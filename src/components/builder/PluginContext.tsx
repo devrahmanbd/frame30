@@ -18,7 +18,9 @@ export function PluginProvider({
   children: React.ReactNode;
 }) {
   const value = useMemo(() => plugins ?? [], [plugins]);
-  return <PluginContext.Provider value={value}>{children}</PluginContext.Provider>;
+  return (
+    <PluginContext.Provider value={value}>{children}</PluginContext.Provider>
+  );
 }
 
 export function useInstalledPlugins() {

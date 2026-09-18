@@ -8,11 +8,13 @@ tools: mcp__github__get_pull_request, mcp__github__create_pull_request, mcp__git
 # Swarm PR - Managing Swarms through Pull Requests
 
 ## Overview
+
 Create and manage AI swarms directly from GitHub Pull Requests, enabling seamless integration with your development workflow through intelligent multi-agent coordination.
 
 ## Core Features
 
 ### 1. PR-Based Swarm Creation
+
 ```bash
 # Create swarm from PR description using gh CLI
 gh pr view 123 --json body,title,labels,files | npx ruv-swarm swarm create-from-pr
@@ -26,10 +28,12 @@ gh pr view 123 --json body,labels,author,assignees | \
 ```
 
 ### 2. PR Comment Commands
+
 Execute swarm commands via PR comments:
 
 ```markdown
 <!-- In PR comment -->
+
 /swarm init mesh 6
 /swarm spawn coder "Implement authentication"
 /swarm spawn tester "Write unit tests"
@@ -67,6 +71,7 @@ jobs:
 ## PR Label Integration
 
 ### Automatic Agent Assignment
+
 Map PR labels to agent types:
 
 ```json
@@ -82,9 +87,10 @@ Map PR labels to agent types:
 ```
 
 ### Label-Based Topology
+
 ```bash
 # Small PR (< 100 lines): ring topology
-# Medium PR (100-500 lines): mesh topology  
+# Medium PR (100-500 lines): mesh topology
 # Large PR (> 500 lines): hierarchical topology
 npx ruv-swarm github pr-topology --pr 123
 ```
@@ -92,6 +98,7 @@ npx ruv-swarm github pr-topology --pr 123
 ## PR Swarm Commands
 
 ### Initialize from PR
+
 ```bash
 # Create swarm with PR context using gh CLI
 PR_DIFF=$(gh pr diff 123)
@@ -105,6 +112,7 @@ npx ruv-swarm github pr-init 123 \
 ```
 
 ### Progress Updates
+
 ```bash
 # Post swarm progress to PR using gh CLI
 PROGRESS=$(npx ruv-swarm github pr-progress 123 --format markdown)
@@ -118,6 +126,7 @@ fi
 ```
 
 ### Code Review Integration
+
 ```bash
 # Create review agents with gh CLI integration
 PR_FILES=$(gh pr view 123 --json files --jq '.files[].path')
@@ -132,7 +141,7 @@ echo "$REVIEW_RESULTS" | jq -r '.comments[]' | while read -r comment; do
   FILE=$(echo "$comment" | jq -r '.file')
   LINE=$(echo "$comment" | jq -r '.line')
   BODY=$(echo "$comment" | jq -r '.body')
-  
+
   gh pr review 123 --comment --body "$BODY"
 done
 ```
@@ -140,6 +149,7 @@ done
 ## Advanced Features
 
 ### 1. Multi-PR Swarm Coordination
+
 ```bash
 # Coordinate swarms across related PRs
 npx ruv-swarm github multi-pr \
@@ -149,6 +159,7 @@ npx ruv-swarm github multi-pr \
 ```
 
 ### 2. PR Dependency Analysis
+
 ```bash
 # Analyze PR dependencies
 npx ruv-swarm github pr-deps 123 \
@@ -157,6 +168,7 @@ npx ruv-swarm github pr-deps 123 \
 ```
 
 ### 3. Automated PR Fixes
+
 ```bash
 # Auto-fix PR issues
 npx ruv-swarm github pr-fix 123 \
@@ -167,20 +179,25 @@ npx ruv-swarm github pr-fix 123 \
 ## Best Practices
 
 ### 1. PR Templates
+
 ```markdown
 <!-- .github/pull_request_template.md -->
+
 ## Swarm Configuration
+
 - Topology: [mesh/hierarchical/ring/star]
 - Max Agents: [number]
 - Auto-spawn: [yes/no]
 - Priority: [high/medium/low]
 
 ## Tasks for Swarm
+
 - [ ] Task 1 description
 - [ ] Task 2 description
 ```
 
 ### 2. Status Checks
+
 ```yaml
 # Require swarm completion before merge
 required_status_checks:
@@ -191,6 +208,7 @@ required_status_checks:
 ```
 
 ### 3. PR Merge Automation
+
 ```bash
 # Auto-merge when swarm completes using gh CLI
 # Check swarm completion status
@@ -199,7 +217,7 @@ SWARM_STATUS=$(npx ruv-swarm github pr-status 123)
 if [[ "$SWARM_STATUS" == "complete" ]]; then
   # Check review requirements
   REVIEWS=$(gh pr view 123 --json reviews --jq '.reviews | length')
-  
+
   if [[ $REVIEWS -ge 2 ]]; then
     # Enable auto-merge
     gh pr merge 123 --auto --squash
@@ -210,21 +228,22 @@ fi
 ## Webhook Integration
 
 ### Setup Webhook Handler
+
 ```javascript
 // webhook-handler.js
-const { createServer } = require('http');
-const { execSync } = require('child_process');
+const { createServer } = require("http");
+const { execSync } = require("child_process");
 
 createServer((req, res) => {
-  if (req.url === '/github-webhook') {
+  if (req.url === "/github-webhook") {
     const event = JSON.parse(body);
-    
-    if (event.action === 'opened' && event.pull_request) {
+
+    if (event.action === "opened" && event.pull_request) {
       execSync(`npx ruv-swarm github pr-init ${event.pull_request.number}`);
     }
-    
+
     res.writeHead(200);
-    res.end('OK');
+    res.end("OK");
   }
 }).listen(3000);
 ```
@@ -232,6 +251,7 @@ createServer((req, res) => {
 ## Examples
 
 ### Feature Development PR
+
 ```bash
 # PR #456: Add user authentication
 npx ruv-swarm github pr-init 456 \
@@ -241,6 +261,7 @@ npx ruv-swarm github pr-init 456 \
 ```
 
 ### Bug Fix PR
+
 ```bash
 # PR #789: Fix memory leak
 npx ruv-swarm github pr-init 789 \
@@ -250,6 +271,7 @@ npx ruv-swarm github pr-init 789 \
 ```
 
 ### Documentation PR
+
 ```bash
 # PR #321: Update API docs
 npx ruv-swarm github pr-init 321 \
@@ -261,6 +283,7 @@ npx ruv-swarm github pr-init 321 \
 ## Metrics & Reporting
 
 ### PR Swarm Analytics
+
 ```bash
 # Generate PR swarm report
 npx ruv-swarm github pr-report 123 \
@@ -269,6 +292,7 @@ npx ruv-swarm github pr-report 123 \
 ```
 
 ### Dashboard Integration
+
 ```bash
 # Export to GitHub Insights
 npx ruv-swarm github export-metrics \
@@ -286,6 +310,7 @@ npx ruv-swarm github export-metrics \
 ## Integration with Claude Code
 
 When using with Claude Code:
+
 1. Claude Code reads PR diff and context
 2. Swarm coordinates approach based on PR type
 3. Agents work in parallel on different aspects
@@ -295,6 +320,7 @@ When using with Claude Code:
 ## Advanced Swarm PR Coordination
 
 ### Multi-Agent PR Analysis
+
 ```bash
 # Initialize PR-specific swarm with intelligent topology selection
 mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 8 }
@@ -308,8 +334,8 @@ mcp__claude-flow__agent_spawn { type: "optimizer", name: "Performance Optimizer"
 mcp__claude-flow__memory_usage {
   action: "store",
   key: "pr/#{pr_number}/analysis",
-  value: { 
-    diff: "pr_diff_content", 
+  value: {
+    diff: "pr_diff_content",
     files_changed: ["file1.js", "file2.py"],
     complexity_score: 8.5,
     risk_assessment: "medium"
@@ -326,16 +352,17 @@ mcp__claude-flow__task_orchestrate {
 ```
 
 ### Swarm-Coordinated PR Lifecycle
+
 ```javascript
 // Pre-hook: PR Initialization and Swarm Setup
 const prPreHook = async (prData) => {
   // Analyze PR complexity for optimal swarm configuration
   const complexity = await analyzePRComplexity(prData);
   const topology = complexity > 7 ? "hierarchical" : "mesh";
-  
+
   // Initialize swarm with PR-specific configuration
   await mcp__claude_flow__swarm_init({ topology, maxAgents: 8 });
-  
+
   // Store comprehensive PR context
   await mcp__claude_flow__memory_usage({
     action: "store",
@@ -344,10 +371,10 @@ const prPreHook = async (prData) => {
       pr: prData,
       complexity,
       agents_assigned: await getOptimalAgents(prData),
-      timeline: generateTimeline(prData)
-    }
+      timeline: generateTimeline(prData),
+    },
   });
-  
+
   // Coordinate initial agent synchronization
   await mcp__claude_flow__coordination_sync({ swarmId: "current" });
 };
@@ -356,10 +383,10 @@ const prPreHook = async (prData) => {
 const prPostHook = async (results) => {
   // Generate comprehensive PR completion report
   const report = await generatePRReport(results);
-  
+
   // Update PR with final swarm analysis
   await updatePRWithResults(report);
-  
+
   // Store completion metrics for future optimization
   await mcp__claude_flow__memory_usage({
     action: "store",
@@ -368,13 +395,14 @@ const prPostHook = async (results) => {
       completion_time: results.duration,
       agent_efficiency: results.agentMetrics,
       quality_score: results.qualityAssessment,
-      lessons_learned: results.insights
-    }
+      lessons_learned: results.insights,
+    },
   });
 };
 ```
 
 ### Intelligent PR Merge Coordination
+
 ```bash
 # Coordinate merge decision with swarm consensus
 mcp__claude-flow__coordination_sync { swarmId: "pr-review-swarm" }

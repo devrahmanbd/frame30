@@ -1,19 +1,21 @@
 # FRAMIQUE: Flagship Blog Plan & Semantic Content Briefs
 
 > **Methodology:** Koray Tuğberk Gübür On-Page Semantic SEO & Topic Cluster Modeling  
-> **Skills Integrated:**  
-> - `~/.agents/skills/seo-content-brief` (Structured Editorial Requirements)  
-> - `~/.agents/skills/seo-content` (E-E-A-T & Holistic Quality Gate)  
-> - `~/.agents/skills/sickn33-awareness-stage-mapper` (Cognitive Stage Calibration)  
+> **Skills Integrated:**
+>
+> - `~/.agents/skills/seo-content-brief` (Structured Editorial Requirements)
+> - `~/.agents/skills/seo-content` (E-E-A-T & Holistic Quality Gate)
+> - `~/.agents/skills/sickn33-awareness-stage-mapper` (Cognitive Stage Calibration)
 > - `~/.agents/skills/sickn33-price-psychology-strategist` (Value & Fee Framing)  
-> **Output:** Production-Ready Execution Briefs for Top 5 Strategic Content Assets  
+>   **Output:** Production-Ready Execution Briefs for Top 5 Strategic Content Assets
 
 ---
 
 ## Content Brief 1: The Sovereign Alternative (Sprint 1 Flagship)
 
 ### Metadata & Strategic Taxonomy
-- **Working Title:** *The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify*
+
+- **Working Title:** _The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify_
 - **Target URL Slug:** `/blog/shopify-fee-exodus`
 - **SEO Title Tag:** `The Death of the 2% Fee: Why Merchants Leave Shopify (2026)` (58 chars)
 - **Meta Description:** `Discover why growing e-commerce brands are leaving Shopify to escape 2% payment penalties, app bloat, and rigid themes. See the 3-year savings breakdown.` (154 chars)
@@ -23,6 +25,7 @@
 - **Target Word Count:** 2,400 words
 
 ### Central Entity & Semantic Triples
+
 - **Central Entity:** `Shopify Transaction Fee` (`FeeSpecification`) & `FRAMIQUE` (`SoftwareApplication`)
 - **Semantic Triples:**
   - `[Shopify] [imposes] [two percent penalty on third-party payment gateways]`
@@ -30,6 +33,7 @@
   - `[Third-party apps] [increase] [Shopify monthly operating costs by over 300 percent]`
 
 ### Strict Heading Outline & Information Gain Checklist
+
 ```
 H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
   ├── H2: The Hidden Arithmetic of Shopify's "App & Gateway Tax"
@@ -49,8 +53,8 @@ H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
 
 - **Information Gain Requirement:** Include a dynamic TCO interactive table comparing annual revenues from $50k to $500k.
 - **Internal Linking:**
-  - Link upward to: [Sovereign Commerce Manifesto](/manifesto/sovereign-commerce) using anchor *"zero fee ecommerce platform"*.
-  - Link laterally to: [Shopify vs Framique Comparison](/compare/shopify) using anchor *"Shopify alternative with zero transaction fees"*.
+  - Link upward to: [Sovereign Commerce Manifesto](/manifesto/sovereign-commerce) using anchor _"zero fee ecommerce platform"_.
+  - Link laterally to: [Shopify vs Framique Comparison](/compare/shopify) using anchor _"Shopify alternative with zero transaction fees"_.
   - Link to Conversion: [Launch Your Free Store](/auth?mode=signup).
 
 ---
@@ -58,7 +62,8 @@ H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
 ## Content Brief 2: The Designer's Dilemma (Sprint 2 Flagship)
 
 ### Metadata & Strategic Taxonomy
-- **Working Title:** *Can You Actually Run an E-Commerce Store on Framer? An Honest Technical Review*
+
+- **Working Title:** _Can You Actually Run an E-Commerce Store on Framer? An Honest Technical Review_
 - **Target URL Slug:** `/blog/framer-ecommerce-reality`
 - **SEO Title Tag:** `Can You Build an E-Commerce Store on Framer? (2026 Review)` (57 chars)
 - **Meta Description:** `Framer is incredible for landing pages, but can you run a real online store on it? We review inventory limits, checkout redirects, and the Framique alternative.` (154 chars)
@@ -68,6 +73,7 @@ H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
 - **Target Word Count:** 2,200 words
 
 ### Central Entity & Semantic Triples
+
 - **Central Entity:** `Framer` (`WebDesignTool`) & `FRAMIQUE Visual Canvas` (`SoftwareFeature`)
 - **Semantic Triples:**
   - `[Framer] [lacks] [native relational e-commerce checkout and inventory management]`
@@ -75,6 +81,7 @@ H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
   - `[Framique] [combines] [Framer-level visual canvas with relational PostgreSQL store engine]`
 
 ### Strict Heading Outline & Information Gain Checklist
+
 ```
 H1: Can You Actually Run an E-Commerce Store on Framer? An Honest Review
   ├── H2: The Promise of Framer: Why Designers Fall in Love with the Canvas
@@ -103,7 +110,8 @@ H1: Can You Actually Run an E-Commerce Store on Framer? An Honest Review
 ## Content Brief 3: The Regional Playbook (Sprint 3 Flagship)
 
 ### Metadata & Strategic Taxonomy
-- **Working Title:** *The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Online Store*
+
+- **Working Title:** _The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Online Store_
 - **Target URL Slug:** `/guides/bangladesh-ecommerce-playbook`
 - **SEO Title Tag:** `Bangladesh E-Commerce Playbook: Complete 2026 Guide` (51 chars)
 - **Meta Description:** `The definitive guide to building a profitable e-commerce brand in Bangladesh: tokenized bKash/Nagad checkout, Steadfast courier automation, and COD fraud defense.` (155 chars)
@@ -113,6 +121,7 @@ H1: Can You Actually Run an E-Commerce Store on Framer? An Honest Review
 - **Target Word Count:** 3,800 words (Comprehensive Field Manual)
 
 ### Central Entity & Semantic Triples
+
 - **Central Entity:** `E-Commerce in Bangladesh` (`CommercialActivity`) & `Local Merchant Infrastructure` (`Service`)
 - **Semantic Triples:**
   - `[Bangladeshi consumers] [demand] [instant mobile financial service checkouts via bKash and Nagad]`
@@ -120,6 +129,7 @@ H1: Can You Actually Run an E-Commerce Store on Framer? An Honest Review
   - `[Framique] [automates] [parcel booking with Steadfast and Pathao courier APIs]`
 
 ### Strict Heading Outline & Information Gain Checklist
+
 ```
 H1: The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store
   ├── H2: The Three Pillars of Modern Bangladeshi Retail: MFS, COD & Mobile Speed
@@ -153,7 +163,8 @@ H1: The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store
 ## Content Brief 4: Systems Engineering Whitepaper (Sprint 4 Flagship)
 
 ### Metadata & Strategic Taxonomy
-- **Working Title:** *Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL Row-Level Security*
+
+- **Working Title:** _Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL Row-Level Security_
 - **Target URL Slug:** `/architecture/framique-stack-deep-dive`
 - **SEO Title Tag:** `Inside Framique: TanStack Start, Nitro & PostgreSQL RLS` (54 chars)
 - **Meta Description:** `A deep technical look into Framique's multi-tenant cloud CMS architecture: edge SSR with TanStack Start, sub-50ms TTFB, and PostgreSQL Row-Level Security isolation.` (154 chars)
@@ -163,6 +174,7 @@ H1: The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store
 - **Target Word Count:** 2,600 words
 
 ### Central Entity & Semantic Triples
+
 - **Central Entity:** `TanStack Start` (`SoftwareFramework`) & `PostgreSQL RLS` (`SecurityFeature`)
 - **Semantic Triples:**
   - `[Framique] [executes] [server-side rendering via TanStack Start on global edge nodes]`
@@ -170,6 +182,7 @@ H1: The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store
   - `[Host-header routing] [resolves] [custom merchant domains in under five milliseconds]`
 
 ### Strict Heading Outline & Information Gain Checklist
+
 ```
 H1: Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS
   ├── H2: Why We Abandoned Monolithic Rails and Client-Side SPA Frameworks
@@ -199,7 +212,8 @@ H1: Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS
 ## Content Brief 5: CRO & Operations Playbook (Sprint 3 Flagship)
 
 ### Metadata & Strategic Taxonomy
-- **Working Title:** *How to Cut Cash-on-Delivery (COD) Delivery Return Rates by 60%*
+
+- **Working Title:** _How to Cut Cash-on-Delivery (COD) Delivery Return Rates by 60%_
 - **Target URL Slug:** `/blog/stopping-cod-return-fraud`
 - **SEO Title Tag:** `How to Cut COD Return Rates by 60% in E-Commerce (2026)` (56 chars)
 - **Meta Description:** `High Cash on Delivery return rates kill e-commerce margins. Learn how algorithmic phone validation, OTP checks, and delivery blacklists slash returns by 60%.` (154 chars)
@@ -209,6 +223,7 @@ H1: Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS
 - **Target Word Count:** 2,100 words
 
 ### Central Entity & Semantic Triples
+
 - **Central Entity:** `Cash on Delivery Fraud Shield` (`SoftwareFeature`) & `Courier Return-to-Origin` (`LogisticsMetric`)
 - **Semantic Triples:**
   - `[Unverified COD orders] [cause] [twenty to thirty percent courier return rates]`
@@ -216,6 +231,7 @@ H1: Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS
   - `[Framique COD Shield] [flags] [high-risk delivery addresses prior to parcel booking]`
 
 ### Strict Heading Outline & Information Gain Checklist
+
 ```
 H1: How to Cut Cash-on-Delivery (COD) Delivery Return Rates by 60%
   ├── H2: The Silent Margin Killer: Why High RTO Destroys D2C Brands

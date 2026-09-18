@@ -1,1 +1,1135 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "label": "cart.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L1"}, {"id": "builder_cart_t", "label": "t()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L21"}, {"id": "builder_cart_lineskeleton", "label": "LineSkeleton()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L25"}, {"id": "builder_cart_summaryskeleton", "label": "SummarySkeleton()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L41"}, {"id": "builder_cart_linelist", "label": "LineList()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L53"}, {"id": "builder_cart_cartlines", "label": "CartLines()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L116"}, {"id": "builder_cart_freeshippingbar", "label": "FreeShippingBar()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L133"}, {"id": "builder_cart_freeshippingwidget", "label": "FreeShippingWidget()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L164"}, {"id": "builder_cart_summaryrow", "label": "SummaryRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L171"}, {"id": "builder_cart_summarybody", "label": "SummaryBody()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L188"}, {"id": "builder_cart_cartsummary", "label": "CartSummary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L294"}, {"id": "builder_cart_cartdrawer", "label": "CartDrawer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L309"}, {"id": "builder_cart_checkoutsteps", "label": "CheckoutSteps()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L339"}, {"id": "builder_cart_group_label", "label": "GROUP_LABEL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L358"}, {"id": "builder_cart_paymentmethods", "label": "PaymentMethods()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L371"}, {"id": "builder_cart_order_stages", "label": "ORDER_STAGES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L428"}, {"id": "builder_cart_orderstageindex", "label": "orderStageIndex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L431"}, {"id": "builder_cart_ordertracker", "label": "OrderTracker()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L439"}, {"id": "builder_cart_cart_widgets", "label": "CART_WIDGETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L474"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "lib_payment_rails_method_group_order", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "lib_payment_rails_groupmethods", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "lib_payment_rails_methodlabel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "lib_payment_rails_paymentmethodkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgets_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_widgets_widgetcomponent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_widgets_widgetctx", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cartcontext_usecartcontext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cartcontext_usecartdraweropener", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cartcontext_carttotals", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_components_builder_primitives_qtystepper_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "primitives_qtystepper_qtystepper", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_components_builder_primitives_steptrail_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "primitives_steptrail_steptrail", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "primitives_steptrail_trailstep", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "users_rahman_documents_frame30_src_components_builder_primitives_overlayhost_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "primitives_overlayhost_overlayhost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_t", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_lineskeleton", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_summaryskeleton", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_linelist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_cartlines", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L116", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_freeshippingbar", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_freeshippingwidget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_summaryrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L171", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_summarybody", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_cartsummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L294", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_cartdrawer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L309", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_checkoutsteps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L339", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_group_label", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L358", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_paymentmethods", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L371", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_order_stages", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L428", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_orderstageindex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L431", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_ordertracker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L439", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cart_tsx", "target": "builder_cart_cart_widgets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L474", "weight": 1.0}, {"source": "builder_cart_linelist", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L69", "weight": 1.0}, {"source": "builder_cart_freeshippingbar", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L144", "weight": 1.0}, {"source": "builder_cart_summarybody", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L198", "weight": 1.0}, {"source": "builder_cart_cartdrawer", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L314", "weight": 1.0}, {"source": "builder_cart_checkoutsteps", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L343", "weight": 1.0}, {"source": "builder_cart_paymentmethods", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L380", "weight": 1.0}, {"source": "builder_cart_ordertracker", "target": "builder_cart_t", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L446", "weight": 1.0}, {"source": "builder_cart_ordertracker", "target": "builder_cart_orderstageindex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L451", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_cart_lineskeleton", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L28"}, {"caller_nid": "builder_cart_summaryskeleton", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L44"}, {"caller_nid": "builder_cart_linelist", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L55"}, {"caller_nid": "builder_cart_linelist", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L69"}, {"caller_nid": "builder_cart_linelist", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L76"}, {"caller_nid": "builder_cart_cartlines", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L118"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L139"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L139"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L139"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L144"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L145"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L145"}, {"caller_nid": "builder_cart_freeshippingbar", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L146"}, {"caller_nid": "builder_cart_freeshippingwidget", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L165"}, {"caller_nid": "builder_cart_summarybody", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L190"}, {"caller_nid": "builder_cart_summarybody", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L191"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L198"}, {"caller_nid": "builder_cart_summarybody", "callee": "bool", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L205"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L208"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L209"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L213"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L214"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L218"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L219"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L223"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L224"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L228"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L228"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L232"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L233"}, {"caller_nid": "builder_cart_summarybody", "callee": "bool", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L239"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L248"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L254"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L261"}, {"caller_nid": "builder_cart_summarybody", "callee": "money", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L265"}, {"caller_nid": "builder_cart_summarybody", "callee": "bool", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L277"}, {"caller_nid": "builder_cart_summarybody", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L282"}, {"caller_nid": "builder_cart_cartsummary", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L296"}, {"caller_nid": "builder_cart_cartsummary", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L298"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L311"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L312"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "useCartDrawerOpener", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L313"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L313"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L314"}, {"caller_nid": "builder_cart_cartdrawer", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L322"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L343"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L344"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L345"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L346"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L348"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L348"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "int", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L348"}, {"caller_nid": "builder_cart_checkoutsteps", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L350"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L373"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "groupMethods", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L374"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L380"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L389"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L392"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L421"}, {"caller_nid": "builder_cart_paymentmethods", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L421"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L432"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L433"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L434"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L434"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L434"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L435"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L435"}, {"caller_nid": "builder_cart_orderstageindex", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L435"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L446"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L447"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L448"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L449"}, {"caller_nid": "builder_cart_ordertracker", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L452"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L461"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L469"}, {"caller_nid": "builder_cart_ordertracker", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx", "source_location": "L469"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "label": "cart.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_cart_t",
+      "label": "t()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "builder_cart_lineskeleton",
+      "label": "LineSkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L25"
+    },
+    {
+      "id": "builder_cart_summaryskeleton",
+      "label": "SummarySkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "builder_cart_linelist",
+      "label": "LineList()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L53"
+    },
+    {
+      "id": "builder_cart_cartlines",
+      "label": "CartLines()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L116"
+    },
+    {
+      "id": "builder_cart_freeshippingbar",
+      "label": "FreeShippingBar()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L133"
+    },
+    {
+      "id": "builder_cart_freeshippingwidget",
+      "label": "FreeShippingWidget()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L164"
+    },
+    {
+      "id": "builder_cart_summaryrow",
+      "label": "SummaryRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L171"
+    },
+    {
+      "id": "builder_cart_summarybody",
+      "label": "SummaryBody()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L188"
+    },
+    {
+      "id": "builder_cart_cartsummary",
+      "label": "CartSummary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L294"
+    },
+    {
+      "id": "builder_cart_cartdrawer",
+      "label": "CartDrawer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L309"
+    },
+    {
+      "id": "builder_cart_checkoutsteps",
+      "label": "CheckoutSteps()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L339"
+    },
+    {
+      "id": "builder_cart_group_label",
+      "label": "GROUP_LABEL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L358"
+    },
+    {
+      "id": "builder_cart_paymentmethods",
+      "label": "PaymentMethods()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L371"
+    },
+    {
+      "id": "builder_cart_order_stages",
+      "label": "ORDER_STAGES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L428"
+    },
+    {
+      "id": "builder_cart_orderstageindex",
+      "label": "orderStageIndex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L431"
+    },
+    {
+      "id": "builder_cart_ordertracker",
+      "label": "OrderTracker()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L439"
+    },
+    {
+      "id": "builder_cart_cart_widgets",
+      "label": "CART_WIDGETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L474"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "lib_payment_rails_method_group_order",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "lib_payment_rails_groupmethods",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "lib_payment_rails_methodlabel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "lib_payment_rails_paymentmethodkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgets_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_widgets_widgetcomponent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_widgets_widgetctx",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cartcontext_usecartcontext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cartcontext_usecartdraweropener",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cartcontext_carttotals",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_primitives_qtystepper_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "primitives_qtystepper_qtystepper",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_primitives_steptrail_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "primitives_steptrail_steptrail",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "primitives_steptrail_trailstep",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_primitives_overlayhost_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "primitives_overlayhost_overlayhost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_t",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_lineskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_summaryskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_linelist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_cartlines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_freeshippingbar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_freeshippingwidget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_summaryrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_summarybody",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_cartsummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L294",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_cartdrawer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L309",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_checkoutsteps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L339",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_group_label",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L358",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_paymentmethods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L371",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_order_stages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L428",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_orderstageindex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L431",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_ordertracker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L439",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cart_tsx",
+      "target": "builder_cart_cart_widgets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L474",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_linelist",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_freeshippingbar",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_summarybody",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_cartdrawer",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_checkoutsteps",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_paymentmethods",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L380",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_ordertracker",
+      "target": "builder_cart_t",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L446",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_cart_ordertracker",
+      "target": "builder_cart_orderstageindex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L451",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_cart_lineskeleton",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "builder_cart_summaryskeleton",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "builder_cart_linelist",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "builder_cart_linelist",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "builder_cart_linelist",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "builder_cart_cartlines",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingbar",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "builder_cart_freeshippingwidget",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "bool",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L224"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L232"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L233"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "bool",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "money",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "bool",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L277"
+    },
+    {
+      "caller_nid": "builder_cart_summarybody",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L282"
+    },
+    {
+      "caller_nid": "builder_cart_cartsummary",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "builder_cart_cartsummary",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "useCartDrawerOpener",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "builder_cart_cartdrawer",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L322"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L343"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "int",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "builder_cart_checkoutsteps",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "groupMethods",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L374"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L392"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "builder_cart_paymentmethods",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L432"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L434"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L434"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L434"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L435"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L435"
+    },
+    {
+      "caller_nid": "builder_cart_orderstageindex",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L435"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L446"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L447"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L448"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L452"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L461"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L469"
+    },
+    {
+      "caller_nid": "builder_cart_ordertracker",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/cart.tsx",
+      "source_location": "L469"
+    }
+  ]
+}

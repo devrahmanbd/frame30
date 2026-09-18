@@ -1,1 +1,194 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "label": "owner-people.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L1"}, {"id": "lib_owner_people_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L17"}, {"id": "lib_owner_people_server_loose", "label": "Loose", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L19"}, {"id": "lib_owner_people_server_service", "label": "service()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L21"}, {"id": "lib_owner_people_server_personrow", "label": "PersonRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L26"}, {"id": "lib_owner_people_server_loadpeople", "label": "loadPeople()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L37"}, {"id": "lib_owner_people_server_setownerright", "label": "setOwnerRight()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L96"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_ops_server_ownergate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_ops_server_ownererror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_loose", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_service", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_personrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_loadpeople", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts", "target": "lib_owner_people_server_setownerright", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L96", "weight": 1.0}, {"source": "lib_owner_people_server_service", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L22", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_owner_people_server_loadpeople", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L38"}, {"caller_nid": "lib_owner_people_server_setownerright", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts", "source_location": "L98"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "label": "owner-people.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_owner_people_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_owner_people_server_loose",
+      "label": "Loose",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_owner_people_server_service",
+      "label": "service()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_owner_people_server_personrow",
+      "label": "PersonRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_owner_people_server_loadpeople",
+      "label": "loadPeople()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_owner_people_server_setownerright",
+      "label": "setOwnerRight()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L96"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_ops_server_ownererror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_loose",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_service",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_personrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_loadpeople",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_people_server_ts",
+      "target": "lib_owner_people_server_setownerright",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_people_server_service",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_owner_people_server_loadpeople",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_owner_people_server_setownerright",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-people.server.ts",
+      "source_location": "L98"
+    }
+  ]
+}

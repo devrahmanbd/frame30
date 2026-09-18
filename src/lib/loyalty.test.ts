@@ -30,7 +30,11 @@ describe("tiers", () => {
     const silver = tierProgress(1_000_00);
     expect(silver.next).toBe("gold");
     expect(silver.remainingMinor).toBe(1_500_00);
-    expect(tierProgress(20_000_00)).toMatchObject({ next: null, percent: 100, remainingMinor: 0 });
+    expect(tierProgress(20_000_00)).toMatchObject({
+      next: null,
+      percent: 100,
+      remainingMinor: 0,
+    });
   });
 });
 
@@ -129,13 +133,19 @@ describe("quoteRedemption", () => {
   });
 
   it("refuses dust redemptions with a reason the shopper can read", () => {
-    const quote = quoteRedemption(DEFAULT_PROGRAM, { balancePoints: 40, orderTotalMinor: 1_000_00 });
+    const quote = quoteRedemption(DEFAULT_PROGRAM, {
+      balancePoints: 40,
+      orderTotalMinor: 1_000_00,
+    });
     expect(quote.points).toBe(0);
     expect(explainReason(quote.reason, "bn")).toMatch(/[\u0980-\u09FF]/);
   });
 
   it("refuses when the order is too small to absorb the minimum", () => {
-    const quote = quoteRedemption(DEFAULT_PROGRAM, { balancePoints: 10_000, orderTotalMinor: 10_00 });
+    const quote = quoteRedemption(DEFAULT_PROGRAM, {
+      balancePoints: 10_000,
+      orderTotalMinor: 10_00,
+    });
     expect(quote.points).toBe(0);
     expect(quote.reason).toBe("below_minimum");
   });
@@ -143,14 +153,32 @@ describe("quoteRedemption", () => {
 
 describe("ledger", () => {
   const entries = [
-    { id: "a", points: 100, state: "available" as const, expiresAt: "2026-09-01T00:00:00.000Z" },
-    { id: "b", points: 300, state: "available" as const, expiresAt: "2027-01-01T00:00:00.000Z" },
+    {
+      id: "a",
+      points: 100,
+      state: "available" as const,
+      expiresAt: "2026-09-01T00:00:00.000Z",
+    },
+    {
+      id: "b",
+      points: 300,
+      state: "available" as const,
+      expiresAt: "2027-01-01T00:00:00.000Z",
+    },
     { id: "c", points: 50, state: "pending" as const, expiresAt: null },
-    { id: "d", points: 25, state: "expired" as const, expiresAt: "2026-01-01T00:00:00.000Z" },
+    {
+      id: "d",
+      points: 25,
+      state: "expired" as const,
+      expiresAt: "2026-01-01T00:00:00.000Z",
+    },
   ];
 
   it("splits the balance by state and warns about near expiry", () => {
-    const summary = summarizeLedger(entries, new Date("2026-08-10T00:00:00.000Z"));
+    const summary = summarizeLedger(
+      entries,
+      new Date("2026-08-10T00:00:00.000Z"),
+    );
     expect(summary.available).toBe(400);
     expect(summary.pending).toBe(50);
     expect(summary.expiringSoon).toBe(100);
@@ -186,33 +214,52 @@ describe("evaluateReferral", () => {
 
   it("pays a clean referral", () => {
     const verdict = evaluateReferral(DEFAULT_REFERRAL, base);
-    expect(verdict).toMatchObject({ qualified: true, referrerPoints: 500, refereeDiscountMinor: 100_00 });
+    expect(verdict).toMatchObject({
+      qualified: true,
+      referrerPoints: 500,
+      refereeDiscountMinor: 100_00,
+    });
   });
 
   it("blocks self-referral", () => {
-    expect(evaluateReferral(DEFAULT_REFERRAL, { ...base, refereeId: "r1" }).reason).toBe("self_referral");
+    expect(
+      evaluateReferral(DEFAULT_REFERRAL, { ...base, refereeId: "r1" }).reason,
+    ).toBe("self_referral");
   });
 
   it("holds same-household signals for review instead of paying", () => {
-    const verdict = evaluateReferral(DEFAULT_REFERRAL, { ...base, sharedPaymentFingerprint: true });
+    const verdict = evaluateReferral(DEFAULT_REFERRAL, {
+      ...base,
+      sharedPaymentFingerprint: true,
+    });
     expect(verdict.qualified).toBe(false);
     expect(verdict.reviewRequired).toBe(true);
     expect(verdict.referrerPoints).toBe(0);
   });
 
   it("rejects repeat orders, small orders and farmed accounts", () => {
-    expect(evaluateReferral(DEFAULT_REFERRAL, { ...base, refereeIsFirstOrder: false }).reason).toBe(
-      "not_first_order",
-    );
-    expect(evaluateReferral(DEFAULT_REFERRAL, { ...base, refereeOrderTotalMinor: 100_00 }).reason).toBe(
-      "order_below_minimum",
-    );
-    expect(evaluateReferral(DEFAULT_REFERRAL, { ...base, refereeAccountAgeMinutes: 1 }).reason).toBe(
-      "account_too_new",
-    );
-    expect(evaluateReferral(DEFAULT_REFERRAL, { ...base, rewardsInWindow: 10 }).reason).toBe(
-      "window_cap_reached",
-    );
+    expect(
+      evaluateReferral(DEFAULT_REFERRAL, {
+        ...base,
+        refereeIsFirstOrder: false,
+      }).reason,
+    ).toBe("not_first_order");
+    expect(
+      evaluateReferral(DEFAULT_REFERRAL, {
+        ...base,
+        refereeOrderTotalMinor: 100_00,
+      }).reason,
+    ).toBe("order_below_minimum");
+    expect(
+      evaluateReferral(DEFAULT_REFERRAL, {
+        ...base,
+        refereeAccountAgeMinutes: 1,
+      }).reason,
+    ).toBe("account_too_new");
+    expect(
+      evaluateReferral(DEFAULT_REFERRAL, { ...base, rewardsInWindow: 10 })
+        .reason,
+    ).toBe("window_cap_reached");
   });
 });
 
@@ -241,7 +288,12 @@ describe("affiliate commission", () => {
   it("adds the flat bonus on top of the percentage", () => {
     const result = commissionFor(
       { ...DEFAULT_AFFILIATE, flatMinor: 50_00 },
-      { subtotalMinor: 1_000_00, shippingMinor: 0, discountMinor: 0, refundedMinor: 0 },
+      {
+        subtotalMinor: 1_000_00,
+        shippingMinor: 0,
+        discountMinor: 0,
+        refundedMinor: 0,
+      },
     );
     expect(result.commissionMinor).toBe(50_00 + 50_00);
   });
@@ -255,8 +307,16 @@ describe("attributeOrder", () => {
       orderAt,
       customerId: "cust-1",
       clicks: [
-        { affiliateId: "aff-old", affiliateOwnerId: null, clickedAt: "2026-08-01T09:00:00.000Z" },
-        { affiliateId: "aff-new", affiliateOwnerId: null, clickedAt: "2026-08-09T09:00:00.000Z" },
+        {
+          affiliateId: "aff-old",
+          affiliateOwnerId: null,
+          clickedAt: "2026-08-01T09:00:00.000Z",
+        },
+        {
+          affiliateId: "aff-new",
+          affiliateOwnerId: null,
+          clickedAt: "2026-08-09T09:00:00.000Z",
+        },
       ],
     });
     expect(winner?.affiliateId).toBe("aff-new");
@@ -268,8 +328,16 @@ describe("attributeOrder", () => {
       orderAt,
       customerId: null,
       clicks: [
-        { affiliateId: "stale", affiliateOwnerId: null, clickedAt: "2026-01-01T00:00:00.000Z" },
-        { affiliateId: "future", affiliateOwnerId: null, clickedAt: "2026-08-11T00:00:00.000Z" },
+        {
+          affiliateId: "stale",
+          affiliateOwnerId: null,
+          clickedAt: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          affiliateId: "future",
+          affiliateOwnerId: null,
+          clickedAt: "2026-08-11T00:00:00.000Z",
+        },
       ],
     });
     expect(winner).toBeNull();
@@ -279,7 +347,13 @@ describe("attributeOrder", () => {
     const winner = attributeOrder(DEFAULT_AFFILIATE, {
       orderAt,
       customerId: "cust-1",
-      clicks: [{ affiliateId: "aff-self", affiliateOwnerId: "cust-1", clickedAt: "2026-08-09T09:00:00.000Z" }],
+      clicks: [
+        {
+          affiliateId: "aff-self",
+          affiliateOwnerId: "cust-1",
+          clickedAt: "2026-08-09T09:00:00.000Z",
+        },
+      ],
     });
     expect(winner).toBeNull();
   });
@@ -291,11 +365,31 @@ describe("payoutReadiness", () => {
     const state = payoutReadiness(
       DEFAULT_AFFILIATE,
       [
-        { state: "approved", amountMinor: 600_00, matureAt: "2026-08-01T00:00:00.000Z" },
-        { state: "approved", amountMinor: 900_00, matureAt: "2026-09-01T00:00:00.000Z" },
-        { state: "pending", amountMinor: 200_00, matureAt: "2026-08-01T00:00:00.000Z" },
-        { state: "reversed", amountMinor: 100_00, matureAt: "2026-08-01T00:00:00.000Z" },
-        { state: "paid", amountMinor: 400_00, matureAt: "2026-07-01T00:00:00.000Z" },
+        {
+          state: "approved",
+          amountMinor: 600_00,
+          matureAt: "2026-08-01T00:00:00.000Z",
+        },
+        {
+          state: "approved",
+          amountMinor: 900_00,
+          matureAt: "2026-09-01T00:00:00.000Z",
+        },
+        {
+          state: "pending",
+          amountMinor: 200_00,
+          matureAt: "2026-08-01T00:00:00.000Z",
+        },
+        {
+          state: "reversed",
+          amountMinor: 100_00,
+          matureAt: "2026-08-01T00:00:00.000Z",
+        },
+        {
+          state: "paid",
+          amountMinor: 400_00,
+          matureAt: "2026-07-01T00:00:00.000Z",
+        },
       ],
       now,
     );

@@ -1,1 +1,452 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "label": "url-lifecycle.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L1"}, {"id": "lib_url_lifecycle_server_key", "label": "KEY()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L21"}, {"id": "lib_url_lifecycle_server_merchantidfor", "label": "merchantIdFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L23"}, {"id": "lib_url_lifecycle_server_loadredirectmap", "label": "loadRedirectMap()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L35"}, {"id": "lib_url_lifecycle_server_resolvemissingurl", "label": "resolveMissingUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L70"}, {"id": "lib_url_lifecycle_server_upsertrule", "label": "upsertRule()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L74"}, {"id": "lib_url_lifecycle_server_recordslugchange", "label": "recordSlugChange()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L101"}, {"id": "lib_url_lifecycle_server_recordtombstone", "label": "recordTombstone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L115"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "users_rahman_documents_frame30_src_lib_pricing_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_pricing_server_publicclient", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_cache_server_invalidate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "users_rahman_documents_frame30_src_lib_render_read_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_render_read_server_renderread", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "users_rahman_documents_frame30_src_lib_url_lifecycle_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_buildredirectmap", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_normalizepath", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_resolveurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_slugchangerule", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_tombstonerule", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_redirectrule", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_urlverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_merchantidfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_loadredirectmap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_resolvemissingurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_upsertrule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_recordslugchange", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts", "target": "lib_url_lifecycle_server_recordtombstone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L115", "weight": 1.0}, {"source": "lib_url_lifecycle_server_loadredirectmap", "target": "lib_url_lifecycle_server_key", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L41", "weight": 1.0}, {"source": "lib_url_lifecycle_server_resolvemissingurl", "target": "lib_url_lifecycle_server_loadredirectmap", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_url_lifecycle_server_upsertrule", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_url_lifecycle_server_upsertrule", "target": "lib_url_lifecycle_server_key", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L97", "weight": 1.0}, {"source": "lib_url_lifecycle_server_recordslugchange", "target": "lib_url_lifecycle_server_upsertrule", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L111", "weight": 1.0}, {"source": "lib_url_lifecycle_server_recordtombstone", "target": "lib_url_lifecycle_server_upsertrule", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L124", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "publicClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L24"}, {"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L25"}, {"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L25"}, {"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L25"}, {"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L25"}, {"caller_nid": "lib_url_lifecycle_server_merchantidfor", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L25"}, {"caller_nid": "lib_url_lifecycle_server_loadredirectmap", "callee": "await renderRead", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L39"}, {"caller_nid": "lib_url_lifecycle_server_loadredirectmap", "callee": "buildRedirectMap", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L62"}, {"caller_nid": "lib_url_lifecycle_server_resolvemissingurl", "callee": "resolveUrl", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L71"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L76"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L76"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L91"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L91"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L91"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L91"}, {"caller_nid": "lib_url_lifecycle_server_upsertrule", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L97"}, {"caller_nid": "lib_url_lifecycle_server_recordslugchange", "callee": "slugChangeRule", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L109"}, {"caller_nid": "lib_url_lifecycle_server_recordtombstone", "callee": "tombstoneRule", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts", "source_location": "L122"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "label": "url-lifecycle.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_url_lifecycle_server_key",
+      "label": "KEY()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_url_lifecycle_server_merchantidfor",
+      "label": "merchantIdFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_url_lifecycle_server_loadredirectmap",
+      "label": "loadRedirectMap()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_url_lifecycle_server_resolvemissingurl",
+      "label": "resolveMissingUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "lib_url_lifecycle_server_upsertrule",
+      "label": "upsertRule()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_url_lifecycle_server_recordslugchange",
+      "label": "recordSlugChange()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "lib_url_lifecycle_server_recordtombstone",
+      "label": "recordTombstone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L115"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_pricing_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_pricing_server_publicclient",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_cache_server_invalidate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_render_read_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_render_read_server_renderread",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_url_lifecycle_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_buildredirectmap",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_normalizepath",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_resolveurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_slugchangerule",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_tombstonerule",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_redirectrule",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_urlverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_merchantidfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_loadredirectmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_resolvemissingurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_upsertrule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_recordslugchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_url_lifecycle_server_ts",
+      "target": "lib_url_lifecycle_server_recordtombstone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_loadredirectmap",
+      "target": "lib_url_lifecycle_server_key",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_resolvemissingurl",
+      "target": "lib_url_lifecycle_server_loadredirectmap",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_upsertrule",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_upsertrule",
+      "target": "lib_url_lifecycle_server_key",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_recordslugchange",
+      "target": "lib_url_lifecycle_server_upsertrule",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_url_lifecycle_server_recordtombstone",
+      "target": "lib_url_lifecycle_server_upsertrule",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "publicClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_merchantidfor",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_loadredirectmap",
+      "callee": "await renderRead",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_loadredirectmap",
+      "callee": "buildRedirectMap",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_resolvemissingurl",
+      "callee": "resolveUrl",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_upsertrule",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_recordslugchange",
+      "callee": "slugChangeRule",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_url_lifecycle_server_recordtombstone",
+      "callee": "tombstoneRule",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/url-lifecycle.server.ts",
+      "source_location": "L122"
+    }
+  ]
+}

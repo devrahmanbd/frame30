@@ -32,11 +32,16 @@ export class ConsentError extends Error {
  * Stable, non-reversible subject key. The ledger can be joined on a contact
  * without storing that contact a second time next to the audit trail.
  */
-export async function subjectHash(merchantId: string, contact: string): Promise<string> {
+export async function subjectHash(
+  merchantId: string,
+  contact: string,
+): Promise<string> {
   const value = `${merchantId}:${contact.trim().toLowerCase()}`;
   const bytes = new TextEncoder().encode(value);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export type ConsentInput = {
@@ -56,11 +61,17 @@ export type ConsentInput = {
 /** Appends the ledger row and moves the state row. Never partial. */
 export async function recordConsent(input: ConsentInput) {
   return withSpan("consent.record", async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const hash = input.contact ? await subjectHash(input.merchantId, input.contact) : null;
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const hash = input.contact
+      ? await subjectHash(input.merchantId, input.contact)
+      : null;
     const { error } = await (
       supabaseAdmin as unknown as {
-        rpc: (fn: string, args: Record<string, unknown>) => Promise<{ error: unknown }>;
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ error: unknown }>;
       }
     ).rpc("consent_record", {
       _merchant_id: input.merchantId,
@@ -76,8 +87,14 @@ export async function recordConsent(input: ConsentInput) {
       _reason: input.reason ?? null,
     });
     if (error) {
-      incr("framique_consent_total", { channel: input.channel, outcome: "error" });
-      throw new ConsentError("consent_write_failed", (error as { message?: string }).message ?? "Consent write failed");
+      incr("framique_consent_total", {
+        channel: input.channel,
+        outcome: "error",
+      });
+      throw new ConsentError(
+        "consent_write_failed",
+        (error as { message?: string }).message ?? "Consent write failed",
+      );
     }
     incr("framique_consent_total", {
       channel: input.channel,
@@ -95,7 +112,11 @@ export async function recordConsent(input: ConsentInput) {
   });
 }
 
-export type Recipient = { id: string; email?: string | null; phone?: string | null };
+export type Recipient = {
+  id: string;
+  email?: string | null;
+  phone?: string | null;
+};
 
 export type AudienceVerdict<T extends Recipient> = {
   allowed: T[];
@@ -122,8 +143,12 @@ export async function channelAudience<T extends Recipient>(
     .eq("purpose", purpose)
     .eq("granted", false);
 
-  const withdrawnIds = new Set((data ?? []).map((r) => r.subscriber_id).filter(Boolean) as string[]);
-  const withdrawnHashes = new Set((data ?? []).map((r) => r.subject_hash).filter(Boolean) as string[]);
+  const withdrawnIds = new Set(
+    (data ?? []).map((r) => r.subscriber_id).filter(Boolean) as string[],
+  );
+  const withdrawnHashes = new Set(
+    (data ?? []).map((r) => r.subject_hash).filter(Boolean) as string[],
+  );
 
   const allowed: T[] = [];
   const suppressed: AudienceVerdict<T>["suppressed"] = [];
@@ -146,16 +171,30 @@ export async function channelAudience<T extends Recipient>(
     }
     allowed.push(r);
   }
-  incr("framique_consent_audience_total", { channel, purpose, outcome: "allowed" }, allowed.length);
-  incr("framique_consent_audience_total", { channel, purpose, outcome: "suppressed" }, suppressed.length);
+  incr(
+    "framique_consent_audience_total",
+    { channel, purpose, outcome: "allowed" },
+    allowed.length,
+  );
+  incr(
+    "framique_consent_audience_total",
+    { channel, purpose, outcome: "suppressed" },
+    suppressed.length,
+  );
   return { allowed, suppressed };
 }
 
-export async function consentLedger(db: Client, merchantId: string, limit = 100) {
+export async function consentLedger(
+  db: Client,
+  merchantId: string,
+  limit = 100,
+) {
   await enforceRateLimit("consent.read", merchantId);
   const { data, error } = await db
     .from("consent_events")
-    .select("id, channel, purpose, granted, source, reason, created_at, subscriber_id")
+    .select(
+      "id, channel, purpose, granted, source, reason, created_at, subscriber_id",
+    )
     .eq("merchant_id", merchantId)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -171,7 +210,11 @@ export async function withdrawAllChannels(
   source: string,
 ) {
   const channels: ConsentChannel[] = ["email", "sms"];
-  const purposes: ConsentPurpose[] = ["marketing", "cart_recovery", "stock_alerts"];
+  const purposes: ConsentPurpose[] = [
+    "marketing",
+    "cart_recovery",
+    "stock_alerts",
+  ];
   for (const channel of channels) {
     for (const purpose of purposes) {
       await recordConsent({

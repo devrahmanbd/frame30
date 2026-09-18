@@ -2,12 +2,12 @@ name: Validate Marketplace
 on:
   push:
     paths:
-      - '.claude-plugin/**'
-      - 'plugins/**'
+      - ".claude-plugin/**"
+      - "plugins/**"
   pull_request:
     paths:
-      - '.claude-plugin/**'
-      - 'plugins/**'
+      - ".claude-plugin/**"
+      - "plugins/**"
 
 jobs:
   validate:
@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Validate marketplace.json
         run: |
           node -e "

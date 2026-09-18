@@ -11,7 +11,13 @@ const FORWARD: Partial<Record<OrderStatus, OrderStatus>> = {
   shipped: "delivered",
 };
 
-const CANCELLABLE: OrderStatus[] = ["pending", "payment_pending", "confirmed", "paid", "packed"];
+const CANCELLABLE: OrderStatus[] = [
+  "pending",
+  "payment_pending",
+  "confirmed",
+  "paid",
+  "packed",
+];
 
 export function nextStatus(status: OrderStatus): OrderStatus | null {
   return FORWARD[status] ?? null;
@@ -34,11 +40,33 @@ async function assertMember(supabase: Client, orderId: string) {
 
 export async function loadOrderDetail(supabase: Client, orderId: string) {
   const order = await assertMember(supabase, orderId);
-  const [{ data: items }, { data: events }, { data: refunds }, { data: payments }, { data: amendments }] = await Promise.all([
-    supabase.from("order_items").select("*").eq("order_id", orderId).order("created_at"),
-    supabase.from("order_events").select("*").eq("order_id", orderId).order("created_at"),
-    supabase.from("refunds").select("*").eq("order_id", orderId).order("created_at"),
-    supabase.from("payments").select("*").eq("order_id", orderId).order("created_at"),
+  const [
+    { data: items },
+    { data: events },
+    { data: refunds },
+    { data: payments },
+    { data: amendments },
+  ] = await Promise.all([
+    supabase
+      .from("order_items")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at"),
+    supabase
+      .from("order_events")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at"),
+    supabase
+      .from("refunds")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at"),
+    supabase
+      .from("payments")
+      .select("*")
+      .eq("order_id", orderId)
+      .order("created_at"),
     supabase
       .from("order_amendments")
       .select("*")
@@ -55,8 +83,14 @@ export async function loadOrderDetail(supabase: Client, orderId: string) {
   };
 }
 
-async function logEvent(orderId: string, merchantId: string, eventType: string, note: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+async function logEvent(
+  orderId: string,
+  merchantId: string,
+  eventType: string,
+  note: string,
+) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   await supabaseAdmin.from("order_events").insert({
     order_id: orderId,
     merchant_id: merchantId,
@@ -65,20 +99,30 @@ async function logEvent(orderId: string, merchantId: string, eventType: string, 
   });
 }
 
-export async function advanceOrder(supabase: Client, orderId: string, target: OrderStatus) {
+export async function advanceOrder(
+  supabase: Client,
+  orderId: string,
+  target: OrderStatus,
+) {
   const order = await assertMember(supabase, orderId);
   const allowed = nextStatus(order.status);
   if (!allowed || allowed !== target) {
     throw new Error("Order cannot move to that status from its current status");
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin
     .from("orders")
     .update({ status: target })
     .eq("id", orderId)
     .eq("status", order.status);
   if (error) throw error;
-  await logEvent(orderId, order.merchant_id, `order.${target}`, `Marked ${target} by staff`);
+  await logEvent(
+    orderId,
+    order.merchant_id,
+    `order.${target}`,
+    `Marked ${target} by staff`,
+  );
   return { status: target };
 }
 
@@ -86,12 +130,17 @@ export async function fulfillOrder(supabase: Client, orderId: string) {
   return advanceOrder(supabase, orderId, "delivered");
 }
 
-export async function cancelOrder(supabase: Client, orderId: string, reason?: string) {
+export async function cancelOrder(
+  supabase: Client,
+  orderId: string,
+  reason?: string,
+) {
   const order = await assertMember(supabase, orderId);
   if (!canCancel(order.status)) {
     throw new Error("Order cannot be cancelled once it has shipped");
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
 
   const { error } = await supabaseAdmin
     .from("orders")
@@ -129,13 +178,22 @@ export async function cancelOrder(supabase: Client, orderId: string, reason?: st
   return { status: "cancelled" as const };
 }
 
-async function previousStatus(supabase: Client, orderId: string): Promise<OrderStatus> {
+async function previousStatus(
+  supabase: Client,
+  orderId: string,
+): Promise<OrderStatus> {
   const { data: events } = await supabase
     .from("order_events")
     .select("event_type, created_at")
     .eq("order_id", orderId)
     .order("created_at", { ascending: false });
-  const known: OrderStatus[] = ["delivered", "shipped", "packed", "paid", "confirmed"];
+  const known: OrderStatus[] = [
+    "delivered",
+    "shipped",
+    "packed",
+    "paid",
+    "confirmed",
+  ];
   for (const e of events ?? []) {
     const s = e.event_type.replace(/^order\./, "") as OrderStatus;
     if (known.includes(s)) return s;
@@ -143,11 +201,17 @@ async function previousStatus(supabase: Client, orderId: string): Promise<OrderS
   return "delivered";
 }
 
-export async function declineRefund(supabase: Client, orderId: string, reason?: string) {
+export async function declineRefund(
+  supabase: Client,
+  orderId: string,
+  reason?: string,
+) {
   const order = await assertMember(supabase, orderId);
-  if (order.status !== "refund_requested") throw new Error("No refund request pending on this order");
+  if (order.status !== "refund_requested")
+    throw new Error("No refund request pending on this order");
   const restored = await previousStatus(supabase, orderId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin
     .from("orders")
     .update({ status: restored })
@@ -158,26 +222,40 @@ export async function declineRefund(supabase: Client, orderId: string, reason?: 
     orderId,
     order.merchant_id,
     "refund.declined",
-    reason?.trim() ? reason.trim() : `Refund declined by staff; order returned to ${restored}`,
+    reason?.trim()
+      ? reason.trim()
+      : `Refund declined by staff; order returned to ${restored}`,
   );
   return { status: restored };
 }
 
-export async function refundOrder(supabase: Client, orderId: string, reason?: string) {
+export async function refundOrder(
+  supabase: Client,
+  orderId: string,
+  reason?: string,
+) {
   const order = await assertMember(supabase, orderId);
   const refundKey = `refund:${orderId}`;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
 
   const { data: existing } = await supabaseAdmin
     .from("refunds")
     .select("id, amount_minor_int")
     .eq("refund_key", refundKey)
     .maybeSingle();
-  if (existing) return { refundId: existing.id, status: "refunded" as const, replayed: true };
+  if (existing)
+    return {
+      refundId: existing.id,
+      status: "refunded" as const,
+      replayed: true,
+    };
 
   const refundable: OrderStatus[] = ["paid", "delivered", "refund_requested"];
   if (!refundable.includes(order.status)) {
-    throw new Error("Only paid, delivered or refund-requested orders can be refunded");
+    throw new Error(
+      "Only paid, delivered or refund-requested orders can be refunded",
+    );
   }
 
   // Money leaves the business here: require a fresh second factor (single-use).
@@ -203,7 +281,12 @@ export async function refundOrder(supabase: Client, orderId: string, reason?: st
       .select("id")
       .eq("refund_key", refundKey)
       .maybeSingle();
-    if (raced) return { refundId: raced.id, status: "refunded" as const, replayed: true };
+    if (raced)
+      return {
+        refundId: raced.id,
+        status: "refunded" as const,
+        replayed: true,
+      };
     throw error;
   }
 
@@ -212,7 +295,12 @@ export async function refundOrder(supabase: Client, orderId: string, reason?: st
     .update({ status: "refunded" })
     .eq("id", orderId)
     .eq("status", order.status);
-  await logEvent(orderId, order.merchant_id, "refund.settled", "Refund approved and issued (sandbox)");
+  await logEvent(
+    orderId,
+    order.merchant_id,
+    "refund.settled",
+    "Refund approved and issued (sandbox)",
+  );
 
   return { refundId: refund.id, status: "refunded" as const, replayed: false };
 }
@@ -232,7 +320,10 @@ export async function amendOrderAmounts(
   const { incr, log } = await import("./observability.server");
   const { data, error } = await (
     supabase as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: { message: string } | null }>;
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: { message: string } | null }>;
     }
   ).rpc("order_amend", {
     _order_id: orderId,
@@ -243,14 +334,22 @@ export async function amendOrderAmounts(
   if (error) {
     incr("framique_order_amend_total", { outcome: "rejected" });
     log("warn", "order.amend_rejected", { orderId, reason: error.message });
-    if (error.message.includes("forbidden")) throw new Error("Only an owner or admin can edit order amounts");
-    if (error.message.includes("terminal_status")) throw new Error("Cancelled or refunded orders cannot be edited");
-    if (error.message.includes("reason_required")) throw new Error("Give a reason of at least 4 characters");
-    if (error.message.includes("invalid_amounts")) throw new Error("Amounts are out of range for this order");
+    if (error.message.includes("forbidden"))
+      throw new Error("Only an owner or admin can edit order amounts");
+    if (error.message.includes("terminal_status"))
+      throw new Error("Cancelled or refunded orders cannot be edited");
+    if (error.message.includes("reason_required"))
+      throw new Error("Give a reason of at least 4 characters");
+    if (error.message.includes("invalid_amounts"))
+      throw new Error("Amounts are out of range for this order");
     throw new Error("Order amendment failed");
   }
   incr("framique_order_amend_total", { outcome: "applied" });
-  return data as { total_minor_int: number; vat_minor_int: number; delta_minor_int: number };
+  return data as {
+    total_minor_int: number;
+    vat_minor_int: number;
+    delta_minor_int: number;
+  };
 }
 
 /**
@@ -262,7 +361,12 @@ export async function bulkAdvanceOrders(
   orderIds: string[],
   target: OrderStatus | "next",
 ) {
-  const results: { orderId: string; ok: boolean; status?: OrderStatus; error?: string }[] = [];
+  const results: {
+    orderId: string;
+    ok: boolean;
+    status?: OrderStatus;
+    error?: string;
+  }[] = [];
   for (const orderId of orderIds) {
     try {
       const order = await assertMember(supabase, orderId);
@@ -271,7 +375,11 @@ export async function bulkAdvanceOrders(
       const res = await advanceOrder(supabase, orderId, step);
       results.push({ orderId, ok: true, status: res.status });
     } catch (e) {
-      results.push({ orderId, ok: false, error: e instanceof Error ? e.message : "Failed" });
+      results.push({
+        orderId,
+        ok: false,
+        error: e instanceof Error ? e.message : "Failed",
+      });
     }
   }
   return {
@@ -296,7 +404,11 @@ export const REFUND_REASONS = [
 ] as const;
 export type RefundReason = (typeof REFUND_REASONS)[number];
 
-export type RefundLineInput = { orderItemId: string; quantity: number; restock: boolean };
+export type RefundLineInput = {
+  orderItemId: string;
+  quantity: number;
+  restock: boolean;
+};
 
 /**
  * Refund selected lines. Quantities are checked against what has already been
@@ -314,7 +426,8 @@ export async function refundOrderLines(
   if (["cancelled", "refunded"].includes(order.status)) {
     throw new Error("This order is closed; nothing further can be refunded");
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
 
   const { data: items } = await supabaseAdmin
     .from("order_items")
@@ -335,10 +448,16 @@ export async function refundOrderLines(
     : { data: [] as { order_item_id: string; quantity: number }[] };
   const already = new Map<string, number>();
   for (const l of priorLines ?? []) {
-    already.set(l.order_item_id, (already.get(l.order_item_id) ?? 0) + Number(l.quantity));
+    already.set(
+      l.order_item_id,
+      (already.get(l.order_item_id) ?? 0) + Number(l.quantity),
+    );
   }
 
-  const planned: (RefundLineInput & { amount: number; variantId: string | null })[] = [];
+  const planned: (RefundLineInput & {
+    amount: number;
+    variantId: string | null;
+  })[] = [];
   for (const line of lines) {
     const item = byId.get(line.orderItemId);
     if (!item) throw new Error("One of those lines is not on this order");
@@ -346,7 +465,9 @@ export async function refundOrderLines(
     if (qty <= 0) continue;
     const remaining = Number(item.quantity) - (already.get(item.id) ?? 0);
     if (qty > remaining) {
-      throw new Error(`Only ${remaining} of "${item.product_title}" can still be refunded`);
+      throw new Error(
+        `Only ${remaining} of "${item.product_title}" can still be refunded`,
+      );
     }
     planned.push({
       ...line,
@@ -368,7 +489,8 @@ export async function refundOrderLines(
     .select("id")
     .eq("refund_key", refundKey)
     .maybeSingle();
-  if (existing) return { refundId: existing.id, amountMinor: total, replayed: true };
+  if (existing)
+    return { refundId: existing.id, amountMinor: total, replayed: true };
 
   const { data: refund, error } = await supabaseAdmin
     .from("refunds")
@@ -416,7 +538,10 @@ export async function refundOrderLines(
   const priorQty = [...already.values()].reduce((s, n) => s + n, 0);
   const fully = priorQty + refundedQty >= orderedQty;
   if (fully) {
-    await supabaseAdmin.from("orders").update({ status: "refunded" }).eq("id", orderId);
+    await supabaseAdmin
+      .from("orders")
+      .update({ status: "refunded" })
+      .eq("id", orderId);
   }
 
   await logEvent(
@@ -424,7 +549,9 @@ export async function refundOrderLines(
     order.merchant_id,
     fully ? "refund.settled" : "refund.partial",
     `${reason} · ${refundedQty} unit(s) refunded${
-      planned.some((l) => l.restock) ? ", stock returned" : ", stock not returned"
+      planned.some((l) => l.restock)
+        ? ", stock returned"
+        : ", stock not returned"
     }${note?.trim() ? ` · ${note.trim().slice(0, 120)}` : ""}`,
   );
 
@@ -456,7 +583,8 @@ export async function recordCodCall(
   note?: string,
 ) {
   const order = await assertMember(supabase, orderId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
 
   const { data: prior } = await supabaseAdmin
     .from("cod_call_attempts")
@@ -472,23 +600,48 @@ export async function recordCodCall(
     outcome,
     note: note?.trim() ? note.trim().slice(0, 300) : null,
   });
-  await logEvent(orderId, order.merchant_id, `cod.call_${outcome}`, note?.trim() || `Call attempt ${attemptNo}`);
+  await logEvent(
+    orderId,
+    order.merchant_id,
+    `cod.call_${outcome}`,
+    note?.trim() || `Call attempt ${attemptNo}`,
+  );
 
   const failures = [...(prior ?? []).map((p) => p.outcome), outcome].filter(
     (o) => o === "no_answer" || o === "wrong_number",
   ).length;
 
-  if (outcome === "confirmed" && ["pending", "payment_pending"].includes(order.status)) {
-    await supabaseAdmin.from("orders").update({ status: "confirmed" }).eq("id", orderId).eq("status", order.status);
-    await logEvent(orderId, order.merchant_id, "order.confirmed", "Confirmed by call");
+  if (
+    outcome === "confirmed" &&
+    ["pending", "payment_pending"].includes(order.status)
+  ) {
+    await supabaseAdmin
+      .from("orders")
+      .update({ status: "confirmed" })
+      .eq("id", orderId)
+      .eq("status", order.status);
+    await logEvent(
+      orderId,
+      order.merchant_id,
+      "order.confirmed",
+      "Confirmed by call",
+    );
     return { attemptNo, outcome, orderStatus: "confirmed" as const };
   }
   if (outcome === "refused" && canCancel(order.status)) {
-    await cancelOrder(supabase, orderId, "Customer refused on confirmation call");
+    await cancelOrder(
+      supabase,
+      orderId,
+      "Customer refused on confirmation call",
+    );
     return { attemptNo, outcome, orderStatus: "cancelled" as const };
   }
   if (failures >= COD_FAIL_LIMIT && canCancel(order.status)) {
-    await cancelOrder(supabase, orderId, `Unreachable after ${failures} confirmation calls`);
+    await cancelOrder(
+      supabase,
+      orderId,
+      `Unreachable after ${failures} confirmation calls`,
+    );
     return { attemptNo, outcome, orderStatus: "cancelled" as const };
   }
   return { attemptNo, outcome, orderStatus: order.status };
@@ -496,13 +649,23 @@ export async function recordCodCall(
 
 /* ------------------------------- internal notes and tags -------------------------------- */
 
-export async function addOrderNote(supabase: Client, orderId: string, body: string, pinned = false) {
+export async function addOrderNote(
+  supabase: Client,
+  orderId: string,
+  body: string,
+  pinned = false,
+) {
   const order = await assertMember(supabase, orderId);
   const text = body.trim();
   if (text.length < 2) throw new Error("Write a note first");
   const { data, error } = await supabase
     .from("order_notes")
-    .insert({ merchant_id: order.merchant_id, order_id: orderId, body: text.slice(0, 2000), pinned })
+    .insert({
+      merchant_id: order.merchant_id,
+      order_id: orderId,
+      body: text.slice(0, 2000),
+      pinned,
+    })
     .select("*")
     .single();
   if (error) throw error;
@@ -510,31 +673,59 @@ export async function addOrderNote(supabase: Client, orderId: string, body: stri
 }
 
 export async function deleteOrderNote(supabase: Client, noteId: string) {
-  const { error } = await supabase.from("order_notes").delete().eq("id", noteId);
+  const { error } = await supabase
+    .from("order_notes")
+    .delete()
+    .eq("id", noteId);
   if (error) throw error;
   return { ok: true };
 }
 
 /** Internal tags are staff-only labels; the storefront never reads them. */
-export async function setOrderTags(supabase: Client, orderId: string, tags: string[]) {
+export async function setOrderTags(
+  supabase: Client,
+  orderId: string,
+  tags: string[],
+) {
   await assertMember(supabase, orderId);
-  const clean = [...new Set(tags.map((t) => t.trim().toLowerCase().slice(0, 32)).filter(Boolean))].slice(0, 20);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { error } = await supabaseAdmin.from("orders").update({ tags: clean }).eq("id", orderId);
+  const clean = [
+    ...new Set(
+      tags.map((t) => t.trim().toLowerCase().slice(0, 32)).filter(Boolean),
+    ),
+  ].slice(0, 20);
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin
+    .from("orders")
+    .update({ tags: clean })
+    .eq("id", orderId);
   if (error) throw error;
   return { tags: clean };
 }
 
 /** Everything the order desk needs beyond the base detail payload. */
 export async function loadOrderDesk(supabase: Client, orderId: string) {
-  const [{ data: notes }, { data: calls }, { data: refunds }] = await Promise.all([
-    supabase.from("order_notes").select("*").eq("order_id", orderId).order("created_at", { ascending: false }),
-    supabase.from("cod_call_attempts").select("*").eq("order_id", orderId).order("created_at", { ascending: false }),
-    supabase.from("refunds").select("id").eq("order_id", orderId),
-  ]);
+  const [{ data: notes }, { data: calls }, { data: refunds }] =
+    await Promise.all([
+      supabase
+        .from("order_notes")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("cod_call_attempts")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: false }),
+      supabase.from("refunds").select("id").eq("order_id", orderId),
+    ]);
   const refundIds = (refunds ?? []).map((r) => r.id);
   const { data: refundLines } = refundIds.length
     ? await supabase.from("refund_items").select("*").in("refund_id", refundIds)
     : { data: [] };
-  return { notes: notes ?? [], calls: calls ?? [], refundLines: refundLines ?? [] };
+  return {
+    notes: notes ?? [],
+    calls: calls ?? [],
+    refundLines: refundLines ?? [],
+  };
 }

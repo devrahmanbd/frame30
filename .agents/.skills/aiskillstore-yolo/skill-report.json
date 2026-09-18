@@ -26,11 +26,7 @@
       "supabase",
       "devops"
     ],
-    "supported_tools": [
-      "claude",
-      "codex",
-      "claude-code"
-    ],
+    "supported_tools": ["claude", "codex", "claude-code"],
     "risk_factors": [
       "external_commands",
       "network",
@@ -346,12 +342,7 @@
     "total_lines": 4052,
     "audit_model": "codex",
     "audited_at": "2026-06-27T12:36:33.016Z",
-    "risk_factors": [
-      "external_commands",
-      "network",
-      "filesystem",
-      "env_access"
-    ]
+    "risk_factors": ["external_commands", "network", "filesystem", "env_access"]
   },
   "content": {
     "user_title": "Automate Lovable Deployments",

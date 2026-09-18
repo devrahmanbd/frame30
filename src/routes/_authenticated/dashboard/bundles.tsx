@@ -14,7 +14,11 @@ import {
   btnGhost,
 } from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
-import { bundlesLoadFn, bundleSaveFn, bundleDeleteFn } from "@/lib/commerce.functions";
+import {
+  bundlesLoadFn,
+  bundleSaveFn,
+  bundleDeleteFn,
+} from "@/lib/commerce.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/bundles")({
   head: () => ({
@@ -28,7 +32,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/bundles")({
       { property: "og:title", content: "Product bundles — Framique admin" },
       {
         property: "og:description",
-        content: "Bundle pricing derived server-side from live component prices.",
+        content:
+          "Bundle pricing derived server-side from live component prices.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -55,7 +60,12 @@ function BundlesPage() {
   const [picked, setPicked] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading, isError, error: loadError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error: loadError,
+  } = useQuery({
     queryKey: KEY,
     queryFn: () => load(),
   });
@@ -146,19 +156,25 @@ function BundlesPage() {
                 className="flex flex-wrap items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4"
               >
                 <div>
-                  <p className="font-medium">{product?.title ?? b.product_id.slice(0, 8)}</p>
+                  <p className="font-medium">
+                    {product?.title ?? b.product_id.slice(0, 8)}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {items.length} {t("components", "উপাদান")} ·{" "}
                     {b.pricing_mode === "fixed" ? (
                       <Money minor={Number(b.fixed_price_minor_int ?? 0)} />
                     ) : (
-                      <span className="tabular-nums">{b.percent_off}% {t("off", "ছাড়")}</span>
+                      <span className="tabular-nums">
+                        {b.percent_off}% {t("off", "ছাড়")}
+                      </span>
                     )}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <StatusPill
-                    label={b.active ? t("Active", "সক্রিয়") : t("Paused", "বন্ধ")}
+                    label={
+                      b.active ? t("Active", "সক্রিয়") : t("Paused", "বন্ধ")
+                    }
                     tone={b.active ? "success" : "neutral"}
                   />
                   <button
@@ -189,13 +205,21 @@ function BundlesPage() {
               productId: String(form.get("product") ?? ""),
               pricingMode: mode,
               fixedPriceMinorInt:
-                mode === "fixed" ? Math.round(Number(form.get("price") ?? 0) * 100) : null,
-              percentOff: mode === "percent" ? Number(form.get("percent") ?? 0) : 0,
-              components: picked.map((variantId) => ({ variantId, quantity: 1 })),
+                mode === "fixed"
+                  ? Math.round(Number(form.get("price") ?? 0) * 100)
+                  : null,
+              percentOff:
+                mode === "percent" ? Number(form.get("percent") ?? 0) : 0,
+              components: picked.map((variantId) => ({
+                variantId,
+                quantity: 1,
+              })),
             });
           }}
         >
-          <h2 className="text-sm font-semibold">{t("Create a bundle", "বান্ডল তৈরি করুন")}</h2>
+          <h2 className="text-sm font-semibold">
+            {t("Create a bundle", "বান্ডল তৈরি করুন")}
+          </h2>
           <Field label={t("Bundle product", "বান্ডল পণ্য")}>
             <select name="product" required className={inputClass}>
               {(products ?? []).map((p) => (
@@ -221,20 +245,26 @@ function BundlesPage() {
                       checked={picked.includes(v.id)}
                       onChange={(e) =>
                         setPicked((prev) =>
-                          e.target.checked ? [...prev, v.id] : prev.filter((id) => id !== v.id),
+                          e.target.checked
+                            ? [...prev, v.id]
+                            : prev.filter((id) => id !== v.id),
                         )
                       }
                     />
                     <span className="flex-1">
                       {product?.title} — {v.name}
                     </span>
-                    <Money minor={Number(v.price_amount_minor_int)} className="text-xs" />
+                    <Money
+                      minor={Number(v.price_amount_minor_int)}
+                      className="text-xs"
+                    />
                   </label>
                 );
               })}
             </div>
             <p className="text-xs text-muted-foreground">
-              {t("Component total", "উপাদানের মোট")}: <Money minor={componentTotal} />
+              {t("Component total", "উপাদানের মোট")}:{" "}
+              <Money minor={componentTotal} />
             </p>
           </fieldset>
 
@@ -244,8 +274,12 @@ function BundlesPage() {
               onChange={(e) => setMode(e.target.value as typeof mode)}
               className={inputClass}
             >
-              <option value="percent">{t("Percent off components", "উপাদানের উপর শতকরা ছাড়")}</option>
-              <option value="fixed">{t("Fixed bundle price", "নির্দিষ্ট বান্ডল মূল্য")}</option>
+              <option value="percent">
+                {t("Percent off components", "উপাদানের উপর শতকরা ছাড়")}
+              </option>
+              <option value="fixed">
+                {t("Fixed bundle price", "নির্দিষ্ট বান্ডল মূল্য")}
+              </option>
             </select>
           </Field>
           {mode === "percent" ? (

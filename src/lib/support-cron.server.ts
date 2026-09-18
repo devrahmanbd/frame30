@@ -13,14 +13,19 @@ export type SupportSweepResult = {
   retried_events: number;
 };
 
-export async function runSupportSweep(subject: string): Promise<SupportSweepResult> {
+export async function runSupportSweep(
+  subject: string,
+): Promise<SupportSweepResult> {
   await rateLimit("support.sweep", subject);
   return withSpan("support.sweep", async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.rpc("support_sla_sweep");
     if (error) throw error;
 
-    const raw = (data ?? {}) as Partial<Record<keyof SupportSweepResult, number>>;
+    const raw = (data ?? {}) as Partial<
+      Record<keyof SupportSweepResult, number>
+    >;
     const result: SupportSweepResult = {
       breached_first_response: Number(raw.breached_first_response ?? 0),
       breached_resolution: Number(raw.breached_resolution ?? 0),
@@ -28,7 +33,10 @@ export async function runSupportSweep(subject: string): Promise<SupportSweepResu
       retried_events: Number(raw.retried_events ?? 0),
     };
     incr("framique_support_sweep_total", {
-      outcome: result.breached_first_response + result.breached_resolution ? "breaches" : "ok",
+      outcome:
+        result.breached_first_response + result.breached_resolution
+          ? "breaches"
+          : "ok",
     });
     log("info", "support.sweep", { ...result, subject });
     return result;

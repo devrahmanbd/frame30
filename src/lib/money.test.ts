@@ -8,7 +8,12 @@ import {
   money,
   sub,
 } from "./money";
-import { refundVatComponent, splitVatAcrossLines, vatExclusive, vatInclusive } from "./vat";
+import {
+  refundVatComponent,
+  splitVatAcrossLines,
+  vatExclusive,
+  vatInclusive,
+} from "./vat";
 import { convertWithSnapshot } from "./fx.server";
 
 const rate = {

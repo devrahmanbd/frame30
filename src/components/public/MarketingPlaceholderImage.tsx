@@ -47,7 +47,12 @@ export function MarketingPlaceholderImage({
         className,
       )}
     >
-      <div className={cn("relative w-full overflow-hidden bg-muted/20", ASPECT_CLASSES[aspect])}>
+      <div
+        className={cn(
+          "relative w-full overflow-hidden bg-muted/20",
+          ASPECT_CLASSES[aspect],
+        )}
+      >
         {overlay ? (
           <div className="absolute inset-0 z-10 flex items-center justify-center p-4">
             {overlay}

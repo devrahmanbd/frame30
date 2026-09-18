@@ -1,1 +1,58 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx", "label": "DraggableBox.jsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L1"}, {"id": "components_draggablebox_draggablebox", "label": "DraggableBox()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L4"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx", "target": "framer_motion", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx", "target": "components_draggablebox_draggablebox", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L4", "weight": 1.0}], "raw_calls": [{"caller_nid": "components_draggablebox_draggablebox", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx", "source_location": "L5"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx",
+      "label": "DraggableBox.jsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_draggablebox_draggablebox",
+      "label": "DraggableBox()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L4"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx",
+      "target": "framer_motion",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_draggablebox_jsx",
+      "target": "components_draggablebox_draggablebox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L4",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "components_draggablebox_draggablebox",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/DraggableBox.jsx",
+      "source_location": "L5"
+    }
+  ]
+}

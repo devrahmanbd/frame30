@@ -5,7 +5,14 @@ author: "Framique Engineering Council"
 date: "2026-09-13"
 slug: "headless-visual-cms-developer-guide"
 canonical: "https://framique.com/developers"
-target_keywords: ["headless visual cms typescript react 19", "ssr visual store renderer bun", "enterprise headless cms with visual builder", "postgres rls multitenancy saas", "sub 300ms lcp ecommerce platform"]
+target_keywords:
+  [
+    "headless visual cms typescript react 19",
+    "ssr visual store renderer bun",
+    "enterprise headless cms with visual builder",
+    "postgres rls multitenancy saas",
+    "sub 300ms lcp ecommerce platform",
+  ]
 search_intent: "Informational / Technical [I/T]"
 central_entity: "FRAMIQUE (SoftwareApplication)"
 parent_entity: "devrahmanbd (Organization)"
@@ -14,6 +21,7 @@ parent_entity: "devrahmanbd (Organization)"
 # Headless Visual CMS Developer Guide: Building on Bun, React 19, and PostgreSQL Multi-Tenancy
 
 The fundamental architectural dilemma of modern web engineering has been the ongoing conflict between developers and marketing teams:
+
 - **Developers** want headless APIs (REST, GraphQL), TypeScript types, version control, edge rendering, and database isolation.
 - **Marketers & Designers** want a visual, drag-and-drop WYSIWYG canvas to publish landing pages, tweak product hero banners, and launch promotional campaigns without opening a Jira ticket.
 
@@ -62,8 +70,8 @@ curl -X GET "https://api.framique.com/v1/products?limit=20" \
       "id": "prod_987654321",
       "title": "Minimalist Ceramic Vessel",
       "slug": "minimalist-ceramic-vessel",
-      "price_bdt": 2450.00,
-      "price_usd": 22.00,
+      "price_bdt": 2450.0,
+      "price_usd": 22.0,
       "stock_count": 84,
       "inventory_status": "in_stock",
       "payment_rails": ["bkash", "nagad", "stripe_card"],

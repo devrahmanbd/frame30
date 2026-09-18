@@ -11,7 +11,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
-import { Field, StatusPill, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  Field,
+  StatusPill,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import {
   seoRedirectDeleteFn,
   seoRedirectSaveFn,
@@ -19,7 +25,11 @@ import {
   seoTemplatesFn,
 } from "@/lib/seo.functions";
 import { SEO_DESC_MAX, SEO_TITLE_MAX } from "@/lib/seo-analysis";
-import { SEO_TEMPLATE_VARS, renderSeoTemplate, templateIssues } from "@/lib/seo-answers";
+import {
+  SEO_TEMPLATE_VARS,
+  renderSeoTemplate,
+  templateIssues,
+} from "@/lib/seo-answers";
 
 type TemplateType = "product" | "collection" | "page" | "article";
 
@@ -48,7 +58,10 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
   const saveRedirect = useServerFn(seoRedirectSaveFn);
   const removeRedirect = useServerFn(seoRedirectDeleteFn);
 
-  const query = useQuery({ queryKey: ["seo", "templates"], queryFn: () => list() });
+  const query = useQuery({
+    queryKey: ["seo", "templates"],
+    queryFn: () => list(),
+  });
 
   const [type, setType] = useState<TemplateType>("product");
   const [title, setTitle] = useState("");
@@ -62,14 +75,23 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
     setDirty(false);
   }, [current?.titleTemplate, current?.descriptionTemplate, type]);
 
-  const issues = useMemo(() => [...templateIssues(title), ...templateIssues(desc)], [title, desc]);
+  const issues = useMemo(
+    () => [...templateIssues(title), ...templateIssues(desc)],
+    [title, desc],
+  );
   const sample = { ...SAMPLE, store: storeName || SAMPLE.store };
   const previewTitle = renderSeoTemplate(title, sample, SEO_TITLE_MAX);
   const previewDesc = renderSeoTemplate(desc, sample, SEO_DESC_MAX);
 
   const templateMutation = useMutation({
     mutationFn: () =>
-      saveTemplate({ data: { entityType: type, titleTemplate: title, descriptionTemplate: desc } }),
+      saveTemplate({
+        data: {
+          entityType: type,
+          titleTemplate: title,
+          descriptionTemplate: desc,
+        },
+      }),
     onSuccess: () => {
       setDirty(false);
       toast.success(t("Template saved", "টেমপ্লেট সংরক্ষিত হয়েছে"));
@@ -83,7 +105,8 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
   const [status, setStatus] = useState<301 | 410>(301);
 
   const redirectMutation = useMutation({
-    mutationFn: () => saveRedirect({ data: { fromPath: from, toPath: to, status } }),
+    mutationFn: () =>
+      saveRedirect({ data: { fromPath: from, toPath: to, status } }),
     onSuccess: () => {
       setFrom("");
       setTo("");
@@ -95,7 +118,8 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => removeRedirect({ data: { id } }),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ["seo", "templates"] }),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: ["seo", "templates"] }),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -106,7 +130,9 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
       <section className="space-y-4 rounded-lg border border-border p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="font-medium">{t("Title & description templates", "শিরোনাম ও বিবরণ টেমপ্লেট")}</h3>
+            <h3 className="font-medium">
+              {t("Title & description templates", "শিরোনাম ও বিবরণ টেমপ্লেট")}
+            </h3>
             <p className="text-xs text-muted-foreground">
               {t(
                 "Applied wherever a page has no hand-written override.",
@@ -120,11 +146,17 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
             disabled={!dirty || issues.length > 0 || templateMutation.isPending}
             onClick={() => templateMutation.mutate()}
           >
-            {templateMutation.isPending ? t("Saving…", "সংরক্ষণ হচ্ছে…") : t("Save template", "টেমপ্লেট সংরক্ষণ")}
+            {templateMutation.isPending
+              ? t("Saving…", "সংরক্ষণ হচ্ছে…")
+              : t("Save template", "টেমপ্লেট সংরক্ষণ")}
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label={t("Content type", "কনটেন্ট ধরন")}>
+        <div
+          className="flex flex-wrap gap-2"
+          role="tablist"
+          aria-label={t("Content type", "কনটেন্ট ধরন")}
+        >
           {(Object.keys(TYPE_LABEL) as TemplateType[]).map((key) => (
             <button
               key={key}
@@ -133,7 +165,9 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
               aria-selected={type === key}
               onClick={() => setType(key)}
               className={`rounded-md border px-3 py-1.5 text-sm ${
-                type === key ? "border-primary bg-primary/5" : "border-border hover:bg-muted"
+                type === key
+                  ? "border-primary bg-primary/5"
+                  : "border-border hover:bg-muted"
               }`}
             >
               {t(TYPE_LABEL[key].en, TYPE_LABEL[key].bn)}
@@ -179,20 +213,27 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
           </ul>
         )}
 
-        <div className="rounded-md bg-muted/40 p-3" aria-label={t("Template preview", "টেমপ্লেট প্রিভিউ")}>
+        <div
+          className="rounded-md bg-muted/40 p-3"
+          aria-label={t("Template preview", "টেমপ্লেট প্রিভিউ")}
+        >
           <p className="text-[15px] font-medium text-primary">
-            {previewTitle || t("No title template", "কোনো শিরোনাম টেমপ্লেট নেই")}
+            {previewTitle ||
+              t("No title template", "কোনো শিরোনাম টেমপ্লেট নেই")}
           </p>
           <p className="text-sm text-muted-foreground">{previewDesc}</p>
           <p className="mt-1 text-xs tabular-nums text-muted-foreground">
-            {previewTitle.length}/{SEO_TITLE_MAX} · {previewDesc.length}/{SEO_DESC_MAX}
+            {previewTitle.length}/{SEO_TITLE_MAX} · {previewDesc.length}/
+            {SEO_DESC_MAX}
           </p>
         </div>
       </section>
 
       <section className="space-y-4 rounded-lg border border-border p-4">
         <div>
-          <h3 className="font-medium">{t("Redirect manager", "রিডাইরেক্ট ম্যানেজার")}</h3>
+          <h3 className="font-medium">
+            {t("Redirect manager", "রিডাইরেক্ট ম্যানেজার")}
+          </h3>
           <p className="text-xs text-muted-foreground">
             {t(
               "301 moves a URL; 410 tells crawlers it is gone for good. Renames record themselves.",
@@ -221,7 +262,9 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
             className={inputClass}
             value={status}
             aria-label={t("Redirect type", "রিডাইরেক্টের ধরন")}
-            onChange={(e) => setStatus(Number(e.target.value) === 410 ? 410 : 301)}
+            onChange={(e) =>
+              setStatus(Number(e.target.value) === 410 ? 410 : 301)
+            }
           >
             <option value={301}>301</option>
             <option value={410}>410</option>
@@ -229,35 +272,61 @@ export function SeoTemplatesPanel({ storeName }: { storeName?: string }) {
           <button
             type="button"
             className={btnPrimary}
-            disabled={!from.trim() || (status === 301 && !to.trim()) || redirectMutation.isPending}
+            disabled={
+              !from.trim() ||
+              (status === 301 && !to.trim()) ||
+              redirectMutation.isPending
+            }
             onClick={() => redirectMutation.mutate()}
           >
             {t("Add", "যোগ")}
           </button>
         </div>
 
-        {query.isLoading && <p className="text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>}
+        {query.isLoading && (
+          <p className="text-sm text-muted-foreground">
+            {t("Loading…", "লোড হচ্ছে…")}
+          </p>
+        )}
         {!query.isLoading && redirects.length === 0 && (
-          <p className="text-sm text-muted-foreground">{t("No redirects yet.", "এখনো কোনো রিডাইরেক্ট নেই।")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("No redirects yet.", "এখনো কোনো রিডাইরেক্ট নেই।")}
+          </p>
         )}
         <ul className="divide-y divide-border">
           {redirects.map((row) => (
-            <li key={row.id} className="flex flex-wrap items-center gap-3 py-2 text-sm">
-              <StatusPill tone={row.status === 410 ? "danger" : "success"} label={String(row.status)} />
-              <span className="min-w-0 break-all font-mono text-xs">{row.fromPath}</span>
+            <li
+              key={row.id}
+              className="flex flex-wrap items-center gap-3 py-2 text-sm"
+            >
+              <StatusPill
+                tone={row.status === 410 ? "danger" : "success"}
+                label={String(row.status)}
+              />
+              <span className="min-w-0 break-all font-mono text-xs">
+                {row.fromPath}
+              </span>
               {row.status === 301 && (
                 <>
                   <span aria-hidden className="text-muted-foreground">
                     →
                   </span>
-                  <span className="min-w-0 break-all font-mono text-xs">{row.toPath}</span>
+                  <span className="min-w-0 break-all font-mono text-xs">
+                    {row.toPath}
+                  </span>
                 </>
               )}
               <span className="ml-auto text-xs text-muted-foreground">
                 {row.entityType} ·{" "}
-                {new Date(row.createdAt).toLocaleDateString(lang === "bn" ? "bn-BD" : "en-GB")}
+                {new Date(row.createdAt).toLocaleDateString(
+                  lang === "bn" ? "bn-BD" : "en-GB",
+                )}
               </span>
-              <button type="button" className={btnGhost} onClick={() => deleteMutation.mutate(row.id)}>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => deleteMutation.mutate(row.id)}
+              >
                 {t("Remove", "মুছুন")}
               </button>
             </li>

@@ -103,7 +103,9 @@ export type ModerationQueueFilter = {
 // Mock / In-Memory store for offline development & vitest
 // ---------------------------------------------------------------------------
 
-type MockConversation = ModerationConversation & { _raw?: Record<string, unknown> };
+type MockConversation = ModerationConversation & {
+  _raw?: Record<string, unknown>;
+};
 type MockMessage = OperatorMessage;
 
 const mockConversations = new Map<string, MockConversation>();
@@ -126,7 +128,10 @@ export function getMockConversation(id: string): MockConversation | undefined {
   return mockConversations.get(id);
 }
 
-export function recordCustomerMessage(conversationId: string, _body: string): void {
+export function recordCustomerMessage(
+  conversationId: string,
+  _body: string,
+): void {
   const conv = mockConversations.get(conversationId);
   if (conv) {
     conv.lastCustomerMessageAt = new Date().toISOString();
@@ -144,7 +149,8 @@ export function getMockMessages(): MockMessage[] {
 // ---------------------------------------------------------------------------
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -170,57 +176,74 @@ export async function getModerationQueue(
   let rows = Array.from(mockConversations.values());
 
   if (status !== "all") rows = rows.filter((c) => c.status === status);
-  if (takeoverMode !== "all") rows = rows.filter((c) => c.takeoverMode === takeoverMode);
+  if (takeoverMode !== "all")
+    rows = rows.filter((c) => c.takeoverMode === takeoverMode);
   if (priority !== "all") rows = rows.filter((c) => c.priority === priority);
   if (merchantId) rows = rows.filter((c) => c.merchantId === merchantId);
-  if (assignedOperatorId) rows = rows.filter((c) => c.assignedOperatorId === assignedOperatorId);
+  if (assignedOperatorId)
+    rows = rows.filter((c) => c.assignedOperatorId === assignedOperatorId);
   if (needsAgentOnly) rows = rows.filter((c) => c.needsHumanAgent);
 
   // Sort: priorityRank desc, then last customer message desc
   rows.sort((a, b) => {
-    if (b.priorityRank !== a.priorityRank) return b.priorityRank - a.priorityRank;
+    if (b.priorityRank !== a.priorityRank)
+      return b.priorityRank - a.priorityRank;
     if (a.lastCustomerMessageAt && b.lastCustomerMessageAt)
-      return new Date(b.lastCustomerMessageAt).getTime() - new Date(a.lastCustomerMessageAt).getTime();
+      return (
+        new Date(b.lastCustomerMessageAt).getTime() -
+        new Date(a.lastCustomerMessageAt).getTime()
+      );
     return 0;
   });
 
   const totalCount = rows.length;
   const needsAgentCount = rows.filter((c) => c.needsHumanAgent).length;
-  const humanTakeoverCount = rows.filter((c) => c.takeoverMode === "human_takeover").length;
+  const humanTakeoverCount = rows.filter(
+    (c) => c.takeoverMode === "human_takeover",
+  ).length;
   const paginated = rows.slice(offset, offset + limit);
 
   // Production: try Supabase
   try {
     const db = await admin();
-    let query = db
-      .from("moderation_queue")
-      .select("*", { count: "exact" });
+    let query = db.from("moderation_queue").select("*", { count: "exact" });
 
     if (status !== "all") query = query.eq("status", status);
     if (takeoverMode !== "all") query = query.eq("takeover_mode", takeoverMode);
     if (priority !== "all") query = query.eq("priority", priority);
     if (merchantId) query = query.eq("merchant_id", merchantId);
-    if (assignedOperatorId) query = query.eq("assigned_operator_id", assignedOperatorId);
+    if (assignedOperatorId)
+      query = query.eq("assigned_operator_id", assignedOperatorId);
     if (needsAgentOnly) query = query.eq("needs_human_agent", true);
 
     query = query
       .order("priority_rank", { ascending: false })
-      .order("last_customer_message_at", { ascending: false, nullsFirst: false })
+      .order("last_customer_message_at", {
+        ascending: false,
+        nullsFirst: false,
+      })
       .range(offset, offset + limit - 1);
 
     const { data, count, error } = await query;
 
     if (!error && data) {
       const mapped: ModerationConversation[] = data.map(dbRowToConversation);
-      const all = (await db.from("moderation_queue").select("needs_human_agent, takeover_mode")) as {
-        data: Array<{ needs_human_agent: boolean; takeover_mode: string }> | null;
+      const all = (await db
+        .from("moderation_queue")
+        .select("needs_human_agent, takeover_mode")) as {
+        data: Array<{
+          needs_human_agent: boolean;
+          takeover_mode: string;
+        }> | null;
       };
       const allRows = all.data ?? [];
       return {
         conversations: mapped,
         totalCount: count ?? mapped.length,
         needsAgentCount: allRows.filter((r) => r.needs_human_agent).length,
-        humanTakeoverCount: allRows.filter((r) => r.takeover_mode === "human_takeover").length,
+        humanTakeoverCount: allRows.filter(
+          (r) => r.takeover_mode === "human_takeover",
+        ).length,
       };
     }
   } catch {
@@ -251,7 +274,9 @@ export async function setTakeoverMode(
   if (conv) {
     conv.takeoverMode = mode;
     conv.assignedOperatorId =
-      mode === "human_takeover" ? (operatorId ?? conv.assignedOperatorId) : null;
+      mode === "human_takeover"
+        ? (operatorId ?? conv.assignedOperatorId)
+        : null;
     if (mode === "human_takeover") {
       conv.lastOperatorMessageAt = new Date().toISOString();
     }
@@ -260,7 +285,11 @@ export async function setTakeoverMode(
   }
 
   incr("framique_support_takeover_total", { mode });
-  log("info", "support_moderation.takeover_set", { conversationId, mode, operatorId });
+  log("info", "support_moderation.takeover_set", {
+    conversationId,
+    mode,
+    operatorId,
+  });
 
   // Production: call RPC
   try {
@@ -279,7 +308,8 @@ export async function setTakeoverMode(
         .from("ai_conversations")
         .update({
           takeover_mode: mode,
-          assigned_operator_id: mode === "human_takeover" ? (operatorId ?? null) : null,
+          assigned_operator_id:
+            mode === "human_takeover" ? (operatorId ?? null) : null,
           last_operator_message_at:
             mode === "human_takeover" ? new Date().toISOString() : undefined,
           updated_at: new Date().toISOString(),
@@ -296,7 +326,9 @@ export async function setTakeoverMode(
     previousMode,
     newMode: mode,
     assignedOperatorId:
-      mode === "human_takeover" ? (operatorId ?? conv?.assignedOperatorId ?? null) : null,
+      mode === "human_takeover"
+        ? (operatorId ?? conv?.assignedOperatorId ?? null)
+        : null,
   };
 }
 
@@ -362,7 +394,10 @@ export async function saveOperatorNotes(
     mockConversations.set(conversationId, conv);
   }
 
-  log("info", "support_moderation.notes_saved", { conversationId, length: notes.length });
+  log("info", "support_moderation.notes_saved", {
+    conversationId,
+    length: notes.length,
+  });
 
   try {
     const db = await admin();
@@ -375,7 +410,10 @@ export async function saveOperatorNotes(
       const db = await admin();
       await db
         .from("ai_conversations")
-        .update({ operator_notes: notes, updated_at: new Date().toISOString() } as never)
+        .update({
+          operator_notes: notes,
+          updated_at: new Date().toISOString(),
+        } as never)
         .eq("id", conversationId);
     } catch {
       // Offline
@@ -578,9 +616,23 @@ export async function verifyPhase12Schema(): Promise<SchemaVerificationResult> {
     void cols; // suppress unused
 
     // Check functions exist
-    const { data: funcs } = await (db as unknown as {
-      from: (t: string) => { select: (c: string) => { eq: (k: string, v: string) => { in: (k2: string, arr: string[]) => Promise<{ data: Array<{ routine_name: string }> | null }> } } };
-    })
+    const { data: funcs } = await (
+      db as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
+              in: (
+                k2: string,
+                arr: string[],
+              ) => Promise<{ data: Array<{ routine_name: string }> | null }>;
+            };
+          };
+        };
+      }
+    )
       .from("information_schema.routines")
       .select("routine_name")
       .eq("routine_schema", "public")
@@ -590,9 +642,23 @@ export async function verifyPhase12Schema(): Promise<SchemaVerificationResult> {
       funcs != null && funcs.length >= REQUIRED_FUNCTIONS.length;
 
     // Check realtime
-    const { data: pubCheck } = await (db as unknown as {
-      from: (t: string) => { select: (c: string) => { eq: (k: string, v: string) => { in: (k2: string, arr: string[]) => Promise<{ data: Array<{ tablename: string }> | null }> } } };
-    })
+    const { data: pubCheck } = await (
+      db as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
+              in: (
+                k2: string,
+                arr: string[],
+              ) => Promise<{ data: Array<{ tablename: string }> | null }>;
+            };
+          };
+        };
+      }
+    )
       .from("pg_publication_tables")
       .select("tablename")
       .eq("pubname", "supabase_realtime")
@@ -616,7 +682,9 @@ function priorityToRank(p: ConversationPriority): number {
   return { urgent: 4, high: 3, normal: 2, low: 1 }[p] ?? 2;
 }
 
-function dbRowToConversation(row: Record<string, unknown>): ModerationConversation {
+function dbRowToConversation(
+  row: Record<string, unknown>,
+): ModerationConversation {
   return {
     id: row.id as string,
     merchantId: (row.merchant_id as string) ?? "",
@@ -637,7 +705,8 @@ function dbRowToConversation(row: Record<string, unknown>): ModerationConversati
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
     needsHumanAgent: (row.needs_human_agent as boolean) ?? false,
-    minutesSinceLastCustomerMsg: (row.minutes_since_last_customer_msg as number) ?? null,
+    minutesSinceLastCustomerMsg:
+      (row.minutes_since_last_customer_msg as number) ?? null,
     priorityRank: (row.priority_rank as number) ?? 2,
   };
 }

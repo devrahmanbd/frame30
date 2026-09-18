@@ -13,9 +13,11 @@
  *     an email or SMS provider failing must delay a code, never burn it.
  */
 
-export type CodeState = "available" | "reserved" | "delivered" | "revoked" | "expired";
+export type CodeState =
+  "available" | "reserved" | "delivered" | "revoked" | "expired";
 
-export type DeliveryState = "queued" | "sending" | "sent" | "failed" | "cancelled";
+export type DeliveryState =
+  "queued" | "sending" | "sent" | "failed" | "cancelled";
 
 export type DeliveryChannel = "email" | "sms";
 
@@ -69,7 +71,11 @@ export function normalizeCode(code: string) {
 export type ParsedBatch = {
   codes: string[];
   duplicatesInFile: number;
-  rejected: { line: number; value: string; reason: "too_short" | "too_long" | "bad_characters" }[];
+  rejected: {
+    line: number;
+    value: string;
+    reason: "too_short" | "too_long" | "bad_characters";
+  }[];
 };
 
 /**
@@ -90,15 +96,27 @@ export function parseCodeBatch(raw: string, maxCodes = 5000): ParsedBatch {
     if (!cell || codes.length >= maxCodes) return;
     const value = normalizeCode(cell);
     if (value.length < 6) {
-      rejected.push({ line: index + 1, value: maskCode(value), reason: "too_short" });
+      rejected.push({
+        line: index + 1,
+        value: maskCode(value),
+        reason: "too_short",
+      });
       return;
     }
     if (value.length > 120) {
-      rejected.push({ line: index + 1, value: maskCode(value), reason: "too_long" });
+      rejected.push({
+        line: index + 1,
+        value: maskCode(value),
+        reason: "too_long",
+      });
       return;
     }
     if (!/^[A-Z0-9._:-]+$/.test(value)) {
-      rejected.push({ line: index + 1, value: maskCode(value), reason: "bad_characters" });
+      rejected.push({
+        line: index + 1,
+        value: maskCode(value),
+        reason: "bad_characters",
+      });
       return;
     }
     if (seen.has(value)) {
@@ -123,7 +141,8 @@ export function nextAttemptDelayMs(attempt: number, deliveryId: string) {
   const step = Math.min(Math.max(1, attempt), MAX_DELIVERY_ATTEMPTS);
   const base = Math.min(30 * 60_000, 30_000 * 2 ** (step - 1));
   let hash = 0;
-  for (let i = 0; i < deliveryId.length; i += 1) hash = (hash * 31 + deliveryId.charCodeAt(i)) % 1000;
+  for (let i = 0; i < deliveryId.length; i += 1)
+    hash = (hash * 31 + deliveryId.charCodeAt(i)) % 1000;
   return base + Math.floor((base * 0.2 * hash) / 1000);
 }
 
@@ -134,22 +153,37 @@ export function shouldRetry(attempt: number, error: { retryable: boolean }) {
 /** Provider failures split into "try again" and "this will never work". */
 export function classifyDeliveryError(status: number | null, message: string) {
   const text = message.toLowerCase();
-  if (status === 429 || (status !== null && status >= 500)) return { retryable: true, code: "provider_unavailable" };
-  if (text.includes("timeout") || text.includes("network") || text.includes("fetch failed")) {
+  if (status === 429 || (status !== null && status >= 500))
+    return { retryable: true, code: "provider_unavailable" };
+  if (
+    text.includes("timeout") ||
+    text.includes("network") ||
+    text.includes("fetch failed")
+  ) {
     return { retryable: true, code: "network" };
   }
-  if (status === 401 || status === 403) return { retryable: false, code: "provider_auth" };
-  if (text.includes("invalid recipient") || text.includes("unsubscribed") || text.includes("suppressed")) {
+  if (status === 401 || status === 403)
+    return { retryable: false, code: "provider_auth" };
+  if (
+    text.includes("invalid recipient") ||
+    text.includes("unsubscribed") ||
+    text.includes("suppressed")
+  ) {
     return { retryable: false, code: "bad_recipient" };
   }
-  if (status !== null && status >= 400) return { retryable: false, code: "rejected" };
+  if (status !== null && status >= 400)
+    return { retryable: false, code: "rejected" };
   return { retryable: true, code: "unknown" };
 }
 
 /** Bangladeshi mobile numbers, normalized to E.164 for the SMS provider. */
 export function normalizeBdMsisdn(input: string) {
   const digits = input.replace(/\D/g, "");
-  const local = digits.startsWith("880") ? digits.slice(3) : digits.startsWith("0") ? digits.slice(1) : digits;
+  const local = digits.startsWith("880")
+    ? digits.slice(3)
+    : digits.startsWith("0")
+      ? digits.slice(1)
+      : digits;
   if (!/^1[3-9]\d{8}$/.test(local)) return null;
   return `+880${local}`;
 }

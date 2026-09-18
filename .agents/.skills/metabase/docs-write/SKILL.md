@@ -23,6 +23,7 @@ allowed-tools: Read, Write, Grep, Bash, Glob
 - Use headings that state your point: "Set SAML before adding users" not "SAML configuration timing"
 
 **Edit:**
+
 - Read aloud. Does it sound like you talking? If it's too formal, simplify.
 - Cut anything that doesn't directly help the reader
 - Check each paragraph has one clear purpose
@@ -43,15 +44,20 @@ allowed-tools: Read, Write, Grep, Bash, Glob
 ### Common patterns
 
 **Instructions:**
+
 ```markdown
 Run:
 ```
+
 command-to-run
+
 ```
 
 Then:
 ```
+
 next-command
+
 ```
 This ensures you're getting the latest changes.
 ```

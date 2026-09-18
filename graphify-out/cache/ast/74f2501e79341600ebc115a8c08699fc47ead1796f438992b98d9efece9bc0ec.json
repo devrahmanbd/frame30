@@ -1,1 +1,395 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "label": "build-icon-sprite.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L1"}, {"id": "scripts_build_icon_sprite_argv", "label": "argv", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L25"}, {"id": "scripts_build_icon_sprite_has", "label": "has()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L26"}, {"id": "scripts_build_icon_sprite_check", "label": "CHECK", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L27"}, {"id": "scripts_build_icon_sprite_root", "label": "ROOT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L28"}, {"id": "scripts_build_icon_sprite_log", "label": "log()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L30"}, {"id": "scripts_build_icon_sprite_attrs", "label": "attrs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L35"}, {"id": "scripts_build_icon_sprite_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L42"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_argv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_has", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_check", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_root", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_log", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_attrs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs", "target": "scripts_build_icon_sprite_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L42", "weight": 1.0}, {"source": "scripts_build_icon_sprite_main", "target": "scripts_build_icon_sprite_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L80", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_build_icon_sprite_has", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L26"}, {"caller_nid": "scripts_build_icon_sprite_log", "callee": "write", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L31"}, {"caller_nid": "scripts_build_icon_sprite_log", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L32"}, {"caller_nid": "scripts_build_icon_sprite_log", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L32"}, {"caller_nid": "scripts_build_icon_sprite_attrs", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L36"}, {"caller_nid": "scripts_build_icon_sprite_attrs", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L36"}, {"caller_nid": "scripts_build_icon_sprite_attrs", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L36"}, {"caller_nid": "scripts_build_icon_sprite_attrs", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L36"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L64"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "iconNodeFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L65"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L66"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L67"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L70"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L70"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L73"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L81"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L82"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L84"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L90"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L93"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "byteLength", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L94"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L98"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L99"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L99"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L103"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L107"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L107"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L109"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L113"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L117"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L120"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "dirname", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L120"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L121"}, {"caller_nid": "scripts_build_icon_sprite_main", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs", "source_location": "L124"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "label": "build-icon-sprite.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_build_icon_sprite_argv",
+      "label": "argv",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L25"
+    },
+    {
+      "id": "scripts_build_icon_sprite_has",
+      "label": "has()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L26"
+    },
+    {
+      "id": "scripts_build_icon_sprite_check",
+      "label": "CHECK",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L27"
+    },
+    {
+      "id": "scripts_build_icon_sprite_root",
+      "label": "ROOT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L28"
+    },
+    {
+      "id": "scripts_build_icon_sprite_log",
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L30"
+    },
+    {
+      "id": "scripts_build_icon_sprite_attrs",
+      "label": "attrs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L35"
+    },
+    {
+      "id": "scripts_build_icon_sprite_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L42"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_argv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_has",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_check",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_root",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_log",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_attrs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_build_icon_sprite_mjs",
+      "target": "scripts_build_icon_sprite_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_build_icon_sprite_main",
+      "target": "scripts_build_icon_sprite_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L80",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_build_icon_sprite_has",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_log",
+      "callee": "write",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_log",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_log",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_attrs",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_attrs",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_attrs",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_attrs",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "iconNodeFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "byteLength",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "dirname",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "scripts_build_icon_sprite_main",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/build-icon-sprite.mjs",
+      "source_location": "L124"
+    }
+  ]
+}

@@ -32,7 +32,9 @@ export function isBootLang(value: unknown): value is BootLang {
 export function langFromSearch(search: string): BootLang | null {
   if (!search) return null;
   try {
-    const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+    const params = new URLSearchParams(
+      search.startsWith("?") ? search.slice(1) : search,
+    );
     for (const key of ["lang", "locale", "hl"]) {
       const raw = params.get(key);
       if (!raw) continue;
@@ -51,7 +53,9 @@ export function langFromSearch(search: string): BootLang | null {
  * folds duplicates, a value containing `=`), and a throw here would 500 the
  * whole document for a cosmetic preference.
  */
-export function langFromCookieHeader(header: string | null | undefined): BootLang | null {
+export function langFromCookieHeader(
+  header: string | null | undefined,
+): BootLang | null {
   if (!header) return null;
   for (const part of header.split(";")) {
     const eq = part.indexOf("=");
@@ -77,7 +81,9 @@ export function resolveRequestLang(input: {
   cookieHeader?: string | null;
 }): BootLang {
   return (
-    langFromSearch(input.search ?? "") ?? langFromCookieHeader(input.cookieHeader) ?? "en"
+    langFromSearch(input.search ?? "") ??
+    langFromCookieHeader(input.cookieHeader) ??
+    "en"
   );
 }
 
@@ -86,8 +92,7 @@ export function persistLangCookie(lang: BootLang) {
   if (typeof document === "undefined") return;
   try {
     const secure = window.location.protocol === "https:" ? "; Secure" : "";
-    document.cookie =
-      `${LANG_COOKIE}=${lang}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
+    document.cookie = `${LANG_COOKIE}=${lang}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
   } catch {
     /* cookies disabled — localStorage still carries the preference */
   }
@@ -99,6 +104,8 @@ export function readClientBootLang(): BootLang {
   return (
     langFromSearch(window.location.search) ??
     langFromCookieHeader(document.cookie) ??
-    (isBootLang(document.documentElement.lang) ? document.documentElement.lang : "en")
+    (isBootLang(document.documentElement.lang)
+      ? document.documentElement.lang
+      : "en")
   );
 }

@@ -64,7 +64,11 @@ export const CHECKLIST_KEYS = [
 ] as const;
 export type ChecklistKey = (typeof CHECKLIST_KEYS)[number];
 
-export type EmiPlan = { months: number; minAmountMinor: number; interestBps: number };
+export type EmiPlan = {
+  months: number;
+  minAmountMinor: number;
+  interestBps: number;
+};
 
 export type ProviderSpec = {
   key: ProviderKey;
@@ -84,7 +88,6 @@ export type ProviderSpec = {
   support?: "community";
 };
 
-
 const MFS_CHECKS: ChecklistKey[] = [
   "trade_licence",
   "bin_tin",
@@ -101,9 +104,11 @@ const MFS_CHECKS: ChecklistKey[] = [
  * Aggregators front card rails, so they carry the MFS evidence *plus* a PCI
  * SAQ attestation and a verified bank account for netted settlement.
  */
-const AGGREGATOR_CHECKS: ChecklistKey[] = [...MFS_CHECKS, "bank_account_verified", "pci_saq_attested"];
-
-
+const AGGREGATOR_CHECKS: ChecklistKey[] = [
+  ...MFS_CHECKS,
+  "bank_account_verified",
+  "pci_saq_attested",
+];
 
 export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
   bkash: {
@@ -115,7 +120,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["app_key", "app_secret", "username", "password"],
     settlementDays: 2,
     supportsRefund: true,
-    regulatory: "Bangladesh Bank PSD MFS rail. Merchant onboarding is contracted with bKash directly; Framique never holds customer funds.",
+    regulatory:
+      "Bangladesh Bank PSD MFS rail. Merchant onboarding is contracted with bKash directly; Framique never holds customer funds.",
   },
   nagad: {
     key: "nagad",
@@ -126,7 +132,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "public_key", "private_key"],
     settlementDays: 2,
     supportsRefund: true,
-    regulatory: "Bangladesh Bank PSD MFS rail operated under the Bangladesh Post Office licence.",
+    regulatory:
+      "Bangladesh Bank PSD MFS rail operated under the Bangladesh Post Office licence.",
   },
   rocket: {
     key: "rocket",
@@ -137,7 +144,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "api_key", "api_secret"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Dutch-Bangla Bank MFS rail; settlement lands in the merchant's DBBL account.",
+    regulatory:
+      "Dutch-Bangla Bank MFS rail; settlement lands in the merchant's DBBL account.",
   },
   upay: {
     key: "upay",
@@ -148,7 +156,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "api_key", "api_secret"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "UCB Fintech MFS rail licensed by Bangladesh Bank PSD; settlement to the merchant's UCB or linked account.",
+    regulatory:
+      "UCB Fintech MFS rail licensed by Bangladesh Bank PSD; settlement to the merchant's UCB or linked account.",
   },
   tap: {
     key: "tap",
@@ -159,7 +168,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "api_key", "api_secret"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Trust Axiata Digital MFS rail; merchant onboarding is contracted with TAP directly.",
+    regulatory:
+      "Trust Axiata Digital MFS rail; merchant onboarding is contracted with TAP directly.",
   },
   mcash: {
     key: "mcash",
@@ -170,7 +180,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "api_key", "api_secret"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Islami Bank Bangladesh MFS rail; Shariah-compliant settlement into an IBBL account.",
+    regulatory:
+      "Islami Bank Bangladesh MFS rail; Shariah-compliant settlement into an IBBL account.",
   },
   surecash: {
     key: "surecash",
@@ -182,7 +193,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     settlementDays: 4,
     supportsRefund: false,
     // Refunds are manual here, so the desk must never promise an automated reversal.
-    regulatory: "Partner-bank MFS rail. Reversals are filed manually with the operator — do not offer instant refunds on this rail.",
+    regulatory:
+      "Partner-bank MFS rail. Reversals are filed manually with the operator — do not offer instant refunds on this rail.",
   },
   cellfin: {
     key: "cellfin",
@@ -193,7 +205,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "api_key", "api_secret"],
     settlementDays: 2,
     supportsRefund: true,
-    regulatory: "Bank-wallet rail operated by Islami Bank Bangladesh; funds settle bank-to-bank, not through an MFS float.",
+    regulatory:
+      "Bank-wallet rail operated by Islami Bank Bangladesh; funds settle bank-to-bank, not through an MFS float.",
   },
   bank_transfer: {
     key: "bank_transfer",
@@ -211,7 +224,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["bank_code", "account_title", "account_number"],
     settlementDays: 1,
     supportsRefund: false,
-    regulatory: "BEFTN clears same-day for instructions filed before cut-off; RTGS is real-time above BDT 100,000.",
+    regulatory:
+      "BEFTN clears same-day for instructions filed before cut-off; RTGS is real-time above BDT 100,000.",
   },
   card_acquiring: {
     key: "card_acquiring",
@@ -233,7 +247,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["acquirer_mid", "terminal_id", "api_key", "api_secret"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Acquiring runs through a licensed PSO/PSP. Card data never touches Framique — hosted fields only, PCI-DSS SAQ-A.",
+    regulatory:
+      "Acquiring runs through a licensed PSO/PSP. Card data never touches Framique — hosted fields only, PCI-DSS SAQ-A.",
   },
   sslcommerz: {
     key: "sslcommerz",
@@ -244,7 +259,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["store_id", "store_password"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "PSO-licensed aggregator (SSL Wireless). One contract fronts cards, internet banking and every MFS wallet; card data stays on the aggregator's hosted page.",
+    regulatory:
+      "PSO-licensed aggregator (SSL Wireless). One contract fronts cards, internet banking and every MFS wallet; card data stays on the aggregator's hosted page.",
   },
   aamarpay: {
     key: "aamarpay",
@@ -255,7 +271,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["store_id", "signature_key"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "PSO-licensed aggregator (Software Shop Limited). Settlement is netted weekly unless the merchant contracts a faster cycle.",
+    regulatory:
+      "PSO-licensed aggregator (Software Shop Limited). Settlement is netted weekly unless the merchant contracts a faster cycle.",
   },
   shurjopay: {
     key: "shurjopay",
@@ -266,7 +283,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_username", "merchant_password", "prefix"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "PSO-licensed aggregator (shurjoMukhi). Verification tokens are short-lived; never cache a token past its expiry.",
+    regulatory:
+      "PSO-licensed aggregator (shurjoMukhi). Verification tokens are short-lived; never cache a token past its expiry.",
   },
   portwallet: {
     key: "portwallet",
@@ -277,7 +295,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["app_key", "secret_key"],
     settlementDays: 4,
     supportsRefund: true,
-    regulatory: "PSO-licensed aggregator settling through its partner bank; refunds are API-driven but land on the original instrument only.",
+    regulatory:
+      "PSO-licensed aggregator settling through its partner bank; refunds are API-driven but land on the original instrument only.",
   },
   bkash_paylater: {
     key: "bkash_paylater",
@@ -288,7 +307,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["app_key", "app_secret"],
     settlementDays: 2,
     supportsRefund: true,
-    regulatory: "Deferred-payment product underwritten by the provider; the merchant is settled in full and carries no credit risk.",
+    regulatory:
+      "Deferred-payment product underwritten by the provider; the merchant is settled in full and carries no credit risk.",
     emiPlans: [
       { months: 3, minAmountMinor: 500_000, interestBps: 0 },
       { months: 6, minAmountMinor: 1_000_000, interestBps: 0 },
@@ -303,7 +323,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["merchant_id", "private_key"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Deferred-payment product underwritten by the provider under its MFS licence.",
+    regulatory:
+      "Deferred-payment product underwritten by the provider under its MFS licence.",
     emiPlans: [
       { months: 3, minAmountMinor: 500_000, interestBps: 0 },
       { months: 6, minAmountMinor: 1_500_000, interestBps: 0 },
@@ -328,7 +349,8 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     secretFields: ["acquirer_mid", "emi_product_code"],
     settlementDays: 3,
     supportsRefund: true,
-    regulatory: "Issuer-funded EMI. The tenor table is contractual — never invent a tenor the acquirer has not signed off.",
+    regulatory:
+      "Issuer-funded EMI. The tenor table is contractual — never invent a tenor the acquirer has not signed off.",
     emiPlans: [
       { months: 3, minAmountMinor: 500_000, interestBps: 0 },
       { months: 6, minAmountMinor: 1_000_000, interestBps: 0 },
@@ -346,7 +368,11 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     rail: "aggregator",
     label: "PipraPay (community, unofficial)",
     labelBn: "পিপরাপে (কমিউনিটি, অনানুষ্ঠানিক)",
-    requires: ["settlement_account", "webhook_endpoint_verified", "refund_policy_published"],
+    requires: [
+      "settlement_account",
+      "webhook_endpoint_verified",
+      "refund_policy_published",
+    ],
     secretFields: ["api_key", "base_url"],
     settlementDays: 0,
     supportsRefund: false,
@@ -355,7 +381,6 @@ export const PROVIDER_CATALOG: Record<ProviderKey, ProviderSpec> = {
     support: "community",
   },
 };
-
 
 export function isProviderKey(value: string): value is ProviderKey {
   return (PROVIDER_KEYS as readonly string[]).includes(value);
@@ -388,7 +413,10 @@ const TRANSITIONS: Record<CredentialState, CredentialState[]> = {
   revoked: [],
 };
 
-export function credentialCanTransition(from: CredentialState, to: CredentialState) {
+export function credentialCanTransition(
+  from: CredentialState,
+  to: CredentialState,
+) {
   return (TRANSITIONS[from] ?? []).includes(to);
 }
 
@@ -402,7 +430,10 @@ export function isChargeable(state: CredentialState) {
 export type Checklist = Partial<Record<ChecklistKey, boolean>>;
 
 /** Evidence still missing before this provider may be submitted for review. */
-export function checklistGaps(provider: ProviderKey, checklist: Checklist): ChecklistKey[] {
+export function checklistGaps(
+  provider: ProviderKey,
+  checklist: Checklist,
+): ChecklistKey[] {
   const spec = PROVIDER_CATALOG[provider];
   return spec.requires.filter((key) => checklist[key] !== true);
 }
@@ -410,10 +441,18 @@ export function checklistGaps(provider: ProviderKey, checklist: Checklist): Chec
 export function checklistProgress(provider: ProviderKey, checklist: Checklist) {
   const total = PROVIDER_CATALOG[provider].requires.length;
   const done = total - checklistGaps(provider, checklist).length;
-  return { done, total, pct: total === 0 ? 100 : Math.round((done / total) * 100) };
+  return {
+    done,
+    total,
+    pct: total === 0 ? 100 : Math.round((done / total) * 100),
+  };
 }
 
-export type SubmitVerdict = { ok: boolean; missingEvidence: ChecklistKey[]; missingSecrets: string[] };
+export type SubmitVerdict = {
+  ok: boolean;
+  missingEvidence: ChecklistKey[];
+  missingSecrets: string[];
+};
 
 /**
  * The submit gate. Live credentials additionally require every declared secret
@@ -426,9 +465,12 @@ export function evaluateSubmission(
   secretFieldsPresent: string[],
 ): SubmitVerdict {
   const spec = PROVIDER_CATALOG[provider];
-  const missingEvidence = environment === "live" ? checklistGaps(provider, checklist) : [];
+  const missingEvidence =
+    environment === "live" ? checklistGaps(provider, checklist) : [];
   const missingSecrets =
-    environment === "live" ? spec.secretFields.filter((f) => !secretFieldsPresent.includes(f)) : [];
+    environment === "live"
+      ? spec.secretFields.filter((f) => !secretFieldsPresent.includes(f))
+      : [];
   return {
     ok: missingEvidence.length === 0 && missingSecrets.length === 0,
     missingEvidence,
@@ -437,28 +479,43 @@ export function evaluateSubmission(
 }
 
 /** Only a platform reviewer decides; a merchant can never approve its own rail. */
-export function canDecide(reviewerIsPlatformAdmin: boolean, reviewerId: string, submittedBy: string | null) {
-  if (!reviewerIsPlatformAdmin) return { ok: false as const, reason: "provider.not_reviewer" };
-  if (submittedBy && submittedBy === reviewerId) return { ok: false as const, reason: "provider.self_review" };
+export function canDecide(
+  reviewerIsPlatformAdmin: boolean,
+  reviewerId: string,
+  submittedBy: string | null,
+) {
+  if (!reviewerIsPlatformAdmin)
+    return { ok: false as const, reason: "provider.not_reviewer" };
+  if (submittedBy && submittedBy === reviewerId)
+    return { ok: false as const, reason: "provider.self_review" };
   return { ok: true as const, reason: null };
 }
 
 /* --------------------------------- BNPL/EMI -------------------------------- */
 
-export type EmiOffer = { months: number; perInstalmentMinor: number; totalMinor: number; interestBps: number };
+export type EmiOffer = {
+  months: number;
+  perInstalmentMinor: number;
+  totalMinor: number;
+  interestBps: number;
+};
 
 /**
  * Deterministic EMI schedule for an amount. Integer minor units only: the
  * remainder is pushed onto the first instalment so the parts always sum back to
  * the total (no invented or lost paisa).
  */
-export function emiOffers(provider: ProviderKey, amountMinor: number): EmiOffer[] {
+export function emiOffers(
+  provider: ProviderKey,
+  amountMinor: number,
+): EmiOffer[] {
   const plans = PROVIDER_CATALOG[provider].emiPlans ?? [];
   if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0) return [];
   return plans
     .filter((p) => amountMinor >= p.minAmountMinor)
     .map((p) => {
-      const totalMinor = amountMinor + Math.round((amountMinor * p.interestBps) / 10_000);
+      const totalMinor =
+        amountMinor + Math.round((amountMinor * p.interestBps) / 10_000);
       const base = Math.floor(totalMinor / p.months);
       const first = base + (totalMinor - base * p.months);
       return {

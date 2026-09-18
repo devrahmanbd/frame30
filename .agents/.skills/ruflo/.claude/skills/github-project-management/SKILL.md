@@ -155,6 +155,7 @@ Execute swarm operations via issue comments:
 
 ```markdown
 <!-- In issue comment -->
+
 /swarm analyze
 /swarm decompose 5
 /swarm assign @agent-coder
@@ -805,37 +806,45 @@ npx ruv-swarm github review-coordinate \
 ## 🔄 Integration Task
 
 ### Overview
+
 [Brief description of integration requirements]
 
 ### Objectives
+
 - [ ] Component A integration
 - [ ] Component B validation
 - [ ] Testing and verification
 - [ ] Documentation updates
 
 ### Integration Areas
+
 #### Dependencies
+
 - [ ] Package.json updates
 - [ ] Version compatibility
 - [ ] Import statements
 
 #### Functionality
+
 - [ ] Core feature integration
 - [ ] API compatibility
 - [ ] Performance validation
 
 #### Testing
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] End-to-end validation
 
 ### Swarm Coordination
+
 - **Coordinator**: Overall progress tracking
 - **Analyst**: Technical validation
 - **Tester**: Quality assurance
 - **Documenter**: Documentation updates
 
 ### Progress Tracking
+
 Updates will be posted automatically by swarm agents during implementation.
 
 ---
@@ -849,31 +858,38 @@ Updates will be posted automatically by swarm agents during implementation.
 ## 🐛 Bug Report
 
 ### Problem Description
+
 [Clear description of the issue]
 
 ### Expected Behavior
+
 [What should happen]
 
 ### Actual Behavior
+
 [What actually happens]
 
 ### Reproduction Steps
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
 
 ### Environment
+
 - Package: [package name and version]
 - Node.js: [version]
 - OS: [operating system]
 
 ### Investigation Plan
+
 - [ ] Root cause analysis
 - [ ] Fix implementation
 - [ ] Testing and validation
 - [ ] Regression testing
 
 ### Swarm Assignment
+
 - **Debugger**: Issue investigation
 - **Coder**: Fix implementation
 - **Tester**: Validation and testing
@@ -887,35 +903,43 @@ Updates will be posted automatically by swarm agents during implementation.
 ## ✨ Feature Request
 
 ### Feature Description
+
 [Clear description of the proposed feature]
 
 ### Use Cases
+
 1. [Use case 1]
 2. [Use case 2]
 3. [Use case 3]
 
 ### Acceptance Criteria
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 - [ ] Criterion 3
 
 ### Implementation Approach
+
 #### Design
+
 - [ ] Architecture design
 - [ ] API design
 - [ ] UI/UX mockups
 
 #### Development
+
 - [ ] Core implementation
 - [ ] Integration with existing features
 - [ ] Performance optimization
 
 #### Testing
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] User acceptance testing
 
 ### Swarm Coordination
+
 - **Architect**: Design and planning
 - **Coder**: Implementation
 - **Tester**: Quality assurance
@@ -928,30 +952,26 @@ Updates will be posted automatically by swarm agents during implementation.
 
 ```markdown
 <!-- .github/ISSUE_TEMPLATE/swarm-task.yml -->
+
 name: Swarm Task
 description: Create a task for AI swarm processing
 body:
-  - type: dropdown
-    id: topology
-    attributes:
-      label: Swarm Topology
-      options:
-        - mesh
-        - hierarchical
-        - ring
-        - star
-  - type: input
-    id: agents
-    attributes:
-      label: Required Agents
-      placeholder: "coder, tester, analyst"
-  - type: textarea
-    id: tasks
-    attributes:
-      label: Task Breakdown
-      placeholder: |
-        1. Task one description
-        2. Task two description
+
+- type: dropdown
+  id: topology
+  attributes:
+  label: Swarm Topology
+  options: - mesh - hierarchical - ring - star
+- type: input
+  id: agents
+  attributes:
+  label: Required Agents
+  placeholder: "coder, tester, analyst"
+- type: textarea
+  id: tasks
+  attributes:
+  label: Task Breakdown
+  placeholder: | 1. Task one description 2. Task two description
 ```
 
 ---
@@ -1035,36 +1055,42 @@ npx ruv-swarm github debt-swarm 456 \
 ## Best Practices
 
 ### 1. Swarm-Coordinated Issue Management
+
 - Always initialize swarm for complex issues
 - Assign specialized agents based on issue type
 - Use memory for progress coordination
 - Regular automated progress updates
 
 ### 2. Board Organization
+
 - Clear column definitions with consistent naming
 - Systematic labeling strategy across repositories
 - Regular board grooming and maintenance
 - Well-defined automation rules
 
 ### 3. Data Integrity
+
 - Bidirectional sync validation
 - Conflict resolution strategies
 - Comprehensive audit trails
 - Regular backups of project data
 
 ### 4. Team Adoption
+
 - Comprehensive training materials
 - Clear, documented workflows
 - Regular team reviews and retrospectives
 - Active feedback loops for improvement
 
 ### 5. Smart Labeling and Organization
+
 - Consistent labeling strategy across repositories
 - Priority-based issue sorting and assignment
 - Milestone integration for project coordination
 - Agent-type to label mapping
 
 ### 6. Automated Progress Tracking
+
 - Regular automated updates with swarm coordination
 - Progress metrics and completion tracking
 - Cross-issue dependency management
@@ -1113,6 +1139,7 @@ npx ruv-swarm github board-recover \
 ### Performance Metrics
 
 Automatic tracking of:
+
 - Issue creation and resolution times
 - Agent productivity metrics
 - Project milestone progress
@@ -1164,6 +1191,7 @@ npx ruv-swarm github effectiveness \
 ## Integration with Other Skills
 
 ### Seamless Integration With:
+
 - `github-pr-workflow` - Link issues to pull requests automatically
 - `github-release-management` - Coordinate release issues and milestones
 - `sparc-orchestrator` - Complex project coordination workflows

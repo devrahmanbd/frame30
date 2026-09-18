@@ -16,24 +16,34 @@ import {
 
 describe("scope parsing", () => {
   it("accepts space, comma and array forms and drops unknown scopes", () => {
-    expect(parseScopes("orders.read products.write")).toEqual(["orders.read", "products.write"]);
+    expect(parseScopes("orders.read products.write")).toEqual([
+      "orders.read",
+      "products.write",
+    ]);
     expect(parseScopes("orders.read,shells.delete")).toEqual(["orders.read"]);
-    expect(parseScopes(["orders.read", "orders.read"])).toEqual(["orders.read"]);
+    expect(parseScopes(["orders.read", "orders.read"])).toEqual([
+      "orders.read",
+    ]);
     expect(parseScopes(undefined)).toEqual([]);
   });
 
   it("documents every scope it ships", () => {
-    expect(SCOPE_CATALOG.map((s) => s.scope).sort()).toEqual([...SCOPES].sort());
+    expect(SCOPE_CATALOG.map((s) => s.scope).sort()).toEqual(
+      [...SCOPES].sort(),
+    );
   });
 });
 
 describe("intersection is the only grant path", () => {
   it("never returns a scope the registration forbids", () => {
-    const granted = intersectScopes(["orders.read", "products.write"], ["orders.read"]);
+    const granted = intersectScopes(
+      ["orders.read", "products.write"],
+      ["orders.read"],
+    );
     expect(granted).toEqual(["orders.read"]);
-    expect(refusedScopes(["orders.read", "products.write"], ["orders.read"])).toEqual([
-      "products.write",
-    ]);
+    expect(
+      refusedScopes(["orders.read", "products.write"], ["orders.read"]),
+    ).toEqual(["products.write"]);
   });
 
   it("an empty allowlist grants nothing", () => {
@@ -43,7 +53,10 @@ describe("intersection is the only grant path", () => {
 
 describe("implication", () => {
   it("write implies read on the same resource only", () => {
-    expect(expandImplied(["products.write"])).toEqual(["products.read", "products.write"]);
+    expect(expandImplied(["products.write"])).toEqual([
+      "products.read",
+      "products.write",
+    ]);
     expect(satisfies(["products.write"], "products.read")).toBe(true);
     expect(satisfies(["products.write"], "orders.read")).toBe(false);
   });
@@ -58,7 +71,9 @@ describe("cursors", () => {
   it("treats tampered input as absent instead of throwing", () => {
     expect(decodeCursor("!!!!")).toBeNull();
     expect(decodeCursor("")).toBeNull();
-    expect(decodeCursor(encodeCursor({ ts: "not-a-date", id: "x" }))).toBeNull();
+    expect(
+      decodeCursor(encodeCursor({ ts: "not-a-date", id: "x" })),
+    ).toBeNull();
   });
 
   it("clamps page size", () => {

@@ -1,1 +1,1022 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "label": "analytics-pipeline.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L1"}, {"id": "lib_analytics_pipeline_funnel_stages", "label": "FUNNEL_STAGES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L11"}, {"id": "lib_analytics_pipeline_funnelstagekey", "label": "FunnelStageKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L19"}, {"id": "lib_analytics_pipeline_dailybucket", "label": "DailyBucket", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L21"}, {"id": "lib_analytics_pipeline_funnelstage", "label": "FunnelStage", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L33"}, {"id": "lib_analytics_pipeline_round1", "label": "round1()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L46"}, {"id": "lib_analytics_pipeline_pct", "label": "pct()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L50"}, {"id": "lib_analytics_pipeline_buildfunnel", "label": "buildFunnel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L56"}, {"id": "lib_analytics_pipeline_cohortrow", "label": "CohortRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L106"}, {"id": "lib_analytics_pipeline_cohortmatrix", "label": "CohortMatrix", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L115"}, {"id": "lib_analytics_pipeline_buildcohortmatrix", "label": "buildCohortMatrix()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L128"}, {"id": "lib_analytics_pipeline_personas", "label": "PERSONAS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L171"}, {"id": "lib_analytics_pipeline_persona", "label": "Persona", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L172"}, {"id": "lib_analytics_pipeline_persona_labels", "label": "PERSONA_LABELS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L174"}, {"id": "lib_analytics_pipeline_buyerstats", "label": "BuyerStats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L183"}, {"id": "lib_analytics_pipeline_classifypersona", "label": "classifyPersona()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L193"}, {"id": "lib_analytics_pipeline_vipthreshold", "label": "vipThreshold()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L206"}, {"id": "lib_analytics_pipeline_aging_buckets", "label": "AGING_BUCKETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L213"}, {"id": "lib_analytics_pipeline_agingkey", "label": "AgingKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L220"}, {"id": "lib_analytics_pipeline_agingbucket", "label": "agingBucket()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L222"}, {"id": "lib_analytics_pipeline_aginginput", "label": "AgingInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L229"}, {"id": "lib_analytics_pipeline_summarizeaging", "label": "summarizeAging()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L238"}, {"id": "lib_analytics_pipeline_report_datasets", "label": "REPORT_DATASETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L266"}, {"id": "lib_analytics_pipeline_datasetkey", "label": "DatasetKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L289"}, {"id": "lib_analytics_pipeline_reportdefinition", "label": "ReportDefinition", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L291"}, {"id": "lib_analytics_pipeline_schedules", "label": "SCHEDULES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L301"}, {"id": "lib_analytics_pipeline_formats", "label": "FORMATS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L302"}, {"id": "lib_analytics_pipeline_validatereport", "label": "validateReport()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L310"}, {"id": "lib_analytics_pipeline_nextrunat", "label": "nextRunAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L345"}, {"id": "lib_analytics_pipeline_tocsv", "label": "toCsv()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L356"}, {"id": "lib_analytics_pipeline_batchrow", "label": "BatchRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L368"}, {"id": "lib_analytics_pipeline_auditbatchchain", "label": "auditBatchChain()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L383"}, {"id": "lib_analytics_pipeline_isstale", "label": "isStale()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L418"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_funnel_stages", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_funnelstagekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_dailybucket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_funnelstage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_round1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_pct", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_buildfunnel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_cohortrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_cohortmatrix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L115", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_buildcohortmatrix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_personas", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L171", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_persona", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_persona_labels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L174", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_buyerstats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_classifypersona", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L193", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_vipthreshold", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L206", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_aging_buckets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L213", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_agingkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L220", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_agingbucket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L222", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_aginginput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_summarizeaging", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L238", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_report_datasets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L266", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_datasetkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L289", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_reportdefinition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L291", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_schedules", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L301", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_formats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L302", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_validatereport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L310", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_nextrunat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L345", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_tocsv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L356", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_batchrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L368", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_auditbatchchain", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L383", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts", "target": "lib_analytics_pipeline_isstale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L418", "weight": 1.0}, {"source": "lib_analytics_pipeline_pct", "target": "lib_analytics_pipeline_round1", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L52", "weight": 1.0}, {"source": "lib_analytics_pipeline_buildfunnel", "target": "lib_analytics_pipeline_pct", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L101", "weight": 1.0}, {"source": "lib_analytics_pipeline_buildcohortmatrix", "target": "lib_analytics_pipeline_round1", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L165", "weight": 1.0}, {"source": "lib_analytics_pipeline_summarizeaging", "target": "lib_analytics_pipeline_agingbucket", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L249", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_analytics_pipeline_round1", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L47"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L62"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L68"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L69"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L70"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L70"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L74"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L79"}, {"caller_nid": "lib_analytics_pipeline_buildfunnel", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L101"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L132"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L133"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L134"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L137"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L137"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L138"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L140"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L143"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L161"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L161"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L164"}, {"caller_nid": "lib_analytics_pipeline_buildcohortmatrix", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L165"}, {"caller_nid": "lib_analytics_pipeline_vipthreshold", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L207"}, {"caller_nid": "lib_analytics_pipeline_vipthreshold", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L207"}, {"caller_nid": "lib_analytics_pipeline_vipthreshold", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L209"}, {"caller_nid": "lib_analytics_pipeline_vipthreshold", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L210"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L239"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L246"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L249"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L252"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L254"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L254"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L259"}, {"caller_nid": "lib_analytics_pipeline_summarizeaging", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L260"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L317"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L318"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L319"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L322"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L323"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L327"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L328"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "isInteger", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L331"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L332"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L334"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L334"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L335"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L335"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L336"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L338"}, {"caller_nid": "lib_analytics_pipeline_validatereport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L338"}, {"caller_nid": "lib_analytics_pipeline_nextrunat", "callee": "setUTCDate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L350"}, {"caller_nid": "lib_analytics_pipeline_nextrunat", "callee": "getUTCDate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L350"}, {"caller_nid": "lib_analytics_pipeline_nextrunat", "callee": "setUTCHours", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L351"}, {"caller_nid": "lib_analytics_pipeline_nextrunat", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L352"}, {"caller_nid": "lib_analytics_pipeline_tocsv", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L361"}, {"caller_nid": "lib_analytics_pipeline_tocsv", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L361"}, {"caller_nid": "lib_analytics_pipeline_tocsv", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L362"}, {"caller_nid": "lib_analytics_pipeline_tocsv", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L362"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L384"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L385"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L388"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L408"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "reverse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L408"}, {"caller_nid": "lib_analytics_pipeline_auditbatchchain", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L410"}, {"caller_nid": "lib_analytics_pipeline_isstale", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L420"}, {"caller_nid": "lib_analytics_pipeline_isstale", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts", "source_location": "L420"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "label": "analytics-pipeline.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_analytics_pipeline_funnel_stages",
+      "label": "FUNNEL_STAGES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_analytics_pipeline_funnelstagekey",
+      "label": "FunnelStageKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_analytics_pipeline_dailybucket",
+      "label": "DailyBucket",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_analytics_pipeline_funnelstage",
+      "label": "FunnelStage",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_analytics_pipeline_round1",
+      "label": "round1()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "lib_analytics_pipeline_pct",
+      "label": "pct()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_analytics_pipeline_buildfunnel",
+      "label": "buildFunnel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_analytics_pipeline_cohortrow",
+      "label": "CohortRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "lib_analytics_pipeline_cohortmatrix",
+      "label": "CohortMatrix",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "lib_analytics_pipeline_buildcohortmatrix",
+      "label": "buildCohortMatrix()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_analytics_pipeline_personas",
+      "label": "PERSONAS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L171"
+    },
+    {
+      "id": "lib_analytics_pipeline_persona",
+      "label": "Persona",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L172"
+    },
+    {
+      "id": "lib_analytics_pipeline_persona_labels",
+      "label": "PERSONA_LABELS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L174"
+    },
+    {
+      "id": "lib_analytics_pipeline_buyerstats",
+      "label": "BuyerStats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L183"
+    },
+    {
+      "id": "lib_analytics_pipeline_classifypersona",
+      "label": "classifyPersona()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L193"
+    },
+    {
+      "id": "lib_analytics_pipeline_vipthreshold",
+      "label": "vipThreshold()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L206"
+    },
+    {
+      "id": "lib_analytics_pipeline_aging_buckets",
+      "label": "AGING_BUCKETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L213"
+    },
+    {
+      "id": "lib_analytics_pipeline_agingkey",
+      "label": "AgingKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L220"
+    },
+    {
+      "id": "lib_analytics_pipeline_agingbucket",
+      "label": "agingBucket()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L222"
+    },
+    {
+      "id": "lib_analytics_pipeline_aginginput",
+      "label": "AgingInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "lib_analytics_pipeline_summarizeaging",
+      "label": "summarizeAging()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L238"
+    },
+    {
+      "id": "lib_analytics_pipeline_report_datasets",
+      "label": "REPORT_DATASETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L266"
+    },
+    {
+      "id": "lib_analytics_pipeline_datasetkey",
+      "label": "DatasetKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L289"
+    },
+    {
+      "id": "lib_analytics_pipeline_reportdefinition",
+      "label": "ReportDefinition",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L291"
+    },
+    {
+      "id": "lib_analytics_pipeline_schedules",
+      "label": "SCHEDULES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L301"
+    },
+    {
+      "id": "lib_analytics_pipeline_formats",
+      "label": "FORMATS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L302"
+    },
+    {
+      "id": "lib_analytics_pipeline_validatereport",
+      "label": "validateReport()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L310"
+    },
+    {
+      "id": "lib_analytics_pipeline_nextrunat",
+      "label": "nextRunAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L345"
+    },
+    {
+      "id": "lib_analytics_pipeline_tocsv",
+      "label": "toCsv()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L356"
+    },
+    {
+      "id": "lib_analytics_pipeline_batchrow",
+      "label": "BatchRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L368"
+    },
+    {
+      "id": "lib_analytics_pipeline_auditbatchchain",
+      "label": "auditBatchChain()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L383"
+    },
+    {
+      "id": "lib_analytics_pipeline_isstale",
+      "label": "isStale()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L418"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_funnel_stages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_funnelstagekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_dailybucket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_funnelstage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_round1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_pct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_buildfunnel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_cohortrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_cohortmatrix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_buildcohortmatrix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_personas",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_persona",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_persona_labels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_buyerstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_classifypersona",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L193",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_vipthreshold",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_aging_buckets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_agingkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_agingbucket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_aginginput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_summarizeaging",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_report_datasets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_datasetkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_reportdefinition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_schedules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_formats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_validatereport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_nextrunat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L345",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_tocsv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_batchrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L368",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_auditbatchchain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L383",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_analytics_pipeline_ts",
+      "target": "lib_analytics_pipeline_isstale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L418",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_analytics_pipeline_pct",
+      "target": "lib_analytics_pipeline_round1",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_analytics_pipeline_buildfunnel",
+      "target": "lib_analytics_pipeline_pct",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_analytics_pipeline_buildcohortmatrix",
+      "target": "lib_analytics_pipeline_round1",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_analytics_pipeline_summarizeaging",
+      "target": "lib_analytics_pipeline_agingbucket",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_analytics_pipeline_round1",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildfunnel",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_buildcohortmatrix",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_vipthreshold",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_vipthreshold",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_vipthreshold",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_vipthreshold",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_summarizeaging",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L322"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "isInteger",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L331"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L335"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L335"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_validatereport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_nextrunat",
+      "callee": "setUTCDate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_nextrunat",
+      "callee": "getUTCDate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_nextrunat",
+      "callee": "setUTCHours",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L351"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_nextrunat",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_tocsv",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L361"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_tocsv",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L361"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_tocsv",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_tocsv",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L384"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L385"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "reverse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_auditbatchchain",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L410"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_isstale",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L420"
+    },
+    {
+      "caller_nid": "lib_analytics_pipeline_isstale",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/analytics-pipeline.ts",
+      "source_location": "L420"
+    }
+  ]
+}

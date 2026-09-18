@@ -24,7 +24,12 @@ const ok = (n, d) => add("PASS", n, d);
 const bad = (n, d) => add("FAIL", n, d);
 const skip = (n, d) => add("SKIP", n, d);
 
-const ls = (dir, re) => (existsSync(dir) ? readdirSync(dir).filter((f) => re.test(f)).map((f) => join(dir, f)) : []);
+const ls = (dir, re) =>
+  existsSync(dir)
+    ? readdirSync(dir)
+        .filter((f) => re.test(f))
+        .map((f) => join(dir, f))
+    : [];
 
 const COMPOSE = [
   ...ls("ops", /^docker-compose\..*\.ya?ml$/),
@@ -53,7 +58,8 @@ if (!dashboards.length) bad("grafana dashboards present");
 for (const f of dashboards) {
   try {
     const d = JSON.parse(readFileSync(f, "utf8"));
-    if (!Array.isArray(d.panels) || d.panels.length === 0) bad(`dashboard has panels: ${f}`);
+    if (!Array.isArray(d.panels) || d.panels.length === 0)
+      bad(`dashboard has panels: ${f}`);
     else ok(`dashboard valid: ${f}`, `${d.panels.length} panels`);
   } catch (e) {
     bad(`dashboard valid: ${f}`, e.message);
@@ -79,8 +85,12 @@ for (const f of COMPOSE) {
 }
 
 for (const f of COMPOSE) {
-  const images = [...readFileSync(f, "utf8").matchAll(/^\s*image:\s*(\S+)\s*$/gm)].map((m) => m[1]);
-  const floating = images.filter((i) => !/:[^:\s]+$/.test(i) || /:latest$/.test(i));
+  const images = [
+    ...readFileSync(f, "utf8").matchAll(/^\s*image:\s*(\S+)\s*$/gm),
+  ].map((m) => m[1]);
+  const floating = images.filter(
+    (i) => !/:[^:\s]+$/.test(i) || /:latest$/.test(i),
+  );
   if (floating.length) bad(`images pinned: ${f}`, floating.join(", "));
   else ok(`images pinned: ${f}`, `${images.length} images`);
 }
@@ -92,30 +102,43 @@ const sb = existsSync("supabase/docker/docker-compose.yml")
   : "";
 if (sb) {
   const db = sb.slice(sb.indexOf("\n  db:"), sb.indexOf("\n  auth:"));
-  db.includes("ports:") ? bad("postgres not published to the host") : ok("postgres not published to the host");
+  db.includes("ports:")
+    ? bad("postgres not published to the host")
+    : ok("postgres not published to the host");
   /ports:\s*\["127\.0\.0\.1:8000:8000"\]/.test(sb)
     ? ok("api gateway bound to loopback")
     : bad("api gateway bound to loopback");
 }
 
-const kong = existsSync("supabase/docker/kong.yml") ? readFileSync("supabase/docker/kong.yml", "utf8") : "";
+const kong = existsSync("supabase/docker/kong.yml")
+  ? readFileSync("supabase/docker/kong.yml", "utf8")
+  : "";
 if (kong) {
   for (const svc of ["auth-v1-open", "rest-v1", "storage-v1"]) {
     const i = kong.indexOf(`- name: ${svc}`);
     const block = i > -1 ? kong.slice(i, i + 900) : "";
-    block.includes("name: rate-limiting") ? ok(`gateway rate limit: ${svc}`) : bad(`gateway rate limit: ${svc}`);
+    block.includes("name: rate-limiting")
+      ? ok(`gateway rate limit: ${svc}`)
+      : bad(`gateway rate limit: ${svc}`);
   }
   kong.includes("- consumer: service_role\n    group: anon")
     ? bad("service_role is never in the anon group")
     : ok("service_role is never in the anon group");
 }
 
-for (const p of ["ops/backup/backup.sh", "ops/backup/restore.sh", "ops/backup/rehearse.sh"]) {
+for (const p of [
+  "ops/backup/backup.sh",
+  "ops/backup/restore.sh",
+  "ops/backup/rehearse.sh",
+]) {
   if (!existsSync(p)) bad(`operational script: ${p}`, "missing");
-  else if ((statSync(p).mode & 0o111) === 0) bad(`operational script: ${p}`, "not executable");
+  else if ((statSync(p).mode & 0o111) === 0)
+    bad(`operational script: ${p}`, "not executable");
   else ok(`operational script: ${p}`);
 }
-existsSync("scripts/db-migrate.mjs") ? ok("migration runner present") : bad("migration runner present");
+existsSync("scripts/db-migrate.mjs")
+  ? ok("migration runner present")
+  : bad("migration runner present");
 
 // Anything a stack templates must exist in the env template that ships beside
 // it, otherwise bring-up silently substitutes an empty string. Each stack owns
@@ -144,7 +167,10 @@ const ENV_SCOPES = [
   // kong.yml is templated from the gateway container's environment, which
   // docker-compose.yml supplies from ANON_KEY / SERVICE_ROLE_KEY — so only the
   // compose file is checked against the distribution's template.
-  { template: "supabase/docker/.env.example", files: ["supabase/docker/docker-compose.yml"] },
+  {
+    template: "supabase/docker/.env.example",
+    files: ["supabase/docker/docker-compose.yml"],
+  },
 ];
 
 for (const scope of ENV_SCOPES) {
@@ -155,14 +181,22 @@ for (const scope of ENV_SCOPES) {
   }
   const referenced = new Set();
   for (const f of scope.files.filter(existsSync)) {
-    for (const m of readFileSync(f, "utf8").matchAll(/\$\{([A-Z][A-Z0-9_]*)/g)) referenced.add(m[1]);
+    for (const m of readFileSync(f, "utf8").matchAll(/\$\{([A-Z][A-Z0-9_]*)/g))
+      referenced.add(m[1]);
   }
-  const undocumented = [...referenced].filter((k) => !keys.has(k) && !DOCKER_BUILTINS.has(k)).sort();
+  const undocumented = [...referenced]
+    .filter((k) => !keys.has(k) && !DOCKER_BUILTINS.has(k))
+    .sort();
   undocumented.length
-    ? bad(`every templated variable is in ${scope.template}`, undocumented.join(", "))
-    : ok(`every templated variable is in ${scope.template}`, `${referenced.size} variables`);
+    ? bad(
+        `every templated variable is in ${scope.template}`,
+        undocumented.join(", "),
+      )
+    : ok(
+        `every templated variable is in ${scope.template}`,
+        `${referenced.size} variables`,
+      );
 }
-
 
 // ------------------------------------------------------------------- host
 const HOST_SECRETS = [
@@ -177,18 +211,30 @@ const HOST_ENV = [
   "SUPABASE_URL",
 ];
 if (!HOST) {
-  skip("file-mounted secrets exist", `${HOST_SECRETS.length} files — run with --host on the server`);
-  skip("operator environment is set", `${HOST_ENV.length} variables — run with --host on the server`);
-  for (const rel of new Set(SECRET_MOUNTS)) skip(`secret mount: ${rel}`, "git-ignored by design");
+  skip(
+    "file-mounted secrets exist",
+    `${HOST_SECRETS.length} files — run with --host on the server`,
+  );
+  skip(
+    "operator environment is set",
+    `${HOST_ENV.length} variables — run with --host on the server`,
+  );
+  for (const rel of new Set(SECRET_MOUNTS))
+    skip(`secret mount: ${rel}`, "git-ignored by design");
 } else {
   for (const p of HOST_SECRETS) {
-    if (!existsSync(p)) bad(`secret file: ${p}`, "missing — see ops/README.md §2");
-    else if ((statSync(p).mode & 0o077) !== 0) bad(`secret file: ${p}`, "must be chmod 600");
+    if (!existsSync(p))
+      bad(`secret file: ${p}`, "missing — see ops/README.md §2");
+    else if ((statSync(p).mode & 0o077) !== 0)
+      bad(`secret file: ${p}`, "must be chmod 600");
     else ok(`secret file: ${p}`);
   }
-  for (const k of HOST_ENV) (process.env[k] ? ok(`env set: ${k}`) : bad(`env set: ${k}`, "unset"));
+  for (const k of HOST_ENV)
+    process.env[k] ? ok(`env set: ${k}`) : bad(`env set: ${k}`, "unset");
   const dsn = process.env["GLITCHTIP_DSN"] || process.env["SENTRY_DSN"];
-  dsn ? ok("error backend configured") : bad("error backend configured", "set GLITCHTIP_DSN or SENTRY_DSN");
+  dsn
+    ? ok("error backend configured")
+    : bad("error backend configured", "set GLITCHTIP_DSN or SENTRY_DSN");
 }
 
 // ----------------------------------------------------------------- verdict
@@ -196,7 +242,9 @@ const fails = rows.filter((r) => r.state === "FAIL");
 const skips = rows.filter((r) => r.state === "SKIP");
 for (const r of rows) {
   if (r.state === "PASS" && !process.argv.includes("--verbose")) continue;
-  console.log(`${r.state.padEnd(4)}  ${r.name}${r.detail ? ` — ${r.detail}` : ""}`);
+  console.log(
+    `${r.state.padEnd(4)}  ${r.name}${r.detail ? ` — ${r.detail}` : ""}`,
+  );
 }
 console.log(
   `\nselfhost-preflight: ${rows.length - fails.length - skips.length}/${rows.length - skips.length} checks passed` +

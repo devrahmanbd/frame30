@@ -48,7 +48,8 @@ export function ClassManagerDialog({
         <DialogHeader>
           <DialogTitle>Class Manager</DialogTitle>
           <DialogDescription>
-            Global classes can be applied to any element. Editing a class updates every element using it.
+            Global classes can be applied to any element. Editing a class
+            updates every element using it.
           </DialogDescription>
         </DialogHeader>
 
@@ -84,7 +85,9 @@ export function ClassManagerDialog({
           <ul className="max-h-72 divide-y divide-border overflow-y-auto rounded-fq-md border border-border">
             {classes.map((item) => (
               <li key={item.id} className="flex items-center gap-2 p-2">
-                <span className="font-mono text-[0.7rem] text-muted-foreground">.</span>
+                <span className="font-mono text-[0.7rem] text-muted-foreground">
+                  .
+                </span>
                 <Input
                   defaultValue={item.name}
                   aria-label={`Class name for ${item.name}`}

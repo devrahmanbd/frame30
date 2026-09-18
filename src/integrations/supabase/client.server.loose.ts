@@ -3,4 +3,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabaseAdmin as generated } from "./client.server";
 
-export const supabaseAdmin = generated as unknown as SupabaseClient<any, any, any>;
+export const supabaseAdmin = generated as unknown as SupabaseClient<
+  any,
+  any,
+  any
+>;

@@ -56,8 +56,10 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     id: "RULE_NO_DROP_COLUMN",
     name: "Prohibit Dropping Columns in Standard Migrations",
     severity: "error",
-    pattern: /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+drop\s+(?:column\s+(?:if\s+exists\s+)?(\w+)|(?:if\s+exists\s+)?(?!constraint|trigger|policy|rule)(\w+))/i,
-    message: "Dropping a column immediately breaks running Version N (BLUE) pods.",
+    pattern:
+      /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+drop\s+(?:column\s+(?:if\s+exists\s+)?(\w+)|(?:if\s+exists\s+)?(?!constraint|trigger|policy|rule)(\w+))/i,
+    message:
+      "Dropping a column immediately breaks running Version N (BLUE) pods.",
     remediation:
       "Follow Expand-and-Contract: First stop reading/writing the column in application code. Only drop it in a dedicated Stage 4 Contract migration annotated with `-- @framique-stage: contract` and `-- @rationale: <reason>`.",
     allowedInContract: true,
@@ -66,8 +68,10 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     id: "RULE_NO_RENAME_COLUMN",
     name: "Prohibit Renaming Columns",
     severity: "error",
-    pattern: /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+rename\s+(?:column\s+)?(\w+)\s+to\s+(\w+)/i,
-    message: "Renaming a column immediately breaks running Version N (BLUE) pods querying the old column name.",
+    pattern:
+      /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+rename\s+(?:column\s+)?(\w+)\s+to\s+(\w+)/i,
+    message:
+      "Renaming a column immediately breaks running Version N (BLUE) pods querying the old column name.",
     remediation:
       "Follow Expand-and-Contract: 1) Add new column (Expand); 2) Dual-write to both; 3) Backfill historical rows; 4) Read exclusively from new; 5) Drop old column in a Stage 4 Contract migration.",
     allowedInContract: false,
@@ -76,8 +80,10 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     id: "RULE_NO_RENAME_TABLE",
     name: "Prohibit Renaming Tables",
     severity: "error",
-    pattern: /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+rename\s+to\s+(\w+)/i,
-    message: "Renaming a table immediately breaks all existing active queries referencing the old table.",
+    pattern:
+      /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+rename\s+to\s+(\w+)/i,
+    message:
+      "Renaming a table immediately breaks all existing active queries referencing the old table.",
     remediation:
       "Create the new table, replicate data in dual-write mode, backfill historical rows, and migrate traffic before decommissioning the old table.",
     allowedInContract: false,
@@ -88,15 +94,20 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     severity: "error",
     matcher: (stmt: string) => {
       const isAddColumn =
-        /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?\w+\s+add\s+column\s+/i.test(stmt) ||
-        /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?\w+\s+add\s+(?!constraint|check|foreign|primary|unique)\w+\s+[a-z0-9_]+/i.test(stmt);
+        /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?\w+\s+add\s+column\s+/i.test(
+          stmt,
+        ) ||
+        /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?\w+\s+add\s+(?!constraint|check|foreign|primary|unique)\w+\s+[a-z0-9_]+/i.test(
+          stmt,
+        );
       if (!isAddColumn) return false;
       if (/\bdrop\s+not\s+null\b/i.test(stmt)) return false;
       const hasNotNull = /\bnot\s+null\b/i.test(stmt);
       const hasDefault = /\bdefault\b/i.test(stmt);
       return hasNotNull && !hasDefault;
     },
-    message: "Adding a NOT NULL column without a DEFAULT fails if the table has rows, and breaks concurrent Version N inserts.",
+    message:
+      "Adding a NOT NULL column without a DEFAULT fails if the table has rows, and breaks concurrent Version N inserts.",
     remediation:
       "Add the column as NULLABLE or provide an explicit `DEFAULT <value>` so existing rows and concurrent inserts succeed without failure.",
     allowedInContract: false,
@@ -105,8 +116,10 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     id: "RULE_NO_IN_PLACE_TYPE_ALTERATION",
     name: "Prohibit In-Place Column Type Alteration",
     severity: "error",
-    pattern: /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+alter\s+(?:column\s+)?(\w+)\s+(?:set\s+data\s+)?type\s+(\w+)/i,
-    message: "Altering column types in-place acquires an ACCESS EXCLUSIVE table lock, locking out all live traffic and potentially causing deadlocks.",
+    pattern:
+      /alter\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)\s+alter\s+(?:column\s+)?(\w+)\s+(?:set\s+data\s+)?type\s+(\w+)/i,
+    message:
+      "Altering column types in-place acquires an ACCESS EXCLUSIVE table lock, locking out all live traffic and potentially causing deadlocks.",
     remediation:
       "Add a new column with the desired type, dual-write to both, backfill in background chunks, and switch reads before dropping the old column.",
     allowedInContract: false,
@@ -116,7 +129,8 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     name: "Prohibit Dropping Tables in Standard Migrations",
     severity: "error",
     pattern: /drop\s+table\s+(?:if\s+exists\s+)?(?:\w+\.)?(\w+)/i,
-    message: "Dropping a table immediately breaks any service or canary query referencing it.",
+    message:
+      "Dropping a table immediately breaks any service or canary query referencing it.",
     remediation:
       "Drop tables only in a dedicated Stage 4 Contract migration annotated with `-- @framique-stage: contract` and `-- @rationale: <reason>`.",
     allowedInContract: true,
@@ -125,9 +139,12 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
     id: "RULE_INDEX_CONCURRENTLY_WARNING",
     name: "Prefer Concurrent Index Creation on Existing Tables",
     severity: "warning",
-    pattern: /create\s+(?:unique\s+)?index\s+(?:if\s+not\s+exists\s+)?(\w+)\s+on\s+(?!concurrently\b)/i,
-    message: "Creating indexes without CONCURRENTLY locks the table against concurrent writes during index generation.",
-    remediation: "Use `CREATE INDEX CONCURRENTLY` in production environments to avoid write blocking.",
+    pattern:
+      /create\s+(?:unique\s+)?index\s+(?:if\s+not\s+exists\s+)?(\w+)\s+on\s+(?!concurrently\b)/i,
+    message:
+      "Creating indexes without CONCURRENTLY locks the table against concurrent writes during index generation.",
+    remediation:
+      "Use `CREATE INDEX CONCURRENTLY` in production environments to avoid write blocking.",
     allowedInContract: true,
   },
 ];
@@ -144,11 +161,17 @@ export function parseMigrationMetadata(sqlContent: string): {
   isDriftRepair: boolean;
   rationale?: string;
 } {
-  const contractMatch = sqlContent.match(/--\s*@framique-stage:\s*(contract|expand)/i);
+  const contractMatch = sqlContent.match(
+    /--\s*@framique-stage:\s*(contract|expand)/i,
+  );
   const rationaleMatch = sqlContent.match(/--\s*@rationale:\s*(.+)/i);
-  const driftRepairMatch = sqlContent.match(/--\s*@framique-drift-repair:\s*true/i);
+  const driftRepairMatch = sqlContent.match(
+    /--\s*@framique-drift-repair:\s*true/i,
+  );
 
-  const isContract = contractMatch ? contractMatch[1].toLowerCase() === "contract" : false;
+  const isContract = contractMatch
+    ? contractMatch[1].toLowerCase() === "contract"
+    : false;
   const isDriftRepair = Boolean(driftRepairMatch);
   const rationale = rationaleMatch ? rationaleMatch[1].trim() : undefined;
 
@@ -189,7 +212,9 @@ function stripComments(sql: string): { cleanSql: string; lines: string[] } {
       if (startCommentIdx !== -1) {
         const endCommentIdx = cleaned.indexOf("*/", startCommentIdx + 2);
         if (endCommentIdx !== -1) {
-          cleaned = cleaned.slice(0, startCommentIdx) + cleaned.slice(endCommentIdx + 2);
+          cleaned =
+            cleaned.slice(0, startCommentIdx) +
+            cleaned.slice(endCommentIdx + 2);
         } else {
           cleaned = cleaned.slice(0, startCommentIdx);
           inBlockComment = true;
@@ -206,8 +231,12 @@ function stripComments(sql: string): { cleanSql: string; lines: string[] } {
 /**
  * Lint SQL content against Expand-and-Contract rules.
  */
-export function lintMigrationSql(sqlContent: string, filePath?: string): LintResult {
-  const { isContract, isDriftRepair, rationale } = parseMigrationMetadata(sqlContent);
+export function lintMigrationSql(
+  sqlContent: string,
+  filePath?: string,
+): LintResult {
+  const { isContract, isDriftRepair, rationale } =
+    parseMigrationMetadata(sqlContent);
   const { lines } = stripComments(sqlContent);
   const violations: LintViolation[] = [];
 
@@ -220,8 +249,10 @@ export function lintMigrationSql(sqlContent: string, filePath?: string): LintRes
       filePath,
       lineNumber: 1,
       lineContent: "-- @framique-stage: contract",
-      message: "Contract stage migrations must provide an explicit rationale explaining why legacy objects can now be safely dropped.",
-      remediation: "Add `-- @rationale: <detailed explanation of prior dual-run and safety verification>` to the migration header.",
+      message:
+        "Contract stage migrations must provide an explicit rationale explaining why legacy objects can now be safely dropped.",
+      remediation:
+        "Add `-- @rationale: <detailed explanation of prior dual-run and safety verification>` to the migration header.",
     });
   }
 
@@ -269,7 +300,12 @@ export function lintMigrationSql(sqlContent: string, filePath?: string): LintRes
             severity: rule.severity,
             filePath,
             lineNumber: i + 1,
-            lineContent: statementFirstLine || lines.slice(i, i + 3).join(" ").trim(),
+            lineContent:
+              statementFirstLine ||
+              lines
+                .slice(i, i + 3)
+                .join(" ")
+                .trim(),
             message: rule.message,
             remediation: rule.remediation,
           });

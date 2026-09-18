@@ -1,1 +1,741 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "label": "CollectionDesk.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L1"}, {"id": "billing_collectiondesk_desk", "label": "Desk", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L33"}, {"id": "billing_collectiondesk_item", "label": "Item", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L34"}, {"id": "billing_collectiondesk_status_cls", "label": "STATUS_CLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L36"}, {"id": "billing_collectiondesk_day", "label": "day()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L43"}, {"id": "billing_collectiondesk_readerror", "label": "readError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L48"}, {"id": "billing_collectiondesk_newidempotencykey", "label": "newIdempotencyKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L57"}, {"id": "billing_collectiondesk_collectiondesk", "label": "CollectionDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L62"}, {"id": "billing_collectiondesk_verdicttone", "label": "verdictTone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L263"}, {"id": "billing_collectiondesk_invoicerow", "label": "InvoiceRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L270"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "users_rahman_documents_frame30_src_lib_platform_billing_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_platform_billing_functions_platformcancelchargefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_platform_billing_functions_platformcollectionfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_platform_billing_functions_platformstartchargefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_platform_billing_methodlabel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_platform_billing_collectionverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_desk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_item", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_status_cls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_day", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_readerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_newidempotencykey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_collectiondesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_verdicttone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L263", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx", "target": "billing_collectiondesk_invoicerow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L270", "weight": 1.0}, {"source": "billing_collectiondesk_collectiondesk", "target": "billing_collectiondesk_day", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L206", "weight": 1.0}, {"source": "billing_collectiondesk_invoicerow", "target": "billing_collectiondesk_day", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L303", "weight": 1.0}, {"source": "billing_collectiondesk_invoicerow", "target": "billing_collectiondesk_verdicttone", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L311", "weight": 1.0}], "raw_calls": [{"caller_nid": "billing_collectiondesk_day", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L44"}, {"caller_nid": "billing_collectiondesk_readerror", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L50"}, {"caller_nid": "billing_collectiondesk_newidempotencykey", "callee": "randomUUID", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L59"}, {"caller_nid": "billing_collectiondesk_newidempotencykey", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L59"}, {"caller_nid": "billing_collectiondesk_newidempotencykey", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L59"}, {"caller_nid": "billing_collectiondesk_newidempotencykey", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L59"}, {"caller_nid": "billing_collectiondesk_newidempotencykey", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L59"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L63"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L65"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L66"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L67"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L68"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L70"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L71"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L72"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L74"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L85"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L111"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L117"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L143"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L157"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L165"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L172"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L182"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L193"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L194"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L198"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L202"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L206"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L213"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L214"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L217"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L226"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L229"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L232"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L239"}, {"caller_nid": "billing_collectiondesk_collectiondesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L244"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L289"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L300"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L300"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L304"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L304"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L304"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L315"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L330"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "methodLabel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L330"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "methodLabel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L330"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L338"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L352"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L352"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L356"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L381"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L387"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L389"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L402"}, {"caller_nid": "billing_collectiondesk_invoicerow", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx", "source_location": "L405"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "label": "CollectionDesk.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "billing_collectiondesk_desk",
+      "label": "Desk",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "billing_collectiondesk_item",
+      "label": "Item",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "billing_collectiondesk_status_cls",
+      "label": "STATUS_CLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L36"
+    },
+    {
+      "id": "billing_collectiondesk_day",
+      "label": "day()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L43"
+    },
+    {
+      "id": "billing_collectiondesk_readerror",
+      "label": "readError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L48"
+    },
+    {
+      "id": "billing_collectiondesk_newidempotencykey",
+      "label": "newIdempotencyKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L57"
+    },
+    {
+      "id": "billing_collectiondesk_collectiondesk",
+      "label": "CollectionDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "billing_collectiondesk_verdicttone",
+      "label": "verdictTone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L263"
+    },
+    {
+      "id": "billing_collectiondesk_invoicerow",
+      "label": "InvoiceRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L270"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_platform_billing_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_platform_billing_functions_platformcancelchargefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_platform_billing_functions_platformcollectionfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_platform_billing_functions_platformstartchargefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_platform_billing_methodlabel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_platform_billing_collectionverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_desk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_item",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_status_cls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_day",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_readerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_newidempotencykey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_collectiondesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_verdicttone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_collectiondesk_tsx",
+      "target": "billing_collectiondesk_invoicerow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L270",
+      "weight": 1.0
+    },
+    {
+      "source": "billing_collectiondesk_collectiondesk",
+      "target": "billing_collectiondesk_day",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "billing_collectiondesk_invoicerow",
+      "target": "billing_collectiondesk_day",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L303",
+      "weight": 1.0
+    },
+    {
+      "source": "billing_collectiondesk_invoicerow",
+      "target": "billing_collectiondesk_verdicttone",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L311",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "billing_collectiondesk_day",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_readerror",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_newidempotencykey",
+      "callee": "randomUUID",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_newidempotencykey",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_newidempotencykey",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_newidempotencykey",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_newidempotencykey",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L232"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_collectiondesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "methodLabel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "methodLabel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L356"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L381"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L402"
+    },
+    {
+      "caller_nid": "billing_collectiondesk_invoicerow",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/CollectionDesk.tsx",
+      "source_location": "L405"
+    }
+  ]
+}

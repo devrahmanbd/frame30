@@ -104,11 +104,19 @@ function railSecret() {
       "এই ডিপ্লয়মেন্টে কার্ড/ওয়ালেট পেমেন্ট কনফিগার করা হয়নি।",
     );
   }
-  return createHash("sha256").update(`framique.platform-rail.v1:${service}`).digest("hex");
+  return createHash("sha256")
+    .update(`framique.platform-rail.v1:${service}`)
+    .digest("hex");
 }
 
-export function signPlatformReturn(chargeId: string, status: string, nonce: string) {
-  return createHmac("sha256", railSecret()).update(`${chargeId}.${status}.${nonce}`).digest("hex");
+export function signPlatformReturn(
+  chargeId: string,
+  status: string,
+  nonce: string,
+) {
+  return createHmac("sha256", railSecret())
+    .update(`${chargeId}.${status}.${nonce}`)
+    .digest("hex");
 }
 
 export function platformSignatureMatches(
@@ -152,7 +160,9 @@ function mapOpenError(message: string): PlatformBillingError {
   };
   const key = Object.keys(table).find((k) => message.includes(k));
   if (key) return table[key]!;
-  log("error", "platform_billing.open_failed", { detail: message.slice(0, 160) });
+  log("error", "platform_billing.open_failed", {
+    detail: message.slice(0, 160),
+  });
   return new PlatformBillingError(
     "platform.unavailable",
     "Payments are temporarily unavailable. Your invoice is unchanged.",
@@ -193,7 +203,9 @@ export async function loadCollection(db: Client, merchantId: string) {
     ]);
 
     const allowed = Array.isArray(plan.data?.payment_methods_allowed)
-      ? (plan.data?.payment_methods_allowed as string[]).filter(isPlatformMethod)
+      ? (plan.data?.payment_methods_allowed as string[]).filter(
+          isPlatformMethod,
+        )
       : null;
     const methods = platformMethods(allowed && allowed.length ? allowed : null);
     const rows = (charges.data ?? []) as unknown as ChargeRow[];
@@ -207,7 +219,9 @@ export async function loadCollection(db: Client, merchantId: string) {
     const pastDueDays = daysBetween(subscription.past_due_since);
     const items = (invoices.data ?? []).map((invoice) => {
       const history = byInvoice.get(invoice.id) ?? [];
-      const live = history.find((c) => c.status === "created" || c.status === "pending") ?? null;
+      const live =
+        history.find((c) => c.status === "created" || c.status === "pending") ??
+        null;
       const lastFailed = history.find((c) =>
         ["failed", "cancelled", "expired"].includes(c.status),
       );
@@ -225,7 +239,8 @@ export async function loadCollection(db: Client, merchantId: string) {
         verdict: collectionVerdict({
           invoiceStatus: invoice.status,
           attempts: failedAttempts,
-          liveCharge: !!live && new Date(live.expires_at).getTime() > Date.now(),
+          liveCharge:
+            !!live && new Date(live.expires_at).getTime() > Date.now(),
           pastDueDays,
           subscriptionStatus: subscription.status,
           lastFailureCode: lastFailed?.failure_code ?? null,
@@ -294,7 +309,12 @@ export async function startPlatformCharge(
   db: Client,
   merchantId: string,
   actor: string,
-  input: { invoiceId: string; method: string; idempotencyKey?: string; origin: string },
+  input: {
+    invoiceId: string;
+    method: string;
+    idempotencyKey?: string;
+    origin: string;
+  },
 ): Promise<StartChargeResult> {
   if (!isPlatformMethod(input.method)) {
     throw new PlatformBillingError(
@@ -313,9 +333,14 @@ export async function startPlatformCharge(
       const desk = await loadCollection(db, merchantId);
       const item = desk.items.find((i) => i.invoice.id === input.invoiceId);
       if (!item) throw mapOpenError("invoice_not_found");
-      if (item.invoice.status === "paid") throw mapOpenError("invoice_already_paid");
+      if (item.invoice.status === "paid")
+        throw mapOpenError("invoice_already_paid");
       if (item.verdict.kind === "wait") {
-        throw new PlatformBillingError("platform.retry_too_soon", item.verdict.en, item.verdict.bn);
+        throw new PlatformBillingError(
+          "platform.retry_too_soon",
+          item.verdict.en,
+          item.verdict.bn,
+        );
       }
       if (item.verdict.kind === "support") {
         throw new PlatformBillingError(
@@ -344,7 +369,10 @@ export async function startPlatformCharge(
         _ttl_seconds: 1800,
       });
       if (error) {
-        incr("framique_platform_charge_total", { outcome: "rejected", method: input.method });
+        incr("framique_platform_charge_total", {
+          outcome: "rejected",
+          method: input.method,
+        });
         throw mapOpenError(error.message);
       }
 
@@ -383,7 +411,10 @@ export async function startPlatformCharge(
         });
       }
 
-      const url = new URL(`/api/public/payments/platform/${charge.method}`, input.origin);
+      const url = new URL(
+        `/api/public/payments/platform/${charge.method}`,
+        input.origin,
+      );
       url.searchParams.set("charge", charge.id);
       return {
         chargeId: charge.id,
@@ -420,7 +451,10 @@ export async function platformHostedOutcome(
     .select("id, status, return_nonce, method")
     .eq("id", chargeId)
     .maybeSingle();
-  const charge = data as unknown as Pick<ChargeRow, "id" | "status" | "return_nonce" | "method"> | null;
+  const charge = data as unknown as Pick<
+    ChargeRow,
+    "id" | "status" | "return_nonce" | "method"
+  > | null;
   if (!charge) {
     throw new PlatformBillingError(
       "platform.charge_not_found",
@@ -428,11 +462,19 @@ export async function platformHostedOutcome(
       "এই পেমেন্ট চেষ্টাটি আর নেই।",
     );
   }
-  const status = outcome === "success" ? "paid" : outcome === "cancel" ? "cancelled" : "failed";
+  const status =
+    outcome === "success"
+      ? "paid"
+      : outcome === "cancel"
+        ? "cancelled"
+        : "failed";
   const url = new URL("/api/public/payments/platform/return", origin);
   url.searchParams.set("charge", charge.id);
   url.searchParams.set("status", status);
-  url.searchParams.set("sig", signPlatformReturn(charge.id, status, charge.return_nonce));
+  url.searchParams.set(
+    "sig",
+    signPlatformReturn(charge.id, status, charge.return_nonce),
+  );
   incr("framique_platform_hosted_total", { method: charge.method, outcome });
   return { redirectTo: url.pathname + url.search };
 }
@@ -459,7 +501,9 @@ export async function applyPlatformReturn(
     const service = await admin();
     const { data } = await service
       .from("platform_charges")
-      .select("id, merchant_id, invoice_id, method, status, return_nonce, attempt")
+      .select(
+        "id, merchant_id, invoice_id, method, status, return_nonce, attempt",
+      )
       .eq("id", chargeId)
       .maybeSingle();
     const charge = data as unknown as ChargeRow | null;
@@ -478,7 +522,14 @@ export async function applyPlatformReturn(
         "পেমেন্টের ফলাফল বোঝা যায়নি।",
       );
     }
-    if (!platformSignatureMatches(charge.id, status, charge.return_nonce, signature)) {
+    if (
+      !platformSignatureMatches(
+        charge.id,
+        status,
+        charge.return_nonce,
+        signature,
+      )
+    ) {
       incr("framique_platform_return_total", { outcome: "signature_invalid" });
       log("warn", "platform_billing.signature_invalid", { chargeId });
       throw new PlatformBillingError(
@@ -489,16 +540,22 @@ export async function applyPlatformReturn(
     }
 
     const reference = `${charge.method}:${charge.id.slice(0, 8)}:${charge.attempt}`;
-    const { data: settled, error } = await service.rpc("platform_charge_settle", {
-      _charge_id: charge.id,
-      _status: status,
-      _provider_reference: status === "paid" ? reference : null,
-      _failure_code:
-        status === "paid"
-          ? null
-          : (failureCode ?? (status === "cancelled" ? "cancelled_by_user" : "provider_declined")),
-      _actor: "gateway",
-    });
+    const { data: settled, error } = await service.rpc(
+      "platform_charge_settle",
+      {
+        _charge_id: charge.id,
+        _status: status,
+        _provider_reference: status === "paid" ? reference : null,
+        _failure_code:
+          status === "paid"
+            ? null
+            : (failureCode ??
+              (status === "cancelled"
+                ? "cancelled_by_user"
+                : "provider_declined")),
+        _actor: "gateway",
+      },
+    );
     if (error) {
       incr("framique_platform_return_total", { outcome: "settle_failed" });
       log("error", "platform_billing.settle_failed", {
@@ -523,7 +580,11 @@ export async function applyPlatformReturn(
       method: charge.method,
     });
     if (status === "paid" && !result.replay) {
-      incr("framique_platform_collected_minor_total", { method: charge.method }, Number(result.charge.amount_minor_int));
+      incr(
+        "framique_platform_collected_minor_total",
+        { method: charge.method },
+        Number(result.charge.amount_minor_int),
+      );
       const { invalidateEntitlements } = await import("./entitlements.server");
       invalidateEntitlements(charge.merchant_id);
     }
@@ -550,7 +611,9 @@ export async function hostedChargeView(chargeId: string) {
   const service = await admin();
   const { data } = await service
     .from("platform_charges")
-    .select("id, method, amount_minor_int, currency_code, status, attempt, expires_at")
+    .select(
+      "id, method, amount_minor_int, currency_code, status, attempt, expires_at",
+    )
     .eq("id", chargeId)
     .maybeSingle();
   if (!data) return null;
@@ -623,6 +686,7 @@ export async function expirePlatformCharges(limit = 500) {
     });
     if (!error) expired += 1;
   }
-  if (expired) incr("framique_platform_charge_total", { outcome: "expired" }, expired);
+  if (expired)
+    incr("framique_platform_charge_total", { outcome: "expired" }, expired);
   return { expired };
 }

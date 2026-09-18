@@ -24,7 +24,8 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
       async (cursor, limit) => {
         const startId = cursor !== null ? Number(cursor) : 0;
         const matching = store.filter((r) => r.id > startId).slice(0, limit);
-        const nextCursor = matching.length > 0 ? matching[matching.length - 1].id : null;
+        const nextCursor =
+          matching.length > 0 ? matching[matching.length - 1].id : null;
         return { rows: matching, nextCursor };
       },
       async (rows) => {
@@ -38,7 +39,9 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
 
     expect(progress.status).toBe("completed");
     expect(progress.rowsProcessed).toBe(totalSyntheticRows);
-    expect(progress.totalBatches).toBe(Math.ceil(totalSyntheticRows / batchSize));
+    expect(progress.totalBatches).toBe(
+      Math.ceil(totalSyntheticRows / batchSize),
+    );
     expect(progress.cursor).toBe(totalSyntheticRows);
     expect(store.every((r) => r.migrated)).toBe(true);
 
@@ -51,7 +54,10 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
 
   it("handles concurrent live transactions without deadlocks or data loss", async () => {
     const totalRows = 500;
-    const mockDb = new Map<number, { id: number; data: string; lockedBy?: string }>();
+    const mockDb = new Map<
+      number,
+      { id: number; data: string; lockedBy?: string }
+    >();
 
     for (let i = 1; i <= totalRows; i++) {
       mockDb.set(i, { id: i, data: "v1_legacy" });
@@ -89,7 +95,11 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
       async (cursor, limit) => {
         const startId = cursor !== null ? Number(cursor) : 0;
         const rows: Array<{ id: number; data: string }> = [];
-        for (let id = startId + 1; id <= totalRows && rows.length < limit; id++) {
+        for (
+          let id = startId + 1;
+          id <= totalRows && rows.length < limit;
+          id++
+        ) {
           const row = mockDb.get(id);
           if (row) rows.push({ ...row });
         }
@@ -102,17 +112,24 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
           if (current?.lockedBy) {
             lockContentionResolved++;
             // Simulate lock timeout exception
-            throw new Error("lock timeout: could not obtain lock on row in table orders");
+            throw new Error(
+              "lock timeout: could not obtain lock on row in table orders",
+            );
           }
           if (current) {
-            current.data = current.data.includes("checkout") ? current.data : "v2_backfilled";
+            current.data = current.data.includes("checkout")
+              ? current.data
+              : "v2_backfilled";
           }
         }
         return { updatedCount: rows.length };
       },
     );
 
-    const [_, backfillProgress] = await Promise.all([liveTrafficPromise, backfillPromise]);
+    const [_, backfillProgress] = await Promise.all([
+      liveTrafficPromise,
+      backfillPromise,
+    ]);
 
     expect(backfillProgress.status).toBe("completed");
     expect(backfillProgress.rowsProcessed).toBe(totalRows);
@@ -122,7 +139,10 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
 
   it("supports pausing and resuming from saved cursor checkpoint", async () => {
     const totalRows = 300;
-    const store = Array.from({ length: totalRows }, (_, i) => ({ id: i + 1, processed: false }));
+    const store = Array.from({ length: totalRows }, (_, i) => ({
+      id: i + 1,
+      processed: false,
+    }));
 
     // Run first half and pause
     let batchCounter = 0;
@@ -141,7 +161,11 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
           // Trigger abort signal midway
           abortBackfill("test_resumable_job");
         }
-        return { rows: matching, nextCursor: matching.length > 0 ? matching[matching.length - 1].id : null };
+        return {
+          rows: matching,
+          nextCursor:
+            matching.length > 0 ? matching[matching.length - 1].id : null,
+        };
       },
       async (rows) => {
         for (const r of rows) store[r.id - 1].processed = true;
@@ -164,7 +188,11 @@ describe("Phase 8.2 — Background Data Backfill Workers", () => {
       async (cursor, limit) => {
         const startId = cursor !== null ? Number(cursor) : 0;
         const matching = store.filter((r) => r.id > startId).slice(0, limit);
-        return { rows: matching, nextCursor: matching.length > 0 ? matching[matching.length - 1].id : null };
+        return {
+          rows: matching,
+          nextCursor:
+            matching.length > 0 ? matching[matching.length - 1].id : null,
+        };
       },
       async (rows) => {
         for (const r of rows) store[r.id - 1].processed = true;

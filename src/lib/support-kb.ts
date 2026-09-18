@@ -10,7 +10,10 @@ export const OVERLAP_CHARS = 80;
 export type Chunk = { ordinal: number; body: string };
 
 export function chunkDocument(body: string): Chunk[] {
-  const clean = body.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+  const clean = body
+    .replace(/\r\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
   if (!clean) return [];
 
   const paragraphs = clean.split(/\n\n+/);
@@ -36,7 +39,9 @@ export function chunkDocument(body: string): Chunk[] {
   }
   push();
 
-  return chunks.filter(Boolean).map((value, ordinal) => ({ ordinal, body: value }));
+  return chunks
+    .filter(Boolean)
+    .map((value, ordinal) => ({ ordinal, body: value }));
 }
 
 /** Extractive snippet around the strongest query term, for the provenance card. */

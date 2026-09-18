@@ -33,9 +33,17 @@ describe("Phase 7.3 — field budgets", () => {
 describe("Phase 7.3 — transfer budgets", () => {
   it("holds a storefront route to 60KB CSS / 100KB JS gzipped", () => {
     expect(ASSET_BUDGET).toEqual({ cssGzBytes: 61440, jsGzBytes: 102400 });
-    const ok = checkAssetBudget({ route: "/store/x", cssGzBytes: 50_000, jsGzBytes: 90_000 });
+    const ok = checkAssetBudget({
+      route: "/store/x",
+      cssGzBytes: 50_000,
+      jsGzBytes: 90_000,
+    });
     expect(ok.ok).toBe(true);
-    const bad = checkAssetBudget({ route: "/store/x", cssGzBytes: 80_000, jsGzBytes: 200_000 });
+    const bad = checkAssetBudget({
+      route: "/store/x",
+      cssGzBytes: 80_000,
+      jsGzBytes: 200_000,
+    });
     expect(bad.ok).toBe(false);
     expect(bad.failures.map((f) => f.code)).toEqual(["asset:css", "asset:js"]);
   });
@@ -45,7 +53,10 @@ describe("Phase 7.3 — transfer budgets", () => {
   });
 
   it("the CI gate quotes the same numbers as the app", () => {
-    const script = readFileSync(new URL("../../scripts/perf-budget.mjs", import.meta.url), "utf8");
+    const script = readFileSync(
+      new URL("../../scripts/perf-budget.mjs", import.meta.url),
+      "utf8",
+    );
     expect(script).toContain("cssGzBytes: 60 * 1024");
     expect(script).toContain("jsGzBytes: 100 * 1024");
   });
@@ -53,13 +64,19 @@ describe("Phase 7.3 — transfer budgets", () => {
 
 describe("Phase 7.3 — third-party and merchant scripts", () => {
   it("fails any parser-blocking script regardless of size", () => {
-    const report = checkThirdPartyBudget([{ name: "pixel", gzBytes: 1_000, deferred: false }]);
+    const report = checkThirdPartyBudget([
+      { name: "pixel", gzBytes: 1_000, deferred: false },
+    ]);
     expect(report.ok).toBe(false);
     expect(report.failures[0]?.code).toBe("third_party:blocking");
   });
 
   it("caps the count and the combined weight", () => {
-    const many = Array.from({ length: 6 }, (_, i) => ({ name: `p${i}`, gzBytes: 9_000, deferred: true }));
+    const many = Array.from({ length: 6 }, (_, i) => ({
+      name: `p${i}`,
+      gzBytes: 9_000,
+      deferred: true,
+    }));
     const report = checkThirdPartyBudget(many);
     expect(report.failures.map((f) => f.code)).toContain("third_party:count");
     expect(report.failures.map((f) => f.code)).toContain("third_party:bytes");
@@ -75,7 +92,9 @@ describe("Phase 7.3 — third-party and merchant scripts", () => {
   });
 
   it("keeps merchant custom JS inside the third-party byte budget", () => {
-    expect(CUSTOM_CODE_LIMITS.js).toBeLessThan(THIRD_PARTY_BUDGET.scriptGzBytes);
+    expect(CUSTOM_CODE_LIMITS.js).toBeLessThan(
+      THIRD_PARTY_BUDGET.scriptGzBytes,
+    );
   });
 });
 
@@ -115,7 +134,10 @@ describe("Phase 7.3 — zero shift on locale switch", () => {
     expect(FONT_PRELOAD.stylesheet).toContain("Noto+Sans+Bengali");
     expect(FONT_PRELOAD.stylesheet).toContain("Inter");
     expect(FONT_PRELOAD.stylesheet).toContain("display=swap");
-    const root = readFileSync(new URL("../routes/__root.tsx", import.meta.url), "utf8");
+    const root = readFileSync(
+      new URL("../routes/__root.tsx", import.meta.url),
+      "utf8",
+    );
     expect(root).toContain('rel: "preload"');
     expect(root).toContain("FONT_PRELOAD.origins");
   });

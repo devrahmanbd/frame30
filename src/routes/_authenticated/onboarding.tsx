@@ -169,7 +169,9 @@ function Onboarding() {
           <button
             type="button"
             onClick={() =>
-              void supabase.auth.signOut().then(() => navigate({ to: "/auth", replace: true }))
+              void supabase.auth
+                .signOut()
+                .then(() => navigate({ to: "/auth", replace: true }))
             }
             className="rounded-fq-md border border-border px-4 py-2 text-sm"
           >
@@ -333,7 +335,9 @@ function Onboarding() {
                     <tr>
                       <td className="py-1 font-semibold text-primary">A</td>
                       <td className="py-1">@</td>
-                      <td className="py-1 text-foreground">{LIVE_EDGE_IPS[0]}</td>
+                      <td className="py-1 text-foreground">
+                        {LIVE_EDGE_IPS[0]}
+                      </td>
                     </tr>
                   </tbody>
                 </table>

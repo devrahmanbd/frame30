@@ -13,9 +13,17 @@ import { describe, expect, it, beforeEach } from "vitest";
 
 import { newSection, type Section, type ThemeAst } from "./builder-ast";
 import { collectWidgetRequests, type WidgetRow } from "./widget-data";
-import { clearLastGood, lastGoodRows, resolveWidgetData } from "./widget-data.server";
+import {
+  clearLastGood,
+  lastGoodRows,
+  resolveWidgetData,
+} from "./widget-data.server";
 import { cached, invalidate } from "./cache.server";
-import { parseCacheKey, storefrontCacheKey, tenantCachePrefix } from "./storefront-cache";
+import {
+  parseCacheKey,
+  storefrontCacheKey,
+  tenantCachePrefix,
+} from "./storefront-cache";
 import { hydrationMode } from "./widget-hydration";
 import { WIDGET_REGISTRY, WIDGET_TYPES } from "./widget-registry";
 
@@ -24,11 +32,16 @@ const OTHER = "merchant-other";
 
 function grid(props: Record<string, unknown> = {}): Section {
   const section = newSection("product_grid");
-  return { ...section, props: { ...section.props, ...props } as Section["props"] };
+  return {
+    ...section,
+    props: { ...section.props, ...props } as Section["props"],
+  };
 }
 const ast = (main: Section[]): ThemeAst => ({ header: [], main, footer: [] });
 
-const ROWS: WidgetRow[] = [{ id: "p1", title: "Kurta", href: "/products/kurta" }];
+const ROWS: WidgetRow[] = [
+  { id: "p1", title: "Kurta", href: "/products/kurta" },
+];
 
 describe("Phase 7 — resolver fail-safes", () => {
   beforeEach(() => clearLastGood());
@@ -55,7 +68,9 @@ describe("Phase 7 — resolver fail-safes", () => {
   it("serves last-good rows when the source throws, and never rejects", async () => {
     const bundle = collectWidgetRequests(ast([grid({ limit: 6 })]));
     const key = bundle.requests[0]!.key;
-    await resolveWidgetData(TENANT, bundle, { collection: async () => ({ [key]: ROWS }) });
+    await resolveWidgetData(TENANT, bundle, {
+      collection: async () => ({ [key]: ROWS }),
+    });
 
     const degraded = await resolveWidgetData(TENANT, bundle, {
       collection: async () => {
@@ -79,7 +94,9 @@ describe("Phase 7 — resolver fail-safes", () => {
   it("never lets one tenant's last-good payload leak into another's", async () => {
     const bundle = collectWidgetRequests(ast([grid({ limit: 12 })]));
     const key = bundle.requests[0]!.key;
-    await resolveWidgetData(TENANT, bundle, { collection: async () => ({ [key]: ROWS }) });
+    await resolveWidgetData(TENANT, bundle, {
+      collection: async () => ({ [key]: ROWS }),
+    });
 
     const other = await resolveWidgetData(OTHER, bundle, {
       collection: async () => {
@@ -107,17 +124,45 @@ describe("Phase 7 — storefront cache identity", () => {
     });
     // Any dimension changing must change the key.
     const dims = [
-      storefrontCacheKey({ merchantId: OTHER, template: "product", locale: "bn", themeVersion: "v-42" }),
-      storefrontCacheKey({ merchantId: TENANT, template: "index", locale: "bn", themeVersion: "v-42" }),
-      storefrontCacheKey({ merchantId: TENANT, template: "product", locale: "en", themeVersion: "v-42" }),
-      storefrontCacheKey({ merchantId: TENANT, template: "product", locale: "bn", themeVersion: "v-43" }),
+      storefrontCacheKey({
+        merchantId: OTHER,
+        template: "product",
+        locale: "bn",
+        themeVersion: "v-42",
+      }),
+      storefrontCacheKey({
+        merchantId: TENANT,
+        template: "index",
+        locale: "bn",
+        themeVersion: "v-42",
+      }),
+      storefrontCacheKey({
+        merchantId: TENANT,
+        template: "product",
+        locale: "en",
+        themeVersion: "v-42",
+      }),
+      storefrontCacheKey({
+        merchantId: TENANT,
+        template: "product",
+        locale: "bn",
+        themeVersion: "v-43",
+      }),
     ];
     expect(new Set([key, ...dims]).size).toBe(5);
   });
 
   it("a publish purge clears one merchant and leaves every other one warm", async () => {
-    const mine = storefrontCacheKey({ merchantId: TENANT, template: "index", themeVersion: "v1" });
-    const theirs = storefrontCacheKey({ merchantId: OTHER, template: "index", themeVersion: "v1" });
+    const mine = storefrontCacheKey({
+      merchantId: TENANT,
+      template: "index",
+      themeVersion: "v1",
+    });
+    const theirs = storefrontCacheKey({
+      merchantId: OTHER,
+      template: "index",
+      themeVersion: "v1",
+    });
     await cached(mine, 60, async () => "mine-v1");
     await cached(theirs, 60, async () => "theirs-v1");
 
@@ -131,18 +176,29 @@ describe("Phase 7 — storefront cache identity", () => {
 describe("Phase 7 — hydration policy audit", () => {
   it("assigns every registered widget exactly one mode", () => {
     for (const type of WIDGET_TYPES) {
-      expect(["static", "eager", "visible", "interaction"]).toContain(hydrationMode(type));
+      expect(["static", "eager", "visible", "interaction"]).toContain(
+        hydrationMode(type),
+      );
     }
   });
 
   it("keeps chrome eager, editorial static and overlays interaction", () => {
-    for (const type of ["announcement_bar", "account_cart", "add_to_cart"] as const) {
+    for (const type of [
+      "announcement_bar",
+      "account_cart",
+      "add_to_cart",
+    ] as const) {
       expect(hydrationMode(type), type).toBe("eager");
     }
     for (const type of ["rich_text", "heading", "image", "divider"] as const) {
       expect(hydrationMode(type), type).toBe("static");
     }
-    for (const type of ["cart_drawer", "size_guide", "quick_view", "facet_sidebar"] as const) {
+    for (const type of [
+      "cart_drawer",
+      "size_guide",
+      "quick_view",
+      "facet_sidebar",
+    ] as const) {
       expect(hydrationMode(type), type).toBe("interaction");
     }
   });
@@ -174,7 +230,10 @@ describe("Phase 7 — overlay invariants", () => {
   });
 
   it("OverlayHost owns focus trap, scroll lock, Escape and focus restore", () => {
-    const source = readFileSync(join(dir, "primitives/OverlayHost.tsx"), "utf8");
+    const source = readFileSync(
+      join(dir, "primitives/OverlayHost.tsx"),
+      "utf8",
+    );
     expect(source).toContain('aria-modal="true"');
     expect(source).toContain("document.body.style.overflow");
     expect(source).toContain('event.key === "Escape"');

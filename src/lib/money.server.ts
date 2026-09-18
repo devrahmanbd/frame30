@@ -17,10 +17,16 @@ type Client = SupabaseClient<Database>;
 type Loose = {
   from: (t: string) => {
     select: (c: string) => {
-      order: (c: string, o: { ascending: boolean }) => Promise<{ data: unknown }>;
+      order: (
+        c: string,
+        o: { ascending: boolean },
+      ) => Promise<{ data: unknown }>;
     };
   };
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 const loose = (db: Client) => db as unknown as Loose;
 
@@ -61,14 +67,23 @@ export async function loadMoneyDesk(db: Client, userId: string) {
           return null;
         }
       }),
-      loose(db).from("vat_rates").select("*").order("effective_year", { ascending: false }),
-      loose(db).from("fx_rates").select("*").order("effective_at", { ascending: false }),
+      loose(db)
+        .from("vat_rates")
+        .select("*")
+        .order("effective_year", { ascending: false }),
+      loose(db)
+        .from("fx_rates")
+        .select("*")
+        .order("effective_at", { ascending: false }),
     ]);
 
     const vatRows = ((vat.data ?? []) as VatCoverage[]).slice(0, 50);
     const year = legalYear();
     const currentYearCovered = vatRows.some(
-      (r) => r.country_code === "BD" && r.category === "standard" && r.effective_year <= year,
+      (r) =>
+        r.country_code === "BD" &&
+        r.category === "standard" &&
+        r.effective_year <= year,
     );
 
     const report = conformance ?? {

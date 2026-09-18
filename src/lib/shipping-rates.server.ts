@@ -31,7 +31,8 @@ export class ShippingError extends Error {
 }
 
 export type ZoneRow = Database["public"]["Tables"]["shipping_zones"]["Row"];
-export type RuleRow = Database["public"]["Tables"]["shipping_rate_rules"]["Row"];
+export type RuleRow =
+  Database["public"]["Tables"]["shipping_rate_rules"]["Row"];
 
 const CACHE_TTL_SECONDS = 60;
 const rateKey = (merchantId: string) => `shipping-rates:${merchantId}`;
@@ -65,7 +66,8 @@ function toRuleLike(row: RuleRow): RateRuleLike {
 
 /** A store with no zones still has to be able to sell, so seed a working table. */
 async function seedDefaults(merchantId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data: zones, error } = await supabaseAdmin
     .from("shipping_zones")
     .insert(
@@ -183,7 +185,8 @@ export async function persistQuote(
   args: QuoteArgs,
 ): Promise<{ quoteId: string | null; breakdown: QuoteBreakdown }> {
   const breakdown = await quote(supabase, merchantId, args);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("shipment_quotes")
     .insert({
@@ -195,7 +198,8 @@ export async function persistQuote(
       weight_grams: Math.max(0, Math.round(args.weightGrams)),
       amount_minor_int: breakdown.shippingMinorInt,
       cod_fee_minor_int: breakdown.codFeeMinorInt,
-      breakdown: breakdown as unknown as Database["public"]["Tables"]["shipment_quotes"]["Insert"]["breakdown"],
+      breakdown:
+        breakdown as unknown as Database["public"]["Tables"]["shipment_quotes"]["Insert"]["breakdown"],
       stale: breakdown.fallback,
     })
     .select("id")
@@ -218,25 +222,40 @@ export type ZoneInput = {
   priority: number;
 };
 
-export async function saveZone(supabase: Client, merchantId: string, input: ZoneInput) {
+export async function saveZone(
+  supabase: Client,
+  merchantId: string,
+  input: ZoneInput,
+) {
   const verdict = await rateLimit("shipping.zone_write", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.zone_write", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.zone_write", verdict.reset_at);
   if (!/^[a-z0-9_]{2,40}$/.test(input.code)) {
-    throw new ShippingError("zone_code_invalid", "Zone code must be lowercase letters, digits or _");
+    throw new ShippingError(
+      "zone_code_invalid",
+      "Zone code must be lowercase letters, digits or _",
+    );
   }
   const payload = {
     merchant_id: merchantId,
     code: input.code,
     name_en: input.nameEn.trim().slice(0, 80),
     name_bn: input.nameBn.trim().slice(0, 80),
-    districts: input.districts.map((d) => d.trim()).filter(Boolean).slice(0, 100),
+    districts: input.districts
+      .map((d) => d.trim())
+      .filter(Boolean)
+      .slice(0, 100),
     is_default: input.isDefault,
     enabled: input.enabled,
     priority: Math.max(1, Math.min(999, Math.round(input.priority))),
     updated_at: new Date().toISOString(),
   };
   const query = input.id
-    ? supabase.from("shipping_zones").update(payload).eq("id", input.id).eq("merchant_id", merchantId)
+    ? supabase
+        .from("shipping_zones")
+        .update(payload)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
     : supabase.from("shipping_zones").insert(payload);
   const { data, error } = await query.select("*").single();
   if (error) throw error;
@@ -258,14 +277,25 @@ export type RuleInput = {
   priority: number;
 };
 
-export async function saveRule(supabase: Client, merchantId: string, input: RuleInput) {
+export async function saveRule(
+  supabase: Client,
+  merchantId: string,
+  input: RuleInput,
+) {
   const verdict = await rateLimit("shipping.zone_write", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.zone_write", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.zone_write", verdict.reset_at);
   if (input.minWeightGrams >= input.maxWeightGrams) {
-    throw new ShippingError("rule_weight_invalid", "Maximum weight must exceed minimum weight");
+    throw new ShippingError(
+      "rule_weight_invalid",
+      "Maximum weight must exceed minimum weight",
+    );
   }
   if (input.baseMinorInt < 0 || input.perKgMinorInt < 0 || input.codFeeBp < 0) {
-    throw new ShippingError("rule_amount_invalid", "Amounts cannot be negative");
+    throw new ShippingError(
+      "rule_amount_invalid",
+      "Amounts cannot be negative",
+    );
   }
   const payload = {
     merchant_id: merchantId,
@@ -276,7 +306,10 @@ export async function saveRule(supabase: Client, merchantId: string, input: Rule
     base_minor_int: Math.round(input.baseMinorInt),
     per_kg_minor_int: Math.round(input.perKgMinorInt),
     cod_fee_bp: Math.min(2000, Math.round(input.codFeeBp)),
-    free_over_minor_int: input.freeOverMinorInt === null ? null : Math.round(input.freeOverMinorInt),
+    free_over_minor_int:
+      input.freeOverMinorInt === null
+        ? null
+        : Math.round(input.freeOverMinorInt),
     enabled: input.enabled,
     priority: Math.max(1, Math.min(999, Math.round(input.priority))),
     updated_at: new Date().toISOString(),
@@ -294,7 +327,11 @@ export async function saveRule(supabase: Client, merchantId: string, input: Rule
   return data;
 }
 
-export async function deleteRule(supabase: Client, merchantId: string, ruleId: string) {
+export async function deleteRule(
+  supabase: Client,
+  merchantId: string,
+  ruleId: string,
+) {
   const { error } = await supabase
     .from("shipping_rate_rules")
     .delete()

@@ -1,1 +1,367 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "label": "ad-fraud.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L1"}, {"id": "lib_ad_fraud_test_click", "label": "click()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L14"}, {"id": "lib_ad_fraud_test_result", "label": "result", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L40"}, {"id": "lib_ad_fraud_test_codes", "label": "codes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L92"}, {"id": "lib_ad_fraud_test_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L134"}, {"id": "lib_ad_fraud_test_row", "label": "row", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L144"}, {"id": "lib_ad_fraud_test_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L188"}, {"id": "lib_ad_fraud_test_summary", "label": "summary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L214"}, {"id": "lib_ad_fraud_test_scored", "label": "scored", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L229"}, {"id": "lib_ad_fraud_test_explained", "label": "explained", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L230"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "users_rahman_documents_frame30_src_lib_ad_fraud_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_campaignintegrity", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_explainsignals", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_integrityadvice", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_isadnetwork", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_scoreclick", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_scorevisitor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_summarizeintegrity", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_suspicious_threshold", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_clickinput", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_click", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_codes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L102", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L134", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_row", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_row", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_row", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L174", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_summary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L214", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_summary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_scored", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts", "target": "lib_ad_fraud_test_explained", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts", "source_location": "L230", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "label": "ad-fraud.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ad_fraud_test_click",
+      "label": "click()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_ad_fraud_test_result",
+      "label": "result",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_ad_fraud_test_codes",
+      "label": "codes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_ad_fraud_test_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L134"
+    },
+    {
+      "id": "lib_ad_fraud_test_row",
+      "label": "row",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "lib_ad_fraud_test_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L188"
+    },
+    {
+      "id": "lib_ad_fraud_test_summary",
+      "label": "summary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L214"
+    },
+    {
+      "id": "lib_ad_fraud_test_scored",
+      "label": "scored",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "lib_ad_fraud_test_explained",
+      "label": "explained",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L230"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ad_fraud_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_campaignintegrity",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_explainsignals",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_integrityadvice",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_isadnetwork",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_scoreclick",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_scorevisitor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_summarizeintegrity",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_suspicious_threshold",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_clickinput",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_click",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_codes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_summary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_summary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_scored",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ad_fraud_test_ts",
+      "target": "lib_ad_fraud_test_explained",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ad-fraud.test.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

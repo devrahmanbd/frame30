@@ -66,10 +66,18 @@ describe("auditDictionary — the shipped copy", () => {
   });
 
   it("keeps placeholder sets identical across locales (locale.placeholder-parity)", () => {
-    const parity = auditEntry("home.x", { en: "Save {count} items", bn: "সংরক্ষণ করুন" });
-    expect(parity.some((f) => f.rule === "locale.placeholder-parity")).toBe(true);
+    const parity = auditEntry("home.x", {
+      en: "Save {count} items",
+      bn: "সংরক্ষণ করুন",
+    });
+    expect(parity.some((f) => f.rule === "locale.placeholder-parity")).toBe(
+      true,
+    );
     const mismatched = Object.entries(dict)
-      .filter(([, v]) => placeholders(v.en).join("|") !== placeholders(v.bn).join("|"))
+      .filter(
+        ([, v]) =>
+          placeholders(v.en).join("|") !== placeholders(v.bn).join("|"),
+      )
       .map(([k]) => k);
     expect(mismatched).toEqual([]);
   });
@@ -80,20 +88,35 @@ describe("voice rules", () => {
 
   it("flags every banned hype word", () => {
     for (const phrase of BANNED_HYPE.slice(0, 8)) {
-      const found = auditEntry("home.x", { en: `We ${phrase} storefronts.`, bn: "বাংলা লেখা" });
-      expect(found.some((f) => f.rule === "voice.hype"), phrase).toBe(true);
+      const found = auditEntry("home.x", {
+        en: `We ${phrase} storefronts.`,
+        bn: "বাংলা লেখা",
+      });
+      expect(
+        found.some((f) => f.rule === "voice.hype"),
+        phrase,
+      ).toBe(true);
     }
   });
 
   it("flags unsupported claims", () => {
     for (const claim of FORBIDDEN_CLAIMS) {
-      const found = auditEntry("home.x", { en: `Checkout is ${claim} for everyone.`, bn: "বাংলা লেখা" });
-      expect(found.some((f) => f.rule === "voice.unsupported-claim"), claim).toBe(true);
+      const found = auditEntry("home.x", {
+        en: `Checkout is ${claim} for everyone.`,
+        bn: "বাংলা লেখা",
+      });
+      expect(
+        found.some((f) => f.rule === "voice.unsupported-claim"),
+        claim,
+      ).toBe(true);
     }
   });
 
   it("allows a weasel word only when a number shares the sentence", () => {
-    const vague = auditEntry("home.x", { en: "Checkout is faster now.", bn: "চেকআউট এখন দ্রুত।" });
+    const vague = auditEntry("home.x", {
+      en: "Checkout is faster now.",
+      bn: "চেকআউট এখন দ্রুত।",
+    });
     expect(vague.some((f) => f.rule === "voice.unquantified")).toBe(true);
 
     const measured = auditEntry("home.x", {
@@ -110,31 +133,55 @@ describe("voice rules", () => {
   });
 
   it("rejects exclamation marks in either locale", () => {
-    expect(auditEntry("home.x", { en: "Start today!", bn: "আজই শুরু করুন" }).some((f) => f.rule === "voice.exclamation")).toBe(true);
-    expect(auditEntry("home.x", { en: "Start today", bn: "আজই শুরু করুন!" }).some((f) => f.rule === "voice.exclamation")).toBe(true);
+    expect(
+      auditEntry("home.x", { en: "Start today!", bn: "আজই শুরু করুন" }).some(
+        (f) => f.rule === "voice.exclamation",
+      ),
+    ).toBe(true);
+    expect(
+      auditEntry("home.x", { en: "Start today", bn: "আজই শুরু করুন!" }).some(
+        (f) => f.rule === "voice.exclamation",
+      ),
+    ).toBe(true);
   });
 
   it("rejects placeholder copy that escaped review", () => {
     for (const junk of ["Lorem ipsum dolor", "TODO write this", "TBD"]) {
-      expect(auditEntry("home.x", { en: junk, bn: "বাংলা লেখা" }).some((f) => f.rule === "voice.placeholder-copy")).toBe(true);
+      expect(
+        auditEntry("home.x", { en: junk, bn: "বাংলা লেখা" }).some(
+          (f) => f.rule === "voice.placeholder-copy",
+        ),
+      ).toBe(true);
     }
   });
 
   it("flags Bangla transliteration where a Bangla word exists", () => {
     for (const rule of BANGLA_LINT.slice(0, 3)) {
       const found = auditEntry("home.x", bn(`আমরা ${rule.bad} সমর্থন করি`));
-      expect(found.some((f) => f.rule === "bangla.transliteration"), rule.bad).toBe(true);
+      expect(
+        found.some((f) => f.rule === "bangla.transliteration"),
+        rule.bad,
+      ).toBe(true);
     }
   });
 
   it("requires a currency token on BDT money", () => {
-    expect(moneyFindings("pricing.x", "Only Tk 1,200 a month", "en").some((f) => f.rule === "money.currency-token")).toBe(true);
+    expect(
+      moneyFindings("pricing.x", "Only Tk 1,200 a month", "en").some(
+        (f) => f.rule === "money.currency-token",
+      ),
+    ).toBe(true);
     expect(moneyFindings("pricing.x", "Only ৳1,200 a month", "en")).toEqual([]);
-    expect(moneyFindings("pricing.x", "Only BDT 1,200 a month", "en")).toEqual([]);
+    expect(moneyFindings("pricing.x", "Only BDT 1,200 a month", "en")).toEqual(
+      [],
+    );
   });
 
   it("caps label length but leaves prose alone", () => {
-    const label = auditEntry("common.some_button", { en: "x".repeat(COPY_LIMITS.buttonMaxChars + 1), bn: "বাংলা" });
+    const label = auditEntry("common.some_button", {
+      en: "x".repeat(COPY_LIMITS.buttonMaxChars + 1),
+      bn: "বাংলা",
+    });
     expect(label.some((f) => f.rule === "length.button")).toBe(true);
 
     const prose = auditEntry("common.error.thing", {
@@ -145,26 +192,45 @@ describe("voice rules", () => {
   });
 
   it("splits long sentences", () => {
-    const long = Array.from({ length: COPY_LIMITS.sentenceMaxWords + 5 }, () => "word").join(" ");
-    expect(auditEntry("home.x", { en: `${long}.`, bn: "বাংলা লেখা।" }).some((f) => f.rule === "length.sentence")).toBe(true);
+    const long = Array.from(
+      { length: COPY_LIMITS.sentenceMaxWords + 5 },
+      () => "word",
+    ).join(" ");
+    expect(
+      auditEntry("home.x", { en: `${long}.`, bn: "বাংলা লেখা।" }).some(
+        (f) => f.rule === "length.sentence",
+      ),
+    ).toBe(true);
   });
 
   it("enforces meta title and description limits", () => {
-    expect(auditMeta("x".repeat(COPY_LIMITS.metaTitleMaxChars + 1), "ok")).toHaveLength(1);
-    expect(auditMeta("ok", "x".repeat(COPY_LIMITS.metaDescriptionMaxChars + 1))).toHaveLength(1);
+    expect(
+      auditMeta("x".repeat(COPY_LIMITS.metaTitleMaxChars + 1), "ok"),
+    ).toHaveLength(1);
+    expect(
+      auditMeta("ok", "x".repeat(COPY_LIMITS.metaDescriptionMaxChars + 1)),
+    ).toHaveLength(1);
     expect(auditMeta("ok", "ok")).toEqual([]);
   });
 
   it("is deterministic and sorted by key", () => {
     const keys = auditDictionary(dict).map((f) => f.key);
-    expect(keys).toEqual([...keys].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
+    expect(keys).toEqual(
+      [...keys].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
+    );
     expect(auditDictionary(dict)).toEqual(auditDictionary(dict));
   });
 });
 
 describe("legal documents", () => {
   it("publishes the five documents the footer links to", () => {
-    expect(LEGAL_SLUGS).toEqual(["terms", "privacy", "refund", "cookies", "acceptable-use"]);
+    expect(LEGAL_SLUGS).toEqual([
+      "terms",
+      "privacy",
+      "refund",
+      "cookies",
+      "acceptable-use",
+    ]);
     expect(new Set(LEGAL_SLUGS).size).toBe(LEGAL_SLUGS.length);
   });
 
@@ -174,7 +240,9 @@ describe("legal documents", () => {
       expect(doc.effective, doc.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(Number.isNaN(Date.parse(doc.effective))).toBe(false);
     }
-    expect(legalLastUpdated()).toBe([...LEGAL_DOCS.map((d) => d.effective)].sort().at(-1));
+    expect(legalLastUpdated()).toBe(
+      [...LEGAL_DOCS.map((d) => d.effective)].sort().at(-1),
+    );
   });
 
   it("is bilingual all the way down, with unique section ids", () => {
@@ -187,8 +255,14 @@ describe("legal documents", () => {
       for (const section of doc.sections) {
         expect(section.heading.en.trim()).not.toBe("");
         expect(section.heading.bn.trim()).not.toBe("");
-        expect(section.body.en.length, `${doc.slug}/${section.id}`).toBeGreaterThan(0);
-        expect(section.body.bn.length, `${doc.slug}/${section.id}`).toBeGreaterThan(0);
+        expect(
+          section.body.en.length,
+          `${doc.slug}/${section.id}`,
+        ).toBeGreaterThan(0);
+        expect(
+          section.body.bn.length,
+          `${doc.slug}/${section.id}`,
+        ).toBeGreaterThan(0);
         for (const paragraph of [...section.body.en, ...section.body.bn]) {
           expect(paragraph.trim().length).toBeGreaterThan(20);
         }

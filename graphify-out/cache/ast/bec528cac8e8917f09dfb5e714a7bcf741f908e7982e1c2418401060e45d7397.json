@@ -1,1 +1,817 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_structured_data_ts", "label": "structured-data.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L1"}, {"id": "lib_structured_data_jsonldnode", "label": "JsonLdNode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L16"}, {"id": "lib_structured_data_str", "label": "str()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L20"}, {"id": "lib_structured_data_item_conditions", "label": "ITEM_CONDITIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L24"}, {"id": "lib_structured_data_itemcondition", "label": "ItemCondition", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L29"}, {"id": "lib_structured_data_reviewinput", "label": "ReviewInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L31"}, {"id": "lib_structured_data_ratingsummary", "label": "RatingSummary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L39"}, {"id": "lib_structured_data_aggregaterating", "label": "aggregateRating()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L46"}, {"id": "lib_structured_data_reviewnodes", "label": "reviewNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L60"}, {"id": "lib_structured_data_returnpolicyinput", "label": "ReturnPolicyInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L74"}, {"id": "lib_structured_data_returnpolicynode", "label": "returnPolicyNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L83"}, {"id": "lib_structured_data_shippinginput", "label": "ShippingInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L97"}, {"id": "lib_structured_data_shippingdetailsnode", "label": "shippingDetailsNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L110"}, {"id": "lib_structured_data_numbered", "label": "numbered()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L139"}, {"id": "lib_structured_data_jsonld_singletons", "label": "JSONLD_SINGLETONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L153"}, {"id": "lib_structured_data_ldcontext", "label": "LdContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L162"}, {"id": "lib_structured_data_sectionjsonld", "label": "sectionJsonLd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L173"}, {"id": "lib_structured_data_collectjsonld", "label": "collectJsonLd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L283"}, {"id": "lib_structured_data_astjsonld", "label": "astJsonLd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L300"}, {"id": "lib_structured_data_required", "label": "REQUIRED", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L312"}, {"id": "lib_structured_data_missing", "label": "missing()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L328"}, {"id": "lib_structured_data_jsonldissues", "label": "jsonLdIssues()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L344"}, {"id": "lib_structured_data_graphissues", "label": "graphIssues()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L401"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "users_rahman_documents_frame30_src_lib_seo_answers_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_seo_answers_authorjsonld", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_jsonldnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_str", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_item_conditions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_itemcondition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_reviewinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_ratingsummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_aggregaterating", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_reviewnodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_returnpolicyinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_returnpolicynode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_shippinginput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_shippingdetailsnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_numbered", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_jsonld_singletons", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_ldcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_sectionjsonld", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_collectjsonld", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L283", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_astjsonld", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L300", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_required", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L312", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_missing", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L328", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_jsonldissues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L344", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_structured_data_ts", "target": "lib_structured_data_graphissues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L401", "weight": 1.0}, {"source": "lib_structured_data_sectionjsonld", "target": "lib_structured_data_numbered", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L178", "weight": 1.0}, {"source": "lib_structured_data_sectionjsonld", "target": "lib_structured_data_str", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L194", "weight": 1.0}, {"source": "lib_structured_data_collectjsonld", "target": "lib_structured_data_sectionjsonld", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L287", "weight": 1.0}, {"source": "lib_structured_data_astjsonld", "target": "lib_structured_data_collectjsonld", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L306", "weight": 1.0}, {"source": "lib_structured_data_jsonldissues", "target": "lib_structured_data_missing", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L363", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_structured_data_str", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L20"}, {"caller_nid": "lib_structured_data_aggregaterating", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L47"}, {"caller_nid": "lib_structured_data_aggregaterating", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L49"}, {"caller_nid": "lib_structured_data_aggregaterating", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L52"}, {"caller_nid": "lib_structured_data_aggregaterating", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L52"}, {"caller_nid": "lib_structured_data_reviewnodes", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L61"}, {"caller_nid": "lib_structured_data_reviewnodes", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L61"}, {"caller_nid": "lib_structured_data_reviewnodes", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L61"}, {"caller_nid": "lib_structured_data_returnpolicynode", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L84"}, {"caller_nid": "lib_structured_data_returnpolicynode", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L85"}, {"caller_nid": "lib_structured_data_shippingdetailsnode", "callee": "priceString", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L117"}, {"caller_nid": "lib_structured_data_shippingdetailsnode", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L117"}, {"caller_nid": "lib_structured_data_shippingdetailsnode", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L117"}, {"caller_nid": "lib_structured_data_shippingdetailsnode", "callee": "priceString", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L130"}, {"caller_nid": "lib_structured_data_numbered", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L142"}, {"caller_nid": "lib_structured_data_numbered", "callee": "every", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L143"}, {"caller_nid": "lib_structured_data_numbered", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L143"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L183"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L200"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L206"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L220"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "authorJsonLd", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L228"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "authorJsonLd", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L242"}, {"caller_nid": "lib_structured_data_sectionjsonld", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L248"}, {"caller_nid": "lib_structured_data_collectjsonld", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L289"}, {"caller_nid": "lib_structured_data_collectjsonld", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L290"}, {"caller_nid": "lib_structured_data_collectjsonld", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L291"}, {"caller_nid": "lib_structured_data_collectjsonld", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L292"}, {"caller_nid": "lib_structured_data_collectjsonld", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L294"}, {"caller_nid": "lib_structured_data_astjsonld", "callee": "flatten", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L306"}, {"caller_nid": "lib_structured_data_missing", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L330"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L351"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L352"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L354"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L355"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L358"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L360"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L364"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L369"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L372"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L373"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L377"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L378"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L379"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L381"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L382"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L387"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L389"}, {"caller_nid": "lib_structured_data_jsonldissues", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L390"}, {"caller_nid": "lib_structured_data_graphissues", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts", "source_location": "L402"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "label": "structured-data.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_structured_data_jsonldnode",
+      "label": "JsonLdNode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_structured_data_str",
+      "label": "str()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_structured_data_item_conditions",
+      "label": "ITEM_CONDITIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_structured_data_itemcondition",
+      "label": "ItemCondition",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_structured_data_reviewinput",
+      "label": "ReviewInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_structured_data_ratingsummary",
+      "label": "RatingSummary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_structured_data_aggregaterating",
+      "label": "aggregateRating()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "lib_structured_data_reviewnodes",
+      "label": "reviewNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_structured_data_returnpolicyinput",
+      "label": "ReturnPolicyInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_structured_data_returnpolicynode",
+      "label": "returnPolicyNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_structured_data_shippinginput",
+      "label": "ShippingInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "lib_structured_data_shippingdetailsnode",
+      "label": "shippingDetailsNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_structured_data_numbered",
+      "label": "numbered()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "lib_structured_data_jsonld_singletons",
+      "label": "JSONLD_SINGLETONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "lib_structured_data_ldcontext",
+      "label": "LdContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "lib_structured_data_sectionjsonld",
+      "label": "sectionJsonLd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "lib_structured_data_collectjsonld",
+      "label": "collectJsonLd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L283"
+    },
+    {
+      "id": "lib_structured_data_astjsonld",
+      "label": "astJsonLd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L300"
+    },
+    {
+      "id": "lib_structured_data_required",
+      "label": "REQUIRED",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L312"
+    },
+    {
+      "id": "lib_structured_data_missing",
+      "label": "missing()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L328"
+    },
+    {
+      "id": "lib_structured_data_jsonldissues",
+      "label": "jsonLdIssues()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L344"
+    },
+    {
+      "id": "lib_structured_data_graphissues",
+      "label": "graphIssues()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L401"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_answers_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_seo_answers_authorjsonld",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_jsonldnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_str",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_item_conditions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_itemcondition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_reviewinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_ratingsummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_aggregaterating",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_reviewnodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_returnpolicyinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_returnpolicynode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_shippinginput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_shippingdetailsnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_numbered",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_jsonld_singletons",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_ldcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_sectionjsonld",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_collectjsonld",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L283",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_astjsonld",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_required",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_missing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_jsonldissues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L344",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_structured_data_ts",
+      "target": "lib_structured_data_graphissues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L401",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_structured_data_sectionjsonld",
+      "target": "lib_structured_data_numbered",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_structured_data_sectionjsonld",
+      "target": "lib_structured_data_str",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_structured_data_collectjsonld",
+      "target": "lib_structured_data_sectionjsonld",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_structured_data_astjsonld",
+      "target": "lib_structured_data_collectjsonld",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_structured_data_jsonldissues",
+      "target": "lib_structured_data_missing",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L363",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_structured_data_str",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "lib_structured_data_aggregaterating",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_structured_data_aggregaterating",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_structured_data_aggregaterating",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "lib_structured_data_aggregaterating",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "lib_structured_data_reviewnodes",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_structured_data_reviewnodes",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_structured_data_reviewnodes",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_structured_data_returnpolicynode",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_structured_data_returnpolicynode",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_structured_data_shippingdetailsnode",
+      "callee": "priceString",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_structured_data_shippingdetailsnode",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_structured_data_shippingdetailsnode",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_structured_data_shippingdetailsnode",
+      "callee": "priceString",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_structured_data_numbered",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_structured_data_numbered",
+      "callee": "every",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_structured_data_numbered",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L200"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "authorJsonLd",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "authorJsonLd",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L242"
+    },
+    {
+      "caller_nid": "lib_structured_data_sectionjsonld",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "lib_structured_data_collectjsonld",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_structured_data_collectjsonld",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_structured_data_collectjsonld",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L291"
+    },
+    {
+      "caller_nid": "lib_structured_data_collectjsonld",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L292"
+    },
+    {
+      "caller_nid": "lib_structured_data_collectjsonld",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_structured_data_astjsonld",
+      "callee": "flatten",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "lib_structured_data_missing",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L351"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L354"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L355"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L358"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L360"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L364"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L369"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L377"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L378"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L379"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L381"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_structured_data_jsonldissues",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L390"
+    },
+    {
+      "caller_nid": "lib_structured_data_graphissues",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/structured-data.ts",
+      "source_location": "L402"
+    }
+  ]
+}

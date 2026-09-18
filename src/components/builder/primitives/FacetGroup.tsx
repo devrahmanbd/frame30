@@ -32,7 +32,9 @@ export function FacetGroup({
   return (
     <Disclosure summary={title} defaultOpen={defaultOpen} tone="card">
       {options.length === 0 ? (
-        <p className="py-2 text-sm text-muted-foreground">{emptyText ?? "No options"}</p>
+        <p className="py-2 text-sm text-muted-foreground">
+          {emptyText ?? "No options"}
+        </p>
       ) : (
         <ul className="m-0 list-none space-y-1 p-0">
           {options.map((option) => (
@@ -49,12 +51,16 @@ export function FacetGroup({
                     : undefined
                 }
                 className={`flex min-h-11 items-center justify-between gap-3 rounded-fq-md px-2 py-2 text-sm ${
-                  option.active ? "bg-secondary font-medium text-secondary-foreground" : "text-foreground"
+                  option.active
+                    ? "bg-secondary font-medium text-secondary-foreground"
+                    : "text-foreground"
                 }`}
               >
                 <span className="min-w-0 break-words">{option.label}</span>
                 {typeof option.count === "number" && (
-                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{option.count}</span>
+                  <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                    {option.count}
+                  </span>
                 )}
               </a>
             </li>

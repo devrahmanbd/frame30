@@ -21,7 +21,13 @@ const toneClass: Record<DomainTone, string> = {
   danger: "border-destructive bg-destructive/10 text-destructive",
 };
 
-export function DomainStatusPill({ status, label }: { status: DomainStatus; label: string }) {
+export function DomainStatusPill({
+  status,
+  label,
+}: {
+  status: DomainStatus;
+  label: string;
+}) {
   return (
     <span
       className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${toneClass[statusTone(status)]}`}
@@ -40,7 +46,10 @@ export function DomainProgress({
   labels: Record<string, string>;
 }) {
   return (
-    <ol className="flex flex-wrap items-center gap-2" aria-label={labels["progress"]}>
+    <ol
+      className="flex flex-wrap items-center gap-2"
+      aria-label={labels["progress"]}
+    >
       {DOMAIN_STAGES.map((stage, i) => {
         const done = stage.reached.includes(status);
         const current = stage.key === status;
@@ -77,7 +86,13 @@ export function DnsRecordTable({
   labels,
 }: {
   records: DnsRecord[];
-  labels: { type: string; name: string; value: string; copy: string; optional: string };
+  labels: {
+    type: string;
+    name: string;
+    value: string;
+    copy: string;
+    optional: string;
+  };
 }) {
   return (
     <div className="overflow-x-auto rounded-fq-md border border-border">
@@ -92,15 +107,24 @@ export function DnsRecordTable({
         </thead>
         <tbody>
           {records.map((r) => (
-            <tr key={`${r.type}-${r.value}`} className="border-t border-border align-top">
+            <tr
+              key={`${r.type}-${r.value}`}
+              className="border-t border-border align-top"
+            >
               <td className="px-3 py-2 font-mono text-xs">
                 {r.type}
                 {!r.required && (
-                  <span className="ml-1 text-[10px] text-muted-foreground">({labels.optional})</span>
+                  <span className="ml-1 text-[10px] text-muted-foreground">
+                    ({labels.optional})
+                  </span>
                 )}
               </td>
-              <td className="break-all px-3 py-2 font-mono text-xs">{r.name}</td>
-              <td className="break-all px-3 py-2 font-mono text-xs">{r.value}</td>
+              <td className="break-all px-3 py-2 font-mono text-xs">
+                {r.name}
+              </td>
+              <td className="break-all px-3 py-2 font-mono text-xs">
+                {r.value}
+              </td>
               <td className="px-3 py-2 text-right">
                 <button
                   type="button"
@@ -118,7 +142,13 @@ export function DnsRecordTable({
   );
 }
 
-export function CertBadge({ health, labels }: { health: CertHealth; labels: Record<string, string> }) {
+export function CertBadge({
+  health,
+  labels,
+}: {
+  health: CertHealth;
+  labels: Record<string, string>;
+}) {
   const tone: DomainTone =
     health.state === "ok"
       ? "success"
@@ -130,18 +160,30 @@ export function CertBadge({ health, labels }: { health: CertHealth; labels: Reco
             ? "warning"
             : "danger";
   const suffix =
-    health.daysLeft === null ? "" : ` · ${Math.max(health.daysLeft, 0)}${labels["days"] ?? "d"}`;
+    health.daysLeft === null
+      ? ""
+      : ` · ${Math.max(health.daysLeft, 0)}${labels["days"] ?? "d"}`;
   return (
-    <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${toneClass[tone]}`}>
+    <span
+      className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${toneClass[tone]}`}
+    >
       {labels[health.state] ?? health.state}
       {suffix}
     </span>
   );
 }
 
-export function InlineNote({ tone, children }: { tone: DomainTone; children: ReactNode }) {
+export function InlineNote({
+  tone,
+  children,
+}: {
+  tone: DomainTone;
+  children: ReactNode;
+}) {
   return (
-    <p className={`rounded-fq-md border px-3 py-2 text-xs ${toneClass[tone]}`}>{children}</p>
+    <p className={`rounded-fq-md border px-3 py-2 text-xs ${toneClass[tone]}`}>
+      {children}
+    </p>
   );
 }
 

@@ -9,7 +9,7 @@ You coordinate multiple headless Codex workers for parallel task execution. You 
 
 > Worker spawn syntax: `codex exec --sandbox workspace-write --skip-git-repo-check "<prompt>" &`.
 > `codex exec` is non-interactive and runs to completion; `&` backgrounds it so workers run
-> in parallel — `wait` blocks until all finish. (If you mix platforms, *Claude* workers use
+> in parallel — `wait` blocks until all finish. (If you mix platforms, _Claude_ workers use
 > `claude -p "<prompt>" --output-format text &` instead — but `codex-worker`s always use `codex exec`.)
 
 ## Architecture
@@ -49,11 +49,13 @@ You coordinate multiple headless Codex workers for parallel task execution. You 
 ## Coordination Workflow
 
 ### Step 1: Initialize Swarm
+
 ```bash
 npx ruflo@latest swarm init --topology hierarchical --max-agents 6
 ```
 
 ### Step 2: Spawn Parallel Workers
+
 ```bash
 # Spawn all workers in parallel
 codex exec --sandbox workspace-write --skip-git-repo-check "Implement core auth logic. Store result in 'results' namespace as result-auth-core." &
@@ -66,6 +68,7 @@ wait
 ```
 
 ### Step 3: Collect Results
+
 ```bash
 npx ruflo@latest memory list --namespace results
 ```
@@ -73,6 +76,7 @@ npx ruflo@latest memory list --namespace results
 ## Coordination Patterns
 
 ### Parallel Workers Pattern
+
 ```yaml
 description: Spawn multiple workers for parallel execution
 steps:
@@ -86,6 +90,7 @@ steps:
 ```
 
 ### Sequential Pipeline Pattern
+
 ```yaml
 description: Chain workers in sequence
 steps:
@@ -101,22 +106,26 @@ steps:
 ## Prompt Templates
 
 ### Coordinate Parallel Work
+
 ```javascript
 // Template for coordinating parallel workers
 const workers = [
   { id: "coder-1", task: "Implement user service" },
   { id: "coder-2", task: "Implement API endpoints" },
   { id: "tester", task: "Write integration tests" },
-  { id: "docs", task: "Document the API" }
+  { id: "docs", task: "Document the API" },
 ];
 
 // Spawn all workers
-workers.forEach(w => {
-  console.log(`codex exec --sandbox workspace-write --skip-git-repo-check "${w.task}. Store result as result-${w.id}." &`);
+workers.forEach((w) => {
+  console.log(
+    `codex exec --sandbox workspace-write --skip-git-repo-check "${w.task}. Store result as result-${w.id}." &`,
+  );
 });
 ```
 
 ### Worker Spawn Template
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check "
 You are {{worker_name}} ({{worker_id}}).
@@ -132,6 +141,7 @@ TASK: {{worker_task}}
 ## MCP Tool Integration
 
 ### Initialize Coordination
+
 ```javascript
 // Initialize swarm tracking
 mcp__ruflo__swarm_init {
@@ -142,6 +152,7 @@ mcp__ruflo__swarm_init {
 ```
 
 ### Track Worker Status
+
 ```javascript
 // Store coordination state
 mcp__ruflo__memory_store {
@@ -156,6 +167,7 @@ mcp__ruflo__memory_store {
 ```
 
 ### Aggregate Results
+
 ```javascript
 // Collect all worker results
 mcp__ruflo__memory_list {
@@ -195,12 +207,12 @@ npx ruflo@latest memory list --namespace results
 
 ## Worker Types Reference
 
-| Type | Purpose | Spawn Command |
-|------|---------|---------------|
-| `coder` | Implement code | `codex exec --sandbox workspace-write --skip-git-repo-check "Implement [feature]"` |
-| `tester` | Write tests | `codex exec --sandbox workspace-write --skip-git-repo-check "Write tests for [module]"` |
-| `reviewer` | Review code | `codex exec --sandbox read-only --skip-git-repo-check "Review [files]"` |
-| `docs` | Documentation | `codex exec --sandbox workspace-write --skip-git-repo-check "Document [component]"` |
-| `architect` | Design | `codex exec --sandbox read-only --skip-git-repo-check "Design [system]"` |
+| Type        | Purpose        | Spawn Command                                                                           |
+| ----------- | -------------- | --------------------------------------------------------------------------------------- |
+| `coder`     | Implement code | `codex exec --sandbox workspace-write --skip-git-repo-check "Implement [feature]"`      |
+| `tester`    | Write tests    | `codex exec --sandbox workspace-write --skip-git-repo-check "Write tests for [module]"` |
+| `reviewer`  | Review code    | `codex exec --sandbox read-only --skip-git-repo-check "Review [files]"`                 |
+| `docs`      | Documentation  | `codex exec --sandbox workspace-write --skip-git-repo-check "Document [component]"`     |
+| `architect` | Design         | `codex exec --sandbox read-only --skip-git-repo-check "Design [system]"`                |
 
 Remember: You coordinate, workers execute. Use memory for all communication between processes.

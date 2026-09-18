@@ -69,7 +69,9 @@ export type GrowthSettings = {
   affiliate: AffiliateTerms;
 };
 
-function normalizeReferral(input: Partial<ReferralPolicy> | null | undefined): ReferralPolicy {
+function normalizeReferral(
+  input: Partial<ReferralPolicy> | null | undefined,
+): ReferralPolicy {
   const p = { ...DEFAULT_REFERRAL, ...(input ?? {}) };
   return {
     refereeDiscountMinor: Math.max(0, Math.trunc(p.refereeDiscountMinor)),
@@ -80,8 +82,9 @@ function normalizeReferral(input: Partial<ReferralPolicy> | null | undefined): R
   };
 }
 
-
-function normalizeAffiliate(input: Partial<AffiliateTerms> | null | undefined): AffiliateTerms {
+function normalizeAffiliate(
+  input: Partial<AffiliateTerms> | null | undefined,
+): AffiliateTerms {
   const t = { ...DEFAULT_AFFILIATE, ...(input ?? {}) };
   return {
     commissionBps: Math.min(5000, Math.max(0, Math.trunc(t.commissionBps))),
@@ -93,21 +96,31 @@ function normalizeAffiliate(input: Partial<AffiliateTerms> | null | undefined): 
   };
 }
 
-export async function loadSettings(db: Client, merchantId: string): Promise<GrowthSettings> {
+export async function loadSettings(
+  db: Client,
+  merchantId: string,
+): Promise<GrowthSettings> {
   const { data, error } = await db
     .from("growth_settings")
     .select("*")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (error) fail("settings_unavailable", "Growth settings are temporarily unavailable");
+  if (error)
+    fail("settings_unavailable", "Growth settings are temporarily unavailable");
   return {
     merchantId,
     loyaltyEnabled: data?.loyalty_enabled ?? false,
-    loyalty: normalizeProgram((data?.loyalty_program ?? null) as Partial<LoyaltyProgram> | null),
+    loyalty: normalizeProgram(
+      (data?.loyalty_program ?? null) as Partial<LoyaltyProgram> | null,
+    ),
     referralEnabled: data?.referral_enabled ?? false,
-    referral: normalizeReferral((data?.referral_policy ?? null) as Partial<ReferralPolicy> | null),
+    referral: normalizeReferral(
+      (data?.referral_policy ?? null) as Partial<ReferralPolicy> | null,
+    ),
     affiliateEnabled: data?.affiliate_enabled ?? false,
-    affiliate: normalizeAffiliate((data?.affiliate_terms ?? null) as Partial<AffiliateTerms> | null),
+    affiliate: normalizeAffiliate(
+      (data?.affiliate_terms ?? null) as Partial<AffiliateTerms> | null,
+    ),
   };
 }
 
@@ -131,12 +144,19 @@ export async function saveSettings(
     loyaltyEnabled: input.loyaltyEnabled ?? before.loyaltyEnabled,
     loyalty: normalizeProgram({ ...before.loyalty, ...(input.loyalty ?? {}) }),
     referralEnabled: input.referralEnabled ?? before.referralEnabled,
-    referral: normalizeReferral({ ...before.referral, ...(input.referral ?? {}) }),
+    referral: normalizeReferral({
+      ...before.referral,
+      ...(input.referral ?? {}),
+    }),
     affiliateEnabled: input.affiliateEnabled ?? before.affiliateEnabled,
-    affiliate: normalizeAffiliate({ ...before.affiliate, ...(input.affiliate ?? {}) }),
+    affiliate: normalizeAffiliate({
+      ...before.affiliate,
+      ...(input.affiliate ?? {}),
+    }),
   };
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const { error } = await admin.from("growth_settings").upsert(
     {
@@ -169,7 +189,11 @@ export async function audit(
   actor: string,
   action: string,
   subjectId: string | null,
-  states: { before?: Record<string, unknown> | null; after?: Record<string, unknown> | null; reason?: string },
+  states: {
+    before?: Record<string, unknown> | null;
+    after?: Record<string, unknown> | null;
+    reason?: string;
+  },
 ) {
   await admin.from("growth_audit").insert({
     merchant_id: merchantId,
@@ -190,10 +214,16 @@ const REF_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 /** Referral codes are read aloud and typed by hand, so ambiguous glyphs are out. */
 export function generateReferralCode() {
   const bytes = crypto.getRandomValues(new Uint8Array(8));
-  return Array.from(bytes, (b) => REF_ALPHABET[b % REF_ALPHABET.length]).join("");
+  return Array.from(bytes, (b) => REF_ALPHABET[b % REF_ALPHABET.length]).join(
+    "",
+  );
 }
 
-async function ensureAccount(admin: Client, merchantId: string, customerId: string) {
+async function ensureAccount(
+  admin: Client,
+  merchantId: string,
+  customerId: string,
+) {
   const { data: existing } = await admin
     .from("loyalty_accounts")
     .select("*")
@@ -207,7 +237,11 @@ async function ensureAccount(admin: Client, merchantId: string, customerId: stri
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const { data, error } = await admin
       .from("loyalty_accounts")
-      .insert({ merchant_id: merchantId, customer_id: customerId, referral_code: generateReferralCode() })
+      .insert({
+        merchant_id: merchantId,
+        customer_id: customerId,
+        referral_code: generateReferralCode(),
+      })
       .select("*")
       .maybeSingle();
     if (data) return data;
@@ -267,10 +301,18 @@ async function refreshBalance(admin: Client, accountId: string) {
     })
     .eq("id", accountId);
 
-  return { available: Math.max(0, available), pending: Math.max(0, pending), tier };
+  return {
+    available: Math.max(0, available),
+    pending: Math.max(0, pending),
+    tier,
+  };
 }
 
-export async function customerSummary(db: Client, merchantId: string, customerId: string) {
+export async function customerSummary(
+  db: Client,
+  merchantId: string,
+  customerId: string,
+) {
   await enforceRateLimit("growth.read", `${merchantId}:${customerId}`);
   const settings = await loadSettings(db, merchantId);
   const { data: account } = await db
@@ -284,14 +326,23 @@ export async function customerSummary(db: Client, merchantId: string, customerId
       enabled: settings.loyaltyEnabled,
       program: settings.loyalty,
       account: null,
-      balance: { pending: 0, available: 0, spent: 0, expired: 0, expiringSoon: 0, lifetime: 0 },
+      balance: {
+        pending: 0,
+        available: 0,
+        spent: 0,
+        expired: 0,
+        expiringSoon: 0,
+        lifetime: 0,
+      },
       progress: tierProgress(0),
       entries: [],
     };
   }
   const { data: entries } = await db
     .from("loyalty_ledger")
-    .select("id, kind, points, remaining_points, state, expires_at, note, created_at")
+    .select(
+      "id, kind, points, remaining_points, state, expires_at, note, created_at",
+    )
     .eq("account_id", account.id)
     .order("created_at", { ascending: false })
     .limit(100);
@@ -303,7 +354,8 @@ export async function customerSummary(db: Client, merchantId: string, customerId
     balance: summarizeLedger(
       (entries ?? []).map((e) => ({
         points: e.state === "available" ? e.remaining_points : e.points,
-        state: e.state as "available" | "expired" | "pending" | "revoked" | "spent",
+        state: e.state as
+          "available" | "expired" | "pending" | "revoked" | "spent",
         expiresAt: e.expires_at,
       })),
     ),
@@ -335,9 +387,11 @@ export async function earnForOrder(
   return withSpan("loyalty.earn", async () => {
     await enforceRateLimit("loyalty.earn", merchantId);
     const settings = await loadSettings(db, merchantId);
-    if (!settings.loyaltyEnabled) return { granted: 0, skipped: "disabled" as const };
+    if (!settings.loyaltyEnabled)
+      return { granted: 0, skipped: "disabled" as const };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const { data: replay } = await admin
@@ -353,7 +407,10 @@ export async function earnForOrder(
     }
 
     const account = await ensureAccount(admin, merchantId, input.customerId);
-    const result = earnPoints(settings.loyalty, { ...input, lifetimeNetMinor: account.lifetime_net_minor });
+    const result = earnPoints(settings.loyalty, {
+      ...input,
+      lifetimeNetMinor: account.lifetime_net_minor,
+    });
     const netMinor = account.lifetime_net_minor + result.qualifyingMinor;
 
     if (result.points > 0) {
@@ -367,7 +424,10 @@ export async function earnForOrder(
         state: holdDays > 0 ? "pending" : "available",
         order_id: input.orderId,
         matures_at: holdDays > 0 ? daysFromNow(holdDays) : null,
-        expires_at: settings.loyalty.expiryDays > 0 ? daysFromNow(settings.loyalty.expiryDays) : null,
+        expires_at:
+          settings.loyalty.expiryDays > 0
+            ? daysFromNow(settings.loyalty.expiryDays)
+            : null,
         actor: "system",
         note: `Order reward at ${result.multiplier}x (${result.tier})`,
       });
@@ -427,7 +487,11 @@ export async function maturePoints(admin: Client, limit = 500) {
   for (const accountId of touched) await refreshBalance(admin, accountId);
   incr("loyalty.matured", {}, pending?.length ?? 0);
   incr("loyalty.expired", {}, expiring?.length ?? 0);
-  return { matured: pending?.length ?? 0, expired: expiring?.length ?? 0, accounts: touched.size };
+  return {
+    matured: pending?.length ?? 0,
+    expired: expiring?.length ?? 0,
+    accounts: touched.size,
+  };
 }
 
 /* ------------------------------------------------------------------ redemption */
@@ -435,18 +499,25 @@ export async function maturePoints(admin: Client, limit = 500) {
 export async function quoteForOrder(
   db: Client,
   merchantId: string,
-  args: { customerId: string; orderTotalMinor: number; requestedPoints?: number },
+  args: {
+    customerId: string;
+    orderTotalMinor: number;
+    requestedPoints?: number;
+  },
 ) {
   const settings = await loadSettings(db, merchantId);
-  if (!settings.loyaltyEnabled) return { points: 0, discountMinor: 0, maxPoints: 0, reason: "disabled" };
+  if (!settings.loyaltyEnabled)
+    return { points: 0, discountMinor: 0, maxPoints: 0, reason: "disabled" };
   const { data: account } = await db
     .from("loyalty_accounts")
     .select("available_points, blocked_at")
     .eq("merchant_id", merchantId)
     .eq("customer_id", args.customerId)
     .maybeSingle();
-  if (!account) return { points: 0, discountMinor: 0, maxPoints: 0, reason: "no_account" };
-  if (account.blocked_at) return { points: 0, discountMinor: 0, maxPoints: 0, reason: "blocked" };
+  if (!account)
+    return { points: 0, discountMinor: 0, maxPoints: 0, reason: "no_account" };
+  if (account.blocked_at)
+    return { points: 0, discountMinor: 0, maxPoints: 0, reason: "blocked" };
   return quoteRedemption(settings.loyalty, {
     balancePoints: account.available_points,
     orderTotalMinor: args.orderTotalMinor,
@@ -461,14 +532,24 @@ export async function quoteForOrder(
 export async function redeemForOrder(
   db: Client,
   merchantId: string,
-  args: { customerId: string; orderId: string; orderTotalMinor: number; requestedPoints: number },
+  args: {
+    customerId: string;
+    orderId: string;
+    orderTotalMinor: number;
+    requestedPoints: number;
+  },
 ) {
   return withSpan("loyalty.redeem", async () => {
-    await enforceRateLimit("loyalty.redeem", `${merchantId}:${args.customerId}`);
+    await enforceRateLimit(
+      "loyalty.redeem",
+      `${merchantId}:${args.customerId}`,
+    );
     const settings = await loadSettings(db, merchantId);
-    if (!settings.loyaltyEnabled) fail("loyalty_disabled", "Points are not available in this store");
+    if (!settings.loyaltyEnabled)
+      fail("loyalty_disabled", "Points are not available in this store");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const { data: replay } = await admin
@@ -478,17 +559,27 @@ export async function redeemForOrder(
       .eq("order_id", args.orderId)
       .eq("kind", "redeem")
       .maybeSingle();
-    if (replay) return { points: Math.abs(replay.points), discountMinor: 0, replayed: true };
+    if (replay)
+      return {
+        points: Math.abs(replay.points),
+        discountMinor: 0,
+        replayed: true,
+      };
 
     const account = await ensureAccount(admin, merchantId, args.customerId);
-    if (account.blocked_at) fail("account_blocked", "This account cannot redeem points right now");
+    if (account.blocked_at)
+      fail("account_blocked", "This account cannot redeem points right now");
 
     const quote = quoteRedemption(settings.loyalty, {
       balancePoints: account.available_points,
       orderTotalMinor: args.orderTotalMinor,
       requestedPoints: args.requestedPoints,
     });
-    if (quote.points <= 0) fail(quote.reason ?? "cannot_redeem", "These points cannot be redeemed here");
+    if (quote.points <= 0)
+      fail(
+        quote.reason ?? "cannot_redeem",
+        "These points cannot be redeemed here",
+      );
 
     const { data: grants } = await admin
       .from("loyalty_ledger")
@@ -508,7 +599,8 @@ export async function redeemForOrder(
       })),
       quote.points,
     );
-    if (plan.shortfall > 0) fail("insufficient_points", "You do not have enough points for that");
+    if (plan.shortfall > 0)
+      fail("insufficient_points", "You do not have enough points for that");
 
     for (const draw of plan.draws) {
       const grant = (grants ?? []).find((g) => g.id === draw.id);
@@ -517,12 +609,19 @@ export async function redeemForOrder(
       // cannot both draw from the same grant.
       const { data: updated } = await admin
         .from("loyalty_ledger")
-        .update({ remaining_points: remaining, state: remaining === 0 ? "spent" : "available" })
+        .update({
+          remaining_points: remaining,
+          state: remaining === 0 ? "spent" : "available",
+        })
         .eq("id", draw.id)
         .eq("remaining_points", grant?.remaining_points ?? -1)
         .select("id")
         .maybeSingle();
-      if (!updated) fail("redeem_conflict", "Your points changed while we were spending them. Try again.");
+      if (!updated)
+        fail(
+          "redeem_conflict",
+          "Your points changed while we were spending them. Try again.",
+        );
     }
 
     await admin.from("loyalty_ledger").insert({
@@ -538,7 +637,11 @@ export async function redeemForOrder(
     });
     await refreshBalance(admin, account.id);
     incr("loyalty.redeemed", {}, quote.points);
-    return { points: quote.points, discountMinor: quote.discountMinor, replayed: false };
+    return {
+      points: quote.points,
+      discountMinor: quote.discountMinor,
+      replayed: false,
+    };
   });
 }
 
@@ -550,11 +653,15 @@ export async function adjustPoints(
   args: { customerId: string; points: number; reason: string },
 ) {
   await enforceRateLimit("loyalty.adjust", merchantId);
-  if (!Number.isInteger(args.points) || args.points === 0) fail("invalid_amount", "Enter a non-zero whole number");
-  if (Math.abs(args.points) > 1_000_000) fail("invalid_amount", "That adjustment is too large");
-  if (args.reason.trim().length < 3) fail("reason_required", "Give a reason for this adjustment");
+  if (!Number.isInteger(args.points) || args.points === 0)
+    fail("invalid_amount", "Enter a non-zero whole number");
+  if (Math.abs(args.points) > 1_000_000)
+    fail("invalid_amount", "That adjustment is too large");
+  if (args.reason.trim().length < 3)
+    fail("reason_required", "Give a reason for this adjustment");
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const settings = await loadSettings(db, merchantId);
   const account = await ensureAccount(admin, merchantId, args.customerId);
@@ -573,7 +680,10 @@ export async function adjustPoints(
       state: "available",
       actor,
       note: args.reason.slice(0, 200),
-      expires_at: settings.loyalty.expiryDays > 0 ? daysFromNow(settings.loyalty.expiryDays) : null,
+      expires_at:
+        settings.loyalty.expiryDays > 0
+          ? daysFromNow(settings.loyalty.expiryDays)
+          : null,
     });
   } else {
     const { data: grants } = await admin
@@ -593,13 +703,20 @@ export async function adjustPoints(
       })),
       Math.abs(args.points),
     );
-    if (plan.shortfall > 0) fail("insufficient_points", "This customer does not have that many points");
+    if (plan.shortfall > 0)
+      fail(
+        "insufficient_points",
+        "This customer does not have that many points",
+      );
     for (const draw of plan.draws) {
       const grant = (grants ?? []).find((g) => g.id === draw.id);
       const remaining = (grant?.remaining_points ?? 0) - draw.points;
       await admin
         .from("loyalty_ledger")
-        .update({ remaining_points: remaining, state: remaining === 0 ? "spent" : "available" })
+        .update({
+          remaining_points: remaining,
+          state: remaining === 0 ? "spent" : "available",
+        })
         .eq("id", draw.id);
     }
     await admin.from("loyalty_ledger").insert({
@@ -615,10 +732,18 @@ export async function adjustPoints(
   }
 
   const balance = await refreshBalance(admin, account.id);
-  await audit(admin, merchantId, "loyalty", actor, "points.adjust", account.id, {
-    after: { points: args.points, balance: balance.available },
-    reason: args.reason.slice(0, 200),
-  });
+  await audit(
+    admin,
+    merchantId,
+    "loyalty",
+    actor,
+    "points.adjust",
+    account.id,
+    {
+      after: { points: args.points, balance: balance.available },
+      reason: args.reason.slice(0, 200),
+    },
+  );
   incr("loyalty.adjusted");
   return balance;
 }
@@ -645,11 +770,16 @@ export async function claimReferral(
   },
 ) {
   return withSpan("referral.claim", async () => {
-    await enforceRateLimit("referral.claim", `${merchantId}:${args.refereeCustomerId}`);
+    await enforceRateLimit(
+      "referral.claim",
+      `${merchantId}:${args.refereeCustomerId}`,
+    );
     const settings = await loadSettings(db, merchantId);
-    if (!settings.referralEnabled) return { qualified: false, reason: "disabled" as const };
+    if (!settings.referralEnabled)
+      return { qualified: false, reason: "disabled" as const };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const code = args.code.trim().toUpperCase();
@@ -661,7 +791,9 @@ export async function claimReferral(
       .maybeSingle();
     if (!referrer) return { qualified: false, reason: "unknown_code" as const };
 
-    const windowStart = new Date(Date.now() - settings.referral.windowDays * 86_400_000).toISOString();
+    const windowStart = new Date(
+      Date.now() - settings.referral.windowDays * 86_400_000,
+    ).toISOString();
     const { count } = await admin
       .from("referrals")
       .select("id", { count: "exact", head: true })
@@ -679,10 +811,14 @@ export async function claimReferral(
         .eq("merchant_id", merchantId)
         .eq("referrer_customer_id", referrer.customer_id)
         .limit(200);
-      sharedDevice = Boolean(args.deviceHash) && (siblings ?? []).some((s) => s.device_hash === args.deviceHash);
+      sharedDevice =
+        Boolean(args.deviceHash) &&
+        (siblings ?? []).some((s) => s.device_hash === args.deviceHash);
       sharedPayment =
         Boolean(args.paymentFingerprint) &&
-        (siblings ?? []).some((s) => s.payment_fingerprint === args.paymentFingerprint);
+        (siblings ?? []).some(
+          (s) => s.payment_fingerprint === args.paymentFingerprint,
+        );
     }
 
     const verdict = evaluateReferral(settings.referral, {
@@ -696,7 +832,11 @@ export async function claimReferral(
       refereeAccountAgeMinutes: args.accountAgeMinutes,
     });
 
-    const state = verdict.qualified ? "rewarded" : verdict.reviewRequired ? "review" : "rejected";
+    const state = verdict.qualified
+      ? "rewarded"
+      : verdict.reviewRequired
+        ? "review"
+        : "rejected";
     const { data: row, error } = await admin
       .from("referrals")
       .insert({
@@ -731,13 +871,21 @@ export async function claimReferral(
         actor: "system",
         reference: row?.id ?? null,
         note: "Referral reward",
-        expires_at: settings.loyalty.expiryDays > 0 ? daysFromNow(settings.loyalty.expiryDays) : null,
+        expires_at:
+          settings.loyalty.expiryDays > 0
+            ? daysFromNow(settings.loyalty.expiryDays)
+            : null,
       });
       await refreshBalance(admin, referrer.id);
     }
 
     incr("referral.decided", { state });
-    return { qualified: verdict.qualified, reason: verdict.reason, state, verdict };
+    return {
+      qualified: verdict.qualified,
+      reason: verdict.reason,
+      state,
+      verdict,
+    };
   });
 }
 
@@ -749,8 +897,10 @@ export async function decideReferral(
   args: { referralId: string; approve: boolean; reason: string },
 ) {
   await enforceRateLimit("growth.write", merchantId);
-  if (args.reason.trim().length < 3) fail("reason_required", "Give a reason for this decision");
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (args.reason.trim().length < 3)
+    fail("reason_required", "Give a reason for this decision");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const { data: referral } = await admin
@@ -760,17 +910,26 @@ export async function decideReferral(
     .eq("merchant_id", merchantId)
     .maybeSingle();
   if (!referral) fail("not_found", "Referral not found");
-  if (referral.state !== "review") fail("already_decided", "This referral has already been decided");
+  if (referral.state !== "review")
+    fail("already_decided", "This referral has already been decided");
 
   const settings = await loadSettings(db, merchantId);
   const nextState = args.approve ? "rewarded" : "rejected";
   await admin
     .from("referrals")
-    .update({ state: nextState, reason: args.reason.slice(0, 200), decided_at: new Date().toISOString() })
+    .update({
+      state: nextState,
+      reason: args.reason.slice(0, 200),
+      decided_at: new Date().toISOString(),
+    })
     .eq("id", referral.id);
 
   if (args.approve && referral.referrer_points > 0) {
-    const account = await ensureAccount(admin, merchantId, referral.referrer_customer_id);
+    const account = await ensureAccount(
+      admin,
+      merchantId,
+      referral.referrer_customer_id,
+    );
     await admin.from("loyalty_ledger").insert({
       merchant_id: merchantId,
       account_id: account.id,
@@ -781,16 +940,27 @@ export async function decideReferral(
       actor,
       reference: referral.id,
       note: "Referral reward (manual approval)",
-      expires_at: settings.loyalty.expiryDays > 0 ? daysFromNow(settings.loyalty.expiryDays) : null,
+      expires_at:
+        settings.loyalty.expiryDays > 0
+          ? daysFromNow(settings.loyalty.expiryDays)
+          : null,
     });
     await refreshBalance(admin, account.id);
   }
 
-  await audit(admin, merchantId, "referral", actor, `referral.${nextState}`, referral.id, {
-    before: { state: referral.state },
-    after: { state: nextState },
-    reason: args.reason.slice(0, 200),
-  });
+  await audit(
+    admin,
+    merchantId,
+    "referral",
+    actor,
+    `referral.${nextState}`,
+    referral.id,
+    {
+      before: { state: referral.state },
+      after: { state: nextState },
+      reason: args.reason.slice(0, 200),
+    },
+  );
   return { state: nextState };
 }
 
@@ -822,9 +992,11 @@ export async function upsertAffiliate(
 ) {
   await enforceRateLimit("growth.write", merchantId);
   const slug = slugify(input.slug || input.displayName);
-  if (slug.length < 3) fail("invalid_slug", "Give the partner a longer link name");
+  if (slug.length < 3)
+    fail("invalid_slug", "Give the partner a longer link name");
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const payload = {
@@ -837,25 +1009,44 @@ export async function upsertAffiliate(
     terms_override:
       input.commissionBps === null || input.commissionBps === undefined
         ? null
-        : ({ commissionBps: Math.min(5000, Math.max(0, Math.trunc(input.commissionBps))) } as never),
+        : ({
+            commissionBps: Math.min(
+              5000,
+              Math.max(0, Math.trunc(input.commissionBps)),
+            ),
+          } as never),
     approved_at: input.state === "active" ? new Date().toISOString() : null,
-    banned_reason: input.state === "banned" ? (input.reason ?? "").slice(0, 200) : null,
+    banned_reason:
+      input.state === "banned" ? (input.reason ?? "").slice(0, 200) : null,
     updated_at: new Date().toISOString(),
   };
 
   const query = input.id
-    ? admin.from("affiliates").update(payload).eq("id", input.id).eq("merchant_id", merchantId)
+    ? admin
+        .from("affiliates")
+        .update(payload)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
     : admin.from("affiliates").insert(payload);
   const { data, error } = await query.select("*").maybeSingle();
   if (error) {
-    if (error.message.includes("duplicate key")) fail("slug_taken", "That link name is already used");
+    if (error.message.includes("duplicate key"))
+      fail("slug_taken", "That link name is already used");
     fail("affiliate_save_failed", "Could not save the partner");
   }
 
-  await audit(admin, merchantId, "affiliate", actor, input.id ? "affiliate.update" : "affiliate.create", data?.id ?? null, {
-    after: payload as unknown as Record<string, unknown>,
-    reason: input.reason,
-  });
+  await audit(
+    admin,
+    merchantId,
+    "affiliate",
+    actor,
+    input.id ? "affiliate.update" : "affiliate.create",
+    data?.id ?? null,
+    {
+      after: payload as unknown as Record<string, unknown>,
+      reason: input.reason,
+    },
+  );
   return data;
 }
 
@@ -877,11 +1068,13 @@ export async function recordAffiliateClick(
   },
 ) {
   await enforceRateLimit("affiliate.click", merchantId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const settings = await loadSettings(admin, merchantId);
-  if (!settings.affiliateEnabled) return { recorded: false, reason: "disabled" as const };
+  if (!settings.affiliateEnabled)
+    return { recorded: false, reason: "disabled" as const };
 
   const { data: affiliate } = await admin
     .from("affiliates")
@@ -889,8 +1082,10 @@ export async function recordAffiliateClick(
     .eq("merchant_id", merchantId)
     .eq("slug", slugify(args.slug))
     .maybeSingle();
-  if (!affiliate) return { recorded: false, reason: "unknown_partner" as const };
-  if (affiliate.state !== "active") return { recorded: false, reason: "partner_inactive" as const };
+  if (!affiliate)
+    return { recorded: false, reason: "unknown_partner" as const };
+  if (affiliate.state !== "active")
+    return { recorded: false, reason: "partner_inactive" as const };
 
   await admin.from("affiliate_clicks").insert({
     merchant_id: merchantId,
@@ -925,9 +1120,11 @@ export async function bookCommission(
 ) {
   return withSpan("affiliate.commission", async () => {
     const settings = await loadSettings(db, merchantId);
-    if (!settings.affiliateEnabled) return { booked: false, reason: "disabled" as const };
+    if (!settings.affiliateEnabled)
+      return { booked: false, reason: "disabled" as const };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const { data: replay } = await admin
@@ -936,7 +1133,12 @@ export async function bookCommission(
       .eq("merchant_id", merchantId)
       .eq("order_id", args.orderId)
       .maybeSingle();
-    if (replay) return { booked: false, reason: "replay" as const, amountMinor: replay.amount_minor };
+    if (replay)
+      return {
+        booked: false,
+        reason: "replay" as const,
+        amountMinor: replay.amount_minor,
+      };
 
     const since = new Date(
       Date.parse(args.orderAt) - settings.affiliate.cookieDays * 86_400_000,
@@ -956,7 +1158,11 @@ export async function bookCommission(
       clicks: (clicks ?? []).map((c) => ({
         affiliateId: c.affiliate_id,
         affiliateOwnerId:
-          (c.affiliates as unknown as { owner_customer_id: string | null } | null)?.owner_customer_id ?? null,
+          (
+            c.affiliates as unknown as {
+              owner_customer_id: string | null;
+            } | null
+          )?.owner_customer_id ?? null,
         clickedAt: c.clicked_at,
       })),
     });
@@ -967,16 +1173,20 @@ export async function bookCommission(
       .select("id, state, terms_override")
       .eq("id", winner.affiliateId)
       .maybeSingle();
-    if (!affiliate || affiliate.state !== "active") return { booked: false, reason: "partner_inactive" as const };
+    if (!affiliate || affiliate.state !== "active")
+      return { booked: false, reason: "partner_inactive" as const };
 
     const terms = normalizeAffiliate({
       ...settings.affiliate,
       ...((affiliate.terms_override ?? {}) as Partial<AffiliateTerms>),
     });
     const result = commissionFor(terms, args);
-    if (result.commissionMinor <= 0) return { booked: false, reason: "no_qualifying_revenue" as const };
+    if (result.commissionMinor <= 0)
+      return { booked: false, reason: "no_qualifying_revenue" as const };
 
-    const clickRow = (clicks ?? []).find((c) => c.clicked_at === winner.clickedAt);
+    const clickRow = (clicks ?? []).find(
+      (c) => c.clicked_at === winner.clickedAt,
+    );
     const { error } = await admin.from("affiliate_commissions").insert({
       merchant_id: merchantId,
       affiliate_id: affiliate.id,
@@ -993,20 +1203,36 @@ export async function bookCommission(
     }
 
     if (clickRow) {
-      await admin.from("affiliate_clicks").update({ converted_order_id: args.orderId }).eq("id", clickRow.id);
+      await admin
+        .from("affiliate_clicks")
+        .update({ converted_order_id: args.orderId })
+        .eq("id", clickRow.id);
     }
     incr("affiliate.commission_booked", {}, 1);
-    return { booked: true, affiliateId: affiliate.id, amountMinor: result.commissionMinor };
+    return {
+      booked: true,
+      affiliateId: affiliate.id,
+      amountMinor: result.commissionMinor,
+    };
   });
 }
 
 /** Reverses a commission when the order is refunded or cancelled. */
-export async function reverseCommission(merchantId: string, orderId: string, reason: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+export async function reverseCommission(
+  merchantId: string,
+  orderId: string,
+  reason: string,
+) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const { data } = await admin
     .from("affiliate_commissions")
-    .update({ state: "reversed", reversed_at: new Date().toISOString(), reason: reason.slice(0, 200) })
+    .update({
+      state: "reversed",
+      reversed_at: new Date().toISOString(),
+      reason: reason.slice(0, 200),
+    })
     .eq("merchant_id", merchantId)
     .eq("order_id", orderId)
     .in("state", ["pending", "approved"])
@@ -1038,7 +1264,8 @@ export async function markCommissionsPaid(
 ) {
   await enforceRateLimit("affiliate.payout", merchantId);
   const settings = await loadSettings(db, merchantId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const { data: commissions } = await admin
@@ -1050,24 +1277,46 @@ export async function markCommissionsPaid(
 
   const readiness = payoutReadiness(
     settings.affiliate,
-    (commissions ?? []).map((c) => ({ state: c.state, amountMinor: c.amount_minor, matureAt: c.matures_at })),
+    (commissions ?? []).map((c) => ({
+      state: c.state,
+      amountMinor: c.amount_minor,
+      matureAt: c.matures_at,
+    })),
   );
-  if (!readiness.canPayout) fail("below_min_payout", "This partner has not reached the payout minimum yet");
+  if (!readiness.canPayout)
+    fail(
+      "below_min_payout",
+      "This partner has not reached the payout minimum yet",
+    );
 
   const now = new Date().toISOString();
-  const payable = (commissions ?? []).filter((c) => c.state === "approved" && c.matures_at <= now);
+  const payable = (commissions ?? []).filter(
+    (c) => c.state === "approved" && c.matures_at <= now,
+  );
   await admin
     .from("affiliate_commissions")
-    .update({ state: "paid", paid_at: now, reason: args.reference.slice(0, 120) })
+    .update({
+      state: "paid",
+      paid_at: now,
+      reason: args.reference.slice(0, 120),
+    })
     .in(
       "id",
       payable.map((c) => c.id),
     );
 
-  await audit(admin, merchantId, "affiliate", actor, "affiliate.payout", args.affiliateId, {
-    after: { amountMinor: readiness.payable, commissions: payable.length },
-    reason: args.reference.slice(0, 120),
-  });
+  await audit(
+    admin,
+    merchantId,
+    "affiliate",
+    actor,
+    "affiliate.payout",
+    args.affiliateId,
+    {
+      after: { amountMinor: readiness.payable, commissions: payable.length },
+      reason: args.reference.slice(0, 120),
+    },
+  );
   incr("affiliate.payout", {}, readiness.payable);
   return { paidMinor: readiness.payable, commissions: payable.length };
 }
@@ -1078,33 +1327,43 @@ export async function loadGrowthDesk(db: Client, merchantId: string) {
   await enforceRateLimit("growth.read", merchantId);
   const settings = await loadSettings(db, merchantId);
 
-  const [accounts, referrals, affiliates, commissions, auditRows] = await Promise.all([
-    db
-      .from("loyalty_accounts")
-      .select("id, customer_id, tier, available_points, pending_points, lifetime_net_minor, referral_code, blocked_at")
-      .eq("merchant_id", merchantId)
-      .order("available_points", { ascending: false })
-      .limit(100),
-    db
-      .from("referrals")
-      .select("*")
-      .eq("merchant_id", merchantId)
-      .order("created_at", { ascending: false })
-      .limit(100),
-    db.from("affiliates").select("*").eq("merchant_id", merchantId).order("created_at", { ascending: false }).limit(100),
-    db
-      .from("affiliate_commissions")
-      .select("id, affiliate_id, order_id, state, amount_minor, matures_at, created_at")
-      .eq("merchant_id", merchantId)
-      .order("created_at", { ascending: false })
-      .limit(500),
-    db
-      .from("growth_audit")
-      .select("*")
-      .eq("merchant_id", merchantId)
-      .order("created_at", { ascending: false })
-      .limit(50),
-  ]);
+  const [accounts, referrals, affiliates, commissions, auditRows] =
+    await Promise.all([
+      db
+        .from("loyalty_accounts")
+        .select(
+          "id, customer_id, tier, available_points, pending_points, lifetime_net_minor, referral_code, blocked_at",
+        )
+        .eq("merchant_id", merchantId)
+        .order("available_points", { ascending: false })
+        .limit(100),
+      db
+        .from("referrals")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(100),
+      db
+        .from("affiliates")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(100),
+      db
+        .from("affiliate_commissions")
+        .select(
+          "id, affiliate_id, order_id, state, amount_minor, matures_at, created_at",
+        )
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(500),
+      db
+        .from("growth_audit")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(50),
+    ]);
 
   const commissionRows = commissions.data ?? [];
   const byAffiliate = new Map<string, typeof commissionRows>();
@@ -1145,7 +1404,9 @@ export async function loadGrowthDesk(db: Client, merchantId: string) {
     totals: {
       ...totals,
       liabilityMinor: totals.available * settings.loyalty.pointValueMinor,
-      referralsInReview: (referrals.data ?? []).filter((r) => r.state === "review").length,
+      referralsInReview: (referrals.data ?? []).filter(
+        (r) => r.state === "review",
+      ).length,
       payableMinor: partners.reduce((n, p) => n + p.readiness.payable, 0),
     },
   };
@@ -1155,7 +1416,8 @@ export async function loadGrowthDesk(db: Client, merchantId: string) {
 
 export async function runGrowthSweep() {
   await enforceRateLimit("growth.sweep", "global");
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   try {
     const points = await maturePoints(admin);

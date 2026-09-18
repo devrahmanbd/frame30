@@ -13,36 +13,42 @@ import { createFileRoute } from "@tanstack/react-router";
  * The page is deliberately server-rendered HTML with a plain form: no client
  * bundle, no JS requirement, `no-store`, `noindex`, and no merchant PII.
  */
-export const Route = createFileRoute("/api/public/payments/platform/$provider")({
-  server: {
-    handlers: {
-      GET: async ({ request, params }) => {
-        const url = new URL(request.url);
-        const chargeId = url.searchParams.get("charge") ?? "";
-        const { isPlatformMethod, methodLabel } = await import("@/lib/platform-billing");
-        if (!isPlatformMethod(params.provider)) {
-          return new Response("unsupported_provider", { status: 404 });
-        }
-        const { hostedChargeView } = await import("@/lib/platform-billing.server");
-        const charge = chargeId ? await hostedChargeView(chargeId) : null;
-        if (!charge || charge.method !== params.provider) {
-          return html(page({ title: "Payment not found", body: notFoundBody() }), 404);
-        }
-        const { fmtMinor } = await import("@/lib/money");
-        if (charge.expired || charge.status !== "pending") {
+export const Route = createFileRoute("/api/public/payments/platform/$provider")(
+  {
+    server: {
+      handlers: {
+        GET: async ({ request, params }) => {
+          const url = new URL(request.url);
+          const chargeId = url.searchParams.get("charge") ?? "";
+          const { isPlatformMethod, methodLabel } =
+            await import("@/lib/platform-billing");
+          if (!isPlatformMethod(params.provider)) {
+            return new Response("unsupported_provider", { status: 404 });
+          }
+          const { hostedChargeView } =
+            await import("@/lib/platform-billing.server");
+          const charge = chargeId ? await hostedChargeView(chargeId) : null;
+          if (!charge || charge.method !== params.provider) {
+            return html(
+              page({ title: "Payment not found", body: notFoundBody() }),
+              404,
+            );
+          }
+          const { fmtMinor } = await import("@/lib/money");
+          if (charge.expired || charge.status !== "pending") {
+            return html(
+              page({
+                title: "Payment window closed",
+                body: `<p>This payment attempt is no longer active (<code>${escape(charge.status)}</code>). Start a new payment from your invoices page.</p>
+                     <p><a href="/dashboard/billing/invoices">Back to invoices</a></p>`,
+              }),
+              410,
+            );
+          }
           return html(
             page({
-              title: "Payment window closed",
-              body: `<p>This payment attempt is no longer active (<code>${escape(charge.status)}</code>). Start a new payment from your invoices page.</p>
-                     <p><a href="/dashboard/billing/invoices">Back to invoices</a></p>`,
-            }),
-            410,
-          );
-        }
-        return html(
-          page({
-            title: `${methodLabel(charge.method)} — authorise payment`,
-            body: `
+              title: `${methodLabel(charge.method)} — authorise payment`,
+              body: `
               <p class="amount">${escape(fmtMinor(charge.amountMinorInt, charge.currencyCode))}</p>
               <p class="muted">Attempt ${charge.attempt} · window closes ${escape(charge.expiresAt.slice(11, 16))} UTC</p>
               <form method="post" action="${escape(url.pathname + url.search)}">
@@ -51,43 +57,62 @@ export const Route = createFileRoute("/api/public/payments/platform/$provider")(
                 <button name="outcome" value="cancel" class="muted-btn">Cancel</button>
               </form>
               <p class="muted">Nothing is settled by this page. The result is signed and verified on return.</p>`,
-          }),
-        );
-      },
+            }),
+          );
+        },
 
-      POST: async ({ request, params }) => {
-        const url = new URL(request.url);
-        const chargeId = url.searchParams.get("charge") ?? "";
-        const form = await request.formData();
-        const raw = String(form.get("outcome") ?? "");
-        const outcome = raw === "success" || raw === "fail" || raw === "cancel" ? raw : null;
-        if (!outcome || !chargeId) return new Response("bad_request", { status: 400 });
+        POST: async ({ request, params }) => {
+          const url = new URL(request.url);
+          const chargeId = url.searchParams.get("charge") ?? "";
+          const form = await request.formData();
+          const raw = String(form.get("outcome") ?? "");
+          const outcome =
+            raw === "success" || raw === "fail" || raw === "cancel"
+              ? raw
+              : null;
+          if (!outcome || !chargeId)
+            return new Response("bad_request", { status: 400 });
 
-        const { isPlatformMethod } = await import("@/lib/platform-billing");
-        if (!isPlatformMethod(params.provider)) {
-          return new Response("unsupported_provider", { status: 404 });
-        }
-        const { platformHostedOutcome, PlatformBillingError } = await import(
-          "@/lib/platform-billing.server"
-        );
-        try {
-          const { redirectTo } = await platformHostedOutcome(chargeId, outcome, url.origin);
-          return new Response(null, {
-            status: 303,
-            headers: { location: redirectTo, "cache-control": "no-store" },
-          });
-        } catch (error) {
-          const code = error instanceof PlatformBillingError ? error.code : "platform.unavailable";
-          return new Response(code, { status: 400 });
-        }
+          const { isPlatformMethod } = await import("@/lib/platform-billing");
+          if (!isPlatformMethod(params.provider)) {
+            return new Response("unsupported_provider", { status: 404 });
+          }
+          const { platformHostedOutcome, PlatformBillingError } =
+            await import("@/lib/platform-billing.server");
+          try {
+            const { redirectTo } = await platformHostedOutcome(
+              chargeId,
+              outcome,
+              url.origin,
+            );
+            return new Response(null, {
+              status: 303,
+              headers: { location: redirectTo, "cache-control": "no-store" },
+            });
+          } catch (error) {
+            const code =
+              error instanceof PlatformBillingError
+                ? error.code
+                : "platform.unavailable";
+            return new Response(code, { status: 400 });
+          }
+        },
       },
     },
   },
-});
+);
 
 function escape(value: string) {
   return value.replace(/[&<>"']/g, (c) =>
-    c === "&" ? "&amp;" : c === "<" ? "&lt;" : c === ">" ? "&gt;" : c === '"' ? "&quot;" : "&#39;",
+    c === "&"
+      ? "&amp;"
+      : c === "<"
+        ? "&lt;"
+        : c === ">"
+          ? "&gt;"
+          : c === '"'
+            ? "&quot;"
+            : "&#39;",
   );
 }
 

@@ -1,4 +1,11 @@
-import { useState, useId, useRef, useEffect, useCallback, type ReactNode } from "react";
+import {
+  useState,
+  useId,
+  useRef,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { Link } from "@tanstack/react-router";
 import { withEngine } from "@/lib/motion-engine";
 import { ArrowRight, Loader2, Check } from "lucide-react";
@@ -16,7 +23,11 @@ const SOCIAL_LINKS = [
     name: "YouTube",
     href: "#",
     icon: (
-      <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+      <svg
+        className="size-4 shrink-0 fill-current"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
       </svg>
     ),
@@ -25,7 +36,11 @@ const SOCIAL_LINKS = [
     name: "Twitter",
     href: "#",
     icon: (
-      <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+      <svg
+        className="size-4 shrink-0 fill-current"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
       </svg>
     ),
@@ -34,7 +49,11 @@ const SOCIAL_LINKS = [
     name: "Instagram",
     href: "#",
     icon: (
-      <svg className="size-4 shrink-0 fill-none stroke-current stroke-2" viewBox="0 0 24 24" aria-hidden="true">
+      <svg
+        className="size-4 shrink-0 fill-none stroke-current stroke-2"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
@@ -45,7 +64,11 @@ const SOCIAL_LINKS = [
     name: "Facebook",
     href: "#",
     icon: (
-      <svg className="size-4 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+      <svg
+        className="size-4 shrink-0 fill-current"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
       </svg>
     ),
@@ -99,7 +122,7 @@ function SculpturalEmblem() {
           gsap.fromTo(
             svgRef.current,
             { autoAlpha: 0, y: 24, scale: 0.94 },
-            { autoAlpha: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" }
+            { autoAlpha: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" },
           );
 
           // 2. Coordinated floating levitation cycle (physics-inspired)
@@ -117,7 +140,7 @@ function SculpturalEmblem() {
                 rotation: 1.6,
                 duration: 3.2,
               },
-              0
+              0,
             )
             .to(
               shadowRef.current,
@@ -127,7 +150,7 @@ function SculpturalEmblem() {
                 opacity: 0.35,
                 duration: 3.2,
               },
-              0
+              0,
             );
 
           // 3. Specular rim highlight shimmer
@@ -165,11 +188,14 @@ function SculpturalEmblem() {
           document.addEventListener("visibilitychange", handleVisibilityChange);
 
           return () => {
-            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            document.removeEventListener(
+              "visibilitychange",
+              handleVisibilityChange,
+            );
             floatTl.kill();
           };
         },
-        containerRef
+        containerRef,
       );
 
       return () => {
@@ -204,21 +230,42 @@ function SculpturalEmblem() {
       >
         <defs>
           {/* Specular front surface gradient */}
-          <linearGradient id="ribbonFront" x1="80" y1="40" x2="320" y2="200" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="ribbonFront"
+            x1="80"
+            y1="40"
+            x2="320"
+            y2="200"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="currentColor" stopOpacity="0.95" />
             <stop offset="45%" stopColor="currentColor" stopOpacity="0.85" />
             <stop offset="100%" stopColor="currentColor" stopOpacity="0.45" />
           </linearGradient>
 
           {/* Underfold ambient shade */}
-          <linearGradient id="ribbonFold" x1="160" y1="120" x2="280" y2="220" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="ribbonFold"
+            x1="160"
+            y1="120"
+            x2="280"
+            y2="220"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="currentColor" stopOpacity="0.7" />
             <stop offset="60%" stopColor="currentColor" stopOpacity="0.3" />
             <stop offset="100%" stopColor="currentColor" stopOpacity="0.1" />
           </linearGradient>
 
           {/* Upper curve rim lighting */}
-          <linearGradient id="ribbonRim" x1="140" y1="30" x2="260" y2="120" gradientUnits="userSpaceOnUse">
+          <linearGradient
+            id="ribbonRim"
+            x1="140"
+            y1="30"
+            x2="260"
+            y2="120"
+            gradientUnits="userSpaceOnUse"
+          >
             <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0.1" />
           </linearGradient>
@@ -276,7 +323,10 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
   const inputId = useId();
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const renderedAt = useRef<number>(Date.now());
 
   const handleSubscribe = useCallback(
@@ -302,24 +352,36 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
         if (res.outcome === "check_inbox") {
           setFeedback({
             type: "success",
-            text: lang === "bn" ? "ধন্যবাদ! ইনবক্স চেক করুন।" : "Subscribed! Check your inbox to confirm.",
+            text:
+              lang === "bn"
+                ? "ধন্যবাদ! ইনবক্স চেক করুন।"
+                : "Subscribed! Check your inbox to confirm.",
           });
           setEmail("");
         } else if (res.outcome === "rate_limited") {
           setFeedback({
             type: "error",
-            text: lang === "bn" ? "অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।" : "Too many attempts. Please wait.",
+            text:
+              lang === "bn"
+                ? "অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।"
+                : "Too many attempts. Please wait.",
           });
         } else {
           setFeedback({
             type: "error",
-            text: lang === "bn" ? "সাবস্ক্রিপশনে ত্রুটি হয়েছে।" : "Subscription failed. Please try again.",
+            text:
+              lang === "bn"
+                ? "সাবস্ক্রিপশনে ত্রুটি হয়েছে।"
+                : "Subscription failed. Please try again.",
           });
         }
       } catch {
         setFeedback({
           type: "error",
-          text: lang === "bn" ? "সাময়িক ত্রুটি। পরে চেষ্টা করুন।" : "Something went wrong. Please try again.",
+          text:
+            lang === "bn"
+              ? "সাময়িক ত্রুটি। পরে চেষ্টা করুন।"
+              : "Something went wrong. Please try again.",
         });
       } finally {
         setSubmitting(false);
@@ -385,16 +447,28 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                 <a
                   key={item.name}
                   href={item.href}
-                  {...(!isPlaceholder ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  {...(!isPlaceholder
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   onClick={(e) => {
                     if (isPlaceholder) e.preventDefault();
                   }}
-                  title={isPlaceholder ? `${item.name} (Official profile launching soon)` : item.name}
-                  aria-label={isPlaceholder ? `${item.name} - official profile launching soon` : item.name}
+                  title={
+                    isPlaceholder
+                      ? `${item.name} (Official profile launching soon)`
+                      : item.name
+                  }
+                  aria-label={
+                    isPlaceholder
+                      ? `${item.name} - official profile launching soon`
+                      : item.name
+                  }
                   className="group flex min-h-[58px] items-center justify-between px-6 py-4 text-sm font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.03] hover:text-foreground cursor-pointer"
                 >
                   <span className="flex items-center gap-3">
-                    <span className="text-foreground/70 transition-colors group-hover:text-primary">{item.icon}</span>
+                    <span className="text-foreground/70 transition-colors group-hover:text-primary">
+                      {item.icon}
+                    </span>
                     <span className="tracking-tight">{item.name}</span>
                   </span>
                   <ArrowRight className="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" />
@@ -412,27 +486,46 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
               </h3>
               <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <Link to="/features" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/features"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "ফিচারসমূহ" : "Technology & Features"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/builder" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
-                    {lang === "bn" ? "স্টোরফ্রন্ট বিল্ডার" : "Storefront Builder"}
+                  <Link
+                    to="/builder"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
+                    {lang === "bn"
+                      ? "স্টোরফ্রন্ট বিল্ডার"
+                      : "Storefront Builder"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/payments" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/payments"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "পেমেন্ট গেটওয়ে" : "Payment Rails"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/fulfilment" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
-                    {lang === "bn" ? "ডেলিভারি ও কুরিয়ার" : "Fulfilment & Dispatch"}
+                  <Link
+                    to="/fulfilment"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
+                    {lang === "bn"
+                      ? "ডেলিভারি ও কুরিয়ার"
+                      : "Fulfilment & Dispatch"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/status" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/status"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "সিস্টেম স্ট্যাটাস" : "Releases & Status"}
                   </Link>
                 </li>
@@ -446,27 +539,42 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
               </h3>
               <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <Link to="/docs" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/docs"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "ডকুমেন্টেশন" : "Docs"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/docs" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/docs"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "এপিআই গাইড" : "API Reference"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/pricing" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/pricing"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "প্রাইসিং ও প্ল্যান" : "Pricing & Plans"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/faq" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/faq"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "সাধারণ জিজ্ঞাসা" : "Tutorials & FAQ"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/blog" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/blog"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "ব্লগ ও আপডেট" : "System Guide & Blog"}
                   </Link>
                 </li>
@@ -480,27 +588,44 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
               </h3>
               <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <Link to="/about" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/about"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "আমাদের সম্পর্কে" : "About & Team"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/customers" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
-                    {lang === "bn" ? "ভেরিফাইড মার্চেন্ট" : "Verified Merchants"}
+                  <Link
+                    to="/customers"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
+                    {lang === "bn"
+                      ? "ভেরিফাইড মার্চেন্ট"
+                      : "Verified Merchants"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/security" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/security"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "নিরাপত্তা ও ভরসা" : "Security & Trust"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/contact" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/contact"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "যোগাযোগ ও সাপোর্ট" : "Contact & Support"}
                   </Link>
                 </li>
                 <li>
-                  <Link to="/dashboard" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/dashboard"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "মার্চেন্ট লগইন" : "Merchant Portal"}
                   </Link>
                 </li>
@@ -514,7 +639,10 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
               </h3>
               <ul className="mt-5 space-y-3 text-sm">
                 <li>
-                  <Link to="/legal" className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary">
+                  <Link
+                    to="/legal"
+                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
+                  >
                     {lang === "bn" ? "আইনি বিবরণ (ইমপ্রিন্ট)" : "Imprint"}
                   </Link>
                 </li>
@@ -557,7 +685,8 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
               </p>
 
               <div className="pt-2 text-[11px] text-muted-foreground/60">
-                © {year} {ORG_NAP.legalName} · {ORG_NAP.locality}, {ORG_NAP.country}
+                © {year} {ORG_NAP.legalName} · {ORG_NAP.locality},{" "}
+                {ORG_NAP.country}
               </div>
             </div>
 
@@ -591,8 +720,10 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                         <Check className="size-3.5" />
                         <span>Done</span>
                       </span>
+                    ) : lang === "bn" ? (
+                      "সাবস্ক্রাইব"
                     ) : (
-                      lang === "bn" ? "সাবস্ক্রাইব" : "Subscribe"
+                      "Subscribe"
                     )}
                   </button>
                 </div>
@@ -602,7 +733,9 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                     role="status"
                     className={cn(
                       "text-xs font-medium mt-1.5",
-                      feedback.type === "success" ? "text-success-foreground" : "text-destructive",
+                      feedback.type === "success"
+                        ? "text-success-foreground"
+                        : "text-destructive",
                     )}
                   >
                     {feedback.text}

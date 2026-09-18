@@ -63,7 +63,8 @@ type Db = {
 };
 
 async function admin(): Promise<Db> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Db;
 }
 
@@ -71,7 +72,10 @@ async function sha256(value: string): Promise<string> {
   const salt = process.env["AUTH_HASH_SALT"] ?? "framique-newsletter";
   const bytes = new TextEncoder().encode(`${salt}:${value}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 40);
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 40);
 }
 
 function requestSignals(): { ip: string; ua: string; origin: string | null } {
@@ -82,7 +86,9 @@ function requestSignals(): { ip: string; ua: string; origin: string | null } {
       req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       "unknown";
     const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
-    const host = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ?? req.headers.get("host");
+    const host =
+      req.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ??
+      req.headers.get("host");
     return {
       ip: ip.slice(0, 64),
       ua: (req.headers.get("user-agent") ?? "unknown").slice(0, 180),
@@ -95,7 +101,9 @@ function requestSignals(): { ip: string; ua: string; origin: string | null } {
 }
 
 function siteOrigin(fallback: string | null): string {
-  return fallback ?? process.env["PUBLIC_SITE_ORIGIN"] ?? "https://framique.com";
+  return (
+    fallback ?? process.env["PUBLIC_SITE_ORIGIN"] ?? "https://framique.com"
+  );
 }
 
 /** Append-only consent/abuse trail. Never blocks the caller's path. */
@@ -160,7 +168,9 @@ export type SubscribeResult = {
  * The public entry point. Returns an indistinguishable success for every
  * address that passes validation, whatever its current state on the list.
  */
-export async function subscribeNewsletter(input: SubscribeInput): Promise<SubscribeResult> {
+export async function subscribeNewsletter(
+  input: SubscribeInput,
+): Promise<SubscribeResult> {
   return withSpan("newsletter.subscribe", async () => {
     const now = new Date();
     const locale: NewsletterLocale = input.locale === "bn" ? "bn" : "en";
@@ -176,7 +186,10 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
       consent: input.consent === true,
     });
     if (!signals.ok) {
-      incr("framique_newsletter_signup_total", { outcome: "rejected", reason: signals.reason });
+      incr("framique_newsletter_signup_total", {
+        outcome: "rejected",
+        reason: signals.reason,
+      });
       await recordEvent({
         subscriberId: null,
         emailHash: await sha256(String(input.email ?? "").toLowerCase()),
@@ -191,7 +204,10 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
 
     const verdict = validateEmail(input.email);
     if (!verdict.ok) {
-      incr("framique_newsletter_signup_total", { outcome: "rejected", reason: verdict.reason });
+      incr("framique_newsletter_signup_total", {
+        outcome: "rejected",
+        reason: verdict.reason,
+      });
       await recordEvent({
         subscriberId: null,
         emailHash: await sha256(String(input.email ?? "").toLowerCase()),
@@ -221,7 +237,9 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
           reason: null,
           retryAfterSeconds: Math.max(
             1,
-            Math.ceil((new Date(error.resetAt).getTime() - now.getTime()) / 1000),
+            Math.ceil(
+              (new Date(error.resetAt).getTime() - now.getTime()) / 1000,
+            ),
           ),
         };
       }
@@ -239,7 +257,10 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
       .maybeSingle();
     if (readError) {
       await captureError(readError, { scope: "newsletter.subscribe.read" });
-      throw new NewsletterError("newsletter_unavailable", "Subscription is temporarily unavailable");
+      throw new NewsletterError(
+        "newsletter_unavailable",
+        "Subscription is temporarily unavailable",
+      );
     }
 
     const uaHash = await sha256(ua);
@@ -275,8 +296,13 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
           incr("framique_newsletter_signup_total", { outcome: "raced" });
           return { outcome: "check_inbox", reason: null };
         }
-        await captureError(insertError, { scope: "newsletter.subscribe.insert" });
-        throw new NewsletterError("newsletter_unavailable", "Subscription is temporarily unavailable");
+        await captureError(insertError, {
+          scope: "newsletter.subscribe.insert",
+        });
+        throw new NewsletterError(
+          "newsletter_unavailable",
+          "Subscription is temporarily unavailable",
+        );
       }
 
       await recordEvent({
@@ -303,7 +329,11 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
 
     // 3b. Suppressed addresses are honoured in silence. A bounced or
     //     complained address is not re-subscribed by a form post, ever.
-    if (existing.status === "bounced" || existing.status === "complained" || existing.status === "blocked") {
+    if (
+      existing.status === "bounced" ||
+      existing.status === "complained" ||
+      existing.status === "blocked"
+    ) {
       await recordEvent({
         subscriberId: existing.id,
         emailHash,
@@ -313,13 +343,23 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
         ipHash,
         reason: existing.status,
       });
-      incr("framique_newsletter_signup_total", { outcome: "suppressed", reason: existing.status });
+      incr("framique_newsletter_signup_total", {
+        outcome: "suppressed",
+        reason: existing.status,
+      });
       return { outcome: "check_inbox", reason: null };
     }
 
     // 3c. Already confirmed → nothing to do, and we say nothing about it.
     if (existing.status === "active") {
-      await recordEvent({ subscriberId: existing.id, emailHash, type: "already_active", source, locale, ipHash });
+      await recordEvent({
+        subscriberId: existing.id,
+        emailHash,
+        type: "already_active",
+        source,
+        locale,
+        ipHash,
+      });
       incr("framique_newsletter_signup_total", { outcome: "already_active" });
       return { outcome: "check_inbox", reason: null };
     }
@@ -335,9 +375,16 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
       now,
     );
     if (!resend.ok) {
-      incr("framique_newsletter_signup_total", { outcome: "throttled", reason: resend.reason });
+      incr("framique_newsletter_signup_total", {
+        outcome: "throttled",
+        reason: resend.reason,
+      });
       // Still `check_inbox`: the previous confirmation is genuinely in flight.
-      return { outcome: "check_inbox", reason: null, retryAfterSeconds: resend.retryAfterSeconds };
+      return {
+        outcome: "check_inbox",
+        reason: null,
+        retryAfterSeconds: resend.retryAfterSeconds,
+      };
     }
 
     const verifyToken = generateToken();
@@ -363,10 +410,20 @@ export async function subscribeNewsletter(input: SubscribeInput): Promise<Subscr
       .eq("id", existing.id);
     if (updateError) {
       await captureError(updateError, { scope: "newsletter.subscribe.rearm" });
-      throw new NewsletterError("newsletter_unavailable", "Subscription is temporarily unavailable");
+      throw new NewsletterError(
+        "newsletter_unavailable",
+        "Subscription is temporarily unavailable",
+      );
     }
 
-    await recordEvent({ subscriberId: existing.id, emailHash, type: "resend", source, locale, ipHash });
+    await recordEvent({
+      subscriberId: existing.id,
+      emailHash,
+      type: "resend",
+      source,
+      locale,
+      ipHash,
+    });
     await queueAndFlush({
       subscriberId: existing.id,
       to: email,
@@ -422,7 +479,10 @@ export async function verifyNewsletter(token: string): Promise<VerifyResult> {
     }
 
     const now = new Date();
-    if (row.verify_expires_at && new Date(row.verify_expires_at).getTime() < now.getTime()) {
+    if (
+      row.verify_expires_at &&
+      new Date(row.verify_expires_at).getTime() < now.getTime()
+    ) {
       await recordEvent({
         subscriberId: row.id,
         emailHash: await sha256(row.email),
@@ -446,7 +506,10 @@ export async function verifyNewsletter(token: string): Promise<VerifyResult> {
       .eq("id", row.id);
     if (error) {
       await captureError(error, { scope: "newsletter.verify.update" });
-      throw new NewsletterError("newsletter_unavailable", "Confirmation is temporarily unavailable");
+      throw new NewsletterError(
+        "newsletter_unavailable",
+        "Confirmation is temporarily unavailable",
+      );
     }
 
     await recordEvent({
@@ -469,14 +532,19 @@ export async function verifyNewsletter(token: string): Promise<VerifyResult> {
   });
 }
 
-export type UnsubscribeResult = { status: "done" | "already" | "invalid"; email?: string };
+export type UnsubscribeResult = {
+  status: "done" | "already" | "invalid";
+  email?: string;
+};
 
 /**
  * One-click unsubscribe. Deliberately unauthenticated and idempotent: making
  * someone sign in to stop receiving mail is both hostile and a CAN-SPAM/GDPR
  * problem. The token is high entropy and only ever removes consent.
  */
-export async function unsubscribeNewsletter(token: string): Promise<UnsubscribeResult> {
+export async function unsubscribeNewsletter(
+  token: string,
+): Promise<UnsubscribeResult> {
   return withSpan("newsletter.unsubscribe", async () => {
     const clean = String(token ?? "").trim();
     if (!/^[a-f0-9]{32,64}$/.test(clean)) return { status: "invalid" };
@@ -540,7 +608,9 @@ export async function recordDeliveryFeedback(input: {
   kind: "hard" | "soft" | "complaint";
   detail?: string | null;
 }): Promise<{ status: NewsletterStatus | "unknown"; suppressed: boolean }> {
-  const email = String(input.email ?? "").trim().toLowerCase();
+  const email = String(input.email ?? "")
+    .trim()
+    .toLowerCase();
   if (!email) return { status: "unknown", suppressed: false };
 
   const db = await admin();
@@ -575,7 +645,11 @@ export async function recordDeliveryFeedback(input: {
     return { status: "complained", suppressed: true };
   }
 
-  const next = statusAfterBounce(row.status as NewsletterStatus, row.bounce_count ?? 0, input.kind);
+  const next = statusAfterBounce(
+    row.status as NewsletterStatus,
+    row.bounce_count ?? 0,
+    input.kind,
+  );
   await db
     .from("newsletter_subscribers")
     .update({
@@ -591,7 +665,10 @@ export async function recordDeliveryFeedback(input: {
     type: "bounced",
     reason: `${input.kind}:${input.detail?.slice(0, 160) ?? ""}`,
   });
-  incr("framique_newsletter_feedback_total", { kind: input.kind, suppressed: String(next.suppressed) });
+  incr("framique_newsletter_feedback_total", {
+    kind: input.kind,
+    suppressed: String(next.suppressed),
+  });
   return next;
 }
 
@@ -667,7 +744,13 @@ async function queueAndFlush(input: QueueInput) {
 
 async function attemptDelivery(
   outboxId: string,
-  message: { to: string; subject: string; text: string; html: string; unsubscribeUrl: string },
+  message: {
+    to: string;
+    subject: string;
+    text: string;
+    html: string;
+    unsubscribeUrl: string;
+  },
   previousAttempts = 0,
 ) {
   const db = await admin();
@@ -702,12 +785,22 @@ async function attemptDelivery(
       provider: result.provider,
       attempts,
       last_error: result.error.slice(0, 300),
-      next_attempt_at: nextAttemptAt(attempts, now, Math.random()).toISOString(),
+      next_attempt_at: nextAttemptAt(
+        attempts,
+        now,
+        Math.random(),
+      ).toISOString(),
     })
     .eq("id", outboxId);
-  incr("framique_newsletter_outbox_total", { outcome: dead ? "dead" : "retry" });
+  incr("framique_newsletter_outbox_total", {
+    outcome: dead ? "dead" : "retry",
+  });
   if (dead) {
-    log("error", "newsletter.outbox_dead_letter", { outboxId, attempts, error: result.error.slice(0, 200) });
+    log("error", "newsletter.outbox_dead_letter", {
+      outboxId,
+      attempts,
+      error: result.error.slice(0, 200),
+    });
   }
 }
 
@@ -717,12 +810,19 @@ async function attemptDelivery(
  * self-heals on the next visitor without adding a cron dependency. The batch
  * is deliberately tiny: a visitor's request is not a worker.
  */
-export async function flushOutbox(limit = NEWSLETTER_LIMITS.outboxFlushBatch): Promise<{ processed: number }> {
-  const bounded = Math.max(1, Math.min(NEWSLETTER_LIMITS.outboxFlushBatch, Math.trunc(limit)));
+export async function flushOutbox(
+  limit = NEWSLETTER_LIMITS.outboxFlushBatch,
+): Promise<{ processed: number }> {
+  const bounded = Math.max(
+    1,
+    Math.min(NEWSLETTER_LIMITS.outboxFlushBatch, Math.trunc(limit)),
+  );
   const db = await admin();
   const { data: due } = await db
     .from("newsletter_outbox")
-    .select("id, to_email, subject, body_text, body_html, attempts, subscriber_id")
+    .select(
+      "id, to_email, subject, body_text, body_html, attempts, subscriber_id",
+    )
     .eq("status", "queued")
     .lte("next_attempt_at", new Date().toISOString())
     .order("next_attempt_at", { ascending: true })
@@ -740,7 +840,9 @@ export async function flushOutbox(limit = NEWSLETTER_LIMITS.outboxFlushBatch): P
   for (const row of rows) {
     // Extract the unsubscribe URL we already rendered so the header stays in
     // sync with the body even on a retry days later.
-    const match = /https?:\/\/\S*\/unsubscribe\?token=[a-f0-9]+/.exec(row.body_text);
+    const match = /https?:\/\/\S*\/unsubscribe\?token=[a-f0-9]+/.exec(
+      row.body_text,
+    );
     await attemptDelivery(
       row.id,
       {
@@ -753,13 +855,21 @@ export async function flushOutbox(limit = NEWSLETTER_LIMITS.outboxFlushBatch): P
       row.attempts,
     );
   }
-  if (rows.length > 0) log("info", "newsletter.outbox_flushed", { processed: rows.length });
+  if (rows.length > 0)
+    log("info", "newsletter.outbox_flushed", { processed: rows.length });
   return { processed: rows.length };
 }
 
 /** Send-time audience filter, mirroring `channelAudience` for the platform list. */
 export function sendableStatuses(): NewsletterStatus[] {
-  return (["pending", "active", "unsubscribed", "bounced", "complained", "blocked"] as NewsletterStatus[]).filter(
-    isSendable,
-  );
+  return (
+    [
+      "pending",
+      "active",
+      "unsubscribed",
+      "bounced",
+      "complained",
+      "blocked",
+    ] as NewsletterStatus[]
+  ).filter(isSendable);
 }

@@ -13,7 +13,10 @@ import { publicClient } from "./pricing.server";
 import { incr, log, withSpan } from "./observability.server";
 
 type Rpc = {
-  rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 export type Assignment = {
@@ -52,7 +55,10 @@ export async function assignVariant(
       });
       return result;
     } catch {
-      incr("framique_experiment_assign_total", { experiment: key, outcome: "unavailable" });
+      incr("framique_experiment_assign_total", {
+        experiment: key,
+        outcome: "unavailable",
+      });
       log("warn", "experiment.assign_failed", { key });
       return { variant: null, reason: "unavailable" };
     }
@@ -83,7 +89,10 @@ export async function recordConversion(
     incr("framique_experiment_conversion_total", { experiment: key, metric });
     return Boolean(data);
   } catch {
-    incr("framique_experiment_conversion_total", { experiment: key, metric: "failed" });
+    incr("framique_experiment_conversion_total", {
+      experiment: key,
+      metric: "failed",
+    });
     log("warn", "experiment.convert_failed", { key });
     return false;
   }
@@ -117,11 +126,20 @@ export type ExperimentRow = {
 };
 
 /** Experiment list with exposure and conversion roll-ups for the admin table. */
-export async function listExperiments(db: Client, merchantId: string): Promise<ExperimentRow[]> {
-  const [{ data: experiments, error }, { data: variants }, { data: exposures }] = await Promise.all([
+export async function listExperiments(
+  db: Client,
+  merchantId: string,
+): Promise<ExperimentRow[]> {
+  const [
+    { data: experiments, error },
+    { data: variants },
+    { data: exposures },
+  ] = await Promise.all([
     db
       .from("experiments")
-      .select("id, key, name, hypothesis, surface, status, traffic_pct, started_at, stopped_at")
+      .select(
+        "id, key, name, hypothesis, surface, status, traffic_pct, started_at, stopped_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(100),
@@ -136,14 +154,21 @@ export async function listExperiments(db: Client, merchantId: string): Promise<E
   ]);
   if (error) throw error;
 
-  const totals = new Map<string, { exposures: number; conversions: number; revenue: number }>();
+  const totals = new Map<
+    string,
+    { exposures: number; conversions: number; revenue: number }
+  >();
   for (const e of (exposures ?? []) as {
     variant_id: string;
     metric: string;
     hits: number;
     value_minor_int: number;
   }[]) {
-    const cur = totals.get(e.variant_id) ?? { exposures: 0, conversions: 0, revenue: 0 };
+    const cur = totals.get(e.variant_id) ?? {
+      exposures: 0,
+      conversions: 0,
+      revenue: 0,
+    };
     if (e.metric === "exposure") cur.exposures += Number(e.hits ?? 0);
     else {
       cur.conversions += Number(e.hits ?? 0);
@@ -157,7 +182,11 @@ export async function listExperiments(db: Client, merchantId: string): Promise<E
     variants: ((variants ?? []) as { experiment_id: string; id: string }[])
       .filter((v) => v.experiment_id === x.id)
       .map((v) => {
-        const t = totals.get(v.id) ?? { exposures: 0, conversions: 0, revenue: 0 };
+        const t = totals.get(v.id) ?? {
+          exposures: 0,
+          conversions: 0,
+          revenue: 0,
+        };
         return {
           ...(v as unknown as ExperimentRow["variants"][number]),
           exposures: t.exposures,
@@ -165,7 +194,13 @@ export async function listExperiments(db: Client, merchantId: string): Promise<E
           revenue_minor: t.revenue,
         };
       })
-      .sort((a, b) => (a.is_control === b.is_control ? a.key.localeCompare(b.key) : a.is_control ? -1 : 1)),
+      .sort((a, b) =>
+        a.is_control === b.is_control
+          ? a.key.localeCompare(b.key)
+          : a.is_control
+            ? -1
+            : 1,
+      ),
   }));
 }
 
@@ -184,9 +219,14 @@ export type ExperimentInput = {
  * and again by a deferred database constraint, so a running experiment can
  * never serve traffic that does not add up to 100%.
  */
-export async function saveExperiment(db: Client, merchantId: string, input: ExperimentInput) {
+export async function saveExperiment(
+  db: Client,
+  merchantId: string,
+  input: ExperimentInput,
+) {
   const total = input.variants.reduce((sum, v) => sum + v.weightPct, 0);
-  if (input.variants.length < 2) throw new Error("experiment.needs_two_variants");
+  if (input.variants.length < 2)
+    throw new Error("experiment.needs_two_variants");
   if (total !== 100) throw new Error("experiment.weights_must_total_100");
   if (input.variants.filter((v) => v.isControl).length !== 1) {
     throw new Error("experiment.needs_exactly_one_control");
@@ -210,7 +250,11 @@ export async function saveExperiment(db: Client, merchantId: string, input: Expe
       .eq("merchant_id", merchantId);
     if (error) throw error;
   } else {
-    const { data, error } = await db.from("experiments").insert(row).select("id").single();
+    const { data, error } = await db
+      .from("experiments")
+      .insert(row)
+      .select("id")
+      .single();
     if (error) throw error;
     experimentId = (data as { id: string }).id;
   }
@@ -262,8 +306,8 @@ export async function setExperimentStatus(
   }
 
   const patch: Record<string, unknown> = { status };
-  if (status === "running") patch['started_at'] = new Date().toISOString();
-  if (status === "stopped") patch['stopped_at'] = new Date().toISOString();
+  if (status === "running") patch["started_at"] = new Date().toISOString();
+  if (status === "stopped") patch["stopped_at"] = new Date().toISOString();
 
   const { error } = await db
     .from("experiments")

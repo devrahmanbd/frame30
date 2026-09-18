@@ -29,15 +29,23 @@ export const permalinkStateFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { loadPermalinkSettings, listRedirectsPage, listMissingPaths } = await import(
-      "./permalink.server"
-    );
+    const { loadPermalinkSettings, listRedirectsPage, listMissingPaths } =
+      await import("./permalink.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("seo.read", `permalinks:${merchantId}:${context.userId}`);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "seo.read",
+      `permalinks:${merchantId}:${context.userId}`,
+    );
     const [settings, redirects, missing] = await Promise.all([
       loadPermalinkSettings(context.supabase, merchantId),
-      listRedirectsPage(context.supabase, merchantId, { page: 1, pageSize: 50 }),
+      listRedirectsPage(context.supabase, merchantId, {
+        page: 1,
+        pageSize: 50,
+      }),
       listMissingPaths(context.supabase, merchantId, 100),
     ]);
     return { settings, redirects, missing };
@@ -49,8 +57,15 @@ export const permalinkPreviewFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { previewPermalinkChange } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    const plan = await previewPermalinkChange(context.supabase, merchantId, data as Partial<PermalinkSettings>);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    const plan = await previewPermalinkChange(
+      context.supabase,
+      merchantId,
+      data as Partial<PermalinkSettings>,
+    );
     // The full move list can be tens of thousands of rows; the client only
     // ever renders the sample and the counts.
     const { moves: _moves, ...wire } = plan;
@@ -63,21 +78,36 @@ export const permalinkApplyFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { applyPermalinkChange } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return applyPermalinkChange(context.supabase, merchantId, context.userId, data as Partial<PermalinkSettings>);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return applyPermalinkChange(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data as Partial<PermalinkSettings>,
+    );
   });
 
 export const permalinkSlugCheckFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])
   .inputValidator((d: unknown) =>
     z
-      .object({ kind, slug: z.string().max(200), excludeId: z.string().uuid().nullable().optional() })
+      .object({
+        kind,
+        slug: z.string().max(200),
+        excludeId: z.string().uuid().nullable().optional(),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { checkSlug } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return checkSlug(context.supabase, merchantId, {
       kind: data.kind,
       slug: data.slug,
@@ -101,7 +131,10 @@ export const redirectListFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { listRedirectsPage } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return listRedirectsPage(context.supabase, merchantId, data);
   });
 
@@ -119,29 +152,52 @@ export const redirectSaveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { upsertRedirect } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return upsertRedirect(context.supabase, merchantId, context.userId, data);
   });
 
 export const redirectDeleteFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).max(500) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ ids: z.array(z.string().uuid()).max(500) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { deleteRedirects } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    const deleted = await deleteRedirects(context.supabase, merchantId, context.userId, data.ids);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    const deleted = await deleteRedirects(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.ids,
+    );
     return { deleted };
   });
 
 export const redirectImportFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ csv: z.string().max(2_000_000) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ csv: z.string().max(2_000_000) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { importRedirectCsv } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return importRedirectCsv(context.supabase, merchantId, context.userId, data.csv);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return importRedirectCsv(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.csv,
+    );
   });
 
 export const redirectExportFn = createServerFn({ method: "POST" })
@@ -149,7 +205,10 @@ export const redirectExportFn = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { exportRedirectCsv } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return { csv: await exportRedirectCsv(context.supabase, merchantId) };
   });
 
@@ -167,8 +226,16 @@ export const missingResolveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { resolveMissingPath } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return resolveMissingPath(context.supabase, merchantId, context.userId, data);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return resolveMissingPath(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data,
+    );
   });
 
 export const missingDismissFn = createServerFn({ method: "POST" })
@@ -177,7 +244,10 @@ export const missingDismissFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { dismissMissingPath } = await import("./permalink.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await dismissMissingPath(context.supabase, merchantId, data.id);
     return { ok: true as const };
   });

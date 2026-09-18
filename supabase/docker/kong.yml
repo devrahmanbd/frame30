@@ -46,9 +46,6 @@ services:
           fault_tolerant: true
           limit_by: ip
 
-
-
-
   - name: rest-v1
     url: http://rest:3000/
     routes:
@@ -72,7 +69,6 @@ services:
         config:
           hide_groups_header: true
           allow: [admin, anon]
-
 
   - name: realtime-v1
     url: http://realtime:4000/socket/
@@ -106,7 +102,6 @@ services:
           policy: local
           fault_tolerant: true
           limit_by: ip
-
 
   # Schema introspection is an operator tool: admin only, no anon group.
   - name: meta

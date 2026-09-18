@@ -28,8 +28,10 @@ export function formatDisplayMoney(
   amountMinor: number | string | null | undefined,
   options: MoneyDisplayOptions = {},
 ): string {
-  const currency = options.currency && isCurrency(options.currency) ? options.currency : "BDT";
-  const raw = typeof amountMinor === "string" ? Number(amountMinor) : (amountMinor ?? 0);
+  const currency =
+    options.currency && isCurrency(options.currency) ? options.currency : "BDT";
+  const raw =
+    typeof amountMinor === "string" ? Number(amountMinor) : (amountMinor ?? 0);
   const minor = Number.isFinite(raw) ? Math.trunc(raw) : 0;
   let out = fmtMinor(minor, currency);
   if (options.compact && minor % 100 === 0) out = out.replace(/\.00\b/, "");
@@ -37,7 +39,10 @@ export function formatDisplayMoney(
     // Symbol swap only — never touches the digits the server sent.
     out = out.replace(/^[^\d\-]*\s?/, `${currency} `);
   }
-  return toDigits(out, options.digits ?? (options.locale === "bn" ? "bengali" : "latin"));
+  return toDigits(
+    out,
+    options.digits ?? (options.locale === "bn" ? "bengali" : "latin"),
+  );
 }
 
 /** Quantities, ratings, counts — same digit rules, no currency symbol. */

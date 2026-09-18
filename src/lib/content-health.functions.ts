@@ -18,18 +18,24 @@ async function friendly(err: unknown): Promise<never> {
   const { ContentHealthError } = await import("./content-health.server");
   const { RateLimitError } = await import("./rate-limit.server");
   if (err instanceof RateLimitError) {
-    throw new Error("Too many content scans. Wait a few minutes and try again.");
+    throw new Error(
+      "Too many content scans. Wait a few minutes and try again.",
+    );
   }
   if (err instanceof ContentHealthError) {
     switch (err.code) {
       case "scan_busy":
-        throw new Error("A content scan is already running for this store. Give it a minute.");
+        throw new Error(
+          "A content scan is already running for this store. Give it a minute.",
+        );
       case "merchant_not_found":
         throw new Error("This store is not set up yet.");
       case "not_found":
         throw new Error("That item no longer exists — refresh the list.");
       default:
-        throw new Error("The content scan could not finish. Try again shortly.");
+        throw new Error(
+          "The content scan could not finish. Try again shortly.",
+        );
     }
   }
   const { captureError } = await import("./observability.server");
@@ -45,8 +51,14 @@ export const contentHealthStateFn = createServerFn({ method: "POST" })
     const { loadContentHealthState } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_read", `${merchantId}:${context.userId}`);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_read",
+        `${merchantId}:${context.userId}`,
+      );
       return await loadContentHealthState(context.supabase, merchantId);
     } catch (err) {
       return friendly(err);
@@ -72,8 +84,14 @@ export const contentHealthFindingsFn = createServerFn({ method: "POST" })
     const { loadFindings } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_read", `${merchantId}:${context.userId}`);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_read",
+        `${merchantId}:${context.userId}`,
+      );
       return await loadFindings(context.supabase, merchantId, data as never);
     } catch (err) {
       return friendly(err);
@@ -82,14 +100,22 @@ export const contentHealthFindingsFn = createServerFn({ method: "POST" })
 
 export const contentHealthRunFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ checkExternal: z.boolean().default(true) }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ checkExternal: z.boolean().default(true) }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { runContentHealthScan } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_run", `${merchantId}:${context.userId}`);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_run",
+        `${merchantId}:${context.userId}`,
+      );
       return await runContentHealthScan({
         merchantId,
         trigger: "manual",
@@ -104,16 +130,33 @@ export const contentHealthRunFn = createServerFn({ method: "POST" })
 export const contentHealthTriageFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
   .inputValidator((d: unknown) =>
-    z.object({ findingId: z.string().uuid(), state: z.enum(["open", "ignored"]) }).parse(d),
+    z
+      .object({
+        findingId: z.string().uuid(),
+        state: z.enum(["open", "ignored"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { setFindingState } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_triage", `${merchantId}:${context.userId}`);
-      return await setFindingState(context.supabase, merchantId, data.findingId, data.state, context.userId);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_triage",
+        `${merchantId}:${context.userId}`,
+      );
+      return await setFindingState(
+        context.supabase,
+        merchantId,
+        data.findingId,
+        data.state,
+        context.userId,
+      );
     } catch (err) {
       return friendly(err);
     }
@@ -138,10 +181,21 @@ export const contentLinkSuggestionsFn = createServerFn({ method: "POST" })
     const { suggestLinksForDraft } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_suggest", `${merchantId}:${context.userId}`);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_suggest",
+        `${merchantId}:${context.userId}`,
+      );
       const { limit, ...draft } = data;
-      return await suggestLinksForDraft(context.supabase, merchantId, draft as never, limit);
+      return await suggestLinksForDraft(
+        context.supabase,
+        merchantId,
+        draft as never,
+        limit,
+      );
     } catch (err) {
       return friendly(err);
     }
@@ -149,14 +203,22 @@ export const contentLinkSuggestionsFn = createServerFn({ method: "POST" })
 
 export const contentSchemaReportFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.read")])
-  .inputValidator((d: unknown) => z.object({ entityId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ entityId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { schemaReportFor } = await import("./content-health.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
     try {
-      const merchantId = await currentMerchantId(context.supabase, context.userId);
-      await enforceRateLimit("content.health_read", `${merchantId}:${context.userId}`);
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      await enforceRateLimit(
+        "content.health_read",
+        `${merchantId}:${context.userId}`,
+      );
       return await schemaReportFor(context.supabase, merchantId, data.entityId);
     } catch (err) {
       return friendly(err);

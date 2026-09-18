@@ -1,1 +1,242 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "label": "DomainManager.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L1"}, {"id": "admin_domainmanager_toneclass", "label": "toneClass", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L16"}, {"id": "admin_domainmanager_domainstatuspill", "label": "DomainStatusPill()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L24"}, {"id": "admin_domainmanager_domainprogress", "label": "DomainProgress()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L35"}, {"id": "admin_domainmanager_dnsrecordtable", "label": "DnsRecordTable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L75"}, {"id": "admin_domainmanager_certbadge", "label": "CertBadge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L121"}, {"id": "admin_domainmanager_inlinenote", "label": "InlineNote()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L142"}, {"id": "admin_domainmanager_observedrecords", "label": "ObservedRecords()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L148"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "users_rahman_documents_frame30_src_lib_domains_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_domain_stages", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_statustone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_certhealth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_dnsrecord", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_domainstatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "lib_domains_domaintone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_toneclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_domainstatuspill", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_domainprogress", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_dnsrecordtable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_certbadge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L121", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_inlinenote", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx", "target": "admin_domainmanager_observedrecords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L148", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_domainmanager_domainstatuspill", "callee": "statusTone", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L27"}, {"caller_nid": "admin_domainmanager_domainprogress", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L44"}, {"caller_nid": "admin_domainmanager_dnsrecordtable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L94"}, {"caller_nid": "admin_domainmanager_certbadge", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L133"}, {"caller_nid": "admin_domainmanager_observedrecords", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx", "source_location": "L158"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "label": "DomainManager.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_domainmanager_toneclass",
+      "label": "toneClass",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "admin_domainmanager_domainstatuspill",
+      "label": "DomainStatusPill()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "admin_domainmanager_domainprogress",
+      "label": "DomainProgress()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L35"
+    },
+    {
+      "id": "admin_domainmanager_dnsrecordtable",
+      "label": "DnsRecordTable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L75"
+    },
+    {
+      "id": "admin_domainmanager_certbadge",
+      "label": "CertBadge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L121"
+    },
+    {
+      "id": "admin_domainmanager_inlinenote",
+      "label": "InlineNote()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L142"
+    },
+    {
+      "id": "admin_domainmanager_observedrecords",
+      "label": "ObservedRecords()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L148"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_domains_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_domain_stages",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_statustone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_certhealth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_dnsrecord",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_domainstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "lib_domains_domaintone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_toneclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_domainstatuspill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_domainprogress",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_dnsrecordtable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_certbadge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_inlinenote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_domainmanager_tsx",
+      "target": "admin_domainmanager_observedrecords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L148",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_domainmanager_domainstatuspill",
+      "callee": "statusTone",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "admin_domainmanager_domainprogress",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "admin_domainmanager_dnsrecordtable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "admin_domainmanager_certbadge",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "admin_domainmanager_observedrecords",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/DomainManager.tsx",
+      "source_location": "L158"
+    }
+  ]
+}

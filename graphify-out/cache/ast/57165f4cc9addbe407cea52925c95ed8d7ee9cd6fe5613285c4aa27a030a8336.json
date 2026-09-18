@@ -1,1 +1,1377 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_seo_strategy_13_layout_preserving_content_injection_dictionary_json", "label": "13-layout-preserving-content-injection-dictionary.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L1"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes", "label": "routes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L2"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L4"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L5"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "label": "en", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L6"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "label": "bn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L7"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L9"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "label": "en", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L10"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "label": "bn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L11"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_eyebrow", "label": "eyebrow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L13"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L14"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L15"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "label": "/pricing", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L17"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L18"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L19"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L23"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_eyebrow", "label": "eyebrow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L27"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L28"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L29"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "label": "/features", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L31"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L32"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L33"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L37"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_eyebrow", "label": "eyebrow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L41"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L42"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L43"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "label": "/faq", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L45"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L46"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L47"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L51"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_eyebrow", "label": "eyebrow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L55"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L56"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L57"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "label": "/builder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L59"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_builder_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L60"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L61"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L65"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_builder_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L69"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L70"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "label": "/payments", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L72"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_payments_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L73"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L74"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L78"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_payments_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L82"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L83"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "label": "/fulfilment", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L85"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L86"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L87"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L91"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L95"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L96"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "label": "/about", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L98"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_targetfile", "label": "targetFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L99"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_h1", "label": "h1", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L100"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline", "label": "subheadline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L104"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_eyebrow", "label": "eyebrow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L108"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_primarykeyword", "label": "primaryKeyword", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L109"}, {"id": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords", "label": "secondaryKeywords", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L110"}], "edges": [{"source": "users_rahman_documents_frame30_seo_strategy_13_layout_preserving_content_injection_dictionary_json", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L2", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L4", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L5", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L6", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L7", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L9", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L10", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L11", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_eyebrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L13", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L14", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L15", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords", "target": "ref_shopify_alternative_bangladesh", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L15", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords", "target": "ref_0_transaction_fee_online_store", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L15", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords", "target": "ref_best_ecommerce_platform_for_small_business", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L15", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L17", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L18", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L19", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L20", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L21", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L23", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L24", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L25", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_eyebrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L27", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L28", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing", "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L29", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords", "target": "ref_shopify_pricing_vs_framique", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L29", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords", "target": "ref_flat_fee_ecommerce_platform", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L29", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords", "target": "ref_tco_ecommerce_calculator", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L29", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L31", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L32", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L33", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L34", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L35", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L37", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L38", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L39", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_eyebrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L41", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L42", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features", "target": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L43", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords", "target": "ref_all_in_one_ecommerce_software", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L43", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords", "target": "ref_pos_and_online_store_unified", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L43", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords", "target": "ref_automated_courier_booking_ecommerce", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L43", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L45", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L46", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L47", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L48", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L49", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L51", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L52", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L53", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_eyebrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L55", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L56", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq", "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L57", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords", "target": "ref_bkash_payment_gateway_integration_questions", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L57", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords", "target": "ref_how_to_reduce_cod_delivery_returns", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L57", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords", "target": "ref_switch_from_shopify_to_local_platform", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L57", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L59", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L60", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L61", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L62", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L63", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L65", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L66", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L67", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L69", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder", "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L70", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords", "target": "ref_framer_like_ecommerce_builder", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L70", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords", "target": "ref_visual_website_builder_for_online_store", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L70", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L72", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L73", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L74", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L75", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L76", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L78", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L79", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L80", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L82", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments", "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L83", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords", "target": "ref_nagad_online_payment_integration", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L83", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords", "target": "ref_single_step_checkout_mobile_ecommerce", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L83", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L85", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L86", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L87", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L88", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L89", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L91", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L92", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L93", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L95", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment", "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L96", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords", "target": "ref_ecommerce_order_fulfillment_bangladesh", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L96", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords", "target": "ref_reduce_cod_return_rate", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L96", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes", "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L98", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_targetfile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L99", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_h1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L100", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L101", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_h1", "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L102", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L104", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L105", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline", "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L106", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_eyebrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L108", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_primarykeyword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L109", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about", "target": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L110", "weight": 1.0}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords", "target": "ref_open_architecture_saas_cms", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L110", "weight": 1.0, "context": "import"}, {"source": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords", "target": "ref_zero_vendor_lock_in_ecommerce", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json", "source_location": "L110", "weight": 1.0, "context": "import"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_seo_strategy_13_layout_preserving_content_injection_dictionary_json",
+      "label": "13-layout-preserving-content-injection-dictionary.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "label": "routes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "label": "en",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "label": "bn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "label": "en",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "label": "bn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_eyebrow",
+      "label": "eyebrow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "label": "/pricing",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_eyebrow",
+      "label": "eyebrow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "label": "/features",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_eyebrow",
+      "label": "eyebrow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "label": "/faq",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L45"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L46"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L47"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L51"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_eyebrow",
+      "label": "eyebrow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L55"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L56"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L57"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "label": "/builder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L59"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_builder_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L60"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L61"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L65"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_builder_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L69"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "label": "/payments",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_payments_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_payments_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L82"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L83"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "label": "/fulfilment",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L85"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L86"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L87"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L95"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L96"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "label": "/about",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L98"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_targetfile",
+      "label": "targetFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L99"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_h1",
+      "label": "h1",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L100"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline",
+      "label": "subheadline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L104"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_eyebrow",
+      "label": "eyebrow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L108"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_primarykeyword",
+      "label": "primaryKeyword",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L109"
+    },
+    {
+      "id": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords",
+      "label": "secondaryKeywords",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L110"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_seo_strategy_13_layout_preserving_content_injection_dictionary_json",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_eyebrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords",
+      "target": "ref_shopify_alternative_bangladesh",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords",
+      "target": "ref_0_transaction_fee_online_store",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_secondarykeywords",
+      "target": "ref_best_ecommerce_platform_for_small_business",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L15",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_eyebrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_pricing",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords",
+      "target": "ref_shopify_pricing_vs_framique",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords",
+      "target": "ref_flat_fee_ecommerce_platform",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_pricing_secondarykeywords",
+      "target": "ref_tco_ecommerce_calculator",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L29",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_eyebrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_features",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords",
+      "target": "ref_all_in_one_ecommerce_software",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L43",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords",
+      "target": "ref_pos_and_online_store_unified",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L43",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_features_secondarykeywords",
+      "target": "ref_automated_courier_booking_ecommerce",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L43",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_eyebrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_faq",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords",
+      "target": "ref_bkash_payment_gateway_integration_questions",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords",
+      "target": "ref_how_to_reduce_cod_delivery_returns",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_faq_secondarykeywords",
+      "target": "ref_switch_from_shopify_to_local_platform",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L57",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_builder",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords",
+      "target": "ref_framer_like_ecommerce_builder",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_builder_secondarykeywords",
+      "target": "ref_visual_website_builder_for_online_store",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_payments",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords",
+      "target": "ref_nagad_online_payment_integration",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_payments_secondarykeywords",
+      "target": "ref_single_step_checkout_mobile_ecommerce",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_fulfilment",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords",
+      "target": "ref_ecommerce_order_fulfillment_bangladesh",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_fulfilment_secondarykeywords",
+      "target": "ref_reduce_cod_return_rate",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_targetfile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_h1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_h1",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_h1_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_en",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_subheadline",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_subheadline_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_eyebrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_primarykeyword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_routes_about",
+      "target": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords",
+      "target": "ref_open_architecture_saas_cms",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L110",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "strategy_13_layout_preserving_content_injection_dictionary_about_secondarykeywords",
+      "target": "ref_zero_vendor_lock_in_ecommerce",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/SEO/Strategy/13-layout-preserving-content-injection-dictionary.json",
+      "source_location": "L110",
+      "weight": 1.0,
+      "context": "import"
+    }
+  ]
+}

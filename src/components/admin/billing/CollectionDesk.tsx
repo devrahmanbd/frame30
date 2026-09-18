@@ -30,7 +30,9 @@ import { methodLabel, type CollectionVerdict } from "@/lib/platform-billing";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 
-type Desk = Awaited<ReturnType<ReturnType<typeof useServerFn<typeof platformCollectionFn>>>>;
+type Desk = Awaited<
+  ReturnType<ReturnType<typeof useServerFn<typeof platformCollectionFn>>>
+>;
 type Item = Desk["items"][number];
 
 const STATUS_CLS: Record<string, string> = {
@@ -56,7 +58,9 @@ function readError(error: unknown, bn: boolean) {
 
 function newIdempotencyKey() {
   const c = globalThis.crypto;
-  return c && "randomUUID" in c ? c.randomUUID() : `k_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+  return c && "randomUUID" in c
+    ? c.randomUUID()
+    : `k_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 }
 
 export function CollectionDesk() {
@@ -68,7 +72,11 @@ export function CollectionDesk() {
   const cancel = useServerFn(platformCancelChargeFn);
 
   const [picking, setPicking] = useState<string | null>(null);
-  const [manual, setManual] = useState<{ en: string; bn: string; reference: string } | null>(null);
+  const [manual, setManual] = useState<{
+    en: string;
+    bn: string;
+    reference: string;
+  } | null>(null);
   const keys = useRef(new Map<string, string>());
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -76,7 +84,9 @@ export function CollectionDesk() {
     queryFn: () => load(),
     // A live charge expires on a clock; the verdict must not go stale on screen.
     refetchInterval: (q) =>
-      (q.state.data as Desk | undefined)?.items.some((i) => i.live) ? 15_000 : false,
+      (q.state.data as Desk | undefined)?.items.some((i) => i.live)
+        ? 15_000
+        : false,
     staleTime: 5_000,
     retry: 1,
   });
@@ -92,15 +102,26 @@ export function CollectionDesk() {
       const receipt = params.get("receipt");
       toast.success(
         receipt
-          ? t(`Payment received. Receipt ${receipt}.`, `পেমেন্ট গৃহীত। রসিদ ${receipt}।`)
+          ? t(
+              `Payment received. Receipt ${receipt}.`,
+              `পেমেন্ট গৃহীত। রসিদ ${receipt}।`,
+            )
           : t("Payment received.", "পেমেন্ট গৃহীত।"),
       );
     } else if (paid) {
       toast.error(
-        t(`Payment did not complete (${paid}).`, `পেমেন্ট সম্পন্ন হয়নি (${paid})।`),
+        t(
+          `Payment did not complete (${paid}).`,
+          `পেমেন্ট সম্পন্ন হয়নি (${paid})।`,
+        ),
       );
     } else if (failed) {
-      toast.error(t(`Payment could not be verified (${failed}).`, `পেমেন্ট যাচাই করা যায়নি (${failed})।`));
+      toast.error(
+        t(
+          `Payment could not be verified (${failed}).`,
+          `পেমেন্ট যাচাই করা যায়নি (${failed})।`,
+        ),
+      );
     }
     // Clear the params so a refresh does not replay the toast, then re-read the
     // authoritative state rather than believing the query string.
@@ -115,8 +136,15 @@ export function CollectionDesk() {
   }, [qc]);
 
   const startMutation = useMutation({
-    mutationFn: ({ invoiceId, method }: { invoiceId: string; method: string }) => {
-      const existing = keys.current.get(`${invoiceId}:${method}`) ?? newIdempotencyKey();
+    mutationFn: ({
+      invoiceId,
+      method,
+    }: {
+      invoiceId: string;
+      method: string;
+    }) => {
+      const existing =
+        keys.current.get(`${invoiceId}:${method}`) ?? newIdempotencyKey();
       keys.current.set(`${invoiceId}:${method}`, existing);
       return start({ data: { invoiceId, method, idempotencyKey: existing } });
     },
@@ -128,7 +156,10 @@ export function CollectionDesk() {
         return;
       }
       if (result.instructions) {
-        setManual({ ...result.instructions, reference: result.chargeId.slice(0, 8).toUpperCase() });
+        setManual({
+          ...result.instructions,
+          reference: result.chargeId.slice(0, 8).toUpperCase(),
+        });
       }
       invalidate();
     },
@@ -162,7 +193,11 @@ export function CollectionDesk() {
   }, [data]);
 
   if (isLoading) {
-    return <p className="text-sm text-muted-foreground">{t("Loading invoices…", "ইনভয়েস লোড হচ্ছে…")}</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t("Loading invoices…", "ইনভয়েস লোড হচ্ছে…")}
+      </p>
+    );
   }
 
   if (isError || !data) {
@@ -190,8 +225,10 @@ export function CollectionDesk() {
       {dunning && (
         <div className="rounded-fq-md border border-destructive/40 bg-destructive/10 p-3 text-sm">
           <p className="font-medium text-destructive">
-            {t("Subscription needs attention", "সাবস্ক্রিপশনে মনোযোগ দরকার")} · {dunning.status}
-            {dunning.dunningStage > 0 && ` · ${t("stage", "ধাপ")} ${dunning.dunningStage}`}
+            {t("Subscription needs attention", "সাবস্ক্রিপশনে মনোযোগ দরকার")} ·{" "}
+            {dunning.status}
+            {dunning.dunningStage > 0 &&
+              ` · ${t("stage", "ধাপ")} ${dunning.dunningStage}`}
           </p>
           <p className="mt-1 text-muted-foreground">
             {dunning.pastDueDays != null
@@ -203,15 +240,20 @@ export function CollectionDesk() {
                   "Settling the open invoice restores full service immediately.",
                   "বকেয়া ইনভয়েস পরিশোধ করলেই সেবা সাথে সাথে ফিরে আসবে।",
                 )}
-            {dunning.graceUntil && ` · ${t("grace until", "গ্রেস")} ${day(dunning.graceUntil)}`}
+            {dunning.graceUntil &&
+              ` · ${t("grace until", "গ্রেস")} ${day(dunning.graceUntil)}`}
           </p>
         </div>
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-border bg-card p-3">
         <div>
-          <p className="text-xs uppercase text-muted-foreground">{t("Outstanding", "বকেয়া")}</p>
-          <p className="text-xl font-semibold tabular-nums">{fmtMinor(outstanding, currency)}</p>
+          <p className="text-xs uppercase text-muted-foreground">
+            {t("Outstanding", "বকেয়া")}
+          </p>
+          <p className="text-xl font-semibold tabular-nums">
+            {fmtMinor(outstanding, currency)}
+          </p>
         </div>
         <p className="text-xs text-muted-foreground">
           {t(
@@ -223,12 +265,21 @@ export function CollectionDesk() {
 
       {manual && (
         <div className="rounded-fq-md border border-border bg-muted/30 p-3 text-sm">
-          <p className="font-medium">{t("Bank transfer instructions", "ব্যাংক ট্রান্সফার নির্দেশনা")}</p>
-          <p className="mt-1 whitespace-pre-line text-muted-foreground">{bn ? manual.bn : manual.en}</p>
-          <p className="mt-1">
-            {t("Reference", "রেফারেন্স")}: <code className="font-mono">{manual.reference}</code>
+          <p className="font-medium">
+            {t("Bank transfer instructions", "ব্যাংক ট্রান্সফার নির্দেশনা")}
           </p>
-          <button type="button" onClick={() => setManual(null)} className="mt-2 text-xs underline">
+          <p className="mt-1 whitespace-pre-line text-muted-foreground">
+            {bn ? manual.bn : manual.en}
+          </p>
+          <p className="mt-1">
+            {t("Reference", "রেফারেন্স")}:{" "}
+            <code className="font-mono">{manual.reference}</code>
+          </p>
+          <button
+            type="button"
+            onClick={() => setManual(null)}
+            className="mt-2 text-xs underline"
+          >
             {t("Dismiss", "বন্ধ করুন")}
           </button>
         </div>
@@ -242,15 +293,22 @@ export function CollectionDesk() {
 
       <ul className="space-y-3">
         {data.items.map((item) => (
-          <li key={item.invoice.id} className="rounded-fq-md border border-border bg-card p-4">
+          <li
+            key={item.invoice.id}
+            className="rounded-fq-md border border-border bg-card p-4"
+          >
             <InvoiceRow
               item={item}
               bn={bn}
               busy={busy}
               methods={data.methods}
               picking={picking === item.invoice.id}
-              onPick={() => setPicking(picking === item.invoice.id ? null : item.invoice.id)}
-              onStart={(method) => startMutation.mutate({ invoiceId: item.invoice.id, method })}
+              onPick={() =>
+                setPicking(picking === item.invoice.id ? null : item.invoice.id)
+              }
+              onStart={(method) =>
+                startMutation.mutate({ invoiceId: item.invoice.id, method })
+              }
               onCancel={(chargeId) => cancelMutation.mutate(chargeId)}
             />
           </li>
@@ -262,7 +320,8 @@ export function CollectionDesk() {
 
 function verdictTone(kind: CollectionVerdict["kind"]) {
   if (kind === "settled") return "text-success";
-  if (kind === "support" || kind === "not_chargeable") return "text-destructive";
+  if (kind === "support" || kind === "not_chargeable")
+    return "text-destructive";
   if (kind === "wait") return "text-warning";
   return "text-muted-foreground";
 }
@@ -295,20 +354,27 @@ function InvoiceRow({
     <div className="space-y-3">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-xs text-muted-foreground">{inv.invoice_number}</p>
+          <p className="font-mono text-xs text-muted-foreground">
+            {inv.invoice_number}
+          </p>
           <p className="text-lg font-semibold tabular-nums">
             {fmtMinor(Number(inv.total_minor_int), inv.currency_code)}
           </p>
           <p className="text-xs text-muted-foreground tabular-nums">
             {day(inv.period_start)} → {day(inv.period_end)} ·{" "}
-            {t("VAT", "ভ্যাট")} {fmtMinor(Number(inv.vat_minor_int), inv.currency_code)} (
+            {t("VAT", "ভ্যাট")}{" "}
+            {fmtMinor(Number(inv.vat_minor_int), inv.currency_code)} (
             {inv.vat_rate_basis_points / 100}%)
           </p>
         </div>
-        <span className={`rounded-full px-2 py-0.5 text-xs ${statusCls}`}>{inv.status}</span>
+        <span className={`rounded-full px-2 py-0.5 text-xs ${statusCls}`}>
+          {inv.status}
+        </span>
       </div>
 
-      <p className={`text-sm ${verdictTone(verdict.kind)}`}>{bn ? verdict.bn : verdict.en}</p>
+      <p className={`text-sm ${verdictTone(verdict.kind)}`}>
+        {bn ? verdict.bn : verdict.en}
+      </p>
 
       {verdict.kind === "collect" && verdict.attemptsLeft <= 2 && (
         <p className="text-xs text-warning">
@@ -327,7 +393,10 @@ function InvoiceRow({
             onClick={() => onStart(item.live!.method)}
             className="min-h-9 rounded-fq-md bg-primary px-3 text-xs font-medium text-primary-foreground disabled:opacity-50"
           >
-            {t(`Resume ${methodLabel(item.live.method)}`, `${methodLabel(item.live.method)} চালিয়ে যান`)}
+            {t(
+              `Resume ${methodLabel(item.live.method)}`,
+              `${methodLabel(item.live.method)} চালিয়ে যান`,
+            )}
           </button>
           <button
             type="button"
@@ -361,11 +430,18 @@ function InvoiceRow({
                     onClick={() => onStart(m.key)}
                     className="w-full rounded-fq-md border border-border p-2 text-left text-xs hover:bg-muted/50 disabled:opacity-50"
                   >
-                    <span className="block font-medium">{bn ? m.labelBn : m.label}</span>
-                    <span className="block text-muted-foreground">{bn ? m.noteBn : m.noteEn}</span>
+                    <span className="block font-medium">
+                      {bn ? m.labelBn : m.label}
+                    </span>
+                    <span className="block text-muted-foreground">
+                      {bn ? m.noteBn : m.noteEn}
+                    </span>
                     {m.manualSettlement && (
                       <span className="mt-1 block text-warning">
-                        {t("Clears after we confirm receipt.", "প্রাপ্তি নিশ্চিত হলে পরিশোধিত হবে।")}
+                        {t(
+                          "Clears after we confirm receipt.",
+                          "প্রাপ্তি নিশ্চিত হলে পরিশোধিত হবে।",
+                        )}
                       </span>
                     )}
                   </button>
@@ -377,18 +453,31 @@ function InvoiceRow({
       )}
 
       {verdict.kind === "support" && (
-        <Link to="/dashboard/support" className="inline-block text-xs underline">
-          {t("Contact support with this invoice number", "এই ইনভয়েস নম্বর নিয়ে সাপোর্টে যোগাযোগ করুন")}
+        <Link
+          to="/dashboard/support"
+          className="inline-block text-xs underline"
+        >
+          {t(
+            "Contact support with this invoice number",
+            "এই ইনভয়েস নম্বর নিয়ে সাপোর্টে যোগাযোগ করুন",
+          )}
         </Link>
       )}
 
       {item.receipt && (
         <details className="rounded-fq-md bg-muted/30 p-2">
-          <summary className="cursor-pointer text-xs font-medium">{t("Receipt", "রসিদ")}</summary>
+          <summary className="cursor-pointer text-xs font-medium">
+            {t("Receipt", "রসিদ")}
+          </summary>
           <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
             {item.receipt.map((line) => (
-              <div key={line.label} className="col-span-2 grid grid-cols-subgrid">
-                <dt className="text-muted-foreground">{bn ? line.labelBn : line.label}</dt>
+              <div
+                key={line.label}
+                className="col-span-2 grid grid-cols-subgrid"
+              >
+                <dt className="text-muted-foreground">
+                  {bn ? line.labelBn : line.label}
+                </dt>
                 <dd className="tabular-nums">{line.value}</dd>
               </div>
             ))}
@@ -399,12 +488,16 @@ function InvoiceRow({
       {item.history.length > 0 && (
         <details>
           <summary className="cursor-pointer text-xs text-muted-foreground">
-            {t(`Attempt history (${item.history.length})`, `চেষ্টার ইতিহাস (${item.history.length})`)}
+            {t(
+              `Attempt history (${item.history.length})`,
+              `চেষ্টার ইতিহাস (${item.history.length})`,
+            )}
           </summary>
           <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
             {item.history.map((c) => (
               <li key={c.id} className="tabular-nums">
-                {c.created_at.slice(0, 16).replace("T", " ")} · {methodLabel(c.method)} · {c.status}
+                {c.created_at.slice(0, 16).replace("T", " ")} ·{" "}
+                {methodLabel(c.method)} · {c.status}
                 {c.failure_code ? ` · ${c.failure_code}` : ""}
               </li>
             ))}

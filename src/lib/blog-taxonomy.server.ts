@@ -88,7 +88,10 @@ function counted<T>(action: string, work: () => Promise<T>): Promise<T> {
     },
     (error: unknown) => {
       const expected = error instanceof TaxonomyError;
-      incr("framique_taxonomy_write_total", { action, result: expected ? "rejected" : "error" });
+      incr("framique_taxonomy_write_total", {
+        action,
+        result: expected ? "rejected" : "error",
+      });
       if (!expected) {
         log("error", "taxonomy.write_failed", {
           action,
@@ -110,7 +113,10 @@ export type TaxonomyState = {
   emptyTermIds: string[];
 };
 
-export async function loadTaxonomy(db: Client, merchantId: string): Promise<TaxonomyState> {
+export async function loadTaxonomy(
+  db: Client,
+  merchantId: string,
+): Promise<TaxonomyState> {
   const { data, error } = await loose(db)
     .from("blog_terms")
     .select(TERM_COLUMNS)
@@ -118,24 +124,46 @@ export async function loadTaxonomy(db: Client, merchantId: string): Promise<Taxo
     .order("sort_order", { ascending: true })
     .limit(TAXONOMY_LIMITS.maxTermsPerKind * 2 + 1);
   if (error) {
-    log("warn", "taxonomy.load_failed", { reason: String(error.message).slice(0, 160) });
-    return { categories: [], tags: [], limits: TAXONOMY_LIMITS, emptyTermIds: [] };
+    log("warn", "taxonomy.load_failed", {
+      reason: String(error.message).slice(0, 160),
+    });
+    return {
+      categories: [],
+      tags: [],
+      limits: TAXONOMY_LIMITS,
+      emptyTermIds: [],
+    };
   }
   const rows = (data ?? []) as TermRow[];
-  const categories = buildTermTree(rows.filter((row) => row.kind === "category"));
+  const categories = buildTermTree(
+    rows.filter((row) => row.kind === "category"),
+  );
   const tags = rows
     .filter((row) => row.kind === "tag")
-    .sort((a, b) => (b.article_count ?? 0) - (a.article_count ?? 0) || a.name.localeCompare(b.name, "bn"));
+    .sort(
+      (a, b) =>
+        (b.article_count ?? 0) - (a.article_count ?? 0) ||
+        a.name.localeCompare(b.name, "bn"),
+    );
   return {
     categories,
     tags,
     limits: TAXONOMY_LIMITS,
-    emptyTermIds: rows.filter((row) => !(row.article_count ?? 0)).map((row) => row.id),
+    emptyTermIds: rows
+      .filter((row) => !(row.article_count ?? 0))
+      .map((row) => row.id),
   };
 }
 
-async function allTerms(db: Client, merchantId: string, kind?: TermKind): Promise<TermRow[]> {
-  let query = loose(db).from("blog_terms").select(TERM_COLUMNS).eq("merchant_id", merchantId);
+async function allTerms(
+  db: Client,
+  merchantId: string,
+  kind?: TermKind,
+): Promise<TermRow[]> {
+  let query = loose(db)
+    .from("blog_terms")
+    .select(TERM_COLUMNS)
+    .eq("merchant_id", merchantId);
   if (kind) query = query.eq("kind", kind);
   const { data } = await query.limit(TAXONOMY_LIMITS.maxTermsPerKind * 2 + 1);
   return (data ?? []) as TermRow[];
@@ -192,7 +220,12 @@ async function recordArchiveRedirect(
     await loose(db)
       .from("url_redirects")
       .upsert(
-        { merchant_id: merchantId, from_path: fromPath, to_path: toPath, status_code: 301 },
+        {
+          merchant_id: merchantId,
+          from_path: fromPath,
+          to_path: toPath,
+          status_code: 301,
+        },
         { onConflict: "merchant_id,from_path" },
       );
   } catch (error) {
@@ -212,9 +245,16 @@ export async function saveTerm(
     const prepared = prepareTerm(input);
     const siblings = await allTerms(db, merchantId, prepared.kind);
 
-    const existing = input.id ? siblings.find((row) => row.id === input.id) : undefined;
+    const existing = input.id
+      ? siblings.find((row) => row.id === input.id)
+      : undefined;
     if (input.id && !existing) {
-      throw new TaxonomyError("term_missing", "id", "That term no longer exists.", "টার্মটি আর নেই।");
+      throw new TaxonomyError(
+        "term_missing",
+        "id",
+        "That term no longer exists.",
+        "টার্মটি আর নেই।",
+      );
     }
     if (!input.id && siblings.length >= TAXONOMY_LIMITS.maxTermsPerKind) {
       throw new TaxonomyError(
@@ -231,7 +271,12 @@ export async function saveTerm(
     if (prepared.parent_id) {
       const issue = parentageIssue(siblings, input.id, prepared.parent_id);
       if (issue === "missing") {
-        throw new TaxonomyError("parent_missing", "parentId", "That parent no longer exists.", "প্যারেন্ট টার্মটি নেই।");
+        throw new TaxonomyError(
+          "parent_missing",
+          "parentId",
+          "That parent no longer exists.",
+          "প্যারেন্ট টার্মটি নেই।",
+        );
       }
       if (issue === "cycle") {
         throw new TaxonomyError(
@@ -242,7 +287,9 @@ export async function saveTerm(
         );
       }
       const height = input.id ? subtreeHeight(siblings, input.id) : 1;
-      const depthAbove = siblings.length ? depthOf(siblings, prepared.parent_id) : 1;
+      const depthAbove = siblings.length
+        ? depthOf(siblings, prepared.parent_id)
+        : 1;
       if (issue === "depth" || depthAbove + height > TAXONOMY_LIMITS.maxDepth) {
         throw new TaxonomyError(
           "parent_depth",
@@ -253,7 +300,13 @@ export async function saveTerm(
       }
     }
 
-    const slug = await uniqueSlug(db, merchantId, prepared.kind, prepared.slug, input.id);
+    const slug = await uniqueSlug(
+      db,
+      merchantId,
+      prepared.kind,
+      prepared.slug,
+      input.id,
+    );
     const row = { ...prepared, slug, merchant_id: merchantId };
 
     if (existing) {
@@ -267,7 +320,12 @@ export async function saveTerm(
       let movedFrom: string | null = null;
       if (existing.slug !== slug) {
         movedFrom = termArchivePath(existing.kind, existing.slug);
-        await recordArchiveRedirect(db, merchantId, movedFrom, termArchivePath(prepared.kind, slug));
+        await recordArchiveRedirect(
+          db,
+          merchantId,
+          movedFrom,
+          termArchivePath(prepared.kind, slug),
+        );
       }
       await audit(db, merchantId, actor, "blog.term_updated", {
         id: existing.id,
@@ -278,15 +336,26 @@ export async function saveTerm(
       return { id: existing.id, slug, movedFrom };
     }
 
-    const { data, error } = await loose(db).from("blog_terms").insert(row).select("id").single();
+    const { data, error } = await loose(db)
+      .from("blog_terms")
+      .insert(row)
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
-    await audit(db, merchantId, actor, "blog.term_created", { id: data.id, kind: prepared.kind, slug });
+    await audit(db, merchantId, actor, "blog.term_created", {
+      id: data.id,
+      kind: prepared.kind,
+      slug,
+    });
     return { id: data.id as string, slug, movedFrom: null };
   });
 }
 
 /** Levels above and including `termId` (1 for a root). Loop-safe. */
-function depthOf(rows: Pick<TermRow, "id" | "parent_id">[], termId: string): number {
+function depthOf(
+  rows: Pick<TermRow, "id" | "parent_id">[],
+  termId: string,
+): number {
   const byId = new Map(rows.map((row) => [row.id, row]));
   const seen = new Set<string>();
   let cursor: string | null = termId;
@@ -312,13 +381,22 @@ export async function deleteTerm(
   actor: string,
   termId: string,
   opts: { maxAutoShift?: number } = {},
-): Promise<{ relinkedChildren: number; relinkedArticles: number; redirectTo: string }> {
+): Promise<{
+  relinkedChildren: number;
+  relinkedArticles: number;
+  redirectTo: string;
+}> {
   const maxAutoShift = opts.maxAutoShift ?? 25;
   return counted("delete", async () => {
     const rows = await allTerms(db, merchantId);
     const term = rows.find((row) => row.id === termId);
     if (!term) {
-      throw new TaxonomyError("term_missing", "id", "That term no longer exists.", "টার্মটি আর নেই।");
+      throw new TaxonomyError(
+        "term_missing",
+        "id",
+        "That term no longer exists.",
+        "টার্মটি আর নেই।",
+      );
     }
     const children = rows.filter((row) => row.parent_id === termId);
     if (children.length > maxAutoShift) {
@@ -330,7 +408,9 @@ export async function deleteTerm(
       );
     }
 
-    const parent = term.parent_id ? rows.find((row) => row.id === term.parent_id) ?? null : null;
+    const parent = term.parent_id
+      ? (rows.find((row) => row.id === term.parent_id) ?? null)
+      : null;
 
     if (children.length) {
       const { error } = await loose(db)
@@ -350,7 +430,10 @@ export async function deleteTerm(
       .eq("merchant_id", merchantId)
       .eq("term_id", termId)
       .limit(5_000);
-    const affected = (links ?? []) as { article_id: string; is_primary: boolean }[];
+    const affected = (links ?? []) as {
+      article_id: string;
+      is_primary: boolean;
+    }[];
 
     if (parent && affected.length) {
       // Upsert rather than update: an article already filed under the parent
@@ -367,7 +450,11 @@ export async function deleteTerm(
           { onConflict: "article_id,term_id" },
         );
     }
-    await loose(db).from("article_terms").delete().eq("merchant_id", merchantId).eq("term_id", termId);
+    await loose(db)
+      .from("article_terms")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("term_id", termId);
 
     const { error: delError } = await loose(db)
       .from("blog_terms")
@@ -376,8 +463,15 @@ export async function deleteTerm(
       .eq("merchant_id", merchantId);
     if (delError) throw new Error(delError.message);
 
-    const redirectTo = parent ? termArchivePath(parent.kind, parent.slug) : "/blog";
-    await recordArchiveRedirect(db, merchantId, termArchivePath(term.kind, term.slug), redirectTo);
+    const redirectTo = parent
+      ? termArchivePath(parent.kind, parent.slug)
+      : "/blog";
+    await recordArchiveRedirect(
+      db,
+      merchantId,
+      termArchivePath(term.kind, term.slug),
+      redirectTo,
+    );
     if (parent) await refreshCounts(db, merchantId, [parent.id]);
     await audit(db, merchantId, actor, "blog.term_deleted", {
       id: termId,
@@ -385,7 +479,11 @@ export async function deleteTerm(
       children: children.length,
       articles: affected.length,
     });
-    return { relinkedChildren: children.length, relinkedArticles: affected.length, redirectTo };
+    return {
+      relinkedChildren: children.length,
+      relinkedArticles: affected.length,
+      redirectTo,
+    };
   });
 }
 
@@ -402,7 +500,12 @@ export async function reorderTerms(
 ): Promise<{ updated: number }> {
   return counted("reorder", async () => {
     if (order.length > TAXONOMY_LIMITS.maxTermsPerKind) {
-      throw new TaxonomyError("reorder_too_large", "order", "Too many terms in one move.", "একবারে অনেক বেশি টার্ম।");
+      throw new TaxonomyError(
+        "reorder_too_large",
+        "order",
+        "Too many terms in one move.",
+        "একবারে অনেক বেশি টার্ম।",
+      );
     }
     const rows = await allTerms(db, merchantId);
     const known = new Map(rows.map((row) => [row.id, row]));
@@ -411,11 +514,19 @@ export async function reorderTerms(
     // applied reorder can leave a cycle behind, and a cycle hangs the renderer.
     const proposed = rows.map((row) => {
       const move = order.find((item) => item.id === row.id);
-      return { id: row.id, parent_id: move ? move.parentId : row.parent_id ?? null };
+      return {
+        id: row.id,
+        parent_id: move ? move.parentId : (row.parent_id ?? null),
+      };
     });
     for (const item of order) {
       if (!known.has(item.id)) {
-        throw new TaxonomyError("term_missing", "order", "One of those terms is gone.", "একটি টার্ম আর নেই।");
+        throw new TaxonomyError(
+          "term_missing",
+          "order",
+          "One of those terms is gone.",
+          "একটি টার্ম আর নেই।",
+        );
       }
       const issue = parentageIssue(proposed, item.id, item.parentId);
       if (issue) {
@@ -436,12 +547,17 @@ export async function reorderTerms(
     for (const item of order) {
       const { error } = await loose(db)
         .from("blog_terms")
-        .update({ sort_order: Math.max(0, Math.trunc(item.sortOrder)), parent_id: item.parentId })
+        .update({
+          sort_order: Math.max(0, Math.trunc(item.sortOrder)),
+          parent_id: item.parentId,
+        })
         .eq("id", item.id)
         .eq("merchant_id", merchantId);
       if (!error) updated += 1;
     }
-    await audit(db, merchantId, actor, "blog.terms_reordered", { count: updated });
+    await audit(db, merchantId, actor, "blog.terms_reordered", {
+      count: updated,
+    });
     return { updated };
   });
 }
@@ -461,7 +577,10 @@ export async function setArticleTerms(
   actor: string,
   articleId: string,
   requested: { termId: string; isPrimary: boolean }[],
-): Promise<{ terms: { termId: string; isPrimary: boolean }[]; tags: string[] }> {
+): Promise<{
+  terms: { termId: string; isPrimary: boolean }[];
+  tags: string[];
+}> {
   return counted("assign", async () => {
     const { data: article } = await loose(db)
       .from("articles")
@@ -470,11 +589,18 @@ export async function setArticleTerms(
       .eq("merchant_id", merchantId)
       .maybeSingle();
     if (!article) {
-      throw new TaxonomyError("article_missing", "articleId", "That article no longer exists.", "লেখাটি আর নেই।");
+      throw new TaxonomyError(
+        "article_missing",
+        "articleId",
+        "That article no longer exists.",
+        "লেখাটি আর নেই।",
+      );
     }
 
     const rows = await allTerms(db, merchantId);
-    const unknown = requested.filter((item) => !rows.some((row) => row.id === item.termId));
+    const unknown = requested.filter(
+      (item) => !rows.some((row) => row.id === item.termId),
+    );
     if (unknown.length) {
       throw new TaxonomyError(
         "term_unknown",
@@ -490,27 +616,41 @@ export async function setArticleTerms(
       .select("term_id")
       .eq("merchant_id", merchantId)
       .eq("article_id", articleId);
-    const previous = ((before ?? []) as { term_id: string }[]).map((row) => row.term_id);
+    const previous = ((before ?? []) as { term_id: string }[]).map(
+      (row) => row.term_id,
+    );
 
-    await loose(db).from("article_terms").delete().eq("merchant_id", merchantId).eq("article_id", articleId);
+    await loose(db)
+      .from("article_terms")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("article_id", articleId);
     if (assignments.length) {
-      const { error } = await loose(db).from("article_terms").insert(
-        assignments.map((item) => ({
-          merchant_id: merchantId,
-          article_id: articleId,
-          term_id: item.termId,
-          is_primary: item.isPrimary,
-        })),
-      );
+      const { error } = await loose(db)
+        .from("article_terms")
+        .insert(
+          assignments.map((item) => ({
+            merchant_id: merchantId,
+            article_id: articleId,
+            term_id: item.termId,
+            is_primary: item.isPrimary,
+          })),
+        );
       if (error) throw new Error(error.message);
     }
 
     const tags = tagNamesFor(assignments, rows);
-    await loose(db).from("articles").update({ tags }).eq("id", articleId).eq("merchant_id", merchantId);
+    await loose(db)
+      .from("articles")
+      .update({ tags })
+      .eq("id", articleId)
+      .eq("merchant_id", merchantId);
 
     // Both sides of the change need fresh counters: a term the article left is
     // now potentially empty (and therefore noindex).
-    await refreshCounts(db, merchantId, [...new Set([...previous, ...assignments.map((a) => a.termId)])]);
+    await refreshCounts(db, merchantId, [
+      ...new Set([...previous, ...assignments.map((a) => a.termId)]),
+    ]);
     await audit(db, merchantId, actor, "blog.article_terms_set", {
       article: articleId,
       terms: assignments.length,
@@ -520,16 +660,22 @@ export async function setArticleTerms(
 }
 
 /** The term set currently on an article, for the editor sidebar. */
-export async function articleTerms(db: Client, merchantId: string, articleId: string) {
+export async function articleTerms(
+  db: Client,
+  merchantId: string,
+  articleId: string,
+) {
   const { data } = await loose(db)
     .from("article_terms")
     .select("term_id, is_primary")
     .eq("merchant_id", merchantId)
     .eq("article_id", articleId);
-  return ((data ?? []) as { term_id: string; is_primary: boolean }[]).map((row) => ({
-    termId: row.term_id,
-    isPrimary: row.is_primary,
-  }));
+  return ((data ?? []) as { term_id: string; is_primary: boolean }[]).map(
+    (row) => ({
+      termId: row.term_id,
+      isPrimary: row.is_primary,
+    }),
+  );
 }
 
 /* ----------------------------------------------------------------- counters */
@@ -589,7 +735,9 @@ export async function refreshCounts(
       .eq("merchant_id", merchantId);
     if (!error) updated += 1;
   }
-  incr("framique_taxonomy_count_refresh_total", { scope: ids.length ? "partial" : "full" });
+  incr("framique_taxonomy_count_refresh_total", {
+    scope: ids.length ? "partial" : "full",
+  });
   return { updated };
 }
 

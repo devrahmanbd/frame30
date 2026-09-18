@@ -5,7 +5,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -36,24 +39,46 @@ beforeEach(() => recorder.reset());
 describe("installCatalogTheme completeness", () => {
   it("creates version, draft, ledger linkage and audit row", async () => {
     const db = catalogDb();
-    const out: any = await installCatalogTheme(db.asClient(), MERCHANT, "classic", "user-9");
+    const out: any = await installCatalogTheme(
+      db.asClient(),
+      MERCHANT,
+      "classic",
+      "user-9",
+    );
     expect(out.alreadyInstalled).toBe(false);
     expect(db.rows("theme_versions")).toHaveLength(1);
     expect(db.rows("theme_drafts")).toHaveLength(1);
     const installs = db.rows("marketplace_installs");
     expect(installs).toHaveLength(1);
-    expect(installs[0]).toMatchObject({ kind: "theme", listing_slug: "classic", status: "installed" });
+    expect(installs[0]).toMatchObject({
+      kind: "theme",
+      listing_slug: "classic",
+      status: "installed",
+    });
     const themes = db.rows("store_themes");
     expect(themes[0].source_install_id).toBe(installs[0].id);
     const audit = db.rows("theme_audit");
     expect(audit).toHaveLength(1);
-    expect(audit[0]).toMatchObject({ action: "theme.installed", actor: "user-9" });
+    expect(audit[0]).toMatchObject({
+      action: "theme.installed",
+      actor: "user-9",
+    });
   });
 
   it("replays the existing row instead of duplicating", async () => {
     const db = catalogDb();
-    const first: any = await installCatalogTheme(db.asClient(), MERCHANT, "classic", "user-9");
-    const out: any = await installCatalogTheme(db.asClient(), MERCHANT, "classic", "user-9");
+    const first: any = await installCatalogTheme(
+      db.asClient(),
+      MERCHANT,
+      "classic",
+      "user-9",
+    );
+    const out: any = await installCatalogTheme(
+      db.asClient(),
+      MERCHANT,
+      "classic",
+      "user-9",
+    );
     expect(out.alreadyInstalled).toBe(true);
     expect(out.id).toBe(first.id);
     expect(db.rows("store_themes")).toHaveLength(1);

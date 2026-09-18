@@ -50,10 +50,9 @@ const flag = (name, fallback = null) => {
   return v && !v.startsWith("--") ? v : true;
 };
 
-const BASE = String(flag("base", process.env.MOTION_GATE_BASE ?? "http://localhost:8080")).replace(
-  /\/$/,
-  "",
-);
+const BASE = String(
+  flag("base", process.env.MOTION_GATE_BASE ?? "http://localhost:8080"),
+).replace(/\/$/, "");
 const ONLY = flag("only", null);
 const WIDTHS = String(flag("widths", "390,1440"))
   .split(",")
@@ -64,8 +63,14 @@ const PASSES = String(flag("passes", "full,reduced,ssr"))
   .map((p) => p.trim())
   .filter((p) => ["full", "reduced", "ssr"].includes(p));
 const LOCALES = String(flag("locales", "en")).split(",");
-const CONCURRENCY = Math.max(1, Number.parseInt(String(flag("concurrency", "4")), 10) || 4);
-const ATTEMPTS = Math.max(1, Number.parseInt(String(flag("attempts", "2")), 10) || 2);
+const CONCURRENCY = Math.max(
+  1,
+  Number.parseInt(String(flag("concurrency", "4")), 10) || 4,
+);
+const ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(String(flag("attempts", "2")), 10) || 2,
+);
 const FAIL_ON = String(flag("fail-on", "error"));
 const JSON_OUT = flag("json", null);
 const LOG_LEVEL = String(flag("log-level", "info"));
@@ -105,8 +110,9 @@ const SURFACES = [
 ].filter((s) => !ONLY || s.name === ONLY);
 
 async function loadSpec() {
-  const url = pathToFileURL(new URL("../src/lib/motion-choreography.ts", import.meta.url).pathname)
-    .href;
+  const url = pathToFileURL(
+    new URL("../src/lib/motion-choreography.ts", import.meta.url).pathname,
+  ).href;
   try {
     return await import(url);
   } catch (cause) {
@@ -173,7 +179,8 @@ const MEASURE = () => {
         continue;
       }
       for (const rule of rules ?? []) {
-        if (rule.type !== CSSRule.KEYFRAMES_RULE || rule.name !== name) continue;
+        if (rule.type !== CSSRule.KEYFRAMES_RULE || rule.name !== name)
+          continue;
         for (const frame of rule.cssRules ?? []) {
           const style = frame.style;
           for (let i = 0; i < style.length; i += 1) found.add(style.item(i));
@@ -185,7 +192,9 @@ const MEASURE = () => {
 
   const vh = window.innerHeight;
   const label = (el, fallback) =>
-    (el.getAttribute?.("data-motion-label") || (el.textContent ?? "").trim().slice(0, 32) || fallback);
+    el.getAttribute?.("data-motion-label") ||
+    (el.textContent ?? "").trim().slice(0, 32) ||
+    fallback;
 
   /* Reveals ------------------------------------------------------------- */
   const reveals = [...document.querySelectorAll("[data-motion-state]")]
@@ -193,7 +202,10 @@ const MEASURE = () => {
     .map((el, i) => {
       const cs = getComputedStyle(el);
       const rect = el.getBoundingClientRect();
-      const state = el.getAttribute("data-motion-state") === "pending" ? "pending" : "settled";
+      const state =
+        el.getAttribute("data-motion-state") === "pending"
+          ? "pending"
+          : "settled";
       // Prefer the entrance the primitive *declares*. The computed transition on
       // a glass card is the union of its entrance and its hover affordance, so
       // reading it back reported every hover `border-color 200ms` as an illegal
@@ -207,10 +219,16 @@ const MEASURE = () => {
       return {
         label: label(el, `reveal#${i}`),
         state,
-        durationMs: declared ? attrNum("data-motion-duration") : ms(cs.transitionDuration),
-        delayMs: declared ? attrNum("data-motion-delay") : ms(cs.transitionDelay),
+        durationMs: declared
+          ? attrNum("data-motion-duration")
+          : ms(cs.transitionDuration),
+        delayMs: declared
+          ? attrNum("data-motion-delay")
+          : ms(cs.transitionDelay),
         properties: declared
-          ? (el.getAttribute("data-motion-properties") ?? "").split(",").filter(Boolean)
+          ? (el.getAttribute("data-motion-properties") ?? "")
+              .split(",")
+              .filter(Boolean)
           : props(cs.transitionProperty),
         translatePx: declared
           ? state === "pending"
@@ -224,7 +242,9 @@ const MEASURE = () => {
 
   /* Drifting atmosphere -------------------------------------------------- */
   const driftNodes = [
-    ...document.querySelectorAll('[data-band-drift="true"], .fq-aurora, .fq-mesh-blob'),
+    ...document.querySelectorAll(
+      '[data-band-drift="true"], .fq-aurora, .fq-mesh-blob',
+    ),
   ].slice(0, 40);
   const drifts = [];
   for (const [i, el] of driftNodes.entries()) {
@@ -239,7 +259,10 @@ const MEASURE = () => {
       drifts.push({
         label: `${el.classList.contains("fq-mesh-blob") ? "mesh" : "aurora"}#${i}${pseudo ?? ""}`,
         durationMs: duration,
-        iterationCount: iteration === "infinite" ? "infinite" : Number.parseFloat(iteration) || 1,
+        iterationCount:
+          iteration === "infinite"
+            ? "infinite"
+            : Number.parseFloat(iteration) || 1,
         properties: keyframeProperties(cs.animationName.split(",")[0].trim()),
         aboveFold: rect.top < vh && rect.bottom > 0,
       });
@@ -247,7 +270,9 @@ const MEASURE = () => {
   }
 
   /* Magnetic CTAs -------------------------------------------------------- */
-  const magnetics = [...document.querySelectorAll('[data-motion="magnetic"]')].map((el, i) => {
+  const magnetics = [
+    ...document.querySelectorAll('[data-motion="magnetic"]'),
+  ].map((el, i) => {
     const band = el.closest("[data-band-surface]");
     return {
       label: label(el, `magnet#${i}`),
@@ -260,9 +285,15 @@ const MEASURE = () => {
   });
 
   /* Counters ------------------------------------------------------------- */
-  const counters = [...document.querySelectorAll('[data-motion="counter"]')].map((el, i) => ({
+  const counters = [
+    ...document.querySelectorAll('[data-motion="counter"]'),
+  ].map((el, i) => ({
     label: `counter#${i}`,
-    rendered: (el.querySelector('[aria-hidden="true"]')?.textContent ?? el.textContent ?? "").trim(),
+    rendered: (
+      el.querySelector('[aria-hidden="true"]')?.textContent ??
+      el.textContent ??
+      ""
+    ).trim(),
     settled: (el.getAttribute("data-motion-settled") ?? "").trim(),
   }));
 
@@ -277,7 +308,10 @@ const MEASURE = () => {
         const name = cs.animationName.split(",")[0].trim();
         return {
           label: `h1:${(h1.textContent ?? "").trim().slice(0, 32)}`,
-          durationMs: Math.max(ms(cs.transitionDuration), ms(cs.animationDuration)),
+          durationMs: Math.max(
+            ms(cs.transitionDuration),
+            ms(cs.animationDuration),
+          ),
           animationName: name === "none" ? null : name,
         };
       })()
@@ -313,11 +347,17 @@ async function waitForServer(base, attempts = 15) {
       }
       log("warn", "server.unhealthy", { base, status: res.status, attempt: i });
     } catch (e) {
-      log("debug", "server.probe_failed", { base, attempt: i, error: String(e?.message ?? e) });
+      log("debug", "server.probe_failed", {
+        base,
+        attempt: i,
+        error: String(e?.message ?? e),
+      });
     }
     await sleep(Math.min(4_000, 400 * i));
   }
-  throw new Error(`Dev server at ${base} did not answer after ${attempts} probes.`);
+  throw new Error(
+    `Dev server at ${base} did not answer after ${attempts} probes.`,
+  );
 }
 
 function planJobs() {
@@ -344,7 +384,9 @@ function planJobs() {
  * page — the classic false positive in this kind of check.
  */
 async function settleReveals(page) {
-  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  const height = await page.evaluate(
+    () => document.documentElement.scrollHeight,
+  );
   const step = await page.evaluate(() => window.innerHeight);
   for (let y = 0; y < height; y += Math.max(200, step * 0.8)) {
     await page.evaluate((to) => window.scrollTo(0, to), y);
@@ -373,7 +415,9 @@ async function waitForMotionResolved(page, timeoutMs = 8_000) {
       () => {
         if (document.querySelector('[data-band-drift="true"]')) return true;
         const nodes = [...document.querySelectorAll("[data-motion-duration]")];
-        return nodes.some((n) => Number.parseFloat(n.getAttribute("data-motion-duration")) > 0);
+        return nodes.some(
+          (n) => Number.parseFloat(n.getAttribute("data-motion-duration")) > 0,
+        );
       },
       null,
       { timeout: timeoutMs },
@@ -422,7 +466,10 @@ async function runJob(browser, job, spec) {
         consoleErrors.push(`pageerror: ${String(e.message).slice(0, 200)}`),
       );
 
-      await page.goto(url, { waitUntil: pass === "ssr" ? "commit" : "load", timeout: 45_000 });
+      await page.goto(url, {
+        waitUntil: pass === "ssr" ? "commit" : "load",
+        timeout: 45_000,
+      });
       if (pass === "ssr") {
         // No JS: the DOM is final as soon as parsing completes.
         await page.waitForLoadState("domcontentloaded");
@@ -455,7 +502,12 @@ async function runJob(browser, job, spec) {
 
       const at = `${surface.name} @${width}/${locale}/${pass}`;
       const extra = [];
-      if (motionResolved && pass === "full" && measured.reveals.length === 0 && surface.name !== "contact") {
+      if (
+        motionResolved &&
+        pass === "full" &&
+        measured.reveals.length === 0 &&
+        surface.name !== "contact"
+      ) {
         extra.push({
           code: "motion.unknown",
           severity: "info",
@@ -547,12 +599,15 @@ async function runJob(browser, job, spec) {
 async function drain(jobs, worker, concurrency) {
   const results = [];
   let cursor = 0;
-  const runners = Array.from({ length: Math.min(concurrency, jobs.length) }, async () => {
-    while (cursor < jobs.length) {
-      const job = jobs[cursor++];
-      results.push(await worker(job));
-    }
-  });
+  const runners = Array.from(
+    { length: Math.min(concurrency, jobs.length) },
+    async () => {
+      while (cursor < jobs.length) {
+        const job = jobs[cursor++];
+        results.push(await worker(job));
+      }
+    },
+  );
   await Promise.all(runners);
   return results;
 }
@@ -579,13 +634,17 @@ function printReport(results, spec) {
 
   const harnessFailures = results.filter((r) => r.harnessError);
   for (const r of harnessFailures) {
-    lines.push(`  HARNESS ${r.route} @${r.viewportPx}/${r.locale}/${r.pass}: ${r.harnessError}`);
+    lines.push(
+      `  HARNESS ${r.route} @${r.viewportPx}/${r.locale}/${r.pass}: ${r.harnessError}`,
+    );
   }
 
   for (const [route, findings] of [...byRoute.entries()].sort()) {
     lines.push("", `  ${route}`);
     const order = { error: 0, warn: 1, info: 2 };
-    for (const f of findings.sort((a, b) => order[a.severity] - order[b.severity])) {
+    for (const f of findings.sort(
+      (a, b) => order[a.severity] - order[b.severity],
+    )) {
       lines.push(`    ${spec.formatMotionFinding(f)}`);
     }
   }
@@ -603,7 +662,8 @@ function printReport(results, spec) {
   );
   if (consoleErrors.length) {
     lines.push("", "  console");
-    for (const f of consoleErrors) lines.push(`    ${spec.formatMotionFinding(f)}`);
+    for (const f of consoleErrors)
+      lines.push(`    ${spec.formatMotionFinding(f)}`);
   }
 
   const counts = spec.countMotionBySeverity(unique);
@@ -623,20 +683,34 @@ function printReport(results, spec) {
 /* -------------------------------------------------------------------------- */
 
 async function main() {
-  if (SURFACES.length === 0) throw new Error(`--only ${ONLY} matched no known surface.`);
-  if (WIDTHS.length === 0) throw new Error("--widths produced no usable viewport width.");
-  if (PASSES.length === 0) throw new Error("--passes must include at least one of full,reduced,ssr.");
+  if (SURFACES.length === 0)
+    throw new Error(`--only ${ONLY} matched no known surface.`);
+  if (WIDTHS.length === 0)
+    throw new Error("--widths produced no usable viewport width.");
+  if (PASSES.length === 0)
+    throw new Error("--passes must include at least one of full,reduced,ssr.");
 
   const spec = await loadSpec();
   await waitForServer(BASE);
 
   const started = Date.now();
-  const browser = await chromium.launch({ args: ["--font-render-hinting=none"] });
+  const browser = await chromium.launch({
+    args: ["--font-render-hinting=none"],
+  });
   let results;
   try {
     const jobs = planJobs();
-    log("info", "run.start", { jobs: jobs.length, concurrency: CONCURRENCY, base: BASE, passes: PASSES });
-    results = await drain(jobs, (job) => runJob(browser, job, spec), CONCURRENCY);
+    log("info", "run.start", {
+      jobs: jobs.length,
+      concurrency: CONCURRENCY,
+      base: BASE,
+      passes: PASSES,
+    });
+    results = await drain(
+      jobs,
+      (job) => runJob(browser, job, spec),
+      CONCURRENCY,
+    );
   } finally {
     await browser.close().catch(() => {});
   }
@@ -679,7 +753,8 @@ async function main() {
   }
 
   if (summary.harnessFailures.length) return 2;
-  const blocking = summary.counts.error + (FAIL_ON === "warn" ? summary.counts.warn : 0);
+  const blocking =
+    summary.counts.error + (FAIL_ON === "warn" ? summary.counts.warn : 0);
   return blocking > 0 ? 1 : 0;
 }
 

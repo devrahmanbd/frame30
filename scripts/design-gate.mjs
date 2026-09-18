@@ -44,7 +44,10 @@ const list = (name, fallback) =>
     .map((v) => v.trim())
     .filter(Boolean);
 
-const BASE = arg("base", process.env.E2E_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+const BASE = arg(
+  "base",
+  process.env.E2E_BASE_URL ?? "http://localhost:8080",
+).replace(/\/$/, "");
 const ONLY = arg("only", null);
 const WIDTHS = list("widths", "320,768,1440,1920")
   .map(Number)
@@ -53,7 +56,10 @@ const LOCALES = list("locales", "en,bn");
 const JSON_OUT = arg("json", null);
 const FAIL_ON = arg("fail-on", "error") === "warn" ? "warn" : "error";
 const ALLOW = new Set(list("allow", ""));
-const CONCURRENCY = Math.max(1, Math.min(6, Number(arg("concurrency", "3")) || 3));
+const CONCURRENCY = Math.max(
+  1,
+  Math.min(6, Number(arg("concurrency", "3")) || 3),
+);
 const NAV_TIMEOUT_MS = Number(arg("timeout", "25000")) || 25000;
 const ATTEMPTS = 3;
 const SKIP_SOURCE = flag("skip-source");
@@ -111,7 +117,9 @@ const SOURCE_EXT = /\.(tsx|ts)$/;
 const SOURCE_SKIP = /\.(test|spec|contract\.test)\.tsx?$/;
 
 async function loadSpec() {
-  const url = pathToFileURL(new URL("../src/lib/design-exit.ts", import.meta.url).pathname).href;
+  const url = pathToFileURL(
+    new URL("../src/lib/design-exit.ts", import.meta.url).pathname,
+  ).href;
   try {
     return await import(url);
   } catch (cause) {
@@ -146,13 +154,20 @@ function collectFiles(root, out = []) {
 function scanSource(spec) {
   const files = SOURCE_ROOTS.flatMap((r) => collectFiles(r));
   const findings = spec.auditSourceTree(files);
-  log("info", "source.scanned", { files: files.length, findings: findings.length });
+  log("info", "source.scanned", {
+    files: files.length,
+    findings: findings.length,
+  });
   return { files: files.length, findings };
 }
 
 async function auditSeoCrawl(spec) {
-  const seoUrl = pathToFileURL(new URL("../src/lib/marketing-seo.ts", import.meta.url).pathname).href;
-  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(seoUrl);
+  const seoUrl = pathToFileURL(
+    new URL("../src/lib/marketing-seo.ts", import.meta.url).pathname,
+  ).href;
+  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(
+    seoUrl
+  );
   const findings = [];
 
   for (const r of MARKETING_ROUTES) {
@@ -188,7 +203,10 @@ async function auditSeoCrawl(spec) {
     }
 
     // Bidirectional hreflang alternates
-    const head = buildMarketingHead({ route: r.id, origin: "https://framique.com" });
+    const head = buildMarketingHead({
+      route: r.id,
+      origin: "https://framique.com",
+    });
     const alternates = head.links.filter((l) => l.rel === "alternate");
     const hreflangs = alternates.map((a) => a.hreflang);
     if (!hreflangs.includes("bn-BD") || !hreflangs.includes("x-default")) {
@@ -223,8 +241,14 @@ async function auditSeoCrawl(spec) {
   }
 
   // Verify SemrushBot crawler policy in robots.txt
-  const robotsSrc = readFileSync(new URL("../src/routes/robots[.]txt.ts", import.meta.url).pathname, "utf8");
-  if (!robotsSrc.includes("User-agent: SemrushBot") || !robotsSrc.includes("Allow: /")) {
+  const robotsSrc = readFileSync(
+    new URL("../src/routes/robots[.]txt.ts", import.meta.url).pathname,
+    "utf8",
+  );
+  if (
+    !robotsSrc.includes("User-agent: SemrushBot") ||
+    !robotsSrc.includes("Allow: /")
+  ) {
     findings.push(
       spec.finding(
         "seo.semrush_bot_blocked",
@@ -238,7 +262,10 @@ async function auditSeoCrawl(spec) {
     );
   }
 
-  log("info", "seo.crawled", { routes: MARKETING_ROUTES.length, findings: findings.length });
+  log("info", "seo.crawled", {
+    routes: MARKETING_ROUTES.length,
+    findings: findings.length,
+  });
   return { routes: MARKETING_ROUTES.length, findings };
 }
 
@@ -258,7 +285,11 @@ const MEASURE = () => {
   };
   const label = (el) => {
     const tag = el.tagName.toLowerCase();
-    const cls = (el.getAttribute("class") ?? "").split(/\s+/).filter(Boolean).slice(0, 2).join(".");
+    const cls = (el.getAttribute("class") ?? "")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(".");
     const id = el.id ? `#${el.id}` : "";
     return `${tag}${id}${cls ? `.${cls}` : ""}`;
   };
@@ -266,7 +297,11 @@ const MEASURE = () => {
     const r = el.getBoundingClientRect();
     if (r.width < 2 || r.height < 2) return false;
     const cs = getComputedStyle(el);
-    return cs.visibility !== "hidden" && cs.display !== "none" && num(cs.opacity) > 0.05;
+    return (
+      cs.visibility !== "hidden" &&
+      cs.display !== "none" &&
+      num(cs.opacity) > 0.05
+    );
   };
   const opaque = (color) => {
     const m = String(color ?? "").match(/rgba?\(([^)]+)\)/);
@@ -309,14 +344,21 @@ const MEASURE = () => {
   const pushContrast = (el, role, state) => {
     if (contrast.length >= 60 || !el || !visible(el)) return;
     const cs = getComputedStyle(el);
-    const text = (el.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 40);
+    const text = (el.textContent ?? "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .slice(0, 40);
     const { layers, base } = backdropOf(el);
     contrast.push({
       label: `${label(el)}${state ? ` [${state}]` : ""}`,
       role,
       state,
-      color: role === "focus-ring" ? cs.outlineColor || cs.borderTopColor : cs.color,
-      backdrop: role === "cta" || role === "cta-disabled" ? [cs.backgroundColor, ...layers] : layers,
+      color:
+        role === "focus-ring" ? cs.outlineColor || cs.borderTopColor : cs.color,
+      backdrop:
+        role === "cta" || role === "cta-disabled"
+          ? [cs.backgroundColor, ...layers]
+          : layers,
       base,
       fontSizePx: num(cs.fontSize),
       fontWeight: num(cs.fontWeight) || 400,
@@ -324,21 +366,38 @@ const MEASURE = () => {
     });
   };
 
-  const roleMap = { display: "body", lead: "body", body: "body", caption: "muted", numeral: "body" };
+  const roleMap = {
+    display: "body",
+    lead: "body",
+    body: "body",
+    caption: "muted",
+    numeral: "body",
+  };
   for (const el of scope.querySelectorAll("[data-type-role]")) {
     const declared = el.getAttribute("data-type-role") ?? "body";
     pushContrast(el, roleMap[declared] ?? "body");
   }
   for (const el of [...scope.querySelectorAll("p, li")].slice(0, 12)) {
-    pushContrast(el, num(getComputedStyle(el).opacity) < 0.9 ? "muted" : "body");
+    pushContrast(
+      el,
+      num(getComputedStyle(el).opacity) < 0.9 ? "muted" : "body",
+    );
   }
 
-  const ctas = [...scope.querySelectorAll("a[data-cta], button, a[class*='fq-pill']")]
+  const ctas = [
+    ...scope.querySelectorAll("a[data-cta], button, a[class*='fq-pill']"),
+  ]
     .filter(visible)
     .slice(0, 6);
   for (const el of ctas) {
-    const disabled = el.hasAttribute("disabled") || el.getAttribute("aria-disabled") === "true";
-    pushContrast(el, disabled ? "cta-disabled" : "cta", disabled ? "disabled" : "rest");
+    const disabled =
+      el.hasAttribute("disabled") ||
+      el.getAttribute("aria-disabled") === "true";
+    pushContrast(
+      el,
+      disabled ? "cta-disabled" : "cta",
+      disabled ? "disabled" : "rest",
+    );
   }
 
   /* Overflow. Report the widest painted boxes and whether anything clips them. */
@@ -453,7 +512,9 @@ const MEASURE = () => {
 
   /* Tap targets. */
   const tapTargets = [];
-  for (const el of scope.querySelectorAll("a[href], button, [role='button'], input, summary")) {
+  for (const el of scope.querySelectorAll(
+    "a[href], button, [role='button'], input, summary",
+  )) {
     if (tapTargets.length >= 40 || !visible(el)) continue;
     const r = el.getBoundingClientRect();
     const parentText = (el.parentElement?.textContent ?? "").trim();
@@ -463,7 +524,8 @@ const MEASURE = () => {
       widthPx: r.width,
       heightPx: r.height,
       inline:
-        getComputedStyle(el).display === "inline" && parentText.length > own.length + 8,
+        getComputedStyle(el).display === "inline" &&
+        parentText.length > own.length + 8,
     });
   }
 
@@ -476,7 +538,12 @@ const MEASURE = () => {
       visuallyHidden: el.className.includes("sr-only"),
     }));
 
-  const vitals = window.__fqVitals ?? { lcpMs: null, clsScore: null, lcpElement: null, worstShift: null };
+  const vitals = window.__fqVitals ?? {
+    lcpMs: null,
+    clsScore: null,
+    lcpElement: null,
+    worstShift: null,
+  };
   const nav = performance.getEntriesByType("navigation")[0];
 
   return {
@@ -506,7 +573,12 @@ const MEASURE = () => {
  * failure mode this whole phase exists to prevent.
  */
 const INSTALL_OBSERVERS = () => {
-  window.__fqVitals = { lcpMs: null, clsScore: 0, lcpElement: null, worstShift: null };
+  window.__fqVitals = {
+    lcpMs: null,
+    clsScore: 0,
+    lcpElement: null,
+    worstShift: null,
+  };
   try {
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
@@ -521,13 +593,18 @@ const INSTALL_OBSERVERS = () => {
     new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.hadRecentInput) continue;
-        window.__fqVitals.clsScore = (window.__fqVitals.clsScore ?? 0) + entry.value;
+        window.__fqVitals.clsScore =
+          (window.__fqVitals.clsScore ?? 0) + entry.value;
         const worst = window.__fqVitals.worstShift;
         if (!worst || entry.value > worst.value) {
           window.__fqVitals.worstShift = {
             value: entry.value,
             sources: (entry.sources ?? [])
-              .map((s) => s.node && s.node.tagName ? s.node.tagName.toLowerCase() : "unknown")
+              .map((s) =>
+                s.node && s.node.tagName
+                  ? s.node.tagName.toLowerCase()
+                  : "unknown",
+              )
               .slice(0, 3),
           };
         }
@@ -544,7 +621,11 @@ const INSTALL_OBSERVERS = () => {
 /** Synthesises hover and focus on the primary CTA and re-samples its colours. */
 async function sampleCtaStates(page) {
   const out = [];
-  const cta = page.locator("[data-cta='primary'], .fq-site a[class*='fq-pill'], .fq-site button").first();
+  const cta = page
+    .locator(
+      "[data-cta='primary'], .fq-site a[class*='fq-pill'], .fq-site button",
+    )
+    .first();
   if ((await cta.count()) === 0) return out;
   for (const state of ["hover", "focus"]) {
     try {
@@ -580,7 +661,10 @@ async function sampleCtaStates(page) {
         });
       }
     } catch (e) {
-      log("debug", "cta.state_failed", { state, error: String(e?.message ?? e).slice(0, 120) });
+      log("debug", "cta.state_failed", {
+        state,
+        error: String(e?.message ?? e).slice(0, 120),
+      });
     }
   }
   return out;
@@ -597,12 +681,16 @@ async function waitForServer(base) {
     }
     await sleep(1000);
   }
-  throw new Error(`Dev server at ${base} never became ready. Start it, or pass --base.`);
+  throw new Error(
+    `Dev server at ${base} never became ready. Start it, or pass --base.`,
+  );
 }
 
 function planJobs() {
   return SURFACES.flatMap((surface) =>
-    WIDTHS.flatMap((width) => LOCALES.map((locale) => ({ surface, width, locale }))),
+    WIDTHS.flatMap((width) =>
+      LOCALES.map((locale) => ({ surface, width, locale })),
+    ),
   );
 }
 
@@ -620,12 +708,18 @@ async function runJob(browser, { surface, width, locale }, spec) {
       await context.addInitScript(INSTALL_OBSERVERS);
       const page = await context.newPage();
       page.on("console", (msg) => {
-        if (msg.type() === "error") consoleErrors.push(msg.text().slice(0, 200));
+        if (msg.type() === "error")
+          consoleErrors.push(msg.text().slice(0, 200));
       });
-      page.on("pageerror", (e) => consoleErrors.push(String(e?.message ?? e).slice(0, 200)));
+      page.on("pageerror", (e) =>
+        consoleErrors.push(String(e?.message ?? e).slice(0, 200)),
+      );
 
       const url = `${BASE}${surface.path}${surface.path.includes("?") ? "&" : "?"}lang=${locale}`;
-      await page.goto(url, { waitUntil: "networkidle", timeout: NAV_TIMEOUT_MS });
+      await page.goto(url, {
+        waitUntil: "networkidle",
+        timeout: NAV_TIMEOUT_MS,
+      });
       await page.waitForTimeout(600); // let reveals settle and CLS accumulate
 
       const measured = await page.evaluate(MEASURE);
@@ -641,7 +735,12 @@ async function runJob(browser, { surface, width, locale }, spec) {
         tapTargets: measured.tapTargets,
         contrast: [...measured.contrast, ...ctaStates],
         headings: measured.headings,
-        vitals: { route: surface.name, viewportPx: width, locale, ...measured.vitals },
+        vitals: {
+          route: surface.name,
+          viewportPx: width,
+          locale,
+          ...measured.vitals,
+        },
       });
 
       await context.close().catch(() => {});
@@ -651,7 +750,11 @@ async function runJob(browser, { surface, width, locale }, spec) {
         locale,
         findings: report.findings.length,
       });
-      return { ...report, consoleErrors, headingCount: measured.headings.length };
+      return {
+        ...report,
+        consoleErrors,
+        headingCount: measured.headings.length,
+      };
     } catch (e) {
       lastError = e;
       await context.close().catch(() => {});
@@ -722,12 +825,16 @@ function printReport(source, seoCrawl, results, spec) {
   }
 
   for (const r of results.filter((r) => r.harnessError)) {
-    lines.push(`  HARNESS ${r.route} @${r.viewportPx}/${r.locale}: ${r.harnessError}`);
+    lines.push(
+      `  HARNESS ${r.route} @${r.viewportPx}/${r.locale}: ${r.harnessError}`,
+    );
   }
 
   for (const [group, findings] of [...byGroup.entries()].sort()) {
     lines.push("", `  ${group}`);
-    for (const f of findings.sort((a, b) => a.severity.localeCompare(b.severity))) {
+    for (const f of findings.sort((a, b) =>
+      a.severity.localeCompare(b.severity),
+    )) {
       lines.push(`    ${spec.formatFinding(f)}`);
     }
   }
@@ -749,7 +856,11 @@ function printReport(source, seoCrawl, results, spec) {
   );
   process.stdout.write(lines.join("\n"));
 
-  return { unique, counts, harnessFailures: results.filter((r) => r.harnessError) };
+  return {
+    unique,
+    counts,
+    harnessFailures: results.filter((r) => r.harnessError),
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -757,7 +868,8 @@ function printReport(source, seoCrawl, results, spec) {
 /* -------------------------------------------------------------------------- */
 
 async function main() {
-  if (SURFACES.length === 0) throw new Error(`--only ${ONLY} matched no known surface.`);
+  if (SURFACES.length === 0)
+    throw new Error(`--only ${ONLY} matched no known surface.`);
   const spec = await loadSpec();
   const started = Date.now();
 
@@ -767,11 +879,21 @@ async function main() {
   let results = [];
   if (!SKIP_BROWSER) {
     await waitForServer(BASE);
-    const browser = await chromium.launch({ args: ["--font-render-hinting=none"] });
+    const browser = await chromium.launch({
+      args: ["--font-render-hinting=none"],
+    });
     try {
       const jobs = planJobs();
-      log("info", "run.start", { jobs: jobs.length, concurrency: CONCURRENCY, base: BASE });
-      results = await drain(jobs, (job) => runJob(browser, job, spec), CONCURRENCY);
+      log("info", "run.start", {
+        jobs: jobs.length,
+        concurrency: CONCURRENCY,
+        base: BASE,
+      });
+      results = await drain(
+        jobs,
+        (job) => runJob(browser, job, spec),
+        CONCURRENCY,
+      );
     } finally {
       await browser.close().catch(() => {});
     }
@@ -815,7 +937,8 @@ async function main() {
   }
 
   if (summary.harnessFailures.length) return 2;
-  const blocking = summary.counts.error + (FAIL_ON === "warn" ? summary.counts.warn : 0);
+  const blocking =
+    summary.counts.error + (FAIL_ON === "warn" ? summary.counts.warn : 0);
   return blocking > 0 ? 1 : 0;
 }
 
@@ -823,6 +946,8 @@ main()
   .then((code) => process.exit(code))
   .catch((e) => {
     log("error", "run.failed", { error: String(e?.message ?? e) });
-    process.stderr.write(`\ndesign exit gate could not run: ${e?.stack ?? e}\n`);
+    process.stderr.write(
+      `\ndesign exit gate could not run: ${e?.stack ?? e}\n`,
+    );
     process.exit(2);
   });

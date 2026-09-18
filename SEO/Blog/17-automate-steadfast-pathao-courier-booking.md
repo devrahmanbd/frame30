@@ -2,7 +2,7 @@
 
 > **Target Query:** `steadfast courier api ecommerce`, `pathao courier automated parcel booking`, `automated shipping labels ecommerce`  
 > **Reading Time:** 8 minutes  
-> **Published:** November 2026  
+> **Published:** November 2026
 
 ---
 
@@ -11,6 +11,7 @@
 For growing e-commerce brands in South Asia, order fulfillment is often the biggest operational time drain.
 
 A merchant receiving 80 orders a day typically spends **2 to 3 hours every single morning**:
+
 - Opening multiple browser tabs for Steadfast, Pathao, or RedX merchant panels.
 - Manually copy-pasting customer names, phone numbers, delivery addresses, and Cash-on-Delivery collection amounts.
 - Manually downloading PDF labels, sorting them, and copy-pasting Consignment IDs back into their website admin.
@@ -54,6 +55,7 @@ In **FRAMIQUE**, courier fulfillment is integrated directly into the core order 
 
 When courier delivery riders deliver parcels and collect cash, couriers issue automated webhook callbacks.  
 Framique listens for these webhook events:
+
 - Order status shifts from `In Transit` to `Delivered`.
 - Collected cash reconciles against your store's financial ledger.
 - If a parcel is returned or rejected, Framique flags the customer record to protect your store against repeat non-delivery losses.

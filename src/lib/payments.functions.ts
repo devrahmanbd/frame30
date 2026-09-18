@@ -18,7 +18,13 @@ export const startCharge = createServerFn({ method: "POST" })
     const { openCharge } = await import("./payments.server");
     const host = getRequestHost();
     const origin = `${host.startsWith("localhost") ? "http" : "https"}://${host}`;
-    return openCharge(data.slug, data.orderId, data.idempotencyKey, origin, data.slug);
+    return openCharge(
+      data.slug,
+      data.orderId,
+      data.idempotencyKey,
+      origin,
+      data.slug,
+    );
   });
 
 export const loadPayments = createServerFn({ method: "GET" })
@@ -26,7 +32,10 @@ export const loadPayments = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadPaymentsDesk } = await import("./payments.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return loadPaymentsDesk(context.supabase, merchantId);
   });
 
@@ -95,7 +104,9 @@ export const reconcileCodOrder = createServerFn({ method: "POST" })
 export const clearCod = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ reconId: z.string().uuid(), note: z.string().min(4).max(300) }).parse(d),
+    z
+      .object({ reconId: z.string().uuid(), note: z.string().min(4).max(300) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { clearCodVariance } = await import("./payments.server");
@@ -118,19 +129,33 @@ export const uploadSettlement = createServerFn({ method: "POST" })
     const { parseSettlementCsv } = await import("./settlement-csv");
     const { ingestSettlement } = await import("./payments.server");
     const { createHash } = await import("crypto");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     const items = parseSettlementCsv(data.csv);
     const hash = createHash("sha256").update(data.csv).digest("hex");
-    return ingestSettlement(merchantId, data.provider, data.fileDate, hash, items);
+    return ingestSettlement(
+      merchantId,
+      data.provider,
+      data.fileDate,
+      hash,
+      items,
+    );
   });
 
 export const postSettlementFile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ fileId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ fileId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { postSettlement } = await import("./payments.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     // Ownership check through the member-scoped client before privileged posting.
     const { data: file } = await (context.supabase as any)
       .from("settlement_files")
@@ -145,7 +170,9 @@ export const postSettlementFile = createServerFn({ method: "POST" })
 export const resolveAlert = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ alertId: z.string().uuid(), note: z.string().min(4).max(300) }).parse(d),
+    z
+      .object({ alertId: z.string().uuid(), note: z.string().min(4).max(300) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { resolveSettlementAlert } = await import("./payments.server");

@@ -1,1 +1,239 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "label": "store.$slug.c.$collectionSlug.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L1"}, {"id": "routes_store_slug_c_collectionslug_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L17"}, {"id": "routes_store_slug_c_collectionslug_collectionpage", "label": "CollectionPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L54"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "store_themechrome_themechrome", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_storeheader_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "store_storeheader_storeheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_storeimage_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "store_storeimage_storeimage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "lib_storefront_functions_getstorecollection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "lib_builder_ast_flattenast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "routes_store_slug_c_collectionslug_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx", "target": "routes_store_slug_c_collectionslug_collectionpage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L54", "weight": 1.0}], "raw_calls": [{"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L55"}, {"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "useLoaderData", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L56"}, {"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L67"}, {"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L71"}, {"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L118"}, {"caller_nid": "routes_store_slug_c_collectionslug_collectionpage", "callee": "flattenAst", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx", "source_location": "L118"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "label": "store.$slug.c.$collectionSlug.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_store_slug_c_collectionslug_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "routes_store_slug_c_collectionslug_collectionpage",
+      "label": "CollectionPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L54"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "store_themechrome_themechrome",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_storeheader_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "store_storeheader_storeheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_storeimage_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "store_storeimage_storeimage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "lib_storefront_functions_getstorecollection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "lib_builder_ast_flattenast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "routes_store_slug_c_collectionslug_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_c_collectionslug_tsx",
+      "target": "routes_store_slug_c_collectionslug_collectionpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L54",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "useLoaderData",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "routes_store_slug_c_collectionslug_collectionpage",
+      "callee": "flattenAst",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.c.$collectionSlug.tsx",
+      "source_location": "L118"
+    }
+  ]
+}

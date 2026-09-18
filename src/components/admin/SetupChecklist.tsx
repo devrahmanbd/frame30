@@ -3,9 +3,15 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Check, ChevronRight, X } from "lucide-react";
 import { useLang } from "@/lib/i18n";
-import { adminOverviewFn, adminSaveSetupFn } from "@/lib/merchant-admin.functions";
+import {
+  adminOverviewFn,
+  adminSaveSetupFn,
+} from "@/lib/merchant-admin.functions";
 
-const LABELS: Record<string, { en: string; bn: string; hintEn: string; hintBn: string }> = {
+const LABELS: Record<
+  string,
+  { en: string; bn: string; hintEn: string; hintBn: string }
+> = {
   profile: {
     en: "Add support contact",
     bn: "সাপোর্ট যোগাযোগ যোগ করুন",
@@ -150,7 +156,10 @@ export function SetupChecklist() {
                   )}
                 </span>
                 {!step.done && (
-                  <ChevronRight className="ml-auto size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  <ChevronRight
+                    className="ml-auto size-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
                 )}
               </a>
             </li>

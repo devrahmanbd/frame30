@@ -27,7 +27,10 @@ export const LARGE_TENANT_SHAPE = {
   orders: 1_000,
 } as const;
 
-export const LARGE_TENANT_TOTAL_ROWS = Object.values(LARGE_TENANT_SHAPE).reduce((a, b) => a + b, 0);
+export const LARGE_TENANT_TOTAL_ROWS = Object.values(LARGE_TENANT_SHAPE).reduce(
+  (a, b) => a + b,
+  0,
+);
 
 /** Mulberry32 — small, fast, and identical across runtimes. */
 function prng(seed: number) {
@@ -58,7 +61,8 @@ const WORDS = [
 
 function phrase(rand: () => number, count: number) {
   const out: string[] = [];
-  for (let i = 0; i < count; i += 1) out.push(WORDS[Math.floor(rand() * WORDS.length)]!);
+  for (let i = 0; i < count; i += 1)
+    out.push(WORDS[Math.floor(rand() * WORDS.length)]!);
   return out.join(" ");
 }
 
@@ -86,7 +90,9 @@ export type LargeTenantOptions = {
  * the production selects actually project, plus `deleted_at`/`status` so tenant
  * and soft-delete filters are exercised rather than skipped.
  */
-export function largeTenantTables(options: LargeTenantOptions = {}): Record<string, Row[]> {
+export function largeTenantTables(
+  options: LargeTenantOptions = {},
+): Record<string, Row[]> {
   const merchantId = options.merchantId ?? LARGE_TENANT_ID;
   const slug = options.slug ?? LARGE_TENANT_SLUG;
   const scale = Math.min(1, Math.max(0.001, options.scale ?? 1));

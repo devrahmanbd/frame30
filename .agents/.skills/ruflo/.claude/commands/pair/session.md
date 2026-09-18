@@ -5,17 +5,20 @@ Complete guide to managing pair programming sessions.
 ## Session Lifecycle
 
 ### 1. Initialization
+
 ```bash
 claude-flow pair --start
 ```
 
 ### 2. Active Session
+
 - Real-time collaboration
 - Continuous verification
 - Quality monitoring
 - Role management
 
 ### 3. Completion
+
 ```bash
 claude-flow pair --end
 ```
@@ -25,6 +28,7 @@ claude-flow pair --end
 During an active session, use these commands:
 
 ### Basic Commands
+
 ```
 /help          - Show all available commands
 /status        - Current session status
@@ -35,6 +39,7 @@ During an active session, use these commands:
 ```
 
 ### Code Commands
+
 ```
 /explain       - Explain current code
 /suggest       - Get improvement suggestions
@@ -45,6 +50,7 @@ During an active session, use these commands:
 ```
 
 ### Testing Commands
+
 ```
 /test          - Run test suite
 /test-gen      - Generate tests
@@ -54,6 +60,7 @@ During an active session, use these commands:
 ```
 
 ### Review Commands
+
 ```
 /review        - Full code review
 /security      - Security analysis
@@ -63,6 +70,7 @@ During an active session, use these commands:
 ```
 
 ### Navigation Commands
+
 ```
 /goto <file>   - Navigate to file
 /find <text>   - Search in project
@@ -72,6 +80,7 @@ During an active session, use these commands:
 ```
 
 ### Role Commands
+
 ```
 /switch        - Switch driver/navigator
 /mode <type>   - Change mode
@@ -80,6 +89,7 @@ During an active session, use these commands:
 ```
 
 ### Git Commands
+
 ```
 /diff          - Show changes
 /commit        - Commit with verification
@@ -97,6 +107,7 @@ claude-flow pair --status
 ```
 
 Output:
+
 ```
 👥 Pair Programming Session
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -131,6 +142,7 @@ claude-flow pair --history
 ```
 
 Output:
+
 ```
 📚 Session History
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -159,6 +171,7 @@ Output:
 Real-time metrics during session:
 
 ### Truth Score
+
 ```
 Current: 0.982 ✅
 Average: 0.975
@@ -167,6 +180,7 @@ Threshold: 0.950
 ```
 
 ### Productivity
+
 ```
 Lines Changed: 234
 Files Modified: 5
@@ -175,6 +189,7 @@ Functions Refactored: 3
 ```
 
 ### Quality
+
 ```
 Test Coverage: 87% ↑3%
 Lint Issues: 0
@@ -183,6 +198,7 @@ Performance Issues: 1 ⚠️
 ```
 
 ### Collaboration
+
 ```
 Suggestions Given: 45
 Suggestions Accepted: 38 (84%)
@@ -193,16 +209,19 @@ Rollbacks: 1
 ## Session Persistence
 
 ### Save Session
+
 ```bash
 claude-flow pair --save [--name <name>]
 ```
 
 ### Load Session
+
 ```bash
 claude-flow pair --load <session-id>
 ```
 
 ### Export Session
+
 ```bash
 claude-flow pair --export <session-id> [--format json|md]
 ```
@@ -212,16 +231,19 @@ claude-flow pair --export <session-id> [--format json|md]
 Run pair programming in background:
 
 ### Start Background Session
+
 ```bash
 claude-flow pair --start --background
 ```
 
 ### Monitor Background Session
+
 ```bash
 claude-flow pair --monitor
 ```
 
 ### Attach to Background Session
+
 ```bash
 claude-flow pair --attach <session-id>
 ```
@@ -229,6 +251,7 @@ claude-flow pair --attach <session-id>
 ## Session Configuration
 
 ### Default Settings
+
 ```json
 {
   "pair": {
@@ -244,6 +267,7 @@ claude-flow pair --attach <session-id>
 ```
 
 ### Per-Session Config
+
 ```bash
 claude-flow pair --start \
   --config custom-config.json
@@ -252,36 +276,44 @@ claude-flow pair --start \
 ## Session Templates
 
 ### Refactoring Template
+
 ```bash
 claude-flow pair --template refactor
 ```
+
 - Focus: Code improvement
 - Verification: High (0.98)
 - Testing: After each change
 - Review: Continuous
 
 ### Feature Template
+
 ```bash
 claude-flow pair --template feature
 ```
+
 - Focus: Implementation
 - Verification: Standard (0.95)
 - Testing: On completion
 - Review: Pre-commit
 
 ### Debug Template
+
 ```bash
 claude-flow pair --template debug
 ```
+
 - Focus: Problem solving
 - Verification: Moderate (0.90)
 - Testing: Regression tests
 - Review: Root cause
 
 ### Learning Template
+
 ```bash
 claude-flow pair --template learn
 ```
+
 - Mode: Mentor
 - Pace: Slow
 - Explanations: Detailed
@@ -296,6 +328,7 @@ claude-flow pair --report <session-id>
 ```
 
 Report includes:
+
 - Session summary
 - Metrics overview
 - Code changes
@@ -307,16 +340,19 @@ Report includes:
 ## Multi-Session Management
 
 ### List Active Sessions
+
 ```bash
 claude-flow pair --list
 ```
 
 ### Switch Between Sessions
+
 ```bash
 claude-flow pair --switch <session-id>
 ```
 
 ### Merge Sessions
+
 ```bash
 claude-flow pair --merge <session-1> <session-2>
 ```
@@ -324,14 +360,17 @@ claude-flow pair --merge <session-1> <session-2>
 ## Session Recovery
 
 ### Auto-Recovery
+
 Sessions auto-save every 5 minutes with recovery points.
 
 ### Manual Recovery
+
 ```bash
 claude-flow pair --recover [--point <timestamp>]
 ```
 
 ### Crash Recovery
+
 ```bash
 claude-flow pair --crash-recovery
 ```
@@ -339,17 +378,20 @@ claude-flow pair --crash-recovery
 ## Session Sharing
 
 ### Share with Team
+
 ```bash
 claude-flow pair --share <session-id> \
   --team <team-id>
 ```
 
 ### Export for Review
+
 ```bash
 claude-flow pair --export-review <session-id>
 ```
 
 ### Create Learning Material
+
 ```bash
 claude-flow pair --create-tutorial <session-id>
 ```
@@ -357,36 +399,45 @@ claude-flow pair --create-tutorial <session-id>
 ## Advanced Features
 
 ### Session Recording
+
 ```bash
 claude-flow pair --start --record
 ```
+
 Records all interactions for playback.
 
 ### Session Replay
+
 ```bash
 claude-flow pair --replay <session-id>
 ```
+
 Replay recorded session for learning.
 
 ### Session Analytics
+
 ```bash
 claude-flow pair --analytics <session-id>
 ```
+
 Deep analysis of session patterns.
 
 ## Troubleshooting
 
 ### Session Won't Start
+
 - Check agent availability
 - Verify configuration
 - Ensure clean workspace
 
 ### Session Disconnected
+
 - Use `--recover` to restore
 - Check network connection
 - Verify background processes
 
 ### Poor Performance
+
 - Reduce verification threshold
 - Disable continuous testing
 - Check system resources

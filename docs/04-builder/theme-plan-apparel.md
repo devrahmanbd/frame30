@@ -23,6 +23,7 @@ Atelier is the editorial pole of the platform. Bazaar proves density; Atelier pr
 ## 1. Design system steps
 
 ### 1.1 Tokens
+
 - [ ] Atelier token set: paper `#FBF8F4`, ink `#1C1917`, muted ink `#6E6A65`, brand `#111827`, seasonal pigment `#B45309` (accent), sale red reserved as the only second accent.
 - [ ] `radius: 2px` (sharp), `container: 1240px`, `density: airy`, `typeScale: expressive`, `spaceUnit: 24px`, `shadow: none`, `motion: subtle`.
 - [ ] Contrast check every ink/paper/pigment pair with `contrastRatio()` ≥ 4.5:1 for body, ≥ 3:1 for ≥24px display; record the numbers in the preset test.
@@ -30,12 +31,14 @@ Atelier is the editorial pole of the platform. Bazaar proves density; Atelier pr
 - [ ] Scrim token applied on every text-over-image section (`container.bgImage` + `scrim`, `editorial_hero`, `collection_story`, `banner`).
 
 ### 1.2 Rhythm and layout
+
 - [ ] Section spacing 128px desktop / 96px tablet / 64px mobile, driven by `spaceUnit` only — no hardcoded margins in props.
 - [ ] Portrait 4:5 media ratio as the default for `product_grid`, `product_rail`, `lookbook`; ratio is reserved so CLS stays ≤ 0.02.
 - [ ] Max two competing focal elements per viewport on the home template.
 - [ ] Eyebrow style (uppercase, 11px, `0.16em` tracking) expressed through `typeScale: expressive` + heading `eyebrow` prop, never per-widget font overrides.
 
 ### 1.3 Motion
+
 - [x] `reveal.ts` degrades to opacity-only under `prefers-reduced-motion: reduce`.
 - [ ] Atelier uses `reveal: rise` on editorial sections, `stagger` (≤60ms) on grids, `none` on chrome and checkout.
 - [ ] `marquee` in Atelier uses the type-only variant, pauses on hover, static under reduced motion.
@@ -48,17 +51,20 @@ Atelier is the editorial pole of the platform. Bazaar proves density; Atelier pr
 Current state: `FONT_PAIRINGS` has 4 presets + `custom`; `FONT_PRELOAD` hardcodes one Google stylesheet (Noto Sans Bengali + Inter); `styles.css` declares metric-matched fallback faces for both.
 
 ### 2.1 Pairing model
+
 - [x] Theme-level pairing (`fontPairing` → `fontDisplay`/`fontBody`); **no per-widget font pickers** — keep it that way.
 - [ ] Add editorial pairings for Atelier: `editorial-serif` (display: `Playfair Display`, body: `Inter`), `editorial-bangla` (display: `Hind Siliguri`, body: `Noto Sans Bengali`), keeping `custom` as the escape hatch.
 - [ ] Atelier default = `editorial-mix`; the seasonal switch to `editorial-serif` must be a one-token change with no section edits.
 
 ### 2.2 Bilingual correctness
+
 - [x] `--font-bangla` stack + `.fq-bn` line-height/scale (`--fq-bn-scale`) so বাংলা does not clip ascenders/descenders.
 - [ ] Every pairing declares a Bangla-capable body face; a Latin-only body face is only allowed when a Bangla fallback is appended automatically at token-render time.
 - [!] Font resolver test: for each pairing × locale (`en`, `bn`), the resolved CSS stack must contain a face that covers the script, else the test fails.
 - [ ] Bengali numerals (`digits: bengali`) keep tabular numerals for money — verify `font-variant-numeric: tabular-nums` survives the Bangla stack.
 
 ### 2.3 Loading, CLS, and performance
+
 - [x] Both subsets ship in one stylesheet and are preloaded, so a locale switch never swaps in an unloaded face.
 - [x] Metric-matched fallback faces (`Inter Fallback`, `Noto Sans Bengali Fallback`) hold the pre-swap box height.
 - [ ] Derive `FONT_PRELOAD.stylesheet` from the active theme's pairing instead of a constant, emitting `preconnect` to `fonts.googleapis.com` + `fonts.gstatic.com` and `display=swap` on every family.
@@ -67,6 +73,7 @@ Current state: `FONT_PAIRINGS` has 4 presets + `custom`; `FONT_PRELOAD` hardcode
 - [ ] `latin` + `bengali` subsets only (`&subset=` / `unicode-range`), no `latin-ext` bloat.
 
 ### 2.4 Custom / self-hosted fonts (merchant uploads)
+
 - [ ] Storage bucket `theme-fonts`, tenant-scoped path `{merchantId}/{family}/{weight}.woff2`; `.woff2` only, ≤ 400KB per file, ≤ 4 files per family.
 - [ ] Validate the upload server-side (magic bytes + parse) before it is addressable; reject anything that is not a real woff2.
 - [ ] Admin UI in the theme token panel: upload family → assign to display/body → live preview → save sets `fontPairing: "custom"`.

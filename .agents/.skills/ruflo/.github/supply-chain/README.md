@@ -4,13 +4,13 @@ This directory is the **maintained surface** for ruflo's supply-chain defence.
 
 CI runs [`scripts/audit-supply-chain.mjs`](../../scripts/audit-supply-chain.mjs) on every PR and push that touches a `package.json`, a lockfile, this directory, or the audit script itself. Five layers of defence:
 
-| # | Layer | Source of truth | Hard-fail? |
-|---|---|---|---|
-| 1 | CVE audit (HIGH/CRITICAL in DIRECT deps) | `npm audit` | ✅ unless accepted |
-| 2 | Lockfile integrity (SHA-512 on every downloaded entry) | `package-lock.json` | ✅ unless accepted |
-| 3 | Top-level allowlist | `allowed-deps.json` | ✅ |
-| 4 | Typosquat reject | `allowed-deps.json` → `policies.rejectInRegistry` | ✅ |
-| 5 | Publisher trust snapshot | live `npm view` | logged-only |
+| #   | Layer                                                  | Source of truth                                   | Hard-fail?         |
+| --- | ------------------------------------------------------ | ------------------------------------------------- | ------------------ |
+| 1   | CVE audit (HIGH/CRITICAL in DIRECT deps)               | `npm audit`                                       | ✅ unless accepted |
+| 2   | Lockfile integrity (SHA-512 on every downloaded entry) | `package-lock.json`                               | ✅ unless accepted |
+| 3   | Top-level allowlist                                    | `allowed-deps.json`                               | ✅                 |
+| 4   | Typosquat reject                                       | `allowed-deps.json` → `policies.rejectInRegistry` | ✅                 |
+| 5   | Publisher trust snapshot                               | live `npm view`                                   | logged-only        |
 
 Plus, on PRs only, GitHub's [`actions/dependency-review-action@v4`](https://github.com/actions/dependency-review-action) flags newly-added vulnerable deps + denies the deny-list of compromised package versions.
 
@@ -67,6 +67,7 @@ If `audit-supply-chain.mjs` fails on your PR:
 ## Why this matters
 
 Three real supply-chain incidents on npm in the last 18 months involved:
+
 - a maintainer takeover of a popular package (`colors@1.4.1`, `ua-parser-js`)
 - a typosquat that pulled in `event-stream → flatmap-stream` and exfiltrated wallets
 - a postinstall script in a transitively-pulled dep that ran during `npm install`

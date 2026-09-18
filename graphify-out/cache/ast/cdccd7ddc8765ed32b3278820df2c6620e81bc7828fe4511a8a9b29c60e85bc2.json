@@ -1,1 +1,747 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "label": "SectionRenderer.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L1"}, {"id": "builder_sectionrenderer_props", "label": "Props", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L21"}, {"id": "builder_sectionrenderer_hide_class", "label": "HIDE_CLASS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L67"}, {"id": "builder_sectionrenderer_sectionrenderer", "label": "SectionRenderer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L78"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_breakpoint", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_catalogentry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_iscontextmismatch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_resolveprops", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_ast_sectionstyle", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_builder_advanced_advancedattrs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_dynamic_tags_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_dynamic_tags_resolvedynamicprops", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_dynamiccontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_dynamiccontext_usedynamiccontext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_bitext_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_bitext_locale", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_visibility_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_visibility_abmatches", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_visibility_evaluatevisibility", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_cartcontext_usecartcontext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_experimentcontext_useexperiments", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_experimentcontext_useexposure", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_reveal_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_reveal_usehydrated", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_reveal_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_reveal_usereveal", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgets_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_widgets_widget_components", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_widgets_widgetreader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgetdatacontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_widgetdatacontext_usenodedata", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgetboundary_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_widgetboundary_widgetboundary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgetisland_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_widgetisland_widgetisland", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_widget_hydration_hydrationmode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "lib_responsive_css_responsiveclassof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_sectionrenderer_props", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_sectionrenderer_hide_class", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "target": "builder_sectionrenderer_sectionrenderer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L78", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L94"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useDynamicContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L95"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L99"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "widgetReader", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L103"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useNodeData", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L106"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L109"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "resolveProps", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L109"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useReveal", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L110"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useHydrated", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L116"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useCartContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L117"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useExperiments", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L118"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "evaluateVisibility", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L119"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L124"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "abMatches", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L127"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "useExposure", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L130"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L149"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L150"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L150"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "resolveProps", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L153"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "sectionStyle", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L154"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "advancedAttrs", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L158"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L161"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "responsiveClassOf", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L165"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L166"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L166"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L184"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L184"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "catalogEntry", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L202"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "isContextMismatch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L215"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L219"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "hydrationMode", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L255"}, {"caller_nid": "builder_sectionrenderer_sectionrenderer", "callee": "wrap", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx", "source_location": "L285"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "label": "SectionRenderer.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_sectionrenderer_props",
+      "label": "Props",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L21"
+    },
+    {
+      "id": "builder_sectionrenderer_hide_class",
+      "label": "HIDE_CLASS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L67"
+    },
+    {
+      "id": "builder_sectionrenderer_sectionrenderer",
+      "label": "SectionRenderer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L78"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_breakpoint",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_catalogentry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_iscontextmismatch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_resolveprops",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_ast_sectionstyle",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_builder_advanced_advancedattrs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_dynamic_tags_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_dynamic_tags_resolvedynamicprops",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_dynamiccontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_dynamiccontext_usedynamiccontext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_bitext_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_bitext_locale",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_visibility_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_visibility_abmatches",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_visibility_evaluatevisibility",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_cartcontext_usecartcontext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_experimentcontext_useexperiments",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_experimentcontext_useexposure",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_reveal_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_reveal_usehydrated",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_reveal_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_reveal_usereveal",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgets_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_widgets_widget_components",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_widgets_widgetreader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgetdatacontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_widgetdatacontext_usenodedata",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgetboundary_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_widgetboundary_widgetboundary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgetisland_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_widgetisland_widgetisland",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_widget_hydration_hydrationmode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "lib_responsive_css_responsiveclassof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_sectionrenderer_props",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_sectionrenderer_hide_class",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "target": "builder_sectionrenderer_sectionrenderer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useDynamicContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "widgetReader",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useNodeData",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "resolveProps",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useReveal",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useHydrated",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useCartContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useExperiments",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "evaluateVisibility",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "abMatches",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "useExposure",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "resolveProps",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "sectionStyle",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "advancedAttrs",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "responsiveClassOf",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "catalogEntry",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "isContextMismatch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L215"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "hydrationMode",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "builder_sectionrenderer_sectionrenderer",
+      "callee": "wrap",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SectionRenderer.tsx",
+      "source_location": "L285"
+    }
+  ]
+}

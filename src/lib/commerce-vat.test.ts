@@ -34,7 +34,11 @@ describe("VAT display parity", () => {
   });
 
   it("never charges VAT when no legal rate resolved", () => {
-    const unresolved: VatRate = { ...rate, rateBasisPoints: 0, resolved: false };
+    const unresolved: VatRate = {
+      ...rate,
+      rateBasisPoints: 0,
+      resolved: false,
+    };
     const b = vatBreakdown(money(9_999, "BDT"), unresolved, "exclusive");
     expect(b.vat.minor).toBe(0);
     expect(b.gross.minor).toBe(9_999);
@@ -43,7 +47,11 @@ describe("VAT display parity", () => {
 
 describe("invoice line reconciliation", () => {
   it("per-line VAT sums exactly to invoice VAT in both modes", () => {
-    const lines = [money(3_333, "BDT"), money(3_333, "BDT"), money(3_334, "BDT")];
+    const lines = [
+      money(3_333, "BDT"),
+      money(3_333, "BDT"),
+      money(3_334, "BDT"),
+    ];
     for (const mode of ["exclusive", "inclusive"] as const) {
       const b = vatBreakdown(money(10_000, "BDT"), rate, mode);
       const split = splitVatAcrossLines(b, lines);

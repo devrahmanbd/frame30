@@ -37,7 +37,11 @@ export const BUCKET_OF_BREAKPOINT: Record<BreakpointName, DeviceBucket> = {
 };
 
 /** Columns available per bucket, with a fixed gutter. */
-export const GRID_COLS: Record<DeviceBucket, number> = { mobile: 4, tablet: 8, desktop: 12 };
+export const GRID_COLS: Record<DeviceBucket, number> = {
+  mobile: 4,
+  tablet: 8,
+  desktop: 12,
+};
 export const GRID_GUTTER_PX = 16;
 
 /** Minimum interactive target, both axes. */
@@ -56,7 +60,11 @@ export const DEVICE_PRESETS = [
   { width: 768, label: "768", bp: "tablet" },
   { width: 1024, label: "1024", bp: "tablet" },
   { width: 1440, label: "1440", bp: "desktop" },
-] as const satisfies readonly { width: number; label: string; bp: DeviceBucket }[];
+] as const satisfies readonly {
+  width: number;
+  label: string;
+  bp: DeviceBucket;
+}[];
 
 /** The bucket a viewport width resolves to, using the platform breakpoints. */
 export function bucketForWidth(width: number): DeviceBucket {
@@ -66,7 +74,10 @@ export function bucketForWidth(width: number): DeviceBucket {
 }
 
 /** Column spans a widget may claim, per bucket. `0` = auto (full flow width). */
-export function clampSpan(value: unknown, bucket: DeviceBucket = "desktop"): number {
+export function clampSpan(
+  value: unknown,
+  bucket: DeviceBucket = "desktop",
+): number {
   const n = Math.trunc(Number(value ?? 0));
   if (!Number.isFinite(n) || n <= 0) return 0;
   return Math.min(n, GRID_COLS[bucket]);
@@ -140,7 +151,10 @@ export const MIN_PREFERRED_WIDTH_PX = 360;
  * base cascade), the other two are bounded so their rules cannot escape their
  * device class.
  */
-export const LAYER_RANGE: Record<DeviceBucket, { min: number | null; max: number | null }> = {
+export const LAYER_RANGE: Record<
+  DeviceBucket,
+  { min: number | null; max: number | null }
+> = {
   desktop: { min: null, max: null },
   tablet: { min: BREAKPOINT_PX.md, max: BREAKPOINT_PX.xl - 0.02 },
   mobile: { min: null, max: BREAKPOINT_PX.md - 0.02 },
@@ -223,5 +237,10 @@ export function inheritanceOf<V = unknown>(
       };
     }
   }
-  return { value: undefined, source: "default", inherited: bucket !== "desktop", overridden: false };
+  return {
+    value: undefined,
+    source: "default",
+    inherited: bucket !== "desktop",
+    overridden: false,
+  };
 }

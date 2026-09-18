@@ -49,7 +49,8 @@ describe("snapshot manifest", () => {
     }
     // No duplicates, and every table names the key a rewind upserts on.
     expect(new Set(names).size).toBe(names.length);
-    for (const spec of SNAPSHOT_TABLES) expect(spec.key.length).toBeGreaterThan(0);
+    for (const spec of SNAPSHOT_TABLES)
+      expect(spec.key.length).toBeGreaterThan(0);
   });
 
   it("is written parents-before-children so a rewind cannot orphan rows", () => {
@@ -99,7 +100,10 @@ describe("credentials never reach an archive", () => {
   it("every table carrying a sealed column declares it", () => {
     const risky = SNAPSHOT_TABLES.filter((t) => t.table === "gateway_accounts");
     expect(risky).toHaveLength(1);
-    expect(risky[0]?.redact).toEqual(["credentials_ciphertext", "webhook_secret"]);
+    expect(risky[0]?.redact).toEqual([
+      "credentials_ciphertext",
+      "webhook_secret",
+    ]);
   });
 
   it("leaves an ordinary row alone", () => {
@@ -115,9 +119,14 @@ describe("fingerprint and sizes", () => {
   ];
 
   it("is order-independent but changes with any row count", () => {
-    expect(snapshotChecksum(counts)).toBe(snapshotChecksum([...counts].reverse()));
+    expect(snapshotChecksum(counts)).toBe(
+      snapshotChecksum([...counts].reverse()),
+    );
     expect(snapshotChecksum(counts)).not.toBe(
-      snapshotChecksum([{ table: "orders", rows: 7 }, { table: "products", rows: 24 }]),
+      snapshotChecksum([
+        { table: "orders", rows: 7 },
+        { table: "products", rows: 24 },
+      ]),
     );
     expect(snapshotChecksum(counts)).toMatch(/^[0-9a-f]{8}$/);
     expect(totalRows(counts)).toBe(30);
@@ -154,33 +163,56 @@ describe("verifying an archive against the live database", () => {
   });
 
   it("reports drift rather than hiding it", () => {
-    const v = verifyArchive(archived, [{ table: "orders", rows: 9 }, { table: "products", rows: 24 }], checksum);
+    const v = verifyArchive(
+      archived,
+      [
+        { table: "orders", rows: 9 },
+        { table: "products", rows: 24 },
+      ],
+      checksum,
+    );
     expect(v.status).toBe("drifted");
     expect(v.drift).toEqual([{ table: "orders", archived: 6, live: 9 }]);
   });
 
   it("calls a tampered or empty archive damaged, never restorable", () => {
-    expect(verifyArchive(archived, archived, "deadbeef").status).toBe("damaged");
+    expect(verifyArchive(archived, archived, "deadbeef").status).toBe(
+      "damaged",
+    );
     expect(verifyArchive([], [], snapshotChecksum([])).status).toBe("damaged");
-    const missing = verifyArchive(archived, [{ table: "orders", rows: 6 }], checksum);
-    expect(missing.drift).toEqual([{ table: "products", archived: 24, live: 0 }]);
+    const missing = verifyArchive(
+      archived,
+      [{ table: "orders", rows: 6 }],
+      checksum,
+    );
+    expect(missing.drift).toEqual([
+      { table: "products", archived: 24, live: 0 },
+    ]);
   });
 });
 
 describe("rewind guards", () => {
   it("writes tables in manifest order and drops anything unknown", () => {
-    expect(restoreOrder(["order_items", "orders", "merchants", "made_up_table", "orders"])).toEqual([
-      "merchants",
-      "orders",
-      "order_items",
-    ]);
+    expect(
+      restoreOrder([
+        "order_items",
+        "orders",
+        "merchants",
+        "made_up_table",
+        "orders",
+      ]),
+    ).toEqual(["merchants", "orders", "order_items"]);
   });
 
   it("requires the snapshot's own phrase, typed exactly", () => {
     const label = "Before the September release";
     expect(confirmPhrase(label)).toBe("restore before the september release");
-    expect(phraseMatches("Restore Before The September Release", label)).toBe(true);
-    expect(phraseMatches("  restore   before the september release  ", label)).toBe(true);
+    expect(phraseMatches("Restore Before The September Release", label)).toBe(
+      true,
+    );
+    expect(
+      phraseMatches("  restore   before the september release  ", label),
+    ).toBe(true);
     expect(phraseMatches("restore", label)).toBe(false);
     expect(phraseMatches("", label)).toBe(false);
     expect(phraseMatches(confirmPhrase("Another snapshot"), label)).toBe(false);

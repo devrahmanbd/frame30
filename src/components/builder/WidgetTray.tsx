@@ -13,7 +13,10 @@ import {
 import { createRecentStore } from "@/lib/widget-recent";
 import { useInstalledPlugins } from "./PluginContext";
 
-const REASON_LABEL: Record<WidgetSearchHit["reason"], { en: string; bn: string }> = {
+const REASON_LABEL: Record<
+  WidgetSearchHit["reason"],
+  { en: string; bn: string }
+> = {
   label: { en: "Name", bn: "নাম" },
   synonym: { en: "Also called", bn: "অন্য নাম" },
   vertical: { en: "For your store", bn: "আপনার স্টোরের জন্য" },
@@ -94,7 +97,10 @@ export function WidgetTray({
   const appEntries = useMemo(() => {
     const q = term.trim().toLowerCase();
     return pluginTrayEntries(plugins, slot as BlockSlot).filter(
-      (e) => !q || e.label.toLowerCase().includes(q) || e.pluginName.toLowerCase().includes(q),
+      (e) =>
+        !q ||
+        e.label.toLowerCase().includes(q) ||
+        e.pluginName.toLowerCase().includes(q),
     );
   }, [plugins, slot, term]);
 
@@ -128,7 +134,11 @@ export function WidgetTray({
       <div className="space-y-3">
         <div className="flex items-center justify-between gap-2">
           <h3 className="text-sm font-semibold">{entry?.label ?? pending}</h3>
-          <button type="button" onClick={() => setPending(null)} className="text-xs underline">
+          <button
+            type="button"
+            onClick={() => setPending(null)}
+            className="text-xs underline"
+          >
             {t("Back", "ফিরে যান")}
           </button>
         </div>
@@ -155,7 +165,10 @@ export function WidgetTray({
 
   return (
     <div className="space-y-3">
-      <label className="block text-xs font-medium text-muted-foreground" htmlFor="widget-search">
+      <label
+        className="block text-xs font-medium text-muted-foreground"
+        htmlFor="widget-search"
+      >
         {t("Find a widget", "উইজেট খুঁজুন")}
       </label>
       <input
@@ -167,7 +180,11 @@ export function WidgetTray({
         className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
       />
 
-      <div role="group" aria-label={t("Store type", "স্টোরের ধরন")} className="flex flex-wrap gap-1">
+      <div
+        role="group"
+        aria-label={t("Store type", "স্টোরের ধরন")}
+        className="flex flex-wrap gap-1"
+      >
         {VERTICALS.map((key) => (
           <button
             key={key}
@@ -175,7 +192,9 @@ export function WidgetTray({
             aria-pressed={vertical === key}
             onClick={() => setVertical(key)}
             className={`rounded-fq-md px-2 py-1 text-[11px] ${
-              vertical === key ? "bg-primary text-primary-foreground" : "border border-border bg-card"
+              vertical === key
+                ? "bg-primary text-primary-foreground"
+                : "border border-border bg-card"
             }`}
           >
             {t(VERTICAL_LABEL[key].en, VERTICAL_LABEL[key].bn)}
@@ -208,7 +227,10 @@ export function WidgetTray({
       {hits.length === 0 && (
         <p className="text-xs text-muted-foreground">
           {term
-            ? t("Nothing matches that search in this slot.", "এই স্লটে সার্চের সাথে কিছু মেলেনি।")
+            ? t(
+                "Nothing matches that search in this slot.",
+                "এই স্লটে সার্চের সাথে কিছু মেলেনি।",
+              )
             : t("No widgets match this slot.", "এই স্লটে কোনো উইজেট মেলেনি।")}
         </p>
       )}
@@ -240,9 +262,18 @@ export function WidgetTray({
       )}
 
       {grouped.map(([group, entries]) => (
-        <section key={group} aria-label={t(GROUP_LABEL[group]?.en ?? group, GROUP_LABEL[group]?.bn ?? group)}>
+        <section
+          key={group}
+          aria-label={t(
+            GROUP_LABEL[group]?.en ?? group,
+            GROUP_LABEL[group]?.bn ?? group,
+          )}
+        >
           <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            {t(GROUP_LABEL[group]?.en ?? group, GROUP_LABEL[group]?.bn ?? group)}
+            {t(
+              GROUP_LABEL[group]?.en ?? group,
+              GROUP_LABEL[group]?.bn ?? group,
+            )}
           </h3>
           <ul className="grid grid-cols-2 gap-1">
             {entries.map((hit) => (
@@ -256,7 +287,10 @@ export function WidgetTray({
                   <span className="block truncate">{hit.label}</span>
                   {term && hit.reason !== "label" && (
                     <span className="mt-0.5 block text-[10px] text-muted-foreground">
-                      {t(REASON_LABEL[hit.reason].en, REASON_LABEL[hit.reason].bn)}
+                      {t(
+                        REASON_LABEL[hit.reason].en,
+                        REASON_LABEL[hit.reason].bn,
+                      )}
                     </span>
                   )}
                   {presetsFor(hit.type).length > 1 && (

@@ -4,28 +4,31 @@ description: Agent skill for gossip-coordinator - invoke with $agent-gossip-coor
 ---
 
 ---
+
 name: gossip-coordinator
 type: coordinator
 color: "#FF9800"
 description: Coordinates gossip-based consensus protocols for scalable eventually consistent systems
 capabilities:
-  - epidemic_dissemination
-  - peer_selection
-  - state_synchronization
-  - conflict_resolution
-  - scalability_optimization
-priority: medium
-hooks:
+
+- epidemic_dissemination
+- peer_selection
+- state_synchronization
+- conflict_resolution
+- scalability_optimization
+  priority: medium
+  hooks:
   pre: |
-    echo "📡 Gossip Coordinator broadcasting: $TASK"
-    # Initialize peer connections
-    if [[ "$TASK" == *"dissemination"* ]]; then
-      echo "🌐 Establishing peer network topology"
-    fi
+  echo "📡 Gossip Coordinator broadcasting: $TASK"
+  # Initialize peer connections
+  if [[ "$TASK" == *"dissemination"* ]]; then
+  echo "🌐 Establishing peer network topology"
+  fi
   post: |
-    echo "🔄 Gossip protocol cycle complete"
-    # Check convergence status
-    echo "📊 Monitoring eventual consistency convergence"
+  echo "🔄 Gossip protocol cycle complete"
+  # Check convergence status
+  echo "📊 Monitoring eventual consistency convergence"
+
 ---
 
 # Gossip Protocol Coordinator
@@ -43,18 +46,21 @@ Coordinates gossip-based consensus protocols for scalable eventually consistent 
 ## Implementation Approach
 
 ### Epidemic Information Spread
+
 - Deploy push gossip protocol for proactive information spreading
 - Implement pull gossip protocol for reactive information retrieval
 - Execute push-pull hybrid approach for optimal convergence
 - Manage rumor spreading for fast critical update propagation
 
 ### Anti-Entropy Protocols
+
 - Ensure eventual consistency through state synchronization
 - Execute Merkle tree comparison for efficient difference detection
 - Manage vector clocks for tracking causal relationships
 - Implement conflict resolution for concurrent state updates
 
 ### Membership and Topology
+
 - Handle seamless integration of new nodes via join protocol
 - Detect unresponsive or failed nodes through failure detection
 - Manage graceful node departures and membership list maintenance

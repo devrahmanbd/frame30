@@ -31,10 +31,16 @@ export function EndpointTable() {
                 <span className="inline-flex items-center rounded-fq-sm bg-primary/10 px-2 py-0.5 font-mono text-xs font-semibold text-primary">
                   {row.method}
                 </span>
-                <code className="font-mono text-xs text-muted-foreground">{row.scope}</code>
+                <code className="font-mono text-xs text-muted-foreground">
+                  {row.scope}
+                </code>
               </div>
-              <p className="mt-2 font-mono text-sm font-medium text-foreground break-all">{row.path}</p>
-              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">{row.summary}</p>
+              <p className="mt-2 font-mono text-sm font-medium text-foreground break-all">
+                {row.path}
+              </p>
+              <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+                {row.summary}
+              </p>
               <div className="mt-3 border-t border-border/60 pt-3">
                 <button
                   type="button"
@@ -47,9 +53,22 @@ export function EndpointTable() {
                 </button>
               </div>
               {expanded && (
-                <div className="mt-3 space-y-3 pt-2" id={`mobile-samples-${row.key.replace(/[^a-z0-9]/gi, "-")}`}>
-                  <CodeBlock code={row.curl} lang="bash" caption="curl" label={`curl for ${row.key}`} />
-                  <CodeBlock code={row.ts} lang="ts" caption="TypeScript" label={`TypeScript for ${row.key}`} />
+                <div
+                  className="mt-3 space-y-3 pt-2"
+                  id={`mobile-samples-${row.key.replace(/[^a-z0-9]/gi, "-")}`}
+                >
+                  <CodeBlock
+                    code={row.curl}
+                    lang="bash"
+                    caption="curl"
+                    label={`curl for ${row.key}`}
+                  />
+                  <CodeBlock
+                    code={row.ts}
+                    lang="ts"
+                    caption="TypeScript"
+                    label={`TypeScript for ${row.key}`}
+                  />
                 </div>
               )}
             </div>
@@ -60,7 +79,9 @@ export function EndpointTable() {
       {/* Desktop view (md+): Clean Table */}
       <div className="hidden md:block overflow-hidden rounded-fq-md border border-border bg-card">
         <table className="w-full border-collapse text-sm">
-          <caption className="sr-only">Framique public REST API endpoints</caption>
+          <caption className="sr-only">
+            Framique public REST API endpoints
+          </caption>
           <thead>
             <tr className="border-b border-border bg-muted/40 text-left">
               <th scope="col" className="py-2 pl-4 pr-2 font-semibold">
@@ -84,13 +105,19 @@ export function EndpointTable() {
                 <Fragment key={row.key}>
                   <tr className="border-b border-border/60 align-top">
                     <td className="py-3 pl-4 pr-2">
-                      <span className="mr-2 font-mono text-xs font-semibold text-primary">{row.method}</span>
+                      <span className="mr-2 font-mono text-xs font-semibold text-primary">
+                        {row.method}
+                      </span>
                       <code className="font-mono text-xs">{row.path}</code>
                     </td>
                     <td className="py-3 pr-2">
-                      <code className="font-mono text-xs text-muted-foreground">{row.scope}</code>
+                      <code className="font-mono text-xs text-muted-foreground">
+                        {row.scope}
+                      </code>
                     </td>
-                    <td className="py-3 pr-2 text-muted-foreground">{row.summary}</td>
+                    <td className="py-3 pr-2 text-muted-foreground">
+                      {row.summary}
+                    </td>
                     <td className="py-3 pr-4 text-right">
                       <button
                         type="button"
@@ -105,9 +132,23 @@ export function EndpointTable() {
                   </tr>
                   {expanded && (
                     <tr className="border-b border-border/60 bg-muted/20">
-                      <td colSpan={4} className="px-4 pb-4" id={`samples-${row.key.replace(/[^a-z0-9]/gi, "-")}`}>
-                        <CodeBlock code={row.curl} lang="bash" caption="curl" label={`curl for ${row.key}`} />
-                        <CodeBlock code={row.ts} lang="ts" caption="TypeScript" label={`TypeScript for ${row.key}`} />
+                      <td
+                        colSpan={4}
+                        className="px-4 pb-4"
+                        id={`samples-${row.key.replace(/[^a-z0-9]/gi, "-")}`}
+                      >
+                        <CodeBlock
+                          code={row.curl}
+                          lang="bash"
+                          caption="curl"
+                          label={`curl for ${row.key}`}
+                        />
+                        <CodeBlock
+                          code={row.ts}
+                          lang="ts"
+                          caption="TypeScript"
+                          label={`TypeScript for ${row.key}`}
+                        />
                       </td>
                     </tr>
                   )}

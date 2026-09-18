@@ -3,7 +3,7 @@
 **Document ID:** `FRAMIQUE-SEO-TECH-05`  
 **Standard:** Claude SEO (`seo-technical` + `seo-sxo`) & Holistic SEO On-Page Architecture  
 **Evaluated Codebase:** `devrahmanbd/frame28`  
-**Date:** September 2026  
+**Date:** September 2026
 
 ---
 
@@ -19,26 +19,29 @@ The architecture was audited against modern search engine crawlers (Googlebot, B
 
 Modern search ranking algorithms directly penalize sluggish client hydration, render-blocking scripts, and layout jitter. Claude SEO strictly measures the current three Core Web Vitals:
 
-| Metric | Target Floor | Current Measured Benchmark | Status | Underlying Architectural Mechanism |
-|---|---|---|---|---|
-| **LCP (Largest Contentful Paint)** | `< 2.5s` | **0.85s – 1.15s** | PASS (Optimal) | SSR-rendered semantic HTML, critical inline styles, pre-compressed hero assets |
-| **INP (Interaction to Next Paint)** | `< 200ms` | **24ms – 48ms** | PASS (Optimal) | React 19 concurrent transitions, zero heavy third-party tracking scripts |
-| **CLS (Cumulative Layout Shift)** | `< 0.10` | **0.000** | PASS (Optimal) | Explicit aspect ratios on all visual blocks, zero late-injected banner scripts |
-| **TTFB (Time to First Byte)** | `< 800ms` | **95ms – 180ms** | PASS (Optimal) | Bun edge runtime execution + in-memory route caching |
+| Metric                              | Target Floor | Current Measured Benchmark | Status         | Underlying Architectural Mechanism                                             |
+| ----------------------------------- | ------------ | -------------------------- | -------------- | ------------------------------------------------------------------------------ |
+| **LCP (Largest Contentful Paint)**  | `< 2.5s`     | **0.85s – 1.15s**          | PASS (Optimal) | SSR-rendered semantic HTML, critical inline styles, pre-compressed hero assets |
+| **INP (Interaction to Next Paint)** | `< 200ms`    | **24ms – 48ms**            | PASS (Optimal) | React 19 concurrent transitions, zero heavy third-party tracking scripts       |
+| **CLS (Cumulative Layout Shift)**   | `< 0.10`     | **0.000**                  | PASS (Optimal) | Explicit aspect ratios on all visual blocks, zero late-injected banner scripts |
+| **TTFB (Time to First Byte)**       | `< 800ms`    | **95ms – 180ms**           | PASS (Optimal) | Bun edge runtime execution + in-memory route caching                           |
 
-> *Note on FID:* In accordance with Google's Core Web Vitals update, First Input Delay (FID) is obsolete. All responsiveness evaluations strictly measure Interaction to Next Paint (INP).
+> _Note on FID:_ In accordance with Google's Core Web Vitals update, First Input Delay (FID) is obsolete. All responsiveness evaluations strictly measure Interaction to Next Paint (INP).
 
 ---
 
 ## 3. Microcaching & Cost of Retrieval Minimization
 
 ### Elimination of Third-Party App Latency
+
 In standard Shopify stores, adding basic functionality (reviews, currency convertor, upsell modal, custom forms) requires loading 15 to 30 external JavaScript bundles from distinct third-party domains. This introduces:
+
 - 40+ render-blocking DNS lookups.
 - 1.8MB to 4.5MB of bloated client JavaScript.
 - Massive layout shifts (CLS > 0.25) as widgets inject asynchronously into the DOM.
 
 FRAMIQUE eliminates this entire latency chain by providing **native primitives**:
+
 1. Native visual canvas layout engine with 0 client JS runtime overhead for static nodes.
 2. Native multi-currency price calculations performed during SSR.
 3. Native bKash and Nagad payment tokenization with zero external redirection delays.
@@ -60,6 +63,7 @@ PASS src/lib/marketing-seo.contract.test.ts (43 tests passed)
 ```
 
 ### DOM Landmark Hierarchy:
+
 - `<header role="banner">`: Navigation, brand identity, quick actions.
 - `<main role="main">`: Primary content, structured heading hierarchy (`<h1>` ➔ `<h2>` ➔ `<h3>`).
 - `<aside role="complementary">`: Sidebar filters, related reading, author credentials.

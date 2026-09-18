@@ -1,1 +1,66 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts", "label": "beacon.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L1"}, {"id": "analytics_beacon_beaconschema", "label": "beaconSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L13"}, {"id": "analytics_beacon_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L35"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts", "target": "zod", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts", "target": "analytics_beacon_beaconschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts", "target": "analytics_beacon_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts", "source_location": "L35", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts",
+      "label": "beacon.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "analytics_beacon_beaconschema",
+      "label": "beaconSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "analytics_beacon_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L35"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts",
+      "target": "analytics_beacon_beaconschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_analytics_beacon_ts",
+      "target": "analytics_beacon_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/analytics/beacon.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

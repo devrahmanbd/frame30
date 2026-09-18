@@ -10,7 +10,13 @@
  *   • `reduced` intent keeps a short opacity fade with zero translation;
  *     `off` skips animation entirely.
  */
-import { useEffect, useRef, useState, type ElementType, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ElementType,
+  type ReactNode,
+} from "react";
 import {
   MOTION_TOKENS,
   allowsTransform,
@@ -68,7 +74,10 @@ export function Reveal({
   const intent: MotionIntent = useMotionIntent();
   const animated = intent !== "off";
   const id = useMotionId("reveal");
-  const { ref, inView } = useInView<HTMLElement>({ once: !repeat, enabled: animated });
+  const { ref, inView } = useInView<HTMLElement>({
+    once: !repeat,
+    enabled: animated,
+  });
   const [entered, setEntered] = useState(!animated);
   const budgeted = useRef(false);
 
@@ -84,7 +93,11 @@ export function Reveal({
     // Borrow a slot; if the page is already saturated we simply appear.
     budgeted.current = withMotionBudget(id);
     setEntered(true);
-    const ms = entranceDuration(intent, duration ?? (MOTION_TOKENS.duration.reveal as number)) + delay;
+    const ms =
+      entranceDuration(
+        intent,
+        duration ?? (MOTION_TOKENS.duration.reveal as number),
+      ) + delay;
     const timer = setTimeout(() => {
       if (budgeted.current) {
         releaseMotionBudget(id);
@@ -100,7 +113,10 @@ export function Reveal({
     };
   }, [animated, delay, duration, id, intent, inView, repeat]);
 
-  const ms = entranceDuration(intent, duration ?? (MOTION_TOKENS.duration.reveal as number));
+  const ms = entranceDuration(
+    intent,
+    duration ?? (MOTION_TOKENS.duration.reveal as number),
+  );
   const useTransform = allowsTransform(intent);
   const hidden = animated && !entered;
 
@@ -114,7 +130,8 @@ export function Reveal({
    * means the gate audits what this component actually animates, and a hover
    * transition stays what it is: a hover transition.
    */
-  const properties = ms > 0 ? (useTransform ? "opacity,transform" : "opacity") : "";
+  const properties =
+    ms > 0 ? (useTransform ? "opacity,transform" : "opacity") : "";
 
   return (
     <Tag
@@ -127,7 +144,8 @@ export function Reveal({
       data-motion-properties={properties}
       style={{
         opacity: hidden ? 0 : 1,
-        transform: hidden && useTransform ? translate(direction, distance) : "none",
+        transform:
+          hidden && useTransform ? translate(direction, distance) : "none",
         transition:
           ms > 0
             ? `opacity ${ms}ms ${MOTION_TOKENS.easing.entrance} ${delay}ms, transform ${ms}ms ${MOTION_TOKENS.easing.entrance} ${delay}ms`
@@ -135,7 +153,6 @@ export function Reveal({
         willChange: hidden ? "opacity, transform" : undefined,
       }}
     >
-
       {children}
     </Tag>
   );

@@ -16,7 +16,11 @@ import {
   normaliseKeywords,
   type SeoDraft,
 } from "@/lib/seo-analysis";
-import { documentFacts, phraseOccurrences, readability } from "@/lib/seo-content";
+import {
+  documentFacts,
+  phraseOccurrences,
+  readability,
+} from "@/lib/seo-content";
 import { serpMetrics, truncateToPixels } from "@/lib/seo-pixels";
 import { composeSeoPublishGate, titleKey } from "@/lib/seo-publish-gate";
 
@@ -35,9 +39,9 @@ const article = (words: number) =>
   [
     "<h1>Handmade jute bags in Dhaka</h1>",
     "<p>Handmade jute bags are woven in Dhaka by weavers we pay directly. " +
-      "Every order ships within two days. <a href=\"/store/demo/p/tote\">See the tote</a> " +
-      "and <a href=\"/store/demo/pages/care\">care guide</a>, or read the " +
-      "<a href=\"https://example.org/jute\">jute standard</a>.</p>",
+      'Every order ships within two days. <a href="/store/demo/p/tote">See the tote</a> ' +
+      'and <a href="/store/demo/pages/care">care guide</a>, or read the ' +
+      '<a href="https://example.org/jute">jute standard</a>.</p>',
     "<h2>Why jute bags last</h2>",
     `<p>${"Jute fibre is strong and it dries fast. ".repeat(Math.ceil(words / 8))}</p>`,
     '<img src="/a.jpg" alt="Handmade jute bags on a table" width="800" height="600" />',
@@ -65,30 +69,54 @@ describe("phase 2 — analysis contract", () => {
   });
 
   it("is deterministic for the same draft", () => {
-    const draft = { ...base, metaTitle: "Jute bags", focusKeyword: "jute", content: article(200) };
+    const draft = {
+      ...base,
+      metaTitle: "Jute bags",
+      focusKeyword: "jute",
+      content: article(200),
+    };
     expect(analyseSeo(draft)).toEqual(analyseSeo(draft));
   });
 
   it("skips readability honestly for বাংলা instead of faking an English score", () => {
     const bn = analyseSeo({ ...base, locale: "bn", content: article(300) });
     const en = analyseSeo({ ...base, locale: "en", content: article(300) });
-    expect(bn.checks.find((c) => c.id === "readability.locale")?.status).toBe("skip");
+    expect(bn.checks.find((c) => c.id === "readability.locale")?.status).toBe(
+      "skip",
+    );
     expect(bn.facts.readability.applicable).toBe(false);
     expect(en.checks.some((c) => c.id === "readability.ease")).toBe(true);
   });
 
   it("excludes skipped checks from the denominator", () => {
-    const withUrl = analyseSeo({ ...base, focusKeyword: "jute", url: "/jute", metaTitle: "Jute" });
-    const withoutUrl = analyseSeo({ ...base, focusKeyword: "jute", metaTitle: "Jute" });
-    expect(withoutUrl.checks.find((c) => c.id === "keyword.url")?.status).toBe("skip");
+    const withUrl = analyseSeo({
+      ...base,
+      focusKeyword: "jute",
+      url: "/jute",
+      metaTitle: "Jute",
+    });
+    const withoutUrl = analyseSeo({
+      ...base,
+      focusKeyword: "jute",
+      metaTitle: "Jute",
+    });
+    expect(withoutUrl.checks.find((c) => c.id === "keyword.url")?.status).toBe(
+      "skip",
+    );
     expect(withUrl.score).toBeGreaterThan(withoutUrl.score - 100); // sanity: both scored
     expect(withoutUrl.counts.skip).toBeGreaterThan(0);
   });
 
   it("refuses to judge body copy under the minimum word count", () => {
-    const report = analyseSeo({ ...base, content: "Three words only", focusKeyword: "words" });
+    const report = analyseSeo({
+      ...base,
+      content: "Three words only",
+      focusKeyword: "words",
+    });
     expect(MIN_JUDGEABLE_WORDS).toBe(40);
-    expect(report.checks.find((c) => c.id === "links.internal")?.status).toBe("skip");
+    expect(report.checks.find((c) => c.id === "links.internal")?.status).toBe(
+      "skip",
+    );
   });
 
   it("scores a complete article well and an empty one badly", () => {
@@ -103,8 +131,14 @@ describe("phase 2 — analysis contract", () => {
       url: "/store/demo/jute-bags",
       content: article(700),
       faq: [
-        { q: "Do you deliver outside Dhaka?", a: "Yes, we deliver nationwide within three working days." },
-        { q: "Can I pay cash on delivery?", a: "Yes, cash on delivery is available for every district." },
+        {
+          q: "Do you deliver outside Dhaka?",
+          a: "Yes, we deliver nationwide within three working days.",
+        },
+        {
+          q: "Can I pay cash on delivery?",
+          a: "Yes, cash on delivery is available for every district.",
+        },
       ],
     });
     expect(full.score).toBeGreaterThan(analyseSeo(base).score);
@@ -124,8 +158,13 @@ describe("phase 2 — analysis contract", () => {
   });
 
   it("extracts headings, images, alt coverage and link direction", () => {
-    const facts = documentFacts(article(120), { origin: "https://shop.example.com" });
-    expect(facts.headings[0]).toEqual({ level: 1, text: "Handmade jute bags in Dhaka" });
+    const facts = documentFacts(article(120), {
+      origin: "https://shop.example.com",
+    });
+    expect(facts.headings[0]).toEqual({
+      level: 1,
+      text: "Handmade jute bags in Dhaka",
+    });
     expect(facts.images[0]?.alt).toContain("jute bags");
     expect(facts.internalLinks).toBe(2);
     expect(facts.externalLinks).toBe(1);
@@ -138,7 +177,8 @@ describe("phase 2 — analysis contract", () => {
   });
 
   it("truncates snippets on pixel width, on a word boundary", () => {
-    const long = "Handmade jute bags in Dhaka with cash on delivery and nationwide shipping in two days";
+    const long =
+      "Handmade jute bags in Dhaka with cash on delivery and nationwide shipping in two days";
     const metrics = serpMetrics({ title: long, description: long }, "mobile");
     expect(metrics.title.truncated).toBe(true);
     expect(metrics.title.shown.endsWith("…")).toBe(true);
@@ -151,7 +191,12 @@ describe("phase 2 — analysis contract", () => {
     // body). Asserting the median of several runs keeps the guard meaningful —
     // a real regression moves every sample — without failing on one steal.
     const body = article(5000);
-    const draft = { ...base, metaTitle: "Jute", focusKeyword: "jute bags", content: body };
+    const draft = {
+      ...base,
+      metaTitle: "Jute",
+      focusKeyword: "jute bags",
+      content: body,
+    };
     analyseSeo(draft); // warm caches and JIT
     const samples: number[] = [];
     for (let i = 0; i < 7; i += 1) {
@@ -162,14 +207,14 @@ describe("phase 2 — analysis contract", () => {
     samples.sort((a, b) => a - b);
     const median = samples[Math.floor(samples.length / 2)];
     const budget = Number(process.env["SEO_ANALYSIS_BUDGET_MS"] ?? 50);
-    expect(median, `median ${median.toFixed(1)}ms of ${samples.map((s) => s.toFixed(1)).join("/")}`).toBeLessThan(
-      budget,
-    );
+    expect(
+      median,
+      `median ${median.toFixed(1)}ms of ${samples.map((s) => s.toFixed(1)).join("/")}`,
+    ).toBeLessThan(budget);
     // The slowest sample may be preempted, but not by an order of magnitude:
     // that would mean the analysis has a pathological path, not a noisy runner.
     expect(samples[samples.length - 1]).toBeLessThan(budget * 4);
   });
-
 
   it("keeps the analysis path free of server imports", () => {
     for (const file of [
@@ -197,13 +242,25 @@ describe("phase 2 — publish gate", () => {
     robotsIndex: true,
     selfUrl: "https://shop.example.com/blog/jute-bags",
     inSitemap: true,
-    siblings: [] as { type: string; id: string | null; label: string; title: string }[],
+    siblings: [] as {
+      type: string;
+      id: string | null;
+      label: string;
+      title: string;
+    }[],
   };
 
   it("blocks a duplicate title and names the offending sibling", () => {
     const gate = composeSeoPublishGate({
       ...gateBase,
-      siblings: [{ type: "product", id: "p1", label: "Jute tote", title: "handmade  Jute Bags" }],
+      siblings: [
+        {
+          type: "product",
+          id: "p1",
+          label: "Jute tote",
+          title: "handmade  Jute Bags",
+        },
+      ],
     });
     expect(gate.ok).toBe(false);
     const failure = gate.failures.find((f) => f.code === "title_duplicate");
@@ -214,18 +271,34 @@ describe("phase 2 — publish gate", () => {
   it("does not consider the entity its own duplicate", () => {
     const gate = composeSeoPublishGate({
       ...gateBase,
-      siblings: [{ type: "article", id: "a1", label: "Self", title: "Handmade jute bags" }],
+      siblings: [
+        {
+          type: "article",
+          id: "a1",
+          label: "Self",
+          title: "Handmade jute bags",
+        },
+      ],
     });
     expect(gate.ok).toBe(true);
   });
 
   it("blocks a missing title, an off-site canonical and a noindex sitemap conflict", () => {
-    expect(composeSeoPublishGate({ ...gateBase, title: "  " }).failures[0]?.code).toBe("title_missing");
     expect(
-      composeSeoPublishGate({ ...gateBase, canonical: "https://other.example.com/x" }).failures[0]?.code,
+      composeSeoPublishGate({ ...gateBase, title: "  " }).failures[0]?.code,
+    ).toBe("title_missing");
+    expect(
+      composeSeoPublishGate({
+        ...gateBase,
+        canonical: "https://other.example.com/x",
+      }).failures[0]?.code,
     ).toBe("canonical_offsite");
     expect(
-      composeSeoPublishGate({ ...gateBase, robotsIndex: false, inSitemap: true }).failures[0]?.code,
+      composeSeoPublishGate({
+        ...gateBase,
+        robotsIndex: false,
+        inSitemap: true,
+      }).failures[0]?.code,
     ).toBe("noindex_in_sitemap");
   });
 

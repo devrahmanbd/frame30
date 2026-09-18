@@ -11,10 +11,18 @@
 import { publicClient } from "./pricing.server";
 import { cached, invalidate } from "./cache.server";
 import { incr, log, withSpan } from "./observability.server";
-import { EMPTY_AGG, mergeRails, type RecommendedProduct, type ReviewAgg } from "./conversion";
+import {
+  EMPTY_AGG,
+  mergeRails,
+  type RecommendedProduct,
+  type ReviewAgg,
+} from "./conversion";
 
 type Rpc = {
-  rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 export type PublicReview = {
@@ -64,7 +72,11 @@ export function purgeReviews(productId: string) {
  * Records an anonymous product view. Best effort by design: a tracking failure
  * must never break a product page, so it is logged and counted, not thrown.
  */
-export async function trackProductView(merchantId: string, productId: string, sessionKey: string) {
+export async function trackProductView(
+  merchantId: string,
+  productId: string,
+  sessionKey: string,
+) {
   try {
     const db = publicClient() as unknown as Rpc;
     const { error } = await db.rpc("storefront_track_view", {
@@ -85,7 +97,11 @@ export async function trackProductView(merchantId: string, productId: string, se
  * stale window, because the underlying co-purchase scan is the heaviest read
  * on the page and its answer changes slowly.
  */
-export async function recommendations(merchantId: string, productId: string, limit = 6) {
+export async function recommendations(
+  merchantId: string,
+  productId: string,
+  limit = 6,
+) {
   return cached(
     `recs:${merchantId}:${productId}:${limit}`,
     300,
@@ -101,7 +117,8 @@ export async function recommendations(merchantId: string, productId: string, lim
           log("warn", "recommendations.failed", { merchantId });
           return [] as RecommendedProduct[];
         }
-        return ((data as RecommendedProduct[] | null) ?? []) as RecommendedProduct[];
+        return ((data as RecommendedProduct[] | null) ??
+          []) as RecommendedProduct[];
       }),
     { staleSeconds: 600 },
   );
@@ -141,10 +158,17 @@ export async function productConversionBundle(opts: {
 }) {
   const { merchantId, productId, sessionKey } = opts;
   const [reviews, recs, recent] = await Promise.all([
-    productReviews(productId).catch(() => ({ agg: EMPTY_AGG, list: [] as PublicReview[] })),
-    recommendations(merchantId, productId).catch(() => [] as RecommendedProduct[]),
+    productReviews(productId).catch(() => ({
+      agg: EMPTY_AGG,
+      list: [] as PublicReview[],
+    })),
+    recommendations(merchantId, productId).catch(
+      () => [] as RecommendedProduct[],
+    ),
     sessionKey
-      ? recentlyViewed(merchantId, sessionKey, productId).catch(() => [] as RecommendedProduct[])
+      ? recentlyViewed(merchantId, sessionKey, productId).catch(
+          () => [] as RecommendedProduct[],
+        )
       : Promise.resolve([] as RecommendedProduct[]),
   ]);
 

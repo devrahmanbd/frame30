@@ -27,7 +27,11 @@ import {
 
 /* ---------------------------------------------------------- inline: md → html */
 
-const ESCAPE: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
+const ESCAPE: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+};
 
 /**
  * Convert one markdown inline run to the allow-listed HTML `parseInline`
@@ -42,11 +46,18 @@ export function inlineMarkdownToHtml(source: string): string {
   });
   text = text.replace(/[&<>]/g, (c) => ESCAPE[c] ?? c);
   // Code spans first so their contents are never re-interpreted.
-  text = text.replace(/`([^`\n]+)`/g, (_m, code: string) => `<code>${code}</code>`);
-  text = text.replace(/!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g, (_m, alt: string) => alt);
+  text = text.replace(
+    /`([^`\n]+)`/g,
+    (_m, code: string) => `<code>${code}</code>`,
+  );
+  text = text.replace(
+    /!\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g,
+    (_m, alt: string) => alt,
+  );
   text = text.replace(
     /\[([^\]]{1,200})\]\(([^)\s]{1,2048})(?:\s+"[^"]*")?\)/g,
-    (_m, label: string, href: string) => `<a href="${href.replace(/"/g, "&quot;")}">${label}</a>`,
+    (_m, label: string, href: string) =>
+      `<a href="${href.replace(/"/g, "&quot;")}">${label}</a>`,
   );
   text = text.replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>");
   text = text.replace(/__([^_]+?)__/g, "<strong>$1</strong>");
@@ -54,7 +65,10 @@ export function inlineMarkdownToHtml(source: string): string {
   text = text.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, "$1<em>$2</em>");
   text = text.replace(/(^|[^_\w])_([^_\n]+?)_(?!\w)/g, "$1<em>$2</em>");
   text = text.replace(/ {2,}\n/g, "<br />");
-  text = text.replace(/\u0000(\d+)\u0000/g, (_m, i: string) => kept[Number(i)] ?? "");
+  text = text.replace(
+    /\u0000(\d+)\u0000/g,
+    (_m, i: string) => kept[Number(i)] ?? "",
+  );
   return text;
 }
 
@@ -110,7 +124,8 @@ export function markdownToBlocks(markdown: string): Block[] {
   const blocks: Block[] = [];
   let index = 0;
 
-  const inline = (raw: string): Inline[] => parseInline(inlineMarkdownToHtml(raw));
+  const inline = (raw: string): Inline[] =>
+    parseInline(inlineMarkdownToHtml(raw));
 
   while (index < lines.length) {
     const line = lines[index] ?? "";
@@ -138,7 +153,11 @@ export function markdownToBlocks(markdown: string): Block[] {
         index += 1;
       }
       index += 1; // closing fence
-      blocks.push({ type: "code", lang: (fence[1] ?? "").toLowerCase(), code: code.join("\n") });
+      blocks.push({
+        type: "code",
+        lang: (fence[1] ?? "").toLowerCase(),
+        code: code.join("\n"),
+      });
       continue;
     }
 
@@ -162,10 +181,18 @@ export function markdownToBlocks(markdown: string): Block[] {
     const heading = /^(#{1,6})\s+(.*?)\s*#*$/.exec(content);
     if (heading) {
       // `#` is reserved for the page title, so it renders as an h2 like `##`.
-      const level = Math.min(Math.max(heading[1]!.length, 2), 4) as HeadingLevel;
+      const level = Math.min(
+        Math.max(heading[1]!.length, 2),
+        4,
+      ) as HeadingLevel;
       const nodes = inline(heading[2] ?? "");
       if (nodes.length)
-        blocks.push({ type: "heading", level, inline: nodes, ...(align ? { align } : {}) });
+        blocks.push({
+          type: "heading",
+          level,
+          inline: nodes,
+          ...(align ? { align } : {}),
+        });
       index += 1;
       continue;
     }
@@ -213,7 +240,8 @@ export function markdownToBlocks(markdown: string): Block[] {
         if (nodes.length) items.push(nodes);
         index += 1;
       }
-      if (items.length) blocks.push({ type: "list", ordered: isOrdered, items });
+      if (items.length)
+        blocks.push({ type: "list", ordered: isOrdered, items });
       continue;
     }
 
@@ -255,7 +283,11 @@ export function markdownToBlocks(markdown: string): Block[] {
     }
     const nodes = inline(para.join("\n"));
     if (nodes.length)
-      blocks.push({ type: "paragraph", inline: nodes, ...(align ? { align } : {}) });
+      blocks.push({
+        type: "paragraph",
+        inline: nodes,
+        ...(align ? { align } : {}),
+      });
   }
 
   return blocks;
@@ -280,7 +312,10 @@ export function blocksToMarkdown(blocks: Block[]): string {
           );
         case "list":
           return block.items
-            .map((item, i) => `${block.ordered ? `${i + 1}.` : "-"} ${inlineToMarkdown(item)}`)
+            .map(
+              (item, i) =>
+                `${block.ordered ? `${i + 1}.` : "-"} ${inlineToMarkdown(item)}`,
+            )
             .join("\n");
         case "quote":
           return `> ${inlineToMarkdown(block.inline).replace(/\n/g, "\n> ")}`;
@@ -289,12 +324,21 @@ export function blocksToMarkdown(blocks: Block[]): string {
         case "hr":
           return "---";
         case "image": {
-          const size = block.width && block.height ? `#${block.width}x${block.height}` : "";
-          const caption = block.caption ? ` "${block.caption.replace(/"/g, "'")}"` : "";
+          const size =
+            block.width && block.height
+              ? `#${block.width}x${block.height}`
+              : "";
+          const caption = block.caption
+            ? ` "${block.caption.replace(/"/g, "'")}"`
+            : "";
           return `![${block.alt.replace(/\]/g, "")}](${block.src}${size}${caption})`;
         }
         case "table": {
-          const width = Math.max(block.head.length, ...block.rows.map((r) => r.length), 1);
+          const width = Math.max(
+            block.head.length,
+            ...block.rows.map((r) => r.length),
+            1,
+          );
           const row = (cells: Inline[][]) =>
             `| ${Array.from({ length: width }, (_, i) => inlineToMarkdown(cells[i] ?? []).replace(/\|/g, "\\|")).join(" | ")} |`;
           const divider = `| ${Array.from({ length: width }, () => "---").join(" | ")} |`;
@@ -318,9 +362,12 @@ export function renderMarkdownBlocks(markdown: string): string {
 export function markdownToText(markdown: string): string {
   return markdownToBlocks(markdown)
     .map((block) => {
-      if ("inline" in block) return inlineToHtml(block.inline).replace(/<[^>]+>/g, "");
+      if ("inline" in block)
+        return inlineToHtml(block.inline).replace(/<[^>]+>/g, "");
       if (block.type === "list")
-        return block.items.map((i) => inlineToHtml(i).replace(/<[^>]+>/g, "")).join(" ");
+        return block.items
+          .map((i) => inlineToHtml(i).replace(/<[^>]+>/g, ""))
+          .join(" ");
       if (block.type === "code") return block.code;
       if (block.type === "image") return block.alt;
       return "";

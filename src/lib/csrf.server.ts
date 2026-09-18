@@ -130,9 +130,8 @@ export async function lookupActiveMerchantDomain(
   const cacheKey = `csrf:custom-domain:${hostname}`;
   return cached(cacheKey, 30, async () => {
     try {
-      const { supabaseAdmin } = await import(
-        "@/integrations/supabase/client.server"
-      );
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const { data } = await supabaseAdmin
         .from("merchant_domains")
         .select("id, status")

@@ -58,7 +58,8 @@ function filterQueue(
       if (tab === "needs_agent") return c.needsHumanAgent;
       if (tab === "open") return c.status === "open";
       if (tab === "in_progress") return c.status === "in_progress";
-      if (tab === "closed") return c.status === "resolved" || c.status === "closed";
+      if (tab === "closed")
+        return c.status === "resolved" || c.status === "closed";
       return true;
     })
     .filter((c) => {
@@ -71,14 +72,19 @@ function filterQueue(
       );
     })
     .sort((a, b) => {
-      if (a.needsHumanAgent !== b.needsHumanAgent) return a.needsHumanAgent ? -1 : 1;
-      if (b.priorityRank !== a.priorityRank) return b.priorityRank - a.priorityRank;
+      if (a.needsHumanAgent !== b.needsHumanAgent)
+        return a.needsHumanAgent ? -1 : 1;
+      if (b.priorityRank !== a.priorityRank)
+        return b.priorityRank - a.priorityRank;
       if (a.last_customer_message_at && b.last_customer_message_at)
         return (
           new Date(b.last_customer_message_at).getTime() -
           new Date(a.last_customer_message_at).getTime()
         );
-      return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
+      return (
+        new Date(b.last_message_at).getTime() -
+        new Date(a.last_message_at).getTime()
+      );
     });
 }
 
@@ -115,7 +121,8 @@ function computeNeedsHumanAgent(conv: {
     (conv.takeover_mode ?? "ai") === "ai" &&
     conv.last_customer_message_at !== null &&
     (conv.last_operator_message_at === null ||
-      new Date(conv.last_customer_message_at) > new Date(conv.last_operator_message_at))
+      new Date(conv.last_customer_message_at) >
+        new Date(conv.last_operator_message_at))
   );
 }
 
@@ -252,11 +259,11 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
 
   describe("filterQueue — conversation list filtering", () => {
     const rows = [
-      makeConv({ id: "c1", status: "open",        needsHumanAgent: false }),
-      makeConv({ id: "c2", status: "open",        needsHumanAgent: true  }),
+      makeConv({ id: "c1", status: "open", needsHumanAgent: false }),
+      makeConv({ id: "c2", status: "open", needsHumanAgent: true }),
       makeConv({ id: "c3", status: "in_progress", needsHumanAgent: false }),
-      makeConv({ id: "c4", status: "resolved",    needsHumanAgent: false }),
-      makeConv({ id: "c5", status: "closed",      needsHumanAgent: false }),
+      makeConv({ id: "c4", status: "resolved", needsHumanAgent: false }),
+      makeConv({ id: "c5", status: "closed", needsHumanAgent: false }),
     ];
 
     it("returns all rows for tab=all", () => {
@@ -298,8 +305,18 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
     it("puts needsHumanAgent conversations at the top", () => {
       const now = new Date().toISOString();
       const rows = [
-        makeConv({ id: "normal", needsHumanAgent: false, priorityRank: 4, last_customer_message_at: now }),
-        makeConv({ id: "needs",  needsHumanAgent: true,  priorityRank: 1, last_customer_message_at: now }),
+        makeConv({
+          id: "normal",
+          needsHumanAgent: false,
+          priorityRank: 4,
+          last_customer_message_at: now,
+        }),
+        makeConv({
+          id: "needs",
+          needsHumanAgent: true,
+          priorityRank: 1,
+          last_customer_message_at: now,
+        }),
       ];
       const sorted = filterQueue(rows, "all", "");
       expect(sorted[0].id).toBe("needs");
@@ -308,9 +325,24 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
     it("sorts by priorityRank descending within the same needsHumanAgent bucket", () => {
       const now = new Date().toISOString();
       const rows = [
-        makeConv({ id: "low",    needsHumanAgent: false, priorityRank: 1, last_customer_message_at: now }),
-        makeConv({ id: "urgent", needsHumanAgent: false, priorityRank: 4, last_customer_message_at: now }),
-        makeConv({ id: "high",   needsHumanAgent: false, priorityRank: 3, last_customer_message_at: now }),
+        makeConv({
+          id: "low",
+          needsHumanAgent: false,
+          priorityRank: 1,
+          last_customer_message_at: now,
+        }),
+        makeConv({
+          id: "urgent",
+          needsHumanAgent: false,
+          priorityRank: 4,
+          last_customer_message_at: now,
+        }),
+        makeConv({
+          id: "high",
+          needsHumanAgent: false,
+          priorityRank: 3,
+          last_customer_message_at: now,
+        }),
       ];
       const sorted = filterQueue(rows, "all", "");
       expect(sorted.map((r) => r.id)).toEqual(["urgent", "high", "low"]);
@@ -320,8 +352,18 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
       const older = new Date(Date.now() - 20 * 60_000).toISOString();
       const newer = new Date().toISOString();
       const rows = [
-        makeConv({ id: "old",  needsHumanAgent: false, priorityRank: 2, last_customer_message_at: older }),
-        makeConv({ id: "new",  needsHumanAgent: false, priorityRank: 2, last_customer_message_at: newer }),
+        makeConv({
+          id: "old",
+          needsHumanAgent: false,
+          priorityRank: 2,
+          last_customer_message_at: older,
+        }),
+        makeConv({
+          id: "new",
+          needsHumanAgent: false,
+          priorityRank: 2,
+          last_customer_message_at: newer,
+        }),
       ];
       const sorted = filterQueue(rows, "all", "");
       expect(sorted[0].id).toBe("new");
@@ -334,9 +376,24 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
 
   describe("filterQueue — search by store name, order, channel", () => {
     const rows = [
-      makeConv({ id: "s1", merchantName: "Dhaka Fashion Hub",  order_number: "ORD-9988", channel: "widget" }),
-      makeConv({ id: "s2", merchantName: "Chittagong Bazaar",  order_number: null,        channel: "whatsapp" }),
-      makeConv({ id: "s3", merchantName: "Uttara Electronics", order_number: "ORD-0001", channel: "widget" }),
+      makeConv({
+        id: "s1",
+        merchantName: "Dhaka Fashion Hub",
+        order_number: "ORD-9988",
+        channel: "widget",
+      }),
+      makeConv({
+        id: "s2",
+        merchantName: "Chittagong Bazaar",
+        order_number: null,
+        channel: "whatsapp",
+      }),
+      makeConv({
+        id: "s3",
+        merchantName: "Uttara Electronics",
+        order_number: "ORD-0001",
+        channel: "widget",
+      }),
     ];
 
     it("matches by merchantName (case-insensitive)", () => {
@@ -371,7 +428,9 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
   // ─────────────────────────────────────────────────────────────────────────
 
   describe("Takeover mode state transitions", () => {
-    function toggleTakeover(mode: "ai" | "human_takeover"): "ai" | "human_takeover" {
+    function toggleTakeover(
+      mode: "ai" | "human_takeover",
+    ): "ai" | "human_takeover" {
       return mode === "human_takeover" ? "ai" : "human_takeover";
     }
 
@@ -389,11 +448,18 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
   // ─────────────────────────────────────────────────────────────────────────
 
   describe("Status lifecycle", () => {
-    const VALID_STATUSES = ["open", "in_progress", "resolved", "closed"] as const;
+    const VALID_STATUSES = [
+      "open",
+      "in_progress",
+      "resolved",
+      "closed",
+    ] as const;
     const RESOLVING = ["resolved", "closed"] as const;
 
     function getResolvedAt(status: string): string | null {
-      return status === "resolved" || status === "closed" ? new Date().toISOString() : null;
+      return status === "resolved" || status === "closed"
+        ? new Date().toISOString()
+        : null;
     }
 
     it("only allows valid status transitions", () => {
@@ -430,10 +496,14 @@ describe("Phase 12.2 — Platform Owner Support Chat Moderation Console", () => 
     }
 
     it("classifies internal note messages correctly", () => {
-      expect(classifyBubble({ role: "agent", is_internal_note: true })).toBe("internal");
+      expect(classifyBubble({ role: "agent", is_internal_note: true })).toBe(
+        "internal",
+      );
     });
     it("classifies agent role messages as agent", () => {
-      expect(classifyBubble({ role: "agent", is_internal_note: false })).toBe("agent");
+      expect(classifyBubble({ role: "agent", is_internal_note: false })).toBe(
+        "agent",
+      );
     });
     it("classifies assistant role as bot", () => {
       expect(classifyBubble({ role: "assistant" })).toBe("bot");

@@ -20,11 +20,26 @@ import { Button } from "@/components/ui/button";
 import { MarketingPlaceholderImage } from "@/components/public/MarketingPlaceholderImage";
 
 export const Route = createFileRoute("/blog/")({
-  validateSearch: z.object({ page: z.coerce.number().int().min(1).max(500).optional(), q: z.string().max(120).optional() }),
-  loaderDeps: ({ search }) => ({ page: search.page ?? 1, q: search.q?.trim() ?? "" }),
-  loader: ({ deps }) => deps.q ? blogSearchFn({ data: { query: deps.q, page: deps.page } }) : blogIndexFn({ data: { page: deps.page } }),
+  validateSearch: z.object({
+    page: z.coerce.number().int().min(1).max(500).optional(),
+    q: z.string().max(120).optional(),
+  }),
+  loaderDeps: ({ search }) => ({
+    page: search.page ?? 1,
+    q: search.q?.trim() ?? "",
+  }),
+  loader: ({ deps }) =>
+    deps.q
+      ? blogSearchFn({ data: { query: deps.q, page: deps.page } })
+      : blogIndexFn({ data: { page: deps.page } }),
   head: ({ loaderData }) => {
-    if (!loaderData) return { meta: [{ title: "Blog — Framique" }, { name: "robots", content: "noindex" }] };
+    if (!loaderData)
+      return {
+        meta: [
+          { title: "Blog — Framique" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     const { meta, links } = archiveHead({
       basePath: "/blog",
       titleEn: "Blog",
@@ -36,7 +51,27 @@ export const Route = createFileRoute("/blog/")({
     });
     return {
       meta,
-      links: [...links, { rel: "alternate", type: "application/rss+xml", title: "Framique Blog RSS", href: "/blog.xml" }, { rel: "alternate", type: "application/atom+xml", title: "Framique Blog Atom", href: "/blog.atom" }, { rel: "alternate", type: "application/feed+json", title: "Framique Blog JSON Feed", href: "/blog.json" }],
+      links: [
+        ...links,
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: "Framique Blog RSS",
+          href: "/blog.xml",
+        },
+        {
+          rel: "alternate",
+          type: "application/atom+xml",
+          title: "Framique Blog Atom",
+          href: "/blog.atom",
+        },
+        {
+          rel: "alternate",
+          type: "application/feed+json",
+          title: "Framique Blog JSON Feed",
+          href: "/blog.json",
+        },
+      ],
       scripts: [
         {
           type: "application/ld+json",
@@ -44,7 +79,10 @@ export const Route = createFileRoute("/blog/")({
             listingJsonLd({
               path: "/blog",
               name: "Framique Blog",
-              articles: loaderData.articles.map((a) => ({ slug: a.slug, title: a.title })),
+              articles: loaderData.articles.map((a) => ({
+                slug: a.slug,
+                title: a.title,
+              })),
               paging: loaderData.paging,
             }),
           ),
@@ -61,7 +99,8 @@ function BlogIndexPage() {
   const { t } = useLang();
 
   const basePath = search.q
-    ? (page: number) => `/blog?q=${encodeURIComponent(search.q ?? "")}${page > 1 ? `&page=${page}` : ""}`
+    ? (page: number) =>
+        `/blog?q=${encodeURIComponent(search.q ?? "")}${page > 1 ? `&page=${page}` : ""}`
     : blogIndexPath;
 
   return (
@@ -75,7 +114,9 @@ function BlogIndexPage() {
       header={
         <>
           <header className="mb-8 border-b border-border pb-6">
-            <h1 className="font-bangla-display text-3xl font-semibold">{t("Blog", "ব্লগ")}</h1>
+            <h1 className="font-bangla-display text-3xl font-semibold">
+              {t("Blog", "ব্লগ")}
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               {t(
                 "Guides, product stories and updates from stores building on Framique.",
@@ -84,7 +125,10 @@ function BlogIndexPage() {
             </p>
             {data.paging.total > 0 ? (
               <p className="mt-1 text-xs text-muted-foreground">
-                {t(`${data.paging.total} articles`, `${data.paging.total}টি লেখা`)}
+                {t(
+                  `${data.paging.total} articles`,
+                  `${data.paging.total}টি লেখা`,
+                )}
               </p>
             ) : null}
           </header>
@@ -97,23 +141,38 @@ function BlogIndexPage() {
                 badge={t("Merchant Playbook", "মার্চেন্ট প্লেবুক")}
                 caption={t(
                   "Frameworks, financial playbooks, and logistics analysis for Bangladesh merchants.",
-                  "বাংলাদেশি মার্চেন্টদের জন্য ফাইন্যান্সিয়াল প্লেবুক ও লজিস্টিকস বিশ্লেষণ।"
+                  "বাংলাদেশি মার্চেন্টদের জন্য ফাইন্যান্সিয়াল প্লেবুক ও লজিস্টিকস বিশ্লেষণ।",
                 )}
               />
             </div>
           ) : null}
 
-          <form action="/blog" method="get" role="search" className="mb-8 flex flex-col sm:flex-row max-w-xl gap-2">
-            <label htmlFor="blog-search" className="sr-only">{t("Search articles", "লেখা খুঁজুন")}</label>
+          <form
+            action="/blog"
+            method="get"
+            role="search"
+            className="mb-8 flex flex-col sm:flex-row max-w-xl gap-2"
+          >
+            <label htmlFor="blog-search" className="sr-only">
+              {t("Search articles", "লেখা খুঁজুন")}
+            </label>
             <input
               id="blog-search"
               name="q"
               defaultValue={search.q ?? ""}
               maxLength={80}
-              placeholder={t("Search guides and updates", "গাইড ও আপডেট খুঁজুন")}
+              placeholder={t(
+                "Search guides and updates",
+                "গাইড ও আপডেট খুঁজুন",
+              )}
               className="min-h-11 flex-1 rounded-md border border-border bg-background px-3 text-sm outline-none focus:border-primary"
             />
-            <Button type="submit" className="min-h-11 w-full sm:w-auto bg-primary text-primary-foreground font-semibold px-6">{t("Search", "খুঁজুন")}</Button>
+            <Button
+              type="submit"
+              className="min-h-11 w-full sm:w-auto bg-primary text-primary-foreground font-semibold px-6"
+            >
+              {t("Search", "খুঁজুন")}
+            </Button>
           </form>
         </>
       }
@@ -121,7 +180,10 @@ function BlogIndexPage() {
         <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
           {data.paging.overrun
             ? t("That page does not exist yet.", "এই পেজটি এখনো নেই।")
-            : t("No articles published yet.", "এখনো কোনো লেখা প্রকাশ করা হয়নি।")}
+            : t(
+                "No articles published yet.",
+                "এখনো কোনো লেখা প্রকাশ করা হয়নি।",
+              )}
         </p>
       }
     />

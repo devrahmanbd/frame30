@@ -44,6 +44,7 @@ The SPARC methodology enhances GOAP planning by providing a structured framework
 ## Core Competencies
 
 ### Software Development Planning
+
 - **Feature Implementation**: Break down features into atomic, testable components
 - **Bug Resolution**: Create systematic debugging and fixing strategies
 - **Refactoring Plans**: Design incremental refactoring with maintained functionality
@@ -56,22 +57,23 @@ The SPARC methodology enhances GOAP planning by providing a structured framework
 ### GOAP Methodology for Code
 
 1. **Code State Analysis**:
+
    ```javascript
    current_state = {
      test_coverage: 45,
-     performance_score: 'C',
+     performance_score: "C",
      tech_debt_hours: 120,
-     features_complete: ['auth', 'user-mgmt'],
-     bugs_open: 23
-   }
-   
+     features_complete: ["auth", "user-mgmt"],
+     bugs_open: 23,
+   };
+
    goal_state = {
      test_coverage: 80,
-     performance_score: 'A',
+     performance_score: "A",
      tech_debt_hours: 40,
-     features_complete: [...current, 'payments', 'notifications'],
-     bugs_open: 5
-   }
+     features_complete: [...current, "payments", "notifications"],
+     bugs_open: 5,
+   };
    ```
 
 2. **Action Decomposition**:
@@ -109,6 +111,7 @@ npx claude-flow sparc concurrent tdd tasks.json
 ```
 
 ### SPARC-GOAP Feature Implementation Plan
+
 ```yaml
 goal: implement_payment_processing_with_sparc
 sparc_phases:
@@ -122,7 +125,7 @@ sparc_phases:
       - all_payment_types_defined
       - security_requirements_clear
       - compliance_standards_identified
-      
+
   pseudocode:
     command: "npx claude-flow sparc run pseudocode 'payment flow algorithms'"
     deliverables:
@@ -132,7 +135,7 @@ sparc_phases:
     success_criteria:
       - algorithms_validated
       - edge_cases_covered
-      
+
   architecture:
     command: "npx claude-flow sparc run architect 'payment system design'"
     deliverables:
@@ -142,7 +145,7 @@ sparc_phases:
     success_criteria:
       - scalability_addressed
       - security_layers_defined
-      
+
   refinement:
     command: "npx claude-flow sparc tdd 'payment feature'"
     deliverables:
@@ -152,7 +155,7 @@ sparc_phases:
     success_criteria:
       - test_coverage_80_percent
       - all_tests_passing
-      
+
   completion:
     command: "npx claude-flow sparc run integration 'deploy payment system'"
     deliverables:
@@ -170,13 +173,13 @@ goap_milestones:
       preconditions: [api_keys_configured]
       deliverables: [provider_client, test_environment]
       success_criteria: [can_create_test_charge]
-      
+
   - implement_checkout_flow:
       sparc_phase: refinement
       preconditions: [payment_provider_ready, ui_framework_setup]
       deliverables: [checkout_component, payment_form]
       success_criteria: [form_validation_works, ui_responsive]
-      
+
   - add_webhook_handling:
       sparc_phase: completion
       preconditions: [server_endpoints_available]
@@ -185,28 +188,30 @@ goap_milestones:
 ```
 
 ### Performance Optimization Plan
+
 ```yaml
 goal: reduce_api_latency_50_percent
 analysis:
   - profile_current_performance:
       tools: [profiler, APM, database_explain]
       metrics: [p50_latency, p99_latency, throughput]
-      
+
 optimizations:
   - database_query_optimization:
       actions: [add_indexes, optimize_joins, implement_pagination]
       expected_improvement: 30%
-      
+
   - implement_caching_layer:
       actions: [redis_setup, cache_warming, invalidation_strategy]
       expected_improvement: 25%
-      
+
   - code_optimization:
       actions: [algorithm_improvements, parallel_processing, batch_operations]
       expected_improvement: 15%
 ```
 
 ### Testing Strategy Plan
+
 ```yaml
 goal: achieve_80_percent_coverage
 current_coverage: 45%
@@ -214,11 +219,11 @@ test_pyramid:
   unit_tests:
     target: 60%
     focus: [business_logic, utilities, validators]
-    
+
   integration_tests:
     target: 25%
     focus: [api_endpoints, database_operations, external_services]
-    
+
   e2e_tests:
     target: 15%
     focus: [critical_user_journeys, payment_flow, authentication]
@@ -227,6 +232,7 @@ test_pyramid:
 ## Development Workflow Integration
 
 ### 1. Git Workflow Planning
+
 ```bash
 # Feature branch strategy
 main -> feature/oauth-implementation
@@ -236,18 +242,20 @@ main -> feature/oauth-implementation
 ```
 
 ### 2. Sprint Planning Integration
+
 - Map milestones to sprint goals
 - Estimate story points per action
 - Define acceptance criteria
 - Set up automated tracking
 
 ### 3. Continuous Delivery Goals
+
 ```yaml
 pipeline_goals:
   - automated_testing:
       target: all_commits_tested
       metrics: [test_execution_time < 10min]
-      
+
   - deployment_automation:
       target: one_click_deploy
       environments: [dev, staging, prod]
@@ -257,18 +265,21 @@ pipeline_goals:
 ## Success Metrics Framework
 
 ### Code Quality Metrics
+
 - **Complexity**: Cyclomatic complexity < 10
 - **Duplication**: < 3% duplicate code
 - **Coverage**: > 80% test coverage
 - **Debt**: Technical debt ratio < 5%
 
 ### Performance Metrics
+
 - **Response Time**: p99 < 200ms
 - **Throughput**: > 1000 req/s
 - **Error Rate**: < 0.1%
 - **Availability**: > 99.9%
 
 ### Delivery Metrics
+
 - **Lead Time**: < 1 day
 - **Deployment Frequency**: > 1/day
 - **MTTR**: < 1 hour
@@ -309,17 +320,17 @@ pipeline_goals:
 // Complete SPARC-GOAP workflow for a feature
 async function implementFeatureWithSPARC(feature: string) {
   // Phase 1: Specification
-  const spec = await executeSPARC('spec-pseudocode', feature);
-  
+  const spec = await executeSPARC("spec-pseudocode", feature);
+
   // Phase 2: Architecture
-  const architecture = await executeSPARC('architect', feature);
-  
+  const architecture = await executeSPARC("architect", feature);
+
   // Phase 3: TDD Implementation
-  const implementation = await executeSPARC('tdd', feature);
-  
+  const implementation = await executeSPARC("tdd", feature);
+
   // Phase 4: Integration
-  const integration = await executeSPARC('integration', feature);
-  
+  const integration = await executeSPARC("integration", feature);
+
   // Phase 5: Validation
   return validateGoalAchievement(spec, implementation);
 }
@@ -365,6 +376,7 @@ mcp__claude-flow__memory_usage {
 ## Risk Assessment
 
 For each code goal, evaluate:
+
 1. **Technical Risk**: Complexity, unknowns, dependencies
 2. **Timeline Risk**: Estimation accuracy, resource availability
 3. **Quality Risk**: Testing gaps, regression potential
@@ -387,20 +399,20 @@ class SPARCGoalPlanner {
   async achieveGoal(goal) {
     // 1. SPECIFICATION: Define goal state
     const goalSpec = await this.specifyGoal(goal);
-    
+
     // 2. PSEUDOCODE: Plan action sequence
     const actionPlan = await this.planActions(goalSpec);
-    
+
     // 3. ARCHITECTURE: Structure solution
     const architecture = await this.designArchitecture(actionPlan);
-    
+
     // 4. REFINEMENT: Iterate with TDD
     const implementation = await this.refineWithTDD(architecture);
-    
+
     // 5. COMPLETION: Validate and deploy
     return await this.completeGoal(implementation, goalSpec);
   }
-  
+
   // GOAP A* search with SPARC phases
   async findOptimalPath(currentState, goalState) {
     const actions = this.getAvailableSPARCActions();
@@ -437,6 +449,7 @@ npx claude-flow sparc verify "authentication feature complete"
 - Share successful SPARC patterns across projects
 
 Remember: Every SPARC-enhanced code goal should have:
+
 - Clear definition of "done"
 - Measurable success criteria
 - Testable deliverables

@@ -32,8 +32,14 @@ export function useSectionChannel(store: string, slot: ChannelSlot) {
   return {
     ids,
     push: useCallback((id: string) => pushSlot(store, slot, id), [store, slot]),
-    remove: useCallback((id: string) => removeSlot(store, slot, id), [store, slot]),
-    toggle: useCallback((id: string) => toggleSlot(store, slot, id), [store, slot]),
+    remove: useCallback(
+      (id: string) => removeSlot(store, slot, id),
+      [store, slot],
+    ),
+    toggle: useCallback(
+      (id: string) => toggleSlot(store, slot, id),
+      [store, slot],
+    ),
     clear: useCallback(() => clearSlot(store, slot), [store, slot]),
   };
 }

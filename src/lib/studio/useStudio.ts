@@ -42,7 +42,10 @@ import { pickStyles, resetStyles } from "./styles";
 import { presetBases, type LayoutPreset } from "./containers";
 import { DEFAULT_ACTIVE_DEVICES, type DeviceKey } from "./responsive";
 
-export type StudioClipboard = { node: StudioNode | null; styles: Record<string, SettingValue> | null };
+export type StudioClipboard = {
+  node: StudioNode | null;
+  styles: Record<string, SettingValue> | null;
+};
 
 export function useStudio(initial: StudioDoc) {
   const [history, setHistory] = useState(() => initHistory(initial));
@@ -58,13 +61,17 @@ export function useStudio(initial: StudioDoc) {
   );
   const activeDevices = doc.breakpoints ?? DEFAULT_ACTIVE_DEVICES;
 
-  const commit = useCallback((next: StudioDoc, element: string, verb: HistoryVerb) => {
-    setHistory((state) => pushHistory(state, next, element, verb));
-    setDirty(true);
-  }, []);
+  const commit = useCallback(
+    (next: StudioDoc, element: string, verb: HistoryVerb) => {
+      setHistory((state) => pushHistory(state, next, element, verb));
+      setDirty(true);
+    },
+    [],
+  );
 
   const setRoot = useCallback(
-    (root: StudioNode[], element: string, verb: HistoryVerb) => commit({ ...doc, root }, element, verb),
+    (root: StudioNode[], element: string, verb: HistoryVerb) =>
+      commit({ ...doc, root }, element, verb),
     [commit, doc],
   );
 
@@ -76,23 +83,35 @@ export function useStudio(initial: StudioDoc) {
         id: selected && isContainerNode(selected) ? selected.id : null,
         position: selected && isContainerNode(selected) ? "inside" : "after",
       };
-      setRoot(dropInto(doc.root, node, where), node.name ?? widgetLabel(node.el), "added");
+      setRoot(
+        dropInto(doc.root, node, where),
+        node.name ?? widgetLabel(node.el),
+        "added",
+      );
       setSelectedId(node.id);
     },
     [doc.root, selected, setRoot],
   );
 
-  const addWidget = useCallback((key: string, target?: DropTarget) => addNode(newWidgetNode(key), target), [addNode]);
+  const addWidget = useCallback(
+    (key: string, target?: DropTarget) => addNode(newWidgetNode(key), target),
+    [addNode],
+  );
 
   const addPreset = useCallback(
     (preset: LayoutPreset, target?: DropTarget) => {
       const rows = preset.rows.map((row) =>
         newContainer(
           { layout: preset.layout, direction: "row" },
-          row.map((basis) => newContainer({ layout: "flex", direction: "column", basis })),
+          row.map((basis) =>
+            newContainer({ layout: "flex", direction: "column", basis }),
+          ),
         ),
       );
-      const node = rows.length === 1 ? rows[0]! : newContainer({ layout: "flex", direction: "column" }, rows);
+      const node =
+        rows.length === 1
+          ? rows[0]!
+          : newContainer({ layout: "flex", direction: "column" }, rows);
       void presetBases;
       addNode(node, target);
     },
@@ -102,7 +121,11 @@ export function useStudio(initial: StudioDoc) {
   const update = useCallback(
     (id: string, patch: Partial<StudioNode>, verb: HistoryVerb = "edited") => {
       const node = findNode(doc.root, id);
-      setRoot(updateNode(doc.root, id, (current) => ({ ...current, ...patch })), node ? widgetLabel(node.el) : "Element", verb);
+      setRoot(
+        updateNode(doc.root, id, (current) => ({ ...current, ...patch })),
+        node ? widgetLabel(node.el) : "Element",
+        verb,
+      );
     },
     [doc.root, setRoot],
   );
@@ -111,7 +134,10 @@ export function useStudio(initial: StudioDoc) {
     (id: string, key: string, value: SettingValue) => {
       const node = findNode(doc.root, id);
       setRoot(
-        updateNode(doc.root, id, (current) => ({ ...current, settings: { ...current.settings, [key]: value } })),
+        updateNode(doc.root, id, (current) => ({
+          ...current,
+          settings: { ...current.settings, [key]: value },
+        })),
         node ? widgetLabel(node.el) : "Element",
         "styled",
       );
@@ -123,7 +149,11 @@ export function useStudio(initial: StudioDoc) {
     (id: string) => {
       const node = findNode(doc.root, id);
       const parent = parentOf(doc.root, id);
-      setRoot(removeNode(doc.root, id), node ? widgetLabel(node.el) : "Element", "removed");
+      setRoot(
+        removeNode(doc.root, id),
+        node ? widgetLabel(node.el) : "Element",
+        "removed",
+      );
       setSelectedId(parent?.id ?? null);
     },
     [doc.root, setRoot],
@@ -134,7 +164,11 @@ export function useStudio(initial: StudioDoc) {
       const node = findNode(doc.root, id);
       if (!node) return;
       const copy = cloneNode(node);
-      setRoot(dropInto(doc.root, copy, { id, position: "after" }), widgetLabel(node.el), "duplicated");
+      setRoot(
+        dropInto(doc.root, copy, { id, position: "after" }),
+        widgetLabel(node.el),
+        "duplicated",
+      );
       setSelectedId(copy.id);
     },
     [doc.root, setRoot],
@@ -143,7 +177,11 @@ export function useStudio(initial: StudioDoc) {
   const move = useCallback(
     (dragId: string, target: DropTarget) => {
       const node = findNode(doc.root, dragId);
-      setRoot(moveNode(doc.root, dragId, target), node ? widgetLabel(node.el) : "Element", "moved");
+      setRoot(
+        moveNode(doc.root, dragId, target),
+        node ? widgetLabel(node.el) : "Element",
+        "moved",
+      );
     },
     [doc.root, setRoot],
   );
@@ -162,7 +200,11 @@ export function useStudio(initial: StudioDoc) {
       if (!node) return;
       const copyNode = cloneNode(node);
       setRoot(
-        dropInto(doc.root, copyNode, target ?? { id: selectedId, position: "after" }),
+        dropInto(
+          doc.root,
+          copyNode,
+          target ?? { id: selectedId, position: "after" },
+        ),
         widgetLabel(copyNode.el),
         "pasted",
       );
@@ -184,7 +226,10 @@ export function useStudio(initial: StudioDoc) {
       const styles = clipboard.current.styles;
       if (!styles) return;
       setRoot(
-        updateNode(doc.root, id, (current) => ({ ...current, settings: { ...current.settings, ...styles } })),
+        updateNode(doc.root, id, (current) => ({
+          ...current,
+          settings: { ...current.settings, ...styles },
+        })),
         "Element",
         "styled",
       );
@@ -195,7 +240,10 @@ export function useStudio(initial: StudioDoc) {
   const resetStyle = useCallback(
     (id: string) =>
       setRoot(
-        updateNode(doc.root, id, (current) => ({ ...current, settings: resetStyles(current.settings) })),
+        updateNode(doc.root, id, (current) => ({
+          ...current,
+          settings: resetStyles(current.settings),
+        })),
         "Element",
         "reset",
       ),
@@ -207,7 +255,10 @@ export function useStudio(initial: StudioDoc) {
       setRoot(
         updateNode(doc.root, id, (current) => ({
           ...current,
-          hiddenOn: (current.hiddenOn?.length ?? 0) > 0 ? [] : [...DEFAULT_ACTIVE_DEVICES],
+          hiddenOn:
+            (current.hiddenOn?.length ?? 0) > 0
+              ? []
+              : [...DEFAULT_ACTIVE_DEVICES],
         })),
         "Element",
         "edited",
@@ -221,12 +272,14 @@ export function useStudio(initial: StudioDoc) {
   );
 
   const setPage = useCallback(
-    (patch: Partial<PageSettings>) => commit({ ...doc, page: { ...doc.page, ...patch } }, "Page", "edited"),
+    (patch: Partial<PageSettings>) =>
+      commit({ ...doc, page: { ...doc.page, ...patch } }, "Page", "edited"),
     [commit, doc],
   );
 
   const setBreakpoints = useCallback(
-    (next: DeviceKey[]) => commit({ ...doc, breakpoints: next }, "Page", "edited"),
+    (next: DeviceKey[]) =>
+      commit({ ...doc, breakpoints: next }, "Page", "edited"),
     [commit, doc],
   );
 
@@ -235,7 +288,8 @@ export function useStudio(initial: StudioDoc) {
   const classes = doc.classes ?? [];
 
   const setClasses = useCallback(
-    (next: StudioClass[]) => commit({ ...doc, classes: next }, "Classes", "edited"),
+    (next: StudioClass[]) =>
+      commit({ ...doc, classes: next }, "Classes", "edited"),
     [commit, doc],
   );
 
@@ -250,25 +304,40 @@ export function useStudio(initial: StudioDoc) {
   const renameClass = useCallback(
     (id: string, name: string) => {
       const previous = classes.find((item) => item.id === id);
-      setClasses(classes.map((item) => (item.id === id ? { ...item, name } : item)));
+      setClasses(
+        classes.map((item) => (item.id === id ? { ...item, name } : item)),
+      );
       if (!previous) return;
       // Keep every element that used the old name pointing at the new one.
       setHistory((state) => {
         const current = currentDoc(state);
         const rewrite = (nodes: StudioNode[]): StudioNode[] =>
           nodes.map((node) => {
-            const raw = typeof node.settings.cssClasses === "string" ? node.settings.cssClasses : "";
+            const raw =
+              typeof node.settings.cssClasses === "string"
+                ? node.settings.cssClasses
+                : "";
             const names = raw.split(/\s+/).filter(Boolean);
             const next = names.includes(previous.name)
-              ? names.map((entry) => (entry === previous.name ? name : entry)).join(" ")
+              ? names
+                  .map((entry) => (entry === previous.name ? name : entry))
+                  .join(" ")
               : raw;
             return {
               ...node,
-              settings: next === raw ? node.settings : { ...node.settings, cssClasses: next },
+              settings:
+                next === raw
+                  ? node.settings
+                  : { ...node.settings, cssClasses: next },
               children: node.children ? rewrite(node.children) : node.children,
             };
           });
-        return pushHistory(state, { ...current, root: rewrite(current.root) }, "Classes", "edited");
+        return pushHistory(
+          state,
+          { ...current, root: rewrite(current.root) },
+          "Classes",
+          "edited",
+        );
       });
     },
     [classes, setClasses],
@@ -279,9 +348,9 @@ export function useStudio(initial: StudioDoc) {
     [classes, setClasses],
   );
 
-
   const replaceDoc = useCallback(
-    (next: StudioDoc, verb: HistoryVerb = "imported") => commit(next, "Page", verb),
+    (next: StudioDoc, verb: HistoryVerb = "imported") =>
+      commit(next, "Page", verb),
     [commit],
   );
 

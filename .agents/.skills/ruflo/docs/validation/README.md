@@ -10,13 +10,13 @@ Three-layer regression-protection stack used by ruflo's CI to catch the regressi
 
 Three regressions filed on 2026-05-08 (#1859, #1862, #1867) all passed unit tests + typecheck on the broken commits. Each had a different root cause but the same gap: **unit tests verify code paths, not user-visible failure modes.**
 
-| Regression | What broke | Why CI passed | What user saw |
-|---|---|---|---|
-| `#1867` | `@claude-flow/memory` had `better-sqlite3` as a hard dep + static import | CI ran on Node 20 where prebuilds existed, so the static import evaluated fine | `npm install ruflo@latest` failed on Node 26 with `node-gyp` errors |
-| `#1862` | `ruflo-core` plugin's `hooks.json` called `--format true` (not a real flag) | No CI test invoked the plugin's `hooks.json` against the CLI with realistic stdin | Every Write/Edit tool use printed `[ERROR] Invalid value for --format: true` |
-| `#1859` | CLI parser preferred stray positionals over named flags (14 sites in `hooks.ts`) | Unit tests passed flags individually, never combined `--flag` + boolean-shaped value | `post-edit --file X --success true` recorded `"true"` as the file path |
+| Regression | What broke                                                                       | Why CI passed                                                                        | What user saw                                                                |
+| ---------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `#1867`    | `@claude-flow/memory` had `better-sqlite3` as a hard dep + static import         | CI ran on Node 20 where prebuilds existed, so the static import evaluated fine       | `npm install ruflo@latest` failed on Node 26 with `node-gyp` errors          |
+| `#1862`    | `ruflo-core` plugin's `hooks.json` called `--format true` (not a real flag)      | No CI test invoked the plugin's `hooks.json` against the CLI with realistic stdin    | Every Write/Edit tool use printed `[ERROR] Invalid value for --format: true` |
+| `#1859`    | CLI parser preferred stray positionals over named flags (14 sites in `hooks.ts`) | Unit tests passed flags individually, never combined `--flag` + boolean-shaped value | `post-edit --file X --success true` recorded `"true"` as the file path       |
 
-The validation stack adds three layers that each test a *user-visible* failure mode against a real artifact, not a code path.
+The validation stack adds three layers that each test a _user-visible_ failure mode against a real artifact, not a code path.
 
 ---
 
@@ -50,26 +50,26 @@ The validation stack adds three layers that each test a *user-visible* failure m
 
 Each layer is independently useful and independently adoptable. Together:
 
-- **Layer 1** catches the regression *as a user would experience it*.
-- **Layer 2** confirms every documented fix is *still in the code*, even if Layer 1 has no specific test for it.
-- **Layer 3** answers *when the regression was introduced*, so triage doesn't require manual `git bisect`.
+- **Layer 1** catches the regression _as a user would experience it_.
+- **Layer 2** confirms every documented fix is _still in the code_, even if Layer 1 has no specific test for it.
+- **Layer 3** answers _when the regression was introduced_, so triage doesn't require manual `git bisect`.
 
 ---
 
 ## Layer 1 — Behavioral smoke tests
 
-Build the artifact under test in CI, drive it through the *user-visible* failure path with a real subprocess, assert on the user-visible signal.
+Build the artifact under test in CI, drive it through the _user-visible_ failure path with a real subprocess, assert on the user-visible signal.
 
 ### Concrete instances in this repo
 
-| Instance | Source | CI job |
-|---|---|---|
+| Instance      | Source                                                | CI job                                   |
+| ------------- | ----------------------------------------------------- | ---------------------------------------- |
 | Install smoke | `v3/@claude-flow/memory/scripts/smoke-no-bsqlite.mjs` | `smoke-install-no-bsqlite` (`v3-ci.yml`) |
-| Hook smoke | `plugins/ruflo-core/scripts/test-hooks.mjs` | `plugin-hooks-smoke` (`v3-ci.yml`) |
+| Hook smoke    | `plugins/ruflo-core/scripts/test-hooks.mjs`           | `plugin-hooks-smoke` (`v3-ci.yml`)       |
 
-**Install smoke** — packs `@claude-flow/memory`, installs the tarball into `/tmp/smoke` with `--omit=optional` (simulates "native better-sqlite3 build failed" on Node 26 without prebuilds), asserts the package loads, runtime auto-falls-back to RVF/sql.js, round-trip works. Catches *any* form of "install fails when an optional native dep can't build."
+**Install smoke** — packs `@claude-flow/memory`, installs the tarball into `/tmp/smoke` with `--omit=optional` (simulates "native better-sqlite3 build failed" on Node 26 without prebuilds), asserts the package loads, runtime auto-falls-back to RVF/sql.js, round-trip works. Catches _any_ form of "install fails when an optional native dep can't build."
 
-**Hook smoke** — reads each PostToolUse hook from `plugins/ruflo-core/hooks/hooks.json`, pipes synthetic Claude-Code-style JSON to it, asserts both exit code 0 *and* that the recorded value matches the input. Negative assertions like `expect(stdout).not.toContain('Recording outcome for: true')` are critical — a naive `contains: 'true'` test would have spuriously passed against the broken CLI because the recorded value happened to be `"true"`.
+**Hook smoke** — reads each PostToolUse hook from `plugins/ruflo-core/hooks/hooks.json`, pipes synthetic Claude-Code-style JSON to it, asserts both exit code 0 _and_ that the recorded value matches the input. Negative assertions like `expect(stdout).not.toContain('Recording outcome for: true')` are critical — a naive `contains: 'true'` test would have spuriously passed against the broken CLI because the recorded value happened to be `"true"`.
 
 See **ADR-102** (`v3/docs/adr/ADR-102-plugin-hook-cli-flag-regression-ci-guard.md`) for the full smoke-harness design + flag-priority CLI convention.
 
@@ -77,13 +77,13 @@ See **ADR-102** (`v3/docs/adr/ADR-102-plugin-hook-cli-flag-regression-ci-guard.m
 
 ## Layer 2 — Cryptographic witness manifest
 
-Every documented fix gets an entry containing the file path, a SHA-256 of that file at issuance, and a *marker substring* that must remain in the file while the fix is present. The whole manifest is hashed (SHA-256) and signed (Ed25519) using a deterministic seed derived from the git commit, so the public key can be re-derived without a committed private key.
+Every documented fix gets an entry containing the file path, a SHA-256 of that file at issuance, and a _marker substring_ that must remain in the file while the fix is present. The whole manifest is hashed (SHA-256) and signed (Ed25519) using a deterministic seed derived from the git commit, so the public key can be re-derived without a committed private key.
 
-| File | Purpose |
-|---|---|
-| `verification.md.json` | The signed manifest itself |
-| `verification.md` | Human-readable witness documentation |
-| `witness-fixes.json` | Project-specific NEW_FIXES list (input to regen) |
+| File                   | Purpose                                          |
+| ---------------------- | ------------------------------------------------ |
+| `verification.md.json` | The signed manifest itself                       |
+| `verification.md`      | Human-readable witness documentation             |
+| `witness-fixes.json`   | Project-specific NEW_FIXES list (input to regen) |
 
 ### How verification works
 
@@ -98,14 +98,14 @@ For each fix entry, the verifier computes:
 
 - **Pass** — file's SHA-256 matches manifest entry exactly
 - **Drift** — file SHA-256 changed but the marker is still present (acceptable — codebase advanced)
-- **Regressed** — the marker is *missing* from the file (real regression)
+- **Regressed** — the marker is _missing_ from the file (real regression)
 - **Missing** — the cited file no longer exists
 
 CI gates publish on `regressed === 0 && signatureValid`.
 
 ### Why marker substrings, not just SHA-256
 
-A SHA-256-only check would flag every benign whitespace change as a regression. The marker is the *semantic* invariant — "the fix is the presence of this specific substring." If a developer refactors the file but preserves the fix, marker stays present, drift is recorded, no false alarm. If a developer deletes the fix, marker disappears, regression is caught.
+A SHA-256-only check would flag every benign whitespace change as a regression. The marker is the _semantic_ invariant — "the fix is the presence of this specific substring." If a developer refactors the file but preserves the fix, marker stays present, drift is recorded, no false alarm. If a developer deletes the fix, marker disappears, regression is caught.
 
 Choosing markers is the load-bearing skill. Bad markers: `'function'`, `'TODO'`. Good markers: `(await import('better-sqlite3')).default`, `import * as bcrypt from 'bcryptjs'`, `(ctx.flags.file as string) || ctx.args[0]`.
 
@@ -115,9 +115,9 @@ Choosing markers is the load-bearing skill. Bad markers: `'function'`, `'TODO'`.
 
 Every regen of the witness appends one line to `verification-history.jsonl`. Queries against the history answer:
 
-- *When* a regression was introduced (which commit window)
-- *What* fixes have flapped between pass and regressed (likely a brittle marker)
-- *Which* fixes are persistently drifting (probably an unstable file)
+- _When_ a regression was introduced (which commit window)
+- _What_ fixes have flapped between pass and regressed (likely a brittle marker)
+- _Which_ fixes are persistently drifting (probably an unstable file)
 
 ### Entry shape
 
@@ -131,8 +131,8 @@ Every regen of the witness appends one line to `verification-history.jsonl`. Que
   "summary": { "totalFixes": 82, "verified": 82, "missing": 0 },
   "fixes": {
     "#1867": { "sha256": "...", "markerVerified": true },
-    "F1":    { "sha256": "...", "markerVerified": true }
-  }
+    "F1": { "sha256": "...", "markerVerified": true },
+  },
 }
 ```
 
@@ -158,20 +158,20 @@ See **ADR-103** (`v3/docs/adr/ADR-103-witness-temporal-history.md`) for the full
 
 All scripts live in `plugins/ruflo-core/scripts/witness/`. Project-agnostic — the only runtime dep is `@noble/ed25519`. Adopt by copying the directory into your repo.
 
-| File | Purpose |
-|---|---|
-| `lib.mjs` | Shared regen + history primitives |
-| `init.mjs` | Bootstrap empty manifest + history + fix template |
-| `regen.mjs` | Sign manifest + append history |
-| `verify.mjs` | Validate signature + markers (no CLI dep) |
+| File          | Purpose                                                          |
+| ------------- | ---------------------------------------------------------------- |
+| `lib.mjs`     | Shared regen + history primitives                                |
+| `init.mjs`    | Bootstrap empty manifest + history + fix template                |
+| `regen.mjs`   | Sign manifest + append history                                   |
+| `verify.mjs`  | Validate signature + markers (no CLI dep)                        |
 | `history.mjs` | Query temporal log: `summary`, `regressions`, `timeline`, `list` |
 
 Plus surface area for Claude Code:
 
-| File | Purpose |
-|---|---|
-| `plugins/ruflo-core/skills/witness/SKILL.md` | Workflow guide + anti-patterns |
-| `plugins/ruflo-core/commands/witness.md` | Slash command |
+| File                                           | Purpose                                           |
+| ---------------------------------------------- | ------------------------------------------------- |
+| `plugins/ruflo-core/skills/witness/SKILL.md`   | Workflow guide + anti-patterns                    |
+| `plugins/ruflo-core/commands/witness.md`       | Slash command                                     |
 | `plugins/ruflo-core/agents/witness-curator.md` | Agent for adding fixes / interpreting regressions |
 
 ---
@@ -221,16 +221,16 @@ These are the specific traps that hit ruflo's GitHub Actions during the 2026-05-
 
 ### 1. pnpm isolated linker hides `@noble/ed25519`
 
-`verify.mjs` loads `@noble/ed25519` via `createRequire`. With pnpm's default *isolated* node-linker, transitive deps don't hoist to the workspace root unless a workspace member declares them directly. Locally you might have a flat copy at `<root>/node_modules` from an earlier `npm install` and never notice. In CI, fresh pnpm-only install — and the probe fails silently into `signatureValid: false`.
+`verify.mjs` loads `@noble/ed25519` via `createRequire`. With pnpm's default _isolated_ node-linker, transitive deps don't hoist to the workspace root unless a workspace member declares them directly. Locally you might have a flat copy at `<root>/node_modules` from an earlier `npm install` and never notice. In CI, fresh pnpm-only install — and the probe fails silently into `signatureValid: false`.
 
-**Fix:** `verify.mjs` and `lib.mjs` probe paths now include the workspace packages that *do* declare `@noble/ed25519` directly. In ruflo:
+**Fix:** `verify.mjs` and `lib.mjs` probe paths now include the workspace packages that _do_ declare `@noble/ed25519` directly. In ruflo:
 
 ```js
 const probes = [
   repoRoot,
-  join(repoRoot, 'v3'),
-  join(repoRoot, 'v3/@claude-flow/cli'),                         // declares ed25519
-  join(repoRoot, 'v3/@claude-flow/plugin-agent-federation'),     // declares ed25519
+  join(repoRoot, "v3"),
+  join(repoRoot, "v3/@claude-flow/cli"), // declares ed25519
+  join(repoRoot, "v3/@claude-flow/plugin-agent-federation"), // declares ed25519
 ];
 ```
 
@@ -266,7 +266,7 @@ If the smoke job packs a workspace package and installs the tarball with `--omit
 
 ### 4. Always print the verify output, never trust silent exit codes
 
-`set -e` (the GitHub Actions default for `run:` blocks) kills the bash script the instant `verify.mjs` returns non-zero — *before* any diagnostic node block runs. Result: a 65ms job failure with no log output, and you have no idea which fix regressed or whether the signature even loaded.
+`set -e` (the GitHub Actions default for `run:` blocks) kills the bash script the instant `verify.mjs` returns non-zero — _before_ any diagnostic node block runs. Result: a 65ms job failure with no log output, and you have no idea which fix regressed or whether the signature even loaded.
 
 **Fix:** wrap the verify call in `set +e ... set -e`, capture both streams, analyze unconditionally:
 
@@ -306,14 +306,14 @@ This costs nothing on the green path and gives you a concrete failure cause on t
 
 ## Capabilities matrix
 
-| Failure class | Layer | Example |
-|---|---|---|
-| Install fails on platform without prebuilds | Layer 1 (install smoke) | `npm install` errors out during native build |
-| Wrong CLI flag handling, parser ambiguity | Layer 1 (subprocess smoke) | `--flag value` records the wrong value |
-| Plugin calls flag the CLI doesn't have | Layer 1 (subprocess smoke) | Hook prints `Invalid value for --format: true` |
-| Documented fix silently removed | Layer 2 (witness markers) | Refactor deletes the load-bearing line, code still compiles |
-| Fix regressed: which commit? | Layer 3 (history) | `git bisect` reduced to 3 commits in 18-hour window |
-| Marker too brittle, flaps pass↔regressed | Layer 3 (history) | Status timeline shows oscillation |
+| Failure class                               | Layer                      | Example                                                     |
+| ------------------------------------------- | -------------------------- | ----------------------------------------------------------- |
+| Install fails on platform without prebuilds | Layer 1 (install smoke)    | `npm install` errors out during native build                |
+| Wrong CLI flag handling, parser ambiguity   | Layer 1 (subprocess smoke) | `--flag value` records the wrong value                      |
+| Plugin calls flag the CLI doesn't have      | Layer 1 (subprocess smoke) | Hook prints `Invalid value for --format: true`              |
+| Documented fix silently removed             | Layer 2 (witness markers)  | Refactor deletes the load-bearing line, code still compiles |
+| Fix regressed: which commit?                | Layer 3 (history)          | `git bisect` reduced to 3 commits in 18-hour window         |
+| Marker too brittle, flaps pass↔regressed    | Layer 3 (history)          | Status timeline shows oscillation                           |
 
 ---
 

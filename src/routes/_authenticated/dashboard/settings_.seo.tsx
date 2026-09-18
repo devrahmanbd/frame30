@@ -19,7 +19,11 @@ import {
   btnPrimary,
   inputClass,
 } from "@/components/console/kit";
-import { CheckboxRow, TokenField, UnderlineTabs } from "@/components/admin/seo/metabox/parts";
+import {
+  CheckboxRow,
+  TokenField,
+  UnderlineTabs,
+} from "@/components/admin/seo/metabox/parts";
 import { useLang } from "@/lib/i18n";
 import { SEPARATORS, applyTokens } from "@/lib/seo/seo-meta";
 import {
@@ -40,27 +44,38 @@ import {
   siteSeoSaveFn,
 } from "@/lib/seo/site-seo.functions";
 
-export const Route = createFileRoute("/_authenticated/dashboard/settings_/seo")({
-  loader: () => siteSeoLoadFn(),
-  head: () => ({
-    meta: [
-      { title: "SEO settings — Framique admin" },
-      {
-        name: "description",
-        content:
-          "Search titles, meta templates, sitemap, verification, redirects and the 404 monitor for your store.",
-      },
-      { property: "og:title", content: "SEO settings — Framique admin" },
-      { property: "og:description", content: "Control how your store appears in search results." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: SeoSettingsPage,
-});
+export const Route = createFileRoute("/_authenticated/dashboard/settings_/seo")(
+  {
+    loader: () => siteSeoLoadFn(),
+    head: () => ({
+      meta: [
+        { title: "SEO settings — Framique admin" },
+        {
+          name: "description",
+          content:
+            "Search titles, meta templates, sitemap, verification, redirects and the 404 monitor for your store.",
+        },
+        { property: "og:title", content: "SEO settings — Framique admin" },
+        {
+          property: "og:description",
+          content: "Control how your store appears in search results.",
+        },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary" },
+        { name: "robots", content: "noindex" },
+      ],
+    }),
+    component: SeoSettingsPage,
+  },
+);
 
-type TabId = "titles" | "sitemap" | "verification" | "analytics" | "redirects" | "notfound";
+type TabId =
+  | "titles"
+  | "sitemap"
+  | "verification"
+  | "analytics"
+  | "redirects"
+  | "notfound";
 
 const KIND_LABEL: Record<SeoEntityKind, { en: string; bn: string }> = {
   home: { en: "Homepage", bn: "হোমপেজ" },
@@ -83,7 +98,8 @@ function SeoSettingsPage() {
     [settings, bundle.settings],
   );
 
-  const patch = (part: Partial<SiteSeoSettings>) => setSettings((s) => ({ ...s, ...part }));
+  const patch = (part: Partial<SiteSeoSettings>) =>
+    setSettings((s) => ({ ...s, ...part }));
 
   async function save() {
     if (busy) return;
@@ -93,7 +109,11 @@ function SeoSettingsPage() {
       toast.success(t("SEO settings saved.", "এসইও সেটিংস সংরক্ষিত হয়েছে।"));
       await router.invalidate();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : t("Could not save.", "সংরক্ষণ করা যায়নি।"));
+      toast.error(
+        e instanceof Error
+          ? e.message
+          : t("Could not save.", "সংরক্ষণ করা যায়নি।"),
+      );
     } finally {
       setBusy(false);
     }
@@ -112,8 +132,15 @@ function SeoSettingsPage() {
             tab === "sitemap" ||
             tab === "verification" ||
             tab === "analytics") && (
-            <button type="button" disabled={!dirty || busy} onClick={save} className={btnPrimary}>
-              {busy ? t("Saving…", "সেভ হচ্ছে…") : t("Save changes", "পরিবর্তন সেভ")}
+            <button
+              type="button"
+              disabled={!dirty || busy}
+              onClick={save}
+              className={btnPrimary}
+            >
+              {busy
+                ? t("Saving…", "সেভ হচ্ছে…")
+                : t("Save changes", "পরিবর্তন সেভ")}
             </button>
           )
         }
@@ -126,7 +153,10 @@ function SeoSettingsPage() {
             { id: "titles", label: t("Titles & Meta", "টাইটেল ও মেটা") },
             { id: "sitemap", label: t("Sitemap", "সাইটম্যাপ") },
             { id: "verification", label: t("Verification", "ভেরিফিকেশন") },
-            { id: "analytics", label: t("Pixels & Analytics", "পিক্সেল ও অ্যানালিটিক্স") },
+            {
+              id: "analytics",
+              label: t("Pixels & Analytics", "পিক্সেল ও অ্যানালিটিক্স"),
+            },
             { id: "redirects", label: t("Redirections", "রিডাইরেকশন") },
             { id: "notfound", label: t("404 monitor", "৪০৪ মনিটর") },
           ]}
@@ -161,15 +191,26 @@ function SeoSettingsPage() {
             {SEO_ENTITY_KINDS.map((kind) => {
               const tpl = settings.templates[kind];
               const setTpl = (part: Partial<typeof tpl>) =>
-                patch({ templates: { ...settings.templates, [kind]: { ...tpl, ...part } } });
+                patch({
+                  templates: {
+                    ...settings.templates,
+                    [kind]: { ...tpl, ...part },
+                  },
+                });
               const sample = applyTokens(tpl.title, {
                 title: t("Example item", "উদাহরণ আইটেম"),
                 sitename: bundle.storeName,
                 sep: settings.separator,
-                excerpt: t("A short summary of the item.", "আইটেমের সংক্ষিপ্ত বর্ণনা।"),
+                excerpt: t(
+                  "A short summary of the item.",
+                  "আইটেমের সংক্ষিপ্ত বর্ণনা।",
+                ),
               });
               return (
-                <Card key={kind} title={t(KIND_LABEL[kind].en, KIND_LABEL[kind].bn)}>
+                <Card
+                  key={kind}
+                  title={t(KIND_LABEL[kind].en, KIND_LABEL[kind].bn)}
+                >
                   <div className="space-y-3">
                     <TokenField
                       label={t("Title template", "টাইটেল টেমপ্লেট")}
@@ -177,7 +218,8 @@ function SeoSettingsPage() {
                       onChange={(title) => setTpl({ title })}
                     />
                     <p className="truncate rounded-fq-md bg-muted px-2 py-1 text-xs text-muted-foreground">
-                      {t("Preview", "প্রিভিউ")}: <span className="text-foreground">{sample}</span>
+                      {t("Preview", "প্রিভিউ")}:{" "}
+                      <span className="text-foreground">{sample}</span>
                     </p>
                     <TokenField
                       label={t("Description template", "বর্ণনা টেমপ্লেট")}
@@ -190,7 +232,10 @@ function SeoSettingsPage() {
                       <CheckboxRow
                         checked={tpl.index}
                         onChange={(index) => setTpl({ index })}
-                        label={t("Show in search results", "সার্চ ফলাফলে দেখান")}
+                        label={t(
+                          "Show in search results",
+                          "সার্চ ফলাফলে দেখান",
+                        )}
                       />
                       <CheckboxRow
                         checked={tpl.sitemap}
@@ -210,7 +255,9 @@ function SeoSettingsPage() {
             <div className="space-y-3">
               <CheckboxRow
                 checked={settings.sitemap.enabled}
-                onChange={(enabled) => patch({ sitemap: { ...settings.sitemap, enabled } })}
+                onChange={(enabled) =>
+                  patch({ sitemap: { ...settings.sitemap, enabled } })
+                }
                 label={t("Publish a sitemap", "সাইটম্যাপ প্রকাশ করুন")}
                 hint={t(
                   "Helps search engines find every page.",
@@ -252,7 +299,10 @@ function SeoSettingsPage() {
                   value={settings.sitemap.perPage}
                   onChange={(e) =>
                     patch({
-                      sitemap: { ...settings.sitemap, perPage: Number(e.target.value) || 200 },
+                      sitemap: {
+                        ...settings.sitemap,
+                        perPage: Number(e.target.value) || 200,
+                      },
                     })
                   }
                   className={inputClass}
@@ -273,7 +323,9 @@ function SeoSettingsPage() {
         )}
 
         {tab === "verification" && (
-          <Card title={t("Search engine verification", "সার্চ ইঞ্জিন ভেরিফিকেশন")}>
+          <Card
+            title={t("Search engine verification", "সার্চ ইঞ্জিন ভেরিফিকেশন")}
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               {(
                 [
@@ -288,7 +340,12 @@ function SeoSettingsPage() {
                     value={settings.verification[key]}
                     placeholder={t("Verification code", "ভেরিফিকেশন কোড")}
                     onChange={(e) =>
-                      patch({ verification: { ...settings.verification, [key]: e.target.value } })
+                      patch({
+                        verification: {
+                          ...settings.verification,
+                          [key]: e.target.value,
+                        },
+                      })
                     }
                     className={inputClass}
                   />
@@ -305,140 +362,237 @@ function SeoSettingsPage() {
         )}
 
         {tab === "analytics" && (
-          <Card
-            title={t("Tracking Pixels & Analytics", "ট্র্যাকিং পিক্সেল ও অ্যানালিটিক্স")}
-            description={t(
-              "Per-customer marketing IDs and conversion tracking tokens. Stored in your isolated tenant vault, never in global environment variables.",
-              "দোকান-নির্দিষ্ট মার্কেটিং আইডি ও কনভার্সন ট্র্যাকিং টোকেন। আপনার নিজস্ব টেন্যান্ট ভল্টে সংরক্ষিত থাকে, কখনোই গ্লোবাল পরিবেশ ভ্যারিয়েবলে নয়।",
+          <div className="space-y-4">
+            {/* Custom-domain requirement banner */}
+            {!bundle.hasActiveCustomDomain && (
+              <div className="rounded-fq-md border border-warning/50 bg-warning-soft px-4 py-3 text-sm text-warning-foreground">
+                <p className="font-medium">
+                  {t(
+                    "Analytics tags require a custom domain",
+                    "অ্যানালিটিক্স ট্যাগের জন্য কাস্টম ডোমেইন দরকার",
+                  )}
+                </p>
+                <p className="mt-1 text-xs">
+                  {t(
+                    "IDs saved here will not fire on store.framique.com URLs. Once you connect a custom domain under Settings → Domains, tags will activate automatically.",
+                    "এখানে সেভ করা আইডি store.framique.com URL-এ কাজ করবে না। Settings → Domains-এ কাস্টম ডোমেইন যুক্ত করলে ট্যাগগুলো স্বয়ংক্রিয়ভাবে সক্রিয় হবে।",
+                  )}
+                </p>
+              </div>
             )}
-          >
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="block space-y-1 text-xs">
-                <span className="font-medium">
-                  {t("Meta / Facebook Pixel ID", "মেটা / ফেসবুক পিক্সেল আইডি")}
-                </span>
-                <input
-                  value={settings.analytics?.facebookPixelId ?? ""}
-                  placeholder="e.g. 123456789012345"
-                  onChange={(e) =>
-                    patch({
-                      analytics: {
-                        ...(settings.analytics ?? {
-                          facebookPixelId: "",
-                          facebookCapiToken: "",
-                          googleConversionUrl: "",
-                          googleTagManagerId: "",
-                        }),
-                        facebookPixelId: e.target.value,
-                      },
-                    })
-                  }
-                  className={inputClass}
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  {t(
-                    "Used for storefront browser-side Meta Pixel tracking.",
-                    "স্টোরফ্রন্ট ব্রাউজার-সাইড মেটা পিক্সেল ট্র্যাকিং এর জন্য ব্যবহৃত হয়।",
-                  )}
-                </p>
-              </label>
 
-              <label className="block space-y-1 text-xs">
-                <span className="font-medium">
-                  {t("Google Tag Manager Container ID", "গুগল ট্যাগ ম্যানেজার কনটেইনার আইডি")}
-                </span>
-                <input
-                  value={settings.analytics?.googleTagManagerId ?? ""}
-                  placeholder="e.g. GTM-XXXXXXX"
-                  onChange={(e) =>
-                    patch({
-                      analytics: {
-                        ...(settings.analytics ?? {
-                          facebookPixelId: "",
-                          facebookCapiToken: "",
-                          googleConversionUrl: "",
-                          googleTagManagerId: "",
-                        }),
-                        googleTagManagerId: e.target.value,
-                      },
-                    })
-                  }
-                  className={inputClass}
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  {t(
-                    "Container ID from Google Tag Manager.",
-                    "গুগল ট্যাগ ম্যানেজার থেকে কনটেইনার আইডি।",
-                  )}
-                </p>
-              </label>
+            <Card
+              title={t(
+                "Tracking Pixels & Analytics",
+                "ট্র্যাকিং পিক্সেল ও অ্যানালিটিক্স",
+              )}
+              description={t(
+                "Per-store marketing IDs and conversion tracking tokens. Stored in your isolated tenant vault, never in global environment variables.",
+                "দোকান-নির্দিষ্ট মার্কেটিং আইডি ও কনভার্সন ট্র্যাকিং টোকেন। আপনার নিজস্ব টেন্যান্ট ভল্টে সংরক্ষিত থাকে, কখনোই গ্লোবাল পরিবেশ ভ্যারিয়েবলে নয়।",
+              )}
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block space-y-1 text-xs">
+                  <span className="font-medium">
+                    {t(
+                      "Google Analytics 4 (GA4) Measurement ID",
+                      "গুগল অ্যানালিটিক্স 4 (GA4) মেজারমেন্ট আইডি",
+                    )}
+                  </span>
+                  <input
+                    value={settings.analytics?.googleAnalyticsId ?? ""}
+                    placeholder="G-XXXXXXXXXX"
+                    onChange={(e) =>
+                      patch({
+                        analytics: {
+                          ...(settings.analytics ?? {
+                            facebookPixelId: "",
+                            facebookCapiToken: "",
+                            googleConversionUrl: "",
+                            googleTagManagerId: "",
+                            googleAnalyticsId: "",
+                          }),
+                          googleAnalyticsId: e.target.value,
+                        },
+                      })
+                    }
+                    className={inputClass}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(
+                      "Direct GA4 tag \u2014 use this or GTM, not both.",
+                      "সরাসরি GA4 ট্যাগ \u2014 এটি অথবা GTM ব্যবহার করুন, দুটি একসাথে নয়।",
+                    )}
+                  </p>
+                </label>
 
-              <label className="block space-y-1 text-xs sm:col-span-2">
-                <span className="font-medium">
-                  {t("Meta Conversions API (CAPI) Token", "মেটা কনভার্সন এপিআই (CAPI) টোকেন")}
-                </span>
-                <input
-                  type="password"
-                  value={settings.analytics?.facebookCapiToken ?? ""}
-                  placeholder="EAAB..."
-                  onChange={(e) =>
-                    patch({
-                      analytics: {
-                        ...(settings.analytics ?? {
-                          facebookPixelId: "",
-                          facebookCapiToken: "",
-                          googleConversionUrl: "",
-                          googleTagManagerId: "",
-                        }),
-                        facebookCapiToken: e.target.value,
-                      },
-                    })
-                  }
-                  className={inputClass}
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  {t(
-                    "Server-side Conversions API token. Encrypted at rest.",
-                    "সার্ভার-সাইড কনভার্সন এপিআই টোকেন। ডাটাবেজে এনক্রিপ্ট করে রাখা হয়।",
-                  )}
-                </p>
-              </label>
+                <label className="block space-y-1 text-xs">
+                  <span className="font-medium">
+                    {t(
+                      "Meta / Facebook Pixel ID",
+                      "মেটা / ফেসবুক পিক্সেল আইডি",
+                    )}
+                  </span>
+                  <input
+                    value={settings.analytics?.facebookPixelId ?? ""}
+                    placeholder="e.g. 123456789012345"
+                    onChange={(e) =>
+                      patch({
+                        analytics: {
+                          ...(settings.analytics ?? {
+                            facebookPixelId: "",
+                            facebookCapiToken: "",
+                            googleConversionUrl: "",
+                            googleTagManagerId: "",
+                            googleAnalyticsId: "",
+                          }),
+                          facebookPixelId: e.target.value,
+                        },
+                      })
+                    }
+                    className={inputClass}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(
+                      "Used for storefront browser-side Meta Pixel tracking.",
+                      "স্টোরফ্রন্ট ব্রাউজার-সাইড মেটা পিক্সেল ট্র্যাকিং এর জন্য ব্যবহৃত হয়।",
+                    )}
+                  </p>
+                </label>
 
-              <label className="block space-y-1 text-xs sm:col-span-2">
-                <span className="font-medium">
-                  {t("Google Ads Conversion Tracking URL / ID", "গুগল অ্যাডস কনভার্সন ট্র্যাকিং URL / আইডি")}
-                </span>
-                <input
-                  value={settings.analytics?.googleConversionUrl ?? ""}
-                  placeholder="e.g. AW-123456789/AbCdEfGhIj"
-                  onChange={(e) =>
-                    patch({
-                      analytics: {
-                        ...(settings.analytics ?? {
-                          facebookPixelId: "",
-                          facebookCapiToken: "",
-                          googleConversionUrl: "",
-                          googleTagManagerId: "",
-                        }),
-                        googleConversionUrl: e.target.value,
-                      },
-                    })
-                  }
-                  className={inputClass}
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  {t(
-                    "Google Ads conversion purchase event destination.",
-                    "গুগল অ্যাডস কনভার্সন পারচেস ইভেন্ট গন্তব্য।",
-                  )}
-                </p>
-              </label>
-            </div>
-          </Card>
+                <label className="block space-y-1 text-xs">
+                  <span className="font-medium">
+                    {t(
+                      "Google Tag Manager Container ID",
+                      "গুগল ট্যাগ ম্যানেজার কনটেইনার আইডি",
+                    )}
+                  </span>
+                  <input
+                    value={settings.analytics?.googleTagManagerId ?? ""}
+                    placeholder="e.g. GTM-XXXXXXX"
+                    onChange={(e) =>
+                      patch({
+                        analytics: {
+                          ...(settings.analytics ?? {
+                            facebookPixelId: "",
+                            facebookCapiToken: "",
+                            googleConversionUrl: "",
+                            googleTagManagerId: "",
+                            googleAnalyticsId: "",
+                          }),
+                          googleTagManagerId: e.target.value,
+                        },
+                      })
+                    }
+                    className={inputClass}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(
+                      "Container ID from Google Tag Manager.",
+                      "গুগল ট্যাগ ম্যানেজার থেকে কনটেইনার আইডি।",
+                    )}
+                  </p>
+                </label>
+
+                <label className="block space-y-1 text-xs sm:col-span-2">
+                  <span className="font-medium">
+                    {t(
+                      "Meta Conversions API (CAPI) Token",
+                      "মেটা কনভার্সন এপিআই (CAPI) টোকেন",
+                    )}
+                  </span>
+                  <input
+                    type="password"
+                    value={settings.analytics?.facebookCapiToken ?? ""}
+                    placeholder="EAAB..."
+                    onChange={(e) =>
+                      patch({
+                        analytics: {
+                          ...(settings.analytics ?? {
+                            facebookPixelId: "",
+                            facebookCapiToken: "",
+                            googleConversionUrl: "",
+                            googleTagManagerId: "",
+                            googleAnalyticsId: "",
+                          }),
+                          facebookCapiToken: e.target.value,
+                        },
+                      })
+                    }
+                    className={inputClass}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(
+                      "Server-side Conversions API token. Encrypted at rest.",
+                      "সার্ভার-সাইড কনভার্সন এপিআই টোকেন। ডাটাবেজে এনক্রিপ্ট করে রাখা হয়।",
+                    )}
+                  </p>
+                </label>
+
+                <label className="block space-y-1 text-xs sm:col-span-2">
+                  <span className="font-medium">
+                    {t(
+                      "Google Ads Conversion Tracking URL / ID",
+                      "গুগল অ্যাডস কনভার্সন ট্র্যাকিং URL / আইডি",
+                    )}
+                  </span>
+                  <input
+                    value={settings.analytics?.googleConversionUrl ?? ""}
+                    placeholder="e.g. AW-123456789/AbCdEfGhIj"
+                    onChange={(e) =>
+                      patch({
+                        analytics: {
+                          ...(settings.analytics ?? {
+                            facebookPixelId: "",
+                            facebookCapiToken: "",
+                            googleConversionUrl: "",
+                            googleTagManagerId: "",
+                            googleAnalyticsId: "",
+                          }),
+                          googleConversionUrl: e.target.value,
+                        },
+                      })
+                    }
+                    className={inputClass}
+                  />
+                  <p className="text-[11px] text-muted-foreground">
+                    {t(
+                      "Google Ads conversion purchase event destination.",
+                      "গুগল অ্যাডস কনভার্সন পারচেস ইভেন্ট গন্তব্য।",
+                    )}
+                  </p>
+                </label>
+              </div>
+            </Card>
+
+            {/* Data safety notice — links to the SiteKit desk for full controls */}
+            <Card
+              title={t(
+                "Data safety & bot protection",
+                "ডেটা নিরাপত্তা ও বট সুরক্ষা",
+              )}
+            >
+              <p className="text-sm text-muted-foreground">
+                {t(
+                  "Consent gating (load tags only after visitor opt-in) and bot protection (Cloudflare Turnstile) are managed in the Site Kit desk.",
+                  "কনসেন্ট গেটিং (ভিজিটরের অনুমতির পর ট্যাগ লোড) এবং বট সুরক্ষা (Cloudflare Turnstile) সাইট কিট ডেস্কে পাওয়া যাবে।",
+                )}
+              </p>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {t(
+                  "All IDs are stored encrypted in your isolated tenant vault \u2014 they never appear in logs or shared environment variables.",
+                  "সব আইডি এনক্রিপ্ট করে আপনার বিচ্ছিন্ন টেন্যান্ট ভল্টে সংরক্ষিত \u2014 লগ বা শেয়ার্ড পরিবেশ ভ্যারিয়েবলে কখনো আসে না।",
+                )}
+              </p>
+            </Card>
+          </div>
         )}
 
         {tab === "redirects" && (
-          <RedirectsPanel rows={bundle.redirects} onDone={() => router.invalidate()} />
+          <RedirectsPanel
+            rows={bundle.redirects}
+            onDone={() => router.invalidate()}
+          />
         )}
 
         {tab === "notfound" && (
@@ -456,15 +610,25 @@ function SeoSettingsPage() {
                 <table className="w-full text-left text-sm">
                   <thead className="text-xs text-muted-foreground">
                     <tr>
-                      <th className="py-2 pr-3 font-medium">{t("Address", "ঠিকানা")}</th>
-                      <th className="py-2 pr-3 font-medium">{t("Hits", "হিট")}</th>
-                      <th className="py-2 pr-3 font-medium">{t("Last seen", "শেষ দেখা")}</th>
+                      <th className="py-2 pr-3 font-medium">
+                        {t("Address", "ঠিকানা")}
+                      </th>
+                      <th className="py-2 pr-3 font-medium">
+                        {t("Hits", "হিট")}
+                      </th>
+                      <th className="py-2 pr-3 font-medium">
+                        {t("Last seen", "শেষ দেখা")}
+                      </th>
                       <th className="py-2 font-medium">{t("Fix", "সমাধান")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {bundle.notFound.map((row) => (
-                      <NotFoundRowView key={row.id} row={row} onDone={() => router.invalidate()} />
+                      <NotFoundRowView
+                        key={row.id}
+                        row={row}
+                        onDone={() => router.invalidate()}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -472,7 +636,9 @@ function SeoSettingsPage() {
                   type="button"
                   onClick={async () => {
                     await notFoundClearFn({ data: { id: null } });
-                    toast.success(t("404 log cleared.", "৪০৪ লগ মুছে ফেলা হয়েছে।"));
+                    toast.success(
+                      t("404 log cleared.", "৪০৪ লগ মুছে ফেলা হয়েছে।"),
+                    );
                     await router.invalidate();
                   }}
                   className={`${btnGhost} mt-3`}
@@ -506,7 +672,10 @@ function RedirectsPanel({
   const issue = source || target ? validateRedirect(source, target) : null;
   const message =
     issue === "source"
-      ? t("Enter the old address, like /old-page.", "পুরোনো ঠিকানা দিন, যেমন /old-page।")
+      ? t(
+          "Enter the old address, like /old-page.",
+          "পুরোনো ঠিকানা দিন, যেমন /old-page।",
+        )
       : issue === "target"
         ? t("Enter where visitors should land.", "দর্শকরা কোথায় যাবে তা দিন।")
         : issue === "loop"
@@ -521,7 +690,9 @@ function RedirectsPanel({
         data: {
           id: null,
           sourcePath: normalisePath(source),
-          targetPath: /^https?:\/\//i.test(target.trim()) ? target.trim() : normalisePath(target),
+          targetPath: /^https?:\/\//i.test(target.trim())
+            ? target.trim()
+            : normalisePath(target),
           code,
           isActive: true,
         },
@@ -531,7 +702,11 @@ function RedirectsPanel({
       toast.success(t("Redirect added.", "রিডাইরেক্ট যোগ হয়েছে।"));
       await onDone();
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : t("Could not save.", "সংরক্ষণ করা যায়নি।"));
+      toast.error(
+        e instanceof Error
+          ? e.message
+          : t("Could not save.", "সংরক্ষণ করা যায়নি।"),
+      );
     } finally {
       setBusy(false);
     }
@@ -603,10 +778,16 @@ function RedirectsPanel({
               <tbody>
                 {rows.map((row) => (
                   <tr key={row.id} className="border-t border-border">
-                    <td className="py-2 pr-3 font-mono text-xs">{row.sourcePath}</td>
-                    <td className="py-2 pr-3 font-mono text-xs">{row.targetPath}</td>
+                    <td className="py-2 pr-3 font-mono text-xs">
+                      {row.sourcePath}
+                    </td>
+                    <td className="py-2 pr-3 font-mono text-xs">
+                      {row.targetPath}
+                    </td>
                     <td className="py-2 pr-3">
-                      <Badge tone={row.isActive ? "success" : "neutral"}>{row.code}</Badge>
+                      <Badge tone={row.isActive ? "success" : "neutral"}>
+                        {row.code}
+                      </Badge>
                     </td>
                     <td className="fq-num py-2 pr-3 text-xs">{row.hits}</td>
                     <td className="py-2">
@@ -614,7 +795,12 @@ function RedirectsPanel({
                         type="button"
                         onClick={async () => {
                           await redirectDeleteFn({ data: { id: row.id } });
-                          toast.success(t("Redirect removed.", "রিডাইরেক্ট মুছে ফেলা হয়েছে।"));
+                          toast.success(
+                            t(
+                              "Redirect removed.",
+                              "রিডাইরেক্ট মুছে ফেলা হয়েছে।",
+                            ),
+                          );
                           await onDone();
                         }}
                         className="fq-focus-glow min-h-8 rounded-fq-md px-2 text-xs font-medium text-danger hover:bg-danger-soft"
@@ -663,7 +849,9 @@ function NotFoundRowView({
             type="button"
             disabled={!target.trim()}
             onClick={async () => {
-              await notFoundRedirectFn({ data: { id: row.id, targetPath: target.trim() } });
+              await notFoundRedirectFn({
+                data: { id: row.id, targetPath: target.trim() },
+              });
               toast.success(t("Redirect created.", "রিডাইরেক্ট তৈরি হয়েছে।"));
               await onDone();
             }}

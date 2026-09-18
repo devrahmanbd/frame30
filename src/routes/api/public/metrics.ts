@@ -11,10 +11,14 @@ export const Route = createFileRoute("/api/public/metrics")({
         const token = process.env["METRICS_TOKEN"];
         if (!token) return new Response("Not found", { status: 404 });
         const auth = request.headers.get("authorization");
-        if (auth !== `Bearer ${token}`) return new Response("Unauthorized", { status: 401 });
+        if (auth !== `Bearer ${token}`)
+          return new Response("Unauthorized", { status: 401 });
         const { renderPrometheus } = await import("@/lib/observability.server");
         return new Response(renderPrometheus(), {
-          headers: { "content-type": "text/plain; version=0.0.4", "cache-control": "no-store" },
+          headers: {
+            "content-type": "text/plain; version=0.0.4",
+            "cache-control": "no-store",
+          },
         });
       },
     },

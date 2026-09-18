@@ -1,1 +1,700 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "label": "seo-weight-gate.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L1"}, {"id": "scripts_seo_weight_gate_root", "label": "ROOT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L7"}, {"id": "scripts_seo_weight_gate_entries", "label": "ENTRIES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L8"}, {"id": "scripts_seo_weight_gate_forbidden", "label": "FORBIDDEN", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L14"}, {"id": "scripts_seo_weight_gate_reads", "label": "READS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L15"}, {"id": "scripts_seo_weight_gate_admin_budget", "label": "ADMIN_BUDGET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L24"}, {"id": "scripts_seo_weight_gate_failures", "label": "failures", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L28"}, {"id": "scripts_seo_weight_gate_warnings", "label": "warnings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L29"}, {"id": "scripts_seo_weight_gate_source", "label": "source()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L30"}, {"id": "scripts_seo_weight_gate_imports", "label": "imports()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L31"}, {"id": "scripts_seo_weight_gate_resolveimport", "label": "resolveImport()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L33"}, {"id": "scripts_seo_weight_gate_queue", "label": "queue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L44"}, {"id": "scripts_seo_weight_gate_seen", "label": "seen", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L45"}, {"id": "scripts_seo_weight_gate_file_chain", "label": "[file, chain]", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L47"}, {"id": "scripts_seo_weight_gate_target", "label": "target", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L51"}, {"id": "scripts_seo_weight_gate_functionbody", "label": "functionBody()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L57"}, {"id": "scripts_seo_weight_gate_body", "label": "body", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L66"}, {"id": "scripts_seo_weight_gate_workerimporters", "label": "workerImporters", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L74"}, {"id": "scripts_seo_weight_gate_findmanifest", "label": "findManifest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L77"}, {"id": "scripts_seo_weight_gate_manifestpath", "label": "manifestPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L90"}, {"id": "scripts_seo_weight_gate_manifest", "label": "manifest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L92"}, {"id": "scripts_seo_weight_gate_gz", "label": "gz()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94"}, {"id": "scripts_seo_weight_gate_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95"}, {"id": "scripts_seo_weight_gate_key", "label": "key", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L97"}, {"id": "scripts_seo_weight_gate_bytes", "label": "bytes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L99"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "node_zlib", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_root", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_entries", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_forbidden", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_reads", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_admin_budget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_failures", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_warnings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_imports", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_resolveimport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_queue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_seen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_file_chain", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_forbidden", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_target", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_functionbody", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_body", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_workerimporters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_findmanifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_manifestpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_manifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_gz", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs", "target": "scripts_seo_weight_gate_bytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L99", "weight": 1.0}, {"source": "scripts_seo_weight_gate_walk", "target": "scripts_seo_weight_gate_gz", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_seo_weight_gate_source", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L30"}, {"caller_nid": "scripts_seo_weight_gate_source", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L30"}, {"caller_nid": "scripts_seo_weight_gate_imports", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L31"}, {"caller_nid": "scripts_seo_weight_gate_imports", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L31"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L34"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L34"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L35"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L35"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L35"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L35"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "dirname", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L35"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L36"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L36"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L37"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "isFile", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L37"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L37"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "normalize", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L37"}, {"caller_nid": "scripts_seo_weight_gate_resolveimport", "callee": "relative", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L37"}, {"caller_nid": "scripts_seo_weight_gate_functionbody", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L58"}, {"caller_nid": "scripts_seo_weight_gate_functionbody", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L62"}, {"caller_nid": "scripts_seo_weight_gate_functionbody", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L63"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L78"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "pop", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L81"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L82"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L83"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L85"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L85"}, {"caller_nid": "scripts_seo_weight_gate_findmanifest", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L85"}, {"caller_nid": "scripts_seo_weight_gate_gz", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94"}, {"caller_nid": "scripts_seo_weight_gate_gz", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94"}, {"caller_nid": "scripts_seo_weight_gate_gz", "callee": "gzipSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94"}, {"caller_nid": "scripts_seo_weight_gate_gz", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L94"}, {"caller_nid": "scripts_seo_weight_gate_walk", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95"}, {"caller_nid": "scripts_seo_weight_gate_walk", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95"}, {"caller_nid": "scripts_seo_weight_gate_walk", "callee": "endsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95"}, {"caller_nid": "scripts_seo_weight_gate_walk", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs", "source_location": "L95"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "label": "seo-weight-gate.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_seo_weight_gate_root",
+      "label": "ROOT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L7"
+    },
+    {
+      "id": "scripts_seo_weight_gate_entries",
+      "label": "ENTRIES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L8"
+    },
+    {
+      "id": "scripts_seo_weight_gate_forbidden",
+      "label": "FORBIDDEN",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L14"
+    },
+    {
+      "id": "scripts_seo_weight_gate_reads",
+      "label": "READS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L15"
+    },
+    {
+      "id": "scripts_seo_weight_gate_admin_budget",
+      "label": "ADMIN_BUDGET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L24"
+    },
+    {
+      "id": "scripts_seo_weight_gate_failures",
+      "label": "failures",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L28"
+    },
+    {
+      "id": "scripts_seo_weight_gate_warnings",
+      "label": "warnings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L29"
+    },
+    {
+      "id": "scripts_seo_weight_gate_source",
+      "label": "source()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L30"
+    },
+    {
+      "id": "scripts_seo_weight_gate_imports",
+      "label": "imports()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L31"
+    },
+    {
+      "id": "scripts_seo_weight_gate_resolveimport",
+      "label": "resolveImport()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L33"
+    },
+    {
+      "id": "scripts_seo_weight_gate_queue",
+      "label": "queue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L44"
+    },
+    {
+      "id": "scripts_seo_weight_gate_seen",
+      "label": "seen",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L45"
+    },
+    {
+      "id": "scripts_seo_weight_gate_file_chain",
+      "label": "[file, chain]",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L47"
+    },
+    {
+      "id": "scripts_seo_weight_gate_target",
+      "label": "target",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L51"
+    },
+    {
+      "id": "scripts_seo_weight_gate_functionbody",
+      "label": "functionBody()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L57"
+    },
+    {
+      "id": "scripts_seo_weight_gate_body",
+      "label": "body",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L66"
+    },
+    {
+      "id": "scripts_seo_weight_gate_workerimporters",
+      "label": "workerImporters",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L74"
+    },
+    {
+      "id": "scripts_seo_weight_gate_findmanifest",
+      "label": "findManifest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L77"
+    },
+    {
+      "id": "scripts_seo_weight_gate_manifestpath",
+      "label": "manifestPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L90"
+    },
+    {
+      "id": "scripts_seo_weight_gate_manifest",
+      "label": "manifest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L92"
+    },
+    {
+      "id": "scripts_seo_weight_gate_gz",
+      "label": "gz()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94"
+    },
+    {
+      "id": "scripts_seo_weight_gate_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95"
+    },
+    {
+      "id": "scripts_seo_weight_gate_key",
+      "label": "key",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L97"
+    },
+    {
+      "id": "scripts_seo_weight_gate_bytes",
+      "label": "bytes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L99"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "node_zlib",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_root",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_entries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_forbidden",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_reads",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_admin_budget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_failures",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_warnings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_imports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_resolveimport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_queue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_seen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_file_chain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_forbidden",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_target",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_functionbody",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_body",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_workerimporters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_findmanifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_manifestpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_manifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_gz",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_seo_weight_gate_mjs",
+      "target": "scripts_seo_weight_gate_bytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_seo_weight_gate_walk",
+      "target": "scripts_seo_weight_gate_gz",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_seo_weight_gate_source",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_source",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_imports",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_imports",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "dirname",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "isFile",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "normalize",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_resolveimport",
+      "callee": "relative",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_functionbody",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_functionbody",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_functionbody",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "pop",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_findmanifest",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_gz",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_gz",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_gz",
+      "callee": "gzipSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_gz",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_walk",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_walk",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_walk",
+      "callee": "endsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_seo_weight_gate_walk",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/seo-weight-gate.mjs",
+      "source_location": "L95"
+    }
+  ]
+}

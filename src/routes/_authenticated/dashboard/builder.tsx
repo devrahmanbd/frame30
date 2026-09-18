@@ -224,7 +224,15 @@ function BuilderStudio() {
   const [blocks, setBlocks] = useState<SavedBlock[]>([]);
   const [blockName, setBlockName] = useState("");
   const [panel, setPanel] = useState<
-    "inspect" | "seo" | "brand" | "history" | "themes" | "templates" | "maintenance" | "forms" | "popups"
+    | "inspect"
+    | "seo"
+    | "brand"
+    | "history"
+    | "themes"
+    | "templates"
+    | "maintenance"
+    | "forms"
+    | "popups"
   >("inspect");
   const [runAt, setRunAt] = useState("");
   const [pendingInstall, setPendingInstall] = useState<string | null>(null);
@@ -1122,28 +1130,52 @@ function BuilderStudio() {
         run: () => setTemplate(key),
       })),
       {
-        id: "undo", label: t("Undo", "আনডু"), section: t("Edit", "এডিট"), run: () => editor.undo(),
+        id: "undo",
+        label: t("Undo", "আনডু"),
+        section: t("Edit", "এডিট"),
+        run: () => editor.undo(),
       },
       {
-        id: "redo", label: t("Redo", "রিডু"), section: t("Edit", "এডিট"), run: () => editor.redo(),
+        id: "redo",
+        label: t("Redo", "রিডু"),
+        section: t("Edit", "এডিট"),
+        run: () => editor.redo(),
       },
       {
-        id: "save", label: t("Save version", "ভার্সন সেভ"), section: t("File", "ফাইল"), run: () => commitDraft.mutate(),
+        id: "save",
+        label: t("Save version", "ভার্সন সেভ"),
+        section: t("File", "ফাইল"),
+        run: () => commitDraft.mutate(),
       },
       {
-        id: "publish", label: t("Publish", "পাবলিশ"), section: t("File", "ফাইল"), run: () => setPublishOpen(true),
+        id: "publish",
+        label: t("Publish", "পাবলিশ"),
+        section: t("File", "ফাইল"),
+        run: () => setPublishOpen(true),
       },
       {
-        id: "seo", label: t("SEO settings", "SEO সেটিংস"), section: t("Panels", "প্যানেল"), run: () => setPanel("seo"),
+        id: "seo",
+        label: t("SEO settings", "SEO সেটিংস"),
+        section: t("Panels", "প্যানেল"),
+        run: () => setPanel("seo"),
       },
       {
-        id: "brand", label: t("Brand tokens", "ব্র্যান্ড টোকেন"), section: t("Panels", "প্যানেল"), run: () => setPanel("brand"),
+        id: "brand",
+        label: t("Brand tokens", "ব্র্যান্ড টোকেন"),
+        section: t("Panels", "প্যানেল"),
+        run: () => setPanel("brand"),
       },
       {
-        id: "popups", label: t("Popup settings", "পপআপ সেটিংস"), section: t("Panels", "প্যানেল"), run: () => setPanel("popups"),
+        id: "popups",
+        label: t("Popup settings", "পপআপ সেটিংস"),
+        section: t("Panels", "প্যানেল"),
+        run: () => setPanel("popups"),
       },
       {
-        id: "history", label: t("History", "ইতিহাস"), section: t("Panels", "প্যানেল"), run: () => setPanel("history"),
+        id: "history",
+        label: t("History", "ইতিহাস"),
+        section: t("Panels", "প্যানেল"),
+        run: () => setPanel("history"),
       },
     ],
     [t, editor, commitDraft],
@@ -1169,7 +1201,9 @@ function BuilderStudio() {
           saveDisabled={busy || !doc}
           publishDisabled={busy || !doc}
           onFinderOpen={() => setFinderOpen(true)}
-          onStructureToggle={() => setLeftTab((t) => t === "layers" ? "add" : "layers")}
+          onStructureToggle={() =>
+            setLeftTab((t) => (t === "layers" ? "add" : "layers"))
+          }
           structureVisible={leftTab === "layers"}
           onChecklistOpen={() => setPublishOpen(true)}
           issueCount={issues.filter((i) => i.level === "error").length}
@@ -1179,7 +1213,10 @@ function BuilderStudio() {
         <PublishModal
           open={publishOpen}
           onClose={() => setPublishOpen(false)}
-          onPublish={() => { publishNow.mutate(); setPublishOpen(false); }}
+          onPublish={() => {
+            publishNow.mutate();
+            setPublishOpen(false);
+          }}
           issues={issues}
           templateName={TEMPLATE_LABEL[template].en}
           hasChanges={editor.dirty}
@@ -1190,7 +1227,6 @@ function BuilderStudio() {
           onClose={() => setFinderOpen(false)}
           actions={finderActions}
         />
-
 
         {workspace.data?.isPreview && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm shadow-xs">
@@ -1713,35 +1749,37 @@ function BuilderStudio() {
             )}
           </aside>
 
-                  {selected && linkedBlockId(selected) && (
-          <GlobalBlockBar
-            blockName={String(selected.props[NODE_NAME_PROP] ?? "Global block")}
-            onEdit={() => {
-              const gid = linkedBlockId(selected);
-              if (gid) {
-                const g = globals.find((b) => b.id === gid);
-                if (g) {
-                  const ids = editor.insert(template, slot, g.nodes);
-                  if (ids?.length) setSelectedIds(ids);
+          {selected && linkedBlockId(selected) && (
+            <GlobalBlockBar
+              blockName={String(
+                selected.props[NODE_NAME_PROP] ?? "Global block",
+              )}
+              onEdit={() => {
+                const gid = linkedBlockId(selected);
+                if (gid) {
+                  const g = globals.find((b) => b.id === gid);
+                  if (g) {
+                    const ids = editor.insert(template, slot, g.nodes);
+                    if (ids?.length) setSelectedIds(ids);
+                  }
                 }
-              }
-            }}
-            onUnlink={() => {
-              if (!selected) return;
-              const gid = linkedBlockId(selected);
-              if (gid) {
-                const g = globals.find((b) => b.id === gid);
-                if (g) {
-                  editor.remove(template, slot, selected.id);
-                  const ids = editor.insert(template, slot, g.nodes);
-                  if (ids?.length) setSelectedIds(ids);
+              }}
+              onUnlink={() => {
+                if (!selected) return;
+                const gid = linkedBlockId(selected);
+                if (gid) {
+                  const g = globals.find((b) => b.id === gid);
+                  if (g) {
+                    editor.remove(template, slot, selected.id);
+                    const ids = editor.insert(template, slot, g.nodes);
+                    if (ids?.length) setSelectedIds(ids);
+                  }
                 }
-              }
-            }}
-          />
-        )}
+              }}
+            />
+          )}
 
-<section
+          <section
             className="space-y-3 rounded-fq-lg border border-border bg-muted p-4"
             aria-label={t("Preview", "প্রিভিউ")}
           >
@@ -2243,7 +2281,7 @@ function BuilderStudio() {
                 ))}
               </div>
             )}
-          
+
             {panel === "templates" && themeId && (
               <TemplatesLibrary
                 themeId={themeId}
@@ -2254,18 +2292,12 @@ function BuilderStudio() {
               />
             )}
 
-            {panel === "maintenance" && (
-              <MaintenanceSettings />
-            )}
+            {panel === "maintenance" && <MaintenanceSettings />}
 
-            {panel === "forms" && (
-              <FormsPanel />
-            )}
+            {panel === "forms" && <FormsPanel />}
 
-            {panel === "popups" && (
-              <PopupSettings />
-            )}
-</aside>
+            {panel === "popups" && <PopupSettings />}
+          </aside>
         </div>
 
         {/* Phase 1.2 / 1.4 overlays live at the end so they escape panel overflow. */}

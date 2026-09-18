@@ -43,19 +43,42 @@ export type CouponInput = {
   status: CouponStatus;
 };
 
-export async function saveCoupon(supabase: Client, merchantId: string, input: CouponInput) {
+export async function saveCoupon(
+  supabase: Client,
+  merchantId: string,
+  input: CouponInput,
+) {
   const code = input.code.trim().toUpperCase();
   if (!/^[A-Z0-9_-]{3,32}$/.test(code)) {
-    throw new MarketingError("coupon_code_invalid", "Code must be 3-32 characters (A-Z, 0-9, -, _)");
+    throw new MarketingError(
+      "coupon_code_invalid",
+      "Code must be 3-32 characters (A-Z, 0-9, -, _)",
+    );
   }
-  if (input.type === "percent" && (input.percentOff <= 0 || input.percentOff > 100)) {
-    throw new MarketingError("coupon_percent_invalid", "Percentage discount must be between 1-100");
+  if (
+    input.type === "percent" &&
+    (input.percentOff <= 0 || input.percentOff > 100)
+  ) {
+    throw new MarketingError(
+      "coupon_percent_invalid",
+      "Percentage discount must be between 1-100",
+    );
   }
   if (input.type === "fixed" && input.amountMinorInt <= 0) {
-    throw new MarketingError("coupon_amount_invalid", "Discount amount must be greater than zero");
+    throw new MarketingError(
+      "coupon_amount_invalid",
+      "Discount amount must be greater than zero",
+    );
   }
-  if (input.startsAt && input.expiresAt && new Date(input.startsAt) >= new Date(input.expiresAt)) {
-    throw new MarketingError("coupon_window_invalid", "Start time must be before end time");
+  if (
+    input.startsAt &&
+    input.expiresAt &&
+    new Date(input.startsAt) >= new Date(input.expiresAt)
+  ) {
+    throw new MarketingError(
+      "coupon_window_invalid",
+      "Start time must be before end time",
+    );
   }
 
   const dupQuery = supabase
@@ -63,9 +86,14 @@ export async function saveCoupon(supabase: Client, merchantId: string, input: Co
     .select("id")
     .eq("merchant_id", merchantId)
     .eq("code", code);
-  const { data: dup } = input.id ? await dupQuery.neq("id", input.id) : await dupQuery;
+  const { data: dup } = input.id
+    ? await dupQuery.neq("id", input.id)
+    : await dupQuery;
   if (dup && dup.length > 0) {
-    throw new MarketingError("coupon_code_taken", "This code is already in use");
+    throw new MarketingError(
+      "coupon_code_taken",
+      "This code is already in use",
+    );
   }
 
   const row = {
@@ -88,7 +116,12 @@ export async function saveCoupon(supabase: Client, merchantId: string, input: Co
   };
 
   const query = input.id
-    ? supabase.from("coupons").update(row).eq("id", input.id).select("id, code").single()
+    ? supabase
+        .from("coupons")
+        .update(row)
+        .eq("id", input.id)
+        .select("id, code")
+        .single()
     : supabase.from("coupons").insert(row).select("id, code").single();
   const { data, error } = await query;
   if (error) throw new MarketingError("coupon_save_failed", error.message);
@@ -97,14 +130,19 @@ export async function saveCoupon(supabase: Client, merchantId: string, input: Co
 
 type SegmentRule = { field: string; operator: string; value: string };
 
-export async function segmentMembers(supabase: Client, merchantId: string, rule: SegmentRule | null) {
+export async function segmentMembers(
+  supabase: Client,
+  merchantId: string,
+  rule: SegmentRule | null,
+) {
   let query = supabase
     .from("subscribers")
     .select("id, email, phone, tags, status, email_consent")
     .eq("merchant_id", merchantId);
   if (rule) {
     if (rule.field === "status") query = query.eq("status", rule.value);
-    if (rule.field === "email_consent") query = query.eq("email_consent", rule.value === "true");
+    if (rule.field === "email_consent")
+      query = query.eq("email_consent", rule.value === "true");
     if (rule.field === "tag") query = query.contains("tags", [rule.value]);
   }
   const { data, error } = await query.order("created_at", { ascending: false });
@@ -117,17 +155,29 @@ function mockDeliver(email: string) {
   return !/(bounce|invalid)/i.test(email);
 }
 
-export async function sendCampaign(supabase: Client, merchantId: string, campaignId: string) {
+export async function sendCampaign(
+  supabase: Client,
+  merchantId: string,
+  campaignId: string,
+) {
   const { data: campaign } = await supabase
     .from("campaigns")
     .select("*")
     .eq("id", campaignId)
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (!campaign) throw new MarketingError("campaign_not_found", "Campaign not found");
-  if (campaign.status === "sent") throw new MarketingError("campaign_already_sent", "Campaign has already been sent");
+  if (!campaign)
+    throw new MarketingError("campaign_not_found", "Campaign not found");
+  if (campaign.status === "sent")
+    throw new MarketingError(
+      "campaign_already_sent",
+      "Campaign has already been sent",
+    );
   if (!campaign.subject.trim() || !campaign.body_template.trim()) {
-    throw new MarketingError("campaign_incomplete", "Subject and body are required");
+    throw new MarketingError(
+      "campaign_incomplete",
+      "Subject and body are required",
+    );
   }
 
   let rule: SegmentRule | null = null;
@@ -138,7 +188,11 @@ export async function sendCampaign(supabase: Client, merchantId: string, campaig
       .eq("id", campaign.segment_id)
       .maybeSingle();
     if (segment) {
-      rule = { field: segment.rule_field, operator: segment.rule_operator, value: segment.rule_value };
+      rule = {
+        field: segment.rule_field,
+        operator: segment.rule_operator,
+        value: segment.rule_value,
+      };
     }
   }
 
@@ -155,9 +209,21 @@ export async function sendCampaign(supabase: Client, merchantId: string, campaig
     "marketing",
     candidates,
   );
-  incr("framique_campaign_recipients_total", { outcome: "allowed" }, members.length);
-  incr("framique_campaign_recipients_total", { outcome: "suppressed" }, suppressed.length);
-  if (members.length === 0) throw new MarketingError("campaign_no_recipients", "No recipients with active consent");
+  incr(
+    "framique_campaign_recipients_total",
+    { outcome: "allowed" },
+    members.length,
+  );
+  incr(
+    "framique_campaign_recipients_total",
+    { outcome: "suppressed" },
+    suppressed.length,
+  );
+  if (members.length === 0)
+    throw new MarketingError(
+      "campaign_no_recipients",
+      "No recipients with active consent",
+    );
 
   const rows = members.map((m) => {
     const ok = mockDeliver(m.email);
@@ -171,8 +237,11 @@ export async function sendCampaign(supabase: Client, merchantId: string, campaig
       sent_at: ok ? new Date().toISOString() : null,
     };
   });
-  const { error: sendError } = await supabase.from("campaign_sends").insert(rows);
-  if (sendError) throw new MarketingError("campaign_send_failed", sendError.message);
+  const { error: sendError } = await supabase
+    .from("campaign_sends")
+    .insert(rows);
+  if (sendError)
+    throw new MarketingError("campaign_send_failed", sendError.message);
 
   const sent = rows.filter((r) => r.status === "sent").length;
   await supabase
@@ -188,7 +257,11 @@ export async function sendCampaign(supabase: Client, merchantId: string, campaig
   return { sent, failed: rows.length - sent, suppressed: suppressed.length };
 }
 
-export async function retryCampaignSend(supabase: Client, merchantId: string, sendId: string) {
+export async function retryCampaignSend(
+  supabase: Client,
+  merchantId: string,
+  sendId: string,
+) {
   const { data: row } = await supabase
     .from("campaign_sends")
     .select("id, email, campaign_id")
@@ -208,40 +281,59 @@ export async function retryCampaignSend(supabase: Client, merchantId: string, se
   return { ok };
 }
 
-export async function deleteArticle(supabase: Client, merchantId: string, articleId: string) {
+export async function deleteArticle(
+  supabase: Client,
+  merchantId: string,
+  articleId: string,
+) {
   const { data: article } = await supabase
     .from("articles")
     .select("id, status")
     .eq("id", articleId)
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (!article) throw new MarketingError("article_not_found", "Article not found");
+  if (!article)
+    throw new MarketingError("article_not_found", "Article not found");
   if (article.status !== "draft") {
     throw new MarketingError(
       "article_has_publish_state",
       "Published article cannot be deleted — archive it instead",
     );
   }
-  const { error } = await supabase.from("articles").delete().eq("id", articleId);
+  const { error } = await supabase
+    .from("articles")
+    .delete()
+    .eq("id", articleId);
   if (error) throw new MarketingError("article_delete_failed", error.message);
   return { ok: true };
 }
 
 export async function unsubscribeByToken(token: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data: subscriber } = await supabaseAdmin
     .from("subscribers")
     .select("id, email, merchant_id, status")
     .eq("unsubscribe_token", token)
     .maybeSingle();
-  if (!subscriber) throw new MarketingError("subscriber_not_found", "Link is not valid");
-  if (subscriber.status === "unsubscribed") return { email: subscriber.email, alreadyDone: true };
+  if (!subscriber)
+    throw new MarketingError("subscriber_not_found", "Link is not valid");
+  if (subscriber.status === "unsubscribed")
+    return { email: subscriber.email, alreadyDone: true };
   // Withdrawal is recorded on every channel and purpose, not just email status.
   const { withdrawAllChannels } = await import("./consent.server");
-  await withdrawAllChannels(subscriber.merchant_id, subscriber.id, subscriber.email, "unsubscribe_link");
+  await withdrawAllChannels(
+    subscriber.merchant_id,
+    subscriber.id,
+    subscriber.email,
+    "unsubscribe_link",
+  );
   await supabaseAdmin
     .from("subscribers")
-    .update({ status: "unsubscribed", unsubscribed_at: new Date().toISOString() })
+    .update({
+      status: "unsubscribed",
+      unsubscribed_at: new Date().toISOString(),
+    })
     .eq("id", subscriber.id);
   return { email: subscriber.email, alreadyDone: false };
 }

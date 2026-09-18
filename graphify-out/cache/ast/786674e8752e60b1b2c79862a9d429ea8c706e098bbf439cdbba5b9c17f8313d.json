@@ -1,1 +1,415 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "label": "error-tracking.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L1"}, {"id": "lib_error_tracking_test_root", "label": "ROOT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L26"}, {"id": "lib_error_tracking_test_read", "label": "read()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L27"}, {"id": "lib_error_tracking_test_compose", "label": "compose", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L29"}, {"id": "lib_error_tracking_test_reporter", "label": "reporter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L30"}, {"id": "lib_error_tracking_test_client", "label": "client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L31"}, {"id": "lib_error_tracking_test_ingest", "label": "ingest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L32"}, {"id": "lib_error_tracking_test_bridge", "label": "bridge", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L33"}, {"id": "lib_error_tracking_test_doc", "label": "doc", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L34"}, {"id": "lib_error_tracking_test_pkg", "label": "pkg", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L35"}, {"id": "lib_error_tracking_test_images", "label": "images", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L57"}, {"id": "lib_error_tracking_test_tags", "label": "tags", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L98"}, {"id": "lib_error_tracking_test_out", "label": "out", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L113"}, {"id": "lib_error_tracking_test_deep", "label": "deep", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L131"}, {"id": "lib_error_tracking_test_wide", "label": "wide", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L133"}, {"id": "lib_error_tracking_test_first", "label": "first", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L159"}, {"id": "lib_error_tracking_test_kept", "label": "kept", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L163"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "users_rahman_documents_frame30_src_lib_error_tracking_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_forbidden_event_fields", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_basetags", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_errorenvironment", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_errorquota", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_errorsamplerate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_errortargets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_errortrackingenabled", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_sanitizeeventfields", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_shouldsample", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_root", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_compose", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_reporter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_ingest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_bridge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_doc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_pkg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_images", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_tags", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_deep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_wide", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_first", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts", "target": "lib_error_tracking_test_kept", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L163", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_error_tracking_test_read", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L27"}, {"caller_nid": "lib_error_tracking_test_read", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts", "source_location": "L27"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "label": "error-tracking.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_error_tracking_test_root",
+      "label": "ROOT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_error_tracking_test_read",
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_error_tracking_test_compose",
+      "label": "compose",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_error_tracking_test_reporter",
+      "label": "reporter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_error_tracking_test_client",
+      "label": "client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_error_tracking_test_ingest",
+      "label": "ingest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_error_tracking_test_bridge",
+      "label": "bridge",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_error_tracking_test_doc",
+      "label": "doc",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_error_tracking_test_pkg",
+      "label": "pkg",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_error_tracking_test_images",
+      "label": "images",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_error_tracking_test_tags",
+      "label": "tags",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_error_tracking_test_out",
+      "label": "out",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_error_tracking_test_deep",
+      "label": "deep",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "lib_error_tracking_test_wide",
+      "label": "wide",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_error_tracking_test_first",
+      "label": "first",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_error_tracking_test_kept",
+      "label": "kept",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L163"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_error_tracking_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_forbidden_event_fields",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_basetags",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_errorenvironment",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_errorquota",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_errorsamplerate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_errortargets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_errortrackingenabled",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_sanitizeeventfields",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_shouldsample",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_root",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_compose",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_reporter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_ingest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_bridge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_doc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_pkg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_images",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_tags",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_deep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_wide",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_first",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_error_tracking_test_ts",
+      "target": "lib_error_tracking_test_kept",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_error_tracking_test_read",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_error_tracking_test_read",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/error-tracking.test.ts",
+      "source_location": "L27"
+    }
+  ]
+}

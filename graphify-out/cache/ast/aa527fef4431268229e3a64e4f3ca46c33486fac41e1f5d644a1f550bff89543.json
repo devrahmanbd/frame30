@@ -1,1 +1,440 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "label": "containers.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L1"}, {"id": "studio_containers_containerlayout", "label": "ContainerLayout", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L11"}, {"id": "studio_containers_flexdirection", "label": "FlexDirection", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L12"}, {"id": "studio_containers_justify", "label": "Justify", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L13"}, {"id": "studio_containers_alignitems", "label": "AlignItems", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L14"}, {"id": "studio_containers_wrap", "label": "Wrap", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L15"}, {"id": "studio_containers_contentwidth", "label": "ContentWidth", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L16"}, {"id": "studio_containers_containersettings", "label": "ContainerSettings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L18"}, {"id": "studio_containers_flex_defaults", "label": "FLEX_DEFAULTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L35"}, {"id": "studio_containers_grid_defaults", "label": "GRID_DEFAULTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L46"}, {"id": "studio_containers_layoutpreset", "label": "LayoutPreset", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L62"}, {"id": "studio_containers_layout_presets", "label": "LAYOUT_PRESETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L70"}, {"id": "studio_containers_presetbykey", "label": "presetByKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L85"}, {"id": "studio_containers_presetchildcount", "label": "presetChildCount()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L90"}, {"id": "studio_containers_presetbases", "label": "presetBases()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L95"}, {"id": "studio_containers_containercss", "label": "containerCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L99"}, {"id": "studio_containers_childbasiscss", "label": "childBasisCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L142"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_responsive_resolveresponsive", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_responsive_devicekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_responsive_maybe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_containerlayout", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_flexdirection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_justify", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_alignitems", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_wrap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_contentwidth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_containersettings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_flex_defaults", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_grid_defaults", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_layoutpreset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_layout_presets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_presetbykey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_presetchildcount", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_presetbases", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L95", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_containercss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_containers_ts", "target": "studio_containers_childbasiscss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L142", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_containers_presetbykey", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L86"}, {"caller_nid": "studio_containers_presetchildcount", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L91"}, {"caller_nid": "studio_containers_presetbases", "callee": "flat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L96"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L103"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L104"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L105"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L106"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L107"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L108"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L109"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L122"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L123"}, {"caller_nid": "studio_containers_containercss", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L127"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L129"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L136"}, {"caller_nid": "studio_containers_containercss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L137"}, {"caller_nid": "studio_containers_childbasiscss", "callee": "resolveResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts", "source_location": "L143"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "label": "containers.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_containers_containerlayout",
+      "label": "ContainerLayout",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "studio_containers_flexdirection",
+      "label": "FlexDirection",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "studio_containers_justify",
+      "label": "Justify",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "studio_containers_alignitems",
+      "label": "AlignItems",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "studio_containers_wrap",
+      "label": "Wrap",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "studio_containers_contentwidth",
+      "label": "ContentWidth",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "studio_containers_containersettings",
+      "label": "ContainerSettings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "studio_containers_flex_defaults",
+      "label": "FLEX_DEFAULTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "studio_containers_grid_defaults",
+      "label": "GRID_DEFAULTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "studio_containers_layoutpreset",
+      "label": "LayoutPreset",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "studio_containers_layout_presets",
+      "label": "LAYOUT_PRESETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "studio_containers_presetbykey",
+      "label": "presetByKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "studio_containers_presetchildcount",
+      "label": "presetChildCount()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "studio_containers_presetbases",
+      "label": "presetBases()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L95"
+    },
+    {
+      "id": "studio_containers_containercss",
+      "label": "containerCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "studio_containers_childbasiscss",
+      "label": "childBasisCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L142"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_responsive_resolveresponsive",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_responsive_devicekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_responsive_maybe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_containerlayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_flexdirection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_justify",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_alignitems",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_wrap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_contentwidth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_containersettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_flex_defaults",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_grid_defaults",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_layoutpreset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_layout_presets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_presetbykey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_presetchildcount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_presetbases",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_containercss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_containers_ts",
+      "target": "studio_containers_childbasiscss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_containers_presetbykey",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "studio_containers_presetchildcount",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "studio_containers_presetbases",
+      "callee": "flat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "studio_containers_containercss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "studio_containers_childbasiscss",
+      "callee": "resolveResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/containers.ts",
+      "source_location": "L143"
+    }
+  ]
+}

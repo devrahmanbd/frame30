@@ -7,7 +7,15 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Check, ChevronLeft, ChevronRight, Copy, Download, Trash2, X } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Download,
+  Trash2,
+  X,
+} from "lucide-react";
 import { btnGhost, btnPrimary, inputClass } from "@/components/console/kit";
 import {
   type Attachment,
@@ -76,7 +84,9 @@ export function AttachmentModal({
     document.body.appendChild(node);
     hostRef.current = node;
     setHost(node);
-    const siblings = Array.from(document.body.children).filter((child) => child !== node);
+    const siblings = Array.from(document.body.children).filter(
+      (child) => child !== node,
+    );
     for (const sibling of siblings) {
       sibling.setAttribute("aria-hidden", "true");
       (sibling as HTMLElement).inert = true;
@@ -108,7 +118,11 @@ export function AttachmentModal({
   }, [hasNext, hasPrevious, onClose, onStep]);
 
   const fileUrl = useMemo(
-    () => absoluteMediaUrl(typeof window === "undefined" ? "" : window.location.origin, item.url),
+    () =>
+      absoluteMediaUrl(
+        typeof window === "undefined" ? "" : window.location.origin,
+        item.url,
+      ),
     [item.url],
   );
 
@@ -140,13 +154,23 @@ export function AttachmentModal({
       >
         <header className="flex items-center justify-between border-b border-border px-3 py-2">
           <div className="flex items-center gap-1">
-            <IconButton label="Previous file" disabled={!hasPrevious} onClick={() => onStep(-1)}>
+            <IconButton
+              label="Previous file"
+              disabled={!hasPrevious}
+              onClick={() => onStep(-1)}
+            >
               <ChevronLeft className="size-4" aria-hidden />
             </IconButton>
-            <IconButton label="Next file" disabled={!hasNext} onClick={() => onStep(1)}>
+            <IconButton
+              label="Next file"
+              disabled={!hasNext}
+              onClick={() => onStep(1)}
+            >
               <ChevronRight className="size-4" aria-hidden />
             </IconButton>
-            <h2 className="ml-2 truncate text-sm font-semibold">Attachment details</h2>
+            <h2 className="ml-2 truncate text-sm font-semibold">
+              Attachment details
+            </h2>
           </div>
           <IconButton label="Close details" onClick={onClose}>
             <X className="size-4" aria-hidden />
@@ -162,12 +186,18 @@ export function AttachmentModal({
 
           <div className="space-y-4 border-t border-border p-4 md:border-l md:border-t-0">
             <div className="space-y-1">
-              <p className="truncate text-sm font-semibold" title={item.fileName}>
+              <p
+                className="truncate text-sm font-semibold"
+                title={item.fileName}
+              >
                 {item.fileName}
               </p>
               <p className="text-xs text-muted-foreground">
-                Uploaded {uploadedLabel(item.createdAt)} · {formatBytes(item.sizeBytes)}
-                {dimensionLabel(item) ? ` · ${dimensionLabel(item)}` : ""} · {mediaKind(item.contentType)}
+                Uploaded {uploadedLabel(item.createdAt)} ·{" "}
+                {formatBytes(item.sizeBytes)}
+                {dimensionLabel(item)
+                  ? ` · ${dimensionLabel(item)}`
+                  : ""} · {mediaKind(item.contentType)}
               </p>
               {item.sanitised && <SanitisedBadge />}
             </div>
@@ -180,7 +210,9 @@ export function AttachmentModal({
               <input
                 className={inputClass}
                 value={draft.altText}
-                onChange={(event) => setDraft({ ...draft, altText: event.target.value })}
+                onChange={(event) =>
+                  setDraft({ ...draft, altText: event.target.value })
+                }
               />
             </Labelled>
 
@@ -188,7 +220,9 @@ export function AttachmentModal({
               <input
                 className={inputClass}
                 value={draft.title}
-                onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+                onChange={(event) =>
+                  setDraft({ ...draft, title: event.target.value })
+                }
               />
             </Labelled>
 
@@ -197,7 +231,9 @@ export function AttachmentModal({
                 rows={2}
                 className={inputClass}
                 value={draft.caption}
-                onChange={(event) => setDraft({ ...draft, caption: event.target.value })}
+                onChange={(event) =>
+                  setDraft({ ...draft, caption: event.target.value })
+                }
               />
             </Labelled>
 
@@ -206,20 +242,31 @@ export function AttachmentModal({
                 rows={3}
                 className={inputClass}
                 value={draft.description}
-                onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+                onChange={(event) =>
+                  setDraft({ ...draft, description: event.target.value })
+                }
               />
             </Labelled>
 
             <Labelled label="File URL">
               <div className="flex gap-2">
-                <input readOnly value={fileUrl} className={inputClass} onFocus={(e) => e.target.select()} />
+                <input
+                  readOnly
+                  value={fileUrl}
+                  className={inputClass}
+                  onFocus={(e) => e.target.select()}
+                />
                 <button
                   type="button"
                   onClick={() => void copy()}
                   className={btnGhost}
                   aria-label="Copy file address"
                 >
-                  {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
+                  {copied ? (
+                    <Check className="size-4" aria-hidden />
+                  ) : (
+                    <Copy className="size-4" aria-hidden />
+                  )}
                   <span className="ml-1">{copied ? "Copied" : "Copy"}</span>
                 </button>
               </div>
@@ -229,7 +276,12 @@ export function AttachmentModal({
 
         <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-border px-3 py-2">
           <div className="flex flex-wrap items-center gap-2">
-            <a href={item.url} target="_blank" rel="noreferrer" className={btnGhost}>
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noreferrer"
+              className={btnGhost}
+            >
               View
             </a>
             <a href={item.url} download={item.fileName} className={btnGhost}>
@@ -279,7 +331,9 @@ function Labelled({
 }) {
   return (
     <label className="block space-y-1">
-      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</span>
+      <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
       {children}
       {hint && (
         <span

@@ -22,11 +22,15 @@ export const Route = createFileRoute("/newsletter/verify")({
       { title: "Confirm your newsletter subscription — Framique" },
       {
         name: "description",
-        content: "Confirm the email address you used to subscribe to the Framique merchant newsletter.",
+        content:
+          "Confirm the email address you used to subscribe to the Framique merchant newsletter.",
       },
       { name: "robots", content: "noindex, nofollow" },
       { property: "og:title", content: "Confirm your newsletter subscription" },
-      { property: "og:description", content: "One click confirms your Framique newsletter subscription." },
+      {
+        property: "og:description",
+        content: "One click confirms your Framique newsletter subscription.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -34,7 +38,8 @@ export const Route = createFileRoute("/newsletter/verify")({
   component: VerifyPage,
 });
 
-type State = "idle" | "working" | "confirmed" | "already" | "expired" | "invalid";
+type State =
+  "idle" | "working" | "confirmed" | "already" | "expired" | "invalid";
 
 function VerifyPage() {
   const { tk } = useLang();
@@ -78,11 +83,20 @@ function VerifyPage() {
   return (
     <PublicShell>
       <section className="mx-auto max-w-md px-4 py-20 text-center">
-        <h1 className="font-bangla-display text-2xl font-semibold">{tk("news.verify.title")}</h1>
-        <p role="status" aria-live="polite" className="mt-4 text-sm text-muted-foreground">
+        <h1 className="font-bangla-display text-2xl font-semibold">
+          {tk("news.verify.title")}
+        </h1>
+        <p
+          role="status"
+          aria-live="polite"
+          className="mt-4 text-sm text-muted-foreground"
+        >
           {message}
         </p>
-        <Link to="/" className="mt-8 inline-flex min-h-11 w-full sm:w-auto items-center justify-center rounded-fq-md border border-border px-5 text-sm font-medium">
+        <Link
+          to="/"
+          className="mt-8 inline-flex min-h-11 w-full sm:w-auto items-center justify-center rounded-fq-md border border-border px-5 text-sm font-medium"
+        >
           Framique
         </Link>
       </section>

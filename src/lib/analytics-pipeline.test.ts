@@ -17,9 +17,17 @@ import {
 describe("funnel", () => {
   const buckets: DailyBucket[] = [
     { entity: "page", day: "2026-01-01", totals: { actions: { view: 1000 } } },
-    { entity: "product", day: "2026-01-01", totals: { actions: { view: 400 } } },
+    {
+      entity: "product",
+      day: "2026-01-01",
+      totals: { actions: { view: 400 } },
+    },
     { entity: "cart", day: "2026-01-01", totals: { actions: { add: 120 } } },
-    { entity: "checkout", day: "2026-01-01", totals: { actions: { start: 80 } } },
+    {
+      entity: "checkout",
+      day: "2026-01-01",
+      totals: { actions: { start: 80 } },
+    },
     { entity: "order", day: "2026-01-01", totals: { actions: { paid: 40 } } },
   ];
 
@@ -42,16 +50,44 @@ describe("funnel", () => {
   });
 
   it("sums across days", () => {
-    const two = buildFunnel([...buckets, { entity: "order", day: "2026-01-02", totals: { actions: { paid: 10 } } } as DailyBucket]);
+    const two = buildFunnel([
+      ...buckets,
+      {
+        entity: "order",
+        day: "2026-01-02",
+        totals: { actions: { paid: 10 } },
+      } as DailyBucket,
+    ]);
     expect(two.stages[4]!.count).toBe(50);
   });
 });
 
 describe("cohorts", () => {
   const rows = [
-    { cohort_week: "2026-01-05", week_offset: 0, customers: 100, active_customers: 100, orders: 100, revenue_minor_int: 100000 },
-    { cohort_week: "2026-01-05", week_offset: 1, customers: 100, active_customers: 25, orders: 30, revenue_minor_int: 40000 },
-    { cohort_week: "2026-01-12", week_offset: 0, customers: 50, active_customers: 50, orders: 50, revenue_minor_int: 50000 },
+    {
+      cohort_week: "2026-01-05",
+      week_offset: 0,
+      customers: 100,
+      active_customers: 100,
+      orders: 100,
+      revenue_minor_int: 100000,
+    },
+    {
+      cohort_week: "2026-01-05",
+      week_offset: 1,
+      customers: 100,
+      active_customers: 25,
+      orders: 30,
+      revenue_minor_int: 40000,
+    },
+    {
+      cohort_week: "2026-01-12",
+      week_offset: 0,
+      customers: 50,
+      active_customers: 50,
+      orders: 50,
+      revenue_minor_int: 50000,
+    },
   ];
 
   it("builds a dense grid", () => {
@@ -62,18 +98,39 @@ describe("cohorts", () => {
   });
 
   it("averages retention per offset", () => {
-    expect(buildCohortMatrix(rows).averages[0]).toEqual({ offset: 1, retention: 12.5 });
+    expect(buildCohortMatrix(rows).averages[0]).toEqual({
+      offset: 1,
+      retention: 12.5,
+    });
   });
 });
 
 describe("personas", () => {
   it("bands by spend, recency and frequency", () => {
-    expect(classifyPersona({ orders: 1, spendMinorInt: 1000, daysSinceLast: 3 }, 0)).toBe("new");
-    expect(classifyPersona({ orders: 2, spendMinorInt: 5000, daysSinceLast: 10 }, 0)).toBe("repeat");
-    expect(classifyPersona({ orders: 6, spendMinorInt: 9000, daysSinceLast: 10 }, 0)).toBe("loyal");
-    expect(classifyPersona({ orders: 3, spendMinorInt: 9000, daysSinceLast: 80 }, 0)).toBe("at_risk");
-    expect(classifyPersona({ orders: 3, spendMinorInt: 9000, daysSinceLast: 200 }, 0)).toBe("dormant");
-    expect(classifyPersona({ orders: 2, spendMinorInt: 500000, daysSinceLast: 5 }, 100000)).toBe("vip");
+    expect(
+      classifyPersona({ orders: 1, spendMinorInt: 1000, daysSinceLast: 3 }, 0),
+    ).toBe("new");
+    expect(
+      classifyPersona({ orders: 2, spendMinorInt: 5000, daysSinceLast: 10 }, 0),
+    ).toBe("repeat");
+    expect(
+      classifyPersona({ orders: 6, spendMinorInt: 9000, daysSinceLast: 10 }, 0),
+    ).toBe("loyal");
+    expect(
+      classifyPersona({ orders: 3, spendMinorInt: 9000, daysSinceLast: 80 }, 0),
+    ).toBe("at_risk");
+    expect(
+      classifyPersona(
+        { orders: 3, spendMinorInt: 9000, daysSinceLast: 200 },
+        0,
+      ),
+    ).toBe("dormant");
+    expect(
+      classifyPersona(
+        { orders: 2, spendMinorInt: 500000, daysSinceLast: 5 },
+        100000,
+      ),
+    ).toBe("vip");
   });
 
   it("needs five buyers before naming a VIP band", () => {
@@ -93,8 +150,22 @@ describe("inventory aging", () => {
 
   it("totals tied-up capital", () => {
     const summary = summarizeAging([
-      { variantId: "a", title: "A", sku: null, stock: 10, unitCostMinorInt: 1000, daysSinceLastSale: 5 },
-      { variantId: "b", title: "B", sku: null, stock: 4, unitCostMinorInt: 2500, daysSinceLastSale: 300 },
+      {
+        variantId: "a",
+        title: "A",
+        sku: null,
+        stock: 10,
+        unitCostMinorInt: 1000,
+        daysSinceLastSale: 5,
+      },
+      {
+        variantId: "b",
+        title: "B",
+        sku: null,
+        stock: 4,
+        unitCostMinorInt: 2500,
+        daysSinceLastSale: 300,
+      },
     ]);
     expect(summary.totalTiedUpMinorInt).toBe(20000);
     expect(summary.deadStockMinorInt).toBe(10000);
@@ -119,13 +190,17 @@ describe("report builder", () => {
   it("rejects unknown columns and datasets", () => {
     expect(validateReport({ ...base, dataset: "nope" }).ok).toBe(false);
     expect(validateReport({ ...base, metrics: ["profit"] }).ok).toBe(false);
-    expect(validateReport({ ...base, dimensions: ["moon_phase"] }).ok).toBe(false);
+    expect(validateReport({ ...base, dimensions: ["moon_phase"] }).ok).toBe(
+      false,
+    );
   });
 
   it("rejects bad ranges, schedules and recipients", () => {
     expect(validateReport({ ...base, rangeDays: 0 }).ok).toBe(false);
     expect(validateReport({ ...base, schedule: "hourly" }).ok).toBe(false);
-    expect(validateReport({ ...base, recipients: ["not-an-email"] }).ok).toBe(false);
+    expect(validateReport({ ...base, recipients: ["not-an-email"] }).ok).toBe(
+      false,
+    );
     expect(validateReport({ ...base, metrics: [] }).ok).toBe(false);
   });
 
@@ -136,14 +211,22 @@ describe("report builder", () => {
   });
 
   it("quotes CSV safely", () => {
-    const csv = toCsv([{ title: 'Shirt, "blue"', units: 2 }], ["title", "units"]);
+    const csv = toCsv(
+      [{ title: 'Shirt, "blue"', units: 2 }],
+      ["title", "units"],
+    );
     expect(csv).toBe('title,units\n"Shirt, ""blue""",2');
     expect(toCsv([], ["a"])).toBe("a");
   });
 });
 
 describe("batch ledger", () => {
-  const b = (id: string, prev: string | null, committed: boolean, created: string) => ({
+  const b = (
+    id: string,
+    prev: string | null,
+    committed: boolean,
+    created: string,
+  ) => ({
     id,
     previous_batch_id: prev,
     status: committed ? "committed" : "running",

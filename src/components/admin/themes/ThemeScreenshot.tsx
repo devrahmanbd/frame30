@@ -60,11 +60,11 @@ export function ThemeScreenshot({
         >
           {/* Top Browser / Announcement Bar */}
           <div
-            className="flex h-5 shrink-0 items-center justify-between px-2.5 text-[9px] font-medium text-white shadow-xs"
+            className="flex h-5 shrink-0 items-center justify-between px-2.5 text-[9px] font-medium text-primary-foreground shadow-xs"
             style={{ backgroundColor: brandColor }}
           >
             <div className="flex items-center gap-1">
-              <span className="inline-block size-1.5 rounded-full bg-white/70" />
+              <span className="inline-block size-1.5 rounded-full bg-primary-foreground/70" />
               <span className="truncate max-w-[120px] tracking-tight">
                 Free shipping nationwide · 24/7 Support
               </span>
@@ -78,7 +78,7 @@ export function ThemeScreenshot({
           <div className="flex h-7 shrink-0 items-center justify-between border-b border-border/5 px-2.5 bg-card/60 backdrop-blur-xs">
             <div className="flex items-center gap-1.5 font-bold tracking-tight">
               <span
-                className="grid size-3.5 place-items-center rounded-[3px] text-[8px] font-black text-white"
+                className="grid size-3.5 place-items-center rounded-[3px] text-[8px] font-black text-primary-foreground"
                 style={{ backgroundColor: brandColor }}
               >
                 {themeInitials(name)[0] ?? "F"}
@@ -98,7 +98,7 @@ export function ThemeScreenshot({
               <div className="relative">
                 <ShoppingBag className="size-2.5" />
                 <span
-                  className="absolute -right-1 -top-1 grid size-2 place-items-center rounded-full text-[6px] font-bold text-white"
+                  className="absolute -right-1 -top-1 grid size-2 place-items-center rounded-full text-[6px] font-bold text-primary-foreground"
                   style={{ backgroundColor: accentColor }}
                 >
                   2
@@ -116,7 +116,7 @@ export function ThemeScreenshot({
           >
             <div className="max-w-[70%] space-y-0.5">
               <span
-                className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.2 text-[8px] font-semibold text-white"
+                className="inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.2 text-[8px] font-semibold text-primary-foreground"
                 style={{ backgroundColor: brandColor }}
               >
                 <Sparkles className="size-2" />
@@ -131,7 +131,7 @@ export function ThemeScreenshot({
               </p>
               <div className="pt-1">
                 <span
-                  className="inline-block rounded-fq-sm px-2 py-0.5 text-[8px] font-medium text-white shadow-xs"
+                  className="inline-block rounded-fq-sm px-2 py-0.5 text-[8px] font-medium text-primary-foreground shadow-xs"
                   style={{ backgroundColor: brandColor }}
                 >
                   Explore Catalog →

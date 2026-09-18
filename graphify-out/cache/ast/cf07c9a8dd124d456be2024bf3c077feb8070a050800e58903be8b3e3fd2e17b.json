@@ -1,1 +1,520 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "label": "returns.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L1"}, {"id": "admin_returns_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L17"}, {"id": "admin_returns_key", "label": "KEY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L39"}, {"id": "admin_returns_return_next", "label": "RETURN_NEXT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L41"}, {"id": "admin_returns_dispute_next", "label": "DISPUTE_NEXT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L50"}, {"id": "admin_returns_tone", "label": "TONE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L58"}, {"id": "admin_returns_message", "label": "message()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L72"}, {"id": "admin_returns_returnspage", "label": "ReturnsPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L76"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_statuspill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_money", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_field", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_errorframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_marketingui_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "users_rahman_documents_frame30_src_lib_commerce_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "lib_commerce_functions_returnsloadfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "lib_commerce_functions_returnadvancefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "lib_commerce_functions_disputeadvancefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_return_next", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_dispute_next", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_tone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_message", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx", "target": "admin_returns_returnspage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L76", "weight": 1.0}, {"source": "admin_returns_returnspage", "target": "admin_returns_message", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L151", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_returns_returnspage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L77"}, {"caller_nid": "admin_returns_returnspage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L78"}, {"caller_nid": "admin_returns_returnspage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L79"}, {"caller_nid": "admin_returns_returnspage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L80"}, {"caller_nid": "admin_returns_returnspage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L81"}, {"caller_nid": "admin_returns_returnspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L82"}, {"caller_nid": "admin_returns_returnspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L83"}, {"caller_nid": "admin_returns_returnspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L84"}, {"caller_nid": "admin_returns_returnspage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L86"}, {"caller_nid": "admin_returns_returnspage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L93"}, {"caller_nid": "admin_returns_returnspage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L104"}, {"caller_nid": "admin_returns_returnspage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L117"}, {"caller_nid": "admin_returns_returnspage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L118"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L124"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L127"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L136"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L140"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L144"}, {"caller_nid": "admin_returns_returnspage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L146"}, {"caller_nid": "admin_returns_returnspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L154"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L155"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L156"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L172"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L173"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L183"}, {"caller_nid": "admin_returns_returnspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L187"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L232"}, {"caller_nid": "admin_returns_returnspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L240"}, {"caller_nid": "admin_returns_returnspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx", "source_location": "L269"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "label": "returns.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_returns_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "admin_returns_key",
+      "label": "KEY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L39"
+    },
+    {
+      "id": "admin_returns_return_next",
+      "label": "RETURN_NEXT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "admin_returns_dispute_next",
+      "label": "DISPUTE_NEXT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L50"
+    },
+    {
+      "id": "admin_returns_tone",
+      "label": "TONE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L58"
+    },
+    {
+      "id": "admin_returns_message",
+      "label": "message()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L72"
+    },
+    {
+      "id": "admin_returns_returnspage",
+      "label": "ReturnsPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L76"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_statuspill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_money",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_errorframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_marketingui_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_commerce_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "lib_commerce_functions_returnsloadfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "lib_commerce_functions_returnadvancefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "lib_commerce_functions_disputeadvancefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_return_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_dispute_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_tone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_message",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_returns_tsx",
+      "target": "admin_returns_returnspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "admin_returns_returnspage",
+      "target": "admin_returns_message",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L151",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L232"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "admin_returns_returnspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/returns.tsx",
+      "source_location": "L269"
+    }
+  ]
+}

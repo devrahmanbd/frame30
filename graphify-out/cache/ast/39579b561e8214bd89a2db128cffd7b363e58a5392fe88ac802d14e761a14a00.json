@@ -1,1 +1,813 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "label": "agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L1"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_schema", "label": "schema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L2"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bench", "label": "bench", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L3"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticowversion", "label": "agenticowVersion", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L4"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ts", "label": "ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L5"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_dim", "label": "dim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L6"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_runspersize", "label": "runsPerSize", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L7"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize", "label": "bySize", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L8"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "label": "1000", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L9"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_n", "label": "n", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L10"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebuildms", "label": "baseBuildMs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L11"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebytes", "label": "baseBytes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L12"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "label": "agenticow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L13"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian", "label": "branchMsMedian", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L14"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall", "label": "branchMsAll", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L15"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian", "label": "branchBytesMedian", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L20"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall", "label": "branchBytesAll", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L21"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy", "label": "fullCopy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L27"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian", "label": "copyMsMedian", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L28"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian", "label": "copyBytesMedian", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L29"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios", "label": "ratios", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L31"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup", "label": "speedup", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L32"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction", "label": "sizeReduction", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L33"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "label": "publishedClaim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L35"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget", "label": "branchMsTarget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L36"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget", "label": "branchBytesTarget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L37"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim", "label": "speedupClaim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L38"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim", "label": "sizeReductionClaim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L39"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "label": "verdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L41"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit", "label": "branchMsHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L42"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit", "label": "branchBytesHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L43"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit", "label": "speedupHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L44"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit", "label": "sizeReductionHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L45"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "label": "5000", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L48"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_n", "label": "n", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L49"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebuildms", "label": "baseBuildMs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L50"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebytes", "label": "baseBytes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L51"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "label": "agenticow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L52"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy", "label": "fullCopy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L66"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios", "label": "ratios", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L70"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "label": "publishedClaim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L74"}, {"id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "label": "verdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L80"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_schema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bench", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticowversion", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_dim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_runspersize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L8", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L9", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_n", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L10", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebuildms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L11", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L12", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L13", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L14", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L15", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L20", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L21", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L27", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L28", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L29", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L31", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L32", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L33", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L35", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L36", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L37", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L38", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L39", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L41", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L42", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L43", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L44", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L45", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L48", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_n", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L49", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebuildms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L50", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L51", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L52", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L53", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L54", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L59", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L60", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L66", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L67", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L68", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L70", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L71", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L72", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L74", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L75", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L76", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L77", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L78", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L80", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L81", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L82", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L83", "weight": 1.0}, {"source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict", "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json", "source_location": "L84", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "label": "agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_schema",
+      "label": "schema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bench",
+      "label": "bench",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticowversion",
+      "label": "agenticowVersion",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ts",
+      "label": "ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_dim",
+      "label": "dim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_runspersize",
+      "label": "runsPerSize",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize",
+      "label": "bySize",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "label": "1000",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_n",
+      "label": "n",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebuildms",
+      "label": "baseBuildMs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebytes",
+      "label": "baseBytes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "label": "agenticow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian",
+      "label": "branchMsMedian",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall",
+      "label": "branchMsAll",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian",
+      "label": "branchBytesMedian",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall",
+      "label": "branchBytesAll",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy",
+      "label": "fullCopy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian",
+      "label": "copyMsMedian",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian",
+      "label": "copyBytesMedian",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios",
+      "label": "ratios",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup",
+      "label": "speedup",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction",
+      "label": "sizeReduction",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L33"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "label": "publishedClaim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L35"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget",
+      "label": "branchMsTarget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget",
+      "label": "branchBytesTarget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim",
+      "label": "speedupClaim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim",
+      "label": "sizeReductionClaim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L39"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "label": "verdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L41"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit",
+      "label": "branchMsHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L42"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit",
+      "label": "branchBytesHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L43"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit",
+      "label": "speedupHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L44"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit",
+      "label": "sizeReductionHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L45"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "label": "5000",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L48"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_n",
+      "label": "n",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L49"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebuildms",
+      "label": "baseBuildMs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L50"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebytes",
+      "label": "baseBytes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L51"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "label": "agenticow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L52"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy",
+      "label": "fullCopy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L66"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios",
+      "label": "ratios",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L70"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "label": "publishedClaim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "label": "verdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L80"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bench",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticowversion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_dim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_runspersize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_json",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_n",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebuildms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_basebytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_fullcopy",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_ratios",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_1000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_1000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_n",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebuildms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_basebytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchmsall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_agenticow",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_agenticow_branchbytesall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copymsmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_fullcopy",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_fullcopy_copybytesmedian",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_speedup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_ratios",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_ratios_sizereduction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchmstarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_branchbytestarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_speedupclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_publishedclaim",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_publishedclaim_sizereductionclaim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_bysize_5000",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchmshit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_branchbyteshit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_speeduphit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_5000_verdict",
+      "target": "runs_agenticow_vs_full_copy_2026_06_29t15_02_13_954z_verdict_sizereductionhit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/agenticow-vs-full-copy-2026-06-29T15-02-13-954Z.json",
+      "source_location": "L84",
+      "weight": 1.0
+    }
+  ]
+}

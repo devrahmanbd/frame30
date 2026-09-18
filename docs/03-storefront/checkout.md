@@ -74,13 +74,13 @@ on mobile mid-range Android — the storefront README's state machine
 
 Tables owned by `07-commerce` (no new schema in this spec):
 
-| Table | Checkout role |
-|---|---|
-| `carts` / `cart_items` | line items, quantities, applied coupon ref |
-| `orders` / `order_items` / `discounts_applied` | placed order + lines + discounts |
-| `promotions` / `coupon_codes` / `vat_rates` | read-only at validation (current-year VAT) |
-| `inventory` | read-only for `stock_status` (DD-8) |
-| `gateway_accounts` | read-only availability gate (DD-5); vaulted creds never in client |
+| Table                                          | Checkout role                                                     |
+| ---------------------------------------------- | ----------------------------------------------------------------- |
+| `carts` / `cart_items`                         | line items, quantities, applied coupon ref                        |
+| `orders` / `order_items` / `discounts_applied` | placed order + lines + discounts                                  |
+| `promotions` / `coupon_codes` / `vat_rates`    | read-only at validation (current-year VAT)                        |
+| `inventory`                                    | read-only for `stock_status` (DD-8)                               |
+| `gateway_accounts`                             | read-only availability gate (DD-5); vaulted creds never in client |
 
 Access contract:
 
@@ -99,13 +99,13 @@ Access contract:
 All endpoints: JSON, `merchant_id` resolved server-side, literal machine-readable
 errors. Idempotency key `attempt_key` required on `confirm`.
 
-| Endpoint | Purpose | Returns |
-|---|---|---|
-| `POST /api/checkout/session` | create/resume checkout from cart | `checkout_id`, current totals |
-| `POST /api/checkout/method` | select `cod` or MFS rail | `checkout_id`, surcharge, total |
-| `POST /api/checkout/confirm` | place order (idempotent) | `order_id`, `status` |
-| `GET /api/checkout/status` | poll payment | `status`, `order_id` |
-| `POST /api/checkout/cancel` | abandon | `status: cancelled` |
+| Endpoint                     | Purpose                          | Returns                         |
+| ---------------------------- | -------------------------------- | ------------------------------- |
+| `POST /api/checkout/session` | create/resume checkout from cart | `checkout_id`, current totals   |
+| `POST /api/checkout/method`  | select `cod` or MFS rail         | `checkout_id`, surcharge, total |
+| `POST /api/checkout/confirm` | place order (idempotent)         | `order_id`, `status`            |
+| `GET /api/checkout/status`   | poll payment                     | `status`, `order_id`            |
+| `POST /api/checkout/cancel`  | abandon                          | `status: cancelled`             |
 
 Errors (4xx, code + Bangla message): `cart_empty`, `cart_expired`,
 `checkout_expired`, `method_unavailable`, `promo_invalid`, `price_changed`,

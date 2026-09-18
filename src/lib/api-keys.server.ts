@@ -3,7 +3,11 @@ import type { Database } from "@/integrations/supabase/types";
 
 type Client = SupabaseClient<Database>;
 export type ApiKeyEnv = Database["public"]["Enums"]["api_key_env"];
-export const API_SCOPES = ["orders.read", "products.write", "analytics.read"] as const;
+export const API_SCOPES = [
+  "orders.read",
+  "products.write",
+  "analytics.read",
+] as const;
 export type ApiScope = (typeof API_SCOPES)[number];
 
 export class ApiKeyError extends Error {
@@ -22,7 +26,10 @@ function toHex(buf: ArrayBuffer) {
 }
 
 export async function hashSecret(secret: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(secret));
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(secret),
+  );
   return toHex(digest);
 }
 
@@ -40,7 +47,10 @@ async function requireAdmin(db: Client, merchantId: string, userId: string) {
     .eq("user_id", userId)
     .maybeSingle();
   if (!data || (data.role !== "owner" && data.role !== "admin")) {
-    throw new ApiKeyError("forbidden", "Not permitted to create or revoke keys");
+    throw new ApiKeyError(
+      "forbidden",
+      "Not permitted to create or revoke keys",
+    );
   }
 }
 
@@ -48,7 +58,9 @@ export async function listKeys(db: Client, merchantId: string) {
   const [keys, events] = await Promise.all([
     db
       .from("api_keys")
-      .select("id,name,prefix,scopes,env,active,created_at,last_used_at,revoked_at")
+      .select(
+        "id,name,prefix,scopes,env,active,created_at,last_used_at,revoked_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false }),
     db
@@ -97,7 +109,12 @@ export async function createKey(
   return { id: data.id, secret, prefix };
 }
 
-export async function revokeKey(db: Client, merchantId: string, userId: string, keyId: string) {
+export async function revokeKey(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  keyId: string,
+) {
   await requireAdmin(db, merchantId, userId);
   const { error } = await db
     .from("api_keys")
@@ -117,7 +134,8 @@ export async function revokeKey(db: Client, merchantId: string, userId: string, 
 
 /** Maps a bearer secret to a live tenant + scopes. Revoked/unknown keys resolve to null. */
 export async function resolveBearer(secret: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const keyHash = await hashSecret(secret);
   const { data } = await supabaseAdmin
     .from("api_keys")

@@ -11,6 +11,7 @@ In Claude Code:
 ```
 
 This will:
+
 - Clone the repository
 - Install all 150+ commands
 - Install all 74+ agents
@@ -47,6 +48,7 @@ Restart to activate the plugin:
 Look for `claude-flow` in the active plugins list.
 
 Try a command:
+
 ```
 /coordination-swarm-init
 ```
@@ -60,6 +62,7 @@ Or type `/` to see all 150+ available commands.
 ### ✅ 150+ Slash Commands
 
 Commands organized by category:
+
 - **Coordination** (6): swarm-init, agent-spawn, task-orchestrate
 - **SPARC** (18): coder, tdd, architect, reviewer, optimizer
 - **GitHub** (18): pr-manager, code-review-swarm, release-manager
@@ -78,6 +81,7 @@ Commands organized by category:
 ### ✅ 74+ Specialized Agents
 
 Available for delegation:
+
 - **Core Development** (5): coder, planner, researcher, reviewer, tester
 - **Swarm Coordination** (5): hierarchical, mesh, adaptive coordinators
 - **Consensus** (7): Byzantine, Raft, Gossip protocols
@@ -88,6 +92,7 @@ Available for delegation:
 ### ✅ MCP Integration
 
 3 MCP servers with 110+ tools:
+
 - **claude-flow**: Core orchestration (40+ tools) - Required
 - **ruv-swarm**: Enhanced coordination - Optional
 - **flow-nexus**: Cloud features (70+ tools) - Optional
@@ -109,6 +114,7 @@ Available for delegation:
 ```
 
 Or pull latest from GitHub:
+
 ```
 cd /path/to/claude-flow
 git pull
@@ -148,6 +154,7 @@ MCP servers are automatically configured when you install the plugin.
 ### Check Plugin Status
 
 In Claude Code:
+
 ```
 /plugin list
 ```
@@ -157,6 +164,7 @@ Look for `claude-flow` in the list with status "active".
 ### Test Commands
 
 Type `/` in Claude Code and look for:
+
 - Commands starting with `coordination-`
 - Commands starting with `sparc-`
 - Commands starting with `github-`

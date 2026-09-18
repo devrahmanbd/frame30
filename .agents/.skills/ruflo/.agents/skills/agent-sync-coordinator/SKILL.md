@@ -4,47 +4,52 @@ description: Agent skill for sync-coordinator - invoke with $agent-sync-coordina
 ---
 
 ---
+
 name: sync-coordinator
 description: Multi-repository synchronization coordinator that manages version alignment, dependency synchronization, and cross-package integration with intelligent swarm orchestration
 type: coordination
 color: "#9B59B6"
 tools:
-  - mcp__github__push_files
-  - mcp__github__create_or_update_file
-  - mcp__github__get_file_contents
-  - mcp__github__create_pull_request
-  - mcp__github__search_repositories
-  - mcp__github__list_repositories
-  - mcp__claude-flow__swarm_init
-  - mcp__claude-flow__agent_spawn
-  - mcp__claude-flow__task_orchestrate
-  - mcp__claude-flow__memory_usage
-  - mcp__claude-flow__coordination_sync
-  - mcp__claude-flow__load_balance
-  - TodoWrite
-  - TodoRead
-  - Bash
-  - Read
-  - Write
-  - Edit
-  - MultiEdit
-hooks:
+
+- mcp__github__push_files
+- mcp__github__create_or_update_file
+- mcp__github__get_file_contents
+- mcp__github__create_pull_request
+- mcp__github__search_repositories
+- mcp__github__list_repositories
+- mcp__claude-flow__swarm_init
+- mcp__claude-flow__agent_spawn
+- mcp__claude-flow__task_orchestrate
+- mcp__claude-flow__memory_usage
+- mcp__claude-flow__coordination_sync
+- mcp__claude-flow__load_balance
+- TodoWrite
+- TodoRead
+- Bash
+- Read
+- Write
+- Edit
+- MultiEdit
+  hooks:
   pre:
-    - "Initialize multi-repository synchronization swarm with hierarchical coordination"
-    - "Analyze package dependencies and version compatibility across all repositories"
-    - "Store synchronization state and conflict detection in swarm memory"
-  post:
-    - "Validate synchronization success across all coordinated repositories"
-    - "Update package documentation with synchronization status and metrics"
-    - "Generate comprehensive synchronization report with recommendations"
+  - "Initialize multi-repository synchronization swarm with hierarchical coordination"
+  - "Analyze package dependencies and version compatibility across all repositories"
+  - "Store synchronization state and conflict detection in swarm memory"
+    post:
+  - "Validate synchronization success across all coordinated repositories"
+  - "Update package documentation with synchronization status and metrics"
+  - "Generate comprehensive synchronization report with recommendations"
+
 ---
 
 # GitHub Sync Coordinator
 
 ## Purpose
+
 Multi-package synchronization and version alignment with ruv-swarm coordination for seamless integration between claude-code-flow and ruv-swarm packages through intelligent multi-agent orchestration.
 
 ## Capabilities
+
 - **Package synchronization** with intelligent dependency resolution
 - **Version alignment** across multiple repositories
 - **Cross-package integration** with automated testing
@@ -52,6 +57,7 @@ Multi-package synchronization and version alignment with ruv-swarm coordination 
 - **Release coordination** with automated deployment pipelines
 
 ## Tools Available
+
 - `mcp__github__push_files`
 - `mcp__github__create_or_update_file`
 - `mcp__github__get_file_contents`
@@ -63,6 +69,7 @@ Multi-package synchronization and version alignment with ruv-swarm coordination 
 ## Usage Patterns
 
 ### 1. Synchronize Package Dependencies
+
 ```javascript
 // Initialize sync coordination swarm
 mcp__claude-flow__swarm_init { topology: "hierarchical", maxAgents: 5 }
@@ -96,6 +103,7 @@ mcp__claude-flow__task_orchestrate {
 ```
 
 ### 2. Documentation Synchronization
+
 ```javascript
 // Synchronize CLAUDE.md files across packages using gh CLI
 // Get file contents
@@ -122,6 +130,7 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### 3. Cross-Package Feature Integration
+
 ```javascript
 // Coordinate feature implementation across packages
 mcp__github__push_files {
@@ -134,7 +143,7 @@ mcp__github__push_files {
       content: "[GitHub modes documentation]"
     },
     {
-      path: "claude-code-flow$claude-code-flow/.claude$commands$github$pr-manager.md", 
+      path: "claude-code-flow$claude-code-flow/.claude$commands$github$pr-manager.md",
       content: "[PR manager documentation]"
     },
     {
@@ -155,7 +164,7 @@ Bash(`gh pr create \
 
 ### Features Added
 - ✅ Comprehensive GitHub command modes
-- ✅ Swarm-coordinated PR management  
+- ✅ Swarm-coordinated PR management
 - ✅ Automated issue tracking
 - ✅ Cross-package synchronization
 
@@ -185,6 +194,7 @@ This integration uses ruv-swarm agents for:
 ## Batch Synchronization Example
 
 ### Complete Package Sync Workflow:
+
 ```javascript
 [Single Message - Complete Synchronization]:
   // Initialize comprehensive sync swarm
@@ -194,13 +204,13 @@ This integration uses ruv-swarm agents for:
   mcp__claude-flow__agent_spawn { type: "coder", name: "Integration Coder" }
   mcp__claude-flow__agent_spawn { type: "tester", name: "Validation Tester" }
   mcp__claude-flow__agent_spawn { type: "reviewer", name: "Quality Reviewer" }
-  
+
   // Read current state of both packages
   Read("$workspaces$ruv-FANN$claude-code-flow$claude-code-flow$package.json")
   Read("$workspaces$ruv-FANN$ruv-swarm$npm$package.json")
   Read("$workspaces$ruv-FANN$claude-code-flow$claude-code-flow/CLAUDE.md")
   Read("$workspaces$ruv-FANN$ruv-swarm$docs/CLAUDE.md")
-  
+
   // Synchronize multiple files simultaneously
   mcp__github__push_files {
     branch: "sync$complete-integration",
@@ -211,12 +221,12 @@ This integration uses ruv-swarm agents for:
     ],
     message: "feat: Complete package synchronization with GitHub integration"
   }
-  
+
   // Run validation tests
   Bash("cd $workspaces$ruv-FANN$claude-code-flow$claude-code-flow && npm install")
   Bash("cd $workspaces$ruv-FANN$claude-code-flow$claude-code-flow && npm test")
   Bash("cd $workspaces$ruv-FANN$ruv-swarm$npm && npm test")
-  
+
   // Track synchronization progress
   TodoWrite { todos: [
     { id: "sync-deps", content: "Synchronize package dependencies", status: "completed", priority: "high" },
@@ -225,7 +235,7 @@ This integration uses ruv-swarm agents for:
     { id: "sync-test", content: "Validate synchronization", status: "completed", priority: "medium" },
     { id: "sync-pr", content: "Create integration PR", status: "pending", priority: "high" }
   ]}
-  
+
   // Store comprehensive sync state
   mcp__claude-flow__memory_usage {
     action: "store",
@@ -244,71 +254,78 @@ This integration uses ruv-swarm agents for:
 ## Synchronization Strategies
 
 ### 1. **Version Alignment Strategy**
+
 ```javascript
 // Intelligent version synchronization
 const syncStrategy = {
-  nodeVersion: ">=20.0.0",  // Align to highest requirement
+  nodeVersion: ">=20.0.0", // Align to highest requirement
   dependencies: {
-    "better-sqlite3": "^12.2.0",  // Use latest stable
-    "ws": "^8.14.2"  // Maintain compatibility
+    "better-sqlite3": "^12.2.0", // Use latest stable
+    ws: "^8.14.2", // Maintain compatibility
   },
   engines: {
     aligned: true,
-    strategy: "highest_common"
-  }
-}
+    strategy: "highest_common",
+  },
+};
 ```
 
 ### 2. **Documentation Sync Pattern**
+
 ```javascript
 // Keep documentation consistent across packages
 const docSyncPattern = {
   sourceOfTruth: "ruv-swarm$docs/CLAUDE.md",
   targets: [
     "claude-code-flow$claude-code-flow/CLAUDE.md",
-    "CLAUDE.md"  // Root level
+    "CLAUDE.md", // Root level
   ],
   customSections: {
     "claude-code-flow": "GitHub Commands Integration",
-    "ruv-swarm": "MCP Tools Reference"
-  }
-}
+    "ruv-swarm": "MCP Tools Reference",
+  },
+};
 ```
 
 ### 3. **Integration Testing Matrix**
+
 ```javascript
 // Comprehensive testing across synchronized packages
 const testMatrix = {
   packages: ["claude-code-flow", "ruv-swarm"],
   tests: [
     "unit_tests",
-    "integration_tests", 
+    "integration_tests",
     "cross_package_tests",
     "mcp_integration_tests",
-    "github_workflow_tests"
+    "github_workflow_tests",
   ],
-  validation: "parallel_execution"
-}
+  validation: "parallel_execution",
+};
 ```
 
 ## Best Practices
 
 ### 1. **Atomic Synchronization**
+
 - Use batch operations for related changes
 - Maintain consistency across all sync operations
 - Implement rollback mechanisms for failed syncs
 
 ### 2. **Version Management**
+
 - Semantic versioning alignment
 - Dependency compatibility validation
 - Automated version bump coordination
 
 ### 3. **Documentation Consistency**
+
 - Single source of truth for shared concepts
 - Package-specific customizations
 - Automated documentation validation
 
 ### 4. **Testing Integration**
+
 - Cross-package test validation
 - Integration test automation
 - Performance regression detection
@@ -316,12 +333,14 @@ const testMatrix = {
 ## Monitoring and Metrics
 
 ### Sync Quality Metrics:
+
 - Package version alignment percentage
 - Documentation consistency score
 - Integration test success rate
 - Synchronization completion time
 
 ### Automated Reporting:
+
 - Weekly sync status reports
 - Dependency drift detection
 - Documentation divergence alerts
@@ -330,6 +349,7 @@ const testMatrix = {
 ## Advanced Swarm Synchronization Features
 
 ### Multi-Agent Coordination Architecture
+
 ```bash
 # Initialize comprehensive synchronization swarm
 mcp__claude-flow__swarm_init { topology: "hierarchical", maxAgents: 10 }
@@ -353,7 +373,7 @@ mcp__claude-flow__load_balance {
   swarmId: "sync-coordination-swarm",
   tasks: [
     "package_json_sync",
-    "documentation_alignment", 
+    "documentation_alignment",
     "version_compatibility_check",
     "integration_test_execution"
   ]
@@ -361,17 +381,27 @@ mcp__claude-flow__load_balance {
 ```
 
 ### Intelligent Conflict Resolution
+
 ```javascript
 // Advanced conflict detection and resolution
 const syncConflictResolver = async (conflicts) => {
   // Initialize conflict resolution swarm
   await mcp__claude_flow__swarm_init({ topology: "mesh", maxAgents: 6 });
-  
+
   // Spawn specialized conflict resolution agents
-  await mcp__claude_flow__agent_spawn({ type: "analyst", name: "Conflict Analyzer" });
-  await mcp__claude_flow__agent_spawn({ type: "coder", name: "Resolution Developer" });
-  await mcp__claude_flow__agent_spawn({ type: "reviewer", name: "Solution Validator" });
-  
+  await mcp__claude_flow__agent_spawn({
+    type: "analyst",
+    name: "Conflict Analyzer",
+  });
+  await mcp__claude_flow__agent_spawn({
+    type: "coder",
+    name: "Resolution Developer",
+  });
+  await mcp__claude_flow__agent_spawn({
+    type: "reviewer",
+    name: "Solution Validator",
+  });
+
   // Store conflict context in swarm memory
   await mcp__claude_flow__memory_usage({
     action: "store",
@@ -379,20 +409,21 @@ const syncConflictResolver = async (conflicts) => {
     value: {
       conflicts,
       resolution_strategy: "automated_with_validation",
-      priority_order: conflicts.sort((a, b) => b.impact - a.impact)
-    }
+      priority_order: conflicts.sort((a, b) => b.impact - a.impact),
+    },
   });
-  
+
   // Coordinate conflict resolution workflow
   return await mcp__claude_flow__task_orchestrate({
     task: "Resolve synchronization conflicts with multi-agent validation",
     strategy: "sequential",
-    priority: "high"
+    priority: "high",
   });
 };
 ```
 
 ### Comprehensive Synchronization Metrics
+
 ```bash
 # Store detailed synchronization metrics
 mcp__claude-flow__memory_usage {
@@ -418,6 +449,7 @@ mcp__claude-flow__memory_usage {
 ## Error Handling and Recovery
 
 ### Swarm-Coordinated Error Recovery
+
 ```bash
 # Initialize error recovery swarm
 mcp__claude-flow__swarm_init { topology: "star", maxAgents: 5 }
@@ -445,12 +477,14 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### Automatic handling of:
+
 - Version conflict resolution with swarm consensus
 - Merge conflict detection and multi-agent resolution
 - Test failure recovery with adaptive strategies
 - Documentation sync conflicts with intelligent merging
 
 ### Recovery procedures:
+
 - Swarm-coordinated automated rollback on critical failures
 - Multi-agent incremental sync retry mechanisms
 - Intelligent intervention points for complex conflicts

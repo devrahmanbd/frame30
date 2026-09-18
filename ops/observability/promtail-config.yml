@@ -37,9 +37,11 @@ scrape_configs:
       - source_labels: [__meta_docker_container_name]
         regex: "/(.*)"
         target_label: container
-      - source_labels: [__meta_docker_container_label_com_docker_compose_service]
+      - source_labels:
+          [__meta_docker_container_label_com_docker_compose_service]
         target_label: service
-      - source_labels: [__meta_docker_container_label_com_docker_compose_project]
+      - source_labels:
+          [__meta_docker_container_label_com_docker_compose_project]
         target_label: stack
       - source_labels: [__meta_docker_container_log_stream]
         target_label: stream
@@ -89,13 +91,13 @@ scrape_configs:
           selector: '{service=~"db|supabase-db|postgres"}'
           stages:
             - regex:
-                expression: '(?P<severity>DEBUG|INFO|NOTICE|WARNING|ERROR|LOG|FATAL|PANIC):'
+                expression: "(?P<severity>DEBUG|INFO|NOTICE|WARNING|ERROR|LOG|FATAL|PANIC):"
             - labels:
                 severity:
 
       # Drop health-check noise before it costs storage.
       - drop:
-          expression: '(GET /-/healthy|GET /api/public/health|kube-probe)'
+          expression: "(GET /-/healthy|GET /api/public/health|kube-probe)"
           drop_counter_reason: healthcheck
 
   # ------------------------------------------------------------- host logs

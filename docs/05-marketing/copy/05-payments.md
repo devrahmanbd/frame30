@@ -49,7 +49,7 @@ Route: `src/routes/payments.tsx` · Shell: marketing layout, dark canvas · Scop
 
 ## 1. Hero — aurora spotlight
 
-*Lever: specificity beats hype — naming the actual rails and the actual failure mode (unreconciled cash) signals domain competence before any claim is made.*
+_Lever: specificity beats hype — naming the actual rails and the actual failure mode (unreconciled cash) signals domain competence before any claim is made._
 
 - **Eyebrow**: `Four rails · one ledger`
 - **H1**: **bKash, Nagad, card, COD — reconciled.**
@@ -65,7 +65,7 @@ Route: `src/routes/payments.tsx` · Shell: marketing layout, dark canvas · Scop
 
 ## 2. The four rails — glass card grid, 4-up → 2-up → 1-up
 
-*Lever: categorisation reduces perceived complexity — four named rails feel finite and masterable, versus an open-ended "many payment methods."*
+_Lever: categorisation reduces perceived complexity — four named rails feel finite and masterable, versus an open-ended "many payment methods."_
 
 Bangladeshi checkout has to cover four structurally different payment behaviours, not four cosmetic buttons. Framique treats each rail as a first-class object with its own authorisation flow, failure surface and refund path — but every rail writes to the same order and ledger schema, so reporting never forks by method.
 
@@ -81,12 +81,12 @@ For B2B and higher-ticket transactions, direct bank transfer or net-banking redi
 **Rail 4 — Cash on delivery (COD)**
 Still the largest single rail by order count in much of Bangladesh's e-commerce market, and the one most platforms treat as an afterthought. Framique treats COD as a real payment method with a real settlement event: the courier collects, remits to you (per your courier's cash-collection cycle), and that remittance is matched to the original order the same way a bKash webhook is matched. COD is also the rail carrying the most risk — fake orders, refusals at the door, address failures — which is why it gets fraud scoring and a dedicated risk playbook (Bands 6–7).
 
-| Rail | Card copy | Detail line |
-|---|---|---|
-| MFS (bKash, Nagad, Rocket, Upay) | The default for most baskets. | Hosted or in-app checkout, webhook-confirmed, refund-to-wallet supported. |
-| Card (Visa, Mastercard) | Runs on your existing merchant account. | 3-D Secure, chargeback events post to the order timeline. |
-| Bank / net banking | The rail procurement teams ask for. | Redirect or manual reference match; settlement is bank-cleared, not instant. |
-| COD | Treated as a real method, not an exception. | Fraud scored pre-booking, courier-collected, remittance reconciled. |
+| Rail                             | Card copy                                   | Detail line                                                                  |
+| -------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------- |
+| MFS (bKash, Nagad, Rocket, Upay) | The default for most baskets.               | Hosted or in-app checkout, webhook-confirmed, refund-to-wallet supported.    |
+| Card (Visa, Mastercard)          | Runs on your existing merchant account.     | 3-D Secure, chargeback events post to the order timeline.                    |
+| Bank / net banking               | The rail procurement teams ask for.         | Redirect or manual reference match; settlement is bank-cleared, not instant. |
+| COD                              | Treated as a real method, not an exception. | Fraud scored pre-booking, courier-collected, remittance reconciled.          |
 
 **Design note**: 4-up glass card grid on canvas, each card `{components.glass-card}` with a small monochrome rail icon top-left, headline in `display-md`, detail in `body`/`ink-muted`. Cards collapse to 2-up at 900px, 1-up at 640px per the grid spec in DESIGN.md.
 
@@ -94,16 +94,16 @@ Still the largest single rail by order count in much of Bangladesh's e-commerce 
 
 ## 3. Rail comparison table — full-width, canvas band
 
-*Lever: a structured comparison table lets a buyer self-serve the "which rail should I lead with" decision instead of reading four paragraphs and guessing — reduces decision fatigue.*
+_Lever: a structured comparison table lets a buyer self-serve the "which rail should I lead with" decision instead of reading four paragraphs and guessing — reduces decision fatigue._
 
 This is the table to bring into a finance or ops conversation. Numbers below are typical ranges reported by merchants and PSPs operating in Bangladesh; confirm exact settlement cycles and MDR with your specific bKash/Nagad merchant agreement and your card acquirer, since terms vary by account tier and are updated periodically by the providers.
 
-| Rail | Typical settlement timing | Common failure modes | Refund path | Reconciliation difficulty | Best-fit basket size |
-|---|---|---|---|---|---|
-| MFS (bKash/Nagad/Rocket/Upay) | Near-real-time confirmation; merchant payout per your MFS settlement cycle (commonly T+1 to T+3 business days — confirm with your provider) | PIN entry timeout, app-switch drop, insufficient balance, duplicate submission on slow networks | Refund-to-wallet via the same rail, usually 1–3 business days | Low — webhook gives a hard match to transaction ID | Low to mid ticket, high frequency |
-| Card (Visa/Mastercard) | Authorised instantly; settlement per your acquirer's cycle (commonly T+1 to T+5) | 3-D Secure abandonment, issuer decline, expired card, network timeout on OTP step | Refund to card, can take 5–14 business days depending on issuer | Medium — needs processor reference reconciled against gateway callback | Mid to high ticket |
-| Bank transfer / net banking | Bank-cleared, typically same-day to T+2 depending on bank cutoff times | Wrong reference number, delayed batch clearing, redirect drop-off | Manual bank transfer back, days not minutes | High — often needs a human to match a bank statement line to an order | High ticket, B2B, wholesale |
-| COD | Cash collected on delivery; remitted by courier per their cycle (commonly weekly or twice-weekly) | Customer refusal at door, unreachable address, wrong address, partial acceptance | Refund is a non-event on accepted orders; on refusal, order simply reverts to unpaid/returned | High — depends entirely on courier remittance reports matching your order set | Low to mid ticket, price-sensitive segments |
+| Rail                          | Typical settlement timing                                                                                                                   | Common failure modes                                                                            | Refund path                                                                                   | Reconciliation difficulty                                                     | Best-fit basket size                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
+| MFS (bKash/Nagad/Rocket/Upay) | Near-real-time confirmation; merchant payout per your MFS settlement cycle (commonly T+1 to T+3 business days — confirm with your provider) | PIN entry timeout, app-switch drop, insufficient balance, duplicate submission on slow networks | Refund-to-wallet via the same rail, usually 1–3 business days                                 | Low — webhook gives a hard match to transaction ID                            | Low to mid ticket, high frequency           |
+| Card (Visa/Mastercard)        | Authorised instantly; settlement per your acquirer's cycle (commonly T+1 to T+5)                                                            | 3-D Secure abandonment, issuer decline, expired card, network timeout on OTP step               | Refund to card, can take 5–14 business days depending on issuer                               | Medium — needs processor reference reconciled against gateway callback        | Mid to high ticket                          |
+| Bank transfer / net banking   | Bank-cleared, typically same-day to T+2 depending on bank cutoff times                                                                      | Wrong reference number, delayed batch clearing, redirect drop-off                               | Manual bank transfer back, days not minutes                                                   | High — often needs a human to match a bank statement line to an order         | High ticket, B2B, wholesale                 |
+| COD                           | Cash collected on delivery; remitted by courier per their cycle (commonly weekly or twice-weekly)                                           | Customer refusal at door, unreachable address, wrong address, partial acceptance                | Refund is a non-event on accepted orders; on refusal, order simply reverts to unpaid/returned | High — depends entirely on courier remittance reports matching your order set | Low to mid ticket, price-sensitive segments |
 
 **Reading the table as a decision framework**: if your average order value is under roughly ৳1,000 and your audience is mobile-first, MFS should be your default rail with COD as the fallback. If you sell above roughly ৳10,000 or to institutional buyers, expect bank transfer to carry a disproportionate share of revenue even if it's a minority of order count — build your reconciliation process around that rail's slower, human-matched settlement rather than assuming it behaves like MFS. If COD exceeds roughly 40–50% of your order volume, the risk playbook in Band 7 is not optional — it directly protects margin.
 
@@ -115,7 +115,7 @@ This is the table to bring into a finance or ops conversation. Numbers below are
 
 ## 4. The reconciliation engine — Z layout, text-left
 
-*Lever: process transparency (showing the mechanism, not just the promise) builds trust with finance and ops buyers who have been burned by "trust us" payment claims before.*
+_Lever: process transparency (showing the mechanism, not just the promise) builds trust with finance and ops buyers who have been burned by "trust us" payment claims before._
 
 Reconciliation is the actual product here — not the checkout button. The mechanism:
 
@@ -126,7 +126,8 @@ Reconciliation is the actual product here — not the checkout button. The mecha
 
 **Worked example**: a merchant processes 800 orders in a week — 500 via bKash, 150 via card, 50 via bank transfer, 100 COD. In a spreadsheet-based process, the bank transfers (50 orders) are the ones that eat finance time, because each requires opening the bank statement and matching a reference by eye; at even 3 minutes per match, that's 2.5 hours a week of manual work for 6% of order volume. Framique auto-matches transfers with a clean reference and routes only the genuinely ambiguous ones (typically under 10% of bank transfers) to the unmatched-taka queue — cutting the manual load to roughly 15 minutes a week.
 
-*Proof strings*:
+_Proof strings_:
+
 - `Exception queue with an owner and an age.`
 - `Idempotency key on every webhook — no double-credited orders.`
 - `Unmatched-taka queue: visible, owned, resolvable — not silent.`
@@ -139,7 +140,7 @@ Reconciliation is the actual product here — not the checkout button. The mecha
 
 ## 5. Refunds and partial refunds — Z layout, text-right
 
-*Lever: reducing perceived risk of the platform itself — a merchant who can picture exactly how a refund propagates trusts the system enough to grant refunds generously, which in turn improves their own customer experience.*
+_Lever: reducing perceived risk of the platform itself — a merchant who can picture exactly how a refund propagates trusts the system enough to grant refunds generously, which in turn improves their own customer experience._
 
 A refund in Framique is one transaction that updates four records at once: the order status, the payment record, the ledger, and the customer's order timeline. This atomicity matters — a refund that updates the ledger but not the order (or vice versa) is exactly how merchants end up with support tickets that contradict their own accounting.
 
@@ -149,14 +150,14 @@ A refund in Framique is one transaction that updates four records at once: the o
 
 **Refund SLAs by rail** (typical, confirm with your provider):
 
-| Rail | Typical refund time to customer |
-|---|---|
-| MFS | 1–3 business days |
-| Card | 5–14 business days (issuer-dependent) |
-| Bank transfer | Manual, days |
-| COD | N/A — unpaid orders simply revert; no cash to return unless a prepaid deposit was collected |
+| Rail          | Typical refund time to customer                                                             |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| MFS           | 1–3 business days                                                                           |
+| Card          | 5–14 business days (issuer-dependent)                                                       |
+| Bank transfer | Manual, days                                                                                |
+| COD           | N/A — unpaid orders simply revert; no cash to return unless a prepaid deposit was collected |
 
-*Proof*: `One transaction, four consistent records.`
+_Proof_: `One transaction, four consistent records.`
 
 **Design note**: right-column narrative, left column shows a small before/after ledger snippet mock (glass card, monospace figures, signal-blue diff highlight on the changed row) illustrating a partial refund updating one SKU line.
 
@@ -164,7 +165,7 @@ A refund in Framique is one transaction that updates four records at once: the o
 
 ## 6. Fraud scoring before courier booking — Z layout, text-left
 
-*Lever: loss aversion — framing fraud prevention as "a lost parcel avoided" rather than an abstract security feature makes the benefit concrete and immediate to a merchant who has felt that specific loss.*
+_Lever: loss aversion — framing fraud prevention as "a lost parcel avoided" rather than an abstract security feature makes the benefit concrete and immediate to a merchant who has felt that specific loss._
 
 The costliest fraud event in Bangladeshi e-commerce isn't a stolen card — it's a COD order that ties up a courier slot, packaging, and staff time, then gets refused or is simply undeliverable. Framique scores every order for risk **before** the courier is booked, not after, so a bad order costs you a review-queue click, not a wasted delivery attempt.
 
@@ -186,7 +187,7 @@ The costliest fraud event in Bangladeshi e-commerce isn't a stolen card — it's
 4. If fraudulent orders are still reaching courier booking, tighten velocity and address-quality weights before adding new signals — most missed fraud is a threshold problem, not a missing-signal problem.
 5. Re-check quarterly; fraud patterns shift with seasonal demand (Eid, Pohela Boishakh peaks attract more testing of the checkout by bad actors).
 
-*Proof*: `Review queue instead of a lost parcel.`
+_Proof_: `Review queue instead of a lost parcel.`
 
 **Design note**: left text column carries the numbered tuning loop; right column renders the signal list as a compact glass checklist card with small dot indicators (signal-blue for active, ink-muted for informational-only signals).
 
@@ -194,7 +195,7 @@ The costliest fraud event in Bangladeshi e-commerce isn't a stolen card — it's
 
 ## 7. COD risk management playbook — glass card grid + worked example
 
-*Lever: giving the merchant an operational playbook (not just a feature) transfers competence and positions Framique as a partner in margin protection, not merely a payment processor.*
+_Lever: giving the merchant an operational playbook (not just a feature) transfers competence and positions Framique as a partner in margin protection, not merely a payment processor._
 
 COD risk is manageable with process, not just software. Framique's playbook combines five levers:
 
@@ -212,14 +213,14 @@ COD risk is manageable with process, not just software. Framique's playbook comb
 
 Assume a merchant runs ৳50,000 in COD gross order value per week, with a 30% average gross margin, and a 20% COD refusal/return rate (a realistic pre-intervention figure for many Bangladeshi COD-heavy stores).
 
-| Metric | Before playbook | After playbook (refusal rate cut to 8%) |
-|---|---|---|
-| Weekly COD order value | ৳50,000 | ৳50,000 |
-| Refusal rate | 20% | 8% |
-| Value lost to refusals | ৳10,000 | ৳4,000 |
-| Delivery attempt cost per refused order (courier fee, packaging, staff time — assume ৳120 avg) | on ~40 refused orders (avg ticket ৳250): ৳4,800 | on ~16 refused orders: ৳1,920 |
-| Net weekly cost of COD friction (lost margin + wasted delivery cost) | ৳10,000 × 30% margin-on-cost proxy is not the right lens here — the real cost is the wasted delivery spend plus the opportunity cost of the tied-up inventory and slot: **≈ ৳4,800 in direct wasted delivery cost** | **≈ ৳1,920 in direct wasted delivery cost** |
-| Weekly saving from the playbook | — | **≈ ৳2,880**, before accounting for the OTP/address/advance measures reducing refusals further over time |
+| Metric                                                                                         | Before playbook                                                                                                                                                                                                     | After playbook (refusal rate cut to 8%)                                                                  |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Weekly COD order value                                                                         | ৳50,000                                                                                                                                                                                                             | ৳50,000                                                                                                  |
+| Refusal rate                                                                                   | 20%                                                                                                                                                                                                                 | 8%                                                                                                       |
+| Value lost to refusals                                                                         | ৳10,000                                                                                                                                                                                                             | ৳4,000                                                                                                   |
+| Delivery attempt cost per refused order (courier fee, packaging, staff time — assume ৳120 avg) | on ~40 refused orders (avg ticket ৳250): ৳4,800                                                                                                                                                                     | on ~16 refused orders: ৳1,920                                                                            |
+| Net weekly cost of COD friction (lost margin + wasted delivery cost)                           | ৳10,000 × 30% margin-on-cost proxy is not the right lens here — the real cost is the wasted delivery spend plus the opportunity cost of the tied-up inventory and slot: **≈ ৳4,800 in direct wasted delivery cost** | **≈ ৳1,920 in direct wasted delivery cost**                                                              |
+| Weekly saving from the playbook                                                                | —                                                                                                                                                                                                                   | **≈ ৳2,880**, before accounting for the OTP/address/advance measures reducing refusals further over time |
 
 The assumptions above (average ticket, per-attempt cost, starting refusal rate) will vary by category and courier contract — rerun this table with your own numbers before presenting it internally; the structure of the calculation (refusal rate × order volume × per-attempt cost) is the reusable part, not the specific figures.
 
@@ -231,7 +232,7 @@ The assumptions above (average ticket, per-attempt cost, starting refusal rate) 
 
 ## 8. Chargebacks and disputes — glass card, canvas band
 
-*Lever: proactive disclosure of a negative scenario (chargebacks) before the merchant encounters it themselves builds credibility — platforms that only describe the upside read as incomplete to an experienced merchant.*
+_Lever: proactive disclosure of a negative scenario (chargebacks) before the merchant encounters it themselves builds credibility — platforms that only describe the upside read as incomplete to an experienced merchant._
 
 Card chargebacks and MFS dispute cases are rarer in Bangladesh than in mature card markets, but they do happen, and they follow the card network's or MFS provider's own dispute process — Framique does not adjudicate disputes on your behalf, since that authority sits with your acquirer or the rail provider under their card network or scheme rules. What Framique does:
 
@@ -247,7 +248,7 @@ Confirm your specific chargeback response windows and evidence requirements with
 
 ## 9. Checkout conversion design — Z layout, text-right
 
-*Lever: friction reduction — every field removed or pre-filled measurably raises completion rate; phone-first identity matches the actual primary identifier Bangladeshi customers use, rather than forcing an email-first pattern borrowed from Western checkout defaults.*
+_Lever: friction reduction — every field removed or pre-filled measurably raises completion rate; phone-first identity matches the actual primary identifier Bangladeshi customers use, rather than forcing an email-first pattern borrowed from Western checkout defaults._
 
 Checkout design decisions that measurably affect completion in this market:
 
@@ -261,15 +262,15 @@ Checkout design decisions that measurably affect completion in this market:
 
 **Checkout field checklist**:
 
-| Field | Required? | Why |
-|---|---|---|
-| Full name | Yes | Delivery label, order record |
-| Phone number | Yes | Payment identity, OTP, courier contact |
-| Division/District/Thana | Yes (structured) | Delivery accuracy, fraud signal |
-| Detailed address line | Yes | Delivery accuracy |
-| Email | No | Optional receipt delivery only |
-| Payment method | Yes | Rail selection |
-| Order note | No | Optional, e.g. landmark or delivery instruction |
+| Field                   | Required?        | Why                                             |
+| ----------------------- | ---------------- | ----------------------------------------------- |
+| Full name               | Yes              | Delivery label, order record                    |
+| Phone number            | Yes              | Payment identity, OTP, courier contact          |
+| Division/District/Thana | Yes (structured) | Delivery accuracy, fraud signal                 |
+| Detailed address line   | Yes              | Delivery accuracy                               |
+| Email                   | No               | Optional receipt delivery only                  |
+| Payment method          | Yes              | Rail selection                                  |
+| Order note              | No               | Optional, e.g. landmark or delivery instruction |
 
 **Bangla variant of section label**: `চেকআউট — সবচেয়ে কম ফিল্ড, ফোন-প্রথম পরিচয়`
 
@@ -279,7 +280,7 @@ Checkout design decisions that measurably affect completion in this market:
 
 ## 10. Security — PCI, keys, tokens — canvas band, two-column
 
-*Lever: reducing perceived technical risk for the person actually accountable for compliance (often a co-founder or ops lead, not a developer) by naming the specific mechanisms rather than asserting "bank-grade security," a phrase experienced buyers have learned to distrust.*
+_Lever: reducing perceived technical risk for the person actually accountable for compliance (often a co-founder or ops lead, not a developer) by naming the specific mechanisms rather than asserting "bank-grade security," a phrase experienced buyers have learned to distrust._
 
 Framique does not store raw card numbers on its own servers. Card entry is tokenised by your PCI-DSS-compliant gateway or processor at the point of entry, and Framique stores and operates on the resulting token, not the card data itself — this is the standard tokenisation pattern used to keep a merchant's own PCI compliance scope minimal (typically SAQ-A or SAQ-A-EP-equivalent, depending on your exact checkout integration; confirm your applicable SAQ level with your acquirer or QSA).
 
@@ -295,7 +296,7 @@ This section intentionally avoids naming a specific compliance certification lev
 
 ## 11. Payouts and finance exports — Z layout, text-left
 
-*Lever: speaking directly to the accountant/bookkeeper persona (who is often not the buyer but is the internal blocker) removes a common adoption friction — "will this work with our existing books" — before it's asked.*
+_Lever: speaking directly to the accountant/bookkeeper persona (who is often not the buyer but is the internal blocker) removes a common adoption friction — "will this work with our existing books" — before it's asked._
 
 Every rail's incoming payments and every payout to your bank account are logged as ledger events, exportable in the format your accountant actually needs:
 
@@ -310,7 +311,7 @@ Every rail's incoming payments and every payout to your bank account are logged 
 
 ## 12. Built for developers — glass card, canvas band, linking to `/docs`
 
-*Lever: credibility signalling to a technical evaluator — a direct, unhyped link to real API/webhook documentation demonstrates the platform is not marketing-only vaporware.*
+_Lever: credibility signalling to a technical evaluator — a direct, unhyped link to real API/webhook documentation demonstrates the platform is not marketing-only vaporware._
 
 If you're integrating Framique payments into a custom storefront, a headless frontend, or an existing ERP, the payments module is fully addressable via the REST API:
 
@@ -328,7 +329,7 @@ If you're integrating Framique payments into a custom storefront, a headless fro
 
 ## 13. FAQ — canvas band, accordion rows
 
-*Lever: FAQ answers pre-empt the specific objections that stall a payments decision (money custody, provider lock-in, dispute handling) — resolving them in the merchant's own words reduces sales-cycle friction.*
+_Lever: FAQ answers pre-empt the specific objections that stall a payments decision (money custody, provider lock-in, dispute handling) — resolving them in the merchant's own words reduces sales-cycle friction._
 
 1. **Do you hold my money?**
    No. Rails settle to your own bKash/Nagad/bank/acquirer accounts directly; Framique records and reconciles those settlements against your orders — it does not sit in the custody chain.
@@ -368,7 +369,7 @@ If you're integrating Framique payments into a custom storefront, a headless fro
 
 ## 14. Final CTA — gradient spotlight card
 
-*Lever: urgency without hype — "tonight" is a concrete, near-term time horizon rather than a vague exhortation, and "no card" removes the final objection (cost/commitment) at the exact decision point.*
+_Lever: urgency without hype — "tonight" is a concrete, near-term time horizon rather than a vague exhortation, and "no card" removes the final objection (cost/commitment) at the exact decision point._
 
 - **H2**: **Connect bKash today, take an order tonight.**
 - **Sub**: Card and COD can follow in the same setup flow. Reconciliation starts on your first order, not your hundredth.

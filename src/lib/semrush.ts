@@ -132,9 +132,12 @@ export function buildSemrushUrl(params: {
   if (params.domain) url.searchParams.set("domain", params.domain);
   if (params.phrase) url.searchParams.set("phrase", params.phrase);
   if (params.database) url.searchParams.set("database", params.database);
-  if (params.limit !== undefined) url.searchParams.set("display_limit", String(params.limit));
-  if (params.offset !== undefined) url.searchParams.set("display_offset", String(params.offset));
-  if (params.export_columns) url.searchParams.set("export_columns", params.export_columns);
+  if (params.limit !== undefined)
+    url.searchParams.set("display_limit", String(params.limit));
+  if (params.offset !== undefined)
+    url.searchParams.set("display_offset", String(params.offset));
+  if (params.export_columns)
+    url.searchParams.set("export_columns", params.export_columns);
 
   return url.toString();
 }
@@ -150,7 +153,11 @@ export function parseSemrushTable(rawText: string): Record<string, string>[] {
 
   if (lines.length <= 1) return [];
 
-  const delimiter = lines[0].includes(";") ? ";" : lines[0].includes("\t") ? "\t" : ",";
+  const delimiter = lines[0].includes(";")
+    ? ";"
+    : lines[0].includes("\t")
+      ? "\t"
+      : ",";
   const headers = lines[0].split(delimiter).map((h) => h.trim());
 
   const records: Record<string, string>[] = [];
@@ -251,7 +258,7 @@ export const DEFAULT_SEMRUSH_KEYWORDS: SemrushKeywordPosition[] = [
     position: 1,
     previousPosition: 1,
     searchVolume: 880,
-    cpc: 0.40,
+    cpc: 0.4,
     competition: 0.38,
     url: "https://framique.com/features",
     trafficPercentage: 5.2,

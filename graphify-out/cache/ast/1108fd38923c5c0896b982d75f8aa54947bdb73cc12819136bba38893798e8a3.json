@@ -1,1 +1,178 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_legal_ts", "label": "legal.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L1"}, {"id": "lib_legal_legalsection", "label": "LegalSection", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L25"}, {"id": "lib_legal_legaldoc", "label": "LegalDoc", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L31"}, {"id": "lib_legal_s", "label": "s()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L40"}, {"id": "lib_legal_legal_docs", "label": "LEGAL_DOCS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L48"}, {"id": "lib_legal_legal_slugs", "label": "LEGAL_SLUGS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L369"}, {"id": "lib_legal_legallastupdated", "label": "legalLastUpdated()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L376"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "users_rahman_documents_frame30_src_lib_nap_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_nap_org_nap", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_nap_napaddressline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legalsection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legaldoc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_s", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legal_docs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legal_slugs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L369", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legaldoc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L371", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_legal_ts", "target": "lib_legal_legallastupdated", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L376", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_legal_legaldoc", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L372"}, {"caller_nid": "lib_legal_legallastupdated", "callee": "at", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L377"}, {"caller_nid": "lib_legal_legallastupdated", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L377"}, {"caller_nid": "lib_legal_legallastupdated", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts", "source_location": "L377"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "label": "legal.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_legal_legalsection",
+      "label": "LegalSection",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_legal_legaldoc",
+      "label": "LegalDoc",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_legal_s",
+      "label": "s()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_legal_legal_docs",
+      "label": "LEGAL_DOCS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_legal_legal_slugs",
+      "label": "LEGAL_SLUGS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L369"
+    },
+    {
+      "id": "lib_legal_legallastupdated",
+      "label": "legalLastUpdated()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L376"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "users_rahman_documents_frame30_src_lib_nap_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_nap_org_nap",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_nap_napaddressline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legalsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legaldoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_s",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legal_docs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legal_slugs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L369",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legaldoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L371",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "target": "lib_legal_legallastupdated",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L376",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_legal_legaldoc",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_legal_legallastupdated",
+      "callee": "at",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L377"
+    },
+    {
+      "caller_nid": "lib_legal_legallastupdated",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L377"
+    },
+    {
+      "caller_nid": "lib_legal_legallastupdated",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/legal.ts",
+      "source_location": "L377"
+    }
+  ]
+}

@@ -1,1 +1,12 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_obra_brainstorming_scripts_start_server_sh", "label": "start-server.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/obra/brainstorming/scripts/start-server.sh", "source_location": "L1"}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_obra_brainstorming_scripts_start_server_sh",
+      "label": "start-server.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/obra/brainstorming/scripts/start-server.sh",
+      "source_location": "L1"
+    }
+  ],
+  "edges": []
+}

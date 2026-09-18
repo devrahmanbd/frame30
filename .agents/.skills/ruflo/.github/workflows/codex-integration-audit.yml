@@ -14,20 +14,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'v3/@claude-flow/codex/**'
-      - 'ruflo/src/mcp-bridge/**'
-      - 'ruflo/src/ruvocal/mcp-bridge/**'
-      - '.claude/agents/dual-mode/**'
-      - 'scripts/audit-codex-integration.mjs'
-      - '.github/workflows/codex-integration-audit.yml'
+      - "v3/@claude-flow/codex/**"
+      - "ruflo/src/mcp-bridge/**"
+      - "ruflo/src/ruvocal/mcp-bridge/**"
+      - ".claude/agents/dual-mode/**"
+      - "scripts/audit-codex-integration.mjs"
+      - ".github/workflows/codex-integration-audit.yml"
   pull_request:
     paths:
-      - 'v3/@claude-flow/codex/**'
-      - 'ruflo/src/mcp-bridge/**'
-      - 'ruflo/src/ruvocal/mcp-bridge/**'
-      - '.claude/agents/dual-mode/**'
-      - 'scripts/audit-codex-integration.mjs'
-      - '.github/workflows/codex-integration-audit.yml'
+      - "v3/@claude-flow/codex/**"
+      - "ruflo/src/mcp-bridge/**"
+      - "ruflo/src/ruvocal/mcp-bridge/**"
+      - ".claude/agents/dual-mode/**"
+      - "scripts/audit-codex-integration.mjs"
+      - ".github/workflows/codex-integration-audit.yml"
 
 jobs:
   audit:
@@ -37,5 +37,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
       - run: node scripts/audit-codex-integration.mjs

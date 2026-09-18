@@ -4,7 +4,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -13,8 +16,10 @@ rec.holder = recorder;
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
-const { activateTheme, deleteTheme } = await import("./themes/appearance.server");
-const { upsertPlugin, setPluginEnabled, uninstallPlugin } = await import("./plugins.server");
+const { activateTheme, deleteTheme } =
+  await import("./themes/appearance.server");
+const { upsertPlugin, setPluginEnabled, uninstallPlugin } =
+  await import("./plugins.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const THEME = "44444444-4444-4444-4444-444444444444";
@@ -25,7 +30,9 @@ beforeEach(() => recorder.reset());
 function themeDb(active: boolean) {
   return fakeDb({
     tables: {
-      store_themes: [{ id: THEME, merchant_id: MERCHANT, name: "T", is_active: active }],
+      store_themes: [
+        { id: THEME, merchant_id: MERCHANT, name: "T", is_active: active },
+      ],
       theme_versions: [],
       theme_drafts: [],
       theme_audit: [],
@@ -103,11 +110,19 @@ describe("plugin lifecycle audit", () => {
   it("setPluginEnabled records toggles", async () => {
     const db = fakeDb({
       tables: {
-        plugin_state: [{ merchant_id: MERCHANT, plugin_id: "audit-probe", enabled: true }],
+        plugin_state: [
+          { merchant_id: MERCHANT, plugin_id: "audit-probe", enabled: true },
+        ],
         activity_log: [],
       },
     });
-    await setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", false, ACTOR);
+    await setPluginEnabled(
+      db.asClient(),
+      MERCHANT,
+      "audit-probe",
+      false,
+      ACTOR,
+    );
     const rows = db.rows("activity_log");
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ action: "plugin.disabled", actor: ACTOR });
@@ -116,7 +131,9 @@ describe("plugin lifecycle audit", () => {
   it("uninstallPlugin records removal", async () => {
     const db = fakeDb({
       tables: {
-        plugin_state: [{ merchant_id: MERCHANT, plugin_id: "audit-probe", enabled: true }],
+        plugin_state: [
+          { merchant_id: MERCHANT, plugin_id: "audit-probe", enabled: true },
+        ],
         activity_log: [],
       },
     });
@@ -124,6 +141,9 @@ describe("plugin lifecycle audit", () => {
     expect(db.rows("plugin_state")).toHaveLength(0);
     const rows = db.rows("activity_log");
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ action: "plugin.uninstalled", actor: ACTOR });
+    expect(rows[0]).toMatchObject({
+      action: "plugin.uninstalled",
+      actor: ACTOR,
+    });
   });
 });

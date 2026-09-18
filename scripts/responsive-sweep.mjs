@@ -76,7 +76,6 @@ const SURFACES = [
   { name: "checkout", path: `/store/${storeSlug}/checkout` },
 ].filter((s) => !only || s.name === only);
 
-
 const VARIANTS = [
   { scheme: "light", locale: "en" },
   { scheme: "dark", locale: "en" },
@@ -88,13 +87,21 @@ const VARIANTS = [
 const AUDIT = ({ minTouch, slack }) => {
   const label = (el) => {
     const id = el.id ? `#${el.id}` : "";
-    const cls = typeof el.className === "string" && el.className ? `.${el.className.trim().split(/\s+/).slice(0, 2).join(".")}` : "";
+    const cls =
+      typeof el.className === "string" && el.className
+        ? `.${el.className.trim().split(/\s+/).slice(0, 2).join(".")}`
+        : "";
     const text = (el.textContent ?? "").trim().slice(0, 28);
     return `${el.tagName.toLowerCase()}${id}${cls}${text ? ` "${text}"` : ""}`;
   };
   const visible = (el) => {
     const style = getComputedStyle(el);
-    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return false;
+    if (
+      style.display === "none" ||
+      style.visibility === "hidden" ||
+      Number(style.opacity) === 0
+    )
+      return false;
     const rect = el.getBoundingClientRect();
     return rect.width > 0 && rect.height > 0;
   };
@@ -117,17 +124,33 @@ const AUDIT = ({ minTouch, slack }) => {
       let inScroller = false;
       while (parent && parent !== document.body) {
         const ps = getComputedStyle(parent);
-        if (ps.overflowX === "auto" || ps.overflowX === "scroll" || ps.overflowX === "hidden") {
+        if (
+          ps.overflowX === "auto" ||
+          ps.overflowX === "scroll" ||
+          ps.overflowX === "hidden"
+        ) {
           inScroller = true;
           break;
         }
         parent = parent.parentElement;
       }
-      if (!inScroller) overflow.push({ el: label(el), right: Math.round(rect.right), width: Math.round(rect.width) });
+      if (!inScroller)
+        overflow.push({
+          el: label(el),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+        });
     }
     const style = getComputedStyle(el);
-    if (/\b\d+(?:\.\d+)?vh\b/.test(style.height) || /\b\d+(?:\.\d+)?vh\b/.test(style.minHeight)) {
-      vh.push({ el: label(el), height: style.height, minHeight: style.minHeight });
+    if (
+      /\b\d+(?:\.\d+)?vh\b/.test(style.height) ||
+      /\b\d+(?:\.\d+)?vh\b/.test(style.minHeight)
+    ) {
+      vh.push({
+        el: label(el),
+        height: style.height,
+        minHeight: style.minHeight,
+      });
     }
   }
 
@@ -138,7 +161,8 @@ const AUDIT = ({ minTouch, slack }) => {
     if (!visible(el)) continue;
     const rect = el.getBoundingClientRect();
     // WCAG 2.5.8 exemption: an inline link inside a run of text.
-    const inline = el.tagName === "A" && getComputedStyle(el).display === "inline";
+    const inline =
+      el.tagName === "A" && getComputedStyle(el).display === "inline";
     if (inline) continue;
     // Off-canvas by design: spam honeypots and skip links are parked far to the
     // left. They are not pointer targets at all, so a 44px rule says nothing
@@ -149,7 +173,10 @@ const AUDIT = ({ minTouch, slack }) => {
     // union of the two boxes. WCAG 2.5.8 measures the target, not the widget.
     let w = rect.width;
     let h = rect.height;
-    if (el.tagName === "INPUT" && (el.type === "checkbox" || el.type === "radio")) {
+    if (
+      el.tagName === "INPUT" &&
+      (el.type === "checkbox" || el.type === "radio")
+    ) {
       const labelEl = el.id
         ? document.querySelector(`label[for="${CSS.escape(el.id)}"]`)
         : el.closest("label");
@@ -165,8 +192,17 @@ const AUDIT = ({ minTouch, slack }) => {
 
     if (el.closest('[lang="bn"]')) {
       const style = getComputedStyle(el);
-      if (style.width !== "auto" && style.maxWidth !== "none" && style.flexShrink === "0" && style.minWidth !== "0px") {
-        bnFixed.push({ el: label(el), width: style.width, minWidth: style.minWidth });
+      if (
+        style.width !== "auto" &&
+        style.maxWidth !== "none" &&
+        style.flexShrink === "0" &&
+        style.minWidth !== "0px"
+      ) {
+        bnFixed.push({
+          el: label(el),
+          width: style.width,
+          minWidth: style.minWidth,
+        });
       }
     }
   }
@@ -211,22 +247,32 @@ try {
         const url = `${base}${surface.path}`;
         const tag = `${surface.name} @${width} ${variant.scheme}/${variant.locale}`;
         try {
-          const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30_000 });
+          const response = await page.goto(url, {
+            waitUntil: "domcontentloaded",
+            timeout: 30_000,
+          });
           if (response && response.status() >= 500) {
             failures.push(`${tag}: server returned ${response.status()}`);
             continue;
           }
           // Let fonts settle: a Bangla face swapping in changes every width.
-          await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => {});
+          await page
+            .waitForLoadState("networkidle", { timeout: 15_000 })
+            .catch(() => {});
           await page.evaluate(() => document.fonts?.ready).catch(() => {});
 
-          const result = await page.evaluate(AUDIT, { minTouch: MIN_TOUCH_PX, slack: OVERFLOW_SLACK_PX });
+          const result = await page.evaluate(AUDIT, {
+            minTouch: MIN_TOUCH_PX,
+            slack: OVERFLOW_SLACK_PX,
+          });
           report.push({ tag, ...result });
 
           if (result.docScrollWidth > result.viewport + OVERFLOW_SLACK_PX) {
             failures.push(
               `${tag}: horizontal overflow — document is ${result.docScrollWidth}px wide in a ${result.viewport}px viewport` +
-                (result.overflow.length ? `\n      widest: ${result.overflow.map((o) => `${o.el} (right ${o.right}px)`).join("\n              ")}` : ""),
+                (result.overflow.length
+                  ? `\n      widest: ${result.overflow.map((o) => `${o.el} (right ${o.right}px)`).join("\n              ")}`
+                  : ""),
             );
           }
           if (result.tap.length) {
@@ -237,7 +283,9 @@ try {
             );
           }
           if (result.vh.length) {
-            failures.push(`${tag}: 100vh used — ${result.vh.map((x) => `${x.el} (${x.height}/${x.minHeight})`).join("; ")}`);
+            failures.push(
+              `${tag}: 100vh used — ${result.vh.map((x) => `${x.el} (${x.height}/${x.minHeight})`).join("; ")}`,
+            );
           }
           if (variant.locale === "bn" && result.bnFixed.length) {
             failures.push(
@@ -245,7 +293,9 @@ try {
             );
           }
         } catch (error) {
-          failures.push(`${tag}: ${error instanceof Error ? error.message : String(error)}`);
+          failures.push(
+            `${tag}: ${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       }
       await context.close();
@@ -255,13 +305,21 @@ try {
   await browser.close();
 }
 
-if (jsonOut) writeFileSync(jsonOut, JSON.stringify({ base, widths, failures, report }, null, 2));
+if (jsonOut)
+  writeFileSync(
+    jsonOut,
+    JSON.stringify({ base, widths, failures, report }, null, 2),
+  );
 
 const surfaces = SURFACES.length * VARIANTS.length * widths.length;
-console.log(`responsive sweep: ${surfaces} surface renders (${widths.join("/")} px × light/dark × en/bn)`);
+console.log(
+  `responsive sweep: ${surfaces} surface renders (${widths.join("/")} px × light/dark × en/bn)`,
+);
 if (failures.length) {
   console.error(`\n${failures.length} responsive failure(s):\n`);
   for (const failure of failures) console.error(`  ✗ ${failure}`);
   process.exit(has("soft") ? 0 : 1);
 }
-console.log("responsive sweep: PASS — no overflow, no small tap targets, no vh units.");
+console.log(
+  "responsive sweep: PASS — no overflow, no small tap targets, no vh units.",
+);

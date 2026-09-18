@@ -55,7 +55,11 @@ export const DESC_MAX = 160;
 export type MetaTag = Record<string, string>;
 export type LinkTag = Record<string, string>;
 export type ScriptTag = { type: string; children: string };
-export type HeadOutput = { meta: MetaTag[]; links: LinkTag[]; scripts: ScriptTag[] };
+export type HeadOutput = {
+  meta: MetaTag[];
+  links: LinkTag[];
+  scripts: ScriptTag[];
+};
 
 export type ThemeSeoProfile = {
   /** `{page}` and `{store}` placeholders. */
@@ -78,17 +82,36 @@ export const DEFAULT_SEO_PROFILE: ThemeSeoProfile = {
   titleTemplate: "{page} — {store}",
   homeTitleTemplate: "{store} — Online store",
   socialCard: "summary_large_image",
-  jsonld: { organization: true, website: true, product: true, breadcrumb: true, faq: true, itemList: true },
+  jsonld: {
+    organization: true,
+    website: true,
+    product: true,
+    breadcrumb: true,
+    faq: true,
+    itemList: true,
+  },
   preloadHero: true,
 };
 
 const CATEGORY_PROFILE: Record<string, Partial<ThemeSeoProfile>> = {
-  landing: { homeTitleTemplate: "{store} — {page}", jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: false } },
-  wholesale: { socialCard: "summary", jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true, itemList: false } },
+  landing: {
+    homeTitleTemplate: "{store} — {page}",
+    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: false },
+  },
+  wholesale: {
+    socialCard: "summary",
+    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true, itemList: false },
+  },
   fashion: { homeTitleTemplate: "{store} — Shop the collection" },
   grocery: { homeTitleTemplate: "{store} — Daily grocery delivery" },
-  marketplace: { homeTitleTemplate: "{store} — Everything you need, delivered", jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: true } },
-  electronics: { homeTitleTemplate: "{store} — Official-warranty electronics", jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true } },
+  marketplace: {
+    homeTitleTemplate: "{store} — Everything you need, delivered",
+    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: true },
+  },
+  electronics: {
+    homeTitleTemplate: "{store} — Official-warranty electronics",
+    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true },
+  },
   beauty: { homeTitleTemplate: "{store} — Beauty matched to your skin" },
 };
 
@@ -112,12 +135,14 @@ const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
   {
     entityType: "product",
     titleTemplate: "{{title}} — {{store}}",
-    descriptionTemplate: "Buy {{title}} from {{store}} at {{price}}. Cash on delivery, bKash and Nagad.",
+    descriptionTemplate:
+      "Buy {{title}} from {{store}} at {{price}}. Cash on delivery, bKash and Nagad.",
   },
   {
     entityType: "collection",
     titleTemplate: "{{title}} — {{store}}",
-    descriptionTemplate: "Shop {{title}} at {{store}} with nationwide delivery across Bangladesh.",
+    descriptionTemplate:
+      "Shop {{title}} at {{store}} with nationwide delivery across Bangladesh.",
   },
   {
     entityType: "page",
@@ -132,38 +157,57 @@ const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
 ];
 
 /** Category-specific overrides; anything unspecified keeps the generic row. */
-const CATEGORY_SEO_TEMPLATES: Record<string, Partial<Record<PresetSeoTemplate["entityType"], Partial<PresetSeoTemplate>>>> = {
+const CATEGORY_SEO_TEMPLATES: Record<
+  string,
+  Partial<Record<PresetSeoTemplate["entityType"], Partial<PresetSeoTemplate>>>
+> = {
   fashion: {
     product: {
       titleTemplate: "{{title}} — {{brand}} | {{store}}",
-      descriptionTemplate: "{{title}} by {{brand}} at {{price}}. Size guide, fabric details and easy returns from {{store}}.",
+      descriptionTemplate:
+        "{{title}} by {{brand}} at {{price}}. Size guide, fabric details and easy returns from {{store}}.",
     },
-    collection: { descriptionTemplate: "Browse {{title}} at {{store}} — new arrivals, size guides and easy returns." },
+    collection: {
+      descriptionTemplate:
+        "Browse {{title}} at {{store}} — new arrivals, size guides and easy returns.",
+    },
   },
   electronics: {
     product: {
       titleTemplate: "{{title}} price in Bangladesh — {{store}}",
-      descriptionTemplate: "{{title}} at {{price}} with official warranty, EMI and full specifications from {{store}}.",
+      descriptionTemplate:
+        "{{title}} at {{price}} with official warranty, EMI and full specifications from {{store}}.",
     },
-    collection: { descriptionTemplate: "Compare {{title}} at {{store}} — specs, warranty and EMI options." },
+    collection: {
+      descriptionTemplate:
+        "Compare {{title}} at {{store}} — specs, warranty and EMI options.",
+    },
   },
   beauty: {
     product: {
       titleTemplate: "{{title}} — {{store}}",
-      descriptionTemplate: "{{title}} at {{price}}. Shades, ingredients and how to use, from {{store}}.",
+      descriptionTemplate:
+        "{{title}} at {{price}}. Shades, ingredients and how to use, from {{store}}.",
     },
   },
   marketplace: {
     product: {
       titleTemplate: "{{title}} — {{category}} | {{store}}",
-      descriptionTemplate: "{{title}} at {{price}} from {{store}}. Delivery in {{city}} and nationwide.",
+      descriptionTemplate:
+        "{{title}} at {{price}} from {{store}}. Delivery in {{city}} and nationwide.",
     },
   },
   grocery: {
-    product: { descriptionTemplate: "{{title}} at {{price}} — same-day grocery delivery in {{city}} from {{store}}." },
+    product: {
+      descriptionTemplate:
+        "{{title}} at {{price}} — same-day grocery delivery in {{city}} from {{store}}.",
+    },
   },
   wholesale: {
-    product: { descriptionTemplate: "{{title}} at wholesale pricing from {{store}}. Bulk rates and trade terms." },
+    product: {
+      descriptionTemplate:
+        "{{title}} at wholesale pricing from {{store}}. Bulk rates and trade terms.",
+    },
   },
 };
 
@@ -171,10 +215,15 @@ const CATEGORY_SEO_TEMPLATES: Record<string, Partial<Record<PresetSeoTemplate["e
  * The starter `seo_templates` rows an official theme ships with. Merchants may
  * edit every row afterwards in the SEO panel — this is a default, not a lock.
  */
-export function presetSeoTemplates(themeKey?: string | null): PresetSeoTemplate[] {
+export function presetSeoTemplates(
+  themeKey?: string | null,
+): PresetSeoTemplate[] {
   const category = themeKey ? THEME_SEO_CATEGORY[themeKey] : undefined;
   const overrides = (category && CATEGORY_SEO_TEMPLATES[category]) || {};
-  return GENERIC_SEO_TEMPLATES.map((row) => ({ ...row, ...(overrides[row.entityType] ?? {}) }));
+  return GENERIC_SEO_TEMPLATES.map((row) => ({
+    ...row,
+    ...(overrides[row.entityType] ?? {}),
+  }));
 }
 
 export function clamp(value: string, max: number): string {
@@ -185,12 +234,19 @@ export function clamp(value: string, max: number): string {
   return `${(space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd()}…`;
 }
 
-export function applyTemplate(template: string, page: string, store: string): string {
+export function applyTemplate(
+  template: string,
+  page: string,
+  store: string,
+): string {
   return template.replace("{page}", page).replace("{store}", store);
 }
 
 /** Absolute URL, or null when no trustworthy origin is known. */
-export function absUrl(origin: string | null | undefined, path: string): string | null {
+export function absUrl(
+  origin: string | null | undefined,
+  path: string,
+): string | null {
   if (!origin || !/^https?:\/\//.test(origin)) return null;
   return `${origin.replace(/\/+$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
 }
@@ -199,7 +255,9 @@ export function absUrl(origin: string | null | undefined, path: string): string 
 export function priceString(minor: number, currency = "BDT"): string {
   const digits = currency === "BDT" || currency === "USD" ? 2 : 0;
   const sign = minor < 0 ? "-" : "";
-  const abs = Math.abs(Math.trunc(minor)).toString().padStart(digits + 1, "0");
+  const abs = Math.abs(Math.trunc(minor))
+    .toString()
+    .padStart(digits + 1, "0");
   if (digits === 0) return `${sign}${abs}`;
   return `${sign}${abs.slice(0, -digits)}.${abs.slice(-digits)}`;
 }
@@ -233,15 +291,27 @@ function origins(urls: (string | null | undefined)[]): string[] {
  */
 export function performanceLinks(
   profile: ThemeSeoProfile,
-  opts: { heroImage?: string | null; imageUrls?: (string | null | undefined)[] } = {},
+  opts: {
+    heroImage?: string | null;
+    imageUrls?: (string | null | undefined)[];
+  } = {},
 ): LinkTag[] {
   const links: LinkTag[] = [];
   for (const origin of origins([opts.heroImage, ...(opts.imageUrls ?? [])])) {
     links.push({ rel: "preconnect", href: origin, crossOrigin: "anonymous" });
     links.push({ rel: "dns-prefetch", href: origin });
   }
-  if (profile.preloadHero && opts.heroImage && /^https?:\/\//.test(opts.heroImage)) {
-    links.push({ rel: "preload", as: "image", href: opts.heroImage, fetchpriority: "high" });
+  if (
+    profile.preloadHero &&
+    opts.heroImage &&
+    /^https?:\/\//.test(opts.heroImage)
+  ) {
+    links.push({
+      rel: "preload",
+      as: "image",
+      href: opts.heroImage,
+      fetchpriority: "high",
+    });
   }
   return links;
 }
@@ -274,7 +344,8 @@ type BaseInput = {
 
 /** Robots directive from the panel toggles, or null when nothing is set. */
 function overrideRobots(seo?: SeoOverride | null): string | null {
-  if (!seo || (seo.robotsIndex === undefined && seo.robotsFollow === undefined)) return null;
+  if (!seo || (seo.robotsIndex === undefined && seo.robotsFollow === undefined))
+    return null;
   const index = seo.robotsIndex === false ? "noindex" : "index";
   const follow = seo.robotsFollow === false ? "nofollow" : "follow";
   return `${index},${follow}`;
@@ -290,7 +361,9 @@ function baseHead(
   const seo = input.seo ?? null;
   const seoCanonical = seo?.canonical?.trim();
   const canonical =
-    seoCanonical && /^https?:\/\//.test(seoCanonical) ? seoCanonical : absUrl(input.origin, input.path);
+    seoCanonical && /^https?:\/\//.test(seoCanonical)
+      ? seoCanonical
+      : absUrl(input.origin, input.path);
   const t = clamp(seo?.metaTitle?.trim() || title, TITLE_MAX);
   const d = clamp(seo?.metaDescription?.trim() || description, DESC_MAX);
   const panelRobots = overrideRobots(seo);
@@ -309,7 +382,10 @@ function baseHead(
     { property: "og:title", content: t },
     { property: "og:description", content: d },
     { property: "og:type", content: ogType },
-    { property: "og:locale", content: input.locale === "en" ? "en_US" : "bn_BD" },
+    {
+      property: "og:locale",
+      content: input.locale === "en" ? "en_US" : "bn_BD",
+    },
     { name: "twitter:card", content: image ? profile.socialCard : "summary" },
     { name: "twitter:title", content: t },
     { name: "twitter:description", content: d },
@@ -330,7 +406,9 @@ function baseHead(
 
   const scripts: ScriptTag[] = [];
   // AEO: merchant-authored answers become FAQPage JSON-LD on any surface.
-  const faq = (seo?.faq ?? []).filter((f) => f.q?.trim() && f.a?.trim()).slice(0, 12);
+  const faq = (seo?.faq ?? [])
+    .filter((f) => f.q?.trim() && f.a?.trim())
+    .slice(0, 12);
   if (profile.jsonld.faq && faq.length > 0) {
     scripts.push(
       jsonLd({
@@ -347,16 +425,24 @@ function baseHead(
   return { meta, links, scripts };
 }
 
-
-function breadcrumbLd(origin: string | null | undefined, trail: { name: string; path: string }[]) {
+function breadcrumbLd(
+  origin: string | null | undefined,
+  trail: { name: string; path: string }[],
+) {
   const items = trail
     .map((step, i) => {
       const url = absUrl(origin, step.path);
-      return url ? { "@type": "ListItem", position: i + 1, name: step.name, item: url } : null;
+      return url
+        ? { "@type": "ListItem", position: i + 1, name: step.name, item: url }
+        : null;
     })
     .filter(Boolean);
   if (items.length < 2) return null;
-  return { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items };
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items,
+  };
 }
 
 export type StoreHeadInput = BaseInput & {
@@ -368,12 +454,23 @@ export type StoreHeadInput = BaseInput & {
 /** Storefront home: Organization + WebSite(SearchAction) + ItemList. */
 export function buildStoreHead(input: StoreHeadInput): HeadOutput {
   const profile = seoProfileFor(input.themeKey);
-  const title = applyTemplate(profile.homeTitleTemplate, "Online store", input.storeName);
+  const title = applyTemplate(
+    profile.homeTitleTemplate,
+    "Online store",
+    input.storeName,
+  );
   const description =
     input.tagline?.trim() ||
     `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`;
-  const hero = input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
-  const head = baseHead({ ...input, image: hero }, title, description, "website", profile);
+  const hero =
+    input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
+  const head = baseHead(
+    { ...input, image: hero },
+    title,
+    description,
+    "website",
+    profile,
+  );
   const site = absUrl(input.origin, input.path);
 
   if (profile.jsonld.organization) {
@@ -389,7 +486,10 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     );
   }
   if (profile.jsonld.website && site) {
-    const search = absUrl(input.origin, input.searchPath ?? `${input.path.replace(/\/$/, "")}/search`);
+    const search = absUrl(
+      input.origin,
+      input.searchPath ?? `${input.path.replace(/\/$/, "")}/search`,
+    );
     head.scripts.push(
       jsonLd({
         "@context": "https://schema.org",
@@ -412,17 +512,31 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     const items = input.products
       .slice(0, 20)
       .map((p, i) => {
-        const url = absUrl(input.origin, `${input.path.replace(/\/$/, "")}/p/${p.slug}`);
-        return url ? { "@type": "ListItem", position: i + 1, name: p.title, url } : null;
+        const url = absUrl(
+          input.origin,
+          `${input.path.replace(/\/$/, "")}/p/${p.slug}`,
+        );
+        return url
+          ? { "@type": "ListItem", position: i + 1, name: p.title, url }
+          : null;
       })
       .filter(Boolean);
     if (items.length) {
       head.scripts.push({
-        ...jsonLd({ "@context": "https://schema.org", "@type": "ItemList", itemListElement: items }),
+        ...jsonLd({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListElement: items,
+        }),
       });
     }
   }
-  head.links.push(...performanceLinks(profile, { heroImage: hero, imageUrls: input.products?.map((p) => p.image_url) }));
+  head.links.push(
+    ...performanceLinks(profile, {
+      heroImage: hero,
+      imageUrls: input.products?.map((p) => p.image_url),
+    }),
+  );
   return head;
 }
 
@@ -449,20 +563,35 @@ export type ProductHeadInput = BaseInput & {
 /** Product detail: Product + Offer + BreadcrumbList. */
 export function buildProductHead(input: ProductHeadInput): HeadOutput {
   const profile = seoProfileFor(input.themeKey);
-  const title = applyTemplate(profile.titleTemplate, input.product.title, input.storeName);
+  const title = applyTemplate(
+    profile.titleTemplate,
+    input.product.title,
+    input.storeName,
+  );
   const description =
     input.product.description?.trim() ||
     `Buy ${input.product.title} from ${input.storeName} with cash on delivery or mobile payment.`;
   const image = input.image ?? input.product.image_url ?? null;
-  const head = baseHead({ ...input, image }, title, description, "product", profile);
+  const head = baseHead(
+    { ...input, image },
+    title,
+    description,
+    "product",
+    profile,
+  );
   const url = absUrl(input.origin, input.path);
 
   if (profile.jsonld.product) {
     const reviews = input.reviews ?? [];
     const rating = aggregateRating(reviews);
-    const returns = input.returnPolicy ? returnPolicyNode(input.returnPolicy) : null;
+    const returns = input.returnPolicy
+      ? returnPolicyNode(input.returnPolicy)
+      : null;
     const shipping = input.shipping
-      ? shippingDetailsNode({ ...input.shipping, currency: input.currency }, priceString)
+      ? shippingDetailsNode(
+          { ...input.shipping, currency: input.currency },
+          priceString,
+        )
       : null;
     head.scripts.push(
       jsonLd({
@@ -521,9 +650,17 @@ export function buildPageHead(input: PageHeadInput): HeadOutput {
     input.page.meta_title?.trim() ||
     applyTemplate(profile.titleTemplate, input.page.title, input.storeName);
   const description =
-    input.page.meta_description?.trim() || input.page.excerpt?.trim() || `${input.page.title} — ${input.storeName}`;
+    input.page.meta_description?.trim() ||
+    input.page.excerpt?.trim() ||
+    `${input.page.title} — ${input.storeName}`;
   const image = input.image ?? input.page.cover_image_url ?? null;
-  const head = baseHead({ ...input, image }, title, description, "article", profile);
+  const head = baseHead(
+    { ...input, image },
+    title,
+    description,
+    "article",
+    profile,
+  );
   const url = absUrl(input.origin, input.path);
 
   head.scripts.push(
@@ -580,7 +717,10 @@ export function buildSearchHead(input: SearchHeadInput): HeadOutput {
     ? `${input.total ?? 0} results for “${q}” at ${input.storeName}.`
     : `Browse every product available at ${input.storeName}, with cash on delivery and mobile payments.`;
   const head = baseHead(
-    { ...input, robots: q ? "noindex,follow" : (input.robots ?? "index,follow") },
+    {
+      ...input,
+      robots: q ? "noindex,follow" : (input.robots ?? "index,follow"),
+    },
     title,
     description,
     "website",

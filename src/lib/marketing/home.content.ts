@@ -25,14 +25,17 @@ export type Bi = { en: string; bn?: string };
 /* --------------------------------------------------------------------- hero */
 
 export const HERO = {
-  title: "Run your whole shop on one login — storefront, bKash, courier, counter.",
+  title:
+    "Run your whole shop on one login — storefront, bKash, courier, counter.",
   titleBn: "বাংলাদেশে বিক্রি করুন। সারা বিশ্বে পাঠান।",
   sub: "Take the order, get paid on bKash, Nagad, card or COD, book SteadFast or Pathao and print the label — without leaving the order. No per-order commission, ever.",
-  subBn: "স্টোরফ্রন্ট, পেমেন্ট, কুরিয়ার আর POS — এক প্ল্যাটফর্মে, বাংলায়, টাকায়।",
+  subBn:
+    "স্টোরফ্রন্ট, পেমেন্ট, কুরিয়ার আর POS — এক প্ল্যাটফর্মে, বাংলায়, টাকায়।",
   ctaPrimary: "Create your store",
   ctaSecondary: "See a live store",
   note: "No hidden fees · no card · cancel anytime · export your data any time",
-  proof: "Built in Dhaka for COD-heavy, Bangla-reading, mobile-money commerce — 4 payment rails, 4 couriers, 1 ledger.",
+  proof:
+    "Built in Dhaka for COD-heavy, Bangla-reading, mobile-money commerce — 4 payment rails, 4 couriers, 1 ledger.",
 } as const;
 
 /* -------------------------------------------------------------------- rails */
@@ -99,7 +102,7 @@ export const TOUR_ROWS: readonly TourRow[] = [
     id: "catalogue",
     direction: "left",
     title: "Catalogue hygiene that holds at scale",
-    body: "Variants, stock thresholds and Bangla product copy live in one product record, so a size-out-of-stock in Sylhet doesn't quietly still show \"in stock\" to a buyer in Khulna.",
+    body: 'Variants, stock thresholds and Bangla product copy live in one product record, so a size-out-of-stock in Sylhet doesn\'t quietly still show "in stock" to a buyer in Khulna.',
     proof: "One source of truth",
   },
   {
@@ -156,11 +159,23 @@ export const THEMES = {
       body: "A quote-first wholesale layout: tiered pricing tables, minimum order quantities enforced at the cart, and a request-a-quote flow ahead of checkout.",
     },
   ],
-} as const satisfies { title: string; sub: string; subBn: string; cards: ThemeCard[] };
+} as const satisfies {
+  title: string;
+  sub: string;
+  subBn: string;
+  cards: ThemeCard[];
+};
 
 /* --------------------------------------------------------------- comparison */
 
-export type ComparisonRow = { id: string; label: string; framique: string; builder: string; marketplace: string; offline: string };
+export type ComparisonRow = {
+  id: string;
+  label: string;
+  framique: string;
+  builder: string;
+  marketplace: string;
+  offline: string;
+};
 
 export const COMPARISON = {
   title: "What you stop paying for.",
@@ -257,24 +272,58 @@ export const COD = {
   intro:
     "Cash on delivery is the majority payment method for first-time online buyers in Bangladesh, and it is also the single biggest hidden cost in the unit economics of a Bangladeshi storefront — not because of fraud, but because of return rate: the share of dispatched COD orders the customer refuses at the door. Below is a worked example with stated assumptions; substitute your own numbers.",
   assumptions:
- "Assumptions (stated, not measured): average order value BDT 1,200; product cost BDT 600; forward courier fee BDT 70; return courier fee (product coming back) BDT 60; packaging BDT 25; COD return rate 18% (a commonly cited range for unmoderated COD checkouts is 15–30%, before any fraud-scoring or address-verification step).",
+    "Assumptions (stated, not measured): average order value BDT 1,200; product cost BDT 600; forward courier fee BDT 70; return courier fee (product coming back) BDT 60; packaging BDT 25; COD return rate 18% (a commonly cited range for unmoderated COD checkouts is 15–30%, before any fraud-scoring or address-verification step).",
   table: {
-    columns: { success: "Successful delivery", returned: "Returned at doorstep" },
+    columns: {
+      success: "Successful delivery",
+      returned: "Returned at doorstep",
+    },
     rows: [
- { id: "collected", label: "Order value collected", success: "BDT 1,200", returned: "BDT 0" },
- { id: "product", label: "Product cost", success: "−BDT 600", returned: "−BDT 600 (not recovered until restocked)" },
- { id: "forward", label: "Forward courier fee", success: "−BDT 70", returned: "−BDT 70 (courier is paid whether or not the customer accepts)" },
- { id: "return", label: "Return courier fee", success: "BDT 0", returned: "−BDT 60" },
- { id: "packaging", label: "Packaging", success: "−BDT 25", returned: "−BDT 25 (not reusable)" },
- { id: "net", label: "Net result", success: "+BDT 505", returned: "−BDT 755" },
+      {
+        id: "collected",
+        label: "Order value collected",
+        success: "BDT 1,200",
+        returned: "BDT 0",
+      },
+      {
+        id: "product",
+        label: "Product cost",
+        success: "−BDT 600",
+        returned: "−BDT 600 (not recovered until restocked)",
+      },
+      {
+        id: "forward",
+        label: "Forward courier fee",
+        success: "−BDT 70",
+        returned:
+          "−BDT 70 (courier is paid whether or not the customer accepts)",
+      },
+      {
+        id: "return",
+        label: "Return courier fee",
+        success: "BDT 0",
+        returned: "−BDT 60",
+      },
+      {
+        id: "packaging",
+        label: "Packaging",
+        success: "−BDT 25",
+        returned: "−BDT 25 (not reusable)",
+      },
+      {
+        id: "net",
+        label: "Net result",
+        success: "+BDT 505",
+        returned: "−BDT 755",
+      },
     ],
   },
   arithmetic:
- "With an 18% return rate, out of 100 dispatched orders, 82 succeed and 18 return. 82 × BDT 505 = BDT 41,410 gained; 18 × BDT 755 = BDT 13,590 lost. Net profit across 100 orders: BDT 27,820 — meaning the return rate alone consumed roughly a third of the gross profit the successful orders generated. Cut the return rate from 18% to 10% with the same volume, and net profit rises to BDT 37,900 — a 36% improvement in bottom-line profit with zero change in traffic or pricing.",
+    "With an 18% return rate, out of 100 dispatched orders, 82 succeed and 18 return. 82 × BDT 505 = BDT 41,410 gained; 18 × BDT 755 = BDT 13,590 lost. Net profit across 100 orders: BDT 27,820 — meaning the return rate alone consumed roughly a third of the gross profit the successful orders generated. Cut the return rate from 18% to 10% with the same volume, and net profit rises to BDT 37,900 — a 36% improvement in bottom-line profit with zero change in traffic or pricing.",
   levers: [
     "Phone verification before dispatch — an automated confirmation call or SMS-and-reply step catches orders placed on impulse or with a mistyped number before a courier fee is ever spent.",
     "Fraud and risk scoring at checkout — repeat-refusal phone numbers and mismatched delivery addresses are flagged before the order is booked, not after the courier reports a failed delivery.",
- "Partial prepayment nudges — offering a small bKash/Nagad advance (even BDT 50–100) at checkout, with COD covering the remainder, measurably filters low-intent orders because it asks for a small commitment before delivery.",
+    "Partial prepayment nudges — offering a small bKash/Nagad advance (even BDT 50–100) at checkout, with COD covering the remainder, measurably filters low-intent orders because it asks for a small commitment before delivery.",
   ],
   caption:
     "These are worked assumptions for illustration, not a guarantee — run the same formula with your own AOV, return rate and courier fees.",
@@ -287,7 +336,8 @@ export const COD = {
 export const PRICING_TEASER = {
   title: "Pricing that stays honest at scale.",
   sub: "Every plan includes bKash, Nagad, card and COD. No per-order tax on your growth.",
-  subBn: "প্রতিটি প্ল্যানে বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারি অন্তর্ভুক্ত। বিক্রি বাড়লেও কোনো অতিরিক্ত কমিশন নেই।",
+  subBn:
+    "প্রতিটি প্ল্যানে বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারি অন্তর্ভুক্ত। বিক্রি বাড়লেও কোনো অতিরিক্ত কমিশন নেই।",
   ctaPrimary: "See all plans",
   ctaSecondary: "Talk to sales",
 } as const;
@@ -298,7 +348,8 @@ export const STORIES = {
   title: "Stores that grew on Framique.",
   sub: "Real merchants, real numbers. Pulled from their live dashboards.",
   cta: "Read the stories",
-  empty: "Case studies are being verified with real merchants — check back soon.",
+  empty:
+    "Case studies are being verified with real merchants — check back soon.",
 } as const;
 
 /* --------------------------------------------------------------------- cta */
@@ -321,7 +372,13 @@ export const FINAL_CTA = {
  * step names the effort ("about 20 minutes") because an unstated cost is
  * assumed to be large.
  */
-export type HowStep = { id: string; step: string; title: string; body: string; effort: string };
+export type HowStep = {
+  id: string;
+  step: string;
+  title: string;
+  body: string;
+  effort: string;
+};
 
 export const HOW_IT_WORKS = {
   eyebrow: "How it works",
@@ -357,11 +414,21 @@ export const HOW_IT_WORKS = {
       effort: "Same day",
     },
   ],
-} as const satisfies { eyebrow: string; title: string; sub: string; steps: readonly HowStep[] };
+} as const satisfies {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  steps: readonly HowStep[];
+};
 
 /* ------------------------------------------------------------- who it's for */
 
-export type AudienceCard = { id: string; name: string; useCase: string; body: string };
+export type AudienceCard = {
+  id: string;
+  name: string;
+  useCase: string;
+  body: string;
+};
 
 /**
  * Entity coverage for search: the queries that actually convert are
@@ -409,7 +476,12 @@ export const AUDIENCES = {
       body: "Sell a downloadable file or a service slot with the same checkout, payment rails and invoice trail as a physical product. No second tool, no separate payout.",
     },
   ],
-} as const satisfies { eyebrow: string; title: string; sub: string; cards: readonly AudienceCard[] };
+} as const satisfies {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  cards: readonly AudienceCard[];
+};
 
 /* -------------------------------------------------------------- objections */
 
@@ -427,23 +499,32 @@ export const OBJECTIONS = {
   rows: [
     {
       id: "lock-in",
-      worry: "\"What if I want to leave?\"",
-      answer: "Export products, orders and customers to CSV or through the API whenever you like — including on the free trial. There is no export fee and no notice period.",
+      worry: '"What if I want to leave?"',
+      answer:
+        "Export products, orders and customers to CSV or through the API whenever you like — including on the free trial. There is no export fee and no notice period.",
     },
     {
       id: "technical",
-      worry: "\"I'm not technical — will I get stuck?\"",
-      answer: "Setup is a form and a theme picker, not a deployment. If you do get stuck, support answers in Bangla, and a 20-minute walkthrough is free whether or not you ever pay us.",
+      worry: '"I\'m not technical — will I get stuck?"',
+      answer:
+        "Setup is a form and a theme picker, not a deployment. If you do get stuck, support answers in Bangla, and a 20-minute walkthrough is free whether or not you ever pay us.",
     },
     {
       id: "cod",
-      worry: "\"COD returns eat my margin.\"",
-      answer: "Orders are risk-scored before you pay for a pickup, repeat non-receivers are flagged, and every COD taka is matched to the order that produced it when the courier settles.",
+      worry: '"COD returns eat my margin."',
+      answer:
+        "Orders are risk-scored before you pay for a pickup, repeat non-receivers are flagged, and every COD taka is matched to the order that produced it when the courier settles.",
     },
     {
       id: "price",
-      worry: "\"Will the price change once I depend on it?\"",
-      answer: "Plan pricing is published on the pricing page, with no per-order commission at any tier. Growth in your sales does not quietly grow our invoice.",
+      worry: '"Will the price change once I depend on it?"',
+      answer:
+        "Plan pricing is published on the pricing page, with no per-order commission at any tier. Growth in your sales does not quietly grow our invoice.",
     },
   ],
-} as const satisfies { eyebrow: string; title: string; sub: string; rows: readonly Objection[] };
+} as const satisfies {
+  eyebrow: string;
+  title: string;
+  sub: string;
+  rows: readonly Objection[];
+};

@@ -7,24 +7,43 @@
  * arrange a FAQ list.
  */
 import { useState } from "react";
-import { MAX_ARRAY_ROWS, type Field, type PropRow, type PropScalar } from "@/lib/builder-ast";
+import {
+  MAX_ARRAY_ROWS,
+  type Field,
+  type PropRow,
+  type PropScalar,
+} from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
 
 type Props = {
   field: Field;
   rows: PropRow[];
   onChange: (rows: PropRow[]) => void;
-  renderRowField: (sub: Field, row: PropRow, set: (key: string, value: PropScalar) => void) => React.ReactNode;
+  renderRowField: (
+    sub: Field,
+    row: PropRow,
+    set: (key: string, value: PropScalar) => void,
+  ) => React.ReactNode;
 };
 
 function summarise(field: Field, row: PropRow, index: number): string {
   const key = field.itemLabel ?? field.fields?.[0]?.key ?? "";
   const value = key ? row[key] : undefined;
-  const text = typeof value === "string" ? value.trim() : value !== undefined ? String(value) : "";
+  const text =
+    typeof value === "string"
+      ? value.trim()
+      : value !== undefined
+        ? String(value)
+        : "";
   return text || `#${index + 1}`;
 }
 
-export function ArrayFieldEditor({ field, rows, onChange, renderRowField }: Props) {
+export function ArrayFieldEditor({
+  field,
+  rows,
+  onChange,
+  renderRowField,
+}: Props) {
   const { t } = useLang();
   const [open, setOpen] = useState<number | null>(rows.length ? 0 : null);
   const [dragging, setDragging] = useState<number | null>(null);
@@ -42,7 +61,12 @@ export function ArrayFieldEditor({ field, rows, onChange, renderRowField }: Prop
   const blank = (): PropRow => {
     const row: PropRow = {};
     for (const sub of field.fields ?? []) {
-      row[sub.key] = sub.kind === "boolean" ? false : sub.kind === "number" || sub.kind === "range" || sub.kind === "unit" ? (sub.min ?? 0) : "";
+      row[sub.key] =
+        sub.kind === "boolean"
+          ? false
+          : sub.kind === "number" || sub.kind === "range" || sub.kind === "unit"
+            ? (sub.min ?? 0)
+            : "";
     }
     return row;
   };

@@ -10,18 +10,22 @@ import {
 } from "@/components/admin/ProductForm";
 import { useLang } from "@/lib/i18n";
 
-export const Route = createFileRoute("/_authenticated/dashboard/products/$productId")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/products/$productId",
+)({
   head: () => ({
     meta: [
       { title: "Edit product — Framique Admin" },
       {
         name: "description",
-        content: "Edit product details, variants, SKUs, BDT pricing and stock levels.",
+        content:
+          "Edit product details, variants, SKUs, BDT pricing and stock levels.",
       },
       { property: "og:title", content: "Edit product" },
       {
         property: "og:description",
-        content: "Update catalog product details and variant stock in Framique.",
+        content:
+          "Update catalog product details and variant stock in Framique.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -47,7 +51,11 @@ function EditProduct() {
           )
           .eq("id", productId)
           .single(),
-        supabase.from("brands").select("id, name").eq("merchant_id", merchant!.id).order("name"),
+        supabase
+          .from("brands")
+          .select("id, name")
+          .eq("merchant_id", merchant!.id)
+          .order("name"),
         supabase
           .from("categories")
           .select("id, name")
@@ -93,7 +101,9 @@ function EditProduct() {
 
   return (
     <div className="space-y-5">
-      <h1 className="font-bangla-display text-lg font-semibold">{t("Edit product", "পণ্য সম্পাদনা")}</h1>
+      <h1 className="font-bangla-display text-lg font-semibold">
+        {t("Edit product", "পণ্য সম্পাদনা")}
+      </h1>
       <ProductForm
         merchantId={merchant.id}
         initialProduct={draft}

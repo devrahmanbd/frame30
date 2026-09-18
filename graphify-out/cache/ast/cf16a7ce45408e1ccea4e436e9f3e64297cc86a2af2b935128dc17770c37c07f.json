@@ -1,1 +1,577 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_facet_url_ts", "label": "facet-url.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L1"}, {"id": "lib_facet_url_facetkey", "label": "FacetKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L23"}, {"id": "lib_facet_url_facet_keys", "label": "FACET_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L25"}, {"id": "lib_facet_url_indexable_facets", "label": "INDEXABLE_FACETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L32"}, {"id": "lib_facet_url_isindexablefacetstate", "label": "isIndexableFacetState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L35"}, {"id": "lib_facet_url_hasfacet", "label": "hasFacet()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L42"}, {"id": "lib_facet_url_facetvalue", "label": "facetValue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L60"}, {"id": "lib_facet_url_withfacet", "label": "withFacet()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L82"}, {"id": "lib_facet_url_togglefacet", "label": "toggleFacet()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L92"}, {"id": "lib_facet_url_clearfacets", "label": "clearFacets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L97"}, {"id": "lib_facet_url_withsort", "label": "withSort()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L104"}, {"id": "lib_facet_url_withpage", "label": "withPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L110"}, {"id": "lib_facet_url_facethref", "label": "facetHref()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L117"}, {"id": "lib_facet_url_activefilter", "label": "ActiveFilter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L122"}, {"id": "lib_facet_url_activefilters", "label": "activeFilters()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L129"}, {"id": "lib_facet_url_pagewindow", "label": "pageWindow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L143"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_max_offset", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_page_size", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_product_kinds_filter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_sorts", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_activefiltercount", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_normalizesearchparams", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_pagecount", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_tosearchquery", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_searchparams", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_storefront_search_sortkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_facetkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_facet_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_indexable_facets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_isindexablefacetstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_hasfacet", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_facetvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_withfacet", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_togglefacet", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_clearfacets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_withsort", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_withpage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_facethref", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_activefilter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_activefilters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_facet_url_ts", "target": "lib_facet_url_pagewindow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L143", "weight": 1.0}, {"source": "lib_facet_url_togglefacet", "target": "lib_facet_url_withfacet", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L93", "weight": 1.0}, {"source": "lib_facet_url_togglefacet", "target": "lib_facet_url_facetvalue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L93", "weight": 1.0}, {"source": "lib_facet_url_activefilters", "target": "lib_facet_url_facetvalue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L135", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_facet_url_isindexablefacetstate", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L36"}, {"caller_nid": "lib_facet_url_isindexablefacetstate", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L39"}, {"caller_nid": "lib_facet_url_facetvalue", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L69"}, {"caller_nid": "lib_facet_url_facetvalue", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L71"}, {"caller_nid": "lib_facet_url_withfacet", "callee": "toSearchQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L83"}, {"caller_nid": "lib_facet_url_withfacet", "callee": "normalizeSearchParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L88"}, {"caller_nid": "lib_facet_url_clearfacets", "callee": "toSearchQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L98"}, {"caller_nid": "lib_facet_url_clearfacets", "callee": "normalizeSearchParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L101"}, {"caller_nid": "lib_facet_url_withsort", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L105"}, {"caller_nid": "lib_facet_url_withsort", "callee": "normalizeSearchParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L106"}, {"caller_nid": "lib_facet_url_withsort", "callee": "toSearchQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L106"}, {"caller_nid": "lib_facet_url_withpage", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L111"}, {"caller_nid": "lib_facet_url_withpage", "callee": "pageCount", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L111"}, {"caller_nid": "lib_facet_url_withpage", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L111"}, {"caller_nid": "lib_facet_url_withpage", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L112"}, {"caller_nid": "lib_facet_url_withpage", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L112"}, {"caller_nid": "lib_facet_url_withpage", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L112"}, {"caller_nid": "lib_facet_url_withpage", "callee": "normalizeSearchParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L113"}, {"caller_nid": "lib_facet_url_withpage", "callee": "toSearchQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L113"}, {"caller_nid": "lib_facet_url_facethref", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L118"}, {"caller_nid": "lib_facet_url_facethref", "callee": "toSearchQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L118"}, {"caller_nid": "lib_facet_url_activefilters", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L137"}, {"caller_nid": "lib_facet_url_pagewindow", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L146"}, {"caller_nid": "lib_facet_url_pagewindow", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L147"}, {"caller_nid": "lib_facet_url_pagewindow", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L151"}, {"caller_nid": "lib_facet_url_pagewindow", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts", "source_location": "L152"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "label": "facet-url.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_facet_url_facetkey",
+      "label": "FacetKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_facet_url_facet_keys",
+      "label": "FACET_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_facet_url_indexable_facets",
+      "label": "INDEXABLE_FACETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_facet_url_isindexablefacetstate",
+      "label": "isIndexableFacetState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_facet_url_hasfacet",
+      "label": "hasFacet()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_facet_url_facetvalue",
+      "label": "facetValue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_facet_url_withfacet",
+      "label": "withFacet()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "lib_facet_url_togglefacet",
+      "label": "toggleFacet()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_facet_url_clearfacets",
+      "label": "clearFacets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "lib_facet_url_withsort",
+      "label": "withSort()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "lib_facet_url_withpage",
+      "label": "withPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_facet_url_facethref",
+      "label": "facetHref()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "lib_facet_url_activefilter",
+      "label": "ActiveFilter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "lib_facet_url_activefilters",
+      "label": "activeFilters()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "lib_facet_url_pagewindow",
+      "label": "pageWindow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L143"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_max_offset",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_page_size",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_product_kinds_filter",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_sorts",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_activefiltercount",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_normalizesearchparams",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_pagecount",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_tosearchquery",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_searchparams",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_storefront_search_sortkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_facetkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_facet_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_indexable_facets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_isindexablefacetstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_hasfacet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_facetvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_withfacet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_togglefacet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_clearfacets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_withsort",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_withpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_facethref",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_activefilter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_activefilters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "target": "lib_facet_url_pagewindow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_facet_url_togglefacet",
+      "target": "lib_facet_url_withfacet",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_facet_url_togglefacet",
+      "target": "lib_facet_url_facetvalue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_facet_url_activefilters",
+      "target": "lib_facet_url_facetvalue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_facet_url_isindexablefacetstate",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_facet_url_isindexablefacetstate",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_facet_url_facetvalue",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_facet_url_facetvalue",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "lib_facet_url_withfacet",
+      "callee": "toSearchQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_facet_url_withfacet",
+      "callee": "normalizeSearchParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_facet_url_clearfacets",
+      "callee": "toSearchQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_facet_url_clearfacets",
+      "callee": "normalizeSearchParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_facet_url_withsort",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_facet_url_withsort",
+      "callee": "normalizeSearchParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "lib_facet_url_withsort",
+      "callee": "toSearchQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "pageCount",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "normalizeSearchParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_facet_url_withpage",
+      "callee": "toSearchQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_facet_url_facethref",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_facet_url_facethref",
+      "callee": "toSearchQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_facet_url_activefilters",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_facet_url_pagewindow",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_facet_url_pagewindow",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "lib_facet_url_pagewindow",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "lib_facet_url_pagewindow",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/facet-url.ts",
+      "source_location": "L152"
+    }
+  ]
+}

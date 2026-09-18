@@ -25,7 +25,12 @@ export type FaqBandProps = {
 
 export function FaqBand({ entries, className }: FaqBandProps) {
   return (
-    <div className={cn("mt-10 divide-y divide-border border-y border-border", className)}>
+    <div
+      className={cn(
+        "mt-10 divide-y divide-border border-y border-border",
+        className,
+      )}
+    >
       {entries.map((entry) => (
         <Reveal key={entry.id} as="div">
           <details className="group py-5">

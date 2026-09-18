@@ -115,7 +115,10 @@ export async function probeReadiness(
       lastStatus = res.status;
 
       if (res.ok) {
-        const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+        const body = (await res.json().catch(() => ({}))) as Record<
+          string,
+          unknown
+        >;
         return {
           passed: true,
           statusCode: res.status,
@@ -123,7 +126,10 @@ export async function probeReadiness(
           details: body,
         };
       } else {
-        lastDetails = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+        lastDetails = (await res.json().catch(() => ({}))) as Record<
+          string,
+          unknown
+        >;
         lastError = `HTTP ${res.status}: ${JSON.stringify(lastDetails)}`;
       }
     } catch (err) {
@@ -212,7 +218,8 @@ export async function probeSmokeJourneys(
     try {
       // Unauthenticated request must be closed (404 or 401)
       const resUnauth = await fetch(`${base}/api/public/metrics`);
-      const unauthBlocked = resUnauth.status === 404 || resUnauth.status === 401;
+      const unauthBlocked =
+        resUnauth.status === 404 || resUnauth.status === 401;
 
       // Authenticated request if token available
       let authPassed = true;
@@ -288,14 +295,18 @@ export async function probeDatabaseCompatibility(
   requiredRpcs: string[] = REQUIRED_PRODUCTION_RPCS,
 ): Promise<DbCompatibilityReport> {
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
 
     // Check table accessibility
     const missingTables: string[] = [];
     await Promise.all(
       requiredTables.map(async (table) => {
         try {
-          const { error } = await supabaseAdmin.from(table).select("*").limit(0);
+          const { error } = await supabaseAdmin
+            .from(table)
+            .select("*")
+            .limit(0);
           if (error && error.code === "42P01") {
             // relation does not exist
             missingTables.push(table);
@@ -312,9 +323,14 @@ export async function probeDatabaseCompatibility(
       requiredRpcs.map(async (rpc) => {
         try {
           // Probe RPC with empty/null arguments to check function existence
-          const { error } = await (supabaseAdmin as unknown as {
-            rpc: (name: string, args: Record<string, unknown>) => Promise<{ error?: { code?: string } }>;
-          }).rpc(rpc, {});
+          const { error } = await (
+            supabaseAdmin as unknown as {
+              rpc: (
+                name: string,
+                args: Record<string, unknown>,
+              ) => Promise<{ error?: { code?: string } }>;
+            }
+          ).rpc(rpc, {});
 
           // Code 42883 means function does not exist
           if (error && error.code === "42883") {
@@ -351,7 +367,9 @@ export async function probeDatabaseCompatibility(
 }
 
 /** Orchestrate Complete Pre-Flight Suite */
-export async function runPreflightSuite(opts: PreflightOptions): Promise<PreflightReport> {
+export async function runPreflightSuite(
+  opts: PreflightOptions,
+): Promise<PreflightReport> {
   const startedAt = Date.now();
   const failureReasons: string[] = [];
 
@@ -362,7 +380,9 @@ export async function runPreflightSuite(opts: PreflightOptions): Promise<Preflig
     opts.retryIntervalMs ?? 1000,
   );
   if (!readiness.passed) {
-    failureReasons.push(`Readiness probe failed: ${readiness.error || `HTTP ${readiness.statusCode}`}`);
+    failureReasons.push(
+      `Readiness probe failed: ${readiness.error || `HTTP ${readiness.statusCode}`}`,
+    );
   }
 
   // 2. Smoke Probes
@@ -392,7 +412,9 @@ export async function runPreflightSuite(opts: PreflightOptions): Promise<Preflig
   }
 
   const passed = readiness.passed && smoke.passed && dbCompat.passed;
-  const verdict: ProbeVerdict = passed ? "PROCEED_TO_CANARY" : "ABORT_PROMOTION";
+  const verdict: ProbeVerdict = passed
+    ? "PROCEED_TO_CANARY"
+    : "ABORT_PROMOTION";
 
   const report: PreflightReport = {
     verdict,

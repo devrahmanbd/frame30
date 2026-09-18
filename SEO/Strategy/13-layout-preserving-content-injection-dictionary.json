@@ -12,7 +12,11 @@
       },
       "eyebrow": "Sovereign Cloud E-Commerce Engine",
       "primaryKeyword": "cloud ecommerce cms",
-      "secondaryKeywords": ["shopify alternative bangladesh", "0 transaction fee online store", "best ecommerce platform for small business"]
+      "secondaryKeywords": [
+        "shopify alternative bangladesh",
+        "0 transaction fee online store",
+        "best ecommerce platform for small business"
+      ]
     },
     "/pricing": {
       "targetFile": "src/routes/pricing.tsx",
@@ -26,7 +30,11 @@
       },
       "eyebrow": "Transparent Flat Pricing · Zero Commission",
       "primaryKeyword": "ecommerce cms with 0 transaction fee",
-      "secondaryKeywords": ["shopify pricing vs framique", "flat fee ecommerce platform", "tco ecommerce calculator"]
+      "secondaryKeywords": [
+        "shopify pricing vs framique",
+        "flat fee ecommerce platform",
+        "tco ecommerce calculator"
+      ]
     },
     "/features": {
       "targetFile": "src/routes/features.tsx",
@@ -40,7 +48,11 @@
       },
       "eyebrow": "Everything You Need, Built-In",
       "primaryKeyword": "saas ecommerce builder features",
-      "secondaryKeywords": ["all in one ecommerce software", "pos and online store unified", "automated courier booking ecommerce"]
+      "secondaryKeywords": [
+        "all in one ecommerce software",
+        "pos and online store unified",
+        "automated courier booking ecommerce"
+      ]
     },
     "/faq": {
       "targetFile": "src/lib/marketing/faq.content.ts",
@@ -54,7 +66,11 @@
       },
       "eyebrow": "Zero Sales Fluff · Direct Answers",
       "primaryKeyword": "framique ecommerce faq",
-      "secondaryKeywords": ["bkash payment gateway integration questions", "how to reduce cod delivery returns", "switch from shopify to local platform"]
+      "secondaryKeywords": [
+        "bkash payment gateway integration questions",
+        "how to reduce cod delivery returns",
+        "switch from shopify to local platform"
+      ]
     },
     "/builder": {
       "targetFile": "src/lib/marketing/builder.content.ts",
@@ -67,7 +83,10 @@
         "bn": "সেকশন থেকে স্টোরফ্রন্ট সাজান, পুরো স্টোরের ডিজাইন টোকেন একবারেই বদলান, ভার্সন পাবলিশ করুন এবং এক ক্লিকে রোলব্যাক করুন।"
       },
       "primaryKeyword": "headless ecommerce visual builder",
-      "secondaryKeywords": ["framer like ecommerce builder", "visual website builder for online store"]
+      "secondaryKeywords": [
+        "framer like ecommerce builder",
+        "visual website builder for online store"
+      ]
     },
     "/payments": {
       "targetFile": "src/lib/marketing/payments.content.ts",
@@ -80,7 +99,10 @@
         "bn": "একটি চেকআউটেই বিকাশ, নগদ, রকেট, উপায়, কার্ড ও ক্যাশ অন ডেলিভারি নিন। প্রতিটি টাকা অর্ডারের সাথে মেলে, সরাসরি মার্চেন্ট অ্যাকাউন্টে জমা হয়।"
       },
       "primaryKeyword": "bkash integrated ecommerce website",
-      "secondaryKeywords": ["nagad online payment integration", "single step checkout mobile ecommerce"]
+      "secondaryKeywords": [
+        "nagad online payment integration",
+        "single step checkout mobile ecommerce"
+      ]
     },
     "/fulfilment": {
       "targetFile": "src/lib/marketing/fulfilment.content.ts",
@@ -93,7 +115,10 @@
         "bn": "অর্ডার ড্রয়ার থেকেই স্টেডফাস্ট, পাঠাও, রেডএক্স ও পেপারফ্লাই পিকআপ বুক করুন, লেবেল প্রিন্ট করুন ও ডেলিভারি ট্র্যাক করুন। সিওডি রিটার্ন নিজেই মিলে যায়।"
       },
       "primaryKeyword": "steadfast pathao courier automated booking",
-      "secondaryKeywords": ["ecommerce order fulfillment bangladesh", "reduce cod return rate"]
+      "secondaryKeywords": [
+        "ecommerce order fulfillment bangladesh",
+        "reduce cod return rate"
+      ]
     },
     "/about": {
       "targetFile": "src/routes/about.tsx",
@@ -107,7 +132,10 @@
       },
       "eyebrow": "Our Story · Engineering Principles",
       "primaryKeyword": "cloud commerce operating system bangladesh",
-      "secondaryKeywords": ["open architecture saas cms", "zero vendor lock in ecommerce"]
+      "secondaryKeywords": [
+        "open architecture saas cms",
+        "zero vendor lock in ecommerce"
+      ]
     }
   }
 }

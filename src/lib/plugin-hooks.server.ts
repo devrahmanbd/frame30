@@ -22,7 +22,11 @@ function breakerKey(pluginId: string, hook: ServerHook) {
   return `${pluginId}:${hook}`;
 }
 
-export function breakerOpen(pluginId: string, hook: ServerHook, now = Date.now()) {
+export function breakerOpen(
+  pluginId: string,
+  hook: ServerHook,
+  now = Date.now(),
+) {
   const state = breakers.get(breakerKey(pluginId, hook));
   if (!state || state.failures < FAILURE_THRESHOLD) return false;
   if (now - state.openedAt > OPEN_MS) {
@@ -64,7 +68,11 @@ async function callOne(
   timeoutMs: number,
 ): Promise<HookOutcome> {
   const started = Date.now();
-  if (!plugin.enabled || !plugin.manifest.hooks.includes(hook) || !plugin.manifest.hooksUrl) {
+  if (
+    !plugin.enabled ||
+    !plugin.manifest.hooks.includes(hook) ||
+    !plugin.manifest.hooksUrl
+  ) {
     return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
   }
   if (breakerOpen(plugin.manifest.id, hook)) {
@@ -86,7 +94,13 @@ async function callOne(
     if (!res.ok) throw new Error(`status_${res.status}`);
     const result = await res.json().catch(() => null);
     recordSuccess(plugin.manifest.id, hook);
-    return { pluginId: plugin.manifest.id, hook, status: "ok", ms: Date.now() - started, result };
+    return {
+      pluginId: plugin.manifest.id,
+      hook,
+      status: "ok",
+      ms: Date.now() - started,
+      result,
+    };
   } catch (err) {
     recordFailure(plugin.manifest.id, hook);
     const timedOut = (err as Error)?.name === "AbortError";
@@ -113,12 +127,15 @@ export async function runHook(
 ): Promise<HookOutcome[]> {
   const subscribers = installed.filter((p) => p.manifest.hooks.includes(hook));
   if (!subscribers.length) return [];
-  const outcomes = await Promise.all(subscribers.map((p) => callOne(p, hook, payload, timeoutMs)));
+  const outcomes = await Promise.all(
+    subscribers.map((p) => callOne(p, hook, payload, timeoutMs)),
+  );
   // Phase 8.7: timeout and skip rate per hook is how an operator sees a plugin
   // degrading before merchants report it.
   for (const outcome of outcomes) {
     incr("framique_plugin_hook_total", { hook, status: outcome.status });
-    if (outcome.status !== "skipped") observe("framique_plugin_hook_ms", outcome.ms, { hook });
+    if (outcome.status !== "skipped")
+      observe("framique_plugin_hook_ms", outcome.ms, { hook });
   }
   return outcomes;
 }

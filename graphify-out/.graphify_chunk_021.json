@@ -1,15 +1,53 @@
 {
   "nodes": [
-    {"id": "mkt_inventory_desk", "type": "image", "label": "Inventory Desk Marketing Image", "properties": {"asset": "inventory-desk", "format": "jpg", "category": "inventory_management"}},
-    {"id": "mkt_support_team", "type": "image", "label": "Support Team Marketing Image", "properties": {"asset": "support-team", "format": "jpg", "category": "customer_support"}}
+    {
+      "id": "mkt_inventory_desk",
+      "type": "image",
+      "label": "Inventory Desk Marketing Image",
+      "properties": {
+        "asset": "inventory-desk",
+        "format": "jpg",
+        "category": "inventory_management"
+      }
+    },
+    {
+      "id": "mkt_support_team",
+      "type": "image",
+      "label": "Support Team Marketing Image",
+      "properties": {
+        "asset": "support-team",
+        "format": "jpg",
+        "category": "customer_support"
+      }
+    }
   ],
   "edges": [
-    {"source": "mkt_inventory_desk", "target": "mkt_support_team", "type": "related_to", "properties": {"relation": "back_office_operations"}}
+    {
+      "source": "mkt_inventory_desk",
+      "target": "mkt_support_team",
+      "type": "related_to",
+      "properties": { "relation": "back_office_operations" }
+    }
   ],
   "hyperedges": [
-    {"id": "he_back_office", "nodes": ["mkt_inventory_desk", "mkt_support_team"], "label": "Back Office Operations", "properties": {"category": "operations"}},
-    {"id": "he_operations_marketing", "nodes": ["mkt_inventory_desk"], "label": "Inventory Operations", "properties": {"category": "product_feature"}},
-    {"id": "he_customer_experience", "nodes": ["mkt_support_team"], "label": "Customer Support", "properties": {"category": "service"}}
+    {
+      "id": "he_back_office",
+      "nodes": ["mkt_inventory_desk", "mkt_support_team"],
+      "label": "Back Office Operations",
+      "properties": { "category": "operations" }
+    },
+    {
+      "id": "he_operations_marketing",
+      "nodes": ["mkt_inventory_desk"],
+      "label": "Inventory Operations",
+      "properties": { "category": "product_feature" }
+    },
+    {
+      "id": "he_customer_experience",
+      "nodes": ["mkt_support_team"],
+      "label": "Customer Support",
+      "properties": { "category": "service" }
+    }
   ],
   "input_tokens": 0,
   "output_tokens": 0

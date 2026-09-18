@@ -34,7 +34,10 @@ export const Route = createFileRoute("/api/public/couriers/$carrier")({
           const result = await ingestWebhook(carrier, raw, signature);
           return Response.json(
             { accepted: result.accepted, reason: result.reason },
-            { status: result.status ?? 200, headers: { "cache-control": "no-store" } },
+            {
+              status: result.status ?? 200,
+              headers: { "cache-control": "no-store" },
+            },
           );
         } catch (err) {
           const { captureError } = await import("@/lib/observability.server");

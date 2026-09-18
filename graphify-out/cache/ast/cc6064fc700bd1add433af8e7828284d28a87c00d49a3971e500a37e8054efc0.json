@@ -1,1 +1,13 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_bands_index_ts", "label": "index.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/index.ts", "source_location": "L1"}], "edges": [], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_bands_index_ts",
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/index.ts",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [],
+  "raw_calls": []
+}

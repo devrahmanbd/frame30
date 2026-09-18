@@ -29,23 +29,37 @@ export async function loadPlans(db: Client, userId: string) {
  */
 export async function loadTenants(db: Client, userId: string) {
   await requirePlatformAdmin(db, userId);
-  const [plans, merchants, subscriptions, limits, products, staff] = await Promise.all([
-    db.from("plan_definitions").select("*").order("sort_order", { ascending: true }),
-    db.from("merchants").select("id, name, slug, status, kyc_status, currency_code").order("name"),
-    db.from("subscriptions").select("merchant_id, plan, status, trial_ends_at, next_billing_at"),
-    db.from("tenant_limits").select("merchant_id, products_limit, staff_limit"),
-    db.from("products").select("merchant_id"),
-    db.from("merchant_members").select("merchant_id"),
-  ]);
+  const [plans, merchants, subscriptions, limits, products, staff] =
+    await Promise.all([
+      db
+        .from("plan_definitions")
+        .select("*")
+        .order("sort_order", { ascending: true }),
+      db
+        .from("merchants")
+        .select("id, name, slug, status, kyc_status, currency_code")
+        .order("name"),
+      db
+        .from("subscriptions")
+        .select("merchant_id, plan, status, trial_ends_at, next_billing_at"),
+      db
+        .from("tenant_limits")
+        .select("merchant_id, products_limit, staff_limit"),
+      db.from("products").select("merchant_id"),
+      db.from("merchant_members").select("merchant_id"),
+    ]);
 
   const count = (rows: { merchant_id: string }[] | null) => {
     const map = new Map<string, number>();
-    for (const r of rows ?? []) map.set(r.merchant_id, (map.get(r.merchant_id) ?? 0) + 1);
+    for (const r of rows ?? [])
+      map.set(r.merchant_id, (map.get(r.merchant_id) ?? 0) + 1);
     return map;
   };
   const productCount = count(products.data);
   const staffCount = count(staff.data);
-  const subMap = new Map((subscriptions.data ?? []).map((s) => [s.merchant_id, s]));
+  const subMap = new Map(
+    (subscriptions.data ?? []).map((s) => [s.merchant_id, s]),
+  );
   const limitMap = new Map((limits.data ?? []).map((l) => [l.merchant_id, l]));
   const planMap = new Map((plans.data ?? []).map((p) => [p.plan, p]));
 
@@ -74,7 +88,9 @@ export async function loadAudit(db: Client, userId: string, limit = 50) {
   await requirePlatformAdmin(db, userId);
   const { data } = await db
     .from("platform_audit_log")
-    .select("id, action, entity, entity_id, actor, created_at, before_data, after_data")
+    .select(
+      "id, action, entity, entity_id, actor, created_at, before_data, after_data",
+    )
     .order("created_at", { ascending: false })
     .limit(limit);
   return { audit: data ?? [] };
@@ -101,7 +117,9 @@ export async function savePlan(db: Client, userId: string, input: PlanInput) {
   await requirePlatformAdmin(db, userId);
   // Runs as the signed-in admin: the routine re-asserts platform-admin itself
   // and stamps the audit row from auth.uid().
-  const { error } = await db.rpc("platform_save_plan", { _plan: input as never });
+  const { error } = await db.rpc("platform_save_plan", {
+    _plan: input as never,
+  });
   if (error) throw new BillingError("plan_save_failed", error.message);
   return { ok: true };
 }
@@ -127,9 +145,15 @@ export async function setTenantQuota(
   return { ok: true };
 }
 
-export async function clearTenantQuota(db: Client, userId: string, merchantId: string) {
+export async function clearTenantQuota(
+  db: Client,
+  userId: string,
+  merchantId: string,
+) {
   await requirePlatformAdmin(db, userId);
-  const { error } = await db.rpc("platform_clear_tenant_limits", { _merchant_id: merchantId });
+  const { error } = await db.rpc("platform_clear_tenant_limits", {
+    _merchant_id: merchantId,
+  });
   if (error) throw new BillingError("quota_clear_failed", error.message);
   await logEvent(db, merchantId, userId, "quota.reset_to_plan", {});
   return { ok: true };

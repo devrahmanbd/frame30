@@ -81,7 +81,10 @@ function Skeleton({ lines = 4 }: { lines?: number }) {
   return (
     <div className="space-y-2" aria-hidden="true">
       {Array.from({ length: lines }, (_, i) => (
-        <div key={i} className="h-9 w-full animate-pulse rounded-fq-md bg-muted" />
+        <div
+          key={i}
+          className="h-9 w-full animate-pulse rounded-fq-md bg-muted"
+        />
       ))}
     </div>
   );
@@ -89,7 +92,12 @@ function Skeleton({ lines = 4 }: { lines?: number }) {
 
 /** Rows the `facets` source returns, split by the group it tagged them with. */
 export function groupFacetRows(rows: WidgetRow[] | undefined) {
-  const out = { category: [] as WidgetRow[], kind: [] as WidgetRow[], stock: 0, total: 0 };
+  const out = {
+    category: [] as WidgetRow[],
+    kind: [] as WidgetRow[],
+    stock: 0,
+    total: 0,
+  };
   for (const row of rows ?? []) {
     if (row.subtitle === "category") out.category.push(row);
     else if (row.subtitle === "kind") out.kind.push(row);
@@ -128,7 +136,9 @@ function facetOptions(
       label: row.title,
       ...(typeof row.count === "number" ? { count: row.count } : {}),
       href: href(next),
-      active: (key === "category" ? query.params.category : query.params.kind) === value,
+      active:
+        (key === "category" ? query.params.category : query.params.kind) ===
+        value,
     } satisfies FacetOption;
   });
 }
@@ -146,9 +156,17 @@ function FacetPanel({ ctx }: { ctx: WidgetCtx }) {
     <div className="space-y-3">
       {bool("showCategories") && (
         <FacetGroup
-          title={str("categoryLabel") || (locale === "bn" ? "ক্যাটাগরি" : "Category")}
+          title={
+            str("categoryLabel") || (locale === "bn" ? "ক্যাটাগরি" : "Category")
+          }
           defaultOpen={!collapsed}
-          options={facetOptions(groups.category, "category", limit, query, href)}
+          options={facetOptions(
+            groups.category,
+            "category",
+            limit,
+            query,
+            href,
+          )}
           onSelect={
             query.navigate
               ? (value) => go(toggleFacet(query.params, "category", value))
@@ -161,25 +179,46 @@ function FacetPanel({ ctx }: { ctx: WidgetCtx }) {
           title={str("kindLabel") || (locale === "bn" ? "ধরন" : "Type")}
           defaultOpen={!collapsed}
           options={facetOptions(groups.kind, "kind", limit, query, href)}
-          onSelect={query.navigate ? (value) => go(toggleFacet(query.params, "kind", value)) : undefined}
+          onSelect={
+            query.navigate
+              ? (value) => go(toggleFacet(query.params, "kind", value))
+              : undefined
+          }
         />
       )}
       {bool("showStock") && (
         <FacetGroup
-          title={str("stockLabel") || (locale === "bn" ? "স্টক" : "Availability")}
+          title={
+            str("stockLabel") || (locale === "bn" ? "স্টক" : "Availability")
+          }
           defaultOpen={!collapsed}
           options={[
             {
               value: "1",
-              label: str("inStockLabel") || (locale === "bn" ? "শুধু স্টকে আছে" : "In stock only"),
+              label:
+                str("inStockLabel") ||
+                (locale === "bn" ? "শুধু স্টকে আছে" : "In stock only"),
               count: groups.stock,
-              href: href(withFacet(query.params, "stock", query.params.inStock ? null : "1")),
+              href: href(
+                withFacet(
+                  query.params,
+                  "stock",
+                  query.params.inStock ? null : "1",
+                ),
+              ),
               active: query.params.inStock,
             },
           ]}
           onSelect={
             query.navigate
-              ? () => go(withFacet(query.params, "stock", query.params.inStock ? null : "1"))
+              ? () =>
+                  go(
+                    withFacet(
+                      query.params,
+                      "stock",
+                      query.params.inStock ? null : "1",
+                    ),
+                  )
               : undefined
           }
         />
@@ -187,7 +226,14 @@ function FacetPanel({ ctx }: { ctx: WidgetCtx }) {
       {bool("showPrice") && <PriceFacet ctx={ctx} />}
       <a
         href={href(clearFacets(query.params))}
-        onClick={query.navigate ? (e) => { e.preventDefault(); go(clearFacets(query.params)); } : undefined}
+        onClick={
+          query.navigate
+            ? (e) => {
+                e.preventDefault();
+                go(clearFacets(query.params));
+              }
+            : undefined
+        }
         className="inline-flex min-h-11 items-center px-2 text-sm underline"
       >
         {str("clearLabel") || (locale === "bn" ? "সব মুছুন" : "Clear all")}
@@ -204,13 +250,23 @@ function FacetPanel({ ctx }: { ctx: WidgetCtx }) {
 function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
   const { str, locale, money } = ctx;
   const { query, href, go } = useFacetLinks();
-  const [min, setMin] = useState(query.params.minMinor === null ? "" : String(query.params.minMinor / 100));
-  const [max, setMax] = useState(query.params.maxMinor === null ? "" : String(query.params.maxMinor / 100));
+  const [min, setMin] = useState(
+    query.params.minMinor === null ? "" : String(query.params.minMinor / 100),
+  );
+  const [max, setMax] = useState(
+    query.params.maxMinor === null ? "" : String(query.params.maxMinor / 100),
+  );
   const toMinor = (value: string) => {
     const n = Number(value);
-    return value === "" || !Number.isFinite(n) || n < 0 ? null : String(Math.round(n) * 100);
+    return value === "" || !Number.isFinite(n) || n < 0
+      ? null
+      : String(Math.round(n) * 100);
   };
-  const next = withFacet(withFacet(query.params, "min", toMinor(min)), "max", toMinor(max));
+  const next = withFacet(
+    withFacet(query.params, "min", toMinor(min)),
+    "max",
+    toMinor(max),
+  );
   return (
     <div className="rounded-fq-md border border-border bg-card p-3">
       <p className="mb-2 text-sm font-medium">
@@ -244,7 +300,14 @@ function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
         />
         <a
           href={href(next)}
-          onClick={query.navigate ? (e) => { e.preventDefault(); go(next); } : undefined}
+          onClick={
+            query.navigate
+              ? (e) => {
+                  e.preventDefault();
+                  go(next);
+                }
+              : undefined
+          }
           className="inline-flex h-11 shrink-0 items-center rounded-fq-md border border-border px-3 text-sm"
         >
           {locale === "bn" ? "প্রয়োগ" : "Apply"}
@@ -269,7 +332,12 @@ const FacetSidebar: WidgetComponent = (ctx) => {
         >
           {str("drawerLabel") || heading}
         </button>
-        <OverlayHost open={open} onClose={() => setOpen(false)} title={heading} side="bottom">
+        <OverlayHost
+          open={open}
+          onClose={() => setOpen(false)}
+          title={heading}
+          side="bottom"
+        >
           <FacetPanel ctx={ctx} />
         </OverlayHost>
       </div>
@@ -288,18 +356,31 @@ const FilterChips: WidgetComponent = (ctx) => {
   if (chips.length === 0) {
     if (!bool("showWhenEmpty")) return null;
     const empty = str("emptyText");
-    return empty ? <p className="text-sm text-muted-foreground">{empty}</p> : null;
+    return empty ? (
+      <p className="text-sm text-muted-foreground">{empty}</p>
+    ) : null;
   }
   return (
-    <ul aria-label={locale === "bn" ? "সক্রিয় ফিল্টার" : "Active filters"} className="m-0 flex flex-wrap gap-2 p-0">
+    <ul
+      aria-label={locale === "bn" ? "সক্রিয় ফিল্টার" : "Active filters"}
+      className="m-0 flex flex-wrap gap-2 p-0"
+    >
       {chips.map((chip) => {
         const next = withFacet(query.params, chip.key, null);
-        const label = FACET_CHIP_LABELS[chip.key][locale === "bn" ? "bn" : "en"];
+        const label =
+          FACET_CHIP_LABELS[chip.key][locale === "bn" ? "bn" : "en"];
         return (
           <li key={`${chip.key}:${chip.value}`}>
             <a
               href={href(next)}
-              onClick={query.navigate ? (e) => { e.preventDefault(); go(next); } : undefined}
+              onClick={
+                query.navigate
+                  ? (e) => {
+                      e.preventDefault();
+                      go(next);
+                    }
+                  : undefined
+              }
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-3 text-sm"
             >
               <span className="min-w-0 break-words">
@@ -307,7 +388,9 @@ const FilterChips: WidgetComponent = (ctx) => {
                 {chip.key === "stock" ? "" : `: ${chip.label}`}
               </span>
               <span aria-hidden="true">×</span>
-              <span className="sr-only">{locale === "bn" ? "ফিল্টার সরান" : "Remove filter"}</span>
+              <span className="sr-only">
+                {locale === "bn" ? "ফিল্টার সরান" : "Remove filter"}
+              </span>
             </a>
           </li>
         );
@@ -315,7 +398,14 @@ const FilterChips: WidgetComponent = (ctx) => {
       <li>
         <a
           href={href(clearFacets(query.params))}
-          onClick={query.navigate ? (e) => { e.preventDefault(); go(clearFacets(query.params)); } : undefined}
+          onClick={
+            query.navigate
+              ? (e) => {
+                  e.preventDefault();
+                  go(clearFacets(query.params));
+                }
+              : undefined
+          }
           className="inline-flex min-h-11 items-center px-2 text-sm underline"
         >
           {str("clearLabel") || (locale === "bn" ? "সব মুছুন" : "Clear all")}
@@ -335,10 +425,16 @@ const ResultToolbar: WidgetComponent = (ctx) => {
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3">
       <p className="text-sm text-muted-foreground" aria-live="polite">
         {data?.pending ? (
-          <span className="inline-block h-4 w-24 animate-pulse rounded-fq-sm bg-muted" aria-hidden="true" />
+          <span
+            className="inline-block h-4 w-24 animate-pulse rounded-fq-sm bg-muted"
+            aria-hidden="true"
+          />
         ) : (
           <>
-            <span className="tabular-nums">{formatDisplayNumber(total, { locale })}</span> {noun}
+            <span className="tabular-nums">
+              {formatDisplayNumber(total, { locale })}
+            </span>{" "}
+            {noun}
           </>
         )}
       </p>
@@ -351,7 +447,9 @@ const ResultToolbar: WidgetComponent = (ctx) => {
             <select
               id="fq-sort"
               value={query.params.sort}
-              onChange={(event) => go(withSort(query.params, event.target.value))}
+              onChange={(event) =>
+                go(withSort(query.params, event.target.value))
+              }
               className="h-11 rounded-fq-md border border-border bg-background px-2 text-sm"
             >
               {SORTS.map((sort) => (
@@ -363,7 +461,11 @@ const ResultToolbar: WidgetComponent = (ctx) => {
             {/* Crawlable equivalents of the select, for clients without JS. */}
             <noscript>
               {SORTS.map((sort) => (
-                <a key={sort} href={href(withSort(query.params, sort))} className="px-1 text-sm underline">
+                <a
+                  key={sort}
+                  href={href(withSort(query.params, sort))}
+                  className="px-1 text-sm underline"
+                >
                   {SORT_LABELS[sort]!.en}
                 </a>
               ))}
@@ -385,7 +487,12 @@ const Pagination: WidgetComponent = (ctx) => {
   const next = withPage(query.params, current + 1, query.total);
   const mode = str("mode") || "numbered";
 
-  const link = (page: number, label: string, disabled = false, current2 = false) => (
+  const link = (
+    page: number,
+    label: string,
+    disabled = false,
+    current2 = false,
+  ) => (
     <a
       key={`${label}-${page}`}
       href={href(withPage(query.params, page, query.total))}
@@ -409,9 +516,15 @@ const Pagination: WidgetComponent = (ctx) => {
 
   if (mode === "more") {
     return (
-      <nav aria-label={locale === "bn" ? "পেজিনেশন" : "Pagination"} className="flex justify-center py-4">
+      <nav
+        aria-label={locale === "bn" ? "পেজিনেশন" : "Pagination"}
+        className="flex justify-center py-4"
+      >
         {current < last
-          ? link(current + 1, str("moreLabel") || (locale === "bn" ? "আরও দেখুন" : "Load more"))
+          ? link(
+              current + 1,
+              str("moreLabel") || (locale === "bn" ? "আরও দেখুন" : "Load more"),
+            )
           : null}
         {/* Real prev/next links stay in the markup so crawlers can walk the set. */}
         <span className="sr-only">
@@ -423,18 +536,38 @@ const Pagination: WidgetComponent = (ctx) => {
   }
 
   return (
-    <nav aria-label={locale === "bn" ? "পেজিনেশন" : "Pagination"} className="flex flex-wrap items-center justify-center gap-2 py-4">
-      {link(current - 1, str("prevLabel") || (locale === "bn" ? "আগের" : "Previous"), current === 1)}
+    <nav
+      aria-label={locale === "bn" ? "পেজিনেশন" : "Pagination"}
+      className="flex flex-wrap items-center justify-center gap-2 py-4"
+    >
+      {link(
+        current - 1,
+        str("prevLabel") || (locale === "bn" ? "আগের" : "Previous"),
+        current === 1,
+      )}
       {pageWindow(current, last).map((page, index) =>
         page === -1 ? (
-          <span key={`gap-${index}`} aria-hidden="true" className="px-1 text-muted-foreground">
+          <span
+            key={`gap-${index}`}
+            aria-hidden="true"
+            className="px-1 text-muted-foreground"
+          >
             …
           </span>
         ) : (
-          link(page, formatDisplayNumber(page, { locale }), false, page === current)
+          link(
+            page,
+            formatDisplayNumber(page, { locale }),
+            false,
+            page === current,
+          )
         ),
       )}
-      {link(current + 1, str("nextLabel") || (locale === "bn" ? "পরের" : "Next"), current === last)}
+      {link(
+        current + 1,
+        str("nextLabel") || (locale === "bn" ? "পরের" : "Next"),
+        current === last,
+      )}
     </nav>
   );
 };
@@ -444,12 +577,24 @@ const CategoryHeader: WidgetComponent = (ctx) => {
   const { query, href } = useFacetLinks();
   const image = str("imageUrl");
   const body = str("body");
-  const title = str("heading") || (locale === "bn" ? "সব পণ্য" : "All products");
+  const title =
+    str("heading") || (locale === "bn" ? "সব পণ্য" : "All products");
   return (
     <header className="mb-4">
       {bool("showBreadcrumb") && (
-        <nav aria-label={locale === "bn" ? "ব্রেডক্রাম্ব" : "Breadcrumb"} className="mb-2 text-sm text-muted-foreground">
-          <a href={href({ ...query.params, category: null, kind: null, page: 1 })} className="underline">
+        <nav
+          aria-label={locale === "bn" ? "ব্রেডক্রাম্ব" : "Breadcrumb"}
+          className="mb-2 text-sm text-muted-foreground"
+        >
+          <a
+            href={href({
+              ...query.params,
+              category: null,
+              kind: null,
+              page: 1,
+            })}
+            className="underline"
+          >
             {str("homeLabel") || (locale === "bn" ? "হোম" : "Home")}
           </a>
           <span aria-hidden="true"> / </span>
@@ -466,16 +611,31 @@ const CategoryHeader: WidgetComponent = (ctx) => {
             fetchPriority="high"
             className="h-auto w-full object-cover"
           />
-          {bool("scrim") && <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />}
+          {bool("scrim") && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-foreground/40"
+            />
+          )}
           <div className="absolute inset-0 flex flex-col justify-end p-4">
-            <Heading className="text-2xl font-semibold text-background">{title}</Heading>
-            {body && <p className="mt-1 max-w-prose text-sm text-background/90">{body}</p>}
+            <Heading className="text-2xl font-semibold text-background">
+              {title}
+            </Heading>
+            {body && (
+              <p className="mt-1 max-w-prose text-sm text-background/90">
+                {body}
+              </p>
+            )}
           </div>
         </div>
       ) : (
         <>
           <Heading className="text-2xl font-semibold">{title}</Heading>
-          {body && <p className="mt-1 max-w-prose text-sm text-muted-foreground">{body}</p>}
+          {body && (
+            <p className="mt-1 max-w-prose text-sm text-muted-foreground">
+              {body}
+            </p>
+          )}
         </>
       )}
       {bool("showCount") && query.total > 0 && (
@@ -497,15 +657,30 @@ const EmptyState: WidgetComponent = (ctx) => {
       className="rounded-fq-lg border border-border bg-card p-6 text-center"
     >
       <p className="text-base font-semibold">
-        {str("heading") || (locale === "bn" ? "কোনো ফল পাওয়া যায়নি" : "Nothing matches those filters")}
+        {str("heading") ||
+          (locale === "bn"
+            ? "কোনো ফল পাওয়া যায়নি"
+            : "Nothing matches those filters")}
       </p>
-      {str("body") && <p className="mx-auto mt-2 max-w-prose text-sm text-muted-foreground">{str("body")}</p>}
+      {str("body") && (
+        <p className="mx-auto mt-2 max-w-prose text-sm text-muted-foreground">
+          {str("body")}
+        </p>
+      )}
       <a
         href={href(clearFacets(query.params))}
-        onClick={query.navigate ? (e) => { e.preventDefault(); go(clearFacets(query.params)); } : undefined}
+        onClick={
+          query.navigate
+            ? (e) => {
+                e.preventDefault();
+                go(clearFacets(query.params));
+              }
+            : undefined
+        }
         className="mt-4 inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm font-medium"
       >
-        {str("clearLabel") || (locale === "bn" ? "সব ফিল্টার মুছুন" : "Clear all filters")}
+        {str("clearLabel") ||
+          (locale === "bn" ? "সব ফিল্টার মুছুন" : "Clear all filters")}
       </a>
       {bool("showSuggestions") && rows.length > 0 && (
         <ul className="mt-6 grid list-none grid-cols-2 gap-3 p-0 md:grid-cols-4">
@@ -523,7 +698,12 @@ const EmptyState: WidgetComponent = (ctx) => {
 export const COLLECTION_WIDGETS: Record<
   Extract<
     SectionType,
-    "facet_sidebar" | "filter_chips" | "result_toolbar" | "pagination" | "category_header" | "empty_state"
+    | "facet_sidebar"
+    | "filter_chips"
+    | "result_toolbar"
+    | "pagination"
+    | "category_header"
+    | "empty_state"
   >,
   WidgetComponent
 > = {

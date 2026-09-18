@@ -78,7 +78,10 @@ export function MenusScreen() {
   });
 
   const menus: NavMenu[] = useMemo(() => query.data?.menus ?? [], [query.data]);
-  const sources: MenuSource[] = useMemo(() => query.data?.sources ?? [], [query.data]);
+  const sources: MenuSource[] = useMemo(
+    () => query.data?.sources ?? [],
+    [query.data],
+  );
   const active = menus.find((menu) => menu.id === activeId) ?? menus[0] ?? null;
 
   useEffect(() => {
@@ -96,7 +99,8 @@ export function MenusScreen() {
       name !== (active?.name ?? "") ||
       locations.join(",") !== (active?.locations ?? []).join(","));
 
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["menus", "workspace"] });
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["menus", "workspace"] });
 
   const createMenu = useMutation({
     mutationFn: (input: { name: string }) => create({ data: input }),
@@ -112,7 +116,14 @@ export function MenusScreen() {
 
   const saveMenu = useMutation({
     mutationFn: () =>
-      save({ data: { menuId: active!.id, name: name.trim() || "Untitled menu", locations, items: draft } }),
+      save({
+        data: {
+          menuId: active!.id,
+          name: name.trim() || "Untitled menu",
+          locations,
+          items: draft,
+        },
+      }),
     onSuccess: () => {
       setError(null);
       refresh();
@@ -133,7 +144,10 @@ export function MenusScreen() {
 
   const addSources = (picked: MenuSource[]) =>
     setDraft((current) =>
-      picked.reduce((items, source) => addItem(items, sourceToItem(source, newId())), current),
+      picked.reduce(
+        (items, source) => addItem(items, sourceToItem(source, newId())),
+        current,
+      ),
     );
 
   const addCustom = (input: { label: string; url: string }) =>
@@ -157,7 +171,11 @@ export function MenusScreen() {
       title="Menus"
       description="Build the navigation your shoppers use, and choose where each menu appears."
       actions={
-        <button type="button" className={btnPrimary} onClick={() => setCreating(true)}>
+        <button
+          type="button"
+          className={btnPrimary}
+          onClick={() => setCreating(true)}
+        >
           <Plus className="size-4" aria-hidden />
           <span className="ml-1">Create menu</span>
         </button>
@@ -187,7 +205,11 @@ export function MenusScreen() {
             >
               {createMenu.isPending ? "Creating…" : "Create menu"}
             </button>
-            <button type="button" className={btnGhost} onClick={() => setCreating(false)}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => setCreating(false)}
+            >
               Cancel
             </button>
           </div>
@@ -205,7 +227,11 @@ export function MenusScreen() {
           title="No menus yet"
           description="A menu holds the links in your header, footer or mobile drawer."
           action={
-            <button type="button" className={btnPrimary} onClick={() => setCreating(true)}>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => setCreating(true)}
+            >
               Create your first menu
             </button>
           }
@@ -214,7 +240,11 @@ export function MenusScreen() {
         <>
           {menus.length > 1 && (
             <Card>
-              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Select a menu">
+              <div
+                className="flex flex-wrap items-center gap-2"
+                role="group"
+                aria-label="Select a menu"
+              >
                 {menus.map((menu) => (
                   <button
                     key={menu.id}
@@ -229,7 +259,9 @@ export function MenusScreen() {
                     )}
                   >
                     {menu.name}
-                    <span className="ml-2 text-xs opacity-80">{locationsLabel(menu.locations)}</span>
+                    <span className="ml-2 text-xs opacity-80">
+                      {locationsLabel(menu.locations)}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -239,7 +271,11 @@ export function MenusScreen() {
           <div className="grid gap-4 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
             <div className="space-y-3">
               <h2 className="text-sm font-semibold">Add menu items</h2>
-              <MenuSourcePanel sources={sources} onAdd={addSources} onAddCustom={addCustom} />
+              <MenuSourcePanel
+                sources={sources}
+                onAdd={addSources}
+                onAddCustom={addCustom}
+              />
             </div>
 
             <div className="space-y-4">
@@ -260,16 +296,25 @@ export function MenusScreen() {
                       Display location
                     </legend>
                     {MENU_LOCATIONS.map((location) => (
-                      <label key={location.key} className="flex min-h-11 items-start gap-2 text-sm">
+                      <label
+                        key={location.key}
+                        className="flex min-h-11 items-start gap-2 text-sm"
+                      >
                         <input
                           type="checkbox"
                           className="mt-3 size-4"
                           checked={locations.includes(location.key)}
-                          onChange={() => setLocations((current) => toggleLocation(current, location.key))}
+                          onChange={() =>
+                            setLocations((current) =>
+                              toggleLocation(current, location.key),
+                            )
+                          }
                         />
                         <span className="pt-2.5">
                           <span className="font-medium">{location.label}</span>
-                          <span className="block text-xs text-muted-foreground">{location.hint}</span>
+                          <span className="block text-xs text-muted-foreground">
+                            {location.hint}
+                          </span>
                         </span>
                       </label>
                     ))}
@@ -280,20 +325,33 @@ export function MenusScreen() {
               <section aria-label="Menu structure" className="space-y-3">
                 <h2 className="text-sm font-semibold">Menu structure</h2>
                 <p className="text-xs text-muted-foreground">
-                  Drag a row, or use the arrows to reorder and the chevrons to nest an item under the one above
-                  it. Menus can be three levels deep.
+                  Drag a row, or use the arrows to reorder and the chevrons to
+                  nest an item under the one above it. Menus can be three levels
+                  deep.
                 </p>
                 <MenuStructure
                   items={draft}
                   issues={issues}
-                  onChange={(id, patch) => setDraft((current) => updateItem(current, id, patch))}
-                  onMove={(id, targetId, position: MenuDropPosition) =>
-                    setDraft((current) => moveItem(current, id, targetId, position))
+                  onChange={(id, patch) =>
+                    setDraft((current) => updateItem(current, id, patch))
                   }
-                  onRemove={(id) => setDraft((current) => removeItem(current, id))}
-                  onVertical={(id, step) => setDraft((current) => moveVertical(current, id, step))}
-                  onIndent={(id) => setDraft((current) => indentItem(current, id))}
-                  onOutdent={(id) => setDraft((current) => outdentItem(current, id))}
+                  onMove={(id, targetId, position: MenuDropPosition) =>
+                    setDraft((current) =>
+                      moveItem(current, id, targetId, position),
+                    )
+                  }
+                  onRemove={(id) =>
+                    setDraft((current) => removeItem(current, id))
+                  }
+                  onVertical={(id, step) =>
+                    setDraft((current) => moveVertical(current, id, step))
+                  }
+                  onIndent={(id) =>
+                    setDraft((current) => indentItem(current, id))
+                  }
+                  onOutdent={(id) =>
+                    setDraft((current) => outdentItem(current, id))
+                  }
                 />
               </section>
 

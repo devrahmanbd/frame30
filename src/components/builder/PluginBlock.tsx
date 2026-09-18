@@ -27,25 +27,34 @@ export function PluginBlock({
   const plugins = useInstalledPlugins();
   const resolved = resolvePluginWidget(pluginKey, plugins);
 
-  const onCall = useCallback(
-    async (method: string, _params: unknown) => {
-      // Host bridge: the sandbox may only reach allow-listed, scoped methods.
-      // Data fetching is deliberately server-mediated elsewhere; unknown
-      // methods reject instead of silently resolving.
-      if (!WIDGET_API[method]) throw new Error("unknown_method");
-      return { ok: true };
-    },
-    [],
-  );
+  const onCall = useCallback(async (method: string, _params: unknown) => {
+    // Host bridge: the sandbox may only reach allow-listed, scoped methods.
+    // Data fetching is deliberately server-mediated elsewhere; unknown
+    // methods reject instead of silently resolving.
+    if (!WIDGET_API[method]) throw new Error("unknown_method");
+    return { ok: true };
+  }, []);
 
   if (!resolved.ok) {
     if (!editing && resolved.reason === "bad_key") return null;
     const reasons: Record<string, [string, string]> = {
-      bad_key: ["No app widget selected", "কোনো অ্যাপ উইজেট নির্বাচন করা হয়নি"],
+      bad_key: [
+        "No app widget selected",
+        "কোনো অ্যাপ উইজেট নির্বাচন করা হয়নি",
+      ],
       not_installed: ["This app is not installed", "এই অ্যাপটি ইনস্টল করা নেই"],
-      unknown_widget: ["This app no longer ships this block", "অ্যাপে এই ব্লকটি আর নেই"],
-      incompatible: ["App not compatible with this builder version", "অ্যাপটি এই বিল্ডার সংস্করণে চলে না"],
-      disabled: ["Apps are switched off for this store", "এই স্টোরে অ্যাপ বন্ধ আছে"],
+      unknown_widget: [
+        "This app no longer ships this block",
+        "অ্যাপে এই ব্লকটি আর নেই",
+      ],
+      incompatible: [
+        "App not compatible with this builder version",
+        "অ্যাপটি এই বিল্ডার সংস্করণে চলে না",
+      ],
+      disabled: [
+        "Apps are switched off for this store",
+        "এই স্টোরে অ্যাপ বন্ধ আছে",
+      ],
     };
     const [en, bn] = reasons[resolved.reason] ?? reasons.bad_key;
     return (

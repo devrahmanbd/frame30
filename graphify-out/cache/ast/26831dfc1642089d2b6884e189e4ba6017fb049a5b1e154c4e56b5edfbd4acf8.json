@@ -1,1 +1,40 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_api_public_font_ts", "label": "$.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts", "source_location": "L1"}, {"id": "font_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts", "source_location": "L11"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_api_public_font_ts", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_font_ts", "target": "font_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts", "source_location": "L11", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_api_public_font_ts",
+      "label": "$.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "font_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts",
+      "source_location": "L11"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_font_ts",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_font_ts",
+      "target": "font_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/font/$.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

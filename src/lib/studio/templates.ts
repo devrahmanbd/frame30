@@ -47,7 +47,13 @@ export type StudioTemplate = {
 
 function heading(text: string, level = 2, size = 36): StudioNode {
   const node = newWidgetNode("heading");
-  node.settings = { ...node.settings, text, level, fontSize: size, textAlign: "center" };
+  node.settings = {
+    ...node.settings,
+    text,
+    level,
+    fontSize: size,
+    textAlign: "center",
+  };
   return node;
 }
 
@@ -70,37 +76,90 @@ function iconBox(title: string, text: string): StudioNode {
 }
 
 function row(children: StudioNode[]): StudioNode {
-  return newContainer({ layout: "flex", direction: "row", gap: 24, wrap: "wrap", contentWidth: "boxed" }, children);
+  return newContainer(
+    {
+      layout: "flex",
+      direction: "row",
+      gap: 24,
+      wrap: "wrap",
+      contentWidth: "boxed",
+    },
+    children,
+  );
 }
 
 function column(children: StudioNode[], basis?: number): StudioNode {
-  return newContainer({ layout: "flex", direction: "column", gap: 12, contentWidth: "full", basis }, children);
+  return newContainer(
+    {
+      layout: "flex",
+      direction: "column",
+      gap: 12,
+      contentWidth: "full",
+      basis,
+    },
+    children,
+  );
 }
 
 export function builtInTemplates(): StudioTemplate[] {
-  const hero = newContainer({ layout: "flex", direction: "column", gap: 16, contentWidth: "boxed" }, [
-    heading("Everything your shop needs, in one place", 1, 48),
-    paragraph("Launch, sell and deliver without stitching five tools together."),
-    button("Start free"),
-  ]);
+  const hero = newContainer(
+    { layout: "flex", direction: "column", gap: 16, contentWidth: "boxed" },
+    [
+      heading("Everything your shop needs, in one place", 1, 48),
+      paragraph(
+        "Launch, sell and deliver without stitching five tools together.",
+      ),
+      button("Start free"),
+    ],
+  );
 
   const features = row([
     column([iconBox("Fast delivery", "Same-day dispatch inside Dhaka.")], 33),
-    column([iconBox("Safe payments", "bKash, Nagad, card and cash on delivery.")], 33),
-    column([iconBox("Real support", "Bangla-speaking humans, seven days a week.")], 33),
+    column(
+      [iconBox("Safe payments", "bKash, Nagad, card and cash on delivery.")],
+      33,
+    ),
+    column(
+      [iconBox("Real support", "Bangla-speaking humans, seven days a week.")],
+      33,
+    ),
   ]);
 
   const pricing = row([
-    column([heading("Starter", 3, 24), paragraph("৳0 / month"), button("Choose", "/pricing")], 33),
-    column([heading("Growth", 3, 24), paragraph("৳1,500 / month"), button("Choose", "/pricing")], 33),
-    column([heading("Scale", 3, 24), paragraph("৳4,900 / month"), button("Choose", "/pricing")], 33),
+    column(
+      [
+        heading("Starter", 3, 24),
+        paragraph("৳0 / month"),
+        button("Choose", "/pricing"),
+      ],
+      33,
+    ),
+    column(
+      [
+        heading("Growth", 3, 24),
+        paragraph("৳1,500 / month"),
+        button("Choose", "/pricing"),
+      ],
+      33,
+    ),
+    column(
+      [
+        heading("Scale", 3, 24),
+        paragraph("৳4,900 / month"),
+        button("Choose", "/pricing"),
+      ],
+      33,
+    ),
   ]);
 
   const testimonialNode = newWidgetNode("testimonial");
   const testimonials = row([column([testimonialNode], 100)]);
 
   const faqNode = newWidgetNode("accordion");
-  const faq = newContainer({ layout: "flex", direction: "column", gap: 12 }, [heading("Questions", 2, 32), faqNode]);
+  const faq = newContainer({ layout: "flex", direction: "column", gap: 12 }, [
+    heading("Questions", 2, 32),
+    faqNode,
+  ]);
 
   const cta = newContainer({ layout: "flex", direction: "column", gap: 16 }, [
     heading("Ready when you are", 2, 36),
@@ -115,39 +174,125 @@ export function builtInTemplates(): StudioTemplate[] {
     }),
   );
 
-  const subscribe = newContainer({ layout: "flex", direction: "column", gap: 12 }, [
-    heading("Get the weekly merchant note", 2, 28),
-    paragraph("One email, every Sunday. No noise."),
-    button("Subscribe", "/newsletter"),
-  ]);
-
-  const teamRow = row(
-    ["Operations", "Support", "Engineering"].map((title) => column([iconBox(title, "Meet the people behind it.")], 33)),
+  const subscribe = newContainer(
+    { layout: "flex", direction: "column", gap: 12 },
+    [
+      heading("Get the weekly merchant note", 2, 28),
+      paragraph("One email, every Sunday. No noise."),
+      button("Subscribe", "/newsletter"),
+    ],
   );
 
-  const notFound = newContainer({ layout: "flex", direction: "column", gap: 12 }, [
-    heading("404 — page not found", 1, 44),
-    paragraph("The page moved or never existed."),
-    button("Back to shop", "/"),
-  ]);
+  const teamRow = row(
+    ["Operations", "Support", "Engineering"].map((title) =>
+      column([iconBox(title, "Meet the people behind it.")], 33),
+    ),
+  );
+
+  const notFound = newContainer(
+    { layout: "flex", direction: "column", gap: 12 },
+    [
+      heading("404 — page not found", 1, 44),
+      paragraph("The page moved or never existed."),
+      button("Back to shop", "/"),
+    ],
+  );
 
   const blocks: StudioTemplate[] = [
-    { id: "b-hero", name: "Centred hero", kind: "block", category: "hero", nodes: [hero] },
-    { id: "b-features", name: "Three benefits", kind: "block", category: "features", nodes: [features] },
-    { id: "b-pricing", name: "Three plans", kind: "block", category: "pricing", nodes: [pricing] },
-    { id: "b-testimonials", name: "Customer quote", kind: "block", category: "testimonials", nodes: [testimonials] },
-    { id: "b-faq", name: "FAQ accordion", kind: "block", category: "faq", nodes: [faq] },
-    { id: "b-cta", name: "Closing call to action", kind: "block", category: "cta", nodes: [cta] },
-    { id: "b-stats", name: "Three counters", kind: "block", category: "stats", nodes: [statsRow] },
-    { id: "b-subscribe", name: "Newsletter", kind: "block", category: "subscribe", nodes: [subscribe] },
-    { id: "b-team", name: "Team columns", kind: "block", category: "team", nodes: [teamRow] },
-    { id: "b-404", name: "404 block", kind: "block", category: "404", nodes: [notFound] },
+    {
+      id: "b-hero",
+      name: "Centred hero",
+      kind: "block",
+      category: "hero",
+      nodes: [hero],
+    },
+    {
+      id: "b-features",
+      name: "Three benefits",
+      kind: "block",
+      category: "features",
+      nodes: [features],
+    },
+    {
+      id: "b-pricing",
+      name: "Three plans",
+      kind: "block",
+      category: "pricing",
+      nodes: [pricing],
+    },
+    {
+      id: "b-testimonials",
+      name: "Customer quote",
+      kind: "block",
+      category: "testimonials",
+      nodes: [testimonials],
+    },
+    {
+      id: "b-faq",
+      name: "FAQ accordion",
+      kind: "block",
+      category: "faq",
+      nodes: [faq],
+    },
+    {
+      id: "b-cta",
+      name: "Closing call to action",
+      kind: "block",
+      category: "cta",
+      nodes: [cta],
+    },
+    {
+      id: "b-stats",
+      name: "Three counters",
+      kind: "block",
+      category: "stats",
+      nodes: [statsRow],
+    },
+    {
+      id: "b-subscribe",
+      name: "Newsletter",
+      kind: "block",
+      category: "subscribe",
+      nodes: [subscribe],
+    },
+    {
+      id: "b-team",
+      name: "Team columns",
+      kind: "block",
+      category: "team",
+      nodes: [teamRow],
+    },
+    {
+      id: "b-404",
+      name: "404 block",
+      kind: "block",
+      category: "404",
+      nodes: [notFound],
+    },
   ];
 
   const pages: StudioTemplate[] = [
-    { id: "p-landing", name: "Product landing", kind: "page", category: "hero", nodes: [hero, features, pricing, cta] },
-    { id: "p-about", name: "About us", kind: "page", category: "team", nodes: [hero, teamRow, statsRow, cta] },
-    { id: "p-faq", name: "Help centre", kind: "page", category: "faq", nodes: [heading("Help centre", 1, 44), faq, cta] },
+    {
+      id: "p-landing",
+      name: "Product landing",
+      kind: "page",
+      category: "hero",
+      nodes: [hero, features, pricing, cta],
+    },
+    {
+      id: "p-about",
+      name: "About us",
+      kind: "page",
+      category: "team",
+      nodes: [hero, teamRow, statsRow, cta],
+    },
+    {
+      id: "p-faq",
+      name: "Help centre",
+      kind: "page",
+      category: "faq",
+      nodes: [heading("Help centre", 1, 44), faq, cta],
+    },
   ];
 
   return [...blocks, ...pages];
@@ -155,14 +300,29 @@ export function builtInTemplates(): StudioTemplate[] {
 
 export function filterTemplates(
   templates: StudioTemplate[],
-  options: { kind?: TemplateKind; category?: TemplateCategory | "all"; query?: string; favouritesOnly?: boolean } = {},
+  options: {
+    kind?: TemplateKind;
+    category?: TemplateCategory | "all";
+    query?: string;
+    favouritesOnly?: boolean;
+  } = {},
 ): StudioTemplate[] {
   const query = (options.query ?? "").trim().toLowerCase();
   return templates.filter((template) => {
     if (options.kind && template.kind !== options.kind) return false;
-    if (options.category && options.category !== "all" && template.category !== options.category) return false;
+    if (
+      options.category &&
+      options.category !== "all" &&
+      template.category !== options.category
+    )
+      return false;
     if (options.favouritesOnly && !template.favourite) return false;
-    if (query && !template.name.toLowerCase().includes(query) && !template.category.includes(query)) return false;
+    if (
+      query &&
+      !template.name.toLowerCase().includes(query) &&
+      !template.category.includes(query)
+    )
+      return false;
     return true;
   });
 }
@@ -177,7 +337,11 @@ export function instantiate(template: StudioTemplate): StudioNode[] {
   return template.nodes.map(reid);
 }
 
-export function saveAsTemplate(name: string, nodes: StudioNode[], category: TemplateCategory = "hero"): StudioTemplate {
+export function saveAsTemplate(
+  name: string,
+  nodes: StudioNode[],
+  category: TemplateCategory = "hero",
+): StudioTemplate {
   return {
     id: `mine-${uid()}`,
     name: name.trim() || "Untitled template",
@@ -207,7 +371,11 @@ export function importDocJson(raw: string): StudioDoc | null {
 }
 
 export function exportTemplateJson(template: StudioTemplate): string {
-  return JSON.stringify({ kind: "fq-studio-template", version: 2, template }, null, 2);
+  return JSON.stringify(
+    { kind: "fq-studio-template", version: 2, template },
+    null,
+    2,
+  );
 }
 
 export function importTemplateJson(raw: string): StudioTemplate | null {
@@ -221,7 +389,10 @@ export function importTemplateJson(raw: string): StudioTemplate | null {
   }
 }
 
-export function docFromTemplate(template: StudioTemplate, title?: string): StudioDoc {
+export function docFromTemplate(
+  template: StudioTemplate,
+  title?: string,
+): StudioDoc {
   const doc = emptyStudioDoc(title ?? template.name);
   return { ...doc, root: instantiate(template) };
 }
@@ -229,22 +400,34 @@ export function docFromTemplate(template: StudioTemplate, title?: string): Studi
 const STORE_KEY = "fq.studio.templates.v1";
 
 export function loadMyTemplates(storage?: Storage): StudioTemplate[] {
-  const store = storage ?? (typeof window === "undefined" ? undefined : window.localStorage);
+  const store =
+    storage ??
+    (typeof window === "undefined" ? undefined : window.localStorage);
   if (!store) return [];
   try {
     const raw = store.getItem(STORE_KEY);
     const parsed = raw ? (JSON.parse(raw) as StudioTemplate[]) : [];
-    return Array.isArray(parsed) ? parsed.filter((t) => Array.isArray(t?.nodes)) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((t) => Array.isArray(t?.nodes))
+      : [];
   } catch {
     return [];
   }
 }
 
-export function persistMyTemplates(templates: StudioTemplate[], storage?: Storage): void {
-  const store = storage ?? (typeof window === "undefined" ? undefined : window.localStorage);
+export function persistMyTemplates(
+  templates: StudioTemplate[],
+  storage?: Storage,
+): void {
+  const store =
+    storage ??
+    (typeof window === "undefined" ? undefined : window.localStorage);
   if (!store) return;
   try {
-    store.setItem(STORE_KEY, JSON.stringify(templates.filter((t) => t.kind === "mine")));
+    store.setItem(
+      STORE_KEY,
+      JSON.stringify(templates.filter((t) => t.kind === "mine")),
+    );
   } catch {
     /* quota or private mode — templates stay in memory for this session */
   }

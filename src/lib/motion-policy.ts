@@ -29,7 +29,14 @@ export const MOTION_TOKENS = {
    * to; `base` stays as the shorter token for UI affordances (hovers, toggles)
    * where 480ms would feel sluggish rather than considered.
    */
-  duration: { instant: 0, fast: 180, base: 320, reveal: 480, slow: 520, counter: 1_400 },
+  duration: {
+    instant: 0,
+    fast: 180,
+    base: 320,
+    reveal: 480,
+    slow: 520,
+    counter: 1_400,
+  },
   /** CSS timing functions. One family, so the whole site feels like one hand. */
   easing: {
     out: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -69,7 +76,11 @@ export type MotionEnvironment = {
 
 /** The single decision point. Everything else asks this. */
 export function resolveIntent(env: MotionEnvironment = {}): MotionIntent {
-  if (env.override === "off" || env.override === "reduced" || env.override === "full") {
+  if (
+    env.override === "off" ||
+    env.override === "reduced" ||
+    env.override === "full"
+  ) {
     // An explicit `full` override still loses to the OS accessibility setting:
     // a product opinion may not overrule a user's vestibular preference.
     if (env.override === "full" && env.prefersReduced) return "reduced";
@@ -78,8 +89,17 @@ export function resolveIntent(env: MotionEnvironment = {}): MotionIntent {
   if (env.hydrated === false) return "off";
   if (env.prefersReduced) return "reduced";
   if (env.saveData) return "reduced";
-  if (typeof env.deviceMemoryGb === "number" && env.deviceMemoryGb > 0 && env.deviceMemoryGb < 2) return "reduced";
-  if (typeof env.hardwareConcurrency === "number" && env.hardwareConcurrency > 0 && env.hardwareConcurrency <= 2) {
+  if (
+    typeof env.deviceMemoryGb === "number" &&
+    env.deviceMemoryGb > 0 &&
+    env.deviceMemoryGb < 2
+  )
+    return "reduced";
+  if (
+    typeof env.hardwareConcurrency === "number" &&
+    env.hardwareConcurrency > 0 &&
+    env.hardwareConcurrency <= 2
+  ) {
     return "reduced";
   }
   return "full";
@@ -119,7 +139,8 @@ export function allowsMagnetic(
 ) {
   if (intent !== "full") return false;
   if (!finePointer) return false;
-  if (!Number.isFinite(viewportWidthPx) || viewportWidthPx < minViewportPx) return false;
+  if (!Number.isFinite(viewportWidthPx) || viewportWidthPx < minViewportPx)
+    return false;
   return true;
 }
 
@@ -130,7 +151,10 @@ export function allowsMagnetic(
  * duration means two heroes on two routes drift differently, and "why does the
  * pricing page feel faster?" is not a question anyone can debug.
  */
-export function driftDurationMs(index = 0, bounds: { minMs?: number; maxMs?: number } = {}) {
+export function driftDurationMs(
+  index = 0,
+  bounds: { minMs?: number; maxMs?: number } = {},
+) {
   const min = bounds.minMs ?? MOTION_TOKENS.drift.minMs;
   const max = bounds.maxMs ?? MOTION_TOKENS.drift.maxMs;
   if (max <= min) return min;
@@ -139,10 +163,11 @@ export function driftDurationMs(index = 0, bounds: { minMs?: number; maxMs?: num
   return Math.round(min + ((max - min) / (steps - 1)) * i);
 }
 
-
-
 /** Entrance duration for the resolved intent, in ms. */
-export function entranceDuration(intent: MotionIntent, base: number = MOTION_TOKENS.duration.base) {
+export function entranceDuration(
+  intent: MotionIntent,
+  base: number = MOTION_TOKENS.duration.base,
+) {
   if (intent === "off") return 0;
   if (intent === "reduced") return Math.min(MOTION_TOKENS.duration.fast, base);
   return clamp(base, 0, MOTION_TOKENS.duration.slow);
@@ -162,14 +187,23 @@ export type StaggerOptions = {
  * never later than `maxTotalMs` — a 40-item grid must not take 2.4 seconds to
  * finish arriving just because someone typed `stagger={60}`.
  */
-export function staggerSchedule(count: number, options: StaggerOptions = {}): number[] {
+export function staggerSchedule(
+  count: number,
+  options: StaggerOptions = {},
+): number[] {
   const n = Math.max(0, Math.floor(Number.isFinite(count) ? count : 0));
   if (n === 0) return [];
   const intent = options.intent ?? "full";
   if (intent !== "full") return new Array(n).fill(0);
 
-  const maxChildren = Math.max(1, options.maxChildren ?? MOTION_TOKENS.stagger.maxChildren);
-  const maxTotal = Math.max(0, options.maxTotalMs ?? MOTION_TOKENS.stagger.maxTotalMs);
+  const maxChildren = Math.max(
+    1,
+    options.maxChildren ?? MOTION_TOKENS.stagger.maxChildren,
+  );
+  const maxTotal = Math.max(
+    0,
+    options.maxTotalMs ?? MOTION_TOKENS.stagger.maxTotalMs,
+  );
   const requested = Math.max(0, options.stepMs ?? MOTION_TOKENS.stagger.stepMs);
   const spans = Math.max(1, Math.min(n, maxChildren) - 1);
   const step = Math.min(requested, maxTotal / spans);
@@ -189,7 +223,8 @@ export function marqueeDurationMs(
   bounds: { minMs?: number; maxMs?: number } = {},
 ) {
   const width = Number.isFinite(contentWidthPx) ? Math.abs(contentWidthPx) : 0;
-  const speed = speedPxPerSec > 0 ? speedPxPerSec : MOTION_TOKENS.marquee.speedPxPerSec;
+  const speed =
+    speedPxPerSec > 0 ? speedPxPerSec : MOTION_TOKENS.marquee.speedPxPerSec;
   const min = bounds.minMs ?? MOTION_TOKENS.marquee.minMs;
   const max = bounds.maxMs ?? MOTION_TOKENS.marquee.maxMs;
   if (width === 0) return min;
@@ -200,7 +235,11 @@ export function marqueeDurationMs(
  * Parallax translation for a section, in px. `progress` is -1 (just below the
  * viewport) … 0 (centred) … 1 (just above), `depth` is 0…1.
  */
-export function parallaxOffset(progress: number, depth = 0.2, max: number = MOTION_TOKENS.distance.parallaxMax) {
+export function parallaxOffset(
+  progress: number,
+  depth = 0.2,
+  max: number = MOTION_TOKENS.distance.parallaxMax,
+) {
   const p = clamp(Number.isFinite(progress) ? progress : 0, -1, 1);
   const d = clamp(Number.isFinite(depth) ? depth : 0, 0, 1);
   return round2(clamp(p * d * max, -max, max));
@@ -248,7 +287,11 @@ export function counterValueAt(
 export function formatCounterValue(
   value: number,
   target: number,
-  options: { locale?: string; maximumFractionDigits?: number; minimumFractionDigits?: number } = {},
+  options: {
+    locale?: string;
+    maximumFractionDigits?: number;
+    minimumFractionDigits?: number;
+  } = {},
 ) {
   const locale = options.locale ?? "en-US";
   const fraction = options.maximumFractionDigits ?? 0;
@@ -258,7 +301,9 @@ export function formatCounterValue(
   });
   const rendered = fmt.format(fraction === 0 ? Math.round(value) : value);
   const width = fmt.format(fraction === 0 ? Math.round(target) : target).length;
-  return rendered.length < width ? rendered.padStart(width, "\u2007") : rendered;
+  return rendered.length < width
+    ? rendered.padStart(width, "\u2007")
+    : rendered;
 }
 
 /* ------------------------------------------------------------------ budget */
@@ -308,7 +353,12 @@ export class MotionBudget {
   }
 
   stats() {
-    return { active: this.active.size, peak: this.peak, rejected: this.rejections, max: this.max };
+    return {
+      active: this.active.size,
+      peak: this.peak,
+      rejected: this.rejections,
+      max: this.max,
+    };
   }
 }
 
@@ -334,14 +384,21 @@ export const ENGINE_LOAD_POLICY: EngineLoadPolicy = {
 };
 
 /** Exponential backoff with full jitter, deterministic when `rand` is supplied. */
-export function backoffDelayMs(attempt: number, policy: EngineLoadPolicy = ENGINE_LOAD_POLICY, rand = Math.random) {
+export function backoffDelayMs(
+  attempt: number,
+  policy: EngineLoadPolicy = ENGINE_LOAD_POLICY,
+  rand = Math.random,
+) {
   const n = Math.max(0, Math.floor(attempt));
   const raw = policy.baseBackoffMs * Math.pow(policy.factor, n);
   const capped = Math.min(raw, policy.maxBackoffMs);
   return Math.round(capped * (0.5 + 0.5 * clamp(rand(), 0, 1)));
 }
 
-export function shouldRetryLoad(attempt: number, policy: EngineLoadPolicy = ENGINE_LOAD_POLICY) {
+export function shouldRetryLoad(
+  attempt: number,
+  policy: EngineLoadPolicy = ENGINE_LOAD_POLICY,
+) {
   return attempt < policy.retries;
 }
 
@@ -367,7 +424,8 @@ export function motionLogRecord(
   for (const [key, value] of Object.entries(fields)) {
     if (Object.keys(safe).length >= 12) break;
     if (value === null || value === undefined) continue;
-    if (typeof value === "number") safe[key] = Number.isFinite(value) ? round2(value) : 0;
+    if (typeof value === "number")
+      safe[key] = Number.isFinite(value) ? round2(value) : 0;
     else if (typeof value === "boolean") safe[key] = value;
     else safe[key] = String(value).slice(0, 120);
   }
@@ -375,7 +433,11 @@ export function motionLogRecord(
 }
 
 /** Warnings and errors always report; chatty debug/info events are sampled. */
-export function shouldSampleLog(level: MotionLogLevel, rate = 0.05, rand = Math.random) {
+export function shouldSampleLog(
+  level: MotionLogLevel,
+  rate = 0.05,
+  rand = Math.random,
+) {
   if (level === "warn" || level === "error") return true;
   return rand() < clamp(rate, 0, 1);
 }

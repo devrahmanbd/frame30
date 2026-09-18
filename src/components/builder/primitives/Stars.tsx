@@ -16,9 +16,14 @@ export function clampRating(value: number | null | undefined): number {
 
 /** Histogram percentages for buckets [1★…5★]; total 0 yields all zeroes. */
 export function histogramPercents(counts: number[]): number[] {
-  const total = counts.reduce((sum, n) => sum + (Number.isFinite(n) ? n : 0), 0);
+  const total = counts.reduce(
+    (sum, n) => sum + (Number.isFinite(n) ? n : 0),
+    0,
+  );
   if (total <= 0) return counts.map(() => 0);
-  return counts.map((n) => Math.round(((Number.isFinite(n) ? n : 0) / total) * 100));
+  return counts.map((n) =>
+    Math.round(((Number.isFinite(n) ? n : 0) / total) * 100),
+  );
 }
 
 export function Stars({
@@ -38,8 +43,14 @@ export function Stars({
       ? `৫-এর মধ্যে ${formatDisplayNumber(Math.round(value * 10) / 10, { locale })}`
       : `${Math.round(value * 10) / 10} out of 5`;
   return (
-    <span className={`inline-flex items-center gap-1 ${size === "lg" ? "text-base" : "text-xs"}`} aria-label={label}>
-      <span aria-hidden="true" className="relative inline-block leading-none tracking-[0.1em] text-muted-foreground">
+    <span
+      className={`inline-flex items-center gap-1 ${size === "lg" ? "text-base" : "text-xs"}`}
+      aria-label={label}
+    >
+      <span
+        aria-hidden="true"
+        className="relative inline-block leading-none tracking-[0.1em] text-muted-foreground"
+      >
         <span>★★★★★</span>
         <span
           className="absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap text-warning"
@@ -50,7 +61,8 @@ export function Stars({
       </span>
       <span className="tabular-nums text-muted-foreground">
         {formatDisplayNumber(Math.round(value * 10) / 10, { locale })}
-        {typeof count === "number" && ` (${formatDisplayNumber(count, { locale })})`}
+        {typeof count === "number" &&
+          ` (${formatDisplayNumber(count, { locale })})`}
       </span>
     </span>
   );
@@ -71,7 +83,10 @@ export function HistogramBar({
         {formatDisplayNumber(bucket, { locale })}★
       </span>
       <span className="h-2 flex-1 overflow-hidden rounded-fq-sm bg-muted">
-        <span className="block h-full bg-warning" style={{ width: `${percent}%` }} />
+        <span
+          className="block h-full bg-warning"
+          style={{ width: `${percent}%` }}
+        />
       </span>
       <span className="w-10 shrink-0 text-right tabular-nums text-muted-foreground">
         {formatDisplayNumber(percent, { locale })}%

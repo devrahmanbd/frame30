@@ -1,6 +1,7 @@
 # FRAMIQUE: Taglines to Landing Pages Conversion Architecture Playbook
 
 > **Frameworks Applied:**
+>
 > - `~/.agents/skills/seo-flow` (FLOW Win-stage BOFU Briefs & Decision Triggers)
 > - `~/.agents/skills/seo-sxo` (Search Experience Optimization: User Stories & Gap Scoring)
 > - `~/.agents/skills/sickn33-marketing-psychology` (Loss Aversion & Price Anchoring)
@@ -38,20 +39,21 @@ A great tagline is not an advertising decoration—it is a **contract with the s
 
 ## 2. Master Tagline & Landing Page Section Mapping
 
-| Core Value Proposition | High-Converting Tagline Hook | Target Landing Page / Route | Primary Section Layout | SXO User Story Solved |
-| :--- | :--- | :--- | :--- | :--- |
-| **0% Platform Fee Sovereignty** | *"Stop paying rent on your own revenue: 0% platform transaction fees forever."* | `/compare/shopify` & `/pricing` | Interactive TCO Margin Calculator | *"As a high-volume merchant, I want to keep 100% of my margin rather than losing 2% to Shopify."* |
-| **Visual Freedom + Real Commerce** | *"The design freedom of Framer with the transactional power of a modern cloud engine."* | `/compare/framer` & `/builder` | Visual Studio Canvas vs Product Demo | *"As a designer, I want to build bespoke storefronts without Frankenstein Buy Button embeds."* |
-| **Infinite Catalog Scalability** | *"Break free from 10,000 item limits: Sovereign PostgreSQL catalog architecture."* | `/compare/webflow` | Scalability Ceiling Teardown & Filter Grid | *"As an agency, I want to build large-scale apparel stores without hitting CMS collection hard caps."* |
-| **Zero Maintenance Cloud** | *"Say goodbye to plugin conflicts, database crashes, and midnight server updates."* | `/compare/woocommerce` | Cloud SLA & Automated Security Shield | *"As a business owner, I want a stable store that never crashes when a plugin updates."* |
-| **Sub-45ms Local Speed** | *"Sub-45ms edge server-side rendering: Faster stores convert 2.4x better on mobile."* | `/features` & `/compare` | Live Core Web Vitals Benchmark Bar | *"As a mobile-first merchant, I want instant page loads even on 3G/4G cellular networks."* |
-| **Native Emerging Market Rails** | *"Built for local commerce: Tokenized bKash, Nagad, and 1-click courier dispatch."* | `/payments` & `/fulfilment` | Interactive Checkout & Courier Simulator | *"As a local founder, I need MFS and courier automation built directly into the store core."* |
+| Core Value Proposition             | High-Converting Tagline Hook                                                            | Target Landing Page / Route     | Primary Section Layout                     | SXO User Story Solved                                                                                  |
+| :--------------------------------- | :-------------------------------------------------------------------------------------- | :------------------------------ | :----------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| **0% Platform Fee Sovereignty**    | _"Stop paying rent on your own revenue: 0% platform transaction fees forever."_         | `/compare/shopify` & `/pricing` | Interactive TCO Margin Calculator          | _"As a high-volume merchant, I want to keep 100% of my margin rather than losing 2% to Shopify."_      |
+| **Visual Freedom + Real Commerce** | _"The design freedom of Framer with the transactional power of a modern cloud engine."_ | `/compare/framer` & `/builder`  | Visual Studio Canvas vs Product Demo       | _"As a designer, I want to build bespoke storefronts without Frankenstein Buy Button embeds."_         |
+| **Infinite Catalog Scalability**   | _"Break free from 10,000 item limits: Sovereign PostgreSQL catalog architecture."_      | `/compare/webflow`              | Scalability Ceiling Teardown & Filter Grid | _"As an agency, I want to build large-scale apparel stores without hitting CMS collection hard caps."_ |
+| **Zero Maintenance Cloud**         | _"Say goodbye to plugin conflicts, database crashes, and midnight server updates."_     | `/compare/woocommerce`          | Cloud SLA & Automated Security Shield      | _"As a business owner, I want a stable store that never crashes when a plugin updates."_               |
+| **Sub-45ms Local Speed**           | _"Sub-45ms edge server-side rendering: Faster stores convert 2.4x better on mobile."_   | `/features` & `/compare`        | Live Core Web Vitals Benchmark Bar         | _"As a mobile-first merchant, I want instant page loads even on 3G/4G cellular networks."_             |
+| **Native Emerging Market Rails**   | _"Built for local commerce: Tokenized bKash, Nagad, and 1-click courier dispatch."_     | `/payments` & `/fulfilment`     | Interactive Checkout & Courier Simulator   | _"As a local founder, I need MFS and courier automation built directly into the store core."_          |
 
 ---
 
 ## 3. Wireframe & Section Structure per Page Type
 
 ### 3.1 Head-to-Head Comparison Page Wireframe (`/compare/*`)
+
 1. **Hero Section**:
    - Single semantic `<h1>` targeting `[Brand A] vs [Brand B]`.
    - Punchy, high-contrast subheadline derived from validated tagline.

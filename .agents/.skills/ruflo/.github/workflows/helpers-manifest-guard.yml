@@ -14,25 +14,25 @@ name: helpers-manifest-guard
 on:
   pull_request:
     paths:
-      - 'v3/@claude-flow/cli/.claude/helpers/auto-memory-hook.mjs'
-      - 'v3/@claude-flow/cli/.claude/helpers/hook-handler.cjs'
-      - 'v3/@claude-flow/cli/.claude/helpers/intelligence.cjs'
-      - 'v3/@claude-flow/cli/.claude/helpers/helpers.manifest.json'
-      - 'v3/@claude-flow/cli/scripts/sign-helpers.mjs'
-      - 'v3/@claude-flow/cli/scripts/verify-helpers.mjs'
-      - 'scripts/smoke-helper-signing-security.mjs'
-      - 'v3/@claude-flow/cli/scripts/prepare-publish.mjs'
-      - 'v3/@claude-flow/cli/package.json'
-      - '.github/workflows/helpers-manifest-guard.yml'
+      - "v3/@claude-flow/cli/.claude/helpers/auto-memory-hook.mjs"
+      - "v3/@claude-flow/cli/.claude/helpers/hook-handler.cjs"
+      - "v3/@claude-flow/cli/.claude/helpers/intelligence.cjs"
+      - "v3/@claude-flow/cli/.claude/helpers/helpers.manifest.json"
+      - "v3/@claude-flow/cli/scripts/sign-helpers.mjs"
+      - "v3/@claude-flow/cli/scripts/verify-helpers.mjs"
+      - "scripts/smoke-helper-signing-security.mjs"
+      - "v3/@claude-flow/cli/scripts/prepare-publish.mjs"
+      - "v3/@claude-flow/cli/package.json"
+      - ".github/workflows/helpers-manifest-guard.yml"
   push:
     branches: [main]
     paths:
-      - 'v3/@claude-flow/cli/.claude/helpers/**'
-      - 'v3/@claude-flow/cli/scripts/sign-helpers.mjs'
-      - 'v3/@claude-flow/cli/scripts/verify-helpers.mjs'
-      - 'scripts/smoke-helper-signing-security.mjs'
-      - 'v3/@claude-flow/cli/scripts/prepare-publish.mjs'
-      - 'v3/@claude-flow/cli/package.json'
+      - "v3/@claude-flow/cli/.claude/helpers/**"
+      - "v3/@claude-flow/cli/scripts/sign-helpers.mjs"
+      - "v3/@claude-flow/cli/scripts/verify-helpers.mjs"
+      - "scripts/smoke-helper-signing-security.mjs"
+      - "v3/@claude-flow/cli/scripts/prepare-publish.mjs"
+      - "v3/@claude-flow/cli/package.json"
 
 jobs:
   guard:
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       # 1. The scripts themselves must exist. If either is deleted, the
       #    prepublishOnly command below silently no-ops on that step and

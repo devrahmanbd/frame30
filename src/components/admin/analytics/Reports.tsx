@@ -2,7 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Activity, Download, Play, Plus, RefreshCw, Trash2 } from "lucide-react";
+import {
+  Activity,
+  Download,
+  Play,
+  Plus,
+  RefreshCw,
+  Trash2,
+} from "lucide-react";
 import {
   analyticsDeleteReportFn,
   analyticsFlushFn,
@@ -19,7 +26,6 @@ import {
   type DatasetKey,
 } from "@/lib/analytics-pipeline";
 import { useLang } from "@/lib/i18n";
-
 
 type Draft = {
   id: string | null;
@@ -46,14 +52,20 @@ const EMPTY: Draft = {
 };
 
 function toggle(list: string[], value: string) {
-  return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+  return list.includes(value)
+    ? list.filter((v) => v !== value)
+    : [...list, value];
 }
 
 export function Reports() {
   const { t } = useLang();
   const qc = useQueryClient();
   const [draft, setDraft] = useState<Draft>(EMPTY);
-  const [preview, setPreview] = useState<{ columns: string[]; rows: Record<string, unknown>[]; csv: string } | null>(null);
+  const [preview, setPreview] = useState<{
+    columns: string[];
+    rows: Record<string, unknown>[];
+    csv: string;
+  } | null>(null);
 
   const fetchReports = useServerFn(analyticsReportsFn);
   const fetchPipeline = useServerFn(analyticsPipelineFn);
@@ -62,8 +74,14 @@ export function Reports() {
   const runReport = useServerFn(analyticsRunReportFn);
   const flush = useServerFn(analyticsFlushFn);
 
-  const reportsQuery = useQuery({ queryKey: ["analytics-reports"], queryFn: () => fetchReports({}) });
-  const pipelineQuery = useQuery({ queryKey: ["analytics-pipeline"], queryFn: () => fetchPipeline({}) });
+  const reportsQuery = useQuery({
+    queryKey: ["analytics-reports"],
+    queryFn: () => fetchReports({}),
+  });
+  const pipelineQuery = useQuery({
+    queryKey: ["analytics-pipeline"],
+    queryFn: () => fetchPipeline({}),
+  });
 
   const recipients = draft.recipients
     .split(",")
@@ -109,12 +127,19 @@ export function Reports() {
   const run = useMutation({
     mutationFn: (reportId: string) => runReport({ data: { reportId } }),
     onSuccess: (result) => {
-      setPreview({ columns: result.columns, rows: result.preview, csv: result.csv });
+      setPreview({
+        columns: result.columns,
+        rows: result.preview,
+        csv: result.csv,
+      });
       invalidate();
     },
   });
 
-  const flushNow = useMutation({ mutationFn: () => flush({}), onSuccess: invalidate });
+  const flushNow = useMutation({
+    mutationFn: () => flush({}),
+    onSuccess: invalidate,
+  });
 
   const download = () => {
     if (!preview) return;
@@ -129,7 +154,10 @@ export function Reports() {
 
   const dataset = REPORT_DATASETS[draft.dataset];
   const health = pipelineQuery.data?.health;
-  const mutationError = (save.error ?? run.error ?? remove.error ?? flushNow.error) as Error | null;
+  const mutationError = (save.error ??
+    run.error ??
+    remove.error ??
+    flushNow.error) as Error | null;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -146,7 +174,10 @@ export function Reports() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Link to="/dashboard/analytics/insights" className="min-h-9 rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted">
+          <Link
+            to="/dashboard/analytics/insights"
+            className="min-h-9 rounded-fq-md border border-border px-3 py-2 text-sm hover:bg-muted"
+          >
             {t("Insights", "ইনসাইটস")}
           </Link>
           <button
@@ -155,22 +186,33 @@ export function Reports() {
             disabled={flushNow.isPending}
             className="inline-flex min-h-9 items-center gap-2 rounded-fq-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            <RefreshCw className={`size-4 ${flushNow.isPending ? "animate-spin" : ""}`} aria-hidden />
+            <RefreshCw
+              className={`size-4 ${flushNow.isPending ? "animate-spin" : ""}`}
+              aria-hidden
+            />
             {t("Run ETL now", "ETL চালান")}
           </button>
         </div>
       </header>
 
       {mutationError && (
-        <p role="alert" className="mb-4 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+        <p
+          role="alert"
+          className="mb-4 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
           {mutationError.message}
         </p>
       )}
 
-      <section aria-label="Pipeline health" className="rounded-fq-lg border border-border bg-card p-4 shadow-xs">
+      <section
+        aria-label="Pipeline health"
+        className="rounded-fq-lg border border-border bg-card p-4 shadow-xs"
+      >
         <div className="flex items-center gap-2">
           <Activity className="size-4 text-muted-foreground" aria-hidden />
-          <h2 className="font-bangla-display text-sm font-semibold">{t("Event pipeline", "ইভেন্ট পাইপলাইন")}</h2>
+          <h2 className="font-bangla-display text-sm font-semibold">
+            {t("Event pipeline", "ইভেন্ট পাইপলাইন")}
+          </h2>
           {health && (
             <span
               className={`ml-auto rounded-fq-md px-2 py-0.5 text-xs font-medium ${
@@ -191,21 +233,35 @@ export function Reports() {
         {health && (
           <dl className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             <div>
-              <dt className="text-xs text-muted-foreground">{t("Raw rows", "কাঁচা রো")}</dt>
-              <dd className="tabular-nums">{health.rawRows.toLocaleString()}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">{t("Events folded", "ফোল্ড হওয়া ইভেন্ট")}</dt>
-              <dd className="tabular-nums">{health.totalEvents.toLocaleString()}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground">{t("Last commit", "শেষ কমিট")}</dt>
+              <dt className="text-xs text-muted-foreground">
+                {t("Raw rows", "কাঁচা রো")}
+              </dt>
               <dd className="tabular-nums">
-                {health.lastCommittedAt ? new Date(health.lastCommittedAt).toLocaleString() : "—"}
+                {health.rawRows.toLocaleString()}
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground">{t("Ledger problems", "লেজার সমস্যা")}</dt>
+              <dt className="text-xs text-muted-foreground">
+                {t("Events folded", "ফোল্ড হওয়া ইভেন্ট")}
+              </dt>
+              <dd className="tabular-nums">
+                {health.totalEvents.toLocaleString()}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t("Last commit", "শেষ কমিট")}
+              </dt>
+              <dd className="tabular-nums">
+                {health.lastCommittedAt
+                  ? new Date(health.lastCommittedAt).toLocaleString()
+                  : "—"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-xs text-muted-foreground">
+                {t("Ledger problems", "লেজার সমস্যা")}
+              </dt>
               <dd className="tabular-nums">{health.problems.length}</dd>
             </div>
           </dl>
@@ -241,14 +297,21 @@ export function Reports() {
       </section>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <section aria-label="Report builder" className="rounded-fq-lg border border-border bg-card p-4 shadow-xs">
+        <section
+          aria-label="Report builder"
+          className="rounded-fq-lg border border-border bg-card p-4 shadow-xs"
+        >
           <h2 className="font-bangla-display text-sm font-semibold">
-            {draft.id ? t("Edit report", "রিপোর্ট এডিট") : t("New report", "নতুন রিপোর্ট")}
+            {draft.id
+              ? t("Edit report", "রিপোর্ট এডিট")
+              : t("New report", "নতুন রিপোর্ট")}
           </h2>
 
           <div className="mt-3 space-y-3">
             <label className="block text-sm">
-              <span className="mb-1 block text-xs text-muted-foreground">{t("Name", "নাম")}</span>
+              <span className="mb-1 block text-xs text-muted-foreground">
+                {t("Name", "নাম")}
+              </span>
               <input
                 value={draft.name}
                 onChange={(e) => setDraft({ ...draft, name: e.target.value })}
@@ -258,11 +321,18 @@ export function Reports() {
             </label>
 
             <label className="block text-sm">
-              <span className="mb-1 block text-xs text-muted-foreground">{t("Dataset", "ডেটাসেট")}</span>
+              <span className="mb-1 block text-xs text-muted-foreground">
+                {t("Dataset", "ডেটাসেট")}
+              </span>
               <select
                 value={draft.dataset}
                 onChange={(e) =>
-                  setDraft({ ...draft, dataset: e.target.value as DatasetKey, dimensions: [], metrics: [] })
+                  setDraft({
+                    ...draft,
+                    dataset: e.target.value as DatasetKey,
+                    dimensions: [],
+                    metrics: [],
+                  })
                 }
                 className="min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
               >
@@ -275,14 +345,21 @@ export function Reports() {
             </label>
 
             <fieldset>
-              <legend className="mb-1 text-xs text-muted-foreground">{t("Dimensions (max 3)", "ডাইমেনশন")}</legend>
+              <legend className="mb-1 text-xs text-muted-foreground">
+                {t("Dimensions (max 3)", "ডাইমেনশন")}
+              </legend>
               <div className="flex flex-wrap gap-2">
                 {dataset.dimensions.map((dim) => (
                   <button
                     key={dim}
                     type="button"
                     aria-pressed={draft.dimensions.includes(dim)}
-                    onClick={() => setDraft({ ...draft, dimensions: toggle(draft.dimensions, dim) })}
+                    onClick={() =>
+                      setDraft({
+                        ...draft,
+                        dimensions: toggle(draft.dimensions, dim),
+                      })
+                    }
                     className={`min-h-8 rounded-fq-md border px-2 text-xs ${
                       draft.dimensions.includes(dim)
                         ? "border-primary bg-primary/10 font-medium"
@@ -296,14 +373,21 @@ export function Reports() {
             </fieldset>
 
             <fieldset>
-              <legend className="mb-1 text-xs text-muted-foreground">{t("Metrics (max 6)", "মেট্রিক")}</legend>
+              <legend className="mb-1 text-xs text-muted-foreground">
+                {t("Metrics (max 6)", "মেট্রিক")}
+              </legend>
               <div className="flex flex-wrap gap-2">
                 {dataset.metrics.map((metric) => (
                   <button
                     key={metric}
                     type="button"
                     aria-pressed={draft.metrics.includes(metric)}
-                    onClick={() => setDraft({ ...draft, metrics: toggle(draft.metrics, metric) })}
+                    onClick={() =>
+                      setDraft({
+                        ...draft,
+                        metrics: toggle(draft.metrics, metric),
+                      })
+                    }
                     className={`min-h-8 rounded-fq-md border px-2 text-xs ${
                       draft.metrics.includes(metric)
                         ? "border-primary bg-primary/10 font-medium"
@@ -318,21 +402,32 @@ export function Reports() {
 
             <div className="grid grid-cols-3 gap-2">
               <label className="block text-sm">
-                <span className="mb-1 block text-xs text-muted-foreground">{t("Days", "দিন")}</span>
+                <span className="mb-1 block text-xs text-muted-foreground">
+                  {t("Days", "দিন")}
+                </span>
                 <input
                   type="number"
                   min={1}
                   max={365}
                   value={draft.rangeDays}
-                  onChange={(e) => setDraft({ ...draft, rangeDays: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setDraft({ ...draft, rangeDays: Number(e.target.value) })
+                  }
                   className="min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm tabular-nums"
                 />
               </label>
               <label className="block text-sm">
-                <span className="mb-1 block text-xs text-muted-foreground">{t("Schedule", "শিডিউল")}</span>
+                <span className="mb-1 block text-xs text-muted-foreground">
+                  {t("Schedule", "শিডিউল")}
+                </span>
                 <select
                   value={draft.schedule}
-                  onChange={(e) => setDraft({ ...draft, schedule: e.target.value as Draft["schedule"] })}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      schedule: e.target.value as Draft["schedule"],
+                    })
+                  }
                   className="min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
                 >
                   <option value="off">off</option>
@@ -342,10 +437,17 @@ export function Reports() {
                 </select>
               </label>
               <label className="block text-sm">
-                <span className="mb-1 block text-xs text-muted-foreground">{t("Format", "ফরম্যাট")}</span>
+                <span className="mb-1 block text-xs text-muted-foreground">
+                  {t("Format", "ফরম্যাট")}
+                </span>
                 <select
                   value={draft.format}
-                  onChange={(e) => setDraft({ ...draft, format: e.target.value as Draft["format"] })}
+                  onChange={(e) =>
+                    setDraft({
+                      ...draft,
+                      format: e.target.value as Draft["format"],
+                    })
+                  }
                   className="min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
                 >
                   <option value="csv">csv</option>
@@ -360,7 +462,9 @@ export function Reports() {
               </span>
               <input
                 value={draft.recipients}
-                onChange={(e) => setDraft({ ...draft, recipients: e.target.value })}
+                onChange={(e) =>
+                  setDraft({ ...draft, recipients: e.target.value })
+                }
                 placeholder="ops@store.com, finance@store.com"
                 className="min-h-9 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
               />
@@ -377,7 +481,9 @@ export function Reports() {
             <div className="flex gap-2">
               <button
                 type="button"
-                disabled={!verdict.ok || draft.name.trim().length < 2 || save.isPending}
+                disabled={
+                  !verdict.ok || draft.name.trim().length < 2 || save.isPending
+                }
                 onClick={() => save.mutate()}
                 className="inline-flex min-h-9 items-center gap-2 rounded-fq-md bg-primary px-3 text-sm font-medium text-primary-foreground disabled:opacity-60"
               >
@@ -397,17 +503,29 @@ export function Reports() {
           </div>
         </section>
 
-        <section aria-label="Saved reports" className="rounded-fq-lg border border-border bg-card p-4 shadow-xs">
-          <h2 className="font-bangla-display text-sm font-semibold">{t("Saved reports", "সেভ করা রিপোর্ট")}</h2>
+        <section
+          aria-label="Saved reports"
+          className="rounded-fq-lg border border-border bg-card p-4 shadow-xs"
+        >
+          <h2 className="font-bangla-display text-sm font-semibold">
+            {t("Saved reports", "সেভ করা রিপোর্ট")}
+          </h2>
           <ul className="mt-3 space-y-2">
             {(reportsQuery.data?.reports ?? []).map((report) => (
-              <li key={report.id} className="rounded-fq-md border border-border p-2">
+              <li
+                key={report.id}
+                className="rounded-fq-md border border-border p-2"
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{report.name}</p>
+                    <p className="truncate text-sm font-medium">
+                      {report.name}
+                    </p>
                     <p className="text-xs text-muted-foreground">
-                      {report.dataset} · {report.range_days}d · {report.schedule}
-                      {report.next_run_at && ` · next ${new Date(report.next_run_at).toLocaleDateString()}`}
+                      {report.dataset} · {report.range_days}d ·{" "}
+                      {report.schedule}
+                      {report.next_run_at &&
+                        ` · next ${new Date(report.next_run_at).toLocaleDateString()}`}
                     </p>
                   </div>
                   <div className="flex shrink-0 gap-1">
@@ -433,7 +551,9 @@ export function Reports() {
                           rangeDays: report.range_days,
                           schedule: report.schedule as Draft["schedule"],
                           format: report.format as Draft["format"],
-                          recipients: ((report.recipients as string[]) ?? []).join(", "),
+                          recipients: (
+                            (report.recipients as string[]) ?? []
+                          ).join(", "),
                         })
                       }
                       className="rounded-fq-md border border-border px-2 text-xs hover:bg-muted"
@@ -480,7 +600,9 @@ export function Reports() {
                   <thead>
                     <tr className="text-left text-muted-foreground">
                       {preview.columns.map((c) => (
-                        <th key={c} scope="col" className="py-1 pr-3">{c}</th>
+                        <th key={c} scope="col" className="py-1 pr-3">
+                          {c}
+                        </th>
                       ))}
                     </tr>
                   </thead>
@@ -488,7 +610,9 @@ export function Reports() {
                     {preview.rows.map((row, i) => (
                       <tr key={i} className="border-t border-border">
                         {preview.columns.map((c) => (
-                          <td key={c} className="py-1 pr-3 tabular-nums">{String(row[c] ?? "")}</td>
+                          <td key={c} className="py-1 pr-3 tabular-nums">
+                            {String(row[c] ?? "")}
+                          </td>
                         ))}
                       </tr>
                     ))}

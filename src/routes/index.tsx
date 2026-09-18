@@ -40,7 +40,9 @@ export const Route = createFileRoute("/")({
     return {
       meta: head.meta,
       links: head.links,
-      scripts: graph ? [{ type: "application/ld+json", children: JSON.stringify(graph) }] : [],
+      scripts: graph
+        ? [{ type: "application/ld+json", children: JSON.stringify(graph) }]
+        : [],
     };
   },
   component: PlatformHome,
@@ -50,7 +52,7 @@ function PlatformHome() {
   const data = Route.useLoaderData();
 
   return (
-    <PublicShell >
+    <PublicShell>
       <HomePage data={data} />
     </PublicShell>
   );

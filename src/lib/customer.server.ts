@@ -24,7 +24,8 @@ import {
 } from "./customer-view";
 
 async function db() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -36,7 +37,9 @@ export async function resolveCustomerScope(
   const client = await db();
   let query = client
     .from("customers")
-    .select("id, merchant_id, name, email, phone, locale, merchants(name, slug, currency_code)")
+    .select(
+      "id, merchant_id, name, email, phone, locale, merchants(name, slug, currency_code)",
+    )
     .eq("auth_uid", userId)
     .is("deleted_at", null);
 
@@ -48,7 +51,11 @@ export async function resolveCustomerScope(
 
   const { data } = await query.limit(1).maybeSingle();
   if (!data) return null;
-  const store = (data.merchants ?? null) as { name?: string; slug?: string; currency_code?: string } | null;
+  const store = (data.merchants ?? null) as {
+    name?: string;
+    slug?: string;
+    currency_code?: string;
+  } | null;
   return {
     id: data.id,
     merchantId: data.merchant_id,
@@ -63,17 +70,25 @@ export async function resolveCustomerScope(
 }
 
 /** Resolves all merchant stores where this user holds a customer profile. */
-export async function resolveCustomerAccounts(userId: string): Promise<CustomerScope[]> {
+export async function resolveCustomerAccounts(
+  userId: string,
+): Promise<CustomerScope[]> {
   const client = await db();
   const { data } = await client
     .from("customers")
-    .select("id, merchant_id, name, email, phone, locale, merchants(name, slug, currency_code)")
+    .select(
+      "id, merchant_id, name, email, phone, locale, merchants(name, slug, currency_code)",
+    )
     .eq("auth_uid", userId)
     .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   return (data ?? []).map((row) => {
-    const store = (row.merchants ?? null) as { name?: string; slug?: string; currency_code?: string } | null;
+    const store = (row.merchants ?? null) as {
+      name?: string;
+      slug?: string;
+      currency_code?: string;
+    } | null;
     return {
       id: row.id,
       merchantId: row.merchant_id,
@@ -108,7 +123,10 @@ type OrderRow = {
   postcode: string | null;
 };
 
-function scopedOrders(client: Awaited<ReturnType<typeof db>>, scope: CustomerScope) {
+function scopedOrders(
+  client: Awaited<ReturnType<typeof db>>,
+  scope: CustomerScope,
+) {
   return client
     .from("orders")
     .select(CUSTOMER_ORDER_SELECT)
@@ -123,19 +141,21 @@ export async function loadCustomerHome(scope: CustomerScope) {
   const { data: orders } = await scopedOrders(client, scope)
     .order("created_at", { ascending: false })
     .limit(10);
-  const rows = ((orders ?? []) as unknown as OrderRow[]);
-  const open = rows.filter((o) => (OPEN_ORDER_STATUSES as readonly string[]).includes(o.status));
+  const rows = (orders ?? []) as unknown as OrderRow[];
+  const open = rows.filter((o) =>
+    (OPEN_ORDER_STATUSES as readonly string[]).includes(o.status),
+  );
 
   const orderIds = open.map((o) => o.id);
   const shipments = orderIds.length
-    ? (
+    ? ((
         await client
           .from("carrier_shipments")
           .select(CUSTOMER_SHIPMENT_SELECT)
           .eq("merchant_id", scope.merchantId)
           .in("order_id", orderIds)
           .order("created_at", { ascending: false })
-      ).data ?? []
+      ).data ?? [])
     : [];
 
   const { data: loyalty } = await client
@@ -185,7 +205,11 @@ export async function loadCustomerHome(scope: CustomerScope) {
 
 /* ------------------------------------------------------------------- orders */
 
-export async function loadCustomerOrders(scope: CustomerScope, page = 0, pageSize = 20) {
+export async function loadCustomerOrders(
+  scope: CustomerScope,
+  page = 0,
+  pageSize = 20,
+) {
   const client = await db();
   const from = page * pageSize;
   const { data, count } = await client
@@ -195,7 +219,7 @@ export async function loadCustomerOrders(scope: CustomerScope, page = 0, pageSiz
     .eq("customer_id", scope.id)
     .order("created_at", { ascending: false })
     .range(from, from + pageSize - 1);
-  const rows = ((data ?? []) as unknown as OrderRow[]);
+  const rows = (data ?? []) as unknown as OrderRow[];
   return {
     total: count ?? rows.length,
     page,
@@ -232,7 +256,14 @@ export type CustomerOrderDetail = {
     problem: { en: string; bn: string } | null;
     deliveredAt: string | null;
   } | null;
-  returns: { id: string; reference: string; status: string; reason: string; refundMinor: number; createdAt: string }[];
+  returns: {
+    id: string;
+    reference: string;
+    status: string;
+    reason: string;
+    refundMinor: number;
+    createdAt: string;
+  }[];
   eligibility: Eligibility;
   invoice: { number: string; issuedAt: string } | null;
 };
@@ -246,7 +277,9 @@ export async function loadCustomerOrder(
   orderId: string,
 ): Promise<CustomerOrderDetail | null> {
   const client = await db();
-  const { data: order } = await scopedOrders(client, scope).eq("id", orderId).maybeSingle();
+  const { data: order } = await scopedOrders(client, scope)
+    .eq("id", orderId)
+    .maybeSingle();
   if (!order) return null;
   const row = order as unknown as OrderRow;
 
@@ -288,7 +321,9 @@ export async function loadCustomerOrder(
 
   const shipment = shipments.data?.[0] ?? null;
   const returnRows = returns.data ?? [];
-  const openReturn = returnRows.some((r) => !["rejected", "cancelled", "refunded"].includes(r.status));
+  const openReturn = returnRows.some(
+    (r) => !["rejected", "cancelled", "refunded"].includes(r.status),
+  );
 
   return {
     order: { ...row },
@@ -328,7 +363,10 @@ export async function loadCustomerOrder(
       hasOpenReturn: openReturn,
     }),
     invoice: invoice.data
-      ? { number: invoice.data.invoice_number, issuedAt: invoice.data.issued_at }
+      ? {
+          number: invoice.data.invoice_number,
+          issuedAt: invoice.data.issued_at,
+        }
       : null,
   };
 }
@@ -340,7 +378,7 @@ export async function loadCustomerTracking(scope: CustomerScope) {
   const { data: orders } = await scopedOrders(client, scope)
     .order("created_at", { ascending: false })
     .limit(20);
-  const rows = ((orders ?? []) as unknown as OrderRow[]);
+  const rows = (orders ?? []) as unknown as OrderRow[];
   if (rows.length === 0) return { parcels: [] };
 
   const { data: shipments } = await client
@@ -356,7 +394,7 @@ export async function loadCustomerTracking(scope: CustomerScope) {
 
   const shipmentRows = shipments ?? [];
   const events = shipmentRows.length
-    ? (
+    ? ((
         await client
           .from("delivery_events")
           .select("id, shipment_id, event_type, occurred_at")
@@ -367,7 +405,7 @@ export async function loadCustomerTracking(scope: CustomerScope) {
           )
           .order("occurred_at", { ascending: true })
           .limit(300)
-      ).data ?? []
+      ).data ?? [])
     : [];
 
   return {
@@ -429,8 +467,10 @@ export async function loadCustomerWishlist(scope: CustomerScope) {
   return {
     currency: scope.currencyCode,
     items: items.map((i) => {
-      const variant = variantRows.find((v) => v.id === i.product_variant_id) ?? null;
-      const product = (products ?? []).find((p) => p.id === variant?.product_id) ?? null;
+      const variant =
+        variantRows.find((v) => v.id === i.product_variant_id) ?? null;
+      const product =
+        (products ?? []).find((p) => p.id === variant?.product_id) ?? null;
       return {
         id: i.id,
         variantId: i.product_variant_id,
@@ -491,7 +531,12 @@ export async function loadCustomerProfile(scope: CustomerScope) {
 
 export async function saveCustomerProfile(
   scope: CustomerScope,
-  input: { name: string; email: string | null; phone: string | null; locale: string },
+  input: {
+    name: string;
+    email: string | null;
+    phone: string | null;
+    locale: string;
+  },
 ) {
   const client = await db();
   const { error } = await client
@@ -600,12 +645,17 @@ export async function saveCustomerAddress(
       .eq("merchant_id", scope.merchantId)
       .eq("customer_id", scope.id)
       .eq("address_type", input.addressType);
-    await (input.addressId ? query.neq("id", input.addressId) : query.neq("label", input.label));
+    await (input.addressId
+      ? query.neq("id", input.addressId)
+      : query.neq("label", input.label));
   }
   return { ok: true };
 }
 
-export async function deleteCustomerAddress(scope: CustomerScope, addressId: string) {
+export async function deleteCustomerAddress(
+  scope: CustomerScope,
+  addressId: string,
+) {
   const client = await db();
   await client
     .from("customer_addresses")
@@ -624,7 +674,12 @@ export async function deleteCustomerAddress(scope: CustomerScope, addressId: str
  */
 export async function openCustomerReturn(
   scope: CustomerScope,
-  input: { orderId: string; reason: string; note: string; items: { orderItemId: string; quantity: number }[] },
+  input: {
+    orderId: string;
+    reason: string;
+    note: string;
+    items: { orderItemId: string; quantity: number }[];
+  },
 ) {
   const detail = await loadCustomerOrder(scope, input.orderId);
   if (!detail) throw new Error("order_not_found");
@@ -635,13 +690,26 @@ export async function openCustomerReturn(
     .map((i) => {
       const line = detail.items.find((l) => l.id === i.orderItemId);
       if (!line) return null;
-      const quantity = Math.min(Math.max(1, Math.floor(i.quantity)), line.quantity);
+      const quantity = Math.min(
+        Math.max(1, Math.floor(i.quantity)),
+        line.quantity,
+      );
       return { line, quantity };
     })
-    .filter((v): v is { line: CustomerOrderDetail["items"][number]; quantity: number } => v !== null);
+    .filter(
+      (
+        v,
+      ): v is {
+        line: CustomerOrderDetail["items"][number];
+        quantity: number;
+      } => v !== null,
+    );
   if (chosen.length === 0) throw new Error("return_items_required");
 
-  const refundMinor = chosen.reduce((sum, c) => sum + c.line.unitMinor * c.quantity, 0);
+  const refundMinor = chosen.reduce(
+    (sum, c) => sum + c.line.unitMinor * c.quantity,
+    0,
+  );
   const reference = `RET-${Date.now().toString(36).toUpperCase()}`;
   const order = detail.order as unknown as OrderRow;
 

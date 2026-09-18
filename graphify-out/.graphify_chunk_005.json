@@ -881,7 +881,19 @@
   "hyperedges": [
     {
       "id": "hyperedge_framique_platform_architecture",
-      "nodes": ["framique", "tanstack_start", "nitro", "bun_runtime", "react_19", "postgresql_rls", "tailwind_css_v4", "edge_ssr", "uncapped_postgresql", "multi_tenant_isolation", "visual_canvas"],
+      "nodes": [
+        "framique",
+        "tanstack_start",
+        "nitro",
+        "bun_runtime",
+        "react_19",
+        "postgresql_rls",
+        "tailwind_css_v4",
+        "edge_ssr",
+        "uncapped_postgresql",
+        "multi_tenant_isolation",
+        "visual_canvas"
+      ],
       "label": "Framique Core Platform Architecture",
       "description": "The complete technical architecture of Framique spanning edge SSR presentation (TanStack Start + Nitro), runtime (Bun), frontend (React 19), database (PostgreSQL RLS), styling (Tailwind CSS v4 + OKLCH), and multi-tenant data isolation.",
       "confidence": 1.0,
@@ -889,7 +901,19 @@
     },
     {
       "id": "hyperedge_competitor_gap_analysis",
-      "nodes": ["framique", "shopify", "webflow", "framer", "woocommerce", "2pct_shopify_penalty", "app_tax_shopify", "uncapped_postgresql", "0pct_transaction_fee", "bkash", "nagad"],
+      "nodes": [
+        "framique",
+        "shopify",
+        "webflow",
+        "framer",
+        "woocommerce",
+        "2pct_shopify_penalty",
+        "app_tax_shopify",
+        "uncapped_postgresql",
+        "0pct_transaction_fee",
+        "bkash",
+        "nagad"
+      ],
       "label": "Competitor Gap & Strategic Wedge",
       "description": "Framique's strategic positioning against all major competitors. Exploits Shopify's 2% penalty + app tax, Webflow's 2,000 CMS ceiling, Framer's lack of native commerce, and WooCommerce's maintenance burden while providing zero-fee sovereignty and native local payment rails.",
       "confidence": 1.0,
@@ -897,7 +921,23 @@
     },
     {
       "id": "hyperedge_seo_content_ecosystem",
-      "nodes": ["seo_keyword_research", "technical_seo_audit", "aeo_geo_optimization", "persona_playbooks", "content_pillar_zero_fee", "content_pillar_ssr_canvas", "content_pillar_local_rails", "content_pillar_headless_guide", "blog_comparative", "blog_death_of_2pct", "blog_edge_ssr_vs_spa", "blog_bkash_integration", "blog_courier_automation", "blog_postgres_rls", "blog_headless_vs_visual"],
+      "nodes": [
+        "seo_keyword_research",
+        "technical_seo_audit",
+        "aeo_geo_optimization",
+        "persona_playbooks",
+        "content_pillar_zero_fee",
+        "content_pillar_ssr_canvas",
+        "content_pillar_local_rails",
+        "content_pillar_headless_guide",
+        "blog_comparative",
+        "blog_death_of_2pct",
+        "blog_edge_ssr_vs_spa",
+        "blog_bkash_integration",
+        "blog_courier_automation",
+        "blog_postgres_rls",
+        "blog_headless_vs_visual"
+      ],
       "label": "SEO Content & Authority Ecosystem",
       "description": "The complete SEO strategy ecosystem: keyword research informs pillar content, technical audit validates CWV, AEO/GEO Reddit matrix optimizes for LLM citability, persona playbooks govern editorial voice, and 15+ blog posts cover competitive comparisons, technical architecture, and regional commerce pain points.",
       "confidence": 1.0,

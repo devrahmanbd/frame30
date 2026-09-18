@@ -58,7 +58,11 @@ export type IngestResult = {
 /* Helpers                                                             */
 /* ------------------------------------------------------------------ */
 
-async function withTimeout<T>(label: string, work: Promise<T>, ms = DB_TIMEOUT_MS): Promise<T | null> {
+async function withTimeout<T>(
+  label: string,
+  work: Promise<T>,
+  ms = DB_TIMEOUT_MS,
+): Promise<T | null> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
@@ -69,7 +73,10 @@ async function withTimeout<T>(label: string, work: Promise<T>, ms = DB_TIMEOUT_M
     ]);
   } catch (err) {
     const { log } = await import("./observability.server");
-    log("warn", "vitals.db_error", { label, message: err instanceof Error ? err.message : String(err) });
+    log("warn", "vitals.db_error", {
+      label,
+      message: err instanceof Error ? err.message : String(err),
+    });
     return null;
   } finally {
     if (timer) clearTimeout(timer);
@@ -84,10 +91,16 @@ async function withTimeout<T>(label: string, work: Promise<T>, ms = DB_TIMEOUT_M
 export async function sessionHash(meta: IngestMeta): Promise<string | null> {
   if (!meta.ip && !meta.userAgent) return null;
   const hour = Math.floor(Date.now() / 3_600_000);
-  const salt = process.env["VITALS_SALT"] ?? process.env["SUPABASE_PROJECT_ID"] ?? "framique";
+  const salt =
+    process.env["VITALS_SALT"] ??
+    process.env["SUPABASE_PROJECT_ID"] ??
+    "framique";
   const input = `${salt}|${meta.merchantId}|${meta.ip ?? ""}|${meta.userAgent ?? ""}|${hour}`;
   try {
-    const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+    const digest = await crypto.subtle.digest(
+      "SHA-256",
+      new TextEncoder().encode(input),
+    );
     return [...new Uint8Array(digest)]
       .slice(0, 12)
       .map((b) => b.toString(16).padStart(2, "0"))
@@ -97,7 +110,11 @@ export async function sessionHash(meta: IngestMeta): Promise<string | null> {
   }
 }
 
-function rowsFor(samples: VitalSample[], merchantId: string, hash: string | null) {
+function rowsFor(
+  samples: VitalSample[],
+  merchantId: string,
+  hash: string | null,
+) {
   return samples.map((s) => ({
     merchant_id: merchantId,
     template_key: s.template,
@@ -125,25 +142,41 @@ function rowsFor(samples: VitalSample[], merchantId: string, hash: string | null
  * browser request and an exception here would be an error the shopper's
  * console reports as a broken storefront.
  */
-export async function ingestVitals(input: unknown, meta: IngestMeta): Promise<IngestResult> {
+export async function ingestVitals(
+  input: unknown,
+  meta: IngestMeta,
+): Promise<IngestResult> {
   const { incr, log, observe } = await import("./observability.server");
   const started = Date.now();
   const batch = normalizeBatch(input);
 
   if (batch.rejected) {
-    incr("framique_vitals_rejected_total", { reason: "malformed" }, batch.rejected);
+    incr(
+      "framique_vitals_rejected_total",
+      { reason: "malformed" },
+      batch.rejected,
+    );
   }
-  if (batch.truncated) incr("framique_vitals_rejected_total", { reason: "truncated" });
+  if (batch.truncated)
+    incr("framique_vitals_rejected_total", { reason: "truncated" });
   if (!batch.samples.length) {
-    return { accepted: 0, rejected: batch.rejected, truncated: batch.truncated, degraded: false };
+    return {
+      accepted: 0,
+      rejected: batch.rejected,
+      truncated: batch.truncated,
+      degraded: false,
+    };
   }
 
   const hash = await sessionHash(meta);
   const rows = rowsFor(batch.samples, meta.merchantId, hash);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as {
     from: (t: string) => {
-      insert: (rows: unknown[]) => Promise<{ error: { message: string } | null }>;
+      insert: (
+        rows: unknown[],
+      ) => Promise<{ error: { message: string } | null }>;
     };
   };
 
@@ -152,21 +185,45 @@ export async function ingestVitals(input: unknown, meta: IngestMeta): Promise<In
   // telemetry write must never queue behind a shopper's page.
   let lastError: string | null = null;
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    const result = await withTimeout("insert", db.from("web_vitals_sample").insert(rows));
+    const result = await withTimeout(
+      "insert",
+      db.from("web_vitals_sample").insert(rows),
+    );
     if (result && !result.error) {
       observe("framique_vitals_ingest_ms", Date.now() - started, {});
       incr("framique_vitals_accepted_total", {}, rows.length);
       for (const sample of batch.samples) {
-        incr("framique_vitals_sample_total", { metric: sample.metric, rating: sample.rating });
+        incr("framique_vitals_sample_total", {
+          metric: sample.metric,
+          rating: sample.rating,
+        });
       }
-      return { accepted: rows.length, rejected: batch.rejected, truncated: batch.truncated, degraded: false };
+      return {
+        accepted: rows.length,
+        rejected: batch.rejected,
+        truncated: batch.truncated,
+        degraded: false,
+      };
     }
     lastError = result?.error?.message ?? "timeout";
   }
 
-  incr("framique_vitals_dropped_total", { reason: "write_failed" }, rows.length);
-  log("warn", "vitals.write_failed", { merchant_id: meta.merchantId, rows: rows.length, message: lastError });
-  return { accepted: 0, rejected: batch.rejected, truncated: batch.truncated, degraded: true };
+  incr(
+    "framique_vitals_dropped_total",
+    { reason: "write_failed" },
+    rows.length,
+  );
+  log("warn", "vitals.write_failed", {
+    merchant_id: meta.merchantId,
+    rows: rows.length,
+    message: lastError,
+  });
+  return {
+    accepted: 0,
+    rejected: batch.rejected,
+    truncated: batch.truncated,
+    degraded: true,
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -199,7 +256,10 @@ export function invalidateVitals(merchantId: string) {
  * gets an empty summary and the dashboard renders "no field data yet" rather
  * than an error state, and a stale cached summary is preferred over nothing.
  */
-export async function vitalsSummary(merchantId: string, options: SummaryOptions = {}): Promise<VitalsSummary> {
+export async function vitalsSummary(
+  merchantId: string,
+  options: SummaryOptions = {},
+): Promise<VitalsSummary> {
   const opts = {
     hours: Math.min(720, Math.max(1, Math.trunc(options.hours ?? 24))),
     template: options.template ?? null,
@@ -210,7 +270,8 @@ export async function vitalsSummary(merchantId: string, options: SummaryOptions 
   if (hit && now - hit.at < CACHE_TTL_MS) return hit.value;
 
   const { incr, log } = await import("./observability.server");
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const since = new Date(now - opts.hours * 3_600_000).toISOString();
 
   const db = supabaseAdmin as unknown as { from: (t: string) => any };
@@ -223,11 +284,17 @@ export async function vitalsSummary(merchantId: string, options: SummaryOptions 
     .limit(SUMMARY_ROW_LIMIT);
   if (opts.template) query = query.eq("template_key", opts.template);
 
-  const result = await withTimeout<{ data: unknown; error: { message: string } | null }>("summary", query);
+  const result = await withTimeout<{
+    data: unknown;
+    error: { message: string } | null;
+  }>("summary", query);
 
   if (!result || result.error) {
     incr("framique_vitals_read_total", { outcome: "failed" });
-    log("warn", "vitals.read_failed", { merchant_id: merchantId, message: result?.error?.message ?? "timeout" });
+    log("warn", "vitals.read_failed", {
+      merchant_id: merchantId,
+      message: result?.error?.message ?? "timeout",
+    });
     // Stale-while-revalidate: a recent-enough summary beats a blank panel.
     if (hit && now - hit.at < CACHE_STALE_MS) return hit.value;
     return { total: 0, rollups: [], failing: [], worstPaths: [] };
@@ -240,7 +307,12 @@ export async function vitalsSummary(merchantId: string, options: SummaryOptions 
     path: string;
   }[];
   const summary = summarize(
-    rows.map((r) => ({ metric: r.metric, value: r.value_num, device: r.device_class, path: r.path })),
+    rows.map((r) => ({
+      metric: r.metric,
+      value: r.value_num,
+      device: r.device_class,
+      path: r.path,
+    })),
   );
 
   cache.set(key, { at: now, value: summary });
@@ -260,9 +332,15 @@ export async function vitalsSummary(merchantId: string, options: SummaryOptions 
  * its p75 with enough samples to be believed. Deliberately conservative — a
  * quiet store must never be blocked by three unlucky page loads.
  */
-export function vitalsVerdict(summary: VitalsSummary): { ok: boolean; reasons: string[] } {
+export function vitalsVerdict(summary: VitalsSummary): {
+  ok: boolean;
+  reasons: string[];
+} {
   const reasons = summary.failing
     .filter((f) => f.device === "unknown" && f.samples >= MIN_SAMPLES_TO_JUDGE)
-    .map((f) => `${f.metric.toUpperCase()} p75 ${f.p75} over budget ${f.budget} (${f.samples} samples)`);
+    .map(
+      (f) =>
+        `${f.metric.toUpperCase()} p75 ${f.p75} over budget ${f.budget} (${f.samples} samples)`,
+    );
   return { ok: reasons.length === 0, reasons };
 }

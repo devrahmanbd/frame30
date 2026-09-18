@@ -11,7 +11,6 @@ import {
   Field,
   Money,
   StatusPill,
-  
   btnPrimary,
   inputClass,
 } from "@/components/admin/MarketingUi";
@@ -24,13 +23,21 @@ import {
   Toolbar,
 } from "@/components/console/kit";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/coupons")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/coupons",
+)({
   head: () => ({
     meta: [
       { title: "Coupons — Framique Marketing" },
-      { name: "description", content: "Create and manage BDT coupons, promos and usage limits." },
+      {
+        name: "description",
+        content: "Create and manage BDT coupons, promos and usage limits.",
+      },
       { property: "og:title", content: "Coupon management" },
-      { property: "og:description", content: "Fixed, percent, BOGO and free-shipping promos in BDT." },
+      {
+        property: "og:description",
+        content: "Fixed, percent, BOGO and free-shipping promos in BDT.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -59,7 +66,10 @@ const emptyForm = {
   status: "draft" as CouponStatus,
 };
 
-const statusTone: Record<CouponStatus, "warning" | "success" | "neutral" | "danger"> = {
+const statusTone: Record<
+  CouponStatus,
+  "warning" | "success" | "neutral" | "danger"
+> = {
   draft: "warning",
   active: "success",
   paused: "neutral",
@@ -84,10 +94,22 @@ function toMinor(v: string) {
 
 const VIEWS = {
   all: { en: "All", bn: "সব", match: () => true },
-  active: { en: "Active", bn: "সক্রিয়", match: (c: any) => c.status === "active" },
+  active: {
+    en: "Active",
+    bn: "সক্রিয়",
+    match: (c: any) => c.status === "active",
+  },
   draft: { en: "Draft", bn: "খসড়া", match: (c: any) => c.status === "draft" },
-  paused: { en: "Paused", bn: "স্থগিত", match: (c: any) => c.status === "paused" },
-  expired: { en: "Expired", bn: "মেয়াদোত্তীর্ণ", match: (c: any) => c.status === "expired" },
+  paused: {
+    en: "Paused",
+    bn: "স্থগিত",
+    match: (c: any) => c.status === "paused",
+  },
+  expired: {
+    en: "Expired",
+    bn: "মেয়াদোত্তীর্ণ",
+    match: (c: any) => c.status === "expired",
+  },
 } as const;
 type ViewKey = keyof typeof VIEWS;
 
@@ -96,12 +118,15 @@ function CouponsPage() {
   const { data: merchant } = useMerchant();
   const merchantId = merchant?.id;
   const qc = useQueryClient();
-  const list = useListState({ defaultSort: "code", defaultDir: "asc", pageSize: 50 });
+  const list = useListState({
+    defaultSort: "code",
+    defaultDir: "asc",
+    pageSize: 50,
+  });
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
-
 
   const { data: coupons } = useQuery({
     queryKey: ["coupons", merchantId],
@@ -145,9 +170,15 @@ function CouponsPage() {
           getQuantity: Number(form.getQuantity || 0),
           minSubtotalMinorInt: toMinor(form.minSubtotalTaka),
           usageLimit: form.usageLimit ? Number(form.usageLimit) : null,
-          perCustomerLimit: form.perCustomerLimit ? Number(form.perCustomerLimit) : null,
-          startsAt: form.startsAt ? new Date(form.startsAt).toISOString() : null,
-          expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : null,
+          perCustomerLimit: form.perCustomerLimit
+            ? Number(form.perCustomerLimit)
+            : null,
+          startsAt: form.startsAt
+            ? new Date(form.startsAt).toISOString()
+            : null,
+          expiresAt: form.expiresAt
+            ? new Date(form.expiresAt).toISOString()
+            : null,
           allowCombine: form.allowCombine,
           onePerOrder: form.onePerOrder,
           status: form.status,
@@ -169,7 +200,8 @@ function CouponsPage() {
   const view = (list.view in VIEWS ? list.view : "all") as ViewKey;
   const q = list.q.trim().toLowerCase();
   const filtered = rows.filter(
-    (c) => VIEWS[view].match(c) && (!q || String(c.code).toLowerCase().includes(q)),
+    (c) =>
+      VIEWS[view].match(c) && (!q || String(c.code).toLowerCase().includes(q)),
   );
   const sorted = compareBy(
     filtered,
@@ -189,12 +221,18 @@ function CouponsPage() {
       key: "code",
       header: t("Code", "কোড"),
       sortable: true,
-      cell: (c) => <span className="fq-num font-medium text-foreground">{c.code}</span>,
+      cell: (c) => (
+        <span className="fq-num font-medium text-foreground">{c.code}</span>
+      ),
     },
     {
       key: "type",
       header: t("Type", "ধরন"),
-      cell: (c) => t(typeLabel[c.type as CouponType].en, typeLabel[c.type as CouponType].bn),
+      cell: (c) =>
+        t(
+          typeLabel[c.type as CouponType].en,
+          typeLabel[c.type as CouponType].bn,
+        ),
     },
     {
       key: "value",
@@ -233,7 +271,10 @@ function CouponsPage() {
       sortable: true,
       cell: (c) => (
         <StatusPill
-          label={t(statusLabel[c.status as CouponStatus].en, statusLabel[c.status as CouponStatus].bn)}
+          label={t(
+            statusLabel[c.status as CouponStatus].en,
+            statusLabel[c.status as CouponStatus].bn,
+          )}
           tone={statusTone[c.status as CouponStatus]}
         />
       ),
@@ -243,7 +284,9 @@ function CouponsPage() {
   return (
     <div className="space-y-6 p-4 md:p-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Coupons & promos", "কুপন ও প্রোমো")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Coupons & promos", "কুপন ও প্রোমো")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "All discounts are verified on the server — discounts sent by the client cart are never accepted.",
@@ -298,14 +341,19 @@ function CouponsPage() {
             empty={
               <EmptyState
                 title={t("No coupons yet.", "এখনও কোনো কুপন নেই।")}
-                description={t("Create one with the form beside.", "পাশের ফর্ম দিয়ে তৈরি করুন।")}
+                description={t(
+                  "Create one with the form beside.",
+                  "পাশের ফর্ম দিয়ে তৈরি করুন।",
+                )}
               />
             }
           />
 
           {openId && (
             <div className="fq-card p-3">
-              <h2 className="mb-2 text-sm font-semibold">{t("Recent usage", "সাম্প্রতিক ব্যবহার")}</h2>
+              <h2 className="mb-2 text-sm font-semibold">
+                {t("Recent usage", "সাম্প্রতিক ব্যবহার")}
+              </h2>
               <ul className="space-y-1 text-sm">
                 {(redemptions ?? []).map((r) => (
                   <li key={r.id} className="flex justify-between gap-3">
@@ -314,13 +362,14 @@ function CouponsPage() {
                   </li>
                 ))}
                 {(redemptions ?? []).length === 0 && (
-                  <li className="fq-sub">{t("No usage yet.", "কোনো ব্যবহার নেই।")}</li>
+                  <li className="fq-sub">
+                    {t("No usage yet.", "কোনো ব্যবহার নেই।")}
+                  </li>
                 )}
               </ul>
             </div>
           )}
         </div>
-
 
         <form
           className="space-y-3 rounded-fq-md border border-border bg-card p-4"
@@ -329,12 +378,16 @@ function CouponsPage() {
             save.mutate();
           }}
         >
-          <h2 className="font-bangla-display text-base font-semibold">{t("New coupon", "নতুন কুপন")}</h2>
+          <h2 className="font-bangla-display text-base font-semibold">
+            {t("New coupon", "নতুন কুপন")}
+          </h2>
           <Field label={t("Code", "কোড")}>
             <input
               className={inputClass}
               value={form.code}
-              onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+              onChange={(e) =>
+                setForm({ ...form, code: e.target.value.toUpperCase() })
+              }
               required
             />
           </Field>
@@ -342,7 +395,9 @@ function CouponsPage() {
             <select
               className={inputClass}
               value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value as CouponType })}
+              onChange={(e) =>
+                setForm({ ...form, type: e.target.value as CouponType })
+              }
             >
               {(Object.keys(typeLabel) as CouponType[]).map((ty) => (
                 <option key={ty} value={ty}>
@@ -359,7 +414,9 @@ function CouponsPage() {
                 step="0.01"
                 className={inputClass}
                 value={form.amountTaka}
-                onChange={(e) => setForm({ ...form, amountTaka: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, amountTaka: e.target.value })
+                }
               />
             </Field>
           )}
@@ -371,7 +428,9 @@ function CouponsPage() {
                 max="100"
                 className={inputClass}
                 value={form.percentOff}
-                onChange={(e) => setForm({ ...form, percentOff: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, percentOff: e.target.value })
+                }
               />
             </Field>
           )}
@@ -383,7 +442,9 @@ function CouponsPage() {
                   min="1"
                   className={inputClass}
                   value={form.buyQuantity}
-                  onChange={(e) => setForm({ ...form, buyQuantity: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, buyQuantity: e.target.value })
+                  }
                 />
               </Field>
               <Field label={t("Get free", "ফ্রি পান")}>
@@ -392,7 +453,9 @@ function CouponsPage() {
                   min="1"
                   className={inputClass}
                   value={form.getQuantity}
-                  onChange={(e) => setForm({ ...form, getQuantity: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, getQuantity: e.target.value })
+                  }
                 />
               </Field>
             </div>
@@ -404,7 +467,9 @@ function CouponsPage() {
               step="0.01"
               className={inputClass}
               value={form.minSubtotalTaka}
-              onChange={(e) => setForm({ ...form, minSubtotalTaka: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, minSubtotalTaka: e.target.value })
+              }
             />
           </Field>
           <div className="grid grid-cols-2 gap-2">
@@ -414,7 +479,9 @@ function CouponsPage() {
                 min="1"
                 className={inputClass}
                 value={form.usageLimit}
-                onChange={(e) => setForm({ ...form, usageLimit: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, usageLimit: e.target.value })
+                }
               />
             </Field>
             <Field label={t("Per customer", "প্রতি গ্রাহক")}>
@@ -423,7 +490,9 @@ function CouponsPage() {
                 min="1"
                 className={inputClass}
                 value={form.perCustomerLimit}
-                onChange={(e) => setForm({ ...form, perCustomerLimit: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, perCustomerLimit: e.target.value })
+                }
               />
             </Field>
           </div>
@@ -441,7 +510,9 @@ function CouponsPage() {
                 type="datetime-local"
                 className={inputClass}
                 value={form.expiresAt}
-                onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, expiresAt: e.target.value })
+                }
               />
             </Field>
           </div>
@@ -449,7 +520,9 @@ function CouponsPage() {
             <input
               type="checkbox"
               checked={form.allowCombine}
-              onChange={(e) => setForm({ ...form, allowCombine: e.target.checked })}
+              onChange={(e) =>
+                setForm({ ...form, allowCombine: e.target.checked })
+              }
             />
             {t("Usable with other coupons", "অন্য কুপনের সাথে ব্যবহারযোগ্য")}
           </label>
@@ -457,7 +530,9 @@ function CouponsPage() {
             <input
               type="checkbox"
               checked={form.onePerOrder}
-              onChange={(e) => setForm({ ...form, onePerOrder: e.target.checked })}
+              onChange={(e) =>
+                setForm({ ...form, onePerOrder: e.target.checked })
+              }
             />
             {t("Once per order", "প্রতি অর্ডারে একবার")}
           </label>
@@ -465,7 +540,9 @@ function CouponsPage() {
             <select
               className={inputClass}
               value={form.status}
-              onChange={(e) => setForm({ ...form, status: e.target.value as CouponStatus })}
+              onChange={(e) =>
+                setForm({ ...form, status: e.target.value as CouponStatus })
+              }
             >
               {(Object.keys(statusLabel) as CouponStatus[]).map((s) => (
                 <option key={s} value={s}>
@@ -474,7 +551,11 @@ function CouponsPage() {
               ))}
             </select>
           </Field>
-          <button type="submit" className={btnPrimary} disabled={save.isPending}>
+          <button
+            type="submit"
+            className={btnPrimary}
+            disabled={save.isPending}
+          >
             {t("Save", "সংরক্ষণ করুন")}
           </button>
           <ErrorFrame message={error} />

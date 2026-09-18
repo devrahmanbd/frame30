@@ -39,7 +39,8 @@ spec:
         # Phase 11.4 — Time-Machine Continuous Archiving Sidecar
         - name: time-machine-archiver
           image: alpine:3.19
-          command: ["/bin/bash", "/scripts/time-machine-daemon.sh", "run-daemon"]
+          command:
+            ["/bin/bash", "/scripts/time-machine-daemon.sh", "run-daemon"]
           env:
             - name: BACKUP_DIR
               value: /var/backups/framique

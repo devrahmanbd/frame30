@@ -19,6 +19,7 @@ Ruflo wins on breadth and coordination sophistication, but three structural gaps
 **Payoff dimension**: reliability / DX
 
 **Specific files**:
+
 - `v3/__tests__/integration/memory-integration.test.ts` — HybridBackend reopen
 - `v3/__tests__/integration/swarm-integration.test.ts` — error propagation + scale-down direction
 - `v3/__tests__/integration/workflow-integration.test.ts` — workflow resume after interrupt
@@ -121,18 +122,18 @@ Ruflo wins on breadth and coordination sophistication, but three structural gaps
 
 ## Prioritization summary
 
-| Rank | Item | Effort | Payoff | Target |
-|------|------|--------|--------|--------|
-| 1 | Fix 4 skipped integration tests (#1872) | M | reliability | 3.8.x |
-| 2 | Witness manifest drift fix (#2047) | S | security/trust | 3.8.x |
-| 3 | Real-model validation M5 (#2125) | S–M | benchmark credibility | 3.8.x |
-| 4 | `CLAUDE_FLOW_DB_PATH` env var (#2105) | S | DX | 3.8.x |
-| 5 | Skill synthesis loop (ADR-113/R-3) | M | capability | 3.9.0 |
-| 6 | Branding cleanup (#1861, #1858) | S | DX/positioning | 3.8.x |
-| 7 | Windows daemon persistence (#1766) | S–M | reliability | 3.8.x |
-| 8 | Hive-mind load testing (#2030) | M | reliability | 3.9.0 |
-| 9 | `@noble/ed25519` v2→v3 audit (#2032) | S | security | 3.8.x |
-| 10 | Plugin health audit + marketplace promotion | S–M | ecosystem | 3.9.0 |
+| Rank | Item                                        | Effort | Payoff                | Target |
+| ---- | ------------------------------------------- | ------ | --------------------- | ------ |
+| 1    | Fix 4 skipped integration tests (#1872)     | M      | reliability           | 3.8.x  |
+| 2    | Witness manifest drift fix (#2047)          | S      | security/trust        | 3.8.x  |
+| 3    | Real-model validation M5 (#2125)            | S–M    | benchmark credibility | 3.8.x  |
+| 4    | `CLAUDE_FLOW_DB_PATH` env var (#2105)       | S      | DX                    | 3.8.x  |
+| 5    | Skill synthesis loop (ADR-113/R-3)          | M      | capability            | 3.9.0  |
+| 6    | Branding cleanup (#1861, #1858)             | S      | DX/positioning        | 3.8.x  |
+| 7    | Windows daemon persistence (#1766)          | S–M    | reliability           | 3.8.x  |
+| 8    | Hive-mind load testing (#2030)              | M      | reliability           | 3.9.0  |
+| 9    | `@noble/ed25519` v2→v3 audit (#2032)        | S      | security              | 3.8.x  |
+| 10   | Plugin health audit + marketplace promotion | S–M    | ecosystem             | 3.9.0  |
 
 Items 1–4, 6, 7, 9 are 3.8.x candidates (patch or hot-fix releases). Items 5, 8, 10 are 3.9.0 candidates alongside ADR-130 Phases 1–3.
 

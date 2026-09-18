@@ -40,10 +40,22 @@ export function SerpPreviewCard({
         <span className="text-xs font-medium text-muted-foreground">
           {t("Search preview", "সার্চ প্রিভিউ")}
         </span>
-        <div className="flex gap-1" role="group" aria-label={t("Preview device", "প্রিভিউ ডিভাইস")}>
+        <div
+          className="flex gap-1"
+          role="group"
+          aria-label={t("Preview device", "প্রিভিউ ডিভাইস")}
+        >
           {[
-            { id: "desktop" as const, Icon: Monitor, label: t("Desktop", "ডেস্কটপ") },
-            { id: "mobile" as const, Icon: Smartphone, label: t("Mobile", "মোবাইল") },
+            {
+              id: "desktop" as const,
+              Icon: Monitor,
+              label: t("Desktop", "ডেস্কটপ"),
+            },
+            {
+              id: "mobile" as const,
+              Icon: Smartphone,
+              label: t("Mobile", "মোবাইল"),
+            },
           ].map(({ id, Icon, label }) => (
             <button
               key={id}
@@ -83,12 +95,17 @@ export function SerpPreviewCard({
           {metrics.title.shown || t("Untitled", "শিরোনামহীন")}
         </p>
         <p className="line-clamp-2 text-[13px] leading-snug text-muted-foreground">
-          {metrics.description.shown || t("No description yet.", "এখনো বর্ণনা নেই।")}
+          {metrics.description.shown ||
+            t("No description yet.", "এখনো বর্ণনা নেই।")}
         </p>
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
-        <PixelMeter label={t("Title", "টাইটেল")} px={metrics.title.px} max={budget.titlePx} />
+        <PixelMeter
+          label={t("Title", "টাইটেল")}
+          px={metrics.title.px}
+          max={budget.titlePx}
+        />
         <PixelMeter
           label={t("Description", "বর্ণনা")}
           px={metrics.description.px}

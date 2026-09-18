@@ -19,18 +19,18 @@ name: oia-audit-weekly
 
 on:
   schedule:
-    - cron: '17 4 * * 0'  # Sundays at 04:17 UTC
-  workflow_dispatch:        # manual trigger for ad-hoc audits
+    - cron: "17 4 * * 0" # Sundays at 04:17 UTC
+  workflow_dispatch: # manual trigger for ad-hoc audits
     # iter 109 — parameterize the policy thresholds so ad-hoc runs can
     # explore stricter/looser gates without editing YAML.
     inputs:
       threshold:
-        description: 'Structural similarity threshold (default 0.85 — scheduled). Lower = stricter drift alert.'
+        description: "Structural similarity threshold (default 0.85 — scheduled). Lower = stricter drift alert."
         type: string
-        default: '0.85'
+        default: "0.85"
         required: false
       alert_on_new_severity:
-        description: 'Alert on any introduced finding ≥ this severity'
+        description: "Alert on any introduced finding ≥ this severity"
         type: choice
         options:
           - info
@@ -45,9 +45,9 @@ on:
   push:
     branches: [main]
     paths:
-      - 'plugins/ruflo-metaharness/scripts/oia-audit.mjs'
-      - 'plugins/ruflo-metaharness/scripts/_harness.mjs'
-      - '.github/workflows/oia-audit-weekly.yml'
+      - "plugins/ruflo-metaharness/scripts/oia-audit.mjs"
+      - "plugins/ruflo-metaharness/scripts/_harness.mjs"
+      - ".github/workflows/oia-audit-weekly.yml"
 
 jobs:
   audit:
@@ -57,7 +57,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Run composite audit (alert on HIGH)
         # --dry-run because CI has no persistent memory store; the

@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest";
 import { SECTION_CATALOG, BITEXT_FIELDS } from "@/lib/builder-ast";
 import { WIDGET_REGISTRY } from "@/lib/widget-registry";
 import { emiPlan, EMI_TENURES, isEmiTenure } from "@/lib/emi";
-import { sparklinePath, authoredSpecs, resolvedSpecs } from "@/components/builder/electronics";
+import {
+  sparklinePath,
+  authoredSpecs,
+  resolvedSpecs,
+} from "@/components/builder/electronics";
 import { groupSpecs } from "@/components/builder/primitives/SpecRow";
 
 const CIRCUIT_TYPES = [
@@ -25,7 +29,10 @@ const SRC = readFileSync("src/components/builder/electronics.tsx", "utf8");
 describe("phase 2.7 — circuit catalogue wiring", () => {
   it("registers every new widget in the catalogue and the registry", () => {
     for (const type of CIRCUIT_TYPES) {
-      expect(SECTION_CATALOG.some((entry) => entry.type === type), `${type} catalogue`).toBe(true);
+      expect(
+        SECTION_CATALOG.some((entry) => entry.type === type),
+        `${type} catalogue`,
+      ).toBe(true);
       expect(WIDGET_REGISTRY[type], `${type} registry`).toBeTruthy();
     }
   });
@@ -39,7 +46,9 @@ describe("phase 2.7 — circuit catalogue wiring", () => {
   it("keeps spec_table upgraded with grouped rows 5 and 6", () => {
     const entry = SECTION_CATALOG.find((e) => e.type === "spec_table")!;
     const keys = Object.keys(entry.defaults ?? {});
-    expect(keys).toEqual(expect.arrayContaining(["r5Label", "r6Label", "grouped"]));
+    expect(keys).toEqual(
+      expect.arrayContaining(["r5Label", "r6Label", "grouped"]),
+    );
   });
 });
 
@@ -47,8 +56,15 @@ describe("phase 2.7 — no client-side money arithmetic", () => {
   it("never adds, subtracts or multiplies inside the renderer module", () => {
     const offenders = SRC.split("\n")
       .map((line) => line.trim())
-      .filter((line) => !line.startsWith("*") && !line.startsWith("//") && !line.startsWith("/*"))
-      .filter((line) => /(?:Minor|price|total|amount)\w*\s*[-+*/]\s*\w/i.test(line));
+      .filter(
+        (line) =>
+          !line.startsWith("*") &&
+          !line.startsWith("//") &&
+          !line.startsWith("/*"),
+      )
+      .filter((line) =>
+        /(?:Minor|price|total|amount)\w*\s*[-+*/]\s*\w/i.test(line),
+      );
     expect(offenders, offenders.join("\n")).toEqual([]);
   });
 
@@ -83,9 +99,26 @@ describe("phase 2.7 — emi maths (server-side helper)", () => {
 describe("phase 2.7 — spec grouping and sparkline", () => {
   it("prefers resolved rows and keeps group order stable", () => {
     const rows = resolvedSpecs([
-      { id: "a", title: "Chipset", valueText: "A17", group: "Performance" } as never,
-      { id: "b", title: "RAM", valueText: "8", unit: "GB", group: "Performance" } as never,
-      { id: "c", title: "Weight", valueText: "187", unit: "g", group: "Body" } as never,
+      {
+        id: "a",
+        title: "Chipset",
+        valueText: "A17",
+        group: "Performance",
+      } as never,
+      {
+        id: "b",
+        title: "RAM",
+        valueText: "8",
+        unit: "GB",
+        group: "Performance",
+      } as never,
+      {
+        id: "c",
+        title: "Weight",
+        valueText: "187",
+        unit: "g",
+        group: "Body",
+      } as never,
     ]);
     const groups = groupSpecs(rows);
     expect(groups.map((g) => g.group)).toEqual(["Performance", "Body"]);

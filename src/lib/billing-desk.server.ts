@@ -55,12 +55,18 @@ function mapRpcError(message: string): BillingError {
   const code = Object.keys(known).find((k) => message.includes(k));
   if (code) return new BillingError(code, known[code] as string);
   log("warn", "billing.rpc_failed", { detail: message.slice(0, 120) });
-  return new BillingError("billing_unavailable", "Billing is temporarily unavailable");
+  return new BillingError(
+    "billing_unavailable",
+    "Billing is temporarily unavailable",
+  );
 }
 
 async function usage(db: Client, merchantId: string) {
   const [products, staff] = await Promise.all([
-    db.from("products").select("id", { count: "exact", head: true }).eq("merchant_id", merchantId),
+    db
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("merchant_id", merchantId),
     db
       .from("merchant_members")
       .select("id", { count: "exact", head: true })
@@ -85,36 +91,43 @@ export function nextDunningStep(pastDueDays: number | null) {
 export async function loadBilling(db: Client, merchantId: string) {
   return withSpan("billing.load", async () => {
     const subscription = await ensureSubscription(db, merchantId);
-    const [plans, limits, counts, vat, invoices, merchant, attempts] = await Promise.all([
-      loadPlanDefs(db),
-      ensureLimits(db, merchantId, subscription.plan),
-      usage(db, merchantId),
-      vatBasisPoints(db),
-      db
-        .from("invoices")
-        .select("*")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(100),
-      db
-        .from("merchants")
-        .select("id, name, kyc_status, currency_code")
-        .eq("id", merchantId)
-        .single(),
-      db
-        .from("billing_dunning_attempts")
-        .select("stage, channel, outcome, created_at, invoice_id")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(20),
-    ]);
+    const [plans, limits, counts, vat, invoices, merchant, attempts] =
+      await Promise.all([
+        loadPlanDefs(db),
+        ensureLimits(db, merchantId, subscription.plan),
+        usage(db, merchantId),
+        vatBasisPoints(db),
+        db
+          .from("invoices")
+          .select("*")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(100),
+        db
+          .from("merchants")
+          .select("id, name, kyc_status, currency_code")
+          .eq("id", merchantId)
+          .single(),
+        db
+          .from("billing_dunning_attempts")
+          .select("stage, channel, outcome, created_at, invoice_id")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(20),
+      ]);
 
     const pastDueDays = daysBetween(subscription.past_due_since);
     const trialDaysLeft = subscription.trial_ends_at
-      ? Math.ceil((new Date(subscription.trial_ends_at).getTime() - Date.now()) / 86400000)
+      ? Math.ceil(
+          (new Date(subscription.trial_ends_at).getTime() - Date.now()) /
+            86400000,
+        )
       : null;
     const graceDaysLeft = subscription.grace_until
-      ? Math.ceil((new Date(subscription.grace_until).getTime() - Date.now()) / 86400000)
+      ? Math.ceil(
+          (new Date(subscription.grace_until).getTime() - Date.now()) /
+            86400000,
+        )
       : null;
 
     return {
@@ -140,13 +153,20 @@ export async function loadBilling(db: Client, merchantId: string) {
       },
       scheduled:
         subscription.scheduled_plan && subscription.scheduled_plan_at
-          ? { plan: subscription.scheduled_plan, at: subscription.scheduled_plan_at }
+          ? {
+              plan: subscription.scheduled_plan,
+              at: subscription.scheduled_plan_at,
+            }
           : null,
     };
   });
 }
 
-export async function planPreview(db: Client, merchantId: string, target: Plan) {
+export async function planPreview(
+  db: Client,
+  merchantId: string,
+  target: Plan,
+) {
   const { data, error } = await db.rpc("billing_plan_preview", {
     _merchant_id: merchantId,
     _target: target,
@@ -160,7 +180,12 @@ export async function planPreview(db: Client, merchantId: string, target: Plan) 
  * per day, credit for the current plan deducted); downgrade is scheduled at
  * period end so the merchant keeps what they paid for. Both are audited.
  */
-export async function changePlan(db: Client, merchantId: string, actor: string, target: Plan) {
+export async function changePlan(
+  db: Client,
+  merchantId: string,
+  actor: string,
+  target: Plan,
+) {
   return withSpan(
     "billing.plan_change",
     async () => {
@@ -174,7 +199,10 @@ export async function changePlan(db: Client, merchantId: string, actor: string, 
         incr("framique_billing_plan_change_total", { outcome: "error" });
         throw mapRpcError(error.message);
       }
-      const result = data as unknown as { kind: string; total_minor_int?: number };
+      const result = data as unknown as {
+        kind: string;
+        total_minor_int?: number;
+      };
       incr("framique_billing_plan_change_total", { outcome: result.kind });
       return result;
     },
@@ -192,8 +220,13 @@ export async function fingerprintOf(parts: (string | null | undefined)[]) {
     .map((p) => (p ?? "").trim().toLowerCase())
     .filter(Boolean)
     .join("|");
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(seed || "unknown"));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(seed || "unknown"),
+  );
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export async function claimTrial(
@@ -216,7 +249,12 @@ export async function claimTrial(
   });
 }
 
-export async function payInvoice(db: Client, merchantId: string, actor: string, invoiceId: string) {
+export async function payInvoice(
+  db: Client,
+  merchantId: string,
+  actor: string,
+  invoiceId: string,
+) {
   return withSpan("billing.pay_invoice", async () => {
     await enforceRateLimit("billing.pay_invoice", `${merchantId}:${actor}`);
     const { data: invoice } = await db
@@ -225,10 +263,12 @@ export async function payInvoice(db: Client, merchantId: string, actor: string, 
       .eq("merchant_id", merchantId)
       .eq("id", invoiceId)
       .maybeSingle();
-    if (!invoice) throw new BillingError("invoice_not_found", "Invoice not found");
+    if (!invoice)
+      throw new BillingError("invoice_not_found", "Invoice not found");
     // Replay of a settled invoice returns the original verdict, never a second effect.
     if (invoice.status === "paid") return { invoice };
-    if (invoice.status === "void") throw new BillingError("invoice_void", "Invoice is void");
+    if (invoice.status === "void")
+      throw new BillingError("invoice_void", "Invoice is void");
 
     const { data: paid, error } = await db
       .from("invoices")
@@ -272,7 +312,12 @@ export async function payInvoice(db: Client, merchantId: string, actor: string, 
   });
 }
 
-export async function warnLimit(db: Client, merchantId: string, actor: string, resource: string) {
+export async function warnLimit(
+  db: Client,
+  merchantId: string,
+  actor: string,
+  resource: string,
+) {
   incr("framique_plan_limit_exceeded_total", { resource });
   await logEvent(db, merchantId, actor, "plan.limit_exceeded", { resource });
 }

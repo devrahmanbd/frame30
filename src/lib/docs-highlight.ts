@@ -35,16 +35,66 @@ export type Token = { kind: TokenKind; text: string };
 export type CodeLang = "bash" | "ts" | "json" | "http" | "text";
 
 const TS_KEYWORDS = new Set([
-  "const","let","var","function","return","await","async","import","from","export","default",
-  "if","else","for","of","in","while","try","catch","finally","throw","new","class","extends",
-  "type","interface","true","false","null","undefined","as","void","this",
+  "const",
+  "let",
+  "var",
+  "function",
+  "return",
+  "await",
+  "async",
+  "import",
+  "from",
+  "export",
+  "default",
+  "if",
+  "else",
+  "for",
+  "of",
+  "in",
+  "while",
+  "try",
+  "catch",
+  "finally",
+  "throw",
+  "new",
+  "class",
+  "extends",
+  "type",
+  "interface",
+  "true",
+  "false",
+  "null",
+  "undefined",
+  "as",
+  "void",
+  "this",
 ]);
 
 const BASH_KEYWORDS = new Set([
-  "curl","echo","export","jq","if","then","fi","for","do","done","set","cat","printf",
+  "curl",
+  "echo",
+  "export",
+  "jq",
+  "if",
+  "then",
+  "fi",
+  "for",
+  "do",
+  "done",
+  "set",
+  "cat",
+  "printf",
 ]);
 
-const HTTP_METHODS = new Set(["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"]);
+const HTTP_METHODS = new Set([
+  "GET",
+  "POST",
+  "PATCH",
+  "PUT",
+  "DELETE",
+  "OPTIONS",
+  "HEAD",
+]);
 
 /** Hard ceiling so a pathological sample cannot spend SSR time. */
 const MAX_INPUT = 20_000;
@@ -63,7 +113,10 @@ const RULES: Record<CodeLang, Rule[]> = {
   ],
   ts: [
     { kind: "comment", re: /\/\/[^\n]*|\/\*[\s\S]*?\*\//y },
-    { kind: "string", re: /`(?:[^`\\]|\\.)*`|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"/y },
+    {
+      kind: "string",
+      re: /`(?:[^`\\]|\\.)*`|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"/y,
+    },
     { kind: "number", re: /\b\d+(?:\.\d+)?\b/y },
     { kind: "method", re: /\b[A-Za-z_$][\w$]*(?=\s*\()/y },
     { kind: "keyword", re: /\b[A-Za-z_$][\w$]*\b/y },
@@ -94,7 +147,8 @@ const RULES: Record<CodeLang, Rule[]> = {
 export function highlight(code: string, lang: CodeLang = "text"): Token[] {
   const source = code.length > MAX_INPUT ? code.slice(0, MAX_INPUT) : code;
   const rules = RULES[lang] ?? [];
-  if (rules.length === 0) return source ? [{ kind: "plain", text: source }] : [];
+  if (rules.length === 0)
+    return source ? [{ kind: "plain", text: source }] : [];
 
   const out: Token[] = [];
   let index = 0;

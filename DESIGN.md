@@ -284,17 +284,20 @@ The design system reconciles a fundamental aesthetic truth: **monochrome minimal
 ## 2. Color System & Color Roles
 
 ### 2.1 Brand & Action Accents
+
 - **Facebook Blue** (`{colors.brand-blue}` — `#1877F2`): Dominant primary action color. Triggers instant trust for merchant checkout, signup, and primary buttons. Active press state transitions to `{colors.brand-blue-hover}` (`#1465CC`).
 - **Blue Soft Wash** (`{colors.brand-blue-soft}` — `#EBF5FF`): Background for verified badges, active tab pills, and secondary focus states.
 - **Rose / Pink Accent** (`{colors.brand-pink}` — `#F43F5E`): Playful accent for live status pills, conversion highlights, and notification indicators.
 
 ### 2.2 Surface Palette (The Calm Warmth Hierarchy)
+
 - **Canvas** (`{colors.canvas}` — `#FDFBFB`): The default page floor. Infused with 0.5% rose warmth to eradicate the harshness of flat white.
 - **Calm Pink Surface** (`{colors.canvas-pink-calm}` — `#FFF1F3`): Ambient hero lighting, section transitions, and subtle badge containers. Provides visual tranquility.
 - **Card Surface** (`{colors.surface-card}` — `#FFFFFF`): Elevated content cards, bento tiles, and input surfaces with crisp hairline borders.
 - **Dark Surface** (`{colors.surface-dark}` — `#0F172A`): Deep carbon/navy footer and dummy image placeholder interiors. Serves as a solid visual anchor at the bottom of long-scroll pages.
 
 ### 2.3 Typographic Ink
+
 - **Deep Ink** (`{colors.ink}` — `#0F172A`): Headlines, display typography, and primary button labels. High-contrast, WCAG AAA compliant (14.2:1 against canvas).
 - **Secondary Ink** (`{colors.ink-secondary}` — `#334155`): Subheadings, card titles, and bold highlights.
 - **Body Text** (`{colors.body}` — `#475569`): Running paragraphs, list items, and matrix cells.
@@ -308,23 +311,24 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 
 ### Typographic Scale & Usage
 
-| Token | Font Size | Weight | Line Height | Letter Spacing | Primary Usage |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| `{typography.display-xl}` | 56px | 700 | 1.10 | -1.5px | Homepage Hero H1 ("The modern commerce platform for Bangladesh") |
-| `{typography.display-lg}` | 42px | 700 | 1.15 | -1.0px | Major Band Section Headings |
-| `{typography.display-md}` | 32px | 600 | 1.20 | -0.6px | Sub-section headings, Modal titles |
-| `{typography.display-sm}` | 24px | 600 | 1.25 | -0.3px | Bento Card Titles, Tour Headings |
-| `{typography.title-lg}` | 20px | 600 | 1.35 | -0.2px | Pricing Tier Names, Feature Highlights |
-| `{typography.title-md}` | 18px | 600 | 1.40 | 0px | Card subheadings, Accordion Question Titles |
-| `{typography.title-sm}` | 16px | 600 | 1.40 | 0px | Small card headers, Table Column Labels |
-| `{typography.body-md}` | 16px | 400 | 1.55 | 0px | Default body copy, Lead explanations |
-| `{typography.body-sm}` | 14px | 400 | 1.50 | 0px | Secondary explanations, Footer links |
-| `{typography.caption}` | 12px | 500 | 1.40 | +0.2px | Floating badges, Asset specs, Date stamps |
-| `{typography.code}` | 13px | 400 | 1.50 | 0px | API endpoints, Barcodes, Webhook payloads |
-| `{typography.button}` | 14px | 600 | 1.00 | 0px | Interactive CTA button labels |
+| Token                     | Font Size | Weight | Line Height | Letter Spacing | Primary Usage                                                    |
+| :------------------------ | :-------- | :----- | :---------- | :------------- | :--------------------------------------------------------------- |
+| `{typography.display-xl}` | 56px      | 700    | 1.10        | -1.5px         | Homepage Hero H1 ("The modern commerce platform for Bangladesh") |
+| `{typography.display-lg}` | 42px      | 700    | 1.15        | -1.0px         | Major Band Section Headings                                      |
+| `{typography.display-md}` | 32px      | 600    | 1.20        | -0.6px         | Sub-section headings, Modal titles                               |
+| `{typography.display-sm}` | 24px      | 600    | 1.25        | -0.3px         | Bento Card Titles, Tour Headings                                 |
+| `{typography.title-lg}`   | 20px      | 600    | 1.35        | -0.2px         | Pricing Tier Names, Feature Highlights                           |
+| `{typography.title-md}`   | 18px      | 600    | 1.40        | 0px            | Card subheadings, Accordion Question Titles                      |
+| `{typography.title-sm}`   | 16px      | 600    | 1.40        | 0px            | Small card headers, Table Column Labels                          |
+| `{typography.body-md}`    | 16px      | 400    | 1.55        | 0px            | Default body copy, Lead explanations                             |
+| `{typography.body-sm}`    | 14px      | 400    | 1.50        | 0px            | Secondary explanations, Footer links                             |
+| `{typography.caption}`    | 12px      | 500    | 1.40        | +0.2px         | Floating badges, Asset specs, Date stamps                        |
+| `{typography.code}`       | 13px      | 400    | 1.50        | 0px            | API endpoints, Barcodes, Webhook payloads                        |
+| `{typography.button}`     | 14px      | 600    | 1.00        | 0px            | Interactive CTA button labels                                    |
 
 ### Dual-Script Rules
-1. **Never apply negative tracking to Bengali text**: Latin letter-spacing tokens (`-1.5px`, `-1.0px`) break Bengali conjuncts (*juktakkhor*). When `lang="bn"` or Bengali characters are detected, `letter-spacing` is strictly forced to `0px`.
+
+1. **Never apply negative tracking to Bengali text**: Latin letter-spacing tokens (`-1.5px`, `-1.0px`) break Bengali conjuncts (_juktakkhor_). When `lang="bn"` or Bengali characters are detected, `letter-spacing` is strictly forced to `0px`.
 2. **Vertical Clearance**: Bengali script requires a minimum line-height of `1.35` for display type and `1.60` for body copy to prevent upper and lower diacritic clipping.
 
 ---
@@ -345,6 +349,7 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 ## 5. Component Specifications
 
 ### 5.1 Primary Button (`button-primary`)
+
 - **Background**: `{colors.brand-blue}` (`#1877F2`)
 - **Text**: `{colors.on-primary}` (`#FFFFFF`) with weight 600
 - **Radius**: `{rounded.md}` (8px)
@@ -352,23 +357,27 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 - **Interaction**: Subtle spring scale (`scale(0.98)` on click), shadow lift on hover.
 
 ### 5.2 Secondary Button (`button-secondary`)
+
 - **Background**: `{colors.surface-card}` (`#FFFFFF`)
 - **Border**: `1px solid {colors.hairline}` (`#E2E8F0`)
 - **Text**: `{colors.ink}` (`#0F172A`)
 - **Hover**: Background shifts to `{colors.brand-pink-subtle}` (`#FDF8F9`) with `{colors.brand-pink}` border tint.
 
 ### 5.3 Dummy Image Placeholder (`dummy-placeholder-frame`)
+
 - **Philosophy**: Pure graphic placeholder. **Zero faux OS window chrome, zero fake browser dots, zero fake URL bars.**
 - **Canvas**: Clean dark container (`#0F172A`) with subtle dashed outline (`#334155`).
 - **Visual Icon**: Universal photography/artwork vector icon with centered text: `"DUMMY PLACEHOLDER IMAGE"`.
 - **Alt Text Requirement**: The `alt` attribute strictly serves as an **AI image generation prompt** (e.g. for Midjourney/DALL-E) detailing subject, style, lighting, composition, and aspect ratio.
 
 ### 5.4 Bento & Feature Cards
+
 - **Background**: Crisp `{colors.surface-card}` (`#FFFFFF`) with subtle 1px hairline border.
 - **Top Accent**: Micro-interactive animated icon wrapper with smooth spring physics (`bounce`, `pulse`, `tilt`, `lift`).
 - **Hover**: 2px lift elevation with subtle ambient rose shadow (`0 12px 32px -8px rgba(244, 63, 94, 0.08)`).
 
 ### 5.5 Interactive Tour Switcher
+
 - **Container**: Tab strip grouped inside a `{colors.surface-soft}` container.
 - **Active Tab**: Elevated white pill with `{colors.brand-blue}` icon highlight and subtle box shadow.
 - **Animation**: 250ms cross-fade for seamless content transitions.
@@ -379,7 +388,9 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 
 1. **Hover Physics**: Micro-interactions on buttons and icons use spring dampening:
    ```css
-   transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease;
+   transition:
+     transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+     box-shadow 200ms ease;
    ```
 2. **Animated Iconography**:
    - `pulse`: Subtle rhythmic breathing (scale 1.05) for security and verification icons.
@@ -393,32 +404,33 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 
 ## 7. Responsive Breakpoint Contract
 
-| Breakpoint | Target Devices | Layout Behavior |
-| :--- | :--- | :--- |
-| **< 640px** (`sm`) | Compact Smartphones (320px–414px) | Single-column stack. Full-width buttons (`w-full`). Multi-step tables collapse into touch-friendly cards. Fixed 16px horizontal gutters. |
-| **640px – 1023px** (`md`) | Tablets & Foldables (768px–960px) | 2-column balanced grids. Hero visual flows below title. Tab controls convert to horizontal swipeable scrollbar. |
-| **1024px – 1439px** (`lg`/`xl`) | Laptops & Desktops | Full 3-column bento grids. Side-by-side hero layout (text left, visual right). 32px gutters. |
-| **≥ 1440px** (`2xl`) | Ultrawide Monitors (1440px–2560px) | Fixed maximum container constraint (`max-w-7xl` / 1280px). Proportional reading measure (`max-w-2xl` for paragraphs). |
+| Breakpoint                      | Target Devices                     | Layout Behavior                                                                                                                          |
+| :------------------------------ | :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **< 640px** (`sm`)              | Compact Smartphones (320px–414px)  | Single-column stack. Full-width buttons (`w-full`). Multi-step tables collapse into touch-friendly cards. Fixed 16px horizontal gutters. |
+| **640px – 1023px** (`md`)       | Tablets & Foldables (768px–960px)  | 2-column balanced grids. Hero visual flows below title. Tab controls convert to horizontal swipeable scrollbar.                          |
+| **1024px – 1439px** (`lg`/`xl`) | Laptops & Desktops                 | Full 3-column bento grids. Side-by-side hero layout (text left, visual right). 32px gutters.                                             |
+| **≥ 1440px** (`2xl`)            | Ultrawide Monitors (1440px–2560px) | Fixed maximum container constraint (`max-w-7xl` / 1280px). Proportional reading measure (`max-w-2xl` for paragraphs).                    |
 
 ---
 
 ## 8. Real-World Business Copywriting Rules
 
 1. **Outcome Over Mechanism**:
-   - *Don't write*: "Integrated webhook listeners sync SQL tables with Pathao API."
-   - *Do write*: **"One click to print barcodes and book riders. Zero copy-pasting."**
+   - _Don't write_: "Integrated webhook listeners sync SQL tables with Pathao API."
+   - _Do write_: **"One click to print barcodes and book riders. Zero copy-pasting."**
 2. **Confidence Over Defense**:
-   - *Don't write*: "Is Framique another Shopify clone? Here's our defense."
-   - *Do write*: **"The first commerce engine built natively for how Bangladesh sells."**
+   - _Don't write_: "Is Framique another Shopify clone? Here's our defense."
+   - _Do write_: **"The first commerce engine built natively for how Bangladesh sells."**
 3. **Positive Prevention Over Painful Math**:
-   - *Don't write*: "You lose ৳180 every time a customer rejects a COD order."
-   - *Do write*: **"Stop return losses before they happen with automated buyer trust scoring."**
+   - _Don't write_: "You lose ৳180 every time a customer rejects a COD order."
+   - _Do write_: **"Stop return losses before they happen with automated buyer trust scoring."**
 
 ---
 
 ## 9. Do's and Don'ts / Design Guardrails
 
 ### Do
+
 - **Do** anchor the visual hierarchy in a crisp black-and-white typographic core.
 - **Do** use calm soft pink (`oklch(0.978 0.008 25)`) to soften section transitions and eliminate harsh flat-white glare.
 - **Do** use Facebook Blue (`oklch(0.55 0.22 255)`) exclusively for primary high-intent action buttons and trust verification.
@@ -427,6 +439,7 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 - **Do** provide smooth theme toggling with 44px touch targets.
 
 ### Don't
+
 - **Don't** use faux OS window chrome (no 3 macOS colored dots, no fake browser URL bars).
 - **Don't** coat the artboard in stark `#ffffff` everywhere; always layer smooth calm warmth.
 - **Don't** allow contrast to shoot to harsh 21:1 pure black on pure white, nor drop below 4.5:1. Target the 7:1–12:1 eye-soothing sweet spot.
@@ -438,9 +451,11 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 ## 10. Hallmark & 10-Skill WCAG Contrast Matrix (Light & Dark Themes)
 
 ### Color Mathematics & Eye-Soothing Calibration
+
 Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blinding 21:1 stark glare or washed-out text, both themes hit the **eye-soothing comfort band**:
 
 #### Light Theme (Warm Blush / Minimalist B&W)
+
 - **Canvas Base**: `oklch(0.978 0.008 25)` (`#FAF6F7`)
 - **Card / Elevated Plates**: `oklch(0.995 0.003 25)` (`#FDFBFB`)
 - **Headings & Body Ink**: `oklch(0.26 0.015 25)` (`#2B272A`) — **11.2:1** on canvas, **11.8:1** on card (WCAG AAA)
@@ -450,6 +465,7 @@ Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blindi
 - **Brand Pink Focal Pip**: `oklch(0.62 0.22 18)` (`#F43F5E`) — 3% viewport rule
 
 #### Dark Theme (Twilight Obsidian)
+
 - **Canvas Base**: `oklch(0.17 0.012 25)` (`#181517`)
 - **Card / Elevated Plates**: `oklch(0.21 0.014 25)` (`#221F22`)
 - **Headings & Body Ink**: `oklch(0.91 0.008 25)` (`#EAE4E7`) — **11.8:1** on canvas, **10.6:1** on card (WCAG AAA)
@@ -457,4 +473,3 @@ Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blindi
 - **Hairline Borders**: `oklch(0.30 0.016 25)` (`#363236`) — **1.45:1**
 - **Facebook Blue Dark CTA**: `oklch(0.58 0.21 255)` (`#1D70F4`) — White text contrast **4.6:1** (WCAG AA)
 - **Brand Pink Luminous Pip**: `oklch(0.72 0.18 20)` (`#FA7287`) — **7.2:1** on dark canvas
-

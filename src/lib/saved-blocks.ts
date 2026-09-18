@@ -49,8 +49,12 @@ export function listBlocks(themeId: string | null): SavedBlock[] {
       return [
         {
           id: value["id"],
-          name: typeof value["name"] === "string" ? value["name"].slice(0, 60) : "Block",
-          createdAt: typeof value["createdAt"] === "string" ? value["createdAt"] : "",
+          name:
+            typeof value["name"] === "string"
+              ? value["name"].slice(0, 60)
+              : "Block",
+          createdAt:
+            typeof value["createdAt"] === "string" ? value["createdAt"] : "",
           nodes,
         },
       ];
@@ -60,7 +64,11 @@ export function listBlocks(themeId: string | null): SavedBlock[] {
   }
 }
 
-export function saveBlock(themeId: string | null, name: string, nodes: Section[]): SavedBlock[] {
+export function saveBlock(
+  themeId: string | null,
+  name: string,
+  nodes: Section[],
+): SavedBlock[] {
   const store = storage();
   if (!store || !themeId || nodes.length === 0) return listBlocks(themeId);
   const block: SavedBlock = {
@@ -103,7 +111,10 @@ export type BlockEnvelope = {
 };
 
 /** Serialises a whole library (or a single section) for download / paste. */
-export function exportBlocks(themeId: string | null, blocks?: SavedBlock[]): string {
+export function exportBlocks(
+  themeId: string | null,
+  blocks?: SavedBlock[],
+): string {
   const list = blocks ?? listBlocks(themeId);
   const envelope: BlockEnvelope = {
     v: BLOCK_EXPORT_VERSION,
@@ -127,14 +138,21 @@ export function exportSection(name: string, nodes: Section[]): string {
 /** Anything bigger than this is not a block library; refuse before parsing. */
 export const MAX_IMPORT_BYTES = 512 * 1024;
 
-export type ImportResult = { added: number; skipped: number; blocks: SavedBlock[] };
+export type ImportResult = {
+  added: number;
+  skipped: number;
+  blocks: SavedBlock[];
+};
 
 /**
  * Imports an envelope. Every node goes through the AST parser, so unknown
  * widgets and junk props are dropped rather than trusted; names already in the
  * library are skipped instead of silently overwriting a merchant's work.
  */
-export function importBlocks(themeId: string | null, json: string): ImportResult {
+export function importBlocks(
+  themeId: string | null,
+  json: string,
+): ImportResult {
   const existing = listBlocks(themeId);
   if (!themeId || json.length > MAX_IMPORT_BYTES) {
     return { added: 0, skipped: 0, blocks: existing };
@@ -155,9 +173,15 @@ export function importBlocks(themeId: string | null, json: string): ImportResult
   let current = existing;
 
   for (const entry of incoming) {
-    const name = typeof entry?.name === "string" ? entry.name.trim().slice(0, 60) : "";
+    const name =
+      typeof entry?.name === "string" ? entry.name.trim().slice(0, 60) : "";
     const nodes = sanitiseBlockNodes((entry as { nodes?: unknown })?.nodes);
-    if (!name || nodes.length === 0 || names.has(name) || current.length >= MAX_BLOCKS) {
+    if (
+      !name ||
+      nodes.length === 0 ||
+      names.has(name) ||
+      current.length >= MAX_BLOCKS
+    ) {
       skipped += 1;
       continue;
     }

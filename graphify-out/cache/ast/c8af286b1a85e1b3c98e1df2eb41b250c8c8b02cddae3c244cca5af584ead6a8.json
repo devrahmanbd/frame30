@@ -1,1 +1,490 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "label": "phase9-guardrails.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L1"}, {"id": "lib_phase9_guardrails_test_node", "label": "node()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L31"}, {"id": "lib_phase9_guardrails_test_issues", "label": "issues", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L61"}, {"id": "lib_phase9_guardrails_test_ast", "label": "ast", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L72"}, {"id": "lib_phase9_guardrails_test_parsed", "label": "parsed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L110"}, {"id": "lib_phase9_guardrails_test_errors", "label": "errors", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L112"}, {"id": "lib_phase9_guardrails_test_stats", "label": "stats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L120"}, {"id": "lib_phase9_guardrails_test_usage", "label": "usage", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L128"}, {"id": "lib_phase9_guardrails_test_blueprintkeys", "label": "blueprintKeys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L132"}, {"id": "lib_phase9_guardrails_test_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L137"}, {"id": "lib_phase9_guardrails_test_used", "label": "used", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L148"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_guardrails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_translation_publish_floor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_consentissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_disclaimerissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_guardrailissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_moneymathissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_scrimissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_guardrails_translationgate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_template_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_linttemplate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_parseast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_theme_presets_theme_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_theme_blueprints_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_theme_blueprints_shipped_blueprint_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_translation_coverage_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_translation_coverage_translationcoverage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_widget_registry_widget_types", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_widget_hydration_hydrationmode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_ast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_ast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_parsed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_errors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_stats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_usage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_blueprintkeys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_parsed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts", "target": "lib_phase9_guardrails_test_used", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L148", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_phase9_guardrails_test_walk", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L139"}, {"caller_nid": "lib_phase9_guardrails_test_walk", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L139"}, {"caller_nid": "lib_phase9_guardrails_test_walk", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L140"}, {"caller_nid": "lib_phase9_guardrails_test_walk", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts", "source_location": "L140"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "label": "phase9-guardrails.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_node",
+      "label": "node()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_issues",
+      "label": "issues",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_ast",
+      "label": "ast",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_parsed",
+      "label": "parsed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_errors",
+      "label": "errors",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_stats",
+      "label": "stats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_usage",
+      "label": "usage",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_blueprintkeys",
+      "label": "blueprintKeys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "lib_phase9_guardrails_test_used",
+      "label": "used",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L148"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_guardrails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_translation_publish_floor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_consentissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_disclaimerissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_guardrailissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_moneymathissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_scrimissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_guardrails_translationgate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_template_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_linttemplate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_parseast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_theme_presets_theme_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_theme_blueprints_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_theme_blueprints_shipped_blueprint_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_translation_coverage_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_translation_coverage_translationcoverage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_widget_registry_widget_types",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_widget_hydration_hydrationmode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_ast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_ast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_parsed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_stats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_usage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_blueprintkeys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_parsed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase9_guardrails_test_ts",
+      "target": "lib_phase9_guardrails_test_used",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_phase9_guardrails_test_walk",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_phase9_guardrails_test_walk",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_phase9_guardrails_test_walk",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_phase9_guardrails_test_walk",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase9-guardrails.test.ts",
+      "source_location": "L140"
+    }
+  ]
+}

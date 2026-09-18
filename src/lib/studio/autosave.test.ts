@@ -26,7 +26,11 @@ function memoryStorage(): Storage {
 }
 
 function doc(title = "Page"): StudioDoc {
-  return { version: STUDIO_VERSION, root: [], page: defaultPageSettings(title) };
+  return {
+    version: STUDIO_VERSION,
+    root: [],
+    page: defaultPageSettings(title),
+  };
 }
 
 describe("studio autosave", () => {

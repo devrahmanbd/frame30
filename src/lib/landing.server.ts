@@ -28,7 +28,8 @@ import {
   type LandingData,
   type PlanTeaserInput,
   type RawStats,
-  type StoryCard} from "./landing";
+  type StoryCard,
+} from "./landing";
 
 type Db = { from: (table: string) => any };
 
@@ -44,23 +45,32 @@ async function countOf(
   apply: (q: any) => any,
 ): Promise<number | null> {
   try {
-    const { count, error } = await apply(db.from(table).select("id", { count: "exact", head: true }));
+    const { count, error } = await apply(
+      db.from(table).select("id", { count: "exact", head: true }),
+    );
     if (error) throw error;
     return typeof count === "number" ? count : null;
   } catch (error) {
     // A single missing counter must not take the band — or the page — down.
     log("warn", "landing.count_failed", {
       table,
-      reason: String((error as Error)?.message ?? error).slice(0, 160)});
+      reason: String((error as Error)?.message ?? error).slice(0, 160),
+    });
     return null;
   }
 }
 
 async function loadStats(db: Db): Promise<RawStats> {
   const [merchants, products, articles] = await Promise.all([
-    countOf(db, "merchants", (q) => q.eq("status", "active").eq("kyc_status", "verified")),
-    countOf(db, "products", (q) => q.eq("status", "active").is("deleted_at", null)),
-    countOf(db, "articles", (q) => q.eq("status", "published").is("deleted_at", null)),
+    countOf(db, "merchants", (q) =>
+      q.eq("status", "active").eq("kyc_status", "verified"),
+    ),
+    countOf(db, "products", (q) =>
+      q.eq("status", "active").is("deleted_at", null),
+    ),
+    countOf(db, "articles", (q) =>
+      q.eq("status", "published").is("deleted_at", null),
+    ),
   ]);
   return {
     merchants,
@@ -69,10 +79,12 @@ async function loadStats(db: Db): Promise<RawStats> {
     // Not a database read: the rail registry is the source of truth for what
     // the platform can actually settle.
     paymentRails: PAYMENT_METHOD_KEYS.length,
-    measuredAt: new Date().toISOString()};
+    measuredAt: new Date().toISOString(),
+  };
 }
 
-const STORY_COLUMNS = "slug, title, title_en, excerpt, cover_image_url, published_at, merchant_id";
+const STORY_COLUMNS =
+  "slug, title, title_en, excerpt, cover_image_url, published_at, merchant_id";
 
 /**
  * Newest published articles, used as the case-study rail. Two queries at most:
@@ -100,7 +112,10 @@ async function loadStories(db: Db): Promise<StoryCard[]> {
   }[];
   if (rows.length === 0) return [];
 
-  const ids = [...new Set(rows.map((r) => r.merchant_id))].slice(0, LANDING_LIMITS.stories);
+  const ids = [...new Set(rows.map((r) => r.merchant_id))].slice(
+    0,
+    LANDING_LIMITS.stories,
+  );
   let names = new Map<string, string>();
   try {
     const { data: merchants } = await db
@@ -108,7 +123,12 @@ async function loadStories(db: Db): Promise<StoryCard[]> {
       .select("id, name")
       .in("id", ids)
       .limit(ids.length);
-    names = new Map(((merchants ?? []) as { id: string; name: string }[]).map((m) => [m.id, m.name]));
+    names = new Map(
+      ((merchants ?? []) as { id: string; name: string }[]).map((m) => [
+        m.id,
+        m.name,
+      ]),
+    );
   } catch {
     // by-line is decoration; swallow and render without it
   }
@@ -119,7 +139,8 @@ async function loadStories(db: Db): Promise<StoryCard[]> {
     excerpt: row.excerpt,
     coverImageUrl: row.cover_image_url,
     publishedAt: row.published_at,
-    merchantName: names.get(row.merchant_id) ?? null}));
+    merchantName: names.get(row.merchant_id) ?? null,
+  }));
 }
 
 async function loadPlans(): Promise<PlanTeaserInput[]> {
@@ -133,7 +154,8 @@ async function loadPlans(): Promise<PlanTeaserInput[]> {
     currencyCode: p.currencyCode,
     trialDays: p.trialDays,
     productsLimit: p.productsLimit,
-    staffLimit: p.staffLimit}));
+    staffLimit: p.staffLimit,
+  }));
 }
 
 /**
@@ -154,13 +176,15 @@ export async function loadLanding(): Promise<LandingData> {
       const [plans, stats, stories, demoSlug] = await Promise.all([
         loadPlans().catch((error) => {
           log("warn", "landing.plans_failed", {
-            reason: String((error as Error)?.message ?? error).slice(0, 160)});
+            reason: String((error as Error)?.message ?? error).slice(0, 160),
+          });
           return [] as PlanTeaserInput[];
         }),
         loadStats(db),
         loadStories(db).catch((error) => {
           log("warn", "landing.stories_failed", {
-            reason: String((error as Error)?.message ?? error).slice(0, 160)});
+            reason: String((error as Error)?.message ?? error).slice(0, 160),
+          });
           return [] as StoryCard[];
         }),
         (async () => {
@@ -175,5 +199,6 @@ export async function loadLanding(): Promise<LandingData> {
 
       const degraded = plans.length === 0 || stats.merchants === null;
       return { plans, stats, stories, demoSlug: demoSlug ?? null, degraded };
-    }});
+    },
+  });
 }

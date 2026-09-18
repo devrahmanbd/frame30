@@ -33,7 +33,9 @@ export async function loadMemberships(): Promise<MerchantMembership[]> {
 
   const { data, error } = await supabase
     .from("merchant_members")
-    .select("merchant_id, role, merchants(id, name, slug, currency_code, status)")
+    .select(
+      "merchant_id, role, merchants(id, name, slug, currency_code, status)",
+    )
     .eq("user_id", userData.user.id);
   if (error) throw error;
 
@@ -70,7 +72,9 @@ async function loadMerchant(): Promise<Merchant | null> {
     activeId = window.localStorage.getItem(ACTIVE_MERCHANT_KEY);
   }
 
-  const matched = activeId ? memberships.find((m) => m.merchant_id === activeId) : null;
+  const matched = activeId
+    ? memberships.find((m) => m.merchant_id === activeId)
+    : null;
   const current = matched ?? memberships[0];
 
   const { data: merchantRow, error: merchantError } = await supabase
@@ -130,7 +134,6 @@ export function useMerchants() {
     isPending: merchantQuery.isPending || membershipsQuery.isPending,
   };
 }
-
 
 export function useInvalidateCatalog() {
   const qc = useQueryClient();

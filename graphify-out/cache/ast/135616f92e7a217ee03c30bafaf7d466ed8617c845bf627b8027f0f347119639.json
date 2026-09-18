@@ -1,1 +1,656 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "label": "api-keys.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L1"}, {"id": "lib_api_keys_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L4"}, {"id": "lib_api_keys_server_apikeyenv", "label": "ApiKeyEnv", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L5"}, {"id": "lib_api_keys_server_api_scopes", "label": "API_SCOPES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L6"}, {"id": "lib_api_keys_server_apiscope", "label": "ApiScope", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L7"}, {"id": "lib_api_keys_server_apikeyerror", "label": "ApiKeyError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L9"}, {"id": "lib_api_keys_server_apikeyerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L10"}, {"id": "lib_api_keys_server_tohex", "label": "toHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L18"}, {"id": "lib_api_keys_server_hashsecret", "label": "hashSecret()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L24"}, {"id": "lib_api_keys_server_randomtoken", "label": "randomToken()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L29"}, {"id": "lib_api_keys_server_requireadmin", "label": "requireAdmin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L35"}, {"id": "lib_api_keys_server_listkeys", "label": "listKeys()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L47"}, {"id": "lib_api_keys_server_createkey", "label": "createKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L65"}, {"id": "lib_api_keys_server_revokekey", "label": "revokeKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L100"}, {"id": "lib_api_keys_server_resolvebearer", "label": "resolveBearer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L119"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_apikeyenv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_api_scopes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_apiscope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_apikeyerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "lib_api_keys_server_apikeyerror", "target": "lib_api_keys_server_apikeyerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_tohex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_hashsecret", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_randomtoken", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_requireadmin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_listkeys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_createkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_revokekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "target": "lib_api_keys_server_resolvebearer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L119", "weight": 1.0}, {"source": "lib_api_keys_server_hashsecret", "target": "lib_api_keys_server_tohex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "lib_api_keys_server_randomtoken", "target": "lib_api_keys_server_tohex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L32", "weight": 1.0}, {"source": "lib_api_keys_server_createkey", "target": "lib_api_keys_server_requireadmin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_api_keys_server_createkey", "target": "lib_api_keys_server_randomtoken", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L72", "weight": 1.0}, {"source": "lib_api_keys_server_createkey", "target": "lib_api_keys_server_hashsecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_api_keys_server_revokekey", "target": "lib_api_keys_server_requireadmin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L101", "weight": 1.0}, {"source": "lib_api_keys_server_resolvebearer", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L120", "weight": 1.0}, {"source": "lib_api_keys_server_resolvebearer", "target": "lib_api_keys_server_hashsecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L121", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_api_keys_server_apikeyerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L14"}, {"caller_nid": "lib_api_keys_server_tohex", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L19"}, {"caller_nid": "lib_api_keys_server_tohex", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L19"}, {"caller_nid": "lib_api_keys_server_tohex", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L19"}, {"caller_nid": "lib_api_keys_server_hashsecret", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L25"}, {"caller_nid": "lib_api_keys_server_hashsecret", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L25"}, {"caller_nid": "lib_api_keys_server_randomtoken", "callee": "getRandomValues", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L31"}, {"caller_nid": "lib_api_keys_server_requireadmin", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L36"}, {"caller_nid": "lib_api_keys_server_requireadmin", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L36"}, {"caller_nid": "lib_api_keys_server_requireadmin", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L36"}, {"caller_nid": "lib_api_keys_server_requireadmin", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L36"}, {"caller_nid": "lib_api_keys_server_requireadmin", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L36"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L48"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L49"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L49"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L49"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L49"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L54"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L54"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L54"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L54"}, {"caller_nid": "lib_api_keys_server_listkeys", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L54"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L74"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "single", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L76"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L76"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L76"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L76"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L90"}, {"caller_nid": "lib_api_keys_server_createkey", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L90"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L102"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L102"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L102"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L102"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L104"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L108"}, {"caller_nid": "lib_api_keys_server_revokekey", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L108"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L122"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L122"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L122"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L122"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L128"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L128"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L128"}, {"caller_nid": "lib_api_keys_server_resolvebearer", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts", "source_location": "L130"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "label": "api-keys.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_api_keys_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "lib_api_keys_server_apikeyenv",
+      "label": "ApiKeyEnv",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_api_keys_server_api_scopes",
+      "label": "API_SCOPES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L6"
+    },
+    {
+      "id": "lib_api_keys_server_apiscope",
+      "label": "ApiScope",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_api_keys_server_apikeyerror",
+      "label": "ApiKeyError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_api_keys_server_apikeyerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_api_keys_server_tohex",
+      "label": "toHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_api_keys_server_hashsecret",
+      "label": "hashSecret()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_api_keys_server_randomtoken",
+      "label": "randomToken()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_api_keys_server_requireadmin",
+      "label": "requireAdmin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_api_keys_server_listkeys",
+      "label": "listKeys()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_api_keys_server_createkey",
+      "label": "createKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_api_keys_server_revokekey",
+      "label": "revokeKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_api_keys_server_resolvebearer",
+      "label": "resolveBearer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L119"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_apikeyenv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_api_scopes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_apiscope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_apikeyerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_apikeyerror",
+      "target": "lib_api_keys_server_apikeyerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_tohex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_hashsecret",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_randomtoken",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_requireadmin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_listkeys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_createkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_revokekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "target": "lib_api_keys_server_resolvebearer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_hashsecret",
+      "target": "lib_api_keys_server_tohex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_randomtoken",
+      "target": "lib_api_keys_server_tohex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_createkey",
+      "target": "lib_api_keys_server_requireadmin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_createkey",
+      "target": "lib_api_keys_server_randomtoken",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_createkey",
+      "target": "lib_api_keys_server_hashsecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_revokekey",
+      "target": "lib_api_keys_server_requireadmin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_resolvebearer",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_api_keys_server_resolvebearer",
+      "target": "lib_api_keys_server_hashsecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_api_keys_server_apikeyerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_tohex",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_tohex",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_tohex",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_hashsecret",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_hashsecret",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_randomtoken",
+      "callee": "getRandomValues",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_requireadmin",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_requireadmin",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_requireadmin",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_requireadmin",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_requireadmin",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_listkeys",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "single",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_createkey",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_revokekey",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_api_keys_server_resolvebearer",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-keys.server.ts",
+      "source_location": "L130"
+    }
+  ]
+}

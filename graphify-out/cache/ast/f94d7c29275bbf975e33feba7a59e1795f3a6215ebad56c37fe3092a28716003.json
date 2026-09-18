@@ -1,1 +1,1444 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_observability_server_ts", "label": "observability.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L1"}, {"id": "lib_observability_server_registry", "label": "registry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L52"}, {"id": "lib_observability_server_errorbudget", "label": "errorBudget()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L56"}, {"id": "lib_observability_server_registermetric", "label": "registerMetric()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L99"}, {"id": "lib_observability_server_incr", "label": "incr()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L108"}, {"id": "lib_observability_server_setgauge", "label": "setGauge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L112"}, {"id": "lib_observability_server_observe", "label": "observe()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L116"}, {"id": "lib_observability_server_tenantbuckets", "label": "tenantBuckets", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L140"}, {"id": "lib_observability_server_tenantlabel", "label": "tenantLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L142"}, {"id": "lib_observability_server_tenantlabelcount", "label": "tenantLabelCount()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L159"}, {"id": "lib_observability_server_activetrace", "label": "ActiveTrace", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L168"}, {"id": "lib_observability_server_tracestore", "label": "traceStore", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L176"}, {"id": "lib_observability_server_currenttrace", "label": "currentTrace()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L178"}, {"id": "lib_observability_server_traceheaders", "label": "traceHeaders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L184"}, {"id": "lib_observability_server_addbreadcrumb", "label": "addBreadcrumb()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L190"}, {"id": "lib_observability_server_settracetag", "label": "setTraceTag()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L202"}, {"id": "lib_observability_server_loglevel", "label": "LogLevel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L211"}, {"id": "lib_observability_server_log", "label": "log()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L218"}, {"id": "lib_observability_server_sentryenv", "label": "sentryEnv()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L245"}, {"id": "lib_observability_server_sentryenabled", "label": "sentryEnabled()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L254"}, {"id": "lib_observability_server_errorbackends", "label": "errorBackends()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L259"}, {"id": "lib_observability_server_sendenvelope", "label": "sendEnvelope()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L263"}, {"id": "lib_observability_server_captureerror", "label": "captureError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L306"}, {"id": "lib_observability_server_capturebrowsererror", "label": "captureBrowserError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L370"}, {"id": "lib_observability_server_sendtransaction", "label": "sendTransaction()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L384"}, {"id": "lib_observability_server_withspan", "label": "withSpan()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L437"}, {"id": "lib_observability_server_requesttraceresult", "label": "RequestTraceResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L460"}, {"id": "lib_observability_server_withrequesttrace", "label": "withRequestTrace()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L468"}, {"id": "lib_observability_server_metricssnapshot", "label": "metricsSnapshot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L505"}, {"id": "lib_observability_server_renderprometheus", "label": "renderPrometheus()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L510"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "node_async_hooks", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "users_rahman_documents_frame30_src_lib_error_tracking_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_basetags", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errorenvironment", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errorquota", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errorrelease", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errorsamplerate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errortargets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errortrackingenabled", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_sanitizeeventfields", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_shouldsample", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_browsererrorreport", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_error_tracking_errortargetname", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "users_rahman_documents_frame30_src_lib_ops_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_ops_scrubpayload", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_ops_scrubtext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "users_rahman_documents_frame30_src_lib_telemetry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_metricregistry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_sendbudget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_buildenvelope", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_errorfingerprint", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_formattraceparent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_newspanid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_parsesentrydsn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_sentryauthheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_sentryenvelopeurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_starttrace", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_breadcrumb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_labels", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_telemetry_tracecontext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_registry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_errorbudget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_registermetric", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_incr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_setgauge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_observe", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L116", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_tenantbuckets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_tenantlabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_tenantlabelcount", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_activetrace", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_tracestore", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L176", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_currenttrace", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L178", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_traceheaders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L184", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_addbreadcrumb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L190", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_settracetag", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L202", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_loglevel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L211", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_log", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L218", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_sentryenv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L245", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_sentryenabled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L254", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_errorbackends", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L259", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_sendenvelope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L263", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_captureerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L306", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_capturebrowsererror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L370", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_sendtransaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L384", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_withspan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L437", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_requesttraceresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L460", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_withrequesttrace", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L468", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_metricssnapshot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L505", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_server_ts", "target": "lib_observability_server_renderprometheus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L510", "weight": 1.0}, {"source": "lib_observability_server_traceheaders", "target": "lib_observability_server_currenttrace", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L185", "weight": 1.0}, {"source": "lib_observability_server_sendenvelope", "target": "users_rahman_documents_frame30_src_lib_dynamic_config_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L266", "weight": 1.0}, {"source": "lib_observability_server_captureerror", "target": "lib_observability_server_incr", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L311", "weight": 1.0}, {"source": "lib_observability_server_captureerror", "target": "lib_observability_server_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L312", "weight": 1.0}, {"source": "lib_observability_server_captureerror", "target": "lib_observability_server_sentryenv", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L315", "weight": 1.0}, {"source": "lib_observability_server_captureerror", "target": "lib_observability_server_errorbudget", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L322", "weight": 1.0}, {"source": "lib_observability_server_captureerror", "target": "lib_observability_server_sendenvelope", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L331", "weight": 1.0}, {"source": "lib_observability_server_capturebrowsererror", "target": "lib_observability_server_captureerror", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L374", "weight": 1.0}, {"source": "lib_observability_server_sendtransaction", "target": "lib_observability_server_sentryenv", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L385", "weight": 1.0}, {"source": "lib_observability_server_sendtransaction", "target": "lib_observability_server_sendenvelope", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L390", "weight": 1.0}, {"source": "lib_observability_server_withspan", "target": "lib_observability_server_captureerror", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L455", "weight": 1.0}, {"source": "lib_observability_server_withrequesttrace", "target": "lib_observability_server_sentryenv", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L473", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_observability_server_errorbudget", "callee": "errorQuota", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L57"}, {"caller_nid": "lib_observability_server_registermetric", "callee": "describe", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L105"}, {"caller_nid": "lib_observability_server_setgauge", "callee": "gauge", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L113"}, {"caller_nid": "lib_observability_server_tenantlabel", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L144"}, {"caller_nid": "lib_observability_server_tenantlabel", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L150"}, {"caller_nid": "lib_observability_server_tenantlabel", "callee": "imul", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L151"}, {"caller_nid": "lib_observability_server_tenantlabel", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L153"}, {"caller_nid": "lib_observability_server_tenantlabel", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L154"}, {"caller_nid": "lib_observability_server_currenttrace", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L179"}, {"caller_nid": "lib_observability_server_traceheaders", "callee": "formatTraceparent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L186"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L191"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L193"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L194"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "scrubText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L196"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "scrubPayload", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L197"}, {"caller_nid": "lib_observability_server_addbreadcrumb", "callee": "shift", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L199"}, {"caller_nid": "lib_observability_server_settracetag", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L203"}, {"caller_nid": "lib_observability_server_settracetag", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L204"}, {"caller_nid": "lib_observability_server_settracetag", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L204"}, {"caller_nid": "lib_observability_server_log", "callee": "scrubPayload", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L219"}, {"caller_nid": "lib_observability_server_log", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L220"}, {"caller_nid": "lib_observability_server_log", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L221"}, {"caller_nid": "lib_observability_server_log", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L222"}, {"caller_nid": "lib_observability_server_log", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L229"}, {"caller_nid": "lib_observability_server_log", "callee": "warn", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L230"}, {"caller_nid": "lib_observability_server_sentryenv", "callee": "parseSentryDsn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L247"}, {"caller_nid": "lib_observability_server_sentryenv", "callee": "errorEnvironment", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L248"}, {"caller_nid": "lib_observability_server_sentryenv", "callee": "errorRelease", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L249"}, {"caller_nid": "lib_observability_server_sentryenv", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L250"}, {"caller_nid": "lib_observability_server_sentryenabled", "callee": "errorTrackingEnabled", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L255"}, {"caller_nid": "lib_observability_server_errorbackends", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L260"}, {"caller_nid": "lib_observability_server_errorbackends", "callee": "errorTargets", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L260"}, {"caller_nid": "lib_observability_server_sendenvelope", "callee": "errorTargets", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L264"}, {"caller_nid": "lib_observability_server_sendenvelope", "callee": "await getDynamicPlatformConfig", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L267"}, {"caller_nid": "lib_observability_server_sendenvelope", "callee": "errorTargets", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L269"}, {"caller_nid": "lib_observability_server_sendenvelope", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L278"}, {"caller_nid": "lib_observability_server_sendenvelope", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L279"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L307"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "scrubText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L308"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "sanitizeEventFields", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L309"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "scrubPayload", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L309"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L310"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "errorTrackingEnabled", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L314"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "errorFingerprint", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L316"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L317"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "shouldSample", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L318"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "errorSampleRate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L318"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "allow", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L322"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L327"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L328"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "randomUUID", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L328"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L329"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L329"}, {"caller_nid": "lib_observability_server_captureerror", "callee": "scrubText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L329"}, {"caller_nid": "lib_observability_server_capturebrowsererror", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L371"}, {"caller_nid": "lib_observability_server_capturebrowsererror", "callee": "scrubText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L371"}, {"caller_nid": "lib_observability_server_capturebrowsererror", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L373"}, {"caller_nid": "lib_observability_server_capturebrowsererror", "callee": "scrubText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L373"}, {"caller_nid": "lib_observability_server_sendtransaction", "callee": "errorTrackingEnabled", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L386"}, {"caller_nid": "lib_observability_server_sendtransaction", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L387"}, {"caller_nid": "lib_observability_server_sendtransaction", "callee": "randomUUID", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L387"}, {"caller_nid": "lib_observability_server_sendtransaction", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L389"}, {"caller_nid": "lib_observability_server_withspan", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L438"}, {"caller_nid": "lib_observability_server_withspan", "callee": "getStore", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L439"}, {"caller_nid": "lib_observability_server_withspan", "callee": "newSpanId", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L440"}, {"caller_nid": "lib_observability_server_withspan", "callee": "fn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L450"}, {"caller_nid": "lib_observability_server_withspan", "callee": "finish", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L451"}, {"caller_nid": "lib_observability_server_withspan", "callee": "finish", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L454"}, {"caller_nid": "lib_observability_server_withrequesttrace", "callee": "startTrace", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L474"}, {"caller_nid": "lib_observability_server_withrequesttrace", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L474"}, {"caller_nid": "lib_observability_server_withrequesttrace", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L478"}, {"caller_nid": "lib_observability_server_withrequesttrace", "callee": "run", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L484"}, {"caller_nid": "lib_observability_server_metricssnapshot", "callee": "snapshot", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L506"}, {"caller_nid": "lib_observability_server_renderprometheus", "callee": "gauge", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L511"}, {"caller_nid": "lib_observability_server_renderprometheus", "callee": "totalSeries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L511"}, {"caller_nid": "lib_observability_server_renderprometheus", "callee": "gauge", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L512"}, {"caller_nid": "lib_observability_server_renderprometheus", "callee": "droppedSeries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L512"}, {"caller_nid": "lib_observability_server_renderprometheus", "callee": "render", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts", "source_location": "L513"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "label": "observability.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_observability_server_registry",
+      "label": "registry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_observability_server_errorbudget",
+      "label": "errorBudget()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_observability_server_registermetric",
+      "label": "registerMetric()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "lib_observability_server_incr",
+      "label": "incr()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "lib_observability_server_setgauge",
+      "label": "setGauge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_observability_server_observe",
+      "label": "observe()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "id": "lib_observability_server_tenantbuckets",
+      "label": "tenantBuckets",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_observability_server_tenantlabel",
+      "label": "tenantLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "id": "lib_observability_server_tenantlabelcount",
+      "label": "tenantLabelCount()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_observability_server_activetrace",
+      "label": "ActiveTrace",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L168"
+    },
+    {
+      "id": "lib_observability_server_tracestore",
+      "label": "traceStore",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L176"
+    },
+    {
+      "id": "lib_observability_server_currenttrace",
+      "label": "currentTrace()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L178"
+    },
+    {
+      "id": "lib_observability_server_traceheaders",
+      "label": "traceHeaders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L184"
+    },
+    {
+      "id": "lib_observability_server_addbreadcrumb",
+      "label": "addBreadcrumb()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L190"
+    },
+    {
+      "id": "lib_observability_server_settracetag",
+      "label": "setTraceTag()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L202"
+    },
+    {
+      "id": "lib_observability_server_loglevel",
+      "label": "LogLevel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L211"
+    },
+    {
+      "id": "lib_observability_server_log",
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L218"
+    },
+    {
+      "id": "lib_observability_server_sentryenv",
+      "label": "sentryEnv()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "id": "lib_observability_server_sentryenabled",
+      "label": "sentryEnabled()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L254"
+    },
+    {
+      "id": "lib_observability_server_errorbackends",
+      "label": "errorBackends()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L259"
+    },
+    {
+      "id": "lib_observability_server_sendenvelope",
+      "label": "sendEnvelope()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L263"
+    },
+    {
+      "id": "lib_observability_server_captureerror",
+      "label": "captureError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L306"
+    },
+    {
+      "id": "lib_observability_server_capturebrowsererror",
+      "label": "captureBrowserError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L370"
+    },
+    {
+      "id": "lib_observability_server_sendtransaction",
+      "label": "sendTransaction()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L384"
+    },
+    {
+      "id": "lib_observability_server_withspan",
+      "label": "withSpan()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L437"
+    },
+    {
+      "id": "lib_observability_server_requesttraceresult",
+      "label": "RequestTraceResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L460"
+    },
+    {
+      "id": "lib_observability_server_withrequesttrace",
+      "label": "withRequestTrace()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L468"
+    },
+    {
+      "id": "lib_observability_server_metricssnapshot",
+      "label": "metricsSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L505"
+    },
+    {
+      "id": "lib_observability_server_renderprometheus",
+      "label": "renderPrometheus()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L510"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "node_async_hooks",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_error_tracking_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_basetags",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errorenvironment",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errorquota",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errorrelease",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errorsamplerate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errortargets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errortrackingenabled",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_sanitizeeventfields",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_shouldsample",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_browsererrorreport",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_error_tracking_errortargetname",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ops_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_ops_scrubpayload",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_ops_scrubtext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_metricregistry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_sendbudget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_buildenvelope",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_errorfingerprint",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_formattraceparent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_newspanid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_parsesentrydsn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_sentryauthheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_sentryenvelopeurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_starttrace",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_breadcrumb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_labels",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_telemetry_tracecontext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_registry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_errorbudget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_registermetric",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_setgauge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_tenantbuckets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_tenantlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_tenantlabelcount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_activetrace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_tracestore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_currenttrace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_traceheaders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_addbreadcrumb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_settracetag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_loglevel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_sentryenv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_sentryenabled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_errorbackends",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_sendenvelope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_captureerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_capturebrowsererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L370",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_sendtransaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L384",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L437",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_requesttraceresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L460",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_withrequesttrace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L468",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_metricssnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L505",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "target": "lib_observability_server_renderprometheus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L510",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_traceheaders",
+      "target": "lib_observability_server_currenttrace",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_sendenvelope",
+      "target": "users_rahman_documents_frame30_src_lib_dynamic_config_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_captureerror",
+      "target": "lib_observability_server_incr",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L311",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_captureerror",
+      "target": "lib_observability_server_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_captureerror",
+      "target": "lib_observability_server_sentryenv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_captureerror",
+      "target": "lib_observability_server_errorbudget",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L322",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_captureerror",
+      "target": "lib_observability_server_sendenvelope",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L331",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_capturebrowsererror",
+      "target": "lib_observability_server_captureerror",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L374",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_sendtransaction",
+      "target": "lib_observability_server_sentryenv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L385",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_sendtransaction",
+      "target": "lib_observability_server_sendenvelope",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L390",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_withspan",
+      "target": "lib_observability_server_captureerror",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L455",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_observability_server_withrequesttrace",
+      "target": "lib_observability_server_sentryenv",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L473",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_observability_server_errorbudget",
+      "callee": "errorQuota",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_observability_server_registermetric",
+      "callee": "describe",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_observability_server_setgauge",
+      "callee": "gauge",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_observability_server_tenantlabel",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "lib_observability_server_tenantlabel",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "lib_observability_server_tenantlabel",
+      "callee": "imul",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "lib_observability_server_tenantlabel",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_observability_server_tenantlabel",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_observability_server_currenttrace",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "lib_observability_server_traceheaders",
+      "callee": "formatTraceparent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "scrubText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "scrubPayload",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "lib_observability_server_addbreadcrumb",
+      "callee": "shift",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "lib_observability_server_settracetag",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L203"
+    },
+    {
+      "caller_nid": "lib_observability_server_settracetag",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_observability_server_settracetag",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "scrubPayload",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "lib_observability_server_log",
+      "callee": "warn",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "lib_observability_server_sentryenv",
+      "callee": "parseSentryDsn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "lib_observability_server_sentryenv",
+      "callee": "errorEnvironment",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "lib_observability_server_sentryenv",
+      "callee": "errorRelease",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "lib_observability_server_sentryenv",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_observability_server_sentryenabled",
+      "callee": "errorTrackingEnabled",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "lib_observability_server_errorbackends",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_observability_server_errorbackends",
+      "callee": "errorTargets",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendenvelope",
+      "callee": "errorTargets",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendenvelope",
+      "callee": "await getDynamicPlatformConfig",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L267"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendenvelope",
+      "callee": "errorTargets",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L269"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendenvelope",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L278"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendenvelope",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "scrubText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "sanitizeEventFields",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "scrubPayload",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "errorTrackingEnabled",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "errorFingerprint",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "shouldSample",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "errorSampleRate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "allow",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L322"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "randomUUID",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_observability_server_captureerror",
+      "callee": "scrubText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_observability_server_capturebrowsererror",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_observability_server_capturebrowsererror",
+      "callee": "scrubText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_observability_server_capturebrowsererror",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "lib_observability_server_capturebrowsererror",
+      "callee": "scrubText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendtransaction",
+      "callee": "errorTrackingEnabled",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendtransaction",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendtransaction",
+      "callee": "randomUUID",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "lib_observability_server_sendtransaction",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L438"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "getStore",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L439"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "newSpanId",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "fn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "finish",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_observability_server_withspan",
+      "callee": "finish",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "lib_observability_server_withrequesttrace",
+      "callee": "startTrace",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L474"
+    },
+    {
+      "caller_nid": "lib_observability_server_withrequesttrace",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L474"
+    },
+    {
+      "caller_nid": "lib_observability_server_withrequesttrace",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L478"
+    },
+    {
+      "caller_nid": "lib_observability_server_withrequesttrace",
+      "callee": "run",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L484"
+    },
+    {
+      "caller_nid": "lib_observability_server_metricssnapshot",
+      "callee": "snapshot",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L506"
+    },
+    {
+      "caller_nid": "lib_observability_server_renderprometheus",
+      "callee": "gauge",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L511"
+    },
+    {
+      "caller_nid": "lib_observability_server_renderprometheus",
+      "callee": "totalSeries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L511"
+    },
+    {
+      "caller_nid": "lib_observability_server_renderprometheus",
+      "callee": "gauge",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L512"
+    },
+    {
+      "caller_nid": "lib_observability_server_renderprometheus",
+      "callee": "droppedSeries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L512"
+    },
+    {
+      "caller_nid": "lib_observability_server_renderprometheus",
+      "callee": "render",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.server.ts",
+      "source_location": "L513"
+    }
+  ]
+}

@@ -117,7 +117,7 @@
         "epochsRun": 40,
         "trainAccuracy": 1,
         "valAccuracy": 1,
-        "trainLoss": 8.514225919498131e-05,
+        "trainLoss": 8.514225919498131e-5,
         "modelBytes": 6164,
         "modelPath": "/tmp/bench-router-1781547245894.safetensors",
         "trainMs": 25.0089169999992

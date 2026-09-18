@@ -1,1 +1,109 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "label": "EndpointTable.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L1"}, {"id": "docs_endpointtable_endpointtable", "label": "EndpointTable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L15"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "users_rahman_documents_frame30_src_components_docs_codeblock_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "docs_codeblock_codeblock", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "users_rahman_documents_frame30_src_lib_docs_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "lib_docs_endpointrows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "target": "docs_endpointtable_endpointtable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L15", "weight": 1.0}], "raw_calls": [{"caller_nid": "docs_endpointtable_endpointtable", "callee": "endpointRows", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L16"}, {"caller_nid": "docs_endpointtable_endpointtable", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L17"}, {"caller_nid": "docs_endpointtable_endpointtable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L23"}, {"caller_nid": "docs_endpointtable_endpointtable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx", "source_location": "L81"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "label": "EndpointTable.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_endpointtable_endpointtable",
+      "label": "EndpointTable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L15"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "users_rahman_documents_frame30_src_components_docs_codeblock_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "docs_codeblock_codeblock",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_docs_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "lib_docs_endpointrows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "target": "docs_endpointtable_endpointtable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "docs_endpointtable_endpointtable",
+      "callee": "endpointRows",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L16"
+    },
+    {
+      "caller_nid": "docs_endpointtable_endpointtable",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "docs_endpointtable_endpointtable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "docs_endpointtable_endpointtable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/EndpointTable.tsx",
+      "source_location": "L81"
+    }
+  ]
+}

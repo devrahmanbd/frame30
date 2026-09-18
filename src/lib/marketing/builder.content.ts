@@ -26,7 +26,8 @@ export const hero = {
   title: "Design the storefront. Don't fight the theme.",
   titleBn: "স্টোরফ্রন্ট ডিজাইন করুন। থিমের সাথে লড়াই নয়।",
   sub: "Drag sections, edit tokens, ship a version — with instant rollback.",
-  subBn: "সেকশন টেনে আনুন, টোকেন এডিট করুন, একটি ভার্সন পাবলিশ করুন — সাথে সাথে রোলব্যাকের সুযোগসহ।",
+  subBn:
+    "সেকশন টেনে আনুন, টোকেন এডিট করুন, একটি ভার্সন পাবলিশ করুন — সাথে সাথে রোলব্যাকের সুযোগসহ।",
   primaryCta: "Open a live demo",
   altCta: "See a store built with it",
 };
@@ -37,11 +38,17 @@ export const hero = {
 
 export const canvasMock = {
   title: "The editor renders exactly what the storefront serves",
-  caption: "The same renderer draws the editor and the live store, so preview is not an approximation.",
-  captionBn: "এডিটর ও লাইভ স্টোর একই রেন্ডারার ব্যবহার করে, তাই প্রিভিউ কোনো অনুমান নয়।",
-  body:
-    "Most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic \"it looked right in the editor\" complaint. Framique's editor iframe loads the identical theme bundle the storefront serves, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.",
-  rail: ["Hero section", "Product grid", "Announcement bar", "Testimonial strip"],
+  caption:
+    "The same renderer draws the editor and the live store, so preview is not an approximation.",
+  captionBn:
+    "এডিটর ও লাইভ স্টোর একই রেন্ডারার ব্যবহার করে, তাই প্রিভিউ কোনো অনুমান নয়।",
+  body: 'Most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic "it looked right in the editor" complaint. Framique\'s editor iframe loads the identical theme bundle the storefront serves, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.',
+  rail: [
+    "Hero section",
+    "Product grid",
+    "Announcement bar",
+    "Testimonial strip",
+  ],
   tokens: ["Primary colour", "Accent colour", "Corner radius", "Type scale"],
 };
 
@@ -55,7 +62,7 @@ export const editingRows = [
     direction: "left" as const,
     eyebrow: "Sections, not HTML",
     title: "Sections, not a page of HTML.",
-    body: "Add a hero, a product grid, a testimonial strip, a Bangla-only announcement bar. Each section carries its own settings, its own Bangla copy, and its own visibility rules (device, audience segment, date window, A/B arm). Sections are drag-reordered on the rail; there is no way to \"break the layout\" by nesting divs incorrectly, because there are no divs to nest.",
+    body: 'Add a hero, a product grid, a testimonial strip, a Bangla-only announcement bar. Each section carries its own settings, its own Bangla copy, and its own visibility rules (device, audience segment, date window, A/B arm). Sections are drag-reordered on the rail; there is no way to "break the layout" by nesting divs incorrectly, because there are no divs to nest.',
     proof: "Per-section visibility by audience or experiment.",
   },
   {
@@ -95,13 +102,38 @@ export const lifecycle = {
   worked:
     "Versions are numbered and immutable: version 14 always means exactly the sections, copy, and tokens it meant the day it went live, even after you publish version 15. If a Friday evening Eid promotion converts poorly, you can compare version 14 against version 13 side by side and roll back to 13 in one click, without a developer or a support ticket.",
   scheduled:
-    "Scheduled publish decouples \"when I finish the work\" from \"when the shopper sees it.\" A merchant working on a Ramadan sale page on a Tuesday night can queue it to go live at midnight, with zero manual action required at that hour.",
+    'Scheduled publish decouples "when I finish the work" from "when the shopper sees it." A merchant working on a Ramadan sale page on a Tuesday night can queue it to go live at midnight, with zero manual action required at that hour.',
   rows: [
-    { stage: "Draft", happens: "Autosaved continuously as you edit", who: "Only you, in the builder", reversible: "N/A — it is not shipped" },
-    { stage: "Preview link", happens: "Shareable URL renders the draft outside the editor", who: "Anyone with the link", reversible: "Yes, expires or is revoked anytime" },
-    { stage: "Scheduled publish", happens: "Draft is queued for a future timestamp", who: "No one, until the clock hits", reversible: "Yes, cancel before the scheduled time" },
-    { stage: "Published (live version)", happens: "Draft becomes the numbered live version", who: "All storefront visitors", reversible: "Roll back to any prior version, one click" },
-    { stage: "Rolled back", happens: "An earlier version is restored as current", who: "All storefront visitors", reversible: "Yes, roll forward again if needed" },
+    {
+      stage: "Draft",
+      happens: "Autosaved continuously as you edit",
+      who: "Only you, in the builder",
+      reversible: "N/A — it is not shipped",
+    },
+    {
+      stage: "Preview link",
+      happens: "Shareable URL renders the draft outside the editor",
+      who: "Anyone with the link",
+      reversible: "Yes, expires or is revoked anytime",
+    },
+    {
+      stage: "Scheduled publish",
+      happens: "Draft is queued for a future timestamp",
+      who: "No one, until the clock hits",
+      reversible: "Yes, cancel before the scheduled time",
+    },
+    {
+      stage: "Published (live version)",
+      happens: "Draft becomes the numbered live version",
+      who: "All storefront visitors",
+      reversible: "Roll back to any prior version, one click",
+    },
+    {
+      stage: "Rolled back",
+      happens: "An earlier version is restored as current",
+      who: "All storefront visitors",
+      reversible: "Yes, roll forward again if needed",
+    },
   ],
 };
 
@@ -145,12 +177,36 @@ export const themes = [
 export const themeDecisionTable = {
   caption: "Theme-choice decision table",
   rows: [
-    { situation: "First store, moderate catalogue, strong photography", theme: "Classic", because: "Safest default, smallest section library, image-forward" },
-    { situation: "Small high-margin catalogue, strong brand identity", theme: "Modern", because: "Editorial layout rewards fewer, better products" },
-    { situation: "One hero product or campaign launch", theme: "Landing", because: "Single-purchase-decision page, not a catalogue" },
-    { situation: "Hundreds to thousands of SKUs, filter-driven browsing", theme: "Supershop", because: "Density and filters over inspiration" },
-    { situation: "Wholesale, quote-based, or account-gated pricing", theme: "B2B", because: "Tiered pricing and MOQ built in, not bolted on" },
-    { situation: "Unsure, catalogue will grow past 50 SKUs in a year", theme: "Classic → migrate later", because: "Cleanest section model to extend" },
+    {
+      situation: "First store, moderate catalogue, strong photography",
+      theme: "Classic",
+      because: "Safest default, smallest section library, image-forward",
+    },
+    {
+      situation: "Small high-margin catalogue, strong brand identity",
+      theme: "Modern",
+      because: "Editorial layout rewards fewer, better products",
+    },
+    {
+      situation: "One hero product or campaign launch",
+      theme: "Landing",
+      because: "Single-purchase-decision page, not a catalogue",
+    },
+    {
+      situation: "Hundreds to thousands of SKUs, filter-driven browsing",
+      theme: "Supershop",
+      because: "Density and filters over inspiration",
+    },
+    {
+      situation: "Wholesale, quote-based, or account-gated pricing",
+      theme: "B2B",
+      because: "Tiered pricing and MOQ built in, not bolted on",
+    },
+    {
+      situation: "Unsure, catalogue will grow past 50 SKUs in a year",
+      theme: "Classic → migrate later",
+      because: "Cleanest section model to extend",
+    },
   ],
 };
 
@@ -160,10 +216,9 @@ export const themeDecisionTable = {
 
 export const tokensBand = {
   title: "Design tokens and brand consistency",
-  body:
-    "A token panel holds four families: colour (primary, accent, surface, text), radius (from sharp to fully rounded), type scale (a ratio-based ladder from caption to display), and spacing (a fixed step scale, not freeform pixel entry). Every section in every theme reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.",
+  body: "A token panel holds four families: colour (primary, accent, surface, text), radius (from sharp to fully rounded), type scale (a ratio-based ladder from caption to display), and spacing (a fixed step scale, not freeform pixel entry). Every section in every theme reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.",
   worked:
-    "A merchant rebranding from a teal to a maroon accent for Pohela Boishakh changes one colour token. That single change updates the \"Add to cart\" button, the sale badge, the active nav underline, and the checkout progress bar simultaneously — four surfaces, one edit, zero risk of shipping a mismatched button colour on launch day.",
+    'A merchant rebranding from a teal to a maroon accent for Pohela Boishakh changes one colour token. That single change updates the "Add to cart" button, the sale badge, the active nav underline, and the checkout progress bar simultaneously — four surfaces, one edit, zero risk of shipping a mismatched button colour on launch day.',
   note: "Token changes are draft-scoped like everything else: preview a full rebrand before publishing it, compare it against the live version, discard it without consequence if it doesn't work.",
 };
 
@@ -174,14 +229,13 @@ export const tokensBand = {
 export const bilingualCatalogue = {
   title: "Bangla + English from one catalogue",
   titleBn: "একই ক্যাটালগ থেকে বাংলা ও ইংরেজি",
-  body:
-    "Every product, section, and piece of storefront copy in Framique has one Bangla field and one English field living on the same record — not two parallel catalogues that must be kept in sync by hand. A shopper's browser or a manual language switch decides which one renders; the merchant edits both from the same product screen.",
+  body: "Every product, section, and piece of storefront copy in Framique has one Bangla field and one English field living on the same record — not two parallel catalogues that must be kept in sync by hand. A shopper's browser or a manual language switch decides which one renders; the merchant edits both from the same product screen.",
   bodyBn:
     "Framique-এর প্রতিটি পণ্য, সেকশন ও স্টোরফ্রন্ট কপির একটি বাংলা ও একটি ইংরেজি ফিল্ড একই রেকর্ডে থাকে — হাতে সিঙ্ক রাখা দুটি আলাদা ক্যাটালগ নয়।",
   commercial:
     "A large share of Bangladeshi online shoppers convert better against Bangla product names, sizes, and care instructions even when they can read English, because purchase-stage cognitive load is lower in the first language. A storefront that only offers English at checkout reintroduces exactly the friction the bilingual catalogue was meant to remove.",
   typography:
-    "Any token applied to a lang=\"bn\" subtree drops letter-spacing to 0 (Bengali conjuncts and matras clip under Latin negative tracking), and Bangla display text keeps a minimum 1.35 line-height box — enforced by the renderer, not left to merchant discipline.",
+    'Any token applied to a lang="bn" subtree drops letter-spacing to 0 (Bengali conjuncts and matras clip under Latin negative tracking), and Bangla display text keeps a minimum 1.35 line-height box — enforced by the renderer, not left to merchant discipline.',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -210,7 +264,7 @@ export const fontsAndCode = {
 export const perfBand = {
   title: "Performance budgets — why LCP matters for BDT conversion",
   intro:
-    "Largest Contentful Paint (LCP) is the performance metric most correlated with whether a Bangladeshi mobile shopper stays on a product page long enough to scroll to \"Add to cart.\" A large share of retail traffic in Bangladesh arrives over 3G/4G mobile data with variable latency, and every additional second of blank-screen wait is a second of attention and mobile data spent on nothing.",
+    'Largest Contentful Paint (LCP) is the performance metric most correlated with whether a Bangladeshi mobile shopper stays on a product page long enough to scroll to "Add to cart." A large share of retail traffic in Bangladesh arrives over 3G/4G mobile data with variable latency, and every additional second of blank-screen wait is a second of attention and mobile data spent on nothing.',
   worked:
     "Worked example (stated assumptions, not a measured claim): 10,000 monthly mobile sessions, converting at 2.0% (200 orders) at a fast load time. An unbudgeted 900 KB hero image (versus the 90 KB ceiling) adds roughly 2.5s to LCP. At a commonly cited 7%-per-second conversion drop, that implies conversion falling to roughly 1.65% (165 orders) — 35 fewer orders. At an assumed average order value of 1,200 BDT, that is approximately 42,000 BDT of assumed monthly revenue attributable to one unbudgeted hero image. The arithmetic is the point, not the exact numbers.",
   enforcement:
@@ -220,9 +274,17 @@ export const perfBand = {
   rows: [
     { id: "hero", label: "Hero LCP asset", budget: "≤ 90 KB" },
     { id: "image", label: "Any other image", budget: "≤ 140 KB" },
-    { id: "lcp", label: "LCP target (mid-tier Android / 4G)", budget: "≤ 2.0 seconds" },
+    {
+      id: "lcp",
+      label: "LCP target (mid-tier Android / 4G)",
+      budget: "≤ 2.0 seconds",
+    },
     { id: "motion", label: "Motion", budget: "Transform / opacity only" },
-    { id: "reduced-motion", label: "prefers-reduced-motion", budget: "Full fallback on every animated element" },
+    {
+      id: "reduced-motion",
+      label: "prefers-reduced-motion",
+      budget: "Full fallback on every animated element",
+    },
   ],
 };
 
@@ -235,14 +297,14 @@ export const productPageChecklist = [
   "Price shown in BDT with the Taka symbol, never a bare number",
   "At least one image showing scale or the product in a hand/on a body",
   "Discount badge only if the original price is genuinely shown struck through nearby",
-  "Stock status stated plainly (\"In stock\", \"Only 4 left\", \"Restocking [date]\")",
+  'Stock status stated plainly ("In stock", "Only 4 left", "Restocking [date]")',
   "Delivery estimate by area (inside Dhaka vs. outside Dhaka)",
   "COD availability stated explicitly",
   "bKash/Nagad/Rocket/Upay logos shown near the price, not buried at checkout",
   "Return/exchange policy in one sentence, in Bangla, linked to the full policy",
   "Size or variant guidance specific to the product category",
   "At least one section addressing a common pre-purchase doubt (durability, authenticity, warranty)",
-  "A visible, sticky \"Add to cart\" / \"Order now\" action that survives scroll on mobile",
+  'A visible, sticky "Add to cart" / "Order now" action that survives scroll on mobile',
   "Related or complementary products below the fold, not above it",
   "Contact channel visible (WhatsApp, phone, Messenger)",
   "Page weight within budget — none of the above matters if the page has not finished loading",
@@ -253,15 +315,51 @@ export const productPageChecklist = [
 /* -------------------------------------------------------------------------- */
 
 export const firstHour = [
-  { time: "0–5 min", title: "Pick a theme", body: "Use the decision table above. If genuinely unsure and your catalogue will likely grow, start with Classic." },
-  { time: "5–15 min", title: "Set your four core tokens", body: "Primary colour, accent colour, corner radius, and base font. Everything downstream inherits these; do this before touching any section." },
-  { time: "15–20 min", title: "Edit the hero section", body: "Replace the placeholder headline and image with your own; enter both the Bangla and English fields, not just one." },
-  { time: "20–30 min", title: "Add your first product grid", body: "Connect it to your catalogue. Confirm price displays in BDT and that stock status is visible." },
-  { time: "30–35 min", title: "Add a delivery/COD/payment trust section", body: "Place it directly below the hero or product grid — see checklist items 6–8." },
-  { time: "35–45 min", title: "Preview on your own phone", body: "Use the shareable link, on mobile data if possible, not just on the office Wi-Fi." },
-  { time: "45–50 min", title: "Check the performance panel", body: "Address any flagged oversized image before publishing." },
-  { time: "50–55 min", title: "Publish as version 1", body: "Or schedule it for a specific launch time." },
-  { time: "55–60 min", title: "Bookmark the version history panel", body: "You now know how to roll back if anything about the next change goes wrong." },
+  {
+    time: "0–5 min",
+    title: "Pick a theme",
+    body: "Use the decision table above. If genuinely unsure and your catalogue will likely grow, start with Classic.",
+  },
+  {
+    time: "5–15 min",
+    title: "Set your four core tokens",
+    body: "Primary colour, accent colour, corner radius, and base font. Everything downstream inherits these; do this before touching any section.",
+  },
+  {
+    time: "15–20 min",
+    title: "Edit the hero section",
+    body: "Replace the placeholder headline and image with your own; enter both the Bangla and English fields, not just one.",
+  },
+  {
+    time: "20–30 min",
+    title: "Add your first product grid",
+    body: "Connect it to your catalogue. Confirm price displays in BDT and that stock status is visible.",
+  },
+  {
+    time: "30–35 min",
+    title: "Add a delivery/COD/payment trust section",
+    body: "Place it directly below the hero or product grid — see checklist items 6–8.",
+  },
+  {
+    time: "35–45 min",
+    title: "Preview on your own phone",
+    body: "Use the shareable link, on mobile data if possible, not just on the office Wi-Fi.",
+  },
+  {
+    time: "45–50 min",
+    title: "Check the performance panel",
+    body: "Address any flagged oversized image before publishing.",
+  },
+  {
+    time: "50–55 min",
+    title: "Publish as version 1",
+    body: "Or schedule it for a specific launch time.",
+  },
+  {
+    time: "55–60 min",
+    title: "Bookmark the version history panel",
+    body: "You now know how to roll back if anything about the next change goes wrong.",
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -275,16 +373,70 @@ export const comparison = {
     { id: "framique", label: "Framique builder", highlight: true },
   ],
   rows: [
-    { id: "preview", label: "Preview fidelity", generic: "Simplified preview renderer, can diverge from production", framique: "Same renderer for editor and live store" },
-    { id: "bangla", label: "Bangla support", generic: "Often a bolted-on translation plugin", framique: "One catalogue, native Bangla + English fields, script-aware typography" },
-    { id: "payments", label: "Payment context", generic: "Generic card/PayPal assumptions", framique: "bKash/Nagad/Rocket/Upay/card/COD built into theme sections" },
-    { id: "versioning", label: "Versioning", generic: "Usually undo history within a session only", framique: "Numbered, immutable, author-stamped versions with one-click rollback" },
-    { id: "scheduled", label: "Scheduled publish", generic: "Rare or third-party plugin", framique: "Native, queue a draft for a future timestamp" },
-    { id: "fonts", label: "Font governance", generic: "Unlimited weights, no licence step", framique: "Licence attestation + two-weight budget enforced at upload" },
-    { id: "code", label: "Custom code safety", generic: "Inline script, can break the whole page", framique: "Sandboxed iframe, isolated failure" },
-    { id: "secrets", label: "Secret exposure risk", generic: "Unchecked", framique: "Secret scanning blocks save on credential-shaped strings" },
-    { id: "perf", label: "Performance enforcement", generic: "Advisory at best", framique: "Hard budgets enforced at publish time, with auto-compression offered" },
-    { id: "themes", label: "Themes offered", generic: "Often hundreds of undifferentiated templates", framique: "Five official themes, each purpose-built for a distinct merchandising situation" },
+    {
+      id: "preview",
+      label: "Preview fidelity",
+      generic: "Simplified preview renderer, can diverge from production",
+      framique: "Same renderer for editor and live store",
+    },
+    {
+      id: "bangla",
+      label: "Bangla support",
+      generic: "Often a bolted-on translation plugin",
+      framique:
+        "One catalogue, native Bangla + English fields, script-aware typography",
+    },
+    {
+      id: "payments",
+      label: "Payment context",
+      generic: "Generic card/PayPal assumptions",
+      framique: "bKash/Nagad/Rocket/Upay/card/COD built into theme sections",
+    },
+    {
+      id: "versioning",
+      label: "Versioning",
+      generic: "Usually undo history within a session only",
+      framique:
+        "Numbered, immutable, author-stamped versions with one-click rollback",
+    },
+    {
+      id: "scheduled",
+      label: "Scheduled publish",
+      generic: "Rare or third-party plugin",
+      framique: "Native, queue a draft for a future timestamp",
+    },
+    {
+      id: "fonts",
+      label: "Font governance",
+      generic: "Unlimited weights, no licence step",
+      framique: "Licence attestation + two-weight budget enforced at upload",
+    },
+    {
+      id: "code",
+      label: "Custom code safety",
+      generic: "Inline script, can break the whole page",
+      framique: "Sandboxed iframe, isolated failure",
+    },
+    {
+      id: "secrets",
+      label: "Secret exposure risk",
+      generic: "Unchecked",
+      framique: "Secret scanning blocks save on credential-shaped strings",
+    },
+    {
+      id: "perf",
+      label: "Performance enforcement",
+      generic: "Advisory at best",
+      framique:
+        "Hard budgets enforced at publish time, with auto-compression offered",
+    },
+    {
+      id: "themes",
+      label: "Themes offered",
+      generic: "Often hundreds of undifferentiated templates",
+      framique:
+        "Five official themes, each purpose-built for a distinct merchandising situation",
+    },
   ],
   note: "A marketplace of hundreds of templates optimises for browsing variety, not merchandising fit. Five themes, each mapped to a specific business situation, is a smaller but more honest promise.",
 };
@@ -295,8 +447,7 @@ export const comparison = {
 
 export const accessibility = {
   title: "Accessibility",
-  body:
-    "The builder itself and every published storefront share the same accessibility baseline. Body text clears 7:1 contrast; any gradient spotlight card carrying text uses a minimum 4.5:1 against its darkest gradient stop. Focus states use a visible ring on every interactive element, including inside the token panel and section rail — a focused button also gets a visible outline shift, never colour alone. Motion is transform/opacity only and fully collapses under prefers-reduced-motion. Drag-and-drop section reordering has a keyboard-operable equivalent (move-up/move-down buttons revealed on focus). Bangla text accessibility is structural: minimum 1.35 line-height on Bangla display type prevents matra clipping, and lang=\"bn\" is set at the subtree level so screen readers switch pronunciation correctly mid-page.",
+  body: 'The builder itself and every published storefront share the same accessibility baseline. Body text clears 7:1 contrast; any gradient spotlight card carrying text uses a minimum 4.5:1 against its darkest gradient stop. Focus states use a visible ring on every interactive element, including inside the token panel and section rail — a focused button also gets a visible outline shift, never colour alone. Motion is transform/opacity only and fully collapses under prefers-reduced-motion. Drag-and-drop section reordering has a keyboard-operable equivalent (move-up/move-down buttons revealed on focus). Bangla text accessibility is structural: minimum 1.35 line-height on Bangla display type prevents matra clipping, and lang="bn" is set at the subtree level so screen readers switch pronunciation correctly mid-page.',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -336,7 +487,8 @@ export const faq: { id: string; question: string; answer: string }[] = [
   },
   {
     id: "font-licence",
-    question: "What happens if my custom font upload doesn't include a licence I actually hold?",
+    question:
+      "What happens if my custom font upload doesn't include a licence I actually hold?",
     answer:
       "The builder does not verify licence terms with the foundry; the attestation is a legal confirmation logged against your account, and responsibility for accuracy sits with the merchant.",
   },
@@ -348,14 +500,17 @@ export const faq: { id: string; question: string; answer: string }[] = [
   },
   {
     id: "secret-in-code",
-    question: "What happens if my custom code snippet contains an API key by accident?",
+    question:
+      "What happens if my custom code snippet contains an API key by accident?",
     answer:
       "The save is blocked and the exact triggering line is shown before anything is published; nothing with a credential-shaped string reaches the live storefront through this path.",
   },
   {
     id: "one-catalogue",
-    question: "Does the Bangla and English catalogue require maintaining two separate product lists?",
-    answer: "No — one product record holds both language fields; there is no second catalogue to keep in sync.",
+    question:
+      "Does the Bangla and English catalogue require maintaining two separate product lists?",
+    answer:
+      "No — one product record holds both language fields; there is no second catalogue to keep in sync.",
   },
   {
     id: "oversized-hero",

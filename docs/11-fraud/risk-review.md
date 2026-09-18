@@ -40,10 +40,10 @@ A `hold` case returns to `review` on expiry after `fraud.hold_window_days` — i
 
 ## 6. Named TBDs (owners)
 
-| Item | Owner |
-| --- | --- |
+| Item                                                          | Owner                      |
+| ------------------------------------------------------------- | -------------------------- |
 | `fraud.review_sla` — queue deliver-by (README §7 ops console) | **TBD** — fraud operations |
-| `fraud.hold_window_days` — hold → review expiry (README §5) | **TBD** — fraud operations |
+| `fraud.hold_window_days` — hold → review expiry (README §5)   | **TBD** — fraud operations |
 
 All three quantities live as configured names only; no literal values anywhere until OWNER sign-off (SYSTEM §Conventions).
 

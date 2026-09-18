@@ -302,7 +302,12 @@
     {
       "id": "elementor_editor_ui",
       "label": "Elementor Visual Editor Interface",
-      "nodes": ["el_2_canvas", "el_2_canvas_drag_area", "el_2_canvas_structure_panel", "el_2_canvas_widget_panel"],
+      "nodes": [
+        "el_2_canvas",
+        "el_2_canvas_drag_area",
+        "el_2_canvas_structure_panel",
+        "el_2_canvas_widget_panel"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -320,7 +325,11 @@
     {
       "id": "el_configuration_panels",
       "label": "Elementor Configuration and Settings Panels",
-      "nodes": ["el_settings_advanced", "el_settings_google_fonts", "el_settings_file_uploads"],
+      "nodes": [
+        "el_settings_advanced",
+        "el_settings_google_fonts",
+        "el_settings_file_uploads"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,

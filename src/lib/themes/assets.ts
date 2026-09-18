@@ -23,7 +23,10 @@ export type ThemeAsset = {
   updatedAt: string;
 };
 
-export const ASSET_KIND_LABEL: Record<ThemeAssetKind, { en: string; bn: string }> = {
+export const ASSET_KIND_LABEL: Record<
+  ThemeAssetKind,
+  { en: string; bn: string }
+> = {
   css: { en: "Custom CSS", bn: "কাস্টম সিএসএস" },
   tokens: { en: "Colour tokens", bn: "কালার টোকেন" },
   image: { en: "Image", bn: "ছবি" },
@@ -69,7 +72,10 @@ const CSS_BANS: { pattern: RegExp; label: string }[] = [
   { pattern: /expression\s*\([^)]*\)/gi, label: "expression()" },
   { pattern: /behaviou?r\s*:[^;]*;?/gi, label: "behavior" },
   { pattern: /javascript\s*:/gi, label: "javascript:" },
-  { pattern: /url\(\s*['"]?\s*data:text\/html[^)]*\)/gi, label: "data:text/html url" },
+  {
+    pattern: /url\(\s*['"]?\s*data:text\/html[^)]*\)/gi,
+    label: "data:text/html url",
+  },
   { pattern: /-moz-binding\s*:[^;]*;?/gi, label: "-moz-binding" },
 ];
 
@@ -94,7 +100,12 @@ export function isCssSafe(input: string): boolean {
   return sanitiseThemeCss(input).removed.length === 0;
 }
 
-export type CssStats = { bytes: number; rules: number; lines: number; overLimit: boolean };
+export type CssStats = {
+  bytes: number;
+  rules: number;
+  lines: number;
+  overLimit: boolean;
+};
 
 export function cssStats(css: string): CssStats {
   const bytes = new TextEncoder().encode(css).length;
@@ -124,7 +135,9 @@ const TOKEN_VALUE = /^[^;{}<>]{1,80}$/;
  * projected into CSS custom properties. Unsafe names or values are dropped
  * rather than escaped, so a bad paste can never break the storefront.
  */
-export function parseTokenOverrides(raw: string | null | undefined): Record<string, string> {
+export function parseTokenOverrides(
+  raw: string | null | undefined,
+): Record<string, string> {
   if (!raw) return {};
   let parsed: unknown;
   try {
@@ -134,7 +147,9 @@ export function parseTokenOverrides(raw: string | null | undefined): Record<stri
   }
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
   const out: Record<string, string> = {};
-  for (const [key, value] of Object.entries(parsed as Record<string, unknown>)) {
+  for (const [key, value] of Object.entries(
+    parsed as Record<string, unknown>,
+  )) {
     if (Object.keys(out).length >= MAX_TOKENS) break;
     const name = key.trim().replace(/^--/, "").toLowerCase();
     if (!TOKEN_NAME.test(name)) continue;
@@ -156,7 +171,8 @@ export function validateTokens(raw: string): string | null {
   if (!raw.trim()) return null;
   try {
     const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return "tokens.shape";
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed))
+      return "tokens.shape";
   } catch {
     return "tokens.json";
   }
@@ -170,16 +186,22 @@ export function validateTokens(raw: string): string | null {
  * later rule can always win), then custom CSS, then `@font-face` blocks for
  * uploaded fonts.
  */
-export function combineThemeCss(assets: ThemeAsset[], themeId: string | null): string {
+export function combineThemeCss(
+  assets: ThemeAsset[],
+  themeId: string | null,
+): string {
   const scoped = assets.filter(
-    (asset) => asset.enabled && (asset.themeId === null || asset.themeId === themeId),
+    (asset) =>
+      asset.enabled && (asset.themeId === null || asset.themeId === themeId),
   );
   const parts: string[] = [];
   for (const asset of scoped.filter((a) => a.kind === "tokens"))
     parts.push(tokensToCss(parseTokenOverrides(asset.content)));
   for (const asset of scoped.filter((a) => a.kind === "font")) {
     if (!asset.url) continue;
-    const family = asset.name.replace(/\.[a-z0-9]+$/i, "").replace(/["\\]/g, "");
+    const family = asset.name
+      .replace(/\.[a-z0-9]+$/i, "")
+      .replace(/["\\]/g, "");
     parts.push(
       `@font-face{font-family:"${family}";src:url("${asset.url}");font-display:swap}`,
     );
@@ -200,9 +222,14 @@ export function sortAssets(assets: ThemeAsset[]): ThemeAsset[] {
   );
 }
 
-export function assetsForTheme(assets: ThemeAsset[], themeId: string | null): ThemeAsset[] {
+export function assetsForTheme(
+  assets: ThemeAsset[],
+  themeId: string | null,
+): ThemeAsset[] {
   return sortAssets(
-    assets.filter((asset) => asset.themeId === null || asset.themeId === themeId),
+    assets.filter(
+      (asset) => asset.themeId === null || asset.themeId === themeId,
+    ),
   );
 }
 

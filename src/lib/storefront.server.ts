@@ -1,6 +1,11 @@
 import { publicClient } from "./pricing.server";
 import { log, observe } from "./observability.server";
-import { templateOf, type TemplateKey, type ThemeAst, type ThemeTokens } from "./builder-ast";
+import {
+  templateOf,
+  type TemplateKey,
+  type ThemeAst,
+  type ThemeTokens,
+} from "./builder-ast";
 import { publishedTheme } from "./themes.server";
 
 /**
@@ -11,7 +16,12 @@ import { publishedTheme } from "./themes.server";
 async function loadPublished(
   merchantId: string,
   template: TemplateKey = "index",
-): Promise<{ ast: ThemeAst; tokens: ThemeTokens; themeKey: string | null; versionId: string } | null> {
+): Promise<{
+  ast: ThemeAst;
+  tokens: ThemeTokens;
+  themeKey: string | null;
+  versionId: string;
+} | null> {
   // Phase 8.7: render time is tracked per template, which is the unit a
   // merchant experiences and the unit the cache is keyed by.
   const started = Date.now();
@@ -22,7 +32,8 @@ async function loadPublished(
   // A theme that publishes no header/footer for a secondary template (search,
   // cart, checkout) borrows the home template's chrome, so a shopper never
   // lands on a page without the store's navigation or its policy links.
-  const home = template === "index" ? ast : templateOf(theme.templates, "index");
+  const home =
+    template === "index" ? ast : templateOf(theme.templates, "index");
   const withChrome = {
     header: ast.header.length ? ast.header : home.header,
     main: ast.main,
@@ -36,7 +47,6 @@ async function loadPublished(
   };
 }
 
-
 /**
  * Published `page` template for a tenant, used by content pages.
  *
@@ -44,10 +54,17 @@ async function loadPublished(
  * `page` template wins; an unpublished or deleted pin falls back to the
  * store's active theme so the page still renders.
  */
-export async function loadPageTemplate(merchantId: string, themeId?: string | null) {
+export async function loadPageTemplate(
+  merchantId: string,
+  themeId?: string | null,
+) {
   if (themeId) {
     const { publishedThemeById } = await import("./themes.server");
-    const pinned = await publishedThemeById(publicClient(), merchantId, themeId);
+    const pinned = await publishedThemeById(
+      publicClient(),
+      merchantId,
+      themeId,
+    );
     if (pinned)
       return {
         ast: templateOf(pinned.templates, "page"),
@@ -78,7 +95,9 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
 
   const [theme, siteKit] = await Promise.all([
     loadPublished(merchant.id, template),
-    import("./search-console.server").then((m) => m.storefrontSiteKit(merchant.id)),
+    import("./search-console.server").then((m) =>
+      m.storefrontSiteKit(merchant.id),
+    ),
   ]);
 
   return {
@@ -96,7 +115,10 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
  * `collection` template. Falls back to the store's own chrome when the theme
  * publishes no collection sections.
  */
-export async function loadStoreCollection(slug: string, collectionSlug: string) {
+export async function loadStoreCollection(
+  slug: string,
+  collectionSlug: string,
+) {
   const db = publicClient();
   const { data: merchant } = await db
     .from("merchants")
@@ -129,7 +151,11 @@ export async function loadStoreCollection(slug: string, collectionSlug: string) 
           .limit(60)
       : Promise.resolve({ data: [] as never[] }),
     loadPublished(merchant.id, "collection"),
-    db.from("merchant_settings").select("tagline").eq("merchant_id", merchant.id).maybeSingle(),
+    db
+      .from("merchant_settings")
+      .select("tagline")
+      .eq("merchant_id", merchant.id)
+      .maybeSingle(),
   ]);
 
   const { resolveSeo } = await import("./seo.server");
@@ -137,14 +163,23 @@ export async function loadStoreCollection(slug: string, collectionSlug: string) 
   const entitySeo =
     (await resolveSeo(merchant.id, "collection", collection.id)) ??
     (await resolveSeo(merchant.id, "store", null));
-  const seo = await resolveSeoWithTemplate(merchant.id, "collection", entitySeo);
+  const seo = await resolveSeoWithTemplate(
+    merchant.id,
+    "collection",
+    entitySeo,
+  );
 
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
 
   return {
     merchant,
-    collection: { id: collection.id, name: collection.name, slug: collection.slug, description: collection.description },
+    collection: {
+      id: collection.id,
+      name: collection.name,
+      slug: collection.slug,
+      description: collection.description,
+    },
     products: products ?? [],
     settings,
     seo,
@@ -165,13 +200,21 @@ export type StorefrontPreview = { merchantId: string; themeId: string } | null;
  * Preview responses must never enter the shared storefront cache (see
  * withStorefrontCache) and are always noindex (see the route head).
  */
-async function resolveIndexTheme(merchantId: string, preview: StorefrontPreview) {
+async function resolveIndexTheme(
+  merchantId: string,
+  preview: StorefrontPreview,
+) {
   if (preview && preview.merchantId === merchantId) {
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const { previewTheme } = await import("./themes.server");
       const { templateOf } = await import("./builder-ast");
-      const draft = await previewTheme(supabaseAdmin as never, merchantId, preview.themeId);
+      const draft = await previewTheme(
+        supabaseAdmin as never,
+        merchantId,
+        preview.themeId,
+      );
       if (draft) {
         return {
           ast: templateOf(draft.templates, "index"),
@@ -189,7 +232,9 @@ async function resolveIndexTheme(merchantId: string, preview: StorefrontPreview)
       // `log` alias resolved to the wrong export at runtime), which would
       // throw inside this catch and mask the original error.
       try {
-        log("warn", "storefront.preview_failed", { message: String(err).slice(0, 200) });
+        log("warn", "storefront.preview_failed", {
+          message: String(err).slice(0, 200),
+        });
       } catch {
         // Logging must never break the storefront.
       }
@@ -199,7 +244,10 @@ async function resolveIndexTheme(merchantId: string, preview: StorefrontPreview)
   return published ? { ...published, preview: false as const } : null;
 }
 
-export async function loadStorefront(slug: string, preview: StorefrontPreview = null) {
+export async function loadStorefront(
+  slug: string,
+  preview: StorefrontPreview = null,
+) {
   const db = publicClient();
   const { data: merchant, error } = await db
     .from("merchants")
@@ -210,29 +258,42 @@ export async function loadStorefront(slug: string, preview: StorefrontPreview = 
   if (error) throw error;
   if (!merchant) return null;
 
-  const [{ data: settings }, { data: products }, { data: categories }, { data: collections }, theme] =
-    await Promise.all([
-      db
-        .from("merchant_settings")
-        .select("tagline, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int")
-        .eq("merchant_id", merchant.id)
-        .maybeSingle(),
-      db
-        .from("products")
-        .select("id, title, slug, description, image_url, category_id, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)")
-        .eq("merchant_id", merchant.id)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(48),
-      db.from("categories").select("id, name, slug").eq("merchant_id", merchant.id).order("name"),
-      db
-        .from("collections")
-        .select("id, name, slug, collection_products(product_id)")
-        .eq("merchant_id", merchant.id)
-        .eq("is_published", true)
-        .order("position"),
-      resolveIndexTheme(merchant.id, preview),
-    ]);
+  const [
+    { data: settings },
+    { data: products },
+    { data: categories },
+    { data: collections },
+    theme,
+  ] = await Promise.all([
+    db
+      .from("merchant_settings")
+      .select(
+        "tagline, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int",
+      )
+      .eq("merchant_id", merchant.id)
+      .maybeSingle(),
+    db
+      .from("products")
+      .select(
+        "id, title, slug, description, image_url, category_id, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+      )
+      .eq("merchant_id", merchant.id)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(48),
+    db
+      .from("categories")
+      .select("id, name, slug")
+      .eq("merchant_id", merchant.id)
+      .order("name"),
+    db
+      .from("collections")
+      .select("id, name, slug, collection_products(product_id)")
+      .eq("merchant_id", merchant.id)
+      .eq("is_published", true)
+      .order("position"),
+    resolveIndexTheme(merchant.id, preview),
+  ]);
 
   // Phase 3: entity SEO first, the builder's per-template record behind it.
   // Never throws: a failed template read leaves the entity override in charge.
@@ -260,7 +321,9 @@ export async function loadStorefront(slug: string, preview: StorefrontPreview = 
   // one batched call, and shipped inside the SSR payload — the client reads
   // rows from the map instead of refetching on hydrate.
   const { collectWidgetRequests, EMPTY_BUNDLE } = await import("./widget-data");
-  const widgetBundle = theme?.ast ? collectWidgetRequests(theme.ast) : EMPTY_BUNDLE;
+  const widgetBundle = theme?.ast
+    ? collectWidgetRequests(theme.ast)
+    : EMPTY_BUNDLE;
   let widgetData = {};
   if (widgetBundle.requests.length > 0) {
     const { resolveWidgetData } = await import("./widget-data.server");
@@ -286,9 +349,6 @@ export async function loadStorefront(slug: string, preview: StorefrontPreview = 
   };
 }
 
-
-
-
 export async function loadStoreProduct(slug: string, productSlug: string) {
   const db = publicClient();
   const { data: merchant } = await db
@@ -301,7 +361,9 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { data: product } = await db
     .from("products")
-    .select("id, title, slug, description, image_url, product_variants(id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)")
+    .select(
+      "id, title, slug, description, image_url, product_variants(id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+    )
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)
     .eq("status", "active")
@@ -313,7 +375,9 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const [{ data: settings }, theme, { data: reviews }] = await Promise.all([
     db
       .from("merchant_settings")
-      .select("cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int")
+      .select(
+        "cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int",
+      )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),
     loadPublished(merchant.id, "product"),
@@ -330,7 +394,8 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const { resolveSeo } = await import("./seo.server");
   const { resolveSeoWithTemplate } = await import("./template-seo.server");
   const entitySeo =
-    (await resolveSeo(merchant.id, "product", product.id)) ?? (await resolveSeo(merchant.id, "store", null));
+    (await resolveSeo(merchant.id, "product", product.id)) ??
+    (await resolveSeo(merchant.id, "store", null));
   const seo = await resolveSeoWithTemplate(merchant.id, "product", entitySeo);
 
   const { storefrontSiteKit } = await import("./search-console.server");
@@ -393,7 +458,8 @@ export async function locateProduct(productId: string) {
 }
 
 export async function locateOrder(orderId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data: order } = await supabaseAdmin
     .from("orders")
     .select("merchant_id")
@@ -409,4 +475,3 @@ export async function locateOrder(orderId: string) {
     .maybeSingle();
   return merchant?.slug ?? null;
 }
-

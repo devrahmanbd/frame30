@@ -3,7 +3,13 @@ import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { AlertTriangle, CheckCircle2, Download, FileUp, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Download,
+  FileUp,
+  Trash2,
+} from "lucide-react";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
 import {
@@ -41,7 +47,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/catalog")({
       { property: "og:title", content: "Catalog core desk" },
       {
         property: "og:description",
-        content: "Kind coherence, metafield definitions and idempotent bulk import for your store.",
+        content:
+          "Kind coherence, metafield definitions and idempotent bulk import for your store.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -69,9 +76,14 @@ function CatalogDeskPage() {
   const exportCsv = useServerFn(catalogExportCsvFn);
 
   const fileRef = useRef<HTMLInputElement>(null);
-  const [pending, setPending] = useState<{ fileName: string; rows: ImportRow[] } | null>(null);
+  const [pending, setPending] = useState<{
+    fileName: string;
+    rows: ImportRow[];
+  } | null>(null);
   const [job, setJob] = useState<ImportJob | null>(null);
-  const [verdictFilter, setVerdictFilter] = useState<"all" | "create" | "update" | "error">("all");
+  const [verdictFilter, setVerdictFilter] = useState<
+    "all" | "create" | "update" | "error"
+  >("all");
 
   const { data, isLoading } = useQuery({
     queryKey: ["catalog-desk", merchantId],
@@ -83,23 +95,37 @@ function CatalogDeskPage() {
     mutationFn: async (payload: { fileName: string; rows: ImportRow[] }) => {
       const sourceHash = await hashRows(payload.fileName, payload.rows);
       return dryRun({
-        data: { merchantId: merchantId!, fileName: payload.fileName, sourceHash, rows: payload.rows },
+        data: {
+          merchantId: merchantId!,
+          fileName: payload.fileName,
+          sourceHash,
+          rows: payload.rows,
+        },
       });
     },
     onSuccess: (result) => {
       setJob(result as ImportJob);
-      toast.success(t("Dry run ready — nothing written yet", "ড্রাই রান তৈরি — এখনো কিছু সেভ হয়নি"));
+      toast.success(
+        t(
+          "Dry run ready — nothing written yet",
+          "ড্রাই রান তৈরি — এখনো কিছু সেভ হয়নি",
+        ),
+      );
     },
     onError: (err) => toast.error(friendly(err)),
   });
 
   const applyMutation = useMutation({
-    mutationFn: (jobId: string) => applyJob({ data: { merchantId: merchantId!, jobId } }),
+    mutationFn: (jobId: string) =>
+      applyJob({ data: { merchantId: merchantId!, jobId } }),
     onSuccess: (res) => {
       const r = res as { replayed: boolean; summary: Record<string, number> };
       toast.success(
         r.replayed
-          ? t("Already applied — replay ignored", "আগেই প্রয়োগ হয়েছে — পুনরাবৃত্তি বাতিল")
+          ? t(
+              "Already applied — replay ignored",
+              "আগেই প্রয়োগ হয়েছে — পুনরাবৃত্তি বাতিল",
+            )
           : t(
               `Applied: ${r.summary.created ?? 0} created, ${r.summary.updated ?? 0} updated`,
               `প্রয়োগ: ${r.summary.created ?? 0}টি নতুন, ${r.summary.updated ?? 0}টি হালনাগাদ`,
@@ -113,7 +139,8 @@ function CatalogDeskPage() {
   });
 
   const discardMutation = useMutation({
-    mutationFn: (jobId: string) => discardJob({ data: { merchantId: merchantId!, jobId } }),
+    mutationFn: (jobId: string) =>
+      discardJob({ data: { merchantId: merchantId!, jobId } }),
     onSuccess: () => {
       setJob(null);
       setPending(null);
@@ -130,13 +157,17 @@ function CatalogDeskPage() {
     mutationFn: () => exportCsv({ data: { merchantId: merchantId! } }),
     onSuccess: (res) => {
       const { csv, rows } = res as { csv: string; rows: number };
-      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const url = URL.createObjectURL(
+        new Blob([csv], { type: "text/csv;charset=utf-8" }),
+      );
       const a = document.createElement("a");
       a.href = url;
       a.download = `framique-catalog-${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success(t(`Exported ${rows} rows`, `${rows}টি সারি এক্সপোর্ট হয়েছে`));
+      toast.success(
+        t(`Exported ${rows} rows`, `${rows}টি সারি এক্সপোর্ট হয়েছে`),
+      );
     },
     onError: (err) => toast.error(friendly(err)),
   });
@@ -149,7 +180,12 @@ function CatalogDeskPage() {
       return;
     }
     if (parsed.rows.length > IMPORT_MAX_ROWS) {
-      toast.error(t(`Max ${IMPORT_MAX_ROWS} rows per file`, `প্রতি ফাইলে সর্বোচ্চ ${IMPORT_MAX_ROWS} সারি`));
+      toast.error(
+        t(
+          `Max ${IMPORT_MAX_ROWS} rows per file`,
+          `প্রতি ফাইলে সর্বোচ্চ ${IMPORT_MAX_ROWS} সারি`,
+        ),
+      );
       return;
     }
     setPending({ fileName: file.name, rows: parsed.rows });
@@ -158,7 +194,9 @@ function CatalogDeskPage() {
 
   const diff = useMemo(() => {
     const rows = job?.diff ?? [];
-    return verdictFilter === "all" ? rows : rows.filter((d) => d.verdict === verdictFilter);
+    return verdictFilter === "all"
+      ? rows
+      : rows.filter((d) => d.verdict === verdictFilter);
   }, [job, verdictFilter]);
 
   const health = data;
@@ -202,7 +240,10 @@ function CatalogDeskPage() {
             value={health?.missingDigitalAsset ?? 0}
           />
           <Gap
-            label={t("Service without booking rules", "বুকিং নিয়ম ছাড়া সার্ভিস")}
+            label={t(
+              "Service without booking rules",
+              "বুকিং নিয়ম ছাড়া সার্ভিস",
+            )}
             value={health?.missingServiceConfig ?? 0}
           />
           <Gap
@@ -222,7 +263,8 @@ function CatalogDeskPage() {
             download="framique-catalog-template.csv"
             className="inline-flex min-h-9 items-center gap-1.5 rounded-fq-md border border-border px-3 text-sm hover:bg-muted"
           >
-            <Download className="size-4" aria-hidden /> {t("CSV template", "সিএসভি টেমপ্লেট")}
+            <Download className="size-4" aria-hidden />{" "}
+            {t("CSV template", "সিএসভি টেমপ্লেট")}
           </a>
           <button
             type="button"
@@ -274,10 +316,14 @@ function CatalogDeskPage() {
               <Badge tone="warn">{`${job.summary.updates ?? 0} ${t("update", "হালনাগাদ")}`}</Badge>
               <Badge tone="error">{`${job.summary.errors ?? 0} ${t("error", "ত্রুটি")}`}</Badge>
               <label className="ml-auto flex items-center gap-2">
-                <span className="text-muted-foreground">{t("Filter", "ফিল্টার")}</span>
+                <span className="text-muted-foreground">
+                  {t("Filter", "ফিল্টার")}
+                </span>
                 <select
                   value={verdictFilter}
-                  onChange={(e) => setVerdictFilter(e.target.value as typeof verdictFilter)}
+                  onChange={(e) =>
+                    setVerdictFilter(e.target.value as typeof verdictFilter)
+                  }
                   className="min-h-9 rounded-fq-md border border-border bg-background px-2 text-sm"
                 >
                   <option value="all">{t("All", "সব")}</option>
@@ -290,14 +336,26 @@ function CatalogDeskPage() {
 
             <div className="overflow-x-auto rounded-fq-md border border-border">
               <table className="w-full text-sm">
-                <caption className="sr-only">{t("Import dry run result", "ইমপোর্ট ড্রাই রান ফলাফল")}</caption>
+                <caption className="sr-only">
+                  {t("Import dry run result", "ইমপোর্ট ড্রাই রান ফলাফল")}
+                </caption>
                 <thead className="bg-muted/50 text-left">
                   <tr>
-                    <th scope="col" className="p-2">#</th>
-                    <th scope="col" className="p-2">{t("Verdict", "সিদ্ধান্ত")}</th>
-                    <th scope="col" className="p-2">{t("Slug", "স্লাগ")}</th>
-                    <th scope="col" className="p-2">{t("Title", "শিরোনাম")}</th>
-                    <th scope="col" className="p-2">{t("Note", "নোট")}</th>
+                    <th scope="col" className="p-2">
+                      #
+                    </th>
+                    <th scope="col" className="p-2">
+                      {t("Verdict", "সিদ্ধান্ত")}
+                    </th>
+                    <th scope="col" className="p-2">
+                      {t("Slug", "স্লাগ")}
+                    </th>
+                    <th scope="col" className="p-2">
+                      {t("Title", "শিরোনাম")}
+                    </th>
+                    <th scope="col" className="p-2">
+                      {t("Note", "নোট")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -307,15 +365,23 @@ function CatalogDeskPage() {
                       <td className="p-2">
                         <Badge
                           tone={
-                            row.verdict === "error" ? "error" : row.verdict === "update" ? "warn" : "ok"
+                            row.verdict === "error"
+                              ? "error"
+                              : row.verdict === "update"
+                                ? "warn"
+                                : "ok"
                           }
                         >
                           {row.verdict}
                         </Badge>
                       </td>
-                      <td className="p-2 font-mono text-xs">{row.slug ?? "—"}</td>
+                      <td className="p-2 font-mono text-xs">
+                        {row.slug ?? "—"}
+                      </td>
                       <td className="p-2">{row.title ?? "—"}</td>
-                      <td className="p-2 text-muted-foreground">{row.reason ?? "—"}</td>
+                      <td className="p-2 text-muted-foreground">
+                        {row.reason ?? "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -334,7 +400,10 @@ function CatalogDeskPage() {
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
-                disabled={applyMutation.isPending || (job.summary.creates ?? 0) + (job.summary.updates ?? 0) === 0}
+                disabled={
+                  applyMutation.isPending ||
+                  (job.summary.creates ?? 0) + (job.summary.updates ?? 0) === 0
+                }
                 onClick={() => applyMutation.mutate(job.id)}
                 className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
               >
@@ -361,12 +430,21 @@ function CatalogDeskPage() {
             <ul className="space-y-1 text-sm">
               {health.jobs.map((j) => (
                 <li key={j.id} className="flex flex-wrap items-center gap-2">
-                  <Badge tone={j.status === "applied" ? "ok" : j.status === "failed" ? "error" : "warn"}>
+                  <Badge
+                    tone={
+                      j.status === "applied"
+                        ? "ok"
+                        : j.status === "failed"
+                          ? "error"
+                          : "warn"
+                    }
+                  >
                     {j.status}
                   </Badge>
                   <span>{j.file_name}</span>
                   <span className="text-muted-foreground tabular-nums">
-                    {j.row_count} {t("rows", "সারি")} · {new Date(j.created_at).toLocaleString()}
+                    {j.row_count} {t("rows", "সারি")} ·{" "}
+                    {new Date(j.created_at).toLocaleString()}
                   </span>
                 </li>
               ))}
@@ -379,7 +457,9 @@ function CatalogDeskPage() {
         merchantId={merchantId}
         definitions={health?.definitions ?? []}
         onSave={async (payload) => {
-          await saveDefinition({ data: { merchantId: merchantId!, ...payload } });
+          await saveDefinition({
+            data: { merchantId: merchantId!, ...payload },
+          });
           void qc.invalidateQueries({ queryKey: ["catalog-desk", merchantId] });
         }}
         onDelete={async (id) => {
@@ -396,7 +476,10 @@ function Gap({ label, value }: { label: string; value: number }) {
   return (
     <div className={`${card} flex items-center gap-3`}>
       {bad ? (
-        <AlertTriangle className="size-5 text-[hsl(var(--bondhu-amber))]" aria-hidden />
+        <AlertTriangle
+          className="size-5 text-[hsl(var(--bondhu-amber))]"
+          aria-hidden
+        />
       ) : (
         <CheckCircle2 className="size-5 text-[hsl(var(--mint))]" aria-hidden />
       )}
@@ -408,14 +491,22 @@ function Gap({ label, value }: { label: string; value: number }) {
   );
 }
 
-function Badge({ tone, children }: { tone: "ok" | "warn" | "error"; children: React.ReactNode }) {
+function Badge({
+  tone,
+  children,
+}: {
+  tone: "ok" | "warn" | "error";
+  children: React.ReactNode;
+}) {
   const map = {
     ok: "border-[hsl(var(--mint))] text-[hsl(var(--mint))]",
     warn: "border-[hsl(var(--bondhu-amber))] text-[hsl(var(--bondhu-amber))]",
     error: "border-[hsl(var(--rickshaw-red))] text-[hsl(var(--rickshaw-red))]",
   } as const;
   return (
-    <span className={`inline-flex items-center rounded-fq-sm border px-2 py-0.5 text-xs ${map[tone]}`}>
+    <span
+      className={`inline-flex items-center rounded-fq-sm border px-2 py-0.5 text-xs ${map[tone]}`}
+    >
       {children}
     </span>
   );
@@ -474,7 +565,9 @@ function MetafieldDefinitions({
         label: draft.label,
         valueType: draft.valueType,
         isRequired: draft.isRequired,
-        validation: draft.maxLength ? { max_length: Number(draft.maxLength) } : {},
+        validation: draft.maxLength
+          ? { max_length: Number(draft.maxLength) }
+          : {},
       });
       toast.success(t("Definition saved", "ডেফিনিশন সেভ হয়েছে"));
       setDraft((d) => ({ ...d, key: "", label: "", maxLength: "" }));
@@ -497,9 +590,14 @@ function MetafieldDefinitions({
         )}
       </p>
 
-      <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+      <form
+        onSubmit={submit}
+        className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6"
+      >
         <label className="block text-sm">
-          <span className="mb-1.5 block font-medium">{t("Owner", "মালিক")}</span>
+          <span className="mb-1.5 block font-medium">
+            {t("Owner", "মালিক")}
+          </span>
           <select
             value={draft.ownerType}
             onChange={(e) => setDraft({ ...draft, ownerType: e.target.value })}
@@ -513,7 +611,9 @@ function MetafieldDefinitions({
           </select>
         </label>
         <label className="block text-sm">
-          <span className="mb-1.5 block font-medium">{t("Namespace", "নেমস্পেস")}</span>
+          <span className="mb-1.5 block font-medium">
+            {t("Namespace", "নেমস্পেস")}
+          </span>
           <input
             value={draft.namespace}
             onChange={(e) => setDraft({ ...draft, namespace: e.target.value })}
@@ -532,7 +632,9 @@ function MetafieldDefinitions({
           />
         </label>
         <label className="block text-sm">
-          <span className="mb-1.5 block font-medium">{t("Label", "লেবেল")}</span>
+          <span className="mb-1.5 block font-medium">
+            {t("Label", "লেবেল")}
+          </span>
           <input
             value={draft.label}
             onChange={(e) => setDraft({ ...draft, label: e.target.value })}
@@ -559,7 +661,9 @@ function MetafieldDefinitions({
             <input
               type="checkbox"
               checked={draft.isRequired}
-              onChange={(e) => setDraft({ ...draft, isRequired: e.target.checked })}
+              onChange={(e) =>
+                setDraft({ ...draft, isRequired: e.target.checked })
+              }
               className="size-4"
             />
             {t("Required", "আবশ্যক")}
@@ -577,13 +681,18 @@ function MetafieldDefinitions({
       {definitions.length ? (
         <ul className="divide-y divide-border rounded-fq-md border border-border">
           {definitions.map((d) => (
-            <li key={d.id} className="flex flex-wrap items-center gap-3 p-3 text-sm">
+            <li
+              key={d.id}
+              className="flex flex-wrap items-center gap-3 p-3 text-sm"
+            >
               <span className="font-mono text-xs">
                 {d.owner_type}.{d.namespace}.{d.key}
               </span>
               <span>{d.label}</span>
               <span className="text-muted-foreground">{d.value_type}</span>
-              {d.is_required ? <Badge tone="warn">{t("required", "আবশ্যক")}</Badge> : null}
+              {d.is_required ? (
+                <Badge tone="warn">{t("required", "আবশ্যক")}</Badge>
+              ) : null}
               <button
                 type="button"
                 aria-label={`Delete ${d.key}`}
@@ -606,10 +715,13 @@ function MetafieldDefinitions({
 
 function friendly(err: unknown) {
   const raw = err instanceof Error ? err.message : String(err);
-  if (raw.includes("rate_limit")) return "Too many import attempts — try again shortly.";
+  if (raw.includes("rate_limit"))
+    return "Too many import attempts — try again shortly.";
   if (raw.includes("catalog.forbidden")) return "Owner or admin role required.";
-  if (raw.includes("catalog.too_many_rows")) return `Max ${IMPORT_MAX_ROWS} rows per file.`;
-  if (raw.includes("metafield.")) return raw.replace("metafield.", "Metafield rejected: ");
+  if (raw.includes("catalog.too_many_rows"))
+    return `Max ${IMPORT_MAX_ROWS} rows per file.`;
+  if (raw.includes("metafield."))
+    return raw.replace("metafield.", "Metafield rejected: ");
   return raw;
 }
 

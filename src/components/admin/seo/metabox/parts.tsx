@@ -16,9 +16,18 @@ export const seoInput =
 
 /* ------------------------------------------------------------ pixel meter */
 
-export function PixelMeter({ label, px, max }: { label: string; px: number; max: number }) {
+export function PixelMeter({
+  label,
+  px,
+  max,
+}: {
+  label: string;
+  px: number;
+  max: number;
+}) {
   const fill = Math.min(1, px / max);
-  const tone = px > max ? "bg-danger" : fill > 0.9 ? "bg-warning" : "bg-success";
+  const tone =
+    px > max ? "bg-danger" : fill > 0.9 ? "bg-warning" : "bg-success";
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-[11px] text-muted-foreground">
@@ -27,7 +36,10 @@ export function PixelMeter({ label, px, max }: { label: string; px: number; max:
           {Math.round(px)} / {max} px
         </span>
       </div>
-      <div className="h-1 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
+      <div
+        className="h-1 w-full overflow-hidden rounded-full bg-muted"
+        aria-hidden
+      >
         <div
           className={cn("h-full rounded-full transition-all", tone)}
           style={{ width: `${fill * 100}%` }}
@@ -51,7 +63,11 @@ export function UnderlineTabs<T extends string>({
   label: string;
 }) {
   return (
-    <div role="tablist" aria-label={label} className="flex items-end gap-1 border-b border-border">
+    <div
+      role="tablist"
+      aria-label={label}
+      className="flex items-end gap-1 border-b border-border"
+    >
       {tabs.map((tab) => {
         const active = tab.id === value;
         return (
@@ -171,7 +187,8 @@ export function KeywordPills({
   const add = () => {
     const value = draft.trim();
     if (!value) return;
-    if (values.some((v) => v.toLowerCase() === value.toLowerCase())) return setDraft("");
+    if (values.some((v) => v.toLowerCase() === value.toLowerCase()))
+      return setDraft("");
     onChange([...values, value].slice(0, max));
     setDraft("");
   };
@@ -288,7 +305,9 @@ export function TokenField({
                   onClick={() => insert(token.token)}
                   className="fq-focus-glow flex min-h-8 w-full items-center justify-between gap-2 rounded-fq-md px-2 text-left text-xs hover:bg-muted"
                 >
-                  <span className="font-mono text-[11px] text-primary">{token.token}</span>
+                  <span className="font-mono text-[11px] text-primary">
+                    {token.token}
+                  </span>
                   <span className="text-muted-foreground">
                     {lang === "bn" ? token.bn : token.en}
                   </span>

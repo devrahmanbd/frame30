@@ -7,7 +7,12 @@
  * unbounded `width` query param is how an image CDN bill explodes and how the
  * cache hit rate collapses.
  */
-import { WIDTH_LADDER, snapWidth, type ResponsiveImage, type TransformSpec } from "./image-transform";
+import {
+  WIDTH_LADDER,
+  snapWidth,
+  type ResponsiveImage,
+  type TransformSpec,
+} from "./image-transform";
 import { buildImageUrl } from "./image-transform.server";
 
 export type { ResponsiveImage };
@@ -15,7 +20,11 @@ export type { ResponsiveImage };
 /** Widths we actually ship per surface — small ladders keep the cache hot. */
 export const IMAGE_PRESETS = {
   thumb: { widths: [64, 128, 256], sizes: "64px", aspect: 1 },
-  card: { widths: [256, 384, 512, 768], sizes: "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px", aspect: 1 },
+  card: {
+    widths: [256, 384, 512, 768],
+    sizes: "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px",
+    aspect: 1,
+  },
   hero: {
     widths: [512, 768, 1024, 1280, 1600],
     sizes: "(max-width: 768px) 100vw, 640px",
@@ -44,15 +53,25 @@ export async function responsiveImage(
     ladder.map(async (w) => {
       const url = await buildImageUrl(
         source,
-        { ...overrides, width: w, height: Math.round(w / aspect), resize: overrides.resize ?? "cover" },
+        {
+          ...overrides,
+          width: w,
+          height: Math.round(w / aspect),
+          resize: overrides.resize ?? "cover",
+        },
         "",
       );
       return `${url} ${w}w`;
     }),
   );
 
-  const fallbackWidth = ladder[Math.min(ladder.length - 1, Math.max(0, Math.floor(ladder.length / 2)))]!;
-  const src = (entries.find((e) => e.endsWith(` ${fallbackWidth}w`)) ?? entries[0]!).split(" ")[0]!;
+  const fallbackWidth =
+    ladder[
+      Math.min(ladder.length - 1, Math.max(0, Math.floor(ladder.length / 2)))
+    ]!;
+  const src = (
+    entries.find((e) => e.endsWith(` ${fallbackWidth}w`)) ?? entries[0]!
+  ).split(" ")[0]!;
 
   return {
     src,
@@ -69,14 +88,24 @@ export async function responsiveImages<T extends { image_url?: string | null }>(
   preset: ImagePreset,
 ): Promise<(T & { image: ResponsiveImage | null })[]> {
   return Promise.all(
-    rows.map(async (row) => ({ ...row, image: await responsiveImage(row.image_url ?? null, preset) })),
+    rows.map(async (row) => ({
+      ...row,
+      image: await responsiveImage(row.image_url ?? null, preset),
+    })),
   );
 }
 
 /** Widest variant available — used for og:image, where one absolute URL is needed. */
-export async function socialImage(source: string | null | undefined, origin: string) {
+export async function socialImage(
+  source: string | null | undefined,
+  origin: string,
+) {
   if (!source) return null;
-  return buildImageUrl(source, { width: snapWidth(1200), height: 630, resize: "cover" }, origin);
+  return buildImageUrl(
+    source,
+    { width: snapWidth(1200), height: 630, resize: "cover" },
+    origin,
+  );
 }
 
 export { WIDTH_LADDER };

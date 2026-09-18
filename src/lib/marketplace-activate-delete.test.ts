@@ -5,7 +5,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -34,12 +37,23 @@ describe("activateTheme honesty", () => {
           { id: "other", merchant_id: MERCHANT, name: "Live", is_active: true },
         ],
         theme_drafts: [
-          { theme_id: THEME, merchant_id: MERCHANT, templates: CUSTOM, tokens: {}, revision: 3 },
+          {
+            theme_id: THEME,
+            merchant_id: MERCHANT,
+            templates: CUSTOM,
+            tokens: {},
+            revision: 3,
+          },
         ],
         theme_audit: [],
       },
     });
-    const out: any = await activateTheme(db.asClient(), MERCHANT, THEME, "user-9");
+    const out: any = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      "user-9",
+    );
     expect(out.id).toBe(THEME);
     expect(out.applied).toBe(false);
     const themes = db.rows("store_themes");
@@ -97,7 +111,10 @@ describe("third-party install materialization", () => {
     expect(out.replayed).toBe(false);
     const themes = db.rows("store_themes");
     expect(themes).toHaveLength(1);
-    expect(themes[0]).toMatchObject({ merchant_id: MERCHANT, is_active: false });
+    expect(themes[0]).toMatchObject({
+      merchant_id: MERCHANT,
+      is_active: false,
+    });
     const install = db.rows("marketplace_installs")[0];
     expect(themes[0].source_install_id).toBe(install.id);
     expect(db.rows("theme_versions")).toHaveLength(1);

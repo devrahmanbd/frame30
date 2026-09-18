@@ -1,1 +1,364 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "label": "fraud-engine.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L1"}, {"id": "lib_fraud_engine_test_rules", "label": "rules()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L14"}, {"id": "lib_fraud_engine_test_order", "label": "order()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L24"}, {"id": "lib_fraud_engine_test_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L36"}, {"id": "lib_fraud_engine_test_v", "label": "v", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L47"}, {"id": "lib_fraud_engine_test_codes", "label": "codes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L66"}, {"id": "lib_fraud_engine_test_history", "label": "history", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L72"}, {"id": "lib_fraud_engine_test_hit", "label": "hit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L86"}, {"id": "lib_fraud_engine_test_ctx", "label": "ctx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L125"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "users_rahman_documents_frame30_src_lib_fraud_engine_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_assess", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_botscore", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_defaultparams", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_rule_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_high_risk_threshold", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_historyorder", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_rulestate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_rules", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_order", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_codes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_history", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_history", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_hit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L86", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_history", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L109", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_ctx", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L125", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_history", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L130", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts", "target": "lib_fraud_engine_test_v", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L147", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_fraud_engine_test_rules", "callee": "defaultParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L15"}, {"caller_nid": "lib_fraud_engine_test_rules", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts", "source_location": "L16"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "label": "fraud-engine.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_fraud_engine_test_rules",
+      "label": "rules()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_fraud_engine_test_order",
+      "label": "order()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_fraud_engine_test_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_fraud_engine_test_v",
+      "label": "v",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_fraud_engine_test_codes",
+      "label": "codes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "lib_fraud_engine_test_history",
+      "label": "history",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "lib_fraud_engine_test_hit",
+      "label": "hit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L86"
+    },
+    {
+      "id": "lib_fraud_engine_test_ctx",
+      "label": "ctx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L125"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fraud_engine_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_assess",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_botscore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_defaultparams",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_rule_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_high_risk_threshold",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_historyorder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_rulestate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_order",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_codes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_hit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_ctx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_history",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fraud_engine_test_ts",
+      "target": "lib_fraud_engine_test_v",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_fraud_engine_test_rules",
+      "callee": "defaultParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "lib_fraud_engine_test_rules",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/fraud-engine.test.ts",
+      "source_location": "L16"
+    }
+  ]
+}

@@ -34,8 +34,19 @@ export type MailMessage = {
 };
 
 export type MailResult =
-  | { ok: true; provider: MailProvider; messageId: string | null; simulated: boolean }
-  | { ok: false; provider: MailProvider; retriable: boolean; error: string; status: number | null };
+  | {
+      ok: true;
+      provider: MailProvider;
+      messageId: string | null;
+      simulated: boolean;
+    }
+  | {
+      ok: false;
+      provider: MailProvider;
+      retriable: boolean;
+      error: string;
+      status: number | null;
+    };
 
 export type MailProvider = "resend" | "log";
 
@@ -101,7 +112,13 @@ export async function sendMail(message: MailMessage): Promise<MailResult> {
 
   if (isBreakerOpen(startedAt)) {
     incr("framique_mail_total", { provider, outcome: "breaker_open" });
-    return { ok: false, provider, retriable: true, error: "mail.breaker_open", status: null };
+    return {
+      ok: false,
+      provider,
+      retriable: true,
+      error: "mail.breaker_open",
+      status: null,
+    };
   }
 
   if (provider === "log") {
@@ -123,7 +140,8 @@ export async function sendMail(message: MailMessage): Promise<MailResult> {
       authorization: `Bearer ${process.env["RESEND_API_KEY"]}`,
       "content-type": "application/json",
     };
-    if (message.idempotencyKey) headers["idempotency-key"] = message.idempotencyKey;
+    if (message.idempotencyKey)
+      headers["idempotency-key"] = message.idempotencyKey;
 
     const body: Record<string, unknown> = {
       from: fromAddress(),
@@ -153,7 +171,12 @@ export async function sendMail(message: MailMessage): Promise<MailResult> {
       const payload = (await res.json().catch(() => ({}))) as { id?: string };
       noteSuccess();
       incr("framique_mail_total", { provider, outcome: "sent" });
-      return { ok: true, provider, messageId: payload.id ?? null, simulated: false };
+      return {
+        ok: true,
+        provider,
+        messageId: payload.id ?? null,
+        simulated: false,
+      };
     }
 
     const detail = (await res.text().catch(() => "")).slice(0, 300);
@@ -168,17 +191,28 @@ export async function sendMail(message: MailMessage): Promise<MailResult> {
       status: res.status,
       detail,
     });
-    return { ok: false, provider, retriable, error: detail || `http_${res.status}`, status: res.status };
+    return {
+      ok: false,
+      provider,
+      retriable,
+      error: detail || `http_${res.status}`,
+      status: res.status,
+    };
   } catch (error) {
     const aborted = (error as Error)?.name === "AbortError";
     noteFailure(Date.now());
-    incr("framique_mail_total", { provider, outcome: aborted ? "timeout" : "network_error" });
+    incr("framique_mail_total", {
+      provider,
+      outcome: aborted ? "timeout" : "network_error",
+    });
     await captureError(error, { scope: "mail.send", to: maskedTo(message.to) });
     return {
       ok: false,
       provider,
       retriable: true,
-      error: aborted ? "mail.timeout" : String((error as Error)?.message ?? error).slice(0, 200),
+      error: aborted
+        ? "mail.timeout"
+        : String((error as Error)?.message ?? error).slice(0, 200),
       status: null,
     };
   } finally {

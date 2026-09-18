@@ -24,7 +24,13 @@
  *   • `--only home,pricing` for a single card; `--locale bn` for a Bangla set;
  *   • JSONL logs on stderr, human summary on stdout, exit 0/1/2.
  */
-import { mkdirSync, writeFileSync, readFileSync, existsSync, statSync } from "node:fs";
+import {
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  statSync,
+} from "node:fs";
 import { resolve, dirname } from "node:path";
 import { chromium } from "playwright";
 
@@ -38,8 +44,14 @@ const flag = (name, fallback = null) => {
 const CHECK = argv.includes("--check");
 const ONLY = flag("only", null);
 const LOCALE = String(flag("locale", "en")) === "bn" ? "bn" : "en";
-const CONCURRENCY = Math.max(1, Number.parseInt(String(flag("concurrency", "3")), 10) || 3);
-const ATTEMPTS = Math.max(1, Number.parseInt(String(flag("attempts", "3")), 10) || 3);
+const CONCURRENCY = Math.max(
+  1,
+  Number.parseInt(String(flag("concurrency", "3")), 10) || 3,
+);
+const ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(String(flag("attempts", "3")), 10) || 3,
+);
 const ROOT = resolve(import.meta.dirname, "..");
 
 const log = (level, event, fields = {}) =>
@@ -57,9 +69,22 @@ function pngSize(path) {
 }
 
 const esc = (s) =>
-  String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
-function template({ eyebrow, headline, description, accent, footer, width, height, locale }) {
+function template({
+  eyebrow,
+  headline,
+  description,
+  accent,
+  footer,
+  width,
+  height,
+  locale,
+}) {
   return `<!doctype html>
 <html lang="${locale}"><head><meta charset="utf-8" />
 <style>
@@ -130,10 +155,18 @@ async function main() {
   const seo = await import(`${ROOT}/src/lib/marketing-seo.ts`);
   const { OG, OG_CARDS, ogAssetPath } = assets;
 
-  const only = ONLY ? new Set(String(ONLY).split(",").map((s) => s.trim())) : null;
+  const only = ONLY
+    ? new Set(
+        String(ONLY)
+          .split(",")
+          .map((s) => s.trim()),
+      )
+    : null;
   const cards = OG_CARDS.filter((c) => !only || only.has(c.route));
   if (cards.length === 0) {
-    console.error(`og cards FAILED: --only "${ONLY}" matched no registered route.`);
+    console.error(
+      `og cards FAILED: --only "${ONLY}" matched no registered route.`,
+    );
     process.exit(1);
   }
 
@@ -147,7 +180,10 @@ async function main() {
       html: template({
         eyebrow: card.eyebrow[LOCALE] ?? card.eyebrow.en,
         headline: route.title[LOCALE] ?? route.title.en,
-        description: seo.clampText(route.description[LOCALE] ?? route.description.en, 132),
+        description: seo.clampText(
+          route.description[LOCALE] ?? route.description.en,
+          132,
+        ),
         accent: card.accent,
         footer: `framique.com${route.path === "/" ? "" : route.path}`,
         width: OG.width,
@@ -173,15 +209,21 @@ async function main() {
         );
       }
       if (bytes > OG.maxBytes) {
-        problems.push(`${job.publicPath} is ${Math.round(bytes / 1024)}KB over budget`);
+        problems.push(
+          `${job.publicPath} is ${Math.round(bytes / 1024)}KB over budget`,
+        );
       }
     }
     if (problems.length > 0) {
       log("error", "og.check_failed", { problems });
-      console.error(`og cards FAILED:\n${problems.map((p) => `  - ${p}`).join("\n")}`);
+      console.error(
+        `og cards FAILED:\n${problems.map((p) => `  - ${p}`).join("\n")}`,
+      );
       process.exit(1);
     }
-    console.log(`og cards up to date — ${jobs.length} cards at ${OG.width}×${OG.height}.`);
+    console.log(
+      `og cards up to date — ${jobs.length} cards at ${OG.width}×${OG.height}.`,
+    );
     return;
   }
 
@@ -224,7 +266,11 @@ async function main() {
             // A card over budget is still better than no card: keep the file,
             // report it, and let the caller decide. Cards are rendered flat
             // colour, so this normally means the template gained a photo.
-            log("warn", "og.oversize", { id: job.id, bytes, budget: OG.maxBytes });
+            log("warn", "og.oversize", {
+              id: job.id,
+              bytes,
+              budget: OG.maxBytes,
+            });
           }
           written.push({ id: job.id, bytes, path: job.publicPath });
           log("info", "og.written", { id: job.id, bytes, attempt });
@@ -242,16 +288,24 @@ async function main() {
           await page.close().catch(() => {});
         }
       }
-      if (lastError) failures.push({ id: job.id, message: String(lastError?.message ?? lastError) });
+      if (lastError)
+        failures.push({
+          id: job.id,
+          message: String(lastError?.message ?? lastError),
+        });
     }
   };
 
-  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker),
+  );
   await context.close();
   await browser.close();
 
   for (const w of written.sort((a, b) => a.id.localeCompare(b.id))) {
-    console.log(`  ${w.id.padEnd(12)} ${String(Math.round(w.bytes / 1024)).padStart(4)}KB  ${w.path}`);
+    console.log(
+      `  ${w.id.padEnd(12)} ${String(Math.round(w.bytes / 1024)).padStart(4)}KB  ${w.path}`,
+    );
   }
   if (failures.length > 0) {
     console.error(
@@ -261,11 +315,15 @@ async function main() {
     );
     process.exit(1);
   }
-  console.log(`\nog cards written — ${written.length} at ${OG.width}×${OG.height} (${LOCALE}).`);
+  console.log(
+    `\nog cards written — ${written.length} at ${OG.width}×${OG.height} (${LOCALE}).`,
+  );
 }
 
 main().catch((error) => {
-  log("error", "og.harness_failed", { message: String(error?.message ?? error) });
+  log("error", "og.harness_failed", {
+    message: String(error?.message ?? error),
+  });
   console.error(`og card harness failed: ${error?.stack ?? error}`);
   process.exit(2);
 });

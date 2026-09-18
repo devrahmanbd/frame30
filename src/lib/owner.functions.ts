@@ -48,7 +48,11 @@ export const ownerGetConversationMessagesFn = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }) => {
     const { loadAiConversationMessages } = await import("./owner.server");
-    return loadAiConversationMessages(context.supabase, context.userId, data.conversationId);
+    return loadAiConversationMessages(
+      context.supabase,
+      context.userId,
+      data.conversationId,
+    );
   });
 
 export const ownerSendAgentMessageFn = createServerFn({ method: "POST" })
@@ -87,10 +91,17 @@ export const ownerSetTakeoverModeFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { ownerSetTakeoverMode } = await import("./owner.server");
-    return ownerSetTakeoverMode(context.supabase, context.userId, data.conversationId, data.mode);
+    return ownerSetTakeoverMode(
+      context.supabase,
+      context.userId,
+      data.conversationId,
+      data.mode,
+    );
   });
 
-export const ownerUpdateConversationStatusFn = createServerFn({ method: "POST" })
+export const ownerUpdateConversationStatusFn = createServerFn({
+  method: "POST",
+})
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
@@ -150,7 +161,9 @@ export const ownerSaveOperatorNotesFn = createServerFn({ method: "POST" })
     );
   });
 
-export const ownerExportConversationTranscriptFn = createServerFn({ method: "POST" })
+export const ownerExportConversationTranscriptFn = createServerFn({
+  method: "POST",
+})
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
@@ -167,7 +180,8 @@ export const ownerExportConversationTranscriptFn = createServerFn({ method: "POS
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { ownerExportConversationTranscript } = await import("./owner.server");
+    const { ownerExportConversationTranscript } =
+      await import("./owner.server");
     return ownerExportConversationTranscript(
       context.supabase,
       context.userId,
@@ -176,8 +190,6 @@ export const ownerExportConversationTranscriptFn = createServerFn({ method: "POS
       data.options,
     );
   });
-
-
 
 export const ownerRosterFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -199,7 +211,11 @@ export const ownerSetFlagFn = createServerFn({ method: "POST" })
     z
       .object({
         key: z.string().min(1).max(64),
-        value: z.union([z.boolean(), z.number().int().min(0).max(36500)]),
+        value: z.union([
+          z.boolean(),
+          z.number().int().min(0).max(36500),
+          z.string().max(100),
+        ]),
       })
       .parse(d),
   )
@@ -276,7 +292,12 @@ export const ownerReinstateFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { reinstateMerchant } = await import("./owner-ops.server");
-    return reinstateMerchant(context.supabase, context.userId, data.merchantId, data.note ?? null);
+    return reinstateMerchant(
+      context.supabase,
+      context.userId,
+      data.merchantId,
+      data.note ?? null,
+    );
   });
 
 export const ownerImpersonationFn = createServerFn({ method: "GET" })
@@ -305,7 +326,9 @@ export const ownerImpersonateRequestFn = createServerFn({ method: "POST" })
 
 export const ownerImpersonateRevokeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ grantId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ grantId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { revokeImpersonation } = await import("./owner-ops.server");
     return revokeImpersonation(context.supabase, context.userId, data.grantId);
@@ -314,17 +337,26 @@ export const ownerImpersonateRevokeFn = createServerFn({ method: "POST" })
 export const ownerImpersonateUseFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ grantId: z.string().uuid(), action: z.string().min(1).max(80) }).parse(d),
+    z
+      .object({ grantId: z.string().uuid(), action: z.string().min(1).max(80) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { useImpersonation } = await import("./owner-ops.server");
-    return useImpersonation(context.supabase, context.userId, data.grantId, data.action);
+    return useImpersonation(
+      context.supabase,
+      context.userId,
+      data.grantId,
+      data.action,
+    );
   });
 
 /** Merchant side: the tenant sees and answers every impersonation request. */
 export const merchantImpersonationQueueFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { merchantConsentQueue } = await import("./owner-ops.server");
     return merchantConsentQueue(context.supabase, data.merchantId);
@@ -344,15 +376,23 @@ export const merchantImpersonationRespondFn = createServerFn({ method: "POST" })
 export const ownerTrafficFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ days: z.number().int().min(1).max(90).default(30) }).parse(d ?? {}),
+    z
+      .object({ days: z.number().int().min(1).max(90).default(30) })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { ownerGate } = await import("./owner-ops.server");
-    const { loadPlatformTraffic } = await import("./analytics-warehouse.server");
+    const { loadPlatformTraffic } =
+      await import("./analytics-warehouse.server");
     return ownerGate(
       context.supabase,
       context.userId,
-      { action: "traffic.read", entity: "analytics_geo_daily", kind: "read", bucket: "owner.read" },
+      {
+        action: "traffic.read",
+        entity: "analytics_geo_daily",
+        kind: "read",
+        bucket: "owner.read",
+      },
       () => loadPlatformTraffic(data.days),
     );
   });

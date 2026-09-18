@@ -14,7 +14,13 @@ import {
   ownerSuspensionsFn,
 } from "@/lib/owner.functions";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 
 export const Route = createFileRoute("/root/access")({
   head: () => ({
@@ -25,10 +31,14 @@ export const Route = createFileRoute("/root/access")({
         content:
           "Suspend or reinstate a merchant with an optional payment freeze, and request time-limited impersonation that only starts after the tenant consents.",
       },
-      { property: "og:title", content: "Tenant access — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Tenant access — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Suspension with payment freeze and consented, expiring impersonation.",
+        content:
+          "Suspension with payment freeze and consented, expiring impersonation.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -63,7 +73,10 @@ function AccessDesk() {
     queryKey: ["owner-suspensions"],
     queryFn: () => loadSuspensions(),
   });
-  const grants = useQuery({ queryKey: ["owner-grants"], queryFn: () => loadGrants() });
+  const grants = useQuery({
+    queryKey: ["owner-grants"],
+    queryFn: () => loadGrants(),
+  });
 
   const [merchantId, setMerchantId] = useState("");
   const [reason, setReason] = useState("");
@@ -80,10 +93,15 @@ function AccessDesk() {
     void qc.invalidateQueries({ queryKey: ["owner-grants"] });
   };
   const fail = (e: unknown) =>
-    toast.error(e instanceof Error ? e.message : t("Action failed", "কাজটি ব্যর্থ হয়েছে"));
+    toast.error(
+      e instanceof Error
+        ? e.message
+        : t("Action failed", "কাজটি ব্যর্থ হয়েছে"),
+    );
 
   const suspend = useMutation({
-    mutationFn: () => suspendFn({ data: { merchantId, reason, freezePayments: freeze } }),
+    mutationFn: () =>
+      suspendFn({ data: { merchantId, reason, freezePayments: freeze } }),
     onSuccess: () => {
       toast.success(t("Merchant suspended", "মার্চেন্ট সাসপেন্ড হয়েছে"));
       setReason("");
@@ -92,7 +110,8 @@ function AccessDesk() {
     onError: fail,
   });
   const reinstate = useMutation({
-    mutationFn: (id: string) => reinstateFn({ data: { merchantId: id, note: null } }),
+    mutationFn: (id: string) =>
+      reinstateFn({ data: { merchantId: id, note: null } }),
     onSuccess: () => {
       toast.success(t("Merchant reinstated", "মার্চেন্ট পুনর্বহাল হয়েছে"));
       refresh();
@@ -111,7 +130,10 @@ function AccessDesk() {
       }),
     onSuccess: () => {
       toast.success(
-        t("Request sent — waiting for tenant consent", "অনুরোধ পাঠানো হয়েছে — টেন্যান্টের সম্মতির অপেক্ষা"),
+        t(
+          "Request sent — waiting for tenant consent",
+          "অনুরোধ পাঠানো হয়েছে — টেন্যান্টের সম্মতির অপেক্ষা",
+        ),
       );
       setImpReason("");
       refresh();
@@ -127,9 +149,15 @@ function AccessDesk() {
     onError: fail,
   });
   const enter = useMutation({
-    mutationFn: (grantId: string) => useGrantFn({ data: { grantId, action: "console.open" } }),
+    mutationFn: (grantId: string) =>
+      useGrantFn({ data: { grantId, action: "console.open" } }),
     onSuccess: () => {
-      toast.success(t("Impersonated access recorded", "ইমপারসোনেটেড অ্যাক্সেস রেকর্ড হয়েছে"));
+      toast.success(
+        t(
+          "Impersonated access recorded",
+          "ইমপারসোনেটেড অ্যাক্সেস রেকর্ড হয়েছে",
+        ),
+      );
       refresh();
     },
     onError: fail,
@@ -151,11 +179,19 @@ function AccessDesk() {
       />
 
       <StatGrid>
-        <StatCard label={t("Merchants", "মার্চেন্ট")} value={String(merchants.length)} />
-        <StatCard label={t("Suspended now", "এখন সাসপেন্ডেড")} value={String(activeSuspensions.length)} />
+        <StatCard
+          label={t("Merchants", "মার্চেন্ট")}
+          value={String(merchants.length)}
+        />
+        <StatCard
+          label={t("Suspended now", "এখন সাসপেন্ডেড")}
+          value={String(activeSuspensions.length)}
+        />
         <StatCard
           label={t("Payments frozen", "পেমেন্ট ফ্রোজেন")}
-          value={String(activeSuspensions.filter((r) => r.payments_frozen).length)}
+          value={String(
+            activeSuspensions.filter((r) => r.payments_frozen).length,
+          )}
         />
         <StatCard
           label={t("Live impersonation", "চলমান ইমপারসোনেশন")}
@@ -182,7 +218,9 @@ function AccessDesk() {
               value={merchantId}
               onChange={(e) => setMerchantId(e.target.value)}
             >
-              <option value="">{t("Select a merchant", "একটি মার্চেন্ট বাছুন")}</option>
+              <option value="">
+                {t("Select a merchant", "একটি মার্চেন্ট বাছুন")}
+              </option>
               {merchants
                 .filter((m) => m.status !== "suspended")
                 .map((m) => (
@@ -198,7 +236,10 @@ function AccessDesk() {
               className={field}
               value={reason}
               minLength={8}
-              placeholder={t("Why this tenant is being suspended", "কেন সাসপেন্ড করা হচ্ছে")}
+              placeholder={t(
+                "Why this tenant is being suspended",
+                "কেন সাসপেন্ড করা হচ্ছে",
+              )}
               onChange={(e) => setReason(e.target.value)}
             />
           </label>
@@ -210,12 +251,17 @@ function AccessDesk() {
             onChange={(e) => setFreeze(e.target.checked)}
             className="h-4 w-4"
           />
-          {t("Freeze payments while suspended", "সাসপেন্ড থাকাকালীন পেমেন্ট ফ্রিজ করুন")}
+          {t(
+            "Freeze payments while suspended",
+            "সাসপেন্ড থাকাকালীন পেমেন্ট ফ্রিজ করুন",
+          )}
         </label>
         <button
           type="button"
           className={btnPrimary}
-          disabled={!merchantId || reason.trim().length < 8 || suspend.isPending}
+          disabled={
+            !merchantId || reason.trim().length < 8 || suspend.isPending
+          }
           onClick={() => setConfirmSuspend(true)}
         >
           {t("Suspend merchant", "সাসপেন্ড করুন")}
@@ -235,7 +281,10 @@ function AccessDesk() {
         {rows.length === 0 ? (
           <tr>
             <td colSpan={6} className="px-3 py-4 text-sm text-muted-foreground">
-              {t("No suspension has ever been recorded.", "কোনো সাসপেনশন রেকর্ড নেই।")}
+              {t(
+                "No suspension has ever been recorded.",
+                "কোনো সাসপেনশন রেকর্ড নেই।",
+              )}
             </td>
           </tr>
         ) : (
@@ -244,7 +293,9 @@ function AccessDesk() {
               <td className="px-3 py-2">{r.merchantName ?? r.merchant_id}</td>
               <td className="px-3 py-2">
                 <StatePill tone={r.active ? "bad" : "ok"}>
-                  {r.active ? t("Suspended", "সাসপেন্ডেড") : t("Reinstated", "পুনর্বহাল")}
+                  {r.active
+                    ? t("Suspended", "সাসপেন্ডেড")
+                    : t("Reinstated", "পুনর্বহাল")}
                 </StatePill>
               </td>
               <td className="px-3 py-2 text-xs">
@@ -287,8 +338,14 @@ function AccessDesk() {
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="space-y-1 text-xs font-medium">
             {t("Merchant", "মার্চেন্ট")}
-            <select className={field} value={impMerchant} onChange={(e) => setImpMerchant(e.target.value)}>
-              <option value="">{t("Select a merchant", "একটি মার্চেন্ট বাছুন")}</option>
+            <select
+              className={field}
+              value={impMerchant}
+              onChange={(e) => setImpMerchant(e.target.value)}
+            >
+              <option value="">
+                {t("Select a merchant", "একটি মার্চেন্ট বাছুন")}
+              </option>
               {(grants.data?.merchants ?? []).map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.name}
@@ -302,7 +359,10 @@ function AccessDesk() {
               className={field}
               value={impReason}
               onChange={(e) => setImpReason(e.target.value)}
-              placeholder={t("Support ticket or incident reference", "সাপোর্ট টিকিট বা ইনসিডেন্ট রেফারেন্স")}
+              placeholder={t(
+                "Support ticket or incident reference",
+                "সাপোর্ট টিকিট বা ইনসিডেন্ট রেফারেন্স",
+              )}
             />
           </label>
           <label className="space-y-1 text-xs font-medium">
@@ -310,10 +370,14 @@ function AccessDesk() {
             <select
               className={field}
               value={impScope}
-              onChange={(e) => setImpScope(e.target.value === "write" ? "write" : "read")}
+              onChange={(e) =>
+                setImpScope(e.target.value === "write" ? "write" : "read")
+              }
             >
               <option value="read">{t("Read only", "শুধু পড়া")}</option>
-              <option value="write">{t("Read and write", "পড়া ও লেখা")}</option>
+              <option value="write">
+                {t("Read and write", "পড়া ও লেখা")}
+              </option>
             </select>
           </label>
           <label className="space-y-1 text-xs font-medium">
@@ -331,7 +395,9 @@ function AccessDesk() {
         <button
           type="button"
           className={btnPrimary}
-          disabled={!impMerchant || impReason.trim().length < 8 || request.isPending}
+          disabled={
+            !impMerchant || impReason.trim().length < 8 || request.isPending
+          }
           onClick={() => request.mutate()}
         >
           {t("Request consent", "সম্মতি চাই")}
@@ -351,7 +417,10 @@ function AccessDesk() {
         {grantRows.length === 0 ? (
           <tr>
             <td colSpan={6} className="px-3 py-4 text-sm text-muted-foreground">
-              {t("No impersonation has been requested.", "কোনো ইমপারসোনেশন অনুরোধ নেই।")}
+              {t(
+                "No impersonation has been requested.",
+                "কোনো ইমপারসোনেশন অনুরোধ নেই।",
+              )}
             </td>
           </tr>
         ) : (
@@ -370,7 +439,9 @@ function AccessDesk() {
                 </StatePill>
               </td>
               <td className="px-3 py-2 text-xs">
-                {g.scope === "write" ? t("Read and write", "পড়া ও লেখা") : t("Read only", "শুধু পড়া")}
+                {g.scope === "write"
+                  ? t("Read and write", "পড়া ও লেখা")
+                  : t("Read only", "শুধু পড়া")}
               </td>
               <td className="px-3 py-2 text-xs tabular-nums">
                 {new Date(g.expires_at).toLocaleString()}

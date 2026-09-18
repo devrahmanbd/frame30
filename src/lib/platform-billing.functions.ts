@@ -11,7 +11,11 @@ import { z } from "zod";
 import { requirePermission } from "./authz-middleware";
 
 function wireError(error: unknown): Error {
-  if (error && typeof error === "object" && (error as { name?: string }).name === "PlatformBillingError") {
+  if (
+    error &&
+    typeof error === "object" &&
+    (error as { name?: string }).name === "PlatformBillingError"
+  ) {
     const e = error as { code: string; en: string; bn: string };
     const wrapped = new Error(`${e.code}|${e.en}|${e.bn}`);
     wrapped.name = "PlatformBillingError";
@@ -33,10 +37,16 @@ export const platformCollectionFn = createServerFn({ method: "GET" })
     const { currentMerchantId } = await import("./marketing.server");
     const { loadCollection } = await import("./platform-billing.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("platform.read", `${merchantId}:${context.userId}`);
     try {
-      return { merchantId, ...(await loadCollection(context.supabase, merchantId)) };
+      return {
+        merchantId,
+        ...(await loadCollection(context.supabase, merchantId)),
+      };
     } catch (error) {
       throw wireError(error);
     }
@@ -57,16 +67,26 @@ export const platformStartChargeFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { startPlatformCharge } = await import("./platform-billing.server");
     const { getRequestHost } = await import("@tanstack/react-start/server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     const host = getRequestHost();
     const origin = `${host.startsWith("localhost") ? "http" : "https"}://${host}`;
     try {
-      return await startPlatformCharge(context.supabase, merchantId, context.userId, {
-        invoiceId: data.invoiceId,
-        method: data.method,
-        ...(data.idempotencyKey ? { idempotencyKey: data.idempotencyKey } : {}),
-        origin,
-      });
+      return await startPlatformCharge(
+        context.supabase,
+        merchantId,
+        context.userId,
+        {
+          invoiceId: data.invoiceId,
+          method: data.method,
+          ...(data.idempotencyKey
+            ? { idempotencyKey: data.idempotencyKey }
+            : {}),
+          origin,
+        },
+      );
     } catch (error) {
       throw wireError(error);
     }
@@ -74,13 +94,23 @@ export const platformStartChargeFn = createServerFn({ method: "POST" })
 
 export const platformCancelChargeFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("finance.initiate")])
-  .inputValidator((d: unknown) => z.object({ chargeId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ chargeId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { cancelPlatformCharge } = await import("./platform-billing.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     try {
-      return await cancelPlatformCharge(context.supabase, merchantId, context.userId, data.chargeId);
+      return await cancelPlatformCharge(
+        context.supabase,
+        merchantId,
+        context.userId,
+        data.chargeId,
+      );
     } catch (error) {
       throw wireError(error);
     }

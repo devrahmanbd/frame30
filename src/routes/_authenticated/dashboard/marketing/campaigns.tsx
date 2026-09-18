@@ -14,18 +14,22 @@ import {
   inputClass,
 } from "@/components/admin/MarketingUi";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/campaigns")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/campaigns",
+)({
   head: () => ({
     meta: [
       { title: "Campaigns — Framique Marketing" },
       {
         name: "description",
-        content: "Draft, schedule and send segmented email campaigns with delivery logs.",
+        content:
+          "Draft, schedule and send segmented email campaigns with delivery logs.",
       },
       { property: "og:title", content: "Campaign management" },
       {
         property: "og:description",
-        content: "Segmented sends with per-recipient delivery status and retry.",
+        content:
+          "Segmented sends with per-recipient delivery status and retry.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -113,7 +117,11 @@ function CampaignsPage() {
 
   const save = useMutation({
     mutationFn: async () => {
-      if (!form.name.trim() || !form.subject.trim() || !form.bodyTemplate.trim()) {
+      if (
+        !form.name.trim() ||
+        !form.subject.trim() ||
+        !form.bodyTemplate.trim()
+      ) {
         throw new Error("Name, subject and body are required");
       }
       const row = {
@@ -122,7 +130,9 @@ function CampaignsPage() {
         segment_id: form.segmentId || null,
         subject: form.subject.trim(),
         body_template: form.bodyTemplate,
-        scheduled_for: form.scheduledFor ? new Date(form.scheduledFor).toISOString() : null,
+        scheduled_for: form.scheduledFor
+          ? new Date(form.scheduledFor).toISOString()
+          : null,
         status: form.scheduledFor ? "scheduled" : "draft",
       };
       const q = form.id
@@ -144,7 +154,8 @@ function CampaignsPage() {
   });
 
   const send = useMutation({
-    mutationFn: (campaignId: string) => sendCampaignFn({ data: { campaignId } }),
+    mutationFn: (campaignId: string) =>
+      sendCampaignFn({ data: { campaignId } }),
     onSuccess: (res) => {
       setError(null);
       setNotice(`Sent: ${res.sent}, failed: ${res.failed}`);
@@ -159,14 +170,17 @@ function CampaignsPage() {
 
   const retry = useMutation({
     mutationFn: (sendId: string) => retrySendFn({ data: { sendId } }),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ["campaign-sends", openId] }),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: ["campaign-sends", openId] }),
     onError: (e: Error) => setError(e.message),
   });
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Campaigns", "ক্যাম্পেইন")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Campaigns", "ক্যাম্পেইন")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "Messages are only sent to consented, subscribed recipients.",
@@ -177,7 +191,10 @@ function CampaignsPage() {
 
       <ErrorFrame message={error} />
       {notice && (
-        <p role="status" className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground">
+        <p
+          role="status"
+          className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground"
+        >
           {notice}
         </p>
       )}
@@ -188,25 +205,48 @@ function CampaignsPage() {
             <caption className="sr-only">Campaign list</caption>
             <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th scope="col" className="px-3 py-2">{t("Name", "নাম")}</th>
-                <th scope="col" className="px-3 py-2">{t("Subject", "বিষয়")}</th>
-                <th scope="col" className="px-3 py-2">{t("Result", "ফলাফল")}</th>
-                <th scope="col" className="px-3 py-2">{t("Status", "অবস্থা")}</th>
+                <th scope="col" className="px-3 py-2">
+                  {t("Name", "নাম")}
+                </th>
+                <th scope="col" className="px-3 py-2">
+                  {t("Subject", "বিষয়")}
+                </th>
+                <th scope="col" className="px-3 py-2">
+                  {t("Result", "ফলাফল")}
+                </th>
+                <th scope="col" className="px-3 py-2">
+                  {t("Status", "অবস্থা")}
+                </th>
                 <th scope="col" className="px-3 py-2" />
               </tr>
             </thead>
             <tbody>
               {(campaigns ?? []).map((c) => (
-                <tr key={c.id} className="border-b border-border/60 last:border-0">
+                <tr
+                  key={c.id}
+                  className="border-b border-border/60 last:border-0"
+                >
                   <td className="px-3 py-2 font-medium">{c.name}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{c.subject}</td>
+                  <td className="px-3 py-2 text-muted-foreground">
+                    {c.subject}
+                  </td>
                   <td className="px-3 py-2 tabular-nums">
                     {c.sent_count} / {c.sent_count + c.failed_count}
                   </td>
                   <td className="px-3 py-2">
                     <StatusPill
-                      label={statusLabel[c.status] ? t(statusLabel[c.status].en, statusLabel[c.status].bn) : c.status}
-                      tone={statusTone[c.status as keyof typeof statusTone] ?? "neutral"}
+                      label={
+                        statusLabel[c.status]
+                          ? t(
+                              statusLabel[c.status].en,
+                              statusLabel[c.status].bn,
+                            )
+                          : c.status
+                      }
+                      tone={
+                        statusTone[c.status as keyof typeof statusTone] ??
+                        "neutral"
+                      }
                     />
                   </td>
                   <td className="px-3 py-2">
@@ -222,7 +262,9 @@ function CampaignsPage() {
                             subject: c.subject,
                             bodyTemplate: c.body_template,
                             scheduledFor: c.scheduled_for
-                              ? new Date(c.scheduled_for).toISOString().slice(0, 16)
+                              ? new Date(c.scheduled_for)
+                                  .toISOString()
+                                  .slice(0, 16)
                               : "",
                           })
                         }
@@ -251,7 +293,10 @@ function CampaignsPage() {
               ))}
               {(campaigns ?? []).length === 0 && (
                 <tr>
-                  <td className="px-3 py-6 text-center text-muted-foreground" colSpan={5}>
+                  <td
+                    className="px-3 py-6 text-center text-muted-foreground"
+                    colSpan={5}
+                  >
                     {t("No campaigns yet.", "এখনও কোনো ক্যাম্পেইন নেই।")}
                   </td>
                 </tr>
@@ -261,14 +306,23 @@ function CampaignsPage() {
 
           {openId && (
             <div className="border-t border-border p-3">
-              <h2 className="mb-2 text-sm font-semibold">{t("Delivery log", "ডেলিভারি লগ")}</h2>
+              <h2 className="mb-2 text-sm font-semibold">
+                {t("Delivery log", "ডেলিভারি লগ")}
+              </h2>
               <ul className="space-y-1 text-sm">
                 {(sends ?? []).map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-3">
+                  <li
+                    key={s.id}
+                    className="flex items-center justify-between gap-3"
+                  >
                     <span className="truncate">{s.email}</span>
                     <span className="flex items-center gap-2">
                       <StatusPill
-                        label={s.status === "sent" ? t("Success", "সফল") : t("Failed", "ব্যর্থ")}
+                        label={
+                          s.status === "sent"
+                            ? t("Success", "সফল")
+                            : t("Failed", "ব্যর্থ")
+                        }
                         tone={s.status === "sent" ? "success" : "danger"}
                       />
                       {s.status !== "sent" && (
@@ -285,7 +339,9 @@ function CampaignsPage() {
                   </li>
                 ))}
                 {(sends ?? []).length === 0 && (
-                  <li className="text-muted-foreground">{t("No log entries yet.", "কোনো লগ নেই।")}</li>
+                  <li className="text-muted-foreground">
+                    {t("No log entries yet.", "কোনো লগ নেই।")}
+                  </li>
                 )}
               </ul>
             </div>
@@ -300,7 +356,9 @@ function CampaignsPage() {
           }}
         >
           <h2 className="font-bangla-display text-base font-semibold">
-            {form.id ? t("Edit campaign", "ক্যাম্পেইন সম্পাদনা") : t("New campaign", "নতুন ক্যাম্পেইন")}
+            {form.id
+              ? t("Edit campaign", "ক্যাম্পেইন সম্পাদনা")
+              : t("New campaign", "নতুন ক্যাম্পেইন")}
           </h2>
           <Field label={t("Name", "নাম")}>
             <input
@@ -310,7 +368,13 @@ function CampaignsPage() {
               required
             />
           </Field>
-          <Field label={t("Segment", "সেগমেন্ট")} hint={t("Leave empty for all consented subscribers", "খালি রাখলে সব সম্মতিপ্রাপ্ত সাবস্ক্রাইবার")}>
+          <Field
+            label={t("Segment", "সেগমেন্ট")}
+            hint={t(
+              "Leave empty for all consented subscribers",
+              "খালি রাখলে সব সম্মতিপ্রাপ্ত সাবস্ক্রাইবার",
+            )}
+          >
             <select
               className={inputClass}
               value={form.segmentId}
@@ -332,28 +396,49 @@ function CampaignsPage() {
               required
             />
           </Field>
-          <Field label={t("Body", "বডি")} hint={t("You can use the {{email}} placeholder", "{{email}} প্লেসহোল্ডার ব্যবহার করা যায়")}>
+          <Field
+            label={t("Body", "বডি")}
+            hint={t(
+              "You can use the {{email}} placeholder",
+              "{{email}} প্লেসহোল্ডার ব্যবহার করা যায়",
+            )}
+          >
             <textarea
               className={`${inputClass} min-h-32`}
               value={form.bodyTemplate}
-              onChange={(e) => setForm({ ...form, bodyTemplate: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, bodyTemplate: e.target.value })
+              }
               required
             />
           </Field>
-          <Field label={t("Scheduled time", "নির্ধারিত সময়")} hint={t("Optional", "ঐচ্ছিক")}>
+          <Field
+            label={t("Scheduled time", "নির্ধারিত সময়")}
+            hint={t("Optional", "ঐচ্ছিক")}
+          >
             <input
               type="datetime-local"
               className={inputClass}
               value={form.scheduledFor}
-              onChange={(e) => setForm({ ...form, scheduledFor: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, scheduledFor: e.target.value })
+              }
             />
           </Field>
           <div className="flex gap-2">
-            <button type="submit" className={btnPrimary} disabled={save.isPending}>
+            <button
+              type="submit"
+              className={btnPrimary}
+              disabled={save.isPending}
+            >
               {t("Save", "সংরক্ষণ")}
             </button>
             {form.id && (
-              <button type="button" className={btnGhost} onClick={() => setForm(emptyForm)}>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => setForm(emptyForm)}
+              >
                 {t("Cancel", "বাতিল")}
               </button>
             )}

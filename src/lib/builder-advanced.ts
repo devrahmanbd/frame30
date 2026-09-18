@@ -33,7 +33,14 @@ export function isAdvancedKey(key: string): boolean {
 }
 
 /** Entrance animations; `none` also covers a reduced-motion visitor. */
-export const ADVANCED_ANIMATIONS = ["none", "fade", "rise", "slide-left", "slide-right", "zoom"] as const;
+export const ADVANCED_ANIMATIONS = [
+  "none",
+  "fade",
+  "rise",
+  "slide-left",
+  "slide-right",
+  "zoom",
+] as const;
 export type AdvancedAnimation = (typeof ADVANCED_ANIMATIONS)[number];
 
 export const ADVANCED_FIELDS: Field[] = [
@@ -57,11 +64,42 @@ export const ADVANCED_FIELDS: Field[] = [
     panel: "advanced",
     responsive: true,
   },
-  { key: "advPadY", label: "Padding — vertical", kind: "number", min: 0, max: 240, step: 4, panel: "advanced", responsive: true },
-  { key: "advPadX", label: "Padding — horizontal", kind: "number", min: 0, max: 160, step: 4, panel: "advanced", responsive: true },
-  { key: "advZIndex", label: "Z-index", kind: "number", min: -10, max: 999, panel: "advanced" },
+  {
+    key: "advPadY",
+    label: "Padding — vertical",
+    kind: "number",
+    min: 0,
+    max: 240,
+    step: 4,
+    panel: "advanced",
+    responsive: true,
+  },
+  {
+    key: "advPadX",
+    label: "Padding — horizontal",
+    kind: "number",
+    min: 0,
+    max: 160,
+    step: 4,
+    panel: "advanced",
+    responsive: true,
+  },
+  {
+    key: "advZIndex",
+    label: "Z-index",
+    kind: "number",
+    min: -10,
+    max: 999,
+    panel: "advanced",
+  },
   { key: "advId", label: "CSS id", kind: "text", max: 60, panel: "advanced" },
-  { key: "advClass", label: "CSS classes", kind: "text", max: 200, panel: "advanced" },
+  {
+    key: "advClass",
+    label: "CSS classes",
+    kind: "text",
+    max: 200,
+    panel: "advanced",
+  },
   {
     key: "advAnimation",
     label: "Entrance animation",
@@ -77,7 +115,13 @@ export const ADVANCED_FIELDS: Field[] = [
       { value: "zoom", label: "Zoom" },
     ],
   },
-  { key: "advCss", label: "Custom CSS", kind: "html", max: 2000, panel: "advanced" },
+  {
+    key: "advCss",
+    label: "Custom CSS",
+    kind: "html",
+    max: 2000,
+    panel: "advanced",
+  },
 ];
 
 /** Sanitised, spaced-out class list. Never lets a class break out of an attribute. */
@@ -98,7 +142,11 @@ function cssId(value: PropValue | undefined): string | undefined {
   return /^[A-Za-z][A-Za-z0-9_-]{0,59}$/.test(id) ? id : undefined;
 }
 
-function num(value: PropValue | undefined, min: number, max: number): number | null {
+function num(
+  value: PropValue | undefined,
+  min: number,
+  max: number,
+): number | null {
   const n = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(n) || n === 0) return null;
   return Math.min(max, Math.max(min, Math.round(n)));
@@ -129,7 +177,9 @@ export function advancedAttrs(props: Record<string, PropValue>): AdvancedAttrs {
   if (px !== null) style["paddingInline"] = `${px}px`;
   if (z !== null) style["zIndex"] = String(z);
   const raw = props["advAnimation"];
-  const animation = (ADVANCED_ANIMATIONS as readonly string[]).includes(String(raw))
+  const animation = (ADVANCED_ANIMATIONS as readonly string[]).includes(
+    String(raw),
+  )
     ? (raw as AdvancedAnimation)
     : "none";
   const id = cssId(props["advId"]);
@@ -145,7 +195,9 @@ export function advancedAttrs(props: Record<string, PropValue>): AdvancedAttrs {
 export function hasAdvanced(props: Record<string, PropValue>): boolean {
   return ADVANCED_KEYS.some((key) => {
     const value = props[key];
-    return value !== undefined && value !== "" && value !== 0 && value !== "none";
+    return (
+      value !== undefined && value !== "" && value !== 0 && value !== "none"
+    );
   });
 }
 
@@ -170,11 +222,16 @@ export function scopedCss(nodeId: string, css: PropValue | undefined): string {
     : `${scope}{${cleaned}}`;
   // A rule that never names the element is still scoped, so stray selectors
   // cannot restyle the whole storefront.
-  return body.includes(scope) ? body : `${scope}{${cleaned.replace(/[{}]/g, "")}}`;
+  return body.includes(scope)
+    ? body
+    : `${scope}{${cleaned.replace(/[{}]/g, "")}}`;
 }
 
 /** Every node's scoped CSS in one stylesheet, budget-capped. */
-export function advancedCssFor(sections: Section[], budgetBytes = 24_000): string {
+export function advancedCssFor(
+  sections: Section[],
+  budgetBytes = 24_000,
+): string {
   const out: string[] = [];
   let size = 0;
   for (const section of sections) {

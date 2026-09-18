@@ -16,7 +16,14 @@ import {
   titlePill,
   validateDoc,
 } from "./editor-doc";
-import { canRedo, canUndo, createHistory, pushHistory, redo, undo } from "./editor-history";
+import {
+  canRedo,
+  canUndo,
+  createHistory,
+  pushHistory,
+  redo,
+  undo,
+} from "./editor-history";
 import {
   blocksToMarkdown,
   inlineMarkdownToHtml,
@@ -34,7 +41,9 @@ describe("slugs", () => {
   });
   it("prefers explicit slug, then english title, then title", () => {
     expect(effectiveSlug({ slug: "x", title: "A", titleEn: "B" })).toBe("x");
-    expect(effectiveSlug({ slug: "", title: "A b", titleEn: "C d" })).toBe("c-d");
+    expect(effectiveSlug({ slug: "", title: "A b", titleEn: "C d" })).toBe(
+      "c-d",
+    );
     expect(effectiveSlug({ slug: "", title: "A b", titleEn: "" })).toBe("a-b");
   });
 });
@@ -43,15 +52,24 @@ describe("publish state", () => {
   it("derives scheduled from a future date", () => {
     const future = new Date(NOW + 3_600_000).toISOString();
     expect(
-      resolvePublishStatus({ status: "published", publishAt: future, visibility: "public" }, NOW),
+      resolvePublishStatus(
+        { status: "published", publishAt: future, visibility: "public" },
+        NOW,
+      ),
     ).toBe("scheduled");
     expect(
-      resolvePublishStatus({ status: "published", publishAt: null, visibility: "public" }, NOW),
+      resolvePublishStatus(
+        { status: "published", publishAt: null, visibility: "public" },
+        NOW,
+      ),
     ).toBe("published");
   });
   it("private visibility wins", () => {
     expect(
-      resolvePublishStatus({ status: "published", publishAt: null, visibility: "private" }, NOW),
+      resolvePublishStatus(
+        { status: "published", publishAt: null, visibility: "private" },
+        NOW,
+      ),
     ).toBe("private");
   });
   it("picks the WordPress primary button label", () => {
@@ -62,9 +80,15 @@ describe("publish state", () => {
       visibility: "public" as const,
     };
     expect(primaryAction(base, true, NOW)).toBe("publish");
-    expect(primaryAction({ ...base, publishedAt: "2026-01-01" }, true, NOW)).toBe("update");
     expect(
-      primaryAction({ ...base, publishAt: new Date(NOW + 86_400_000).toISOString() }, true, NOW),
+      primaryAction({ ...base, publishedAt: "2026-01-01" }, true, NOW),
+    ).toBe("update");
+    expect(
+      primaryAction(
+        { ...base, publishAt: new Date(NOW + 86_400_000).toISOString() },
+        true,
+        NOW,
+      ),
     ).toBe("schedule");
     expect(primaryAction(base, false, NOW)).toBe("submit");
   });
@@ -73,7 +97,11 @@ describe("publish state", () => {
 describe("pre-publish checks", () => {
   it("blocks on missing title and password", () => {
     const doc = { ...emptyEditorDoc("page"), visibility: "password" as const };
-    const checks = prePublishChecks(doc, { seoScore: 40, builderLints: 0, slugTaken: false }, NOW);
+    const checks = prePublishChecks(
+      doc,
+      { seoScore: 40, builderLints: 0, slugTaken: false },
+      NOW,
+    );
     expect(canProceed(checks)).toBe(false);
     expect(checks.find((c) => c.id === "title")?.level).toBe("fail");
     expect(checks.find((c) => c.id === "password")?.level).toBe("fail");
@@ -84,7 +112,11 @@ describe("pre-publish checks", () => {
       title: "Hello",
       body: "<p>Some words here for the test.</p>",
     };
-    const checks = prePublishChecks(doc, { seoScore: 90, builderLints: 0, slugTaken: false }, NOW);
+    const checks = prePublishChecks(
+      doc,
+      { seoScore: 90, builderLints: 0, slugTaken: false },
+      NOW,
+    );
     expect(canProceed(checks)).toBe(true);
     expect(checks.find((c) => c.id === "category")?.level).toBe("warn");
     expect(checks.find((c) => c.id === "seo")?.en).toContain("90");
@@ -93,7 +125,9 @@ describe("pre-publish checks", () => {
 
 describe("stats and outline", () => {
   it("counts words for pages (markdown) and posts (markup)", () => {
-    expect(docStats({ kind: "page", body: "## Hi\n\none two three" }).words).toBe(4);
+    expect(
+      docStats({ kind: "page", body: "## Hi\n\none two three" }).words,
+    ).toBe(4);
     expect(docStats({ kind: "post", body: "<p>one two</p>" }).words).toBe(2);
     expect(docStats({ kind: "post", body: "" }).minutes).toBe(0);
   });
@@ -109,9 +143,15 @@ describe("stats and outline", () => {
 describe("dates", () => {
   it("formats publish dates and relative time", () => {
     expect(formatPublishDate(null)).toBe("Immediately");
-    expect(relativeTime(new Date(NOW - 13 * 3_600_000).toISOString(), NOW)).toBe("13 hours ago");
-    expect(relativeTime(new Date(NOW - 20_000).toISOString(), NOW)).toBe("just now");
-    expect(relativeTime(new Date(NOW - 3 * 86_400_000).toISOString(), NOW)).toBe("3 days ago");
+    expect(
+      relativeTime(new Date(NOW - 13 * 3_600_000).toISOString(), NOW),
+    ).toBe("13 hours ago");
+    expect(relativeTime(new Date(NOW - 20_000).toISOString(), NOW)).toBe(
+      "just now",
+    );
+    expect(
+      relativeTime(new Date(NOW - 3 * 86_400_000).toISOString(), NOW),
+    ).toBe("3 days ago");
   });
 });
 
@@ -141,7 +181,9 @@ describe("parent options", () => {
       { id: "b", title: "B", parentId: "a" },
       { id: "c", title: "C", parentId: null },
     ];
-    expect(parentOptions(pages, "c").map((p) => `${p.depth}:${p.title}`)).toEqual(["0:A", "1:B"]);
+    expect(
+      parentOptions(pages, "c").map((p) => `${p.depth}:${p.title}`),
+    ).toEqual(["0:A", "1:B"]);
   });
 });
 

@@ -22,8 +22,14 @@
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { getBackfillProgress, type BackfillProgress } from "./migration-backfill.server";
-import { EXPAND_CONTRACT_RULES, type LintRule } from "./migration-linter.server";
+import {
+  getBackfillProgress,
+  type BackfillProgress,
+} from "./migration-backfill.server";
+import {
+  EXPAND_CONTRACT_RULES,
+  type LintRule,
+} from "./migration-linter.server";
 import { incr, log } from "./observability.server";
 
 export type PipelineReleaseStage = 1 | 2 | 3 | 4;
@@ -38,40 +44,76 @@ export type PipelineStageDefinition = {
   requiresBackfillVerification: boolean;
 };
 
-export const PIPELINE_STAGES: Record<PipelineReleaseStage, PipelineStageDefinition> = {
+export const PIPELINE_STAGES: Record<
+  PipelineReleaseStage,
+  PipelineStageDefinition
+> = {
   1: {
     stage: 1,
     name: "Release 1: Expand (Additive Schema)",
     codeName: "expand",
-    description: "Add new columns (nullable or defaulted), tables, or indexes. Old schema remains 100% untouched.",
-    allowedDdlPatterns: ["ADD COLUMN (NULLABLE/DEFAULT)", "CREATE TABLE", "CREATE INDEX CONCURRENTLY"],
-    prohibitedDdlPatterns: ["DROP COLUMN", "DROP TABLE", "RENAME COLUMN", "RENAME TABLE", "ALTER COLUMN TYPE", "NOT NULL without DEFAULT"],
+    description:
+      "Add new columns (nullable or defaulted), tables, or indexes. Old schema remains 100% untouched.",
+    allowedDdlPatterns: [
+      "ADD COLUMN (NULLABLE/DEFAULT)",
+      "CREATE TABLE",
+      "CREATE INDEX CONCURRENTLY",
+    ],
+    prohibitedDdlPatterns: [
+      "DROP COLUMN",
+      "DROP TABLE",
+      "RENAME COLUMN",
+      "RENAME TABLE",
+      "ALTER COLUMN TYPE",
+      "NOT NULL without DEFAULT",
+    ],
     requiresBackfillVerification: false,
   },
   2: {
     stage: 2,
     name: "Release 2: Dual-Write (Sync Both)",
     codeName: "dual_write",
-    description: "Application writes concurrently to both old and new structures. Reads stay on old.",
+    description:
+      "Application writes concurrently to both old and new structures. Reads stay on old.",
     allowedDdlPatterns: ["Zero breaking DDL"],
-    prohibitedDdlPatterns: ["DROP COLUMN", "DROP TABLE", "RENAME COLUMN", "RENAME TABLE", "ALTER COLUMN TYPE"],
+    prohibitedDdlPatterns: [
+      "DROP COLUMN",
+      "DROP TABLE",
+      "RENAME COLUMN",
+      "RENAME TABLE",
+      "ALTER COLUMN TYPE",
+    ],
     requiresBackfillVerification: false,
   },
   3: {
     stage: 3,
     name: "Release 3: Read-New & Backfill Verification",
     codeName: "read_new",
-    description: "Reads cut over to new schema. Requires 100% historical row backfill completion before merge.",
-    allowedDdlPatterns: ["SET NOT NULL (on validated backfilled columns)", "CREATE INDEX"],
-    prohibitedDdlPatterns: ["DROP COLUMN", "DROP TABLE", "RENAME COLUMN", "RENAME TABLE"],
+    description:
+      "Reads cut over to new schema. Requires 100% historical row backfill completion before merge.",
+    allowedDdlPatterns: [
+      "SET NOT NULL (on validated backfilled columns)",
+      "CREATE INDEX",
+    ],
+    prohibitedDdlPatterns: [
+      "DROP COLUMN",
+      "DROP TABLE",
+      "RENAME COLUMN",
+      "RENAME TABLE",
+    ],
     requiresBackfillVerification: true,
   },
   4: {
     stage: 4,
     name: "Release 4: Contract (Prune Deprecated)",
     codeName: "contract",
-    description: "Drop deprecated legacy columns and tables after 100% soak on Release 3.",
-    allowedDdlPatterns: ["DROP COLUMN (annotated)", "DROP TABLE (annotated)", "DROP TRIGGER"],
+    description:
+      "Drop deprecated legacy columns and tables after 100% soak on Release 3.",
+    allowedDdlPatterns: [
+      "DROP COLUMN (annotated)",
+      "DROP TABLE (annotated)",
+      "DROP TRIGGER",
+    ],
     prohibitedDdlPatterns: ["Unannotated DROPs", "Unverified backfills"],
     requiresBackfillVerification: true,
   },
@@ -106,7 +148,10 @@ export type GatekeeperEvaluation = {
 /**
  * Clean and strip SQL comments except special Framique metadata annotations.
  */
-function cleanSql(sql: string): { lines: { number: number; raw: string; cleaned: string }[]; annotations: Record<string, string> } {
+function cleanSql(sql: string): {
+  lines: { number: number; raw: string; cleaned: string }[];
+  annotations: Record<string, string>;
+} {
   const lines = sql.split("\n");
   const processed: { number: number; raw: string; cleaned: string }[] = [];
   const annotations: Record<string, string> = {};
@@ -227,7 +272,10 @@ export async function validatePrMigration(options: {
         // Evaluate by target stage:
         if (stage === 1 || stage === 2) {
           // Release 1 and Release 2 STRICTLY FORBID all breaking DDL
-          if (rule.id === "RULE_NO_DROP_COLUMN" || rule.id === "RULE_NO_DROP_TABLE") {
+          if (
+            rule.id === "RULE_NO_DROP_COLUMN" ||
+            rule.id === "RULE_NO_DROP_TABLE"
+          ) {
             violations.push({
               ruleId: rule.id,
               severity: "blocker",
@@ -236,7 +284,10 @@ export async function validatePrMigration(options: {
               message: `[STAGE ${stage} BLOCKED] ${rule.message} Attempting to execute DROP operations in ${stageDef.name} violates zero-downtime rules.`,
               remediation: rule.remediation,
             });
-          } else if (rule.id === "RULE_NO_RENAME_COLUMN" || rule.id === "RULE_NO_RENAME_TABLE") {
+          } else if (
+            rule.id === "RULE_NO_RENAME_COLUMN" ||
+            rule.id === "RULE_NO_RENAME_TABLE"
+          ) {
             violations.push({
               ruleId: rule.id,
               severity: "blocker",
@@ -266,19 +317,24 @@ export async function validatePrMigration(options: {
           }
         } else if (stage === 3) {
           // Release 3 (Read-New) prohibits drops as well (drops happen in Release 4)
-          if (rule.id === "RULE_NO_DROP_COLUMN" || rule.id === "RULE_NO_DROP_TABLE") {
+          if (
+            rule.id === "RULE_NO_DROP_COLUMN" ||
+            rule.id === "RULE_NO_DROP_TABLE"
+          ) {
             violations.push({
               ruleId: rule.id,
               severity: "blocker",
               lineNumber: line.number,
               lineContent: line.raw.trim(),
               message: `[STAGE 3 BLOCKED] Legacy columns/tables cannot be dropped in Release 3. Drop operations must wait for Release 4 (Contract) after reads have cut over.`,
-              remediation: "Defer all DROP operations to a separate Release 4 Contract PR.",
+              remediation:
+                "Defer all DROP operations to a separate Release 4 Contract PR.",
             });
           }
         } else if (stage === 4) {
           // Release 4 (Contract): Allows DROP COLUMN and DROP TABLE ONLY IF annotated!
-          const isContractAnnotated = annotations["framique-stage"] === "contract";
+          const isContractAnnotated =
+            annotations["framique-stage"] === "contract";
           const hasRationale = Boolean(annotations["rationale"]);
 
           if (!isContractAnnotated) {
@@ -288,7 +344,8 @@ export async function validatePrMigration(options: {
               lineNumber: line.number,
               lineContent: line.raw.trim(),
               message: `[STAGE 4 BLOCKED] Contract migration containing DROP statement must be annotated with '-- @framique-stage: contract'.`,
-              remediation: "Add '-- @framique-stage: contract' at the top of the migration file.",
+              remediation:
+                "Add '-- @framique-stage: contract' at the top of the migration file.",
             });
           }
 
@@ -299,7 +356,8 @@ export async function validatePrMigration(options: {
               lineNumber: line.number,
               lineContent: line.raw.trim(),
               message: `[STAGE 4 BLOCKED] Contract migration must document verification rationale via '-- @rationale: <reason>'.`,
-              remediation: "Add '-- @rationale: Legacy column retired after dual-write and backfill' to migration header.",
+              remediation:
+                "Add '-- @rationale: Legacy column retired after dual-write and backfill' to migration header.",
             });
           }
         }
@@ -309,7 +367,8 @@ export async function validatePrMigration(options: {
 
   // 2. Backfill Verification for Stage 3 and Stage 4
   let backfillResult: GatekeeperEvaluation["backfillVerification"];
-  const targetBackfillJob = options.backfillJobId || annotations["prerequisite-backfill"];
+  const targetBackfillJob =
+    options.backfillJobId || annotations["prerequisite-backfill"];
 
   if (stageDef.requiresBackfillVerification) {
     if (!targetBackfillJob) {
@@ -320,7 +379,8 @@ export async function validatePrMigration(options: {
           lineNumber: 1,
           lineContent: "--",
           message: `Stage 3 read-cutover has no specified backfill job ID. Ensure background backfill is completed if migrating data.`,
-          remediation: "Pass '--backfill-job=<id>' or annotate with '-- @prerequisite-backfill: <id>'.",
+          remediation:
+            "Pass '--backfill-job=<id>' or annotate with '-- @prerequisite-backfill: <id>'.",
         });
       } else if (stage === 4) {
         violations.push({
@@ -329,7 +389,8 @@ export async function validatePrMigration(options: {
           lineNumber: 1,
           lineContent: "--",
           message: `[STAGE 4 BLOCKED] Release 4 (Contract) requires verification that historical data was 100% backfilled before dropping legacy structures.`,
-          remediation: "Annotate file with '-- @prerequisite-backfill: <job_id>' verifying 100% row completion.",
+          remediation:
+            "Annotate file with '-- @prerequisite-backfill: <job_id>' verifying 100% row completion.",
         });
       }
     } else {
@@ -392,7 +453,7 @@ export async function validatePrMigration(options: {
 export async function validateMigrationFile(
   filePath: string,
   stage: PipelineReleaseStage,
-  backfillJobId?: string
+  backfillJobId?: string,
 ): Promise<GatekeeperEvaluation> {
   const content = readFileSync(filePath, "utf8");
   return validatePrMigration({

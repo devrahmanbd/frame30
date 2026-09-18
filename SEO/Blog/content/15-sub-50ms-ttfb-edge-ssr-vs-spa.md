@@ -2,7 +2,7 @@
 
 > **Target Query:** `edge rendered ecommerce ssr`, `tanstack start ecommerce performance`, `ttfb conversion rate ecommerce`  
 > **Reading Time:** 9 minutes  
-> **Published:** November 2026  
+> **Published:** November 2026
 
 ---
 
@@ -46,12 +46,12 @@ In contrast to legacy SPAs or centralized origin monoliths (like Ruby on Rails o
 
 ## 3. Measurable Core Web Vitals Impact
 
-| Metric | Client-Side SPA | Monolithic CMS (Shopify/Liquid) | FRAMIQUE Edge SSR |
-| :--- | :--- | :--- | :--- |
-| **TTFB (Time to First Byte)** | 350ms – 600ms | 450ms – 900ms | **< 45ms** |
-| **FCP (First Contentful Paint)**| 1.8s – 3.2s | 1.4s – 2.5s | **< 600ms** |
-| **LCP (Largest Contentful Paint)**| 2.8s – 4.5s | 2.2s – 3.8s | **< 1.2s** |
-| **INP (Interaction to Next Paint)**| 180ms – 320ms | 120ms – 240ms | **< 35ms** |
+| Metric                              | Client-Side SPA | Monolithic CMS (Shopify/Liquid) | FRAMIQUE Edge SSR |
+| :---------------------------------- | :-------------- | :------------------------------ | :---------------- |
+| **TTFB (Time to First Byte)**       | 350ms – 600ms   | 450ms – 900ms                   | **< 45ms**        |
+| **FCP (First Contentful Paint)**    | 1.8s – 3.2s     | 1.4s – 2.5s                     | **< 600ms**       |
+| **LCP (Largest Contentful Paint)**  | 2.8s – 4.5s     | 2.2s – 3.8s                     | **< 1.2s**        |
+| **INP (Interaction to Next Paint)** | 180ms – 320ms   | 120ms – 240ms                   | **< 35ms**        |
 
 By eliminating main-thread JavaScript blocking, Framique stores routinely score **98–100 on Google PageSpeed Insights Mobile**.
 

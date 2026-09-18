@@ -8,7 +8,15 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 export type MenuItem =
-  | { kind: "action"; id: string; label: string; hint?: string; disabled?: boolean; danger?: boolean; run: () => void }
+  | {
+      kind: "action";
+      id: string;
+      label: string;
+      hint?: string;
+      disabled?: boolean;
+      danger?: boolean;
+      run: () => void;
+    }
   | { kind: "separator"; id: string };
 
 export function NodeContextMenu({
@@ -24,7 +32,10 @@ export function NodeContextMenu({
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [pos, setPos] = useState(at);
-  const actionable = items.filter((item): item is Extract<MenuItem, { kind: "action" }> => item.kind === "action" && !item.disabled);
+  const actionable = items.filter(
+    (item): item is Extract<MenuItem, { kind: "action" }> =>
+      item.kind === "action" && !item.disabled,
+  );
 
   useEffect(() => setPos(at), [at]);
 
@@ -33,14 +44,21 @@ export function NodeContextMenu({
     const box = ref.current.getBoundingClientRect();
     const maxX = window.innerWidth - box.width - 8;
     const maxY = window.innerHeight - box.height - 8;
-    const clamped = { x: Math.max(8, Math.min(pos.x, maxX)), y: Math.max(8, Math.min(pos.y, maxY)) };
+    const clamped = {
+      x: Math.max(8, Math.min(pos.x, maxX)),
+      y: Math.max(8, Math.min(pos.y, maxY)),
+    };
     if (clamped.x !== pos.x || clamped.y !== pos.y) setPos(clamped);
   }, [pos]);
 
   useEffect(() => {
     if (!at) return;
     const dismiss = (event: Event) => {
-      if (event.type === "mousedown" && ref.current?.contains(event.target as Node)) return;
+      if (
+        event.type === "mousedown" &&
+        ref.current?.contains(event.target as Node)
+      )
+        return;
       onClose();
     };
     window.addEventListener("mousedown", dismiss);
@@ -54,7 +72,15 @@ export function NodeContextMenu({
     };
     window.addEventListener("keydown", onKey, true);
     // Focus the first item so the menu is usable without a mouse.
-    const timer = setTimeout(() => ref.current?.querySelector<HTMLElement>("[role='menuitem']:not([aria-disabled='true'])")?.focus(), 0);
+    const timer = setTimeout(
+      () =>
+        ref.current
+          ?.querySelector<HTMLElement>(
+            "[role='menuitem']:not([aria-disabled='true'])",
+          )
+          ?.focus(),
+      0,
+    );
     return () => {
       clearTimeout(timer);
       window.removeEventListener("mousedown", dismiss);
@@ -68,7 +94,9 @@ export function NodeContextMenu({
 
   const move = (from: HTMLElement, delta: 1 | -1 | "first" | "last") => {
     const nodes = Array.from(
-      ref.current?.querySelectorAll<HTMLElement>("[role='menuitem']:not([aria-disabled='true'])") ?? [],
+      ref.current?.querySelectorAll<HTMLElement>(
+        "[role='menuitem']:not([aria-disabled='true'])",
+      ) ?? [],
     );
     if (!nodes.length) return;
     const index = nodes.indexOf(from);
@@ -120,11 +148,17 @@ export function NodeContextMenu({
               onClose();
             }}
             className={`flex w-full items-center justify-between gap-3 rounded-fq-sm px-2 py-1.5 text-left text-xs disabled:opacity-40 ${
-              item.danger ? "text-destructive hover:bg-destructive/10" : "hover:bg-muted"
+              item.danger
+                ? "text-destructive hover:bg-destructive/10"
+                : "hover:bg-muted"
             }`}
           >
             <span>{item.label}</span>
-            {item.hint && <span className="font-mono text-[0.65rem] text-muted-foreground">{item.hint}</span>}
+            {item.hint && (
+              <span className="font-mono text-[0.65rem] text-muted-foreground">
+                {item.hint}
+              </span>
+            )}
           </button>
         ),
       )}

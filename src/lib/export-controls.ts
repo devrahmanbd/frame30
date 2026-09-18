@@ -18,7 +18,8 @@ export function needsExportReason(rowCount: number): boolean {
   return rowCount > EXPORT_REASON_THRESHOLD;
 }
 
-export type ExportReasonProblem = "reason_required" | "reason_too_short" | "reason_too_long" | null;
+export type ExportReasonProblem =
+  "reason_required" | "reason_too_short" | "reason_too_long" | null;
 
 export function checkExportReason(
   rowCount: number,
@@ -32,7 +33,10 @@ export function checkExportReason(
   return null;
 }
 
-export function exportReasonMessage(problem: Exclude<ExportReasonProblem, null>, rowCount: number) {
+export function exportReasonMessage(
+  problem: Exclude<ExportReasonProblem, null>,
+  rowCount: number,
+) {
   switch (problem) {
     case "reason_required":
       return `This export returns ${rowCount} rows. Exports over ${EXPORT_REASON_THRESHOLD} rows need a stated reason.`;

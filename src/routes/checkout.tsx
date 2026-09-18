@@ -5,7 +5,12 @@ import { getFeaturedStoreSlug } from "@/lib/storefront.functions";
 export const Route = createFileRoute("/checkout")({
   loader: async () => {
     const slug = await getFeaturedStoreSlug();
-    if (slug) throw redirect({ to: "/store/$slug/checkout", params: { slug }, replace: true });
+    if (slug)
+      throw redirect({
+        to: "/store/$slug/checkout",
+        params: { slug },
+        replace: true,
+      });
     throw redirect({ to: "/", replace: true });
   },
 });

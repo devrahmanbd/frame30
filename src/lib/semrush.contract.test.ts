@@ -42,8 +42,14 @@ describe("Semrush API Key & Authentication", () => {
   });
 
   it("validates Semrush Personal Access Tokens (PAT) and rejects invalid shapes", () => {
-    expect(validateSemrushApiKey("semrtkn-pat-valid-token-with-sufficient-length-1234567890")).toBe(true);
-    expect(validateSemrushApiKey("a1b2c3d4e5f60718293a4b5c6d7e8f90")).toBe(true); // 32 hex
+    expect(
+      validateSemrushApiKey(
+        "semrtkn-pat-valid-token-with-sufficient-length-1234567890",
+      ),
+    ).toBe(true);
+    expect(validateSemrushApiKey("a1b2c3d4e5f60718293a4b5c6d7e8f90")).toBe(
+      true,
+    ); // 32 hex
     expect(validateSemrushApiKey("")).toBe(false);
     expect(validateSemrushApiKey("short")).toBe(false);
     expect(validateSemrushApiKey("invalid-key-token")).toBe(false);

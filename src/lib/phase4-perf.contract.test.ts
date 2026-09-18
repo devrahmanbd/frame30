@@ -32,11 +32,24 @@ import {
 import { vitalsVerdict } from "./vitals.server";
 
 let seq = 0;
-function node(type: string, props: Record<string, unknown> = {}, children?: Section[]): Section {
+function node(
+  type: string,
+  props: Record<string, unknown> = {},
+  children?: Section[],
+): Section {
   seq += 1;
-  return { id: `n${seq}`, type: type as Section["type"], props: props as Section["props"], ...(children ? { children } : {}) };
+  return {
+    id: `n${seq}`,
+    type: type as Section["type"],
+    props: props as Section["props"],
+    ...(children ? { children } : {}),
+  };
 }
-function ast(main: Section[], header: Section[] = [], footer: Section[] = []): ThemeAst {
+function ast(
+  main: Section[],
+  header: Section[] = [],
+  footer: Section[] = [],
+): ThemeAst {
   return { header, main, footer };
 }
 
@@ -55,12 +68,16 @@ describe("per-widget weight budgets", () => {
   });
 
   it("keeps every route budget positive and checkout the tightest", () => {
-    for (const bytes of Object.values(TEMPLATE_JS_BUDGET)) expect(bytes).toBeGreaterThan(0);
+    for (const bytes of Object.values(TEMPLATE_JS_BUDGET))
+      expect(bytes).toBeGreaterThan(0);
     expect(TEMPLATE_JS_BUDGET.checkout).toBeLessThan(TEMPLATE_JS_BUDGET.index);
   });
 
   it("a lean editorial page costs no client JS at all", () => {
-    const report = templateWeight(ast([node("heading"), node("rich_text"), node("divider")]), "page");
+    const report = templateWeight(
+      ast([node("heading"), node("rich_text"), node("divider")]),
+      "page",
+    );
     expect(report.totalBytes).toBe(0);
     expect(report.staticShare).toBe(1);
     expect(report.failures).toHaveLength(0);
@@ -76,13 +93,30 @@ describe("per-widget weight budgets", () => {
   });
 
   it("blocks a single widget that eats half a route on its own", () => {
-    const report = templateWeight(ast([node("store_locator"), node("store_locator"), node("store_locator")]), "checkout");
-    expect(report.failures.some((f) => f.code === "perf.weight_single")).toBe(true);
+    const report = templateWeight(
+      ast([
+        node("store_locator"),
+        node("store_locator"),
+        node("store_locator"),
+      ]),
+      "checkout",
+    );
+    expect(report.failures.some((f) => f.code === "perf.weight_single")).toBe(
+      true,
+    );
   });
 
   it("counts nested children, not just top-level sections", () => {
-    const flat = templateWeight(ast([node("product_rail"), node("product_rail")]), "index");
-    const nested = templateWeight(ast([node("container", {}, [node("product_rail"), node("product_rail")])]), "index");
+    const flat = templateWeight(
+      ast([node("product_rail"), node("product_rail")]),
+      "index",
+    );
+    const nested = templateWeight(
+      ast([
+        node("container", {}, [node("product_rail"), node("product_rail")]),
+      ]),
+      "index",
+    );
     expect(nested.totalBytes).toBeGreaterThanOrEqual(flat.totalBytes);
     expect(nested.nodeCount).toBe(3);
   });
@@ -128,30 +162,64 @@ describe("hydration policy", () => {
 
 describe("image contract", () => {
   it("allows exactly one explicit LCP candidate", () => {
-    const report = imageAudit(ast([node("hero", { image: "/a.jpg", ratio: "aspect-video", priority: true })]));
+    const report = imageAudit(
+      ast([
+        node("hero", {
+          image: "/a.jpg",
+          ratio: "aspect-video",
+          priority: true,
+        }),
+      ]),
+    );
     expect(report.priorityNodes).toHaveLength(1);
-    expect(report.failures.filter((f) => f.severity === "error")).toHaveLength(0);
+    expect(report.failures.filter((f) => f.severity === "error")).toHaveLength(
+      0,
+    );
   });
 
   it("blocks a second fetchpriority=high node", () => {
     const report = imageAudit(
       ast([
-        node("hero", { image: "/a.jpg", ratio: "aspect-video", priority: true }),
-        node("banner", { image: "/b.jpg", ratio: "aspect-video", priority: true }),
+        node("hero", {
+          image: "/a.jpg",
+          ratio: "aspect-video",
+          priority: true,
+        }),
+        node("banner", {
+          image: "/b.jpg",
+          ratio: "aspect-video",
+          priority: true,
+        }),
       ]),
     );
-    expect(report.failures.some((f) => f.code === "img.priority_multiple")).toBe(true);
+    expect(
+      report.failures.some((f) => f.code === "img.priority_multiple"),
+    ).toBe(true);
   });
 
   it("blocks a priority claim from the footer", () => {
     const report = imageAudit(
-      ast([], [], [node("hero", { image: "/b.jpg", ratio: "aspect-video", priority: true })]),
+      ast(
+        [],
+        [],
+        [
+          node("hero", {
+            image: "/b.jpg",
+            ratio: "aspect-video",
+            priority: true,
+          }),
+        ],
+      ),
     );
-    expect(report.failures.some((f) => f.code === "img.priority_below_fold")).toBe(true);
+    expect(
+      report.failures.some((f) => f.code === "img.priority_below_fold"),
+    ).toBe(true);
   });
 
   it("only warns when the LCP candidate is implicit", () => {
-    const report = imageAudit(ast([node("hero", { image: "/a.jpg", ratio: "aspect-video" })]));
+    const report = imageAudit(
+      ast([node("hero", { image: "/a.jpg", ratio: "aspect-video" })]),
+    );
     expect(report.failures.every((f) => f.severity === "warn")).toBe(true);
     expect(report.lcpNodeId).not.toBeNull();
   });
@@ -165,7 +233,15 @@ describe("perf gate", () => {
   it("passes a realistic index template and describes it", () => {
     const report = perfGate({
       ast: ast(
-        [node("hero", { image: "/a.jpg", ratio: "aspect-video", priority: true }), node("product_rail"), node("rich_text")],
+        [
+          node("hero", {
+            image: "/a.jpg",
+            ratio: "aspect-video",
+            priority: true,
+          }),
+          node("product_rail"),
+          node("rich_text"),
+        ],
         [node("announcement_bar")],
       ),
       template: "index",
@@ -223,7 +299,12 @@ describe("vitals ingest normalisation", () => {
   });
 
   it("counts malformed rows without throwing", () => {
-    const result = normalizeBatch([null, 7, { metric: "cls", value: 0.01 }, { metric: "nope", value: 1 }]);
+    const result = normalizeBatch([
+      null,
+      7,
+      { metric: "cls", value: 0.01 },
+      { metric: "nope", value: 1 },
+    ]);
     expect(result.rejected).toBe(3);
     expect(result.samples).toHaveLength(1);
   });
@@ -236,21 +317,38 @@ describe("vitals aggregation", () => {
   });
 
   it("summarises per device and flags a budget breach only with enough samples", () => {
-    const slow = Array.from({ length: 40 }, () => ({ metric: "lcp", value: 6000, device: "mobile", path: "/" }));
+    const slow = Array.from({ length: 40 }, () => ({
+      metric: "lcp",
+      value: 6000,
+      device: "mobile",
+      path: "/",
+    }));
     const summary = summarize(slow);
     expect(summary.total).toBe(40);
     expect(summary.failing.length).toBeGreaterThan(0);
     expect(vitalsVerdict(summary).ok).toBe(false);
 
-    const quiet = summarize([{ metric: "lcp", value: 9000, device: "mobile", path: "/" }]);
+    const quiet = summarize([
+      { metric: "lcp", value: 9000, device: "mobile", path: "/" },
+    ]);
     expect(quiet.failing).toHaveLength(0);
     expect(vitalsVerdict(quiet).ok).toBe(true);
   });
 
   it("ranks the slowest paths for the merchant", () => {
     const rows = [
-      ...Array.from({ length: 6 }, () => ({ metric: "lcp", value: 5000, device: "mobile", path: "/p/slow" })),
-      ...Array.from({ length: 6 }, () => ({ metric: "lcp", value: 900, device: "mobile", path: "/p/fast" })),
+      ...Array.from({ length: 6 }, () => ({
+        metric: "lcp",
+        value: 5000,
+        device: "mobile",
+        path: "/p/slow",
+      })),
+      ...Array.from({ length: 6 }, () => ({
+        metric: "lcp",
+        value: 900,
+        device: "mobile",
+        path: "/p/fast",
+      })),
     ];
     const summary = summarize(rows);
     expect(summary.worstPaths[0]!.path).toBe("/p/slow");

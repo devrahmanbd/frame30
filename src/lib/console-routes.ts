@@ -28,7 +28,9 @@ export function consoleRoute(data: ConsoleStaticData): ConsoleStaticData {
 type MatchLike = { staticData?: unknown };
 
 /** The most specific declared permission across the matched route chain. */
-export function permissionFromMatches(matches: readonly MatchLike[]): Permission | null {
+export function permissionFromMatches(
+  matches: readonly MatchLike[],
+): Permission | null {
   let found: Permission | null = null;
   for (const match of matches) {
     const data = match.staticData as ConsoleStaticData | undefined;

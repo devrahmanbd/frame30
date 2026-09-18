@@ -23,7 +23,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/experiments")({
       { property: "og:title", content: "Server-side A/B experiments" },
       {
         property: "og:description",
-        content: "Split storefront traffic deterministically and measure what actually converts.",
+        content:
+          "Split storefront traffic deterministically and measure what actually converts.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -76,7 +77,8 @@ function Experiments() {
   };
 
   const create = useMutation({
-    mutationFn: () => save({ data: { merchantId: merchant!.id, id: null, ...draft } }),
+    mutationFn: () =>
+      save({ data: { merchantId: merchant!.id, id: null, ...draft } }),
     onSuccess: () => {
       setDraft(EMPTY_DRAFT);
       invalidate();
@@ -86,8 +88,10 @@ function Experiments() {
   });
 
   const transition = useMutation({
-    mutationFn: (vars: { experimentId: string; status: "running" | "paused" | "stopped" }) =>
-      setStatus({ data: { merchantId: merchant!.id, ...vars } }),
+    mutationFn: (vars: {
+      experimentId: string;
+      status: "running" | "paused" | "stopped";
+    }) => setStatus({ data: { merchantId: merchant!.id, ...vars } }),
     onSuccess: () => {
       invalidate();
       toast.success("Experiment updated");
@@ -98,19 +102,26 @@ function Experiments() {
   const totalWeight = draft.variants.reduce((sum, v) => sum + v.weightPct, 0);
   const controlCount = draft.variants.filter((v) => v.isControl).length;
   const draftValid =
-    draft.key.length >= 2 && draft.name.length >= 2 && totalWeight === 100 && controlCount === 1;
+    draft.key.length >= 2 &&
+    draft.name.length >= 2 &&
+    totalWeight === 100 &&
+    controlCount === 1;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
       <header>
         <h1 className="text-xl font-semibold">A/B experiments</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Variants are assigned on the server and stored, so a shopper sees the same version on
-          every visit and conversions can only be attributed to the variant they actually received.
+          Variants are assigned on the server and stored, so a shopper sees the
+          same version on every visit and conversions can only be attributed to
+          the variant they actually received.
         </p>
       </header>
 
-      <section className="mt-8 rounded-fq-md border border-border bg-card p-5" aria-labelledby="new-exp">
+      <section
+        className="mt-8 rounded-fq-md border border-border bg-card p-5"
+        aria-labelledby="new-exp"
+      >
         <h2 id="new-exp" className="text-sm font-semibold">
           New experiment
         </h2>
@@ -119,9 +130,18 @@ function Experiments() {
             label="Key"
             hint="Used in code. Lowercase, no spaces."
             value={draft.key}
-            onChange={(v) => setDraft({ ...draft, key: v.toLowerCase().replace(/[^a-z0-9_.-]/g, "") })}
+            onChange={(v) =>
+              setDraft({
+                ...draft,
+                key: v.toLowerCase().replace(/[^a-z0-9_.-]/g, ""),
+              })
+            }
           />
-          <Field label="Name" value={draft.name} onChange={(v) => setDraft({ ...draft, name: v })} />
+          <Field
+            label="Name"
+            value={draft.name}
+            onChange={(v) => setDraft({ ...draft, name: v })}
+          />
           <Field
             label="Surface"
             hint="Where it runs, e.g. product, checkout."
@@ -139,7 +159,9 @@ function Experiments() {
               max={100}
               step={5}
               value={draft.trafficPct}
-              onChange={(e) => setDraft({ ...draft, trafficPct: Number(e.target.value) })}
+              onChange={(e) =>
+                setDraft({ ...draft, trafficPct: Number(e.target.value) })
+              }
               className="mt-3 w-full"
             />
             <p className="text-xs text-muted-foreground">
@@ -167,7 +189,9 @@ function Experiments() {
             </h3>
             <span
               className={`text-xs tabular-nums ${
-                totalWeight === 100 ? "text-muted-foreground" : "text-danger-foreground"
+                totalWeight === 100
+                  ? "text-muted-foreground"
+                  : "text-danger-foreground"
               }`}
             >
               {totalWeight}% allocated
@@ -181,7 +205,12 @@ function Experiments() {
                   value={v.key}
                   onChange={(e) => {
                     const variants = [...draft.variants];
-                    variants[i] = { ...v, key: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, "") };
+                    variants[i] = {
+                      ...v,
+                      key: e.target.value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9_-]/g, ""),
+                    };
                     setDraft({ ...draft, variants });
                   }}
                   className="min-h-11 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"
@@ -194,7 +223,10 @@ function Experiments() {
                     onChange={() =>
                       setDraft({
                         ...draft,
-                        variants: draft.variants.map((x, j) => ({ ...x, isControl: i === j })),
+                        variants: draft.variants.map((x, j) => ({
+                          ...x,
+                          isControl: i === j,
+                        })),
                       })
                     }
                   />
@@ -221,7 +253,10 @@ function Experiments() {
                     type="button"
                     aria-label={`Remove variant ${v.key}`}
                     onClick={() =>
-                      setDraft({ ...draft, variants: draft.variants.filter((_, j) => j !== i) })
+                      setDraft({
+                        ...draft,
+                        variants: draft.variants.filter((_, j) => j !== i),
+                      })
                     }
                     className="min-h-11 min-w-11 text-muted-foreground hover:text-danger-foreground"
                   >
@@ -239,7 +274,11 @@ function Experiments() {
                   ...draft,
                   variants: [
                     ...draft.variants,
-                    { key: `variant_${draft.variants.length + 1}`, isControl: false, weightPct: 0 },
+                    {
+                      key: `variant_${draft.variants.length + 1}`,
+                      isControl: false,
+                      weightPct: 0,
+                    },
                   ],
                 })
               }
@@ -256,7 +295,9 @@ function Experiments() {
           onClick={() => create.mutate()}
           className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          {create.isPending && <Loader2 aria-hidden className="size-4 animate-spin" />}
+          {create.isPending && (
+            <Loader2 aria-hidden className="size-4 animate-spin" />
+          )}
           Create draft
         </button>
         {!draftValid && (
@@ -272,7 +313,10 @@ function Experiments() {
         </h2>
 
         {experiments.isLoading && (
-          <div className="mt-4 h-32 animate-pulse rounded-fq-md bg-muted" aria-hidden />
+          <div
+            className="mt-4 h-32 animate-pulse rounded-fq-md bg-muted"
+            aria-hidden
+          />
         )}
         {experiments.isSuccess && experiments.data.length === 0 && (
           <p className="mt-4 rounded-fq-md border border-border bg-card p-6 text-sm text-muted-foreground">
@@ -282,7 +326,10 @@ function Experiments() {
 
         <ul className="mt-4 space-y-4">
           {(experiments.data ?? []).map((x) => (
-            <li key={x.id} className="rounded-fq-md border border-border bg-card p-4">
+            <li
+              key={x.id}
+              className="rounded-fq-md border border-border bg-card p-4"
+            >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <p className="text-sm font-medium">{x.name}</p>
@@ -301,7 +348,8 @@ function Experiments() {
                         onClick={() =>
                           transition.mutate({
                             experimentId: x.id,
-                            status: x.status === "running" ? "paused" : "running",
+                            status:
+                              x.status === "running" ? "paused" : "running",
                           })
                         }
                         className="min-h-11 rounded-fq-md border border-border px-3 text-sm"
@@ -311,8 +359,13 @@ function Experiments() {
                       <button
                         type="button"
                         onClick={() => {
-                          if (window.confirm("Stopping is permanent. Continue?")) {
-                            transition.mutate({ experimentId: x.id, status: "stopped" });
+                          if (
+                            window.confirm("Stopping is permanent. Continue?")
+                          ) {
+                            transition.mutate({
+                              experimentId: x.id,
+                              status: "stopped",
+                            });
                           }
                         }}
                         className="min-h-11 rounded-fq-md border border-border px-3 text-sm text-danger-foreground"
@@ -325,18 +378,32 @@ function Experiments() {
               </div>
 
               {x.hypothesis && (
-                <p className="mt-2 text-xs italic text-muted-foreground">{x.hypothesis}</p>
+                <p className="mt-2 text-xs italic text-muted-foreground">
+                  {x.hypothesis}
+                </p>
               )}
 
               <table className="mt-3 w-full text-sm">
-                <caption className="sr-only">Variant performance for {x.name}</caption>
+                <caption className="sr-only">
+                  Variant performance for {x.name}
+                </caption>
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
-                    <th scope="col" className="py-1">Variant</th>
-                    <th scope="col" className="py-1 text-right">Split</th>
-                    <th scope="col" className="py-1 text-right">Exposures</th>
-                    <th scope="col" className="py-1 text-right">Conversions</th>
-                    <th scope="col" className="py-1 text-right">Rate</th>
+                    <th scope="col" className="py-1">
+                      Variant
+                    </th>
+                    <th scope="col" className="py-1 text-right">
+                      Split
+                    </th>
+                    <th scope="col" className="py-1 text-right">
+                      Exposures
+                    </th>
+                    <th scope="col" className="py-1 text-right">
+                      Conversions
+                    </th>
+                    <th scope="col" className="py-1 text-right">
+                      Rate
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -345,12 +412,20 @@ function Experiments() {
                       <td className="py-1.5">
                         {v.key}
                         {v.is_control && (
-                          <span className="ml-2 text-[11px] text-muted-foreground">control</span>
+                          <span className="ml-2 text-[11px] text-muted-foreground">
+                            control
+                          </span>
                         )}
                       </td>
-                      <td className="py-1.5 text-right tabular-nums">{v.weight_pct}%</td>
-                      <td className="py-1.5 text-right tabular-nums">{v.exposures}</td>
-                      <td className="py-1.5 text-right tabular-nums">{v.conversions}</td>
+                      <td className="py-1.5 text-right tabular-nums">
+                        {v.weight_pct}%
+                      </td>
+                      <td className="py-1.5 text-right tabular-nums">
+                        {v.exposures}
+                      </td>
+                      <td className="py-1.5 text-right tabular-nums">
+                        {v.conversions}
+                      </td>
                       <td className="py-1.5 text-right tabular-nums">
                         {rate(v.conversions, v.exposures)}
                       </td>
@@ -359,7 +434,8 @@ function Experiments() {
                 </tbody>
               </table>
               <p className="mt-2 text-xs text-muted-foreground">
-                Rates are descriptive only — do not call a winner on a handful of exposures.
+                Rates are descriptive only — do not call a winner on a handful
+                of exposures.
               </p>
             </li>
           ))}
@@ -370,11 +446,16 @@ function Experiments() {
 }
 
 function readableError(message: string) {
-  if (message.includes("weights_must_total_100")) return "Variant weights must total 100%.";
-  if (message.includes("needs_exactly_one_control")) return "Mark exactly one variant as control.";
-  if (message.includes("needs_two_variants")) return "An experiment needs at least two variants.";
-  if (message.includes("already_stopped")) return "That experiment is already stopped.";
-  if (/duplicate|unique/i.test(message)) return "That experiment key is already used.";
+  if (message.includes("weights_must_total_100"))
+    return "Variant weights must total 100%.";
+  if (message.includes("needs_exactly_one_control"))
+    return "Mark exactly one variant as control.";
+  if (message.includes("needs_two_variants"))
+    return "An experiment needs at least two variants.";
+  if (message.includes("already_stopped"))
+    return "That experiment is already stopped.";
+  if (/duplicate|unique/i.test(message))
+    return "That experiment key is already used.";
   return "Could not save the experiment.";
 }
 

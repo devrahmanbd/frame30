@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { SECTION_CATALOG, flattenFields, type SectionType } from "./builder-ast";
+import {
+  SECTION_CATALOG,
+  flattenFields,
+  type SectionType,
+} from "./builder-ast";
 import {
   HEADING_LEVEL_OPTIONS,
   applyPreset,
@@ -40,7 +44,19 @@ describe("Phase 2 exit gate — widget metadata", () => {
   });
 
   it("every non-obvious prop resolves a hint", () => {
-    const kinds = new Set(["number", "range", "unit", "select", "taxonomy", "embed", "url", "html", "array", "boolean", "image"]);
+    const kinds = new Set([
+      "number",
+      "range",
+      "unit",
+      "select",
+      "taxonomy",
+      "embed",
+      "url",
+      "html",
+      "array",
+      "boolean",
+      "image",
+    ]);
     const unexplained = new Set<string>();
     for (const entry of SECTION_CATALOG) {
       for (const field of flattenFields(entry.fields)) {
@@ -58,7 +74,8 @@ describe("Phase 2 exit gate — widget metadata", () => {
       const keys = requiredAltKeys(entry.type);
       expect(keys.length, entry.type).toBeGreaterThan(0);
       const owned = new Set(flattenFields(entry.fields).map((f) => f.key));
-      for (const key of keys) expect(owned.has(key), `${entry.type}.${key}`).toBe(true);
+      for (const key of keys)
+        expect(owned.has(key), `${entry.type}.${key}`).toBe(true);
     }
   });
 
@@ -67,7 +84,8 @@ describe("Phase 2 exit gate — widget metadata", () => {
     const levels = HEADING_LEVEL_OPTIONS.map(headingLevelNumber).sort();
     // h1 comes from the claiming widget; every option is reachable from it.
     expect(levels).toEqual([2, 3]);
-    for (const level of levels) expect(levels.includes(level - 1) || level === 2).toBe(true);
+    for (const level of levels)
+      expect(levels.includes(level - 1) || level === 2).toBe(true);
   });
 
   it("presets only write props the widget owns", () => {
@@ -85,7 +103,11 @@ describe("Phase 2 exit gate — widget metadata", () => {
     const byLabel = searchWidgets({ term: "hero", slot: "main" });
     expect(byLabel[0]?.type).toBe("hero");
     const bySynonym = searchWidgets({ term: "carousel", slot: "main" });
-    expect(bySynonym.some((h) => h.type === "product_rail" && h.reason === "synonym")).toBe(true);
+    expect(
+      bySynonym.some(
+        (h) => h.type === "product_rail" && h.reason === "synonym",
+      ),
+    ).toBe(true);
     const byHelp = searchWidgets({ term: "instalment", slot: "main" });
     expect(byHelp.some((h) => h.type === "emi_calculator")).toBe(true);
     for (const hit of searchWidgets({ term: "", slot: "header" })) {
@@ -107,17 +129,28 @@ describe("Phase 2 exit gate — widget metadata", () => {
         throw new Error("QuotaExceededError");
       },
     };
-    const store = createRecentStore({ storage: hostile, logger: (e) => events.push(e) });
+    const store = createRecentStore({
+      storage: hostile,
+      logger: (e) => events.push(e),
+    });
     expect(store.read()).toEqual([]);
     expect(store.push("hero")).toEqual(["hero"]);
     expect(events).toContain("builder.recent.write_failed");
 
     const map = new Map<string, string>();
-    const good = createRecentStore({ storage: { getItem: (k) => map.get(k) ?? null, setItem: (k, v) => void map.set(k, v) } });
+    const good = createRecentStore({
+      storage: {
+        getItem: (k) => map.get(k) ?? null,
+        setItem: (k, v) => void map.set(k, v),
+      },
+    });
     good.push("hero");
     good.push("faq");
     expect(good.read()).toEqual(["faq", "hero"]);
-    map.set("framique.builder.recent.v1", JSON.stringify(["nope", "hero", "hero"]));
+    map.set(
+      "framique.builder.recent.v1",
+      JSON.stringify(["nope", "hero", "hero"]),
+    );
     expect(good.read()).toEqual(["hero" as SectionType]);
   });
 

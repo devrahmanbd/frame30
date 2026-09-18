@@ -48,7 +48,9 @@ function text(value: unknown): string {
 }
 
 /** A stored template record projected onto the head-builder override shape. */
-export function templateSeoToOverride(seo: PageSeo | null | undefined): SeoOverride | null {
+export function templateSeoToOverride(
+  seo: PageSeo | null | undefined,
+): SeoOverride | null {
   if (!seo) return null;
   const canonical = safeUrl(text(seo.canonical));
   const override: SeoOverride = {};
@@ -77,7 +79,9 @@ export function mergeSeoOverride(
   template: SeoOverride | null | undefined,
 ): SeoOverride | null {
   if (!entity && !template) return null;
-  const pick = (key: "metaTitle" | "metaDescription" | "canonical" | "ogImageUrl") => {
+  const pick = (
+    key: "metaTitle" | "metaDescription" | "canonical" | "ogImageUrl",
+  ) => {
     const own = text(entity?.[key]);
     if (own) return own;
     const inherited = text(template?.[key]);
@@ -96,12 +100,16 @@ export function mergeSeoOverride(
   if (entity?.faq?.length) merged.faq = entity.faq;
 
   // Hiding wins from either side; showing requires both to agree.
-  const hidden = entity?.robotsIndex === false || template?.robotsIndex === false;
-  const nofollow = entity?.robotsFollow === false || template?.robotsFollow === false;
+  const hidden =
+    entity?.robotsIndex === false || template?.robotsIndex === false;
+  const nofollow =
+    entity?.robotsFollow === false || template?.robotsFollow === false;
   if (hidden) merged.robotsIndex = false;
-  else if (entity?.robotsIndex === true || template?.robotsIndex === true) merged.robotsIndex = true;
+  else if (entity?.robotsIndex === true || template?.robotsIndex === true)
+    merged.robotsIndex = true;
   if (nofollow) merged.robotsFollow = false;
-  else if (entity?.robotsFollow === true || template?.robotsFollow === true) merged.robotsFollow = true;
+  else if (entity?.robotsFollow === true || template?.robotsFollow === true)
+    merged.robotsFollow = true;
 
   if (Object.keys(merged).length === 0) return null;
   if (merged.canonical === undefined) delete merged.canonical;

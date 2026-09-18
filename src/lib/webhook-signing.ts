@@ -31,7 +31,10 @@ export const WEBHOOK_EVENTS = [
 export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 
 export function isWebhookEvent(value: unknown): value is WebhookEvent {
-  return typeof value === "string" && (WEBHOOK_EVENTS as readonly string[]).includes(value);
+  return (
+    typeof value === "string" &&
+    (WEBHOOK_EVENTS as readonly string[]).includes(value)
+  );
 }
 
 function toHex(buf: ArrayBuffer) {
@@ -44,7 +47,11 @@ export function signedPayload(timestamp: number, body: string) {
   return `${timestamp}.${body}`;
 }
 
-export async function computeSignature(secret: string, timestamp: number, body: string) {
+export async function computeSignature(
+  secret: string,
+  timestamp: number,
+  body: string,
+) {
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -68,12 +75,16 @@ export function signatureHeader(timestamp: number, signatures: string[]) {
 export function timingSafeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
 export function parseSignatureHeader(header: string) {
-  const out: { timestamp: number | null; signatures: string[] } = { timestamp: null, signatures: [] };
+  const out: { timestamp: number | null; signatures: string[] } = {
+    timestamp: null,
+    signatures: [],
+  };
   for (const part of header.split(",")) {
     const [k, v] = part.trim().split("=");
     if (k === "t" && v) out.timestamp = Number.parseInt(v, 10);
@@ -131,22 +142,30 @@ export function nextDeliveryState(opts: {
 }): DeliveryOutcome {
   const now = opts.now ?? new Date();
   const code = opts.responseStatus;
-  if (code !== null && code >= 200 && code < 300) return { status: "delivered", nextAttemptAt: null };
+  if (code !== null && code >= 200 && code < 300)
+    return { status: "delivered", nextAttemptAt: null };
   if (code === 410) return { status: "dead", nextAttemptAt: null };
-  if (opts.attempt >= MAX_ATTEMPTS) return { status: "dead", nextAttemptAt: null };
+  if (opts.attempt >= MAX_ATTEMPTS)
+    return { status: "dead", nextAttemptAt: null };
   const delay = backoffSeconds(opts.attempt);
-  return { status: "failed", nextAttemptAt: new Date(now.getTime() + delay * 1000).toISOString() };
+  return {
+    status: "failed",
+    nextAttemptAt: new Date(now.getTime() + delay * 1000).toISOString(),
+  };
 }
 
 /** Only https endpoints, no localhost/private hosts: webhooks must not be an SSRF probe. */
-export function validateEndpointUrl(raw: string): { ok: true; url: string } | { ok: false; reason: string } {
+export function validateEndpointUrl(
+  raw: string,
+): { ok: true; url: string } | { ok: false; reason: string } {
   let parsed: URL;
   try {
     parsed = new URL(raw);
   } catch {
     return { ok: false, reason: "invalid_url" };
   }
-  if (parsed.protocol !== "https:") return { ok: false, reason: "https_required" };
+  if (parsed.protocol !== "https:")
+    return { ok: false, reason: "https_required" };
   const host = parsed.hostname.toLowerCase();
   const blocked =
     host === "localhost" ||

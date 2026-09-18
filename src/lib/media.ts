@@ -90,23 +90,31 @@ export function safeFileName(name: string, mime: string): string {
   return `${base || "image"}-${stamp}.${ext}`;
 }
 
-export type MediaUrlCheck = { ok: true; url: string } | { ok: false; reason: string };
+export type MediaUrlCheck =
+  { ok: true; url: string } | { ok: false; reason: string };
 
 /**
  * A merchant may point a widget at their own uploaded object, or at an
  * https URL on the transform allow-list. Everything else is refused here so a
  * bad value never reaches the storefront.
  */
-export function validateMediaUrl(raw: string, allowedHosts: readonly string[] = []): MediaUrlCheck {
+export function validateMediaUrl(
+  raw: string,
+  allowedHosts: readonly string[] = [],
+): MediaUrlCheck {
   const value = raw.trim();
   if (!value) return { ok: false, reason: "empty" };
   if (isMediaUrl(value)) {
     const path = decodeURIComponent(value.slice(MEDIA_URL_PREFIX.length));
-    return isMediaObjectPath(path) ? { ok: true, url: value } : { ok: false, reason: "bad_path" };
+    return isMediaObjectPath(path)
+      ? { ok: true, url: value }
+      : { ok: false, reason: "bad_path" };
   }
   if (!allowedHosts.length) return { ok: false, reason: "host_not_allowed" };
   const guard = isAllowedSource(value, allowedHosts);
-  return guard.ok ? { ok: true, url: value } : { ok: false, reason: guard.reason };
+  return guard.ok
+    ? { ok: true, url: value }
+    : { ok: false, reason: guard.reason };
 }
 
 /**
@@ -125,4 +133,3 @@ export type MediaItem = {
   width?: number | null;
   height?: number | null;
 };
-

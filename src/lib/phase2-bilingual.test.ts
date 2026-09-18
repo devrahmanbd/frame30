@@ -29,14 +29,18 @@ describe("§2.1 বাংলা line box", () => {
   });
 
   it("exposes the scale as a theme token", () => {
-    expect(tokensToCss({ ...DEFAULT_TOKENS, locale: "bn" })["--fq-bn-scale"]).toBe("1.06");
+    expect(
+      tokensToCss({ ...DEFAULT_TOKENS, locale: "bn" })["--fq-bn-scale"],
+    ).toBe("1.06");
   });
 });
 
 describe("§2.2 no all-caps under বাংলা", () => {
   it("disables text-transform for .fq-caps inside a bn subtree", () => {
-    expect(css).toContain('.fq-caps');
-    expect(css).toMatch(/:where\(\[lang="bn"\]\) \.fq-caps[\s\S]{0,120}text-transform: none/);
+    expect(css).toContain(".fq-caps");
+    expect(css).toMatch(
+      /:where\(\[lang="bn"\]\) \.fq-caps[\s\S]{0,120}text-transform: none/,
+    );
   });
 
   /** Lint, not convention: a raw `uppercase` class in storefront copy fails. */
@@ -72,7 +76,9 @@ describe("§2.4 mixed-script safety", () => {
   it("isolates SKUs and model numbers inside Bangla copy", () => {
     const runs = segmentMixedScript("গ্যালাক্সি A50-256GB পাওয়া যাচ্ছে");
     expect(runs.filter((r) => r.ltr).map((r) => r.text)).toEqual(["A50-256GB"]);
-    expect(runs.map((r) => r.text).join("")).toBe("গ্যালাক্সি A50-256GB পাওয়া যাচ্ছে");
+    expect(runs.map((r) => r.text).join("")).toBe(
+      "গ্যালাক্সি A50-256GB পাওয়া যাচ্ছে",
+    );
   });
 
   it("captures units attached to a number", () => {
@@ -90,11 +96,15 @@ describe("§2.4 mixed-script safety", () => {
 
 describe("§2.5 numerals", () => {
   it("carries the digit system as --fq-digits", () => {
-    expect(tokensToCss({ ...DEFAULT_TOKENS, digits: "bengali" })["--fq-digits"]).toBe("bengali");
+    expect(
+      tokensToCss({ ...DEFAULT_TOKENS, digits: "bengali" })["--fq-digits"],
+    ).toBe("bengali");
   });
 
   it("keeps tabular figures on the Bangla stack", () => {
-    expect(css).toMatch(/\[data-numeric\][\s\S]{0,160}font-variant-numeric: tabular-nums/);
+    expect(css).toMatch(
+      /\[data-numeric\][\s\S]{0,160}font-variant-numeric: tabular-nums/,
+    );
   });
 
   it("maps money digits to Bengali numerals", () => {
@@ -112,7 +122,9 @@ describe("§2.6 missing-translation fail-safe", () => {
   });
 
   it("uses বাংলা with lang=bn when it exists", () => {
-    expect(resolveBiTextTagged({ en: "Add to cart", bn: "কার্টে যোগ" }, "bn")).toEqual({
+    expect(
+      resolveBiTextTagged({ en: "Add to cart", bn: "কার্টে যোগ" }, "bn"),
+    ).toEqual({
       text: "কার্টে যোগ",
       lang: "bn",
       state: "ok",
@@ -120,6 +132,8 @@ describe("§2.6 missing-translation fail-safe", () => {
   });
 
   it("an English page never switches script", () => {
-    expect(resolveBiTextTagged({ en: "", bn: "কার্টে যোগ" }, "en").text).toBe("");
+    expect(resolveBiTextTagged({ en: "", bn: "কার্টে যোগ" }, "en").text).toBe(
+      "",
+    );
   });
 });

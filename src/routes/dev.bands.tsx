@@ -82,7 +82,11 @@ const MARKS: MarqueeMark[] = [
   { id: "card", content: "Card", label: "Card" },
   // A Bangla mark is included on purpose: the marquee clones its track, so a
   // taller glyph box here is what exposes a vertical clip in the mask.
-  { id: "bn", content: <span className={BN}>{BN_SHORT}</span>, label: "Run your shop in Bangla" },
+  {
+    id: "bn",
+    content: <span className={BN}>{BN_SHORT}</span>,
+    label: "Run your shop in Bangla",
+  },
 ];
 
 const CARDS: BandCard[] = [
@@ -98,7 +102,11 @@ const CARDS: BandCard[] = [
     title: "Reconciled payments across every mobile-money rail in Bangladesh",
     body: "Settlement files are parsed, matched against captured charges, and every variance is held for review rather than silently absorbed into the day's total.",
     meta: <Chip>Live</Chip>,
-    footer: <span className="text-sm text-muted-foreground">Included on every plan</span>,
+    footer: (
+      <span className="text-sm text-muted-foreground">
+        Included on every plan
+      </span>
+    ),
   },
   {
     id: "featured",
@@ -126,13 +134,24 @@ const MATRIX_ROWS: MatrixRow[] = [
   {
     id: "rails",
     label: "Mobile-money rails",
-    cells: { launch: "bKash", growth: "All rails", business: "All rails", enterprise: "All rails" },
+    cells: {
+      launch: "bKash",
+      growth: "All rails",
+      business: "All rails",
+      enterprise: "All rails",
+    },
   },
   {
     id: "long-label",
     // Long row labels are the usual cause of horizontal overflow at 320px.
-    label: "Settlement variance alerts with reviewer assignment and audit trail",
-    cells: { launch: "—", growth: "Included", business: "Included", enterprise: "Included" },
+    label:
+      "Settlement variance alerts with reviewer assignment and audit trail",
+    cells: {
+      launch: "—",
+      growth: "Included",
+      business: "Included",
+      enterprise: "Included",
+    },
   },
   {
     id: "bangla",
@@ -148,10 +167,21 @@ const MATRIX_ROWS: MatrixRow[] = [
 
 const STATS: BandStat[] = [
   { id: "orders", label: "Orders processed", value: 128_400, suffix: "+" },
-  { id: "uptime", label: "Rolling 30-day uptime", value: 99.95, suffix: "%", decimals: 2 },
+  {
+    id: "uptime",
+    label: "Rolling 30-day uptime",
+    value: 99.95,
+    suffix: "%",
+    decimals: 2,
+  },
   // A null stat must render as an honest dash, never as a zero — the whole
   // point of the `value: null` branch is that we omit rather than invent.
-  { id: "missing", label: "Metric not yet measured", value: null, hint: "Awaiting first full month" },
+  {
+    id: "missing",
+    label: "Metric not yet measured",
+    value: null,
+    hint: "Awaiting first full month",
+  },
   {
     id: "bangla",
     label: <span className={BN}>সক্রিয় দোকান</span>,
@@ -163,7 +193,8 @@ const STATS: BandStat[] = [
 const FAQ: FaqEntry[] = [
   {
     id: "q1",
-    question: "Does a long question wrap cleanly against the disclosure marker on a narrow phone?",
+    question:
+      "Does a long question wrap cleanly against the disclosure marker on a narrow phone?",
     answer:
       "It has to. The summary row is a flex row with a fixed marker, so an unbounded question string is the case that pushes the marker off-canvas if the row ever loses its min-width-0 child.",
   },
@@ -233,8 +264,16 @@ function BandSmoke() {
             title="A row title that runs long enough to wrap onto a second line"
             body="The 60/40 split holds because the text column is a min-width-0 grid child; without that, a long unbroken token in the body would widen the row past the container."
             proof={<Chip>Proof chip</Chip>}
-            bullets={["First supporting point", "Second supporting point", "Third supporting point"]}
-            action={<span className="text-sm font-semibold text-primary">Inline action</span>}
+            bullets={[
+              "First supporting point",
+              "Second supporting point",
+              "Third supporting point",
+            ]}
+            action={
+              <span className="text-sm font-semibold text-primary">
+                Inline action
+              </span>
+            }
             visual={<VisualStub label="Row visual" />}
           />
           <ZRow
@@ -287,7 +326,11 @@ function BandSmoke() {
       </Band>
 
       <Band divided labelledBy="spotlight-heading">
-        <BandHeading id="spotlight-heading" eyebrow="SpotlightBand" title="The one gradient tile" />
+        <BandHeading
+          id="spotlight-heading"
+          eyebrow="SpotlightBand"
+          title="The one gradient tile"
+        />
         <div className="mt-12">
           <SpotlightBand
             level={3}

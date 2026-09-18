@@ -11,9 +11,12 @@ import { SNAPSHOT_TABLES } from "./snapshots";
 
 type Row = { table_name: string; column_name?: string };
 
-const url = process.env["SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"] ?? "";
+const url =
+  process.env["SUPABASE_URL"] ?? process.env["VITE_SUPABASE_URL"] ?? "";
 const key =
-  process.env["SUPABASE_PUBLISHABLE_KEY"] ?? process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ?? "";
+  process.env["SUPABASE_PUBLISHABLE_KEY"] ??
+  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ??
+  "";
 const live = Boolean(url && key);
 
 async function introspect(sql: string): Promise<Row[]> {
@@ -48,7 +51,10 @@ describe.skipIf(!live)("snapshot manifest matches the database", () => {
     for (const spec of SNAPSHOT_TABLES) {
       const real = keys[spec.table];
       if (!real) wrong.push(`${spec.table}: table missing`);
-      else if (real !== spec.key) wrong.push(`${spec.table}: key is "${real}", manifest says "${spec.key}"`);
+      else if (real !== spec.key)
+        wrong.push(
+          `${spec.table}: key is "${real}", manifest says "${spec.key}"`,
+        );
     }
     expect(wrong).toEqual([]);
   });

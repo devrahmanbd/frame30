@@ -52,7 +52,10 @@ export function Counter({
   const intent = useMotionIntent();
   const animated = intent === "full";
   const id = useMotionId("counter");
-  const { ref, inView } = useInView<HTMLSpanElement>({ once: true, enabled: animated });
+  const { ref, inView } = useInView<HTMLSpanElement>({
+    once: true,
+    enabled: animated,
+  });
   const [value, setValue] = useState(animated ? from : to);
   const started = useRef(false);
 
@@ -84,8 +87,14 @@ export function Counter({
     };
   }, [animated, duration, from, id, inView, to]);
 
-  const text = formatCounterValue(value, to, { locale, maximumFractionDigits: decimals });
-  const settled = formatCounterValue(to, to, { locale, maximumFractionDigits: decimals });
+  const text = formatCounterValue(value, to, {
+    locale,
+    maximumFractionDigits: decimals,
+  });
+  const settled = formatCounterValue(to, to, {
+    locale,
+    maximumFractionDigits: decimals,
+  });
 
   return (
     <span

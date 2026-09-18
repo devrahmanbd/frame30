@@ -21,7 +21,8 @@ export function bundlePrice(
   fixedMinor: number | null,
   percentOff: number,
 ) {
-  if (mode === "fixed") return Math.max(0, Math.floor(fixedMinor ?? componentTotalMinor));
+  if (mode === "fixed")
+    return Math.max(0, Math.floor(fixedMinor ?? componentTotalMinor));
   const pct = Math.min(100, Math.max(0, Math.floor(percentOff)));
   return componentTotalMinor - Math.floor((componentTotalMinor * pct) / 100);
 }
@@ -33,7 +34,11 @@ export async function loadBundles(db: Client, merchantId: string) {
     .eq("merchant_id", merchantId)
     .order("created_at", { ascending: false })
     .limit(200);
-  if (error) throw new CommerceError("bundles_unavailable", "Bundles are temporarily unavailable");
+  if (error)
+    throw new CommerceError(
+      "bundles_unavailable",
+      "Bundles are temporarily unavailable",
+    );
   return data ?? [];
 }
 
@@ -56,7 +61,10 @@ export async function saveBundle(
       .map((c) => ({ ...c, quantity: Math.max(1, Math.floor(c.quantity)) }))
       .filter((c) => c.variantId);
     if (components.length < 2) {
-      throw new CommerceError("bundle_needs_components", "A bundle needs at least two items");
+      throw new CommerceError(
+        "bundle_needs_components",
+        "A bundle needs at least two items",
+      );
     }
     const { data: bundle, error } = await db
       .from("product_bundles")
@@ -66,8 +74,13 @@ export async function saveBundle(
           product_id: input.productId,
           pricing_mode: input.pricingMode,
           fixed_price_minor_int:
-            input.pricingMode === "fixed" ? Math.max(0, Math.floor(input.fixedPriceMinorInt ?? 0)) : null,
-          percent_off: input.pricingMode === "percent" ? Math.min(100, Math.max(0, Math.floor(input.percentOff ?? 0))) : 0,
+            input.pricingMode === "fixed"
+              ? Math.max(0, Math.floor(input.fixedPriceMinorInt ?? 0))
+              : null,
+          percent_off:
+            input.pricingMode === "percent"
+              ? Math.min(100, Math.max(0, Math.floor(input.percentOff ?? 0)))
+              : 0,
           active: input.active ?? true,
         },
         { onConflict: "product_id" },
@@ -76,7 +89,11 @@ export async function saveBundle(
       .single();
     if (error) throw new CommerceError("bundle_save_failed", error.message);
 
-    await db.from("bundle_items").delete().eq("bundle_id", bundle.id).eq("merchant_id", merchantId);
+    await db
+      .from("bundle_items")
+      .delete()
+      .eq("bundle_id", bundle.id)
+      .eq("merchant_id", merchantId);
     const { error: itemError } = await db.from("bundle_items").insert(
       components.map((c) => ({
         merchant_id: merchantId,
@@ -85,14 +102,23 @@ export async function saveBundle(
         quantity: c.quantity,
       })),
     );
-    if (itemError) throw new CommerceError("bundle_save_failed", itemError.message);
+    if (itemError)
+      throw new CommerceError("bundle_save_failed", itemError.message);
     incr("framique_bundle_saved_total", {});
     return bundle;
   });
 }
 
-export async function deleteBundle(db: Client, merchantId: string, bundleId: string) {
-  await db.from("product_bundles").delete().eq("id", bundleId).eq("merchant_id", merchantId);
+export async function deleteBundle(
+  db: Client,
+  merchantId: string,
+  bundleId: string,
+) {
+  await db
+    .from("product_bundles")
+    .delete()
+    .eq("id", bundleId)
+    .eq("merchant_id", merchantId);
 }
 
 /* ---------------------------------- customers ---------------------------------- */
@@ -118,9 +144,16 @@ export async function loadCustomers(db: Client, merchantId: string, term = "") {
       .order("created_at", { ascending: false })
       .limit(200);
     const needle = term.trim();
-    if (needle) q = q.or(`name.ilike.%${needle}%,email.ilike.%${needle}%,phone.ilike.%${needle}%`);
+    if (needle)
+      q = q.or(
+        `name.ilike.%${needle}%,email.ilike.%${needle}%,phone.ilike.%${needle}%`,
+      );
     const { data: customers, error } = await q;
-    if (error) throw new CommerceError("customers_unavailable", "Customers are unavailable");
+    if (error)
+      throw new CommerceError(
+        "customers_unavailable",
+        "Customers are unavailable",
+      );
 
     const ids = (customers ?? []).map((c) => c.id);
     const { data: orders } = ids.length
@@ -129,7 +162,13 @@ export async function loadCustomers(db: Client, merchantId: string, term = "") {
           .select("customer_id, total_minor_int, created_at")
           .eq("merchant_id", merchantId)
           .in("customer_id", ids)
-      : { data: [] as { customer_id: string | null; total_minor_int: number; created_at: string }[] };
+      : {
+          data: [] as {
+            customer_id: string | null;
+            total_minor_int: number;
+            created_at: string;
+          }[],
+        };
 
     return (customers ?? []).map<CustomerRecord>((c) => {
       const mine = (orders ?? []).filter((o) => o.customer_id === c.id);
@@ -141,7 +180,8 @@ export async function loadCustomers(db: Client, merchantId: string, term = "") {
         orders: mine.length,
         spendMinorInt: mine.reduce((s, o) => s + Number(o.total_minor_int), 0),
         lastOrderAt:
-          mine.map((o) => o.created_at).sort((a, b) => (a < b ? 1 : -1))[0] ?? null,
+          mine.map((o) => o.created_at).sort((a, b) => (a < b ? 1 : -1))[0] ??
+          null,
       };
     });
   });
@@ -153,7 +193,9 @@ export function matchesSegment(customer: CustomerRecord, rule: SegmentRule) {
   const numeric = Number(rule.value);
   switch (rule.field) {
     case "orders":
-      return rule.operator === "gte" ? customer.orders >= numeric : customer.orders <= numeric;
+      return rule.operator === "gte"
+        ? customer.orders >= numeric
+        : customer.orders <= numeric;
     case "spend":
       return rule.operator === "gte"
         ? customer.spendMinorInt >= numeric
@@ -180,7 +222,13 @@ export async function loadSegments(db: Client, merchantId: string) {
 export async function saveSegment(
   db: Client,
   merchantId: string,
-  input: { id?: string; name: string; field: string; operator: string; value: string },
+  input: {
+    id?: string;
+    name: string;
+    field: string;
+    operator: string;
+    value: string;
+  },
 ) {
   await enforceRateLimit("commerce.customers", merchantId);
   const row = {
@@ -191,7 +239,11 @@ export async function saveSegment(
     rule_value: input.value,
   };
   const query = input.id
-    ? db.from("segments").update(row).eq("id", input.id).eq("merchant_id", merchantId)
+    ? db
+        .from("segments")
+        .update(row)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
     : db.from("segments").insert(row);
   const { data, error } = await query.select("*").single();
   if (error) throw new CommerceError("segment_save_failed", error.message);

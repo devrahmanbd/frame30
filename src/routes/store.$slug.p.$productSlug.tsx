@@ -13,19 +13,31 @@ import { useSectionChannel } from "@/components/builder/useSectionChannel";
 import { useLang } from "@/lib/i18n";
 import { buildProductHead } from "@/lib/theme-seo";
 import { verificationTags } from "@/lib/search-console";
-import { ProductConversion, ScarcityBadge } from "@/components/store/ConversionSurfaces";
+import {
+  ProductConversion,
+  ScarcityBadge,
+} from "@/components/store/ConversionSurfaces";
 
 export const Route = createFileRoute("/store/$slug/p/$productSlug")({
   loader: async ({ params }) => {
     const data = await getStoreProduct({
       data: { slug: params.slug, productSlug: params.productSlug },
     });
-    if (!data) throw await handleMissingStoreUrl(params.slug, `/store/${params.slug}/p/${params.productSlug}`);
+    if (!data)
+      throw await handleMissingStoreUrl(
+        params.slug,
+        `/store/${params.slug}/p/${params.productSlug}`,
+      );
     return data;
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Product unavailable" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Product unavailable" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const variants = loaderData.product.product_variants ?? [];
     const cheapest = variants
@@ -54,12 +66,16 @@ export const Route = createFileRoute("/store/$slug/p/$productSlug")({
       returnPolicy: { days: 7, fees: "shopper" },
       shipping: {
         flatMinor: Number(loaderData.settings?.shipping_flat_minor_int ?? 0),
-        freeThresholdMinor: loaderData.settings?.free_shipping_threshold_minor_int ?? null,
+        freeThresholdMinor:
+          loaderData.settings?.free_shipping_threshold_minor_int ?? null,
       },
     });
     return {
       ...base,
-      meta: [...(base.meta ?? []), ...verificationTags(loaderData.siteKit.verification)],
+      meta: [
+        ...(base.meta ?? []),
+        ...verificationTags(loaderData.siteKit.verification),
+      ],
     };
   },
   component: ProductDetail,
@@ -70,14 +86,17 @@ function ProductNotFound() {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-2xl font-semibold">{t("Product not found", "পণ্যটি পাওয়া যায়নি")}</h1>
+      <h1 className="text-2xl font-semibold">
+        {t("Product not found", "পণ্যটি পাওয়া যায়নি")}
+      </h1>
     </main>
   );
 }
 
 function ProductDetail() {
   const { t } = useLang();
-  const { merchant, product, settings, ast, tokens, siteKit } = Route.useLoaderData();
+  const { merchant, product, settings, ast, tokens, siteKit } =
+    Route.useLoaderData();
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
   const variant = variants.find((v) => v.id === variantId) ?? variants[0];
@@ -94,11 +113,17 @@ function ProductDetail() {
   // Funnel step: product views. Recorded once per product, never with anything
   // that identifies the shopper.
   useEffect(() => {
-    trackEvent({ entity: "product", action: "view", payload: { slug: product.slug } });
+    trackEvent({
+      entity: "product",
+      action: "view",
+      payload: { slug: product.slug },
+    });
   }, [product.slug]);
 
   const themed = ast && ast.main.length > 0 ? ast : null;
-  const sections = themed ? [...themed.header, ...themed.main, ...themed.footer] : [];
+  const sections = themed
+    ? [...themed.header, ...themed.main, ...themed.footer]
+    : [];
   const hasPriceBlock = sections.some((s) => s.type === "price_block");
 
   const media = (
@@ -116,11 +141,18 @@ function ProductDetail() {
 
   const priceBlock = (
     <div>
-      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">{product.title}</h1>
+      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
+        {product.title}
+      </h1>
       <p className="money mt-3 text-2xl font-semibold">
-        {fmtMinor(Number(variant?.price_amount_minor_int ?? 0), merchant.currency_code)}
+        {fmtMinor(
+          Number(variant?.price_amount_minor_int ?? 0),
+          merchant.currency_code,
+        )}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">VAT shown at checkout</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        VAT shown at checkout
+      </p>
       <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
     </div>
   );
@@ -129,7 +161,9 @@ function ProductDetail() {
     <div>
       {variants.length > 1 && (
         <fieldset className="mt-5">
-          <legend className="text-sm font-medium">{t("Variant", "ভ্যারিয়েন্ট")}</legend>
+          <legend className="text-sm font-medium">
+            {t("Variant", "ভ্যারিয়েন্ট")}
+          </legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {variants.map((v) => (
               <button
@@ -152,11 +186,16 @@ function ProductDetail() {
 
       <p
         className={`mt-4 text-sm ${
-          (variant?.stock_quantity ?? 0) > 0 ? "text-success-foreground" : "text-danger-foreground"
+          (variant?.stock_quantity ?? 0) > 0
+            ? "text-success-foreground"
+            : "text-danger-foreground"
         }`}
       >
         {(variant?.stock_quantity ?? 0) > 0
-          ? t(`${variant?.stock_quantity} in stock`, `স্টকে ${variant?.stock_quantity} টি`)
+          ? t(
+              `${variant?.stock_quantity} in stock`,
+              `স্টকে ${variant?.stock_quantity} টি`,
+            )
           : t("Out of stock", "স্টক নেই")}
       </p>
 
@@ -181,28 +220,45 @@ function ProductDetail() {
           {t("Checkout", "চেকআউট")}
         </Link>
       </div>
-      <p aria-live="polite" className="mt-2 h-5 text-sm text-success-foreground">
+      <p
+        aria-live="polite"
+        className="mt-2 h-5 text-sm text-success-foreground"
+      >
         {added ? t("Added to cart", "কার্টে যোগ হয়েছে") : ""}
       </p>
 
       <ul className="mt-6 flex flex-wrap gap-2 text-xs">
         {(settings?.cod_enabled ?? true) && (
-          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">COD</li>
+          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">
+            COD
+          </li>
         )}
         {(settings?.mfs_enabled ?? true) && (
-          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">bKash / Nagad</li>
+          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">
+            bKash / Nagad
+          </li>
         )}
       </ul>
     </div>
   );
 
   const meta = product.description ? (
-    <p className="whitespace-pre-line leading-relaxed text-muted-foreground">{product.description}</p>
+    <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
+      {product.description}
+    </p>
   ) : null;
 
   const breadcrumb = (
-    <nav aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")} className="text-xs text-muted-foreground">
-      <Link to="/store/$slug" search={{ preview_token: undefined }} params={{ slug: merchant.slug }} className="underline">
+    <nav
+      aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
+      className="text-xs text-muted-foreground"
+    >
+      <Link
+        to="/store/$slug"
+        search={{ preview_token: undefined }}
+        params={{ slug: merchant.slug }}
+        className="underline"
+      >
         {merchant.name}
       </Link>
       <span aria-hidden> / </span>
@@ -228,7 +284,9 @@ function ProductDetail() {
         {addToCart}
         {meta && (
           <div className="mt-8 border-t border-border pt-6">
-            <h2 className="text-sm font-semibold">{t("Description", "বিবরণ")}</h2>
+            <h2 className="text-sm font-semibold">
+              {t("Description", "বিবরণ")}
+            </h2>
             <div className="mt-2">{meta}</div>
           </div>
         )}
@@ -239,30 +297,30 @@ function ProductDetail() {
   return (
     <>
       <ThemeChrome
-      template="product"
-      storeSlug={merchant.slug}
-      merchantId={merchant.id}
-      ast={ast}
-      tokens={tokens}
-      siteKit={siteKit}
-      ownsPrimary={hasPriceBlock}
-      chrome={
-        <>
-          <StoreHeader slug={merchant.slug} name={merchant.name} />
-          <SupportWidget slug={merchant.slug} />
-        </>
-      }
-      contextSlots={{
-        breadcrumb,
-        product_media: media,
-        price_block: priceBlock,
-        add_to_cart: addToCart,
-        product_meta: meta,
-      }}
+        template="product"
+        storeSlug={merchant.slug}
+        merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
+        siteKit={siteKit}
+        ownsPrimary={hasPriceBlock}
+        chrome={
+          <>
+            <StoreHeader slug={merchant.slug} name={merchant.name} />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={merchant.slug} /> */}
+          </>
+        }
+        contextSlots={{
+          breadcrumb,
+          product_media: media,
+          price_block: priceBlock,
+          add_to_cart: addToCart,
+          product_meta: meta,
+        }}
         fallback={fallback}
       />
       <div className="mx-auto max-w-6xl px-4 pb-16">{conversion}</div>
     </>
   );
 }
-

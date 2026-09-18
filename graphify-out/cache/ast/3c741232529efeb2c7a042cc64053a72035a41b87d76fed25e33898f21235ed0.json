@@ -1,1 +1,411 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "label": "payments.content.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L1"}, {"id": "marketing_payments_content_bilingual", "label": "Bilingual", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L18"}, {"id": "marketing_payments_content_hero_rail_pills", "label": "HERO_RAIL_PILLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L36"}, {"id": "marketing_payments_content_railcard", "label": "RailCard", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L42"}, {"id": "marketing_payments_content_four_rails", "label": "FOUR_RAILS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L50"}, {"id": "marketing_payments_content_railcardlabel", "label": "railCardLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L84"}, {"id": "marketing_payments_content_railcomparisonrow", "label": "RailComparisonRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L94"}, {"id": "marketing_payments_content_rail_comparison", "label": "RAIL_COMPARISON", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L104"}, {"id": "marketing_payments_content_rail_comparison_note", "label": "RAIL_COMPARISON_NOTE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L143"}, {"id": "marketing_payments_content_rail_decision_framework", "label": "RAIL_DECISION_FRAMEWORK", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L147"}, {"id": "marketing_payments_content_refund_sla_rows", "label": "REFUND_SLA_ROWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L196"}, {"id": "marketing_payments_content_fraud_signals", "label": "FRAUD_SIGNALS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L221"}, {"id": "marketing_payments_content_cod_playbook_title", "label": "COD_PLAYBOOK_TITLE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L235"}, {"id": "marketing_payments_content_playbookcard", "label": "PlaybookCard", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L240"}, {"id": "marketing_payments_content_cod_playbook", "label": "COD_PLAYBOOK", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L242"}, {"id": "marketing_payments_content_workedrow", "label": "WorkedRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L275"}, {"id": "marketing_payments_content_cod_worked_example_title", "label": "COD_WORKED_EXAMPLE_TITLE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L277"}, {"id": "marketing_payments_content_cod_worked_example_rows", "label": "COD_WORKED_EXAMPLE_ROWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L281"}, {"id": "marketing_payments_content_cod_worked_example_note", "label": "COD_WORKED_EXAMPLE_NOTE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L294"}, {"id": "marketing_payments_content_checkout_fields", "label": "CHECKOUT_FIELDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L331"}, {"id": "marketing_payments_content_security_key_scopes", "label": "SECURITY_KEY_SCOPES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L357"}, {"id": "marketing_payments_content_faqdeckentry", "label": "FaqDeckEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L408"}, {"id": "marketing_payments_content_payments_faq", "label": "PAYMENTS_FAQ", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L410"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "lib_payment_rails_payment_method_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "lib_payment_rails_paymentmethodkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_bilingual", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_hero_rail_pills", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_railcard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_four_rails", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_railcardlabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_railcomparisonrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_rail_comparison", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_rail_comparison_note", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_rail_decision_framework", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_refund_sla_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L196", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_fraud_signals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_cod_playbook_title", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L235", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_playbookcard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L240", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_cod_playbook", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L242", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_workedrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L275", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_cod_worked_example_title", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L277", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_cod_worked_example_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L281", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_cod_worked_example_note", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L294", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_checkout_fields", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L331", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_security_key_scopes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L357", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_faqdeckentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L408", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts", "target": "marketing_payments_content_payments_faq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L410", "weight": 1.0}], "raw_calls": [{"caller_nid": "marketing_payments_content_railcardlabel", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L85"}, {"caller_nid": "marketing_payments_content_railcardlabel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts", "source_location": "L85"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "label": "payments.content.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketing_payments_content_bilingual",
+      "label": "Bilingual",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "marketing_payments_content_hero_rail_pills",
+      "label": "HERO_RAIL_PILLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "marketing_payments_content_railcard",
+      "label": "RailCard",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "marketing_payments_content_four_rails",
+      "label": "FOUR_RAILS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "marketing_payments_content_railcardlabel",
+      "label": "railCardLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "marketing_payments_content_railcomparisonrow",
+      "label": "RailComparisonRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "marketing_payments_content_rail_comparison",
+      "label": "RAIL_COMPARISON",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "marketing_payments_content_rail_comparison_note",
+      "label": "RAIL_COMPARISON_NOTE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "marketing_payments_content_rail_decision_framework",
+      "label": "RAIL_DECISION_FRAMEWORK",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L147"
+    },
+    {
+      "id": "marketing_payments_content_refund_sla_rows",
+      "label": "REFUND_SLA_ROWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L196"
+    },
+    {
+      "id": "marketing_payments_content_fraud_signals",
+      "label": "FRAUD_SIGNALS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "marketing_payments_content_cod_playbook_title",
+      "label": "COD_PLAYBOOK_TITLE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L235"
+    },
+    {
+      "id": "marketing_payments_content_playbookcard",
+      "label": "PlaybookCard",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L240"
+    },
+    {
+      "id": "marketing_payments_content_cod_playbook",
+      "label": "COD_PLAYBOOK",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L242"
+    },
+    {
+      "id": "marketing_payments_content_workedrow",
+      "label": "WorkedRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L275"
+    },
+    {
+      "id": "marketing_payments_content_cod_worked_example_title",
+      "label": "COD_WORKED_EXAMPLE_TITLE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L277"
+    },
+    {
+      "id": "marketing_payments_content_cod_worked_example_rows",
+      "label": "COD_WORKED_EXAMPLE_ROWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L281"
+    },
+    {
+      "id": "marketing_payments_content_cod_worked_example_note",
+      "label": "COD_WORKED_EXAMPLE_NOTE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L294"
+    },
+    {
+      "id": "marketing_payments_content_checkout_fields",
+      "label": "CHECKOUT_FIELDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L331"
+    },
+    {
+      "id": "marketing_payments_content_security_key_scopes",
+      "label": "SECURITY_KEY_SCOPES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L357"
+    },
+    {
+      "id": "marketing_payments_content_faqdeckentry",
+      "label": "FaqDeckEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L408"
+    },
+    {
+      "id": "marketing_payments_content_payments_faq",
+      "label": "PAYMENTS_FAQ",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L410"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "lib_payment_rails_payment_method_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "lib_payment_rails_paymentmethodkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_bilingual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_hero_rail_pills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_railcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_four_rails",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_railcardlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_railcomparisonrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_rail_comparison",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_rail_comparison_note",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_rail_decision_framework",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_refund_sla_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_fraud_signals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_cod_playbook_title",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L235",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_playbookcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_cod_playbook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_workedrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L275",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_cod_worked_example_title",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_cod_worked_example_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_cod_worked_example_note",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L294",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_checkout_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L331",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_security_key_scopes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L357",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_faqdeckentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L408",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_payments_content_ts",
+      "target": "marketing_payments_content_payments_faq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L410",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "marketing_payments_content_railcardlabel",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "marketing_payments_content_railcardlabel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/payments.content.ts",
+      "source_location": "L85"
+    }
+  ]
+}

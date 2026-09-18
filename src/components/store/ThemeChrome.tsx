@@ -11,7 +11,10 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
-import { SiteKitSurface, type StorefrontSiteKit } from "@/components/store/SiteKitTags";
+import {
+  SiteKitSurface,
+  type StorefrontSiteKit,
+} from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { useLangScope } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
@@ -63,8 +66,13 @@ export function primarySectionId(ast: ThemeAst | null): string | null {
   if (!ast) return null;
   const candidates = ast.main.filter((s) => !s.invalid);
   const heading = (s: Section) =>
-    s.type === "hero" || (typeof s.props["heading"] === "string" && s.props["heading"]);
-  return candidates.find((s) => s.type === "hero")?.id ?? candidates.find(heading)?.id ?? null;
+    s.type === "hero" ||
+    (typeof s.props["heading"] === "string" && s.props["heading"]);
+  return (
+    candidates.find((s) => s.type === "hero")?.id ??
+    candidates.find(heading)?.id ??
+    null
+  );
 }
 
 /**
@@ -72,7 +80,13 @@ export function primarySectionId(ast: ThemeAst | null): string | null {
  * shares a single server quote, so a page with a line list, a summary and a
  * drawer costs one round trip per change instead of three.
  */
-function LiveCartScope({ slug, children }: { slug: string; children: React.ReactNode }) {
+function LiveCartScope({
+  slug,
+  children,
+}: {
+  slug: string;
+  children: React.ReactNode;
+}) {
   const cart = useLiveCart(slug);
   return <CartProvider value={cart}>{children}</CartProvider>;
 }
@@ -99,7 +113,8 @@ export function ThemeChrome({
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the
   // body left shoppers on a page with no store navigation and no policy links.
-  const chromeAst = ast && (ast.header.length > 0 || ast.footer.length > 0) ? ast : null;
+  const chromeAst =
+    ast && (ast.header.length > 0 || ast.footer.length > 0) ? ast : null;
   const primary = ownsPrimary ? null : primarySectionId(themed);
   // Phase 5: the per-device layout overrides authored in the studio are
   // compiled once per render into a range-scoped stylesheet. It is inlined
@@ -116,10 +131,19 @@ export function ThemeChrome({
         />
       ) : null}
       {customCss ? (
-        <style data-fq-theme-assets="" dangerouslySetInnerHTML={{ __html: customCss }} />
+        <style
+          data-fq-theme-assets=""
+          dangerouslySetInnerHTML={{ __html: customCss }}
+        />
       ) : null}
-      <VitalsReporter merchantId={merchantId} template={template ?? "unknown"} />
-      <TrafficReporter merchantId={merchantId} template={template ?? "unknown"} />
+      <VitalsReporter
+        merchantId={merchantId}
+        template={template ?? "unknown"}
+      />
+      <TrafficReporter
+        merchantId={merchantId}
+        template={template ?? "unknown"}
+      />
       <SiteKitSurface siteKit={siteKit ?? null} />
       {chrome}
       {chromeAst && chromeAst.header.length > 0 && (
@@ -172,5 +196,9 @@ export function ThemeChrome({
   );
 
   // Without a slug (studio preview) the widgets fall back to the demo cart.
-  return storeSlug ? <LiveCartScope slug={storeSlug}>{body}</LiveCartScope> : body;
+  return storeSlug ? (
+    <LiveCartScope slug={storeSlug}>{body}</LiveCartScope>
+  ) : (
+    body
+  );
 }

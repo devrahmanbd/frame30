@@ -15,7 +15,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { incr, log, observe } from "./observability.server";
-import { newWebhookSecret, sealSecret, unsealSecret } from "./webhook-secret.server";
+import {
+  newWebhookSecret,
+  sealSecret,
+  unsealSecret,
+} from "./webhook-secret.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import {
   computeSignature,
@@ -46,7 +50,8 @@ export class WebhookError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -70,7 +75,11 @@ async function activeSecrets(endpoint: EndpointRow) {
 /* Registry (merchant admin surface)                                    */
 /* ------------------------------------------------------------------ */
 
-async function requireAdminRole(db: Client, merchantId: string, userId: string) {
+async function requireAdminRole(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   const { data } = await db
     .from("merchant_members")
     .select("role")
@@ -115,7 +124,12 @@ export async function saveWebhook(
   db: Client,
   merchantId: string,
   userId: string,
-  input: { id?: string | null; url: string; description: string; events: string[] },
+  input: {
+    id?: string | null;
+    url: string;
+    description: string;
+    events: string[];
+  },
 ) {
   await requireAdminRole(db, merchantId, userId);
   await enforceRateLimit("dev.write", `${merchantId}:${userId}`);
@@ -200,10 +214,11 @@ export async function setWebhookStatus(
   status: Database["public"]["Enums"]["webhook_endpoint_status"],
 ) {
   await requireAdminRole(db, merchantId, userId);
-  const patch: Database["public"]["Tables"]["api_webhook_endpoints"]["Update"] = {
-    status,
-    updated_at: new Date().toISOString(),
-  };
+  const patch: Database["public"]["Tables"]["api_webhook_endpoints"]["Update"] =
+    {
+      status,
+      updated_at: new Date().toISOString(),
+    };
   // Re-enabling clears the strike counter, otherwise one old outage would
   // auto-pause the endpoint again on the very next failure.
   if (status === "active") patch.failure_count = 0;
@@ -217,7 +232,12 @@ export async function setWebhookStatus(
 }
 
 /** Re-queues a dead/failed delivery as a fresh attempt without losing history. */
-export async function replayDelivery(db: Client, merchantId: string, userId: string, id: string) {
+export async function replayDelivery(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  id: string,
+) {
   await requireAdminRole(db, merchantId, userId);
   await enforceRateLimit("dev.write", `${merchantId}:${userId}`);
   const { data } = await db
@@ -241,7 +261,12 @@ export async function replayDelivery(db: Client, merchantId: string, userId: str
 }
 
 /** One test event so a merchant can prove their receiver before going live. */
-export async function sendTestEvent(db: Client, merchantId: string, userId: string, id: string) {
+export async function sendTestEvent(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  id: string,
+) {
   await requireAdminRole(db, merchantId, userId);
   await enforceRateLimit("dev.write", `${merchantId}:${userId}`);
   const dba = await admin();
@@ -258,7 +283,11 @@ export async function sendTestEvent(db: Client, merchantId: string, userId: stri
       merchant_id: merchantId,
       endpoint_id: id,
       event_type: "order.created",
-      payload: { test: true, sent_by: userId, at: new Date().toISOString() } as unknown as Json,
+      payload: {
+        test: true,
+        sent_by: userId,
+        at: new Date().toISOString(),
+      } as unknown as Json,
       next_attempt_at: new Date().toISOString(),
     })
     .select("*")
@@ -305,15 +334,24 @@ export async function emitWebhook(
         next_attempt_at: now,
       })),
     );
-    incr("framique_webhook_event_total", { event: eventType }, endpoints.length);
+    incr(
+      "framique_webhook_event_total",
+      { event: eventType },
+      endpoints.length,
+    );
     return { queued: endpoints.length };
   } catch (err) {
-    log("error", "webhook.emit_failed", { merchant_id: merchantId, event: eventType, err: String(err) });
+    log("error", "webhook.emit_failed", {
+      merchant_id: merchantId,
+      event: eventType,
+      err: String(err),
+    });
     return { queued: 0 };
   }
 }
 
-type DeliveryRow = Database["public"]["Tables"]["api_webhook_deliveries"]["Row"];
+type DeliveryRow =
+  Database["public"]["Tables"]["api_webhook_deliveries"]["Row"];
 
 async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
   const db = await admin();
@@ -322,7 +360,9 @@ async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
   const ts = Math.floor(started / 1000);
   const secrets = await activeSecrets(endpoint);
   if (!secrets.length) throw new WebhookError("secret_unreadable", 500);
-  const signatures = await Promise.all(secrets.map((s) => computeSignature(s, ts, body)));
+  const signatures = await Promise.all(
+    secrets.map((s) => computeSignature(s, ts, body)),
+  );
 
   let status: number | null = null;
   let error: string | null = null;
@@ -344,13 +384,19 @@ async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
     });
     clearTimeout(timer);
     status = res.status;
-    if (!res.ok) error = (await res.text().catch(() => "")).slice(0, 500) || `HTTP ${res.status}`;
+    if (!res.ok)
+      error =
+        (await res.text().catch(() => "")).slice(0, 500) ||
+        `HTTP ${res.status}`;
   } catch (err) {
     error = err instanceof Error ? err.message.slice(0, 500) : "network_error";
   }
 
   const ms = Date.now() - started;
-  const outcome = nextDeliveryState({ attempt: delivery.attempt, responseStatus: status });
+  const outcome = nextDeliveryState({
+    attempt: delivery.attempt,
+    responseStatus: status,
+  });
   observe("framique_webhook_delivery_ms", ms, { outcome: outcome.status });
   incr("framique_webhook_delivery_total", { outcome: outcome.status });
 
@@ -362,26 +408,35 @@ async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
       response_status: status,
       response_ms: ms,
       error,
-      delivered_at: outcome.status === "delivered" ? new Date().toISOString() : null,
+      delivered_at:
+        outcome.status === "delivered" ? new Date().toISOString() : null,
       next_attempt_at: outcome.nextAttemptAt ?? delivery.next_attempt_at,
       updated_at: new Date().toISOString(),
     })
     .eq("id", delivery.id);
 
-  const failures = outcome.status === "delivered" ? 0 : endpoint.failure_count + 1;
-  const endpointPatch: Database["public"]["Tables"]["api_webhook_endpoints"]["Update"] = {
-    failure_count: failures,
-    last_delivery_at: new Date().toISOString(),
-    last_error: outcome.status === "delivered" ? null : error,
-    updated_at: new Date().toISOString(),
-  };
+  const failures =
+    outcome.status === "delivered" ? 0 : endpoint.failure_count + 1;
+  const endpointPatch: Database["public"]["Tables"]["api_webhook_endpoints"]["Update"] =
+    {
+      failure_count: failures,
+      last_delivery_at: new Date().toISOString(),
+      last_error: outcome.status === "delivered" ? null : error,
+      updated_at: new Date().toISOString(),
+    };
   // A receiver that is down for hundreds of events is disabling itself; pause
   // it so the queue stops growing and the merchant sees why.
   if (failures >= AUTO_PAUSE_FAILURES) {
     endpointPatch.status = "paused";
-    log("warn", "webhook.endpoint_auto_paused", { endpoint: endpoint.id, failures });
+    log("warn", "webhook.endpoint_auto_paused", {
+      endpoint: endpoint.id,
+      failures,
+    });
   }
-  await db.from("api_webhook_endpoints").update(endpointPatch).eq("id", endpoint.id);
+  await db
+    .from("api_webhook_endpoints")
+    .update(endpointPatch)
+    .eq("id", endpoint.id);
 
   return { status: outcome.status, responseStatus: status, ms, error };
 }
@@ -428,7 +483,10 @@ export async function dispatchDueWebhooks(limit = 25) {
       else failed += 1;
     } catch (err) {
       failed += 1;
-      log("error", "webhook.attempt_crashed", { delivery: delivery.id, err: String(err) });
+      log("error", "webhook.attempt_crashed", {
+        delivery: delivery.id,
+        err: String(err),
+      });
     }
   }
   return { processed: due.length, delivered, failed };

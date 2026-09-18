@@ -32,15 +32,25 @@ export function scrimIssues(sections: Section[]): GuardrailIssue[] {
   const issues: GuardrailIssue[] = [];
   for (const section of sections) {
     if (section.invalid) continue;
-    const layers = [section.props, ...Object.values(section.bp ?? {})] as Record<string, unknown>[];
-    const overlays = layers.some((layer) => filled(layer ?? {}, IMAGE_KEYS)) && filled(section.props, TEXT_KEYS);
+    const layers = [
+      section.props,
+      ...Object.values(section.bp ?? {}),
+    ] as Record<string, unknown>[];
+    const overlays =
+      layers.some((layer) => filled(layer ?? {}, IMAGE_KEYS)) &&
+      filled(section.props, TEXT_KEYS);
     if (!overlays) continue;
     const scrim = section.props["scrim"];
-    if (scrim === true || (typeof scrim === "string" && scrim.trim() !== "" && scrim !== "none")) continue;
+    if (
+      scrim === true ||
+      (typeof scrim === "string" && scrim.trim() !== "" && scrim !== "none")
+    )
+      continue;
     issues.push({
       level: "error",
       sectionId: section.id,
-      message: "Text sits over an image with no scrim — enable the scrim token so contrast holds.",
+      message:
+        "Text sits over an image with no scrim — enable the scrim token so contrast holds.",
     });
   }
   return issues;
@@ -87,14 +97,19 @@ export function consentIssues(sections: Section[]): GuardrailIssue[] {
  * expression or a hand-written formula) means a widget would mint its own
  * total in the browser.
  */
-const MONEY_WORD = /price|total|amount|subtotal|discount|savings|fee|tax|shipping|deposit/i;
-const EXPRESSION = /\{\{[^}]*[+\-*/%][^}]*\}\}|\$\{[^}]*[+\-*/%][^}]*\}|=\s*[\w.]+\s*[+\-*/%]\s*[\w.]+/;
+const MONEY_WORD =
+  /price|total|amount|subtotal|discount|savings|fee|tax|shipping|deposit/i;
+const EXPRESSION =
+  /\{\{[^}]*[+\-*/%][^}]*\}\}|\$\{[^}]*[+\-*/%][^}]*\}|=\s*[\w.]+\s*[+\-*/%]\s*[\w.]+/;
 
 export function moneyMathIssues(sections: Section[]): GuardrailIssue[] {
   const issues: GuardrailIssue[] = [];
   for (const section of sections) {
     if (section.invalid) continue;
-    const layers = [section.props, ...Object.values(section.bp ?? {})] as Record<string, unknown>[];
+    const layers = [
+      section.props,
+      ...Object.values(section.bp ?? {}),
+    ] as Record<string, unknown>[];
     for (const layer of layers) {
       for (const [key, value] of Object.entries(layer ?? {})) {
         if (typeof value !== "string") continue;
@@ -138,10 +153,16 @@ export function authoredCoverage(stats: { ok: number; fallback: number }): {
   percent: number;
 } {
   const authored = stats.ok + stats.fallback;
-  return { authored, percent: authored === 0 ? 100 : Math.round((stats.ok / authored) * 100) };
+  return {
+    authored,
+    percent: authored === 0 ? 100 : Math.round((stats.ok / authored) * 100),
+  };
 }
 
-export function translationGate(stats: { ok: number; fallback: number }): GuardrailIssue[] {
+export function translationGate(stats: {
+  ok: number;
+  fallback: number;
+}): GuardrailIssue[] {
   const { authored, percent } = authoredCoverage(stats);
   if (authored === 0 || percent >= TRANSLATION_PUBLISH_FLOOR) return [];
   return [

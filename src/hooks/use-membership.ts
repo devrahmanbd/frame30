@@ -80,5 +80,7 @@ export function useCan() {
     status: data?.status ?? null,
   };
   return (permission: Permission | null | undefined) =>
-    permission ? can(permission, ctx) : Boolean(data && data.status === "active");
+    permission
+      ? can(permission, ctx)
+      : Boolean(data && data.status === "active");
 }

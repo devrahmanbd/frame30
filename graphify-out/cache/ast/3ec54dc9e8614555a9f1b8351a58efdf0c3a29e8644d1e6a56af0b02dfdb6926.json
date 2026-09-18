@@ -1,1 +1,505 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "label": "builder-lint-fixes.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L1"}, {"id": "lib_builder_lint_fixes_lintcode", "label": "LintCode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L31"}, {"id": "lib_builder_lint_fixes_fixpanel", "label": "FixPanel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L55"}, {"id": "lib_builder_lint_fixes_fixplan", "label": "FixPlan", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L57"}, {"id": "lib_builder_lint_fixes_rule", "label": "Rule", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L69"}, {"id": "lib_builder_lint_fixes_rules", "label": "RULES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L82"}, {"id": "lib_builder_lint_fixes_fallback", "label": "FALLBACK", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L105"}, {"id": "lib_builder_lint_fixes_classifiedissue", "label": "ClassifiedIssue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L112"}, {"id": "lib_builder_lint_fixes_classifyissue", "label": "classifyIssue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L120"}, {"id": "lib_builder_lint_fixes_classifyissues", "label": "classifyIssues()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L136"}, {"id": "lib_builder_lint_fixes_issuesummary", "label": "issueSummary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L148"}, {"id": "lib_builder_lint_fixes_defaultsof", "label": "defaultsOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L164"}, {"id": "lib_builder_lint_fixes_resetmatching", "label": "resetMatching()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L173"}, {"id": "lib_builder_lint_fixes_stripuppercase", "label": "stripUppercase()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L183"}, {"id": "lib_builder_lint_fixes_defaultcountdownend", "label": "defaultCountdownEnd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L195"}, {"id": "lib_builder_lint_fixes_fixcontext", "label": "FixContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L201"}, {"id": "lib_builder_lint_fixes_planfix", "label": "planFix()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L207"}, {"id": "lib_builder_lint_fixes_isactionable", "label": "isActionable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L271"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_ast_catalogentry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_ast_astissue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_ast_propvalue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "users_rahman_documents_frame30_src_lib_widget_help_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_widget_help_bitext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_lintcode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_fixpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_fixplan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_rule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_rules", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_fallback", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L105", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_classifiedissue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_classifyissue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_classifyissues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_issuesummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_defaultsof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_resetmatching", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_stripuppercase", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_defaultcountdownend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L195", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_fixcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L201", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_planfix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L207", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "target": "lib_builder_lint_fixes_isactionable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L271", "weight": 1.0}, {"source": "lib_builder_lint_fixes_resetmatching", "target": "lib_builder_lint_fixes_defaultsof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L174", "weight": 1.0}, {"source": "lib_builder_lint_fixes_planfix", "target": "lib_builder_lint_fixes_resetmatching", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L224", "weight": 1.0}, {"source": "lib_builder_lint_fixes_planfix", "target": "lib_builder_lint_fixes_stripuppercase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L238", "weight": 1.0}, {"source": "lib_builder_lint_fixes_planfix", "target": "lib_builder_lint_fixes_defaultcountdownend", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L244", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_builder_lint_fixes_classifyissue", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L121"}, {"caller_nid": "lib_builder_lint_fixes_classifyissues", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L137"}, {"caller_nid": "lib_builder_lint_fixes_classifyissues", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L137"}, {"caller_nid": "lib_builder_lint_fixes_defaultsof", "callee": "catalogEntry", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L165"}, {"caller_nid": "lib_builder_lint_fixes_resetmatching", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L176"}, {"caller_nid": "lib_builder_lint_fixes_resetmatching", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L177"}, {"caller_nid": "lib_builder_lint_fixes_stripuppercase", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L185"}, {"caller_nid": "lib_builder_lint_fixes_stripuppercase", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L186"}, {"caller_nid": "lib_builder_lint_fixes_stripuppercase", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L188"}, {"caller_nid": "lib_builder_lint_fixes_stripuppercase", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L188"}, {"caller_nid": "lib_builder_lint_fixes_stripuppercase", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L188"}, {"caller_nid": "lib_builder_lint_fixes_defaultcountdownend", "callee": "setUTCSeconds", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L197"}, {"caller_nid": "lib_builder_lint_fixes_defaultcountdownend", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L198"}, {"caller_nid": "lib_builder_lint_fixes_isactionable", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts", "source_location": "L273"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "label": "builder-lint-fixes.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_builder_lint_fixes_lintcode",
+      "label": "LintCode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_builder_lint_fixes_fixpanel",
+      "label": "FixPanel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_builder_lint_fixes_fixplan",
+      "label": "FixPlan",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_builder_lint_fixes_rule",
+      "label": "Rule",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_builder_lint_fixes_rules",
+      "label": "RULES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "lib_builder_lint_fixes_fallback",
+      "label": "FALLBACK",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L105"
+    },
+    {
+      "id": "lib_builder_lint_fixes_classifiedissue",
+      "label": "ClassifiedIssue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_builder_lint_fixes_classifyissue",
+      "label": "classifyIssue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "lib_builder_lint_fixes_classifyissues",
+      "label": "classifyIssues()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L136"
+    },
+    {
+      "id": "lib_builder_lint_fixes_issuesummary",
+      "label": "issueSummary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_builder_lint_fixes_defaultsof",
+      "label": "defaultsOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L164"
+    },
+    {
+      "id": "lib_builder_lint_fixes_resetmatching",
+      "label": "resetMatching()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "lib_builder_lint_fixes_stripuppercase",
+      "label": "stripUppercase()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L183"
+    },
+    {
+      "id": "lib_builder_lint_fixes_defaultcountdownend",
+      "label": "defaultCountdownEnd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L195"
+    },
+    {
+      "id": "lib_builder_lint_fixes_fixcontext",
+      "label": "FixContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L201"
+    },
+    {
+      "id": "lib_builder_lint_fixes_planfix",
+      "label": "planFix()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L207"
+    },
+    {
+      "id": "lib_builder_lint_fixes_isactionable",
+      "label": "isActionable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L271"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_ast_catalogentry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_ast_astissue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_ast_propvalue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_help_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_widget_help_bitext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_lintcode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_fixpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_fixplan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_rule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_fallback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_classifiedissue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_classifyissue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_classifyissues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_issuesummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_defaultsof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_resetmatching",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_stripuppercase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_defaultcountdownend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_fixcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L201",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_planfix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "target": "lib_builder_lint_fixes_isactionable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_lint_fixes_resetmatching",
+      "target": "lib_builder_lint_fixes_defaultsof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_lint_fixes_planfix",
+      "target": "lib_builder_lint_fixes_resetmatching",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_lint_fixes_planfix",
+      "target": "lib_builder_lint_fixes_stripuppercase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_lint_fixes_planfix",
+      "target": "lib_builder_lint_fixes_defaultcountdownend",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_builder_lint_fixes_classifyissue",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_classifyissues",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_classifyissues",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_defaultsof",
+      "callee": "catalogEntry",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_resetmatching",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_resetmatching",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_stripuppercase",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_stripuppercase",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_stripuppercase",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_stripuppercase",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_stripuppercase",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_defaultcountdownend",
+      "callee": "setUTCSeconds",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_defaultcountdownend",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "lib_builder_lint_fixes_isactionable",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-lint-fixes.ts",
+      "source_location": "L273"
+    }
+  ]
+}

@@ -24,7 +24,10 @@ export const growthDeskFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { loadGrowthDesk } = await import("./loyalty.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, ...(await loadGrowthDesk(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await loadGrowthDesk(context.supabase, merchantId)),
+    };
   });
 
 export const growthSaveSettingsFn = createServerFn({ method: "POST" })
@@ -44,7 +47,12 @@ export const growthSaveSettingsFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { saveSettings } = await import("./loyalty.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return saveSettings(context.supabase, merchantId, context.userId, data as never);
+    return saveSettings(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data as never,
+    );
   });
 
 export const growthAdjustPointsFn = createServerFn({ method: "POST" })
@@ -81,7 +89,11 @@ export const growthDecideReferralFn = createServerFn({ method: "POST" })
     return decideReferral(context.supabase, merchantId, context.userId, {
       referralId: data.referralId,
       approve: data.decision === "approve",
-      reason: data.reason ?? (data.decision === "approve" ? "approved by staff" : "rejected by staff"),
+      reason:
+        data.reason ??
+        (data.decision === "approve"
+          ? "approved by staff"
+          : "rejected by staff"),
     });
   });
 
@@ -107,7 +119,6 @@ export const growthSaveAffiliateFn = createServerFn({ method: "POST" })
     return upsertAffiliate(context.supabase, merchantId, context.userId, data);
   });
 
-
 export const growthPayCommissionsFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -122,7 +133,12 @@ export const growthPayCommissionsFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { markCommissionsPaid } = await import("./loyalty.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return markCommissionsPaid(context.supabase, merchantId, context.userId, data);
+    return markCommissionsPaid(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data,
+    );
   });
 
 /* --------------------------------------------------------- virtual fulfilment */
@@ -130,7 +146,8 @@ export const growthPayCommissionsFn = createServerFn({ method: "POST" })
 export const virtualPoolsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { loadPools, loadDeliveries } = await import("./virtual-delivery.server");
+    const { loadPools, loadDeliveries } =
+      await import("./virtual-delivery.server");
     const merchantId = await scope(context.supabase, context.userId);
     const [pools, deliveries] = await Promise.all([
       loadPools(context.supabase, merchantId),
@@ -152,7 +169,10 @@ export const virtualSavePoolFn = createServerFn({ method: "POST" })
         instructionsBn: z.string().trim().max(2000).nullable().optional(),
         lowStockThreshold: z.number().int().min(0).max(10_000),
         autoDeliver: z.boolean(),
-        channels: z.array(z.enum(["email", "sms"])).min(1).max(2),
+        channels: z
+          .array(z.enum(["email", "sms"]))
+          .min(1)
+          .max(2),
       })
       .parse(d),
   )
@@ -182,7 +202,9 @@ export const virtualImportCodesFn = createServerFn({ method: "POST" })
 
 export const virtualRevealCodeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ codeId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ codeId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { revealCode } = await import("./virtual-delivery.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -199,7 +221,12 @@ export const virtualRevealCodeFn = createServerFn({ method: "POST" })
 export const virtualRevokeCodeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ codeId: z.string().uuid(), reason: z.string().trim().min(3).max(200) }).parse(d),
+    z
+      .object({
+        codeId: z.string().uuid(),
+        reason: z.string().trim().min(3).max(200),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { revokeCode } = await import("./virtual-delivery.server");
@@ -209,9 +236,16 @@ export const virtualRevokeCodeFn = createServerFn({ method: "POST" })
 
 export const virtualRetryDeliveryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ deliveryId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ deliveryId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { retryDelivery } = await import("./virtual-delivery.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return retryDelivery(context.supabase, merchantId, context.userId, data.deliveryId);
+    return retryDelivery(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.deliveryId,
+    );
   });

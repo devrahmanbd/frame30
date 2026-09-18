@@ -11,7 +11,9 @@ export const gatewayEventsFn = createServerFn({ method: "GET" })
 
 export const gatewayRetryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ eventId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ eventId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { retryGatewayEvent } = await import("./gateway.server");
     return retryGatewayEvent(context.supabase, context.userId, data.eventId);

@@ -10,8 +10,13 @@ import type { ClaimedJob, JobHandler } from "./job-queue.server";
 export const JOB_HANDLERS: Record<string, JobHandler> = {
   "search.sync": async (job: ClaimedJob) => {
     const { applyIndexOps } = await import("./search-backend.server");
-    if (!job.merchantId) throw Object.assign(new Error("missing merchant"), { status: 400 });
-    const ops = (job.payload["ops"] as Array<{ documentId: string; op: "upsert" | "delete" }>) ?? [];
+    if (!job.merchantId)
+      throw Object.assign(new Error("missing merchant"), { status: 400 });
+    const ops =
+      (job.payload["ops"] as Array<{
+        documentId: string;
+        op: "upsert" | "delete";
+      }>) ?? [];
     return applyIndexOps(job.merchantId, ops);
   },
 

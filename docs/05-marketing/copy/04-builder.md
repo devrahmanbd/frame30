@@ -49,7 +49,7 @@ Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app c
 
 ## 1. Hero — aurora
 
-*Lever: specificity beats hype — the sub-headline names the exact mechanism (sections, tokens, rollback) instead of promising an outcome.*
+_Lever: specificity beats hype — the sub-headline names the exact mechanism (sections, tokens, rollback) instead of promising an outcome._
 
 - **Eyebrow**: `Visual builder · versioned`
 - **H1**: **Design the storefront. Don't fight the theme.**
@@ -77,22 +77,22 @@ This is a structural claim, not a marketing flourish: most page builders run a s
 ## 3. Section-based editing model — Z rows
 
 1. **text-left — Sections, not a page of HTML.**
-   *Lever: chunking — a store becomes a short list of named, reorderable blocks instead of one continuous document, which lowers the cognitive load of "where do I click to change this."*
+   _Lever: chunking — a store becomes a short list of named, reorderable blocks instead of one continuous document, which lowers the cognitive load of "where do I click to change this."_
    Add a hero, a product grid, a testimonial strip, a Bangla-only announcement bar. Each section carries its own settings, its own Bangla copy, and its own visibility rules (device, audience segment, date window, A/B arm). Sections are drag-reordered on the rail; there is no way to "break the layout" by nesting divs incorrectly, because there are no divs to nest.
    **Proof**: `Per-section visibility by audience or experiment.`
 
 2. **text-right — Tokens, not scattered CSS.**
-   *Lever: single-point-of-control — changing one variable that fans out everywhere removes the fear of an incomplete edit.*
+   _Lever: single-point-of-control — changing one variable that fans out everywhere removes the fear of an incomplete edit._
    Colour, radius, type scale, and spacing live in one panel. Change the accent colour once and every button, badge, and link across every section updates together — no hunting through forty section-level colour pickers left over from a theme you customised eighteen months ago.
    **Proof**: `One token, every section.`
 
 3. **text-left — Versions, not fear.**
-   *Lever: loss aversion neutralised — reversibility removes the psychological cost of trying something.*
+   _Lever: loss aversion neutralised — reversibility removes the psychological cost of trying something._
    Every publish is a version with an author and a timestamp. Compare two versions side by side, restore an older one, or roll back mid-campcampaign without opening a support ticket.
    **Proof**: `Rollback is one click, not a restore ticket.`
 
 4. **text-right — Custom code with a seatbelt.**
-   *Lever: safe-to-fail sandboxing — advanced users get power without exposing the whole store to their mistakes.*
+   _Lever: safe-to-fail sandboxing — advanced users get power without exposing the whole store to their mistakes._
    Drop in HTML, a tracking pixel, or a third-party widget and it renders inside an isolated frame that cannot reach the DOM outside itself, so a broken script degrades gracefully instead of white-screening checkout.
    **Proof**: `Sandboxed widgets, isolated failures.`
 
@@ -102,19 +102,19 @@ This is a structural claim, not a marketing flourish: most page builders run a s
 
 ## 4. Drafts, autosave, versioning, rollback, scheduled publish
 
-*Lever: safety net — merchants edit more confidently when they know nothing can be lost or shipped by accident.*
+_Lever: safety net — merchants edit more confidently when they know nothing can be lost or shipped by accident._
 
 Every keystroke in the builder writes to a **draft**, autosaved roughly every few seconds to a working copy that never touches the live store. Nothing you type in the canvas is visible to a shopper until you explicitly publish. This separation — draft vs. live — is the single most important safety property of the editing model, and it is why merchants can redesign a homepage during business hours without risk.
 
 **The publish lifecycle:**
 
-| Stage | What happens | Who sees it | Reversible? |
-|---|---|---|---|
-| Draft | Autosaved continuously as you edit | Only you, in the builder | N/A — it is not shipped |
-| Preview link | Shareable URL renders the draft outside the editor | Anyone with the link | Yes, expires or is revoked anytime |
-| Scheduled publish | Draft is queued for a future timestamp | No one, until the clock hits | Yes, cancel before the scheduled time |
-| Published (live version) | Draft becomes the numbered live version | All storefront visitors | Roll back to any prior version, one click |
-| Rolled back | An earlier version is restored as current | All storefront visitors | Yes, roll forward again if needed |
+| Stage                    | What happens                                       | Who sees it                  | Reversible?                               |
+| ------------------------ | -------------------------------------------------- | ---------------------------- | ----------------------------------------- |
+| Draft                    | Autosaved continuously as you edit                 | Only you, in the builder     | N/A — it is not shipped                   |
+| Preview link             | Shareable URL renders the draft outside the editor | Anyone with the link         | Yes, expires or is revoked anytime        |
+| Scheduled publish        | Draft is queued for a future timestamp             | No one, until the clock hits | Yes, cancel before the scheduled time     |
+| Published (live version) | Draft becomes the numbered live version            | All storefront visitors      | Roll back to any prior version, one click |
+| Rolled back              | An earlier version is restored as current          | All storefront visitors      | Yes, roll forward again if needed         |
 
 Versions are numbered and immutable: version 14 always means exactly the sections, copy, and tokens it meant the day it went live, even after you publish version 15. This matters for a very concrete reason — if a Friday evening Eid promotion campaign converts poorly, you can compare version 14 (the promo) against version 13 (the prior baseline) side by side, see exactly which sections changed, and roll back to 13 in one click without waiting for a developer or filing a ticket.
 
@@ -126,7 +126,7 @@ Versions are numbered and immutable: version 14 always means exactly the section
 
 ## 5. The five official themes
 
-*Lever: bounded choice — five well-differentiated options prevent decision paralysis while still covering the real range of Bangladeshi commerce use cases.*
+_Lever: bounded choice — five well-differentiated options prevent decision paralysis while still covering the real range of Bangladeshi commerce use cases._
 
 Framique ships **five official themes**: Classic, Modern, Landing, Supershop, B2B. Each is a complete section library, token set, and default layout — not a colour skin on top of one generic template. Choosing the wrong theme early is the single most common cause of a merchant fighting their storefront for months; the paragraphs below exist to prevent that.
 
@@ -142,14 +142,14 @@ Framique ships **five official themes**: Classic, Modern, Landing, Supershop, B2
 
 **Theme-choice decision table**
 
-| If your situation is… | Choose | Because |
-|---|---|---|
-| First store, moderate catalogue, strong photography | Classic | Safest default, smallest section library, image-forward |
-| Small high-margin catalogue, strong brand identity | Modern | Editorial layout rewards fewer, better products |
-| One hero product or campaign launch | Landing | Single-purchase-decision page, not a catalogue |
-| Hundreds to thousands of SKUs, filter-driven browsing | Supershop | Density and filters over inspiration |
-| Wholesale, quote-based, or account-gated pricing | B2B | Tiered pricing and MOQ built in, not bolted on |
-| Unsure, catalogue will grow past 50 SKUs in a year | Classic → migrate later | Cleanest section model to extend |
+| If your situation is…                                 | Choose                  | Because                                                 |
+| ----------------------------------------------------- | ----------------------- | ------------------------------------------------------- |
+| First store, moderate catalogue, strong photography   | Classic                 | Safest default, smallest section library, image-forward |
+| Small high-margin catalogue, strong brand identity    | Modern                  | Editorial layout rewards fewer, better products         |
+| One hero product or campaign launch                   | Landing                 | Single-purchase-decision page, not a catalogue          |
+| Hundreds to thousands of SKUs, filter-driven browsing | Supershop               | Density and filters over inspiration                    |
+| Wholesale, quote-based, or account-gated pricing      | B2B                     | Tiered pricing and MOQ built in, not bolted on          |
+| Unsure, catalogue will grow past 50 SKUs in a year    | Classic → migrate later | Cleanest section model to extend                        |
 
 **Design note**: theme cards render in a 5-up grid at desktop → 2-up at 900px → 1-up at 640px, each card a `{components.pricing-card}` with a static screenshot, not a gradient spotlight (gradients are reserved for the final CTA and one mid-page highlight, per the scarce-aurora rule).
 
@@ -157,7 +157,7 @@ Framique ships **five official themes**: Classic, Modern, Landing, Supershop, B2
 
 ## 6. Design tokens and brand consistency
 
-*Lever: single source of truth — a merchant who edits one token instead of forty section settings makes fewer inconsistent decisions.*
+_Lever: single source of truth — a merchant who edits one token instead of forty section settings makes fewer inconsistent decisions._
 
 A token panel holds four families: **colour** (primary, accent, surface, text), **radius** (from sharp to fully rounded), **type scale** (a ratio-based ladder from caption to display), and **spacing** (a fixed step scale, not freeform pixel entry). Every section in every theme reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.
 
@@ -169,7 +169,7 @@ Token changes are draft-scoped like everything else: a merchant can preview a fu
 
 ## 7. Bangla + English from one catalogue
 
-*Lever: reduced translation friction — a single content source per SKU removes the maintenance tax that causes bilingual catalogues to drift out of sync.*
+_Lever: reduced translation friction — a single content source per SKU removes the maintenance tax that causes bilingual catalogues to drift out of sync._
 
 Every product, section, and piece of storefront copy in Framique has one Bangla field and one English field living on the same record — not two parallel catalogues that must be kept in sync by hand. A shopper's browser or a manual language switch decides which one renders; the merchant edits both from the same product screen.
 
@@ -181,7 +181,7 @@ This matters commercially, not just operationally: a large share of Bangladeshi 
 
 ## 8. Custom fonts — licence attestation and font-weight budget
 
-*Lever: friction-as-feature — a licence checkbox and a weight ceiling are small frictions that prevent expensive downstream problems (a takedown notice, a slow storefront) that the merchant would otherwise only discover after the fact.*
+_Lever: friction-as-feature — a licence checkbox and a weight ceiling are small frictions that prevent expensive downstream problems (a takedown notice, a slow storefront) that the merchant would otherwise only discover after the fact._
 
 Uploading a custom font requires an explicit licence attestation: the merchant confirms they hold a web-embedding licence for the exact weights being uploaded, and that confirmation is logged with a timestamp against the account. Framique does not verify licence terms with the foundry — this is a legal attestation step, not a rights-management product — but making it explicit and unavoidable is a deliberate design decision that reduces the number of merchants who discover, months later, an unlicensed font on their live storefront.
 
@@ -193,7 +193,7 @@ The **font-weight budget** exists for a performance reason: each additional weig
 
 ## 9. Custom code — sandboxing and secret scanning
 
-*Lever: contained blast radius — advanced customisation is offered without letting a single mistake take down checkout.*
+_Lever: contained blast radius — advanced customisation is offered without letting a single mistake take down checkout._
 
 The custom code section accepts HTML, CSS, and script snippets — a live chat widget, a tracking pixel, a small interactive embed — and renders them inside an isolated iframe with no access to the parent page's DOM, cookies, or checkout state. If the embedded script throws an error or hangs, the failure is contained to that one section; the rest of the storefront, including checkout, keeps functioning.
 
@@ -205,7 +205,7 @@ Before any custom code snippet is saved, it passes through **secret scanning**: 
 
 ## 10. Performance budgets — why LCP matters for BDT conversion
 
-*Lever: made-concrete abstraction — "fast" is meaningless to a merchant; a stated cost-per-second worked example is not.*
+_Lever: made-concrete abstraction — "fast" is meaningless to a merchant; a stated cost-per-second worked example is not._
 
 Largest Contentful Paint (LCP) — the time until the biggest visible element (almost always the hero image or hero text block) finishes rendering — is the performance metric most correlated with whether a Bangladeshi mobile shopper stays on a product page long enough to scroll to "Add to cart." The reason is infrastructural, not aesthetic: a large share of retail traffic in Bangladesh arrives over 3G/4G mobile data with variable latency, and every additional second of blank-screen wait before the page becomes useful is a second in which the shopper's attention — and their mobile data budget — is being spent on nothing.
 
@@ -225,7 +225,7 @@ The builder enforces the budgets at publish time: an oversized hero image is fla
 
 ## 11. Anatomy of a high-converting Bangladeshi product page
 
-*Lever: checklist completeness — a merchant who can tick fifteen concrete items has done more real conversion work than one who "made the page look nice."*
+_Lever: checklist completeness — a merchant who can tick fifteen concrete items has done more real conversion work than one who "made the page look nice."_
 
 A checklist for the product page a merchant is about to publish, in the order a shopper actually reads it:
 
@@ -251,7 +251,7 @@ A checklist for the product page a merchant is about to publish, in the order a 
 
 ## 12. Your first hour in the builder — step by step
 
-*Lever: implementation intention — a concrete first-session script converts intent to action far more reliably than a features list.*
+_Lever: implementation intention — a concrete first-session script converts intent to action far more reliably than a features list._
 
 1. **Minute 0–5 — Pick a theme.** Use the decision table in Section 5. If genuinely unsure and your catalogue will likely grow, start with Classic.
 2. **Minute 5–15 — Set your four core tokens.** Primary colour, accent colour, corner radius, and base font. Everything downstream inherits these; do this before touching any section.
@@ -267,20 +267,20 @@ A checklist for the product page a merchant is about to publish, in the order a 
 
 ## 13. Comparison vs generic page builders
 
-*Lever: contrast framing — naming the exact mechanism competitors lack is more persuasive than a generic superiority claim.*
+_Lever: contrast framing — naming the exact mechanism competitors lack is more persuasive than a generic superiority claim._
 
-| Capability | Generic page builder | Framique builder |
-|---|---|---|
-| Preview fidelity | Simplified preview renderer, can diverge from production | Same renderer for editor and live store |
-| Bangla support | Often a bolted-on translation plugin | One catalogue, native Bangla + English fields, script-aware typography |
-| Payment context | Generic card/PayPal assumptions | bKash/Nagad/Rocket/Upay/card/COD built into theme sections |
-| Versioning | Usually undo history within a session only | Numbered, immutable, author-stamped versions with one-click rollback |
-| Scheduled publish | Rare or third-party plugin | Native, queue a draft for a future timestamp |
-| Font governance | Unlimited weights, no licence step | Licence attestation + two-weight budget enforced at upload |
-| Custom code safety | Inline script, can break the whole page | Sandboxed iframe, isolated failure |
-| Secret exposure risk | Unchecked | Secret scanning blocks save on credential-shaped strings |
-| Performance enforcement | Advisory at best | Hard budgets enforced at publish time, with auto-compression offered |
-| Themes offered | Often hundreds of undifferentiated templates | Five official themes, each purpose-built for a distinct merchandising situation |
+| Capability              | Generic page builder                                     | Framique builder                                                                |
+| ----------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| Preview fidelity        | Simplified preview renderer, can diverge from production | Same renderer for editor and live store                                         |
+| Bangla support          | Often a bolted-on translation plugin                     | One catalogue, native Bangla + English fields, script-aware typography          |
+| Payment context         | Generic card/PayPal assumptions                          | bKash/Nagad/Rocket/Upay/card/COD built into theme sections                      |
+| Versioning              | Usually undo history within a session only               | Numbered, immutable, author-stamped versions with one-click rollback            |
+| Scheduled publish       | Rare or third-party plugin                               | Native, queue a draft for a future timestamp                                    |
+| Font governance         | Unlimited weights, no licence step                       | Licence attestation + two-weight budget enforced at upload                      |
+| Custom code safety      | Inline script, can break the whole page                  | Sandboxed iframe, isolated failure                                              |
+| Secret exposure risk    | Unchecked                                                | Secret scanning blocks save on credential-shaped strings                        |
+| Performance enforcement | Advisory at best                                         | Hard budgets enforced at publish time, with auto-compression offered            |
+| Themes offered          | Often hundreds of undifferentiated templates             | Five official themes, each purpose-built for a distinct merchandising situation |
 
 The last row is a deliberate design choice, not a limitation: a marketplace of hundreds of templates optimises for browsing variety, not for merchandising fit, and it pushes the theme-choice decision onto a merchant who has no framework for making it. Five themes, each mapped to a specific business situation in Section 5's decision table, is a smaller but more honest promise.
 

@@ -1,98 +1,547 @@
 {
   "nodes": [
-    {"id": "framique", "label": "Framique", "type": "platform", "file_type": "document", "confidence": 1.0, "description": "Sovereign cloud e-commerce CMS with 0% platform fees, edge SSR, and native local payment/logistics integrations"},
-    {"id": "shopify", "label": "Shopify", "type": "competitor", "file_type": "document", "confidence": 1.0, "description": "Proprietary e-commerce platform charging 0.5%-2.0% transaction fees on third-party gateways plus monthly app subscriptions"},
-    {"id": "webflow", "label": "Webflow", "type": "competitor", "file_type": "document", "confidence": 1.0, "description": "Visual website builder with limited e-commerce: 3,000 CMS item ceiling, 2% transaction fee, no regional payment rails"},
-    {"id": "framer", "label": "Framer", "type": "competitor", "file_type": "document", "confidence": 1.0, "description": "Visual design tool with fluid animations but no native e-commerce backend, requiring external checkout redirects"},
-    {"id": "woocommerce", "label": "WooCommerce", "type": "competitor", "file_type": "document", "confidence": 1.0, "description": "Open-source WordPress e-commerce plugin requiring self-managed hosting and fragile plugin chains"},
-    {"id": "tanstack_start", "label": "TanStack Start", "type": "technology", "file_type": "document", "confidence": 1.0, "description": "Edge server-side rendering framework powering Framique's sub-45ms TTFB"},
-    {"id": "nitro", "label": "Nitro", "type": "technology", "file_type": "document", "confidence": 1.0, "description": "Server engine paired with TanStack Start for edge rendering"},
-    {"id": "postgres_rls", "label": "PostgreSQL Row-Level Security", "type": "technology", "file_type": "document", "confidence": 1.0, "description": "Kernel-level multi-tenant data isolation ensuring merchants cannot query each other's data"},
-    {"id": "bkash", "label": "bKash", "type": "payment_gateway", "file_type": "document", "confidence": 1.0, "description": "Bangladesh mobile financial service with native tokenized checkout integration on Framique"},
-    {"id": "nagad", "label": "Nagad", "type": "payment_gateway", "file_type": "document", "confidence": 1.0, "description": "Mobile financial service with direct merchant API integration on Framique"},
-    {"id": "steadfast", "label": "Steadfast Courier", "type": "logistics", "file_type": "document", "confidence": 1.0, "description": "Courier service with 1-click automated dispatch and COD reconciliation via Framique"},
-    {"id": "pathao", "label": "Pathao Courier", "type": "logistics", "file_type": "document", "confidence": 1.0, "description": "Courier service with automated parcel booking integration on Framique"},
-    {"id": "bento_grid", "label": "Bento Grid", "type": "design_system", "file_type": "document", "confidence": 1.0, "description": "Visual layout system using variable card dimensions for high-conversion e-commerce storefronts"},
-    {"id": "oklch", "label": "OKLCH Color System", "type": "design_system", "file_type": "document", "confidence": 1.0, "description": "Perceptually uniform color space used for WCAG AAA compliant accessible design tokens"},
-    {"id": "acme_ssl", "label": "ACME SSL Automation", "type": "infrastructure", "file_type": "document", "confidence": 1.0, "description": "Automated Let's Encrypt certificate provisioning at edge for custom merchant domains"},
-    {"id": "edge_ssr", "label": "Edge Server-Side Rendering", "type": "architecture", "file_type": "document", "confidence": 1.0, "description": "Server rendering on distributed edge nodes delivering sub-45ms TTFB globally"},
-    {"id": "cod_protection", "label": "COD Fraud Protection", "type": "feature", "file_type": "document", "confidence": 1.0, "description": "4-tier algorithmic shield validating phone numbers, addresses, OTP verification, and serial returner detection"},
-    {"id": "tokenized_mfs", "label": "Tokenized MFS Checkout", "type": "feature", "file_type": "document", "confidence": 1.0, "description": "Secure modal-based payment authorization eliminating manual transaction ID copy-paste"},
-    {"id": "zero_fee_model", "label": "0% Transaction Fee", "type": "business_model", "file_type": "document", "confidence": 1.0, "description": "Framique's zero platform take-rate policy where merchants keep 100% of gross processing value"},
-    {"id": "core_web_vitals", "label": "Core Web Vitals", "type": "metric", "file_type": "document", "confidence": 1.0, "description": "Google performance metrics: LCP, INP, CLS - Framique targets sub-45ms TTFB, sub-35ms INP"},
-    {"id": "d2c_apparel", "label": "D2C Apparel Brand", "type": "case_study", "file_type": "document", "confidence": 1.0, "description": "Nocturne Atelier case study: $14,210/yr reclaimed migrating from Shopify to Framique"},
-    {"id": "f_commerce", "label": "F-Commerce", "type": "market_segment", "file_type": "document", "confidence": 1.0, "description": "Facebook-based commerce model common in South Asia with algorithm risk and zero data ownership"},
-    {"id": "multi_step_checkout", "label": "Multi-Step Checkout", "type": "problem", "file_type": "document", "confidence": 1.0, "description": "Traditional 4-step checkout flow causing 72% mobile funnel loss and 40% cart abandonment"},
-    {"id": "app_bloat", "label": "App Bloat", "type": "problem", "file_type": "document", "confidence": 1.0, "description": "Third-party JavaScript injection from Shopify apps degrading mobile TTFB and Core Web Vitals"},
-    {"id": "sslcommerz", "label": "SSLCommerz", "type": "payment_gateway", "file_type": "document", "confidence": 0.95, "description": "Multi-bank card processing rail integrated in Framique for Visa/Mastercard/AMEX payments"},
-    {"id": "redx", "label": "RedX", "type": "logistics", "file_type": "document", "confidence": 0.95, "description": "Fulfillment service integrated in Framique for courier dispatch automation"},
-    {"id": "tailwind_v4", "label": "Tailwind CSS v4", "type": "technology", "file_type": "document", "confidence": 0.95, "description": "Utility-first CSS framework used with OKLCH design tokens for zero-bloat styling"},
-    {"id": "cloudflare_saas", "label": "Cloudflare for SaaS", "type": "infrastructure", "file_type": "document", "confidence": 0.85, "description": "Anycast edge reverse-proxy providing SSL for SaaS custom hostname management"},
-    {"id": "caddy_tls", "label": "Caddy On-Demand TLS", "type": "infrastructure", "file_type": "document", "confidence": 0.85, "description": "Fallback TLS automation for self-hosted enterprise deployments with authorization webhook"},
-    {"id": "pgbouncer", "label": "PgBouncer", "type": "technology", "file_type": "document", "confidence": 0.85, "description": "Connection pooling proxy enabling linear scaling with 64 shared pooled connections under RLS"},
-    {"id": "hybrid_cms", "label": "Hybrid Visual-Code CMS", "type": "architecture", "file_type": "document", "confidence": 1.0, "description": "Framique's paradigm combining visual canvas freedom with open React code extensibility"},
-    {"id": "merchant_sovereignty", "label": "Merchant Sovereignty", "type": "concept", "file_type": "document", "confidence": 1.0, "description": "Principle that merchants retain 100% data ownership, direct payment custody, and 0% platform fees"},
-    {"id": "seeding", "label": "Catalog Migration", "type": "feature", "file_type": "document", "confidence": 0.95, "description": "Automated CSV ingestion wizard importing Shopify catalogs in under 5 minutes with zero downtime"}
+    {
+      "id": "framique",
+      "label": "Framique",
+      "type": "platform",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Sovereign cloud e-commerce CMS with 0% platform fees, edge SSR, and native local payment/logistics integrations"
+    },
+    {
+      "id": "shopify",
+      "label": "Shopify",
+      "type": "competitor",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Proprietary e-commerce platform charging 0.5%-2.0% transaction fees on third-party gateways plus monthly app subscriptions"
+    },
+    {
+      "id": "webflow",
+      "label": "Webflow",
+      "type": "competitor",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Visual website builder with limited e-commerce: 3,000 CMS item ceiling, 2% transaction fee, no regional payment rails"
+    },
+    {
+      "id": "framer",
+      "label": "Framer",
+      "type": "competitor",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Visual design tool with fluid animations but no native e-commerce backend, requiring external checkout redirects"
+    },
+    {
+      "id": "woocommerce",
+      "label": "WooCommerce",
+      "type": "competitor",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Open-source WordPress e-commerce plugin requiring self-managed hosting and fragile plugin chains"
+    },
+    {
+      "id": "tanstack_start",
+      "label": "TanStack Start",
+      "type": "technology",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Edge server-side rendering framework powering Framique's sub-45ms TTFB"
+    },
+    {
+      "id": "nitro",
+      "label": "Nitro",
+      "type": "technology",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Server engine paired with TanStack Start for edge rendering"
+    },
+    {
+      "id": "postgres_rls",
+      "label": "PostgreSQL Row-Level Security",
+      "type": "technology",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Kernel-level multi-tenant data isolation ensuring merchants cannot query each other's data"
+    },
+    {
+      "id": "bkash",
+      "label": "bKash",
+      "type": "payment_gateway",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Bangladesh mobile financial service with native tokenized checkout integration on Framique"
+    },
+    {
+      "id": "nagad",
+      "label": "Nagad",
+      "type": "payment_gateway",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Mobile financial service with direct merchant API integration on Framique"
+    },
+    {
+      "id": "steadfast",
+      "label": "Steadfast Courier",
+      "type": "logistics",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Courier service with 1-click automated dispatch and COD reconciliation via Framique"
+    },
+    {
+      "id": "pathao",
+      "label": "Pathao Courier",
+      "type": "logistics",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Courier service with automated parcel booking integration on Framique"
+    },
+    {
+      "id": "bento_grid",
+      "label": "Bento Grid",
+      "type": "design_system",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Visual layout system using variable card dimensions for high-conversion e-commerce storefronts"
+    },
+    {
+      "id": "oklch",
+      "label": "OKLCH Color System",
+      "type": "design_system",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Perceptually uniform color space used for WCAG AAA compliant accessible design tokens"
+    },
+    {
+      "id": "acme_ssl",
+      "label": "ACME SSL Automation",
+      "type": "infrastructure",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Automated Let's Encrypt certificate provisioning at edge for custom merchant domains"
+    },
+    {
+      "id": "edge_ssr",
+      "label": "Edge Server-Side Rendering",
+      "type": "architecture",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Server rendering on distributed edge nodes delivering sub-45ms TTFB globally"
+    },
+    {
+      "id": "cod_protection",
+      "label": "COD Fraud Protection",
+      "type": "feature",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "4-tier algorithmic shield validating phone numbers, addresses, OTP verification, and serial returner detection"
+    },
+    {
+      "id": "tokenized_mfs",
+      "label": "Tokenized MFS Checkout",
+      "type": "feature",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Secure modal-based payment authorization eliminating manual transaction ID copy-paste"
+    },
+    {
+      "id": "zero_fee_model",
+      "label": "0% Transaction Fee",
+      "type": "business_model",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Framique's zero platform take-rate policy where merchants keep 100% of gross processing value"
+    },
+    {
+      "id": "core_web_vitals",
+      "label": "Core Web Vitals",
+      "type": "metric",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Google performance metrics: LCP, INP, CLS - Framique targets sub-45ms TTFB, sub-35ms INP"
+    },
+    {
+      "id": "d2c_apparel",
+      "label": "D2C Apparel Brand",
+      "type": "case_study",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Nocturne Atelier case study: $14,210/yr reclaimed migrating from Shopify to Framique"
+    },
+    {
+      "id": "f_commerce",
+      "label": "F-Commerce",
+      "type": "market_segment",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Facebook-based commerce model common in South Asia with algorithm risk and zero data ownership"
+    },
+    {
+      "id": "multi_step_checkout",
+      "label": "Multi-Step Checkout",
+      "type": "problem",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Traditional 4-step checkout flow causing 72% mobile funnel loss and 40% cart abandonment"
+    },
+    {
+      "id": "app_bloat",
+      "label": "App Bloat",
+      "type": "problem",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Third-party JavaScript injection from Shopify apps degrading mobile TTFB and Core Web Vitals"
+    },
+    {
+      "id": "sslcommerz",
+      "label": "SSLCommerz",
+      "type": "payment_gateway",
+      "file_type": "document",
+      "confidence": 0.95,
+      "description": "Multi-bank card processing rail integrated in Framique for Visa/Mastercard/AMEX payments"
+    },
+    {
+      "id": "redx",
+      "label": "RedX",
+      "type": "logistics",
+      "file_type": "document",
+      "confidence": 0.95,
+      "description": "Fulfillment service integrated in Framique for courier dispatch automation"
+    },
+    {
+      "id": "tailwind_v4",
+      "label": "Tailwind CSS v4",
+      "type": "technology",
+      "file_type": "document",
+      "confidence": 0.95,
+      "description": "Utility-first CSS framework used with OKLCH design tokens for zero-bloat styling"
+    },
+    {
+      "id": "cloudflare_saas",
+      "label": "Cloudflare for SaaS",
+      "type": "infrastructure",
+      "file_type": "document",
+      "confidence": 0.85,
+      "description": "Anycast edge reverse-proxy providing SSL for SaaS custom hostname management"
+    },
+    {
+      "id": "caddy_tls",
+      "label": "Caddy On-Demand TLS",
+      "type": "infrastructure",
+      "file_type": "document",
+      "confidence": 0.85,
+      "description": "Fallback TLS automation for self-hosted enterprise deployments with authorization webhook"
+    },
+    {
+      "id": "pgbouncer",
+      "label": "PgBouncer",
+      "type": "technology",
+      "file_type": "document",
+      "confidence": 0.85,
+      "description": "Connection pooling proxy enabling linear scaling with 64 shared pooled connections under RLS"
+    },
+    {
+      "id": "hybrid_cms",
+      "label": "Hybrid Visual-Code CMS",
+      "type": "architecture",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Framique's paradigm combining visual canvas freedom with open React code extensibility"
+    },
+    {
+      "id": "merchant_sovereignty",
+      "label": "Merchant Sovereignty",
+      "type": "concept",
+      "file_type": "document",
+      "confidence": 1.0,
+      "description": "Principle that merchants retain 100% data ownership, direct payment custody, and 0% platform fees"
+    },
+    {
+      "id": "seeding",
+      "label": "Catalog Migration",
+      "type": "feature",
+      "file_type": "document",
+      "confidence": 0.95,
+      "description": "Automated CSV ingestion wizard importing Shopify catalogs in under 5 minutes with zero downtime"
+    }
   ],
   "edges": [
-    {"source": "framique", "target": "tanstack_start", "relation": "uses_technology", "confidence": 1.0},
-    {"source": "framique", "target": "nitro", "relation": "uses_technology", "confidence": 1.0},
-    {"source": "framique", "target": "postgres_rls", "relation": "uses_technology", "confidence": 1.0},
-    {"source": "framique", "target": "bkash", "relation": "native_integration", "confidence": 1.0},
-    {"source": "framique", "target": "nagad", "relation": "native_integration", "confidence": 1.0},
-    {"source": "framique", "target": "steadfast", "relation": "native_integration", "confidence": 1.0},
-    {"source": "framique", "target": "pathao", "relation": "native_integration", "confidence": 1.0},
-    {"source": "framique", "target": "bento_grid", "relation": "design_primitives", "confidence": 1.0},
-    {"source": "framique", "target": "oklch", "relation": "color_system", "confidence": 1.0},
-    {"source": "framique", "target": "acme_ssl", "relation": "infrastructure", "confidence": 1.0},
-    {"source": "framique", "target": "edge_ssr", "relation": "core_architecture", "confidence": 1.0},
-    {"source": "framique", "target": "cod_protection", "relation": "native_feature", "confidence": 1.0},
-    {"source": "framique", "target": "tokenized_mfs", "relation": "native_feature", "confidence": 1.0},
-    {"source": "framique", "target": "zero_fee_model", "relation": "business_model", "confidence": 1.0},
-    {"source": "framique", "target": "core_web_vitals", "relation": "optimizes_for", "confidence": 1.0},
-    {"source": "framique", "target": "sslcommerz", "relation": "native_integration", "confidence": 0.95},
-    {"source": "framique", "target": "redx", "relation": "native_integration", "confidence": 0.95},
-    {"source": "framique", "target": "tailwind_v4", "relation": "uses_technology", "confidence": 0.95},
-    {"source": "framique", "target": "hybrid_cms", "relation": "architecture_pattern", "confidence": 1.0},
-    {"source": "framique", "target": "merchant_sovereignty", "relation": "embodies", "confidence": 1.0},
-    {"source": "framique", "target": "seeding", "relation": "provides", "confidence": 0.95},
-    {"source": "framique", "target": "d2c_apparel", "relation": "case_study", "confidence": 1.0},
-    {"source": "framique", "target": "shopify", "relation": "competes_with", "confidence": 1.0},
-    {"source": "framique", "target": "webflow", "relation": "competes_with", "confidence": 1.0},
-    {"source": "framique", "target": "framer", "relation": "competes_with", "confidence": 1.0},
-    {"source": "framique", "target": "woocommerce", "relation": "competes_with", "confidence": 1.0},
-    {"source": "edge_ssr", "target": "core_web_vitals", "relation": "enables", "confidence": 1.0},
-    {"source": "edge_ssr", "target": "app_bloat", "relation": "solves", "confidence": 1.0},
-    {"source": "tokenized_mfs", "target": "multi_step_checkout", "relation": "solves", "confidence": 1.0},
-    {"source": "cod_protection", "target": "steadfast", "relation": "complements", "confidence": 0.85},
-    {"source": "cod_protection", "target": "pathao", "relation": "complements", "confidence": 0.85},
-    {"source": "postgres_rls", "target": "pgbouncer", "relation": "uses_technology", "confidence": 0.85},
-    {"source": "acme_ssl", "target": "cloudflare_saas", "relation": "uses_infrastructure", "confidence": 0.85},
-    {"source": "acme_ssl", "target": "caddy_tls", "relation": "fallback_architecture", "confidence": 0.85},
-    {"source": "hybrid_cms", "target": "bento_grid", "relation": "includes", "confidence": 0.95},
-    {"source": "hybrid_cms", "target": "oklch", "relation": "includes", "confidence": 0.95},
-    {"source": "f_commerce", "target": "framique", "relation": "migrates_to", "confidence": 0.95},
-    {"source": "d2c_apparel", "target": "shopify", "relation": "migrated_from", "confidence": 1.0}
+    {
+      "source": "framique",
+      "target": "tanstack_start",
+      "relation": "uses_technology",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "nitro",
+      "relation": "uses_technology",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "postgres_rls",
+      "relation": "uses_technology",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "bkash",
+      "relation": "native_integration",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "nagad",
+      "relation": "native_integration",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "steadfast",
+      "relation": "native_integration",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "pathao",
+      "relation": "native_integration",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "bento_grid",
+      "relation": "design_primitives",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "oklch",
+      "relation": "color_system",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "acme_ssl",
+      "relation": "infrastructure",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "edge_ssr",
+      "relation": "core_architecture",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "cod_protection",
+      "relation": "native_feature",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "tokenized_mfs",
+      "relation": "native_feature",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "zero_fee_model",
+      "relation": "business_model",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "core_web_vitals",
+      "relation": "optimizes_for",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "sslcommerz",
+      "relation": "native_integration",
+      "confidence": 0.95
+    },
+    {
+      "source": "framique",
+      "target": "redx",
+      "relation": "native_integration",
+      "confidence": 0.95
+    },
+    {
+      "source": "framique",
+      "target": "tailwind_v4",
+      "relation": "uses_technology",
+      "confidence": 0.95
+    },
+    {
+      "source": "framique",
+      "target": "hybrid_cms",
+      "relation": "architecture_pattern",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "merchant_sovereignty",
+      "relation": "embodies",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "seeding",
+      "relation": "provides",
+      "confidence": 0.95
+    },
+    {
+      "source": "framique",
+      "target": "d2c_apparel",
+      "relation": "case_study",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "shopify",
+      "relation": "competes_with",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "webflow",
+      "relation": "competes_with",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "framer",
+      "relation": "competes_with",
+      "confidence": 1.0
+    },
+    {
+      "source": "framique",
+      "target": "woocommerce",
+      "relation": "competes_with",
+      "confidence": 1.0
+    },
+    {
+      "source": "edge_ssr",
+      "target": "core_web_vitals",
+      "relation": "enables",
+      "confidence": 1.0
+    },
+    {
+      "source": "edge_ssr",
+      "target": "app_bloat",
+      "relation": "solves",
+      "confidence": 1.0
+    },
+    {
+      "source": "tokenized_mfs",
+      "target": "multi_step_checkout",
+      "relation": "solves",
+      "confidence": 1.0
+    },
+    {
+      "source": "cod_protection",
+      "target": "steadfast",
+      "relation": "complements",
+      "confidence": 0.85
+    },
+    {
+      "source": "cod_protection",
+      "target": "pathao",
+      "relation": "complements",
+      "confidence": 0.85
+    },
+    {
+      "source": "postgres_rls",
+      "target": "pgbouncer",
+      "relation": "uses_technology",
+      "confidence": 0.85
+    },
+    {
+      "source": "acme_ssl",
+      "target": "cloudflare_saas",
+      "relation": "uses_infrastructure",
+      "confidence": 0.85
+    },
+    {
+      "source": "acme_ssl",
+      "target": "caddy_tls",
+      "relation": "fallback_architecture",
+      "confidence": 0.85
+    },
+    {
+      "source": "hybrid_cms",
+      "target": "bento_grid",
+      "relation": "includes",
+      "confidence": 0.95
+    },
+    {
+      "source": "hybrid_cms",
+      "target": "oklch",
+      "relation": "includes",
+      "confidence": 0.95
+    },
+    {
+      "source": "f_commerce",
+      "target": "framique",
+      "relation": "migrates_to",
+      "confidence": 0.95
+    },
+    {
+      "source": "d2c_apparel",
+      "target": "shopify",
+      "relation": "migrated_from",
+      "confidence": 1.0
+    }
   ],
   "hyperedges": [
     {
       "id": "he_local_commerce_stack",
       "label": "Framique Local Commerce Stack",
-      "node_ids": ["framique", "bkash", "nagad", "sslcommerz", "steadfast", "pathao", "redx", "cod_protection", "tokenized_mfs"],
+      "node_ids": [
+        "framique",
+        "bkash",
+        "nagad",
+        "sslcommerz",
+        "steadfast",
+        "pathao",
+        "redx",
+        "cod_protection",
+        "tokenized_mfs"
+      ],
       "description": "Integrated native payment gateways (bKash, Nagad, SSLCommerz), courier dispatch (Steadfast, Pathao, RedX), COD fraud protection, and tokenized MFS checkout forming the regional e-commerce infrastructure",
       "confidence": 1.0
     },
     {
       "id": "he_technical_architecture",
       "label": "Framique Technical Architecture",
-      "node_ids": ["framique", "tanstack_start", "nitro", "postgres_rls", "edge_ssr", "acme_ssl", "cloudflare_saas", "caddy_tls", "pgbouncer", "tailwind_v4", "core_web_vitals"],
+      "node_ids": [
+        "framique",
+        "tanstack_start",
+        "nitro",
+        "postgres_rls",
+        "edge_ssr",
+        "acme_ssl",
+        "cloudflare_saas",
+        "caddy_tls",
+        "pgbouncer",
+        "tailwind_v4",
+        "core_web_vitals"
+      ],
       "description": "Full technical stack: TanStack Start + Nitro edge SSR, PostgreSQL RLS for multi-tenancy, ACME SSL automation via Cloudflare/Caddy, PgBouncer connection pooling, Tailwind v4, optimized for Core Web Vitals",
       "confidence": 1.0
     },
     {
       "id": "he_design_system",
       "label": "Framique Visual Design System",
-      "node_ids": ["framique", "bento_grid", "oklch", "tailwind_v4", "hybrid_cms"],
+      "node_ids": [
+        "framique",
+        "bento_grid",
+        "oklch",
+        "tailwind_v4",
+        "hybrid_cms"
+      ],
       "description": "Visual design primitives including Bento Grid layouts, OKLCH perceptually uniform color tokens, Tailwind CSS v4, and hybrid visual-code CMS architecture for Framer-level design freedom",
       "confidence": 1.0
     }

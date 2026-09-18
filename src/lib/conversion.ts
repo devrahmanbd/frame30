@@ -22,10 +22,15 @@ export const EMPTY_AGG: ReviewAgg = { count: 0, mean: 0, histogram: {} };
 export function reviewSummary(agg: ReviewAgg | null | undefined) {
   const source = agg ?? EMPTY_AGG;
   const count = Math.max(0, Number(source.count) || 0);
-  const mean = count === 0 ? 0 : Math.min(5, Math.max(0, Number(source.mean) || 0));
+  const mean =
+    count === 0 ? 0 : Math.min(5, Math.max(0, Number(source.mean) || 0));
   const bars = [5, 4, 3, 2, 1].map((stars) => {
     const n = Math.max(0, Number(source.histogram?.[String(stars)] ?? 0) || 0);
-    return { stars, count: n, pct: count === 0 ? 0 : Math.round((n / count) * 100) };
+    return {
+      stars,
+      count: n,
+      pct: count === 0 ? 0 : Math.round((n / count) * 100),
+    };
   });
   return {
     count,
@@ -52,7 +57,10 @@ export type ScarcityLevel = "none" | "low" | "critical" | "out";
  * Scarcity messaging must never invent urgency: it is derived from real stock
  * and returns `none` above the threshold so the widget stays hidden.
  */
-export function scarcity(stock: number, threshold = 10): { level: ScarcityLevel; left: number } {
+export function scarcity(
+  stock: number,
+  threshold = 10,
+): { level: ScarcityLevel; left: number } {
   const left = Math.max(0, Math.floor(Number(stock) || 0));
   if (left <= 0) return { level: "out", left: 0 };
   if (left <= Math.min(3, threshold)) return { level: "critical", left };
@@ -61,7 +69,10 @@ export function scarcity(stock: number, threshold = 10): { level: ScarcityLevel;
 }
 
 /** Remaining whole seconds until an ISO deadline; never negative. */
-export function countdownSeconds(endsAt: string | null | undefined, now = Date.now()): number {
+export function countdownSeconds(
+  endsAt: string | null | undefined,
+  now = Date.now(),
+): number {
   if (!endsAt) return 0;
   const end = Date.parse(endsAt);
   if (Number.isNaN(end)) return 0;
@@ -75,7 +86,9 @@ export function formatCountdown(totalSeconds: number): string {
   const m = Math.floor((s % 3600) / 60);
   const sec = s % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
-  return d > 0 ? `${d}d ${pad(h)}:${pad(m)}:${pad(sec)}` : `${pad(h)}:${pad(m)}:${pad(sec)}`;
+  return d > 0
+    ? `${d}d ${pad(h)}:${pad(m)}:${pad(sec)}`
+    : `${pad(h)}:${pad(m)}:${pad(sec)}`;
 }
 
 export type RecommendedProduct = {

@@ -22,7 +22,10 @@ export const Route = createFileRoute("/reset-password")({
           "Set a new password for your Framique account after following the recovery link sent to your email.",
       },
       { property: "og:title", content: "Choose a new password — Framique" },
-      { property: "og:description", content: "Finish account recovery for your Framique account." },
+      {
+        property: "og:description",
+        content: "Finish account recovery for your Framique account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -46,7 +49,9 @@ function ResetPasswordPage() {
     const settle = (has: boolean) => {
       if (!cancelled) setReady(has);
     };
-    void supabase.auth.getSession().then(({ data }) => settle(Boolean(data.session)));
+    void supabase.auth
+      .getSession()
+      .then(({ data }) => settle(Boolean(data.session)));
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "PASSWORD_RECOVERY" || session) settle(true);
     });
@@ -59,7 +64,9 @@ function ResetPasswordPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
-      toast.error(t("The two passwords do not match.", "দুই পাসওয়ার্ড মেলেনি।"));
+      toast.error(
+        t("The two passwords do not match.", "দুই পাসওয়ার্ড মেলেনি।"),
+      );
       return;
     }
     if (password.length < 8) {
@@ -72,16 +79,18 @@ function ResetPasswordPage() {
     try {
       const { error } = await supabase.auth.updateUser({ password });
       if (error) throw error;
-      void recordAuthEventFn({ data: { event: "password.changed", outcome: "ok" } }).catch(
-        () => undefined,
-      );
+      void recordAuthEventFn({
+        data: { event: "password.changed", outcome: "ok" },
+      }).catch(() => undefined);
       setDone(true);
       toast.success(t("Password updated.", "পাসওয়ার্ড বদলানো হয়েছে।"));
       // Force a fresh sign-in with the new password on every device.
       await supabase.auth.signOut();
       navigate({ to: "/auth", replace: true });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not update the password");
+      toast.error(
+        err instanceof Error ? err.message : "Could not update the password",
+      );
     } finally {
       setBusy(false);
     }

@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { btnPrimary } from "@/components/admin/MarketingUi";
-import { oauthAuthorizeDescribeFn, oauthAuthorizeGrantFn } from "@/lib/developers.functions";
+import {
+  oauthAuthorizeDescribeFn,
+  oauthAuthorizeGrantFn,
+} from "@/lib/developers.functions";
 import { parseScopes } from "@/lib/api-scopes";
 import { useLang } from "@/lib/i18n";
 
@@ -23,9 +26,16 @@ export const Route = createFileRoute("/_authenticated/oauth/authorize")({
   head: () => ({
     meta: [
       { title: "Authorize app — Framique" },
-      { name: "description", content: "Review the data an app is requesting before granting access to your store." },
+      {
+        name: "description",
+        content:
+          "Review the data an app is requesting before granting access to your store.",
+      },
       { property: "og:title", content: "Authorize app — Framique" },
-      { property: "og:description", content: "Explicit, scope-by-scope consent for third-party apps." },
+      {
+        property: "og:description",
+        content: "Explicit, scope-by-scope consent for third-party apps.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -39,7 +49,11 @@ function AuthorizePage() {
   const search = useSearch({ from: "/_authenticated/oauth/authorize" });
   const describe = useServerFn(oauthAuthorizeDescribeFn);
   const grant = useServerFn(oauthAuthorizeGrantFn);
-  const [info, setInfo] = useState<{ appName: string; granted: string[]; refused: string[] } | null>(null);
+  const [info, setInfo] = useState<{
+    appName: string;
+    granted: string[];
+    refused: string[];
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -59,7 +73,8 @@ function AuthorizePage() {
         if (!cancelled) setInfo(res);
       })
       .catch((err: unknown) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : "invalid_request");
+        if (!cancelled)
+          setError(err instanceof Error ? err.message : "invalid_request");
       });
     return () => {
       cancelled = true;
@@ -94,35 +109,58 @@ function AuthorizePage() {
         </h1>
 
         {error && (
-          <p role="alert" className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm">
+          <p
+            role="alert"
+            className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm"
+          >
             {error}
           </p>
         )}
 
-        {!info && !error && <p className="text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>}
+        {!info && !error && (
+          <p className="text-sm text-muted-foreground">
+            {t("Loading…", "লোড হচ্ছে…")}
+          </p>
+        )}
 
         {info && (
           <>
             <p className="text-sm">
               <strong>{info.appName}</strong>{" "}
-              {t("is requesting access to your store data:", "আপনার স্টোর ডেটায় অ্যাক্সেস চাইছে:")}
+              {t(
+                "is requesting access to your store data:",
+                "আপনার স্টোর ডেটায় অ্যাক্সেস চাইছে:",
+              )}
             </p>
             <ul className="space-y-1 text-sm">
               {info.granted.map((s) => (
-                <li key={s} className="rounded-fq-md border border-border px-3 py-2 font-mono text-xs">
+                <li
+                  key={s}
+                  className="rounded-fq-md border border-border px-3 py-2 font-mono text-xs"
+                >
                   {s}
                 </li>
               ))}
             </ul>
             {info.refused.length > 0 && (
               <p className="text-xs text-muted-foreground">
-                {t("Not granted (outside the app's allowlist):", "অনুমোদিত নয় (অ্যাপের তালিকার বাইরে):")}{" "}
+                {t(
+                  "Not granted (outside the app's allowlist):",
+                  "অনুমোদিত নয় (অ্যাপের তালিকার বাইরে):",
+                )}{" "}
                 {info.refused.join(", ")}
               </p>
             )}
             <div className="flex gap-2 pt-2">
-              <button type="button" className={btnPrimary} disabled={busy} onClick={() => void allow()}>
-                {busy ? t("Authorizing…", "অনুমোদন হচ্ছে…") : t("Allow", "অনুমতি দিন")}
+              <button
+                type="button"
+                className={btnPrimary}
+                disabled={busy}
+                onClick={() => void allow()}
+              >
+                {busy
+                  ? t("Authorizing…", "অনুমোদন হচ্ছে…")
+                  : t("Allow", "অনুমতি দিন")}
               </button>
               <button
                 type="button"

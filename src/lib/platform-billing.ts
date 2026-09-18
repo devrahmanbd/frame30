@@ -15,11 +15,16 @@
  * the retry timings and the receipt arithmetic without a database. Amounts are
  * integer minor units end to end; there is no float arithmetic in this file.
  */
-import { PAYMENT_METHOD_CATALOG, type PaymentMethodKey, type PaymentMethodSpec } from "./payment-rails";
+import {
+  PAYMENT_METHOD_CATALOG,
+  type PaymentMethodKey,
+  type PaymentMethodSpec,
+} from "./payment-rails";
 import { fmtMinor } from "./money";
 
 /** Charge lifecycle as stored in `platform_charges.status`. */
-export type ChargeStatus = "created" | "pending" | "paid" | "failed" | "cancelled" | "expired";
+export type ChargeStatus =
+  "created" | "pending" | "paid" | "failed" | "cancelled" | "expired";
 
 export const TERMINAL_CHARGE_STATUSES: readonly ChargeStatus[] = [
   "paid",
@@ -72,26 +77,48 @@ export type PlatformMethod = PaymentMethodSpec & {
 };
 
 const NOTES: Record<string, { en: string; bn: string }> = {
-  bkash: { en: "You will be sent to bKash to approve the payment.", bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে বিকাশে পাঠানো হবে।" },
-  nagad: { en: "You will be sent to Nagad to approve the payment.", bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে নগদে পাঠানো হবে।" },
-  rocket: { en: "You will be sent to Rocket to approve the payment.", bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে রকেটে পাঠানো হবে।" },
-  card: { en: "Card details are entered on the acquirer's page — we never see them.", bn: "কার্ডের তথ্য অ্যাকোয়ারারের পেজে দিতে হবে — আমরা কখনো দেখি না।" },
-  sslcommerz: { en: "Pick card, internet banking or any wallet on the SSLCommerz page.", bn: "SSLCommerz পেজে কার্ড, ইন্টারনেট ব্যাংকিং বা যেকোনো ওয়ালেট বেছে নিন।" },
-  bank_transfer: { en: "Transfer by BEFTN and send the reference — the invoice clears when we confirm receipt.", bn: "BEFTN-এ পাঠিয়ে রেফারেন্স দিন — আমরা প্রাপ্তি নিশ্চিত করলে ইনভয়েস পরিশোধিত হবে।" },
+  bkash: {
+    en: "You will be sent to bKash to approve the payment.",
+    bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে বিকাশে পাঠানো হবে।",
+  },
+  nagad: {
+    en: "You will be sent to Nagad to approve the payment.",
+    bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে নগদে পাঠানো হবে।",
+  },
+  rocket: {
+    en: "You will be sent to Rocket to approve the payment.",
+    bn: "পেমেন্ট অনুমোদনের জন্য আপনাকে রকেটে পাঠানো হবে।",
+  },
+  card: {
+    en: "Card details are entered on the acquirer's page — we never see them.",
+    bn: "কার্ডের তথ্য অ্যাকোয়ারারের পেজে দিতে হবে — আমরা কখনো দেখি না।",
+  },
+  sslcommerz: {
+    en: "Pick card, internet banking or any wallet on the SSLCommerz page.",
+    bn: "SSLCommerz পেজে কার্ড, ইন্টারনেট ব্যাংকিং বা যেকোনো ওয়ালেট বেছে নিন।",
+  },
+  bank_transfer: {
+    en: "Transfer by BEFTN and send the reference — the invoice clears when we confirm receipt.",
+    bn: "BEFTN-এ পাঠিয়ে রেফারেন্স দিন — আমরা প্রাপ্তি নিশ্চিত করলে ইনভয়েস পরিশোধিত হবে।",
+  },
 };
 
-export function platformMethods(allowed?: readonly string[] | null): PlatformMethod[] {
+export function platformMethods(
+  allowed?: readonly string[] | null,
+): PlatformMethod[] {
   const filter = allowed && allowed.length ? new Set(allowed) : null;
-  return PLATFORM_METHOD_KEYS.filter((key) => !filter || filter.has(key)).map((key) => {
-    const spec = PAYMENT_METHOD_CATALOG[key];
-    const note = NOTES[key] ?? { en: "", bn: "" };
-    return {
-      ...spec,
-      noteEn: note.en,
-      noteBn: note.bn,
-      manualSettlement: key === "bank_transfer",
-    };
-  });
+  return PLATFORM_METHOD_KEYS.filter((key) => !filter || filter.has(key)).map(
+    (key) => {
+      const spec = PAYMENT_METHOD_CATALOG[key];
+      const note = NOTES[key] ?? { en: "", bn: "" };
+      return {
+        ...spec,
+        noteEn: note.en,
+        noteBn: note.bn,
+        manualSettlement: key === "bank_transfer",
+      };
+    },
+  );
 }
 
 export function isPlatformMethod(value: string): value is PaymentMethodKey {
@@ -110,7 +137,10 @@ export const RETRY_BACKOFF_MINUTES = [0, 5, 30, 180, 720] as const;
 /** Attempts after which collection stops being self-serve and support takes it. */
 export const MAX_SELF_SERVE_ATTEMPTS = RETRY_BACKOFF_MINUTES.length;
 
-export function nextRetryAt(attempt: number, lastFailedAt: string | Date | null): Date | null {
+export function nextRetryAt(
+  attempt: number,
+  lastFailedAt: string | Date | null,
+): Date | null {
   if (!lastFailedAt) return null;
   if (attempt >= MAX_SELF_SERVE_ATTEMPTS) return null;
   const minutes = RETRY_BACKOFF_MINUTES[Math.max(0, attempt - 1)] ?? 720;
@@ -192,7 +222,8 @@ export type CollectionInput = {
 };
 
 export type CollectionVerdict = {
-  kind: "settled" | "collect" | "resume" | "wait" | "support" | "not_chargeable";
+  kind:
+    "settled" | "collect" | "resume" | "wait" | "support" | "not_chargeable";
   en: string;
   bn: string;
   retryAt: string | null;
@@ -208,7 +239,9 @@ export type CollectionVerdict = {
  */
 export function collectionVerdict(input: CollectionInput): CollectionVerdict {
   const now = input.now ?? Date.now();
-  const serviceLimited = ["past_due", "paused"].includes(input.subscriptionStatus);
+  const serviceLimited = ["past_due", "paused"].includes(
+    input.subscriptionStatus,
+  );
   const attemptsLeft = Math.max(0, MAX_SELF_SERVE_ATTEMPTS - input.attempts);
 
   if (input.invoiceStatus === "paid") {
@@ -278,8 +311,14 @@ export function collectionVerdict(input: CollectionInput): CollectionVerdict {
 
   return {
     kind: "collect",
-    en: input.attempts > 0 ? failure.en : "Choose a payment method to settle this invoice.",
-    bn: input.attempts > 0 ? failure.bn : "ইনভয়েস পরিশোধ করতে একটি পেমেন্ট মাধ্যম বেছে নিন।",
+    en:
+      input.attempts > 0
+        ? failure.en
+        : "Choose a payment method to settle this invoice.",
+    bn:
+      input.attempts > 0
+        ? failure.bn
+        : "ইনভয়েস পরিশোধ করতে একটি পেমেন্ট মাধ্যম বেছে নিন।",
     retryAt: null,
     attemptsLeft,
     serviceLimited,
@@ -324,16 +363,32 @@ export function receiptLines(input: ReceiptInput): ReceiptLine[] {
       labelBn: "সময়কাল",
       value: `${input.periodStart.slice(0, 10)} → ${input.periodEnd.slice(0, 10)}`,
     },
-    { label: "Subtotal", labelBn: "সাবটোটাল", value: fmtMinor(input.subtotalMinorInt, cur) },
+    {
+      label: "Subtotal",
+      labelBn: "সাবটোটাল",
+      value: fmtMinor(input.subtotalMinorInt, cur),
+    },
     {
       label: `VAT (${input.vatRateBasisPoints / 100}%)`,
       labelBn: `ভ্যাট (${input.vatRateBasisPoints / 100}%)`,
       value: fmtMinor(input.vatMinorInt, cur),
     },
-    { label: "Total paid", labelBn: "মোট পরিশোধিত", value: fmtMinor(input.totalMinorInt, cur) },
+    {
+      label: "Total paid",
+      labelBn: "মোট পরিশোধিত",
+      value: fmtMinor(input.totalMinorInt, cur),
+    },
     { label: "Method", labelBn: "মাধ্যম", value: methodLabel(input.method) },
-    { label: "Reference", labelBn: "রেফারেন্স", value: input.providerReference ?? "—" },
-    { label: "Paid at", labelBn: "পরিশোধের সময়", value: input.paidAt?.slice(0, 19).replace("T", " ") ?? "—" },
+    {
+      label: "Reference",
+      labelBn: "রেফারেন্স",
+      value: input.providerReference ?? "—",
+    },
+    {
+      label: "Paid at",
+      labelBn: "পরিশোধের সময়",
+      value: input.paidAt?.slice(0, 19).replace("T", " ") ?? "—",
+    },
   ];
   // A receipt whose parts do not add up is worse than no receipt: say so loudly
   // instead of printing a number the merchant's accountant will reject.
@@ -341,7 +396,8 @@ export function receiptLines(input: ReceiptInput): ReceiptLine[] {
     lines.push({
       label: "Warning",
       labelBn: "সতর্কতা",
-      value: "Totals do not reconcile — contact support before filing this receipt.",
+      value:
+        "Totals do not reconcile — contact support before filing this receipt.",
     });
   }
   return lines;
@@ -353,6 +409,9 @@ export function methodLabel(method: string) {
 }
 
 /** `true` when the receipt is safe to present as final and immutable. */
-export function receiptIsFinal(status: ChargeStatus, receiptNumber: string | null) {
+export function receiptIsFinal(
+  status: ChargeStatus,
+  receiptNumber: string | null,
+) {
   return status === "paid" && !!receiptNumber;
 }

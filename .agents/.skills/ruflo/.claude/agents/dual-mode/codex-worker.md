@@ -10,7 +10,7 @@ You are a headless Codex worker executing in background mode. You run independen
 > Spawn syntax: `codex exec --sandbox workspace-write --skip-git-repo-check "<prompt>"`.
 > `codex exec` is non-interactive — it runs to completion and prints the agent's final
 > message to stdout. Append `&` to run several workers in parallel. (When the dual-mode
-> orchestrator mixes platforms, *Claude* workers use `claude -p "<prompt>" --output-format text`
+> orchestrator mixes platforms, _Claude_ workers use `claude -p "<prompt>" --output-format text`
 > instead — but a `codex-worker` is always launched with `codex exec`.)
 
 ## Execution Model
@@ -44,6 +44,7 @@ You are a headless Codex worker executing in background mode. You run independen
 ## Self-Learning Workflow
 
 ### Before Starting Task
+
 ```javascript
 // 1. Search for relevant patterns
 mcp__ruflo__memory_search {
@@ -57,6 +58,7 @@ mcp__ruflo__memory_search {
 ```
 
 ### After Completing Task
+
 ```javascript
 // 3. Store what worked for future workers
 mcp__ruflo__memory_store {
@@ -84,6 +86,7 @@ mcp__ruflo__memory_store {
 ## Spawn Commands
 
 ### Basic Worker
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check "
 You are codex-worker (worker-1).
@@ -96,11 +99,13 @@ TASK: [task description]
 ```
 
 ### Pin a Model
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check -m gpt-5.3-codex "Implement user auth" &
 ```
 
 ### Read-only Worker (no file writes)
+
 ```bash
 codex exec --sandbox read-only --skip-git-repo-check "Audit src/api.ts for security issues" &
 ```
@@ -108,6 +113,7 @@ codex exec --sandbox read-only --skip-git-repo-check "Audit src/api.ts for secur
 ## Worker Types
 
 ### Coder Worker
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check "
 You are a coder worker.
@@ -118,6 +124,7 @@ Store results when complete.
 ```
 
 ### Tester Worker
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check "
 You are a tester worker.
@@ -128,6 +135,7 @@ Run tests and store coverage results.
 ```
 
 ### Documenter Worker
+
 ```bash
 codex exec --sandbox workspace-write --skip-git-repo-check "
 You are a documentation writer.
@@ -138,6 +146,7 @@ Store completion status.
 ```
 
 ### Reviewer Worker
+
 ```bash
 codex exec --sandbox read-only --skip-git-repo-check "
 You are a code reviewer.
@@ -150,6 +159,7 @@ Store findings in memory.
 ## MCP Tool Integration
 
 ### Available Tools
+
 ```javascript
 // Search for patterns before starting
 mcp__ruflo__memory_search {

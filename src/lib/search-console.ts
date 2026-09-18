@@ -29,7 +29,13 @@
  * Verification tokens
  * ========================================================================== */
 
-export const VERIFICATION_PROVIDERS = ["google", "bing", "yandex", "pinterest", "baidu"] as const;
+export const VERIFICATION_PROVIDERS = [
+  "google",
+  "bing",
+  "yandex",
+  "pinterest",
+  "baidu",
+] as const;
 export type VerificationProvider = (typeof VERIFICATION_PROVIDERS)[number];
 
 export type VerificationTag = { name: string; content: string };
@@ -86,7 +92,10 @@ export type VerificationSettings = {
   custom: CustomVerification[];
 };
 
-export const DEFAULT_VERIFICATION: VerificationSettings = { tokens: {}, custom: [] };
+export const DEFAULT_VERIFICATION: VerificationSettings = {
+  tokens: {},
+  custom: [],
+};
 
 export type FieldIssue = { field: string; message: string };
 
@@ -104,37 +113,59 @@ export function validateVerification(input: unknown): {
   const tokens: Partial<Record<VerificationProvider, string>> = {};
 
   for (const provider of VERIFICATION_PROVIDERS) {
-    const value = (raw.tokens as Record<string, unknown> | undefined)?.[provider];
+    const value = (raw.tokens as Record<string, unknown> | undefined)?.[
+      provider
+    ];
     if (value === undefined || value === null || value === "") continue;
     const text = String(value).trim();
     if (!VERIFICATION_SPEC[provider].pattern.test(text)) {
-      issues.push({ field: `tokens.${provider}`, message: `Token does not match the ${provider} format` });
+      issues.push({
+        field: `tokens.${provider}`,
+        message: `Token does not match the ${provider} format`,
+      });
       continue;
     }
     tokens[provider] = text;
   }
 
   const custom: CustomVerification[] = [];
-  const seenNames = new Set(Object.values(VERIFICATION_SPEC).map((spec) => spec.metaName.toLowerCase()));
-  for (const [index, entry] of (Array.isArray(raw.custom) ? raw.custom : []).entries()) {
+  const seenNames = new Set(
+    Object.values(VERIFICATION_SPEC).map((spec) => spec.metaName.toLowerCase()),
+  );
+  for (const [index, entry] of (Array.isArray(raw.custom)
+    ? raw.custom
+    : []
+  ).entries()) {
     if (custom.length >= CUSTOM_VERIFICATION_MAX) {
-      issues.push({ field: "custom", message: `At most ${CUSTOM_VERIFICATION_MAX} custom tags` });
+      issues.push({
+        field: "custom",
+        message: `At most ${CUSTOM_VERIFICATION_MAX} custom tags`,
+      });
       break;
     }
     const name = String((entry as CustomVerification)?.name ?? "").trim();
     const content = String((entry as CustomVerification)?.content ?? "").trim();
     if (!META_NAME_RE.test(name)) {
-      issues.push({ field: `custom.${index}.name`, message: "Invalid meta name" });
+      issues.push({
+        field: `custom.${index}.name`,
+        message: "Invalid meta name",
+      });
       continue;
     }
     if (!META_CONTENT_RE.test(content)) {
-      issues.push({ field: `custom.${index}.content`, message: "Invalid meta content" });
+      issues.push({
+        field: `custom.${index}.content`,
+        message: "Invalid meta content",
+      });
       continue;
     }
     if (seenNames.has(name.toLowerCase())) {
       // Duplicate provider tags are worse than missing ones: crawlers that see
       // two conflicting values treat the site as unverified.
-      issues.push({ field: `custom.${index}.name`, message: `Duplicate meta name ${name}` });
+      issues.push({
+        field: `custom.${index}.name`,
+        message: `Duplicate meta name ${name}`,
+      });
       continue;
     }
     seenNames.add(name.toLowerCase());
@@ -148,7 +179,9 @@ export function validateVerification(input: unknown): {
  * The storefront head tags, deduplicated and stably ordered so SSR and
  * hydration produce byte-identical markup.
  */
-export function verificationTags(settings: VerificationSettings): VerificationTag[] {
+export function verificationTags(
+  settings: VerificationSettings,
+): VerificationTag[] {
   const out: VerificationTag[] = [];
   const seen = new Set<string>();
   for (const provider of VERIFICATION_PROVIDERS) {
@@ -171,7 +204,13 @@ export function verificationTags(settings: VerificationSettings): VerificationTa
  * Analytics vendors
  * ========================================================================== */
 
-export const ANALYTICS_VENDORS = ["ga4", "gtm", "meta", "tiktok", "clarity"] as const;
+export const ANALYTICS_VENDORS = [
+  "ga4",
+  "gtm",
+  "meta",
+  "tiktok",
+  "clarity",
+] as const;
 export type AnalyticsVendor = (typeof ANALYTICS_VENDORS)[number];
 
 /**
@@ -233,12 +272,16 @@ export type AnalyticsSettings = {
   consentRequired: boolean;
 };
 
-export const DEFAULT_ANALYTICS: AnalyticsSettings = { enabled: {}, consentRequired: true };
+export const DEFAULT_ANALYTICS: AnalyticsSettings = {
+  enabled: {},
+  consentRequired: true,
+};
 
 /** Total third-party transfer the storefront takes on, in kB. */
 export function analyticsBudgetKb(settings: AnalyticsSettings): number {
   return ANALYTICS_VENDORS.reduce(
-    (sum, vendor) => (settings.enabled[vendor] ? sum + ANALYTICS_SPEC[vendor].transferKb : sum),
+    (sum, vendor) =>
+      settings.enabled[vendor] ? sum + ANALYTICS_SPEC[vendor].transferKb : sum,
     0,
   );
 }
@@ -246,17 +289,25 @@ export function analyticsBudgetKb(settings: AnalyticsSettings): number {
 /** Above this we warn: the storefront's own JS budget is smaller than this. */
 export const ANALYTICS_BUDGET_WARN_KB = 120;
 
-export function validateAnalytics(input: unknown): { value: AnalyticsSettings; issues: FieldIssue[] } {
+export function validateAnalytics(input: unknown): {
+  value: AnalyticsSettings;
+  issues: FieldIssue[];
+} {
   const issues: FieldIssue[] = [];
   const raw = (input ?? {}) as Partial<AnalyticsSettings>;
   const enabled: Partial<Record<AnalyticsVendor, string>> = {};
   for (const vendor of ANALYTICS_VENDORS) {
-    const value = (raw.enabled as Record<string, unknown> | undefined)?.[vendor];
+    const value = (raw.enabled as Record<string, unknown> | undefined)?.[
+      vendor
+    ];
     if (value === undefined || value === null || value === "") continue;
     const text = String(value).trim().toUpperCase();
     const normalised = vendor === "clarity" ? text.toLowerCase() : text;
     if (!ANALYTICS_SPEC[vendor].pattern.test(normalised)) {
-      issues.push({ field: `analytics.${vendor}`, message: `Invalid ${ANALYTICS_SPEC[vendor].label} ID` });
+      issues.push({
+        field: `analytics.${vendor}`,
+        message: `Invalid ${ANALYTICS_SPEC[vendor].label} ID`,
+      });
       continue;
     }
     enabled[vendor] = normalised;
@@ -272,7 +323,12 @@ export function validateAnalytics(input: unknown): { value: AnalyticsSettings; i
  * because it is the heaviest and the one most likely to be starved by the
  * idle callback — better it is the tag that slips than GA4.
  */
-export type TagPlan = { vendor: AnalyticsVendor; id: string; src: string | null; transferKb: number }[];
+export type TagPlan = {
+  vendor: AnalyticsVendor;
+  id: string;
+  src: string | null;
+  transferKb: number;
+}[];
 
 export function tagPlan(settings: AnalyticsSettings): TagPlan {
   const order: AnalyticsVendor[] = ["ga4", "meta", "tiktok", "clarity", "gtm"];
@@ -310,24 +366,39 @@ export type SiteKitSettings = {
   analytics: AnalyticsSettings;
   /** Merchant-chosen Search Console property, exactly as Google returned it. */
   searchConsoleSiteUrl: string | null;
+  /**
+   * When true the storefront renders a Cloudflare Turnstile widget on forms
+   * (checkout, account sign-in, contact). Protects against credential-stuffing
+   * and bot-driven checkout abuse without any third-party tracking.
+   */
+  botProtection: boolean;
 };
 
 export const DEFAULT_SITE_KIT: SiteKitSettings = {
   verification: DEFAULT_VERIFICATION,
   analytics: DEFAULT_ANALYTICS,
   searchConsoleSiteUrl: null,
+  botProtection: false,
 };
 
-export function validateSiteKit(input: unknown): { value: SiteKitSettings; issues: FieldIssue[] } {
+export function validateSiteKit(input: unknown): {
+  value: SiteKitSettings;
+  issues: FieldIssue[];
+} {
   const raw = (input ?? {}) as Partial<SiteKitSettings>;
   const verification = validateVerification(raw.verification);
   const analytics = validateAnalytics(raw.analytics);
-  const siteUrl = typeof raw.searchConsoleSiteUrl === "string" ? raw.searchConsoleSiteUrl.trim() : "";
+  const siteUrl =
+    typeof raw.searchConsoleSiteUrl === "string"
+      ? raw.searchConsoleSiteUrl.trim()
+      : "";
+  const botProtection = raw.botProtection === true;
   return {
     value: {
       verification: verification.value,
       analytics: analytics.value,
       searchConsoleSiteUrl: siteUrl && isPropertyUrl(siteUrl) ? siteUrl : null,
+      botProtection,
     },
     issues: [...verification.issues, ...analytics.issues],
   };
@@ -343,18 +414,24 @@ export type GscProperty = {
 };
 
 export type PropertyResolution =
-  | { status: "resolved"; siteUrl: string; propertyType: "domain" | "url_prefix" }
+  | {
+      status: "resolved";
+      siteUrl: string;
+      propertyType: "domain" | "url_prefix";
+    }
   | { status: "selection_required"; candidates: GscProperty[] }
   | { status: "none"; reason: "no_verified_property" | "no_permission" };
 
 /** `sc-domain:example.com` and `https://example.com/` are both valid. */
 export function isPropertyUrl(value: string): boolean {
-  if (value.startsWith("sc-domain:")) return /^sc-domain:[a-z0-9.-]+\.[a-z]{2,}$/i.test(value);
+  if (value.startsWith("sc-domain:"))
+    return /^sc-domain:[a-z0-9.-]+\.[a-z]{2,}$/i.test(value);
   return /^https?:\/\/[^\s]+$/i.test(value);
 }
 
 function propertyHost(siteUrl: string): string | null {
-  if (siteUrl.startsWith("sc-domain:")) return siteUrl.slice("sc-domain:".length).toLowerCase();
+  if (siteUrl.startsWith("sc-domain:"))
+    return siteUrl.slice("sc-domain:".length).toLowerCase();
   try {
     return new URL(siteUrl).host.toLowerCase();
   } catch {
@@ -363,7 +440,11 @@ function propertyHost(siteUrl: string): string | null {
 }
 
 /** Permission levels that actually allow reading performance data. */
-const READ_LEVELS = new Set(["siteOwner", "siteFullUser", "siteRestrictedUser"]);
+const READ_LEVELS = new Set([
+  "siteOwner",
+  "siteFullUser",
+  "siteRestrictedUser",
+]);
 
 /**
  * Matches verified properties against the store's own host.
@@ -374,12 +455,19 @@ const READ_LEVELS = new Set(["siteOwner", "siteFullUser", "siteRestrictedUser"])
  * binds a tenant's reporting to the wrong property, and the mistake only
  * surfaces weeks later as "my numbers are wrong".
  */
-export function resolveProperty(properties: readonly GscProperty[], storeHost: string): PropertyResolution {
-  const host = storeHost.trim().toLowerCase().replace(/^www\./, "");
+export function resolveProperty(
+  properties: readonly GscProperty[],
+  storeHost: string,
+): PropertyResolution {
+  const host = storeHost
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, "");
   if (!host) return { status: "none", reason: "no_verified_property" };
 
   const readable = properties.filter((p) => READ_LEVELS.has(p.permissionLevel));
-  if (properties.length > 0 && readable.length === 0) return { status: "none", reason: "no_permission" };
+  if (properties.length > 0 && readable.length === 0)
+    return { status: "none", reason: "no_permission" };
 
   const matches = readable.filter((p) => {
     const candidate = propertyHost(p.siteUrl);
@@ -388,13 +476,17 @@ export function resolveProperty(properties: readonly GscProperty[], storeHost: s
     return bare === host || bare.endsWith(`.${host}`);
   });
 
-  if (matches.length === 0) return { status: "none", reason: "no_verified_property" };
-  if (matches.length > 1) return { status: "selection_required", candidates: matches };
+  if (matches.length === 0)
+    return { status: "none", reason: "no_verified_property" };
+  if (matches.length > 1)
+    return { status: "selection_required", candidates: matches };
   const only = matches[0]!;
   return {
     status: "resolved",
     siteUrl: only.siteUrl,
-    propertyType: only.siteUrl.startsWith("sc-domain:") ? "domain" : "url_prefix",
+    propertyType: only.siteUrl.startsWith("sc-domain:")
+      ? "domain"
+      : "url_prefix",
   };
 }
 
@@ -444,7 +536,10 @@ export function normaliseRows(
     const keys = row.keys ?? [];
     const day = keys[0] ?? "";
     if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) continue;
-    const value = dimension === "date" ? day : (keys[1] ?? "").slice(0, MAX_DIMENSION_VALUE);
+    const value =
+      dimension === "date"
+        ? day
+        : (keys[1] ?? "").slice(0, MAX_DIMENSION_VALUE);
     if (dimension !== "date" && !value) continue;
     out.push({
       day,
@@ -473,9 +568,16 @@ export type Aggregate = {
  * dashboards lie (a day with 3 impressions counts as much as a day with 30k).
  */
 export function aggregate(rows: readonly SnapshotRow[]): Aggregate[] {
-  const byValue = new Map<string, { clicks: number; impressions: number; positionWeighted: number }>();
+  const byValue = new Map<
+    string,
+    { clicks: number; impressions: number; positionWeighted: number }
+  >();
   for (const row of rows) {
-    const bucket = byValue.get(row.value) ?? { clicks: 0, impressions: 0, positionWeighted: 0 };
+    const bucket = byValue.get(row.value) ?? {
+      clicks: 0,
+      impressions: 0,
+      positionWeighted: 0,
+    };
     bucket.clicks += row.clicks;
     bucket.impressions += row.impressions;
     bucket.positionWeighted += row.position * row.impressions;
@@ -486,32 +588,57 @@ export function aggregate(rows: readonly SnapshotRow[]): Aggregate[] {
       value,
       clicks: bucket.clicks,
       impressions: bucket.impressions,
-      ctr: bucket.impressions > 0 ? Number((bucket.clicks / bucket.impressions).toFixed(4)) : 0,
-      position: bucket.impressions > 0 ? Number((bucket.positionWeighted / bucket.impressions).toFixed(2)) : 0,
+      ctr:
+        bucket.impressions > 0
+          ? Number((bucket.clicks / bucket.impressions).toFixed(4))
+          : 0,
+      position:
+        bucket.impressions > 0
+          ? Number((bucket.positionWeighted / bucket.impressions).toFixed(2))
+          : 0,
     }))
-    .sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions || a.value.localeCompare(b.value));
+    .sort(
+      (a, b) =>
+        b.clicks - a.clicks ||
+        b.impressions - a.impressions ||
+        a.value.localeCompare(b.value),
+    );
 }
 
-export type Delta = Aggregate & { previousPosition: number | null; positionChange: number | null };
+export type Delta = Aggregate & {
+  previousPosition: number | null;
+  positionChange: number | null;
+};
 
 /** Position deltas are inverted on purpose: a *lower* position is better. */
-export function comparePeriods(current: readonly SnapshotRow[], previous: readonly SnapshotRow[]): Delta[] {
+export function comparePeriods(
+  current: readonly SnapshotRow[],
+  previous: readonly SnapshotRow[],
+): Delta[] {
   const before = new Map(aggregate(previous).map((row) => [row.value, row]));
   return aggregate(current).map((row) => {
     const prior = before.get(row.value);
     return {
       ...row,
       previousPosition: prior ? prior.position : null,
-      positionChange: prior ? Number((prior.position - row.position).toFixed(2)) : null,
+      positionChange: prior
+        ? Number((prior.position - row.position).toFixed(2))
+        : null,
     };
   });
 }
 
 /** Inclusive ISO date range ending `endDay`, `days` long. */
-export function dateRange(endDay: string, days: number): { start: string; end: string } {
+export function dateRange(
+  endDay: string,
+  days: number,
+): { start: string; end: string } {
   const end = new Date(`${endDay}T00:00:00Z`);
   const start = new Date(end.getTime() - (Math.max(1, days) - 1) * 86_400_000);
-  return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+  return {
+    start: start.toISOString().slice(0, 10),
+    end: end.toISOString().slice(0, 10),
+  };
 }
 
 /**
@@ -522,7 +649,9 @@ export function dateRange(endDay: string, days: number): { start: string; end: s
 export const DATA_LAG_DAYS = 3;
 
 export function latestUsableDay(now: Date): string {
-  return new Date(now.getTime() - DATA_LAG_DAYS * 86_400_000).toISOString().slice(0, 10);
+  return new Date(now.getTime() - DATA_LAG_DAYS * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
 }
 
 /* ========================================================================== *
@@ -532,25 +661,39 @@ export function latestUsableDay(now: Date): string {
 export type BatchOutcome =
   | { action: "continue" }
   | { action: "retry"; afterSeconds: number; reason: string }
-  | { action: "stop"; reason: string; code: "forbidden" | "unauthorized" | "invalid" | "fatal" };
+  | {
+      action: "stop";
+      reason: string;
+      code: "forbidden" | "unauthorized" | "invalid" | "fatal";
+    };
 
 export const MAX_ATTEMPTS = 4;
 export const BASE_BACKOFF_SECONDS = 2;
 export const MAX_BACKOFF_SECONDS = 300;
 
 /** RFC 7231: `Retry-After` is either delta-seconds or an HTTP date. */
-export function parseRetryAfter(header: string | null, now = Date.now()): number | null {
+export function parseRetryAfter(
+  header: string | null,
+  now = Date.now(),
+): number | null {
   if (!header) return null;
   const trimmed = header.trim();
-  if (/^\d+$/.test(trimmed)) return Math.min(MAX_BACKOFF_SECONDS, Number(trimmed));
+  if (/^\d+$/.test(trimmed))
+    return Math.min(MAX_BACKOFF_SECONDS, Number(trimmed));
   const when = Date.parse(trimmed);
   if (Number.isNaN(when)) return null;
-  return Math.min(MAX_BACKOFF_SECONDS, Math.max(0, Math.ceil((when - now) / 1000)));
+  return Math.min(
+    MAX_BACKOFF_SECONDS,
+    Math.max(0, Math.ceil((when - now) / 1000)),
+  );
 }
 
 /** Deterministic exponential backoff; jitter is applied by the caller. */
 export function backoffSeconds(attempt: number): number {
-  return Math.min(MAX_BACKOFF_SECONDS, BASE_BACKOFF_SECONDS * 2 ** Math.max(0, attempt - 1));
+  return Math.min(
+    MAX_BACKOFF_SECONDS,
+    BASE_BACKOFF_SECONDS * 2 ** Math.max(0, attempt - 1),
+  );
 }
 
 /**
@@ -568,17 +711,26 @@ export function classifyResponse(
 ): BatchOutcome {
   if (status >= 200 && status < 300) return { action: "continue" };
   if (status === 401) {
-    return { action: "stop", code: "unauthorized", reason: "The Google connection expired. Reconnect to resume." };
+    return {
+      action: "stop",
+      code: "unauthorized",
+      reason: "The Google connection expired. Reconnect to resume.",
+    };
   }
   if (status === 403) {
     return {
       action: "stop",
       code: "forbidden",
-      reason: "This Google account no longer has access to the selected property.",
+      reason:
+        "This Google account no longer has access to the selected property.",
     };
   }
   if (status === 404) {
-    return { action: "stop", code: "invalid", reason: "The selected Search Console property no longer exists." };
+    return {
+      action: "stop",
+      code: "invalid",
+      reason: "The selected Search Console property no longer exists.",
+    };
   }
   if (status === 429 || status >= 500) {
     if (attempt >= MAX_ATTEMPTS) {
@@ -598,11 +750,19 @@ export function classifyResponse(
       reason: status === 429 ? "rate_limited" : "upstream_unavailable",
     };
   }
-  return { action: "stop", code: "invalid", reason: `Google rejected the request (HTTP ${status}).` };
+  return {
+    action: "stop",
+    code: "invalid",
+    reason: `Google rejected the request (HTTP ${status}).`,
+  };
 }
 
 /** Plain-language banner text for the dashboard — never a raw provider error. */
-export function humaniseFailure(code: string): { en: string; bn: string; action: "reconnect" | "retry" | "fix" } {
+export function humaniseFailure(code: string): {
+  en: string;
+  bn: string;
+  action: "reconnect" | "retry" | "fix";
+} {
   switch (code) {
     case "unauthorized":
       return {
@@ -650,9 +810,12 @@ export function shouldSubmitSitemap(input: {
   now?: number;
 }): { submit: boolean; reason: string } {
   if (!input.sitemapUrl) return { submit: false, reason: "no_sitemap_url" };
-  if (input.lastSubmittedUrl !== input.sitemapUrl) return { submit: true, reason: "new_sitemap_url" };
+  if (input.lastSubmittedUrl !== input.sitemapUrl)
+    return { submit: true, reason: "new_sitemap_url" };
   if (!input.changed) return { submit: false, reason: "unchanged" };
-  const last = input.lastSubmittedAt ? Date.parse(input.lastSubmittedAt) : Number.NaN;
+  const last = input.lastSubmittedAt
+    ? Date.parse(input.lastSubmittedAt)
+    : Number.NaN;
   const now = input.now ?? Date.now();
   if (Number.isFinite(last) && now - last < SITEMAP_SUBMIT_MIN_INTERVAL_MS) {
     return { submit: false, reason: "debounced" };
@@ -677,8 +840,11 @@ export type UrlInspection = {
 };
 
 export function readInspection(payload: unknown, url: string): UrlInspection {
-  const result = (payload as { inspectionResult?: { indexStatusResult?: Record<string, unknown> } })
-    ?.inspectionResult?.indexStatusResult;
+  const result = (
+    payload as {
+      inspectionResult?: { indexStatusResult?: Record<string, unknown> };
+    }
+  )?.inspectionResult?.indexStatusResult;
   const coverageState = String(result?.["coverageState"] ?? "Unknown");
   const verdictRaw = String(result?.["verdict"] ?? "").toUpperCase();
   const verdict: UrlInspection["verdict"] =
@@ -694,9 +860,11 @@ export function readInspection(payload: unknown, url: string): UrlInspection {
     verdict,
     coverageState,
     lastCrawled: (result?.["lastCrawlTime"] as string | undefined) ?? null,
-    canonicalGoogle: (result?.["googleCanonical"] as string | undefined) ?? null,
+    canonicalGoogle:
+      (result?.["googleCanonical"] as string | undefined) ?? null,
     canonicalUser: (result?.["userCanonical"] as string | undefined) ?? null,
     robotsState: (result?.["robotsTxtState"] as string | undefined) ?? null,
-    disclaimer: "This is what Google has already indexed — not a live test and not a re-crawl request.",
+    disclaimer:
+      "This is what Google has already indexed — not a live test and not a re-crawl request.",
   };
 }

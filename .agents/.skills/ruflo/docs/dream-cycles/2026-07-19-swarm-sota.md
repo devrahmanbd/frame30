@@ -6,56 +6,56 @@
 
 ## What's New in 2026
 
-| Finding | Source | Confidence |
-|---------|--------|------------|
-| IB+VQ inter-agent messaging: 181.8% task improvement + 41.4% bandwidth reduction simultaneously | arXiv:2602.02035 (ICRA 2026) | **A** |
-| Decision-tree distillation of neural comm policies: 97.9% fidelity, 88.9% property satisfaction, 0.3% collision rate | arXiv:2606.19632 (2026) | **A** |
-| SPIN tensor-train: O(n^m) → O(m·n·χ²) joint-action complexity — tractable dynamic topology without central control | arXiv:2606.07557 (2026) | **A** |
-| CINOC mean-field operator: zero-shot cross-scale swarm transfer without retraining | arXiv:2605.25867 (2026) | **A** |
-| TPSC LLM consensus: 0.97 acceptance rate, 0.82 inter-agent agreement, 24.09s runtime | arXiv:2607.03628 (2026) | **A** |
-| SEED: self-evolving on-policy trajectory distillation — reduces dependence on static teacher trajectories | HuggingFace 2026-07-18 | **B** |
-| 3-level hierarchical UAV swarm (Hebbian + MARL+GNN + meta-learning): formal guarantees (safety, liveness, starvation-freedom) | arXiv:2607.14093 (2026) | **A** |
+| Finding                                                                                                                       | Source                       | Confidence |
+| ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | ---------- |
+| IB+VQ inter-agent messaging: 181.8% task improvement + 41.4% bandwidth reduction simultaneously                               | arXiv:2602.02035 (ICRA 2026) | **A**      |
+| Decision-tree distillation of neural comm policies: 97.9% fidelity, 88.9% property satisfaction, 0.3% collision rate          | arXiv:2606.19632 (2026)      | **A**      |
+| SPIN tensor-train: O(n^m) → O(m·n·χ²) joint-action complexity — tractable dynamic topology without central control            | arXiv:2606.07557 (2026)      | **A**      |
+| CINOC mean-field operator: zero-shot cross-scale swarm transfer without retraining                                            | arXiv:2605.25867 (2026)      | **A**      |
+| TPSC LLM consensus: 0.97 acceptance rate, 0.82 inter-agent agreement, 24.09s runtime                                          | arXiv:2607.03628 (2026)      | **A**      |
+| SEED: self-evolving on-policy trajectory distillation — reduces dependence on static teacher trajectories                     | HuggingFace 2026-07-18       | **B**      |
+| 3-level hierarchical UAV swarm (Hebbian + MARL+GNN + meta-learning): formal guarantees (safety, liveness, starvation-freedom) | arXiv:2607.14093 (2026)      | **A**      |
 
 ---
 
 ## Ruflo Current Capability
 
-| Capability | Current State | Gap |
-|-----------|---------------|-----|
-| Topology | Hierarchical/mesh/raft (static) | No dynamic reconfiguration under load |
-| Inter-agent messaging | Uncompressed text/JSON over SendMessage | No IB+VQ compression layer |
-| Skill sharing | Static agent-type assignment at spawn | No trajectory distillation or zero-shot transfer |
-| Consensus | Raft (leader-based, O(n) overhead) | No pheromone-weighted or tensor-train consensus |
-| Formal verification | None | No property satisfaction checks |
-| Max agents | 8 (anti-drift default) | Tensor-train would allow tractable 16–64 agent swarms |
+| Capability            | Current State                           | Gap                                                   |
+| --------------------- | --------------------------------------- | ----------------------------------------------------- |
+| Topology              | Hierarchical/mesh/raft (static)         | No dynamic reconfiguration under load                 |
+| Inter-agent messaging | Uncompressed text/JSON over SendMessage | No IB+VQ compression layer                            |
+| Skill sharing         | Static agent-type assignment at spawn   | No trajectory distillation or zero-shot transfer      |
+| Consensus             | Raft (leader-based, O(n) overhead)      | No pheromone-weighted or tensor-train consensus       |
+| Formal verification   | None                                    | No property satisfaction checks                       |
+| Max agents            | 8 (anti-drift default)                  | Tensor-train would allow tractable 16–64 agent swarms |
 
 ---
 
 ## Competitor Comparison
 
-| Framework | Dynamic Topology | Message Compression | Skill Distillation | Formal Verification | Latest 2026 Feature |
-|-----------|-----------------|--------------------|--------------------|--------------------|-----------------|
-| **LangGraph** (v1.x) | Conditional edges (static) | None | None | None | Delta-channel state, subgraph checkpoint inheritance (C) |
-| **AutoGen** (v0.7.x) | GraphFlow fan-out/fan-in | None | None | None | Teams-as-Participants nested swarms (C) |
-| **CrewAI** (v1.x) | Flow-level crew actions | None | None | None | Crew actions in FlowDefinition (C) |
-| **OpenAI Swarm** | Handoff-based (static) | None | None | None | No 2026 public changelog confirmed (C) |
-| **Ruflo** | 16 topologies (reconfigurable) | None | None (planned) | None | Anti-drift hierarchical default, raft consensus |
+| Framework            | Dynamic Topology               | Message Compression | Skill Distillation | Formal Verification | Latest 2026 Feature                                      |
+| -------------------- | ------------------------------ | ------------------- | ------------------ | ------------------- | -------------------------------------------------------- |
+| **LangGraph** (v1.x) | Conditional edges (static)     | None                | None               | None                | Delta-channel state, subgraph checkpoint inheritance (C) |
+| **AutoGen** (v0.7.x) | GraphFlow fan-out/fan-in       | None                | None               | None                | Teams-as-Participants nested swarms (C)                  |
+| **CrewAI** (v1.x)    | Flow-level crew actions        | None                | None               | None                | Crew actions in FlowDefinition (C)                       |
+| **OpenAI Swarm**     | Handoff-based (static)         | None                | None               | None                | No 2026 public changelog confirmed (C)                   |
+| **Ruflo**            | 16 topologies (reconfigurable) | None                | None (planned)     | None                | Anti-drift hierarchical default, raft consensus          |
 
-*Note: LangGraph/AutoGen/CrewAI 2026 releases could not be confirmed via automated fetch — grades C pending manual verification.*
+_Note: LangGraph/AutoGen/CrewAI 2026 releases could not be confirmed via automated fetch — grades C pending manual verification._
 
 ---
 
 ## Benchmarks
 
-| Metric | Value | Method | Grade |
-|--------|-------|--------|-------|
-| IB+VQ task performance vs baseline | +181.8% | ICRA 2026 accepted paper, arXiv:2602.02035 | **A** |
-| IB+VQ bandwidth reduction | −41.4% | Same paper | **A** |
-| Decision-tree distillation fidelity | 97.9% ±1.2% | arXiv:2606.19632, verified 88.9% property sat. | **A** |
-| TPSC consensus acceptance rate | 0.97 | arXiv:2607.03628 | **A** |
-| TPSC inter-agent agreement | 0.82 | arXiv:2607.03628 | **A** |
-| TPSC runtime (LLM swarm) | 24.09s avg | arXiv:2607.03628 | **A** |
-| Ruflo swarm throughput vs IB+VQ SOTA | No 2026 benchmark | — | *No 2026 data available for Ruflo swarm messaging* |
+| Metric                               | Value             | Method                                         | Grade                                              |
+| ------------------------------------ | ----------------- | ---------------------------------------------- | -------------------------------------------------- |
+| IB+VQ task performance vs baseline   | +181.8%           | ICRA 2026 accepted paper, arXiv:2602.02035     | **A**                                              |
+| IB+VQ bandwidth reduction            | −41.4%            | Same paper                                     | **A**                                              |
+| Decision-tree distillation fidelity  | 97.9% ±1.2%       | arXiv:2606.19632, verified 88.9% property sat. | **A**                                              |
+| TPSC consensus acceptance rate       | 0.97              | arXiv:2607.03628                               | **A**                                              |
+| TPSC inter-agent agreement           | 0.82              | arXiv:2607.03628                               | **A**                                              |
+| TPSC runtime (LLM swarm)             | 24.09s avg        | arXiv:2607.03628                               | **A**                                              |
+| Ruflo swarm throughput vs IB+VQ SOTA | No 2026 benchmark | —                                              | _No 2026 data available for Ruflo swarm messaging_ |
 
 ---
 
@@ -77,7 +77,7 @@ SWE-Review-Bench (arXiv:2607.06065, July 2026, Grade A) establishes generate-rev
 **Report SHA-256:** `a0689b45d3b387be1292f7d71ab6295c3743ea848be4d37e18b44cf74e4e911d`
 **Witness stamp:** `f9d26aa1ca90ededce81732910bb237da44c7c7ead36e10181b0732b850393e1`
 
-*Verifier: fetch raw gist, sha256sum the file, concatenate (hash||commit) via `printf '%s%s' <hash> <commit> | sha256sum` — must equal Witness stamp.*
+_Verifier: fetch raw gist, sha256sum the file, concatenate (hash||commit) via `printf '%s%s' <hash> <commit> | sha256sum` — must equal Witness stamp._
 
 ---
 

@@ -155,12 +155,12 @@ A publish is only acknowledged after the storefront runtime confirms it holds th
 
 ## 12. Residual gaps / named TBD owners
 
-| Item | Owner |
-| --- | --- |
-| `theme.payload_byte_cap_*` per plan | **NE** (product lead, in `docs/16-product-pricing`) |
-| Runtime ACK SLO window | **TBD** (`docs/14-operations`) |
-| Semver pre-release policy edge (0.x, nightly) | **NE** (platform eng, in `docs/04-builder/theme-runtime.md`) |
-| Marketplace review persona QOF (via `marketplace.md`) | platform eng + platform legal (gap seats in `licensing.md`) |
-| OAuth scope dependency (`docs/13-export-sdk/oauth.md` — **not yet approved**) | platform eng |
+| Item                                                                          | Owner                                                        |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `theme.payload_byte_cap_*` per plan                                           | **NE** (product lead, in `docs/16-product-pricing`)          |
+| Runtime ACK SLO window                                                        | **TBD** (`docs/14-operations`)                               |
+| Semver pre-release policy edge (0.x, nightly)                                 | **NE** (platform eng, in `docs/04-builder/theme-runtime.md`) |
+| Marketplace review persona QOF (via `marketplace.md`)                         | platform eng + platform legal (gap seats in `licensing.md`)  |
+| OAuth scope dependency (`docs/13-export-sdk/oauth.md` — **not yet approved**) | platform eng                                                 |
 
 No number above is invented; the SLO, byte caps, burst limit are named TBDs or in the cited docs.

@@ -1,53 +1,15 @@
 {
   "enums": {
-    "kyc_state": [
-      "pending",
-      "submitted",
-      "verified",
-      "rejected"
-    ],
-    "ai_channel": [
-      "widget",
-      "admin"
-    ],
-    "kyc_status": [
-      "pending",
-      "verified",
-      "rejected"
-    ],
-    "pos_origin": [
-      "offline",
-      "online"
-    ],
-    "api_key_env": [
-      "test",
-      "live"
-    ],
-    "coupon_type": [
-      "fixed",
-      "percent",
-      "bogo",
-      "free_shipping"
-    ],
-    "market_kind": [
-      "theme",
-      "widget"
-    ],
-    "sync_status": [
-      "pending",
-      "synced",
-      "failed"
-    ],
-    "address_type": [
-      "shipping",
-      "billing"
-    ],
-    "billing_plan": [
-      "launch",
-      "growth",
-      "business",
-      "enterprise"
-    ],
+    "kyc_state": ["pending", "submitted", "verified", "rejected"],
+    "ai_channel": ["widget", "admin"],
+    "kyc_status": ["pending", "verified", "rejected"],
+    "pos_origin": ["offline", "online"],
+    "api_key_env": ["test", "live"],
+    "coupon_type": ["fixed", "percent", "bogo", "free_shipping"],
+    "market_kind": ["theme", "widget"],
+    "sync_status": ["pending", "synced", "failed"],
+    "address_type": ["shipping", "billing"],
+    "billing_plan": ["launch", "growth", "business", "enterprise"],
     "order_status": [
       "pending",
       "payment_pending",
@@ -71,34 +33,11 @@
       "cancelled",
       "reversed"
     ],
-    "product_kind": [
-      "physical",
-      "digital",
-      "service",
-      "subscription"
-    ],
-    "staff_status": [
-      "invited",
-      "active",
-      "suspended",
-      "removed"
-    ],
-    "coupon_status": [
-      "draft",
-      "active",
-      "paused",
-      "expired"
-    ],
-    "merchant_role": [
-      "owner",
-      "admin",
-      "staff",
-      "viewer"
-    ],
-    "payout_method": [
-      "mfs",
-      "bank"
-    ],
+    "product_kind": ["physical", "digital", "service", "subscription"],
+    "staff_status": ["invited", "active", "suspended", "removed"],
+    "coupon_status": ["draft", "active", "paused", "expired"],
+    "merchant_role": ["owner", "admin", "staff", "viewer"],
+    "payout_method": ["mfs", "bank"],
     "return_status": [
       "requested",
       "approved",
@@ -107,16 +46,8 @@
       "refunded",
       "cancelled"
     ],
-    "review_status": [
-      "pending",
-      "published",
-      "rejected"
-    ],
-    "catalog_status": [
-      "draft",
-      "active",
-      "archived"
-    ],
+    "review_status": ["pending", "published", "rejected"],
+    "catalog_status": ["draft", "active", "archived"],
     "dispute_status": [
       "open",
       "evidence_submitted",
@@ -124,12 +55,7 @@
       "lost",
       "withdrawn"
     ],
-    "invoice_status": [
-      "open",
-      "paid",
-      "past_due",
-      "void"
-    ],
+    "invoice_status": ["open", "paid", "past_due", "void"],
     "payment_method": [
       "cod",
       "bkash",
@@ -148,16 +74,8 @@
       "portwallet",
       "piprapay"
     ],
-    "product_status": [
-      "draft",
-      "active",
-      "archived"
-    ],
-    "ai_message_role": [
-      "customer",
-      "bot",
-      "agent"
-    ],
+    "product_status": ["draft", "active", "archived"],
+    "ai_message_role": ["customer", "bot", "agent"],
     "approval_status": [
       "pending",
       "approved",
@@ -165,28 +83,10 @@
       "expired",
       "cancelled"
     ],
-    "consent_channel": [
-      "email",
-      "sms",
-      "push"
-    ],
-    "consent_purpose": [
-      "marketing",
-      "cart_recovery",
-      "stock_alerts"
-    ],
-    "merchant_status": [
-      "active",
-      "suspended",
-      "pending"
-    ],
-    "seo_entity_type": [
-      "store",
-      "product",
-      "collection",
-      "page",
-      "article"
-    ],
+    "consent_channel": ["email", "sms", "push"],
+    "consent_purpose": ["marketing", "cart_recovery", "stock_alerts"],
+    "merchant_status": ["active", "suspended", "pending"],
+    "seo_entity_type": ["store", "product", "collection", "page", "article"],
     "shipment_status": [
       "created",
       "pickup_scheduled",
@@ -197,24 +97,9 @@
       "failed_attempt",
       "returned"
     ],
-    "transfer_status": [
-      "draft",
-      "in_transit",
-      "received",
-      "cancelled"
-    ],
-    "cod_recon_status": [
-      "pending",
-      "matched",
-      "variance",
-      "cleared"
-    ],
-    "gift_card_status": [
-      "active",
-      "redeemed",
-      "expired",
-      "void"
-    ],
+    "transfer_status": ["draft", "in_transit", "received", "cancelled"],
+    "cod_recon_status": ["pending", "matched", "variance", "cleared"],
+    "gift_card_status": ["active", "redeemed", "expired", "void"],
     "pos_order_status": [
       "local_pending",
       "synced",
@@ -222,11 +107,7 @@
       "delivered",
       "voided"
     ],
-    "staff_mfa_status": [
-      "none",
-      "enrolled",
-      "enforced"
-    ],
+    "staff_mfa_status": ["none", "enrolled", "enforced"],
     "export_job_status": [
       "queued",
       "generating",
@@ -236,12 +117,7 @@
       "expired",
       "fail_retry"
     ],
-    "fraud_case_status": [
-      "open",
-      "evidence_requested",
-      "approved",
-      "rejected"
-    ],
+    "fraud_case_status": ["open", "evidence_requested", "approved", "rejected"],
     "fulfilment_status": [
       "pending",
       "packed",
@@ -256,15 +132,8 @@
       "product_events",
       "analytics_raw"
     ],
-    "pos_payment_method": [
-      "cash",
-      "card",
-      "cod"
-    ],
-    "pos_session_status": [
-      "open",
-      "closed"
-    ],
+    "pos_payment_method": ["cash", "card", "cod"],
+    "pos_session_status": ["open", "closed"],
     "subscription_status": [
       "trial",
       "active",
@@ -294,27 +163,10 @@
       "dead_letter",
       "replayed"
     ],
-    "fraud_blacklist_kind": [
-      "phone",
-      "email"
-    ],
-    "payout_account_state": [
-      "pending",
-      "verified",
-      "rejected",
-      "disabled"
-    ],
-    "abandoned_cart_status": [
-      "active",
-      "recovered",
-      "lost"
-    ],
-    "market_install_status": [
-      "installed",
-      "trial",
-      "paused",
-      "rolled_back"
-    ],
+    "fraud_blacklist_kind": ["phone", "email"],
+    "payout_account_state": ["pending", "verified", "rejected", "disabled"],
+    "abandoned_cart_status": ["active", "recovered", "lost"],
+    "market_install_status": ["installed", "trial", "paused", "rolled_back"],
     "market_listing_status": [
       "draft",
       "review",
@@ -322,17 +174,8 @@
       "paused",
       "archived"
     ],
-    "notification_severity": [
-      "info",
-      "warning",
-      "critical"
-    ],
-    "ai_conversation_status": [
-      "open",
-      "needs_agent",
-      "resolved",
-      "closed"
-    ],
+    "notification_severity": ["info", "warning", "critical"],
+    "ai_conversation_status": ["open", "needs_agent", "resolved", "closed"],
     "settlement_file_status": [
       "received",
       "parsed",

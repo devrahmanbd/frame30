@@ -14,7 +14,11 @@ type WidgetDataState = {
   pending: boolean;
 };
 
-const Ctx = createContext<WidgetDataState>({ bundle: EMPTY_BUNDLE, map: null, pending: false });
+const Ctx = createContext<WidgetDataState>({
+  bundle: EMPTY_BUNDLE,
+  map: null,
+  pending: false,
+});
 
 /**
  * Phase 0.3 SSR handoff. The server loader resolves the batch and ships the
@@ -32,12 +36,18 @@ export function WidgetDataProvider({
   pending?: boolean;
   children: ReactNode;
 }) {
-  const value = useMemo(() => ({ bundle, map, pending }), [bundle, map, pending]);
+  const value = useMemo(
+    () => ({ bundle, map, pending }),
+    [bundle, map, pending],
+  );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
 /** Rows resolved for one node, plus whether the batch is still loading. */
-export function useNodeData(nodeId: string): { rows: WidgetRow[] | undefined; pending: boolean } {
+export function useNodeData(nodeId: string): {
+  rows: WidgetRow[] | undefined;
+  pending: boolean;
+} {
   const { bundle, map, pending } = useContext(Ctx);
   const rows = nodeRows(bundle, map, nodeId);
   return { rows, pending: pending && rows === undefined };

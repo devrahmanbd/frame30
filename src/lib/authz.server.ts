@@ -57,7 +57,11 @@ export async function loadActor(
   merchantId?: string | null,
 ): Promise<Actor> {
   const [{ data: admin }, { data: memberships }] = await Promise.all([
-    supabase.from("platform_admins").select("user_id").eq("user_id", userId).maybeSingle(),
+    supabase
+      .from("platform_admins")
+      .select("user_id")
+      .eq("user_id", userId)
+      .maybeSingle(),
     supabase
       .from("merchant_members")
       .select("merchant_id, role, role_id, status")
@@ -97,6 +101,9 @@ export async function loadActor(
 }
 
 /** Throws `ForbiddenError` unless the actor holds `permission`. */
-export function assertPermission(permission: AnyPermission, actor: AuthzContext): void {
+export function assertPermission(
+  permission: AnyPermission,
+  actor: AuthzContext,
+): void {
   if (!can(permission, actor)) throw new ForbiddenError(permission);
 }

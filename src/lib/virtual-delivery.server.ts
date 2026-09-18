@@ -88,10 +88,14 @@ export async function loadPools(db: Client, merchantId: string) {
     const rows = (codes ?? []).filter((c) => c.pool_id === pool.id);
     const available = rows.filter((c) => c.state === "available").length;
     const reserved = rows.filter((c) => c.state === "reserved").length;
-    const soldLast7Days = rows.filter((c) => c.delivered_at && c.delivered_at >= weekAgo).length;
+    const soldLast7Days = rows.filter(
+      (c) => c.delivered_at && c.delivered_at >= weekAgo,
+    ).length;
     return {
       ...pool,
-      productTitle: (pool.products as unknown as { title: string } | null)?.title ?? "Product",
+      productTitle:
+        (pool.products as unknown as { title: string } | null)?.title ??
+        "Product",
       delivered: rows.filter((c) => c.state === "delivered").length,
       health: stockHealth({
         available,
@@ -121,9 +125,11 @@ export async function savePool(
 ) {
   await enforceRateLimit("growth.write", merchantId);
   const channels = input.channels.filter((c) => c === "email" || c === "sms");
-  if (channels.length === 0) fail("no_channel", "Pick at least one way to send the code");
+  if (channels.length === 0)
+    fail("no_channel", "Pick at least one way to send the code");
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const payload = {
@@ -133,21 +139,38 @@ export async function savePool(
     name: input.name.trim().slice(0, 80) || "Codes",
     instructions: input.instructions?.slice(0, 2000) ?? null,
     instructions_bn: input.instructionsBn?.slice(0, 2000) ?? null,
-    low_stock_threshold: Math.min(10_000, Math.max(0, Math.trunc(input.lowStockThreshold))),
+    low_stock_threshold: Math.min(
+      10_000,
+      Math.max(0, Math.trunc(input.lowStockThreshold)),
+    ),
     auto_deliver: input.autoDeliver,
     channels,
     updated_at: new Date().toISOString(),
   };
 
   const query = input.id
-    ? admin.from("virtual_code_pools").update(payload).eq("id", input.id).eq("merchant_id", merchantId)
-    : admin.from("virtual_code_pools").upsert(payload, { onConflict: "merchant_id,product_id,variant_id" });
+    ? admin
+        .from("virtual_code_pools")
+        .update(payload)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
+    : admin
+        .from("virtual_code_pools")
+        .upsert(payload, { onConflict: "merchant_id,product_id,variant_id" });
   const { data, error } = await query.select("*").maybeSingle();
   if (error) fail("pool_save_failed", "Could not save this digital product");
 
-  await audit(admin, merchantId, "virtual", actor, input.id ? "pool.update" : "pool.create", data?.id ?? null, {
-    after: payload as unknown as Record<string, unknown>,
-  });
+  await audit(
+    admin,
+    merchantId,
+    "virtual",
+    actor,
+    input.id ? "pool.update" : "pool.create",
+    data?.id ?? null,
+    {
+      after: payload as unknown as Record<string, unknown>,
+    },
+  );
   return data;
 }
 
@@ -164,7 +187,8 @@ export async function importCodes(
 ) {
   return withSpan("virtual.import", async () => {
     await enforceRateLimit("virtual.import", merchantId);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const { data: pool } = await admin
@@ -177,7 +201,12 @@ export async function importCodes(
 
     const parsed = parseCodeBatch(args.raw);
     if (parsed.codes.length === 0) {
-      return { imported: 0, duplicatesInFile: parsed.duplicatesInFile, duplicatesInStock: 0, rejected: parsed.rejected };
+      return {
+        imported: 0,
+        duplicatesInFile: parsed.duplicatesInFile,
+        duplicatesInStock: 0,
+        rejected: parsed.rejected,
+      };
     }
 
     const batchId = crypto.randomUUID();
@@ -202,7 +231,10 @@ export async function importCodes(
     // than an error the merchant has to interpret.
     const { data: inserted, error } = await admin
       .from("virtual_codes")
-      .upsert(rows, { onConflict: "merchant_id,code_fingerprint", ignoreDuplicates: true })
+      .upsert(rows, {
+        onConflict: "merchant_id,code_fingerprint",
+        ignoreDuplicates: true,
+      })
       .select("id");
     if (error) fail("import_failed", "Could not import these codes");
 
@@ -234,8 +266,13 @@ export async function importCodes(
  * `state = 'available'`, so the database — not this process — arbitrates who
  * gets the key when two shoppers check out at the same instant.
  */
-export async function reserveCode(merchantId: string, poolId: string, orderId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+export async function reserveCode(
+  merchantId: string,
+  poolId: string,
+  orderId: string,
+) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   for (let attempt = 0; attempt < 5; attempt += 1) {
@@ -261,7 +298,9 @@ export async function reserveCode(merchantId: string, poolId: string, orderId: s
         state: "reserved",
         order_id: orderId,
         reserved_at: now.toISOString(),
-        reserved_until: new Date(now.getTime() + RESERVATION_MINUTES * 60_000).toISOString(),
+        reserved_until: new Date(
+          now.getTime() + RESERVATION_MINUTES * 60_000,
+        ).toISOString(),
       })
       .eq("id", candidate.id)
       .eq("state", "available")
@@ -272,15 +311,24 @@ export async function reserveCode(merchantId: string, poolId: string, orderId: s
       return { codeId: claimed.id };
     }
   }
-  return fail("allocation_contention", "Too many people are buying this right now. Try again.");
+  return fail(
+    "allocation_contention",
+    "Too many people are buying this right now. Try again.",
+  );
 }
 
 export async function releaseReservation(codeId: string, reason: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const { data } = await admin
     .from("virtual_codes")
-    .update({ state: "available", order_id: null, reserved_at: null, reserved_until: null })
+    .update({
+      state: "available",
+      order_id: null,
+      reserved_at: null,
+      reserved_until: null,
+    })
     .eq("id", codeId)
     .eq("state", "reserved")
     .select("id")
@@ -295,7 +343,12 @@ export async function releaseReservation(codeId: string, reason: string) {
 export async function sweepExpiredReservations(admin: Client, limit = 500) {
   const { data } = await admin
     .from("virtual_codes")
-    .update({ state: "available", order_id: null, reserved_at: null, reserved_until: null })
+    .update({
+      state: "available",
+      order_id: null,
+      reserved_at: null,
+      reserved_until: null,
+    })
     .eq("state", "reserved")
     .lt("reserved_until", new Date().toISOString())
     .select("id")
@@ -321,7 +374,8 @@ export async function fulfilOrderItem(
   },
 ) {
   return withSpan("virtual.fulfil", async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as Client;
 
     const { data: existing } = await admin
@@ -333,7 +387,9 @@ export async function fulfilOrderItem(
       .in("state", ["reserved", "delivered"])
       .maybeSingle();
 
-    const codeId = existing?.id ?? (await reserveCode(merchantId, args.poolId, args.orderId)).codeId;
+    const codeId =
+      existing?.id ??
+      (await reserveCode(merchantId, args.poolId, args.orderId)).codeId;
 
     const { data: pool } = await admin
       .from("virtual_code_pools")
@@ -409,12 +465,19 @@ export async function fulfilOrderItem(
  */
 export async function revealCode(
   db: Client,
-  args: { codeId: string; merchantId: string; actor: string; customerId?: string | null; staff: boolean },
+  args: {
+    codeId: string;
+    merchantId: string;
+    actor: string;
+    customerId?: string | null;
+    staff: boolean;
+  },
 ) {
   await enforceRateLimit("virtual.reveal", `${args.merchantId}:${args.actor}`);
   await enforceRateLimit("virtual.reveal_code", args.codeId);
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const { data: code } = await admin
@@ -422,7 +485,8 @@ export async function revealCode(
     .select("id, merchant_id, customer_id, state, code_sealed, code_mask")
     .eq("id", args.codeId)
     .maybeSingle();
-  if (!code || code.merchant_id !== args.merchantId) fail("not_found", "That code was not found");
+  if (!code || code.merchant_id !== args.merchantId)
+    fail("not_found", "That code was not found");
   if (code.state === "revoked") fail("revoked", "This code has been cancelled");
   if (!args.staff && code.customer_id !== args.customerId) {
     log("warn", "virtual.reveal_denied", { codeId: args.codeId });
@@ -430,12 +494,24 @@ export async function revealCode(
   }
 
   const plain = await unsealSecret(code.code_sealed);
-  if (!plain) fail("unseal_failed", "This code could not be unlocked. Contact support.");
+  if (!plain)
+    fail("unseal_failed", "This code could not be unlocked. Contact support.");
 
-  await admin.from("virtual_codes").update({ revealed_at: new Date().toISOString() }).eq("id", code.id);
-  await audit(admin, args.merchantId, "virtual", args.actor, "code.reveal", code.id, {
-    after: { mask: code.code_mask, staff: args.staff },
-  });
+  await admin
+    .from("virtual_codes")
+    .update({ revealed_at: new Date().toISOString() })
+    .eq("id", code.id);
+  await audit(
+    admin,
+    args.merchantId,
+    "virtual",
+    args.actor,
+    "code.reveal",
+    code.id,
+    {
+      after: { mask: code.code_mask, staff: args.staff },
+    },
+  );
   incr("virtual.code_revealed", { staff: String(args.staff) });
   return { code: plain, mask: code.code_mask };
 }
@@ -448,9 +524,11 @@ export async function revokeCode(
   args: { codeId: string; reason: string },
 ) {
   await enforceRateLimit("growth.write", merchantId);
-  if (args.reason.trim().length < 3) fail("reason_required", "Give a reason for cancelling this code");
+  if (args.reason.trim().length < 3)
+    fail("reason_required", "Give a reason for cancelling this code");
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const { data: before } = await admin
     .from("virtual_codes")
@@ -463,7 +541,11 @@ export async function revokeCode(
 
   await admin
     .from("virtual_codes")
-    .update({ state: "revoked", revoked_at: new Date().toISOString(), revoked_reason: args.reason.slice(0, 200) })
+    .update({
+      state: "revoked",
+      revoked_at: new Date().toISOString(),
+      revoked_reason: args.reason.slice(0, 200),
+    })
     .eq("id", args.codeId);
   await admin
     .from("virtual_deliveries")
@@ -482,26 +564,45 @@ export async function revokeCode(
 
 /* ------------------------------------------------------------------- delivery */
 
-type SendResult = { ok: boolean; status: number | null; message: string; providerId?: string };
+type SendResult = {
+  ok: boolean;
+  status: number | null;
+  message: string;
+  providerId?: string;
+};
 
 /**
  * Hands the message to the configured provider. Kept as one seam so the queue,
  * retry and audit behaviour is identical no matter which provider a merchant
  * uses, and so tests can exercise the queue without network access.
  */
-async function sendMessage(channel: DeliveryChannel, recipient: string, body: string): Promise<SendResult> {
-  const endpoint = process.env[channel === "email" ? "EMAIL_SEND_URL" : "SMS_SEND_URL"];
-  const token = process.env[channel === "email" ? "EMAIL_SEND_TOKEN" : "SMS_SEND_TOKEN"];
+async function sendMessage(
+  channel: DeliveryChannel,
+  recipient: string,
+  body: string,
+): Promise<SendResult> {
+  const endpoint =
+    process.env[channel === "email" ? "EMAIL_SEND_URL" : "SMS_SEND_URL"];
+  const token =
+    process.env[channel === "email" ? "EMAIL_SEND_TOKEN" : "SMS_SEND_TOKEN"];
   if (!endpoint || !token) {
     return { ok: false, status: 401, message: "provider not configured" };
   }
   try {
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ to: recipient, body }),
     });
-    if (!res.ok) return { ok: false, status: res.status, message: (await res.text()).slice(0, 200) };
+    if (!res.ok)
+      return {
+        ok: false,
+        status: res.status,
+        message: (await res.text()).slice(0, 200),
+      };
     return { ok: true, status: res.status, message: "sent" };
   } catch (err) {
     return { ok: false, status: null, message: String(err).slice(0, 200) };
@@ -514,7 +615,8 @@ async function sendMessage(channel: DeliveryChannel, recipient: string, body: st
  */
 export async function processDeliveryQueue(limit = 25) {
   await enforceRateLimit("virtual.deliver", "global");
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const workerId = crypto.randomUUID();
 
@@ -533,7 +635,11 @@ export async function processDeliveryQueue(limit = 25) {
   for (const row of due ?? []) {
     const { data: locked } = await admin
       .from("virtual_deliveries")
-      .update({ state: "sending", locked_at: new Date().toISOString(), locked_by: workerId })
+      .update({
+        state: "sending",
+        locked_at: new Date().toISOString(),
+        locked_by: workerId,
+      })
       .eq("id", row.id)
       .in("state", ["queued", "failed"])
       .select("id")
@@ -551,7 +657,10 @@ export async function processDeliveryQueue(limit = 25) {
 
     // A code revoked between queueing and sending must never go out.
     if (!code || code.state === "revoked") {
-      await admin.from("virtual_deliveries").update({ state: "cancelled" }).eq("id", row.id);
+      await admin
+        .from("virtual_deliveries")
+        .update({ state: "cancelled" })
+        .eq("id", row.id);
       skipped += 1;
       continue;
     }
@@ -560,7 +669,11 @@ export async function processDeliveryQueue(limit = 25) {
     if (!plain) {
       await admin
         .from("virtual_deliveries")
-        .update({ state: "failed", last_error_code: "unseal_failed", attempts: row.attempts + 1 })
+        .update({
+          state: "failed",
+          last_error_code: "unseal_failed",
+          attempts: row.attempts + 1,
+        })
         .eq("id", row.id);
       failed += 1;
       continue;
@@ -574,7 +687,11 @@ export async function processDeliveryQueue(limit = 25) {
     const body = `${pool?.name ?? "Your code"}: ${plain}${pool?.instructions ? `\n\n${pool.instructions}` : ""}`;
 
     const attempt = row.attempts + 1;
-    const result = await sendMessage(row.channel as DeliveryChannel, row.recipient, body);
+    const result = await sendMessage(
+      row.channel as DeliveryChannel,
+      row.recipient,
+      body,
+    );
 
     if (result.ok) {
       await admin
@@ -601,7 +718,9 @@ export async function processDeliveryQueue(limit = 25) {
       .update({
         state: retry ? "queued" : "failed",
         attempts: attempt,
-        next_attempt_at: new Date(Date.now() + nextAttemptDelayMs(attempt, row.id)).toISOString(),
+        next_attempt_at: new Date(
+          Date.now() + nextAttemptDelayMs(attempt, row.id),
+        ).toISOString(),
         last_error_code: error.code,
         last_error_message: explainDelivery(error.code),
         locked_by: null,
@@ -610,28 +729,57 @@ export async function processDeliveryQueue(limit = 25) {
     failed += 1;
     incr("virtual.delivery_failed", { channel: row.channel, code: error.code });
     if (!retry) {
-      log("error", "virtual.delivery_dead", { deliveryId: row.id, code: error.code, attempts: attempt });
+      log("error", "virtual.delivery_dead", {
+        deliveryId: row.id,
+        code: error.code,
+        attempts: attempt,
+      });
     }
   }
 
-  return { sent, failed, skipped, considered: due?.length ?? 0, maxAttempts: MAX_DELIVERY_ATTEMPTS };
+  return {
+    sent,
+    failed,
+    skipped,
+    considered: due?.length ?? 0,
+    maxAttempts: MAX_DELIVERY_ATTEMPTS,
+  };
 }
 
 /** Puts a dead delivery back in the queue after the merchant fixes the cause. */
-export async function retryDelivery(db: Client, merchantId: string, actor: string, deliveryId: string) {
+export async function retryDelivery(
+  db: Client,
+  merchantId: string,
+  actor: string,
+  deliveryId: string,
+) {
   await enforceRateLimit("growth.write", merchantId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const { data } = await admin
     .from("virtual_deliveries")
-    .update({ state: "queued", attempts: 0, next_attempt_at: new Date().toISOString(), last_error_code: null })
+    .update({
+      state: "queued",
+      attempts: 0,
+      next_attempt_at: new Date().toISOString(),
+      last_error_code: null,
+    })
     .eq("id", deliveryId)
     .eq("merchant_id", merchantId)
     .eq("state", "failed")
     .select("id")
     .maybeSingle();
   if (!data) fail("not_retryable", "That delivery cannot be retried");
-  await audit(admin, merchantId, "virtual", actor, "delivery.retry", deliveryId, {});
+  await audit(
+    admin,
+    merchantId,
+    "virtual",
+    actor,
+    "delivery.retry",
+    deliveryId,
+    {},
+  );
   return { queued: true };
 }
 
@@ -645,13 +793,18 @@ export async function loadDeliveries(db: Client, merchantId: string) {
     .limit(100);
   return (data ?? []).map((row) => ({
     ...row,
-    mask: (row.virtual_codes as unknown as { code_mask: string } | null)?.code_mask ?? "••••",
-    explanation: row.last_error_code ? explainDelivery(row.last_error_code) : null,
+    mask:
+      (row.virtual_codes as unknown as { code_mask: string } | null)
+        ?.code_mask ?? "••••",
+    explanation: row.last_error_code
+      ? explainDelivery(row.last_error_code)
+      : null,
   }));
 }
 
 export async function runVirtualSweep() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const released = await sweepExpiredReservations(admin);
   const delivered = await processDeliveryQueue(50);

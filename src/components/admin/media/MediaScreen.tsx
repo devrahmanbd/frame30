@@ -71,8 +71,14 @@ export function MediaScreen() {
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
-  const [confirm, setConfirm] = useState<null | { ids: string[]; label: string }>(null);
-  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [confirm, setConfirm] = useState<null | {
+    ids: string[];
+    label: string;
+  }>(null);
+  const [progress, setProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const anchor = useRef<string | null>(null);
 
@@ -83,14 +89,18 @@ export function MediaScreen() {
   });
 
   const items = useMemo(() => query.data?.items ?? [], [query.data]);
-  const visible = useMemo(() => filterAttachments(items, filters), [items, filters]);
+  const visible = useMemo(
+    () => filterAttachments(items, filters),
+    [items, filters],
+  );
   const counts = useMemo(() => typeCounts(items), [items]);
   const months = useMemo(() => monthOptions(items), [items]);
   const open = visible.find((item) => item.id === openId) ?? null;
   const totalBytes = items.reduce((sum, item) => sum + item.sizeBytes, 0);
   const missingAlt = missingAltCount(items);
 
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["media", "library"] });
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["media", "library"] });
 
   const uploadFiles = useMutation({
     mutationFn: async (files: File[]) => {
@@ -113,7 +123,8 @@ export function MediaScreen() {
   });
 
   const saveDetails = useMutation({
-    mutationFn: (input: AttachmentPatch & { id: string }) => patch({ data: input }),
+    mutationFn: (input: AttachmentPatch & { id: string }) =>
+      patch({ data: input }),
     onSuccess: () => {
       setError(null);
       refresh();
@@ -135,7 +146,9 @@ export function MediaScreen() {
 
   const toggle = (item: Attachment, shift: boolean) => {
     setSelected((current) =>
-      shift ? selectRange(visible, anchor.current, item.id, current) : toggleSelected(current, item.id),
+      shift
+        ? selectRange(visible, anchor.current, item.id, current)
+        : toggleSelected(current, item.id),
     );
     anchor.current = item.id;
   };
@@ -153,10 +166,18 @@ export function MediaScreen() {
             role="group"
             aria-label="Library view"
           >
-            <ViewButton active={view === "list"} label="List view" onClick={() => setView("list")}>
+            <ViewButton
+              active={view === "list"}
+              label="List view"
+              onClick={() => setView("list")}
+            >
               <List className="size-4" aria-hidden />
             </ViewButton>
-            <ViewButton active={view === "grid"} label="Grid view" onClick={() => setView("grid")}>
+            <ViewButton
+              active={view === "grid"}
+              label="Grid view"
+              onClick={() => setView("grid")}
+            >
               <LayoutGrid className="size-4" aria-hidden />
             </ViewButton>
           </div>
@@ -171,7 +192,11 @@ export function MediaScreen() {
           >
             {selecting ? "Cancel select" : "Bulk select"}
           </button>
-          <button type="button" className={btnPrimary} onClick={() => setUploadOpen((current) => !current)}>
+          <button
+            type="button"
+            className={btnPrimary}
+            onClick={() => setUploadOpen((current) => !current)}
+          >
             <Plus className="size-4" aria-hidden />
             <span className="ml-1">Add media file</span>
           </button>
@@ -200,15 +225,24 @@ export function MediaScreen() {
               className={inputClass}
               placeholder="Search by name, title or alt text"
               value={filters.query}
-              onChange={(event) => setFilters({ ...filters, query: event.target.value })}
+              onChange={(event) =>
+                setFilters({ ...filters, query: event.target.value })
+              }
             />
           </label>
           <label className="space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Type</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Type
+            </span>
             <select
               className={inputClass}
               value={filters.type}
-              onChange={(event) => setFilters({ ...filters, type: event.target.value as MediaTypeFilter })}
+              onChange={(event) =>
+                setFilters({
+                  ...filters,
+                  type: event.target.value as MediaTypeFilter,
+                })
+              }
             >
               {TYPE_OPTIONS.map((option) => (
                 <option key={option.key} value={option.key}>
@@ -218,11 +252,15 @@ export function MediaScreen() {
             </select>
           </label>
           <label className="space-y-1">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Date</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Date
+            </span>
             <select
               className={inputClass}
               value={filters.month}
-              onChange={(event) => setFilters({ ...filters, month: event.target.value })}
+              onChange={(event) =>
+                setFilters({ ...filters, month: event.target.value })
+              }
             >
               <option value="all">All dates</option>
               {months.map((month) => (
@@ -233,15 +271,22 @@ export function MediaScreen() {
             </select>
           </label>
           {filtersActive(filters) && (
-            <button type="button" className={btnGhost} onClick={() => setFilters(EMPTY_FILTERS)}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => setFilters(EMPTY_FILTERS)}
+            >
               Clear filters
             </button>
           )}
         </div>
 
         <p className="mt-3 text-xs text-muted-foreground" aria-live="polite">
-          {visible.length} of {items.length} files · {formatBytes(totalBytes)} stored
-          {missingAlt > 0 ? ` · ${missingAlt} image${missingAlt === 1 ? "" : "s"} missing alt text` : ""}
+          {visible.length} of {items.length} files · {formatBytes(totalBytes)}{" "}
+          stored
+          {missingAlt > 0
+            ? ` · ${missingAlt} image${missingAlt === 1 ? "" : "s"} missing alt text`
+            : ""}
         </p>
       </Card>
 
@@ -254,7 +299,11 @@ export function MediaScreen() {
       ) : visible.length === 0 ? (
         <EmptyState
           icon={<Images className="size-6" aria-hidden />}
-          title={filtersActive(filters) ? "No files match those filters" : "Your library is empty"}
+          title={
+            filtersActive(filters)
+              ? "No files match those filters"
+              : "Your library is empty"
+          }
           description={
             filtersActive(filters)
               ? "Try a different search, type or month."
@@ -262,11 +311,19 @@ export function MediaScreen() {
           }
           action={
             filtersActive(filters) ? (
-              <button type="button" className={btnPrimary} onClick={() => setFilters(EMPTY_FILTERS)}>
+              <button
+                type="button"
+                className={btnPrimary}
+                onClick={() => setFilters(EMPTY_FILTERS)}
+              >
                 Clear filters
               </button>
             ) : (
-              <button type="button" className={btnPrimary} onClick={() => setUploadOpen(true)}>
+              <button
+                type="button"
+                className={btnPrimary}
+                onClick={() => setUploadOpen(true)}
+              >
                 Add media file
               </button>
             )
@@ -358,7 +415,9 @@ function ViewButton({
       onClick={onClick}
       className={cn(
         "grid size-10 place-items-center rounded-fq-sm transition-colors",
-        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+        active
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {children}

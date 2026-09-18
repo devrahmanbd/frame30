@@ -33,13 +33,17 @@ export class CurrencyGateError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
 async function assertMerchantAdmin(db: Client, merchantId: string) {
-  const { data, error } = await db.rpc("is_merchant_admin", { _merchant_id: merchantId });
-  if (error || data !== true) throw new CurrencyGateError("currency.forbidden", 403);
+  const { data, error } = await db.rpc("is_merchant_admin", {
+    _merchant_id: merchantId,
+  });
+  if (error || data !== true)
+    throw new CurrencyGateError("currency.forbidden", 403);
 }
 
 async function loadSettings(merchantId: string) {
@@ -55,7 +59,8 @@ async function loadSettings(merchantId: string) {
     .insert({ merchant_id: merchantId })
     .select("*")
     .single();
-  if (error || !created) throw new CurrencyGateError("currency.init_failed", 500);
+  if (error || !created)
+    throw new CurrencyGateError("currency.init_failed", 500);
   return created;
 }
 
@@ -66,20 +71,37 @@ export type CurrencyState = {
   settlementCode: string;
   consentAt: string | null;
   verdict: GateVerdict;
-  fx: { rate: number | null; ageSeconds: number | null; source: string | null; driftAlert: boolean };
+  fx: {
+    rate: number | null;
+    ageSeconds: number | null;
+    source: string | null;
+    driftAlert: boolean;
+  };
   lastGateAt: string | null;
 };
 
 /** Evaluates the gate now; returns both the stored intent and the enforced mode. */
-export async function currencyState(db: Client, merchantId: string, userId: string): Promise<CurrencyState> {
+export async function currencyState(
+  db: Client,
+  merchantId: string,
+  userId: string,
+): Promise<CurrencyState> {
   await enforceRateLimit("currency.read", `${merchantId}:${userId}`);
   const service = await admin();
   const settings = await loadSettings(merchantId);
   const now = new Date();
 
   const [sub, kyc, fx] = await Promise.all([
-    service.from("subscriptions").select("plan, status").eq("merchant_id", merchantId).maybeSingle(),
-    service.from("merchant_kyc").select("state").eq("merchant_id", merchantId).maybeSingle(),
+    service
+      .from("subscriptions")
+      .select("plan, status")
+      .eq("merchant_id", merchantId)
+      .maybeSingle(),
+    service
+      .from("merchant_kyc")
+      .select("state")
+      .eq("merchant_id", merchantId)
+      .maybeSingle(),
     service
       .from("fx_rates")
       .select("rate_ppm, effective_at, source")
@@ -89,13 +111,18 @@ export async function currencyState(db: Client, merchantId: string, userId: stri
       .limit(30),
   ]);
 
-  const rates = (fx.data ?? []) as { rate_ppm: number; effective_at: string; source: string }[];
+  const rates = (fx.data ?? []) as {
+    rate_ppm: number;
+    effective_at: string;
+    source: string;
+  }[];
   const newest = rates[0] ?? null;
   const subscription = sub.data as { plan: string; status: string } | null;
   const verdict = evaluateCurrencyGate({
     planTier: subscription?.plan ?? null,
     subscriptionStatus: subscription?.status ?? null,
-    entitled: subscription?.plan === "business" || subscription?.plan === "enterprise",
+    entitled:
+      subscription?.plan === "business" || subscription?.plan === "enterprise",
     consentAt: settings.consent_at,
     fxSnapshotAt: newest?.effective_at ?? null,
     kycState: (kyc.data as { state: string } | null)?.state ?? null,
@@ -112,9 +139,16 @@ export async function currencyState(db: Client, merchantId: string, userId: stri
       effectiveAt: r.effective_at,
     })),
   );
-  const maxDriftBps = audit.reduce((max, row) => Math.max(max, Math.abs(row.driftBps)), 0);
+  const maxDriftBps = audit.reduce(
+    (max, row) => Math.max(max, Math.abs(row.driftBps)),
+    0,
+  );
   const storedMode = settings.mode as CurrencyMode;
-  const effectiveMode: CurrencyMode = verdict.allowed ? storedMode : storedMode === "usd_enabled" ? "bdt_locked" : storedMode;
+  const effectiveMode: CurrencyMode = verdict.allowed
+    ? storedMode
+    : storedMode === "usd_enabled"
+      ? "bdt_locked"
+      : storedMode;
 
   if (storedMode === "usd_enabled" && !verdict.allowed) {
     // Fail closed and record why — a silent downgrade would be unauditable.
@@ -128,7 +162,10 @@ export async function currencyState(db: Client, merchantId: string, userId: stri
       })
       .eq("merchant_id", merchantId);
     incr("framique_currency_gate_total", { outcome: "auto_locked" });
-    log("warn", "currency.auto_locked", { merchantId, denied: verdict.deniedFor });
+    log("warn", "currency.auto_locked", {
+      merchantId,
+      denied: verdict.deniedFor,
+    });
   }
 
   return {
@@ -148,14 +185,22 @@ export async function currencyState(db: Client, merchantId: string, userId: stri
   };
 }
 
-export async function recordConsent(db: Client, merchantId: string, userId: string) {
+export async function recordConsent(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   await assertMerchantAdmin(db, merchantId);
   await enforceRateLimit("currency.write", `${merchantId}:${userId}`);
   const service = await admin();
   await loadSettings(merchantId);
   await service
     .from("store_currency_settings")
-    .update({ consent_at: new Date().toISOString(), consent_by: userId, updated_at: new Date().toISOString() })
+    .update({
+      consent_at: new Date().toISOString(),
+      consent_by: userId,
+      updated_at: new Date().toISOString(),
+    })
     .eq("merchant_id", merchantId);
   incr("framique_currency_gate_total", { outcome: "consent" });
   return currencyState(db, merchantId, userId);
@@ -171,7 +216,10 @@ export async function setCurrencyMode(
   await enforceRateLimit("currency.write", `${merchantId}:${userId}`);
   const state = await currencyState(db, merchantId, userId);
   if (!currencyModeCanTransition(state.mode, mode)) {
-    throw new CurrencyGateError(`currency.illegal_transition:${state.mode}->${mode}`, 409);
+    throw new CurrencyGateError(
+      `currency.illegal_transition:${state.mode}->${mode}`,
+      409,
+    );
   }
   if (mode !== "bdt_locked" && !state.verdict.allowed) {
     incr("framique_currency_gate_total", { outcome: "denied" });

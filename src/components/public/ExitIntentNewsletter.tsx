@@ -37,11 +37,17 @@ function readSnooze(): Snoozed | null {
   }
 }
 
-function writeSnooze(reason: Snoozed["reason"], days = EXIT_INTENT_COOLDOWN_DAYS) {
+function writeSnooze(
+  reason: Snoozed["reason"],
+  days = EXIT_INTENT_COOLDOWN_DAYS,
+) {
   try {
     window.localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ until: Date.now() + days * 86_400_000, reason } satisfies Snoozed),
+      JSON.stringify({
+        until: Date.now() + days * 86_400_000,
+        reason,
+      } satisfies Snoozed),
     );
   } catch {
     /* storage denied — the in-memory guard below still holds for this page */
@@ -55,14 +61,12 @@ export function ExitIntentNewsletter() {
   const restoreFocusTo = useRef<Element | null>(null);
   const shownThisPage = useRef(false);
 
-  const close = useCallback(
-    (reason: Snoozed["reason"] = "dismissed") => {
-      setOpen(false);
-      writeSnooze(reason);
-      if (restoreFocusTo.current instanceof HTMLElement) restoreFocusTo.current.focus();
-    },
-    [],
-  );
+  const close = useCallback((reason: Snoozed["reason"] = "dismissed") => {
+    setOpen(false);
+    writeSnooze(reason);
+    if (restoreFocusTo.current instanceof HTMLElement)
+      restoreFocusTo.current.focus();
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -71,7 +75,8 @@ export function ExitIntentNewsletter() {
     if (snooze && snooze.until > Date.now()) return;
     if (!window.matchMedia("(pointer: fine)").matches) return;
 
-    const connection = (navigator as { connection?: { saveData?: boolean } }).connection;
+    const connection = (navigator as { connection?: { saveData?: boolean } })
+      .connection;
     if (connection?.saveData) return;
 
     const readyAt = Date.now() + EXIT_INTENT_MIN_DWELL_MS;
@@ -102,8 +107,11 @@ export function ExitIntentNewsletter() {
         return;
       }
       if (event.key !== "Tab" || !node) return;
-      const focusable = [...node.querySelectorAll<HTMLElement>("a[href],button,input,[tabindex]:not([tabindex='-1'])")]
-        .filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
+      const focusable = [
+        ...node.querySelectorAll<HTMLElement>(
+          "a[href],button,input,[tabindex]:not([tabindex='-1'])",
+        ),
+      ].filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
       if (focusable.length === 0) return;
       const first = focusable[0]!;
       const last = focusable[focusable.length - 1]!;
@@ -131,10 +139,15 @@ export function ExitIntentNewsletter() {
         aria-labelledby="exit-newsletter-title"
         className="w-full max-w-md rounded-fq-lg border border-border bg-card p-6 shadow-lift motion-safe:animate-in"
       >
-        <h2 id="exit-newsletter-title" className="font-bangla-display text-lg font-semibold">
+        <h2
+          id="exit-newsletter-title"
+          className="font-bangla-display text-lg font-semibold"
+        >
           {tk("news.exit.title")}
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground">{tk("news.exit.body")}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {tk("news.exit.body")}
+        </p>
         <NewsletterForm source="exit_intent" className="mt-4" />
         <button
           type="button"

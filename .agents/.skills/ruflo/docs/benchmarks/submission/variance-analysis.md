@@ -2,19 +2,19 @@
 
 ## All Measured Runs
 
-| Iter | Config | Questions | Score | Pass Rate | Cost USD | Notes |
-|------|--------|-----------|-------|-----------|----------|-------|
-| iter49 | Baseline (untuned) | 53 | 21 | 39.6% | ~$2.5 | Reference point |
-| iter49b | Baseline rerun | 53 | 23 | 43.4% | ~$2.5 | Variance check |
-| iter49.5 | Contrastive (no tools) | 53 | 23 | 43.4% | ~$2.2 | Confirms tool value |
-| iter51 | Max turns=24 | 53 | 24 | 45.3% | ~$3.2 | More turns = marginal gain |
-| iter53a | T2 narrowed extraction | 53 | 27 | 50.9% | ~$3.0 | **+6 vs baseline** |
-| iter53b | T2+T1 attachment tools | 53 | 29 | 54.7% | ~$3.4 | **+2 vs T2-only** |
-| iter56 | CodeAgent routing | 53 | 30 | 56.6% | ~$5.5 | Rejected (below stable) |
-| iter61b-sonnet | Hybrid routing, no visit_webpage | 53 | 31 | 58.5% | $4.10 | Neutral, not adopted |
-| iter60 | Hybrid + visit_webpage | 53 | 28 | 52.8% | $6.12 | visit_webpage drag |
-| iter63 | Convergence layer | 53 | 34 | 64.2% | $3.89 | **Current best, n=1** |
-| iter63b | Convergence n=2 | 53 | — | — | — | File empty, run pending |
+| Iter           | Config                           | Questions | Score | Pass Rate | Cost USD | Notes                      |
+| -------------- | -------------------------------- | --------- | ----- | --------- | -------- | -------------------------- |
+| iter49         | Baseline (untuned)               | 53        | 21    | 39.6%     | ~$2.5    | Reference point            |
+| iter49b        | Baseline rerun                   | 53        | 23    | 43.4%     | ~$2.5    | Variance check             |
+| iter49.5       | Contrastive (no tools)           | 53        | 23    | 43.4%     | ~$2.2    | Confirms tool value        |
+| iter51         | Max turns=24                     | 53        | 24    | 45.3%     | ~$3.2    | More turns = marginal gain |
+| iter53a        | T2 narrowed extraction           | 53        | 27    | 50.9%     | ~$3.0    | **+6 vs baseline**         |
+| iter53b        | T2+T1 attachment tools           | 53        | 29    | 54.7%     | ~$3.4    | **+2 vs T2-only**          |
+| iter56         | CodeAgent routing                | 53        | 30    | 56.6%     | ~$5.5    | Rejected (below stable)    |
+| iter61b-sonnet | Hybrid routing, no visit_webpage | 53        | 31    | 58.5%     | $4.10    | Neutral, not adopted       |
+| iter60         | Hybrid + visit_webpage           | 53        | 28    | 52.8%     | $6.12    | visit_webpage drag         |
+| iter63         | Convergence layer                | 53        | 34    | 64.2%     | $3.89    | **Current best, n=1**      |
+| iter63b        | Convergence n=2                  | 53        | —     | —         | —        | File empty, run pending    |
 
 ## n=4 T2+T1 Block Statistics
 
@@ -35,6 +35,7 @@ Approximately 22 questions. These are single-hop factual lookups, math problems,
 
 **Stable FAIL** (wrong in all available runs):
 Approximately 12 questions. These include:
+
 - Video analysis requiring frame-level understanding (e.g., "bird species on camera simultaneously")
 - Deep multi-hop Wikipedia chains where the path is non-obvious
 - Problems requiring reverse-engineering of a specific data structure (e.g., the ping-pong game simulation)
@@ -44,6 +45,7 @@ Approximately 12 questions. These include:
 Approximately 19 questions (35.8% of the question pool). These are the primary source of score variance.
 
 Common flip patterns:
+
 1. **Search availability**: Multi-hop retrieval where the correct intermediate page may or may not be surfaced by the search backend on a given run
 2. **Extraction precision**: Questions requiring exact numeric extraction where the model sometimes gets the right page but extracts the wrong number
 3. **Format sensitivity**: Questions where the correct answer appears in multiple acceptable forms and the model's normalization varies
@@ -64,6 +66,7 @@ The iter63 score of 34/53 is the current highest observed score (n=1). We do not
 The convergence layer converts empty-answer failures into partial-answer recoveries.
 
 **iter63 empty answers**: 8 questions returned no model answer (blank string)
+
 - `ec09fa32` — ping-pong game (complex simulation, model gave up)
 - `2d83110e` — reversed sentence (turns=1, immediate failure)
 - `4b6bb5f7` — Doctor Who script (fetch failed)

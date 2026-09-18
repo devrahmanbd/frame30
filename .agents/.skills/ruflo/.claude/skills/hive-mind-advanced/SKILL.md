@@ -17,11 +17,13 @@ The Hive Mind system represents the pinnacle of multi-agent coordination in Clau
 ### Architecture Patterns
 
 **Queen-Led Coordination**
+
 - Strategic queen agents orchestrate high-level objectives
 - Tactical queens manage mid-level execution
 - Adaptive queens dynamically adjust strategies based on performance
 
 **Worker Specialization**
+
 - Researcher agents: Analysis and investigation
 - Coder agents: Implementation and development
 - Analyst agents: Data processing and metrics
@@ -32,6 +34,7 @@ The Hive Mind system represents the pinnacle of multi-agent coordination in Clau
 - Documenter agents: Documentation generation
 
 **Collective Memory System**
+
 - Shared knowledge base across all agents
 - LRU cache with memory pressure handling
 - SQLite persistence with WAL mode
@@ -117,6 +120,7 @@ npx claude-flow hive-mind stop <session-id>
 ```
 
 **Session Features**
+
 - Automatic checkpoint creation
 - Progress tracking with completion percentages
 - Parent-child process management
@@ -130,8 +134,8 @@ The Hive Mind builds consensus through structured voting:
 ```javascript
 // Programmatic consensus building
 const decision = await hiveMind.buildConsensus(
-  'Architecture pattern selection',
-  ['microservices', 'monolith', 'serverless']
+  "Architecture pattern selection",
+  ["microservices", "monolith", "serverless"],
 );
 
 // Result includes:
@@ -159,6 +163,7 @@ await memory.store('api-patterns', {
 ```
 
 **Memory Types**
+
 - `knowledge`: Permanent insights (no TTL)
 - `context`: Session context (1 hour TTL)
 - `task`: Task-specific data (30 min TTL)
@@ -172,17 +177,17 @@ await memory.store('api-patterns', {
 
 ```javascript
 // Search memory by pattern
-const results = await memory.search('api*', {
-  type: 'knowledge',
+const results = await memory.search("api*", {
+  type: "knowledge",
   minConfidence: 0.8,
-  limit: 50
+  limit: 50,
 });
 
 // Get related memories
-const related = await memory.getRelated('api-patterns', 10);
+const related = await memory.getRelated("api-patterns", 10);
 
 // Build associations
-await memory.associate('rest-api', 'authentication', 0.9);
+await memory.associate("rest-api", "authentication", 0.9);
 ```
 
 ### Task Distribution
@@ -190,6 +195,7 @@ await memory.associate('rest-api', 'authentication', 0.9);
 **Automatic Worker Assignment**
 
 The system intelligently assigns tasks based on:
+
 - Keyword matching with agent specialization
 - Historical performance metrics
 - Worker availability and load
@@ -212,7 +218,7 @@ const config = {
   autoScale: true,
   maxWorkers: 12,
   scaleUpThreshold: 2, // Pending tasks per idle worker
-  scaleDownThreshold: 2 // Idle workers above pending tasks
+  scaleDownThreshold: 2, // Idle workers above pending tasks
 };
 ```
 
@@ -227,11 +233,12 @@ npx claude-flow hive-mind spawn "Build REST API" --claude
 ```
 
 Output:
+
 ```javascript
-Task("Queen Coordinator", "Orchestrate REST API development...", "coordinator")
-Task("Backend Developer", "Implement Express routes...", "backend-dev")
-Task("Database Architect", "Design PostgreSQL schema...", "code-analyzer")
-Task("Test Engineer", "Create Jest test suite...", "tester")
+Task("Queen Coordinator", "Orchestrate REST API development...", "coordinator");
+Task("Backend Developer", "Implement Express routes...", "backend-dev");
+Task("Database Architect", "Design PostgreSQL schema...", "code-analyzer");
+Task("Test Engineer", "Create Jest test suite...", "tester");
 ```
 
 ### With SPARC Methodology
@@ -265,11 +272,13 @@ npx claude-flow hive-mind spawn "Review PR #123" --queen-type tactical
 The collective memory system includes advanced optimizations:
 
 **LRU Cache**
+
 - Configurable cache size (default: 1000 entries)
 - Memory pressure handling (default: 50MB)
 - Automatic eviction of least-used entries
 
 **Database Optimization**
+
 - WAL (Write-Ahead Logging) mode
 - 64MB cache size
 - 256MB memory mapping
@@ -277,6 +286,7 @@ The collective memory system includes advanced optimizations:
 - Automatic ANALYZE and OPTIMIZE
 
 **Object Pooling**
+
 - Query result pooling
 - Memory entry pooling
 - Reduced garbage collection pressure
@@ -298,12 +308,14 @@ const insights = hiveMind.getPerformanceInsights();
 ### Task Execution
 
 **Parallel Processing**
+
 - Batch agent spawning (5 agents per batch)
 - Concurrent task orchestration
 - Async operation optimization
 - Non-blocking task assignment
 
 **Benchmarks**
+
 - 10-20x faster batch spawning
 - 2.8-4.4x speed improvement overall
 - 32.3% token reduction
@@ -346,18 +358,21 @@ const insights = hiveMind.getPerformanceInsights();
 Hive Mind integrates with Claude Flow hooks for automation:
 
 **Pre-Task Hooks**
+
 - Auto-assign agents by file type
 - Validate objective complexity
 - Optimize topology selection
 - Cache search patterns
 
 **Post-Task Hooks**
+
 - Auto-format deliverables
 - Train neural patterns
 - Update collective memory
 - Analyze performance bottlenecks
 
 **Session Hooks**
+
 - Generate session summaries
 - Persist checkpoint data
 - Track comprehensive metrics
@@ -368,16 +383,19 @@ Hive Mind integrates with Claude Flow hooks for automation:
 ### 1. Choose the Right Queen Type
 
 **Strategic Queens** - For research, planning, and analysis
+
 ```bash
 npx claude-flow hive-mind spawn "Research ML frameworks" --queen-type strategic
 ```
 
 **Tactical Queens** - For implementation and execution
+
 ```bash
 npx claude-flow hive-mind spawn "Build authentication" --queen-type tactical
 ```
 
 **Adaptive Queens** - For optimization and dynamic tasks
+
 ```bash
 npx claude-flow hive-mind spawn "Optimize performance" --queen-type adaptive
 ```
@@ -385,6 +403,7 @@ npx claude-flow hive-mind spawn "Optimize performance" --queen-type adaptive
 ### 2. Leverage Consensus
 
 Use consensus for critical decisions:
+
 - Architecture pattern selection
 - Technology stack choices
 - Implementation approach
@@ -394,6 +413,7 @@ Use consensus for critical decisions:
 ### 3. Utilize Collective Memory
 
 **Store Learnings**
+
 ```javascript
 // After successful pattern implementation
 await memory.store('auth-pattern', {
@@ -405,10 +425,11 @@ await memory.store('auth-pattern', {
 ```
 
 **Build Associations**
+
 ```javascript
 // Link related concepts
-await memory.associate('jwt-auth', 'refresh-tokens', 0.9);
-await memory.associate('jwt-auth', 'oauth2', 0.7);
+await memory.associate("jwt-auth", "refresh-tokens", 0.9);
+await memory.associate("jwt-auth", "oauth2", 0.7);
 ```
 
 ### 4. Monitor Performance
@@ -427,6 +448,7 @@ npx claude-flow hive-mind memory
 ### 5. Session Management
 
 **Checkpoint Frequently**
+
 ```javascript
 // Create checkpoints at key milestones
 await sessionManager.saveCheckpoint(
@@ -437,6 +459,7 @@ await sessionManager.saveCheckpoint(
 ```
 
 **Resume Sessions**
+
 ```bash
 # Resume from any previous state
 npx claude-flow hive-mind resume <session-id>
@@ -447,6 +470,7 @@ npx claude-flow hive-mind resume <session-id>
 ### Memory Issues
 
 **High Memory Usage**
+
 ```bash
 # Run garbage collection
 npx claude-flow hive-mind memory --gc
@@ -459,6 +483,7 @@ npx claude-flow hive-mind memory --export --clear
 ```
 
 **Low Cache Hit Rate**
+
 ```javascript
 // Increase cache size in config
 {
@@ -470,6 +495,7 @@ npx claude-flow hive-mind memory --export --clear
 ### Performance Issues
 
 **Slow Task Assignment**
+
 ```javascript
 // Enable worker type caching
 // The system caches best worker matches for 5 minutes
@@ -477,6 +503,7 @@ npx claude-flow hive-mind memory --export --clear
 ```
 
 **High Queue Utilization**
+
 ```javascript
 // Increase async queue concurrency
 {
@@ -487,6 +514,7 @@ npx claude-flow hive-mind memory --export --clear
 ### Consensus Failures
 
 **No Consensus Reached (Byzantine)**
+
 ```bash
 # Switch to weighted consensus for more decisive results
 npx claude-flow hive-mind spawn "..." --consensus weighted
@@ -553,17 +581,17 @@ npx claude-flow hive-mind import backup.json
 
 ```javascript
 const hiveMind = new HiveMindCore({
-  objective: 'Build system',
-  queenType: 'strategic',
+  objective: "Build system",
+  queenType: "strategic",
   maxWorkers: 8,
-  consensusAlgorithm: 'byzantine'
+  consensusAlgorithm: "byzantine",
 });
 
 await hiveMind.initialize();
 await hiveMind.spawnQueen(queenData);
-await hiveMind.spawnWorkers(['coder', 'tester']);
-await hiveMind.createTask('Implement feature', 7);
-const decision = await hiveMind.buildConsensus('topic', options);
+await hiveMind.spawnWorkers(["coder", "tester"]);
+await hiveMind.createTask("Implement feature", 7);
+const decision = await hiveMind.buildConsensus("topic", options);
 const status = hiveMind.getStatus();
 await hiveMind.shutdown();
 ```
@@ -572,9 +600,9 @@ await hiveMind.shutdown();
 
 ```javascript
 const memory = new CollectiveMemory({
-  swarmId: 'hive-123',
+  swarmId: "hive-123",
   maxSize: 100,
-  cacheSize: 1000
+  cacheSize: 1000,
 });
 
 await memory.store(key, value, type, metadata);
@@ -593,7 +621,10 @@ const health = await memory.healthCheck();
 const sessionManager = new HiveMindSessionManager();
 
 const sessionId = await sessionManager.createSession(
-  swarmId, swarmName, objective, metadata
+  swarmId,
+  swarmName,
+  objective,
+  metadata,
 );
 
 await sessionManager.saveCheckpoint(sessionId, name, data);
@@ -665,12 +696,14 @@ npx claude-flow hive-mind spawn "Review PR #456" \
 ## Skill Progression
 
 ### Beginner
+
 1. Initialize hive mind
 2. Spawn basic swarms
 3. Monitor status
 4. Use majority consensus
 
 ### Intermediate
+
 1. Configure queen types
 2. Implement session management
 3. Use weighted consensus
@@ -678,6 +711,7 @@ npx claude-flow hive-mind spawn "Review PR #456" \
 5. Enable auto-scaling
 
 ### Advanced
+
 1. Byzantine fault tolerance
 2. Memory optimization
 3. Custom worker types

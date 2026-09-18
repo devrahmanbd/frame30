@@ -1,1 +1,185 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "label": "PluginSettingsForm.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L1"}, {"id": "marketplace_pluginsettingsform_pluginsettingsform", "label": "PluginSettingsForm()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L16"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "lib_plugin_manifest_validatesettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "lib_plugin_manifest_installedplugin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "lib_plugin_manifest_settingsvalues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "target": "marketplace_pluginsettingsform_pluginsettingsform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L16", "weight": 1.0}], "raw_calls": [{"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L27"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L29"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L31"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "validateSettings", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L36"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L56"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L66"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L73"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L77"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L124"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L124"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L133"}, {"caller_nid": "marketplace_pluginsettingsform_pluginsettingsform", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx", "source_location": "L133"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "label": "PluginSettingsForm.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketplace_pluginsettingsform_pluginsettingsform",
+      "label": "PluginSettingsForm()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L16"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "lib_plugin_manifest_validatesettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "lib_plugin_manifest_installedplugin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "lib_plugin_manifest_settingsvalues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "target": "marketplace_pluginsettingsform_pluginsettingsform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "validateSettings",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "marketplace_pluginsettingsform_pluginsettingsform",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/PluginSettingsForm.tsx",
+      "source_location": "L133"
+    }
+  ]
+}

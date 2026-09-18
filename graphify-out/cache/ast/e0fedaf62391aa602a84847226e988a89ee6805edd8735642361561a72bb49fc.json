@@ -1,1 +1,186 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "label": "api-scopes.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L1"}, {"id": "lib_api_scopes_test_granted", "label": "granted", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L32"}, {"id": "lib_api_scopes_test_c", "label": "c", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L54"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_clamplimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_decodecursor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_encodecursor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_expandimplied", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_intersectscopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_matchroute", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_parsescopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_refusedscopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_requiresidempotency", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_satisfies", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_scope_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_scopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_test_granted", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts", "target": "lib_api_scopes_test_c", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts", "source_location": "L54", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "label": "api-scopes.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_api_scopes_test_granted",
+      "label": "granted",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_api_scopes_test_c",
+      "label": "c",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L54"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_clamplimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_decodecursor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_encodecursor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_expandimplied",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_intersectscopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_matchroute",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_parsescopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_refusedscopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_requiresidempotency",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_satisfies",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_scope_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_scopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_test_granted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_api_scopes_test_ts",
+      "target": "lib_api_scopes_test_c",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/api-scopes.test.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

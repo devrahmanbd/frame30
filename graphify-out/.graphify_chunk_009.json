@@ -1,1 +1,104 @@
-{"nodes":[{"id":"el_27_svg_upload","type":"concept","label":"SVG Upload Element","description":"WordPress UI element for uploading SVG files","file_type":"image","source_file":"el_27_svg_upload.png","confidence":0.85,"properties":{"feature":"svg_upload","ui_component":"file_upload"}},{"id":"el_33_tablet","type":"concept","label":"Tablet View Element","description":"WordPress UI element for tablet responsive preview","file_type":"image","source_file":"el_33_tablet.png","confidence":0.85,"properties":{"feature":"responsive_preview","device":"tablet"}},{"id":"wp_page_new","type":"concept","label":"New Page Creation","description":"WordPress interface for creating a new page","file_type":"image","source_file":"wp_page_new.png","confidence":0.95,"properties":{"feature":"page_editor","action":"create"}},{"id":"el_26_media_modal","type":"concept","label":"Media Modal Element","description":"WordPress media library modal dialog","file_type":"image","source_file":"el_26_media_modal.png","confidence":0.85,"properties":{"feature":"media_library","ui_component":"modal"}},{"id":"themes_2_details","type":"concept","label":"Theme Details View","description":"WordPress theme details/info panel","file_type":"image","source_file":"themes_2_details.png","confidence":0.95,"properties":{"feature":"themes","ui_component":"details_panel"}}],"edges":[{"source":"wp_page_new","target":"el_26_media_modal","type":"related_to","description":"New page creation uses media modal for images","confidence":0.85},{"source":"el_26_media_modal","target":"el_27_svg_upload","type":"contains","description":"Media modal includes SVG upload capability","confidence":0.75},{"source":"el_33_tablet","target":"wp_page_new","type":"preview_of","description":"Tablet view previews page layout","confidence":0.75}],"hyperedges":[{"id":"wp_page_editing_flow","nodes":["wp_page_new","el_26_media_modal","el_27_svg_upload","el_33_tablet"],"description":"Page creation and editing workflow components","confidence":0.85},{"id":"wp_media_management","nodes":["el_26_media_modal","el_27_svg_upload"],"description":"Media upload and management interface","confidence":0.85},{"id":"wp_theme_management","nodes":["themes_2_details","el_33_tablet"],"description":"Theme customization and preview features","confidence":0.75}],"input_tokens":0,"output_tokens":0}
+{
+  "nodes": [
+    {
+      "id": "el_27_svg_upload",
+      "type": "concept",
+      "label": "SVG Upload Element",
+      "description": "WordPress UI element for uploading SVG files",
+      "file_type": "image",
+      "source_file": "el_27_svg_upload.png",
+      "confidence": 0.85,
+      "properties": { "feature": "svg_upload", "ui_component": "file_upload" }
+    },
+    {
+      "id": "el_33_tablet",
+      "type": "concept",
+      "label": "Tablet View Element",
+      "description": "WordPress UI element for tablet responsive preview",
+      "file_type": "image",
+      "source_file": "el_33_tablet.png",
+      "confidence": 0.85,
+      "properties": { "feature": "responsive_preview", "device": "tablet" }
+    },
+    {
+      "id": "wp_page_new",
+      "type": "concept",
+      "label": "New Page Creation",
+      "description": "WordPress interface for creating a new page",
+      "file_type": "image",
+      "source_file": "wp_page_new.png",
+      "confidence": 0.95,
+      "properties": { "feature": "page_editor", "action": "create" }
+    },
+    {
+      "id": "el_26_media_modal",
+      "type": "concept",
+      "label": "Media Modal Element",
+      "description": "WordPress media library modal dialog",
+      "file_type": "image",
+      "source_file": "el_26_media_modal.png",
+      "confidence": 0.85,
+      "properties": { "feature": "media_library", "ui_component": "modal" }
+    },
+    {
+      "id": "themes_2_details",
+      "type": "concept",
+      "label": "Theme Details View",
+      "description": "WordPress theme details/info panel",
+      "file_type": "image",
+      "source_file": "themes_2_details.png",
+      "confidence": 0.95,
+      "properties": { "feature": "themes", "ui_component": "details_panel" }
+    }
+  ],
+  "edges": [
+    {
+      "source": "wp_page_new",
+      "target": "el_26_media_modal",
+      "type": "related_to",
+      "description": "New page creation uses media modal for images",
+      "confidence": 0.85
+    },
+    {
+      "source": "el_26_media_modal",
+      "target": "el_27_svg_upload",
+      "type": "contains",
+      "description": "Media modal includes SVG upload capability",
+      "confidence": 0.75
+    },
+    {
+      "source": "el_33_tablet",
+      "target": "wp_page_new",
+      "type": "preview_of",
+      "description": "Tablet view previews page layout",
+      "confidence": 0.75
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "wp_page_editing_flow",
+      "nodes": [
+        "wp_page_new",
+        "el_26_media_modal",
+        "el_27_svg_upload",
+        "el_33_tablet"
+      ],
+      "description": "Page creation and editing workflow components",
+      "confidence": 0.85
+    },
+    {
+      "id": "wp_media_management",
+      "nodes": ["el_26_media_modal", "el_27_svg_upload"],
+      "description": "Media upload and management interface",
+      "confidence": 0.85
+    },
+    {
+      "id": "wp_theme_management",
+      "nodes": ["themes_2_details", "el_33_tablet"],
+      "description": "Theme customization and preview features",
+      "confidence": 0.75
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

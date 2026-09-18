@@ -14,15 +14,19 @@
  */
 import { incr, log } from "./observability.server";
 import { redisCommand, redisConfigured, redisKey } from "./redis.server";
-import { getTenantCohort, hashTenantCohort, type CohortTier } from "./tenant-canary.server";
+import {
+  getTenantCohort,
+  hashTenantCohort,
+  type CohortTier,
+} from "./tenant-canary.server";
 
 export type FeatureFlag = {
   key: string;
   name: string;
   description: string;
-  enabled: boolean;                         // Master switch
-  rolloutPercentage: number;                // 0 to 100 percentage rollout
-  cohortTiers?: CohortTier[];               // e.g. [0, 1] for internal & beta only
+  enabled: boolean; // Master switch
+  rolloutPercentage: number; // 0 to 100 percentage rollout
+  cohortTiers?: CohortTier[]; // e.g. [0, 1] for internal & beta only
   merchantOverrides: Record<string, boolean>; // explicit merchant overrides
   createdAt: string;
   updatedAt: string;
@@ -41,7 +45,8 @@ const SEEDED_FLAGS: Record<string, FeatureFlag> = {
   checkout_v2: {
     key: "checkout_v2",
     name: "Checkout Experience v2",
-    description: "Streamlined single-page checkout flow with instant courier rate calculation",
+    description:
+      "Streamlined single-page checkout flow with instant courier rate calculation",
     enabled: true,
     rolloutPercentage: 100,
     merchantOverrides: {},
@@ -51,7 +56,8 @@ const SEEDED_FLAGS: Record<string, FeatureFlag> = {
   ai_agent_support: {
     key: "ai_agent_support",
     name: "AI Support Action Agent",
-    description: "In-chat support action agent with order tracking and courier callback triggers",
+    description:
+      "In-chat support action agent with order tracking and courier callback triggers",
     enabled: true,
     rolloutPercentage: 100,
     cohortTiers: [0, 1], // internal and beta initially
@@ -62,7 +68,8 @@ const SEEDED_FLAGS: Record<string, FeatureFlag> = {
   instant_courier_booking: {
     key: "instant_courier_booking",
     name: "Instant Automated Courier Booking",
-    description: "Automated consignment dispatch via Steadfast/Pathao API on order confirmation",
+    description:
+      "Automated consignment dispatch via Steadfast/Pathao API on order confirmation",
     enabled: true,
     rolloutPercentage: 25,
     merchantOverrides: {},
@@ -72,7 +79,8 @@ const SEEDED_FLAGS: Record<string, FeatureFlag> = {
   multi_currency_checkout: {
     key: "multi_currency_checkout",
     name: "Dynamic Multi-Currency FX Checkout",
-    description: "Direct real-time currency conversion for cross-border transactions",
+    description:
+      "Direct real-time currency conversion for cross-border transactions",
     enabled: false,
     rolloutPercentage: 0,
     merchantOverrides: {},
@@ -82,7 +90,9 @@ const SEEDED_FLAGS: Record<string, FeatureFlag> = {
 };
 
 // In-Memory L1 Cache for zero-latency lookups
-const memoryFlagCache = new Map<string, FeatureFlag>(Object.entries(SEEDED_FLAGS));
+const memoryFlagCache = new Map<string, FeatureFlag>(
+  Object.entries(SEEDED_FLAGS),
+);
 let lastCacheSync = Date.now();
 const CACHE_TTL_MS = 15_000; // 15 seconds
 
@@ -106,7 +116,10 @@ export async function listFeatureFlags(): Promise<FeatureFlag[]> {
   const now = Date.now();
   if (now - lastCacheSync > CACHE_TTL_MS && redisConfigured()) {
     try {
-      const res = await redisCommand(["HGETALL", redisKey("platform", FLAGS_HASH_KEY)]);
+      const res = await redisCommand([
+        "HGETALL",
+        redisKey("platform", FLAGS_HASH_KEY),
+      ]);
       if (res.ok && Array.isArray(res.value)) {
         const pairs = res.value as string[];
         for (let i = 0; i < pairs.length; i += 2) {
@@ -136,7 +149,11 @@ export async function getFeatureFlag(key: string): Promise<FeatureFlag | null> {
 
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["HGET", redisKey("platform", FLAGS_HASH_KEY), key]);
+      const res = await redisCommand([
+        "HGET",
+        redisKey("platform", FLAGS_HASH_KEY),
+        key,
+      ]);
       if (res.ok && typeof res.value === "string") {
         const parsed = JSON.parse(res.value) as FeatureFlag;
         memoryFlagCache.set(key, parsed);
@@ -152,7 +169,9 @@ export async function getFeatureFlag(key: string): Promise<FeatureFlag | null> {
 /**
  * Register or update a feature flag.
  */
-export async function setFeatureFlag(flag: Partial<FeatureFlag> & { key: string }): Promise<boolean> {
+export async function setFeatureFlag(
+  flag: Partial<FeatureFlag> & { key: string },
+): Promise<boolean> {
   const existing = (await getFeatureFlag(flag.key)) || {
     key: flag.key,
     name: flag.name || flag.key,
@@ -220,7 +239,11 @@ export async function deleteFeatureFlag(key: string): Promise<boolean> {
   memoryFlagCache.delete(key);
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["HDEL", redisKey("platform", FLAGS_HASH_KEY), key]);
+      const res = await redisCommand([
+        "HDEL",
+        redisKey("platform", FLAGS_HASH_KEY),
+        key,
+      ]);
       return res.ok;
     } catch {
       return false;

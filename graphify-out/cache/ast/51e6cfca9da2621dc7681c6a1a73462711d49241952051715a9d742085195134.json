@@ -1,1 +1,174 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "label": "synthetic-trading.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L1"}, {"id": "scripts_synthetic_trading_ledger", "label": "ledger", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L26"}, {"id": "scripts_synthetic_trading_balances", "label": "balances", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L27"}, {"id": "scripts_synthetic_trading_updatebalance", "label": "updateBalance()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L29"}, {"id": "scripts_synthetic_trading_orders", "label": "orders", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L41"}, {"id": "scripts_synthetic_trading_order", "label": "order", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L53"}, {"id": "scripts_synthetic_trading_couriers", "label": "couriers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L82"}, {"id": "scripts_synthetic_trading_shipments", "label": "shipments", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L83"}, {"id": "scripts_synthetic_trading_shipment", "label": "shipment", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L89"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "node_crypto", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_ledger", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_balances", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_updatebalance", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_orders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_order", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_couriers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_shipments", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs", "target": "scripts_synthetic_trading_shipment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L89", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_synthetic_trading_updatebalance", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L30"}, {"caller_nid": "scripts_synthetic_trading_updatebalance", "callee": "BigInt", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L31"}, {"caller_nid": "scripts_synthetic_trading_updatebalance", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs", "source_location": "L35"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "label": "synthetic-trading.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_synthetic_trading_ledger",
+      "label": "ledger",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L26"
+    },
+    {
+      "id": "scripts_synthetic_trading_balances",
+      "label": "balances",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L27"
+    },
+    {
+      "id": "scripts_synthetic_trading_updatebalance",
+      "label": "updateBalance()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L29"
+    },
+    {
+      "id": "scripts_synthetic_trading_orders",
+      "label": "orders",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L41"
+    },
+    {
+      "id": "scripts_synthetic_trading_order",
+      "label": "order",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L53"
+    },
+    {
+      "id": "scripts_synthetic_trading_couriers",
+      "label": "couriers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L82"
+    },
+    {
+      "id": "scripts_synthetic_trading_shipments",
+      "label": "shipments",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L83"
+    },
+    {
+      "id": "scripts_synthetic_trading_shipment",
+      "label": "shipment",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L89"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "node_crypto",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_ledger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_balances",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_updatebalance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_orders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_order",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_couriers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_shipments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_synthetic_trading_mjs",
+      "target": "scripts_synthetic_trading_shipment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L89",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_synthetic_trading_updatebalance",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "scripts_synthetic_trading_updatebalance",
+      "callee": "BigInt",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_synthetic_trading_updatebalance",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/synthetic-trading.mjs",
+      "source_location": "L35"
+    }
+  ]
+}

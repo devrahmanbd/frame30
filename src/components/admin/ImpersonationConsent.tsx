@@ -29,17 +29,24 @@ export function ImpersonationConsent({ merchantId }: { merchantId: string }) {
   });
 
   const respond = useMutation({
-    mutationFn: (v: { grantId: string; approve: boolean }) => respondFn({ data: v }),
+    mutationFn: (v: { grantId: string; approve: boolean }) =>
+      respondFn({ data: v }),
     onSuccess: (_r, v) => {
       toast.success(
         v.approve
           ? t("Support access approved", "সাপোর্ট অ্যাক্সেস অনুমোদিত")
           : t("Support access declined", "সাপোর্ট অ্যাক্সেস প্রত্যাখ্যাত"),
       );
-      void qc.invalidateQueries({ queryKey: ["impersonation-queue", merchantId] });
+      void qc.invalidateQueries({
+        queryKey: ["impersonation-queue", merchantId],
+      });
     },
     onError: (e: unknown) =>
-      toast.error(e instanceof Error ? e.message : t("Action failed", "কাজটি ব্যর্থ হয়েছে")),
+      toast.error(
+        e instanceof Error
+          ? e.message
+          : t("Action failed", "কাজটি ব্যর্থ হয়েছে"),
+      ),
   });
 
   const rows = data?.rows ?? [];
@@ -67,7 +74,8 @@ export function ImpersonationConsent({ merchantId }: { merchantId: string }) {
                 ? t("Read and write access", "পড়া ও লেখার অ্যাক্সেস")
                 : t("Read-only access", "শুধু পড়ার অ্যাক্সেস")}
               {" · "}
-              {t("expires", "মেয়াদ শেষ")} {new Date(r.expires_at).toLocaleString()}
+              {t("expires", "মেয়াদ শেষ")}{" "}
+              {new Date(r.expires_at).toLocaleString()}
             </p>
             <div className="mt-2 flex gap-2">
               {r.state === "pending_consent" ? (
@@ -75,7 +83,9 @@ export function ImpersonationConsent({ merchantId }: { merchantId: string }) {
                   type="button"
                   className={btnPrimary}
                   disabled={respond.isPending}
-                  onClick={() => respond.mutate({ grantId: r.id, approve: true })}
+                  onClick={() =>
+                    respond.mutate({ grantId: r.id, approve: true })
+                  }
                 >
                   {t("Approve", "অনুমোদন")}
                 </button>
@@ -84,7 +94,9 @@ export function ImpersonationConsent({ merchantId }: { merchantId: string }) {
                 type="button"
                 className={btn}
                 disabled={respond.isPending}
-                onClick={() => respond.mutate({ grantId: r.id, approve: false })}
+                onClick={() =>
+                  respond.mutate({ grantId: r.id, approve: false })
+                }
               >
                 {r.state === "active"
                   ? t("End access now", "এখনই বন্ধ করুন")

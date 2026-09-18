@@ -1,1 +1,350 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "label": "rpc-contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L1"}, {"id": "lib_rpc_contract_test_pending", "label": "PENDING", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L27"}, {"id": "lib_rpc_contract_test_money_loop", "label": "MONEY_LOOP", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L73"}, {"id": "lib_rpc_contract_test_skip_dirs", "label": "SKIP_DIRS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L91"}, {"id": "lib_rpc_contract_test_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L93"}, {"id": "lib_rpc_contract_test_callsites", "label": "callSites()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L103"}, {"id": "lib_rpc_contract_test_present", "label": "present()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L112"}, {"id": "lib_rpc_contract_test_names", "label": "names", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L129"}, {"id": "lib_rpc_contract_test_broken", "label": "broken", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L131"}, {"id": "lib_rpc_contract_test_stale", "label": "stale", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L138"}, {"id": "lib_rpc_contract_test_missing", "label": "missing", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L144"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_pending", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_money_loop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_skip_dirs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L91", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L93", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_callsites", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_present", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_names", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_broken", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_names", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_stale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L138", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts", "target": "lib_rpc_contract_test_missing", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L144", "weight": 1.0}, {"source": "lib_rpc_contract_test_callsites", "target": "lib_rpc_contract_test_walk", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L105", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_rpc_contract_test_walk", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L94"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L95"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L96"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L97"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L97"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_rpc_contract_test_walk", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_rpc_contract_test_callsites", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L106"}, {"caller_nid": "lib_rpc_contract_test_callsites", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L107"}, {"caller_nid": "lib_rpc_contract_test_callsites", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L107"}, {"caller_nid": "lib_rpc_contract_test_callsites", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L109"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L113"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L116"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "text", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L118"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L119"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L120"}, {"caller_nid": "lib_rpc_contract_test_present", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts", "source_location": "L120"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "label": "rpc-contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_rpc_contract_test_pending",
+      "label": "PENDING",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_rpc_contract_test_money_loop",
+      "label": "MONEY_LOOP",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L73"
+    },
+    {
+      "id": "lib_rpc_contract_test_skip_dirs",
+      "label": "SKIP_DIRS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "lib_rpc_contract_test_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L93"
+    },
+    {
+      "id": "lib_rpc_contract_test_callsites",
+      "label": "callSites()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_rpc_contract_test_present",
+      "label": "present()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_rpc_contract_test_names",
+      "label": "names",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "lib_rpc_contract_test_broken",
+      "label": "broken",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "lib_rpc_contract_test_stale",
+      "label": "stale",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L138"
+    },
+    {
+      "id": "lib_rpc_contract_test_missing",
+      "label": "missing",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L144"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_pending",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_money_loop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_skip_dirs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_callsites",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_present",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_names",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_broken",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_names",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_stale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rpc_contract_test_ts",
+      "target": "lib_rpc_contract_test_missing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rpc_contract_test_callsites",
+      "target": "lib_rpc_contract_test_walk",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_walk",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_callsites",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_callsites",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_callsites",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_callsites",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "text",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_rpc_contract_test_present",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rpc-contract.test.ts",
+      "source_location": "L120"
+    }
+  ]
+}

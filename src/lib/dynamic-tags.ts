@@ -24,8 +24,17 @@ export type DynamicContext = {
     url?: string | null;
     description?: string | null;
   };
-  collection?: { title?: string | null; description?: string | null; count?: number | null; url?: string | null };
-  page?: { title?: string | null; excerpt?: string | null; url?: string | null };
+  collection?: {
+    title?: string | null;
+    description?: string | null;
+    count?: number | null;
+    url?: string | null;
+  };
+  page?: {
+    title?: string | null;
+    excerpt?: string | null;
+    url?: string | null;
+  };
   article?: {
     title?: string | null;
     excerpt?: string | null;
@@ -44,15 +53,31 @@ export const DYNAMIC_TAGS: { value: string; label: string; group: string }[] = [
   { value: "site.tagline", label: "Site tagline", group: "Site" },
   { value: "product.title", label: "Product title", group: "Product" },
   { value: "product.price", label: "Product price", group: "Product" },
-  { value: "product.comparePrice", label: "Compare-at price", group: "Product" },
+  {
+    value: "product.comparePrice",
+    label: "Compare-at price",
+    group: "Product",
+  },
   { value: "product.sku", label: "Product SKU", group: "Product" },
   { value: "product.stock", label: "Stock quantity", group: "Product" },
   { value: "product.image", label: "Featured image", group: "Product" },
   { value: "product.url", label: "Product link", group: "Product" },
-  { value: "product.description", label: "Product description", group: "Product" },
+  {
+    value: "product.description",
+    label: "Product description",
+    group: "Product",
+  },
   { value: "collection.title", label: "Collection title", group: "Collection" },
-  { value: "collection.description", label: "Collection description", group: "Collection" },
-  { value: "collection.count", label: "Products in collection", group: "Collection" },
+  {
+    value: "collection.description",
+    label: "Collection description",
+    group: "Collection",
+  },
+  {
+    value: "collection.count",
+    label: "Products in collection",
+    group: "Collection",
+  },
   { value: "collection.url", label: "Collection link", group: "Collection" },
   { value: "page.title", label: "Page title", group: "Page" },
   { value: "page.excerpt", label: "Page excerpt", group: "Page" },
@@ -123,7 +148,9 @@ export function resolveDynamicProps(
       let rowChanged = false;
       const rows = value.map((row) => {
         if (!row || typeof row !== "object") return row;
-        const nextRow: Record<string, PropValue> = { ...(row as Record<string, PropValue>) };
+        const nextRow: Record<string, PropValue> = {
+          ...(row as Record<string, PropValue>),
+        };
         for (const [rk, rv] of Object.entries(nextRow)) {
           if (typeof rv === "string" && rv.includes("{{")) {
             const next = resolveDynamicText(rv, ctx);
@@ -159,7 +186,12 @@ export const SAMPLE_DYNAMIC_CONTEXT: DynamicContext = {
   },
   collection: { title: "Sample collection", count: 24 },
   page: { title: "Sample page", excerpt: "A short summary." },
-  article: { title: "Sample post", author: "Editor", date: "2026-01-01", excerpt: "A short summary." },
+  article: {
+    title: "Sample post",
+    author: "Editor",
+    date: "2026-01-01",
+    excerpt: "A short summary.",
+  },
   customer: { name: "Shopper" },
   cart: { count: 2, total: "৳2,500" },
 };

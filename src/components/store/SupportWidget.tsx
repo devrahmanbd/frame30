@@ -16,6 +16,7 @@ import {
   ChevronDown,
   ChevronUp,
   Star,
+  Sparkles,
 } from "lucide-react";
 import {
   askSupportFn,
@@ -77,7 +78,10 @@ const uid = () => Math.random().toString(36).slice(2);
 
 function ConfidenceChip({ value }: { value: Confidence }) {
   const { t } = useLang();
-  const map: Record<Confidence, { label: string; className: string; Icon: typeof ShieldCheck }> = {
+  const map: Record<
+    Confidence,
+    { label: string; className: string; Icon: typeof ShieldCheck }
+  > = {
     pinned: {
       label: t("Verified from your records", "আপনার রেকর্ড থেকে যাচাই করা"),
       className: "bg-primary/10 text-primary",
@@ -96,7 +100,9 @@ function ConfidenceChip({ value }: { value: Confidence }) {
   };
   const { label, className, Icon } = map[value];
   return (
-    <span className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ${className}`}>
+    <span
+      className={`mt-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] ${className}`}
+    >
       <Icon className="size-3" aria-hidden />
       {label}
     </span>
@@ -108,7 +114,10 @@ function TicketSuccessCard({ card }: { card: TicketCard }) {
   const { t } = useLang();
   const [expanded, setExpanded] = useState(false);
   const due = new Date(card.firstResponseDueAt);
-  const dueLabel = due.toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" });
+  const dueLabel = due.toLocaleString(undefined, {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
 
   return (
     <div className="mt-2 overflow-hidden rounded-fq-md border border-primary/20 bg-primary/5">
@@ -118,7 +127,9 @@ function TicketSuccessCard({ card }: { card: TicketCard }) {
             <Ticket className="size-3.5" aria-hidden />
           </div>
           <div>
-            <p className="text-[11px] font-semibold text-primary">{card.ticketRef}</p>
+            <p className="text-[11px] font-semibold text-primary">
+              {card.ticketRef}
+            </p>
             <p className="text-[10px] text-muted-foreground capitalize">
               {card.priority} • {card.status}
             </p>
@@ -128,9 +139,17 @@ function TicketSuccessCard({ card }: { card: TicketCard }) {
           type="button"
           onClick={() => setExpanded((s) => !s)}
           className="rounded p-0.5 text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label={expanded ? t("Collapse", "সংকুচিত করুন") : t("Expand", "প্রসারিত করুন")}
+          aria-label={
+            expanded
+              ? t("Collapse", "সংকুচিত করুন")
+              : t("Expand", "প্রসারিত করুন")
+          }
         >
-          {expanded ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+          {expanded ? (
+            <ChevronUp className="size-3.5" />
+          ) : (
+            <ChevronDown className="size-3.5" />
+          )}
         </button>
       </div>
       {expanded && (
@@ -138,7 +157,8 @@ function TicketSuccessCard({ card }: { card: TicketCard }) {
           <p className="font-medium text-foreground">{card.subject}</p>
           <p className="mt-1 flex items-center gap-1">
             <Clock className="size-3" />
-            {t("First response by:", "প্রথম সাড়া দেওয়ার সময়সীমা:")} <span className="font-medium text-foreground">{dueLabel}</span>
+            {t("First response by:", "প্রথম সাড়া দেওয়ার সময়সীমা:")}{" "}
+            <span className="font-medium text-foreground">{dueLabel}</span>
           </p>
         </div>
       )}
@@ -163,12 +183,18 @@ function CallbackSuccessCard({ card }: { card: CallbackCard }) {
           <PhoneCall className="size-3.5" aria-hidden />
         </div>
         <div>
-          <p className="text-[11px] font-semibold text-green-700 dark:text-green-400">{card.callbackRef}</p>
+          <p className="text-[11px] font-semibold text-green-700 dark:text-green-400">
+            {card.callbackRef}
+          </p>
           <p className="text-[10px] text-muted-foreground">
-            {t("Callback", "কলব্যাক")} · {windowLabel} · {card.windowDescription}
+            {t("Callback", "কলব্যাক")} · {windowLabel} ·{" "}
+            {card.windowDescription}
           </p>
         </div>
-        <CheckCircle className="ml-auto size-4 shrink-0 text-green-600" aria-hidden />
+        <CheckCircle
+          className="ml-auto size-4 shrink-0 text-green-600"
+          aria-hidden
+        />
       </div>
     </div>
   );
@@ -186,11 +212,21 @@ type TicketFormProps = {
   onSuccess: (card: TicketCard, agentMsg: string) => void;
 };
 
-function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, onCancel, onSuccess }: TicketFormProps) {
+function TicketForm({
+  slug,
+  conversationId,
+  phone,
+  orderNumber,
+  lastBotMessage,
+  onCancel,
+  onSuccess,
+}: TicketFormProps) {
   const { t } = useLang();
   const [subject, setSubject] = useState(lastBotMessage.slice(0, 120) || "");
   const [details, setDetails] = useState("");
-  const [priority, setPriority] = useState<"low" | "normal" | "high" | "urgent">("normal");
+  const [priority, setPriority] = useState<
+    "low" | "normal" | "high" | "urgent"
+  >("normal");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -225,10 +261,17 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
           res.agentMessage!,
         );
       } else {
-        setError(res.reply || t("Failed to create ticket.", "টিকিট তৈরি করা যায়নি।"));
+        setError(
+          res.reply || t("Failed to create ticket.", "টিকিট তৈরি করা যায়নি।"),
+        );
       }
     } catch {
-      setError(t("Something went wrong. Please try again.", "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।"));
+      setError(
+        t(
+          "Something went wrong. Please try again.",
+          "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -242,7 +285,9 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
     >
       <div className="flex items-center gap-2">
         <Ticket className="size-4 shrink-0 text-primary" aria-hidden />
-        <span className="font-semibold text-foreground">{t("Create Support Ticket", "সাপোর্ট টিকিট তৈরি করুন")}</span>
+        <span className="font-semibold text-foreground">
+          {t("Create Support Ticket", "সাপোর্ট টিকিট তৈরি করুন")}
+        </span>
       </div>
 
       <label className="block text-xs text-muted-foreground">
@@ -253,7 +298,10 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           className="mt-0.5 w-full rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          placeholder={t("Briefly describe your issue", "আপনার সমস্যা সংক্ষেপে লিখুন")}
+          placeholder={t(
+            "Briefly describe your issue",
+            "আপনার সমস্যা সংক্ষেপে লিখুন",
+          )}
         />
       </label>
 
@@ -265,7 +313,10 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
           onChange={(e) => setDetails(e.target.value)}
           rows={3}
           className="mt-0.5 w-full resize-none rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          placeholder={t("More context helps us resolve faster", "বিস্তারিত বিবরণ দিলে দ্রুত সমাধান হবে")}
+          placeholder={t(
+            "More context helps us resolve faster",
+            "বিস্তারিত বিবরণ দিলে দ্রুত সমাধান হবে",
+          )}
         />
       </label>
 
@@ -276,15 +327,26 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
           onChange={(e) => setPriority(e.target.value as typeof priority)}
           className="mt-0.5 w-full rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <option value="low">{t("Low — general inquiry", "কম — সাধারণ জিজ্ঞাসা")}</option>
-          <option value="normal">{t("Normal — standard issue", "স্বাভাবিক — সাধারণ সমস্যা")}</option>
-          <option value="high">{t("High — urgent but stable", "বেশি — জরুরি কিন্তু স্থিতিশীল")}</option>
-          <option value="urgent">{t("Urgent — critical disruption", "অত্যন্ত জরুরি — গুরুতর সমস্যা")}</option>
+          <option value="low">
+            {t("Low — general inquiry", "কম — সাধারণ জিজ্ঞাসা")}
+          </option>
+          <option value="normal">
+            {t("Normal — standard issue", "স্বাভাবিক — সাধারণ সমস্যা")}
+          </option>
+          <option value="high">
+            {t("High — urgent but stable", "বেশি — জরুরি কিন্তু স্থিতিশীল")}
+          </option>
+          <option value="urgent">
+            {t("Urgent — critical disruption", "অত্যন্ত জরুরি — গুরুতর সমস্যা")}
+          </option>
         </select>
       </label>
 
       {error && (
-        <p className="flex items-center gap-1 text-[11px] text-destructive" role="alert">
+        <p
+          className="flex items-center gap-1 text-[11px] text-destructive"
+          role="alert"
+        >
           <XCircle className="size-3 shrink-0" aria-hidden />
           {error}
         </p>
@@ -296,7 +358,9 @@ function TicketForm({ slug, conversationId, phone, orderNumber, lastBotMessage, 
           disabled={loading || !subject.trim()}
           className="flex-1 rounded-fq-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50"
         >
-          {loading ? t("Submitting…", "জমা দেওয়া হচ্ছে…") : t("Submit Ticket", "টিকিট জমা দিন")}
+          {loading
+            ? t("Submitting…", "জমা দেওয়া হচ্ছে…")
+            : t("Submit Ticket", "টিকিট জমা দিন")}
         </button>
         <button
           type="button"
@@ -316,18 +380,30 @@ type CallbackFormProps = {
   slug: string;
   conversationId: string | null;
   defaultPhone: string;
+  mode?: "platform" | "dashboard" | "store";
   onCancel: () => void;
   onSuccess: (card: CallbackCard, agentMsg: string) => void;
 };
 
-function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess }: CallbackFormProps) {
+function CallbackForm({
+  slug,
+  conversationId,
+  defaultPhone,
+  mode = "store",
+  onCancel,
+  onSuccess,
+}: CallbackFormProps) {
   const { t } = useLang();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState(defaultPhone);
-  const [window, setWindow] = useState<"morning" | "afternoon" | "evening">("morning");
+  const [window, setWindow] = useState<"morning" | "afternoon" | "evening">(
+    "morning",
+  );
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const isPlatform = mode === "platform";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -358,10 +434,18 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
           res.agentMessage!,
         );
       } else {
-        setError(res.reply || t("Failed to schedule callback.", "কলব্যাক নির্ধারণ করা যায়নি।"));
+        setError(
+          res.reply ||
+            t("Failed to schedule callback.", "কলব্যাক নির্ধারণ করা যায়নি।"),
+        );
       }
     } catch {
-      setError(t("Something went wrong. Please try again.", "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।"));
+      setError(
+        t(
+          "Something went wrong. Please try again.",
+          "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -370,13 +454,29 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-2 rounded-fq-md border border-border bg-card p-3 text-sm"
-      aria-label={t("Request a callback", "কলব্যাক অনুরোধ করুন")}
+      className="space-y-2 rounded-fq-md border border-border bg-card p-3 text-sm shadow-sm"
+      aria-label={
+        isPlatform
+          ? t("Book a consultation call", "পরামর্শ কলের অনুরোধ করুন")
+          : t("Request a callback", "কলব্যাক অনুরোধ করুন")
+      }
     >
       <div className="flex items-center gap-2">
-        <PhoneCall className="size-4 shrink-0 text-green-600" aria-hidden />
-        <span className="font-semibold text-foreground">{t("Request a Callback", "কলব্যাক অনুরোধ করুন")}</span>
+        <PhoneCall className="size-4 shrink-0 text-emerald-600" aria-hidden />
+        <span className="font-semibold text-foreground">
+          {isPlatform
+            ? t("Book Demo / Talk to Sales", "সেলস পরামর্শ / ডেমো অনুরোধ")
+            : t("Request a Callback", "কলব্যাক অনুরোধ করুন")}
+        </span>
       </div>
+      {isPlatform && (
+        <p className="text-[11px] text-muted-foreground">
+          {t(
+            "Leave your contact details and our ecommerce consultant will reach out.",
+            "আপনার তথ্য দিন, আমাদের প্রতিনিধি পছন্দের সময়ে আপনার সাথে যোগাযোগ করবেন।",
+          )}
+        </p>
+      )}
 
       <label className="block text-xs text-muted-foreground">
         {t("Your name *", "আপনার নাম *")}
@@ -401,7 +501,12 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
           className="mt-0.5 w-full rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm text-foreground tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="01XXXXXXXXX"
         />
-        <span className="text-[10px] text-muted-foreground">{t("Bangladesh number (01XXXXXXXXX)", "বাংলাদেশের নম্বর (01XXXXXXXXX)")}</span>
+        <span className="text-[10px] text-muted-foreground">
+          {t(
+            "Bangladesh number (01XXXXXXXXX)",
+            "বাংলাদেশের নম্বর (01XXXXXXXXX)",
+          )}
+        </span>
       </label>
 
       <label className="block text-xs text-muted-foreground">
@@ -434,18 +539,33 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
       </label>
 
       <label className="block text-xs text-muted-foreground">
-        {t("Note (optional)", "নোট (ঐচ্ছিক)")}
+        {isPlatform
+          ? t(
+              "Store / Business details (optional)",
+              "স্টোর বা ব্যবসার বিবরণ (ঐচ্ছিক)",
+            )
+          : t("Note (optional)", "নোট (ঐচ্ছিক)")}
         <input
           maxLength={200}
           value={note}
           onChange={(e) => setNote(e.target.value)}
           className="mt-0.5 w-full rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          placeholder={t("Brief topic for the call", "কলের বিষয় সংক্ষেপে")}
+          placeholder={
+            isPlatform
+              ? t(
+                  "What kind of store or brand are you launching?",
+                  "কী ধরনের স্টোর বা ব্র্যান্ড তৈরি করতে চান?",
+                )
+              : t("Brief topic for the call", "কলের বিষয় সংক্ষেপে")
+          }
         />
       </label>
 
       {error && (
-        <p className="flex items-center gap-1 text-[11px] text-destructive" role="alert">
+        <p
+          className="flex items-center gap-1 text-[11px] text-destructive"
+          role="alert"
+        >
           <XCircle className="size-3 shrink-0" aria-hidden />
           {error}
         </p>
@@ -455,9 +575,13 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
         <button
           type="submit"
           disabled={loading || !name.trim() || !phone.trim()}
-          className="flex-1 rounded-fq-md bg-green-600 px-3 py-1.5 text-xs font-semibold text-white disabled:opacity-50"
+          className="flex-1 rounded-fq-md bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-95 disabled:opacity-50"
         >
-          {loading ? t("Scheduling…", "নির্ধারণ হচ্ছে…") : t("Schedule Callback", "কলব্যাক নির্ধারণ করুন")}
+          {loading
+            ? t("Submitting…", "জমা হচ্ছে…")
+            : isPlatform
+              ? t("Request Consultation", "পরামর্শ অনুরোধ পাঠান")
+              : t("Schedule Callback", "কলব্যাক নির্ধারণ করুন")}
         </button>
         <button
           type="button"
@@ -473,19 +597,38 @@ function CallbackForm({ slug, conversationId, defaultPhone, onCancel, onSuccess 
 
 // ─── Main Widget ─────────────────────────────────────────────────────────────
 
-export function SupportWidget({ slug, supportPhone }: { slug: string; supportPhone?: string }) {
+export function SupportWidget({
+  slug,
+  supportPhone,
+  mode = "store",
+}: {
+  slug: string;
+  supportPhone?: string;
+  mode?: "platform" | "dashboard" | "store";
+}) {
   const { t, lang } = useLang();
+  const effectiveMode =
+    slug === "framique" || slug === "platform" ? "platform" : mode;
+
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState<Msg[]>([
-    {
-      id: uid(),
-      role: "bot",
-      body: t(
-        "Hello! Ask about order status, refunds, or delivery. Prices and stock are always shown on the product page.",
-        "হ্যালো! অর্ডারের অবস্থা, রিফান্ড বা ডেলিভারি নিয়ে প্রশ্ন করতে পারেন। দাম ও স্টক সবসময় পণ্যের পাতা থেকে দেখানো হয়।",
-      ),
-    },
-  ]);
+  const [msgs, setMsgs] = useState<Msg[]>(() => {
+    let initialGreeting = t(
+      "Hello! Ask about order status, refunds, or delivery. Prices and stock are always shown on the product page.",
+      "হ্যালো! অর্ডারের অবস্থা, রিফান্ড বা ডেলিভারি নিয়ে প্রশ্ন করতে পারেন। দাম ও স্টক সবসময় পণ্যের পাতা থেকে দেখানো হয়।",
+    );
+    if (effectiveMode === "platform") {
+      initialGreeting = t(
+        "Hello! 👋 Welcome to Framique. Ask me anything about creating an online store, pricing plans, bKash & SteadFast integration, or leave your details to talk with our team.",
+        "হ্যালো! 👋 ফ্রেমিক-এ স্বাগতম। অনলাইন স্টোর শুরু করা, প্রাইসিং, বিকাশ পেমেন্ট ও স্টিডফাস্ট কুরিয়ার সংযোগ নিয়ে প্রশ্ন করুন অথবা সেলস টিমের সাথে কথা বলতে তথ্য দিন।",
+      );
+    } else if (effectiveMode === "dashboard") {
+      initialGreeting = t(
+        "Hello! I'm your Framique Merchant Copilot. How can I help you set up products, configure bKash, connect SteadFast courier, or design your storefront today?",
+        "হ্যালো! আমি আপনার ফ্রেমিক স্টোর কোপাইলট। প্রোডাক্ট যুক্ত করা, বিকাশ পেমেন্ট, স্টিডফাস্ট কুরিয়ার বা স্টোর ডিজাইন নিয়ে কীভাবে সাহায্য করতে পারি?",
+      );
+    }
+    return [{ id: uid(), role: "bot", body: initialGreeting }];
+  });
   const [text, setText] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
   const [phone, setPhone] = useState("");
@@ -512,14 +655,49 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
     return () => clearTimeout(id);
   }, [cooldown]);
 
-  const quickAsks = useMemo(
-    () => [
+  const quickAsks = useMemo(() => {
+    if (effectiveMode === "platform") {
+      return [
+        t("How do I start a store?", "অনলাইন স্টোর কীভাবে শুরু করব?"),
+        t("What are the pricing plans?", "প্রাইসিং ও ফ্রি ট্রায়াল কি কি?"),
+        t("How do bKash & couriers work?", "বিকাশ ও কুরিয়ার কীভাবে কাজ করে?"),
+        t("Book a demo / Talk to sales", "সেলস টিমের সাথে কথা বলুন"),
+      ];
+    }
+    if (effectiveMode === "dashboard") {
+      return [
+        t("How to configure SteadFast?", "স্টিডফাস্ট কীভাবে যুক্ত করব?"),
+        t("How to set up bKash?", "বিকাশ কীভাবে চালু করব?"),
+        t("How to connect custom domain?", "কাস্টম ডোমেন সংযোগ কীভাবে করব?"),
+        t("Open a support ticket", "সাপোর্ট টিকিট তৈরি করুন"),
+      ];
+    }
+    return [
       t("Where is my order?", "আমার অর্ডার কোথায়?"),
       t("How do refunds work?", "রিফান্ড কীভাবে হয়?"),
       t("What is the delivery charge?", "ডেলিভারি চার্জ কত?"),
-    ],
-    [t],
-  );
+    ];
+  }, [t, effectiveMode]);
+
+  function handleQuickAsk(q: string) {
+    if (
+      q.includes("Book a demo") ||
+      q.includes("Talk to sales") ||
+      q.includes("সেলস টিমের") ||
+      q.includes("ডেমো")
+    ) {
+      setActiveForm("callback");
+      return;
+    }
+    if (
+      q.includes("Open a support ticket") ||
+      q.includes("সাপোর্ট টিকিট তৈরি")
+    ) {
+      setActiveForm("ticket");
+      return;
+    }
+    void send(q);
+  }
 
   const disabled = busy || cooldown > 0;
 
@@ -550,7 +728,10 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
         setStaffActive(true);
       }
       if (res.retryAfter) {
-        const seconds = Math.max(0, Math.ceil((new Date(res.retryAfter).getTime() - Date.now()) / 1000));
+        const seconds = Math.max(
+          0,
+          Math.ceil((new Date(res.retryAfter).getTime() - Date.now()) / 1000),
+        );
         setCooldown(Math.min(seconds, 300));
       }
       if (res.cta === "callback" && !res.callbackAction) {
@@ -565,30 +746,28 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
           sources: res.sources ?? [],
           confidence: res.confidence,
           // Phase 9.3: ticket card from agent auto-creation
-          ticketCard:
-            res.ticketAction
-              ? {
-                  ticketId: res.ticketAction.ticketId,
-                  ticketRef: `#TKT-${res.ticketAction.ticketId.slice(-8).toUpperCase()}`,
-                  subject: res.ticketAction.subject,
-                  priority: res.ticketAction.priority,
-                  status: res.ticketAction.status,
-                  firstResponseDueAt: res.ticketAction.firstResponseDueAt,
-                  agentMessage: res.reply,
-                }
-              : null,
+          ticketCard: res.ticketAction
+            ? {
+                ticketId: res.ticketAction.ticketId,
+                ticketRef: `#TKT-${res.ticketAction.ticketId.slice(-8).toUpperCase()}`,
+                subject: res.ticketAction.subject,
+                priority: res.ticketAction.priority,
+                status: res.ticketAction.status,
+                firstResponseDueAt: res.ticketAction.firstResponseDueAt,
+                agentMessage: res.reply,
+              }
+            : null,
           // Phase 9.4: callback card from agent auto-creation
-          callbackCard:
-            res.callbackAction
-              ? {
-                  callbackId: res.callbackAction.callbackId,
-                  callbackRef: `#CB-${res.callbackAction.callbackId.slice(-6).toUpperCase()}`,
-                  customerName: res.callbackAction.customerName,
-                  window: res.callbackAction.window,
-                  windowDescription: res.callbackAction.windowDescription,
-                  agentMessage: res.callbackAction.agentMessage,
-                }
-              : null,
+          callbackCard: res.callbackAction
+            ? {
+                callbackId: res.callbackAction.callbackId,
+                callbackRef: `#CB-${res.callbackAction.callbackId.slice(-6).toUpperCase()}`,
+                customerName: res.callbackAction.customerName,
+                window: res.callbackAction.window,
+                windowDescription: res.callbackAction.windowDescription,
+                agentMessage: res.callbackAction.agentMessage,
+              }
+            : null,
           // Legacy CTA: show manual create ticket/callback buttons when needsAgent=true
           cta: res.cta !== "none" && !res.ticketAction && !res.callbackAction,
           ticketId: res.ticketId ?? null,
@@ -669,8 +848,11 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
     ]);
   }
 
-  const lastBotBody = [...msgs].reverse().find((m) => m.role === "bot")?.body ?? "";
-  const lastBot = [...msgs].reverse().find((m) => m.role === "bot" && m.id !== msgs[0]?.id);
+  const lastBotBody =
+    [...msgs].reverse().find((m) => m.role === "bot")?.body ?? "";
+  const lastBot = [...msgs]
+    .reverse()
+    .find((m) => m.role === "bot" && m.id !== msgs[0]?.id);
 
   if (!open)
     return (
@@ -693,9 +875,28 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-4 py-3">
         <div>
-          <span className="font-bangla-display text-sm font-semibold">{t("Support", "সহায়তা")}</span>
+          <span className="font-bangla-display text-sm font-semibold">
+            {effectiveMode === "platform"
+              ? t("Framique Assistant", "ফ্রেমিক অ্যাসিস্ট্যান্ট")
+              : effectiveMode === "dashboard"
+                ? t("Framique Store Copilot", "ফ্রেমিক স্টোর কোপাইলট")
+                : t("Support", "সহায়তা")}
+          </span>
           <p className="text-[11px] text-muted-foreground">
-            {t("Answers come from your records and our help articles.", "উত্তর আসে আপনার রেকর্ড ও সহায়তা নথি থেকে।")}
+            {effectiveMode === "platform"
+              ? t(
+                  "Instant answers, pricing & sales consultation",
+                  "তাৎক্ষণিক উত্তর, প্রাইসিং ও সেলস পরামর্শ",
+                )
+              : effectiveMode === "dashboard"
+                ? t(
+                    "Merchant guidance, configuration & support",
+                    "মার্চেন্ট সহায়তা ও টেকনিক্যাল গাইড",
+                  )
+                : t(
+                    "Answers come from your records and our help articles.",
+                    "উত্তর আসে আপনার রেকর্ড ও সহায়তা নথি থেকে।",
+                  )}
           </p>
         </div>
         <button
@@ -717,38 +918,87 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <span>{t("Staff active • Connected with human specialist", "অফিসার সক্রিয় আছেন • সাপোর্ট প্রতিনিধি যুক্ত আছেন")}</span>
+          <span>
+            {t(
+              "Staff active • Connected with human specialist",
+              "অফিসার সক্রিয় আছেন • সাপোর্ট প্রতিনিধি যুক্ত আছেন",
+            )}
+          </span>
         </div>
       ) : null}
 
-      {/* Context fields */}
-      <div className="grid grid-cols-2 gap-2 border-b border-border px-4 py-3">
-        <label className="text-xs text-muted-foreground">
-          {t("Order number", "অর্ডার নম্বর")}
-          <input
-            value={orderNumber}
-            onChange={(e) => setOrderNumber(e.target.value)}
-            className="mt-1 w-full rounded-fq-md border border-input bg-background px-2 py-1 text-sm tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </label>
-        <label className="text-xs text-muted-foreground">
-          {t("Phone (last 4 digits match)", "ফোন (শেষ ৪ ডিজিট মিলবে)")}
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            inputMode="tel"
-            className="mt-1 w-full rounded-fq-md border border-input bg-background px-2 py-1 text-sm tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          />
-        </label>
-      </div>
+      {/* Context bar / fields */}
+      {effectiveMode === "platform" ? (
+        <div className="flex items-center justify-between border-b border-border/70 bg-muted/40 px-4 py-2 text-xs">
+          <span className="flex items-center gap-1.5 font-medium text-muted-foreground">
+            <Sparkles className="size-3.5 text-primary" aria-hidden />
+            {t(
+              "Want a demo or live consultation?",
+              "ডেমো দেখতে বা কথা বলতে চান?",
+            )}
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              setActiveForm((f) => (f === "callback" ? "none" : "callback"))
+            }
+            className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+          >
+            <PhoneCall className="size-3" aria-hidden />
+            {t("Book Demo / Call", "ডেমো / কল নির্ধারণ")}
+          </button>
+        </div>
+      ) : effectiveMode === "dashboard" ? (
+        <div className="flex items-center justify-between border-b border-border/70 bg-muted/40 px-4 py-2 text-xs">
+          <span className="flex items-center gap-1.5 font-medium text-muted-foreground">
+            <LifeBuoy className="size-3.5 text-primary" aria-hidden />
+            {t("Merchant Copilot Active", "মার্চেন্ট কোপাইলট সক্রিয়")}
+          </span>
+          <button
+            type="button"
+            onClick={() =>
+              setActiveForm((f) => (f === "ticket" ? "none" : "ticket"))
+            }
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+          >
+            <Ticket className="size-3" aria-hidden />
+            {t("Open Ticket", "টিকিট খুলুন")}
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-2 border-b border-border px-4 py-3">
+          <label className="text-xs text-muted-foreground">
+            {t("Order number", "অর্ডার নম্বর")}
+            <input
+              value={orderNumber}
+              onChange={(e) => setOrderNumber(e.target.value)}
+              className="mt-1 w-full rounded-fq-md border border-input bg-background px-2 py-1 text-sm tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+          </label>
+          <label className="text-xs text-muted-foreground">
+            {t("Phone (last 4 digits match)", "ফোন (শেষ ৪ ডিজিট মিলবে)")}
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              inputMode="tel"
+              className="mt-1 w-full rounded-fq-md border border-input bg-background px-2 py-1 text-sm tabular-nums text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            />
+          </label>
+        </div>
+      )}
 
       {/* Message feed */}
-      <div aria-live="polite" className="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm">
+      <div
+        aria-live="polite"
+        className="flex-1 space-y-3 overflow-y-auto px-4 py-3 text-sm"
+      >
         {msgs.map((m) => (
           <div key={m.id} className={m.role === "customer" ? "text-right" : ""}>
             <p
               className={`inline-block max-w-[85%] whitespace-pre-line rounded-fq-md px-3 py-2 text-left ${
-                m.role === "customer" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                m.role === "customer"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-foreground"
               }`}
             >
               {m.body}
@@ -775,14 +1025,19 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
             {m.ticketCard ? <TicketSuccessCard card={m.ticketCard} /> : null}
 
             {/* Phase 9.4: Callback success card */}
-            {m.callbackCard ? <CallbackSuccessCard card={m.callbackCard} /> : null}
+            {m.callbackCard ? (
+              <CallbackSuccessCard card={m.callbackCard} />
+            ) : null}
 
             {/* Legacy CTA with manual Ticket + Callback buttons */}
             {m.cta && !m.ticketCard && !m.callbackCard ? (
               <div className="mt-2 space-y-1.5">
                 {m.ticketId ? (
                   <p className="text-[11px] text-muted-foreground">
-                    {t("A support ticket was opened for you.", "আপনার জন্য একটি সাপোর্ট টিকিট খোলা হয়েছে।")}{" "}
+                    {t(
+                      "A support ticket was opened for you.",
+                      "আপনার জন্য একটি সাপোর্ট টিকিট খোলা হয়েছে।",
+                    )}{" "}
                     <code className="font-mono">#{m.ticketId.slice(0, 8)}</code>
                   </p>
                 ) : null}
@@ -807,7 +1062,9 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
                   </button>
                   <a
                     className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
-                    href={supportPhone ? `tel:${supportPhone}` : `/store/${slug}`}
+                    href={
+                      supportPhone ? `tel:${supportPhone}` : `/store/${slug}`
+                    }
                   >
                     {t("Talk to Care", "কেয়ারে কথা বলুন")}
                   </a>
@@ -822,7 +1079,10 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
             {staffActive ? (
               <>
                 <span className="inline-block size-1.5 rounded-full bg-emerald-500 animate-ping" />
-                {t("Human specialist is typing...", "সাপোর্ট প্রতিনিধি লিখছেন...")}
+                {t(
+                  "Human specialist is typing...",
+                  "সাপোর্ট প্রতিনিধি লিখছেন...",
+                )}
               </>
             ) : (
               t("Preparing reply…", "উত্তর তৈরি হচ্ছে…")
@@ -856,7 +1116,10 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
                   onClick={() => void handleStarClick(s)}
                   onMouseEnter={() => setHoverStar(s)}
                   onMouseLeave={() => setHoverStar(null)}
-                  aria-label={t(`Rate ${s} star${s > 1 ? "s" : ""}`, `${s} স্টার দিন`)}
+                  aria-label={t(
+                    `Rate ${s} star${s > 1 ? "s" : ""}`,
+                    `${s} স্টার দিন`,
+                  )}
                   className="rounded p-0.5 outline-none transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Star
@@ -878,15 +1141,24 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
 
             {/* Optional qualitative review input */}
             {showReviewInput && !reviewSubmitted && (
-              <form onSubmit={handleReviewSubmit} className="mt-2 space-y-1.5 border-t border-border/50 pt-2">
+              <form
+                onSubmit={handleReviewSubmit}
+                className="mt-2 space-y-1.5 border-t border-border/50 pt-2"
+              >
                 <input
                   maxLength={300}
                   value={reviewText}
                   onChange={(e) => setReviewText(e.target.value)}
                   placeholder={
                     starRating && starRating <= 3
-                      ? t("What could we improve?", "আমরা কীভাবে আরও উন্নত করতে পারি?")
-                      : t("What did you like? (optional)", "আপনার কেমন লেগেছে? (ঐচ্ছিক)")
+                      ? t(
+                          "What could we improve?",
+                          "আমরা কীভাবে আরও উন্নত করতে পারি?",
+                        )
+                      : t(
+                          "What did you like? (optional)",
+                          "আপনার কেমন লেগেছে? (ঐচ্ছিক)",
+                        )
                   }
                   className="w-full rounded-fq-md border border-input bg-background px-2 py-1 text-xs text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 />
@@ -910,7 +1182,8 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
 
             {reviewSubmitted && reviewText.trim() && (
               <p className="mt-1.5 text-[10px] text-foreground/80 italic">
-                "{reviewText.trim()}" — {t("Review received.", "মতামত জমা হয়েছে।")}
+                "{reviewText.trim()}" —{" "}
+                {t("Review received.", "মতামত জমা হয়েছে।")}
               </p>
             )}
           </div>
@@ -922,8 +1195,8 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
               <button
                 key={q}
                 type="button"
-                onClick={() => void send(q)}
-                className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
+                onClick={() => void handleQuickAsk(q)}
+                className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {q}
               </button>
@@ -950,6 +1223,7 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
             slug={slug}
             conversationId={conversationId}
             defaultPhone={phone}
+            mode={effectiveMode}
             onCancel={() => setActiveForm("none")}
             onSuccess={handleCallbackSuccess}
           />
@@ -979,7 +1253,19 @@ export function SupportWidget({ slug, supportPhone }: { slug: string; supportPho
             value={text}
             maxLength={1000}
             onChange={(e) => setText(e.target.value)}
-            placeholder={t("Type your question", "আপনার প্রশ্ন লিখুন")}
+            placeholder={
+              effectiveMode === "platform"
+                ? t(
+                    "Ask about features, pricing, or talk to sales…",
+                    "ফিচার, প্রাইসিং বা সেলস নিয়ে জিজ্ঞাসা করুন…",
+                  )
+                : effectiveMode === "dashboard"
+                  ? t(
+                      "Ask about store setup, bKash, couriers…",
+                      "স্টোর সেটআপ, বিকাশ বা কুরিয়ার নিয়ে জিজ্ঞাসা করুন…",
+                    )
+                  : t("Type your question", "আপনার প্রশ্ন লিখুন")
+            }
             aria-label={t("Your question", "আপনার প্রশ্ন")}
             className="min-w-0 flex-1 rounded-fq-md border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
           />

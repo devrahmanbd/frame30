@@ -51,7 +51,11 @@ export function Hotspot({
     <div
       ref={wrap}
       className="absolute"
-      style={{ left: `${clampPercent(x)}%`, top: `${clampPercent(y)}%`, transform: "translate(-50%, -50%)" }}
+      style={{
+        left: `${clampPercent(x)}%`,
+        top: `${clampPercent(y)}%`,
+        transform: "translate(-50%, -50%)",
+      }}
     >
       <button
         type="button"

@@ -57,10 +57,17 @@ export function linkedRevision(node: Section): number | null {
 }
 
 /** Turns a node into a placement: its own children are dropped. */
-export function asPlacement(node: Section, block: Pick<GlobalBlock, "id" | "revision">): Section {
+export function asPlacement(
+  node: Section,
+  block: Pick<GlobalBlock, "id" | "revision">,
+): Section {
   const next: Section = {
     ...node,
-    props: { ...node.props, [GB_ID_PROP]: block.id, [GB_REV_PROP]: block.revision },
+    props: {
+      ...node.props,
+      [GB_ID_PROP]: block.id,
+      [GB_REV_PROP]: block.revision,
+    },
   };
   delete next.children;
   return next;
@@ -101,13 +108,22 @@ export function placementCounts(trees: Section[][]): Record<string, number> {
   return counts;
 }
 
-function graftIds(nodes: Section[], placementId: string, budget: { left: number }): Section[] {
+function graftIds(
+  nodes: Section[],
+  placementId: string,
+  budget: { left: number },
+): Section[] {
   const out: Section[] = [];
   for (const node of nodes) {
     if (budget.left <= 0) break;
     budget.left -= 1;
-    const copy: Section = { ...node, id: `${placementId}~${node.id}`, props: { ...node.props } };
-    if (node.children?.length) copy.children = graftIds(node.children, placementId, budget);
+    const copy: Section = {
+      ...node,
+      id: `${placementId}~${node.id}`,
+      props: { ...node.props },
+    };
+    if (node.children?.length)
+      copy.children = graftIds(node.children, placementId, budget);
     out.push(copy);
   }
   return out;
@@ -128,14 +144,21 @@ export function resolveGlobalBlocks(
   options: ResolveOptions = {},
 ): { sections: Section[]; report: ResolveReport } {
   const index = new Map(blocks.map((block) => [block.id, block]));
-  const report: ResolveReport = { resolved: {}, missing: [], stale: [], skipped: [] };
+  const report: ResolveReport = {
+    resolved: {},
+    missing: [],
+    stale: [],
+    skipped: [],
+  };
   const budget = { left: options.budget ?? MAX_NODES_PER_TEMPLATE };
 
   const walk = (nodes: Section[], ancestry: readonly string[]): Section[] =>
     nodes.map((node) => {
       const blockId = linkedBlockId(node);
       if (!blockId) {
-        return node.children?.length ? { ...node, children: walk(node.children, ancestry) } : node;
+        return node.children?.length
+          ? { ...node, children: walk(node.children, ancestry) }
+          : node;
       }
       const block = index.get(blockId);
       if (!block) {
@@ -152,7 +175,8 @@ export function resolveGlobalBlocks(
         return { ...node, children: [], invalid: "global_block.budget" };
       }
       const recorded = linkedRevision(node);
-      if (recorded !== null && recorded < block.revision) report.stale.push(node.id);
+      if (recorded !== null && recorded < block.revision)
+        report.stale.push(node.id);
       report.resolved[node.id] = blockId;
       const grafted = graftIds(block.nodes, node.id, budget);
       return {

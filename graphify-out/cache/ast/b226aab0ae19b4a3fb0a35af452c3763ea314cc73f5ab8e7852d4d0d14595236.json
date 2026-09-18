@@ -1,1 +1,396 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "label": "SemrushDesk.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L1"}, {"id": "seo_semrushdesk_semrushdesk", "label": "SemrushDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L29"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_semrush_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "lib_semrush_functions_semrushoverviewfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "lib_semrush_functions_semrushauditfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_semrush_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "lib_semrush_semrushdatabase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx", "target": "seo_semrushdesk_semrushdesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L29", "weight": 1.0}], "raw_calls": [{"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L30"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L32"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L33"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L35"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L36"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L38"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L44"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L77"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L81"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L120"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L129"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L134"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L141"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L147"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L159"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L165"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L173"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L177"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L183"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L195"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L195"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L208"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L212"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L220"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L221"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L222"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L224"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L228"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L274"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L278"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L282"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L311"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L315"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L319"}, {"caller_nid": "seo_semrushdesk_semrushdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx", "source_location": "L323"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "label": "SemrushDesk.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "seo_semrushdesk_semrushdesk",
+      "label": "SemrushDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L29"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_semrush_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "lib_semrush_functions_semrushoverviewfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "lib_semrush_functions_semrushauditfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_semrush_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "lib_semrush_semrushdatabase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_semrushdesk_tsx",
+      "target": "seo_semrushdesk_semrushdesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L195"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L195"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L224"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L278"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L282"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "seo_semrushdesk_semrushdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SemrushDesk.tsx",
+      "source_location": "L323"
+    }
+  ]
+}

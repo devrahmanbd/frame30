@@ -18,7 +18,12 @@ import { en } from "./i18n-dict";
 
 export type LoopDetectionResult = {
   loopDetected: boolean;
-  loopType: "duplicate_user_turn" | "duplicate_bot_turn" | "cyclic_tool_failure" | "intent_oscillation" | null;
+  loopType:
+    | "duplicate_user_turn"
+    | "duplicate_bot_turn"
+    | "cyclic_tool_failure"
+    | "intent_oscillation"
+    | null;
   repetitionCount: number;
   interventionReply: string | null;
   interventionReplyBn: string | null;
@@ -29,7 +34,11 @@ export type TrajectoryTurn = {
   role: "customer" | "bot";
   message: string;
   intent?: string;
-  toolCalls?: Array<{ tool: string; ok: boolean; args?: Record<string, unknown> }>;
+  toolCalls?: Array<{
+    tool: string;
+    ok: boolean;
+    args?: Record<string, unknown>;
+  }>;
 };
 
 /** Normalize string for near-duplicate fuzzy matching. */
@@ -94,22 +103,27 @@ export function detectTrajectoryLoop(
   }
 
   // 1. Check duplicate turns from the same role
-  const sameRoleTurns = history
-    .filter((t) => t.role === currentRole)
-    .slice(-4);
+  const sameRoleTurns = history.filter((t) => t.role === currentRole).slice(-4);
 
   let nearDuplicates = 1;
   for (const past of sameRoleTurns) {
     const pastNorm = normalizeForLoopCheck(past.message);
-    if (pastNorm === normalizedCurrent || jaccardSimilarity(pastNorm, normalizedCurrent) >= 0.85) {
+    if (
+      pastNorm === normalizedCurrent ||
+      jaccardSimilarity(pastNorm, normalizedCurrent) >= 0.85
+    ) {
       nearDuplicates++;
     }
   }
 
   if (nearDuplicates >= 3) {
-    const loopType = currentRole === "customer" ? "duplicate_user_turn" : "duplicate_bot_turn";
+    const loopType =
+      currentRole === "customer" ? "duplicate_user_turn" : "duplicate_bot_turn";
     incr("framique_ai_loop_detected_total", { type: loopType });
-    log("warn", "ai.loop_circuit_broken", { type: loopType, count: nearDuplicates });
+    log("warn", "ai.loop_circuit_broken", {
+      type: loopType,
+      count: nearDuplicates,
+    });
 
     return {
       loopDetected: true,
@@ -124,14 +138,15 @@ export function detectTrajectoryLoop(
   }
 
   // 2. Check cyclic tool failure loop (e.g. 2 consecutive failed tool executions)
-  const recentToolCalls = history
-    .flatMap((t) => t.toolCalls ?? [])
-    .slice(-3);
+  const recentToolCalls = history.flatMap((t) => t.toolCalls ?? []).slice(-3);
 
   const consecutiveFails = recentToolCalls.filter((c) => !c.ok).length;
   if (consecutiveFails >= 2) {
     incr("framique_ai_loop_detected_total", { type: "cyclic_tool_failure" });
-    log("warn", "ai.loop_circuit_broken", { type: "cyclic_tool_failure", count: consecutiveFails });
+    log("warn", "ai.loop_circuit_broken", {
+      type: "cyclic_tool_failure",
+      count: consecutiveFails,
+    });
 
     return {
       loopDetected: true,
@@ -154,7 +169,11 @@ export function detectTrajectoryLoop(
   if (recentIntents.length >= 4) {
     const uniqueIntents = new Set(recentIntents);
     // If bouncing strictly between 2 intents back and forth
-    if (uniqueIntents.size === 2 && recentIntents[0] === recentIntents[2] && recentIntents[1] === recentIntents[3]) {
+    if (
+      uniqueIntents.size === 2 &&
+      recentIntents[0] === recentIntents[2] &&
+      recentIntents[1] === recentIntents[3]
+    ) {
       incr("framique_ai_loop_detected_total", { type: "intent_oscillation" });
       log("warn", "ai.loop_circuit_broken", { type: "intent_oscillation" });
 

@@ -6,7 +6,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Loader2, Sparkles } from "lucide-react";
 import { fmtMinor } from "@/lib/money";
-import { adjustPrice, availabilityView, validateBulkRows, type BulkRow } from "@/lib/commerce-desk";
+import {
+  adjustPrice,
+  availabilityView,
+  validateBulkRows,
+  type BulkRow,
+} from "@/lib/commerce-desk";
 import {
   bulkUpdateVariantsFn,
   skuNextFn,
@@ -24,7 +29,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/bulk-editor")({
           "Edit prices, stock, SKUs and barcodes across hundreds of variants at once, with pre-order rules and a preview of every change before it applies.",
       },
       { property: "og:title", content: "Bulk variant editor" },
-      { property: "og:description", content: "Change many prices and stock levels in one safe batch." },
+      {
+        property: "og:description",
+        content: "Change many prices and stock levels in one safe batch.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -32,7 +40,13 @@ export const Route = createFileRoute("/_authenticated/dashboard/bulk-editor")({
   component: BulkEditorPage,
 });
 
-type Edit = { price?: number; compareAt?: number; stock?: number; sku?: string; barcode?: string };
+type Edit = {
+  price?: number;
+  compareAt?: number;
+  stock?: number;
+  sku?: string;
+  barcode?: string;
+};
 
 function BulkEditorPage() {
   const qc = useQueryClient();
@@ -45,7 +59,10 @@ function BulkEditorPage() {
   const [term, setTerm] = useState("");
   const [edits, setEdits] = useState<Record<string, Edit>>({});
   const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const [op, setOp] = useState<{ mode: "percent" | "amount" | "set"; value: number }>({
+  const [op, setOp] = useState<{
+    mode: "percent" | "amount" | "set";
+    value: number;
+  }>({
     mode: "percent",
     value: 0,
   });
@@ -62,7 +79,9 @@ function BulkEditorPage() {
       Object.entries(edits).map(([variant_id, e]) => ({
         variant_id,
         ...(e.price !== undefined ? { price_minor_int: e.price } : {}),
-        ...(e.compareAt !== undefined ? { compare_at_minor_int: e.compareAt } : {}),
+        ...(e.compareAt !== undefined
+          ? { compare_at_minor_int: e.compareAt }
+          : {}),
         ...(e.stock !== undefined ? { stock_quantity: e.stock } : {}),
         ...(e.sku ? { sku: e.sku } : {}),
         ...(e.barcode ? { barcode: e.barcode } : {}),
@@ -77,16 +96,30 @@ function BulkEditorPage() {
       setEdits({});
       void qc.invalidateQueries({ queryKey: ["variant-grid"] });
       const r = res as { applied: number; rejected: number };
-      toast.success(`${r.applied} updated${r.rejected ? `, ${r.rejected} rejected` : ""}`);
+      toast.success(
+        `${r.applied} updated${r.rejected ? `, ${r.rejected} rejected` : ""}`,
+      );
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "That batch could not be applied"),
+      toast.error(
+        err instanceof Error ? err.message : "That batch could not be applied",
+      ),
   });
 
   const preorderMutation = useMutation({
-    mutationFn: (vars: { variantId: string; policy: "deny" | "allow" | "preorder"; releaseAt: string | null }) =>
+    mutationFn: (vars: {
+      variantId: string;
+      policy: "deny" | "allow" | "preorder";
+      releaseAt: string | null;
+    }) =>
       savePreorder({
-        data: { variantId: vars.variantId, policy: vars.policy, limit: 0, releaseAt: vars.releaseAt, note: "" },
+        data: {
+          variantId: vars.variantId,
+          policy: vars.policy,
+          limit: 0,
+          releaseAt: vars.releaseAt,
+          note: "",
+        },
       }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["variant-grid"] });
@@ -97,9 +130,15 @@ function BulkEditorPage() {
 
   const codegen = useMutation({
     mutationFn: (variantId: string) =>
-      nextSku({ data: { prefix: "SKU" } }).then((res) => ({ variantId, ...(res as { sku: string; barcode: string }) })),
+      nextSku({ data: { prefix: "SKU" } }).then((res) => ({
+        variantId,
+        ...(res as { sku: string; barcode: string }),
+      })),
     onSuccess: ({ variantId, sku, barcode }) => {
-      setEdits((e) => ({ ...e, [variantId]: { ...e[variantId], sku, barcode } }));
+      setEdits((e) => ({
+        ...e,
+        [variantId]: { ...e[variantId], sku, barcode },
+      }));
       toast.success(`Generated ${sku}`);
     },
     onError: () => toast.error("Could not generate a code"),
@@ -110,7 +149,8 @@ function BulkEditorPage() {
       const next = { ...current };
       for (const row of rows) {
         if (!selected[row.id]) continue;
-        const base = next[row.id]?.price ?? Number(row.price_amount_minor_int ?? 0);
+        const base =
+          next[row.id]?.price ?? Number(row.price_amount_minor_int ?? 0);
         next[row.id] = { ...next[row.id], price: adjustPrice(base, op) };
       }
       return next;
@@ -123,10 +163,13 @@ function BulkEditorPage() {
   return (
     <section className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">Bulk editor</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          Bulk editor
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Change prices, stock and codes across many variants at once. Nothing is saved until you apply the
-          batch, and anything we can spot as wrong is listed before it goes anywhere near your catalogue.
+          Change prices, stock and codes across many variants at once. Nothing
+          is saved until you apply the batch, and anything we can spot as wrong
+          is listed before it goes anywhere near your catalogue.
         </p>
       </header>
 
@@ -157,7 +200,10 @@ function BulkEditorPage() {
             <select
               value={op.mode}
               onChange={(e) =>
-                setOp((o) => ({ ...o, mode: e.target.value as "percent" | "amount" | "set" }))
+                setOp((o) => ({
+                  ...o,
+                  mode: e.target.value as "percent" | "amount" | "set",
+                }))
               }
               className="mt-1 block min-h-9 rounded-fq-md border border-border bg-background px-2 text-sm"
             >
@@ -170,7 +216,9 @@ function BulkEditorPage() {
             aria-label="Adjustment value"
             type="number"
             value={op.value}
-            onChange={(e) => setOp((o) => ({ ...o, value: Number(e.target.value) || 0 }))}
+            onChange={(e) =>
+              setOp((o) => ({ ...o, value: Number(e.target.value) || 0 }))
+            }
             className="money min-h-9 w-28 rounded-fq-md border border-border bg-background px-2 text-sm"
           />
           <button
@@ -186,7 +234,9 @@ function BulkEditorPage() {
 
       {check.invalid.length ? (
         <div className="rounded-fq-lg border border-border bg-warning-soft p-3 text-sm text-warning-foreground">
-          <p className="font-medium">{check.invalid.length} change(s) need attention</p>
+          <p className="font-medium">
+            {check.invalid.length} change(s) need attention
+          </p>
           <ul className="mt-1 list-disc pl-5">
             {check.invalid.slice(0, 5).map((i, index) => (
               <li key={index}>
@@ -205,46 +255,74 @@ function BulkEditorPage() {
               <th scope="col" className="p-2">
                 <span className="sr-only">Select</span>
               </th>
-              <th scope="col" className="p-2">Variant</th>
-              <th scope="col" className="p-2">Price</th>
-              <th scope="col" className="p-2">Stock</th>
-              <th scope="col" className="p-2">SKU / barcode</th>
-              <th scope="col" className="p-2">Availability</th>
+              <th scope="col" className="p-2">
+                Variant
+              </th>
+              <th scope="col" className="p-2">
+                Price
+              </th>
+              <th scope="col" className="p-2">
+                Stock
+              </th>
+              <th scope="col" className="p-2">
+                SKU / barcode
+              </th>
+              <th scope="col" className="p-2">
+                Availability
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {grid.isLoading ? (
               <tr>
-                <td colSpan={6} className="p-4 text-muted-foreground">Loading…</td>
+                <td colSpan={6} className="p-4 text-muted-foreground">
+                  Loading…
+                </td>
               </tr>
             ) : !rows.length ? (
               <tr>
-                <td colSpan={6} className="p-4 text-muted-foreground">No variants match that search.</td>
+                <td colSpan={6} className="p-4 text-muted-foreground">
+                  No variants match that search.
+                </td>
               </tr>
             ) : (
               rows.map((row) => {
                 const edit = edits[row.id] ?? {};
-                const price = edit.price ?? Number(row.price_amount_minor_int ?? 0);
+                const price =
+                  edit.price ?? Number(row.price_amount_minor_int ?? 0);
                 const stock = edit.stock ?? Number(row.stock_quantity ?? 0);
                 const view = availabilityView({
                   stock,
-                  policy: (row.backorder_policy ?? "deny") as "deny" | "allow" | "preorder",
+                  policy: (row.backorder_policy ?? "deny") as
+                    "deny" | "allow" | "preorder",
                   limit: Number(row.backorder_limit ?? 0),
                   releaseAt: row.preorder_release_at,
                 });
                 return (
-                  <tr key={row.id} className={edits[row.id] ? "bg-info-soft/40" : undefined}>
+                  <tr
+                    key={row.id}
+                    className={edits[row.id] ? "bg-info-soft/40" : undefined}
+                  >
                     <td className="p-2">
                       <input
                         type="checkbox"
                         aria-label={`Select ${one<{ title: string }>(row.products)?.title ?? row.name}`}
                         checked={!!selected[row.id]}
-                        onChange={(e) => setSelected((s) => ({ ...s, [row.id]: e.target.checked }))}
+                        onChange={(e) =>
+                          setSelected((s) => ({
+                            ...s,
+                            [row.id]: e.target.checked,
+                          }))
+                        }
                       />
                     </td>
                     <td className="p-2">
-                      <span className="font-medium">{one<{ title: string }>(row.products)?.title ?? "—"}</span>
-                      <span className="block text-xs text-muted-foreground">{row.name}</span>
+                      <span className="font-medium">
+                        {one<{ title: string }>(row.products)?.title ?? "—"}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {row.name}
+                      </span>
                     </td>
                     <td className="p-2">
                       <input
@@ -252,7 +330,11 @@ function BulkEditorPage() {
                         type="number"
                         min={0}
                         value={price}
-                        onChange={(e) => setEdit(row.id, { price: Number(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setEdit(row.id, {
+                            price: Number(e.target.value) || 0,
+                          })
+                        }
                         className="money min-h-9 w-28 rounded-fq-md border border-border bg-background px-2 text-sm"
                       />
                       <span className="money block text-xs text-muted-foreground">
@@ -265,7 +347,11 @@ function BulkEditorPage() {
                         type="number"
                         min={0}
                         value={stock}
-                        onChange={(e) => setEdit(row.id, { stock: Number(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          setEdit(row.id, {
+                            stock: Number(e.target.value) || 0,
+                          })
+                        }
                         className="money min-h-9 w-24 rounded-fq-md border border-border bg-background px-2 text-sm"
                       />
                     </td>
@@ -274,7 +360,9 @@ function BulkEditorPage() {
                         <input
                           aria-label={`SKU for ${row.name}`}
                           value={edit.sku ?? row.sku ?? ""}
-                          onChange={(e) => setEdit(row.id, { sku: e.target.value })}
+                          onChange={(e) =>
+                            setEdit(row.id, { sku: e.target.value })
+                          }
                           className="min-h-9 w-32 rounded-fq-md border border-border bg-background px-2 text-sm"
                         />
                         <button
@@ -297,7 +385,8 @@ function BulkEditorPage() {
                         onChange={(e) =>
                           preorderMutation.mutate({
                             variantId: row.id,
-                            policy: e.target.value as "deny" | "allow" | "preorder",
+                            policy: e.target.value as
+                              "deny" | "allow" | "preorder",
                             releaseAt: row.preorder_release_at,
                           })
                         }
@@ -307,7 +396,9 @@ function BulkEditorPage() {
                         <option value="allow">Allow backorder</option>
                         <option value="preorder">Pre-order</option>
                       </select>
-                      <span className="block text-xs text-muted-foreground">{view.label}</span>
+                      <span className="block text-xs text-muted-foreground">
+                        {view.label}
+                      </span>
                     </td>
                   </tr>
                 );
@@ -320,7 +411,9 @@ function BulkEditorPage() {
       <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-3 shadow-sm">
         <p className="text-sm text-muted-foreground">
           {check.valid.length} change(s) staged
-          {check.overflow ? ` · ${check.overflow} beyond the 500-row batch limit` : ""}
+          {check.overflow
+            ? ` · ${check.overflow} beyond the 500-row batch limit`
+            : ""}
         </p>
         <div className="flex gap-2">
           <button
@@ -337,7 +430,9 @@ function BulkEditorPage() {
             onClick={() => applyMutation.mutate()}
             className="inline-flex min-h-10 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            {applyMutation.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+            {applyMutation.isPending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : null}
             Apply batch
           </button>
         </div>

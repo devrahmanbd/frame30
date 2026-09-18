@@ -1,1 +1,433 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "label": "blog-reader.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L1"}, {"id": "lib_blog_reader_server_loosedb", "label": "LooseDb", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L5"}, {"id": "lib_blog_reader_server_db", "label": "db()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L7"}, {"id": "lib_blog_reader_server_author", "label": "author()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L17"}, {"id": "lib_blog_reader_server_card", "label": "card()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L31"}, {"id": "lib_blog_reader_server_authormap", "label": "authorMap()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L47"}, {"id": "lib_blog_reader_server_loadpublicarticlepage", "label": "loadPublicArticlePage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L54"}, {"id": "lib_blog_reader_server_searchpublicblog", "label": "searchPublicBlog()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L133"}, {"id": "lib_blog_reader_server_loadauthorarchive", "label": "loadAuthorArchive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L164"}, {"id": "lib_blog_reader_server_loadblogfeed", "label": "loadBlogFeed()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L196"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "users_rahman_documents_frame30_src_lib_blog_reader_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_blog_reader_limits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_normalizeblogsearch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_blogauthor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "users_rahman_documents_frame30_src_lib_blog_taxonomy_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_taxonomy_paging", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_taxonomy_paging", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "users_rahman_documents_frame30_src_lib_render_read_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_render_read_server_renderread", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_loosedb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_author", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_card", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_authormap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_loadpublicarticlepage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_searchpublicblog", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_loadauthorarchive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts", "target": "lib_blog_reader_server_loadblogfeed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L196", "weight": 1.0}, {"source": "lib_blog_reader_server_db", "target": "users_rahman_documents_frame30_src_lib_pricing_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L8", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_blog_reader_server_db", "callee": "publicClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L9"}, {"caller_nid": "lib_blog_reader_server_card", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L42"}, {"caller_nid": "lib_blog_reader_server_card", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L42"}, {"caller_nid": "lib_blog_reader_server_card", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L43"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L48"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L48"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "in", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_reader_server_authormap", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L51"}, {"caller_nid": "lib_blog_reader_server_loadpublicarticlepage", "callee": "renderRead", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L55"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "normalizeBlogSearch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L134"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L135"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L135"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L135"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "paging", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L137"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "renderRead", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L139"}, {"caller_nid": "lib_blog_reader_server_searchpublicblog", "callee": "toLocaleLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L141"}, {"caller_nid": "lib_blog_reader_server_loadauthorarchive", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L165"}, {"caller_nid": "lib_blog_reader_server_loadauthorarchive", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L165"}, {"caller_nid": "lib_blog_reader_server_loadauthorarchive", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L165"}, {"caller_nid": "lib_blog_reader_server_loadauthorarchive", "callee": "renderRead", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L167"}, {"caller_nid": "lib_blog_reader_server_loadblogfeed", "callee": "renderRead", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts", "source_location": "L197"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "label": "blog-reader.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_blog_reader_server_loosedb",
+      "label": "LooseDb",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_blog_reader_server_db",
+      "label": "db()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_blog_reader_server_author",
+      "label": "author()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_blog_reader_server_card",
+      "label": "card()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_blog_reader_server_authormap",
+      "label": "authorMap()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_blog_reader_server_loadpublicarticlepage",
+      "label": "loadPublicArticlePage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_blog_reader_server_searchpublicblog",
+      "label": "searchPublicBlog()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_blog_reader_server_loadauthorarchive",
+      "label": "loadAuthorArchive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "id": "lib_blog_reader_server_loadblogfeed",
+      "label": "loadBlogFeed()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L196"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_reader_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_blog_reader_limits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_normalizeblogsearch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_blogauthor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_taxonomy_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_taxonomy_paging",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_taxonomy_paging",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_render_read_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_render_read_server_renderread",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_loosedb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_author",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_card",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_authormap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_loadpublicarticlepage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_searchpublicblog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_loadauthorarchive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_reader_server_ts",
+      "target": "lib_blog_reader_server_loadblogfeed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_reader_server_db",
+      "target": "users_rahman_documents_frame30_src_lib_pricing_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_blog_reader_server_db",
+      "callee": "publicClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_card",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_card",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_card",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "in",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_authormap",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadpublicarticlepage",
+      "callee": "renderRead",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "normalizeBlogSearch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "paging",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "renderRead",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_searchpublicblog",
+      "callee": "toLocaleLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadauthorarchive",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadauthorarchive",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadauthorarchive",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadauthorarchive",
+      "callee": "renderRead",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "lib_blog_reader_server_loadblogfeed",
+      "callee": "renderRead",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-reader.server.ts",
+      "source_location": "L197"
+    }
+  ]
+}

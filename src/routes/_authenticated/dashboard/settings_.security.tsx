@@ -12,9 +12,11 @@ import {
   revokeOtherSessionsFn,
   securityDeskFn,
 } from "@/lib/identity.functions";
+import { TotpCard } from "@/components/admin/settings/TotpCard";
 
-
-export const Route = createFileRoute("/_authenticated/dashboard/settings_/security")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/settings_/security",
+)({
   head: () => ({
     meta: [
       { title: "Account security — Framique admin" },
@@ -24,7 +26,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/settings_/securi
           "Two-factor authentication, active devices, step-up approval for refunds and payouts, and your recent sign-in activity.",
       },
       { property: "og:title", content: "Account security — Framique" },
-      { property: "og:description", content: "2FA, devices and sign-in history for your Framique account." },
+      {
+        property: "og:description",
+        content: "2FA, devices and sign-in history for your Framique account.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -54,7 +59,9 @@ function SecurityPage() {
       await supabase.auth.signOut({ scope: "others" });
     },
     onSuccess: () => {
-      toast.success(t("Other devices signed out.", "অন্য ডিভাইসগুলো সাইন আউট হয়েছে।"));
+      toast.success(
+        t("Other devices signed out.", "অন্য ডিভাইসগুলো সাইন আউট হয়েছে।"),
+      );
       void qc.invalidateQueries({ queryKey: ["security-desk"] });
     },
     onError: (e: Error) => toast.error(e.message),
@@ -79,7 +86,6 @@ function SecurityPage() {
       <PasswordCard />
       <StepUpCard />
 
-
       <Card title={t("Active devices", "সক্রিয় ডিভাইস")}>
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm text-muted-foreground">
@@ -100,7 +106,10 @@ function SecurityPage() {
         </div>
         <ul className="mt-4 divide-y divide-border text-sm">
           {(desk.data?.sessions ?? []).map((s) => (
-            <li key={s.id} className="flex items-center justify-between gap-3 py-2">
+            <li
+              key={s.id}
+              className="flex items-center justify-between gap-3 py-2"
+            >
               <span className="text-foreground">
                 {s.device ?? t("Unknown device", "অজানা ডিভাইস")}
                 {s.current && (
@@ -127,7 +136,10 @@ function SecurityPage() {
       <Card title={t("Recent activity", "সাম্প্রতিক কার্যক্রম")}>
         <ul className="divide-y divide-border text-sm">
           {(desk.data?.events ?? []).map((e) => (
-            <li key={e.id} className="flex items-center justify-between gap-3 py-2">
+            <li
+              key={e.id}
+              className="flex items-center justify-between gap-3 py-2"
+            >
               <span className="text-foreground">
                 {e.event}
                 <span
@@ -142,7 +154,9 @@ function SecurityPage() {
             </li>
           ))}
           {!desk.isPending && (desk.data?.events ?? []).length === 0 && (
-            <li className="py-2 text-muted-foreground">{t("Nothing logged yet.", "কিছু লগ হয়নি।")}</li>
+            <li className="py-2 text-muted-foreground">
+              {t("Nothing logged yet.", "কিছু লগ হয়নি।")}
+            </li>
           )}
         </ul>
       </Card>
@@ -253,7 +267,9 @@ function PasswordCard() {
       );
     }
     if (next !== confirm) {
-      return toast.error(t("The two passwords do not match.", "দুটি পাসওয়ার্ড মিলছে না।"));
+      return toast.error(
+        t("The two passwords do not match.", "দুটি পাসওয়ার্ড মিলছে না।"),
+      );
     }
     setBusy(true);
     try {
@@ -263,15 +279,17 @@ function PasswordCard() {
         ...({ current_password: current } as { current_password: string }),
       });
       if (error) throw error;
-      void recordAuthEventFn({ data: { event: "password.changed", outcome: "ok" } }).catch(
-        () => undefined,
-      );
+      void recordAuthEventFn({
+        data: { event: "password.changed", outcome: "ok" },
+      }).catch(() => undefined);
       setCurrent("");
       setNext("");
       setConfirm("");
       toast.success(t("Password updated.", "পাসওয়ার্ড আপডেট হয়েছে।"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not change the password");
+      toast.error(
+        err instanceof Error ? err.message : "Could not change the password",
+      );
     } finally {
       setBusy(false);
     }
@@ -325,113 +343,6 @@ function PasswordCard() {
   );
 }
 
-
-function TotpCard() {
-  const { t } = useLang();
-  const [qr, setQr] = useState<string | null>(null);
-  const [secret, setSecret] = useState<string | null>(null);
-  const [factorId, setFactorId] = useState<string | null>(null);
-  const [code, setCode] = useState("");
-  const [enrolled, setEnrolled] = useState<boolean | null>(null);
-
-  async function refresh() {
-    const { data } = await supabase.auth.mfa.listFactors();
-    setEnrolled((data?.totp?.length ?? 0) > 0);
-  }
-  useEffect(() => {
-    void refresh();
-  }, []);
-
-  async function startEnroll() {
-    const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp" });
-    if (error) return toast.error(error.message);
-    setFactorId(data.id);
-    setQr(data.totp.qr_code);
-    setSecret(data.totp.secret);
-  }
-
-  async function confirmEnroll() {
-    if (!factorId) return;
-    const challenge = await supabase.auth.mfa.challenge({ factorId });
-    if (challenge.error) return toast.error(challenge.error.message);
-    const verify = await supabase.auth.mfa.verify({
-      factorId,
-      challengeId: challenge.data.id,
-      code: code.trim(),
-    });
-    if (verify.error) return toast.error(verify.error.message);
-    void recordAuthEventFn({ data: { event: "mfa.enrolled", outcome: "ok" } }).catch(() => undefined);
-    toast.success(t("Two-factor is on.", "দুই-ধাপ যাচাই চালু হয়েছে।"));
-    setQr(null);
-    setSecret(null);
-    setFactorId(null);
-    setCode("");
-    void refresh();
-  }
-
-  async function disable() {
-    const { data } = await supabase.auth.mfa.listFactors();
-    const totp = data?.totp?.[0];
-    if (!totp) return;
-    const { error } = await supabase.auth.mfa.unenroll({ factorId: totp.id });
-    if (error) return toast.error(error.message);
-    void recordAuthEventFn({ data: { event: "mfa.unenrolled", outcome: "ok" } }).catch(
-      () => undefined,
-    );
-    toast.success(t("Two-factor removed.", "দুই-ধাপ যাচাই বন্ধ হয়েছে।"));
-    void refresh();
-  }
-
-  return (
-    <Card title={t("Two-factor authentication (TOTP)", "দুই-ধাপ যাচাই (TOTP)")}>
-      <p className="text-sm text-muted-foreground">
-        {t(
-          "Required for refunds, payouts and store deletion. Use any authenticator app.",
-          "রিফান্ড, পেআউট ও স্টোর মুছে ফেলার জন্য বাধ্যতামূলক। যেকোনো অথেনটিকেটর অ্যাপ ব্যবহার করুন।",
-        )}
-      </p>
-      {enrolled ? (
-        <button
-          type="button"
-          onClick={disable}
-          className="mt-4 min-h-11 rounded-fq-md border border-destructive/40 px-3 text-sm font-medium text-destructive hover:bg-destructive/10"
-        >
-          {t("Turn off two-factor", "দুই-ধাপ যাচাই বন্ধ")}
-        </button>
-      ) : qr ? (
-        <div className="mt-4 space-y-3">
-          <img src={qr} alt={t("Two-factor QR code", "দুই-ধাপ যাচাইয়ের QR কোড")} className="h-40 w-40" />
-          <p className="break-all text-xs tabular-nums text-muted-foreground">{secret}</p>
-          <input
-            value={code}
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="123456"
-            aria-label={t("Authenticator code", "অথেনটিকেটর কোড")}
-            className="min-h-11 w-40 rounded-fq-md border border-border bg-background px-3 text-sm tabular-nums text-foreground"
-          />
-          <button
-            type="button"
-            onClick={confirmEnroll}
-            className="ml-2 min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
-          >
-            {t("Confirm", "নিশ্চিত করুন")}
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={startEnroll}
-          className="mt-4 min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          {t("Set up two-factor", "দুই-ধাপ যাচাই সেট আপ")}
-        </button>
-      )}
-    </Card>
-  );
-}
-
 function StepUpCard() {
   const { t } = useLang();
   const [code, setCode] = useState("");
@@ -441,8 +352,13 @@ function StepUpCard() {
     mutationFn: async (action: "refund" | "payout") => {
       const { data } = await supabase.auth.mfa.listFactors();
       const totp = data?.totp?.[0];
-      if (!totp) throw new Error(t("Enable two-factor first.", "প্রথমে দুই-ধাপ যাচাই চালু করুন।"));
-      const challenge = await supabase.auth.mfa.challenge({ factorId: totp.id });
+      if (!totp)
+        throw new Error(
+          t("Enable two-factor first.", "প্রথমে দুই-ধাপ যাচাই চালু করুন।"),
+        );
+      const challenge = await supabase.auth.mfa.challenge({
+        factorId: totp.id,
+      });
       if (challenge.error) throw challenge.error;
       const verify = await supabase.auth.mfa.verify({
         factorId: totp.id,
@@ -461,7 +377,12 @@ function StepUpCard() {
   });
 
   return (
-    <Card title={t("Step-up approval for money actions", "টাকা সংক্রান্ত কাজের অতিরিক্ত অনুমোদন")}>
+    <Card
+      title={t(
+        "Step-up approval for money actions",
+        "টাকা সংক্রান্ত কাজের অতিরিক্ত অনুমোদন",
+      )}
+    >
       <p className="text-sm text-muted-foreground">
         {t(
           "Refunds and payouts each consume one single-use approval, valid for 5 minutes.",
@@ -496,15 +417,28 @@ function StepUpCard() {
         </button>
       </div>
       {until && (
-        <p role="status" aria-live="polite" className="mt-3 text-sm text-foreground">
-          {t("Valid until", "বৈধ")} <span className="tabular-nums">{new Date(until).toLocaleTimeString()}</span>
+        <p
+          role="status"
+          aria-live="polite"
+          className="mt-3 text-sm text-foreground"
+        >
+          {t("Valid until", "বৈধ")}{" "}
+          <span className="tabular-nums">
+            {new Date(until).toLocaleTimeString()}
+          </span>
         </p>
       )}
     </Card>
   );
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="rounded-fq-lg border border-border bg-card p-5">
       <h2 className="text-sm font-semibold text-foreground">{title}</h2>

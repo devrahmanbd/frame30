@@ -10,7 +10,7 @@ Design baseline: `docs/00-meta/design-system.md`
 
 A plugin is a merchant-installable extension to their storefront/checkout/admin surface that runs **inside a sandboxed worker sidecar**, declares a contract (manifest + scopes + events), and can act only where the reader/writer contract allows. This file owns the plugin-specific surface: build/install lifecycle, the sandbox runtime (worker sidecar only — one declared runtime), the enumerated event surface, the reader/writer contract, and the uninstall → data purge state machine.
 
-Nothing here re-runs OAuth. The plugin auth/zap-walk design is owned by `docs/13-export-sdk/oauth.md`, which is a **not-yet-approved named dependency**; this file only documents how plugins *consume* scopes, not how scopes are minted.
+Nothing here re-runs OAuth. The plugin auth/zap-walk design is owned by `docs/13-export-sdk/oauth.md`, which is a **not-yet-approved named dependency**; this file only documents how plugins _consume_ scopes, not how scopes are minted.
 
 ## 2. Scope
 
@@ -96,7 +96,7 @@ merchant:  installing → active ⇄ suspended → uninstalling → purge
 ## 6. Sandbox contract (worker sidecar)
 
 - Worker runs with operating-system-level sandbox (per-tenant container / minimal fd / net policy). Network calls allowed only to: scoped vendor endpoints stated in the manifest, and the platform pipeline ingress — never to arbitrary egress.
-- Sandbox is resource-bounded: the worker-sidecar resource envelope (max memory / CPU / egress bytes per interval) is enforced by the runtime host; the *numbers* are named TBDs (§11). An envelope breach = `suspend`, not a crash.
+- Sandbox is resource-bounded: the worker-sidecar resource envelope (max memory / CPU / egress bytes per interval) is enforced by the runtime host; the _numbers_ are named TBDs (§11). An envelope breach = `suspend`, not a crash.
 - The worker sidecar share NO globals with the storefront/checkout/render; no bridge JS. Exactly `docs/04-builder/app-blocks.md` boundary ("widget validity is server-side; a widget can never trigger callbacks on failed validity").
 - `is_breaking` manifest upgrades relay through `marketplace.md` consent (§6) — scope add/revoke or runtime change is a `breaking` upgrade; auto-pinning on the old version until review re-approves.
 
@@ -104,7 +104,7 @@ merchant:  installing → active ⇄ suspended → uninstalling → purge
 
 The manifest must declare, in a machine-checkable `scopes`/`permissions` block bound to OAuth names:
 
-- **read** — which resources the worker may read: storefront events (from §8), consented customer PII (pseudonymized), tenant settings — *scoped pass-through*, the platform never hands the worker a key that accesses another tenant.
+- **read** — which resources the worker may read: storefront events (from §8), consented customer PII (pseudonymized), tenant settings — _scoped pass-through_, the platform never hands the worker a key that accesses another tenant.
 - **write** — which invoices/orders customers a plugin may mutate via API, e.g. patch cart-line metadata, create order notes. Writes go through the **reader/writer gate** (identity-aware, ordered, quota-aware), never through raw SQL to a tenant's tables.
 - **No data store outside the platform.** A plugin may write to its own sidecar workspace on the platform (tenant-scoped) but never ship data to an external datastore except the declared vendor endpoints (§6). A `purge` covers the workspace too.
 
@@ -132,7 +132,7 @@ installed → uninstalling → enqueue_purge → purge_running → purge_complet
                                                                     └─→ retry (idempotent)
 ```
 
-- Enqueue: on uninstall-purge, platform `purgeQueue` (idempotent keys) is filled with every row referencing the plugin's tenant key in the event pipeline, worker workspace, linked tables. 
+- Enqueue: on uninstall-purge, platform `purgeQueue` (idempotent keys) is filled with every row referencing the plugin's tenant key in the event pipeline, worker workspace, linked tables.
 - Purge runs for **non-idempotent** and **idempotent** deletions. Idempotency keys in the queue guarantee at-least-once PURGE executed once.
 - PII-minimal: the platform logs purge command (key-only, no values); purge fail → `purge_failed` with the queue item retained (retry), not silent.
 - Reconsent the customer data model (docs/09 retention rules) governs that purged values and any copied ref are removed across the platform within RPO (owner `docs/09`; RPO named TBD §11).
@@ -175,13 +175,13 @@ installed → uninstalling → enqueue_purge → purge_running → purge_complet
 
 ## 13. Residual gaps / named TBD owners
 
-| Item | Owner |
-| --- | --- |
-| **Worker sandbox envelope caps (max CPU / egress / burst)** | **TBD** (`docs/02-infra` / runtime) — cited `docs/12-marketplace/plugins.md`... do not invent |
-| **Purge completion SLA / RPO** | **TBD** (`docs/09-analytics`) |
-| **OAuth scope names + validation** | **TBD** (`docs/13-export-sdk/oauth.md`, **not yet approved**); `plugins.md` consumes, does not mint |
-| **Plugin plan limit** | **NE** (product lead, in `docs/16-product-pricing`) |
-| Store-carry PII policy for plugin tokens | **TBD** (`docs/14-operations`) |
-| E-commerce registry entry (plugin registry in `docs/12-marketplace/README.md`) | platform eng |
+| Item                                                                           | Owner                                                                                               |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **Worker sandbox envelope caps (max CPU / egress / burst)**                    | **TBD** (`docs/02-infra` / runtime) — cited `docs/12-marketplace/plugins.md`... do not invent       |
+| **Purge completion SLA / RPO**                                                 | **TBD** (`docs/09-analytics`)                                                                       |
+| **OAuth scope names + validation**                                             | **TBD** (`docs/13-export-sdk/oauth.md`, **not yet approved**); `plugins.md` consumes, does not mint |
+| **Plugin plan limit**                                                          | **NE** (product lead, in `docs/16-product-pricing`)                                                 |
+| Store-carry PII policy for plugin tokens                                       | **TBD** (`docs/14-operations`)                                                                      |
+| E-commerce registry entry (plugin registry in `docs/12-marketplace/README.md`) | platform eng                                                                                        |
 
 All server-side data values above are TBDs or cited docs; nothing invented.

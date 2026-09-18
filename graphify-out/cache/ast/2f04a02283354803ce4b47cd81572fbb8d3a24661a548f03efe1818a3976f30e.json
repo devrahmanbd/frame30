@@ -1,1 +1,515 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "label": "query-discipline.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L1"}, {"id": "lib_query_discipline_contract_test_current", "label": "current", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L50"}, {"id": "lib_query_discipline_contract_test_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L65"}, {"id": "lib_query_discipline_contract_test_select", "label": "Select", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L83"}, {"id": "lib_query_discipline_contract_test_unbounded", "label": "unbounded()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L86"}, {"id": "lib_query_discipline_contract_test_describeread", "label": "describeRead()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L90"}, {"id": "lib_query_discipline_contract_test_expecteveryreadbounded", "label": "expectEveryReadBounded()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L96"}, {"id": "lib_query_discipline_contract_test_widestread", "label": "widestRead()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L102"}, {"id": "lib_query_discipline_contract_test_atbothscales", "label": "atBothScales()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L111"}, {"id": "lib_query_discipline_contract_test_a", "label": "a", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L131"}, {"id": "lib_query_discipline_contract_test_b", "label": "b", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L132"}, {"id": "lib_query_discipline_contract_test_db", "label": "db", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L156"}, {"id": "lib_query_discipline_contract_test_orderreads", "label": "orderReads", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L257"}, {"id": "lib_query_discipline_contract_test_counts", "label": "counts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L263"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_fake_db_fakedb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_fake_db_call", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_fake_db_fakedb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_large_tenant_large_tenant_id", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_large_tenant_large_tenant_slug", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_large_tenant_large_tenant_total_rows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_large_tenant_countrows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "fixtures_large_tenant_largetenanttables", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_current", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_select", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_unbounded", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L86", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_describeread", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_expecteveryreadbounded", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_widestread", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L102", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_atbothscales", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L111", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_a", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_b", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L156", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L177", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L198", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L222", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L245", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L253", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_orderreads", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L257", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts", "target": "lib_query_discipline_contract_test_counts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L263", "weight": 1.0}, {"source": "lib_query_discipline_contract_test_expecteveryreadbounded", "target": "lib_query_discipline_contract_test_unbounded", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L97", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_query_discipline_contract_test_unbounded", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L87"}, {"caller_nid": "lib_query_discipline_contract_test_describeread", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L91"}, {"caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded", "callee": "selects", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L97"}, {"caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded", "callee": "toEqual", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded", "callee": "expect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L98"}, {"caller_nid": "lib_query_discipline_contract_test_widestread", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L103"}, {"caller_nid": "lib_query_discipline_contract_test_widestread", "callee": "selects", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L103"}, {"caller_nid": "lib_query_discipline_contract_test_atbothscales", "callee": "run", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L118"}, {"caller_nid": "lib_query_discipline_contract_test_atbothscales", "callee": "run", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts", "source_location": "L119"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "label": "query-discipline.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_current",
+      "label": "current",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_select",
+      "label": "Select",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_unbounded",
+      "label": "unbounded()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L86"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_describeread",
+      "label": "describeRead()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "label": "expectEveryReadBounded()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_widestread",
+      "label": "widestRead()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_atbothscales",
+      "label": "atBothScales()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_a",
+      "label": "a",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_b",
+      "label": "b",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_db",
+      "label": "db",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L156"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_orderreads",
+      "label": "orderReads",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L257"
+    },
+    {
+      "id": "lib_query_discipline_contract_test_counts",
+      "label": "counts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L263"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_fake_db_fakedb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_fake_db_call",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_fake_db_fakedb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_large_tenant_large_tenant_id",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_large_tenant_large_tenant_slug",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_large_tenant_large_tenant_total_rows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_large_tenant_countrows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "fixtures_large_tenant_largetenanttables",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_current",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_select",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_unbounded",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_describeread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_widestread",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_atbothscales",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_orderreads",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L257",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_query_discipline_contract_test_ts",
+      "target": "lib_query_discipline_contract_test_counts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "target": "lib_query_discipline_contract_test_unbounded",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_query_discipline_contract_test_unbounded",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_describeread",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "callee": "selects",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "callee": "toEqual",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "callee": "expect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_expecteveryreadbounded",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_widestread",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_widestread",
+      "callee": "selects",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_atbothscales",
+      "callee": "run",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_query_discipline_contract_test_atbothscales",
+      "callee": "run",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/query-discipline.contract.test.ts",
+      "source_location": "L119"
+    }
+  ]
+}

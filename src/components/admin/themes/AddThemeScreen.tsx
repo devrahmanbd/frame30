@@ -84,7 +84,11 @@ export function AddThemeScreen({
       {uploadOpen ? <UploadDropzone /> : null}
 
       <div className="fq-edge-inner flex flex-wrap items-center gap-2 rounded-fq-lg border border-border bg-card/80 p-2 backdrop-blur">
-        <div role="tablist" aria-label="Theme catalogue" className="flex items-center gap-1">
+        <div
+          role="tablist"
+          aria-label="Theme catalogue"
+          className="flex items-center gap-1"
+        >
           {CATALOG_TABS.map((entry) => (
             <button
               key={entry.id}
@@ -199,7 +203,8 @@ function CatalogCard({
       onMouseLeave={() => setLifted(false)}
       onFocus={() => setLifted(true)}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node)) setLifted(false);
+        if (!event.currentTarget.contains(event.relatedTarget as Node))
+          setLifted(false);
       }}
     >
       <div className="relative">
@@ -234,19 +239,28 @@ function CatalogCard({
               {busy ? "Installing…" : "Install"}
             </button>
           )}
-          <button type="button" className={cn(btnGhost, "min-h-11")} onClick={onPreview}>
+          <button
+            type="button"
+            className={cn(btnGhost, "min-h-11")}
+            onClick={onPreview}
+          >
             Details &amp; preview
           </button>
         </div>
         <button
           type="button"
           aria-pressed={theme.favourite}
-          aria-label={theme.favourite ? `Unstar ${theme.name}` : `Star ${theme.name}`}
+          aria-label={
+            theme.favourite ? `Unstar ${theme.name}` : `Star ${theme.name}`
+          }
           onClick={onToggleFavourite}
           className="absolute right-2 top-2 grid size-9 place-items-center rounded-full border border-border bg-card/90 text-muted-foreground backdrop-blur transition-colors hover:text-primary"
         >
           <Star
-            className={cn("size-4", theme.favourite && "fill-current text-primary")}
+            className={cn(
+              "size-4",
+              theme.favourite && "fill-current text-primary",
+            )}
             aria-hidden
           />
         </button>
@@ -257,17 +271,25 @@ function CatalogCard({
         ) : null}
       </div>
       <div className="space-y-1 px-3 py-2">
-        <p className="truncate text-sm font-medium text-foreground">{theme.name}</p>
+        <p className="truncate text-sm font-medium text-foreground">
+          {theme.name}
+        </p>
         <p className="line-clamp-2 text-xs fq-sub">{theme.summary}</p>
-          {theme.installs > 0 ? (
-            <p className="flex items-center gap-1.5 text-xs fq-sub">
-              <Star className="size-3.5 fill-current text-primary" aria-hidden />
-              <span className="fq-num text-foreground/90">{theme.rating.toFixed(1)}</span>·
-              <span className="fq-num">{theme.installs.toLocaleString("en-US")}</span> installs
-            </p>
-          ) : (
-            <p className="text-xs font-medium text-primary">New</p>
-          )}
+        {theme.installs > 0 ? (
+          <p className="flex items-center gap-1.5 text-xs fq-sub">
+            <Star className="size-3.5 fill-current text-primary" aria-hidden />
+            <span className="fq-num text-foreground/90">
+              {theme.rating.toFixed(1)}
+            </span>
+            ·
+            <span className="fq-num">
+              {theme.installs.toLocaleString("en-US")}
+            </span>{" "}
+            installs
+          </p>
+        ) : (
+          <p className="text-xs font-medium text-primary">New</p>
+        )}
       </div>
     </article>
   );
@@ -276,7 +298,9 @@ function CatalogCard({
 /** Client-side `.zip` validation; packaging upload lands with the media library. */
 function UploadDropzone() {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState<{ ok: boolean; message: string } | null>(null);
+  const [state, setState] = useState<{ ok: boolean; message: string } | null>(
+    null,
+  );
   const [over, setOver] = useState(false);
 
   const accept = (file: File | undefined) => {
@@ -313,9 +337,17 @@ function UploadDropzone() {
         )}
       >
         <UploadCloud className="size-6 text-muted-foreground" aria-hidden />
-        <p className="text-sm font-medium text-foreground">Drop your theme .zip here</p>
-        <p className="text-xs fq-sub">Maximum size {formatBytes(MAX_THEME_UPLOAD_BYTES)}</p>
-        <button type="button" className={btnGhost} onClick={() => inputRef.current?.click()}>
+        <p className="text-sm font-medium text-foreground">
+          Drop your theme .zip here
+        </p>
+        <p className="text-xs fq-sub">
+          Maximum size {formatBytes(MAX_THEME_UPLOAD_BYTES)}
+        </p>
+        <button
+          type="button"
+          className={btnGhost}
+          onClick={() => inputRef.current?.click()}
+        >
           Select file
         </button>
         <input
@@ -324,7 +356,9 @@ function UploadDropzone() {
           accept=".zip"
           className="sr-only"
           aria-label="Theme package"
-          onChange={(event) => accept(event.currentTarget.files?.[0] ?? undefined)}
+          onChange={(event) =>
+            accept(event.currentTarget.files?.[0] ?? undefined)
+          }
         />
       </div>
       {state ? (

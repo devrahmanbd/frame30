@@ -11,7 +11,10 @@ import { astJsonLd } from "@/lib/structured-data";
 import { flattenAst } from "@/lib/builder-ast";
 
 import { SupportWidget } from "@/components/store/SupportWidget";
-import { CustomCodeBody, CustomCodeSurface } from "@/components/store/CustomCode";
+import {
+  CustomCodeBody,
+  CustomCodeSurface,
+} from "@/components/store/CustomCode";
 import { verificationTags } from "@/lib/search-console";
 import { getStorefront } from "@/lib/storefront.functions";
 import { fmtMinor } from "@/lib/money";
@@ -19,7 +22,8 @@ import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/")({
   validateSearch: (s: Record<string, unknown>): { preview_token?: string } => ({
-    preview_token: typeof s.preview_token === "string" ? s.preview_token : undefined,
+    preview_token:
+      typeof s.preview_token === "string" ? s.preview_token : undefined,
   }),
   // NOTE: this repo's TanStack version does NOT pass `search` to route
   // loaders (verified in router-core load-matches.js: getLoaderContext
@@ -31,18 +35,27 @@ export const Route = createFileRoute("/store/$slug/")({
     try {
       // location.href may be origin-relative in SSR ("/store/x?..."); the
       // dummy base is ignored when href is already absolute.
-      const raw = new URL(location.href, "http://localhost").searchParams.get("preview_token");
+      const raw = new URL(location.href, "http://localhost").searchParams.get(
+        "preview_token",
+      );
       previewToken = typeof raw === "string" && raw ? raw : undefined;
     } catch {
       previewToken = undefined;
     }
-    const data = await getStorefront({ data: { slug: params.slug as string, previewToken } });
+    const data = await getStorefront({
+      data: { slug: params.slug as string, previewToken },
+    });
     if (!data) throw notFound();
     return data;
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Store unavailable" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Store unavailable" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     // Phase 4: merchant head snippet (verification metas, canonical/alternate
     // links, JSON-LD) is appended after the platform's own tags so it can
@@ -78,7 +91,12 @@ export const Route = createFileRoute("/store/$slug/")({
       // so a theme never pays for a family it does not use.
       links: [
         ...(base.links ?? []),
-        ...fontHeadLinks(loaderData.tokens ?? { fontDisplay: "Noto Sans Bengali", fontBody: "Inter" }),
+        ...fontHeadLinks(
+          loaderData.tokens ?? {
+            fontDisplay: "Noto Sans Bengali",
+            fontBody: "Inter",
+          },
+        ),
         ...custom.filter((t) => t.tag === "link").map((t) => t.attrs),
       ],
       scripts: [
@@ -89,7 +107,9 @@ export const Route = createFileRoute("/store/$slug/")({
           loaderData.ast,
           {
             storeName: loaderData.merchant.name,
-            url: loaderData.origin ? `${loaderData.origin}/store/${params.slug}` : null,
+            url: loaderData.origin
+              ? `${loaderData.origin}/store/${params.slug}`
+              : null,
           },
           flattenAst,
         ).map((node) => ({
@@ -97,7 +117,10 @@ export const Route = createFileRoute("/store/$slug/")({
           children: JSON.stringify(node).replace(/</g, "\\u003c"),
         })),
         ...custom
-          .filter((t): t is Extract<typeof t, { tag: "script" }> => t.tag === "script")
+          .filter(
+            (t): t is Extract<typeof t, { tag: "script" }> =>
+              t.tag === "script",
+          )
           .map((t) => ({ ...t.attrs, children: t.children })),
       ],
     };
@@ -110,8 +133,12 @@ function StoreMissing() {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-2xl font-semibold">{t("Store not found", "দোকান পাওয়া যায়নি")}</h1>
-      <p className="mt-2 text-muted-foreground">{t("This storefront is not published.", "এই দোকানটি প্রকাশিত হয়নি।")}</p>
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
+      <p className="mt-2 text-muted-foreground">
+        {t("This storefront is not published.", "এই দোকানটি প্রকাশিত হয়নি।")}
+      </p>
     </main>
   );
 }
@@ -133,7 +160,6 @@ function StorefrontHome() {
     preview,
   } = Route.useLoaderData();
 
-
   const slug = merchant.slug;
   const [term, setTerm] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -142,14 +168,16 @@ function StorefrontHome() {
   const q = term.trim().toLowerCase();
   const collectionMembers = collectionId
     ? new Set(
-        (collections.find((c) => c.id === collectionId)?.collection_products ?? []).map(
-          (cp) => cp.product_id,
-        ),
+        (
+          collections.find((c) => c.id === collectionId)?.collection_products ??
+          []
+        ).map((cp) => cp.product_id),
       )
     : null;
 
   const visible = products.filter((p) => {
-    if (q && !`${p.title} ${p.description ?? ""}`.toLowerCase().includes(q)) return false;
+    if (q && !`${p.title} ${p.description ?? ""}`.toLowerCase().includes(q))
+      return false;
     if (categoryId && p.category_id !== categoryId) return false;
     if (collectionMembers && !collectionMembers.has(p.id)) return false;
     return true;
@@ -159,7 +187,10 @@ function StorefrontHome() {
     <>
       <section className="mt-8 space-y-3">
         <div>
-          <label htmlFor="store-search" className="block text-xs font-medium text-muted-foreground">
+          <label
+            htmlFor="store-search"
+            className="block text-xs font-medium text-muted-foreground"
+          >
             {t("Search products", "পণ্য খুঁজুন")}
           </label>
           <input
@@ -173,13 +204,23 @@ function StorefrontHome() {
         </div>
 
         {collections.length > 0 && (
-          <div role="group" aria-label="Filter by collection" className="flex flex-wrap gap-2">
-            <FilterChip active={!collectionId} onClick={() => setCollectionId(null)} label={t("All collections", "সব কালেকশন")} />
+          <div
+            role="group"
+            aria-label="Filter by collection"
+            className="flex flex-wrap gap-2"
+          >
+            <FilterChip
+              active={!collectionId}
+              onClick={() => setCollectionId(null)}
+              label={t("All collections", "সব কালেকশন")}
+            />
             {collections.map((c) => (
               <FilterChip
                 key={c.id}
                 active={collectionId === c.id}
-                onClick={() => setCollectionId(collectionId === c.id ? null : c.id)}
+                onClick={() =>
+                  setCollectionId(collectionId === c.id ? null : c.id)
+                }
                 label={c.name}
               />
             ))}
@@ -187,8 +228,16 @@ function StorefrontHome() {
         )}
 
         {categories.length > 0 && (
-          <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2">
-            <FilterChip active={!categoryId} onClick={() => setCategoryId(null)} label={t("All categories", "সব ক্যাটাগরি")} />
+          <div
+            role="group"
+            aria-label="Filter by category"
+            className="flex flex-wrap gap-2"
+          >
+            <FilterChip
+              active={!categoryId}
+              onClick={() => setCategoryId(null)}
+              label={t("All categories", "সব ক্যাটাগরি")}
+            />
             {categories.map((c) => (
               <FilterChip
                 key={c.id}
@@ -203,16 +252,22 @@ function StorefrontHome() {
 
       <h2 className="font-bangla-display mt-10 text-xl font-semibold">
         {t("All products", "সব পণ্য")}{" "}
-        <span className="money text-sm font-normal text-muted-foreground">({visible.length})</span>
+        <span className="money text-sm font-normal text-muted-foreground">
+          ({visible.length})
+        </span>
       </h2>
       {visible.length === 0 ? (
-        <p className="mt-4 text-muted-foreground">{t("No products match this view.", "কোনো পণ্য পাওয়া যায়নি।")}</p>
+        <p className="mt-4 text-muted-foreground">
+          {t("No products match this view.", "কোনো পণ্য পাওয়া যায়নি।")}
+        </p>
       ) : (
         <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {visible.map((p) => {
             const variants = p.product_variants ?? [];
             const min = variants.length
-              ? Math.min(...variants.map((v) => Number(v.price_amount_minor_int)))
+              ? Math.min(
+                  ...variants.map((v) => Number(v.price_amount_minor_int)),
+                )
               : 0;
             const inStock = variants.some((v) => v.stock_quantity > 0);
             return (
@@ -232,10 +287,18 @@ function StorefrontHome() {
                     />
                   </div>
                   <div className="p-3">
-                    <h3 className="line-clamp-2 text-sm font-medium">{p.title}</h3>
-                    <p className="money mt-1 text-sm font-semibold">{fmtMinor(min, merchant.currency_code)}</p>
-                    <p className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}>
-                      {inStock ? t("In stock", "স্টকে আছে") : t("Out of stock", "স্টক নেই")}
+                    <h3 className="line-clamp-2 text-sm font-medium">
+                      {p.title}
+                    </h3>
+                    <p className="money mt-1 text-sm font-semibold">
+                      {fmtMinor(min, merchant.currency_code)}
+                    </p>
+                    <p
+                      className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
+                    >
+                      {inStock
+                        ? t("In stock", "স্টকে আছে")
+                        : t("Out of stock", "স্টক নেই")}
                     </p>
                   </div>
                 </Link>
@@ -263,21 +326,32 @@ function StorefrontHome() {
     </ul>
   );
 
-
   const defaultHero = (
     <section className="rounded-fq-lg border border-border bg-info-soft p-8">
-      <h1 className="font-bangla-display text-3xl font-bold sm:text-4xl">{merchant.name}</h1>
+      <h1 className="font-bangla-display text-3xl font-bold sm:text-4xl">
+        {merchant.name}
+      </h1>
       <p className="mt-2 max-w-xl text-muted-foreground">
-        {settings?.tagline ?? t("Fast delivery across Bangladesh — cash on delivery and mobile payments.", "বাংলাদেশজুড়ে দ্রুত ডেলিভারি — ক্যাশ অন ডেলিভারি ও মোবাইল পেমেন্ট।")}
+        {settings?.tagline ??
+          t(
+            "Fast delivery across Bangladesh — cash on delivery and mobile payments.",
+            "বাংলাদেশজুড়ে দ্রুত ডেলিভারি — ক্যাশ অন ডেলিভারি ও মোবাইল পেমেন্ট।",
+          )}
       </p>
       <ul className="mt-4 flex flex-wrap gap-2 text-xs">
         {(settings?.cod_enabled ?? true) && (
-          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">{t("Cash on delivery", "ক্যাশ অন ডেলিভারি")}</li>
+          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">
+            {t("Cash on delivery", "ক্যাশ অন ডেলিভারি")}
+          </li>
         )}
         {(settings?.mfs_enabled ?? true) && (
-          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">bKash / Nagad</li>
+          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">
+            bKash / Nagad
+          </li>
         )}
-        <li className="rounded-full bg-card px-3 py-1 text-muted-foreground">VAT included at checkout</li>
+        <li className="rounded-full bg-card px-3 py-1 text-muted-foreground">
+          VAT included at checkout
+        </li>
       </ul>
     </section>
   );
@@ -292,7 +366,10 @@ function StorefrontHome() {
           role="status"
           className="bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground"
         >
-          {t("Previewing an unpublished draft — shoppers see the live theme.", "অপ্রকাশিত খসড়ার প্রিভিউ — ক্রেতারা লাইভ থিম দেখছেন।")}
+          {t(
+            "Previewing an unpublished draft — shoppers see the live theme.",
+            "অপ্রকাশিত খসড়ার প্রিভিউ — ক্রেতারা লাইভ থিম দেখছেন।",
+          )}
         </p>
       )}
       <CustomCodeSurface code={customCode} />
@@ -306,8 +383,15 @@ function StorefrontHome() {
         chrome={
           <>
             <CustomCodeBody code={customCode} slot="start" />
-            <StoreHeader slug={slug} name={merchant.name} tagline={settings?.tagline} />
-            <SupportWidget slug={slug} />
+            <StoreHeader
+              slug={slug}
+              name={merchant.name}
+              tagline={settings?.tagline}
+              storeTimezone={tokens?.timezone}
+              allowCustomerTimezone={tokens?.allowCustomerTimezone}
+            />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={slug} /> */}
           </>
         }
         productSlot={catalog}
@@ -323,7 +407,6 @@ function StorefrontHome() {
     </WidgetDataProvider>
   );
 }
-
 
 function FilterChip({
   active,

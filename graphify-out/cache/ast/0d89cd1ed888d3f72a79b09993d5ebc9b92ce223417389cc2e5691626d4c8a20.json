@@ -1,1 +1,866 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "label": "brand-voice.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L1"}, {"id": "lib_brand_voice_severity", "label": "Severity", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L21"}, {"id": "lib_brand_voice_copyfinding", "label": "CopyFinding", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L23"}, {"id": "lib_brand_voice_copyentry", "label": "CopyEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L33"}, {"id": "lib_brand_voice_banned_hype", "label": "BANNED_HYPE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L40"}, {"id": "lib_brand_voice_weasel_words", "label": "WEASEL_WORDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L76"}, {"id": "lib_brand_voice_forbidden_claims", "label": "FORBIDDEN_CLAIMS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L90"}, {"id": "lib_brand_voice_bangla_lint", "label": "BANGLA_LINT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L101"}, {"id": "lib_brand_voice_locale_identical_allowlist", "label": "LOCALE_IDENTICAL_ALLOWLIST", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L114"}, {"id": "lib_brand_voice_copy_limits", "label": "COPY_LIMITS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L136"}, {"id": "lib_brand_voice_wordboundary", "label": "wordBoundary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L145"}, {"id": "lib_brand_voice_escaperegexp", "label": "escapeRegExp()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L148"}, {"id": "lib_brand_voice_hasadjacentnumber", "label": "hasAdjacentNumber()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L153"}, {"id": "lib_brand_voice_placeholders", "label": "placeholders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L161"}, {"id": "lib_brand_voice_moneyfindings", "label": "moneyFindings()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L170"}, {"id": "lib_brand_voice_sentences", "label": "sentences()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L189"}, {"id": "lib_brand_voice_auditoptions", "label": "AuditOptions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L196"}, {"id": "lib_brand_voice_default_options", "label": "DEFAULT_OPTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L203"}, {"id": "lib_brand_voice_matchesprefix", "label": "matchesPrefix()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L208"}, {"id": "lib_brand_voice_auditentry", "label": "auditEntry()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L213"}, {"id": "lib_brand_voice_auditdictionary", "label": "auditDictionary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L340"}, {"id": "lib_brand_voice_errorsonly", "label": "errorsOnly()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L349"}, {"id": "lib_brand_voice_formatfindings", "label": "formatFindings()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L353"}, {"id": "lib_brand_voice_auditmeta", "label": "auditMeta()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L360"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_severity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_copyfinding", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_copyentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_banned_hype", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_weasel_words", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_forbidden_claims", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_bangla_lint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_locale_identical_allowlist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_copy_limits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_wordboundary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_escaperegexp", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_hasadjacentnumber", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_placeholders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L161", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_moneyfindings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_sentences", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L189", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_auditoptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L196", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_default_options", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L203", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_matchesprefix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L208", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_auditentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L213", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_auditdictionary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L340", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_errorsonly", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L349", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_formatfindings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L353", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "target": "lib_brand_voice_auditmeta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L360", "weight": 1.0}, {"source": "lib_brand_voice_wordboundary", "target": "lib_brand_voice_escaperegexp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L146", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_placeholders", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L236", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_wordboundary", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L249", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_hasadjacentnumber", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L263", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_matchesprefix", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L301", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_sentences", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L321", "weight": 1.0}, {"source": "lib_brand_voice_auditentry", "target": "lib_brand_voice_moneyfindings", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L335", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_brand_voice_escaperegexp", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L149"}, {"caller_nid": "lib_brand_voice_hasadjacentnumber", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L154"}, {"caller_nid": "lib_brand_voice_hasadjacentnumber", "callee": "lastIndexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L154"}, {"caller_nid": "lib_brand_voice_hasadjacentnumber", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L155"}, {"caller_nid": "lib_brand_voice_hasadjacentnumber", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L157"}, {"caller_nid": "lib_brand_voice_hasadjacentnumber", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L157"}, {"caller_nid": "lib_brand_voice_placeholders", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L162"}, {"caller_nid": "lib_brand_voice_placeholders", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L162"}, {"caller_nid": "lib_brand_voice_placeholders", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L162"}, {"caller_nid": "lib_brand_voice_moneyfindings", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L173"}, {"caller_nid": "lib_brand_voice_moneyfindings", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L174"}, {"caller_nid": "lib_brand_voice_moneyfindings", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L175"}, {"caller_nid": "lib_brand_voice_moneyfindings", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L176"}, {"caller_nid": "lib_brand_voice_sentences", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L190"}, {"caller_nid": "lib_brand_voice_sentences", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L190"}, {"caller_nid": "lib_brand_voice_sentences", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L190"}, {"caller_nid": "lib_brand_voice_matchesprefix", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L209"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L216"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L217"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L220"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L223"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L225"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L226"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L232"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L238"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L238"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L239"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L244"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L244"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L249"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L250"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L255"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L256"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L262"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L264"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L276"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L277"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L288"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L288"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L290"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L293"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L294"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L300"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L300"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "endsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L300"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L302"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L312"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L322"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L324"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L330"}, {"caller_nid": "lib_brand_voice_auditentry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L335"}, {"caller_nid": "lib_brand_voice_auditdictionary", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L344"}, {"caller_nid": "lib_brand_voice_auditdictionary", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L344"}, {"caller_nid": "lib_brand_voice_auditdictionary", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L344"}, {"caller_nid": "lib_brand_voice_errorsonly", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L350"}, {"caller_nid": "lib_brand_voice_formatfindings", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L354"}, {"caller_nid": "lib_brand_voice_formatfindings", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L354"}, {"caller_nid": "lib_brand_voice_auditmeta", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L363"}, {"caller_nid": "lib_brand_voice_auditmeta", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts", "source_location": "L366"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "label": "brand-voice.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_brand_voice_severity",
+      "label": "Severity",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_brand_voice_copyfinding",
+      "label": "CopyFinding",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_brand_voice_copyentry",
+      "label": "CopyEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_brand_voice_banned_hype",
+      "label": "BANNED_HYPE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_brand_voice_weasel_words",
+      "label": "WEASEL_WORDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_brand_voice_forbidden_claims",
+      "label": "FORBIDDEN_CLAIMS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "lib_brand_voice_bangla_lint",
+      "label": "BANGLA_LINT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "lib_brand_voice_locale_identical_allowlist",
+      "label": "LOCALE_IDENTICAL_ALLOWLIST",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_brand_voice_copy_limits",
+      "label": "COPY_LIMITS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L136"
+    },
+    {
+      "id": "lib_brand_voice_wordboundary",
+      "label": "wordBoundary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "lib_brand_voice_escaperegexp",
+      "label": "escapeRegExp()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_brand_voice_hasadjacentnumber",
+      "label": "hasAdjacentNumber()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "lib_brand_voice_placeholders",
+      "label": "placeholders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L161"
+    },
+    {
+      "id": "lib_brand_voice_moneyfindings",
+      "label": "moneyFindings()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "lib_brand_voice_sentences",
+      "label": "sentences()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L189"
+    },
+    {
+      "id": "lib_brand_voice_auditoptions",
+      "label": "AuditOptions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L196"
+    },
+    {
+      "id": "lib_brand_voice_default_options",
+      "label": "DEFAULT_OPTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "lib_brand_voice_matchesprefix",
+      "label": "matchesPrefix()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L208"
+    },
+    {
+      "id": "lib_brand_voice_auditentry",
+      "label": "auditEntry()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L213"
+    },
+    {
+      "id": "lib_brand_voice_auditdictionary",
+      "label": "auditDictionary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L340"
+    },
+    {
+      "id": "lib_brand_voice_errorsonly",
+      "label": "errorsOnly()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L349"
+    },
+    {
+      "id": "lib_brand_voice_formatfindings",
+      "label": "formatFindings()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L353"
+    },
+    {
+      "id": "lib_brand_voice_auditmeta",
+      "label": "auditMeta()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L360"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_severity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_copyfinding",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_copyentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_banned_hype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_weasel_words",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_forbidden_claims",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_bangla_lint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_locale_identical_allowlist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_copy_limits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_wordboundary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_escaperegexp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_hasadjacentnumber",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_placeholders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_moneyfindings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_sentences",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_auditoptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_default_options",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_matchesprefix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_auditentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_auditdictionary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L340",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_errorsonly",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L349",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_formatfindings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L353",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "target": "lib_brand_voice_auditmeta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L360",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_wordboundary",
+      "target": "lib_brand_voice_escaperegexp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_placeholders",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L236",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_wordboundary",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_hasadjacentnumber",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_matchesprefix",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_sentences",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_brand_voice_auditentry",
+      "target": "lib_brand_voice_moneyfindings",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L335",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_brand_voice_escaperegexp",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_brand_voice_hasadjacentnumber",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_brand_voice_hasadjacentnumber",
+      "callee": "lastIndexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_brand_voice_hasadjacentnumber",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_brand_voice_hasadjacentnumber",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_brand_voice_hasadjacentnumber",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_brand_voice_placeholders",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_brand_voice_placeholders",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_brand_voice_placeholders",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_brand_voice_moneyfindings",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_brand_voice_moneyfindings",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_brand_voice_moneyfindings",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "lib_brand_voice_moneyfindings",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "lib_brand_voice_sentences",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "lib_brand_voice_sentences",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "lib_brand_voice_sentences",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "lib_brand_voice_matchesprefix",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L232"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L238"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L238"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L262"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L277"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L293"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "endsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L302"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L322"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditentry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L335"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditdictionary",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditdictionary",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditdictionary",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_brand_voice_errorsonly",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "lib_brand_voice_formatfindings",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L354"
+    },
+    {
+      "caller_nid": "lib_brand_voice_formatfindings",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L354"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditmeta",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L363"
+    },
+    {
+      "caller_nid": "lib_brand_voice_auditmeta",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/brand-voice.ts",
+      "source_location": "L366"
+    }
+  ]
+}

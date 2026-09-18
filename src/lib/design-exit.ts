@@ -248,7 +248,9 @@ export const COLOR_UTILITY_PREFIXES = [
 export const COLOR_ESCAPE_COMMENT = "design-exit-allow: color";
 
 const VARIANT = String.raw`(?:[a-z0-9@[\]:_.-]+:)*`;
-const PREFIX_ALT = COLOR_UTILITY_PREFIXES.map((p) => p.replace(/-/g, "\\-")).join("|");
+const PREFIX_ALT = COLOR_UTILITY_PREFIXES.map((p) =>
+  p.replace(/-/g, "\\-"),
+).join("|");
 const FAMILY_ALT = LITERAL_COLOR_FAMILIES.join("|");
 
 /** `text-white`, `hover:bg-slate-800/60`, `md:border-red-500`. */
@@ -318,7 +320,15 @@ export function auditSourceColors(file: SourceFile): DesignFinding[] {
     if (seen.has(key)) return;
     seen.add(key);
     out.push(
-      finding(code, severity, "No hardcoded colour", `${file.path}:${line}`, message, token, "semantic token"),
+      finding(
+        code,
+        severity,
+        "No hardcoded colour",
+        `${file.path}:${line}`,
+        message,
+        token,
+        "semantic token",
+      ),
     );
   };
 
@@ -357,7 +367,8 @@ export function auditSourceColors(file: SourceFile): DesignFinding[] {
   for (const m of file.contents.matchAll(RAW_HEX_RE)) {
     const raw = lineText(file.contents, m.index ?? 0);
     // A hex inside an SVG `d`/`viewBox`, a URL, or an obvious id is noise.
-    if (/https?:|url\(|viewBox|\bd=|#[0-9a-fA-F]{6}[0-9a-fA-F]{2,}/.test(raw)) continue;
+    if (/https?:|url\(|viewBox|\bd=|#[0-9a-fA-F]{6}[0-9a-fA-F]{2,}/.test(raw))
+      continue;
     push(
       "color.raw_hex",
       "warn",
@@ -392,7 +403,8 @@ export function parseColor(input: string | null | undefined): Rgba | null {
   const hex = value.match(/^#([0-9a-f]{3,8})$/);
   if (hex) {
     const h = hex[1];
-    const expand = (s: string) => Number.parseInt(s.length === 1 ? s + s : s, 16);
+    const expand = (s: string) =>
+      Number.parseInt(s.length === 1 ? s + s : s, 16);
     if (h.length === 3 || h.length === 4) {
       return {
         r: expand(h[0]),
@@ -420,7 +432,9 @@ export function parseColor(input: string | null | undefined): Rgba | null {
     .filter(Boolean);
   if (parts.length < 3) return null;
   const channel = (raw: string) =>
-    raw.endsWith("%") ? (Number.parseFloat(raw) / 100) * 255 : Number.parseFloat(raw);
+    raw.endsWith("%")
+      ? (Number.parseFloat(raw) / 100) * 255
+      : Number.parseFloat(raw);
   const [r, g, b] = parts.slice(0, 3).map(channel);
   if (![r, g, b].every(Number.isFinite)) return null;
   const alphaRaw = parts[3];
@@ -452,7 +466,10 @@ export function composite(fg: Rgba, bg: Rgba): Rgba {
  * against the other.
  */
 export function flattenBackdrop(layers: readonly Rgba[], base: Rgba): Rgba {
-  return layers.reduce<Rgba>((acc, layer) => composite(layer, acc), { ...base, a: 1 });
+  return layers.reduce<Rgba>((acc, layer) => composite(layer, acc), {
+    ...base,
+    a: 1,
+  });
 }
 
 /** WCAG 2.x relative luminance. */
@@ -473,7 +490,8 @@ export function contrastRatio(fg: Rgba, bg: Rgba): number {
 }
 
 /** The role a measured sample plays, which decides its threshold. */
-export type ContrastRole = "body" | "muted" | "cta" | "cta-disabled" | "focus-ring" | "non-text";
+export type ContrastRole =
+  "body" | "muted" | "cta" | "cta-disabled" | "focus-ring" | "non-text";
 
 export type ContrastSample = {
   label: string;
@@ -577,7 +595,9 @@ export function auditContrast(
         "Contrast on dark",
         at,
         `${ratio.toFixed(2)}:1 against the composited backdrop${stateSuffix}, below the ${min}:1 ${label} threshold` +
-          (fg.a < 1 ? ` (foreground alpha ${fg.a.toFixed(2)} was composited, not assumed opaque)` : "") +
+          (fg.a < 1
+            ? ` (foreground alpha ${fg.a.toFixed(2)} was composited, not assumed opaque)`
+            : "") +
           (sample.text ? ` — "${sample.text}"` : "") +
           ".",
         ratio,
@@ -600,11 +620,16 @@ export function auditCtaStates(
   samples: readonly ContrastSample[],
   where = "page",
 ): DesignFinding[] {
-  const ctas = samples.filter((s) => s.role === "cta" || s.role === "cta-disabled");
+  const ctas = samples.filter(
+    (s) => s.role === "cta" || s.role === "cta-disabled",
+  );
   if (ctas.length === 0) return [];
   const byLabel = new Map<string, Set<string>>();
   for (const s of ctas) {
-    const key = s.label.replace(/\s*\[(rest|hover|focus|active|disabled)\]\s*$/i, "");
+    const key = s.label.replace(
+      /\s*\[(rest|hover|focus|active|disabled)\]\s*$/i,
+      "",
+    );
     byLabel.set(key, (byLabel.get(key) ?? new Set()).add(s.state ?? "rest"));
   }
   const out: DesignFinding[] = [];
@@ -690,7 +715,10 @@ export function auditResponsive(m: ViewportMeasurement): DesignFinding[] {
     // Name the culprits, not just the symptom. Without this the finding is a
     // scavenger hunt across nine routes.
     const culprits = m.overflow
-      .filter((o) => !o.clipped && o.rightPx - m.viewportPx > RESPONSIVE.elementSlackPx)
+      .filter(
+        (o) =>
+          !o.clipped && o.rightPx - m.viewportPx > RESPONSIVE.elementSlackPx,
+      )
       .sort((a, b) => b.rightPx - a.rightPx)
       .slice(0, 5);
     for (const c of culprits) {
@@ -755,7 +783,10 @@ export function auditResponsive(m: ViewportMeasurement): DesignFinding[] {
           RESPONSIVE.tapTargetPx,
         ),
       );
-    } else if (min + 0.5 < RESPONSIVE.tapTargetComfortablePx && m.viewportPx < 768) {
+    } else if (
+      min + 0.5 < RESPONSIVE.tapTargetComfortablePx &&
+      m.viewportPx < 768
+    ) {
       out.push(
         finding(
           "responsive.tap_target",
@@ -801,7 +832,9 @@ export type VitalsMeasurement = {
  */
 export function auditVitals(
   m: VitalsMeasurement,
-  { lcpBudgetRoutes = ["home", "/"] }: { lcpBudgetRoutes?: readonly string[] } = {},
+  {
+    lcpBudgetRoutes = ["home", "/"],
+  }: { lcpBudgetRoutes?: readonly string[] } = {},
 ): DesignFinding[] {
   const where = `${m.route} @${m.viewportPx}/${m.locale}`;
   const out: DesignFinding[] = [];
@@ -825,7 +858,9 @@ export function auditVitals(
         "LCP ≤ 2.0s · CLS ≤ 0.05",
         where,
         `LCP is ${Math.round(m.lcpMs)}ms (element: ${m.lcpElement ?? "unknown"})` +
-          (m.ttfbMs !== null && m.ttfbMs !== undefined && m.ttfbMs > VITALS.ttfbWarnMs
+          (m.ttfbMs !== null &&
+          m.ttfbMs !== undefined &&
+          m.ttfbMs > VITALS.ttfbWarnMs
             ? `, of which ${Math.round(m.ttfbMs)}ms was TTFB — the server, not the paint, is the cost here`
             : "") +
           ".",
@@ -1041,7 +1076,9 @@ export function countBySeverity(
  * line. A report with the same 12 findings repeated 40 times gets skimmed and
  * then ignored, which is the same as not running the gate.
  */
-export function dedupeFindings(findings: readonly DesignFinding[]): DesignFinding[] {
+export function dedupeFindings(
+  findings: readonly DesignFinding[],
+): DesignFinding[] {
   const seen = new Map<string, DesignFinding>();
   for (const f of findings) {
     const key = `${f.code}|${f.where.replace(/@\d+\/[a-z-]+/i, "@*")}`;
@@ -1051,10 +1088,13 @@ export function dedupeFindings(findings: readonly DesignFinding[]): DesignFindin
 }
 
 export function formatFinding(f: DesignFinding): string {
-  const tag = f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
+  const tag =
+    f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
   return `${tag} [${f.code}] ${f.where}\n      ${f.message}`;
 }
 
-export function errorsOnly(findings: readonly DesignFinding[]): DesignFinding[] {
+export function errorsOnly(
+  findings: readonly DesignFinding[],
+): DesignFinding[] {
   return findings.filter((f) => f.severity === "error");
 }

@@ -152,10 +152,20 @@ export function slugifyTerm(value: string): string {
     .replace(/-+$/g, "");
 }
 
-function requireText(value: string, field: string, max: number, label: { en: string; bn: string }): string {
+function requireText(
+  value: string,
+  field: string,
+  max: number,
+  label: { en: string; bn: string },
+): string {
   const text = value.trim().replace(/\s+/g, " ");
   if (!text) {
-    throw new TaxonomyError(`${field}_required`, field, `${label.en} is required.`, `${label.bn} দিতে হবে।`);
+    throw new TaxonomyError(
+      `${field}_required`,
+      field,
+      `${label.en} is required.`,
+      `${label.bn} দিতে হবে।`,
+    );
   }
   if (text.length > max) {
     throw new TaxonomyError(
@@ -188,9 +198,17 @@ export function prepareTerm(input: TermInput): {
   robots_index: boolean;
 } {
   if (!TERM_KINDS.includes(input.kind)) {
-    throw new TaxonomyError("kind_invalid", "kind", "Unknown term kind.", "টার্মের ধরন সঠিক নয়।");
+    throw new TaxonomyError(
+      "kind_invalid",
+      "kind",
+      "Unknown term kind.",
+      "টার্মের ধরন সঠিক নয়।",
+    );
   }
-  const name = requireText(input.name, "name", TAXONOMY_LIMITS.maxNameChars, { en: "A name", bn: "নাম" });
+  const name = requireText(input.name, "name", TAXONOMY_LIMITS.maxNameChars, {
+    en: "A name",
+    bn: "নাম",
+  });
   const nameEn = input.nameEn.trim().slice(0, TAXONOMY_LIMITS.maxNameChars);
 
   // Slug falls back to the English name first: a URL made of Bangla is valid
@@ -268,11 +286,17 @@ export function prepareTerm(input: TermInput): {
     name_en: nameEn || null,
     description: input.description.trim() || null,
     parent_id: input.kind === "category" ? input.parentId || null : null,
-    sort_order: Number.isFinite(input.sortOrder) ? Math.max(0, Math.min(9_999, Math.trunc(input.sortOrder))) : 0,
+    sort_order: Number.isFinite(input.sortOrder)
+      ? Math.max(0, Math.min(9_999, Math.trunc(input.sortOrder)))
+      : 0,
     cover_image_url: coverImageUrl || null,
-    meta_title: input.metaTitle.trim().slice(0, TAXONOMY_LIMITS.maxMetaTitleChars) || null,
+    meta_title:
+      input.metaTitle.trim().slice(0, TAXONOMY_LIMITS.maxMetaTitleChars) ||
+      null,
     meta_description:
-      input.metaDescription.trim().slice(0, TAXONOMY_LIMITS.maxMetaDescriptionChars) || null,
+      input.metaDescription
+        .trim()
+        .slice(0, TAXONOMY_LIMITS.maxMetaDescriptionChars) || null,
     robots_index: !!input.robotsIndex,
   };
 }
@@ -314,7 +338,10 @@ export function parentageIssue(
 }
 
 /** Deepest level below `termId`, so a re-parent cannot smuggle the cap. */
-export function subtreeHeight(rows: Pick<TermRow, "id" | "parent_id">[], termId: string): number {
+export function subtreeHeight(
+  rows: Pick<TermRow, "id" | "parent_id">[],
+  termId: string,
+): number {
   const children = new Map<string, string[]>();
   for (const row of rows) {
     if (!row.parent_id) continue;
@@ -347,7 +374,8 @@ export function buildTermTree(rows: TermRow[]): TermNode[] {
     if (guard > TAXONOMY_LIMITS.maxDepth + 2) return;
     nodes.sort(
       (a, b) =>
-        (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.name.localeCompare(b.name, "bn"),
+        (a.sort_order ?? 0) - (b.sort_order ?? 0) ||
+        a.name.localeCompare(b.name, "bn"),
     );
     for (const node of nodes) {
       node.depth = depth;
@@ -396,7 +424,11 @@ export function blogIndexPath(page = 1): string {
   return page > 1 ? `/blog?page=${page}` : "/blog";
 }
 
-export function termArchivePath(kind: TermKind | string, slug: string, page = 1): string {
+export function termArchivePath(
+  kind: TermKind | string,
+  slug: string,
+  page = 1,
+): string {
   const segment = kind === "tag" ? "tag" : "category";
   const base = `/blog/${segment}/${encodeURIComponent(slug)}`;
   return page > 1 ? `${base}?page=${page}` : base;
@@ -408,7 +440,8 @@ export function articlePath(slug: string): string {
 
 /** Clamp an untrusted `?page=` to the crawlable window. */
 export function normalizePage(raw: unknown): number {
-  const page = typeof raw === "number" ? raw : Number.parseInt(String(raw ?? "1"), 10);
+  const page =
+    typeof raw === "number" ? raw : Number.parseInt(String(raw ?? "1"), 10);
   if (!Number.isFinite(page) || page < 1) return 1;
   return Math.min(Math.trunc(page), BLOG_MAX_PAGE);
 }
@@ -430,7 +463,12 @@ export type Paging = {
  * Everything a paginated listing needs, derived once so the head links, the
  * `<nav>` and the database range can never disagree.
  */
-export function paging(basePath: (page: number) => string, page: number, total: number, pageSize = BLOG_PAGE_SIZE): Paging {
+export function paging(
+  basePath: (page: number) => string,
+  page: number,
+  total: number,
+  pageSize = BLOG_PAGE_SIZE,
+): Paging {
   const safeTotal = Math.max(0, Math.trunc(total));
   const lastPage = Math.max(1, Math.ceil(safeTotal / pageSize));
   const current = normalizePage(page);
@@ -444,16 +482,22 @@ export function paging(basePath: (page: number) => string, page: number, total: 
     from,
     to: from + pageSize - 1,
     overrun,
-    prevPath: current > 1 && current <= lastPage + 1 ? basePath(current - 1) : null,
+    prevPath:
+      current > 1 && current <= lastPage + 1 ? basePath(current - 1) : null,
     nextPath: current < lastPage ? basePath(current + 1) : null,
   };
 }
 
 /** Compact page window (`1 … 4 5 6 … 20`) for the pagination nav. */
-export function pageWindow(page: number, lastPage: number, span = 2): (number | "gap")[] {
+export function pageWindow(
+  page: number,
+  lastPage: number,
+  span = 2,
+): (number | "gap")[] {
   const out: (number | "gap")[] = [];
   const wanted = new Set<number>([1, lastPage]);
-  for (let i = page - span; i <= page + span; i += 1) if (i >= 1 && i <= lastPage) wanted.add(i);
+  for (let i = page - span; i <= page + span; i += 1)
+    if (i >= 1 && i <= lastPage) wanted.add(i);
   const sorted = [...wanted].sort((a, b) => a - b);
   let previous = 0;
   for (const value of sorted) {
@@ -496,16 +540,29 @@ function absolute(origin: string | null | undefined, path: string): string {
  * mean "do not index", and each of them was a bug the first time it was
  * implemented inline in a route.
  */
-export function archiveHead(input: ArchiveHeadInput): { meta: HeadTag[]; links: HeadTag[]; robots: string } {
+export function archiveHead(input: ArchiveHeadInput): {
+  meta: HeadTag[];
+  links: HeadTag[];
+  robots: string;
+} {
   const { paging: page } = input;
   const pageSuffix = page.page > 1 ? ` — page ${page.page}` : "";
-  const title = `${input.titleEn}${pageSuffix}${input.siteName ? ` — ${input.siteName}` : ""}`.slice(0, 180);
+  const title =
+    `${input.titleEn}${pageSuffix}${input.siteName ? ` — ${input.siteName}` : ""}`.slice(
+      0,
+      180,
+    );
   const description = (input.description || input.titleEn).slice(0, 320);
 
   const thin = page.total === 0;
-  const robots = !input.indexable || thin || page.overrun ? "noindex,follow" : "index,follow";
+  const robots =
+    !input.indexable || thin || page.overrun
+      ? "noindex,follow"
+      : "index,follow";
 
-  const canonicalPath = page.overrun ? input.basePath : blogPagePath(input.basePath, page.page);
+  const canonicalPath = page.overrun
+    ? input.basePath
+    : blogPagePath(input.basePath, page.page);
   const meta: HeadTag[] = [
     { title },
     { name: "description", content: description },
@@ -514,7 +571,10 @@ export function archiveHead(input: ArchiveHeadInput): { meta: HeadTag[]; links: 
     { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { property: "og:url", content: absolute(input.origin, canonicalPath) },
-    { name: "twitter:card", content: input.imageUrl ? "summary_large_image" : "summary" },
+    {
+      name: "twitter:card",
+      content: input.imageUrl ? "summary_large_image" : "summary",
+    },
   ];
   if (input.imageUrl && /^https:\/\//i.test(input.imageUrl)) {
     meta.push(
@@ -523,9 +583,13 @@ export function archiveHead(input: ArchiveHeadInput): { meta: HeadTag[]; links: 
     );
   }
 
-  const links: HeadTag[] = [{ rel: "canonical", href: absolute(input.origin, canonicalPath) }];
-  if (page.prevPath) links.push({ rel: "prev", href: absolute(input.origin, page.prevPath) });
-  if (page.nextPath) links.push({ rel: "next", href: absolute(input.origin, page.nextPath) });
+  const links: HeadTag[] = [
+    { rel: "canonical", href: absolute(input.origin, canonicalPath) },
+  ];
+  if (page.prevPath)
+    links.push({ rel: "prev", href: absolute(input.origin, page.prevPath) });
+  if (page.nextPath)
+    links.push({ rel: "next", href: absolute(input.origin, page.nextPath) });
   return { meta, links, robots };
 }
 
@@ -601,7 +665,10 @@ export function archiveCrumbs(
   const chain = termAncestry(rows, termId);
   return [
     { name: labels.blog, path: "/blog" },
-    ...chain.map((term) => ({ name: term.name, path: termArchivePath(term.kind, term.slug) })),
+    ...chain.map((term) => ({
+      name: term.name,
+      path: termArchivePath(term.kind, term.slug),
+    })),
   ];
 }
 
@@ -632,7 +699,9 @@ export function normalizeAssignments(
   }
 
   const primaryCandidate =
-    requested.find((item) => item.isPrimary && kindById.get(item.termId) === "category")?.termId ??
+    requested.find(
+      (item) => item.isPrimary && kindById.get(item.termId) === "category",
+    )?.termId ??
     kept.find((item) => kindById.get(item.termId) === "category")?.termId ??
     null;
   if (primaryCandidate) {
@@ -643,7 +712,10 @@ export function normalizeAssignments(
 }
 
 /** Tag names an article carries, for the legacy `tags[]` column mirror. */
-export function tagNamesFor(assignments: TermAssignment[], known: TermRow[]): string[] {
+export function tagNamesFor(
+  assignments: TermAssignment[],
+  known: TermRow[],
+): string[] {
   const byId = new Map(known.map((row) => [row.id, row]));
   const names = assignments
     .map((item) => byId.get(item.termId))

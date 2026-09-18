@@ -43,11 +43,18 @@ export function payoutCanTransition(from: PayoutState, to: PayoutState) {
 }
 
 /** States that still reserve merchant balance (money promised but not gone). */
-export const RESERVING_STATES: PayoutState[] = ["requested", "approved", "processing"];
+export const RESERVING_STATES: PayoutState[] = [
+  "requested",
+  "approved",
+  "processing",
+];
 
 /* -------------------------------- balance -------------------------------- */
 
-export type LedgerSlice = { direction: "credit" | "debit"; sellerMinor: number };
+export type LedgerSlice = {
+  direction: "credit" | "debit";
+  sellerMinor: number;
+};
 
 export type BalanceInput = {
   entries: LedgerSlice[];
@@ -57,11 +64,17 @@ export type BalanceInput = {
   holdMinor?: number;
 };
 
-export type Balance = { grossMinor: number; reservedMinor: number; holdMinor: number; availableMinor: number };
+export type Balance = {
+  grossMinor: number;
+  reservedMinor: number;
+  holdMinor: number;
+  availableMinor: number;
+};
 
 export function computeBalance(input: BalanceInput): Balance {
   const grossMinor = input.entries.reduce(
-    (sum, e) => sum + (e.direction === "credit" ? e.sellerMinor : -e.sellerMinor),
+    (sum, e) =>
+      sum + (e.direction === "credit" ? e.sellerMinor : -e.sellerMinor),
     0,
   );
   const holdMinor = Math.max(0, input.holdMinor ?? 0);
@@ -83,7 +96,10 @@ export const DUAL_APPROVAL_THRESHOLD_MINOR = 2_500_00; // BDT 2,500.00
 export type PayoutMethod = "mfs" | "bank";
 
 /** Rail fee, integer minor units, rounded half-up and floored at the fixed part. */
-export function payoutFeeMinor(amountMinor: number, method: PayoutMethod): number {
+export function payoutFeeMinor(
+  amountMinor: number,
+  method: PayoutMethod,
+): number {
   if (amountMinor <= 0) return 0;
   if (method === "mfs") {
     // 1.25% capped at BDT 50.00 — matches the MFS disbursement contract.
@@ -97,19 +113,38 @@ export function netPayoutMinor(amountMinor: number, method: PayoutMethod) {
   return Math.max(0, amountMinor - payoutFeeMinor(amountMinor, method));
 }
 
-export type AmountVerdict = { ok: boolean; code: null | "payout.below_minimum" | "payout.above_maximum" | "payout.insufficient_balance" | "payout.not_integer" };
+export type AmountVerdict = {
+  ok: boolean;
+  code:
+    | null
+    | "payout.below_minimum"
+    | "payout.above_maximum"
+    | "payout.insufficient_balance"
+    | "payout.not_integer";
+};
 
-export function validateAmount(amountMinor: number, availableMinor: number): AmountVerdict {
-  if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0) return { ok: false, code: "payout.not_integer" };
-  if (amountMinor < MIN_PAYOUT_MINOR) return { ok: false, code: "payout.below_minimum" };
-  if (amountMinor > MAX_PAYOUT_MINOR) return { ok: false, code: "payout.above_maximum" };
-  if (amountMinor > availableMinor) return { ok: false, code: "payout.insufficient_balance" };
+export function validateAmount(
+  amountMinor: number,
+  availableMinor: number,
+): AmountVerdict {
+  if (!Number.isSafeInteger(amountMinor) || amountMinor <= 0)
+    return { ok: false, code: "payout.not_integer" };
+  if (amountMinor < MIN_PAYOUT_MINOR)
+    return { ok: false, code: "payout.below_minimum" };
+  if (amountMinor > MAX_PAYOUT_MINOR)
+    return { ok: false, code: "payout.above_maximum" };
+  if (amountMinor > availableMinor)
+    return { ok: false, code: "payout.insufficient_balance" };
   return { ok: true, code: null };
 }
 
 /* ------------------------------- approvals ------------------------------- */
 
-export type Approval = { actorId: string; decision: "approve" | "reject"; at: string };
+export type Approval = {
+  actorId: string;
+  decision: "approve" | "reject";
+  at: string;
+};
 
 export function approvalsRequired(amountMinor: number) {
   return amountMinor >= DUAL_APPROVAL_THRESHOLD_MINOR ? 2 : 1;
@@ -151,7 +186,13 @@ export function evaluateApprovals(input: {
     seen.add(a.actorId);
     if (a.decision === "approve") approvals += 1;
   }
-  return { required, approvals, satisfied: !rejected && approvals >= required, rejected, blocked };
+  return {
+    required,
+    approvals,
+    satisfied: !rejected && approvals >= required,
+    rejected,
+    blocked,
+  };
 }
 
 /* ------------------------------ destinations ------------------------------ */
@@ -165,7 +206,15 @@ export function normalizeMsisdn(raw: string) {
   return digits;
 }
 
-export type AccountVerdict = { ok: boolean; code: null | "payout.bad_msisdn" | "payout.bad_account_number" | "payout.bad_holder" | "payout.bad_bank" };
+export type AccountVerdict = {
+  ok: boolean;
+  code:
+    | null
+    | "payout.bad_msisdn"
+    | "payout.bad_account_number"
+    | "payout.bad_holder"
+    | "payout.bad_bank";
+};
 
 export function validateAccount(input: {
   method: PayoutMethod;
@@ -174,21 +223,29 @@ export function validateAccount(input: {
   bankName?: string | null;
   accountNumber?: string | null;
 }): AccountVerdict {
-  if (!input.holderName || input.holderName.trim().length < 3) return { ok: false, code: "payout.bad_holder" };
+  if (!input.holderName || input.holderName.trim().length < 3)
+    return { ok: false, code: "payout.bad_holder" };
   if (input.method === "mfs") {
     return BD_MSISDN.test(normalizeMsisdn(input.msisdn ?? ""))
       ? { ok: true, code: null }
       : { ok: false, code: "payout.bad_msisdn" };
   }
-  if (!input.bankName || input.bankName.trim().length < 2) return { ok: false, code: "payout.bad_bank" };
+  if (!input.bankName || input.bankName.trim().length < 2)
+    return { ok: false, code: "payout.bad_bank" };
   const acct = (input.accountNumber ?? "").replace(/[\s-]/g, "");
-  if (!/^\d{8,20}$/.test(acct)) return { ok: false, code: "payout.bad_account_number" };
+  if (!/^\d{8,20}$/.test(acct))
+    return { ok: false, code: "payout.bad_account_number" };
   return { ok: true, code: null };
 }
 
 /** Display form — never show a full destination number in a list view. */
-export function maskDestination(input: { method: PayoutMethod; msisdn?: string | null; accountNumber?: string | null }) {
-  const raw = (input.method === "mfs" ? input.msisdn : input.accountNumber) ?? "";
+export function maskDestination(input: {
+  method: PayoutMethod;
+  msisdn?: string | null;
+  accountNumber?: string | null;
+}) {
+  const raw =
+    (input.method === "mfs" ? input.msisdn : input.accountNumber) ?? "";
   const v = raw.replace(/[\s-]/g, "");
   return v.length <= 4 ? "••••" : `••••${v.slice(-4)}`;
 }

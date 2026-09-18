@@ -6,7 +6,8 @@
  * the UI can stay a thin renderer and the server can trust one shape.
  */
 
-export type MenuItemKind = "page" | "post" | "collection" | "product" | "custom";
+export type MenuItemKind =
+  "page" | "post" | "collection" | "product" | "custom";
 
 export type MenuItem = {
   id: string;
@@ -23,10 +24,26 @@ export type MenuItem = {
 
 export type MenuLocation = "header" | "footer" | "mobile";
 
-export const MENU_LOCATIONS: { key: MenuLocation; label: string; hint: string }[] = [
-  { key: "header", label: "Header menu", hint: "Shown in the storefront top bar." },
-  { key: "footer", label: "Footer menu", hint: "Shown in the storefront footer columns." },
-  { key: "mobile", label: "Mobile menu", hint: "Shown inside the mobile slide-out." },
+export const MENU_LOCATIONS: {
+  key: MenuLocation;
+  label: string;
+  hint: string;
+}[] = [
+  {
+    key: "header",
+    label: "Header menu",
+    hint: "Shown in the storefront top bar.",
+  },
+  {
+    key: "footer",
+    label: "Footer menu",
+    hint: "Shown in the storefront footer columns.",
+  },
+  {
+    key: "mobile",
+    label: "Mobile menu",
+    hint: "Shown inside the mobile slide-out.",
+  },
 ];
 
 export type NavMenu = {
@@ -79,12 +96,17 @@ export function buildTree(items: readonly MenuItem[]): MenuNode[] {
   const known = new Set(items.map((item) => item.id));
   const byParent = new Map<string | null, MenuItem[]>();
   for (const item of items) {
-    const parent = item.parentId && known.has(item.parentId) ? item.parentId : null;
+    const parent =
+      item.parentId && known.has(item.parentId) ? item.parentId : null;
     const bucket = byParent.get(parent) ?? [];
     bucket.push(item);
     byParent.set(parent, bucket);
   }
-  const walk = (parentId: string | null, depth: number, seen: Set<string>): MenuNode[] =>
+  const walk = (
+    parentId: string | null,
+    depth: number,
+    seen: Set<string>,
+  ): MenuNode[] =>
     (byParent.get(parentId) ?? [])
       .slice()
       .sort((a, b) => a.position - b.position || a.label.localeCompare(b.label))
@@ -159,14 +181,26 @@ export function normalise(items: readonly MenuItem[]): MenuItem[] {
   });
 }
 
-export function addItem(items: readonly MenuItem[], item: MenuItem): MenuItem[] {
+export function addItem(
+  items: readonly MenuItem[],
+  item: MenuItem,
+): MenuItem[] {
   const roots = items.filter((current) => current.parentId === null);
-  const position = roots.reduce((max, current) => Math.max(max, current.position + 1), 0);
+  const position = roots.reduce(
+    (max, current) => Math.max(max, current.position + 1),
+    0,
+  );
   return normalise([...items, { ...item, parentId: null, position }]);
 }
 
-export function updateItem(items: readonly MenuItem[], id: string, patch: Partial<MenuItem>): MenuItem[] {
-  return items.map((item) => (item.id === id ? { ...item, ...patch, id: item.id } : item));
+export function updateItem(
+  items: readonly MenuItem[],
+  id: string,
+  patch: Partial<MenuItem>,
+): MenuItem[] {
+  return items.map((item) =>
+    item.id === id ? { ...item, ...patch, id: item.id } : item,
+  );
 }
 
 export function removeItem(items: readonly MenuItem[], id: string): MenuItem[] {
@@ -185,7 +219,8 @@ export function canIndent(items: readonly MenuItem[], id: string): boolean {
   if (index <= 0) return false;
   const node = nodes[index]!;
   const previous = nodes[index - 1]!;
-  const target = previous.depth >= node.depth ? node.depth + 1 : previous.depth + 1;
+  const target =
+    previous.depth >= node.depth ? node.depth + 1 : previous.depth + 1;
   if (target > node.depth + 1) return false;
   return target + subtreeHeight(items, id) <= MAX_MENU_DEPTH - 1;
 }
@@ -213,13 +248,19 @@ export function canOutdent(items: readonly MenuItem[], id: string): boolean {
   return depthOf(items, id) > 0;
 }
 
-export function outdentItem(items: readonly MenuItem[], id: string): MenuItem[] {
+export function outdentItem(
+  items: readonly MenuItem[],
+  id: string,
+): MenuItem[] {
   const nodes = flatten(items);
   const node = nodes.find((current) => current.id === id);
   if (!node || node.parentId === null) return [...items];
   const parent = nodes.find((current) => current.id === node.parentId);
   return normalise(
-    updateItem(items, id, { parentId: parent?.parentId ?? null, position: (parent?.position ?? 0) + 1 }),
+    updateItem(items, id, {
+      parentId: parent?.parentId ?? null,
+      position: (parent?.position ?? 0) + 1,
+    }),
   );
 }
 
@@ -242,16 +283,27 @@ export function moveItem(
 
   const parentId = position === "child" ? target.id : target.parentId;
   const depth = position === "child" ? target.depth + 1 : target.depth;
-  if (depth + subtreeHeight(items, dragId) > MAX_MENU_DEPTH - 1) return [...items];
+  if (depth + subtreeHeight(items, dragId) > MAX_MENU_DEPTH - 1)
+    return [...items];
 
   const offset = position === "before" ? -0.5 : 0.5;
   const nextPosition = position === "child" ? 999 : target.position + offset;
-  return normalise(updateItem(items, dragId, { parentId, position: nextPosition }));
+  return normalise(
+    updateItem(items, dragId, { parentId, position: nextPosition }),
+  );
 }
 
-export function moveVertical(items: readonly MenuItem[], id: string, step: 1 | -1): MenuItem[] {
+export function moveVertical(
+  items: readonly MenuItem[],
+  id: string,
+  step: 1 | -1,
+): MenuItem[] {
   const siblings = flatten(items)
-    .filter((node) => node.parentId === (items.find((item) => item.id === id)?.parentId ?? null))
+    .filter(
+      (node) =>
+        node.parentId ===
+        (items.find((item) => item.id === id)?.parentId ?? null),
+    )
     .sort((a, b) => a.position - b.position);
   const index = siblings.findIndex((node) => node.id === id);
   const swap = siblings[index + step];
@@ -271,10 +323,19 @@ export type MenuIssue = { id: string; field: "label" | "url"; message: string };
 export function validateMenu(items: readonly MenuItem[]): MenuIssue[] {
   const issues: MenuIssue[] = [];
   for (const item of items) {
-    if (!item.label.trim()) issues.push({ id: item.id, field: "label", message: "Give this item a label." });
+    if (!item.label.trim())
+      issues.push({
+        id: item.id,
+        field: "label",
+        message: "Give this item a label.",
+      });
     const url = item.url.trim();
     if (!url) {
-      issues.push({ id: item.id, field: "url", message: "Give this item an address." });
+      issues.push({
+        id: item.id,
+        field: "url",
+        message: "Give this item an address.",
+      });
     } else if (!/^(https?:\/\/|\/|#|mailto:|tel:)/i.test(url)) {
       issues.push({
         id: item.id,
@@ -300,12 +361,21 @@ export type MenuSource = {
   hint?: string;
 };
 
-export type SourceGroup = { kind: MenuItemKind; label: string; items: MenuSource[] };
+export type SourceGroup = {
+  kind: MenuItemKind;
+  label: string;
+  items: MenuSource[];
+};
 
-export function searchSources(sources: readonly MenuSource[], query: string): MenuSource[] {
+export function searchSources(
+  sources: readonly MenuSource[],
+  query: string,
+): MenuSource[] {
   const needle = query.trim().toLowerCase();
   if (!needle) return [...sources];
-  return sources.filter((source) => `${source.label} ${source.url}`.toLowerCase().includes(needle));
+  return sources.filter((source) =>
+    `${source.label} ${source.url}`.toLowerCase().includes(needle),
+  );
 }
 
 export function sourceToItem(source: MenuSource, id: string): MenuItem {
@@ -340,6 +410,9 @@ export function toggleLocation(
 }
 
 /** True when the on-screen list differs from what was loaded. */
-export function menuDirty(saved: readonly MenuItem[], draft: readonly MenuItem[]): boolean {
+export function menuDirty(
+  saved: readonly MenuItem[],
+  draft: readonly MenuItem[],
+): boolean {
   return JSON.stringify(normalise(saved)) !== JSON.stringify(normalise(draft));
 }

@@ -43,7 +43,10 @@ export function isTenantUuid(value: unknown): value is string {
 /** Returns the normalised id, or throws — never returns a falsy id. */
 export function assertTenantId(value: unknown, scope: string): string {
   if (!isTenantId(value)) {
-    throw new TenantScopeError("tenant.scope_missing", `${scope} requires a tenant id`);
+    throw new TenantScopeError(
+      "tenant.scope_missing",
+      `${scope} requires a tenant id`,
+    );
   }
   return (value as string).trim();
 }

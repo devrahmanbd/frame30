@@ -18,7 +18,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
-import { ErrorFrame, Field, StatusPill, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  ErrorFrame,
+  Field,
+  StatusPill,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import {
   siteKitArticlesFn,
   siteKitInspectFn,
@@ -92,7 +99,8 @@ export function SiteKitDesk() {
   });
 
   const propertiesMutation = useMutation({
-    mutationFn: (force: boolean) => listProperties({ data: { origin, refresh: force } }),
+    mutationFn: (force: boolean) =>
+      listProperties({ data: { origin, refresh: force } }),
     onError: (error) => toast.error(errText(error)),
   });
 
@@ -100,8 +108,10 @@ export function SiteKitDesk() {
     mutationFn: (settings: SiteKitSettings) => save({ data: { settings } }),
     onSuccess: (result) => {
       setDraft(result.settings);
-      for (const issue of result.issues) toast.warning(`${issue.field}: ${issue.message}`);
-      if (result.issues.length === 0) toast.success(t("Site Kit saved.", "সাইট কিট সংরক্ষিত হয়েছে।"));
+      for (const issue of result.issues)
+        toast.warning(`${issue.field}: ${issue.message}`);
+      if (result.issues.length === 0)
+        toast.success(t("Site Kit saved.", "সাইট কিট সংরক্ষিত হয়েছে।"));
       void qc.invalidateQueries({ queryKey: ["sitekit"] });
     },
     onError: (error) => toast.error(errText(error)),
@@ -127,7 +137,10 @@ export function SiteKitDesk() {
   });
 
   const state = stateQuery.data;
-  const budgetKb = useMemo(() => (draft ? analyticsBudgetKb(draft.analytics) : 0), [draft]);
+  const budgetKb = useMemo(
+    () => (draft ? analyticsBudgetKb(draft.analytics) : 0),
+    [draft],
+  );
   const overBudget = budgetKb > ANALYTICS_BUDGET_WARN_KB;
 
   if (stateQuery.isLoading) {
@@ -137,10 +150,12 @@ export function SiteKitDesk() {
       </div>
     );
   }
-  if (stateQuery.error) return <ErrorFrame message={errText(stateQuery.error)} />;
+  if (stateQuery.error)
+    return <ErrorFrame message={errText(stateQuery.error)} />;
   if (!state || !draft) return null;
 
-  const patch = (next: Partial<SiteKitSettings>) => setDraft({ ...draft, ...next });
+  const patch = (next: Partial<SiteKitSettings>) =>
+    setDraft({ ...draft, ...next });
   const setToken = (provider: VerificationProvider, value: string) =>
     patch({
       verification: {
@@ -151,14 +166,25 @@ export function SiteKitDesk() {
   const setCustom = (custom: CustomVerification[]) =>
     patch({ verification: { ...draft.verification, custom } });
   const setVendor = (vendor: AnalyticsVendor, value: string) =>
-    patch({ analytics: { ...draft.analytics, enabled: { ...draft.analytics.enabled, [vendor]: value } } });
+    patch({
+      analytics: {
+        ...draft.analytics,
+        enabled: { ...draft.analytics.enabled, [vendor]: value },
+      },
+    });
 
   return (
-    <section className="space-y-4 rounded-lg border border-border p-4" aria-labelledby="sitekit-heading">
+    <section
+      className="space-y-4 rounded-lg border border-border p-4"
+      aria-labelledby="sitekit-heading"
+    >
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 id="sitekit-heading" className="font-medium">
-            {t("Site Kit — Search Console & analytics", "সাইট কিট — সার্চ কনসোল ও অ্যানালিটিক্স")}
+            {t(
+              "Site Kit — Search Console & analytics",
+              "সাইট কিট — সার্চ কনসোল ও অ্যানালিটিক্স",
+            )}
           </h3>
           <p className="text-xs text-muted-foreground">
             {t(
@@ -169,7 +195,9 @@ export function SiteKitDesk() {
         </div>
         <div className="flex items-center gap-2">
           <StatusPill
-            tone={state.connection?.status === "connected" ? "success" : "warning"}
+            tone={
+              state.connection?.status === "connected" ? "success" : "warning"
+            }
             label={
               state.connection?.status === "connected"
                 ? t("Connected", "সংযুক্ত")
@@ -182,7 +210,9 @@ export function SiteKitDesk() {
             disabled={refreshMutation.isPending || !draft.searchConsoleSiteUrl}
             onClick={() => refreshMutation.mutate()}
           >
-            {refreshMutation.isPending ? t("Refreshing…", "রিফ্রেশ হচ্ছে…") : t("Refresh now", "এখনই রিফ্রেশ")}
+            {refreshMutation.isPending
+              ? t("Refreshing…", "রিফ্রেশ হচ্ছে…")
+              : t("Refresh now", "এখনই রিফ্রেশ")}
           </button>
         </div>
       </header>
@@ -210,8 +240,14 @@ export function SiteKitDesk() {
                   "কানেক্টর সেটিংসে গুগল অ্যাকাউন্ট আবার সংযুক্ত করতে প্ল্যাটফর্ম মালিককে বলুন।",
                 )
               : state.banner.action === "fix"
-                ? t("Choose a property again below.", "নিচে আবার একটি প্রোপার্টি বেছে নিন।")
-                : t("The next scheduled run will retry automatically.", "পরের নির্ধারিত রানে স্বয়ংক্রিয়ভাবে আবার চেষ্টা হবে।")}
+                ? t(
+                    "Choose a property again below.",
+                    "নিচে আবার একটি প্রোপার্টি বেছে নিন।",
+                  )
+                : t(
+                    "The next scheduled run will retry automatically.",
+                    "পরের নির্ধারিত রানে স্বয়ংক্রিয়ভাবে আবার চেষ্টা হবে।",
+                  )}
             {state.connection?.consecutive_failures
               ? ` · ${state.connection.consecutive_failures} ${t("consecutive failures", "টানা ব্যর্থতা")}`
               : ""}
@@ -222,7 +258,9 @@ export function SiteKitDesk() {
       {/* ---------------------------------------------------- property */}
       <div className="rounded-fq-md border border-border p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h4 className="text-sm font-medium">{t("Search Console property", "সার্চ কনসোল প্রোপার্টি")}</h4>
+          <h4 className="text-sm font-medium">
+            {t("Search Console property", "সার্চ কনসোল প্রোপার্টি")}
+          </h4>
           <button
             type="button"
             className={btnGhost}
@@ -237,7 +275,10 @@ export function SiteKitDesk() {
         <p className="mt-1 text-xs text-muted-foreground">
           {draft.searchConsoleSiteUrl
             ? `${t("Selected", "নির্বাচিত")}: ${draft.searchConsoleSiteUrl}`
-            : t("No property selected — search performance stays empty.", "কোনো প্রোপার্টি নির্বাচিত নয় — সার্চ পারফরম্যান্স ফাঁকা থাকবে।")}
+            : t(
+                "No property selected — search performance stays empty.",
+                "কোনো প্রোপার্টি নির্বাচিত নয় — সার্চ পারফরম্যান্স ফাঁকা থাকবে।",
+              )}
         </p>
 
         {propertiesMutation.data && (
@@ -252,16 +293,25 @@ export function SiteKitDesk() {
             ) : (
               <ul className="space-y-1">
                 {propertiesMutation.data.properties.map((property) => (
-                  <li key={property.siteUrl} className="flex items-center justify-between gap-3 text-sm">
+                  <li
+                    key={property.siteUrl}
+                    className="flex items-center justify-between gap-3 text-sm"
+                  >
                     <span className="truncate">
                       {property.siteUrl}
-                      <span className="ml-2 text-xs text-muted-foreground">{property.permissionLevel}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {property.permissionLevel}
+                      </span>
                     </span>
                     <button
                       type="button"
                       className={btnGhost}
-                      aria-pressed={draft.searchConsoleSiteUrl === property.siteUrl}
-                      onClick={() => patch({ searchConsoleSiteUrl: property.siteUrl })}
+                      aria-pressed={
+                        draft.searchConsoleSiteUrl === property.siteUrl
+                      }
+                      onClick={() =>
+                        patch({ searchConsoleSiteUrl: property.siteUrl })
+                      }
                     >
                       {draft.searchConsoleSiteUrl === property.siteUrl
                         ? t("Selected", "নির্বাচিত")
@@ -271,7 +321,8 @@ export function SiteKitDesk() {
                 ))}
               </ul>
             )}
-            {propertiesMutation.data.resolution.status === "selection_required" && (
+            {propertiesMutation.data.resolution.status ===
+              "selection_required" && (
               <p className="text-xs text-muted-foreground">
                 {t(
                   "More than one property covers this store — pick the one you want reports from.",
@@ -285,10 +336,16 @@ export function SiteKitDesk() {
 
       {/* ------------------------------------------------ verification */}
       <div className="rounded-fq-md border border-border p-3">
-        <h4 className="text-sm font-medium">{t("Ownership verification", "মালিকানা ভেরিফিকেশন")}</h4>
+        <h4 className="text-sm font-medium">
+          {t("Ownership verification", "মালিকানা ভেরিফিকেশন")}
+        </h4>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {VERIFICATION_PROVIDERS.map((provider) => (
-            <Field key={provider} label={VERIFICATION_SPEC[provider].label} hint={VERIFICATION_SPEC[provider].help}>
+            <Field
+              key={provider}
+              label={VERIFICATION_SPEC[provider].label}
+              hint={VERIFICATION_SPEC[provider].help}
+            >
               <input
                 className={inputClass}
                 value={draft.verification.tokens[provider] ?? ""}
@@ -301,13 +358,20 @@ export function SiteKitDesk() {
 
         <div className="mt-3 space-y-2">
           {draft.verification.custom.map((tag, i) => (
-            <div key={`${tag.name}-${i}`} className="flex flex-wrap items-end gap-2">
+            <div
+              key={`${tag.name}-${i}`}
+              className="flex flex-wrap items-end gap-2"
+            >
               <input
                 className={inputClass}
                 aria-label={t("Meta name", "মেটা নাম")}
                 value={tag.name}
                 onChange={(e) =>
-                  setCustom(draft.verification.custom.map((c, j) => (j === i ? { ...c, name: e.target.value } : c)))
+                  setCustom(
+                    draft.verification.custom.map((c, j) =>
+                      j === i ? { ...c, name: e.target.value } : c,
+                    ),
+                  )
                 }
               />
               <input
@@ -315,13 +379,19 @@ export function SiteKitDesk() {
                 aria-label={t("Meta content", "মেটা কনটেন্ট")}
                 value={tag.content}
                 onChange={(e) =>
-                  setCustom(draft.verification.custom.map((c, j) => (j === i ? { ...c, content: e.target.value } : c)))
+                  setCustom(
+                    draft.verification.custom.map((c, j) =>
+                      j === i ? { ...c, content: e.target.value } : c,
+                    ),
+                  )
                 }
               />
               <button
                 type="button"
                 className={btnGhost}
-                onClick={() => setCustom(draft.verification.custom.filter((_, j) => j !== i))}
+                onClick={() =>
+                  setCustom(draft.verification.custom.filter((_, j) => j !== i))
+                }
               >
                 {t("Remove", "মুছুন")}
               </button>
@@ -331,7 +401,12 @@ export function SiteKitDesk() {
             <button
               type="button"
               className={btnGhost}
-              onClick={() => setCustom([...draft.verification.custom, { name: "", content: "" }])}
+              onClick={() =>
+                setCustom([
+                  ...draft.verification.custom,
+                  { name: "", content: "" },
+                ])
+              }
             >
               {t("Add another meta tag", "আরেকটি মেটা ট্যাগ যোগ করুন")}
             </button>
@@ -342,9 +417,14 @@ export function SiteKitDesk() {
       {/* --------------------------------------------------- analytics */}
       <div className="rounded-fq-md border border-border p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h4 className="text-sm font-medium">{t("Analytics tags", "অ্যানালিটিক্স ট্যাগ")}</h4>
-          <p className={`text-xs tabular-nums ${overBudget ? "text-destructive" : "text-muted-foreground"}`}>
-            {t("Third-party weight", "তৃতীয় পক্ষের ওজন")}: {budgetKb} kB / {ANALYTICS_BUDGET_WARN_KB} kB
+          <h4 className="text-sm font-medium">
+            {t("Analytics tags", "অ্যানালিটিক্স ট্যাগ")}
+          </h4>
+          <p
+            className={`text-xs tabular-nums ${overBudget ? "text-destructive" : "text-muted-foreground"}`}
+          >
+            {t("Third-party weight", "তৃতীয় পক্ষের ওজন")}: {budgetKb} kB /{" "}
+            {ANALYTICS_BUDGET_WARN_KB} kB
             {overBudget ? ` — ${t("over budget", "বাজেটের বেশি")}` : ""}
           </p>
         </div>
@@ -367,18 +447,79 @@ export function SiteKitDesk() {
             </Field>
           ))}
         </div>
-        <label className="mt-3 flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            checked={draft.analytics.consentRequired}
-            onChange={(e) => patch({ analytics: { ...draft.analytics, consentRequired: e.target.checked } })}
-          />
-          {t("Load tags only after visitor consent", "ভিজিটরের সম্মতির পরেই ট্যাগ লোড করুন")}
-        </label>
+
+        {/* ----- data safety & consent */}
+        <div className="mt-4 rounded-fq-md border border-border/60 bg-muted/30 p-3 space-y-2">
+          <h5 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("Data safety & consent", "ডেটা নিরাপত্তা ও সম্মতি")}
+          </h5>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={draft.analytics.consentRequired}
+              onChange={(e) =>
+                patch({
+                  analytics: {
+                    ...draft.analytics,
+                    consentRequired: e.target.checked,
+                  },
+                })
+              }
+            />
+            <span>
+              {t(
+                "Load tags only after visitor consent",
+                "ভিজিটরের সম্মতির পরেই ট্যাগ লোড করুন",
+              )}
+              <span className="ml-1 text-xs text-muted-foreground">
+                {t(
+                  "(GDPR / PDPA compliant — recommended)",
+                  "(GDPR / PDPA সম্মত — প্রস্তাবিত)",
+                )}
+              </span>
+            </span>
+          </label>
+          <p className="text-xs text-muted-foreground pl-5">
+            {t(
+              "IDs are stored in your isolated tenant vault. They never appear in logs, error messages or global environment variables.",
+              "আইডিগুলো আপনার বিচ্ছিন্ন টেন্যান্ট ভল্টে সংরক্ষিত। লগ, ত্রুটি বার্তা বা গ্লোবাল পরিবেশে কখনো প্রকাশ হয় না।",
+            )}
+          </p>
+        </div>
+
+        {/* ----- bot protection */}
+        <div className="mt-4 rounded-fq-md border border-border/60 bg-muted/30 p-3 space-y-2">
+          <h5 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {t("Bot protection", "বট সুরক্ষা")}
+          </h5>
+          <label className="flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={draft.botProtection}
+              onChange={(e) => patch({ botProtection: e.target.checked })}
+            />
+            <span>
+              {t(
+                "Enable Cloudflare Turnstile on storefront forms",
+                "স্টোরফ্রন্ট ফর্মে Cloudflare Turnstile চালু করুন",
+              )}
+            </span>
+          </label>
+          <p className="text-xs text-muted-foreground pl-5">
+            {t(
+              "Protects checkout, sign-in and contact forms from credential-stuffing bots. No tracking cookies, GDPR-neutral.",
+              "চেকআউট, সাইন-ইন ও যোগাযোগ ফর্মকে ক্রেডেনশিয়াল-স্টাফিং বট থেকে রক্ষা করে। ট্র্যাকিং কুকি নেই, GDPR নিরপেক্ষ।",
+            )}
+          </p>
+        </div>
+
         {state.plan.length > 0 && (
           <p className="mt-2 text-xs text-muted-foreground">
-            {t("Currently live", "এখন চালু")}: {state.plan.map((tag) => tag.vendor).join(", ")} ·{" "}
-            {state.budgetKb} kB
+            {t("Currently live", "এখন চালু")}:{" "}
+            {state.plan.map((tag) => tag.vendor).join(", ")} · {state.budgetKb}{" "}
+            kB
           </p>
         )}
       </div>
@@ -390,9 +531,15 @@ export function SiteKitDesk() {
           disabled={saveMutation.isPending}
           onClick={() => saveMutation.mutate(draft)}
         >
-          {saveMutation.isPending ? t("Saving…", "সংরক্ষণ হচ্ছে…") : t("Save Site Kit", "সাইট কিট সংরক্ষণ")}
+          {saveMutation.isPending
+            ? t("Saving…", "সংরক্ষণ হচ্ছে…")
+            : t("Save Site Kit", "সাইট কিট সংরক্ষণ")}
         </button>
-        <button type="button" className={btnGhost} onClick={() => setDraft(state.settings)}>
+        <button
+          type="button"
+          className={btnGhost}
+          onClick={() => setDraft(state.settings)}
+        >
           {t("Discard changes", "পরিবর্তন বাতিল")}
         </button>
       </div>
@@ -400,7 +547,9 @@ export function SiteKitDesk() {
       {/* ------------------------------------------------- performance */}
       <div className="rounded-fq-md border border-border p-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h4 className="text-sm font-medium">{t("Search performance", "সার্চ পারফরম্যান্স")}</h4>
+          <h4 className="text-sm font-medium">
+            {t("Search performance", "সার্চ পারফরম্যান্স")}
+          </h4>
           <div className="flex gap-2">
             {WINDOWS.map((w) => (
               <button
@@ -418,16 +567,22 @@ export function SiteKitDesk() {
 
         {!draft.searchConsoleSiteUrl ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("Select a property to see search data.", "সার্চ ডেটা দেখতে একটি প্রোপার্টি নির্বাচন করুন।")}
+            {t(
+              "Select a property to see search data.",
+              "সার্চ ডেটা দেখতে একটি প্রোপার্টি নির্বাচন করুন।",
+            )}
           </p>
         ) : snapshotQuery.isLoading ? (
-          <p className="mt-2 text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("Loading…", "লোড হচ্ছে…")}
+          </p>
         ) : snapshotQuery.error ? (
           <ErrorFrame message={errText(snapshotQuery.error)} />
         ) : snapshotQuery.data ? (
           <>
             <p className="mt-1 text-xs text-muted-foreground">
-              {snapshotQuery.data.window.start} → {snapshotQuery.data.window.end} ·{" "}
+              {snapshotQuery.data.window.start} →{" "}
+              {snapshotQuery.data.window.end} ·{" "}
               {t(
                 `Google reports with about ${snapshotQuery.data.window.lagDays} days of lag.`,
                 `গুগলের ডেটা প্রায় ${snapshotQuery.data.window.lagDays} দিন পিছিয়ে থাকে।`,
@@ -437,8 +592,14 @@ export function SiteKitDesk() {
                 : ""}
             </p>
             <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Metric label={t("Clicks", "ক্লিক")} value={String(snapshotQuery.data.totals.clicks)} />
-              <Metric label={t("Impressions", "ইম্প্রেশন")} value={String(snapshotQuery.data.totals.impressions)} />
+              <Metric
+                label={t("Clicks", "ক্লিক")}
+                value={String(snapshotQuery.data.totals.clicks)}
+              />
+              <Metric
+                label={t("Impressions", "ইম্প্রেশন")}
+                value={String(snapshotQuery.data.totals.impressions)}
+              />
               <Metric label="CTR" value={pct(snapshotQuery.data.totals.ctr)} />
               <Metric
                 label={t("Avg. position", "গড় অবস্থান")}
@@ -451,7 +612,10 @@ export function SiteKitDesk() {
                 title={t("Top queries", "সেরা কোয়েরি")}
                 rows={snapshotQuery.data.topQueries.slice(0, 10)}
               />
-              <RowTable title={t("Top pages", "সেরা পেজ")} rows={snapshotQuery.data.topPages.slice(0, 10)} />
+              <RowTable
+                title={t("Top pages", "সেরা পেজ")}
+                rows={snapshotQuery.data.topPages.slice(0, 10)}
+              />
             </div>
           </>
         ) : null}
@@ -463,10 +627,14 @@ export function SiteKitDesk() {
             </h5>
             <ul className="mt-2 space-y-1 text-sm">
               {articlesQuery.data.slice(0, 10).map((article) => (
-                <li key={article.articleId} className="flex justify-between gap-3 tabular-nums">
+                <li
+                  key={article.articleId}
+                  className="flex justify-between gap-3 tabular-nums"
+                >
                   <span className="truncate">{article.title}</span>
                   <span className="text-muted-foreground">
-                    {article.clicks} · {article.impressions} · {article.position.toFixed(1)}
+                    {article.clicks} · {article.impressions} ·{" "}
+                    {article.position.toFixed(1)}
                   </span>
                 </li>
               ))}
@@ -477,7 +645,9 @@ export function SiteKitDesk() {
 
       {/* ---------------------------------------------------- inspect */}
       <div className="rounded-fq-md border border-border p-3">
-        <h4 className="text-sm font-medium">{t("Check a URL in Google's index", "গুগল ইনডেক্সে একটি URL দেখুন")}</h4>
+        <h4 className="text-sm font-medium">
+          {t("Check a URL in Google's index", "গুগল ইনডেক্সে একটি URL দেখুন")}
+        </h4>
         <div className="mt-2 flex flex-wrap items-end gap-2">
           <input
             className={inputClass}
@@ -489,35 +659,55 @@ export function SiteKitDesk() {
           <button
             type="button"
             className={btnGhost}
-            disabled={inspectMutation.isPending || inspectUrlValue.trim().length === 0}
+            disabled={
+              inspectMutation.isPending || inspectUrlValue.trim().length === 0
+            }
             onClick={() => inspectMutation.mutate(inspectUrlValue.trim())}
           >
-            {inspectMutation.isPending ? t("Checking…", "দেখা হচ্ছে…") : t("Check", "দেখুন")}
+            {inspectMutation.isPending
+              ? t("Checking…", "দেখা হচ্ছে…")
+              : t("Check", "দেখুন")}
           </button>
         </div>
         {inspectMutation.data && (
           <dl className="mt-3 space-y-1 text-sm">
-            <Line label={t("Verdict", "ফলাফল")} value={inspectMutation.data.verdict} />
-            <Line label={t("Coverage", "কভারেজ")} value={inspectMutation.data.coverageState} />
-            <Line label={t("Last crawled", "শেষ ক্রল")} value={inspectMutation.data.lastCrawled ?? "—"} />
+            <Line
+              label={t("Verdict", "ফলাফল")}
+              value={inspectMutation.data.verdict}
+            />
+            <Line
+              label={t("Coverage", "কভারেজ")}
+              value={inspectMutation.data.coverageState}
+            />
+            <Line
+              label={t("Last crawled", "শেষ ক্রল")}
+              value={inspectMutation.data.lastCrawled ?? "—"}
+            />
             <Line
               label={t("Google's canonical", "গুগলের ক্যানোনিকাল")}
               value={inspectMutation.data.canonicalGoogle ?? "—"}
             />
-            <p className="pt-1 text-xs text-muted-foreground">{inspectMutation.data.disclaimer}</p>
+            <p className="pt-1 text-xs text-muted-foreground">
+              {inspectMutation.data.disclaimer}
+            </p>
           </dl>
         )}
       </div>
 
       {/* ------------------------------------------------- job history */}
       <div className="rounded-fq-md border border-border p-3">
-        <h4 className="text-sm font-medium">{t("Sync history", "সিঙ্ক ইতিহাস")}</h4>
+        <h4 className="text-sm font-medium">
+          {t("Sync history", "সিঙ্ক ইতিহাস")}
+        </h4>
         <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
-          {state.jobs.length === 0 && <li>{t("No syncs yet.", "এখনো কোনো সিঙ্ক হয়নি।")}</li>}
+          {state.jobs.length === 0 && (
+            <li>{t("No syncs yet.", "এখনো কোনো সিঙ্ক হয়নি।")}</li>
+          )}
           {state.jobs.map((job) => (
             <li key={job.id} className="tabular-nums">
-              {new Date(job.started_at).toLocaleString()} — {job.kind} · {job.status} · {job.trigger} ·{" "}
-              {job.rows_written} {t("rows", "সারি")}
+              {new Date(job.started_at).toLocaleString()} — {job.kind} ·{" "}
+              {job.status} · {job.trigger} · {job.rows_written}{" "}
+              {t("rows", "সারি")}
               {job.error_code ? ` · ${job.error_code}` : ""}
             </li>
           ))}
@@ -550,17 +740,29 @@ function RowTable({
   rows,
 }: {
   title: string;
-  rows: { value: string; clicks: number; impressions: number; ctr: number; position: number; positionChange: number | null }[];
+  rows: {
+    value: string;
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+    positionChange: number | null;
+  }[];
 }) {
   return (
     <div>
-      <h5 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h5>
+      <h5 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        {title}
+      </h5>
       {rows.length === 0 ? (
         <p className="mt-2 text-sm text-muted-foreground">—</p>
       ) : (
         <ul className="mt-2 space-y-1 text-sm">
           {rows.map((row) => (
-            <li key={row.value} className="flex justify-between gap-3 tabular-nums">
+            <li
+              key={row.value}
+              className="flex justify-between gap-3 tabular-nums"
+            >
               <span className="truncate">{row.value}</span>
               <span className="text-muted-foreground">
                 {row.clicks} · {pct(row.ctr)} · {row.position.toFixed(1)}

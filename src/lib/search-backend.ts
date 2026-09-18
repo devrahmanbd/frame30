@@ -40,10 +40,14 @@ export const DEFAULT_BACKEND: BackendConfig = {
   cooldownSeconds: 60,
 };
 
-export function normalizeBackend(input: Partial<BackendConfig> | null | undefined): BackendConfig {
+export function normalizeBackend(
+  input: Partial<BackendConfig> | null | undefined,
+): BackendConfig {
   const c = { ...DEFAULT_BACKEND, ...(input ?? {}) };
   const engine: SearchEngine =
-    c.engine === "meilisearch" || c.engine === "typesense" ? c.engine : "postgres";
+    c.engine === "meilisearch" || c.engine === "typesense"
+      ? c.engine
+      : "postgres";
   const host = c.host?.trim() || null;
   return {
     // A remote engine without a host is a misconfiguration, not a reason to
@@ -52,8 +56,14 @@ export function normalizeBackend(input: Partial<BackendConfig> | null | undefine
     host,
     indexName: c.indexName?.trim() || null,
     timeoutMs: Math.min(5_000, Math.max(50, Math.trunc(c.timeoutMs))),
-    failureThreshold: Math.min(100, Math.max(1, Math.trunc(c.failureThreshold))),
-    cooldownSeconds: Math.min(3_600, Math.max(5, Math.trunc(c.cooldownSeconds))),
+    failureThreshold: Math.min(
+      100,
+      Math.max(1, Math.trunc(c.failureThreshold)),
+    ),
+    cooldownSeconds: Math.min(
+      3_600,
+      Math.max(5, Math.trunc(c.cooldownSeconds)),
+    ),
   };
 }
 
@@ -90,15 +100,26 @@ export function decideEngine(
   now = Date.now(),
 ): BreakerDecision {
   if (config.engine === "postgres") {
-    return { action: "closed", engine: "postgres", health: "healthy", reason: null };
+    return {
+      action: "closed",
+      engine: "postgres",
+      health: "healthy",
+      reason: null,
+    };
   }
   if (breaker.openedAt === null) {
-    const health: BackendHealth = breaker.consecutiveFailures > 0 ? "degraded" : "healthy";
+    const health: BackendHealth =
+      breaker.consecutiveFailures > 0 ? "degraded" : "healthy";
     return { action: "closed", engine: config.engine, health, reason: null };
   }
   const elapsed = now - breaker.openedAt;
   if (elapsed >= config.cooldownSeconds * 1000) {
-    return { action: "probe", engine: config.engine, health: "degraded", reason: "cooldown_elapsed" };
+    return {
+      action: "probe",
+      engine: config.engine,
+      health: "degraded",
+      reason: "cooldown_elapsed",
+    };
   }
   return {
     action: "open",
@@ -164,7 +185,10 @@ export function normalizeQuery(input: Partial<NeutralQuery>): NeutralQuery {
  * expression strings; an unescaped quote there is an injection, exactly like
  * SQL.
  */
-export function toFilterExpression(engine: SearchEngine, filters: NeutralQuery["filters"]) {
+export function toFilterExpression(
+  engine: SearchEngine,
+  filters: NeutralQuery["filters"],
+) {
   const parts: string[] = [];
   for (const [rawKey, value] of Object.entries(filters)) {
     if (value === null || value === undefined || value === "") continue;
@@ -174,14 +198,21 @@ export function toFilterExpression(engine: SearchEngine, filters: NeutralQuery["
       parts.push(`${key} = ${value}`);
       continue;
     }
-    const safe = String(value).replace(/\\/g, "\\\\").replace(/"/g, '\\"').slice(0, 120);
+    const safe = String(value)
+      .replace(/\\/g, "\\\\")
+      .replace(/"/g, '\\"')
+      .slice(0, 120);
     parts.push(`${key} = "${safe}"`);
   }
   return parts.join(engine === "typesense" ? " && " : " AND ");
 }
 
-export function sortExpression(engine: SearchEngine, sort: NeutralQuery["sort"]): string[] {
-  if (sort === "relevance") return engine === "typesense" ? ["_text_match:desc"] : [];
+export function sortExpression(
+  engine: SearchEngine,
+  sort: NeutralQuery["sort"],
+): string[] {
+  if (sort === "relevance")
+    return engine === "typesense" ? ["_text_match:desc"] : [];
   const field = sort === "newest" ? "created_at" : "price_minor";
   const dir = sort === "price_asc" ? "asc" : "desc";
   return [engine === "typesense" ? `${field}:${dir}` : `${field}:${dir}`];
@@ -202,9 +233,13 @@ export function coalesceIndexOps(
   const last = new Map<string, { op: IndexOp; seq: number }>();
   for (const item of ops) {
     const prev = last.get(item.documentId);
-    if (!prev || item.seq >= prev.seq) last.set(item.documentId, { op: item.op, seq: item.seq });
+    if (!prev || item.seq >= prev.seq)
+      last.set(item.documentId, { op: item.op, seq: item.seq });
   }
-  return [...last.entries()].map(([documentId, v]) => ({ documentId, op: v.op }));
+  return [...last.entries()].map(([documentId, v]) => ({
+    documentId,
+    op: v.op,
+  }));
 }
 
 /** Merchant-facing explanation; no cluster internals leak to the desk. */

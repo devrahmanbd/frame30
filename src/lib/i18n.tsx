@@ -21,11 +21,14 @@ const STORAGE_KEY = "framique.lang";
  * বাংলা in one storefront does not rewrite another merchant's chrome. The
  * global key stays as the fallback (and as the studio/admin preference).
  */
-const scopedKey = (scope: string | null) => (scope ? `${STORAGE_KEY}:${scope}` : STORAGE_KEY);
+const scopedKey = (scope: string | null) =>
+  scope ? `${STORAGE_KEY}:${scope}` : STORAGE_KEY;
 
 function readStored(scope: string | null): Lang | null {
   try {
-    const value = window.localStorage.getItem(scopedKey(scope)) ?? window.localStorage.getItem(STORAGE_KEY);
+    const value =
+      window.localStorage.getItem(scopedKey(scope)) ??
+      window.localStorage.getItem(STORAGE_KEY);
     return value === "bn" || value === "en" ? value : null;
   } catch {
     return null;
@@ -58,7 +61,11 @@ function lookup(lang: Lang, key: string, vars?: Vars) {
 
 function translateError(lang: Lang, error: unknown) {
   const raw =
-    typeof error === "string" ? error : error instanceof Error ? error.message : "";
+    typeof error === "string"
+      ? error
+      : error instanceof Error
+        ? error.message
+        : "";
   if (!raw) return lookup(lang, "common.error");
   const parsed = parseMessageKey(raw);
   if (parsed) return lookup(lang, parsed.key, parsed.vars);
@@ -186,4 +193,3 @@ export function TK({ k, vars }: { k: string; vars?: Vars }) {
   const { tk } = useLang();
   return <>{tk(k, vars)}</>;
 }
-

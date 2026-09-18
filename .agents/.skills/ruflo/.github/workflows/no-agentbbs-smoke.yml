@@ -19,22 +19,22 @@ on:
   push:
     branches: [main]
     paths:
-      - 'plugins/ruflo-bbs-federation/**'
-      - 'v3/@claude-flow/cli/src/mcp-tools/agentbbs-tools.ts'
-      - 'v3/@claude-flow/cli/src/mcp-client.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/index.ts'
-      - 'v3/@claude-flow/cli/package.json'
-      - 'scripts/smoke-agentbbs.sh'
-      - '.github/workflows/no-agentbbs-smoke.yml'
+      - "plugins/ruflo-bbs-federation/**"
+      - "v3/@claude-flow/cli/src/mcp-tools/agentbbs-tools.ts"
+      - "v3/@claude-flow/cli/src/mcp-client.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/index.ts"
+      - "v3/@claude-flow/cli/package.json"
+      - "scripts/smoke-agentbbs.sh"
+      - ".github/workflows/no-agentbbs-smoke.yml"
   pull_request:
     paths:
-      - 'plugins/ruflo-bbs-federation/**'
-      - 'v3/@claude-flow/cli/src/mcp-tools/agentbbs-tools.ts'
-      - 'v3/@claude-flow/cli/src/mcp-client.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/index.ts'
-      - 'v3/@claude-flow/cli/package.json'
-      - 'scripts/smoke-agentbbs.sh'
-      - '.github/workflows/no-agentbbs-smoke.yml'
+      - "plugins/ruflo-bbs-federation/**"
+      - "v3/@claude-flow/cli/src/mcp-tools/agentbbs-tools.ts"
+      - "v3/@claude-flow/cli/src/mcp-client.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/index.ts"
+      - "v3/@claude-flow/cli/package.json"
+      - "scripts/smoke-agentbbs.sh"
+      - ".github/workflows/no-agentbbs-smoke.yml"
   workflow_dispatch:
 
 jobs:
@@ -45,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Rule 1 — agentbbs must NOT appear in non-optional dependencies anywhere
         # Static check: agentbbs may be omitted entirely for cold-start
@@ -146,8 +146,8 @@ jobs:
           version: 8
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Rule 3 — runtime drill (surgically remove agentbbs only, run smoke)

@@ -32,7 +32,9 @@ const client = read("src/lib/client-error-reporter.ts");
 const ingest = read("src/routes/api/public/errors.ts");
 const bridge = read("src/routes/api/public/error-alert.ts");
 const doc = read("docs/14-operations/error-tracking.md");
-const pkg = JSON.parse(read("package.json")) as { scripts: Record<string, string> };
+const pkg = JSON.parse(read("package.json")) as {
+  scripts: Record<string, string>;
+};
 
 const GLITCHTIP_DSN = "https://pub1@glitchtip.internal/1";
 const SENTRY_DSN = "https://pub2@sentry.internal/2";
@@ -75,12 +77,13 @@ describe("ops stack", () => {
 describe("one reporter, a DSN per target", () => {
   it("collects every configured backend in send order", () => {
     expect(errorTargets({})).toEqual([]);
-    expect(errorTargets({ GLITCHTIP_DSN }).map((t) => t.name)).toEqual(["glitchtip"]);
-    expect(errorTargets({ SENTRY_DSN }).map((t) => t.name)).toEqual(["sentry"]);
-    expect(errorTargets({ GLITCHTIP_DSN, SENTRY_DSN }).map((t) => t.name)).toEqual([
+    expect(errorTargets({ GLITCHTIP_DSN }).map((t) => t.name)).toEqual([
       "glitchtip",
-      "sentry",
     ]);
+    expect(errorTargets({ SENTRY_DSN }).map((t) => t.name)).toEqual(["sentry"]);
+    expect(
+      errorTargets({ GLITCHTIP_DSN, SENTRY_DSN }).map((t) => t.name),
+    ).toEqual(["glitchtip", "sentry"]);
   });
 
   it("ignores a malformed DSN instead of throwing", () => {
@@ -95,8 +98,16 @@ describe("one reporter, a DSN per target", () => {
   });
 
   it("tags every event with environment, release and commit", () => {
-    const tags = baseTags({ SENTRY_ENVIRONMENT: "production", SENTRY_RELEASE: "v9", COMMIT_SHA: "abc123" });
-    expect(tags).toMatchObject({ environment: "production", release: "v9", commit: "abc123" });
+    const tags = baseTags({
+      SENTRY_ENVIRONMENT: "production",
+      SENTRY_RELEASE: "v9",
+      COMMIT_SHA: "abc123",
+    });
+    expect(tags).toMatchObject({
+      environment: "production",
+      release: "v9",
+      commit: "abc123",
+    });
     expect(errorEnvironment({})).toBe("preview");
   });
 
@@ -104,7 +115,9 @@ describe("one reporter, a DSN per target", () => {
     expect(client).toContain('window.addEventListener("error"');
     expect(client).toContain('window.addEventListener("unhandledrejection"');
     expect(reporter).toContain("export async function captureBrowserError");
-    expect(read("src/lib/client-error-reporting.ts")).toContain("react_error_boundary");
+    expect(read("src/lib/client-error-reporting.ts")).toContain(
+      "react_error_boundary",
+    );
   });
 });
 
@@ -122,7 +135,15 @@ describe("PII scrubbing", () => {
       merchant_bucket: "t42",
     });
     expect(out).toEqual({ route: "/checkout", merchant_bucket: "t42" });
-    for (const key of ["email", "phone", "customer_name", "address", "order", "line_items", "authorization"]) {
+    for (const key of [
+      "email",
+      "phone",
+      "customer_name",
+      "address",
+      "order",
+      "line_items",
+      "authorization",
+    ]) {
       expect(FORBIDDEN_EVENT_FIELDS.test(key)).toBe(true);
     }
   });
@@ -130,8 +151,12 @@ describe("PII scrubbing", () => {
   it("caps depth and breadth so a hostile payload cannot blow up an event", () => {
     const deep = { a: { b: { c: { d: { e: "too deep" } } } } };
     expect(JSON.stringify(sanitizeEventFields(deep))).not.toContain("too deep");
-    const wide = Object.fromEntries(Array.from({ length: 100 }, (_, i) => [`k${i}`, i]));
-    expect(Object.keys(sanitizeEventFields(wide)).length).toBeLessThanOrEqual(40);
+    const wide = Object.fromEntries(
+      Array.from({ length: 100 }, (_, i) => [`k${i}`, i]),
+    );
+    expect(Object.keys(sanitizeEventFields(wide)).length).toBeLessThanOrEqual(
+      40,
+    );
   });
 
   it("passes context through the text scrubber before the field filter", () => {
@@ -160,14 +185,22 @@ describe("sampling and quotas", () => {
     for (let i = 0; i < 20; i += 1) expect(shouldSample(key, 0.25)).toBe(first);
     expect(shouldSample(key, 1)).toBe(true);
     expect(shouldSample(key, 0)).toBe(false);
-    const kept = Array.from({ length: 400 }, (_, i) => shouldSample(`k${i}`, 0.25)).filter(Boolean);
+    const kept = Array.from({ length: 400 }, (_, i) =>
+      shouldSample(`k${i}`, 0.25),
+    ).filter(Boolean);
     expect(kept.length).toBeGreaterThan(60);
     expect(kept.length).toBeLessThan(160);
   });
 
   it("bounds sends per fingerprint per environment", () => {
-    expect(errorQuota({ SENTRY_ENVIRONMENT: "production" })).toEqual({ limit: 60, windowMs: 60_000 });
-    expect(errorQuota({ SENTRY_ENVIRONMENT: "preview" })).toEqual({ limit: 20, windowMs: 60_000 });
+    expect(errorQuota({ SENTRY_ENVIRONMENT: "production" })).toEqual({
+      limit: 60,
+      windowMs: 60_000,
+    });
+    expect(errorQuota({ SENTRY_ENVIRONMENT: "preview" })).toEqual({
+      limit: 20,
+      windowMs: 60_000,
+    });
     expect(errorQuota({ ERROR_QUOTA_PER_MINUTE: "5" }).limit).toBe(5);
     expect(reporter).toContain("errorBudget().allow(key)");
     expect(reporter).toContain('outcome: "sampled_out"');
@@ -176,7 +209,9 @@ describe("sampling and quotas", () => {
   it("caps the browser side too", () => {
     expect(client).toContain("MAX_REPORTS_PER_PAGE");
     expect(ingest).toContain('rateLimit("errors.ingest_ip"');
-    expect(read("src/lib/rate-limit.server.ts")).toContain('"errors.ingest_ip"');
+    expect(read("src/lib/rate-limit.server.ts")).toContain(
+      '"errors.ingest_ip"',
+    );
   });
 });
 
@@ -192,11 +227,13 @@ describe("alert routing", () => {
   it("authenticates the webhook caller in constant time and 404s when unconfigured", () => {
     expect(bridge).toContain("ERROR_ALERT_SECRET");
     expect(bridge).toContain("safeEqual");
-    expect(bridge).toContain('status: 404');
+    expect(bridge).toContain("status: 404");
   });
 
   it("documents the runbook entry the bridge links to", () => {
-    expect(read("docs/14-operations/runbooks.md")).toContain("ErrorTrackerIssue");
+    expect(read("docs/14-operations/runbooks.md")).toContain(
+      "ErrorTrackerIssue",
+    );
   });
 });
 
@@ -218,7 +255,12 @@ describe("tooling", () => {
   });
 
   it("documents sampling, quotas, retention and acceptance", () => {
-    for (const needle of ["ERROR_SAMPLE_RATE", "ERROR_QUOTA_PER_MINUTE", "ERROR_RETENTION_DAYS", "err:verify"]) {
+    for (const needle of [
+      "ERROR_SAMPLE_RATE",
+      "ERROR_QUOTA_PER_MINUTE",
+      "ERROR_RETENTION_DAYS",
+      "err:verify",
+    ]) {
       expect(doc).toContain(needle);
     }
   });

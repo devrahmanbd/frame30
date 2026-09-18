@@ -25,7 +25,11 @@ export type TrainingTurnRecord = {
   systemPrompt: string;
   userTurn: string;
   contextPassages: Array<{ title: string; body: string }>;
-  toolCalls: Array<{ tool: string; ok: boolean; args?: Record<string, unknown> }>;
+  toolCalls: Array<{
+    tool: string;
+    ok: boolean;
+    args?: Record<string, unknown>;
+  }>;
   agentReply: string;
   latencyMs: number;
   csatRating?: number | null;
@@ -44,7 +48,10 @@ const IN_MEMORY_TRAINING_TURNS: TrainingTurnRecord[] = [];
  * Generate a deterministic, immutable pseudonymized cohort hash for a merchant.
  * Ensures ML data retains category/cohort context even if the merchant is deleted.
  */
-export function computeCohortHash(merchantId?: string | null, category = "general_commerce"): string {
+export function computeCohortHash(
+  merchantId?: string | null,
+  category = "general_commerce",
+): string {
   if (!merchantId) return "cohort_anonymous_unlinked";
   return createHash("sha256")
     .update(`framique:cohort:${merchantId}:${category}`)
@@ -61,7 +68,8 @@ export function computeActorToken(seed?: string | null): string {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -74,7 +82,11 @@ export type CaptureTurnInput = {
   systemPrompt?: string;
   userMessage: string;
   contextPassages?: Array<{ title: string; body: string }>;
-  toolCalls?: Array<{ tool: string; ok: boolean; args?: Record<string, unknown> }>;
+  toolCalls?: Array<{
+    tool: string;
+    ok: boolean;
+    args?: Record<string, unknown>;
+  }>;
   agentReply: string;
   latencyMs?: number;
   csatRating?: number | null;
@@ -92,7 +104,9 @@ const DEFAULT_SYSTEM_PROMPT =
  * Capture a single conversational turn with complete PII redaction, ML Data Immunity,
  * and scalar RL reward.
  */
-export async function captureTrainingTurn(input: CaptureTurnInput): Promise<TrainingTurnRecord> {
+export async function captureTrainingTurn(
+  input: CaptureTurnInput,
+): Promise<TrainingTurnRecord> {
   const redactedUser = redactPii(input.userMessage).text;
   const redactedReply = redactPii(input.agentReply).text;
   const redactedContext = (input.contextPassages ?? []).map((c) => ({
@@ -113,8 +127,10 @@ export async function captureTrainingTurn(input: CaptureTurnInput): Promise<Trai
     actionCompleted: input.actionCompleted,
   });
 
-  const cohortHash = input.merchantCohortHash || computeCohortHash(input.merchantId);
-  const actorToken = input.anonymizedActorToken || computeActorToken(input.conversationId);
+  const cohortHash =
+    input.merchantCohortHash || computeCohortHash(input.merchantId);
+  const actorToken =
+    input.anonymizedActorToken || computeActorToken(input.conversationId);
 
   const record: TrainingTurnRecord = {
     id: `train_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
@@ -286,13 +302,19 @@ export async function exportSftDataset(
           id: d.id,
           merchantId: d.merchant_id,
           conversationId: d.conversation_id,
-          merchantCohortHash: (raw["merchant_cohort_hash"] as string) || computeCohortHash(d.merchant_id),
-          anonymizedActorToken: (raw["anonymized_actor_token"] as string) || null,
+          merchantCohortHash:
+            (raw["merchant_cohort_hash"] as string) ||
+            computeCohortHash(d.merchant_id),
+          anonymizedActorToken:
+            (raw["anonymized_actor_token"] as string) || null,
           turnIndex: d.turn_index,
           systemPrompt: d.system_prompt,
           userTurn: d.user_turn,
-          contextPassages: (d.context_passages as Array<{ title: string; body: string }>) ?? [],
-          toolCalls: (d.tool_calls as Array<{ tool: string; ok: boolean }>) ?? [],
+          contextPassages:
+            (d.context_passages as Array<{ title: string; body: string }>) ??
+            [],
+          toolCalls:
+            (d.tool_calls as Array<{ tool: string; ok: boolean }>) ?? [],
           agentReply: d.agent_reply,
           latencyMs: d.latency_ms,
           csatRating: d.csat_rating,
@@ -364,7 +386,9 @@ export type DpoPairRecord = {
 /**
  * Export paired preferences for Direct Preference Optimization (DPO / KTO / ORPO).
  */
-export async function exportDpoDataset(opts: { merchantId?: string; limit?: number } = {}): Promise<DpoPairRecord[]> {
+export async function exportDpoDataset(
+  opts: { merchantId?: string; limit?: number } = {},
+): Promise<DpoPairRecord[]> {
   const limit = opts.limit ?? 500;
   const pool = [...IN_MEMORY_TRAINING_TURNS];
 
@@ -381,13 +405,19 @@ export async function exportDpoDataset(opts: { merchantId?: string; limit?: numb
             id: d.id,
             merchantId: d.merchant_id,
             conversationId: d.conversation_id,
-            merchantCohortHash: (raw["merchant_cohort_hash"] as string) || computeCohortHash(d.merchant_id),
-            anonymizedActorToken: (raw["anonymized_actor_token"] as string) || null,
+            merchantCohortHash:
+              (raw["merchant_cohort_hash"] as string) ||
+              computeCohortHash(d.merchant_id),
+            anonymizedActorToken:
+              (raw["anonymized_actor_token"] as string) || null,
             turnIndex: d.turn_index,
             systemPrompt: d.system_prompt,
             userTurn: d.user_turn,
-            contextPassages: (d.context_passages as Array<{ title: string; body: string }>) ?? [],
-            toolCalls: (d.tool_calls as Array<{ tool: string; ok: boolean }>) ?? [],
+            contextPassages:
+              (d.context_passages as Array<{ title: string; body: string }>) ??
+              [],
+            toolCalls:
+              (d.tool_calls as Array<{ tool: string; ok: boolean }>) ?? [],
             agentReply: d.agent_reply,
             latencyMs: d.latency_ms,
             csatRating: d.csat_rating,
@@ -406,9 +436,15 @@ export async function exportDpoDataset(opts: { merchantId?: string; limit?: numb
   }
 
   // Filter into positive (chosen) and negative (rejected) pools
-  const chosenPool = pool.filter((t) => (t.csatRating && t.csatRating >= 4) || t.rewardScore >= 0.25);
+  const chosenPool = pool.filter(
+    (t) => (t.csatRating && t.csatRating >= 4) || t.rewardScore >= 0.25,
+  );
   const rejectedPool = pool.filter(
-    (t) => t.guardrailBlocked || t.loopDetected || (t.csatRating && t.csatRating <= 2) || t.rewardScore < -0.1,
+    (t) =>
+      t.guardrailBlocked ||
+      t.loopDetected ||
+      (t.csatRating && t.csatRating <= 2) ||
+      t.rewardScore < -0.1,
   );
 
   const pairs: DpoPairRecord[] = [];
@@ -418,8 +454,9 @@ export async function exportDpoDataset(opts: { merchantId?: string; limit?: numb
 
     // Find an appropriate rejected response (same prompt or semantically closest, or general negative)
     const matchingRejected =
-      rejectedPool.find((r) => r.userTurn.slice(0, 30) === chosen.userTurn.slice(0, 30)) ||
-      rejectedPool[pairs.length % Math.max(1, rejectedPool.length)];
+      rejectedPool.find(
+        (r) => r.userTurn.slice(0, 30) === chosen.userTurn.slice(0, 30),
+      ) || rejectedPool[pairs.length % Math.max(1, rejectedPool.length)];
 
     if (matchingRejected) {
       pairs.push({
@@ -427,7 +464,9 @@ export async function exportDpoDataset(opts: { merchantId?: string; limit?: numb
         prompt: chosen.userTurn,
         chosen: chosen.agentReply,
         rejected: matchingRejected.agentReply,
-        margin: Number((chosen.rewardScore - matchingRejected.rewardScore).toFixed(4)),
+        margin: Number(
+          (chosen.rewardScore - matchingRejected.rewardScore).toFixed(4),
+        ),
       });
     }
   }
@@ -456,8 +495,16 @@ export type CsatAnalytics = {
   }>;
 };
 
-export async function getCsatAnalytics(merchantId: string): Promise<CsatAnalytics> {
-  const distribution = { stars5: 0, stars4: 0, stars3: 0, stars2: 0, stars1: 0 };
+export async function getCsatAnalytics(
+  merchantId: string,
+): Promise<CsatAnalytics> {
+  const distribution = {
+    stars5: 0,
+    stars4: 0,
+    stars3: 0,
+    stars2: 0,
+    stars1: 0,
+  };
   let totalRatingSum = 0;
   let totalRatings = 0;
   const reviews: CsatAnalytics["recentReviews"] = [];
@@ -520,7 +567,8 @@ export async function getCsatAnalytics(merchantId: string): Promise<CsatAnalytic
     // optional db failure
   }
 
-  const averageRating = totalRatings > 0 ? Number((totalRatingSum / totalRatings).toFixed(2)) : 5.0;
+  const averageRating =
+    totalRatings > 0 ? Number((totalRatingSum / totalRatings).toFixed(2)) : 5.0;
 
   return {
     averageRating,
@@ -569,12 +617,15 @@ export async function disassociateTenantFromTrainingData(
     // Non-blocking fallback
   }
 
-  log("info", "ML Data Immunity Shield: Disassociated tenant from ML training records", {
-    merchantId,
-    unlinkedCount: count,
-    cohortHash,
-  });
+  log(
+    "info",
+    "ML Data Immunity Shield: Disassociated tenant from ML training records",
+    {
+      merchantId,
+      unlinkedCount: count,
+      cohortHash,
+    },
+  );
 
   return { unlinkedCount: count, preservedCohortHash: cohortHash };
 }
-

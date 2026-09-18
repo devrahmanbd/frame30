@@ -33,17 +33,20 @@
  *   node patch-aggressive-prune.mjs --check  # Check if patched
  */
 
-import { readFileSync, writeFileSync, copyFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync, copyFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const PROJECT_ROOT = join(__dirname, '../..');
-const CLI_PATH = join(PROJECT_ROOT, 'node_modules/@anthropic-ai/claude-agent-sdk/cli.js');
-const BACKUP_PATH = CLI_PATH + '.backup';
+const PROJECT_ROOT = join(__dirname, "../..");
+const CLI_PATH = join(
+  PROJECT_ROOT,
+  "node_modules/@anthropic-ai/claude-agent-sdk/cli.js",
+);
+const BACKUP_PATH = CLI_PATH + ".backup";
 
-const PATCH_MARKER = '/*AGGRESSIVE_TEXT_PRUNE_PATCH*/';
+const PATCH_MARKER = "/*AGGRESSIVE_TEXT_PRUNE_PATCH*/";
 
 // The text pruning function to inject
 const TEXT_PRUNE_FUNCTION = `
@@ -116,69 +119,80 @@ function _aggressiveTextPrune(messages) {
 /*END_AGGRESSIVE_TEXT_PRUNE_PATCH*/`;
 
 // The injection point: after Vd() call, before CT2() call
-const VD_CALL_PATTERN = 'z=await Vd(F,void 0,Y);if(F=z.messages,';
-const PATCHED_PATTERN = 'z=await Vd(F,void 0,Y);if(F=_aggressiveTextPrune(z.messages),';
+const VD_CALL_PATTERN = "z=await Vd(F,void 0,Y);if(F=z.messages,";
+const PATCHED_PATTERN =
+  "z=await Vd(F,void 0,Y);if(F=_aggressiveTextPrune(z.messages),";
 
 function check() {
-  const src = readFileSync(CLI_PATH, 'utf8');
+  const src = readFileSync(CLI_PATH, "utf8");
   const isPatched = src.includes(PATCH_MARKER);
-  console.log(isPatched ? 'PATCHED' : 'NOT PATCHED');
+  console.log(isPatched ? "PATCHED" : "NOT PATCHED");
   return isPatched;
 }
 
 function apply() {
   if (check()) {
-    console.log('Already patched. Use --revert first to re-apply.');
+    console.log("Already patched. Use --revert first to re-apply.");
     return;
   }
 
-  const src = readFileSync(CLI_PATH, 'utf8');
+  const src = readFileSync(CLI_PATH, "utf8");
 
   // Verify the injection point exists
   if (!src.includes(VD_CALL_PATTERN)) {
-    console.error('ERROR: Could not find Vd() call pattern in cli.js.');
-    console.error('Claude Code may have been updated. Pattern expected:');
-    console.error('  ' + VD_CALL_PATTERN);
+    console.error("ERROR: Could not find Vd() call pattern in cli.js.");
+    console.error("Claude Code may have been updated. Pattern expected:");
+    console.error("  " + VD_CALL_PATTERN);
     process.exit(1);
   }
 
   // Backup
   if (!existsSync(BACKUP_PATH)) {
     copyFileSync(CLI_PATH, BACKUP_PATH);
-    console.log('Backup saved to:', BACKUP_PATH);
+    console.log("Backup saved to:", BACKUP_PATH);
   }
 
   // Inject the function at the top of the file (after the first line)
   let patched = src;
-  const firstNewline = patched.indexOf('\n');
-  patched = patched.slice(0, firstNewline + 1) + TEXT_PRUNE_FUNCTION + '\n' + patched.slice(firstNewline + 1);
+  const firstNewline = patched.indexOf("\n");
+  patched =
+    patched.slice(0, firstNewline + 1) +
+    TEXT_PRUNE_FUNCTION +
+    "\n" +
+    patched.slice(firstNewline + 1);
 
   // Patch the Vd() call site to also run our text pruner
   patched = patched.replace(VD_CALL_PATTERN, PATCHED_PATTERN);
 
   writeFileSync(CLI_PATH, patched);
-  console.log('PATCH APPLIED successfully.');
-  console.log('');
-  console.log('Configuration (via env vars in settings.json):');
-  console.log('  CLAUDE_TEXT_PRUNE_KEEP=10       # Keep last N turns intact');
-  console.log('  CLAUDE_TEXT_PRUNE_THRESHOLD=60000 # Start pruning above this token count');
-  console.log('  CLAUDE_TEXT_PRUNE_MAX_CHARS=150  # Truncate old text to this many chars');
-  console.log('');
-  console.log('Restart Claude Code for the patch to take effect.');
+  console.log("PATCH APPLIED successfully.");
+  console.log("");
+  console.log("Configuration (via env vars in settings.json):");
+  console.log("  CLAUDE_TEXT_PRUNE_KEEP=10       # Keep last N turns intact");
+  console.log(
+    "  CLAUDE_TEXT_PRUNE_THRESHOLD=60000 # Start pruning above this token count",
+  );
+  console.log(
+    "  CLAUDE_TEXT_PRUNE_MAX_CHARS=150  # Truncate old text to this many chars",
+  );
+  console.log("");
+  console.log("Restart Claude Code for the patch to take effect.");
 }
 
 function revert() {
   if (!existsSync(BACKUP_PATH)) {
-    console.error('No backup found at:', BACKUP_PATH);
-    console.error('Cannot revert. Reinstall with: npm install @anthropic-ai/claude-agent-sdk');
+    console.error("No backup found at:", BACKUP_PATH);
+    console.error(
+      "Cannot revert. Reinstall with: npm install @anthropic-ai/claude-agent-sdk",
+    );
     process.exit(1);
   }
 
   copyFileSync(BACKUP_PATH, CLI_PATH);
-  console.log('REVERTED to original cli.js from backup.');
+  console.log("REVERTED to original cli.js from backup.");
 }
 
 const arg = process.argv[2];
-if (arg === '--revert') revert();
-else if (arg === '--check') check();
+if (arg === "--revert") revert();
+else if (arg === "--check") check();
 else apply();

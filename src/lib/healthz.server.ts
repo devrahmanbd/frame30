@@ -36,12 +36,19 @@ export type HealthzResult = {
 };
 
 /** Probe PostgreSQL database connectivity and query responsiveness. */
-export async function probeDatabase(timeoutMs = 3000): Promise<DependencyCheck> {
+export async function probeDatabase(
+  timeoutMs = 3000,
+): Promise<DependencyCheck> {
   const start = Date.now();
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Database probe timed out after ${timeoutMs}ms`)), timeoutMs),
+      setTimeout(
+        () =>
+          reject(new Error(`Database probe timed out after ${timeoutMs}ms`)),
+        timeoutMs,
+      ),
     );
 
     // Light-weight database query
@@ -70,7 +77,10 @@ export async function probeRedis(timeoutMs = 2000): Promise<DependencyCheck> {
   try {
     const { redisCommand } = await import("./redis.server");
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Redis probe timed out after ${timeoutMs}ms`)), timeoutMs),
+      setTimeout(
+        () => reject(new Error(`Redis probe timed out after ${timeoutMs}ms`)),
+        timeoutMs,
+      ),
     );
 
     const checkPromise = redisCommand(["PING"]);
@@ -81,7 +91,11 @@ export async function probeRedis(timeoutMs = 2000): Promise<DependencyCheck> {
       return { status: latencyMs > 300 ? "degraded" : "up", latencyMs };
     }
 
-    return { status: "degraded", latencyMs, message: `Unexpected response: ${String(res)}` };
+    return {
+      status: "degraded",
+      latencyMs,
+      message: `Unexpected response: ${String(res)}`,
+    };
   } catch (err) {
     return {
       status: "down",
@@ -115,7 +129,9 @@ export function checkMemoryHealth(): HealthzResult["checks"]["memory"] {
  * In 'liveness' mode, skips external dependencies to confirm node process is alive.
  * In 'readiness' mode, enforces DB & Redis availability.
  */
-export async function checkHealth(mode: "liveness" | "readiness" = "readiness"): Promise<{
+export async function checkHealth(
+  mode: "liveness" | "readiness" = "readiness",
+): Promise<{
   statusCode: number;
   result: HealthzResult;
 }> {
@@ -145,12 +161,19 @@ export async function checkHealth(mode: "liveness" | "readiness" = "readiness"):
   }
 
   // Readiness Mode: Probe DB and Redis concurrently
-  const [dbCheck, redisCheck] = await Promise.all([probeDatabase(), probeRedis()]);
+  const [dbCheck, redisCheck] = await Promise.all([
+    probeDatabase(),
+    probeRedis(),
+  ]);
 
   const hasCriticalFailure =
-    dbCheck.status === "down" || redisCheck.status === "down" || memory.status === "critical";
+    dbCheck.status === "down" ||
+    redisCheck.status === "down" ||
+    memory.status === "critical";
   const hasDegradation =
-    dbCheck.status === "degraded" || redisCheck.status === "degraded" || memory.status === "warning";
+    dbCheck.status === "degraded" ||
+    redisCheck.status === "degraded" ||
+    memory.status === "warning";
 
   const status: HealthzResult["status"] = hasCriticalFailure
     ? "unhealthy"

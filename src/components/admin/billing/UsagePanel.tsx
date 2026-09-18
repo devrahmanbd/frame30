@@ -11,7 +11,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import { entitlementPanelFn } from "@/lib/entitlements.functions";
-import { RESOURCE_META, formatUsage, type EntitlementVerdict } from "@/lib/entitlements";
+import {
+  RESOURCE_META,
+  formatUsage,
+  type EntitlementVerdict,
+} from "@/lib/entitlements";
 import { useLang } from "@/lib/i18n";
 
 const LEVEL_BAR: Record<EntitlementVerdict["level"], string> = {
@@ -34,7 +38,9 @@ export function UsagePanel() {
   if (isLoading) {
     return (
       <section className="rounded-fq-md border border-border bg-card p-4">
-        <p className="text-sm text-muted-foreground">{t("Loading plan usage…", "প্ল্যান ব্যবহার লোড হচ্ছে…")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("Loading plan usage…", "প্ল্যান ব্যবহার লোড হচ্ছে…")}
+        </p>
       </section>
     );
   }
@@ -42,7 +48,9 @@ export function UsagePanel() {
   if (isError || !data) {
     return (
       <section className="rounded-fq-md border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold">{t("Plan usage", "প্ল্যান ব্যবহার")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Plan usage", "প্ল্যান ব্যবহার")}
+        </h2>
         <p className="mt-1 text-sm text-muted-foreground">
           {t(
             "Usage figures are temporarily unavailable. Your limits are unchanged.",
@@ -57,12 +65,19 @@ export function UsagePanel() {
     <section className="rounded-fq-md border border-border bg-card p-4">
       <header className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-sm font-semibold">{t("Plan usage", "প্ল্যান ব্যবহার")}</h2>
+          <h2 className="text-sm font-semibold">
+            {t("Plan usage", "প্ল্যান ব্যবহার")}
+          </h2>
           <p className="text-xs text-muted-foreground">
-            {t("Plan", "প্ল্যান")}: <span className="font-medium capitalize">{data.plan}</span> ·{" "}
+            {t("Plan", "প্ল্যান")}:{" "}
+            <span className="font-medium capitalize">{data.plan}</span> ·{" "}
             {t("Status", "স্ট্যাটাস")}: {data.status}
             {data.trialEndsAt && (
-              <> · {t("Trial ends", "ট্রায়াল শেষ")} {data.trialEndsAt.slice(0, 10)}</>
+              <>
+                {" "}
+                · {t("Trial ends", "ট্রায়াল শেষ")}{" "}
+                {data.trialEndsAt.slice(0, 10)}
+              </>
             )}
           </p>
         </div>
@@ -77,9 +92,12 @@ export function UsagePanel() {
           return (
             <li key={r.resource}>
               <div className="flex items-baseline justify-between gap-3 text-sm">
-                <span className="font-medium">{lang === "bn" ? meta.bn : meta.en}</span>
+                <span className="font-medium">
+                  {lang === "bn" ? meta.bn : meta.en}
+                </span>
                 <span className="tabular-nums text-muted-foreground">
-                  {formatUsage(r.resource, r.used)} / {r.unlimited ? "∞" : formatUsage(r.resource, r.cap)}
+                  {formatUsage(r.resource, r.used)} /{" "}
+                  {r.unlimited ? "∞" : formatUsage(r.resource, r.cap)}
                 </span>
               </div>
               <div
@@ -92,7 +110,9 @@ export function UsagePanel() {
               >
                 <div
                   className={`h-full ${LEVEL_BAR[r.level]}`}
-                  style={{ width: `${r.unlimited ? 4 : Math.max(2, r.percent)}%` }}
+                  style={{
+                    width: `${r.unlimited ? 4 : Math.max(2, r.percent)}%`,
+                  }}
                 />
               </div>
               {r.level !== "ok" && (
@@ -104,7 +124,10 @@ export function UsagePanel() {
                     <>
                       {" "}
                       <Link to="/dashboard/plans" className="underline">
-                        {t(`Upgrade to ${r.upgradeTo}`, `${r.upgradeTo}-এ আপগ্রেড`)}
+                        {t(
+                          `Upgrade to ${r.upgradeTo}`,
+                          `${r.upgradeTo}-এ আপগ্রেড`,
+                        )}
                       </Link>
                     </>
                   )}

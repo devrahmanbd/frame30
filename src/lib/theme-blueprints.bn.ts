@@ -11,7 +11,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Free size exchange within 7 days": "৭ দিনের মধ্যে ফ্রি সাইজ বদল",
   "New season drop is live": "নতুন সিজনের ড্রপ চালু হয়েছে",
   "Free delivery over BDT 2,000": "২,০০০ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি",
-  "Studio pickup available in Dhanmondi": "ধানমন্ডি স্টুডিও থেকে পিকআপ করা যাবে",
+  "Studio pickup available in Dhanmondi":
+    "ধানমন্ডি স্টুডিও থেকে পিকআপ করা যাবে",
   "Size guide": "সাইজ গাইড",
   Exchanges: "বদল ও ফেরত",
   "Contact us": "যোগাযোগ করুন",
@@ -78,8 +79,7 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Saved: "সংরক্ষিত",
   "Sold out in your size?": "আপনার সাইজ শেষ?",
   "We will email you when it returns.": "স্টকে ফিরলে আমরা ইমেইল করব।",
-  "I agree to receive one restock email.":
-    "একটি রিস্টক ইমেইল পেতে আমি সম্মত।",
+  "I agree to receive one restock email.": "একটি রিস্টক ইমেইল পেতে আমি সম্মত।",
   "Fabric and care": "কাপড় ও যত্ন",
   "100% handloom cotton": "১০০% হ্যান্ডলুম কটন",
   "Cold hand wash, dry in shade": "ঠান্ডা পানিতে হাতে ধুয়ে ছায়ায় শুকান",
@@ -160,7 +160,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   /* ---------------------------------------------------- bazaar · chrome */
   "Cash on delivery across 64 districts": "৬৪ জেলায় ক্যাশ অন ডেলিভারি",
   "7-day easy returns": "৭ দিনের সহজ রিটার্ন",
-  "Order before 6pm for same-day dispatch": "সন্ধ্যা ৬টার আগে অর্ডার করলে একই দিনে ডিসপ্যাচ",
+  "Order before 6pm for same-day dispatch":
+    "সন্ধ্যা ৬টার আগে অর্ডার করলে একই দিনে ডিসপ্যাচ",
   "Track order": "অর্ডার ট্র্যাক করুন",
   "Help centre": "হেল্প সেন্টার",
   "Sell with us": "আমাদের সাথে বিক্রি করুন",
@@ -171,7 +172,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
 
   /* ------------------------------------------------------ bazaar · home */
   "Everything, from every seller": "সব বিক্রেতার সব পণ্য",
-  "Millions of products, one trusted checkout.": "লাখো পণ্য, একটি নির্ভরযোগ্য চেকআউট।",
+  "Millions of products, one trusted checkout.":
+    "লাখো পণ্য, একটি নির্ভরযোগ্য চেকআউট।",
   "Shop deals": "ডিল দেখুন",
   "Shop by department": "ডিপার্টমেন্ট অনুযায়ী কিনুন",
   "Deals of the day": "আজকের ডিল",
@@ -191,8 +193,10 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "7-day returns": "৭ দিনের রিটার্ন",
   "Unused items, no questions asked.": "অব্যবহৃত পণ্য, কোনো প্রশ্ন ছাড়াই।",
   "Verified sellers": "যাচাই করা বিক্রেতা",
-  "Every seller is trade-licence checked.": "প্রতিটি বিক্রেতার ট্রেড লাইসেন্স যাচাই করা।",
-  "64 districts, tracked end to end.": "৬৪ জেলায়, শুরু থেকে শেষ পর্যন্ত ট্র্যাকিং।",
+  "Every seller is trade-licence checked.":
+    "প্রতিটি বিক্রেতার ট্রেড লাইসেন্স যাচাই করা।",
+  "64 districts, tracked end to end.":
+    "৬৪ জেলায়, শুরু থেকে শেষ পর্যন্ত ট্র্যাকিং।",
 
   /* ---------------------------------------------------- bazaar · footer */
   Sellers: "বিক্রেতা",
@@ -223,17 +227,21 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Specifications: "স্পেসিফিকেশন",
   Detail: "বিবরণ",
   Description: "বর্ণনা",
-  "Full product description from the seller.": "বিক্রেতার দেওয়া পূর্ণ পণ্য বর্ণনা।",
-  "Return within 7 days in unused condition.": "অব্যবহৃত অবস্থায় ৭ দিনের মধ্যে ফেরত দিন।",
+  "Full product description from the seller.":
+    "বিক্রেতার দেওয়া পূর্ণ পণ্য বর্ণনা।",
+  "Return within 7 days in unused condition.":
+    "অব্যবহৃত অবস্থায় ৭ দিনের মধ্যে ফেরত দিন।",
   Warranty: "ওয়ারেন্টি",
-  "Warranty terms are listed on the invoice.": "ওয়ারেন্টির শর্ত ইনভয়েসে দেওয়া আছে।",
+  "Warranty terms are listed on the invoice.":
+    "ওয়ারেন্টির শর্ত ইনভয়েসে দেওয়া আছে।",
   Ratings: "রেটিং",
   "Questions and answers": "প্রশ্ন ও উত্তর",
   "Ask a question": "প্রশ্ন করুন",
 
   /* ------------------------------------- bazaar · collection, track, page */
   "Browse the department": "ডিপার্টমেন্ট ঘুরে দেখুন",
-  "Filter by brand, price and delivery speed.": "ব্র্যান্ড, দাম ও ডেলিভারির সময় দিয়ে ফিল্টার করুন।",
+  "Filter by brand, price and delivery speed.":
+    "ব্র্যান্ড, দাম ও ডেলিভারির সময় দিয়ে ফিল্টার করুন।",
   results: "ফলাফল",
   "All products": "সব পণ্য",
   "Order placed": "অর্ডার হয়েছে",
@@ -249,7 +257,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Yes, within 7 days of delivery in unused condition.":
     "হ্যাঁ, ডেলিভারির ৭ দিনের মধ্যে অব্যবহৃত অবস্থায়।",
   "Which payments do you accept?": "কোন কোন পেমেন্ট নেওয়া হয়?",
-  "Cash on delivery, bKash, Nagad and Rocket.": "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ ও রকেট।",
+  "Cash on delivery, bKash, Nagad and Rocket.":
+    "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ ও রকেট।",
   "Pickup points": "পিকআপ পয়েন্ট",
   "Dhanmondi hub": "ধানমন্ডি হাব",
   "Road 27, Dhanmondi, Dhaka": "রোড ২৭, ধানমন্ডি, ঢাকা",
@@ -265,7 +274,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   /* --------------------------------------------------- circuit · chrome */
   "0% EMI up to 12 months": "১২ মাস পর্যন্ত ০% ইএমআই",
   "Official warranty on every unit": "প্রতিটি ইউনিটে অফিসিয়াল ওয়ারেন্টি",
-  "Price match on official-warranty stock": "অফিসিয়াল ওয়ারেন্টি স্টকে প্রাইস ম্যাচ",
+  "Price match on official-warranty stock":
+    "অফিসিয়াল ওয়ারেন্টি স্টকে প্রাইস ম্যাচ",
   Compare: "তুলনা করুন",
   "EMI plans": "ইএমআই প্ল্যান",
   "Service centres": "সার্ভিস সেন্টার",
@@ -292,7 +302,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Official brand partners": "অফিসিয়াল ব্র্যান্ড পার্টনার",
   "Popular models": "জনপ্রিয় মডেল",
   "Official warranty stock": "অফিসিয়াল ওয়ারেন্টি স্টক",
-  "Serial numbers are registered with the brand.": "সিরিয়াল নম্বর ব্র্যান্ডের কাছে নিবন্ধিত।",
+  "Serial numbers are registered with the brand.":
+    "সিরিয়াল নম্বর ব্র্যান্ডের কাছে নিবন্ধিত।",
   "Service and support": "সার্ভিস ও সাপোর্ট",
   "Warranty claim": "ওয়ারেন্টি ক্লেম",
   "Book a service slot online.": "অনলাইনে সার্ভিস স্লট বুক করুন।",
@@ -326,7 +337,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Specification: "স্পেসিফিকেশন",
   "At a glance": "এক নজরে",
   "As listed in specs": "স্পেকে যেমন দেওয়া আছে",
-  "Manufacturing defects, parts and labour.": "উৎপাদনজনিত ত্রুটি, যন্ত্রাংশ ও শ্রম।",
+  "Manufacturing defects, parts and labour.":
+    "উৎপাদনজনিত ত্রুটি, যন্ত্রাংশ ও শ্রম।",
   "Official warranty": "অফিসিয়াল ওয়ারেন্টি",
   "Parallel import": "প্যারালাল ইমপোর্ট",
   "Dhaka service centre": "ঢাকা সার্ভিস সেন্টার",
@@ -337,26 +349,31 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "মডেল ও অবস্থা পাঠান; এক দিনের মধ্যে দাম জানাই।",
   "Request a quote": "দাম জানতে চাই",
   "Sending...": "পাঠানো হচ্ছে...",
-  "I agree to be contacted about this quote.": "এই দর নিয়ে আমার সাথে যোগাযোগে আমি সম্মত।",
+  "I agree to be contacted about this quote.":
+    "এই দর নিয়ে আমার সাথে যোগাযোগে আমি সম্মত।",
   "Build your bundle": "নিজের বান্ডল সাজান",
   "Add bundle": "বান্ডল যোগ করুন",
-  "Bundle totals are calculated on the server.": "বান্ডলের মোট হিসাব সার্ভারে করা হয়।",
+  "Bundle totals are calculated on the server.":
+    "বান্ডলের মোট হিসাব সার্ভারে করা হয়।",
   "Compare now": "এখনই তুলনা করুন",
   Clear: "মুছুন",
   "Add products to compare.": "তুলনার জন্য পণ্য যোগ করুন।",
 
   /* ----------------------------------- circuit · collection, page, cart */
   "Browse the category": "ক্যাটাগরি ঘুরে দেখুন",
-  "Filter by spec, brand and price.": "স্পেক, ব্র্যান্ড ও দাম দিয়ে ফিল্টার করুন।",
+  "Filter by spec, brand and price.":
+    "স্পেক, ব্র্যান্ড ও দাম দিয়ে ফিল্টার করুন।",
   models: "মডেল",
   "All models": "সব মডেল",
   "Set up your new device": "নতুন ডিভাইস সেটআপ করুন",
   "Charge fully": "সম্পূর্ণ চার্জ দিন",
   "Charge to 100% before the first use.": "প্রথম ব্যবহারের আগে ১০০% চার্জ দিন।",
   "Sign in": "সাইন ইন করুন",
-  "Use your own account, never the shop's.": "নিজের অ্যাকাউন্ট ব্যবহার করুন, দোকানের নয়।",
+  "Use your own account, never the shop's.":
+    "নিজের অ্যাকাউন্ট ব্যবহার করুন, দোকানের নয়।",
   "Register warranty": "ওয়ারেন্টি নিবন্ধন করুন",
-  "Register the serial number within 7 days.": "৭ দিনের মধ্যে সিরিয়াল নম্বর নিবন্ধন করুন।",
+  "Register the serial number within 7 days.":
+    "৭ দিনের মধ্যে সিরিয়াল নম্বর নিবন্ধন করুন।",
   Update: "আপডেট",
   "Install the latest firmware.": "সর্বশেষ ফার্মওয়্যার ইনস্টল করুন।",
   "Sylhet service point": "সিলেট সার্ভিস পয়েন্ট",
@@ -371,7 +388,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "ইএমআই প্ল্যান চেকআউটে আপনার ব্যাংকের সাথে নিশ্চিত হয়।",
 
   /* -------------------------------------------------- rupaboti · chrome */
-  "Free samples on orders over BDT 1,500": "১,৫০০ টাকার বেশি অর্ডারে ফ্রি স্যাম্পল",
+  "Free samples on orders over BDT 1,500":
+    "১,৫০০ টাকার বেশি অর্ডারে ফ্রি স্যাম্পল",
   "Authentic stock with batch codes": "ব্যাচ কোডসহ আসল পণ্য",
   "Advisor available 10am to 8pm": "সকাল ১০টা - রাত ৮টা পর্যন্ত পরামর্শক আছেন",
   "Shade finder": "শেড ফাইন্ডার",
@@ -420,14 +438,17 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Evening: "সন্ধ্যা",
   Swap: "বদলান",
   "Add the routine": "রুটিন যোগ করুন",
-  "Routine totals are calculated on the server.": "রুটিনের মোট হিসাব সার্ভারে করা হয়।",
+  "Routine totals are calculated on the server.":
+    "রুটিনের মোট হিসাব সার্ভারে করা হয়।",
   "Pick a free sample": "একটি ফ্রি স্যাম্পল বাছুন",
   "Free on orders over BDT 1,500": "১,৫০০ টাকার বেশি অর্ডারে ফ্রি",
   "Ingredient glossary": "উপাদান পরিচিতি",
   Niacinamide: "নায়াসিনামাইড",
-  "Evens tone and supports the barrier.": "ত্বকের টোন সমান করে ও ব্যারিয়ার শক্ত রাখে।",
+  "Evens tone and supports the barrier.":
+    "ত্বকের টোন সমান করে ও ব্যারিয়ার শক্ত রাখে।",
   "Hyaluronic acid": "হায়ালুরনিক অ্যাসিড",
-  "Holds water in the upper layers of skin.": "ত্বকের উপরের স্তরে পানি ধরে রাখে।",
+  "Holds water in the upper layers of skin.":
+    "ত্বকের উপরের স্তরে পানি ধরে রাখে।",
   "Salicylic acid": "স্যালিসিলিক অ্যাসিড",
   "Clears pores; use at night.": "লোমকূপ পরিষ্কার করে; রাতে ব্যবহার করুন।",
   SPF: "এসপিএফ",
@@ -445,7 +466,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Call the advisor": "পরামর্শককে কল করুন",
   "Your skin concern": "আপনার ত্বকের সমস্যা",
   "Request a consult": "পরামর্শ চাই",
-  "I agree to be contacted about this request.": "এই অনুরোধ নিয়ে আমার সাথে যোগাযোগে আমি সম্মত।",
+  "I agree to be contacted about this request.":
+    "এই অনুরোধ নিয়ে আমার সাথে যোগাযোগে আমি সম্মত।",
   "Follow for routines": "রুটিনের জন্য ফলো করুন",
   "Authentic beauty with batch codes, full ingredient lists and honest shade matching.":
     "ব্যাচ কোড, পূর্ণ উপাদান তালিকা ও সৎ শেড ম্যাচিংসহ আসল বিউটি পণ্য।",
@@ -457,11 +479,14 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Full INCI list": "পূর্ণ INCI তালিকা",
   "How to use": "যেভাবে ব্যবহার করবেন",
   Cleanse: "পরিষ্কার করুন",
-  "Wash with lukewarm water and pat dry.": "কুসুম গরম পানিতে ধুয়ে আলতো করে মুছুন।",
+  "Wash with lukewarm water and pat dry.":
+    "কুসুম গরম পানিতে ধুয়ে আলতো করে মুছুন।",
   Apply: "লাগান",
-  "Two drops on damp skin, morning and night.": "ভেজা ত্বকে দুই ফোঁটা, সকালে ও রাতে।",
+  "Two drops on damp skin, morning and night.":
+    "ভেজা ত্বকে দুই ফোঁটা, সকালে ও রাতে।",
   Moisturise: "ময়েশ্চারাইজ করুন",
-  "Seal with your usual moisturiser.": "আপনার নিয়মিত ময়েশ্চারাইজার দিয়ে সিল করুন।",
+  "Seal with your usual moisturiser.":
+    "আপনার নিয়মিত ময়েশ্চারাইজার দিয়ে সিল করুন।",
   Protect: "সুরক্ষা দিন",
   "Use SPF every morning.": "প্রতিদিন সকালে এসপিএফ ব্যবহার করুন।",
   Safety: "নিরাপত্তা",
@@ -475,7 +500,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Best before": "সেরা মেয়াদ",
   Batch: "ব্যাচ",
   "Subscribe and refill": "সাবস্ক্রাইব ও রিফিল",
-  "Pick a cadence; skip or cancel any time.": "সময়সূচি বাছুন; যেকোনো সময় বাদ বা বাতিল করুন।",
+  "Pick a cadence; skip or cancel any time.":
+    "সময়সূচি বাছুন; যেকোনো সময় বাদ বা বাতিল করুন।",
   "Every 30 days": "প্রতি ৩০ দিনে",
   "Every 60 days": "প্রতি ৬০ দিনে",
   "Every 90 days": "প্রতি ৯০ দিনে",
@@ -483,11 +509,13 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Make it a gift": "উপহার হিসেবে পাঠান",
   "Gift message": "উপহারের বার্তা",
   "Add the gift box": "গিফট বক্স যোগ করুন",
-  "Gift box totals are calculated on the server.": "গিফট বক্সের মোট হিসাব সার্ভারে করা হয়।",
+  "Gift box totals are calculated on the server.":
+    "গিফট বক্সের মোট হিসাব সার্ভারে করা হয়।",
 
   /* --------------------------------- rupaboti · collection, page, cart */
   "Shop the range": "সব পণ্য দেখুন",
-  "Filter by concern, finish and price.": "সমস্যা, ফিনিশ ও দাম দিয়ে ফিল্টার করুন।",
+  "Filter by concern, finish and price.":
+    "সমস্যা, ফিনিশ ও দাম দিয়ে ফিল্টার করুন।",
   products: "পণ্য",
   "Beauty counters": "বিউটি কাউন্টার",
   "Dhanmondi counter": "ধানমন্ডি কাউন্টার",
@@ -495,12 +523,13 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Sector 7, Uttara, Dhaka": "সেক্টর ৭, উত্তরা, ঢাকা",
   "Which routine fits you?": "কোন রুটিন আপনার জন্য?",
   "Authentic stock": "আসল পণ্য",
-  "Remove": "সরান",
+  Remove: "সরান",
   "Your cart is empty.": "আপনার কার্ট খালি।",
   "Choose a method at the final step.": "শেষ ধাপে একটি পদ্ধতি বেছে নিন।",
-  "Details": "তথ্য",
+  Details: "তথ্য",
   "Items in this order": "এই অর্ডারের পণ্য",
   "Your items": "আপনার পণ্য",
-  "No payment method is available right now.": "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
+  "No payment method is available right now.":
+    "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
   "Payment method": "পেমেন্ট পদ্ধতি",
 };

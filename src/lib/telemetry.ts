@@ -8,14 +8,19 @@
  * this module owns the rules.
  */
 
-export type Labels = Record<string, string | number | boolean | null | undefined>;
+export type Labels = Record<
+  string,
+  string | number | boolean | null | undefined
+>;
 
 export type MetricKind = "counter" | "gauge" | "histogram";
 
 export type MetricMeta = { kind: MetricKind; help: string; buckets?: number[] };
 
 /** Default latency ladder in milliseconds; wide enough for edge and cron work. */
-export const DEFAULT_BUCKETS_MS = [5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
+export const DEFAULT_BUCKETS_MS = [
+  5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000,
+];
 
 /** Prometheus name rules: `[a-zA-Z_:][a-zA-Z0-9_:]*`. */
 export function isValidMetricName(name: string) {
@@ -24,7 +29,10 @@ export function isValidMetricName(name: string) {
 
 /** Label values are escaped per exposition spec: backslash, quote, newline. */
 export function escapeLabelValue(value: string) {
-  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n");
+  return value
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "\\n");
 }
 
 /**
@@ -39,7 +47,9 @@ export function normalizeLabelValue(value: unknown, max = 48) {
 
 export function seriesKey(name: string, labels: Labels = {}) {
   const parts = Object.keys(labels)
-    .filter((k) => labels[k] !== undefined && labels[k] !== null && labels[k] !== "")
+    .filter(
+      (k) => labels[k] !== undefined && labels[k] !== null && labels[k] !== "",
+    )
     .sort()
     .map((k) => `${k}="${escapeLabelValue(normalizeLabelValue(labels[k]))}"`);
   return parts.length ? `${name}{${parts.join(",")}}` : name;
@@ -69,7 +79,8 @@ export class MetricRegistry {
   constructor(private readonly maxSeries = 5000) {}
 
   describe(name: string, kind: MetricKind, help: string, buckets?: number[]) {
-    if (!isValidMetricName(name)) throw new Error(`invalid metric name: ${name}`);
+    if (!isValidMetricName(name))
+      throw new Error(`invalid metric name: ${name}`);
     this.meta.set(name, { kind, help, ...(buckets ? { buckets } : {}) });
   }
 
@@ -109,7 +120,11 @@ export class MetricRegistry {
     const key = seriesKey(name, labels);
     if (this.capped(this.histograms, key)) return;
     const edges = this.meta.get(name)?.buckets ?? DEFAULT_BUCKETS_MS;
-    const cur = this.histograms.get(key) ?? { count: 0, sum: 0, buckets: edges.map(() => 0) };
+    const cur = this.histograms.get(key) ?? {
+      count: 0,
+      sum: 0,
+      buckets: edges.map(() => 0),
+    };
     cur.count += 1;
     cur.sum += value;
     edges.forEach((edge, i) => {
@@ -155,7 +170,9 @@ export class MetricRegistry {
         const { name } = splitKey(key);
         grouped.set(name, [...(grouped.get(name) ?? []), [key, value]]);
       }
-      for (const [name, rows] of [...grouped].sort(([a], [b]) => a.localeCompare(b))) {
+      for (const [name, rows] of [...grouped].sort(([a], [b]) =>
+        a.localeCompare(b),
+      )) {
         header(name, kind);
         for (const [key, value] of rows) lines.push(`${key} ${value}`);
       }
@@ -169,7 +186,9 @@ export class MetricRegistry {
       const { name } = splitKey(key);
       histGroups.set(name, [...(histGroups.get(name) ?? []), [key, hist]]);
     }
-    for (const [name, rows] of [...histGroups].sort(([a], [b]) => a.localeCompare(b))) {
+    for (const [name, rows] of [...histGroups].sort(([a], [b]) =>
+      a.localeCompare(b),
+    )) {
       header(name, "histogram");
       const edges = this.meta.get(name)?.buckets ?? DEFAULT_BUCKETS_MS;
       for (const [key, hist] of rows) {
@@ -220,11 +239,21 @@ export function newSpanId() {
 }
 
 /** `00-<32 hex>-<16 hex>-<flags>`; invalid or all-zero ids are rejected. */
-export function parseTraceparent(header: string | null | undefined): TraceContext | null {
+export function parseTraceparent(
+  header: string | null | undefined,
+): TraceContext | null {
   if (!header) return null;
-  const m = /^([0-9a-f]{2})-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/.exec(header.trim());
+  const m = /^([0-9a-f]{2})-([0-9a-f]{32})-([0-9a-f]{16})-([0-9a-f]{2})$/.exec(
+    header.trim(),
+  );
   if (!m) return null;
-  const [, version, traceId, spanId, flags] = m as unknown as [string, string, string, string, string];
+  const [, version, traceId, spanId, flags] = m as unknown as [
+    string,
+    string,
+    string,
+    string,
+    string,
+  ];
   if (version === "ff") return null;
   if (/^0+$/.test(traceId) || /^0+$/.test(spanId)) return null;
   return { traceId, spanId, sampled: (parseInt(flags, 16) & 1) === 1 };
@@ -246,7 +275,10 @@ export function sampleTrace(traceId: string, rate: number) {
 }
 
 /** Continue an upstream trace when present, otherwise start a fresh one. */
-export function startTrace(traceparent: string | null | undefined, rate: number): TraceContext {
+export function startTrace(
+  traceparent: string | null | undefined,
+  rate: number,
+): TraceContext {
   const parent = parseTraceparent(traceparent);
   if (parent) {
     return {
@@ -264,15 +296,27 @@ export function startTrace(traceparent: string | null | undefined, rate: number)
 /* Sentry                                                              */
 /* ------------------------------------------------------------------ */
 
-export type SentryDsn = { host: string; protocol: string; projectId: string; publicKey: string };
+export type SentryDsn = {
+  host: string;
+  protocol: string;
+  projectId: string;
+  publicKey: string;
+};
 
-export function parseSentryDsn(dsn: string | undefined | null): SentryDsn | null {
+export function parseSentryDsn(
+  dsn: string | undefined | null,
+): SentryDsn | null {
   if (!dsn) return null;
   try {
     const url = new URL(dsn);
     const projectId = url.pathname.replace(/^\/+/, "");
     if (!projectId || !url.username) return null;
-    return { host: url.host, protocol: url.protocol, projectId, publicKey: url.username };
+    return {
+      host: url.host,
+      protocol: url.protocol,
+      projectId,
+      publicKey: url.username,
+    };
   } catch {
     return null;
   }
@@ -286,7 +330,12 @@ export function sentryAuthHeader(dsn: SentryDsn) {
   return `Sentry sentry_version=7, sentry_client=framique/1.0, sentry_key=${dsn.publicKey}`;
 }
 
-export type Breadcrumb = { ts: string; category: string; message: string; data?: Record<string, unknown> };
+export type Breadcrumb = {
+  ts: string;
+  category: string;
+  message: string;
+  data?: Record<string, unknown>;
+};
 
 /**
  * Envelopes are newline-delimited JSON: header, then (item header, payload)
@@ -312,7 +361,10 @@ export function buildEnvelope(
  */
 export function errorFingerprint(scope: string, message: string) {
   const normalized = message
-    .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, "<uuid>")
+    .replace(
+      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi,
+      "<uuid>",
+    )
     .replace(/\b\d{2,}\b/g, "<n>")
     .slice(0, 160);
   return [scope, normalized];

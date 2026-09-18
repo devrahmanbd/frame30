@@ -62,6 +62,7 @@ export type TenantAnalyticsConfig = {
   facebookCapiToken?: string;
   googleConversionUrl?: string;
   googleTagManagerId?: string;
+  googleAnalyticsId?: string;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -105,7 +106,11 @@ export async function saveTenantPaymentChannel(
     .single();
 
   if (error) {
-    log("error", "tenant_vault.payment_save_failed", { merchantId, provider, error: error.message });
+    log("error", "tenant_vault.payment_save_failed", {
+      merchantId,
+      provider,
+      error: error.message,
+    });
     throw error;
   }
 
@@ -189,11 +194,18 @@ export async function saveTenantCourierChannel(
     .single();
 
   if (error) {
-    log("error", "tenant_vault.courier_save_failed", { merchantId, carrierCode, error: error.message });
+    log("error", "tenant_vault.courier_save_failed", {
+      merchantId,
+      carrierCode,
+      error: error.message,
+    });
     throw error;
   }
 
-  incr("framique_tenant_vault_update_total", { channel: "courier", carrier: carrierCode });
+  incr("framique_tenant_vault_update_total", {
+    channel: "courier",
+    carrier: carrierCode,
+  });
   return data;
 }
 
@@ -214,7 +226,12 @@ export async function loadTenantCourierChannel(
     .is("deleted_at", null)
     .maybeSingle();
 
-  if (!data || data.enabled === false || !data.config || typeof data.config !== "object") {
+  if (
+    !data ||
+    data.enabled === false ||
+    !data.config ||
+    typeof data.config !== "object"
+  ) {
     return null;
   }
 
@@ -257,16 +274,24 @@ export async function saveTenantAnalyticsChannel(
     .eq("merchant_id", merchantId)
     .maybeSingle();
 
-  const existing = (current?.seo_settings && typeof current.seo_settings === "object"
-    ? current.seo_settings
-    : {}) as Record<string, unknown>;
+  const existing = (
+    current?.seo_settings && typeof current.seo_settings === "object"
+      ? current.seo_settings
+      : {}
+  ) as Record<string, unknown>;
 
   const merged = {
     ...existing,
-    facebook_pixel_id: config.facebookPixelId ?? existing["facebook_pixel_id"] ?? null,
-    facebook_capi_token: sealedCapiToken ?? existing["facebook_capi_token"] ?? null,
-    google_conversion_url: config.googleConversionUrl ?? existing["google_conversion_url"] ?? null,
-    google_gtm_id: config.googleTagManagerId ?? existing["google_gtm_id"] ?? null,
+    facebook_pixel_id:
+      config.facebookPixelId ?? existing["facebook_pixel_id"] ?? null,
+    facebook_capi_token:
+      sealedCapiToken ?? existing["facebook_capi_token"] ?? null,
+    google_conversion_url:
+      config.googleConversionUrl ?? existing["google_conversion_url"] ?? null,
+    google_gtm_id:
+      config.googleTagManagerId ?? existing["google_gtm_id"] ?? null,
+    google_ga4_id:
+      config.googleAnalyticsId ?? existing["google_ga4_id"] ?? null,
   };
 
   const { data, error } = await db
@@ -280,7 +305,10 @@ export async function saveTenantAnalyticsChannel(
     .single();
 
   if (error) {
-    log("error", "tenant_vault.analytics_save_failed", { merchantId, error: error.message });
+    log("error", "tenant_vault.analytics_save_failed", {
+      merchantId,
+      error: error.message,
+    });
     throw error;
   }
 
@@ -305,7 +333,10 @@ export async function loadTenantAnalyticsChannel(
   const seo = data.seo_settings as Record<string, unknown>;
   let unsealedCapi: string | undefined;
 
-  const rawCapi = typeof seo["facebook_capi_token"] === "string" ? seo["facebook_capi_token"].trim() : "";
+  const rawCapi =
+    typeof seo["facebook_capi_token"] === "string"
+      ? seo["facebook_capi_token"].trim()
+      : "";
   if (rawCapi) {
     if (rawCapi.startsWith("v1.")) {
       unsealedCapi = (await unsealSecret(rawCapi)) ?? undefined;
@@ -315,9 +346,22 @@ export async function loadTenantAnalyticsChannel(
   }
 
   return {
-    facebookPixelId: typeof seo["facebook_pixel_id"] === "string" ? seo["facebook_pixel_id"].trim() : undefined,
+    facebookPixelId:
+      typeof seo["facebook_pixel_id"] === "string"
+        ? seo["facebook_pixel_id"].trim()
+        : undefined,
     facebookCapiToken: unsealedCapi,
-    googleConversionUrl: typeof seo["google_conversion_url"] === "string" ? seo["google_conversion_url"].trim() : undefined,
-    googleTagManagerId: typeof seo["google_gtm_id"] === "string" ? seo["google_gtm_id"].trim() : undefined,
+    googleConversionUrl:
+      typeof seo["google_conversion_url"] === "string"
+        ? seo["google_conversion_url"].trim()
+        : undefined,
+    googleTagManagerId:
+      typeof seo["google_gtm_id"] === "string"
+        ? seo["google_gtm_id"].trim()
+        : undefined,
+    googleAnalyticsId:
+      typeof seo["google_ga4_id"] === "string"
+        ? seo["google_ga4_id"].trim()
+        : undefined,
   };
 }

@@ -10,7 +10,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { useLang } from "@/lib/i18n";
-import { HIDDEN_DESTINATIONS, type NavGroup, type NavItem } from "@/lib/console-nav";
+import {
+  HIDDEN_DESTINATIONS,
+  type NavGroup,
+  type NavItem,
+} from "@/lib/console-nav";
 import type { Permission } from "@/lib/authz";
 
 const RECENTS_KEY = "fq.admin.recents";
@@ -21,7 +25,9 @@ function readRecents(): string[] {
   try {
     const raw = window.localStorage.getItem(RECENTS_KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : null;
-    return Array.isArray(parsed) ? parsed.filter((x): x is string => typeof x === "string") : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((x): x is string => typeof x === "string")
+      : [];
   } catch {
     return [];
   }
@@ -73,9 +79,9 @@ export function CommandPalette({
         sectionBn: g.bn,
       })),
     );
-    const more = HIDDEN_DESTINATIONS.filter((i) => (can ? can(i.permission) : true)).map(
-      (item) => ({ item, section: "More", sectionBn: "আরও" }),
-    );
+    const more = HIDDEN_DESTINATIONS.filter((i) =>
+      can ? can(i.permission) : true,
+    ).map((item) => ({ item, section: "More", sectionBn: "আরও" }));
     return [...visible, ...more];
   }, [groups, can]);
 
@@ -110,13 +116,18 @@ export function CommandPalette({
   }, [open]);
 
   useEffect(() => {
-    listRef.current?.querySelector('[data-active="true"]')?.scrollIntoView({ block: "nearest" });
+    listRef.current
+      ?.querySelector('[data-active="true"]')
+      ?.scrollIntoView({ block: "nearest" });
   }, [cursor, results.length]);
 
   const go = useCallback(
     (item: NavItem | undefined) => {
       if (!item) return;
-      const next = [item.to, ...readRecents().filter((x) => x !== item.to)].slice(0, RECENTS_MAX);
+      const next = [
+        item.to,
+        ...readRecents().filter((x) => x !== item.to),
+      ].slice(0, RECENTS_MAX);
       try {
         window.localStorage.setItem(RECENTS_KEY, JSON.stringify(next));
       } catch {
@@ -155,10 +166,16 @@ export function CommandPalette({
             onKeyDown={(e) => {
               if (e.key === "ArrowDown") {
                 e.preventDefault();
-                setCursor((c) => (results.length ? (c + 1) % results.length : 0));
+                setCursor((c) =>
+                  results.length ? (c + 1) % results.length : 0,
+                );
               } else if (e.key === "ArrowUp") {
                 e.preventDefault();
-                setCursor((c) => (results.length ? (c - 1 + results.length) % results.length : 0));
+                setCursor((c) =>
+                  results.length
+                    ? (c - 1 + results.length) % results.length
+                    : 0,
+                );
               } else if (e.key === "Enter") {
                 e.preventDefault();
                 go(results[cursor]?.item);
@@ -168,7 +185,9 @@ export function CommandPalette({
             aria-label={t("Search the console", "কনসোলে খুঁজুন")}
             className="h-11 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
-          <kbd className="rounded border border-border px-1 text-[10px] fq-sub">esc</kbd>
+          <kbd className="rounded border border-border px-1 text-[10px] fq-sub">
+            esc
+          </kbd>
         </div>
         <ul ref={listRef} className="max-h-80 overflow-y-auto p-1">
           {results.length === 0 && (
@@ -185,11 +204,15 @@ export function CommandPalette({
                 onClick={() => go(item)}
                 aria-selected={index === cursor}
                 className={`flex w-full items-center justify-between gap-3 rounded-fq-md px-3 py-2 text-left text-sm transition-colors duration-150 ${
-                  index === cursor ? "bg-primary/10 text-foreground" : "text-foreground"
+                  index === cursor
+                    ? "bg-primary/10 text-foreground"
+                    : "text-foreground"
                 }`}
               >
                 <span className="truncate">{t(item.en, item.bn)}</span>
-                <span className="shrink-0 text-xs fq-sub">{t(section, sectionBn)}</span>
+                <span className="shrink-0 text-xs fq-sub">
+                  {t(section, sectionBn)}
+                </span>
               </button>
             </li>
           ))}

@@ -21,9 +21,17 @@ const params = (q: Record<string, unknown> = {}) => normalizeSearchParams(q);
 describe("Phase 7.1 — locale alternates", () => {
   it("emits distinct per-locale hrefs plus x-default", () => {
     const links = hreflangAlternates("https://shop.test/store/acme");
-    expect(links.map((l) => l["hrefLang"])).toEqual([HREFLANG.en, HREFLANG.bn, "x-default"]);
-    expect(links[0]!["href"]).toBe(`https://shop.test/store/acme?${LOCALE_PARAM}=en`);
-    expect(links[1]!["href"]).toBe(`https://shop.test/store/acme?${LOCALE_PARAM}=bn`);
+    expect(links.map((l) => l["hrefLang"])).toEqual([
+      HREFLANG.en,
+      HREFLANG.bn,
+      "x-default",
+    ]);
+    expect(links[0]!["href"]).toBe(
+      `https://shop.test/store/acme?${LOCALE_PARAM}=en`,
+    );
+    expect(links[1]!["href"]).toBe(
+      `https://shop.test/store/acme?${LOCALE_PARAM}=bn`,
+    );
     expect(links[2]!["href"]).toBe("https://shop.test/store/acme");
   });
 
@@ -53,19 +61,27 @@ describe("Phase 7.1 — locale alternates", () => {
       storeName: "Acme",
       noindex: true,
     });
-    expect(hidden.links.filter((l) => l["rel"] === "alternate")).toHaveLength(0);
-    expect(hidden.meta.find((m) => m["name"] === "robots")?.["content"]).toBe("noindex,nofollow");
+    expect(hidden.links.filter((l) => l["rel"] === "alternate")).toHaveLength(
+      0,
+    );
+    expect(hidden.meta.find((m) => m["name"] === "robots")?.["content"]).toBe(
+      "noindex,nofollow",
+    );
   });
 
   it("keeps titles and descriptions inside the crawl limits", () => {
     const head = buildStoreHead({
       origin: "https://shop.test",
       path: "/store/acme",
-      storeName: "A very long Bangladeshi storefront name that would blow the limit outright",
+      storeName:
+        "A very long Bangladeshi storefront name that would blow the limit outright",
       tagline: "x".repeat(400),
     });
-    expect((head.meta[0]!["title"] ?? "").length).toBeLessThanOrEqual(TITLE_MAX);
-    const desc = head.meta.find((m) => m["name"] === "description")?.["content"] ?? "";
+    expect((head.meta[0]!["title"] ?? "").length).toBeLessThanOrEqual(
+      TITLE_MAX,
+    );
+    const desc =
+      head.meta.find((m) => m["name"] === "description")?.["content"] ?? "";
     expect(desc.length).toBeLessThanOrEqual(DESC_MAX);
   });
 });
@@ -88,10 +104,20 @@ describe("Phase 7.1 — faceted canonical discipline", () => {
   });
 
   it("de-indexes facet combinations and non-allowlisted facets", () => {
-    const combo = facetIndexPolicy(base, params({ category: "sarees", stock: "1" }));
-    expect(combo).toMatchObject({ robots: "noindex,follow", canonicalPath: base, reason: "facet-combo" });
+    const combo = facetIndexPolicy(
+      base,
+      params({ category: "sarees", stock: "1" }),
+    );
+    expect(combo).toMatchObject({
+      robots: "noindex,follow",
+      canonicalPath: base,
+      reason: "facet-combo",
+    });
     const single = facetIndexPolicy(base, params({ stock: "1" }));
-    expect(single).toMatchObject({ robots: "noindex,follow", canonicalPath: base });
+    expect(single).toMatchObject({
+      robots: "noindex,follow",
+      canonicalPath: base,
+    });
   });
 
   it("never indexes a free-text query", () => {
@@ -119,21 +145,37 @@ describe("Phase 7.1 — crawlable pagination", () => {
     const middle = paginationLinks(base, params({ page: "2" }), 100);
     expect(middle.prev).toBe(base);
     expect(middle.next).toContain("page=3");
-    const last = paginationLinks(base, params({ page: String(first.last) }), 100);
+    const last = paginationLinks(
+      base,
+      params({ page: String(first.last) }),
+      100,
+    );
     expect(last.next).toBeNull();
   });
 
   it("emits absolute rel=prev/next head links only with a real origin", () => {
-    const links = paginationHeadLinks("https://shop.test", base, params({ page: "2" }), 100);
+    const links = paginationHeadLinks(
+      "https://shop.test",
+      base,
+      params({ page: "2" }),
+      100,
+    );
     expect(links.map((l) => l["rel"])).toEqual(["prev", "next"]);
     expect(links[1]!["href"]).toMatch(/^https:\/\/shop\.test/);
-    expect(paginationHeadLinks(null, base, params({ page: "2" }), 100)).toEqual([]);
+    expect(paginationHeadLinks(null, base, params({ page: "2" }), 100)).toEqual(
+      [],
+    );
   });
 });
 
 describe("Phase 7.1 — per-store robots", () => {
   it("scopes every directive to the tenant and points at its sitemap", () => {
-    const txt = renderStoreRobots({ indexable: true, aiCrawlers: true, origin: "https://shop.test", slug: "acme" });
+    const txt = renderStoreRobots({
+      indexable: true,
+      aiCrawlers: true,
+      origin: "https://shop.test",
+      slug: "acme",
+    });
     expect(txt).toContain("Allow: /store/acme");
     expect(txt).toContain("Disallow: /store/acme/checkout");
     expect(txt).toContain("Sitemap: https://shop.test/store/acme/sitemap.xml");
@@ -141,8 +183,18 @@ describe("Phase 7.1 — per-store robots", () => {
   });
 
   it("blocks AI crawlers unless the merchant opted in", () => {
-    const opted = renderStoreRobots({ indexable: true, aiCrawlers: true, origin: "https://s.test", slug: "acme" });
-    const out = renderStoreRobots({ indexable: true, aiCrawlers: false, origin: "https://s.test", slug: "acme" });
+    const opted = renderStoreRobots({
+      indexable: true,
+      aiCrawlers: true,
+      origin: "https://s.test",
+      slug: "acme",
+    });
+    const out = renderStoreRobots({
+      indexable: true,
+      aiCrawlers: false,
+      origin: "https://s.test",
+      slug: "acme",
+    });
     for (const agent of AI_CRAWLERS) {
       expect(opted).toContain(`User-agent: ${agent}\nAllow: /store/acme`);
       expect(out).toContain(`User-agent: ${agent}\nDisallow: /`);
@@ -150,7 +202,12 @@ describe("Phase 7.1 — per-store robots", () => {
   });
 
   it("locks the whole store out when indexing is off", () => {
-    const txt = renderStoreRobots({ indexable: false, aiCrawlers: true, origin: "https://s.test", slug: "acme" });
+    const txt = renderStoreRobots({
+      indexable: false,
+      aiCrawlers: true,
+      origin: "https://s.test",
+      slug: "acme",
+    });
     expect(txt).toContain("User-agent: *\nDisallow: /");
     expect(txt).not.toContain("Allow: /store/acme");
   });
@@ -161,7 +218,9 @@ describe("Phase 7.1 — heading outline", () => {
     expect(headingIssues([1, 2, 3])).toEqual([]);
     expect(headingIssues([])[0]).toMatch(/no <h1>/);
     expect(headingIssues([1, 1])[0]).toMatch(/2 <h1>/);
-    expect(headingIssues([1, 3]).some((m) => /jumps from h1 to h3/.test(m))).toBe(true);
+    expect(
+      headingIssues([1, 3]).some((m) => /jumps from h1 to h3/.test(m)),
+    ).toBe(true);
   });
 
   it("flags a template where two widgets claim the primary heading", () => {
@@ -174,17 +233,33 @@ describe("Phase 7.1 — heading outline", () => {
       ],
     });
     const issues = lintTemplate(ast, "index");
-    expect(issues.some((i) => i.sectionId === "b" && /claims the page <h1>/.test(i.message))).toBe(true);
-    expect(issues.some((i) => i.sectionId === "a" && /claims the page <h1>/.test(i.message))).toBe(false);
+    expect(
+      issues.some(
+        (i) => i.sectionId === "b" && /claims the page <h1>/.test(i.message),
+      ),
+    ).toBe(true);
+    expect(
+      issues.some(
+        (i) => i.sectionId === "a" && /claims the page <h1>/.test(i.message),
+      ),
+    ).toBe(false);
   });
 
   it("flags a skipped level between the h1 and the next heading", () => {
     const ast = parseAst({
       main: [
         { ...newSection("hero"), id: "a" },
-        { ...newSection("heading"), id: "b", props: { ...newSection("heading").props, level: "h3" } },
+        {
+          ...newSection("heading"),
+          id: "b",
+          props: { ...newSection("heading").props, level: "h3" },
+        },
       ],
     });
-    expect(lintTemplate(ast, "index").some((i) => /jumps from h1 to h3/.test(i.message))).toBe(true);
+    expect(
+      lintTemplate(ast, "index").some((i) =>
+        /jumps from h1 to h3/.test(i.message),
+      ),
+    ).toBe(true);
   });
 });

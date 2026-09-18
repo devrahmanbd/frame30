@@ -1,1 +1,545 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "label": "builder-advanced.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L1"}, {"id": "lib_builder_advanced_advanced_keys", "label": "ADVANCED_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L16"}, {"id": "lib_builder_advanced_advancedkey", "label": "AdvancedKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L28"}, {"id": "lib_builder_advanced_advanced_set", "label": "ADVANCED_SET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L30"}, {"id": "lib_builder_advanced_isadvancedkey", "label": "isAdvancedKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L31"}, {"id": "lib_builder_advanced_advanced_animations", "label": "ADVANCED_ANIMATIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L36"}, {"id": "lib_builder_advanced_advancedanimation", "label": "AdvancedAnimation", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L37"}, {"id": "lib_builder_advanced_advanced_fields", "label": "ADVANCED_FIELDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L39"}, {"id": "lib_builder_advanced_classlist", "label": "classList()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L84"}, {"id": "lib_builder_advanced_cssid", "label": "cssId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L95"}, {"id": "lib_builder_advanced_num", "label": "num()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L101"}, {"id": "lib_builder_advanced_advancedattrs", "label": "AdvancedAttrs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L107"}, {"id": "lib_builder_advanced_hasadvanced", "label": "hasAdvanced()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L145"}, {"id": "lib_builder_advanced_scopedcss", "label": "scopedCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L157"}, {"id": "lib_builder_advanced_advancedcssfor", "label": "advancedCssFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L177"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_ast_field", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_ast_propvalue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advanced_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advancedkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advanced_set", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_isadvancedkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advanced_animations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advancedanimation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advanced_fields", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_classlist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_cssid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L95", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_num", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advancedattrs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advancedattrs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_hasadvanced", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_scopedcss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts", "target": "lib_builder_advanced_advancedcssfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L177", "weight": 1.0}, {"source": "lib_builder_advanced_advancedattrs", "target": "lib_builder_advanced_num", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L121", "weight": 1.0}, {"source": "lib_builder_advanced_advancedattrs", "target": "lib_builder_advanced_cssid", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L135", "weight": 1.0}, {"source": "lib_builder_advanced_advancedattrs", "target": "lib_builder_advanced_classlist", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L138", "weight": 1.0}, {"source": "lib_builder_advanced_advancedcssfor", "target": "lib_builder_advanced_scopedcss", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L181", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_builder_advanced_isadvancedkey", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L32"}, {"caller_nid": "lib_builder_advanced_classlist", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L86"}, {"caller_nid": "lib_builder_advanced_classlist", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L86"}, {"caller_nid": "lib_builder_advanced_classlist", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L86"}, {"caller_nid": "lib_builder_advanced_classlist", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L86"}, {"caller_nid": "lib_builder_advanced_classlist", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L86"}, {"caller_nid": "lib_builder_advanced_cssid", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L97"}, {"caller_nid": "lib_builder_advanced_cssid", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L97"}, {"caller_nid": "lib_builder_advanced_cssid", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L98"}, {"caller_nid": "lib_builder_advanced_num", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L102"}, {"caller_nid": "lib_builder_advanced_num", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L103"}, {"caller_nid": "lib_builder_advanced_num", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L104"}, {"caller_nid": "lib_builder_advanced_num", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L104"}, {"caller_nid": "lib_builder_advanced_num", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L104"}, {"caller_nid": "lib_builder_advanced_advancedattrs", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L130"}, {"caller_nid": "lib_builder_advanced_advancedattrs", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L132"}, {"caller_nid": "lib_builder_advanced_advancedattrs", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L132"}, {"caller_nid": "lib_builder_advanced_hasadvanced", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L146"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L159"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L167"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L168"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L169"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L173"}, {"caller_nid": "lib_builder_advanced_scopedcss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L173"}, {"caller_nid": "lib_builder_advanced_advancedcssfor", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L185"}, {"caller_nid": "lib_builder_advanced_advancedcssfor", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts", "source_location": "L187"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "label": "builder-advanced.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_builder_advanced_advanced_keys",
+      "label": "ADVANCED_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_builder_advanced_advancedkey",
+      "label": "AdvancedKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_builder_advanced_advanced_set",
+      "label": "ADVANCED_SET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_builder_advanced_isadvancedkey",
+      "label": "isAdvancedKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_builder_advanced_advanced_animations",
+      "label": "ADVANCED_ANIMATIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_builder_advanced_advancedanimation",
+      "label": "AdvancedAnimation",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_builder_advanced_advanced_fields",
+      "label": "ADVANCED_FIELDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_builder_advanced_classlist",
+      "label": "classList()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_builder_advanced_cssid",
+      "label": "cssId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L95"
+    },
+    {
+      "id": "lib_builder_advanced_num",
+      "label": "num()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "lib_builder_advanced_advancedattrs",
+      "label": "AdvancedAttrs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_builder_advanced_hasadvanced",
+      "label": "hasAdvanced()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "lib_builder_advanced_scopedcss",
+      "label": "scopedCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L157"
+    },
+    {
+      "id": "lib_builder_advanced_advancedcssfor",
+      "label": "advancedCssFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L177"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_ast_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_ast_propvalue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advanced_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advancedkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advanced_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_isadvancedkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advanced_animations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advancedanimation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advanced_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_classlist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_cssid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_num",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advancedattrs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advancedattrs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_hasadvanced",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_scopedcss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_advanced_ts",
+      "target": "lib_builder_advanced_advancedcssfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_advanced_advancedattrs",
+      "target": "lib_builder_advanced_num",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_advanced_advancedattrs",
+      "target": "lib_builder_advanced_cssid",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_advanced_advancedattrs",
+      "target": "lib_builder_advanced_classlist",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_advanced_advancedcssfor",
+      "target": "lib_builder_advanced_scopedcss",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_builder_advanced_isadvancedkey",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_classlist",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_classlist",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_classlist",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_classlist",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_classlist",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_cssid",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_cssid",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_cssid",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_num",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_num",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_num",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_num",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_num",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_advancedattrs",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_advancedattrs",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_advancedattrs",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_hasadvanced",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_scopedcss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_advancedcssfor",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "lib_builder_advanced_advancedcssfor",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-advanced.ts",
+      "source_location": "L187"
+    }
+  ]
+}

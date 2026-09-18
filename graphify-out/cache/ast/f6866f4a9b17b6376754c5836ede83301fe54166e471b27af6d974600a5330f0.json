@@ -1,1 +1,590 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "label": "responsive.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L1"}, {"id": "studio_responsive_device_keys", "label": "DEVICE_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L10"}, {"id": "studio_responsive_devicekey", "label": "DeviceKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L19"}, {"id": "studio_responsive_breakpointdef", "label": "BreakpointDef", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L21"}, {"id": "studio_responsive_breakpoint_defs", "label": "BREAKPOINT_DEFS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L35"}, {"id": "studio_responsive_breakpoint_by_key", "label": "BREAKPOINT_BY_KEY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L44"}, {"id": "studio_responsive_default_active_devices", "label": "DEFAULT_ACTIVE_DEVICES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L52"}, {"id": "studio_responsive_deviceorder", "label": "deviceOrder()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L57"}, {"id": "studio_responsive_cascadefor", "label": "cascadeFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L63"}, {"id": "studio_responsive_responsive", "label": "Responsive", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L70"}, {"id": "studio_responsive_maybe", "label": "Maybe", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L72"}, {"id": "studio_responsive_isresponsive", "label": "isResponsive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L74"}, {"id": "studio_responsive_resolveresponsive", "label": "resolveResponsive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L83"}, {"id": "studio_responsive_setresponsive", "label": "setResponsive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L100"}, {"id": "studio_responsive_hasoverride", "label": "hasOverride()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L113"}, {"id": "studio_responsive_overriddendevices", "label": "overriddenDevices()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L119"}, {"id": "studio_responsive_units", "label": "UNITS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L128"}, {"id": "studio_responsive_unit", "label": "Unit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L129"}, {"id": "studio_responsive_length", "label": "Length", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L131"}, {"id": "studio_responsive_islength", "label": "isLength()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L137"}, {"id": "studio_responsive_lengthtocss", "label": "lengthToCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L146"}, {"id": "studio_responsive_box", "label": "Box", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L153"}, {"id": "studio_responsive_isbox", "label": "isBox()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L159"}, {"id": "studio_responsive_boxtocss", "label": "boxToCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L170"}, {"id": "studio_responsive_editbox", "label": "editBox()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L178"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_device_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_devicekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_breakpointdef", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_breakpoint_defs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_breakpoint_by_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_default_active_devices", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_deviceorder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_cascadefor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_responsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_maybe", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_isresponsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_responsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_resolveresponsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_setresponsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_hasoverride", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_overriddendevices", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_units", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_unit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_length", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_length", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_islength", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_lengthtocss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L146", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_box", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_box", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L155", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_isbox", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_boxtocss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "target": "studio_responsive_editbox", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L178", "weight": 1.0}, {"source": "studio_responsive_cascadefor", "target": "studio_responsive_deviceorder", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L64", "weight": 1.0}, {"source": "studio_responsive_resolveresponsive", "target": "studio_responsive_cascadefor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L90", "weight": 1.0}, {"source": "studio_responsive_setresponsive", "target": "studio_responsive_isresponsive", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L102", "weight": 1.0}, {"source": "studio_responsive_hasoverride", "target": "studio_responsive_isresponsive", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L115", "weight": 1.0}, {"source": "studio_responsive_lengthtocss", "target": "studio_responsive_resolveresponsive", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L147", "weight": 1.0}, {"source": "studio_responsive_lengthtocss", "target": "studio_responsive_islength", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L148", "weight": 1.0}, {"source": "studio_responsive_boxtocss", "target": "studio_responsive_resolveresponsive", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L171", "weight": 1.0}, {"source": "studio_responsive_boxtocss", "target": "studio_responsive_isbox", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L172", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_responsive_deviceorder", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L59"}, {"caller_nid": "studio_responsive_cascadefor", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L65"}, {"caller_nid": "studio_responsive_cascadefor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L67"}, {"caller_nid": "studio_responsive_isresponsive", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L75"}, {"caller_nid": "studio_responsive_resolveresponsive", "callee": "!isResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L89"}, {"caller_nid": "studio_responsive_setresponsive", "callee": "!isResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L101"}, {"caller_nid": "studio_responsive_setresponsive", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L107"}, {"caller_nid": "studio_responsive_overriddendevices", "callee": "!isResponsive", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L120"}, {"caller_nid": "studio_responsive_overriddendevices", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L121"}, {"caller_nid": "studio_responsive_islength", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L139"}, {"caller_nid": "studio_responsive_islength", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L142"}, {"caller_nid": "studio_responsive_lengthtocss", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts", "source_location": "L149"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "label": "responsive.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_responsive_device_keys",
+      "label": "DEVICE_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "studio_responsive_devicekey",
+      "label": "DeviceKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "studio_responsive_breakpointdef",
+      "label": "BreakpointDef",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "studio_responsive_breakpoint_defs",
+      "label": "BREAKPOINT_DEFS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "studio_responsive_breakpoint_by_key",
+      "label": "BREAKPOINT_BY_KEY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "studio_responsive_default_active_devices",
+      "label": "DEFAULT_ACTIVE_DEVICES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "studio_responsive_deviceorder",
+      "label": "deviceOrder()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "studio_responsive_cascadefor",
+      "label": "cascadeFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "studio_responsive_responsive",
+      "label": "Responsive",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "studio_responsive_maybe",
+      "label": "Maybe",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "studio_responsive_isresponsive",
+      "label": "isResponsive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "studio_responsive_resolveresponsive",
+      "label": "resolveResponsive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "studio_responsive_setresponsive",
+      "label": "setResponsive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "studio_responsive_hasoverride",
+      "label": "hasOverride()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "studio_responsive_overriddendevices",
+      "label": "overriddenDevices()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L119"
+    },
+    {
+      "id": "studio_responsive_units",
+      "label": "UNITS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "studio_responsive_unit",
+      "label": "Unit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "studio_responsive_length",
+      "label": "Length",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "studio_responsive_islength",
+      "label": "isLength()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "studio_responsive_lengthtocss",
+      "label": "lengthToCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L146"
+    },
+    {
+      "id": "studio_responsive_box",
+      "label": "Box",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "studio_responsive_isbox",
+      "label": "isBox()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "studio_responsive_boxtocss",
+      "label": "boxToCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "studio_responsive_editbox",
+      "label": "editBox()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L178"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_device_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_devicekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_breakpointdef",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_breakpoint_defs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_breakpoint_by_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_default_active_devices",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_deviceorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_cascadefor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_responsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_maybe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_isresponsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_responsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_resolveresponsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_setresponsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_hasoverride",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_overriddendevices",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_units",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_unit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_length",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_length",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_islength",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_lengthtocss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_box",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_box",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_isbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_boxtocss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "target": "studio_responsive_editbox",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_cascadefor",
+      "target": "studio_responsive_deviceorder",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_resolveresponsive",
+      "target": "studio_responsive_cascadefor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_setresponsive",
+      "target": "studio_responsive_isresponsive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_hasoverride",
+      "target": "studio_responsive_isresponsive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_lengthtocss",
+      "target": "studio_responsive_resolveresponsive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_lengthtocss",
+      "target": "studio_responsive_islength",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_boxtocss",
+      "target": "studio_responsive_resolveresponsive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_responsive_boxtocss",
+      "target": "studio_responsive_isbox",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_responsive_deviceorder",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "studio_responsive_cascadefor",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "studio_responsive_cascadefor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "studio_responsive_isresponsive",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "studio_responsive_resolveresponsive",
+      "callee": "!isResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "studio_responsive_setresponsive",
+      "callee": "!isResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "studio_responsive_setresponsive",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "studio_responsive_overriddendevices",
+      "callee": "!isResponsive",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "studio_responsive_overriddendevices",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "studio_responsive_islength",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "studio_responsive_islength",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "studio_responsive_lengthtocss",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/responsive.ts",
+      "source_location": "L149"
+    }
+  ]
+}

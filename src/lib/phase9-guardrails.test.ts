@@ -28,38 +28,91 @@ import { translationCoverage } from "./translation-coverage";
 import { WIDGET_TYPES } from "./widget-registry";
 import { hydrationMode } from "./widget-hydration";
 
-function node(type: SectionType | string, props: Record<string, unknown> = {}): Section {
-  return { id: `n_${type}`, type: type as SectionType, props, bp: {}, children: [] } as unknown as Section;
+function node(
+  type: SectionType | string,
+  props: Record<string, unknown> = {},
+): Section {
+  return {
+    id: `n_${type}`,
+    type: type as SectionType,
+    props,
+    bp: {},
+    children: [],
+  } as unknown as Section;
 }
 
 describe("content guardrails", () => {
   it("blocks text over an image with no scrim", () => {
-    expect(scrimIssues([node("category_header", { imageUrl: "https://x/y.jpg", heading: "Sale", scrim: false })])).toHaveLength(1);
-    expect(scrimIssues([node("category_header", { imageUrl: "https://x/y.jpg", heading: "Sale", scrim: true })])).toHaveLength(0);
+    expect(
+      scrimIssues([
+        node("category_header", {
+          imageUrl: "https://x/y.jpg",
+          heading: "Sale",
+          scrim: false,
+        }),
+      ]),
+    ).toHaveLength(1);
+    expect(
+      scrimIssues([
+        node("category_header", {
+          imageUrl: "https://x/y.jpg",
+          heading: "Sale",
+          scrim: true,
+        }),
+      ]),
+    ).toHaveLength(0);
     // An image with no copy over it is just an image.
-    expect(scrimIssues([node("image", { imageUrl: "https://x/y.jpg", alt: "y" })])).toHaveLength(0);
+    expect(
+      scrimIssues([node("image", { imageUrl: "https://x/y.jpg", alt: "y" })]),
+    ).toHaveLength(0);
   });
 
   it("blocks a before/after pair with no disclaimer", () => {
-    expect(disclaimerIssues([node("before_after", { disclaimer: "" })])).toHaveLength(1);
-    expect(disclaimerIssues([node("before_after", { disclaimer: "Results vary." })])).toHaveLength(0);
+    expect(
+      disclaimerIssues([node("before_after", { disclaimer: "" })]),
+    ).toHaveLength(1);
+    expect(
+      disclaimerIssues([node("before_after", { disclaimer: "Results vary." })]),
+    ).toHaveLength(0);
   });
 
   it("blocks a pre-checked consent control", () => {
-    expect(consentIssues([node("newsletter", { consentChecked: true })])).toHaveLength(1);
-    expect(consentIssues([node("newsletter", { marketingOptInDefault: "true" })])).toHaveLength(1);
-    expect(consentIssues([node("newsletter", { consentText: "You agree to our policy." })])).toHaveLength(0);
+    expect(
+      consentIssues([node("newsletter", { consentChecked: true })]),
+    ).toHaveLength(1);
+    expect(
+      consentIssues([node("newsletter", { marketingOptInDefault: "true" })]),
+    ).toHaveLength(1);
+    expect(
+      consentIssues([
+        node("newsletter", { consentText: "You agree to our policy." }),
+      ]),
+    ).toHaveLength(0);
   });
 
   it("blocks client-side money math in a widget prop", () => {
-    expect(moneyMathIssues([node("price_block", { priceLabel: "{{ price * 0.8 }}" })])).toHaveLength(1);
-    expect(moneyMathIssues([node("cart_summary", { totalNote: "${subtotal + shipping}" })])).toHaveLength(1);
-    expect(moneyMathIssues([node("price_block", { priceLabel: "৳1,200" })])).toHaveLength(0);
+    expect(
+      moneyMathIssues([
+        node("price_block", { priceLabel: "{{ price * 0.8 }}" }),
+      ]),
+    ).toHaveLength(1);
+    expect(
+      moneyMathIssues([
+        node("cart_summary", { totalNote: "${subtotal + shipping}" }),
+      ]),
+    ).toHaveLength(1);
+    expect(
+      moneyMathIssues([node("price_block", { priceLabel: "৳1,200" })]),
+    ).toHaveLength(0);
   });
 
   it("reports every guardrail from one walk", () => {
     const issues = guardrailIssues([
-      node("category_header", { imageUrl: "https://x/y.jpg", heading: "Sale", scrim: false }),
+      node("category_header", {
+        imageUrl: "https://x/y.jpg",
+        heading: "Sale",
+        scrim: false,
+      }),
       node("before_after", { disclaimer: "" }),
       node("newsletter", { consentChecked: true }),
       node("price_block", { priceLabel: "{{price*2}}" }),
@@ -69,9 +122,13 @@ describe("content guardrails", () => {
   });
 
   it("keeps the raw-colour rule publish-blocking", () => {
-    const ast = parseAst({ main: [{ id: "a", type: "heading", props: { text: "#ff0000 sale" } }] });
+    const ast = parseAst({
+      main: [{ id: "a", type: "heading", props: { text: "#ff0000 sale" } }],
+    });
     const issues = lintTemplate(ast, "index");
-    expect(issues.some((i) => i.level === "error" && /Raw colour/.test(i.message))).toBe(true);
+    expect(
+      issues.some((i) => i.level === "error" && /Raw colour/.test(i.message)),
+    ).toBe(true);
   });
 
   it("allows only one <h1> claimant per template", () => {
@@ -81,7 +138,11 @@ describe("content guardrails", () => {
         { id: "b", type: "category_header", props: { heading: "Two" } },
       ],
     });
-    expect(lintTemplate(ast, "collection").some((i) => /claims the page <h1>/.test(i.message))).toBe(true);
+    expect(
+      lintTemplate(ast, "collection").some((i) =>
+        /claims the page <h1>/.test(i.message),
+      ),
+    ).toBe(true);
   });
 });
 
@@ -108,9 +169,16 @@ describe("preset conformance", () => {
         const source = preset.templates[key as TemplateKey];
         if (!source) continue;
         const parsed = parseAst(source);
-        expect(JSON.parse(JSON.stringify(parseAst(parsed)))).toEqual(JSON.parse(JSON.stringify(parsed)));
-        const errors = lintTemplate(parsed, key as TemplateKey).filter((i) => i.level === "error");
-        expect(errors, `${preset.key}/${key}: ${errors.map((e) => e.message).join(" · ")}`).toEqual([]);
+        expect(JSON.parse(JSON.stringify(parseAst(parsed)))).toEqual(
+          JSON.parse(JSON.stringify(parsed)),
+        );
+        const errors = lintTemplate(parsed, key as TemplateKey).filter(
+          (i) => i.level === "error",
+        );
+        expect(
+          errors,
+          `${preset.key}/${key}: ${errors.map((e) => e.message).join(" · ")}`,
+        ).toEqual([]);
       }
     }
   });
@@ -118,7 +186,10 @@ describe("preset conformance", () => {
   it("keeps বাংলা coverage above the publish floor for every preset", () => {
     for (const preset of presets) {
       const stats = translationCoverage(preset.templates as never);
-      expect(translationGate(stats), `${preset.key} at ${stats.percent}%`).toEqual([]);
+      expect(
+        translationGate(stats),
+        `${preset.key} at ${stats.percent}%`,
+      ).toEqual([]);
     }
   });
 });
@@ -130,7 +201,9 @@ describe("registry sharing", () => {
     // never use, so the sharing ratio is measured over the general presets;
     // blueprint coverage is asserted in definition-of-done.test.ts.
     const blueprintKeys = new Set<string>(SHIPPED_BLUEPRINT_KEYS);
-    for (const preset of THEME_PRESETS.filter((p) => !blueprintKeys.has(p.key))) {
+    for (const preset of THEME_PRESETS.filter(
+      (p) => !blueprintKeys.has(p.key),
+    )) {
       for (const key of TEMPLATE_KEYS) {
         const ast = preset.templates[key as TemplateKey];
         if (!ast) continue;
@@ -153,7 +226,9 @@ describe("registry sharing", () => {
 
   it("assigns every registered widget a hydration mode, so no theme owns a renderer branch", () => {
     for (const type of WIDGET_TYPES) {
-      expect(["static", "eager", "visible", "interaction"]).toContain(hydrationMode(type));
+      expect(["static", "eager", "visible", "interaction"]).toContain(
+        hydrationMode(type),
+      );
     }
   });
 });

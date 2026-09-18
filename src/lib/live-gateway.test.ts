@@ -30,27 +30,49 @@ describe("live rails", () => {
   });
 
   it("requires every credential a rail needs before going live", () => {
-    expect(credentialsComplete("sslcommerz", { storeId: "a", storePassword: "b" })).toBe(true);
-    expect(credentialsComplete("sslcommerz", { storeId: "a", storePassword: " " })).toBe(false);
-    expect(credentialsComplete("bkash", { storeId: "a", storePassword: "b" })).toBe(false);
     expect(
-      credentialsComplete("bkash", { storeId: "a", storePassword: "b", username: "u", password: "p" }),
+      credentialsComplete("sslcommerz", { storeId: "a", storePassword: "b" }),
+    ).toBe(true);
+    expect(
+      credentialsComplete("sslcommerz", { storeId: "a", storePassword: " " }),
+    ).toBe(false);
+    expect(
+      credentialsComplete("bkash", { storeId: "a", storePassword: "b" }),
+    ).toBe(false);
+    expect(
+      credentialsComplete("bkash", {
+        storeId: "a",
+        storePassword: "b",
+        username: "u",
+        password: "p",
+      }),
     ).toBe(true);
   });
 
   it("only ever exposes masked credential hints", () => {
-    const hints = credentialHints({ storeId: "livestore123", storePassword: "xy" });
+    const hints = credentialHints({
+      storeId: "livestore123",
+      storePassword: "xy",
+    });
     expect(hints["storeId"]).toBe("••••23");
     expect(hints["storePassword"]).toBe("••••");
     expect(JSON.stringify(hints)).not.toContain("livestore123");
   });
 
   it("picks sandbox or live endpoints, and honours an https override only", () => {
-    expect(baseUrlFor("sslcommerz", "sandbox")).toContain("sandbox.sslcommerz.com");
-    expect(baseUrlFor("sslcommerz", "live")).toContain("securepay.sslcommerz.com");
+    expect(baseUrlFor("sslcommerz", "sandbox")).toContain(
+      "sandbox.sslcommerz.com",
+    );
+    expect(baseUrlFor("sslcommerz", "live")).toContain(
+      "securepay.sslcommerz.com",
+    );
     expect(baseUrlFor("bkash", "mock")).toContain("sandbox");
-    expect(baseUrlFor("aamarpay", "live", "https://custom.test/")).toBe("https://custom.test");
-    expect(baseUrlFor("aamarpay", "live", "http://insecure.test")).toContain("aamarpay.com");
+    expect(baseUrlFor("aamarpay", "live", "https://custom.test/")).toBe(
+      "https://custom.test",
+    );
+    expect(baseUrlFor("aamarpay", "live", "http://insecure.test")).toContain(
+      "aamarpay.com",
+    );
   });
 
   it("converts minor units to the major amount rails expect", () => {
@@ -90,7 +112,12 @@ describe("session requests", () => {
       ...base,
       provider: "bkash",
       baseUrl: "https://tokenized.sandbox.bka.sh",
-      credentials: { storeId: "key", storePassword: "secret", username: "u", password: "p" },
+      credentials: {
+        storeId: "key",
+        storePassword: "secret",
+        username: "u",
+        password: "p",
+      },
     });
     expect(create.encoding).toBe("json");
     expect(JSON.parse(create.body).payerReference).toBe(base.intentId);
@@ -113,18 +140,42 @@ describe("session answers", () => {
         GatewayPageURL: "https://pay.test/x",
         sessionkey: "sk1",
       }),
-    ).toEqual({ ok: true, redirectUrl: "https://pay.test/x", providerReference: "sk1" });
-    expect(parseSessionResponse("sslcommerz", { status: "FAILED", failedreason: "bad store" })).toEqual({
+    ).toEqual({
+      ok: true,
+      redirectUrl: "https://pay.test/x",
+      providerReference: "sk1",
+    });
+    expect(
+      parseSessionResponse("sslcommerz", {
+        status: "FAILED",
+        failedreason: "bad store",
+      }),
+    ).toEqual({
       ok: false,
       reason: "bad store",
     });
   });
 
   it("reads an aamarPay payment url and a bKash checkout url", () => {
-    expect(parseSessionResponse("aamarpay", { payment_url: "https://pay.test/a" }).ok).toBe(true);
-    expect(parseSessionResponse("aamarpay", { result: "false" }).ok).toBe(false);
-    expect(parseSessionResponse("bkash", { bkashURL: "https://pay.test/b", paymentID: "p1" }).ok).toBe(true);
-    expect(parseSessionResponse("bkash", { statusCode: "0009", statusMessage: "invalid" }).ok).toBe(false);
+    expect(
+      parseSessionResponse("aamarpay", { payment_url: "https://pay.test/a" })
+        .ok,
+    ).toBe(true);
+    expect(parseSessionResponse("aamarpay", { result: "false" }).ok).toBe(
+      false,
+    );
+    expect(
+      parseSessionResponse("bkash", {
+        bkashURL: "https://pay.test/b",
+        paymentID: "p1",
+      }).ok,
+    ).toBe(true);
+    expect(
+      parseSessionResponse("bkash", {
+        statusCode: "0009",
+        statusMessage: "invalid",
+      }).ok,
+    ).toBe(false);
   });
 
   it("never treats a missing or malformed answer as success", () => {
@@ -135,30 +186,66 @@ describe("session answers", () => {
 
 describe("callbacks", () => {
   it("reads an SSLCommerz valid callback with its amount", () => {
-    const v = readCallback("sslcommerz", { tran_id: "i1", status: "VALID", amount: "1250.00", val_id: "v1" });
-    expect(v).toMatchObject({ intentId: "i1", status: "paid", providerReference: "v1", amountMinorInt: 125_000 });
+    const v = readCallback("sslcommerz", {
+      tran_id: "i1",
+      status: "VALID",
+      amount: "1250.00",
+      val_id: "v1",
+    });
+    expect(v).toMatchObject({
+      intentId: "i1",
+      status: "paid",
+      providerReference: "v1",
+      amountMinorInt: 125_000,
+    });
   });
 
   it("distinguishes cancelled from failed", () => {
-    expect(readCallback("sslcommerz", { status: "CANCELLED" }).status).toBe("cancelled");
-    expect(readCallback("sslcommerz", { status: "FAILED" }).status).toBe("failed");
-    expect(readCallback("aamarpay", { pay_status: "Canceled" }).status).toBe("cancelled");
-    expect(readCallback("bkash", { transactionStatus: "failure" }).status).toBe("failed");
+    expect(readCallback("sslcommerz", { status: "CANCELLED" }).status).toBe(
+      "cancelled",
+    );
+    expect(readCallback("sslcommerz", { status: "FAILED" }).status).toBe(
+      "failed",
+    );
+    expect(readCallback("aamarpay", { pay_status: "Canceled" }).status).toBe(
+      "cancelled",
+    );
+    expect(readCallback("bkash", { transactionStatus: "failure" }).status).toBe(
+      "failed",
+    );
   });
 
   it("reads a successful aamarPay and bKash callback", () => {
-    expect(readCallback("aamarpay", { opt_a: "i2", pay_status: "Successful", amount: "10.50" })).toMatchObject({
+    expect(
+      readCallback("aamarpay", {
+        opt_a: "i2",
+        pay_status: "Successful",
+        amount: "10.50",
+      }),
+    ).toMatchObject({
       intentId: "i2",
       status: "paid",
       amountMinorInt: 1050,
     });
     expect(
-      readCallback("bkash", { payerReference: "i3", transactionStatus: "Completed", amount: "5", trxID: "t9" }),
-    ).toMatchObject({ intentId: "i3", status: "paid", providerReference: "t9", amountMinorInt: 500 });
+      readCallback("bkash", {
+        payerReference: "i3",
+        transactionStatus: "Completed",
+        amount: "5",
+        trxID: "t9",
+      }),
+    ).toMatchObject({
+      intentId: "i3",
+      status: "paid",
+      providerReference: "t9",
+      amountMinorInt: 500,
+    });
   });
 
   it("holds an unknown status at pending rather than guessing", () => {
-    expect(readCallback("sslcommerz", { tran_id: "i1" }).status).toBe("pending");
+    expect(readCallback("sslcommerz", { tran_id: "i1" }).status).toBe(
+      "pending",
+    );
     expect(readCallback("bkash", {}).status).toBe("pending");
   });
 

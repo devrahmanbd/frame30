@@ -9,7 +9,13 @@ function markup(node: React.ReactElement) {
 
 describe("WidgetBoundary", () => {
   it("renders its widget untouched when nothing throws", () => {
-    expect(markup(<WidgetBoundary type="hero"><p>ok</p></WidgetBoundary>)).toContain("ok");
+    expect(
+      markup(
+        <WidgetBoundary type="hero">
+          <p>ok</p>
+        </WidgetBoundary>,
+      ),
+    ).toContain("ok");
   });
 
   it("flips to the failed state from a thrown render error", () => {
@@ -22,12 +28,18 @@ describe("WidgetBoundary", () => {
   it("shows a space-reserving placeholder on the storefront and a reason in the studio", () => {
     const store = new WidgetBoundary({ type: "product_rail", children: null });
     store.state = { failed: true, message: "boom" };
-    expect(markup(store.render() as React.ReactElement)).toContain('data-widget-failed="product_rail"');
+    expect(markup(store.render() as React.ReactElement)).toContain(
+      'data-widget-failed="product_rail"',
+    );
 
-    const studio = new WidgetBoundary({ type: "product_rail", editing: true, children: null });
+    const studio = new WidgetBoundary({
+      type: "product_rail",
+      editing: true,
+      children: null,
+    });
     studio.state = { failed: true, message: "boom" };
     const html = markup(studio.render() as React.ReactElement);
     expect(html).toContain("product_rail");
-    expect(html).toContain("role=\"note\"");
+    expect(html).toContain('role="note"');
   });
 });

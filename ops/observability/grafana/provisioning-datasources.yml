@@ -32,8 +32,8 @@ datasources:
       derivedFields:
         - name: trace_id
           matcherRegex: '"trace_id":"([0-9a-f]{32})"'
-          url: '${SENTRY_WEB_URL}/organizations/${SENTRY_ORG}/performance/trace/$${__value.raw}/'
-          urlDisplayLabel: 'Open trace in Sentry'
+          url: "${SENTRY_WEB_URL}/organizations/${SENTRY_ORG}/performance/trace/$${__value.raw}/"
+          urlDisplayLabel: "Open trace in Sentry"
 
   - name: Alertmanager
     type: alertmanager

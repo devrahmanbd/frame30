@@ -31,21 +31,32 @@ const WIDGET_SRC = WIDGET_FILES.join("\n");
 
 function render(type: SectionType, editing: boolean, locale: "en" | "bn") {
   return renderToStaticMarkup(
-    <SectionRenderer section={newSection(type)} editing={editing} locale={locale} />,
+    <SectionRenderer
+      section={newSection(type)}
+      editing={editing}
+      locale={locale}
+    />,
   );
 }
 
 describe("Phase 1 + 2 widgets — usable by any theme", () => {
   it("registers a component for every catalogue widget", () => {
-    for (const type of TYPES) expect(typeof WIDGET_COMPONENTS[type], type).toBe("function");
+    for (const type of TYPES)
+      expect(typeof WIDGET_COMPONENTS[type], type).toBe("function");
     expect(Object.keys(WIDGET_COMPONENTS).sort()).toEqual(TYPES.slice().sort());
   });
 
   for (const type of TYPES) {
     it(`${type} renders with no theme installed`, () => {
       for (const locale of ["en", "bn"] as const) {
-        expect(() => render(type, false, locale), `${type}/${locale}`).not.toThrow();
-        expect(() => render(type, true, locale), `${type}/${locale}/editing`).not.toThrow();
+        expect(
+          () => render(type, false, locale),
+          `${type}/${locale}`,
+        ).not.toThrow();
+        expect(
+          () => render(type, true, locale),
+          `${type}/${locale}/editing`,
+        ).not.toThrow();
       }
     });
   }
@@ -88,10 +99,14 @@ describe("theme scope — semantic tokens are remapped once, with fallbacks", ()
     "--font-sans",
   ]) {
     it(`maps ${token} from the theme`, () => {
-      const line = block.split("\n").find((l) => l.trim().startsWith(`${token}:`));
+      const line = block
+        .split("\n")
+        .find((l) => l.trim().startsWith(`${token}:`));
       expect(line, token).toBeTruthy();
       // every mapping must carry a platform fallback so a bare custom theme works
-      expect(line!.replace(/^[^:]+:/, "")).toMatch(/var\(--theme-[a-z-]+,\s*.+\)/);
+      expect(line!.replace(/^[^:]+:/, "")).toMatch(
+        /var\(--theme-[a-z-]+,\s*.+\)/,
+      );
     });
   }
 });
@@ -119,7 +134,9 @@ describe("token bridge", () => {
   it("picks readable ink for dark and light brands", () => {
     expect(inkOn("#0F172A", "#0F172A")).toBe("#FFFFFF");
     expect(inkOn("#FFE066", "#0F172A")).toBe("#0F172A");
-    expect(contrastRatio("#FFE066", inkOn("#FFE066", "#0F172A"))).toBeGreaterThan(4.5);
+    expect(
+      contrastRatio("#FFE066", inkOn("#FFE066", "#0F172A")),
+    ).toBeGreaterThan(4.5);
   });
 
   it("survives a custom theme that supplies nothing valid", () => {

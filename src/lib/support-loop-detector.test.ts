@@ -34,7 +34,10 @@ describe("Phase 9 Looping Detection & Circuit Breaker", () => {
       { role: "bot", message: "Yes, we ship nationwide across Bangladesh." },
     ];
 
-    const result = detectTrajectoryLoop(history, "How much is the shipping fee?");
+    const result = detectTrajectoryLoop(
+      history,
+      "How much is the shipping fee?",
+    );
     expect(result.loopDetected).toBe(false);
     expect(result.loopType).toBeNull();
     expect(result.shouldAutoEscalate).toBe(false);
@@ -49,7 +52,11 @@ describe("Phase 9 Looping Detection & Circuit Breaker", () => {
     ];
 
     // Third repetition of the same question
-    const result = detectTrajectoryLoop(history, "where is my parcel??", "customer");
+    const result = detectTrajectoryLoop(
+      history,
+      "where is my parcel??",
+      "customer",
+    );
     expect(result.loopDetected).toBe(true);
     expect(result.loopType).toBe("duplicate_user_turn");
     expect(result.repetitionCount).toBeGreaterThanOrEqual(3);
@@ -66,7 +73,11 @@ describe("Phase 9 Looping Detection & Circuit Breaker", () => {
       { role: "customer", message: "Please try once more." },
     ];
 
-    const result = detectTrajectoryLoop(history, "I could not find information on that.", "bot");
+    const result = detectTrajectoryLoop(
+      history,
+      "I could not find information on that.",
+      "bot",
+    );
     expect(result.loopDetected).toBe(true);
     expect(result.loopType).toBe("duplicate_bot_turn");
     expect(result.shouldAutoEscalate).toBe(true);
@@ -96,7 +107,11 @@ describe("Phase 9 Looping Detection & Circuit Breaker", () => {
     const history: TrajectoryTurn[] = [
       { role: "customer", message: "check status", intent: "order_status" },
       { role: "customer", message: "tell me more", intent: "other" },
-      { role: "customer", message: "check status again", intent: "order_status" },
+      {
+        role: "customer",
+        message: "check status again",
+        intent: "order_status",
+      },
       { role: "customer", message: "random question", intent: "other" },
     ];
 

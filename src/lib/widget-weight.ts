@@ -29,7 +29,11 @@ import {
   type ThemeAst,
 } from "./builder-ast";
 import { hydrationMode, type HydrationMode } from "./widget-hydration";
-import { WIDGET_REGISTRY, WIDGET_TYPES, type WidgetMeta } from "./widget-registry";
+import {
+  WIDGET_REGISTRY,
+  WIDGET_TYPES,
+  type WidgetMeta,
+} from "./widget-registry";
 import { ASSET_BUDGET, formatBytes } from "./web-vitals";
 import { skeletonSpec } from "./widget-skeletons";
 
@@ -112,16 +116,21 @@ export type WidgetWeight = {
   reason: string;
 };
 
-function deriveWeight(meta: WidgetMeta, mode: HydrationMode): { bytes: number; reason: string } {
+function deriveWeight(
+  meta: WidgetMeta,
+  mode: HydrationMode,
+): { bytes: number; reason: string } {
   const override = WEIGHT_OVERRIDES[meta.type];
   if (override !== undefined) {
     // A static widget cannot cost client JS, whatever the table says — the
     // island never mounts. Keeping this invariant here means an override can
     // never contradict the hydration policy.
-    if (mode === "static") return { bytes: 0, reason: "static island — no client JS" };
+    if (mode === "static")
+      return { bytes: 0, reason: "static island — no client JS" };
     return { bytes: override, reason: "declared weight" };
   }
-  if (mode === "static") return { bytes: 0, reason: "static island — no client JS" };
+  if (mode === "static")
+    return { bytes: 0, reason: "static island — no client JS" };
   let bytes = WEIGHT_BASE[mode];
   const parts = [`${mode} island`];
   if (meta.data) {
@@ -140,7 +149,17 @@ const WEIGHTS: Record<SectionType, WidgetWeight> = Object.fromEntries(
     const meta = WIDGET_REGISTRY[type];
     const mode = hydrationMode(type);
     const { bytes, reason } = deriveWeight(meta, mode);
-    return [type, { type, label: meta.label, mode, jsBytes: bytes, zeroJs: bytes === 0, reason }];
+    return [
+      type,
+      {
+        type,
+        label: meta.label,
+        mode,
+        jsBytes: bytes,
+        zeroJs: bytes === 0,
+        reason,
+      },
+    ];
   }),
 ) as Record<SectionType, WidgetWeight>;
 
@@ -159,7 +178,9 @@ export function widgetWeight(type: SectionType | string): WidgetWeight {
 
 /** The whole table, heaviest first. Used by docs, tests and the studio panel. */
 export function weightTable(): WidgetWeight[] {
-  return WIDGET_TYPES.map((t) => WEIGHTS[t]).sort((a, b) => b.jsBytes - a.jsBytes || a.type.localeCompare(b.type));
+  return WIDGET_TYPES.map((t) => WEIGHTS[t]).sort(
+    (a, b) => b.jsBytes - a.jsBytes || a.type.localeCompare(b.type),
+  );
 }
 
 /* ------------------------------------------------------------------ */
@@ -192,15 +213,24 @@ export const TEMPLATE_JS_BUDGET: Record<TemplateKey, number> = {
   checkout: widgetBudget(0.7),
 };
 
-export function templateBudget(template: TemplateKey | null | undefined): number {
-  return template ? (TEMPLATE_JS_BUDGET[template] ?? widgetBudget(1)) : widgetBudget(1);
+export function templateBudget(
+  template: TemplateKey | null | undefined,
+): number {
+  return template
+    ? (TEMPLATE_JS_BUDGET[template] ?? widgetBudget(1))
+    : widgetBudget(1);
 }
 
 /* ------------------------------------------------------------------ */
 /* 3. AST walking                                                      */
 /* ------------------------------------------------------------------ */
 
-export type WalkedNode = { node: Section; slot: keyof ThemeAst; depth: number; index: number };
+export type WalkedNode = {
+  node: Section;
+  slot: keyof ThemeAst;
+  depth: number;
+  index: number;
+};
 
 /** Depth-first walk in render order: header, main, footer. */
 export function walkAst(ast: ThemeAst): WalkedNode[] {
@@ -270,7 +300,10 @@ export type TemplateWeightReport = {
   failures: PerfFailure[];
 };
 
-export function templateWeight(ast: ThemeAst, template: TemplateKey | null = null): TemplateWeightReport {
+export function templateWeight(
+  ast: ThemeAst,
+  template: TemplateKey | null = null,
+): TemplateWeightReport {
   const nodes = walkAst(ast);
   const byType = new Map<SectionType, WeightOffender>();
   let total = 0;
@@ -299,11 +332,15 @@ export function templateWeight(ast: ThemeAst, template: TemplateKey | null = nul
   const budgetBytes = templateBudget(template);
   const offenders = [...byType.values()]
     .filter((row) => row.totalBytes > 0)
-    .sort((a, b) => b.totalBytes - a.totalBytes || a.type.localeCompare(b.type));
+    .sort(
+      (a, b) => b.totalBytes - a.totalBytes || a.type.localeCompare(b.type),
+    );
 
   const failures: PerfFailure[] = [];
   if (total > budgetBytes) {
-    const worst = offenders.slice(0, 3).map((o) => `${o.label}×${o.count} (${formatBytes(o.totalBytes)})`);
+    const worst = offenders
+      .slice(0, 3)
+      .map((o) => `${o.label}×${o.count} (${formatBytes(o.totalBytes)})`);
     failures.push(
       err({
         code: "perf.weight",
@@ -372,8 +409,14 @@ export type HydrationClass =
   | "data"
   | "overlay";
 
-export const HYDRATION_POLICY: Record<HydrationClass, { allowed: HydrationMode[]; why: string }> = {
-  chrome: { allowed: ["eager"], why: "site chrome can be tapped before any scroll" },
+export const HYDRATION_POLICY: Record<
+  HydrationClass,
+  { allowed: HydrationMode[]; why: string }
+> = {
+  chrome: {
+    allowed: ["eager"],
+    why: "site chrome can be tapped before any scroll",
+  },
   below_fold_chrome: {
     allowed: ["visible", "eager"],
     // A department strip, a sticky buy bar or a checkout stepper is chrome the
@@ -381,10 +424,22 @@ export const HYDRATION_POLICY: Record<HydrationClass, { allowed: HydrationMode[]
     // correct and waking it eagerly is merely wasteful.
     why: "chrome that only becomes reachable after a scroll",
   },
-  editorial: { allowed: ["static"], why: "editorial widgets have no state to wake" },
-  buy_path: { allowed: ["eager"], why: "the buy path must respond to the first tap" },
-  data: { allowed: ["visible", "interaction"], why: "data widgets may wait until they are on screen" },
-  overlay: { allowed: ["interaction", "eager"], why: "a closed overlay is markup until it is reached" },
+  editorial: {
+    allowed: ["static"],
+    why: "editorial widgets have no state to wake",
+  },
+  buy_path: {
+    allowed: ["eager"],
+    why: "the buy path must respond to the first tap",
+  },
+  data: {
+    allowed: ["visible", "interaction"],
+    why: "data widgets may wait until they are on screen",
+  },
+  overlay: {
+    allowed: ["interaction", "eager"],
+    why: "a closed overlay is markup until it is reached",
+  },
 };
 
 /** Widget → policy class. Anything unlisted is classified from the registry. */
@@ -447,7 +502,9 @@ export function hydrationClass(type: SectionType): HydrationClass {
  * by the publish gate, so a new widget with a careless mode fails immediately
  * rather than after a Lighthouse regression in production.
  */
-export function hydrationAudit(types: readonly SectionType[] = WIDGET_TYPES): PerfFailure[] {
+export function hydrationAudit(
+  types: readonly SectionType[] = WIDGET_TYPES,
+): PerfFailure[] {
   const failures: PerfFailure[] = [];
   for (const type of types) {
     const cls = hydrationClass(type);
@@ -500,10 +557,22 @@ function hasImageValue(node: Section): boolean {
 }
 
 function declaresRatio(node: Section): boolean {
-  if (RATIO_KEYS.some((key) => typeof node.props[key] === "string" && String(node.props[key]).trim())) return true;
+  if (
+    RATIO_KEYS.some(
+      (key) =>
+        typeof node.props[key] === "string" && String(node.props[key]).trim(),
+    )
+  )
+    return true;
   const width = Number(node.props["width"]);
   const height = Number(node.props["height"]);
-  if (Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0) return true;
+  if (
+    Number.isFinite(width) &&
+    width > 0 &&
+    Number.isFinite(height) &&
+    height > 0
+  )
+    return true;
   return Boolean(skeletonSpec(node.type)?.ratio);
 }
 
@@ -654,7 +723,13 @@ export function perfGate(input: {
     ...(input.hydration === false ? [] : hydrationAudit()),
   ];
   const failures = all.filter((f) => f.severity === "error");
-  return { ok: failures.length === 0, failures, warnings: all.filter((f) => f.severity === "warn"), weight, images };
+  return {
+    ok: failures.length === 0,
+    failures,
+    warnings: all.filter((f) => f.severity === "warn"),
+    weight,
+    images,
+  };
 }
 
 /** Human summary for CI output and the studio footer. */

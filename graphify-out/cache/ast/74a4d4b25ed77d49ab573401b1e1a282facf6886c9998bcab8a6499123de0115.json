@@ -1,1 +1,240 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "label": "storefront-cache.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L1"}, {"id": "lib_storefront_cache_cachelocale", "label": "CacheLocale", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L21"}, {"id": "lib_storefront_cache_storefrontcachekeyinput", "label": "StorefrontCacheKeyInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L23"}, {"id": "lib_storefront_cache_cachekeyerror", "label": "CacheKeyError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L32"}, {"id": "lib_storefront_cache_cachekeyerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L33"}, {"id": "lib_storefront_cache_segment", "label": "segment()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L39"}, {"id": "lib_storefront_cache_tenantcacheprefix", "label": "tenantCachePrefix()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L53"}, {"id": "lib_storefront_cache_storefrontcachekey", "label": "storefrontCacheKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L57"}, {"id": "lib_storefront_cache_parsecachekey", "label": "parseCacheKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L65"}, {"id": "lib_storefront_cache_isstorefrontpath", "label": "isStorefrontPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L79"}, {"id": "lib_storefront_cache_storefrontcacheheaders", "label": "storefrontCacheHeaders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L88"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_cachelocale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_storefrontcachekeyinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_cachekeyerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L32", "weight": 1.0}, {"source": "lib_storefront_cache_cachekeyerror", "target": "lib_storefront_cache_cachekeyerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_segment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_tenantcacheprefix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_storefrontcachekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_parsecachekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_isstorefrontpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "target": "lib_storefront_cache_storefrontcacheheaders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L88", "weight": 1.0}, {"source": "lib_storefront_cache_tenantcacheprefix", "target": "lib_storefront_cache_segment", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L54", "weight": 1.0}, {"source": "lib_storefront_cache_storefrontcachekey", "target": "lib_storefront_cache_segment", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L58", "weight": 1.0}, {"source": "lib_storefront_cache_storefrontcachekey", "target": "lib_storefront_cache_tenantcacheprefix", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L61", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_storefront_cache_cachekeyerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L34"}, {"caller_nid": "lib_storefront_cache_segment", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L40"}, {"caller_nid": "lib_storefront_cache_segment", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L42"}, {"caller_nid": "lib_storefront_cache_parsecachekey", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L66"}, {"caller_nid": "lib_storefront_cache_isstorefrontpath", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts", "source_location": "L80"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "label": "storefront-cache.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_storefront_cache_cachelocale",
+      "label": "CacheLocale",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_storefront_cache_storefrontcachekeyinput",
+      "label": "StorefrontCacheKeyInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_storefront_cache_cachekeyerror",
+      "label": "CacheKeyError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_storefront_cache_cachekeyerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_storefront_cache_segment",
+      "label": "segment()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_storefront_cache_tenantcacheprefix",
+      "label": "tenantCachePrefix()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_storefront_cache_storefrontcachekey",
+      "label": "storefrontCacheKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_storefront_cache_parsecachekey",
+      "label": "parseCacheKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_storefront_cache_isstorefrontpath",
+      "label": "isStorefrontPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_storefront_cache_storefrontcacheheaders",
+      "label": "storefrontCacheHeaders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L88"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_cachelocale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_storefrontcachekeyinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_cachekeyerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_cache_cachekeyerror",
+      "target": "lib_storefront_cache_cachekeyerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_segment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_tenantcacheprefix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_storefrontcachekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_parsecachekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_isstorefrontpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "target": "lib_storefront_cache_storefrontcacheheaders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_cache_tenantcacheprefix",
+      "target": "lib_storefront_cache_segment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_cache_storefrontcachekey",
+      "target": "lib_storefront_cache_segment",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_cache_storefrontcachekey",
+      "target": "lib_storefront_cache_tenantcacheprefix",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_storefront_cache_cachekeyerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "lib_storefront_cache_segment",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_storefront_cache_segment",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_storefront_cache_parsecachekey",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_storefront_cache_isstorefrontpath",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-cache.ts",
+      "source_location": "L80"
+    }
+  ]
+}

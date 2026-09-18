@@ -2789,7 +2789,5 @@
     ],
     "video": []
   },
-  "skipped_sensitive": [
-    "/Users/rahman/Documents/frame30/.env"
-  ]
+  "skipped_sensitive": ["/Users/rahman/Documents/frame30/.env"]
 }

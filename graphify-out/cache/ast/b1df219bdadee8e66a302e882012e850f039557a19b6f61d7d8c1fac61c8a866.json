@@ -1,1 +1,368 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "label": "phase3-theme.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L1"}, {"id": "lib_phase3_theme_test_legacy", "label": "legacy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L23"}, {"id": "lib_phase3_theme_test_tokens", "label": "tokens", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L24"}, {"id": "lib_phase3_theme_test_css", "label": "css", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L60"}, {"id": "lib_phase3_theme_test_paired", "label": "paired", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L79"}, {"id": "lib_phase3_theme_test_custom", "label": "custom", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L82"}, {"id": "lib_phase3_theme_test_code", "label": "code", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L88"}, {"id": "lib_phase3_theme_test_current", "label": "current", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L98"}, {"id": "lib_phase3_theme_test_result", "label": "result", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L105"}, {"id": "lib_phase3_theme_test_presethero", "label": "presetHero", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L115"}, {"id": "lib_phase3_theme_test_heroes", "label": "heroes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L121"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_default_dark_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_default_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_font_pairings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_applyfontpairing", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_contrastratio", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_parsetokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_builder_ast_tokenstocss", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_theme_presets_theme_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_theme_presets_applypreset", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "users_rahman_documents_frame30_src_lib_money_display_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_money_display_formatdisplaymoney", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_legacy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_tokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_tokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_tokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_paired", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_custom", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_code", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L88", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_current", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L105", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_presethero", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L115", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_current", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_heroes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L121", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts", "target": "lib_phase3_theme_test_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts", "source_location": "L127", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "label": "phase3-theme.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase3_theme_test_legacy",
+      "label": "legacy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_phase3_theme_test_tokens",
+      "label": "tokens",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_phase3_theme_test_css",
+      "label": "css",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_phase3_theme_test_paired",
+      "label": "paired",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_phase3_theme_test_custom",
+      "label": "custom",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "lib_phase3_theme_test_code",
+      "label": "code",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L88"
+    },
+    {
+      "id": "lib_phase3_theme_test_current",
+      "label": "current",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_phase3_theme_test_result",
+      "label": "result",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L105"
+    },
+    {
+      "id": "lib_phase3_theme_test_presethero",
+      "label": "presetHero",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "lib_phase3_theme_test_heroes",
+      "label": "heroes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L121"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_default_dark_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_default_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_font_pairings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_applyfontpairing",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_contrastratio",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_parsetokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_builder_ast_tokenstocss",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_theme_presets_theme_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_theme_presets_applypreset",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_money_display_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_money_display_formatdisplaymoney",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_legacy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_paired",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_custom",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_code",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_current",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_presethero",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_current",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_heroes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase3_theme_test_ts",
+      "target": "lib_phase3_theme_test_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase3-theme.test.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

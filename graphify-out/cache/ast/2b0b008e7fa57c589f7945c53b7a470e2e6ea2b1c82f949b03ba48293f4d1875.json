@@ -1,1 +1,705 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "label": "motion.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L1"}, {"id": "lib_motion_contract_test_primitive_dir", "label": "PRIMITIVE_DIR", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L25"}, {"id": "lib_motion_contract_test_primitivefiles", "label": "primitiveFiles", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L26"}, {"id": "lib_motion_contract_test_read", "label": "read()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L27"}, {"id": "lib_motion_contract_test_fakeengine", "label": "fakeEngine()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L29"}, {"id": "lib_motion_contract_test_logs", "label": "logs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L36"}, {"id": "lib_motion_contract_test_loader", "label": "loader", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L52"}, {"id": "lib_motion_contract_test_policy", "label": "policy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L100"}, {"id": "lib_motion_contract_test_cleanup", "label": "cleanup", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L118"}, {"id": "lib_motion_contract_test_setup", "label": "setup", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L119"}, {"id": "lib_motion_contract_test_scope", "label": "scope", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L120"}, {"id": "lib_motion_contract_test_late", "label": "late", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L127"}, {"id": "lib_motion_contract_test_early", "label": "early", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L128"}, {"id": "lib_motion_contract_test_offenders", "label": "offenders", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L151"}, {"id": "lib_motion_contract_test_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L152"}, {"id": "lib_motion_contract_test_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L166"}, {"id": "lib_motion_contract_test_pkg", "label": "pkg", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L172"}, {"id": "lib_motion_contract_test_deps", "label": "deps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L173"}, {"id": "lib_motion_contract_test_engines", "label": "engines", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L174"}, {"id": "lib_motion_contract_test_barrel", "label": "barrel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L194"}, {"id": "lib_motion_contract_test_runtime", "label": "runtime", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L222"}, {"id": "lib_motion_contract_test_css", "label": "css", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L249"}, {"id": "lib_motion_contract_test_motionlogs", "label": "MotionLogs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L269"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_motion_engine_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_engine_resetmotionengine", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_engine_loadmotionengine", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_engine_motionenginestate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_engine_withengine", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_engine_motionengine", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_motion_runtime_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_runtime_setmotionlogsink", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_runtime_recentmotionlogs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_policy_engine_load_policy", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_primitive_dir", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_primitivefiles", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_fakeengine", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_logs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_policy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_cleanup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_setup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_scope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_late", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L127", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_early", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_scope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_offenders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L152", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L166", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_pkg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_deps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_engines", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L174", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L181", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_barrel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L209", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_runtime", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L222", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L230", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L237", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L249", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts", "target": "lib_motion_contract_test_motionlogs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L269", "weight": 1.0}, {"source": "lib_motion_contract_test_walk", "target": "lib_motion_contract_test_read", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L157", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_motion_contract_test_read", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L27"}, {"caller_nid": "lib_motion_contract_test_read", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L27"}, {"caller_nid": "lib_motion_contract_test_read", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L27"}, {"caller_nid": "lib_motion_contract_test_fakeengine", "callee": "fn", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L31"}, {"caller_nid": "lib_motion_contract_test_fakeengine", "callee": "fn", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L31"}, {"caller_nid": "lib_motion_contract_test_fakeengine", "callee": "fn", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L32"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L153"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L153"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L153"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L155"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L156"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L156"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L157"}, {"caller_nid": "lib_motion_contract_test_walk", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts", "source_location": "L157"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "label": "motion.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_motion_contract_test_primitive_dir",
+      "label": "PRIMITIVE_DIR",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_motion_contract_test_primitivefiles",
+      "label": "primitiveFiles",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_motion_contract_test_read",
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_motion_contract_test_fakeengine",
+      "label": "fakeEngine()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_motion_contract_test_logs",
+      "label": "logs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_motion_contract_test_loader",
+      "label": "loader",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_motion_contract_test_policy",
+      "label": "policy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_motion_contract_test_cleanup",
+      "label": "cleanup",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "lib_motion_contract_test_setup",
+      "label": "setup",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L119"
+    },
+    {
+      "id": "lib_motion_contract_test_scope",
+      "label": "scope",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "lib_motion_contract_test_late",
+      "label": "late",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L127"
+    },
+    {
+      "id": "lib_motion_contract_test_early",
+      "label": "early",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_motion_contract_test_offenders",
+      "label": "offenders",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_motion_contract_test_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L152"
+    },
+    {
+      "id": "lib_motion_contract_test_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L166"
+    },
+    {
+      "id": "lib_motion_contract_test_pkg",
+      "label": "pkg",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L172"
+    },
+    {
+      "id": "lib_motion_contract_test_deps",
+      "label": "deps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "lib_motion_contract_test_engines",
+      "label": "engines",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L174"
+    },
+    {
+      "id": "lib_motion_contract_test_barrel",
+      "label": "barrel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L194"
+    },
+    {
+      "id": "lib_motion_contract_test_runtime",
+      "label": "runtime",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L222"
+    },
+    {
+      "id": "lib_motion_contract_test_css",
+      "label": "css",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L249"
+    },
+    {
+      "id": "lib_motion_contract_test_motionlogs",
+      "label": "MotionLogs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L269"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_motion_engine_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_engine_resetmotionengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_engine_loadmotionengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_engine_motionenginestate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_engine_withengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_engine_motionengine",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_motion_runtime_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_runtime_setmotionlogsink",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_runtime_recentmotionlogs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_policy_engine_load_policy",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_primitive_dir",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_primitivefiles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_fakeengine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_logs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_policy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_cleanup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_setup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_scope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_late",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_early",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_scope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_offenders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_pkg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_deps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_engines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_barrel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_runtime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L237",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_contract_test_ts",
+      "target": "lib_motion_contract_test_motionlogs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L269",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_contract_test_walk",
+      "target": "lib_motion_contract_test_read",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_motion_contract_test_read",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_read",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_read",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_fakeengine",
+      "callee": "fn",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_fakeengine",
+      "callee": "fn",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_fakeengine",
+      "callee": "fn",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_motion_contract_test_walk",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion.contract.test.ts",
+      "source_location": "L157"
+    }
+  ]
+}

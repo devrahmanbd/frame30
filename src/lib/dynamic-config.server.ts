@@ -38,7 +38,8 @@ const L1_CACHE = new Map<string, CacheEntry>();
 const CACHE_TTL_MS = 15_000; // 15 seconds
 
 async function adminClient(): Promise<Client> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Client;
 }
 
@@ -58,9 +59,14 @@ export async function getDynamicPlatformConfig<T>(
 
   try {
     const admin = await adminClient();
-    const { data, error } = await (admin as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-    }).rpc("platform_get_active_config", { _config_id: configId });
+    const { data, error } = await (
+      admin as unknown as {
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: unknown }>;
+      }
+    ).rpc("platform_get_active_config", { _config_id: configId });
 
     if (error || !data) {
       // If DB doesn't have the row, try direct table select or fallback
@@ -72,7 +78,9 @@ export async function getDynamicPlatformConfig<T>(
 
       if (row) {
         const slot = (row.active_slot ?? "blue") as ConfigSlot;
-        const payload = (slot === "blue" ? row.blue_payload : row.red_payload) as T;
+        const payload = (
+          slot === "blue" ? row.blue_payload : row.red_payload
+        ) as T;
         L1_CACHE.set(configId, {
           payload,
           activeSlot: slot,
@@ -102,7 +110,10 @@ export async function getDynamicPlatformConfig<T>(
 
     return res.payload;
   } catch (err) {
-    log("warn", "dynamic_config.load_failed", { configId, error: (err as Error).message });
+    log("warn", "dynamic_config.load_failed", {
+      configId,
+      error: (err as Error).message,
+    });
     if (fallback !== undefined) return fallback;
     return {} as T;
   }
@@ -155,7 +166,12 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
   candidatePayload: T,
   probeFn?: (candidate: T) => Promise<boolean>,
   reason = "algorithmic_rotation",
-): Promise<{ ok: boolean; activeSlot?: ConfigSlot; version?: number; error?: string }> {
+): Promise<{
+  ok: boolean;
+  activeSlot?: ConfigSlot;
+  version?: number;
+  error?: string;
+}> {
   try {
     const admin = await adminClient();
 
@@ -170,16 +186,23 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
     const targetSlot: ConfigSlot = currentSlot === "blue" ? "red" : "blue";
 
     // 2. Stage candidate into the standby slot
-    const { error: stageErr } = await (admin as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-    }).rpc("platform_stage_config_slot", {
+    const { error: stageErr } = await (
+      admin as unknown as {
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: unknown }>;
+      }
+    ).rpc("platform_stage_config_slot", {
       _config_id: configId,
       _target_slot: targetSlot,
       _payload: candidatePayload as unknown as Json,
     });
 
     if (stageErr) {
-      throw new Error(`Failed to stage candidate slot: ${(stageErr as Error).message}`);
+      throw new Error(
+        `Failed to stage candidate slot: ${(stageErr as Error).message}`,
+      );
     }
 
     // 3. Algorithmic Health Probe
@@ -197,7 +220,10 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
       }
 
       if (!probePassed) {
-        incr("framique_dynamic_config_probe_failures_total", { configId, targetSlot });
+        incr("framique_dynamic_config_probe_failures_total", {
+          configId,
+          targetSlot,
+        });
         return {
           ok: false,
           error: `Health probe failed for candidate slot '${targetSlot}'. Rollback to '${currentSlot}' retained.`,
@@ -206,16 +232,23 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
     }
 
     // 4. Promote candidate slot
-    const { data: promoteRes, error: promoteErr } = await (admin as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-    }).rpc("platform_promote_config_slot", {
+    const { data: promoteRes, error: promoteErr } = await (
+      admin as unknown as {
+        rpc: (
+          fn: string,
+          args: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: unknown }>;
+      }
+    ).rpc("platform_promote_config_slot", {
       _config_id: configId,
       _target_slot: targetSlot,
       _reason: reason,
     });
 
     if (promoteErr) {
-      throw new Error(`Failed to promote slot: ${(promoteErr as Error).message}`);
+      throw new Error(
+        `Failed to promote slot: ${(promoteErr as Error).message}`,
+      );
     }
 
     const res = promoteRes as {
@@ -227,7 +260,10 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
     // 5. Invalidate caches immediately
     await invalidateDynamicConfigCache(configId);
 
-    incr("framique_dynamic_config_promoted_total", { configId, newSlot: targetSlot });
+    incr("framique_dynamic_config_promoted_total", {
+      configId,
+      newSlot: targetSlot,
+    });
     return {
       ok: true,
       activeSlot: res.active_slot,
@@ -245,7 +281,9 @@ export async function stageAndPromoteConfig<T extends Record<string, unknown>>(
 /**
  * Invalidate cache locally and broadcast to other instances via Redis if available.
  */
-export async function invalidateDynamicConfigCache(configId?: string): Promise<void> {
+export async function invalidateDynamicConfigCache(
+  configId?: string,
+): Promise<void> {
   if (configId) {
     L1_CACHE.delete(configId);
   } else {

@@ -1,1 +1,890 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "label": "live-gateway.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L1"}, {"id": "lib_live_gateway_live_providers", "label": "LIVE_PROVIDERS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L27"}, {"id": "lib_live_gateway_liveprovider", "label": "LiveProvider", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L28"}, {"id": "lib_live_gateway_gatewaymode", "label": "GatewayMode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L31"}, {"id": "lib_live_gateway_isliveprovider", "label": "isLiveProvider()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L33"}, {"id": "lib_live_gateway_livecredentials", "label": "LiveCredentials", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L38"}, {"id": "lib_live_gateway_required_credentials", "label": "REQUIRED_CREDENTIALS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L52"}, {"id": "lib_live_gateway_credentialscomplete", "label": "credentialsComplete()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L59"}, {"id": "lib_live_gateway_credentialhints", "label": "credentialHints()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L74"}, {"id": "lib_live_gateway_provider_base_url", "label": "PROVIDER_BASE_URL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L84"}, {"id": "lib_live_gateway_baseurlfor", "label": "baseUrlFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L101"}, {"id": "lib_live_gateway_sessioninput", "label": "SessionInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L118"}, {"id": "lib_live_gateway_sessionrequest", "label": "SessionRequest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L133"}, {"id": "lib_live_gateway_majorunits", "label": "majorUnits()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L142"}, {"id": "lib_live_gateway_buildsessionrequest", "label": "buildSessionRequest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L147"}, {"id": "lib_live_gateway_bkashgrantrequest", "label": "bkashGrantRequest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L243"}, {"id": "lib_live_gateway_sessionanswer", "label": "SessionAnswer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L258"}, {"id": "lib_live_gateway_parsesessionresponse", "label": "parseSessionResponse()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L263"}, {"id": "lib_live_gateway_callbackverdict", "label": "CallbackVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L295"}, {"id": "lib_live_gateway_minor", "label": "minor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L304"}, {"id": "lib_live_gateway_readcallback", "label": "readCallback()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L315"}, {"id": "lib_live_gateway_amountmatches", "label": "amountMatches()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L377"}, {"id": "lib_live_gateway_samesecret", "label": "sameSecret()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L386"}, {"id": "lib_live_gateway_authenticatecallback", "label": "authenticateCallback()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L401"}, {"id": "lib_live_gateway_piprapayverifyrequest", "label": "piprapayVerifyRequest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L414"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "users_rahman_documents_frame30_src_lib_payment_plugins_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_payment_plugins_communityplugin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_live_providers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_liveprovider", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_gatewaymode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_isliveprovider", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_livecredentials", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_required_credentials", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_credentialscomplete", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_credentialhints", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_provider_base_url", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_baseurlfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_sessioninput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_sessionrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_majorunits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_buildsessionrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_bkashgrantrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L243", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_sessionanswer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L258", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_parsesessionresponse", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L263", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_callbackverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L295", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_minor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L304", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_readcallback", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L315", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_amountmatches", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L377", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_samesecret", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L386", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_authenticatecallback", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L401", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_live_gateway_ts", "target": "lib_live_gateway_piprapayverifyrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L414", "weight": 1.0}, {"source": "lib_live_gateway_buildsessionrequest", "target": "lib_live_gateway_majorunits", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L148", "weight": 1.0}, {"source": "lib_live_gateway_readcallback", "target": "lib_live_gateway_minor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L330", "weight": 1.0}, {"source": "lib_live_gateway_authenticatecallback", "target": "lib_live_gateway_samesecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L410", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_live_gateway_isliveprovider", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L34"}, {"caller_nid": "lib_live_gateway_credentialscomplete", "callee": "every", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L60"}, {"caller_nid": "lib_live_gateway_credentialscomplete", "callee": "communityPlugin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L67"}, {"caller_nid": "lib_live_gateway_credentialscomplete", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L68"}, {"caller_nid": "lib_live_gateway_credentialscomplete", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L68"}, {"caller_nid": "lib_live_gateway_credentialhints", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L76"}, {"caller_nid": "lib_live_gateway_credentialhints", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L78"}, {"caller_nid": "lib_live_gateway_baseurlfor", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L107"}, {"caller_nid": "lib_live_gateway_baseurlfor", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L107"}, {"caller_nid": "lib_live_gateway_baseurlfor", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L108"}, {"caller_nid": "lib_live_gateway_baseurlfor", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L109"}, {"caller_nid": "lib_live_gateway_baseurlfor", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L109"}, {"caller_nid": "lib_live_gateway_majorunits", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L143"}, {"caller_nid": "lib_live_gateway_buildsessionrequest", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L170"}, {"caller_nid": "lib_live_gateway_buildsessionrequest", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L192"}, {"caller_nid": "lib_live_gateway_buildsessionrequest", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L209"}, {"caller_nid": "lib_live_gateway_buildsessionrequest", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L230"}, {"caller_nid": "lib_live_gateway_buildsessionrequest", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L237"}, {"caller_nid": "lib_live_gateway_bkashgrantrequest", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L253"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L267"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L267"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L268"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L269"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L271"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L274"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L275"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L276"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L279"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L280"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L281"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L284"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L285"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L286"}, {"caller_nid": "lib_live_gateway_parsesessionresponse", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L288"}, {"caller_nid": "lib_live_gateway_minor", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L305"}, {"caller_nid": "lib_live_gateway_minor", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L306"}, {"caller_nid": "lib_live_gateway_minor", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L307"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L318"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L320"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L329"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L329"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L334"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L334"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L336"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L336"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L338"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L344"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L346"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L355"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L355"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L360"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L360"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L362"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L362"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L371"}, {"caller_nid": "lib_live_gateway_readcallback", "callee": "str", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L371"}, {"caller_nid": "lib_live_gateway_samesecret", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L389"}, {"caller_nid": "lib_live_gateway_samesecret", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L389"}, {"caller_nid": "lib_live_gateway_authenticatecallback", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L408"}, {"caller_nid": "lib_live_gateway_authenticatecallback", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L408"}, {"caller_nid": "lib_live_gateway_authenticatecallback", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L409"}, {"caller_nid": "lib_live_gateway_authenticatecallback", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L410"}, {"caller_nid": "lib_live_gateway_piprapayverifyrequest", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts", "source_location": "L427"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "label": "live-gateway.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_live_gateway_live_providers",
+      "label": "LIVE_PROVIDERS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_live_gateway_liveprovider",
+      "label": "LiveProvider",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_live_gateway_gatewaymode",
+      "label": "GatewayMode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_live_gateway_isliveprovider",
+      "label": "isLiveProvider()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_live_gateway_livecredentials",
+      "label": "LiveCredentials",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_live_gateway_required_credentials",
+      "label": "REQUIRED_CREDENTIALS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_live_gateway_credentialscomplete",
+      "label": "credentialsComplete()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "lib_live_gateway_credentialhints",
+      "label": "credentialHints()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_live_gateway_provider_base_url",
+      "label": "PROVIDER_BASE_URL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_live_gateway_baseurlfor",
+      "label": "baseUrlFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "lib_live_gateway_sessioninput",
+      "label": "SessionInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "lib_live_gateway_sessionrequest",
+      "label": "SessionRequest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_live_gateway_majorunits",
+      "label": "majorUnits()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L142"
+    },
+    {
+      "id": "lib_live_gateway_buildsessionrequest",
+      "label": "buildSessionRequest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L147"
+    },
+    {
+      "id": "lib_live_gateway_bkashgrantrequest",
+      "label": "bkashGrantRequest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L243"
+    },
+    {
+      "id": "lib_live_gateway_sessionanswer",
+      "label": "SessionAnswer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L258"
+    },
+    {
+      "id": "lib_live_gateway_parsesessionresponse",
+      "label": "parseSessionResponse()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L263"
+    },
+    {
+      "id": "lib_live_gateway_callbackverdict",
+      "label": "CallbackVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L295"
+    },
+    {
+      "id": "lib_live_gateway_minor",
+      "label": "minor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L304"
+    },
+    {
+      "id": "lib_live_gateway_readcallback",
+      "label": "readCallback()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L315"
+    },
+    {
+      "id": "lib_live_gateway_amountmatches",
+      "label": "amountMatches()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L377"
+    },
+    {
+      "id": "lib_live_gateway_samesecret",
+      "label": "sameSecret()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L386"
+    },
+    {
+      "id": "lib_live_gateway_authenticatecallback",
+      "label": "authenticateCallback()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L401"
+    },
+    {
+      "id": "lib_live_gateway_piprapayverifyrequest",
+      "label": "piprapayVerifyRequest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L414"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "users_rahman_documents_frame30_src_lib_payment_plugins_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_payment_plugins_communityplugin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_live_providers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_liveprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_gatewaymode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_isliveprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_livecredentials",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_required_credentials",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_credentialscomplete",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_credentialhints",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_provider_base_url",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_baseurlfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_sessioninput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_sessionrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_majorunits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_buildsessionrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_bkashgrantrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_sessionanswer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_parsesessionresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_callbackverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_minor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L304",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_readcallback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_amountmatches",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L377",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_samesecret",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_authenticatecallback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L401",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_live_gateway_ts",
+      "target": "lib_live_gateway_piprapayverifyrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L414",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_live_gateway_buildsessionrequest",
+      "target": "lib_live_gateway_majorunits",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_live_gateway_readcallback",
+      "target": "lib_live_gateway_minor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L330",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_live_gateway_authenticatecallback",
+      "target": "lib_live_gateway_samesecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L410",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_live_gateway_isliveprovider",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialscomplete",
+      "callee": "every",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialscomplete",
+      "callee": "communityPlugin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialscomplete",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialscomplete",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialhints",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_live_gateway_credentialhints",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_live_gateway_baseurlfor",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "lib_live_gateway_baseurlfor",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "lib_live_gateway_baseurlfor",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_live_gateway_baseurlfor",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_live_gateway_baseurlfor",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_live_gateway_majorunits",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_live_gateway_buildsessionrequest",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_live_gateway_buildsessionrequest",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "lib_live_gateway_buildsessionrequest",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_live_gateway_buildsessionrequest",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "lib_live_gateway_buildsessionrequest",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L237"
+    },
+    {
+      "caller_nid": "lib_live_gateway_bkashgrantrequest",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L267"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L267"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L269"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L271"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L280"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L281"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L286"
+    },
+    {
+      "caller_nid": "lib_live_gateway_parsesessionresponse",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_live_gateway_minor",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L305"
+    },
+    {
+      "caller_nid": "lib_live_gateway_minor",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "lib_live_gateway_minor",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L320"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L355"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L355"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L360"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L360"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_live_gateway_readcallback",
+      "callee": "str",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_live_gateway_samesecret",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_live_gateway_samesecret",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_live_gateway_authenticatecallback",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_live_gateway_authenticatecallback",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_live_gateway_authenticatecallback",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_live_gateway_authenticatecallback",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L410"
+    },
+    {
+      "caller_nid": "lib_live_gateway_piprapayverifyrequest",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/live-gateway.ts",
+      "source_location": "L427"
+    }
+  ]
+}

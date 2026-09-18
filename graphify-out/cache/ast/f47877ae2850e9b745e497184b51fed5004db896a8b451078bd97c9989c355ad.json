@@ -1,1 +1,1960 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_design_exit_ts", "label": "design-exit.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1"}, {"id": "lib_design_exit_designseverity", "label": "DesignSeverity", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L46"}, {"id": "lib_design_exit_designfindingcode", "label": "DesignFindingCode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L48"}, {"id": "lib_design_exit_designfinding", "label": "DesignFinding", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L76"}, {"id": "lib_design_exit_finding", "label": "finding()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L90"}, {"id": "lib_design_exit_contrast", "label": "CONTRAST", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L111"}, {"id": "lib_design_exit_vitals", "label": "VITALS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L132"}, {"id": "lib_design_exit_responsive", "label": "RESPONSIVE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L151"}, {"id": "lib_design_exit_literal_color_families", "label": "LITERAL_COLOR_FAMILIES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L188"}, {"id": "lib_design_exit_color_utility_prefixes", "label": "COLOR_UTILITY_PREFIXES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L217"}, {"id": "lib_design_exit_variant", "label": "VARIANT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L250"}, {"id": "lib_design_exit_prefix_alt", "label": "PREFIX_ALT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L251"}, {"id": "lib_design_exit_family_alt", "label": "FAMILY_ALT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L252"}, {"id": "lib_design_exit_literal_utility_re", "label": "LITERAL_UTILITY_RE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L255"}, {"id": "lib_design_exit_arbitrary_color_re", "label": "ARBITRARY_COLOR_RE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L261"}, {"id": "lib_design_exit_sourcefile", "label": "SourceFile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L273"}, {"id": "lib_design_exit_lineof", "label": "lineOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L280"}, {"id": "lib_design_exit_linetext", "label": "lineText()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L288"}, {"id": "lib_design_exit_auditsourcecolors", "label": "auditSourceColors()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L302"}, {"id": "lib_design_exit_auditsourcetree", "label": "auditSourceTree()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L374"}, {"id": "lib_design_exit_rgba", "label": "Rgba", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L384"}, {"id": "lib_design_exit_parsecolor", "label": "parseColor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L387"}, {"id": "lib_design_exit_composite", "label": "composite()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L437"}, {"id": "lib_design_exit_flattenbackdrop", "label": "flattenBackdrop()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L454"}, {"id": "lib_design_exit_relativeluminance", "label": "relativeLuminance()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L459"}, {"id": "lib_design_exit_contrastratio", "label": "contrastRatio()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L468"}, {"id": "lib_design_exit_contrastrole", "label": "ContrastRole", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L476"}, {"id": "lib_design_exit_contrastsample", "label": "ContrastSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L478"}, {"id": "lib_design_exit_thresholdfor", "label": "thresholdFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L495"}, {"id": "lib_design_exit_codefor", "label": "codeFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L510"}, {"id": "lib_design_exit_auditcontrast", "label": "auditContrast()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L536"}, {"id": "lib_design_exit_required_cta_states", "label": "REQUIRED_CTA_STATES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L597"}, {"id": "lib_design_exit_auditctastates", "label": "auditCtaStates()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L599"}, {"id": "lib_design_exit_overflowsample", "label": "OverflowSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L633"}, {"id": "lib_design_exit_banglasample", "label": "BanglaSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L642"}, {"id": "lib_design_exit_taptargetsample", "label": "TapTargetSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L654"}, {"id": "lib_design_exit_viewportmeasurement", "label": "ViewportMeasurement", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L662"}, {"id": "lib_design_exit_auditresponsive", "label": "auditResponsive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L672"}, {"id": "lib_design_exit_vitalsmeasurement", "label": "VitalsMeasurement", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L780"}, {"id": "lib_design_exit_auditvitals", "label": "auditVitals()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L802"}, {"id": "lib_design_exit_headingsample", "label": "HeadingSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L914"}, {"id": "lib_design_exit_auditheadings", "label": "auditHeadings()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L921"}, {"id": "lib_design_exit_exitmeasurement", "label": "ExitMeasurement", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L995"}, {"id": "lib_design_exit_exitreport", "label": "ExitReport", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1001"}, {"id": "lib_design_exit_auditexitpage", "label": "auditExitPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1011"}, {"id": "lib_design_exit_countbyseverity", "label": "countBySeverity()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1030"}, {"id": "lib_design_exit_dedupefindings", "label": "dedupeFindings()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1044"}, {"id": "lib_design_exit_formatfinding", "label": "formatFinding()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1053"}, {"id": "lib_design_exit_errorsonly", "label": "errorsOnly()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1058"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_designseverity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_designfindingcode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_designfinding", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_finding", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_contrast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L111", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_vitals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_responsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_literal_color_families", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_color_utility_prefixes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L217", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_variant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L250", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_prefix_alt", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L251", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_family_alt", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L252", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_literal_utility_re", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L255", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_arbitrary_color_re", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L261", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_sourcefile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L273", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_lineof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L280", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_linetext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L288", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditsourcecolors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L302", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditsourcetree", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L374", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_rgba", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L384", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_parsecolor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L387", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_composite", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L437", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_flattenbackdrop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L454", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_relativeluminance", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L459", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_contrastratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L468", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_contrastrole", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L476", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_contrastsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L478", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_thresholdfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L495", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_codefor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L510", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditcontrast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L536", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_required_cta_states", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L597", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditctastates", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L599", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_overflowsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L633", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_banglasample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L642", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_taptargetsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L654", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_viewportmeasurement", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L662", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditresponsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L672", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_vitalsmeasurement", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L780", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditvitals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L802", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_headingsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L914", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditheadings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L921", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_exitmeasurement", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L995", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_exitreport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1001", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_auditexitpage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1011", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_countbyseverity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1030", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_dedupefindings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1044", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_formatfinding", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1053", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_design_exit_ts", "target": "lib_design_exit_errorsonly", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1058", "weight": 1.0}, {"source": "lib_design_exit_auditsourcecolors", "target": "lib_design_exit_linetext", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L358", "weight": 1.0}, {"source": "lib_design_exit_contrastratio", "target": "lib_design_exit_relativeluminance", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L469", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_parsecolor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L544", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_finding", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L548", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_flattenbackdrop", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L564", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_composite", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L565", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_contrastratio", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L566", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_thresholdfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L567", "weight": 1.0}, {"source": "lib_design_exit_auditcontrast", "target": "lib_design_exit_codefor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L575", "weight": 1.0}, {"source": "lib_design_exit_auditctastates", "target": "lib_design_exit_finding", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L615", "weight": 1.0}, {"source": "lib_design_exit_auditresponsive", "target": "lib_design_exit_finding", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L679", "weight": 1.0}, {"source": "lib_design_exit_auditvitals", "target": "lib_design_exit_finding", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L812", "weight": 1.0}, {"source": "lib_design_exit_auditheadings", "target": "lib_design_exit_finding", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L930", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_auditresponsive", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1014", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_auditcontrast", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1015", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_auditctastates", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1016", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_auditheadings", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1017", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_auditvitals", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1018", "weight": 1.0}, {"source": "lib_design_exit_auditexitpage", "target": "lib_design_exit_countbyseverity", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1025", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_design_exit_lineof", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L283"}, {"caller_nid": "lib_design_exit_linetext", "callee": "lastIndexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L289"}, {"caller_nid": "lib_design_exit_linetext", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L290"}, {"caller_nid": "lib_design_exit_linetext", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L291"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L325"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L327"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L328"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L337"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L338"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L347"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L348"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L352"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L357"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L360"}, {"caller_nid": "lib_design_exit_auditsourcecolors", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L361"}, {"caller_nid": "lib_design_exit_auditsourcetree", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L375"}, {"caller_nid": "lib_design_exit_auditsourcetree", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L375"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L389"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L389"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L392"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "expand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L398"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "expand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L399"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "expand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L400"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "expand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L401"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseInt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L406"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L406"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseInt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L407"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L407"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseInt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L408"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L408"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseInt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L409"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L409"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L415"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L417"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L417"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L417"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L424"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L424"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "every", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L425"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "endsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L430"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseFloat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L431"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "parseFloat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L432"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L433"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L433"}, {"caller_nid": "lib_design_exit_parsecolor", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L433"}, {"caller_nid": "lib_design_exit_flattenbackdrop", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L455"}, {"caller_nid": "lib_design_exit_relativeluminance", "callee": "channel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L464"}, {"caller_nid": "lib_design_exit_relativeluminance", "callee": "channel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L464"}, {"caller_nid": "lib_design_exit_relativeluminance", "callee": "channel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L464"}, {"caller_nid": "lib_design_exit_contrastratio", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L471"}, {"caller_nid": "lib_design_exit_contrastratio", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L471"}, {"caller_nid": "lib_design_exit_contrastratio", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L472"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L547"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L561"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L561"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L573"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L579"}, {"caller_nid": "lib_design_exit_auditcontrast", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L580"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L603"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L607"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L608"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L608"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L608"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L612"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L614"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L620"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L620"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L621"}, {"caller_nid": "lib_design_exit_auditctastates", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L622"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L678"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L684"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L685"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L692"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L692"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L692"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L697"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L703"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L703"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L704"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L714"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L720"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L720"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L720"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L721"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L721"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L727"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L729"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L735"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L735"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L736"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L736"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L737"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L737"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L744"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L747"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L753"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L753"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L754"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L759"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L765"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L765"}, {"caller_nid": "lib_design_exit_auditresponsive", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L766"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L808"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L811"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L821"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L827"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L829"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L832"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L837"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L843"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L844"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L851"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L861"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L861"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L862"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L868"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L871"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L871"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L876"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L882"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L883"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L883"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L894"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L900"}, {"caller_nid": "lib_design_exit_auditvitals", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L901"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L926"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L929"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L941"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L947"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L947"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L956"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L957"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L973"}, {"caller_nid": "lib_design_exit_auditheadings", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L978"}, {"caller_nid": "lib_design_exit_auditexitpage", "callee": "every", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1026"}, {"caller_nid": "lib_design_exit_countbyseverity", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1033"}, {"caller_nid": "lib_design_exit_dedupefindings", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1047"}, {"caller_nid": "lib_design_exit_dedupefindings", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1048"}, {"caller_nid": "lib_design_exit_dedupefindings", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1048"}, {"caller_nid": "lib_design_exit_dedupefindings", "callee": "values", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1050"}, {"caller_nid": "lib_design_exit_errorsonly", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts", "source_location": "L1059"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "label": "design-exit.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_design_exit_designseverity",
+      "label": "DesignSeverity",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "lib_design_exit_designfindingcode",
+      "label": "DesignFindingCode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_design_exit_designfinding",
+      "label": "DesignFinding",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_design_exit_finding",
+      "label": "finding()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "lib_design_exit_contrast",
+      "label": "CONTRAST",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "lib_design_exit_vitals",
+      "label": "VITALS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_design_exit_responsive",
+      "label": "RESPONSIVE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_design_exit_literal_color_families",
+      "label": "LITERAL_COLOR_FAMILIES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L188"
+    },
+    {
+      "id": "lib_design_exit_color_utility_prefixes",
+      "label": "COLOR_UTILITY_PREFIXES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L217"
+    },
+    {
+      "id": "lib_design_exit_variant",
+      "label": "VARIANT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L250"
+    },
+    {
+      "id": "lib_design_exit_prefix_alt",
+      "label": "PREFIX_ALT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L251"
+    },
+    {
+      "id": "lib_design_exit_family_alt",
+      "label": "FAMILY_ALT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L252"
+    },
+    {
+      "id": "lib_design_exit_literal_utility_re",
+      "label": "LITERAL_UTILITY_RE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L255"
+    },
+    {
+      "id": "lib_design_exit_arbitrary_color_re",
+      "label": "ARBITRARY_COLOR_RE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L261"
+    },
+    {
+      "id": "lib_design_exit_sourcefile",
+      "label": "SourceFile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L273"
+    },
+    {
+      "id": "lib_design_exit_lineof",
+      "label": "lineOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L280"
+    },
+    {
+      "id": "lib_design_exit_linetext",
+      "label": "lineText()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L288"
+    },
+    {
+      "id": "lib_design_exit_auditsourcecolors",
+      "label": "auditSourceColors()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L302"
+    },
+    {
+      "id": "lib_design_exit_auditsourcetree",
+      "label": "auditSourceTree()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L374"
+    },
+    {
+      "id": "lib_design_exit_rgba",
+      "label": "Rgba",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L384"
+    },
+    {
+      "id": "lib_design_exit_parsecolor",
+      "label": "parseColor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L387"
+    },
+    {
+      "id": "lib_design_exit_composite",
+      "label": "composite()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L437"
+    },
+    {
+      "id": "lib_design_exit_flattenbackdrop",
+      "label": "flattenBackdrop()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L454"
+    },
+    {
+      "id": "lib_design_exit_relativeluminance",
+      "label": "relativeLuminance()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L459"
+    },
+    {
+      "id": "lib_design_exit_contrastratio",
+      "label": "contrastRatio()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L468"
+    },
+    {
+      "id": "lib_design_exit_contrastrole",
+      "label": "ContrastRole",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L476"
+    },
+    {
+      "id": "lib_design_exit_contrastsample",
+      "label": "ContrastSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L478"
+    },
+    {
+      "id": "lib_design_exit_thresholdfor",
+      "label": "thresholdFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L495"
+    },
+    {
+      "id": "lib_design_exit_codefor",
+      "label": "codeFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L510"
+    },
+    {
+      "id": "lib_design_exit_auditcontrast",
+      "label": "auditContrast()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L536"
+    },
+    {
+      "id": "lib_design_exit_required_cta_states",
+      "label": "REQUIRED_CTA_STATES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L597"
+    },
+    {
+      "id": "lib_design_exit_auditctastates",
+      "label": "auditCtaStates()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L599"
+    },
+    {
+      "id": "lib_design_exit_overflowsample",
+      "label": "OverflowSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L633"
+    },
+    {
+      "id": "lib_design_exit_banglasample",
+      "label": "BanglaSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L642"
+    },
+    {
+      "id": "lib_design_exit_taptargetsample",
+      "label": "TapTargetSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L654"
+    },
+    {
+      "id": "lib_design_exit_viewportmeasurement",
+      "label": "ViewportMeasurement",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L662"
+    },
+    {
+      "id": "lib_design_exit_auditresponsive",
+      "label": "auditResponsive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L672"
+    },
+    {
+      "id": "lib_design_exit_vitalsmeasurement",
+      "label": "VitalsMeasurement",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L780"
+    },
+    {
+      "id": "lib_design_exit_auditvitals",
+      "label": "auditVitals()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L802"
+    },
+    {
+      "id": "lib_design_exit_headingsample",
+      "label": "HeadingSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L914"
+    },
+    {
+      "id": "lib_design_exit_auditheadings",
+      "label": "auditHeadings()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L921"
+    },
+    {
+      "id": "lib_design_exit_exitmeasurement",
+      "label": "ExitMeasurement",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L995"
+    },
+    {
+      "id": "lib_design_exit_exitreport",
+      "label": "ExitReport",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1001"
+    },
+    {
+      "id": "lib_design_exit_auditexitpage",
+      "label": "auditExitPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1011"
+    },
+    {
+      "id": "lib_design_exit_countbyseverity",
+      "label": "countBySeverity()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1030"
+    },
+    {
+      "id": "lib_design_exit_dedupefindings",
+      "label": "dedupeFindings()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1044"
+    },
+    {
+      "id": "lib_design_exit_formatfinding",
+      "label": "formatFinding()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1053"
+    },
+    {
+      "id": "lib_design_exit_errorsonly",
+      "label": "errorsOnly()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1058"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_designseverity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_designfindingcode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_designfinding",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_finding",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_contrast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_vitals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_responsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_literal_color_families",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_color_utility_prefixes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_variant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_prefix_alt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L251",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_family_alt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_literal_utility_re",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_arbitrary_color_re",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L261",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_sourcefile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L273",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_lineof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_linetext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L288",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditsourcecolors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditsourcetree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L374",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_rgba",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L384",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_parsecolor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L387",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_composite",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L437",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_flattenbackdrop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L454",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_relativeluminance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L459",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_contrastratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L468",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_contrastrole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L476",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_contrastsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L478",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_thresholdfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L495",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_codefor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L510",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditcontrast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L536",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_required_cta_states",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L597",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditctastates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L599",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_overflowsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L633",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_banglasample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L642",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_taptargetsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L654",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_viewportmeasurement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L662",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditresponsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L672",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_vitalsmeasurement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L780",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditvitals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L802",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_headingsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L914",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditheadings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L921",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_exitmeasurement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L995",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_exitreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1001",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_auditexitpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1011",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_countbyseverity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1030",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_dedupefindings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1044",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_formatfinding",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1053",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_design_exit_ts",
+      "target": "lib_design_exit_errorsonly",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1058",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditsourcecolors",
+      "target": "lib_design_exit_linetext",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L358",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_contrastratio",
+      "target": "lib_design_exit_relativeluminance",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L469",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_parsecolor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L544",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_finding",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L548",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_flattenbackdrop",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L564",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_composite",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L565",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_contrastratio",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L566",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_thresholdfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L567",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditcontrast",
+      "target": "lib_design_exit_codefor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L575",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditctastates",
+      "target": "lib_design_exit_finding",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L615",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditresponsive",
+      "target": "lib_design_exit_finding",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L679",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditvitals",
+      "target": "lib_design_exit_finding",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L812",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditheadings",
+      "target": "lib_design_exit_finding",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L930",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_auditresponsive",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1014",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_auditcontrast",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1015",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_auditctastates",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1016",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_auditheadings",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1017",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_auditvitals",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1018",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_design_exit_auditexitpage",
+      "target": "lib_design_exit_countbyseverity",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1025",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_design_exit_lineof",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L283"
+    },
+    {
+      "caller_nid": "lib_design_exit_linetext",
+      "callee": "lastIndexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_design_exit_linetext",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_design_exit_linetext",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L291"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L337"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L360"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcecolors",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L361"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcetree",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L375"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditsourcetree",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L375"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L392"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "expand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L398"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "expand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L399"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "expand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L400"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "expand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L401"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseInt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L406"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L406"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseInt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L407"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L407"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseInt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseInt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L415"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L424"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L424"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "every",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L425"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "endsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L430"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseFloat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L431"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "parseFloat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L432"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_design_exit_parsecolor",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_design_exit_flattenbackdrop",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L455"
+    },
+    {
+      "caller_nid": "lib_design_exit_relativeluminance",
+      "callee": "channel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L464"
+    },
+    {
+      "caller_nid": "lib_design_exit_relativeluminance",
+      "callee": "channel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L464"
+    },
+    {
+      "caller_nid": "lib_design_exit_relativeluminance",
+      "callee": "channel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L464"
+    },
+    {
+      "caller_nid": "lib_design_exit_contrastratio",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L471"
+    },
+    {
+      "caller_nid": "lib_design_exit_contrastratio",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L471"
+    },
+    {
+      "caller_nid": "lib_design_exit_contrastratio",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L472"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L547"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L561"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L561"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L573"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L579"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditcontrast",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L580"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L603"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L607"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L608"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L608"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L608"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L612"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L614"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L620"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L620"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L621"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditctastates",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L622"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L678"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L684"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L685"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L692"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L692"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L692"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L697"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L703"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L703"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L704"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L714"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L720"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L720"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L720"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L721"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L721"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L727"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L729"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L735"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L735"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L736"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L736"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L737"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L737"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L744"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L747"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L753"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L753"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L754"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L759"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L765"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L765"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditresponsive",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L766"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L808"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L811"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L821"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L829"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L832"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L837"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L843"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L844"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L851"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L861"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L861"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L862"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L871"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L871"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L876"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L882"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L883"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L883"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L894"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L900"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditvitals",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L901"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L926"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L929"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L941"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L947"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L947"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L956"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L957"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L973"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditheadings",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L978"
+    },
+    {
+      "caller_nid": "lib_design_exit_auditexitpage",
+      "callee": "every",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1026"
+    },
+    {
+      "caller_nid": "lib_design_exit_countbyseverity",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1033"
+    },
+    {
+      "caller_nid": "lib_design_exit_dedupefindings",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1047"
+    },
+    {
+      "caller_nid": "lib_design_exit_dedupefindings",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1048"
+    },
+    {
+      "caller_nid": "lib_design_exit_dedupefindings",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1048"
+    },
+    {
+      "caller_nid": "lib_design_exit_dedupefindings",
+      "callee": "values",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1050"
+    },
+    {
+      "caller_nid": "lib_design_exit_errorsonly",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/design-exit.ts",
+      "source_location": "L1059"
+    }
+  ]
+}

@@ -34,11 +34,15 @@ function hydrate(store: string): ChannelState {
   if (typeof window !== "undefined") {
     try {
       const raw = window.localStorage.getItem(storageKey(store));
-      const parsed = raw ? (JSON.parse(raw) as Partial<Record<ChannelSlot, unknown>>) : {};
+      const parsed = raw
+        ? (JSON.parse(raw) as Partial<Record<ChannelSlot, unknown>>)
+        : {};
       state = CHANNEL_SLOTS.reduce((acc, slot) => {
         const values = parsed[slot];
         acc[slot] = Array.isArray(values)
-          ? values.filter((v): v is string => typeof v === "string").slice(0, SLOT_LIMIT[slot])
+          ? values
+              .filter((v): v is string => typeof v === "string")
+              .slice(0, SLOT_LIMIT[slot])
           : [];
         return acc;
       }, {} as ChannelState);
@@ -67,14 +71,25 @@ export function readSlot(store: string, slot: ChannelSlot): string[] {
 }
 
 /** Adds an id, most-recent-first, de-duplicated and capped. */
-export function pushSlot(store: string, slot: ChannelSlot, id: string): string[] {
+export function pushSlot(
+  store: string,
+  slot: ChannelSlot,
+  id: string,
+): string[] {
   const state = hydrate(store);
-  const next = [id, ...state[slot].filter((v) => v !== id)].slice(0, SLOT_LIMIT[slot]);
+  const next = [id, ...state[slot].filter((v) => v !== id)].slice(
+    0,
+    SLOT_LIMIT[slot],
+  );
   commit(store, { ...state, [slot]: next });
   return next;
 }
 
-export function removeSlot(store: string, slot: ChannelSlot, id: string): string[] {
+export function removeSlot(
+  store: string,
+  slot: ChannelSlot,
+  id: string,
+): string[] {
   const state = hydrate(store);
   const next = state[slot].filter((v) => v !== id);
   commit(store, { ...state, [slot]: next });
@@ -82,7 +97,11 @@ export function removeSlot(store: string, slot: ChannelSlot, id: string): string
 }
 
 /** Present ⇒ remove, absent ⇒ add. The wishlist / compare button contract. */
-export function toggleSlot(store: string, slot: ChannelSlot, id: string): string[] {
+export function toggleSlot(
+  store: string,
+  slot: ChannelSlot,
+  id: string,
+): string[] {
   return readSlot(store, slot).includes(id)
     ? removeSlot(store, slot, id)
     : pushSlot(store, slot, id);
@@ -93,7 +112,10 @@ export function clearSlot(store: string, slot: ChannelSlot): void {
 }
 
 /** `useSyncExternalStore`-compatible subscription. */
-export function subscribeChannel(store: string, listener: () => void): () => void {
+export function subscribeChannel(
+  store: string,
+  listener: () => void,
+): () => void {
   const set = listeners.get(store) ?? new Set<() => void>();
   set.add(listener);
   listeners.set(store, set);

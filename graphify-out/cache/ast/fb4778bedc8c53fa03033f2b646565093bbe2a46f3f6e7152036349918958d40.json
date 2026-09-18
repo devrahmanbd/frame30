@@ -1,1 +1,604 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_ops_server_ts", "label": "ops.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L1"}, {"id": "lib_ops_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L23"}, {"id": "lib_ops_server_backuprunrow", "label": "BackupRunRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L25"}, {"id": "lib_ops_server_retentionrunrow", "label": "RetentionRunRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L36"}, {"id": "lib_ops_server_incidentrow", "label": "IncidentRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L43"}, {"id": "lib_ops_server_componentrow", "label": "ComponentRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L53"}, {"id": "lib_ops_server_incidentupdaterow", "label": "IncidentUpdateRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L54"}, {"id": "lib_ops_server_statusincident", "label": "StatusIncident", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L61"}, {"id": "lib_ops_server_admin", "label": "Admin", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L71"}, {"id": "lib_ops_server_loaddeadletters", "label": "loadDeadLetters()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L84"}, {"id": "lib_ops_server_replaydeadletter", "label": "replayDeadLetter()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L145"}, {"id": "lib_ops_server_loadreliability", "label": "loadReliability()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L200"}, {"id": "lib_ops_server_recordbackuprun", "label": "recordBackupRun()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L232"}, {"id": "lib_ops_server_runretentionsweep", "label": "runRetentionSweep()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L281"}, {"id": "lib_ops_server_requestretentionsweep", "label": "requestRetentionSweep()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L298"}, {"id": "lib_ops_server_loadincidents", "label": "loadIncidents()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L309"}, {"id": "lib_ops_server_openincident", "label": "openIncident()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L338"}, {"id": "lib_ops_server_postincidentupdate", "label": "postIncidentUpdate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L389"}, {"id": "lib_ops_server_setcomponentstate", "label": "setComponentState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L436"}, {"id": "lib_ops_server_publicstatus", "label": "publicStatus()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L467"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_owner_ops_server_ownergate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_owner_ops_server_ownererror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_cache_server_invalidate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_ops_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_cantransition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_dlqsummary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_componentstate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_deadletter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_incidentstatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_backuprunrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_retentionrunrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_incidentrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_componentrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_incidentupdaterow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_statusincident", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_loaddeadletters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_replaydeadletter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_loadreliability", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_recordbackuprun", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L232", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_runretentionsweep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L281", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_requestretentionsweep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L298", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_loadincidents", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L309", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_openincident", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L338", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_postincidentupdate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L389", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_setcomponentstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L436", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_server_ts", "target": "lib_ops_server_publicstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L467", "weight": 1.0}, {"source": "lib_ops_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L74", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_ops_server_loaddeadletters", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L85"}, {"caller_nid": "lib_ops_server_replaydeadletter", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L150"}, {"caller_nid": "lib_ops_server_loadreliability", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L201"}, {"caller_nid": "lib_ops_server_recordbackuprun", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L244"}, {"caller_nid": "lib_ops_server_runretentionsweep", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L282"}, {"caller_nid": "lib_ops_server_requestretentionsweep", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L299"}, {"caller_nid": "lib_ops_server_loadincidents", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L310"}, {"caller_nid": "lib_ops_server_openincident", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L349"}, {"caller_nid": "lib_ops_server_postincidentupdate", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L394"}, {"caller_nid": "lib_ops_server_setcomponentstate", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L441"}, {"caller_nid": "lib_ops_server_publicstatus", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts", "source_location": "L468"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "label": "ops.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ops_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_ops_server_backuprunrow",
+      "label": "BackupRunRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_ops_server_retentionrunrow",
+      "label": "RetentionRunRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_ops_server_incidentrow",
+      "label": "IncidentRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "lib_ops_server_componentrow",
+      "label": "ComponentRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_ops_server_incidentupdaterow",
+      "label": "IncidentUpdateRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_ops_server_statusincident",
+      "label": "StatusIncident",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_ops_server_admin",
+      "label": "Admin",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "lib_ops_server_loaddeadletters",
+      "label": "loadDeadLetters()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_ops_server_replaydeadletter",
+      "label": "replayDeadLetter()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "lib_ops_server_loadreliability",
+      "label": "loadReliability()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L200"
+    },
+    {
+      "id": "lib_ops_server_recordbackuprun",
+      "label": "recordBackupRun()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L232"
+    },
+    {
+      "id": "lib_ops_server_runretentionsweep",
+      "label": "runRetentionSweep()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L281"
+    },
+    {
+      "id": "lib_ops_server_requestretentionsweep",
+      "label": "requestRetentionSweep()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L298"
+    },
+    {
+      "id": "lib_ops_server_loadincidents",
+      "label": "loadIncidents()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "id": "lib_ops_server_openincident",
+      "label": "openIncident()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L338"
+    },
+    {
+      "id": "lib_ops_server_postincidentupdate",
+      "label": "postIncidentUpdate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L389"
+    },
+    {
+      "id": "lib_ops_server_setcomponentstate",
+      "label": "setComponentState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L436"
+    },
+    {
+      "id": "lib_ops_server_publicstatus",
+      "label": "publicStatus()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L467"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_owner_ops_server_ownererror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_cache_server_invalidate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ops_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_cantransition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_dlqsummary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_componentstate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_deadletter",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_incidentstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_backuprunrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_retentionrunrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_incidentrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_componentrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_incidentupdaterow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_statusincident",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_loaddeadletters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_replaydeadletter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_loadreliability",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_recordbackuprun",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_runretentionsweep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_requestretentionsweep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_loadincidents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L309",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_openincident",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L338",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_postincidentupdate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L389",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_setcomponentstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L436",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_server_ts",
+      "target": "lib_ops_server_publicstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L467",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_ops_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_ops_server_loaddeadletters",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_ops_server_replaydeadletter",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "lib_ops_server_loadreliability",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "lib_ops_server_recordbackuprun",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_ops_server_runretentionsweep",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L282"
+    },
+    {
+      "caller_nid": "lib_ops_server_requestretentionsweep",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "lib_ops_server_loadincidents",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_ops_server_openincident",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "lib_ops_server_postincidentupdate",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "lib_ops_server_setcomponentstate",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L441"
+    },
+    {
+      "caller_nid": "lib_ops_server_publicstatus",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops.server.ts",
+      "source_location": "L468"
+    }
+  ]
+}

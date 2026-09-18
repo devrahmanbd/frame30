@@ -22,15 +22,17 @@ export default defineConfig(async ({ command }) => {
     }
   }
 
-  plugins.push(
-    viteReact(),
-    tailwindcss(),
-    tsconfigPaths(),
-  );
+  plugins.push(viteReact(), tailwindcss(), tsconfigPaths());
 
   return {
-    server: { port: 3000, host: '0.0.0.0', allowedHosts: true, hmr: process.env.DISABLE_HMR !== 'true', watch: process.env.DISABLE_HMR === 'true' ? null : {} },
-    
+    server: {
+      port: 3000,
+      host: "0.0.0.0",
+      allowedHosts: true,
+      hmr: process.env.DISABLE_HMR !== "true",
+      watch: process.env.DISABLE_HMR === "true" ? null : {},
+    },
+
     build: {
       target: browserslistToEsbuild(),
     },

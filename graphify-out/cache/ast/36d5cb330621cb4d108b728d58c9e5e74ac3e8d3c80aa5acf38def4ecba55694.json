@@ -1,1 +1,328 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "label": "CartContext.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L1"}, {"id": "builder_cartcontext_carttotals", "label": "CartTotals", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L18"}, {"id": "builder_cartcontext_cartcontextvalue", "label": "CartContextValue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L42"}, {"id": "builder_cartcontext_demo_cart", "label": "DEMO_CART", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L67"}, {"id": "builder_cartcontext_cartctx", "label": "CartCtx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L118"}, {"id": "builder_cartcontext_usecartcontext", "label": "useCartContext()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L122"}, {"id": "builder_cartcontext_uselivecart", "label": "useLiveCart()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L131"}, {"id": "builder_cartcontext_opencartdrawer", "label": "openCartDrawer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L207"}, {"id": "builder_cartcontext_usecartdraweropener", "label": "useCartDrawerOpener()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L214"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "users_rahman_documents_frame30_src_lib_cart_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "lib_cart_usecart", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "lib_cart_cartline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "lib_storefront_functions_quotecart", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "lib_payment_rails_paymentmethodkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_carttotals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_cartcontextvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_demo_cart", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_cartctx", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_usecartcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_uselivecart", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_opencartdrawer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L207", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "target": "builder_cartcontext_usecartdraweropener", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L214", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_cartcontext_usecartcontext", "callee": "useContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L123"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useCart", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L132"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L133"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L134"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L135"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L136"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L137"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L138"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L139"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L141"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L143"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L174"}, {"caller_nid": "builder_cartcontext_uselivecart", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L176"}, {"caller_nid": "builder_cartcontext_opencartdrawer", "callee": "dispatchEvent", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L210"}, {"caller_nid": "builder_cartcontext_usecartdraweropener", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx", "source_location": "L215"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "label": "CartContext.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_cartcontext_carttotals",
+      "label": "CartTotals",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "builder_cartcontext_cartcontextvalue",
+      "label": "CartContextValue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "builder_cartcontext_demo_cart",
+      "label": "DEMO_CART",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L67"
+    },
+    {
+      "id": "builder_cartcontext_cartctx",
+      "label": "CartCtx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L118"
+    },
+    {
+      "id": "builder_cartcontext_usecartcontext",
+      "label": "useCartContext()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L122"
+    },
+    {
+      "id": "builder_cartcontext_uselivecart",
+      "label": "useLiveCart()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L131"
+    },
+    {
+      "id": "builder_cartcontext_opencartdrawer",
+      "label": "openCartDrawer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L207"
+    },
+    {
+      "id": "builder_cartcontext_usecartdraweropener",
+      "label": "useCartDrawerOpener()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L214"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_cart_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "lib_cart_usecart",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "lib_cart_cartline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "lib_storefront_functions_quotecart",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "lib_payment_rails_paymentmethodkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_carttotals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_cartcontextvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_demo_cart",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_cartctx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_usecartcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_uselivecart",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_opencartdrawer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "target": "builder_cartcontext_usecartdraweropener",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L214",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_cartcontext_usecartcontext",
+      "callee": "useContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useCart",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "builder_cartcontext_uselivecart",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "builder_cartcontext_opencartdrawer",
+      "callee": "dispatchEvent",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "builder_cartcontext_usecartdraweropener",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/CartContext.tsx",
+      "source_location": "L215"
+    }
+  ]
+}

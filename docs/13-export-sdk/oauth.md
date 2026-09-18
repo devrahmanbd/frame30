@@ -75,26 +75,26 @@ token pair:          active → expired | rotated | revoked     (refresh rotates
 
 All RLS-bound to `merchant_id` (README §3 guardrail 2):
 
-| Table | Role |
-| --- | --- |
-| `oauth_clients` | apps: `client_id`, `app_name`, redirect URI allowlist, `client_secret_hash`, scope-allowlist, `merchant_id`, `status active|disabled`, `owner_staff_id` |
-| `oauth_authorizations` | approved consent + code: `merchant_id`, `app_client_id`, `staff_user_id`, `scopes`, `code_hash`, `redirect_uri`, `expires_at`, `challenge` PKCE |
-| `oauth_token_records` | `access_token_hash`, `refresh_token_hash`, `merchant_id`, `app_client_id`, `staff_user_id`, `scopes`, `role_lookup` (computed intersection), `issued_at`, `expires_at`, `rotated_before_id`, `revoked_at`, `revoked_by` |
-| `app_consents` | consent ledger: grant_scope snap, `granted_at`, `revoked_at`, change history (audit) |
+| Table                  | Role                                                                                                                                                                                                                    |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `oauth_clients`        | apps: `client_id`, `app_name`, redirect URI allowlist, `client_secret_hash`, scope-allowlist, `merchant_id`, `status active                                                                                             | disabled`, `owner_staff_id` |
+| `oauth_authorizations` | approved consent + code: `merchant_id`, `app_client_id`, `staff_user_id`, `scopes`, `code_hash`, `redirect_uri`, `expires_at`, `challenge` PKCE                                                                         |
+| `oauth_token_records`  | `access_token_hash`, `refresh_token_hash`, `merchant_id`, `app_client_id`, `staff_user_id`, `scopes`, `role_lookup` (computed intersection), `issued_at`, `expires_at`, `rotated_before_id`, `revoked_at`, `revoked_by` |
+| `app_consents`         | consent ledger: grant_scope snap, `granted_at`, `revoked_at`, change history (audit)                                                                                                                                    |
 
 JWT claims a bound for gateway/dev-TLS: `sub`=staff id, `merchant_id`, `role`, `scope`, `jti` (token id), `iat/exp`, `iss` (Framique auth origin). RLS **enforces** the row as authority; claims are cache, never authority.
 
 ## 6. Endpoints (write/read)
 
-| Method + path | Purpose | Auth on the path | Notes |
-| --- | --- | --- | --- |
-| `POST /oauth/authorize` | Authorization code (PKCE) | session cookie (staff) | UI consent; returns `code` once |
-| `POST /oauth/token` | Exchange code, refresh | none (PKCE/secret proof) | rotate-on-use |
-| `POST /oauth/revoke` | Burn access + refresh | refresh token | idempotent, audit |
-| `GET /oauth/validate` | Validate/refresh claims (apps peek) | bearer | returns canonical grant record |
-| `POST /api/v1/apps` | Create/rotate/disable an OAuth app | admin API key (staff rbac) | scope allowlist required |
-| `POST /api/v1/apps/:id/rotate-secret` | Rotation | admin key | old secret dies instantly |
-| `DELETE /api/v1/apps/:id/consents` | Revoke all consents | admin key | cascade revoke tokens |
+| Method + path                         | Purpose                             | Auth on the path           | Notes                           |
+| ------------------------------------- | ----------------------------------- | -------------------------- | ------------------------------- |
+| `POST /oauth/authorize`               | Authorization code (PKCE)           | session cookie (staff)     | UI consent; returns `code` once |
+| `POST /oauth/token`                   | Exchange code, refresh              | none (PKCE/secret proof)   | rotate-on-use                   |
+| `POST /oauth/revoke`                  | Burn access + refresh               | refresh token              | idempotent, audit               |
+| `GET /oauth/validate`                 | Validate/refresh claims (apps peek) | bearer                     | returns canonical grant record  |
+| `POST /api/v1/apps`                   | Create/rotate/disable an OAuth app  | admin API key (staff rbac) | scope allowlist required        |
+| `POST /api/v1/apps/:id/rotate-secret` | Rotation                            | admin key                  | old secret dies instantly       |
+| `DELETE /api/v1/apps/:id/consents`    | Revoke all consents                 | admin key                  | cascade revoke tokens           |
 
 Rate limit: `/oauth/token` shares `rate_limit_buckets` (README §3 shared
 with `docs/06-payments`); auth-failure (credential-stuffing) escalation all
@@ -169,6 +169,7 @@ before anything executes (webhook-gateway semantics, same as README §7).
   when this is revoked" preview line.
 
 ## 13. Residual v0 gaps / named owners
+
 - Production TTL default for access vs refresh tokens — named TBD (owner:
   Platform) before paper.
 - Rate-left the crate numbers / bucket sizes on `/oauth/token` shared

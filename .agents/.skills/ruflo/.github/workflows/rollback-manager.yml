@@ -2,7 +2,12 @@ name: 🔄 Automated Rollback Manager
 
 on:
   workflow_run:
-    workflows: ["🔍 Verification Pipeline", "🎯 Truth Scoring Pipeline", "🔗 Cross-Agent Integration Tests"]
+    workflows:
+      [
+        "🔍 Verification Pipeline",
+        "🎯 Truth Scoring Pipeline",
+        "🔗 Cross-Agent Integration Tests",
+      ]
     types: [completed]
     branches: [main, develop]
   push:
@@ -10,21 +15,21 @@ on:
   workflow_dispatch:
     inputs:
       rollback_target:
-        description: 'Target commit SHA or tag for rollback'
+        description: "Target commit SHA or tag for rollback"
         required: true
       rollback_reason:
-        description: 'Reason for rollback'
+        description: "Reason for rollback"
         required: true
-        default: 'Manual rollback requested'
+        default: "Manual rollback requested"
       emergency_mode:
-        description: 'Emergency rollback mode (skip confirmations)'
+        description: "Emergency rollback mode (skip confirmations)"
         required: false
         default: false
         type: boolean
       rollback_scope:
-        description: 'Rollback scope'
+        description: "Rollback scope"
         required: false
-        default: 'application'
+        default: "application"
         type: choice
         options:
           - application
@@ -33,7 +38,7 @@ on:
           - full
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
   ROLLBACK_RETENTION_DAYS: 90
   CRITICAL_FAILURE_THRESHOLD: 3
   MONITORING_WINDOW_MINUTES: 15
@@ -65,15 +70,15 @@ jobs:
         id: detect
         run: |
           echo "🚨 Analyzing failure conditions..."
-          
+
           ROLLBACK_SESSION="rollback-$(date +%Y%m%d-%H%M%S)-${{ github.sha }}"
           echo "rollback-session-id=$ROLLBACK_SESSION" >> $GITHUB_OUTPUT
-          
+
           ROLLBACK_REQUIRED="false"
           FAILURE_TYPE="none"
           FAILURE_SEVERITY="low"
           ROLLBACK_TARGET=""
-          
+
           # Check workflow run results if triggered by workflow_run
           if [ "${{ github.event_name }}" = "workflow_run" ]; then
             WORKFLOW_CONCLUSION="${{ github.event.workflow_run.conclusion }}"
@@ -103,7 +108,7 @@ jobs:
               esac
             fi
           fi
-          
+
           # Check for recent commit history to find safe rollback target
           if [ "$ROLLBACK_REQUIRED" = "true" ]; then
             # Find the last successful commit (simplified logic)
@@ -112,12 +117,12 @@ jobs:
               ROLLBACK_TARGET="HEAD~1"
             fi
           fi
-          
+
           echo "rollback-required=$ROLLBACK_REQUIRED" >> $GITHUB_OUTPUT
           echo "failure-type=$FAILURE_TYPE" >> $GITHUB_OUTPUT
           echo "failure-severity=$FAILURE_SEVERITY" >> $GITHUB_OUTPUT
           echo "rollback-target=$ROLLBACK_TARGET" >> $GITHUB_OUTPUT
-          
+
           echo "🔍 Detection Results:"
           echo "  Rollback Required: $ROLLBACK_REQUIRED"
           echo "  Failure Type: $FAILURE_TYPE"
@@ -128,9 +133,9 @@ jobs:
         if: steps.detect.outputs.rollback-required == 'true'
         run: |
           echo "📋 Creating failure report..."
-          
+
           mkdir -p rollback-data
-          
+
           cat > rollback-data/failure-report.json << EOF
           {
             "sessionId": "${{ steps.detect.outputs.rollback-session-id }}",
@@ -181,7 +186,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -190,11 +195,11 @@ jobs:
         id: validate
         run: |
           echo "🔍 Validating rollback target..."
-          
+
           ROLLBACK_TARGET="${{ github.event.inputs.rollback_target || needs.failure-detection.outputs.rollback-target }}"
           VALIDATION_PASSED="false"
           BACKUP_CREATED="false"
-          
+
           if [ -n "$ROLLBACK_TARGET" ]; then
             # Check if target commit exists
             if git cat-file -e "$ROLLBACK_TARGET^{commit}" 2>/dev/null; then
@@ -213,7 +218,7 @@ jobs:
           else
             echo "❌ No rollback target specified"
           fi
-          
+
           echo "validation-passed=$VALIDATION_PASSED" >> $GITHUB_OUTPUT
           echo "backup-created=$BACKUP_CREATED" >> $GITHUB_OUTPUT
 
@@ -221,9 +226,9 @@ jobs:
         if: steps.validate.outputs.validation-passed == 'true'
         run: |
           echo "💾 Creating current state backup..."
-          
+
           mkdir -p rollback-data/backup
-          
+
           # Create backup metadata
           cat > rollback-data/backup/backup-metadata.json << EOF
           {
@@ -235,15 +240,15 @@ jobs:
             "backupType": "pre-rollback"
           }
           EOF
-          
+
           # Create git bundle for backup
           git bundle create rollback-data/backup/current-state.bundle HEAD
-          
+
           # Backup package.json and important config files
           cp package.json rollback-data/backup/ 2>/dev/null || true
           cp package-lock.json rollback-data/backup/ 2>/dev/null || true
           cp claude-flow.config.json rollback-data/backup/ 2>/dev/null || true
-          
+
           echo "✅ Backup created successfully"
 
       - name: Test rollback target viability
@@ -283,7 +288,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [failure-detection, pre-rollback-validation]
     if: needs.pre-rollback-validation.outputs.validation-passed == 'true' && (needs.failure-detection.outputs.failure-severity == 'high' || github.event.inputs.emergency_mode == 'true' || github.event_name == 'workflow_dispatch')
-    environment: 
+    environment:
       name: rollback-approval
     outputs:
       rollback-executed: ${{ steps.rollback.outputs.rollback-executed }}
@@ -315,15 +320,15 @@ jobs:
         id: rollback
         run: |
           echo "🔄 Executing rollback..."
-          
+
           ROLLBACK_TARGET="${{ github.event.inputs.rollback_target || needs.failure-detection.outputs.rollback-target }}"
           ROLLBACK_REASON="${{ github.event.inputs.rollback_reason || 'Automated rollback due to CI failure' }}"
           ROLLBACK_EXECUTED="false"
           ROLLBACK_COMMIT=""
-          
+
           echo "Target: $ROLLBACK_TARGET"
           echo "Reason: $ROLLBACK_REASON"
-          
+
           if [ -n "$ROLLBACK_TARGET" ]; then
             # Create rollback commit
             echo "Creating rollback commit..."
@@ -334,21 +339,21 @@ jobs:
             # Create a revert commit with metadata
             cat > ROLLBACK_INFO.md << EOF
           # Rollback Information
-          
+
           **Rollback Timestamp:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
           **Target Commit:** $ROLLBACK_TARGET
           **Reason:** $ROLLBACK_REASON
           **Triggered By:** ${{ github.actor }}
           **Session ID:** ${{ needs.failure-detection.outputs.rollback-session-id || 'manual' }}
-          
+
           ## Original State
           - **Commit:** ${{ github.sha }}
           - **Branch:** ${{ github.ref_name }}
-          
+
           ## Rollback Details
           - **Scope:** ${{ github.event.inputs.rollback_scope || 'application' }}
           - **Emergency Mode:** ${{ github.event.inputs.emergency_mode || 'false' }}
-          
+
           This rollback was executed automatically by the Rollback Manager workflow.
           EOF
             
@@ -358,9 +363,9 @@ jobs:
           Reason: $ROLLBACK_REASON
           Session: ${{ needs.failure-detection.outputs.rollback-session-id || 'manual' }}
           Scope: ${{ github.event.inputs.rollback_scope || 'application' }}
-          
+
           🤖 Generated by GitHub Actions Rollback Manager
-          
+
           Co-Authored-By: Rollback Manager <noreply@github.com>"
             
             ROLLBACK_COMMIT=$(git rev-parse HEAD)
@@ -370,7 +375,7 @@ jobs:
           else
             echo "❌ No rollback target specified"
           fi
-          
+
           echo "rollback-executed=$ROLLBACK_EXECUTED" >> $GITHUB_OUTPUT
           echo "rollback-commit=$ROLLBACK_COMMIT" >> $GITHUB_OUTPUT
 
@@ -378,31 +383,31 @@ jobs:
         if: steps.rollback.outputs.rollback-executed == 'true'
         run: |
           echo "📤 Pushing rollback commit..."
-          
+
           # Force push the rollback (use with caution)
           if [ "${{ github.event.inputs.emergency_mode }}" = "true" ]; then
             git push origin HEAD:${{ github.ref_name }} --force-with-lease
           else
             git push origin HEAD:${{ github.ref_name }}
           fi
-          
+
           echo "✅ Rollback pushed successfully"
 
       - name: Create rollback tag
         if: steps.rollback.outputs.rollback-executed == 'true'
         run: |
           echo "🏷️ Creating rollback tag..."
-          
+
           TAG_NAME="rollback-$(date +%Y%m%d-%H%M%S)"
-          
+
           git tag -a "$TAG_NAME" -m "Rollback executed on $(date -u)
-          
+
           Target: ${{ github.event.inputs.rollback_target || needs.failure-detection.outputs.rollback-target }}
           Reason: ${{ github.event.inputs.rollback_reason || 'Automated rollback' }}
           Session: ${{ needs.failure-detection.outputs.rollback-session-id || 'manual' }}"
-          
+
           git push origin "$TAG_NAME"
-          
+
           echo "✅ Rollback tag $TAG_NAME created"
 
   # Post-rollback verification
@@ -421,7 +426,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -429,35 +434,35 @@ jobs:
       - name: Verify build functionality
         run: |
           echo "🔍 Verifying build functionality..."
-          
+
           # Test basic build
           npm run build:ts || (echo "❌ Build failed after rollback" && exit 1)
-          
+
           echo "✅ Build verification passed"
 
       - name: Run smoke tests
         run: |
           echo "🧪 Running smoke tests..."
-          
+
           # Run basic tests to ensure functionality
           timeout 120s npm run test:unit || echo "⚠️ Some tests failed"
-          
+
           echo "✅ Smoke tests completed"
 
       - name: Verify CLI functionality
         run: |
           echo "🖥️ Verifying CLI functionality..."
-          
+
           # Test basic CLI commands
           node dist/cli/main.js --version || (echo "❌ CLI verification failed" && exit 1)
           node dist/cli/main.js --help > /dev/null || (echo "❌ CLI help failed" && exit 1)
-          
+
           echo "✅ CLI verification passed"
 
       - name: System health check
         run: |
           echo "💊 Running system health check..."
-          
+
           node -e "
           async function healthCheck() {
             const checks = {
@@ -504,7 +509,7 @@ jobs:
               process.exit(1);
             }
           }
-          
+
           healthCheck().catch(console.error);
           "
 
@@ -521,22 +526,22 @@ jobs:
       - name: Monitor system stability
         run: |
           echo "📊 Monitoring system stability after rollback..."
-          
+
           # Monitor for specified window
           MONITOR_DURATION="${{ env.MONITORING_WINDOW_MINUTES }}"
           echo "Monitoring for $MONITOR_DURATION minutes..."
-          
+
           # Simulate monitoring (in real scenario, this would check actual metrics)
           sleep 30  # Short monitoring for demo
-          
+
           echo "✅ Monitoring completed - system appears stable"
 
       - name: Generate rollback report
         run: |
           echo "📋 Generating rollback report..."
-          
+
           mkdir -p rollback-reports
-          
+
           cat > rollback-reports/rollback-report.json << EOF
           {
             "sessionId": "${{ needs.failure-detection.outputs.rollback-session-id || 'manual' }}",
@@ -561,45 +566,45 @@ jobs:
             "status": "completed_successfully"
           }
           EOF
-          
+
           # Generate markdown report
           cat > rollback-reports/rollback-report.md << 'EOF'
           # 🔄 Rollback Execution Report
-          
+
           **Session ID:** ${{ needs.failure-detection.outputs.rollback-session-id || 'manual' }}
           **Execution Time:** $(date -u +%Y-%m-%dT%H:%M:%SZ)
           **Status:** ✅ COMPLETED SUCCESSFULLY
-          
+
           ## Rollback Details
-          
+
           - **Target Commit:** ${{ github.event.inputs.rollback_target || needs.failure-detection.outputs.rollback-target }}
           - **Rollback Commit:** ${{ needs.execute-rollback.outputs.rollback-commit }}
           - **Reason:** ${{ github.event.inputs.rollback_reason || 'Automated rollback' }}
           - **Scope:** ${{ github.event.inputs.rollback_scope || 'application' }}
-          
+
           ## Verification Results
-          
+
           | Check | Status |
           |-------|--------|
           | Build | ✅ Passed |
           | Tests | ✅ Passed |
           | CLI | ✅ Working |
           | Health | ✅ Healthy |
-          
+
           ## Post-Rollback Monitoring
-          
+
           - **Duration:** ${{ env.MONITORING_WINDOW_MINUTES }} minutes
           - **System Stability:** ✅ Stable
           - **Issues Detected:** 0
-          
+
           ## Next Steps
-          
+
           1. ✅ System has been successfully rolled back
           2. ✅ All verification checks passed
           3. ✅ Monitoring completed successfully
           4. 🔍 Investigate original failure cause
           5. 🛠️ Implement fixes before next deployment
-          
+
           ---
           *Generated by Automated Rollback Manager*
           EOF
@@ -618,22 +623,22 @@ jobs:
           script: |
             const report = `
             ## 🔄 Automated Rollback Executed
-            
+
             **Status:** ✅ COMPLETED SUCCESSFULLY
             **Commit:** ${{ needs.execute-rollback.outputs.rollback-commit }}
             **Target:** ${{ github.event.inputs.rollback_target || needs.failure-detection.outputs.rollback-target }}
             **Reason:** ${{ github.event.inputs.rollback_reason || 'Automated rollback due to CI failure' }}
-            
+
             ### Verification Summary
             - ✅ Build successful
             - ✅ Tests passing
             - ✅ CLI functional
             - ✅ System healthy
-            
+
             The system has been automatically rolled back and is now stable.
             Please investigate the original failure before the next deployment.
             `;
-            
+
             // Create an issue for tracking
             github.rest.issues.create({
               owner: context.repo.owner,
@@ -649,7 +654,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [failure-detection, pre-rollback-validation]
     if: needs.failure-detection.outputs.rollback-required == 'true' && needs.failure-detection.outputs.failure-severity != 'high' && github.event.inputs.emergency_mode != 'true'
-    environment: 
+    environment:
       name: rollback-manual-approval
     steps:
       - name: Manual approval required

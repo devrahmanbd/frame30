@@ -36,11 +36,11 @@ export type CircuitBreakerState = {
 };
 
 export const CIRCUIT_BREAKER_THRESHOLDS = {
-  MAX_ERROR_RATE_5XX: 0.005,             // 0.5% maximum allowable 5xx rate
-  MAX_P99_LATENCY_MS: 800,               // 800ms p99 latency threshold
-  CONSECUTIVE_LATENCY_BREACHES: 2,        // 2 consecutive minutes required
-  MAX_UNHANDLED_EXCEPTIONS: 10,          // 10 unhandled exceptions threshold
-  ROLLBACK_SLA_MS: 500,                  // < 500ms rollback SLA guarantee
+  MAX_ERROR_RATE_5XX: 0.005, // 0.5% maximum allowable 5xx rate
+  MAX_P99_LATENCY_MS: 800, // 800ms p99 latency threshold
+  CONSECUTIVE_LATENCY_BREACHES: 2, // 2 consecutive minutes required
+  MAX_UNHANDLED_EXCEPTIONS: 10, // 10 unhandled exceptions threshold
+  ROLLBACK_SLA_MS: 500, // < 500ms rollback SLA guarantee
 };
 
 const CIRCUIT_KEY = "canary:circuit_breaker:state";
@@ -62,7 +62,10 @@ let localCircuitState: CircuitBreakerState = {
 export async function getCircuitBreakerState(): Promise<CircuitBreakerState> {
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", redisKey("platform", CIRCUIT_KEY)]);
+      const res = await redisCommand([
+        "GET",
+        redisKey("platform", CIRCUIT_KEY),
+      ]);
       if (res.ok && typeof res.value === "string") {
         return JSON.parse(res.value) as CircuitBreakerState;
       }
@@ -76,7 +79,9 @@ export async function getCircuitBreakerState(): Promise<CircuitBreakerState> {
 /**
  * Persist circuit breaker state.
  */
-export async function saveCircuitBreakerState(state: CircuitBreakerState): Promise<boolean> {
+export async function saveCircuitBreakerState(
+  state: CircuitBreakerState,
+): Promise<boolean> {
   state.updatedAt = new Date().toISOString();
   localCircuitState = state;
 
@@ -124,7 +129,11 @@ export async function resetCircuitBreaker(): Promise<CircuitBreakerState> {
 export async function tripCircuitBreaker(
   reason: string,
   metrics?: Partial<CanaryMetricsSample>,
-): Promise<{ success: boolean; rollbackDurationMs: number; state: CircuitBreakerState }> {
+): Promise<{
+  success: boolean;
+  rollbackDurationMs: number;
+  state: CircuitBreakerState;
+}> {
   const start = Date.now();
   const canary = await getCanaryState();
 
@@ -205,7 +214,10 @@ export async function evaluateCanaryMetrics(sample: {
 }> {
   const current = await getCircuitBreakerState();
   if (current.status === "OPEN") {
-    return { tripped: true, reason: current.tripReason || "Circuit already OPEN" };
+    return {
+      tripped: true,
+      reason: current.tripReason || "Circuit already OPEN",
+    };
   }
 
   const errorRate5xx =
@@ -213,7 +225,10 @@ export async function evaluateCanaryMetrics(sample: {
   const unhandledExceptions = sample.unhandledExceptions || 0;
 
   // Rule 1: HTTP 5xx Error Rate > 0.5%
-  if (sample.totalRequests >= 100 && errorRate5xx > CIRCUIT_BREAKER_THRESHOLDS.MAX_ERROR_RATE_5XX) {
+  if (
+    sample.totalRequests >= 100 &&
+    errorRate5xx > CIRCUIT_BREAKER_THRESHOLDS.MAX_ERROR_RATE_5XX
+  ) {
     const reason = `HTTP 5xx error rate (${(errorRate5xx * 100).toFixed(2)}%) exceeded threshold (0.50%)`;
     const trip = await tripCircuitBreaker(reason, {
       ...sample,
@@ -221,11 +236,17 @@ export async function evaluateCanaryMetrics(sample: {
       unhandledExceptions,
       timestamp: new Date().toISOString(),
     });
-    return { tripped: true, reason, rollbackDurationMs: trip.rollbackDurationMs };
+    return {
+      tripped: true,
+      reason,
+      rollbackDurationMs: trip.rollbackDurationMs,
+    };
   }
 
   // Rule 2: Unhandled Exceptions > 10
-  if (unhandledExceptions > CIRCUIT_BREAKER_THRESHOLDS.MAX_UNHANDLED_EXCEPTIONS) {
+  if (
+    unhandledExceptions > CIRCUIT_BREAKER_THRESHOLDS.MAX_UNHANDLED_EXCEPTIONS
+  ) {
     const reason = `Unhandled exceptions count (${unhandledExceptions}) exceeded maximum limit (10)`;
     const trip = await tripCircuitBreaker(reason, {
       ...sample,
@@ -233,7 +254,11 @@ export async function evaluateCanaryMetrics(sample: {
       unhandledExceptions,
       timestamp: new Date().toISOString(),
     });
-    return { tripped: true, reason, rollbackDurationMs: trip.rollbackDurationMs };
+    return {
+      tripped: true,
+      reason,
+      rollbackDurationMs: trip.rollbackDurationMs,
+    };
   }
 
   // Rule 3: p99 Latency > 800ms for 2 consecutive minutes
@@ -250,7 +275,11 @@ export async function evaluateCanaryMetrics(sample: {
         unhandledExceptions,
         timestamp: new Date().toISOString(),
       });
-      return { tripped: true, reason, rollbackDurationMs: trip.rollbackDurationMs };
+      return {
+        tripped: true,
+        reason,
+        rollbackDurationMs: trip.rollbackDurationMs,
+      };
     }
   } else {
     // Latency is healthy, reset consecutive breach counter
@@ -286,7 +315,11 @@ export async function processPrometheusAlertWebhook(payload: {
     labels?: Record<string, string>;
     annotations?: Record<string, string>;
   }>;
-}): Promise<{ tripped: boolean; reason?: string; rollbackDurationMs?: number }> {
+}): Promise<{
+  tripped: boolean;
+  reason?: string;
+  rollbackDurationMs?: number;
+}> {
   if (!payload.alerts || !Array.isArray(payload.alerts)) {
     return { tripped: false, reason: "No alerts in payload" };
   }
@@ -298,7 +331,10 @@ export async function processPrometheusAlertWebhook(payload: {
 
   for (const alert of firingAlerts) {
     const alertname = alert.labels?.["alertname"] || "UnknownAlert";
-    const desc = alert.annotations?.["description"] || alert.labels?.["severity"] || "Critical metric breached";
+    const desc =
+      alert.annotations?.["description"] ||
+      alert.labels?.["severity"] ||
+      "Critical metric breached";
     const reason = `Prometheus alert '${alertname}' firing: ${desc}`;
 
     const trip = await tripCircuitBreaker(reason);

@@ -28,7 +28,9 @@ export type Converted = {
 };
 
 export class FxError extends Error {
-  constructor(readonly code: "fx.no_snapshot" | "fx.not_piloted" | "fx.same_currency") {
+  constructor(
+    readonly code: "fx.no_snapshot" | "fx.not_piloted" | "fx.same_currency",
+  ) {
     super(code);
     this.name = "FxError";
   }
@@ -49,7 +51,9 @@ type Db = {
             c: string,
             o: { ascending: boolean },
           ) => {
-            limit: (n: number) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
+            limit: (n: number) => {
+              maybeSingle: () => Promise<{ data: unknown; error: unknown }>;
+            };
           };
         };
       };
@@ -70,7 +74,9 @@ export async function latestSnapshot(
       async () => {
         const { data, error } = await (client as Db)
           .from("fx_rates")
-          .select("id, base_currency, quote_currency, rate_ppm, source, effective_at")
+          .select(
+            "id, base_currency, quote_currency, rate_ppm, source, effective_at",
+          )
           .eq("base_currency", base)
           .eq("quote_currency", quote)
           .order("effective_at", { ascending: false })
@@ -105,9 +111,14 @@ export async function latestSnapshot(
 }
 
 /** Pure, testable core: integer ppm maths with half-up rounding. */
-export function convertWithSnapshot(amount: Money, snapshot: FxSnapshot): Money {
+export function convertWithSnapshot(
+  amount: Money,
+  snapshot: FxSnapshot,
+): Money {
   if (amount.currency !== snapshot.base) throw new FxError("fx.no_snapshot");
-  const converted = Math.floor((amount.minor * snapshot.ratePpm) / 1_000_000 + 0.5);
+  const converted = Math.floor(
+    (amount.minor * snapshot.ratePpm) / 1_000_000 + 0.5,
+  );
   return money(converted, snapshot.quote);
 }
 

@@ -15,6 +15,7 @@ Unify 7 disparate memory systems into a single, high-performance AgentDB-based s
 ## Systems to Unify
 
 ### **Current Memory Landscape**
+
 ```
 ┌─────────────────────────────────────────┐
 │           LEGACY SYSTEMS                │
@@ -45,13 +46,14 @@ Unify 7 disparate memory systems into a single, high-performance AgentDB-based s
 ### **Core Components**
 
 #### **UnifiedMemoryService**
+
 ```typescript
 class UnifiedMemoryService implements IMemoryBackend {
   constructor(
     private agentdb: AgentDBAdapter,
     private cache: MemoryCache,
     private indexer: HNSWIndexer,
-    private migrator: DataMigrator
+    private migrator: DataMigrator,
   ) {}
 
   async store(entry: MemoryEntry): Promise<void> {
@@ -73,6 +75,7 @@ class UnifiedMemoryService implements IMemoryBackend {
 ```
 
 #### **HNSW Vector Indexing**
+
 ```typescript
 class HNSWIndexer {
   private index: HNSWIndex;
@@ -82,7 +85,7 @@ class HNSWIndexer {
       dimensions,
       efConstruction: 200,
       M: 16,
-      maxElements: 1000000
+      maxElements: 1000000,
     });
   }
 
@@ -102,6 +105,7 @@ class HNSWIndexer {
 ## Migration Strategy
 
 ### **Phase 1: Foundation Setup**
+
 ```bash
 # Week 3: AgentDB adapter creation
 - Create AgentDBAdapter implementing IMemoryBackend
@@ -111,6 +115,7 @@ class HNSWIndexer {
 ```
 
 ### **Phase 2: Gradual Migration**
+
 ```bash
 # Week 4-5: System-by-system migration
 - SQLiteBackend → AgentDB (structured data)
@@ -120,6 +125,7 @@ class HNSWIndexer {
 ```
 
 ### **Phase 3: Advanced Features**
+
 ```bash
 # Week 6: Performance optimization
 - SONA integration for learning patterns
@@ -131,43 +137,47 @@ class HNSWIndexer {
 ## Performance Targets
 
 ### **Search Performance**
+
 - **Current**: O(n) linear search through memory entries
 - **Target**: O(log n) HNSW approximate nearest neighbor
 - **Improvement**: 150x-12,500x depending on dataset size
 - **Benchmark**: Sub-100ms queries for 1M+ entries
 
 ### **Memory Efficiency**
+
 - **Current**: Multiple backend overhead
 - **Target**: Unified storage with compression
 - **Improvement**: 50-75% memory reduction
 - **Benchmark**: <1GB memory usage for large datasets
 
 ### **Query Flexibility**
+
 ```typescript
 // Unified query interface supports both:
 
 // 1. Semantic similarity queries
 await memory.query({
-  type: 'semantic',
-  content: 'agent coordination patterns',
+  type: "semantic",
+  content: "agent coordination patterns",
   limit: 10,
-  threshold: 0.8
+  threshold: 0.8,
 });
 
 // 2. Structured queries
 await memory.query({
-  type: 'structured',
+  type: "structured",
   filters: {
-    agentType: 'security',
-    timestamp: { after: '2026-01-01' }
+    agentType: "security",
+    timestamp: { after: "2026-01-01" },
   },
-  orderBy: 'relevance'
+  orderBy: "relevance",
 });
 ```
 
 ## SONA Integration
 
 ### **Learning Pattern Storage**
+
 ```typescript
 class SONAMemoryIntegration {
   async storePattern(pattern: LearningPattern): Promise<void> {
@@ -179,20 +189,20 @@ class SONAMemoryIntegration {
         sonaMode: pattern.mode, // real-time, balanced, research, edge, batch
         reward: pattern.reward,
         trajectory: pattern.trajectory,
-        adaptation_time: pattern.adaptationTime
+        adaptation_time: pattern.adaptationTime,
       },
-      embedding: await this.generateEmbedding(pattern.data)
+      embedding: await this.generateEmbedding(pattern.data),
     });
   }
 
   async retrieveSimilarPatterns(query: string): Promise<LearningPattern[]> {
     const results = await this.memory.query({
-      type: 'semantic',
+      type: "semantic",
       content: query,
-      filters: { type: 'learning_pattern' },
-      limit: 5
+      filters: { type: "learning_pattern" },
+      limit: 5,
     });
-    return results.map(r => this.toLearningPattern(r));
+    return results.map((r) => this.toLearningPattern(r));
   }
 }
 ```
@@ -200,6 +210,7 @@ class SONAMemoryIntegration {
 ## Data Migration Plan
 
 ### **SQLite → AgentDB Migration**
+
 ```sql
 -- Extract existing data
 SELECT id, content, metadata, created_at, agent_id
@@ -212,10 +223,11 @@ VALUES (?, ?, generate_embedding(?), ?);
 ```
 
 ### **Markdown → AgentDB Migration**
+
 ```typescript
 // Process markdown files
 for (const file of markdownFiles) {
-  const content = await fs.readFile(file, 'utf-8');
+  const content = await fs.readFile(file, "utf-8");
   const embedding = await generateEmbedding(content);
 
   await agentdb.store({
@@ -225,8 +237,8 @@ for (const file of markdownFiles) {
     metadata: {
       originalFile: file,
       migrationDate: new Date(),
-      type: 'document'
-    }
+      type: "document",
+    },
   });
 }
 ```
@@ -234,6 +246,7 @@ for (const file of markdownFiles) {
 ## Validation & Testing
 
 ### **Performance Benchmarks**
+
 ```typescript
 // Benchmark suite
 class MemoryBenchmarks {
@@ -247,15 +260,16 @@ class MemoryBenchmarks {
 
     const endTime = performance.now();
     return {
-      queriesPerSecond: queries.length / (endTime - startTime) * 1000,
+      queriesPerSecond: (queries.length / (endTime - startTime)) * 1000,
       avgLatency: (endTime - startTime) / queries.length,
-      improvement: this.calculateImprovement()
+      improvement: this.calculateImprovement(),
     };
   }
 }
 ```
 
 ### **Success Criteria**
+
 - [ ] 150x-12,500x search performance improvement validated
 - [ ] All existing memory systems successfully migrated
 - [ ] Backward compatibility maintained during transition
@@ -266,16 +280,19 @@ class MemoryBenchmarks {
 ## Coordination Points
 
 ### **Integration Architect (Agent #10)**
+
 - AgentDB integration with agentic-flow@alpha
 - SONA learning mode configuration
 - Performance optimization coordination
 
 ### **Core Architect (Agent #5)**
+
 - Memory service interfaces in DDD structure
 - Event sourcing integration for memory operations
 - Domain boundary definitions for memory access
 
 ### **Performance Engineer (Agent #14)**
+
 - Benchmark validation of 150x-12,500x improvements
 - Memory usage profiling and optimization
 - Performance regression testing

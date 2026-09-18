@@ -5,7 +5,11 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { generateRecoveryCodes, hashRecoveryCode, isWellFormedRecoveryCode } from "./mfa-recovery";
+import {
+  generateRecoveryCodes,
+  hashRecoveryCode,
+  isWellFormedRecoveryCode,
+} from "./mfa-recovery";
 import { recordAuthEvent, StepUpRequiredError } from "./identity.server";
 import { incr, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
@@ -13,7 +17,10 @@ import { enforceRateLimit } from "./rate-limit.server";
 type Client = SupabaseClient<Database>;
 type LooseDb = {
   from: (t: string) => { select: (c: string) => any };
-  rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 function salt() {
@@ -28,15 +35,24 @@ export async function regenerateRecoveryCodes(
 ) {
   return withSpan("identity.recoveryCodes.regenerate", async () => {
     if (String(claims["aal"] ?? "aal1") !== "aal2") {
-      await recordAuthEvent({ event: "mfa.recovery.denied", outcome: "denied", userId });
+      await recordAuthEvent({
+        event: "mfa.recovery.denied",
+        outcome: "denied",
+        userId,
+      });
       throw new StepUpRequiredError("mfa.recovery");
     }
     await enforceRateLimit("auth.recovery", userId);
     const codes = generateRecoveryCodes();
-    const hashes = await Promise.all(codes.map((c) => hashRecoveryCode(userId, c, salt())));
-    const { error } = await (supabase as unknown as LooseDb).rpc("mfa_recovery_replace", {
-      _hashes: hashes,
-    });
+    const hashes = await Promise.all(
+      codes.map((c) => hashRecoveryCode(userId, c, salt())),
+    );
+    const { error } = await (supabase as unknown as LooseDb).rpc(
+      "mfa_recovery_replace",
+      {
+        _hashes: hashes,
+      },
+    );
     if (error) throw new Error("mfa.recovery.persist_failed");
     incr("framique_mfa_recovery_total", { outcome: "generated" });
     await recordAuthEvent({
@@ -68,23 +84,35 @@ export async function recoveryCodeStatus(supabase: Client, userId: string) {
  */
 export async function consumeRecoveryCode(userId: string, code: string) {
   return withSpan("identity.recoveryCodes.consume", async () => {
-    const verdict = await enforceRateLimit("auth.recovery", userId).catch((e) => {
-      throw e;
-    });
+    const verdict = await enforceRateLimit("auth.recovery", userId).catch(
+      (e) => {
+        throw e;
+      },
+    );
     void verdict;
     if (!isWellFormedRecoveryCode(code)) {
       incr("framique_mfa_recovery_total", { outcome: "rejected" });
-      await recordAuthEvent({ event: "mfa.recovery.used", outcome: "denied", userId });
+      await recordAuthEvent({
+        event: "mfa.recovery.used",
+        outcome: "denied",
+        userId,
+      });
       return { ok: false as const };
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const hash = await hashRecoveryCode(userId, code, salt());
-    const { data, error } = await (supabaseAdmin as unknown as LooseDb).rpc("mfa_recovery_consume", {
-      _user_id: userId,
-      _hash: hash,
-    });
+    const { data, error } = await (supabaseAdmin as unknown as LooseDb).rpc(
+      "mfa_recovery_consume",
+      {
+        _user_id: userId,
+        _hash: hash,
+      },
+    );
     const ok = !error && data === true;
-    incr("framique_mfa_recovery_total", { outcome: ok ? "consumed" : "rejected" });
+    incr("framique_mfa_recovery_total", {
+      outcome: ok ? "consumed" : "rejected",
+    });
     await recordAuthEvent({
       event: "mfa.recovery.used",
       outcome: ok ? "ok" : "denied",

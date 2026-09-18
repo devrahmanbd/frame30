@@ -9,7 +9,12 @@ export type ConsentChannel = Database["public"]["Enums"]["consent_channel"];
 export type ConsentPurpose = Database["public"]["Enums"]["consent_purpose"];
 export type AddressType = Database["public"]["Enums"]["address_type"];
 
-export type StoreRef = { id: string; name: string; slug: string; currency_code: string };
+export type StoreRef = {
+  id: string;
+  name: string;
+  slug: string;
+  currency_code: string;
+};
 
 export type AccountAddress = {
   id: string;
@@ -26,7 +31,12 @@ export type AccountAddress = {
 };
 
 export type AccountOverview = {
-  profile: { id: string; name: string; email: string | null; phone: string | null } | null;
+  profile: {
+    id: string;
+    name: string;
+    email: string | null;
+    phone: string | null;
+  } | null;
   addresses: AccountAddress[];
   wishlist: {
     id: string;
@@ -38,7 +48,11 @@ export type AccountOverview = {
     product_title: string;
     product_slug: string;
   }[];
-  consents: { channel: ConsentChannel; purpose: ConsentPurpose; granted: boolean }[];
+  consents: {
+    channel: ConsentChannel;
+    purpose: ConsentPurpose;
+    granted: boolean;
+  }[];
   orders: {
     id: string;
     order_number: string;
@@ -47,7 +61,13 @@ export type AccountOverview = {
     currency_code: string;
     created_at: string;
   }[];
-  reviews: { id: string; product_title: string; rating: number; status: ReviewStatus; created_at: string }[];
+  reviews: {
+    id: string;
+    product_title: string;
+    rating: number;
+    status: ReviewStatus;
+    created_at: string;
+  }[];
 };
 
 const EMPTY: AccountOverview = {
@@ -72,8 +92,13 @@ export async function storeBySlug(slug: string): Promise<StoreRef> {
   return data;
 }
 
-export async function accountOverview(db: Client, merchantId: string): Promise<AccountOverview> {
-  const { data, error } = await db.rpc("customer_overview", { _merchant_id: merchantId });
+export async function accountOverview(
+  db: Client,
+  merchantId: string,
+): Promise<AccountOverview> {
+  const { data, error } = await db.rpc("customer_overview", {
+    _merchant_id: merchantId,
+  });
   if (error) throw error;
   const parsed = (data ?? {}) as unknown as Partial<AccountOverview>;
   return { ...EMPTY, ...parsed };
@@ -108,7 +133,11 @@ export type AddressInput = {
   isDefault: boolean;
 };
 
-export async function saveAddress(db: Client, merchantId: string, input: AddressInput) {
+export async function saveAddress(
+  db: Client,
+  merchantId: string,
+  input: AddressInput,
+) {
   const { error } = await db.rpc("customer_save_address", {
     _merchant_id: merchantId,
     _address_id: input.addressId as string,
@@ -126,7 +155,11 @@ export async function saveAddress(db: Client, merchantId: string, input: Address
   if (error) throw error;
 }
 
-export async function deleteAddress(db: Client, merchantId: string, addressId: string) {
+export async function deleteAddress(
+  db: Client,
+  merchantId: string,
+  addressId: string,
+) {
   const { error } = await db.rpc("customer_delete_address", {
     _merchant_id: merchantId,
     _address_id: addressId,
@@ -168,7 +201,13 @@ export async function setConsent(
 export async function submitReview(
   db: Client,
   merchantId: string,
-  input: { productId: string; rating: number; title: string; body: string; authorName: string },
+  input: {
+    productId: string;
+    rating: number;
+    title: string;
+    body: string;
+    authorName: string;
+  },
 ) {
   const { error } = await db.rpc("review_submit", {
     _merchant_id: merchantId,
@@ -213,14 +252,21 @@ export async function loadReviewQueue(db: Client, merchantId: string) {
   const [{ data: reviews, error }, { data: replies }] = await Promise.all([
     db
       .from("product_reviews")
-      .select("id, product_id, rating, title, body, author_name, verified_purchase, status, moderation_note, created_at, products(title, slug)")
+      .select(
+        "id, product_id, rating, title, body, author_name, verified_purchase, status, moderation_note, created_at, products(title, slug)",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(200),
-    db.from("review_replies").select("review_id, body").eq("merchant_id", merchantId),
+    db
+      .from("review_replies")
+      .select("review_id, body")
+      .eq("merchant_id", merchantId),
   ]);
   if (error) throw error;
-  const replyByReview = new Map((replies ?? []).map((r) => [r.review_id, r.body]));
+  const replyByReview = new Map(
+    (replies ?? []).map((r) => [r.review_id, r.body]),
+  );
   return (reviews ?? []).map((r) => ({
     id: r.id,
     productId: r.product_id,
@@ -252,18 +298,32 @@ export async function moderateReview(
   if (error) throw error;
 }
 
-export async function replyToReview(db: Client, reviewId: string, body: string) {
-  const { error } = await db.rpc("review_reply", { _review_id: reviewId, _body: body });
+export async function replyToReview(
+  db: Client,
+  reviewId: string,
+  body: string,
+) {
+  const { error } = await db.rpc("review_reply", {
+    _review_id: reviewId,
+    _body: body,
+  });
   if (error) throw error;
 }
 
-export type FormField = { key: string; label: string; type: "text" | "email" | "phone" | "textarea"; required: boolean };
+export type FormField = {
+  key: string;
+  label: string;
+  type: "text" | "email" | "phone" | "textarea";
+  required: boolean;
+};
 
 export async function loadForms(db: Client, merchantId: string) {
   const [{ data: forms, error }, { data: submissions }] = await Promise.all([
     db
       .from("storefront_forms")
-      .select("id, slug, title, description, fields, success_message, requires_consent, consent_purpose, is_active, created_at")
+      .select(
+        "id, slug, title, description, fields, success_message, requires_consent, consent_purpose, is_active, created_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false }),
     db
@@ -277,7 +337,9 @@ export async function loadForms(db: Client, merchantId: string) {
   return {
     forms: (forms ?? []).map((f) => ({
       ...f,
-      fields: (Array.isArray(f.fields) ? f.fields : []) as unknown as FormField[],
+      fields: (Array.isArray(f.fields)
+        ? f.fields
+        : []) as unknown as FormField[],
     })),
     submissions: (submissions ?? []).map((s) => ({
       ...s,
@@ -297,7 +359,11 @@ export type FormInput = {
   isActive: boolean;
 };
 
-export async function saveForm(db: Client, merchantId: string, input: FormInput) {
+export async function saveForm(
+  db: Client,
+  merchantId: string,
+  input: FormInput,
+) {
   const row = {
     merchant_id: merchantId,
     slug: input.slug,
@@ -310,7 +376,11 @@ export async function saveForm(db: Client, merchantId: string, input: FormInput)
     updated_at: new Date().toISOString(),
   };
   const query = input.id
-    ? db.from("storefront_forms").update(row).eq("id", input.id).eq("merchant_id", merchantId)
+    ? db
+        .from("storefront_forms")
+        .update(row)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
     : db.from("storefront_forms").insert(row);
   const { error } = await query;
   if (error) throw error;
@@ -355,10 +425,13 @@ export async function submitForm(
   return data as string;
 }
 
-
 /** A shopper's own order, resolved in the database from `auth.uid()` — an order
  * id from another customer (or another store) returns null, never a partial row. */
-export async function ownOrderDetail(db: Client, merchantId: string, orderId: string) {
+export async function ownOrderDetail(
+  db: Client,
+  merchantId: string,
+  orderId: string,
+) {
   const { data, error } = await db.rpc("customer_order_detail", {
     _merchant_id: merchantId,
     _order_id: orderId,
@@ -380,6 +453,12 @@ export async function ownOrderDetail(db: Client, merchantId: string, orderId: st
       city: string;
       created_at: string;
     };
-    items: { title: string; variant_name: string; quantity: number; unit_minor: number; line_minor: number }[];
+    items: {
+      title: string;
+      variant_name: string;
+      quantity: number;
+      unit_minor: number;
+      line_minor: number;
+    }[];
   } | null;
 }

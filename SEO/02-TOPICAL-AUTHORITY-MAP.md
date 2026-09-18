@@ -5,7 +5,7 @@
 **Central Entity:** `FRAMIQUE` (Software Application / Cloud CMS & Commerce Platform)  
 **Parent Entity / Creator:** `devrahmanbd` (Framique Engineering Council)  
 **Source Context:** High-Performance Visual Storefront Builder, Cloud CMS & Zero-Transaction-Fee Commerce Engine  
-**Date:** September 2026  
+**Date:** September 2026
 
 ---
 
@@ -14,11 +14,12 @@
 In modern Semantic Search (Google Hummingbird, RankBrain, MUM, Gemini Search, and LLM Knowledge Graph embeddings), search engines rank documents based on **Topical Authority**, **Contextual Relevance**, and **Cost of Retrieval**, rather than lexical repetition or simple keyword density.
 
 ### Key Axioms Applied to FRAMIQUE:
+
 1. **The Central Entity:** The focal point of the entire topical graph. All sub-entities, predicates, and attributes anchor back to `FRAMIQUE` and its creator `devrahmanbd`.
 2. **Source Context:** Defines the operational domain of `FRAMIQUE`. `FRAMIQUE` is not a generic static blog generator or closed template system; it is a **visual design canvas, high-concurrency Cloud CMS, and sovereign commerce engine with native local payment rails**.
 3. **Macro Context vs. Micro Context:**
-   - *Macro Context:* The site architecture, category taxonomy, and hub-and-spoke URL cluster hierarchy.
-   - *Micro Context:* The predicate-argument structures, subject-predicate-object triples, and sentence-level clarity within individual pages.
+   - _Macro Context:_ The site architecture, category taxonomy, and hub-and-spoke URL cluster hierarchy.
+   - _Micro Context:_ The predicate-argument structures, subject-predicate-object triples, and sentence-level clarity within individual pages.
 4. **Information Tree & Information Gain:** Foundational principles (fee sovereignty, visual canvas, SSR performance) are established first before specialized comparisons or programmatic edges. Delivers first-party empirical data that derivative AI cannot generate.
 5. **Entity-Attribute-Value (EAV) Modeling:** Factual relationships are structured to enable unambiguous knowledge extraction by search crawlers and AI reasoning models.
 6. **Cost of Retrieval Minimization:** Direct-answer sentence structures, clean semantic HTML, unified schema, zero layout shift (CLS 0), and sub-300ms SSR to minimize crawler compute expense and maximize topical confidence.
@@ -30,7 +31,7 @@ In modern Semantic Search (Google Hummingbird, RankBrain, MUM, Gemini Search, an
 ```mermaid
 graph TD
     DEV["devrahmanbd (Organization / Creator)"] -->|develops & maintains| FRAMIQUE["FRAMIQUE (SoftwareApplication / Central Entity)"]
-    
+
     FRAMIQUE -->|implements| VC["Visual Canvas & Storefront Builder"]
     FRAMIQUE -->|implements| CE["Zero-Transaction-Fee Commerce Engine"]
     FRAMIQUE -->|implements| LR["Local & Cross-Border Payment Rails"]
@@ -59,19 +60,19 @@ graph TD
 
 Semantic search engines extract unstructured prose into structured EAV triples. The following verified triples are systematically embedded into FRAMIQUE's public and technical pages:
 
-| Entity (Subject) | Attribute (Predicate) | Value (Object) | Semantic Context / Disambiguation |
-|---|---|---|---|
-| `FRAMIQUE` | `isTypeOf` | `SoftwareApplication` | Cloud CMS & Commerce SaaS Platform |
-| `FRAMIQUE` | `developer` | `devrahmanbd` | Software engineering organization |
-| `FRAMIQUE` | `transactionFeeModel` | `Zero Percent (0.00%)` | Eliminates Shopify 2% third-party penalty |
-| `FRAMIQUE` | `designInterface` | `Visual Drag-and-Drop Canvas` | Pixel-level visual styling without code |
-| `FRAMIQUE` | `renderingEngine` | `Server-Side Rendering (SSR)` | Bun & React 19 sub-300ms edge delivery |
-| `FRAMIQUE` | `databaseArchitecture` | `PostgreSQL / SQLite Multi-Tenant` | High concurrency with zero arbitrary CMS caps |
-| `FRAMIQUE` | `localPaymentRails` | `bKash, Nagad, Regional Gateways` | Native automated mobile financial checkout |
-| `FRAMIQUE` | `globalPaymentRails` | `Stripe, PayPal, Multi-Currency` | Frictionless cross-border merchant settlement |
-| `FRAMIQUE` | `coreWebVitalsStandard` | `LCP < 1.2s, INP < 40ms, CLS 0` | 100% Google CWV green badge pass rate |
-| `FRAMIQUE` | `schemaStandard` | `Schema.org 2026 SSR-Only` | SoftwareApplication, Organization, Product |
-| `FRAMIQUE` | `competitorAlternatives` | `Shopify, Webflow, Framer, WooCommerce` | Unified visual + commerce alternative |
+| Entity (Subject) | Attribute (Predicate)    | Value (Object)                          | Semantic Context / Disambiguation             |
+| ---------------- | ------------------------ | --------------------------------------- | --------------------------------------------- |
+| `FRAMIQUE`       | `isTypeOf`               | `SoftwareApplication`                   | Cloud CMS & Commerce SaaS Platform            |
+| `FRAMIQUE`       | `developer`              | `devrahmanbd`                           | Software engineering organization             |
+| `FRAMIQUE`       | `transactionFeeModel`    | `Zero Percent (0.00%)`                  | Eliminates Shopify 2% third-party penalty     |
+| `FRAMIQUE`       | `designInterface`        | `Visual Drag-and-Drop Canvas`           | Pixel-level visual styling without code       |
+| `FRAMIQUE`       | `renderingEngine`        | `Server-Side Rendering (SSR)`           | Bun & React 19 sub-300ms edge delivery        |
+| `FRAMIQUE`       | `databaseArchitecture`   | `PostgreSQL / SQLite Multi-Tenant`      | High concurrency with zero arbitrary CMS caps |
+| `FRAMIQUE`       | `localPaymentRails`      | `bKash, Nagad, Regional Gateways`       | Native automated mobile financial checkout    |
+| `FRAMIQUE`       | `globalPaymentRails`     | `Stripe, PayPal, Multi-Currency`        | Frictionless cross-border merchant settlement |
+| `FRAMIQUE`       | `coreWebVitalsStandard`  | `LCP < 1.2s, INP < 40ms, CLS 0`         | 100% Google CWV green badge pass rate         |
+| `FRAMIQUE`       | `schemaStandard`         | `Schema.org 2026 SSR-Only`              | SoftwareApplication, Organization, Product    |
+| `FRAMIQUE`       | `competitorAlternatives` | `Shopify, Webflow, Framer, WooCommerce` | Unified visual + commerce alternative         |
 
 ---
 
@@ -115,6 +116,7 @@ Topical Authority is built by constructing mutually exclusive, collectively exha
 ## 5. Micro Context: Information Retrieval & Linguistic Grounding
 
 To minimize search engine **Cost of Retrieval**:
+
 1. **Zero Fluff Lead Sentences:** Every page opens with an authoritative definition containing the Central Entity, its category, its primary differentiator, and a verifiable metric.
 2. **Definitional Passages (134–167 Words):** Formatted for zero-pronoun algorithmic extraction into Google AI Overviews, Perplexity citations, and Claude Search snippets.
 3. **Contextual Internal Linking:** Every spoke links back to its parent hub using descriptive, entity-rich anchors (e.g. `[0% fee Shopify alternative](/compare/shopify)` rather than `[click here]`).

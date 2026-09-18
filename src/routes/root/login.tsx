@@ -56,7 +56,9 @@ export function RootLoginPage() {
       if (adminRow) {
         isVerifiedOwner = true;
       } else {
-        const serverCheck = await platformIsAdminFn().catch(() => ({ admin: false }));
+        const serverCheck = await platformIsAdminFn().catch(() => ({
+          admin: false,
+        }));
         if (serverCheck?.admin) {
           isVerifiedOwner = true;
         }
@@ -72,7 +74,8 @@ export function RootLoginPage() {
       // Navigate straight to root console
       void navigate({ to: "/root", replace: true });
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed.";
+      const message =
+        err instanceof Error ? err.message : "Authentication failed.";
       setErrorMsg(message);
     } finally {
       setBusy(false);
@@ -96,7 +99,9 @@ export function RootLoginPage() {
                 Owner Only
               </span>
             </h1>
-            <p className="text-xs text-slate-400">Infrastructure and platform governance console</p>
+            <p className="text-xs text-slate-400">
+              Infrastructure and platform governance console
+            </p>
           </div>
         </div>
 

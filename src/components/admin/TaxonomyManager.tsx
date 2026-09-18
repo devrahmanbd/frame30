@@ -6,7 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { slugify, useMerchant } from "@/hooks/use-merchant";
 import { TextField } from "@/components/admin/ProductForm";
 
-type Row = { id: string; name: string; slug: string; description: string | null };
+type Row = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+};
 
 export function TaxonomyManager({
   table,
@@ -61,7 +66,8 @@ export function TaxonomyManager({
       const { error } = await supabase.from(table).delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => void qc.invalidateQueries({ queryKey: [table, merchant?.id] }),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: [table, merchant?.id] }),
     onError: (err: unknown) =>
       toast.error(err instanceof Error ? err.message : "Could not delete"),
   });
@@ -81,7 +87,11 @@ export function TaxonomyManager({
         className="grid gap-4 rounded-fq-lg border border-border bg-card p-5 sm:grid-cols-[1fr_1fr_auto] sm:items-end"
       >
         <TextField label="Name" value={name} onChange={setName} required />
-        <TextField label="Description" value={description} onChange={setDescription} />
+        <TextField
+          label="Description"
+          value={description}
+          onChange={setDescription}
+        />
         <button
           type="submit"
           disabled={create.isPending}
@@ -96,12 +106,19 @@ export function TaxonomyManager({
           <li className="px-4 py-4 text-sm text-muted-foreground">Loading…</li>
         )}
         {!list.isLoading && !list.data?.length && (
-          <li className="px-4 py-4 text-sm text-muted-foreground">Nothing here yet.</li>
+          <li className="px-4 py-4 text-sm text-muted-foreground">
+            Nothing here yet.
+          </li>
         )}
         {list.data?.map((row) => (
-          <li key={row.id} className="flex items-center justify-between gap-3 px-4 py-3">
+          <li
+            key={row.id}
+            className="flex items-center justify-between gap-3 px-4 py-3"
+          >
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-foreground">{row.name}</p>
+              <p className="truncate text-sm font-medium text-foreground">
+                {row.name}
+              </p>
               <p className="truncate text-xs text-muted-foreground">
                 /{row.slug}
                 {row.description ? ` — ${row.description}` : ""}

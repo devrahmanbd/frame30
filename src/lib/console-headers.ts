@@ -7,10 +7,18 @@
  * on console documents, which is why it is a pure function of the pathname.
  */
 
-export const CONSOLE_PREFIXES = ["/dashboard", "/dashboard", "/root", "/onboarding", "/auth"] as const;
+export const CONSOLE_PREFIXES = [
+  "/dashboard",
+  "/dashboard",
+  "/root",
+  "/onboarding",
+  "/auth",
+] as const;
 
 export function isConsolePath(pathname: string): boolean {
-  return CONSOLE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  return CONSOLE_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
 }
 
 /** Headers applied to a console HTML document, in addition to the base set. */

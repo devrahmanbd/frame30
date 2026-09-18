@@ -18,10 +18,16 @@ type Client = SupabaseClient<Database>;
 type Loose = {
   from: (t: string) => {
     select: (c: string) => {
-      order: (c: string, o: { ascending: boolean }) => Promise<{ data: unknown }>;
+      order: (
+        c: string,
+        o: { ascending: boolean },
+      ) => Promise<{ data: unknown }>;
     };
   };
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 const loose = (db: Client) => db as unknown as Loose;
@@ -61,29 +67,50 @@ type Fingerprint = {
   functions: string[];
 };
 
-export type DriftLine = { kind: "added" | "removed" | "changed" | "rls"; subject: string; detail: string };
+export type DriftLine = {
+  kind: "added" | "removed" | "changed" | "rls";
+  subject: string;
+  detail: string;
+};
 
 function compare(live: Fingerprint): DriftLine[] {
   const base = baseline as unknown as Fingerprint;
   const out: DriftLine[] = [];
-  const names = new Set([...Object.keys(base.tables), ...Object.keys(live.tables)]);
+  const names = new Set([
+    ...Object.keys(base.tables),
+    ...Object.keys(live.tables),
+  ]);
   for (const t of [...names].sort()) {
     const a = base.tables[t];
     const b = live.tables[t];
     if (!a) out.push({ kind: "added", subject: t, detail: "live only" });
-    else if (!b) out.push({ kind: "removed", subject: t, detail: "snapshot only" });
+    else if (!b)
+      out.push({ kind: "removed", subject: t, detail: "snapshot only" });
     else {
       if (a.columns !== b.columns)
-        out.push({ kind: "changed", subject: t, detail: `columns ${a.columns} → ${b.columns}` });
+        out.push({
+          kind: "changed",
+          subject: t,
+          detail: `columns ${a.columns} → ${b.columns}`,
+        });
       if (a.policies !== b.policies)
-        out.push({ kind: "changed", subject: t, detail: `policies ${a.policies} → ${b.policies}` });
+        out.push({
+          kind: "changed",
+          subject: t,
+          detail: `policies ${a.policies} → ${b.policies}`,
+        });
       if (a.rls !== b.rls)
-        out.push({ kind: "rls", subject: t, detail: `RLS ${a.rls} → ${b.rls}` });
+        out.push({
+          kind: "rls",
+          subject: t,
+          detail: `RLS ${a.rls} → ${b.rls}`,
+        });
     }
   }
   const baseFns = new Set(base.functions ?? []);
   for (const f of live.functions ?? [])
-    if (!baseFns.has(f)) out.push({ kind: "added", subject: `${f}()`, detail: "live only" });
+    if (!baseFns.has(f))
+      out.push({ kind: "added", subject: `${f}()`, detail: "live only" });
   for (const f of baseFns)
     if (!(live.functions ?? []).includes(f))
       out.push({ kind: "removed", subject: `${f}()`, detail: "snapshot only" });
@@ -105,17 +132,28 @@ export async function loadTenancyDesk(db: Client, userId: string) {
   await requirePlatformAdmin(db, userId);
   return withSpan("tenancy.desk", async () => {
     const [purge, merchants, fingerprint, softCounts] = await Promise.all([
-      loose(db).from("tenant_purge_requests").select("*").order("requested_at", { ascending: false }),
-      loose(db).from("merchants").select("id, name").order("name", { ascending: true }),
+      loose(db)
+        .from("tenant_purge_requests")
+        .select("*")
+        .order("requested_at", { ascending: false }),
+      loose(db)
+        .from("merchants")
+        .select("id, name")
+        .order("name", { ascending: true }),
       cached("tenancy:fingerprint", 60, async () => {
-        const { data } = await (await privilegedRpc()).rpc("schema_fingerprint", {});
+        const { data } = await (
+          await privilegedRpc()
+        ).rpc("schema_fingerprint", {});
         return data as Fingerprint;
       }),
       softDeleteCounts(db),
     ]);
 
     const names = new Map(
-      ((merchants.data ?? []) as { id: string; name: string }[]).map((m) => [m.id, m.name]),
+      ((merchants.data ?? []) as { id: string; name: string }[]).map((m) => [
+        m.id,
+        m.name,
+      ]),
     );
     const now = Date.now();
     const rows: PurgeRow[] = (
@@ -146,7 +184,10 @@ export async function loadTenancyDesk(db: Client, userId: string) {
 async function softDeleteCounts(db: Client) {
   const results = await Promise.all(
     SOFT_DELETE_TABLES.map(async (t) => {
-      const { data } = await loose(db).from(t).select("id, deleted_at").order("id", { ascending: true });
+      const { data } = await loose(db)
+        .from(t)
+        .select("id, deleted_at")
+        .order("id", { ascending: true });
       const rows = (data ?? []) as { deleted_at: string | null }[];
       return {
         table: t,
@@ -172,7 +213,10 @@ export async function requestPurge(
     _delay_days: input.delayDays,
   });
   if (error) throw new Error((error as { message: string }).message);
-  log("warn", "tenant.purge_requested", { merchantId: input.merchantId, requestId: data });
+  log("warn", "tenant.purge_requested", {
+    merchantId: input.merchantId,
+    requestId: data,
+  });
   return { requestId: data as string };
 }
 
@@ -191,14 +235,20 @@ export async function cancelPurge(
   return { ok: true };
 }
 
-export async function executePurge(db: Client, userId: string, requestId: string) {
+export async function executePurge(
+  db: Client,
+  userId: string,
+  requestId: string,
+) {
   await requirePlatformAdmin(db, userId);
   await enforceRateLimit("owner.purge", userId);
   // Irreversible tenant deletion is a money-class action: a correctly
   // permissioned admin still needs a fresh second factor.
   const { requireStepUp } = await import("./identity.server");
   await requireStepUp(db, "purge", null);
-  const { data, error } = await loose(db).rpc("tenant_execute_purge", { _request_id: requestId });
+  const { data, error } = await loose(db).rpc("tenant_execute_purge", {
+    _request_id: requestId,
+  });
 
   if (error) throw new Error((error as { message: string }).message);
   log("warn", "tenant.purge_executed", { requestId, counts: data });
@@ -213,7 +263,8 @@ export async function executePurge(db: Client, userId: string, requestId: string
  */
 export async function runDuePurges(limit = 5) {
   return withSpan("tenancy.purge_cron", async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await loose(supabaseAdmin as unknown as Client).rpc(
       "tenant_purge_run_due",
       { _limit: limit },

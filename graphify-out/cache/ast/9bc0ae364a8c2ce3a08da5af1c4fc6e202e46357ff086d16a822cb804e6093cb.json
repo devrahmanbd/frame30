@@ -1,1 +1,833 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "label": "perf-budget.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L1"}, {"id": "scripts_perf_budget_args", "label": "args", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L23"}, {"id": "scripts_perf_budget_arg", "label": "arg()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L24"}, {"id": "scripts_perf_budget_asset_budget", "label": "ASSET_BUDGET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L30"}, {"id": "scripts_perf_budget_routes", "label": "ROUTES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L33"}, {"id": "scripts_perf_budget_marketing_budget", "label": "MARKETING_BUDGET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L52"}, {"id": "scripts_perf_budget_admin_budget", "label": "ADMIN_BUDGET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L60"}, {"id": "scripts_perf_budget_distroot", "label": "distRoot", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L69"}, {"id": "scripts_perf_budget_failures", "label": "failures", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L70"}, {"id": "scripts_perf_budget_warnings", "label": "warnings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L71"}, {"id": "scripts_perf_budget_checklazyworker", "label": "checkLazyWorker()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L77"}, {"id": "scripts_perf_budget_depthat", "label": "depthAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L132"}, {"id": "scripts_perf_budget_blockafter", "label": "blockAfter()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L143"}, {"id": "scripts_perf_budget_findmanifest", "label": "findManifest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L162"}, {"id": "scripts_perf_budget_manifestpath", "label": "manifestPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L183"}, {"id": "scripts_perf_budget_manifest", "label": "manifest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L194"}, {"id": "scripts_perf_budget_assetroot", "label": "assetRoot", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L195"}, {"id": "scripts_perf_budget_gzcache", "label": "gzCache", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L197"}, {"id": "scripts_perf_budget_gzbytes", "label": "gzBytes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L198"}, {"id": "scripts_perf_budget_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L206"}, {"id": "scripts_perf_budget_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L221"}, {"id": "scripts_perf_budget_key", "label": "key", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L224"}, {"id": "scripts_perf_budget_seen", "label": "seen", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L226"}, {"id": "scripts_perf_budget_page", "label": "page", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L228"}, {"id": "scripts_perf_budget_js_css", "label": "{ js, css }", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L247"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "node_zlib", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_args", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_arg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_asset_budget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_routes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_marketing_budget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_admin_budget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_distroot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_failures", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_warnings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_checklazyworker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_depthat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_blockafter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_findmanifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_manifestpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_manifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_assetroot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L195", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_gzcache", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L197", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_gzbytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L198", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L206", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L224", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_seen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L226", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_page", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L228", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L241", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_seen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L246", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_js_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L247", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L257", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_seen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L262", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_perf_budget_mjs", "target": "scripts_perf_budget_page", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L264", "weight": 1.0}, {"source": "scripts_perf_budget_checklazyworker", "target": "scripts_perf_budget_depthat", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L99", "weight": 1.0}, {"source": "scripts_perf_budget_checklazyworker", "target": "scripts_perf_budget_blockafter", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L106", "weight": 1.0}, {"source": "scripts_perf_budget_walk", "target": "scripts_perf_budget_gzbytes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L210", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_perf_budget_arg", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L25"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L78"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L79"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L82"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L86"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L86"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L88"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L88"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L89"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L94"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L96"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L100"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L109"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L109"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L112"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L114"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L118"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L122"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L123"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L126"}, {"caller_nid": "scripts_perf_budget_checklazyworker", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L127"}, {"caller_nid": "scripts_perf_budget_blockafter", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L144"}, {"caller_nid": "scripts_perf_budget_blockafter", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L146"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L164"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L165"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L166"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L168"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "pop", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L172"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L173"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L173"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L173"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L174"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L175"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L177"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L177"}, {"caller_nid": "scripts_perf_budget_findmanifest", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L177"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L199"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L199"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L200"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L201"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "gzipSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L201"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L201"}, {"caller_nid": "scripts_perf_budget_gzbytes", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L202"}, {"caller_nid": "scripts_perf_budget_walk", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L208"}, {"caller_nid": "scripts_perf_budget_walk", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L209"}, {"caller_nid": "scripts_perf_budget_walk", "callee": "endsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L210"}, {"caller_nid": "scripts_perf_budget_walk", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs", "source_location": "L211"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "label": "perf-budget.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_perf_budget_args",
+      "label": "args",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L23"
+    },
+    {
+      "id": "scripts_perf_budget_arg",
+      "label": "arg()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L24"
+    },
+    {
+      "id": "scripts_perf_budget_asset_budget",
+      "label": "ASSET_BUDGET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L30"
+    },
+    {
+      "id": "scripts_perf_budget_routes",
+      "label": "ROUTES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L33"
+    },
+    {
+      "id": "scripts_perf_budget_marketing_budget",
+      "label": "MARKETING_BUDGET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L52"
+    },
+    {
+      "id": "scripts_perf_budget_admin_budget",
+      "label": "ADMIN_BUDGET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L60"
+    },
+    {
+      "id": "scripts_perf_budget_distroot",
+      "label": "distRoot",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L69"
+    },
+    {
+      "id": "scripts_perf_budget_failures",
+      "label": "failures",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L70"
+    },
+    {
+      "id": "scripts_perf_budget_warnings",
+      "label": "warnings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L71"
+    },
+    {
+      "id": "scripts_perf_budget_checklazyworker",
+      "label": "checkLazyWorker()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L77"
+    },
+    {
+      "id": "scripts_perf_budget_depthat",
+      "label": "depthAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L132"
+    },
+    {
+      "id": "scripts_perf_budget_blockafter",
+      "label": "blockAfter()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L143"
+    },
+    {
+      "id": "scripts_perf_budget_findmanifest",
+      "label": "findManifest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L162"
+    },
+    {
+      "id": "scripts_perf_budget_manifestpath",
+      "label": "manifestPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L183"
+    },
+    {
+      "id": "scripts_perf_budget_manifest",
+      "label": "manifest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L194"
+    },
+    {
+      "id": "scripts_perf_budget_assetroot",
+      "label": "assetRoot",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L195"
+    },
+    {
+      "id": "scripts_perf_budget_gzcache",
+      "label": "gzCache",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L197"
+    },
+    {
+      "id": "scripts_perf_budget_gzbytes",
+      "label": "gzBytes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L198"
+    },
+    {
+      "id": "scripts_perf_budget_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L206"
+    },
+    {
+      "id": "scripts_perf_budget_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L221"
+    },
+    {
+      "id": "scripts_perf_budget_key",
+      "label": "key",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L224"
+    },
+    {
+      "id": "scripts_perf_budget_seen",
+      "label": "seen",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L226"
+    },
+    {
+      "id": "scripts_perf_budget_page",
+      "label": "page",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L228"
+    },
+    {
+      "id": "scripts_perf_budget_js_css",
+      "label": "{ js, css }",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L247"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "node_zlib",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_args",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_arg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_asset_budget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_marketing_budget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_admin_budget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_distroot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_failures",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_warnings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_checklazyworker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_depthat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_blockafter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_findmanifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_manifestpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_manifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_assetroot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_gzcache",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_gzbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_seen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L228",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_seen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_js_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L247",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L257",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_seen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_perf_budget_mjs",
+      "target": "scripts_perf_budget_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L264",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_perf_budget_checklazyworker",
+      "target": "scripts_perf_budget_depthat",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_perf_budget_checklazyworker",
+      "target": "scripts_perf_budget_blockafter",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_perf_budget_walk",
+      "target": "scripts_perf_budget_gzbytes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L210",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_perf_budget_arg",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_checklazyworker",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_blockafter",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_blockafter",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "pop",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_findmanifest",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L200"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "gzipSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_gzbytes",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_walk",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_walk",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_walk",
+      "callee": "endsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "scripts_perf_budget_walk",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/perf-budget.mjs",
+      "source_location": "L211"
+    }
+  ]
+}

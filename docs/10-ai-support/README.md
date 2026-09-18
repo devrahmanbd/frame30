@@ -206,13 +206,13 @@ Mapping against `docs/00-meta/audit-verdict.md`: AI support is not a summary-tab
 
 ## 13. Residual gaps
 
-| Item                                                                                           | Owner   |
-| ---------------------------------------------------------------------------------------------- | ------- |
-| `ai.vector_index` — embedding model + dimension (Bengali-capable ONNX) + vector store host     | **TBD** |
-| `ai.model_picker` — production LLM vendor behind the `LLMService` interface (mock in dev)      | **TBD** |
-| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement                 | **TBD** |
-| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                    | **TBD** |
-| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate | **TBD** |
+| Item                                                                                       | Owner   |
+| ------------------------------------------------------------------------------------------ | ------- |
+| `ai.vector_index` — embedding model + dimension (Bengali-capable ONNX) + vector store host | **TBD** |
+| `ai.model_picker` — production LLM vendor behind the `LLMService` interface (mock in dev)  | **TBD** |
+| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement             | **TBD** |
+| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                | **TBD** |
+| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate        | **TBD** |
 
 ---
 

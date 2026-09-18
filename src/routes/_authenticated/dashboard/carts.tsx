@@ -24,7 +24,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/carts")({
       { property: "og:title", content: "Abandoned carts — Framique admin" },
       {
         property: "og:description",
-        content: "Recover open carts without messaging shoppers who never opted in.",
+        content:
+          "Recover open carts without messaging shoppers who never opted in.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -47,9 +48,17 @@ function CartsPage() {
   const recover = useServerFn(cartRecoveryFn);
   const [selected, setSelected] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ queued: number; skipped: number } | null>(null);
+  const [result, setResult] = useState<{
+    queued: number;
+    skipped: number;
+  } | null>(null);
 
-  const { data, isLoading, isError, error: loadError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error: loadError,
+  } = useQuery({
     queryKey: KEY,
     queryFn: () => load(),
   });
@@ -84,17 +93,25 @@ function CartsPage() {
 
       <dl className="grid gap-3 sm:grid-cols-4">
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Open carts", "খোলা কার্ট")}</dt>
-          <dd className="tabular-nums text-2xl font-semibold">{stats?.active ?? 0}</dd>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Open carts", "খোলা কার্ট")}
+          </dt>
+          <dd className="tabular-nums text-2xl font-semibold">
+            {stats?.active ?? 0}
+          </dd>
         </div>
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Open value", "খোলা মূল্য")}</dt>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Open value", "খোলা মূল্য")}
+          </dt>
           <dd className="text-2xl font-semibold">
             <Money minor={stats?.openValue ?? 0} />
           </dd>
         </div>
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Recovered", "উদ্ধার হয়েছে")}</dt>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Recovered", "উদ্ধার হয়েছে")}
+          </dt>
           <dd className="text-2xl font-semibold">
             <Money minor={stats?.recoveredValue ?? 0} />
           </dd>
@@ -103,15 +120,17 @@ function CartsPage() {
           <dt className="text-xs uppercase text-muted-foreground">
             {t("Recovery rate", "রিকভারি হার")}
           </dt>
-          <dd className="tabular-nums text-2xl font-semibold">{stats?.rate ?? 0}%</dd>
+          <dd className="tabular-nums text-2xl font-semibold">
+            {stats?.rate ?? 0}%
+          </dd>
         </div>
       </dl>
 
       <ErrorFrame message={error ?? (isError ? message(loadError) : null)} />
       {result && (
         <p role="status" className="text-sm text-muted-foreground">
-          {t("Queued", "কিউতে")} {result.queued} · {t("skipped for consent", "সম্মতি না থাকায় বাদ")}{" "}
-          {result.skipped}
+          {t("Queued", "কিউতে")} {result.queued} ·{" "}
+          {t("skipped for consent", "সম্মতি না থাকায় বাদ")} {result.skipped}
         </p>
       )}
 
@@ -128,7 +147,9 @@ function CartsPage() {
           type="button"
           className={btnGhost}
           onClick={() =>
-            setSelected(carts.filter((c) => c.status === "active").map((c) => c.id))
+            setSelected(
+              carts.filter((c) => c.status === "active").map((c) => c.id),
+            )
           }
         >
           {t("Select all open", "সব খোলা কার্ট নির্বাচন")}
@@ -143,10 +164,18 @@ function CartsPage() {
               <th scope="col" className="p-3">
                 <span className="sr-only">{t("Select", "নির্বাচন")}</span>
               </th>
-              <th scope="col" className="p-3">{t("Shopper", "ক্রেতা")}</th>
-              <th scope="col" className="p-3">{t("Value", "মূল্য")}</th>
-              <th scope="col" className="p-3">{t("Status", "অবস্থা")}</th>
-              <th scope="col" className="p-3">{t("Last seen", "শেষ দেখা")}</th>
+              <th scope="col" className="p-3">
+                {t("Shopper", "ক্রেতা")}
+              </th>
+              <th scope="col" className="p-3">
+                {t("Value", "মূল্য")}
+              </th>
+              <th scope="col" className="p-3">
+                {t("Status", "অবস্থা")}
+              </th>
+              <th scope="col" className="p-3">
+                {t("Last seen", "শেষ দেখা")}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -164,13 +193,18 @@ function CartsPage() {
                     checked={selected.includes(c.id)}
                     onChange={(e) =>
                       setSelected((prev) =>
-                        e.target.checked ? [...prev, c.id] : prev.filter((id) => id !== c.id),
+                        e.target.checked
+                          ? [...prev, c.id]
+                          : prev.filter((id) => id !== c.id),
                       )
                     }
                   />
                 </td>
                 <td className="p-3">
-                  {c.customer_name ?? c.customer_email ?? c.customer_phone ?? t("Guest", "অতিথি")}
+                  {c.customer_name ??
+                    c.customer_email ??
+                    c.customer_phone ??
+                    t("Guest", "অতিথি")}
                 </td>
                 <td className="p-3">
                   <Money minor={Number(c.subtotal_minor_int)} />
@@ -179,7 +213,11 @@ function CartsPage() {
                   <StatusPill
                     label={c.status}
                     tone={
-                      c.status === "recovered" ? "success" : c.status === "active" ? "warning" : "neutral"
+                      c.status === "recovered"
+                        ? "success"
+                        : c.status === "active"
+                          ? "warning"
+                          : "neutral"
                     }
                   />
                 </td>
@@ -191,7 +229,10 @@ function CartsPage() {
             {!isLoading && carts.length === 0 && (
               <tr>
                 <td colSpan={5} className="p-6 text-sm text-muted-foreground">
-                  {t("No abandoned carts captured yet.", "এখনো কোনো পরিত্যক্ত কার্ট নেই।")}
+                  {t(
+                    "No abandoned carts captured yet.",
+                    "এখনো কোনো পরিত্যক্ত কার্ট নেই।",
+                  )}
                 </td>
               </tr>
             )}

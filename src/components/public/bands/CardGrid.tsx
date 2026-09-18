@@ -66,13 +66,16 @@ export function CardGrid({
           direction="none"
           className={cn(
             "fq-glass fq-glass-hover fq-hover-spotlight fq-edge-inner flex flex-col rounded-fq-lg p-6 transition-transform duration-200 motion-safe:hover:-translate-y-0.5",
-            card.featured && "fq-beam fq-gridlines fq-halo fq-card-glow bg-card ring-1 ring-border",
+            card.featured &&
+              "fq-beam fq-gridlines fq-halo fq-card-glow bg-card ring-1 ring-border",
           )}
         >
           {card.icon || card.featured ? (
             <div className="mb-4 flex items-center justify-between gap-3">
               <span className="text-muted-foreground">{card.icon}</span>
-              {card.featured && card.featuredLabel ? <Chip>{card.featuredLabel}</Chip> : null}
+              {card.featured && card.featuredLabel ? (
+                <Chip>{card.featuredLabel}</Chip>
+              ) : null}
             </div>
           ) : null}
 
@@ -81,7 +84,10 @@ export function CardGrid({
               paragraphs, a list). A `<p>` here silently produced invalid
               nesting and a real hydration mismatch on /customers. */}
           {card.body ? (
-            <div data-type-role="caption" className="mt-3 text-sm text-muted-foreground">
+            <div
+              data-type-role="caption"
+              className="mt-3 text-sm text-muted-foreground"
+            >
               {card.body}
             </div>
           ) : null}

@@ -53,7 +53,8 @@ export function StructurePanel({
       <div className="min-h-0 flex-1 overflow-y-auto p-1">
         {nodes.length === 0 ? (
           <p className="px-3 py-8 text-center text-xs text-muted-foreground">
-            Once you fill your page with content, this window gives an overview of every layer.
+            Once you fill your page with content, this window gives an overview
+            of every layer.
           </p>
         ) : (
           nodes.map((node) => (
@@ -75,9 +76,21 @@ export function StructurePanel({
   );
 }
 
-type RowProps = Omit<StructurePanelProps, "nodes" | "onClose"> & { node: StudioNode; depth: number };
+type RowProps = Omit<StructurePanelProps, "nodes" | "onClose"> & {
+  node: StudioNode;
+  depth: number;
+};
 
-function TreeRow({ node, depth, selectedId, onSelect, onRename, onToggleHidden, onMove, onContextMenu }: RowProps) {
+function TreeRow({
+  node,
+  depth,
+  selectedId,
+  onSelect,
+  onRename,
+  onToggleHidden,
+  onMove,
+  onContextMenu,
+}: RowProps) {
   const [open, setOpen] = useState(true);
   const [editing, setEditing] = useState(false);
   const container = isContainerNode(node);
@@ -104,11 +117,17 @@ function TreeRow({ node, depth, selectedId, onSelect, onRename, onToggleHidden, 
           event.preventDefault();
           event.stopPropagation();
           const dragId = event.dataTransfer.getData("text/plain");
-          if (dragId && dragId !== node.id) onMove(dragId, { id: node.id, position: container ? "inside" : "after" });
+          if (dragId && dragId !== node.id)
+            onMove(dragId, {
+              id: node.id,
+              position: container ? "inside" : "after",
+            });
         }}
         className={cn(
           "flex items-center gap-1 rounded-fq-sm pr-1",
-          selectedId === node.id ? "bg-accent text-accent-foreground" : "hover:bg-muted",
+          selectedId === node.id
+            ? "bg-accent text-accent-foreground"
+            : "hover:bg-muted",
         )}
         style={{ paddingLeft: depth * 12 }}
       >
@@ -120,7 +139,13 @@ function TreeRow({ node, depth, selectedId, onSelect, onRename, onToggleHidden, 
             onClick={() => setOpen(!open)}
             className="grid size-8 place-items-center text-muted-foreground"
           >
-            <ChevronDown className={cn("size-3.5 transition-transform", open ? "" : "-rotate-90")} aria-hidden />
+            <ChevronDown
+              className={cn(
+                "size-3.5 transition-transform",
+                open ? "" : "-rotate-90",
+              )}
+              aria-hidden
+            />
           </button>
         ) : (
           <span className="grid size-8 place-items-center text-muted-foreground">
@@ -138,7 +163,8 @@ function TreeRow({ node, depth, selectedId, onSelect, onRename, onToggleHidden, 
               setEditing(false);
             }}
             onKeyDown={(event) => {
-              if (event.key === "Enter") (event.target as HTMLInputElement).blur();
+              if (event.key === "Enter")
+                (event.target as HTMLInputElement).blur();
               if (event.key === "Escape") setEditing(false);
             }}
             className="min-h-8 flex-1 rounded-fq-sm border border-primary bg-card px-1 text-xs"
@@ -161,7 +187,11 @@ function TreeRow({ node, depth, selectedId, onSelect, onRename, onToggleHidden, 
           aria-label={hidden ? `Show ${label}` : `Hide ${label}`}
           className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:text-foreground"
         >
-          {hidden ? <EyeOff className="size-3.5" aria-hidden /> : <Eye className="size-3.5" aria-hidden />}
+          {hidden ? (
+            <EyeOff className="size-3.5" aria-hidden />
+          ) : (
+            <Eye className="size-3.5" aria-hidden />
+          )}
         </button>
       </div>
 

@@ -20,11 +20,11 @@ Every order (COD or MFS) arrives with a Bangladesh phone number. Merchants need 
 
 ## 3. Data model & RLS
 
-| Table | Notes |
-|---|---|
-| `customers` | `merchant_id`, `phone_e164` unique per merchant, `name`, `email`, `tags`, `consents jsonb`, `created_at`, `erased_at` |
-| `customer_orders` (view) | joins `orders` + `order_items` for history; doesn't duplicate rows |
-| `guest_sessions` | storefront cart→order session linking, destroyed at checkout (per 03 readme data flow) |
+| Table                    | Notes                                                                                                                 |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `customers`              | `merchant_id`, `phone_e164` unique per merchant, `name`, `email`, `tags`, `consents jsonb`, `created_at`, `erased_at` |
+| `customer_orders` (view) | joins `orders` + `order_items` for history; doesn't duplicate rows                                                    |
+| `guest_sessions`         | storefront cart→order session linking, destroyed at checkout (per 03 readme data flow)                                |
 
 RLS: `merchant_id` on every row; anon never reads; staff RPC-reads via `get_customer` / search; `verify_customer_phone` only via OTP service (S3).
 

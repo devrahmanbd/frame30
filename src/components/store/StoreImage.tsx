@@ -44,7 +44,10 @@ export function StoreImage({
   const [stage, setStage] = useState<"transformed" | "raw" | "failed">(
     transformed ? "transformed" : raw ? "raw" : "failed",
   );
-  const degrade = () => setStage((current) => (current === "transformed" && raw ? "raw" : "failed"));
+  const degrade = () =>
+    setStage((current) =>
+      current === "transformed" && raw ? "raw" : "failed",
+    );
   // A server-rendered image can fail *before* React attaches its handler, so
   // the load state is re-checked once the element is in the DOM; otherwise the
   // whole product grid stays blank behind a listener that never fires.
@@ -52,9 +55,17 @@ export function StoreImage({
     if (node && node.complete && node.naturalWidth === 0) degrade();
   };
 
-  const src = stage === "transformed" ? transformed : stage === "raw" ? raw : null;
+  const src =
+    stage === "transformed" ? transformed : stage === "raw" ? raw : null;
   if (!src) {
-    return <div className={className} role="presentation" aria-hidden data-placeholder="image" />;
+    return (
+      <div
+        className={className}
+        role="presentation"
+        aria-hidden
+        data-placeholder="image"
+      />
+    );
   }
 
   const useVariant = stage === "transformed" && image;
@@ -63,7 +74,11 @@ export function StoreImage({
     <img
       ref={check}
       src={src}
-      {...(useVariant ? { srcSet: image.srcSet, sizes: sizes ?? image.sizes } : sizes ? { sizes } : {})}
+      {...(useVariant
+        ? { srcSet: image.srcSet, sizes: sizes ?? image.sizes }
+        : sizes
+          ? { sizes }
+          : {})}
       alt={alt}
       width={image?.width ?? 600}
       height={image?.height ?? 600}

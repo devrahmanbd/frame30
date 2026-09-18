@@ -1,1 +1,941 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "label": "page-markdown.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L1"}, {"id": "editor_page_markdown_escape", "label": "ESCAPE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L30"}, {"id": "editor_page_markdown_inlinemarkdowntohtml", "label": "inlineMarkdownToHtml()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L37"}, {"id": "editor_page_markdown_escapemd", "label": "escapeMd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L63"}, {"id": "editor_page_markdown_inlinetomarkdown", "label": "inlineToMarkdown()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L67"}, {"id": "editor_page_markdown_splittablerow", "label": "splitTableRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L96"}, {"id": "editor_page_markdown_istabledivider", "label": "isTableDivider()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L104"}, {"id": "editor_page_markdown_markdowntoblocks", "label": "markdownToBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L108"}, {"id": "editor_page_markdown_alignprefix", "label": "alignPrefix()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L266"}, {"id": "editor_page_markdown_blockstomarkdown", "label": "blocksToMarkdown()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L270"}, {"id": "editor_page_markdown_rendermarkdownblocks", "label": "renderMarkdownBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L313"}, {"id": "editor_page_markdown_markdowntotext", "label": "markdownToText()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L318"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "users_rahman_documents_frame30_src_lib_blog_body_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_blocktohtml", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_inlinetohtml", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_parseinline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_block", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_headinglevel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_inline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "lib_blog_body_textalign", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_escape", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_inlinemarkdowntohtml", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_escapemd", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_inlinetomarkdown", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_splittablerow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_istabledivider", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_markdowntoblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_alignprefix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L266", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_blockstomarkdown", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L270", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_rendermarkdownblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L313", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "target": "editor_page_markdown_markdowntotext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L318", "weight": 1.0}, {"source": "editor_page_markdown_markdowntoblocks", "target": "editor_page_markdown_istabledivider", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L221", "weight": 1.0}, {"source": "editor_page_markdown_markdowntoblocks", "target": "editor_page_markdown_splittablerow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L222", "weight": 1.0}, {"source": "editor_page_markdown_rendermarkdownblocks", "target": "editor_page_markdown_markdowntoblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L314", "weight": 1.0}, {"source": "editor_page_markdown_markdowntotext", "target": "editor_page_markdown_markdowntoblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L319", "weight": 1.0}], "raw_calls": [{"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L39"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L43"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L45"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L46"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L47"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L51"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L52"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L53"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L54"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L55"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L56"}, {"caller_nid": "editor_page_markdown_inlinemarkdowntohtml", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L57"}, {"caller_nid": "editor_page_markdown_escapemd", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L64"}, {"caller_nid": "editor_page_markdown_inlinetomarkdown", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L68"}, {"caller_nid": "editor_page_markdown_inlinetomarkdown", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L68"}, {"caller_nid": "editor_page_markdown_splittablerow", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L97"}, {"caller_nid": "editor_page_markdown_splittablerow", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L97"}, {"caller_nid": "editor_page_markdown_splittablerow", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L97"}, {"caller_nid": "editor_page_markdown_splittablerow", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L97"}, {"caller_nid": "editor_page_markdown_istabledivider", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L105"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L109"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L109"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L117"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L125"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L126"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L132"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L136"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L137"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L141"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L141"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L141"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L146"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L147"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L155"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L157"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L158"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L162"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L165"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L165"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "inline", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L166"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L168"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L174"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L177"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L178"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L180"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L182"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L183"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L191"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L193"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L194"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L194"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "inline", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L197"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L197"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L198"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L205"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L205"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L206"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L210"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L211"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "inline", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L212"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L212"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L213"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L216"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L221"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L222"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L227"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L228"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L230"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L230"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L233"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L241"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L244"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L245"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L246"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L247"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L248"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L249"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L250"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L253"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "inline", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L256"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L256"}, {"caller_nid": "editor_page_markdown_markdowntoblocks", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L258"}, {"caller_nid": "editor_page_markdown_blockstomarkdown", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L271"}, {"caller_nid": "editor_page_markdown_blockstomarkdown", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L271"}, {"caller_nid": "editor_page_markdown_rendermarkdownblocks", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L314"}, {"caller_nid": "editor_page_markdown_rendermarkdownblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L314"}, {"caller_nid": "editor_page_markdown_markdowntotext", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L319"}, {"caller_nid": "editor_page_markdown_markdowntotext", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L319"}, {"caller_nid": "editor_page_markdown_markdowntotext", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L319"}, {"caller_nid": "editor_page_markdown_markdowntotext", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts", "source_location": "L319"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "label": "page-markdown.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "editor_page_markdown_escape",
+      "label": "ESCAPE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "editor_page_markdown_inlinemarkdowntohtml",
+      "label": "inlineMarkdownToHtml()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "editor_page_markdown_escapemd",
+      "label": "escapeMd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "editor_page_markdown_inlinetomarkdown",
+      "label": "inlineToMarkdown()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L67"
+    },
+    {
+      "id": "editor_page_markdown_splittablerow",
+      "label": "splitTableRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "editor_page_markdown_istabledivider",
+      "label": "isTableDivider()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "editor_page_markdown_markdowntoblocks",
+      "label": "markdownToBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "editor_page_markdown_alignprefix",
+      "label": "alignPrefix()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L266"
+    },
+    {
+      "id": "editor_page_markdown_blockstomarkdown",
+      "label": "blocksToMarkdown()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L270"
+    },
+    {
+      "id": "editor_page_markdown_rendermarkdownblocks",
+      "label": "renderMarkdownBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L313"
+    },
+    {
+      "id": "editor_page_markdown_markdowntotext",
+      "label": "markdownToText()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L318"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_body_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_blocktohtml",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_inlinetohtml",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_parseinline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_block",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_headinglevel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_inline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "lib_blog_body_textalign",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_escape",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_inlinemarkdowntohtml",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_escapemd",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_inlinetomarkdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_splittablerow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_istabledivider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_markdowntoblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_alignprefix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_blockstomarkdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L270",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_rendermarkdownblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "target": "editor_page_markdown_markdowntotext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L318",
+      "weight": 1.0
+    },
+    {
+      "source": "editor_page_markdown_markdowntoblocks",
+      "target": "editor_page_markdown_istabledivider",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "editor_page_markdown_markdowntoblocks",
+      "target": "editor_page_markdown_splittablerow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "editor_page_markdown_rendermarkdownblocks",
+      "target": "editor_page_markdown_markdowntoblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "editor_page_markdown_markdowntotext",
+      "target": "editor_page_markdown_markdowntoblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L319",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinemarkdowntohtml",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "editor_page_markdown_escapemd",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinetomarkdown",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "editor_page_markdown_inlinetomarkdown",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "editor_page_markdown_splittablerow",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "editor_page_markdown_splittablerow",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "editor_page_markdown_splittablerow",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "editor_page_markdown_splittablerow",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "editor_page_markdown_istabledivider",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "inline",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "inline",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "inline",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L233"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L241"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "inline",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntoblocks",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "editor_page_markdown_blockstomarkdown",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L271"
+    },
+    {
+      "caller_nid": "editor_page_markdown_blockstomarkdown",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L271"
+    },
+    {
+      "caller_nid": "editor_page_markdown_rendermarkdownblocks",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "editor_page_markdown_rendermarkdownblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntotext",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntotext",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntotext",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "editor_page_markdown_markdowntotext",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/editor/page-markdown.ts",
+      "source_location": "L319"
+    }
+  ]
+}

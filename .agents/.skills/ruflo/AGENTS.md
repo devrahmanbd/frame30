@@ -19,6 +19,7 @@
 ```
 
 **Workflow (Use MCP Tools):**
+
 1. `memory_search(query="task keywords")` → LEARN from past patterns (score > 0.7 = use it)
 2. `swarm_init(topology="hierarchical")` → coordination record (instant)
 3. **YOU write the code / run the commands** ← THIS IS WHERE WORK HAPPENS
@@ -109,6 +110,7 @@ Repository release contract:
 ```
 
 ### ❌ WRONG: Expecting claude-flow to execute tasks
+
 ```bash
 npx claude-flow swarm start --objective "Build API"
 # WRONG: Waiting for claude-flow to build the API
@@ -116,6 +118,7 @@ npx claude-flow swarm start --objective "Build API"
 ```
 
 ### ✅ CORRECT: Codex executes, claude-flow tracks
+
 ```bash
 # 1. Tell claude-flow what you're doing (optional coordination)
 npx claude-flow swarm init --topology hierarchical --max-agents 1
@@ -133,10 +136,10 @@ npx claude-flow memory store --key "api-created" --value "src/api.ts" --namespac
 
 ### The Division of Labor
 
-| Component | Role | Examples |
-|-----------|------|----------|
-| **CODEX** | EXECUTES | Write files, run tests, create code, shell commands |
-| **claude-flow** | ORCHESTRATES | Track agents, store memory, coordinate tasks |
+| Component       | Role         | Examples                                            |
+| --------------- | ------------ | --------------------------------------------------- |
+| **CODEX**       | EXECUTES     | Write files, run tests, create code, shell commands |
+| **claude-flow** | ORCHESTRATES | Track agents, store memory, coordinate tasks        |
 
 ---
 
@@ -150,6 +153,7 @@ npx claude-flow memory store --key "api-created" --value "src/api.ts" --namespac
 ```
 
 ### ❌ WRONG Pattern (Stopping)
+
 ```bash
 npx claude-flow swarm init --topology hierarchical
 npx claude-flow agent spawn --type coder --name worker-1
@@ -159,6 +163,7 @@ npx claude-flow swarm start --objective "Build hello world"
 ```
 
 ### ✅ CORRECT Pattern (Continue Immediately)
+
 ```bash
 # Step 1: Coordination (optional)
 npx claude-flow swarm init --topology hierarchical
@@ -173,28 +178,29 @@ npx claude-flow memory store --key "result" --value "Hello World printed" --name
 ```
 
 ### The Rule
+
 **After ANY claude-flow command, IMMEDIATELY continue with your own work.**
 
 Claude-flow commands return instantly. They create coordination RECORDS only.
 You must ALWAYS follow up with YOUR OWN execution.
 
-| After This... | IMMEDIATELY Do This... |
-|---------------|----------------------|
-| `swarm init` | Start writing code |
-| `agent spawn` | Continue implementation |
+| After This... | IMMEDIATELY Do This...    |
+| ------------- | ------------------------- |
+| `swarm init`  | Start writing code        |
+| `agent spawn` | Continue implementation   |
 | `task create` | Execute the task yourself |
-| `swarm start` | Begin actual work |
+| `swarm start` | Begin actual work         |
 
 ---
 
 ### When to Use Claude-Flow Commands
 
-| Use Case | Claude-Flow Command | Then Codex Does |
-|----------|---------------------|-----------------|
-| Track progress | `memory store --key "step1" --value "done"` | Continue to next step |
-| Multi-step tasks | `task create --description "step 2"` | Execute step 2 |
-| Store results | `memory store --key "output" --value "..."` | Move on |
-| Coordinate | `swarm init` | Start working |
+| Use Case         | Claude-Flow Command                         | Then Codex Does       |
+| ---------------- | ------------------------------------------- | --------------------- |
+| Track progress   | `memory store --key "step1" --value "done"` | Continue to next step |
+| Multi-step tasks | `task create --description "step 2"`        | Execute step 2        |
+| Store results    | `memory store --key "output" --value "..."` | Move on               |
+| Coordinate       | `swarm init`                                | Start working         |
 
 ### Hello World - Correct Pattern
 
@@ -231,53 +237,53 @@ npx claude-flow swarm start --objective "Your task here" --strategy development
 
 ### Common Swarm Patterns
 
-| Task | Exact Command |
-|------|---------------|
-| Init hierarchical swarm | `npx claude-flow swarm init --topology hierarchical --max-agents 8` |
-| Init mesh swarm | `npx claude-flow swarm init --topology mesh --max-agents 5` |
-| Init V3 mode (15 agents) | `npx claude-flow swarm init --v3-mode` |
-| Spawn coder | `npx claude-flow agent spawn --type coder --name coder-1` |
-| Spawn tester | `npx claude-flow agent spawn --type tester --name tester-1` |
-| Spawn coordinator | `npx claude-flow agent spawn --type coordinator --name coord-1` |
-| Spawn architect | `npx claude-flow agent spawn --type architect --name arch-1` |
-| Spawn reviewer | `npx claude-flow agent spawn --type reviewer --name rev-1` |
-| Spawn researcher | `npx claude-flow agent spawn --type researcher --name res-1` |
-| Start swarm | `npx claude-flow swarm start --objective "task" --strategy development` |
-| Check swarm status | `npx claude-flow swarm status` |
-| List agents | `npx claude-flow agent list` |
-| Stop swarm | `npx claude-flow swarm stop` |
+| Task                     | Exact Command                                                           |
+| ------------------------ | ----------------------------------------------------------------------- |
+| Init hierarchical swarm  | `npx claude-flow swarm init --topology hierarchical --max-agents 8`     |
+| Init mesh swarm          | `npx claude-flow swarm init --topology mesh --max-agents 5`             |
+| Init V3 mode (15 agents) | `npx claude-flow swarm init --v3-mode`                                  |
+| Spawn coder              | `npx claude-flow agent spawn --type coder --name coder-1`               |
+| Spawn tester             | `npx claude-flow agent spawn --type tester --name tester-1`             |
+| Spawn coordinator        | `npx claude-flow agent spawn --type coordinator --name coord-1`         |
+| Spawn architect          | `npx claude-flow agent spawn --type architect --name arch-1`            |
+| Spawn reviewer           | `npx claude-flow agent spawn --type reviewer --name rev-1`              |
+| Spawn researcher         | `npx claude-flow agent spawn --type researcher --name res-1`            |
+| Start swarm              | `npx claude-flow swarm start --objective "task" --strategy development` |
+| Check swarm status       | `npx claude-flow swarm status`                                          |
+| List agents              | `npx claude-flow agent list`                                            |
+| Stop swarm               | `npx claude-flow swarm stop`                                            |
 
 ### Agent Types (Use with `--type`)
 
-| Type | Purpose |
-|------|---------|
-| `coordinator` | Orchestrates other agents |
-| `coder` | Writes code |
-| `tester` | Writes tests |
-| `reviewer` | Reviews code |
-| `architect` | Designs systems |
-| `researcher` | Analyzes requirements |
-| `security-architect` | Security design |
-| `performance-engineer` | Optimization |
+| Type                   | Purpose                   |
+| ---------------------- | ------------------------- |
+| `coordinator`          | Orchestrates other agents |
+| `coder`                | Writes code               |
+| `tester`               | Writes tests              |
+| `reviewer`             | Reviews code              |
+| `architect`            | Designs systems           |
+| `researcher`           | Analyzes requirements     |
+| `security-architect`   | Security design           |
+| `performance-engineer` | Optimization              |
 
 ### Task Commands
 
-| Action | Command |
-|--------|---------|
+| Action      | Command                                                                  |
+| ----------- | ------------------------------------------------------------------------ |
 | Create task | `npx claude-flow task create --type implementation --description "desc"` |
-| List tasks | `npx claude-flow task list` |
-| Assign task | `npx claude-flow task assign TASK_ID --agent AGENT_NAME` |
-| Task status | `npx claude-flow task status TASK_ID` |
-| Cancel task | `npx claude-flow task cancel TASK_ID` |
+| List tasks  | `npx claude-flow task list`                                              |
+| Assign task | `npx claude-flow task assign TASK_ID --agent AGENT_NAME`                 |
+| Task status | `npx claude-flow task status TASK_ID`                                    |
+| Cancel task | `npx claude-flow task cancel TASK_ID`                                    |
 
 ### Memory Commands
 
-| Action | Command |
-|--------|---------|
-| Store | `npx claude-flow memory store --key "key" --value "value" --namespace patterns` |
-| Search | `npx claude-flow memory search --query "search terms"` |
-| List | `npx claude-flow memory list --namespace patterns` |
-| Retrieve | `npx claude-flow memory retrieve --key "key"` |
+| Action   | Command                                                                         |
+| -------- | ------------------------------------------------------------------------------- |
+| Store    | `npx claude-flow memory store --key "key" --value "value" --namespace patterns` |
+| Search   | `npx claude-flow memory search --query "search terms"`                          |
+| List     | `npx claude-flow memory list --namespace patterns`                              |
+| Retrieve | `npx claude-flow memory retrieve --key "key"`                                   |
 
 ---
 
@@ -286,6 +292,7 @@ npx claude-flow swarm start --objective "Your task here" --strategy development
 ### Recipe 1: Hello World Test (COMPLETE EXAMPLE)
 
 **Step 1: Setup coordination** (returns instantly - don't stop!)
+
 ```bash
 npx claude-flow swarm init --topology mesh --max-agents 5
 npx claude-flow agent spawn --type coder --name hello-main
@@ -293,6 +300,7 @@ npx claude-flow agent spawn --type coder --name hello-main
 ```
 
 **Step 2: YOU (Codex) execute the task** (THIS IS THE REAL WORK)
+
 ```bash
 # ✅ YOU create the file
 echo 'console.log("Hello World from Swarm!");' > /tmp/hello-swarm.js
@@ -303,11 +311,13 @@ node /tmp/hello-swarm.js
 ```
 
 **Step 3: Report completion** (optional - store results)
+
 ```bash
 npx claude-flow memory store --key "hello-world-result" --value "Executed: Hello World from Swarm!" --namespace results
 ```
 
 ### Recipe 1b: 5-Agent Concurrent Hello World (COMPLETE)
+
 ```bash
 # COORDINATION (instant - creates records only)
 npx claude-flow swarm init --topology hierarchical --max-agents 5
@@ -327,6 +337,7 @@ npx claude-flow memory store --key "concurrent-result" --value "5 workers comple
 ```
 
 ### Recipe 1b: Hello World (Single Command Block)
+
 ```bash
 # All-in-one execution
 npx claude-flow swarm init --topology mesh --max-agents 5 && \
@@ -338,6 +349,7 @@ npx claude-flow memory store --key "hello-world-result" --value "Success" --name
 ```
 
 ### Recipe 2: Feature Implementation (6 Agents)
+
 ```bash
 npx claude-flow swarm init --topology hierarchical --max-agents 8
 npx claude-flow agent spawn --type coordinator --name lead
@@ -350,6 +362,7 @@ npx claude-flow swarm start --objective "Implement [feature]" --strategy develop
 ```
 
 ### Recipe 3: Bug Fix (4 Agents)
+
 ```bash
 npx claude-flow swarm init --topology hierarchical --max-agents 4
 npx claude-flow agent spawn --type coordinator --name lead
@@ -360,6 +373,7 @@ npx claude-flow swarm start --objective "Fix [bug]" --strategy development
 ```
 
 ### Recipe 4: Security Audit (3 Agents)
+
 ```bash
 npx claude-flow swarm init --topology hierarchical --max-agents 4
 npx claude-flow agent spawn --type coordinator --name lead
@@ -369,6 +383,7 @@ npx claude-flow swarm start --objective "Security audit" --strategy development
 ```
 
 ### Recipe 5: V3 Full Coordination (15 Agents)
+
 ```bash
 npx claude-flow swarm init --v3-mode
 npx claude-flow swarm coordinate --agents 15
@@ -390,17 +405,18 @@ npx claude-flow swarm coordinate --agents 15
 
 ## 📁 FILE ORGANIZATION
 
-| Directory | Purpose |
-|-----------|---------|
-| `/src` | Source code |
-| `/tests` | Test files |
-| `/docs` | Documentation |
-| `/config` | Configuration |
+| Directory  | Purpose         |
+| ---------- | --------------- |
+| `/src`     | Source code     |
+| `/tests`   | Test files      |
+| `/docs`    | Documentation   |
+| `/config`  | Configuration   |
 | `/scripts` | Utility scripts |
 
 ## 🎯 WHEN TO USE SWARMS
 
 **USE SWARM:**
+
 - Multiple files (3+)
 - New feature implementation
 - Cross-module refactoring
@@ -409,6 +425,7 @@ npx claude-flow swarm coordinate --agents 15
 - Performance optimization
 
 **SKIP SWARM:**
+
 - Single file edits
 - Simple bug fixes (1-2 lines)
 - Documentation updates
@@ -419,6 +436,7 @@ npx claude-flow swarm coordinate --agents 15
 ## 🔧 CLI REFERENCE
 
 ### Swarm Commands
+
 ```bash
 npx claude-flow swarm init [--topology TYPE] [--max-agents N] [--v3-mode]
 npx claude-flow swarm start --objective "task" --strategy [development|research]
@@ -429,6 +447,7 @@ npx claude-flow swarm coordinate --agents N
 ```
 
 ### Agent Commands
+
 ```bash
 npx claude-flow agent spawn --type TYPE --name NAME
 npx claude-flow agent list [--filter active|idle|busy]
@@ -440,6 +459,7 @@ npx claude-flow agent logs AGENT_ID
 ```
 
 ### Task Commands
+
 ```bash
 npx claude-flow task create --type TYPE --description "desc"
 npx claude-flow task list [--all]
@@ -450,6 +470,7 @@ npx claude-flow task retry TASK_ID
 ```
 
 ### Memory Commands
+
 ```bash
 npx claude-flow memory store --key KEY --value VALUE [--namespace NS]
 npx claude-flow memory search --query "terms" [--namespace NS]
@@ -459,6 +480,7 @@ npx claude-flow memory init [--force]
 ```
 
 ### Hooks Commands
+
 ```bash
 npx claude-flow hooks pre-task --description "task"
 npx claude-flow hooks post-task --task-id ID --success true
@@ -470,6 +492,7 @@ npx claude-flow hooks worker dispatch --trigger audit
 ```
 
 ### System Commands
+
 ```bash
 npx claude-flow init [--wizard] [--codex] [--full]
 npx claude-flow daemon start
@@ -484,27 +507,31 @@ npx claude-flow mcp start
 
 ## 🔌 TOPOLOGIES
 
-| Topology | Use Case | Command Flag |
-|----------|----------|--------------|
-| `hierarchical` | Coordinated teams, anti-drift | `--topology hierarchical` |
-| `mesh` | Peer-to-peer, equal agents | `--topology mesh` |
-| `hierarchical-mesh` | Hybrid (recommended for V3) | `--topology hierarchical-mesh` |
-| `ring` | Sequential processing | `--topology ring` |
-| `star` | Central coordinator | `--topology star` |
-| `adaptive` | Dynamic switching | `--topology adaptive` |
+| Topology            | Use Case                      | Command Flag                   |
+| ------------------- | ----------------------------- | ------------------------------ |
+| `hierarchical`      | Coordinated teams, anti-drift | `--topology hierarchical`      |
+| `mesh`              | Peer-to-peer, equal agents    | `--topology mesh`              |
+| `hierarchical-mesh` | Hybrid (recommended for V3)   | `--topology hierarchical-mesh` |
+| `ring`              | Sequential processing         | `--topology ring`              |
+| `star`              | Central coordinator           | `--topology star`              |
+| `adaptive`          | Dynamic switching             | `--topology adaptive`          |
 
 ## 🤖 AGENT TYPES
 
 ### Core
+
 `coordinator`, `coder`, `tester`, `reviewer`, `architect`, `researcher`
 
 ### Specialized
+
 `security-architect`, `security-auditor`, `memory-specialist`, `performance-engineer`
 
 ### Swarm Coordination
+
 `hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`
 
 ### Consensus
+
 `byzantine-coordinator`, `raft-manager`, `gossip-coordinator`
 
 ---
@@ -512,6 +539,7 @@ npx claude-flow mcp start
 ## ⚙️ CONFIGURATION
 
 ### Default Swarm Config
+
 - Topology: `hierarchical`
 - Max Agents: 8
 - Strategy: `specialized`
@@ -519,6 +547,7 @@ npx claude-flow mcp start
 - Memory: `hybrid`
 
 ### Environment Variables
+
 ```bash
 CLAUDE_FLOW_CONFIG=./claude-flow.config.json
 CLAUDE_FLOW_LOG_LEVEL=info
@@ -531,16 +560,16 @@ CLAUDE_FLOW_MEMORY_BACKEND=hybrid
 
 Invoke with `$skill-name`:
 
-| Skill | Purpose |
-|-------|---------|
-| `$swarm-orchestration` | Multi-agent coordination |
-| `$memory-management` | Pattern storage/retrieval |
-| `$sparc-methodology` | Structured development |
-| `$security-audit` | Security scanning |
-| `$performance-analysis` | Profiling |
-| `$github-automation` | CI/CD management |
-| `$hive-mind` | Byzantine consensus |
-| `$neural-training` | Pattern learning |
+| Skill                   | Purpose                   |
+| ----------------------- | ------------------------- |
+| `$swarm-orchestration`  | Multi-agent coordination  |
+| `$memory-management`    | Pattern storage/retrieval |
+| `$sparc-methodology`    | Structured development    |
+| `$security-audit`       | Security scanning         |
+| `$performance-analysis` | Profiling                 |
+| `$github-automation`    | CI/CD management          |
+| `$hive-mind`            | Byzantine consensus       |
+| `$neural-training`      | Pattern learning          |
 
 ---
 
@@ -567,44 +596,50 @@ codex mcp add claude-flow -- npx claude-flow mcp start
 ```
 
 ### Test MCP Connection
+
 ```bash
 # Test MCP server starts correctly:
 npx claude-flow mcp start --test
 ```
 
 ### MCP Tools Available
+
 Once added, Codex can use these tools via MCP:
 
 **Coordination:**
-| Tool | Purpose |
-|------|---------|
-| `swarm_init` | Initialize swarm (topology, maxAgents) |
-| `swarm_status` | Check swarm state |
-| `agent_spawn` | Register agent roles |
-| `agent_status` | Check agent state |
-| `task_orchestrate` | Coordinate multi-agent tasks |
+
+| Tool               | Purpose                                |
+| ------------------ | -------------------------------------- |
+| `swarm_init`       | Initialize swarm (topology, maxAgents) |
+| `swarm_status`     | Check swarm state                      |
+| `agent_spawn`      | Register agent roles                   |
+| `agent_status`     | Check agent state                      |
+| `task_orchestrate` | Coordinate multi-agent tasks           |
 
 **Learning & Memory (USE THESE!):**
-| Tool | Purpose | When |
-|------|---------|------|
-| `memory_search` | Semantic vector search | BEFORE every task |
-| `memory_store` | Store patterns with embeddings | AFTER success |
-| `memory_retrieve` | Get by exact key | When key is known |
-| `neural_train` | Train on patterns | Periodic improvement |
-| `neural_status` | Check learning state | Debugging |
+
+| Tool              | Purpose                        | When                 |
+| ----------------- | ------------------------------ | -------------------- |
+| `memory_search`   | Semantic vector search         | BEFORE every task    |
+| `memory_store`    | Store patterns with embeddings | AFTER success        |
+| `memory_retrieve` | Get by exact key               | When key is known    |
+| `neural_train`    | Train on patterns              | Periodic improvement |
+| `neural_status`   | Check learning state           | Debugging            |
 
 **Hive Mind (Advanced):**
-| Tool | Purpose |
-|------|---------|
-| `hive-mind_init` | Byzantine consensus swarm |
-| `hive-mind_spawn` | Spawn hive workers |
-| `hive-mind_broadcast` | Message all workers |
+
+| Tool                  | Purpose                   |
+| --------------------- | ------------------------- |
+| `hive-mind_init`      | Byzantine consensus swarm |
+| `hive-mind_spawn`     | Spawn hive workers        |
+| `hive-mind_broadcast` | Message all workers       |
 
 ### Self-Learning via MCP Tools (PREFERRED)
 
 Use MCP tools directly - faster than CLI commands:
 
 **BEFORE starting any task - SEARCH for patterns:**
+
 ```
 Use tool: memory_search
   query: "keywords related to your task"
@@ -612,6 +647,7 @@ Use tool: memory_search
 ```
 
 **AFTER completing successfully - STORE the pattern:**
+
 ```
 Use tool: memory_store
   key: "pattern-[descriptive-name]"
@@ -635,12 +671,12 @@ Use tool: memory_store
 
 ### MCP Tools for Learning
 
-| Tool | Purpose | When to Use |
-|------|---------|-------------|
-| `memory_search` | Find similar past patterns | BEFORE starting any task |
-| `memory_store` | Save successful patterns | AFTER completing a task |
-| `memory_retrieve` | Get specific pattern by key | When you know the exact key |
-| `neural_train` | Train on successful patterns | After multiple successes |
+| Tool              | Purpose                      | When to Use                 |
+| ----------------- | ---------------------------- | --------------------------- |
+| `memory_search`   | Find similar past patterns   | BEFORE starting any task    |
+| `memory_store`    | Save successful patterns     | AFTER completing a task     |
+| `memory_retrieve` | Get specific pattern by key  | When you know the exact key |
+| `neural_train`    | Train on successful patterns | After multiple successes    |
 
 ### Example: Learning-Enabled Task
 
@@ -669,12 +705,14 @@ Use tool: memory_store
 ```
 
 ### Vector Search Tips
+
 - Searches are SEMANTIC (meaning-based, not just keywords)
 - Score > 0.7 = strong match, use that pattern
 - Score 0.5-0.7 = partial match, adapt as needed
 - Store DETAILED values for better future retrieval
 
 ### CLI Fallback (if MCP unavailable)
+
 ```bash
 npx claude-flow memory search --query "keywords" --namespace patterns
 npx claude-flow memory store --key "pattern-x" --value "what worked" --namespace patterns
@@ -683,12 +721,14 @@ npx claude-flow memory store --key "pattern-x" --value "what worked" --namespace
 ### Coordination via MCP
 
 When claude-flow is added as MCP server, Codex can call tools directly:
+
 ```
 Use tool: swarm_init with topology="hierarchical"
 Use tool: memory_store with key="result" value="success"
 ```
 
 ### config.toml MCP Setup
+
 ```toml
 # ~/.codex/config.toml
 [mcp_servers.claude-flow]

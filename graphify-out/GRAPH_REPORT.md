@@ -1,11 +1,13 @@
 # GRAPH_REPORT.md
 
 ## Summary
+
 - Nodes: 18934
 - Edges: 35961
 - Hyperedges: 65
 
 ## Top Nodes
+
 - routeTree.gen.ts (src_routetree_gen_ts): 617 connections
 - useLang() (lib_i18n_uselang): 461 connections
 - react (react): 304 connections

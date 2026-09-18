@@ -16,7 +16,10 @@ import {
   type CollectionField,
   type CollectionRules,
 } from "@/lib/catalog";
-import { catalogPreviewCollectionFn, catalogSaveRulesFn } from "@/lib/catalog.functions";
+import {
+  catalogPreviewCollectionFn,
+  catalogSaveRulesFn,
+} from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/collections")({
   head: () => ({
@@ -24,12 +27,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/collections")({
       { title: "Collections — Framique Admin" },
       {
         name: "description",
-        content: "Group products into storefront collections and control what shoppers browse.",
+        content:
+          "Group products into storefront collections and control what shoppers browse.",
       },
       { property: "og:title", content: "Collection management" },
       {
         property: "og:description",
-        content: "Create collections and assign products for your Bangladeshi storefront.",
+        content:
+          "Create collections and assign products for your Bangladeshi storefront.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -52,7 +57,9 @@ function CollectionsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("collections")
-        .select("id, name, slug, is_published, position, is_smart, rules, collection_products(product_id)")
+        .select(
+          "id, name, slug, is_published, position, is_smart, rules, collection_products(product_id)",
+        )
         .eq("merchant_id", merchantId!)
         .order("position");
       if (error) throw error;
@@ -74,7 +81,8 @@ function CollectionsPage() {
     },
   });
 
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["collections", merchantId] });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["collections", merchantId] });
 
   const create = useMutation({
     mutationFn: async () => {
@@ -96,7 +104,10 @@ function CollectionsPage() {
 
   const togglePublished = useMutation({
     mutationFn: async ({ id, next }: { id: string; next: boolean }) => {
-      const { error } = await supabase.from("collections").update({ is_published: next }).eq("id", id);
+      const { error } = await supabase
+        .from("collections")
+        .update({ is_published: next })
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: invalidate,
@@ -104,7 +115,10 @@ function CollectionsPage() {
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("collections").delete().eq("id", id);
+      const { error } = await supabase
+        .from("collections")
+        .delete()
+        .eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -143,12 +157,18 @@ function CollectionsPage() {
   });
 
   const active = collections?.find((c) => c.id === selected) ?? null;
-  const memberIds = new Set((active?.collection_products ?? []).map((cp) => cp.product_id));
+  const memberIds = new Set(
+    (active?.collection_products ?? []).map((cp) => cp.product_id),
+  );
 
   return (
     <section>
-      <h1 className="font-bangla-display text-xl font-semibold">{t("Collections", "কালেকশন")}</h1>
-      <p className="text-sm text-muted-foreground">Group products into storefront collections.</p>
+      <h1 className="font-bangla-display text-xl font-semibold">
+        {t("Collections", "কালেকশন")}
+      </h1>
+      <p className="text-sm text-muted-foreground">
+        Group products into storefront collections.
+      </p>
 
       <form
         className="mt-4 flex flex-wrap items-end gap-2"
@@ -158,7 +178,10 @@ function CollectionsPage() {
         }}
       >
         <div className="min-w-56 flex-1">
-          <label htmlFor="collection-name" className="block text-xs font-medium text-muted-foreground">
+          <label
+            htmlFor="collection-name"
+            className="block text-xs font-medium text-muted-foreground"
+          >
             {t("New collection", "নতুন কালেকশন")}
           </label>
           <input
@@ -180,21 +203,30 @@ function CollectionsPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="rounded-fq-lg border border-border bg-card">
-          <h2 className="border-b border-border p-3 text-sm font-semibold">Collections</h2>
+          <h2 className="border-b border-border p-3 text-sm font-semibold">
+            Collections
+          </h2>
           {isLoading ? (
             <p className="p-3 text-sm text-muted-foreground">Loading…</p>
           ) : !collections?.length ? (
-            <p className="p-3 text-sm text-muted-foreground">No collections yet.</p>
+            <p className="p-3 text-sm text-muted-foreground">
+              No collections yet.
+            </p>
           ) : (
             <ul className="divide-y divide-border">
               {collections.map((c) => (
-                <li key={c.id} className="flex flex-wrap items-center gap-2 p-3">
+                <li
+                  key={c.id}
+                  className="flex flex-wrap items-center gap-2 p-3"
+                >
                   <button
                     type="button"
                     aria-pressed={selected === c.id}
                     onClick={() => setSelected(c.id)}
                     className={`min-h-9 flex-1 rounded-fq-md px-2 text-left text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-                      selected === c.id ? "bg-info-soft font-medium text-info-foreground" : "hover:bg-muted"
+                      selected === c.id
+                        ? "bg-info-soft font-medium text-info-foreground"
+                        : "hover:bg-muted"
                     }`}
                   >
                     {selected === c.id ? "✓ " : ""}
@@ -205,14 +237,21 @@ function CollectionsPage() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => togglePublished.mutate({ id: c.id, next: !c.is_published })}
+                    onClick={() =>
+                      togglePublished.mutate({
+                        id: c.id,
+                        next: !c.is_published,
+                      })
+                    }
                     className={`min-h-9 rounded-full px-3 text-xs font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
                       c.is_published
                         ? "bg-success-soft text-success-foreground"
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {c.is_published ? t("Published", "প্রকাশিত") : t("Hidden", "খসড়া")}
+                    {c.is_published
+                      ? t("Published", "প্রকাশিত")
+                      : t("Hidden", "খসড়া")}
                   </button>
                   <button
                     type="button"
@@ -236,7 +275,9 @@ function CollectionsPage() {
               Pick a collection to assign products.
             </p>
           ) : !products?.length ? (
-            <p className="p-3 text-sm text-muted-foreground">No products in your catalog yet.</p>
+            <p className="p-3 text-sm text-muted-foreground">
+              No products in your catalog yet.
+            </p>
           ) : (
             <ul className="max-h-96 divide-y divide-border overflow-y-auto">
               {products.map((p) => {
@@ -258,7 +299,9 @@ function CollectionsPage() {
                     />
                     <label htmlFor={`cp-${p.id}`} className="flex-1 text-sm">
                       {p.title}
-                      <span className="ml-2 text-xs text-muted-foreground">{p.status}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {p.status}
+                      </span>
                     </label>
                   </li>
                 );
@@ -313,23 +356,28 @@ function SmartRules({
   const [rules, setRules] = useState<CollectionRules>(initialRules);
 
   const save = useMutation({
-    mutationFn: () => saveRules({ data: { merchantId, collectionId, isSmart, rules } }),
+    mutationFn: () =>
+      saveRules({ data: { merchantId, collectionId, isSmart, rules } }),
     onSuccess: () => {
       toast.success(t("Rules saved", "রুল সেভ হয়েছে"));
       onSaved();
     },
-    onError: (err) => toast.error(err instanceof Error ? err.message : "Could not save rules"),
+    onError: (err) =>
+      toast.error(err instanceof Error ? err.message : "Could not save rules"),
   });
 
   const preview = useMutation({
     mutationFn: () => previewFn({ data: { merchantId, collectionId } }),
-    onError: (err) => toast.error(err instanceof Error ? err.message : "Preview unavailable"),
+    onError: (err) =>
+      toast.error(err instanceof Error ? err.message : "Preview unavailable"),
   });
 
   function patchCondition(index: number, next: Partial<CollectionCondition>) {
     setRules((r) => ({
       ...r,
-      conditions: r.conditions.map((c, i) => (i === index ? { ...c, ...next } : c)),
+      conditions: r.conditions.map((c, i) =>
+        i === index ? { ...c, ...next } : c,
+      ),
     }));
   }
 
@@ -349,15 +397,21 @@ function SmartRules({
           {t("Automatic membership", "স্বয়ংক্রিয় সদস্যপদ")}
         </label>
       </div>
-      <p className="mt-1 text-xs text-muted-foreground">{describeRules(rules)}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        {describeRules(rules)}
+      </p>
 
       {isSmart ? (
         <div className="mt-4 space-y-3">
           <label className="block max-w-40 text-sm">
-            <span className="mb-1.5 block font-medium">{t("Match", "মিল")}</span>
+            <span className="mb-1.5 block font-medium">
+              {t("Match", "মিল")}
+            </span>
             <select
               value={rules.match}
-              onChange={(e) => setRules({ ...rules, match: e.target.value as "all" | "any" })}
+              onChange={(e) =>
+                setRules({ ...rules, match: e.target.value as "all" | "any" })
+              }
               className={field}
             >
               <option value="all">{t("All conditions", "সব শর্ত")}</option>
@@ -366,13 +420,21 @@ function SmartRules({
           </label>
 
           {rules.conditions.map((c, i) => (
-            <div key={i} className="grid gap-2 rounded-fq-md border border-border p-3 sm:grid-cols-[1fr_1fr_1fr_auto]">
+            <div
+              key={i}
+              className="grid gap-2 rounded-fq-md border border-border p-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
+            >
               <select
                 aria-label={`Condition ${i + 1} field`}
                 value={c.field}
                 onChange={(e) => {
                   const nextField = e.target.value as CollectionField;
-                  patchCondition(i, { field: nextField, op: COLLECTION_OPS[nextField][0]!, value: "", key: "" });
+                  patchCondition(i, {
+                    field: nextField,
+                    op: COLLECTION_OPS[nextField][0]!,
+                    value: "",
+                    key: "",
+                  });
                 }}
                 className={field}
               >
@@ -420,7 +482,9 @@ function SmartRules({
                   <input
                     aria-label={`Condition ${i + 1} value`}
                     value={c.value ?? ""}
-                    onChange={(e) => patchCondition(i, { value: e.target.value })}
+                    onChange={(e) =>
+                      patchCondition(i, { value: e.target.value })
+                    }
                     className={field}
                   />
                 </div>
@@ -428,7 +492,9 @@ function SmartRules({
                 <input
                   aria-label={`Condition ${i + 1} value`}
                   value={c.value ?? ""}
-                  placeholder={c.field === "price" ? "minor units, e.g. 485000" : ""}
+                  placeholder={
+                    c.field === "price" ? "minor units, e.g. 485000" : ""
+                  }
                   onChange={(e) => patchCondition(i, { value: e.target.value })}
                   className={`${field} ${c.field === "price" || c.field === "stock" ? "money" : ""}`}
                 />
@@ -436,7 +502,10 @@ function SmartRules({
               <button
                 type="button"
                 onClick={() =>
-                  setRules((r) => ({ ...r, conditions: r.conditions.filter((_, idx) => idx !== i) }))
+                  setRules((r) => ({
+                    ...r,
+                    conditions: r.conditions.filter((_, idx) => idx !== i),
+                  }))
                 }
                 className="min-h-11 rounded-fq-md border border-border px-3 text-xs font-medium text-danger-foreground"
               >
@@ -452,7 +521,10 @@ function SmartRules({
               onClick={() =>
                 setRules((r) => ({
                   ...r,
-                  conditions: [...r.conditions, { field: "title", op: "contains", value: "" }],
+                  conditions: [
+                    ...r.conditions,
+                    { field: "title", op: "contains", value: "" },
+                  ],
                 }))
               }
               className="min-h-11 rounded-fq-md border border-border px-3 text-sm disabled:opacity-50"
@@ -465,7 +537,9 @@ function SmartRules({
               onClick={() => preview.mutate()}
               className="min-h-11 rounded-fq-md border border-border px-3 text-sm disabled:opacity-50"
             >
-              {preview.isPending ? t("Resolving…", "হিসাব হচ্ছে…") : t("Preview matches", "মিল দেখুন")}
+              {preview.isPending
+                ? t("Resolving…", "হিসাব হচ্ছে…")
+                : t("Preview matches", "মিল দেখুন")}
             </button>
             <button
               type="button"

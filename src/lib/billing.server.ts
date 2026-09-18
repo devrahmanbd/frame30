@@ -41,7 +41,8 @@ export function toPlanDef(row: PlanRow): PlanDef {
     plan: row.plan,
     title: row.title_bn,
     en: row.title_en,
-    priceMinorInt: row.price_minor_int === null ? null : Number(row.price_minor_int),
+    priceMinorInt:
+      row.price_minor_int === null ? null : Number(row.price_minor_int),
     currencyCode: row.currency_code,
     products: row.products_limit,
     staff: row.staff_limit,
@@ -67,7 +68,11 @@ export async function loadPlanDefs(db: Client): Promise<PlanDef[]> {
 }
 
 export async function planDefFor(db: Client, plan: Plan): Promise<PlanDef> {
-  const { data } = await db.from("plan_definitions").select("*").eq("plan", plan).maybeSingle();
+  const { data } = await db
+    .from("plan_definitions")
+    .select("*")
+    .eq("plan", plan)
+    .maybeSingle();
   if (!data) throw new BillingError("limits_unconfigured", LIMITS_UNCONFIGURED);
   return toPlanDef(data);
 }
@@ -95,10 +100,17 @@ export async function ensureSubscription(db: Client, merchantId: string) {
     .maybeSingle();
   if (data) return data;
   const def = await planDefFor(db, "launch");
-  const trialEnds = new Date(Date.now() + def.trialDays * 86400000).toISOString();
+  const trialEnds = new Date(
+    Date.now() + def.trialDays * 86400000,
+  ).toISOString();
   const { data: created, error } = await db
     .from("subscriptions")
-    .insert({ merchant_id: merchantId, plan: "launch", status: "trial", trial_ends_at: trialEnds })
+    .insert({
+      merchant_id: merchantId,
+      plan: "launch",
+      status: "trial",
+      trial_ends_at: trialEnds,
+    })
     .select("*")
     .single();
   if (error) throw new BillingError("subscription_init_failed", error.message);
@@ -125,7 +137,6 @@ export async function ensureLimits(db: Client, merchantId: string, plan: Plan) {
   if (error) throw new BillingError("limits_init_failed", error.message);
   return created;
 }
-
 
 export async function logEvent(
   db: Client,

@@ -12,29 +12,11 @@
       "baseBytes": 520603,
       "agenticow": {
         "branchMsMedian": 9.61,
-        "branchMsAll": [
-          9.61,
-          8.646,
-          9.627,
-          8.036,
-          9.657
-        ],
+        "branchMsAll": [9.61, 8.646, 9.627, 8.036, 9.657],
         "branchBytesMedian": 162,
-        "branchBytesAll": [
-          162,
-          162,
-          162,
-          162,
-          162
-        ],
+        "branchBytesAll": [162, 162, 162, 162, 162],
         "queryMsMedian": 0.088,
-        "queryMsAll": [
-          0.271,
-          0.077,
-          0.087,
-          0.093,
-          0.088
-        ]
+        "queryMsAll": [0.271, 0.077, 0.087, 0.093, 0.088]
       },
       "fullCopy": {
         "copyMsMedian": 0.375,
@@ -63,29 +45,11 @@
       "baseBytes": 5207948,
       "agenticow": {
         "branchMsMedian": 9.068,
-        "branchMsAll": [
-          9.56,
-          8.716,
-          10.412,
-          8.667,
-          9.068
-        ],
+        "branchMsAll": [9.56, 8.716, 10.412, 8.667, 9.068],
         "branchBytesMedian": 162,
-        "branchBytesAll": [
-          162,
-          162,
-          162,
-          162,
-          162
-        ],
+        "branchBytesAll": [162, 162, 162, 162, 162],
         "queryMsMedian": 0.449,
-        "queryMsAll": [
-          5973.038,
-          0.281,
-          0.339,
-          0.449,
-          0.481
-        ]
+        "queryMsAll": [5973.038, 0.281, 0.339, 0.449, 0.481]
       },
       "fullCopy": {
         "copyMsMedian": 3.014,
@@ -114,29 +78,11 @@
       "baseBytes": 26114128,
       "agenticow": {
         "branchMsMedian": 9.732,
-        "branchMsAll": [
-          10.967,
-          10.21,
-          9.732,
-          8.501,
-          9.632
-        ],
+        "branchMsAll": [10.967, 10.21, 9.732, 8.501, 9.632],
         "branchBytesMedian": 162,
-        "branchBytesAll": [
-          162,
-          162,
-          162,
-          162,
-          162
-        ],
+        "branchBytesAll": [162, 162, 162, 162, 162],
         "queryMsMedian": 0.741,
-        "queryMsAll": [
-          36829.844,
-          0.589,
-          0.632,
-          0.741,
-          0.758
-        ]
+        "queryMsAll": [36829.844, 0.589, 0.632, 0.741, 0.758]
       },
       "fullCopy": {
         "copyMsMedian": 16.405,

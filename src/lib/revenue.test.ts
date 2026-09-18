@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { churnWindow, formatMinor, revenueSnapshot, type SubscriptionRow } from "./revenue";
+import {
+  churnWindow,
+  formatMinor,
+  revenueSnapshot,
+  type SubscriptionRow,
+} from "./revenue";
 
 const plans = [
   { plan: "starter", currencyCode: "BDT", priceMinorInt: 99_000 },
@@ -20,7 +25,11 @@ const sub = (over: Partial<SubscriptionRow>): SubscriptionRow => ({
 describe("revenueSnapshot", () => {
   it("sums MRR in integer minor units and derives ARR and ARPA", () => {
     const s = revenueSnapshot(
-      [sub({}), sub({ plan: "growth" }), sub({ plan: "growth", status: "past_due" })],
+      [
+        sub({}),
+        sub({ plan: "growth" }),
+        sub({ plan: "growth", status: "past_due" }),
+      ],
       plans,
     );
     expect(s.mrrMinorInt).toBe(99_000 + 299_000 + 299_000);
@@ -74,14 +83,20 @@ describe("revenueSnapshot", () => {
 
   it("returns an empty snapshot for no subscriptions", () => {
     const s = revenueSnapshot([], plans);
-    expect(s).toMatchObject({ mrrMinorInt: 0, arrMinorInt: 0, arpaMinorInt: 0, paying: 0 });
+    expect(s).toMatchObject({
+      mrrMinorInt: 0,
+      arrMinorInt: 0,
+      arpaMinorInt: 0,
+      paying: 0,
+    });
     expect(s.perPlan).toEqual([]);
   });
 });
 
 describe("churnWindow", () => {
   const now = new Date("2025-06-30T00:00:00Z");
-  const daysAgo = (n: number) => new Date(now.getTime() - n * 86_400_000).toISOString();
+  const daysAgo = (n: number) =>
+    new Date(now.getTime() - n * 86_400_000).toISOString();
 
   it("divides cancellations by the population alive at window start", () => {
     const c = churnWindow(
@@ -89,7 +104,11 @@ describe("churnWindow", () => {
         sub({ createdAt: daysAgo(200) }),
         sub({ createdAt: daysAgo(200) }),
         sub({ createdAt: daysAgo(200) }),
-        sub({ createdAt: daysAgo(200), status: "cancelled", cancelledAt: daysAgo(10) }),
+        sub({
+          createdAt: daysAgo(200),
+          status: "cancelled",
+          cancelledAt: daysAgo(10),
+        }),
       ],
       30,
       now,
@@ -107,7 +126,13 @@ describe("churnWindow", () => {
 
   it("ignores cancellations that happened before the window opened", () => {
     const c = churnWindow(
-      [sub({ createdAt: daysAgo(300), status: "cancelled", cancelledAt: daysAgo(120) })],
+      [
+        sub({
+          createdAt: daysAgo(300),
+          status: "cancelled",
+          cancelledAt: daysAgo(120),
+        }),
+      ],
       30,
       now,
     );

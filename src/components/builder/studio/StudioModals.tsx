@@ -17,7 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { LAYOUT_PRESETS, type ContainerLayout, type LayoutPreset } from "@/lib/studio/containers";
+import {
+  LAYOUT_PRESETS,
+  type ContainerLayout,
+  type LayoutPreset,
+} from "@/lib/studio/containers";
 import {
   TEMPLATE_CATEGORIES,
   filterTemplates,
@@ -26,8 +30,18 @@ import {
   type TemplateKind,
 } from "@/lib/studio/templates";
 import type { PageSettings } from "@/lib/studio/model";
-import { historyList, historyLabel, revisionLabel, type HistoryState, type RevisionEntry } from "@/lib/studio/history";
-import { STUDIO_SHORTCUTS, formatStudioShortcut, type StudioPlatform } from "@/lib/studio/shortcuts";
+import {
+  historyList,
+  historyLabel,
+  revisionLabel,
+  type HistoryState,
+  type RevisionEntry,
+} from "@/lib/studio/history";
+import {
+  STUDIO_SHORTCUTS,
+  formatStudioShortcut,
+  type StudioPlatform,
+} from "@/lib/studio/shortcuts";
 import { BREAKPOINT_DEFS, type DeviceKey } from "@/lib/studio/responsive";
 
 /* ------------------------------------------------------------------ */
@@ -44,14 +58,18 @@ export function LayoutPickerDialog({
   onPick: (preset: LayoutPreset) => void;
 }) {
   const [layout, setLayout] = useState<ContainerLayout>("flex");
-  const presets = LAYOUT_PRESETS.filter((preset) => preset.layout === layout || layout === "flex");
+  const presets = LAYOUT_PRESETS.filter(
+    (preset) => preset.layout === layout || layout === "flex",
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Which layout would you like to use?</DialogTitle>
-          <DialogDescription>Pick a container type, then a starting structure.</DialogDescription>
+          <DialogDescription>
+            Pick a container type, then a starting structure.
+          </DialogDescription>
         </DialogHeader>
 
         <div role="group" aria-label="Container type" className="flex gap-2">
@@ -63,7 +81,9 @@ export function LayoutPickerDialog({
               onClick={() => setLayout(key)}
               className={cn(
                 "min-h-11 flex-1 rounded-fq-md border text-sm font-medium capitalize",
-                layout === key ? "border-primary bg-accent text-accent-foreground" : "border-border",
+                layout === key
+                  ? "border-primary bg-accent text-accent-foreground"
+                  : "border-border",
               )}
             >
               {key === "flex" ? "Flexbox" : "Grid"}
@@ -87,12 +107,18 @@ export function LayoutPickerDialog({
                 {preset.rows.map((row, rowIndex) => (
                   <span key={rowIndex} className="flex flex-1 gap-1">
                     {row.map((basis, cellIndex) => (
-                      <span key={cellIndex} className="rounded-[3px] bg-muted" style={{ flex: basis }} />
+                      <span
+                        key={cellIndex}
+                        className="rounded-[3px] bg-muted"
+                        style={{ flex: basis }}
+                      />
                     ))}
                   </span>
                 ))}
               </span>
-              <span className="text-[10px] text-muted-foreground">{preset.label}</span>
+              <span className="text-[10px] text-muted-foreground">
+                {preset.label}
+              </span>
             </button>
           ))}
         </div>
@@ -135,16 +161,24 @@ export function TemplatesDialog({
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>Templates library</DialogTitle>
-          <DialogDescription>Insert a ready-made block or start from a full page.</DialogDescription>
+          <DialogDescription>
+            Insert a ready-made block or start from a full page.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div role="tablist" aria-label="Template kind" className="flex rounded-fq-md bg-muted p-1">
-            {([
-              ["block", "Blocks"],
-              ["page", "Pages"],
-              ["mine", "My templates"],
-            ] as [TemplateKind, string][]).map(([key, label]) => (
+          <div
+            role="tablist"
+            aria-label="Template kind"
+            className="flex rounded-fq-md bg-muted p-1"
+          >
+            {(
+              [
+                ["block", "Blocks"],
+                ["page", "Pages"],
+                ["mine", "My templates"],
+              ] as [TemplateKind, string][]
+            ).map(([key, label]) => (
               <button
                 key={key}
                 role="tab"
@@ -152,7 +186,9 @@ export function TemplatesDialog({
                 onClick={() => setKind(key)}
                 className={cn(
                   "min-h-9 rounded-fq-sm px-3 text-xs font-semibold",
-                  kind === key ? "bg-card shadow-fq-sm" : "text-muted-foreground",
+                  kind === key
+                    ? "bg-card shadow-fq-sm"
+                    : "text-muted-foreground",
                 )}
               >
                 {label}
@@ -161,7 +197,10 @@ export function TemplatesDialog({
           </div>
 
           <div className="relative min-w-40 flex-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -172,7 +211,11 @@ export function TemplatesDialog({
           </div>
 
           <label className="flex min-h-11 items-center gap-2 text-xs">
-            <Switch checked={favouritesOnly} onCheckedChange={setFavouritesOnly} aria-label="Favourites only" />
+            <Switch
+              checked={favouritesOnly}
+              onCheckedChange={setFavouritesOnly}
+              aria-label="Favourites only"
+            />
             Favourites
           </label>
 
@@ -193,8 +236,13 @@ export function TemplatesDialog({
         </div>
 
         <div className="flex min-h-0 gap-4">
-          <nav aria-label="Template categories" className="hidden w-40 shrink-0 flex-col gap-0.5 overflow-y-auto sm:flex">
-            {(["all", ...TEMPLATE_CATEGORIES] as (TemplateCategory | "all")[]).map((key) => (
+          <nav
+            aria-label="Template categories"
+            className="hidden w-40 shrink-0 flex-col gap-0.5 overflow-y-auto sm:flex"
+          >
+            {(
+              ["all", ...TEMPLATE_CATEGORIES] as (TemplateCategory | "all")[]
+            ).map((key) => (
               <button
                 key={key}
                 type="button"
@@ -202,7 +250,9 @@ export function TemplatesDialog({
                 onClick={() => setCategory(key)}
                 className={cn(
                   "min-h-9 rounded-fq-sm px-2 text-left text-xs capitalize",
-                  category === key ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-muted",
+                  category === key
+                    ? "bg-accent text-accent-foreground"
+                    : "text-muted-foreground hover:bg-muted",
                 )}
               >
                 {key}
@@ -211,14 +261,23 @@ export function TemplatesDialog({
           </nav>
 
           <div className="grid max-h-[50vh] flex-1 grid-cols-1 gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
-            {list.length === 0 && <p className="text-sm text-muted-foreground">No template here yet.</p>}
+            {list.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No template here yet.
+              </p>
+            )}
             {list.map((template) => (
-              <article key={template.id} className="flex flex-col overflow-hidden rounded-fq-md border border-border">
+              <article
+                key={template.id}
+                className="flex flex-col overflow-hidden rounded-fq-md border border-border"
+              >
                 <div className="flex h-24 items-center justify-center bg-muted text-[11px] uppercase tracking-wide text-muted-foreground">
                   {template.category}
                 </div>
                 <div className="flex items-center gap-1 p-2">
-                  <span className="flex-1 truncate text-xs font-medium">{template.name}</span>
+                  <span className="flex-1 truncate text-xs font-medium">
+                    {template.name}
+                  </span>
                   <button
                     type="button"
                     aria-label={`${template.favourite ? "Remove" : "Add"} ${template.name} ${template.favourite ? "from" : "to"} favourites`}
@@ -226,7 +285,13 @@ export function TemplatesDialog({
                     onClick={() => onToggleFavourite(template.id)}
                     className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:text-warning"
                   >
-                    <Star className={cn("size-4", template.favourite && "fill-warning text-warning")} aria-hidden />
+                    <Star
+                      className={cn(
+                        "size-4",
+                        template.favourite && "fill-warning text-warning",
+                      )}
+                      aria-hidden
+                    />
                   </button>
                   <button
                     type="button"
@@ -274,10 +339,16 @@ export function PageSettingsDialog({
       <DialogContent className="max-w-xl">
         <DialogHeader>
           <DialogTitle>Page settings</DialogTitle>
-          <DialogDescription>Controls that apply to this page only.</DialogDescription>
+          <DialogDescription>
+            Controls that apply to this page only.
+          </DialogDescription>
         </DialogHeader>
 
-        <div role="tablist" aria-label="Page settings tabs" className="flex rounded-fq-md bg-muted p-1">
+        <div
+          role="tablist"
+          aria-label="Page settings tabs"
+          className="flex rounded-fq-md bg-muted p-1"
+        >
           {(["settings", "style", "advanced"] as const).map((key) => (
             <button
               key={key}
@@ -298,12 +369,19 @@ export function PageSettingsDialog({
           {tab === "settings" && (
             <>
               <Field label="Title">
-                <Input value={page.title} onChange={(event) => onChange({ title: event.target.value })} />
+                <Input
+                  value={page.title}
+                  onChange={(event) => onChange({ title: event.target.value })}
+                />
               </Field>
               <Field label="Status">
                 <select
                   value={page.status}
-                  onChange={(event) => onChange({ status: event.target.value as PageSettings["status"] })}
+                  onChange={(event) =>
+                    onChange({
+                      status: event.target.value as PageSettings["status"],
+                    })
+                  }
                   className="min-h-11 w-full rounded-fq-md border border-border bg-card px-3 text-sm"
                 >
                   <option value="draft">Draft</option>
@@ -314,7 +392,9 @@ export function PageSettingsDialog({
               <Field label="Featured image URL">
                 <Input
                   value={page.featuredImage ?? ""}
-                  onChange={(event) => onChange({ featuredImage: event.target.value })}
+                  onChange={(event) =>
+                    onChange({ featuredImage: event.target.value })
+                  }
                   placeholder="https://…"
                 />
               </Field>
@@ -322,7 +402,9 @@ export function PageSettingsDialog({
                 <Input
                   type="number"
                   value={page.order ?? 0}
-                  onChange={(event) => onChange({ order: Number(event.target.value) })}
+                  onChange={(event) =>
+                    onChange({ order: Number(event.target.value) })
+                  }
                 />
               </Field>
               <Toggle
@@ -330,11 +412,19 @@ export function PageSettingsDialog({
                 checked={Boolean(page.allowComments)}
                 onChange={(next) => onChange({ allowComments: next })}
               />
-              <Toggle label="Hide title" checked={Boolean(page.hideTitle)} onChange={(next) => onChange({ hideTitle: next })} />
+              <Toggle
+                label="Hide title"
+                checked={Boolean(page.hideTitle)}
+                onChange={(next) => onChange({ hideTitle: next })}
+              />
               <Field label="Page layout">
                 <select
                   value={page.layout}
-                  onChange={(event) => onChange({ layout: event.target.value as PageSettings["layout"] })}
+                  onChange={(event) =>
+                    onChange({
+                      layout: event.target.value as PageSettings["layout"],
+                    })
+                  }
                   className="min-h-11 w-full rounded-fq-md border border-border bg-card px-3 text-sm"
                 >
                   <option value="default">Default</option>
@@ -352,7 +442,9 @@ export function PageSettingsDialog({
               <Field label="Body background">
                 <Input
                   value={page.bodyBackground ?? ""}
-                  onChange={(event) => onChange({ bodyBackground: event.target.value })}
+                  onChange={(event) =>
+                    onChange({ bodyBackground: event.target.value })
+                  }
                   placeholder="var(--color-background)"
                 />
               </Field>
@@ -360,14 +452,18 @@ export function PageSettingsDialog({
                 <Input
                   type="number"
                   value={page.bodyMargin ?? 0}
-                  onChange={(event) => onChange({ bodyMargin: Number(event.target.value) })}
+                  onChange={(event) =>
+                    onChange({ bodyMargin: Number(event.target.value) })
+                  }
                 />
               </Field>
               <Field label="Body padding">
                 <Input
                   type="number"
                   value={page.bodyPadding ?? 0}
-                  onChange={(event) => onChange({ bodyPadding: Number(event.target.value) })}
+                  onChange={(event) =>
+                    onChange({ bodyPadding: Number(event.target.value) })
+                  }
                 />
               </Field>
             </>
@@ -381,17 +477,26 @@ export function PageSettingsDialog({
                   spellCheck={false}
                   className="font-mono text-xs"
                   value={page.customCss ?? ""}
-                  onChange={(event) => onChange({ customCss: event.target.value })}
+                  onChange={(event) =>
+                    onChange({ customCss: event.target.value })
+                  }
                 />
               </Field>
               <fieldset className="flex flex-col gap-2">
-                <legend className="text-xs font-medium text-muted-foreground">Active breakpoints</legend>
+                <legend className="text-xs font-medium text-muted-foreground">
+                  Active breakpoints
+                </legend>
                 {BREAKPOINT_DEFS.map((def) => (
-                  <label key={def.key} className="flex min-h-11 items-center justify-between gap-3 text-sm">
+                  <label
+                    key={def.key}
+                    className="flex min-h-11 items-center justify-between gap-3 text-sm"
+                  >
                     <span>
                       {def.label}{" "}
                       <span className="text-xs text-muted-foreground">
-                        {def.base ? "base" : `${def.direction === "max" ? "up to" : "from"} ${def.edge}px`}
+                        {def.base
+                          ? "base"
+                          : `${def.direction === "max" ? "up to" : "from"} ${def.edge}px`}
                       </span>
                     </span>
                     <Switch
@@ -400,7 +505,9 @@ export function PageSettingsDialog({
                       aria-label={`${def.label} breakpoint`}
                       onCheckedChange={(checked) =>
                         onBreakpoints(
-                          checked ? [...breakpoints, def.key] : breakpoints.filter((key) => key !== def.key),
+                          checked
+                            ? [...breakpoints, def.key]
+                            : breakpoints.filter((key) => key !== def.key),
                         )
                       }
                     />
@@ -415,7 +522,13 @@ export function PageSettingsDialog({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-xs font-medium text-muted-foreground">{label}</span>
@@ -468,10 +581,16 @@ export function HistoryDialog({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>History</DialogTitle>
-          <DialogDescription>Step back through edits, or restore a saved revision.</DialogDescription>
+          <DialogDescription>
+            Step back through edits, or restore a saved revision.
+          </DialogDescription>
         </DialogHeader>
 
-        <div role="tablist" aria-label="History tabs" className="flex rounded-fq-md bg-muted p-1">
+        <div
+          role="tablist"
+          aria-label="History tabs"
+          className="flex rounded-fq-md bg-muted p-1"
+        >
           {(["actions", "revisions"] as const).map((key) => (
             <button
               key={key}
@@ -498,12 +617,17 @@ export function HistoryDialog({
                     aria-current={current ? "true" : undefined}
                     className={cn(
                       "flex min-h-11 w-full items-center justify-between gap-3 rounded-fq-sm px-3 text-left text-sm",
-                      current ? "bg-accent text-accent-foreground" : "hover:bg-muted",
+                      current
+                        ? "bg-accent text-accent-foreground"
+                        : "hover:bg-muted",
                     )}
                   >
                     <span>{historyLabel(entry)}</span>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(entry.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      {new Date(entry.at).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </button>
                 </li>
@@ -520,7 +644,9 @@ export function HistoryDialog({
                 </li>
               ))}
           {tab === "revisions" && revisions.length === 0 && (
-            <li className="px-3 py-6 text-center text-sm text-muted-foreground">No saved revision yet.</li>
+            <li className="px-3 py-6 text-center text-sm text-muted-foreground">
+              No saved revision yet.
+            </li>
           )}
         </ul>
       </DialogContent>
@@ -544,14 +670,18 @@ export function FinderDialog({
   onPick: (id: string) => void;
 }) {
   const [query, setQuery] = useState("");
-  const filtered = items.filter((item) => item.label.toLowerCase().includes(query.trim().toLowerCase()));
+  const filtered = items.filter((item) =>
+    item.label.toLowerCase().includes(query.trim().toLowerCase()),
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Finder</DialogTitle>
-          <DialogDescription>Jump to any element or editor action.</DialogDescription>
+          <DialogDescription>
+            Jump to any element or editor action.
+          </DialogDescription>
         </DialogHeader>
         <Input
           autoFocus
@@ -572,11 +702,19 @@ export function FinderDialog({
                 className="flex min-h-11 w-full items-center justify-between gap-3 rounded-fq-sm px-3 text-left text-sm hover:bg-muted"
               >
                 <span>{item.label}</span>
-                {item.hint && <span className="text-xs text-muted-foreground">{item.hint}</span>}
+                {item.hint && (
+                  <span className="text-xs text-muted-foreground">
+                    {item.hint}
+                  </span>
+                )}
               </button>
             </li>
           ))}
-          {filtered.length === 0 && <li className="px-3 py-6 text-sm text-muted-foreground">Nothing matches.</li>}
+          {filtered.length === 0 && (
+            <li className="px-3 py-6 text-sm text-muted-foreground">
+              Nothing matches.
+            </li>
+          )}
         </ul>
       </DialogContent>
     </Dialog>
@@ -598,15 +736,24 @@ export function ShortcutsDialog({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Keyboard shortcuts</DialogTitle>
-          <DialogDescription>Everything the editor responds to.</DialogDescription>
+          <DialogDescription>
+            Everything the editor responds to.
+          </DialogDescription>
         </DialogHeader>
         <div className="grid max-h-[60vh] gap-4 overflow-y-auto sm:grid-cols-2">
           {groups.map((group) => (
             <section key={group}>
-              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{group}</h3>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {group}
+              </h3>
               <ul className="flex flex-col gap-1">
-                {STUDIO_SHORTCUTS.filter((shortcut) => shortcut.group === group).map((shortcut) => (
-                  <li key={shortcut.id} className="flex items-center justify-between gap-3 text-sm">
+                {STUDIO_SHORTCUTS.filter(
+                  (shortcut) => shortcut.group === group,
+                ).map((shortcut) => (
+                  <li
+                    key={shortcut.id}
+                    className="flex items-center justify-between gap-3 text-sm"
+                  >
                     <span>{shortcut.label}</span>
                     <kbd className="rounded-fq-sm border border-border px-1.5 py-0.5 text-xs">
                       {formatStudioShortcut(shortcut, platform)}

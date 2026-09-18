@@ -4,7 +4,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const planInput = z.object({ plan: z.enum(["launch", "growth", "business", "enterprise"]) });
+const planInput = z.object({
+  plan: z.enum(["launch", "growth", "business", "enterprise"]),
+});
 
 async function scope(db: SupabaseClient<Database>, userId: string) {
   const { currentMerchantId } = await import("./marketing.server");
@@ -45,15 +47,31 @@ export const billingClaimTrialFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     const claims = context.claims as { email?: string; phone?: string };
     // The signal is hashed server-side; neither the browser nor the DB sees it raw.
-    const fingerprint = await fingerprintOf([claims.email, claims.phone, context.userId]);
-    return claimTrial(context.supabase, merchantId, context.userId, fingerprint);
+    const fingerprint = await fingerprintOf([
+      claims.email,
+      claims.phone,
+      context.userId,
+    ]);
+    return claimTrial(
+      context.supabase,
+      merchantId,
+      context.userId,
+      fingerprint,
+    );
   });
 
 export const billingPayInvoiceFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ invoiceId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ invoiceId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { payInvoice } = await import("./billing-desk.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return payInvoice(context.supabase, merchantId, context.userId, data.invoiceId);
+    return payInvoice(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.invoiceId,
+    );
   });

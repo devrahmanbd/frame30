@@ -18,7 +18,12 @@ import { DataTable } from "./primitives/DataTable";
 import { Disclosure } from "./primitives/Disclosure";
 import { ProductCard } from "./primitives/ProductCard";
 import { StickyBar } from "./primitives/StickyBar";
-import { SpecRow, SpecValue, groupSpecs, type SpecPair } from "./primitives/SpecRow";
+import {
+  SpecRow,
+  SpecValue,
+  groupSpecs,
+  type SpecPair,
+} from "./primitives/SpecRow";
 
 /* -------------------------------------------------------------- utilities */
 
@@ -26,7 +31,10 @@ function Skeleton({ lines = 4 }: { lines?: number }) {
   return (
     <div className="space-y-2" aria-hidden="true">
       {Array.from({ length: lines }, (_, i) => (
-        <div key={i} className="h-9 w-full animate-pulse rounded-fq-md bg-muted" />
+        <div
+          key={i}
+          className="h-9 w-full animate-pulse rounded-fq-md bg-muted"
+        />
       ))}
     </div>
   );
@@ -43,20 +51,30 @@ function Panel({
 }) {
   return (
     <section className="rounded-fq-lg border border-border bg-card p-4">
-      {heading ? <Heading className="mb-3 text-base font-semibold">{heading}</Heading> : null}
+      {heading ? (
+        <Heading className="mb-3 text-base font-semibold">{heading}</Heading>
+      ) : null}
       {children}
     </section>
   );
 }
 
 /** Reads the authored `r1..rN` rows off a spec-style widget. */
-export function authoredSpecs(str: (key: string) => string, count = 6): SpecPair[] {
+export function authoredSpecs(
+  str: (key: string) => string,
+  count = 6,
+): SpecPair[] {
   const out: SpecPair[] = [];
   for (let i = 1; i <= count; i += 1) {
     const label = str(`r${i}Label`).trim();
     if (!label) continue;
     const group = str(`r${i}Group`).trim();
-    out.push({ key: `r${i}`, label, value: str(`r${i}Value`).trim(), ...(group ? { group } : {}) });
+    out.push({
+      key: `r${i}`,
+      label,
+      value: str(`r${i}Value`).trim(),
+      ...(group ? { group } : {}),
+    });
   }
   return out;
 }
@@ -111,12 +129,25 @@ const SpecTable: WidgetComponent = ({ str, bool, data, Heading }) => {
 
   return (
     <section className="rounded-fq-lg border border-border bg-card">
-      {caption ? <Heading className="px-3 pt-3 text-sm text-muted-foreground">{caption}</Heading> : null}
+      {caption ? (
+        <Heading className="px-3 pt-3 text-sm text-muted-foreground">
+          {caption}
+        </Heading>
+      ) : null}
       {groups.map((entry, index) => (
-        <Disclosure key={entry.group || `group-${index}`} summary={entry.group || columnLabel} defaultOpen={index === 0}>
+        <Disclosure
+          key={entry.group || `group-${index}`}
+          summary={entry.group || columnLabel}
+          defaultOpen={index === 0}
+        >
           <dl className="m-0">
             {entry.rows.map((pair) => (
-              <SpecRow key={pair.key} label={pair.label} value={pair.value} unit={pair.unit} />
+              <SpecRow
+                key={pair.key}
+                label={pair.label}
+                value={pair.value}
+                unit={pair.unit}
+              />
             ))}
           </dl>
         </Disclosure>
@@ -129,7 +160,11 @@ const SpecTable: WidgetComponent = ({ str, bool, data, Heading }) => {
 
 const SpecHighlights: WidgetComponent = ({ str, int, Heading }) => {
   const tiles = [1, 2, 3, 4, 5, 6]
-    .map((i) => ({ key: `t${i}`, label: str(`t${i}Label`).trim(), value: str(`t${i}Value`).trim() }))
+    .map((i) => ({
+      key: `t${i}`,
+      label: str(`t${i}Label`).trim(),
+      value: str(`t${i}Value`).trim(),
+    }))
     .filter((tile) => tile.label && tile.value);
   if (tiles.length === 0) return null;
   const columns = int("columns", 4, 2, 6);
@@ -137,12 +172,19 @@ const SpecHighlights: WidgetComponent = ({ str, int, Heading }) => {
     <Panel heading={str("heading")} Heading={Heading}>
       <ul
         className="grid list-none gap-3 p-0"
-        style={{ gridTemplateColumns: `repeat(${Math.min(columns, tiles.length)}, minmax(0, 1fr))` }}
+        style={{
+          gridTemplateColumns: `repeat(${Math.min(columns, tiles.length)}, minmax(0, 1fr))`,
+        }}
       >
         {tiles.map((tile) => (
-          <li key={tile.key} className="min-w-0 rounded-fq-md border border-border p-3">
+          <li
+            key={tile.key}
+            className="min-w-0 rounded-fq-md border border-border p-3"
+          >
             <p className="m-0 text-xs text-muted-foreground">{tile.label}</p>
-            <p className="m-0 text-sm font-semibold tabular-nums">{tile.value}</p>
+            <p className="m-0 text-sm font-semibold tabular-nums">
+              {tile.value}
+            </p>
           </li>
         ))}
       </ul>
@@ -160,7 +202,10 @@ const CompareTray: WidgetComponent = ({ str, storeSlug, data, editing }) => {
   const channel = useSectionChannel(storeSlug ?? "studio", "compare");
   const rows = data?.rows ?? [];
   const chosen = channel.ids
-    .map((id) => rows.find((row) => row.id === id) ?? ({ id, title: id } as WidgetRow))
+    .map(
+      (id) =>
+        rows.find((row) => row.id === id) ?? ({ id, title: id } as WidgetRow),
+    )
     .slice(0, 4);
 
   if (chosen.length === 0) {
@@ -178,7 +223,10 @@ const CompareTray: WidgetComponent = ({ str, storeSlug, data, editing }) => {
         <span className="text-sm font-medium">{str("heading")}</span>
         <ul className="flex min-w-0 list-none flex-wrap gap-2 p-0">
           {chosen.map((row) => (
-            <li key={row.id} className="flex items-center gap-2 rounded-fq-md border border-border px-2 py-1 text-sm">
+            <li
+              key={row.id}
+              className="flex items-center gap-2 rounded-fq-md border border-border px-2 py-1 text-sm"
+            >
               <span className="line-clamp-1 max-w-[12rem]">{row.title}</span>
               <button
                 type="button"
@@ -217,21 +265,33 @@ const WarrantyPanel: WidgetComponent = ({ str, bool, int, Heading }) => {
   const months = int("months", 12, 0, 120);
   const official = bool("official");
   const centres = [1, 2, 3]
-    .map((i) => ({ key: `s${i}`, name: str(`s${i}Name`).trim(), address: str(`s${i}Address`).trim() }))
+    .map((i) => ({
+      key: `s${i}`,
+      name: str(`s${i}Name`).trim(),
+      address: str(`s${i}Address`).trim(),
+    }))
     .filter((centre) => centre.name);
   return (
     <Panel heading={str("heading")} Heading={Heading}>
       <p className="m-0 flex flex-wrap items-center gap-2 text-sm">
-        <span className="rounded-fq-sm border border-border px-2 py-1 font-medium tabular-nums">{months}</span>
+        <span className="rounded-fq-sm border border-border px-2 py-1 font-medium tabular-nums">
+          {months}
+        </span>
         <span className="rounded-fq-sm bg-muted px-2 py-1 text-xs">
           {official ? str("officialLabel") : str("parallelLabel")}
         </span>
       </p>
-      {str("coverage") ? <p className="mt-2 text-sm text-muted-foreground">{str("coverage")}</p> : null}
+      {str("coverage") ? (
+        <p className="mt-2 text-sm text-muted-foreground">{str("coverage")}</p>
+      ) : null}
       {centres.length ? (
         <dl className="mt-3 rounded-fq-md border border-border">
           {centres.map((centre) => (
-            <SpecRow key={centre.key} label={centre.name} value={centre.address} />
+            <SpecRow
+              key={centre.key}
+              label={centre.name}
+              value={centre.address}
+            />
           ))}
         </dl>
       ) : null}
@@ -249,7 +309,9 @@ const AuthenticityBadge: WidgetComponent = ({ str, bool }) => {
     <p className="m-0 flex flex-wrap items-center gap-2 rounded-fq-md border border-border bg-card px-3 py-2 text-sm">
       <span aria-hidden="true">{bool("verified") ? "✓" : "•"}</span>
       <span className="font-medium">{label}</span>
-      {str("note") ? <span className="text-muted-foreground">{str("note")}</span> : null}
+      {str("note") ? (
+        <span className="text-muted-foreground">{str("note")}</span>
+      ) : null}
       {href ? (
         <a href={href} className="underline underline-offset-2">
           {href.replace(/^https?:\/\//, "")}
@@ -266,10 +328,15 @@ const AuthenticityBadge: WidgetComponent = ({ str, bool }) => {
  * minor units; picking a tenure only changes which row is displayed.
  */
 const EmiCalculator: WidgetComponent = ({ str, data, money, Heading }) => {
-  const plans = (data?.rows ?? []).filter((row) => typeof row.priceMinor === "number");
+  const plans = (data?.rows ?? []).filter(
+    (row) => typeof row.priceMinor === "number",
+  );
   const [tenure, setTenure] = useState<string>("");
-  const tenures = [...new Set(plans.map((plan) => plan.options ?? ""))].filter(Boolean);
-  const active = tenure && tenures.includes(tenure) ? tenure : (tenures[0] ?? "");
+  const tenures = [...new Set(plans.map((plan) => plan.options ?? ""))].filter(
+    Boolean,
+  );
+  const active =
+    tenure && tenures.includes(tenure) ? tenure : (tenures[0] ?? "");
   const shown = plans.filter((plan) => (plan.options ?? "") === active);
 
   if (data?.pending) return <Skeleton lines={3} />;
@@ -283,7 +350,11 @@ const EmiCalculator: WidgetComponent = ({ str, data, money, Heading }) => {
 
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      <div role="group" aria-label={str("heading")} className="flex flex-wrap gap-2">
+      <div
+        role="group"
+        aria-label={str("heading")}
+        className="flex flex-wrap gap-2"
+      >
         {tenures.map((value) => (
           <button
             key={value}
@@ -291,7 +362,9 @@ const EmiCalculator: WidgetComponent = ({ str, data, money, Heading }) => {
             aria-pressed={value === active}
             onClick={() => setTenure(value)}
             className={`min-h-[44px] rounded-fq-md border px-3 text-sm tabular-nums ${
-              value === active ? "border-primary bg-primary text-primary-foreground" : "border-border"
+              value === active
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border"
             }`}
           >
             {value}
@@ -300,16 +373,23 @@ const EmiCalculator: WidgetComponent = ({ str, data, money, Heading }) => {
       </div>
       <ul className="mt-3 list-none space-y-2 p-0">
         {shown.map((plan) => (
-          <li key={plan.id} className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2 last:border-b-0">
+          <li
+            key={plan.id}
+            className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border pb-2 last:border-b-0"
+          >
             <span className="text-sm font-medium">{plan.title}</span>
             <span className="text-sm tabular-nums">
               {money(plan.priceMinor, plan.currency)}{" "}
-              <span className="text-muted-foreground">{str("perMonthLabel")}</span>
+              <span className="text-muted-foreground">
+                {str("perMonthLabel")}
+              </span>
             </span>
           </li>
         ))}
       </ul>
-      {str("note") ? <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p> : null}
+      {str("note") ? (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      ) : null}
     </Panel>
   );
 };
@@ -317,7 +397,11 @@ const EmiCalculator: WidgetComponent = ({ str, data, money, Heading }) => {
 /* ---------------------------------------------------------- price_sparkline */
 
 /** Pure: turns a minor-unit series into a 0–100 × 0–30 polyline. */
-export function sparklinePath(points: number[], width = 100, height = 30): string {
+export function sparklinePath(
+  points: number[],
+  width = 100,
+  height = 30,
+): string {
   const clean = points.filter((value) => Number.isFinite(value));
   if (clean.length < 2) return "";
   const min = Math.min(...clean);
@@ -327,13 +411,20 @@ export function sparklinePath(points: number[], width = 100, height = 30): strin
   return clean
     .map((value, index) => {
       const x = Math.round(index * step * 10) / 10;
-      const y = Math.round((height - ((value - min) / span) * height) * 10) / 10;
+      const y =
+        Math.round((height - ((value - min) / span) * height) * 10) / 10;
       return `${index === 0 ? "M" : "L"}${x},${y}`;
     })
     .join(" ");
 }
 
-const PriceSparkline: WidgetComponent = ({ str, int, data, money, Heading }) => {
+const PriceSparkline: WidgetComponent = ({
+  str,
+  int,
+  data,
+  money,
+  Heading,
+}) => {
   const series = data?.rows?.[0]?.points ?? [];
   const path = sparklinePath(series);
   const lowest = series.length ? Math.min(...series) : null;
@@ -350,7 +441,12 @@ const PriceSparkline: WidgetComponent = ({ str, int, data, money, Heading }) => 
   return (
     <Panel heading={str("heading")} Heading={Heading}>
       {path ? (
-        <svg viewBox="0 0 100 30" role="presentation" aria-hidden="true" className="h-12 w-full">
+        <svg
+          viewBox="0 0 100 30"
+          role="presentation"
+          aria-hidden="true"
+          className="h-12 w-full"
+        >
           <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" />
         </svg>
       ) : null}
@@ -365,7 +461,13 @@ const PriceSparkline: WidgetComponent = ({ str, int, data, money, Heading }) => 
  * Selection only. The combined total is quoted by the server once the bundle
  * reaches the cart, which is why nothing here adds two prices together.
  */
-const BundleBuilder: WidgetComponent = ({ str, int, data, Heading, locale }) => {
+const BundleBuilder: WidgetComponent = ({
+  str,
+  int,
+  data,
+  Heading,
+  locale,
+}) => {
   const rows = (data?.rows ?? []).slice(0, int("limit", 4, 2, 6));
   const [picked, setPicked] = useState<string[]>([]);
   if (data?.pending) return <Skeleton lines={3} />;
@@ -383,7 +485,9 @@ const BundleBuilder: WidgetComponent = ({ str, int, data, Heading, locale }) => 
                   checked={on}
                   onChange={() =>
                     setPicked((current) =>
-                      current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id],
+                      current.includes(row.id)
+                        ? current.filter((id) => id !== row.id)
+                        : [...current, row.id],
                     )
                   }
                   className="mt-1 h-5 w-5"
@@ -403,7 +507,9 @@ const BundleBuilder: WidgetComponent = ({ str, int, data, Heading, locale }) => 
       >
         {str("buttonLabel")}
       </button>
-      {str("note") ? <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p> : null}
+      {str("note") ? (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      ) : null}
     </Panel>
   );
 };
@@ -431,7 +537,11 @@ const DocLinks: WidgetComponent = ({ str, Heading }) => {
             >
               <span className="min-w-0">{doc.label}</span>
               {doc.meta ? (
-                <span dir="ltr" lang="en" className="shrink-0 text-xs text-muted-foreground">
+                <span
+                  dir="ltr"
+                  lang="en"
+                  className="shrink-0 text-xs text-muted-foreground"
+                >
                   {doc.meta}
                 </span>
               ) : null}
@@ -462,11 +572,18 @@ const SupportStrip: WidgetComponent = ({ str, Heading }) => {
           const body = (
             <>
               <span className="block text-sm font-medium">{tile.title}</span>
-              {tile.body ? <span className="block text-sm text-muted-foreground">{tile.body}</span> : null}
+              {tile.body ? (
+                <span className="block text-sm text-muted-foreground">
+                  {tile.body}
+                </span>
+              ) : null}
             </>
           );
           return (
-            <li key={tile.key} className="min-w-0 rounded-fq-md border border-border p-3">
+            <li
+              key={tile.key}
+              className="min-w-0 rounded-fq-md border border-border p-3"
+            >
               {tile.href ? (
                 <a href={tile.href} className="block min-h-[44px]">
                   {body}
@@ -486,13 +603,21 @@ const SupportStrip: WidgetComponent = ({ str, Heading }) => {
 
 const BuyingGuide: WidgetComponent = ({ str, Heading }) => {
   const links = [1, 2, 3, 4]
-    .map((i) => ({ key: `l${i}`, label: str(`l${i}Label`).trim(), href: str(`l${i}Href`).trim() }))
+    .map((i) => ({
+      key: `l${i}`,
+      label: str(`l${i}Label`).trim(),
+      href: str(`l${i}Href`).trim(),
+    }))
     .filter((link) => link.label && link.href);
   const body = str("body").trim();
   if (!body && links.length === 0) return null;
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      {body ? <p className="m-0 whitespace-pre-line text-sm text-muted-foreground">{body}</p> : null}
+      {body ? (
+        <p className="m-0 whitespace-pre-line text-sm text-muted-foreground">
+          {body}
+        </p>
+      ) : null}
       {links.length ? (
         <ul className="mt-3 flex list-none flex-wrap gap-2 p-0">
           {links.map((link) => (
@@ -521,7 +646,9 @@ const TradeIn: WidgetComponent = ({ str, Heading }) => {
   const [sent, setSent] = useState(false);
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      {str("body") ? <p className="m-0 text-sm text-muted-foreground">{str("body")}</p> : null}
+      {str("body") ? (
+        <p className="m-0 text-sm text-muted-foreground">{str("body")}</p>
+      ) : null}
       {sent ? (
         <p role="status" className="mt-3 text-sm">
           {str("pendingText")}
@@ -548,7 +675,11 @@ const TradeIn: WidgetComponent = ({ str, Heading }) => {
           >
             {str("buttonLabel")}
           </button>
-          {str("consentText") ? <p className="m-0 text-xs text-muted-foreground">{str("consentText")}</p> : null}
+          {str("consentText") ? (
+            <p className="m-0 text-xs text-muted-foreground">
+              {str("consentText")}
+            </p>
+          ) : null}
         </form>
       )}
     </Panel>

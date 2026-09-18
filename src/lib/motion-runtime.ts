@@ -14,7 +14,13 @@
  *      mid-session — an accessibility setting that only applies on reload is
  *      not an accessibility setting.
  */
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   MOTION_TOKENS,
   MotionBudget,
@@ -80,9 +86,12 @@ function readEnvironment(): MotionEnvironment {
     hydrated: true,
     prefersReduced: window.matchMedia?.(REDUCE_QUERY)?.matches ?? false,
     saveData: nav.connection?.saveData ?? false,
-    deviceMemoryGb: typeof nav.deviceMemory === "number" ? nav.deviceMemory : null,
+    deviceMemoryGb:
+      typeof nav.deviceMemory === "number" ? nav.deviceMemory : null,
     hardwareConcurrency:
-      typeof nav.hardwareConcurrency === "number" ? nav.hardwareConcurrency : null,
+      typeof nav.hardwareConcurrency === "number"
+        ? nav.hardwareConcurrency
+        : null,
   };
 }
 
@@ -180,7 +189,12 @@ export type InViewOptions = {
 };
 
 export function useInView<T extends HTMLElement>(options: InViewOptions = {}) {
-  const { once = true, rootMargin = "0px 0px -12% 0px", threshold = 0.05, enabled = true } = options;
+  const {
+    once = true,
+    rootMargin = "0px 0px -12% 0px",
+    threshold = 0.05,
+    enabled = true,
+  } = options;
   const ref = useRef<T | null>(null);
   const [inView, setInView] = useState(!enabled);
 
@@ -238,7 +252,8 @@ function pump(now: number) {
       });
     }
   }
-  if (tickers.size > 0 && !tickerPausedByVisibility) frame = requestAnimationFrame(pump);
+  if (tickers.size > 0 && !tickerPausedByVisibility)
+    frame = requestAnimationFrame(pump);
 }
 
 function ensurePumping() {

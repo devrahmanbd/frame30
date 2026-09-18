@@ -4,7 +4,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { fmtMinor } from "@/lib/money";
-import { draftOrderAcceptFn, draftOrderPublicFn } from "@/lib/commerce-desk.functions";
+import {
+  draftOrderAcceptFn,
+  draftOrderPublicFn,
+} from "@/lib/commerce-desk.functions";
 
 export const Route = createFileRoute("/invoice/$token")({
   head: () => ({
@@ -12,10 +15,14 @@ export const Route = createFileRoute("/invoice/$token")({
       { title: "Your quote — Framique" },
       {
         name: "description",
-        content: "Review the items, totals and delivery details on your quote, then accept it when you are ready.",
+        content:
+          "Review the items, totals and delivery details on your quote, then accept it when you are ready.",
       },
       { property: "og:title", content: "Your quote" },
-      { property: "og:description", content: "A private quote prepared for you by the shop." },
+      {
+        property: "og:description",
+        content: "A private quote prepared for you by the shop.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
@@ -50,7 +57,12 @@ type PublicDraft = {
   total_minor_int?: number;
   expires_at?: string | null;
   note?: string;
-  items?: { title: string; variant_name?: string; quantity: number; unit_price_minor_int: number }[];
+  items?: {
+    title: string;
+    variant_name?: string;
+    quantity: number;
+    unit_price_minor_int: number;
+  }[];
 };
 
 function InvoicePage() {
@@ -70,15 +82,21 @@ function InvoicePage() {
     onSuccess: (res) => {
       const outcome = (res as { outcome: string }).outcome;
       void qc.invalidateQueries({ queryKey: ["invoice", token] });
-      if (outcome === "accepted") toast.success("Thank you — the shop has been notified");
-      else if (outcome === "already_accepted") toast.info("You have already accepted this quote");
+      if (outcome === "accepted")
+        toast.success("Thank you — the shop has been notified");
+      else if (outcome === "already_accepted")
+        toast.info("You have already accepted this quote");
       else toast.error("This quote can no longer be accepted");
     },
     onError: () => toast.error("Something went wrong. Please try again."),
   });
 
   if (quote.isLoading) {
-    return <main className="mx-auto max-w-2xl p-8 text-sm text-muted-foreground">Loading your quote…</main>;
+    return (
+      <main className="mx-auto max-w-2xl p-8 text-sm text-muted-foreground">
+        Loading your quote…
+      </main>
+    );
   }
 
   const data = quote.data;
@@ -87,7 +105,9 @@ function InvoicePage() {
     return (
       <main className="mx-auto max-w-lg p-8 text-center">
         <h1 className="text-lg font-semibold">Too many attempts</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Please wait a moment and refresh this page.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Please wait a moment and refresh this page.
+        </p>
       </main>
     );
   }
@@ -95,9 +115,12 @@ function InvoicePage() {
   if (!data || data.found === false || !data.number) {
     return (
       <main className="mx-auto max-w-lg p-8 text-center">
-        <h1 className="text-lg font-semibold">This quote is no longer available</h1>
+        <h1 className="text-lg font-semibold">
+          This quote is no longer available
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          It may have expired or been cancelled. Please contact the shop for a new one.
+          It may have expired or been cancelled. Please contact the shop for a
+          new one.
         </p>
       </main>
     );
@@ -110,7 +133,9 @@ function InvoicePage() {
   return (
     <main className="mx-auto max-w-2xl p-6">
       <header className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="font-bangla-display text-xl font-semibold">Quote {data.number}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          Quote {data.number}
+        </h1>
         {data.expires_at ? (
           <p className="text-xs text-muted-foreground">
             Valid until {new Date(data.expires_at).toLocaleDateString("en-BD")}
@@ -123,9 +148,15 @@ function InvoicePage() {
           <caption className="sr-only">Items on this quote</caption>
           <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
             <tr>
-              <th scope="col" className="p-3">Item</th>
-              <th scope="col" className="p-3">Qty</th>
-              <th scope="col" className="p-3">Price</th>
+              <th scope="col" className="p-3">
+                Item
+              </th>
+              <th scope="col" className="p-3">
+                Qty
+              </th>
+              <th scope="col" className="p-3">
+                Price
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -134,12 +165,17 @@ function InvoicePage() {
                 <td className="p-3">
                   {item.title}
                   {item.variant_name ? (
-                    <span className="block text-xs text-muted-foreground">{item.variant_name}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {item.variant_name}
+                    </span>
                   ) : null}
                 </td>
                 <td className="money p-3">{item.quantity}</td>
                 <td className="money p-3">
-                  {fmtMinor(Number(item.unit_price_minor_int) * item.quantity, currency)}
+                  {fmtMinor(
+                    Number(item.unit_price_minor_int) * item.quantity,
+                    currency,
+                  )}
                 </td>
               </tr>
             ))}
@@ -149,37 +185,50 @@ function InvoicePage() {
         <dl className="space-y-1 border-t border-border p-4 text-sm">
           <div className="flex justify-between">
             <dt>Subtotal</dt>
-            <dd className="money">{fmtMinor(Number(data.subtotal_minor_int ?? 0), currency)}</dd>
+            <dd className="money">
+              {fmtMinor(Number(data.subtotal_minor_int ?? 0), currency)}
+            </dd>
           </div>
           {Number(data.discount_minor_int ?? 0) > 0 ? (
             <div className="flex justify-between">
               <dt>Discount</dt>
-              <dd className="money">−{fmtMinor(Number(data.discount_minor_int), currency)}</dd>
+              <dd className="money">
+                −{fmtMinor(Number(data.discount_minor_int), currency)}
+              </dd>
             </div>
           ) : null}
           <div className="flex justify-between">
             <dt>Delivery</dt>
-            <dd className="money">{fmtMinor(Number(data.shipping_minor_int ?? 0), currency)}</dd>
+            <dd className="money">
+              {fmtMinor(Number(data.shipping_minor_int ?? 0), currency)}
+            </dd>
           </div>
           {Number(data.vat_minor_int ?? 0) > 0 ? (
             <div className="flex justify-between">
               <dt>VAT</dt>
-              <dd className="money">{fmtMinor(Number(data.vat_minor_int), currency)}</dd>
+              <dd className="money">
+                {fmtMinor(Number(data.vat_minor_int), currency)}
+              </dd>
             </div>
           ) : null}
           <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
             <dt>Total</dt>
-            <dd className="money">{fmtMinor(Number(data.total_minor_int ?? 0), currency)}</dd>
+            <dd className="money">
+              {fmtMinor(Number(data.total_minor_int ?? 0), currency)}
+            </dd>
           </div>
         </dl>
       </div>
 
-      {data.note ? <p className="mt-4 text-sm text-muted-foreground">{data.note}</p> : null}
+      {data.note ? (
+        <p className="mt-4 text-sm text-muted-foreground">{data.note}</p>
+      ) : null}
 
       <div className="mt-6">
         {accepted ? (
           <p className="inline-flex items-center gap-2 rounded-fq-md bg-success-soft px-3 py-2 text-sm text-success-foreground">
-            <CheckCircle2 className="size-4" aria-hidden /> Accepted — the shop will be in touch.
+            <CheckCircle2 className="size-4" aria-hidden /> Accepted — the shop
+            will be in touch.
           </p>
         ) : closed ? (
           <p className="text-sm text-muted-foreground">This quote is closed.</p>
@@ -190,7 +239,9 @@ function InvoicePage() {
             onClick={() => acceptMutation.mutate()}
             className="inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            {acceptMutation.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+            {acceptMutation.isPending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : null}
             Accept this quote
           </button>
         )}

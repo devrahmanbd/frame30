@@ -96,7 +96,14 @@
     {
       "id": "h_route_system",
       "label": "TanStack Start route system",
-      "node_ids": ["tanstack_start_routing", "route_file_conventions", "dynamic_route_syntax", "routetree_gen_ts", "root_layout", "no_nextjs_remix_patterns"],
+      "node_ids": [
+        "tanstack_start_routing",
+        "route_file_conventions",
+        "dynamic_route_syntax",
+        "routetree_gen_ts",
+        "root_layout",
+        "no_nextjs_remix_patterns"
+      ],
       "description": "The complete TanStack Start file-based routing system: file conventions, dynamic syntax, auto-generated tree, root layout, and excluded Next.js/Remix patterns.",
       "confidence": 1.0,
       "confidence_tier": "EXTRACTED"

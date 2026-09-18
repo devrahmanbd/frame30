@@ -36,7 +36,9 @@ describe("anonymous intake security", () => {
   it("charges independent IP and email rate-limit buckets", () => {
     expect(BUCKETS["contact.submit_ip"].limit).toBeLessThanOrEqual(10);
     expect(BUCKETS["contact.submit_email"].limit).toBeLessThanOrEqual(5);
-    expect(BUCKETS["contact.submit_email"].windowSeconds).toBeGreaterThanOrEqual(3600);
+    expect(
+      BUCKETS["contact.submit_email"].windowSeconds,
+    ).toBeGreaterThanOrEqual(3600);
     const server = read("src/lib/contact.server.ts");
     expect(server).toContain('enforceRateLimit("contact.submit_ip"');
     expect(server).toContain('enforceRateLimit("contact.submit_email"');
@@ -52,8 +54,12 @@ describe("anonymous intake security", () => {
 
   it("scores automation before writing a submission", () => {
     const server = read("src/lib/contact.server.ts");
-    expect(server.indexOf("scoreContact(")).toBeLessThan(server.indexOf('.from("contact_submissions")'));
-    expect(scoreContact({ honeypot: "filled", submittedAt: 1 }).blocked).toBe(true);
+    expect(server.indexOf("scoreContact(")).toBeLessThan(
+      server.indexOf('.from("contact_submissions")'),
+    );
+    expect(scoreContact({ honeypot: "filled", submittedAt: 1 }).blocked).toBe(
+      true,
+    );
   });
 
   it("returns apparent success to blocked bots instead of exposing the rule", () => {
@@ -65,8 +71,15 @@ describe("anonymous intake security", () => {
 
 describe("durable routing and failures", () => {
   it("routes all topics to declared teams with distinct SLAs", () => {
-    expect(Object.keys(CONTACT_ROUTES)).toEqual(["sales", "support", "migration"]);
-    expect(new Set(Object.values(CONTACT_ROUTES).map((route) => route.responseHours)).size).toBe(3);
+    expect(Object.keys(CONTACT_ROUTES)).toEqual([
+      "sales",
+      "support",
+      "migration",
+    ]);
+    expect(
+      new Set(Object.values(CONTACT_ROUTES).map((route) => route.responseHours))
+        .size,
+    ).toBe(3);
     const server = read("src/lib/contact.server.ts");
     expect(server).toContain("ORG_NAP.salesEmail");
     expect(server).toContain("ORG_NAP.supportEmail");
@@ -75,8 +88,8 @@ describe("durable routing and failures", () => {
 
   it("persists contact_outbox before attempting delivery", () => {
     const server = read("src/lib/contact.server.ts");
-    const queue = server.indexOf('.from("contact_outbox").insert');
-    const send = server.indexOf("deliverContactMail(queued.id");
+    const queue = server.search(/\.from\("contact_outbox"\)\s*\.insert/);
+    const send = server.search(/deliverContactMail\(\s*queued\.id/);
     expect(queue).toBeGreaterThan(-1);
     expect(send).toBeGreaterThan(queue);
   });

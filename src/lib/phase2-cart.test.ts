@@ -7,7 +7,11 @@
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { SECTION_CATALOG, BITEXT_FIELDS, type SectionType } from "./builder-ast";
+import {
+  SECTION_CATALOG,
+  BITEXT_FIELDS,
+  type SectionType,
+} from "./builder-ast";
 import { WIDGET_REGISTRY } from "./widget-registry";
 import { orderStageIndex } from "@/components/builder/cart";
 
@@ -26,7 +30,10 @@ const CART_SRC = readFileSync("src/components/builder/cart.tsx", "utf8");
 describe("phase 2.5 — catalogue wiring", () => {
   it("registers every widget in the catalogue and the registry", () => {
     for (const type of PHASE_25) {
-      expect(SECTION_CATALOG.find((entry) => entry.type === type), `${type} catalogue`).toBeTruthy();
+      expect(
+        SECTION_CATALOG.find((entry) => entry.type === type),
+        `${type} catalogue`,
+      ).toBeTruthy();
       expect(WIDGET_REGISTRY[type], `${type} registry`).toBeTruthy();
     }
   });
@@ -41,9 +48,9 @@ describe("phase 2.5 — catalogue wiring", () => {
     const entry = SECTION_CATALOG.find((e) => e.type === "cart_summary")!;
     expect(entry.group).toBe("commerce");
     expect(entry.fields.length).toBeGreaterThan(5);
-    expect(readFileSync("src/components/builder/widgets.tsx", "utf8")).not.toContain(
-      "cart_summary: ContextSlot",
-    );
+    expect(
+      readFileSync("src/components/builder/widgets.tsx", "utf8"),
+    ).not.toContain("cart_summary: ContextSlot");
   });
 
   it("binds the order tracker to the order source", () => {
@@ -59,11 +66,20 @@ describe("phase 2.5 — no money arithmetic in widgets", () => {
       return /Minor\w*\s*[-+*/]\s*\w|\w\s*[-+*/]\s*\w*Minor/.test(line);
     });
     // The single permitted exception is the progress percentage, which is not money.
-    expect(offenders.every((line) => line.includes("percent") || line.includes("threshold"))).toBe(true);
+    expect(
+      offenders.every(
+        (line) => line.includes("percent") || line.includes("threshold"),
+      ),
+    ).toBe(true);
   });
 
   it("reads totals straight off the server quote", () => {
-    for (const field of ["subtotalMinor", "shippingMinor", "vatMinor", "totalMinor"]) {
+    for (const field of [
+      "subtotalMinor",
+      "shippingMinor",
+      "vatMinor",
+      "totalMinor",
+    ]) {
       expect(CART_SRC).toContain(`totals.${field}`);
     }
   });

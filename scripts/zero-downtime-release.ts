@@ -23,7 +23,11 @@
 
 import { execSync } from "node:child_process";
 import { runPreflightSuite } from "../src/lib/deploy-preflight.server";
-import { setCanaryStage, CANARY_STAGES, type CanaryStageId } from "../src/lib/canary-weights.server";
+import {
+  setCanaryStage,
+  CANARY_STAGES,
+  type CanaryStageId,
+} from "../src/lib/canary-weights.server";
 import { warmupAll } from "../src/lib/cache-warmup.server";
 
 export type ReleaseStep =
@@ -46,7 +50,9 @@ export interface ReleaseOptions {
   skipWarmup?: boolean;
 }
 
-export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<{
+export async function executeZeroDowntimeRelease(
+  opts: ReleaseOptions,
+): Promise<{
   success: boolean;
   currentStep: ReleaseStep;
   snapshotTag?: string;
@@ -56,8 +62,12 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
   console.log("Framique Enterprise Zero-Downtime Release Orchestrator");
   console.log(`Git Commit SHA     : ${opts.gitSha}`);
   console.log(`Target Candidate   : GREEN (${opts.greenUrl})`);
-  console.log(`Standby Cluster    : BLUE (Serving 100% Traffic until Canary Gate)`);
-  console.log(`Execution Mode     : ${opts.dryRun ? "DRY-RUN (Simulated)" : "LIVE PRODUCTION"}`);
+  console.log(
+    `Standby Cluster    : BLUE (Serving 100% Traffic until Canary Gate)`,
+  );
+  console.log(
+    `Execution Mode     : ${opts.dryRun ? "DRY-RUN (Simulated)" : "LIVE PRODUCTION"}`,
+  );
   console.log("=".repeat(80));
 
   // Step 1: Verify Immutable Artifact
@@ -67,25 +77,38 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
 
   // Step 2: Time-Machine Snapshot Hook
   let snapshotTag = `snap_pre_deploy_${opts.gitSha}_${Date.now()}`;
-  console.log("\n[STEP 2/7] Triggering Pre-Deployment Time-Machine Snapshot Hook...");
+  console.log(
+    "\n[STEP 2/7] Triggering Pre-Deployment Time-Machine Snapshot Hook...",
+  );
   if (!opts.skipSnapshot) {
     try {
       if (opts.dryRun) {
-        console.log(`  [DRY-RUN] Snapshot ${snapshotTag} recorded in simulated storage.`);
+        console.log(
+          `  [DRY-RUN] Snapshot ${snapshotTag} recorded in simulated storage.`,
+        );
       } else {
-        execSync(`./ops/backup/time-machine-snapshot.sh "${snapshotTag}" take`, { stdio: "inherit" });
+        execSync(
+          `./ops/backup/time-machine-snapshot.sh "${snapshotTag}" take`,
+          { stdio: "inherit" },
+        );
         console.log(`  ✓ Time-Machine Snapshot sealed: ${snapshotTag}`);
       }
     } catch (err) {
       console.error(`  ✗ Snapshot failed: ${(err as Error).message}`);
-      return { success: false, currentStep: "TIME_MACHINE_SNAPSHOT", error: (err as Error).message };
+      return {
+        success: false,
+        currentStep: "TIME_MACHINE_SNAPSHOT",
+        error: (err as Error).message,
+      };
     }
   } else {
     console.log("  ⚠ Snapshot skipped by operator flag.");
   }
 
   // Step 3: Automated Health, Smoke & DB Compatibility Probes
-  console.log("\n[STEP 3/7] Probing Candidate GREEN Pods (Readiness, Smoke, DB Schema)...");
+  console.log(
+    "\n[STEP 3/7] Probing Candidate GREEN Pods (Readiness, Smoke, DB Schema)...",
+  );
   if (!opts.dryRun) {
     const preflight = await runPreflightSuite({
       targetUrl: opts.greenUrl,
@@ -94,13 +117,21 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
     });
 
     if (!preflight.passed) {
-      console.error("  ✗ Preflight checks failed! Aborting release without touching BLUE.");
+      console.error(
+        "  ✗ Preflight checks failed! Aborting release without touching BLUE.",
+      );
       for (const reason of preflight.failureReasons) {
         console.error(`    • ${reason}`);
       }
-      return { success: false, currentStep: "HEALTH_SMOKE_PROBES", error: "Preflight failed" };
+      return {
+        success: false,
+        currentStep: "HEALTH_SMOKE_PROBES",
+        error: "Preflight failed",
+      };
     }
-    console.log("  ✓ All 3 Preflight probe tiers passed (Readiness 200, Smoke Journeys OK, DB Schema OK).");
+    console.log(
+      "  ✓ All 3 Preflight probe tiers passed (Readiness 200, Smoke Journeys OK, DB Schema OK).",
+    );
   } else {
     console.log("  [DRY-RUN] Preflight probes simulated successfully.");
   }
@@ -110,7 +141,9 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
   if (!opts.skipWarmup) {
     try {
       const warmupReport = await warmupAll();
-      console.log(`  ✓ Pre-warmed ${warmupReport.totalKeysWarmed} cache keys across active layers.`);
+      console.log(
+        `  ✓ Pre-warmed ${warmupReport.totalKeysWarmed} cache keys across active layers.`,
+      );
     } catch {
       console.log("  ⚠ Cache warmup non-blocking fallback (in-memory mock).");
     }
@@ -121,8 +154,16 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
   const canarySteps = [
     { stage: 1, weight: 1, name: "Stage 1 (1% Traffic / Internal Team)" },
     { stage: 2, weight: 5, name: "Stage 2 (5% Traffic / 10 Beta Merchants)" },
-    { stage: 3, weight: 25, name: "Stage 3 (25% Traffic / 100 Early Adopters)" },
-    { stage: 4, weight: 100, name: "Stage 4 (100% Traffic / Global Promotion)" },
+    {
+      stage: 3,
+      weight: 25,
+      name: "Stage 3 (25% Traffic / 100 Early Adopters)",
+    },
+    {
+      stage: 4,
+      weight: 100,
+      name: "Stage 4 (100% Traffic / Global Promotion)",
+    },
   ];
 
   for (const s of canarySteps) {
@@ -130,15 +171,21 @@ export async function executeZeroDowntimeRelease(opts: ReleaseOptions): Promise<
     if (!opts.dryRun) {
       const advanced = await setCanaryStage(s.stage as CanaryStageId);
       const stageDef = CANARY_STAGES[advanced.state.stage];
-      console.log(`     Applied upstream weight: GREEN=${stageDef.canaryWeight}%, BLUE=${stageDef.primaryWeight}%`);
+      console.log(
+        `     Applied upstream weight: GREEN=${stageDef.canaryWeight}%, BLUE=${stageDef.primaryWeight}%`,
+      );
     } else {
-      console.log(`     [DRY-RUN] Simulated traffic split: GREEN=${s.weight}%, BLUE=${100 - s.weight}%`);
+      console.log(
+        `     [DRY-RUN] Simulated traffic split: GREEN=${s.weight}%, BLUE=${100 - s.weight}%`,
+      );
     }
   }
 
   // Step 6: Retain BLUE Alive on Standby
   console.log("\n[STEP 6/7] Retaining BLUE Alive on Warm Standby...");
-  console.log("  ✓ BLUE cluster kept warm for 60-minute rollback safety window.");
+  console.log(
+    "  ✓ BLUE cluster kept warm for 60-minute rollback safety window.",
+  );
   console.log("  ✓ Instant rollback circuit breaker active (< 500ms trigger).");
 
   // Step 7: Completed

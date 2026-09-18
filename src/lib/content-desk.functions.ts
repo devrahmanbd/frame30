@@ -20,7 +20,10 @@ export const contentDeskFn = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadContentDesk } = await import("./content-desk.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return loadContentDesk(context.supabase, merchantId, data.kind);
   });
 
@@ -46,7 +49,10 @@ export const contentQuickEditFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { applyQuickEdit } = await import("./content-desk.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("cms.save", `${merchantId}:${context.userId}`);
     const { kind, ...input } = data;
     return applyQuickEdit(context.supabase, merchantId, kind, input);
@@ -60,7 +66,9 @@ const bulkEditSchema = z.object({
     parentId: z.string().uuid().nullable().optional(),
     template: z.enum(templateIds).optional(),
     allowComments: z.boolean().optional(),
-    status: z.enum(["published", "draft", "pending", "scheduled", "private"]).optional(),
+    status: z
+      .enum(["published", "draft", "pending", "scheduled", "private"])
+      .optional(),
   }),
 });
 
@@ -70,32 +78,65 @@ export const contentBulkEditFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { applyBulkEdit } = await import("./content-desk.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return applyBulkEdit(context.supabase, merchantId, data.kind, data.ids, data.patch);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return applyBulkEdit(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.ids,
+      data.patch,
+    );
   });
 
 export const contentBulkVerbFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
   .inputValidator((d: unknown) =>
     z
-      .object({ kind: kindSchema, ids: idList, verb: z.enum(["trash", "restore", "publish", "unpublish"]) })
+      .object({
+        kind: kindSchema,
+        ids: idList,
+        verb: z.enum(["trash", "restore", "publish", "unpublish"]),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { applyBulkVerb } = await import("./content-desk.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return applyBulkVerb(context.supabase, merchantId, data.kind, data.ids, data.verb);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return applyBulkVerb(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.ids,
+      data.verb,
+    );
   });
 
 export const contentDeleteForeverFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.publish")])
-  .inputValidator((d: unknown) => z.object({ kind: kindSchema, ids: idList }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ kind: kindSchema, ids: idList }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { applyBulkVerb } = await import("./content-desk.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return applyBulkVerb(context.supabase, merchantId, data.kind, data.ids, "delete");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return applyBulkVerb(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.ids,
+      "delete",
+    );
   });
 
 export const contentCreateDraftFn = createServerFn({ method: "POST" })
@@ -112,6 +153,15 @@ export const contentCreateDraftFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { createDraft } = await import("./content-desk.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return createDraft(context.supabase, merchantId, data.kind, context.userId, { title: data.title, editor: data.editor });
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return createDraft(
+      context.supabase,
+      merchantId,
+      data.kind,
+      context.userId,
+      { title: data.title, editor: data.editor },
+    );
   });

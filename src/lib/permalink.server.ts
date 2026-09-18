@@ -85,7 +85,11 @@ export class PermalinkServerError extends Error {
 
 /* ------------------------------- settings --------------------------------- */
 
-function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(`${label}_timeout`)), ms);
     promise.then(
@@ -101,13 +105,17 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   });
 }
 
-async function readSettingsRow(db: LooseClient, merchantId: string): Promise<PermalinkSettings> {
+async function readSettingsRow(
+  db: LooseClient,
+  merchantId: string,
+): Promise<PermalinkSettings> {
   const { data, error } = await db
     .from("merchant_settings")
     .select("permalinks")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
   const raw = (data?.permalinks ?? {}) as Partial<PermalinkSettings>;
   try {
     return validateSettings(raw);
@@ -121,7 +129,10 @@ async function readSettingsRow(db: LooseClient, merchantId: string): Promise<Per
 }
 
 /** Admin-side read: authoritative, uncached, surfaces real errors. */
-export async function loadPermalinkSettings(db: Client, merchantId: string): Promise<PermalinkSettings> {
+export async function loadPermalinkSettings(
+  db: Client,
+  merchantId: string,
+): Promise<PermalinkSettings> {
   return readSettingsRow(db as LooseClient, merchantId);
 }
 
@@ -138,7 +149,12 @@ export async function permalinkSettingsFor(
     return await cached(
       SETTINGS_KEY(merchantId),
       300,
-      () => withTimeout(readSettingsRow(db as LooseClient, merchantId), READ_TIMEOUT_MS, "permalinks"),
+      () =>
+        withTimeout(
+          readSettingsRow(db as LooseClient, merchantId),
+          READ_TIMEOUT_MS,
+          "permalinks",
+        ),
       { staleSeconds: 1_800 },
     );
   } catch (error) {
@@ -159,14 +175,25 @@ function invalidateTenant(merchantId: string, storeSlug?: string | null) {
   }
 }
 
-async function storeSlugOf(db: LooseClient, merchantId: string): Promise<string | null> {
-  const { data } = await db.from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+async function storeSlugOf(
+  db: LooseClient,
+  merchantId: string,
+): Promise<string | null> {
+  const { data } = await db
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   return data?.slug ?? null;
 }
 
 /* ------------------------------ entity index ------------------------------ */
 
-type Row = { slug: string | null; date?: string | null; category?: string | null };
+type Row = {
+  slug: string | null;
+  date?: string | null;
+  category?: string | null;
+};
 
 async function pull(
   db: LooseClient,
@@ -181,7 +208,8 @@ async function pull(
     const { data, error } = await filters(
       db.from(table).select(columns).eq("merchant_id", merchantId),
     ).range(from, from + page - 1);
-    if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+    if (error)
+      throw new PermalinkServerError("settings_read_failed", error.message);
     const rows = (data ?? []) as Row[];
     out.push(...rows);
     if (rows.length < page) break;
@@ -194,13 +222,22 @@ async function pull(
  * has no indexed URL, so writing a redirect for it is noise that dilutes the
  * redirect table and slows the miss path.
  */
-export async function liveEntities(db: Client, merchantId: string): Promise<PermalinkEntity[]> {
+export async function liveEntities(
+  db: Client,
+  merchantId: string,
+): Promise<PermalinkEntity[]> {
   const loose = db as LooseClient;
   const [articles, products, collections, pages] = await Promise.all([
-    pull(loose, "articles", merchantId, "slug, published_at", (q) => q.eq("status", "published")),
-    pull(loose, "products", merchantId, "slug", (q) => q.eq("status", "active")),
+    pull(loose, "articles", merchantId, "slug, published_at", (q) =>
+      q.eq("status", "published"),
+    ),
+    pull(loose, "products", merchantId, "slug", (q) =>
+      q.eq("status", "active"),
+    ),
     pull(loose, "collections", merchantId, "slug", (q) => q),
-    pull(loose, "storefront_pages", merchantId, "slug", (q) => q.eq("status", "published")),
+    pull(loose, "storefront_pages", merchantId, "slug", (q) =>
+      q.eq("status", "published"),
+    ),
   ]);
 
   const entities: PermalinkEntity[] = [];
@@ -210,7 +247,9 @@ export async function liveEntities(db: Client, merchantId: string): Promise<Perm
       entities.push({
         kind,
         slug: row.slug,
-        date: dated ? ((row as { published_at?: string | null }).published_at ?? null) : null,
+        date: dated
+          ? ((row as { published_at?: string | null }).published_at ?? null)
+          : null,
         category: row.category ?? null,
       });
     }
@@ -263,7 +302,12 @@ export async function previewPermalinkChange(
     const existing = await listAllRedirectPairs(db, merchantId);
     const { dropped } = collapseRedirects(existing, moves);
 
-    const byKind: Record<PermalinkKind, number> = { article: 0, product: 0, collection: 0, page: 0 };
+    const byKind: Record<PermalinkKind, number> = {
+      article: 0,
+      product: 0,
+      collection: 0,
+      page: 0,
+    };
     for (const move of moves) byKind[move.kind] += 1;
 
     const warnings: { code: string; en: string; bn: string }[] = [];
@@ -316,9 +360,14 @@ async function listAllRedirectPairs(db: Client, merchantId: string) {
       .eq("merchant_id", merchantId)
       .neq("status_code", 410)
       .range(from, from + page - 1);
-    if (error) throw new PermalinkServerError("settings_read_failed", error.message);
-    const rows = (data ?? []) as { from_path: string; to_path: string | null }[];
-    for (const row of rows) if (row.to_path) out.push({ from: row.from_path, to: row.to_path });
+    if (error)
+      throw new PermalinkServerError("settings_read_failed", error.message);
+    const rows = (data ?? []) as {
+      from_path: string;
+      to_path: string | null;
+    }[];
+    for (const row of rows)
+      if (row.to_path) out.push({ from: row.from_path, to: row.to_path });
     if (rows.length < page) break;
   }
   return out;
@@ -337,7 +386,11 @@ export async function applyPermalinkChange(
   merchantId: string,
   actor: string,
   next: Partial<PermalinkSettings>,
-): Promise<{ settings: PermalinkSettings; redirects: number; dropped: number }> {
+): Promise<{
+  settings: PermalinkSettings;
+  redirects: number;
+  dropped: number;
+}> {
   await enforceRateLimit("seo.write", `permalinks:${merchantId}`);
   return withSpan("permalink.apply", async () => {
     const plan = await previewPermalinkChange(db, merchantId, next);
@@ -347,8 +400,15 @@ export async function applyPermalinkChange(
     // Only the rules that actually changed are written back: rewriting 20 000
     // untouched rows on every settings save would be an easy way to melt the
     // database for no benefit.
-    const existingMap = new Map(existing.map((rule) => [normaliseBase(rule.from), normaliseBase(rule.to)]));
-    const changed = rules.filter((rule) => existingMap.get(rule.from) !== rule.to);
+    const existingMap = new Map(
+      existing.map((rule) => [
+        normaliseBase(rule.from),
+        normaliseBase(rule.to),
+      ]),
+    );
+    const changed = rules.filter(
+      (rule) => existingMap.get(rule.from) !== rule.to,
+    );
 
     if (existing.length + changed.length > REDIRECT_MAX_ROWS) {
       throw new PermalinkServerError(
@@ -386,7 +446,11 @@ export async function applyPermalinkChange(
         );
       }
       written += batch.length;
-      incr("framique_permalink_redirects_written_total", { origin: "pattern_change" }, batch.length);
+      incr(
+        "framique_permalink_redirects_written_total",
+        { origin: "pattern_change" },
+        batch.length,
+      );
     }
 
     const { error: settingsError } = await loose
@@ -394,17 +458,27 @@ export async function applyPermalinkChange(
       .update({ permalinks: plan.after as unknown as Record<string, unknown> })
       .eq("merchant_id", merchantId);
     if (settingsError) {
-      throw new PermalinkServerError("settings_write_failed", settingsError.message);
+      throw new PermalinkServerError(
+        "settings_write_failed",
+        settingsError.message,
+      );
     }
 
     const slug = await storeSlugOf(loose, merchantId);
     invalidateTenant(merchantId, slug);
-    await auditAction(db, merchantId, actor, "permalinks.updated", "permalink_settings", {
-      before: plan.before,
-      after: plan.after,
-      redirects: written,
-      dropped: dropped.length,
-    });
+    await auditAction(
+      db,
+      merchantId,
+      actor,
+      "permalinks.updated",
+      "permalink_settings",
+      {
+        before: plan.before,
+        after: plan.after,
+        redirects: written,
+        dropped: dropped.length,
+      },
+    );
     log("info", "permalink.applied", {
       merchant_id: merchantId,
       redirects: written,
@@ -412,7 +486,11 @@ export async function applyPermalinkChange(
       dropped: dropped.length,
     });
     incr("framique_permalink_changes_total", {});
-    return { settings: plan.after, redirects: written, dropped: dropped.length };
+    return {
+      settings: plan.after,
+      redirects: written,
+      dropped: dropped.length,
+    };
   });
 }
 
@@ -447,7 +525,10 @@ export async function checkSlug(
     return {
       ok: false,
       slug: (input.slug ?? "").trim().toLowerCase(),
-      reason: err.code === "slug_invalid" && /reserved/i.test(err.messageEn) ? "reserved" : "invalid",
+      reason:
+        err.code === "slug_invalid" && /reserved/i.test(err.messageEn)
+          ? "reserved"
+          : "invalid",
       messageEn: err.messageEn,
       messageBn: err.messageBn,
     };
@@ -463,10 +544,16 @@ export async function checkSlug(
           ? "collections"
           : "storefront_pages";
 
-  let query = loose.from(table).select("id").eq("merchant_id", merchantId).eq("slug", slug).limit(1);
+  let query = loose
+    .from(table)
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("slug", slug)
+    .limit(1);
   if (input.excludeId) query = query.neq("id", input.excludeId);
   const { data, error } = await query;
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
   if ((data ?? []).length > 0) {
     return {
       ok: false,
@@ -491,7 +578,8 @@ export async function checkSlug(
       ok: false,
       slug,
       reason: "redirect_source",
-      messageEn: "An existing redirect sends this URL somewhere else — delete it first.",
+      messageEn:
+        "An existing redirect sends this URL somewhere else — delete it first.",
       messageBn: "একটি রিডাইরেক্ট এই URL অন্যত্র পাঠায় — আগে সেটি মুছুন।",
       suggestion: `${slug}-2`,
     };
@@ -550,7 +638,12 @@ export async function listRedirectsPage(
   db: Client,
   merchantId: string,
   query: RedirectQuery = {},
-): Promise<{ rows: RedirectRow[]; total: number; page: number; pageSize: number }> {
+): Promise<{
+  rows: RedirectRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+}> {
   const pageSize = Math.min(Math.max(query.pageSize ?? 50, 1), 200);
   const page = Math.max(query.page ?? 1, 1);
   const loose = db as LooseClient;
@@ -563,14 +656,17 @@ export async function listRedirectsPage(
     const term = `%${query.search.trim().replace(/[%_]/g, "")}%`;
     builder = builder.or(`from_path.ilike.${term},to_path.ilike.${term}`);
   }
-  if (query.origin && query.origin !== "all") builder = builder.eq("origin", query.origin);
-  if (query.status && query.status !== "all") builder = builder.eq("status_code", query.status);
+  if (query.origin && query.origin !== "all")
+    builder = builder.eq("origin", query.origin);
+  if (query.status && query.status !== "all")
+    builder = builder.eq("status_code", query.status);
 
   const { data, error, count } = await builder
     .order("hits", { ascending: false })
     .order("created_at", { ascending: false })
     .range((page - 1) * pageSize, page * pageSize - 1);
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
   return {
     rows: (data ?? []).map(mapRedirect),
     total: count ?? 0,
@@ -581,7 +677,11 @@ export async function listRedirectsPage(
 
 function assertRule(from: string, to: string, status: 301 | 302 | 410) {
   if (!from || from === "/") {
-    throw new PermalinkServerError("redirect_invalid", "Source path is required.", "সোর্স পাথ দরকার।");
+    throw new PermalinkServerError(
+      "redirect_invalid",
+      "Source path is required.",
+      "সোর্স পাথ দরকার।",
+    );
   }
   if (status !== 410) {
     if (!to) {
@@ -606,7 +706,12 @@ export async function upsertRedirect(
   db: Client,
   merchantId: string,
   actor: string,
-  input: { fromPath: string; toPath: string; status: 301 | 302 | 410; origin?: string },
+  input: {
+    fromPath: string;
+    toPath: string;
+    status: 301 | 302 | 410;
+    origin?: string;
+  },
 ): Promise<RedirectRow> {
   await enforceRateLimit("seo.write", `redirect:${merchantId}`);
   const from = normaliseBase(input.fromPath);
@@ -641,7 +746,8 @@ export async function upsertRedirect(
     )
     .select(SELECT_REDIRECT)
     .single();
-  if (error) throw new PermalinkServerError("settings_write_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_write_failed", error.message);
 
   if (input.status !== 410 && to) {
     // Anything that pointed at the old source now points one hop too far.
@@ -652,7 +758,11 @@ export async function upsertRedirect(
       .eq("to_path", from)
       .neq("from_path", from);
     // And a rule whose source we just started serving again is dead weight.
-    await loose.from("url_redirects").delete().eq("merchant_id", merchantId).eq("from_path", to);
+    await loose
+      .from("url_redirects")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("from_path", to);
   }
 
   const slug = await storeSlugOf(loose, merchantId);
@@ -662,7 +772,9 @@ export async function upsertRedirect(
     to,
     status: input.status,
   });
-  incr("framique_permalink_redirects_written_total", { origin: input.origin ?? "manual" });
+  incr("framique_permalink_redirects_written_total", {
+    origin: input.origin ?? "manual",
+  });
   return mapRedirect(data as Record<string, any>);
 }
 
@@ -679,10 +791,13 @@ export async function deleteRedirects(
     .delete({ count: "exact" })
     .eq("merchant_id", merchantId)
     .in("id", ids.slice(0, 500));
-  if (error) throw new PermalinkServerError("settings_write_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_write_failed", error.message);
   const slug = await storeSlugOf(loose, merchantId);
   invalidateTenant(merchantId, slug);
-  await auditAction(db, merchantId, actor, "redirect.deleted", "url_redirect", { count: count ?? 0 });
+  await auditAction(db, merchantId, actor, "redirect.deleted", "url_redirect", {
+    count: count ?? 0,
+  });
   return count ?? 0;
 }
 
@@ -696,7 +811,11 @@ export async function importRedirectCsv(
   merchantId: string,
   actor: string,
   text: string,
-): Promise<{ imported: number; skipped: number; errors: { line: number; message: string }[] }> {
+): Promise<{
+  imported: number;
+  skipped: number;
+  errors: { line: number; message: string }[];
+}> {
   await enforceRateLimit("seo.write", `redirect-import:${merchantId}`);
   const { rows, errors } = parseRedirectCsv(text);
   if (rows.length === 0) return { imported: 0, skipped: 0, errors };
@@ -710,7 +829,10 @@ export async function importRedirectCsv(
   const accepted = rows.slice(0, Math.max(room, 0));
   const skipped = rows.length - accepted.length;
   if (skipped > 0) {
-    errors.push({ line: 0, message: `${skipped} row(s) skipped — store redirect limit reached.` });
+    errors.push({
+      line: 0,
+      message: `${skipped} row(s) skipped — store redirect limit reached.`,
+    });
   }
 
   let imported = 0;
@@ -727,7 +849,10 @@ export async function importRedirectCsv(
       .from("url_redirects")
       .upsert(batch, { onConflict: "merchant_id,from_path" });
     if (error) {
-      errors.push({ line: 0, message: `Batch starting at row ${i + 1} failed: ${error.message}` });
+      errors.push({
+        line: 0,
+        message: `Batch starting at row ${i + 1} failed: ${error.message}`,
+      });
       break;
     }
     imported += batch.length;
@@ -735,18 +860,36 @@ export async function importRedirectCsv(
 
   const slug = await storeSlugOf(loose, merchantId);
   invalidateTenant(merchantId, slug);
-  await auditAction(db, merchantId, actor, "redirect.imported", "url_redirect", {
+  await auditAction(
+    db,
+    merchantId,
+    actor,
+    "redirect.imported",
+    "url_redirect",
+    {
+      imported,
+      skipped,
+      errors: errors.length,
+    },
+  );
+  incr(
+    "framique_permalink_redirects_written_total",
+    { origin: "import" },
+    imported,
+  );
+  log("info", "permalink.csv_imported", {
+    merchant_id: merchantId,
     imported,
     skipped,
-    errors: errors.length,
   });
-  incr("framique_permalink_redirects_written_total", { origin: "import" }, imported);
-  log("info", "permalink.csv_imported", { merchant_id: merchantId, imported, skipped });
   return { imported, skipped, errors };
 }
 
 /** Export is capped at the same size the importer accepts, so it round-trips. */
-export async function exportRedirectCsv(db: Client, merchantId: string): Promise<string> {
+export async function exportRedirectCsv(
+  db: Client,
+  merchantId: string,
+): Promise<string> {
   const loose = db as LooseClient;
   const { data, error } = await loose
     .from("url_redirects")
@@ -754,7 +897,8 @@ export async function exportRedirectCsv(db: Client, merchantId: string): Promise
     .eq("merchant_id", merchantId)
     .order("from_path")
     .limit(CSV_MAX_ROWS);
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
   return toRedirectCsv(
     (data ?? []).map((row: Record<string, any>) => ({
       from: String(row["from_path"]),
@@ -789,7 +933,8 @@ export async function recordMissingPath(
   const normalised = normaliseBase(path);
   if (!normalised || normalised === "/") return;
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const loose = supabaseAdmin as unknown as LooseClient;
     const { data } = await loose
       .from("url_missing_log")
@@ -800,7 +945,10 @@ export async function recordMissingPath(
     if (data) {
       await loose
         .from("url_missing_log")
-        .update({ hits: Number(data.hits ?? 0) + 1, last_seen_at: new Date().toISOString() })
+        .update({
+          hits: Number(data.hits ?? 0) + 1,
+          last_seen_at: new Date().toISOString(),
+        })
         .eq("id", data.id);
     } else {
       await loose.from("url_missing_log").insert({
@@ -826,12 +974,15 @@ export async function listMissingPaths(
   const loose = db as LooseClient;
   const { data, error } = await loose
     .from("url_missing_log")
-    .select("id, path, hits, referrer, first_seen_at, last_seen_at, resolved_redirect_id")
+    .select(
+      "id, path, hits, referrer, first_seen_at, last_seen_at, resolved_redirect_id",
+    )
     .eq("merchant_id", merchantId)
     .is("resolved_redirect_id", null)
     .order("hits", { ascending: false })
     .limit(Math.min(Math.max(limit, 1), 500));
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
   return (data ?? []).map((row: Record<string, any>) => ({
     id: String(row["id"]),
     path: String(row["path"]),
@@ -856,8 +1007,13 @@ export async function resolveMissingPath(
     .eq("merchant_id", merchantId)
     .eq("id", input.id)
     .maybeSingle();
-  if (error) throw new PermalinkServerError("settings_read_failed", error.message);
-  if (!row) throw new PermalinkServerError("not_found", "That 404 entry no longer exists.");
+  if (error)
+    throw new PermalinkServerError("settings_read_failed", error.message);
+  if (!row)
+    throw new PermalinkServerError(
+      "not_found",
+      "That 404 entry no longer exists.",
+    );
 
   const redirect = await upsertRedirect(db, merchantId, actor, {
     fromPath: String(row.path),
@@ -874,12 +1030,17 @@ export async function resolveMissingPath(
   return redirect;
 }
 
-export async function dismissMissingPath(db: Client, merchantId: string, id: string): Promise<void> {
+export async function dismissMissingPath(
+  db: Client,
+  merchantId: string,
+  id: string,
+): Promise<void> {
   const loose = db as LooseClient;
   const { error } = await loose
     .from("url_missing_log")
     .delete()
     .eq("merchant_id", merchantId)
     .eq("id", id);
-  if (error) throw new PermalinkServerError("settings_write_failed", error.message);
+  if (error)
+    throw new PermalinkServerError("settings_write_failed", error.message);
 }

@@ -74,7 +74,12 @@ export type CustomCodeWorkspace = {
   killed: boolean;
   killReason: string | null;
   /** Published snapshots, newest first — the diff/rollback surface. */
-  history: { versionId: string; version: number; publishedAt: string | null; code: CustomCode }[];
+  history: {
+    versionId: string;
+    version: number;
+    publishedAt: string | null;
+    code: CustomCode;
+  }[];
 };
 
 async function killSwitch(db: Client, merchantId: string) {
@@ -86,10 +91,19 @@ async function killSwitch(db: Client, merchantId: string) {
   return { killed: Boolean(data?.disabled), reason: data?.reason ?? null };
 }
 
-export async function loadCustomCode(db: Client, merchantId: string, themeId: string): Promise<CustomCodeWorkspace> {
+export async function loadCustomCode(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<CustomCodeWorkspace> {
   return withSpan("customcode.load", async () => {
     const [draftRes, historyRes, kill] = await Promise.all([
-      db.from("theme_custom_code").select(COLUMNS).eq("theme_id", themeId).is("version_id", null).maybeSingle(),
+      db
+        .from("theme_custom_code")
+        .select(COLUMNS)
+        .eq("theme_id", themeId)
+        .is("version_id", null)
+        .maybeSingle(),
       db
         .from("theme_custom_code")
         .select(`${COLUMNS}, theme_versions!inner(version, published_at)`)
@@ -110,14 +124,18 @@ export async function loadCustomCode(db: Client, merchantId: string, themeId: st
       updatedAt: (draftRes.data as Row | null)?.updated_at ?? null,
       killed: kill.killed,
       killReason: kill.reason,
-      history: ((historyRes.data ?? []) as unknown as (Row & { theme_versions: { version: number; published_at: string | null } | { version: number; published_at: string | null }[] })[]).map(
-        (row) => ({
-          versionId: row.version_id as string,
-          version: one(row.theme_versions)?.version ?? 0,
-          publishedAt: one(row.theme_versions)?.published_at ?? null,
-          code: toCode(row),
-        }),
-      ),
+      history: (
+        (historyRes.data ?? []) as unknown as (Row & {
+          theme_versions:
+            | { version: number; published_at: string | null }
+            | { version: number; published_at: string | null }[];
+        })[]
+      ).map((row) => ({
+        versionId: row.version_id as string,
+        version: one(row.theme_versions)?.version ?? 0,
+        publishedAt: one(row.theme_versions)?.published_at ?? null,
+        code: toCode(row),
+      })),
     };
   });
 }
@@ -147,7 +165,9 @@ export async function saveCustomCode(
     { onConflict: "theme_id", ignoreDuplicates: false },
   );
   if (error) throw new CustomCodeError("customcode.save_failed", error.message);
-  incr("framique_custom_code_save_total", { blocked: String(compiled.blocked) });
+  incr("framique_custom_code_save_total", {
+    blocked: String(compiled.blocked),
+  });
   return { findings: compiled.findings, blocked: compiled.blocked };
 }
 
@@ -199,14 +219,23 @@ export async function snapshotCustomCode(
     },
     { onConflict: "version_id", ignoreDuplicates: false },
   );
-  if (error) throw new CustomCodeError("customcode.snapshot_failed", error.message);
+  if (error)
+    throw new CustomCodeError("customcode.snapshot_failed", error.message);
   invalidate(CACHE_PREFIX);
-  log("info", "customcode.published", { merchant_id: merchantId, version_id: versionId });
+  log("info", "customcode.published", {
+    merchant_id: merchantId,
+    version_id: versionId,
+  });
   return { snapshotted: true, findings: compiled.findings };
 }
 
 /** Restore a published snapshot back into the draft, ready to re-publish. */
-export async function restoreCustomCode(db: Client, merchantId: string, themeId: string, versionId: string) {
+export async function restoreCustomCode(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  versionId: string,
+) {
   const { data } = await db
     .from("theme_custom_code")
     .select(COLUMNS)
@@ -214,15 +243,27 @@ export async function restoreCustomCode(db: Client, merchantId: string, themeId:
     .eq("version_id", versionId)
     .maybeSingle();
   const row = data as Row | null;
-  if (!row) throw new CustomCodeError("customcode.snapshot_missing", "That version has no custom code.");
+  if (!row)
+    throw new CustomCodeError(
+      "customcode.snapshot_missing",
+      "That version has no custom code.",
+    );
   return saveCustomCode(db, merchantId, { themeId, ...toCode(row) });
 }
 
 /** Platform owner kill switch (`17-owner-console`). RLS restricts the writer. */
-export async function setCustomCodeKill(db: Client, merchantId: string, disabled: boolean, reason: string | null) {
+export async function setCustomCodeKill(
+  db: Client,
+  merchantId: string,
+  disabled: boolean,
+  reason: string | null,
+) {
   const { error } = await db
     .from("custom_code_kill_switch")
-    .upsert({ merchant_id: merchantId, disabled, reason }, { onConflict: "merchant_id" });
+    .upsert(
+      { merchant_id: merchantId, disabled, reason },
+      { onConflict: "merchant_id" },
+    );
   if (error) throw new CustomCodeError("customcode.kill_failed", error.message);
   invalidate(CACHE_PREFIX);
   log("warn", "customcode.kill_switch", { merchant_id: merchantId, disabled });
@@ -234,7 +275,9 @@ export async function setCustomCodeKill(db: Client, merchantId: string, disabled
  * and cached per tenant. Returns null when nothing is published, the merchant
  * disabled it, or the platform pulled the kill switch.
  */
-export async function publishedCustomCode(merchantId: string): Promise<CompiledCustomCode | null> {
+export async function publishedCustomCode(
+  merchantId: string,
+): Promise<CompiledCustomCode | null> {
   const { renderRead } = await import("./render-read.server");
   return renderRead<CompiledCustomCode | null>({
     name: "custom_code.published",

@@ -15,10 +15,14 @@ export const Route = createFileRoute("/root/plans")({
         content:
           "Create and edit Framique plan definitions: monthly price in BDT, trial days, product and staff caps, allowed payment methods and feature flags.",
       },
-      { property: "og:title", content: "Plans & limits — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Plans & limits — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Plan builder for Framique platform owners with audited changes.",
+        content:
+          "Plan builder for Framique platform owners with audited changes.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -31,7 +35,13 @@ export const Route = createFileRoute("/root/plans")({
 const PLAN_KEYS = ["launch", "growth", "business", "enterprise"] as const;
 type PlanKey = (typeof PLAN_KEYS)[number];
 const METHODS = ["cod", "bkash", "nagad", "rocket"] as const;
-const FLAGS = ["pos", "couriers", "marketplace", "fraud_desk", "api_access"] as const;
+const FLAGS = [
+  "pos",
+  "couriers",
+  "marketplace",
+  "fraud_desk",
+  "api_access",
+] as const;
 
 const field =
   "w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm tabular-nums";
@@ -104,7 +114,13 @@ function toDraft(def: PlanDef, sortOrder: number): Draft {
   };
 }
 
-function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void }) {
+function PlanForm({
+  initial,
+  onSaved,
+}: {
+  initial: Draft;
+  onSaved: () => void;
+}) {
   const { tk, tError } = useLang();
   const save = useServerFn(platformSavePlanFn);
   const [draft, setDraft] = useState(initial);
@@ -127,10 +143,7 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             .filter(Boolean),
           trial_days: draft.trial_days,
           payment_methods_allowed: draft.payment_methods_allowed as (
-            | "cod"
-            | "bkash"
-            | "nagad"
-            | "rocket"
+            "cod" | "bkash" | "nagad" | "rocket"
           )[],
           feature_flags: draft.feature_flags,
           sort_order: draft.sort_order,
@@ -161,7 +174,9 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
       }}
     >
       <div className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold uppercase tracking-wide">{draft.plan}</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-wide">
+          {draft.plan}
+        </h3>
         <label className="flex items-center gap-2 text-xs text-muted-foreground">
           <input
             type="checkbox"
@@ -196,11 +211,18 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
           <input
             className={field}
             inputMode="numeric"
-            value={draft.price_minor_int === null ? "" : String(draft.price_minor_int)}
+            value={
+              draft.price_minor_int === null
+                ? ""
+                : String(draft.price_minor_int)
+            }
             onChange={(e) =>
               setDraft({
                 ...draft,
-                price_minor_int: e.target.value.trim() === "" ? null : Number(e.target.value) || 0,
+                price_minor_int:
+                  e.target.value.trim() === ""
+                    ? null
+                    : Number(e.target.value) || 0,
               })
             }
           />
@@ -211,7 +233,9 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             className={field}
             maxLength={3}
             value={draft.currency_code}
-            onChange={(e) => setDraft({ ...draft, currency_code: e.target.value })}
+            onChange={(e) =>
+              setDraft({ ...draft, currency_code: e.target.value })
+            }
           />
         </label>
         <label className="text-xs text-muted-foreground">
@@ -220,7 +244,9 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             className={field}
             inputMode="numeric"
             value={draft.trial_days}
-            onChange={(e) => setDraft({ ...draft, trial_days: Number(e.target.value) || 0 })}
+            onChange={(e) =>
+              setDraft({ ...draft, trial_days: Number(e.target.value) || 0 })
+            }
           />
         </label>
         <label className="text-xs text-muted-foreground">
@@ -229,7 +255,9 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             className={field}
             inputMode="numeric"
             value={draft.sort_order}
-            onChange={(e) => setDraft({ ...draft, sort_order: Number(e.target.value) || 0 })}
+            onChange={(e) =>
+              setDraft({ ...draft, sort_order: Number(e.target.value) || 0 })
+            }
           />
         </label>
         <label className="text-xs text-muted-foreground">
@@ -238,7 +266,12 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             className={field}
             inputMode="numeric"
             value={draft.products_limit}
-            onChange={(e) => setDraft({ ...draft, products_limit: Number(e.target.value) || 0 })}
+            onChange={(e) =>
+              setDraft({
+                ...draft,
+                products_limit: Number(e.target.value) || 0,
+              })
+            }
           />
         </label>
         <label className="text-xs text-muted-foreground">
@@ -247,13 +280,17 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
             className={field}
             inputMode="numeric"
             value={draft.staff_limit}
-            onChange={(e) => setDraft({ ...draft, staff_limit: Number(e.target.value) || 0 })}
+            onChange={(e) =>
+              setDraft({ ...draft, staff_limit: Number(e.target.value) || 0 })
+            }
           />
         </label>
       </div>
 
       <fieldset className="space-y-1">
-        <legend className="text-xs text-muted-foreground">Payment methods allowed</legend>
+        <legend className="text-xs text-muted-foreground">
+          Payment methods allowed
+        </legend>
         <div className="flex flex-wrap gap-3 text-sm">
           {METHODS.map((m) => (
             <label key={m} className="flex items-center gap-1.5">
@@ -279,7 +316,10 @@ function PlanForm({ initial, onSaved }: { initial: Draft; onSaved: () => void })
                 onChange={(e) =>
                   setDraft({
                     ...draft,
-                    feature_flags: { ...draft.feature_flags, [f]: e.target.checked },
+                    feature_flags: {
+                      ...draft.feature_flags,
+                      [f]: e.target.checked,
+                    },
                   })
                 }
               />
@@ -318,9 +358,13 @@ function PlansAndLimits() {
     queryFn: () => load(),
     retry: false,
   });
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["platform-plans"] });
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["platform-plans"] });
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>;
+  if (isLoading)
+    return (
+      <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+    );
   if (error) return <p className="text-sm text-destructive">{tError(error)}</p>;
 
   const defs = (data?.plans ?? []) as PlanDef[];
@@ -329,8 +373,9 @@ function PlansAndLimits() {
   return (
     <section className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Prices are stored in minor units with an explicit currency code. Caps set here drive the
-        database enforcement checks; nothing is hardcoded in the app.
+        Prices are stored in minor units with an explicit currency code. Caps
+        set here drive the database enforcement checks; nothing is hardcoded in
+        the app.
       </p>
       <div className="grid gap-4 lg:grid-cols-2">
         {PLAN_KEYS.map((plan, i) => {

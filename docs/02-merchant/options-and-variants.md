@@ -20,14 +20,14 @@ High-volume merchants sell multi-option products (color, size, flavor). Every va
 
 ## 3. Data model & RLS
 
-| Table | Notes |
-|---|---|
-| `product_option_groups` | `merchant_id`, `name`, `sort` |
-| `product_option_values` | `option_group_id`, `value`, `sort` |
-| `product_variant_options` | join `variant_id` ↔ `option_value_id` |
-| `product_variants` | `merchant_id`, `product_id`, `sku`, `price_minor`, `active`, `published` |
-| `inventory_lots` | stock per location: `variant_id`, `warehouse_id`, `qty` |
-| `inventory_movements` | ledger of every stock change (order allocations, manual adj) |
+| Table                     | Notes                                                                    |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `product_option_groups`   | `merchant_id`, `name`, `sort`                                            |
+| `product_option_values`   | `option_group_id`, `value`, `sort`                                       |
+| `product_variant_options` | join `variant_id` ↔ `option_value_id`                                    |
+| `product_variants`        | `merchant_id`, `product_id`, `sku`, `price_minor`, `active`, `published` |
+| `inventory_lots`          | stock per location: `variant_id`, `warehouse_id`, `qty`                  |
+| `inventory_movements`     | ledger of every stock change (order allocations, manual adj)             |
 
 RLS: every row `merchant_id = current setting from JWT`; staff RPC-only writes.
 RLS on `product_variants` scope: `merchant_id` from tenant claim; reads via RPC or view; anon never touches these tables directly.

@@ -27,24 +27,26 @@
 
   /* Semantic */
   --color-background: #ffffff;
-  --color-foreground: oklch(0.20 0.02 260); /* Deep Ink / Slate */
+  --color-foreground: oklch(0.2 0.02 260); /* Deep Ink / Slate */
   --color-card: #ffffff;
-  --color-card-foreground: oklch(0.20 0.02 260);
+  --color-card-foreground: oklch(0.2 0.02 260);
   --color-popover: #ffffff;
-  --color-popover-foreground: oklch(0.20 0.02 260);
-  
+  --color-popover-foreground: oklch(0.2 0.02 260);
+
   /* primary is Facebook Blue tuned for WCAG AA (5.2:1) */
-  --color-primary: oklch(0.48 0.23 255); 
+  --color-primary: oklch(0.48 0.23 255);
   --color-primary-foreground: #ffffff;
-  
+
   --color-muted: #f8fafc;
-  --color-muted-foreground: oklch(0.40 0.018 25); /* Tuned grey text for 5.5:1 contrast */
-  
+  --color-muted-foreground: oklch(
+    0.4 0.018 25
+  ); /* Tuned grey text for 5.5:1 contrast */
+
   --color-border: #e2e8f0;
-  
+
   /* accent is Calm Pink (#FFF1F3) */
-  --color-accent: #FFF1F3;
-  --color-accent-foreground: #9F1239; /* Rose 800 */
+  --color-accent: #fff1f3;
+  --color-accent-foreground: #9f1239; /* Rose 800 */
 
   /* Severity — the *-foreground tones are tuned against their soft
      background, not against white, so status pills stay AA at 12px. */
@@ -60,12 +62,15 @@
   --color-danger-soft: var(--color-rickshaw-red-100);
   --color-danger-foreground: var(--color-rickshaw-red-700);
   --color-info: oklch(0.48 0.23 255);
-  --color-info-soft: #EBF5FF;
-  --color-info-foreground: #003E9C;
+  --color-info-soft: #ebf5ff;
+  --color-info-foreground: #003e9c;
 
-
-  --font-bangla: "Noto Sans Bengali", "Noto Sans Bengali Fallback", "SolaimanLipi", sans-serif;
-  --font-sans: "Inter", "Inter Fallback", "Noto Sans Bengali", "Noto Sans Bengali Fallback", system-ui, sans-serif;
+  --font-bangla:
+    "Noto Sans Bengali", "Noto Sans Bengali Fallback", "SolaimanLipi",
+    sans-serif;
+  --font-sans:
+    "Inter", "Inter Fallback", "Noto Sans Bengali",
+    "Noto Sans Bengali Fallback", system-ui, sans-serif;
 
   --radius-fq-sm: 4px;
   --radius-fq-md: 6px;
@@ -149,7 +154,6 @@
   line-gap-override: 0%;
 }
 
-
 html,
 body {
   background-color: var(--color-background);
@@ -188,50 +192,118 @@ body {
 
 /* Allow-listed markdown output from tenant-authored store pages. */
 @utility fq-prose {
-  & h2 { @apply font-bangla-display text-lg font-semibold; }
-  & h3 { @apply font-bangla-display text-base font-semibold; }
-  & h4 { @apply text-sm font-semibold; }
-  & p { @apply text-muted-foreground; }
-  & ul { @apply list-disc space-y-1 pl-5 text-muted-foreground; }
-  & ol { @apply list-decimal space-y-1 pl-5 text-muted-foreground; }
-  & blockquote { @apply border-l-2 border-border pl-4 italic text-muted-foreground; }
-  & pre { @apply overflow-x-auto rounded-fq-md bg-muted p-3 font-mono text-xs; }
-  & figure { @apply my-4; }
-  & figcaption { @apply mt-1 text-xs text-muted-foreground; }
-  & img { @apply h-auto max-w-full rounded-fq-md; }
-  & hr { @apply my-6 border-border; }
-  & table { @apply w-full border-collapse text-sm; }
-  & th, & td { @apply border border-border px-2 py-1 text-left; }
-  & a { @apply text-primary underline; }
-  & strong { @apply font-semibold text-foreground; }
-  & u { @apply underline; }
-  & s { @apply line-through; }
-  & .has-text-align-center { text-align: center; }
-  & .has-text-align-right { text-align: right; }
+  & h2 {
+    @apply font-bangla-display text-lg font-semibold;
+  }
+  & h3 {
+    @apply font-bangla-display text-base font-semibold;
+  }
+  & h4 {
+    @apply text-sm font-semibold;
+  }
+  & p {
+    @apply text-muted-foreground;
+  }
+  & ul {
+    @apply list-disc space-y-1 pl-5 text-muted-foreground;
+  }
+  & ol {
+    @apply list-decimal space-y-1 pl-5 text-muted-foreground;
+  }
+  & blockquote {
+    @apply border-l-2 border-border pl-4 italic text-muted-foreground;
+  }
+  & pre {
+    @apply overflow-x-auto rounded-fq-md bg-muted p-3 font-mono text-xs;
+  }
+  & figure {
+    @apply my-4;
+  }
+  & figcaption {
+    @apply mt-1 text-xs text-muted-foreground;
+  }
+  & img {
+    @apply h-auto max-w-full rounded-fq-md;
+  }
+  & hr {
+    @apply my-6 border-border;
+  }
+  & table {
+    @apply w-full border-collapse text-sm;
+  }
+  & th,
+  & td {
+    @apply border border-border px-2 py-1 text-left;
+  }
+  & a {
+    @apply text-primary underline;
+  }
+  & strong {
+    @apply font-semibold text-foreground;
+  }
+  & u {
+    @apply underline;
+  }
+  & s {
+    @apply line-through;
+  }
+  & .has-text-align-center {
+    text-align: center;
+  }
+  & .has-text-align-right {
+    text-align: right;
+  }
 }
 
 /* Phase 17 — pages and posts rendered from a builder document. Widget styling
    is inline; this only supplies the base type, links and button chrome. */
 @utility fq-builder-page {
-  & h1, & h2, & h3, & h4 { @apply font-bangla-display text-foreground; }
-  & p, & li, & blockquote { @apply text-muted-foreground; }
-  & ul { @apply list-disc space-y-1 pl-5; }
-  & a { @apply text-primary underline; }
-  & img { @apply h-auto max-w-full; }
-  & hr { @apply border-border; }
+  & h1,
+  & h2,
+  & h3,
+  & h4 {
+    @apply font-bangla-display text-foreground;
+  }
+  & p,
+  & li,
+  & blockquote {
+    @apply text-muted-foreground;
+  }
+  & ul {
+    @apply list-disc space-y-1 pl-5;
+  }
+  & a {
+    @apply text-primary underline;
+  }
+  & img {
+    @apply h-auto max-w-full;
+  }
+  & hr {
+    @apply border-border;
+  }
   & .fq-btn {
     @apply inline-flex min-h-11 items-center justify-center rounded-fq-md px-4 text-sm font-medium no-underline;
   }
-  & .fq-btn-primary { @apply bg-primary text-primary-foreground; }
-  & .fq-btn-outline { @apply border border-border text-foreground; }
-  & .fq-btn-ghost { @apply text-primary; }
+  & .fq-btn-primary {
+    @apply bg-primary text-primary-foreground;
+  }
+  & .fq-btn-outline {
+    @apply border border-border text-foreground;
+  }
+  & .fq-btn-ghost {
+    @apply text-primary;
+  }
 }
 
 /* Theme-runtime marquee. Motion is opacity/transform only and collapses to a
    static line under prefers-reduced-motion (see the reduce block above). */
 @keyframes fq-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* Published theme tokens are injected as CSS variables on the storefront root
@@ -261,7 +333,13 @@ body {
   --shadow-fq-sm: var(--theme-shadow-sm, 0 1px 2px rgb(0 0 0 / 0.06));
   --shadow-fq-md: var(--theme-shadow-md, 0 2px 8px rgb(0 0 0 / 0.08));
   --shadow-fq-lg: var(--theme-shadow-lg, 0 8px 24px rgb(0 0 0 / 0.12));
-  --font-sans: var(--theme-font-body, "Inter", "Noto Sans Bengali", system-ui, sans-serif);
+  --font-sans: var(
+    --theme-font-body,
+    "Inter",
+    "Noto Sans Bengali",
+    system-ui,
+    sans-serif
+  );
 
   background-color: var(--color-background);
   color: var(--color-foreground);
@@ -271,26 +349,45 @@ body {
 /* Phase 3.1 — the designed dark set. Dark is authored, never auto-inverted, so
    it only engages when the theme actually shipped `--theme-dark-*`. */
 .fq-theme-scope[data-theme="dark"] {
-  --color-background: var(--theme-dark-surface, var(--theme-surface, hsl(160 25% 8%)));
+  --color-background: var(
+    --theme-dark-surface,
+    var(--theme-surface, hsl(160 25% 8%))
+  );
   --color-foreground: var(--theme-dark-ink, var(--theme-ink, hsl(150 20% 96%)));
-  --color-card: var(--theme-dark-surface, var(--theme-surface, hsl(160 25% 10%)));
-  --color-card-foreground: var(--theme-dark-ink, var(--theme-ink, hsl(150 20% 96%)));
-  --color-primary: var(--theme-dark-brand, var(--theme-brand, var(--color-bd-teal-700)));
-  --color-primary-foreground: var(--theme-dark-brand-ink, var(--theme-brand-ink, hsl(160 25% 8%)));
-  --color-accent: var(--theme-dark-accent, var(--theme-accent, var(--color-bd-teal-800)));
-  --color-accent-foreground: var(--theme-dark-accent-ink, var(--theme-accent-ink, hsl(150 20% 96%)));
+  --color-card: var(
+    --theme-dark-surface,
+    var(--theme-surface, hsl(160 25% 10%))
+  );
+  --color-card-foreground: var(
+    --theme-dark-ink,
+    var(--theme-ink, hsl(150 20% 96%))
+  );
+  --color-primary: var(
+    --theme-dark-brand,
+    var(--theme-brand, var(--color-bd-teal-700))
+  );
+  --color-primary-foreground: var(
+    --theme-dark-brand-ink,
+    var(--theme-brand-ink, hsl(160 25% 8%))
+  );
+  --color-accent: var(
+    --theme-dark-accent,
+    var(--theme-accent, var(--color-bd-teal-800))
+  );
+  --color-accent-foreground: var(
+    --theme-dark-accent-ink,
+    var(--theme-accent-ink, hsl(150 20% 96%))
+  );
   --color-muted: var(--theme-dark-muted, hsl(160 18% 16%));
   --color-muted-foreground: var(--theme-dark-muted-ink, hsl(150 10% 72%));
   --color-border: var(--theme-dark-border, hsl(160 14% 24%));
 }
-
 
 /* Display type follows the theme's display face wherever a widget marks a
    heading, without any widget importing a theme module. */
 .fq-theme-scope :is(h1, h2, h3) {
   font-family: var(--theme-font-display, var(--font-sans));
 }
-
 
 /* Phase 0.4 — universal `reveal` style prop. One implementation in the section
    wrapper; widgets never hand-roll entrance animation. Motion is
@@ -307,12 +404,22 @@ body {
   animation-name: fq-reveal-rise;
 }
 @keyframes fq-reveal-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes fq-reveal-rise {
-  from { opacity: 0; transform: translateY(var(--theme-motion-rise, 12px)); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(var(--theme-motion-rise, 12px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 /* Motion token `none` behaves exactly like the OS reduced-motion preference. */
 .fq-theme-scope[data-motion="none"] .fq-reveal {
@@ -320,7 +427,9 @@ body {
   opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fq-reveal { animation: none !important; }
+  .fq-reveal {
+    animation: none !important;
+  }
 }
 
 /* Phase 1.4 — a reveal stays parked until the shared IntersectionObserver
@@ -330,26 +439,90 @@ body {
   animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fq-reveal-pending { opacity: 1; animation-play-state: running; }
+  .fq-reveal-pending {
+    opacity: 1;
+    animation-play-state: running;
+  }
 }
 
 /* Elementor-parity entrance animations, chosen per widget in the Advanced
    tab. Each is a single compositor-friendly transform, and all of them are
    dropped for a visitor who asked for reduced motion. */
-@keyframes fq-anim-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fq-anim-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-@keyframes fq-anim-slide-left { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
-@keyframes fq-anim-slide-right { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
-@keyframes fq-anim-zoom { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes fq-anim-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fq-anim-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fq-anim-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fq-anim-slide-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fq-anim-zoom {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
-.fq-anim { animation-duration: 420ms; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); animation-fill-mode: both; }
-.fq-anim-fade { animation-name: fq-anim-fade; }
-.fq-anim-rise { animation-name: fq-anim-rise; }
-.fq-anim-slide-left { animation-name: fq-anim-slide-left; }
-.fq-anim-slide-right { animation-name: fq-anim-slide-right; }
-.fq-anim-zoom { animation-name: fq-anim-zoom; }
+.fq-anim {
+  animation-duration: 420ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  animation-fill-mode: both;
+}
+.fq-anim-fade {
+  animation-name: fq-anim-fade;
+}
+.fq-anim-rise {
+  animation-name: fq-anim-rise;
+}
+.fq-anim-slide-left {
+  animation-name: fq-anim-slide-left;
+}
+.fq-anim-slide-right {
+  animation-name: fq-anim-slide-right;
+}
+.fq-anim-zoom {
+  animation-name: fq-anim-zoom;
+}
 @media (prefers-reduced-motion: reduce) {
-  .fq-anim { animation: none !important; opacity: 1; transform: none; }
+  .fq-anim {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Phase 1.1 / 2 — বাংলা typography. Bengali matras sit above and below the
@@ -390,7 +563,8 @@ body {
 
 /* Phase 2.3 — length elasticity. বাংলা runs 15–30% longer than English, so
    nothing inside a Bangla subtree may be a fixed-width box. */
-:where([lang="bn"]) :is(button, a[href], [role="button"], .fq-chip, [role="tab"]) {
+:where([lang="bn"])
+  :is(button, a[href], [role="button"], .fq-chip, [role="tab"]) {
   width: auto;
   max-width: 100%;
   white-space: normal;
@@ -410,8 +584,6 @@ body {
   unicode-bidi: isolate;
 }
 
-
-
 /* ------------------------------------------------ Phase 6 — responsive layer */
 
 /* Every storefront node is a query container, so a rail dropped into a 4-column
@@ -430,33 +602,65 @@ body {
   }
 }
 
-.fq-subgrid { display: grid; grid-template-columns: 1fr; }
+.fq-subgrid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
 @supports (grid-template-columns: subgrid) {
-  .fq-subgrid { grid-template-columns: subgrid; }
+  .fq-subgrid {
+    grid-template-columns: subgrid;
+  }
 }
 
 /* Column spans against the 12/8/4 grid. Mobile-first: a span fills the row
    below md, clamps to 8 columns on tablet and opens to 12 from xl up. */
-[class*="fq-span-"] { grid-column: 1 / -1; min-width: 0; }
+[class*="fq-span-"] {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
 @media (min-width: 768px) {
-  .fq-span-1 { grid-column: span 1 / span 1; }
-  .fq-span-2 { grid-column: span 2 / span 2; }
-  .fq-span-3 { grid-column: span 3 / span 3; }
-  .fq-span-4 { grid-column: span 4 / span 4; }
-  .fq-span-5 { grid-column: span 5 / span 5; }
-  .fq-span-6 { grid-column: span 6 / span 6; }
-  .fq-span-7 { grid-column: span 7 / span 7; }
+  .fq-span-1 {
+    grid-column: span 1 / span 1;
+  }
+  .fq-span-2 {
+    grid-column: span 2 / span 2;
+  }
+  .fq-span-3 {
+    grid-column: span 3 / span 3;
+  }
+  .fq-span-4 {
+    grid-column: span 4 / span 4;
+  }
+  .fq-span-5 {
+    grid-column: span 5 / span 5;
+  }
+  .fq-span-6 {
+    grid-column: span 6 / span 6;
+  }
+  .fq-span-7 {
+    grid-column: span 7 / span 7;
+  }
   .fq-span-8,
   .fq-span-9,
   .fq-span-10,
   .fq-span-11,
-  .fq-span-12 { grid-column: span 8 / span 8; }
+  .fq-span-12 {
+    grid-column: span 8 / span 8;
+  }
 }
 @media (min-width: 1280px) {
-  .fq-span-9 { grid-column: span 9 / span 9; }
-  .fq-span-10 { grid-column: span 10 / span 10; }
-  .fq-span-11 { grid-column: span 11 / span 11; }
-  .fq-span-12 { grid-column: span 12 / span 12; }
+  .fq-span-9 {
+    grid-column: span 9 / span 9;
+  }
+  .fq-span-10 {
+    grid-column: span 10 / span 10;
+  }
+  .fq-span-11 {
+    grid-column: span 11 / span 11;
+  }
+  .fq-span-12 {
+    grid-column: span 12 / span 12;
+  }
 }
 
 /* Fluid type bound to tokens — one clamp per step, no per-breakpoint soup. */
@@ -467,16 +671,33 @@ body {
   --fq-step-3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
   --fq-step-4: clamp(1.9rem, 1.4rem + 2.4vw, 3.25rem);
 }
-.fq-theme-scope h1 { font-size: var(--fq-step-4); }
-.fq-theme-scope h2 { font-size: var(--fq-step-3); }
-.fq-theme-scope h3 { font-size: var(--fq-step-2); }
+.fq-theme-scope h1 {
+  font-size: var(--fq-step-4);
+}
+.fq-theme-scope h2 {
+  font-size: var(--fq-step-3);
+}
+.fq-theme-scope h3 {
+  font-size: var(--fq-step-2);
+}
 
 /* Touch: 44px minimum on anything tappable inside a storefront surface. */
-.fq-theme-scope :is(button, a[href], [role="button"], summary, input[type="checkbox"], input[type="radio"]) {
+.fq-theme-scope
+  :is(
+    button,
+    a[href],
+    [role="button"],
+    summary,
+    input[type="checkbox"],
+    input[type="radio"]
+  ) {
   min-height: 44px;
 }
-.fq-theme-scope :is(button, [role="button"]) { min-width: 44px; }
-.fq-theme-scope :is(button, a[href], [role="button"]):where(.fq-inline, .fq-inline *) {
+.fq-theme-scope :is(button, [role="button"]) {
+  min-width: 44px;
+}
+.fq-theme-scope
+  :is(button, a[href], [role="button"]):where(.fq-inline, .fq-inline *) {
   min-height: 0;
   min-width: 0;
 }
@@ -490,9 +711,13 @@ body {
 }
 
 /* Nothing may push the document sideways at 320px. */
-html, body { overflow-x: clip; }
-.fq-theme-scope { min-width: 0; }
-
+html,
+body {
+  overflow-x: clip;
+}
+.fq-theme-scope {
+  min-width: 0;
+}
 
 /* ================================================= Phase 10.1 — marketing */
 /*
@@ -505,7 +730,8 @@ html, body { overflow-x: clip; }
  * money. No Inter-on-purple-gradient default.
  */
 @utility fq-marketing {
-  --fq-gradient-hero: radial-gradient(
+  --fq-gradient-hero:
+    radial-gradient(
       120% 120% at 12% 0%,
       color-mix(in oklab, var(--color-bd-teal-400) 22%, transparent) 0%,
       transparent 55%
@@ -518,11 +744,15 @@ html, body { overflow-x: clip; }
   --fq-gradient-ink: linear-gradient(
     92deg,
     var(--color-foreground) 0%,
-    color-mix(in oklab, var(--color-bd-teal-700) 70%, var(--color-foreground)) 100%
+    color-mix(in oklab, var(--color-bd-teal-700) 70%, var(--color-foreground))
+      100%
   );
-  --shadow-lift: 0 1px 2px rgb(16 32 28 / 0.05), 0 12px 32px -12px rgb(16 32 28 / 0.22);
-  --shadow-lift-lg: 0 2px 4px rgb(16 32 28 / 0.06), 0 32px 64px -24px rgb(16 32 28 / 0.28);
-  --ring-focus: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-bd-teal-600);
+  --shadow-lift:
+    0 1px 2px rgb(16 32 28 / 0.05), 0 12px 32px -12px rgb(16 32 28 / 0.22);
+  --shadow-lift-lg:
+    0 2px 4px rgb(16 32 28 / 0.06), 0 32px 64px -24px rgb(16 32 28 / 0.28);
+  --ring-focus:
+    0 0 0 2px var(--color-background), 0 0 0 4px var(--color-bd-teal-600);
 
   /* Section rhythm — one scale, used for every vertical gap on the site. */
   --fq-rhythm-xs: clamp(1rem, 0.9rem + 0.6vw, 1.5rem);
@@ -547,7 +777,16 @@ html, body { overflow-x: clip; }
 }
 
 /* Focus is never removed on marketing surfaces — it is styled. */
-.fq-marketing :is(a, button, [role="button"], input, select, textarea, summary):focus-visible {
+.fq-marketing
+  :is(
+    a,
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea,
+    summary
+  ):focus-visible {
   outline: none;
   box-shadow: var(--ring-focus);
   border-radius: var(--radius-fq-md);
@@ -586,17 +825,29 @@ html, body { overflow-x: clip; }
 .fq-mesh-blob-a {
   top: -18rem;
   left: -12rem;
-  background: radial-gradient(circle, oklch(0.70 0.165 250 / 0.5), transparent 68%);
+  background: radial-gradient(
+    circle,
+    oklch(0.7 0.165 250 / 0.5),
+    transparent 68%
+  );
 }
 .fq-mesh-blob-b {
   top: -22rem;
   right: -14rem;
-  background: radial-gradient(circle, oklch(0.62 0.19 268 / 0.42), transparent 68%);
+  background: radial-gradient(
+    circle,
+    oklch(0.62 0.19 268 / 0.42),
+    transparent 68%
+  );
 }
 .fq-mesh-blob-c {
   top: 6rem;
   left: 38%;
-  background: radial-gradient(circle, oklch(0.74 0.14 225 / 0.3), transparent 70%);
+  background: radial-gradient(
+    circle,
+    oklch(0.74 0.14 225 / 0.3),
+    transparent 70%
+  );
 }
 .fq-site .fq-mesh-blob {
   opacity: 0.3;
@@ -605,19 +856,32 @@ html, body { overflow-x: clip; }
   animation: fq-mesh-drift 24s var(--ease-fq-out) infinite alternate;
   will-change: transform;
 }
-.fq-mesh-blob-b[data-drifting="true"] { animation-duration: 31s; animation-delay: -6s; }
-.fq-mesh-blob-c[data-drifting="true"] { animation-duration: 38s; animation-delay: -12s; }
+.fq-mesh-blob-b[data-drifting="true"] {
+  animation-duration: 31s;
+  animation-delay: -6s;
+}
+.fq-mesh-blob-c[data-drifting="true"] {
+  animation-duration: 38s;
+  animation-delay: -12s;
+}
 
 @keyframes fq-mesh-drift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to { transform: translate3d(3%, 2.5%, 0) scale(1.06); }
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 2.5%, 0) scale(1.06);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fq-mesh-blob { animation: none !important; }
-  [data-motion="marquee"] > * { animation: none !important; }
+  .fq-mesh-blob {
+    animation: none !important;
+  }
+  [data-motion="marquee"] > * {
+    animation: none !important;
+  }
 }
-
 
 /* ================= Marketing surface — Minimalist B&W + Calm Pink + Facebook Blue (see DESIGN.md) */
 /*
@@ -636,7 +900,7 @@ html, body { overflow-x: clip; }
   --color-primary: oklch(0.48 0.23 255);
   --color-primary-foreground: oklch(0.99 0.003 25);
   --color-muted: oklch(0.94 0.008 25);
-  --color-muted-foreground: oklch(0.40 0.018 25);
+  --color-muted-foreground: oklch(0.4 0.018 25);
   --color-border: oklch(0.91 0.008 25);
   --color-accent: oklch(0.95 0.025 25);
   --color-accent-foreground: oklch(0.38 0.12 20);
@@ -659,10 +923,10 @@ html, body { overflow-x: clip; }
   --radius-fq-lg: 16px;
 
   /* Elevation: gentle warm elevation cues */
-  --shadow-lift: 0 1px 3px rgba(35, 25, 30, 0.05),
-    0 12px 28px -10px rgba(35, 25, 30, 0.08);
-  --shadow-lift-lg: 0 2px 6px rgba(35, 25, 30, 0.06),
-    0 28px 60px -20px rgba(35, 25, 30, 0.12);
+  --shadow-lift:
+    0 1px 3px rgba(35, 25, 30, 0.05), 0 12px 28px -10px rgba(35, 25, 30, 0.08);
+  --shadow-lift-lg:
+    0 2px 6px rgba(35, 25, 30, 0.06), 0 28px 60px -20px rgba(35, 25, 30, 0.12);
   --ring-focus: 0 0 0 2px var(--color-background), 0 0 0 4px var(--fq-signal);
 
   /* Marketing type: Space Grotesk for display, DM Sans for body/UI — the same
@@ -671,10 +935,11 @@ html, body { overflow-x: clip; }
      real family so the pre-swap render has the same box as the post-swap
      render; without them the swap re-wrapped whole bands (see the @font-face
      block above). Bangla keeps Noto Sans Bengali so matras never fall back. */
-  --font-display-fq: "Space Grotesk", "Geist Fallback", "DM Sans",
-    "Manrope Fallback", "Noto Sans Bengali", "Noto Sans Bengali Fallback",
-    system-ui, sans-serif;
-  --font-sans: "DM Sans", "Manrope Fallback", "Space Grotesk", "Geist Fallback",
+  --font-display-fq:
+    "Space Grotesk", "Geist Fallback", "DM Sans", "Manrope Fallback",
+    "Noto Sans Bengali", "Noto Sans Bengali Fallback", system-ui, sans-serif;
+  --font-sans:
+    "DM Sans", "Manrope Fallback", "Space Grotesk", "Geist Fallback",
     "Noto Sans Bengali", "Noto Sans Bengali Fallback", system-ui, sans-serif;
 
   background-color: var(--color-background);
@@ -690,10 +955,10 @@ html, body { overflow-x: clip; }
   --color-foreground: oklch(0.95 0.005 285);
   --color-card: oklch(0.18 0.008 285);
   --color-card-foreground: oklch(0.95 0.005 285);
-  --color-primary: oklch(0.70 0.21 255);
+  --color-primary: oklch(0.7 0.21 255);
   --color-primary-foreground: oklch(0.99 0.003 25);
   --color-muted: oklch(0.22 0.01 285);
-  --color-muted-foreground: oklch(0.70 0.015 285);
+  --color-muted-foreground: oklch(0.7 0.015 285);
   --color-border: oklch(0.26 0.01 285);
   --color-accent: oklch(0.22 0.01 285);
   --color-accent-foreground: oklch(0.95 0.005 285);
@@ -704,14 +969,14 @@ html, body { overflow-x: clip; }
   --fq-orange: oklch(0.76 0.14 235);
   --fq-teal: oklch(0.72 0.13 225);
   --fq-ink: oklch(0.95 0.005 285);
-  --fq-pink-calm: oklch(0.20 0.015 25);
+  --fq-pink-calm: oklch(0.2 0.015 25);
   --fq-pink-accent: oklch(0.72 0.18 20);
   --fq-pink-subtle: oklch(0.25 0.025 25);
 
-  --shadow-lift: 0 1px 2px oklch(0 0 0 / 0.5),
-    0 18px 40px -24px oklch(0 0 0 / 0.9);
-  --shadow-lift-lg: 0 2px 4px oklch(0 0 0 / 0.6),
-    0 40px 80px -36px oklch(0 0 0 / 1);
+  --shadow-lift:
+    0 1px 2px oklch(0 0 0 / 0.5), 0 18px 40px -24px oklch(0 0 0 / 0.9);
+  --shadow-lift-lg:
+    0 2px 4px oklch(0 0 0 / 0.6), 0 40px 80px -36px oklch(0 0 0 / 1);
 }
 
 .fq-site .fq-glass {
@@ -734,10 +999,13 @@ html, body { overflow-x: clip; }
   font-family: var(--font-display-fq);
 }
 
-
 /* Links and selection are the only chromatic signals on the canvas. */
-.fq-site ::selection { background: color-mix(in oklab, var(--fq-signal) 35%, transparent); }
-.fq-site .fq-link { color: var(--fq-signal); }
+.fq-site ::selection {
+  background: color-mix(in oklab, var(--fq-signal) 35%, transparent);
+}
+.fq-site .fq-link {
+  color: var(--fq-signal);
+}
 
 /* ---------------------------------------------------- editorial primitives */
 
@@ -745,7 +1013,11 @@ html, body { overflow-x: clip; }
 @utility fq-rule {
   height: 1px;
   border: 0;
-  background: linear-gradient(to right, var(--fq-edge), rgb(255 255 255 / 0.02));
+  background: linear-gradient(
+    to right,
+    var(--fq-edge),
+    rgb(255 255 255 / 0.02)
+  );
 }
 
 /* Numbered index tag used down the left rail of editorial scenes. */
@@ -770,17 +1042,26 @@ html, body { overflow-x: clip; }
 }
 
 [data-choreo="on"] .fq-line > span {
-  animation: fq-line-rise 900ms var(--ease-fq-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
+  animation: fq-line-rise 900ms
+    var(--ease-fq-out, cubic-bezier(0.22, 1, 0.36, 1)) both;
   animation-delay: var(--fq-line-delay, 0ms);
 }
 
 @keyframes fq-line-rise {
-  from { transform: translate3d(0, 108%, 0); opacity: 0; }
-  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+  from {
+    transform: translate3d(0, 108%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  [data-choreo="on"] .fq-line > span { animation: none !important; }
+  [data-choreo="on"] .fq-line > span {
+    animation: none !important;
+  }
 }
 
 /* Display type: poster tracking in latin, neutral tracking in Bangla. */
@@ -790,7 +1071,10 @@ html, body { overflow-x: clip; }
   line-height: 0.98;
   text-wrap: balance;
 }
-:where([lang="bn"]) .fq-display { letter-spacing: 0; line-height: 1.35; }
+:where([lang="bn"]) .fq-display {
+  letter-spacing: 0;
+  line-height: 1.35;
+}
 
 /* The signature container: 4% white, blurred, and a 1px 14% white edge —
  * TODO §10.3 makes the edge the elevation, so the ambient shadow below it is
@@ -803,7 +1087,9 @@ html, body { overflow-x: clip; }
 }
 
 @utility fq-glass-hover {
-  transition: border-color 200ms var(--ease-fq-out), transform 200ms var(--ease-fq-out);
+  transition:
+    border-color 200ms var(--ease-fq-out),
+    transform 200ms var(--ease-fq-out);
   &:hover {
     border-color: rgb(255 255 255 / 0.16);
     transform: translateY(-2px);
@@ -827,9 +1113,21 @@ html, body { overflow-x: clip; }
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(48% 60% at 14% 8%, color-mix(in oklab, var(--fq-violet) 42%, transparent), transparent 70%),
-      radial-gradient(42% 52% at 82% 0%, color-mix(in oklab, var(--fq-magenta) 32%, transparent), transparent 72%),
-      radial-gradient(46% 46% at 60% 90%, color-mix(in oklab, var(--fq-teal) 30%, transparent), transparent 70%);
+      radial-gradient(
+        48% 60% at 14% 8%,
+        color-mix(in oklab, var(--fq-violet) 42%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        42% 52% at 82% 0%,
+        color-mix(in oklab, var(--fq-magenta) 32%, transparent),
+        transparent 72%
+      ),
+      radial-gradient(
+        46% 46% at 60% 90%,
+        color-mix(in oklab, var(--fq-teal) 30%, transparent),
+        transparent 70%
+      );
     filter: blur(30px);
     opacity: 0.55;
   }
@@ -851,12 +1149,17 @@ html, body { overflow-x: clip; }
  *     nobody can reproduce on demand.
  */
 @keyframes fq-aurora-drift {
-  from { transform: translate3d(-1.5%, -1%, 0) scale(1.02); }
-  to   { transform: translate3d(1.5%, 1.5%, 0) scale(1.06); }
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1.02);
+  }
+  to {
+    transform: translate3d(1.5%, 1.5%, 0) scale(1.06);
+  }
 }
 
 .fq-aurora[data-band-drift="true"]::before {
-  animation: fq-aurora-drift 31s var(--ease-fq-in-out, ease-in-out) infinite alternate;
+  animation: fq-aurora-drift 31s var(--ease-fq-in-out, ease-in-out) infinite
+    alternate;
   will-change: transform;
 }
 
@@ -868,7 +1171,9 @@ html, body { overflow-x: clip; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fq-aurora[data-band-drift="true"]::before { animation: none !important; }
+  .fq-aurora[data-band-drift="true"]::before {
+    animation: none !important;
+  }
 }
 
 /* Full-saturation gradient spotlight tile. Scarce by design: 1–2 per page. */
@@ -888,9 +1193,10 @@ html, body { overflow-x: clip; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fq-glass-hover:hover { transform: none; }
+  .fq-glass-hover:hover {
+    transform: none;
+  }
 }
-
 
 /* ========================== Phase 10.3 — visual rhythm (TODO §10.3) =======
  * The numeric spec lives in `src/lib/site-rhythm.ts` and is asserted against
@@ -969,7 +1275,6 @@ html, body { overflow-x: clip; }
   min-width: 24px;
 }
 
-
 @utility fq-band {
   padding-block: var(--fq-band-y, 72px);
 }
@@ -1014,7 +1319,8 @@ html, body { overflow-x: clip; }
 .fq-admin {
   /* Porcelain Light — cool porcelain canvas, pure-white plates, indigo signal.
      Type: Space Grotesk for headings/metrics, DM Sans for UI text. */
-  --font-sans: "DM Sans", "Manrope Fallback", "Noto Sans Bengali",
+  --font-sans:
+    "DM Sans", "Manrope Fallback", "Noto Sans Bengali",
     "Noto Sans Bengali Fallback", system-ui, sans-serif;
   --fq-font-display: "Space Grotesk", "Geist Fallback", var(--font-sans);
   font-family: var(--font-sans);
@@ -1026,21 +1332,21 @@ html, body { overflow-x: clip; }
   --color-popover: oklch(0.238 0.015 255);
   --color-popover-foreground: oklch(0.905 0.008 250);
   --color-muted: oklch(0.25 0.015 255);
-  --color-sidebar: oklch(0.20 0.015 255);
+  --color-sidebar: oklch(0.2 0.015 255);
 
   /* ink — exactly two tones */
   --color-foreground: oklch(0.878 0.008 250);
   --color-muted-foreground: oklch(0.735 0.02 250);
 
   /* signal — facebook-style blue */
-  --color-primary: oklch(0.70 0.165 250);
+  --color-primary: oklch(0.7 0.165 250);
   --color-primary-foreground: oklch(0.16 0.04 255);
-  --color-ring: oklch(0.70 0.165 250);
+  --color-ring: oklch(0.7 0.165 250);
 
   /* accent tints derived from the signal */
   --color-accent: oklch(0.3 0.075 255);
   --color-accent-foreground: oklch(0.9 0.07 250);
-  --fq-signal: oklch(0.70 0.165 250);
+  --fq-signal: oklch(0.7 0.165 250);
   --fq-signal-soft: oklch(0.3 0.075 255);
   --fq-brand: oklch(0.74 0.15 255);
   --fq-brand-ink: oklch(0.9 0.07 250);
@@ -1075,11 +1381,11 @@ html, body { overflow-x: clip; }
 
   /* elevation — a plate is a hairline plus a soft, wide, low-alpha shadow */
   --fq-scrim: oklch(0.1 0.01 60 / 0.62);
-  --fq-admin-shadow: 0 1px 2px oklch(0 0 0 / 0.45),
-    0 8px 24px -14px oklch(0 0 0 / 0.6);
+  --fq-admin-shadow:
+    0 1px 2px oklch(0 0 0 / 0.45), 0 8px 24px -14px oklch(0 0 0 / 0.6);
   --fq-admin-shadow-overlay: 0 16px 44px -12px oklch(0 0 0 / 0.7);
-  --fq-admin-shadow-lift: 0 2px 4px oklch(0 0 0 / 0.5),
-    0 18px 40px -20px oklch(0 0 0 / 0.7);
+  --fq-admin-shadow-lift:
+    0 2px 4px oklch(0 0 0 / 0.5), 0 18px 40px -20px oklch(0 0 0 / 0.7);
 
   font-size: 14px;
   letter-spacing: -0.005em;
@@ -1088,12 +1394,17 @@ html, body { overflow-x: clip; }
 
   /* Porcelain isn't flat: a faint indigo wash pins the canvas behind the
      plates so white cards read as raised rather than as holes. */
-  background-image: radial-gradient(
+  background-image:
+    radial-gradient(
       90% 60% at 100% 0%,
-      oklch(0.70 0.165 250 / 0.1) 0%,
+      oklch(0.7 0.165 250 / 0.1) 0%,
       transparent 60%
     ),
-    radial-gradient(70% 50% at 0% 0%, oklch(0.62 0.19 268 / 0.07) 0%, transparent 55%);
+    radial-gradient(
+      70% 50% at 0% 0%,
+      oklch(0.62 0.19 268 / 0.07) 0%,
+      transparent 55%
+    );
   background-attachment: fixed;
 }
 
@@ -1115,13 +1426,13 @@ html, body { overflow-x: clip; }
   --color-foreground: oklch(0.878 0.008 250);
   --color-muted-foreground: oklch(0.735 0.02 250);
 
-  --color-primary: oklch(0.70 0.165 250);
+  --color-primary: oklch(0.7 0.165 250);
   --color-primary-foreground: oklch(0.16 0.03 50);
-  --color-ring: oklch(0.70 0.165 250);
+  --color-ring: oklch(0.7 0.165 250);
 
   --color-accent: oklch(0.29 0.075 255);
   --color-accent-foreground: oklch(0.9 0.07 250);
-  --fq-signal: oklch(0.70 0.165 250);
+  --fq-signal: oklch(0.7 0.165 250);
   --fq-signal-soft: oklch(0.29 0.075 255);
   --fq-brand: oklch(0.74 0.15 255);
   --fq-brand-ink: oklch(0.9 0.07 250);
@@ -1174,7 +1485,8 @@ html, body { overflow-x: clip; }
 }
 
 /* Focus lands on the signal colour, everywhere. */
-.fq-admin :is(a, button, [role="button"], input, select, textarea):focus-visible {
+.fq-admin
+  :is(a, button, [role="button"], input, select, textarea):focus-visible {
   outline: 2px solid var(--fq-signal, var(--color-primary, currentColor));
   outline-offset: 2px;
 }
@@ -1203,7 +1515,11 @@ html, body { overflow-x: clip; }
   &:hover {
     transform: translateY(-2px);
     box-shadow: var(--fq-admin-shadow-lift, var(--fq-admin-shadow));
-    border-color: color-mix(in oklab, var(--fq-signal) 28%, var(--color-border));
+    border-color: color-mix(
+      in oklab,
+      var(--fq-signal) 28%,
+      var(--color-border)
+    );
   }
 }
 
@@ -1216,12 +1532,17 @@ html, body { overflow-x: clip; }
   border-radius: var(--radius-fq-lg);
   color: var(--color-primary-foreground);
   background-color: oklch(0.28 0.09 275);
-  background-image: radial-gradient(
+  background-image:
+    radial-gradient(
       110% 130% at 8% 0%,
       color-mix(in oklab, var(--fq-signal) 85%, transparent) 0%,
       transparent 62%
     ),
-    radial-gradient(80% 110% at 100% 100%, oklch(0.62 0.16 220 / 0.55) 0%, transparent 60%);
+    radial-gradient(
+      80% 110% at 100% 100%,
+      oklch(0.62 0.16 220 / 0.55) 0%,
+      transparent 60%
+    );
   box-shadow:
     0 1px 0 0 rgb(255 255 255 / 0.14) inset,
     0 20px 44px -22px oklch(0.28 0.09 275 / 0.85);
@@ -1244,7 +1565,8 @@ html, body { overflow-x: clip; }
 /* A hairline that fades out at both ends — used between dense rows. */
 @utility fq-divide-soft {
   & > * + * {
-    border-top: 1px solid color-mix(in oklab, var(--color-border) 75%, transparent);
+    border-top: 1px solid
+      color-mix(in oklab, var(--color-border) 75%, transparent);
   }
 }
 
@@ -1277,7 +1599,6 @@ html, body { overflow-x: clip; }
   border: 1px solid color-mix(in oklab, currentColor 28%, transparent);
   background-color: color-mix(in oklab, currentColor 10%, transparent);
 }
-
 
 /* ------------------------------------------------------------------------- *
  * Phase 9 — console motion, skeleton and state layer.
@@ -1351,7 +1672,8 @@ html, body { overflow-x: clip; }
 }
 
 /* Interactive chrome shares one duration so nothing feels out of step. */
-.fq-admin :is(a, button, [role="button"], [role="tab"], input, select, textarea) {
+.fq-admin
+  :is(a, button, [role="button"], [role="tab"], input, select, textarea) {
   transition-duration: var(--fq-dur-fast, 120ms);
   transition-timing-function: var(--fq-ease);
 }
@@ -1471,10 +1793,7 @@ html, body { overflow-x: clip; }
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background-image: radial-gradient(
-      currentColor 1px,
-      transparent 1px
-    );
+    background-image: radial-gradient(currentColor 1px, transparent 1px);
     background-size: 14px 14px;
     opacity: 0.07;
     mask-image: radial-gradient(120% 100% at 100% 0%, #000 0%, transparent 70%);
@@ -1506,7 +1825,8 @@ html, body { overflow-x: clip; }
 /* shadcn-style inner edge light on the top of a plate. */
 @utility fq-edge-inner {
   box-shadow:
-    inset 0 1px 0 0 var(--fq-edge-light, color-mix(in oklab, white 12%, transparent)),
+    inset 0 1px 0 0
+      var(--fq-edge-light, color-mix(in oklab, white 12%, transparent)),
     var(--fq-admin-shadow, 0 1px 2px rgb(0 0 0 / 0.05));
 }
 
@@ -1645,9 +1965,21 @@ html, body { overflow-x: clip; }
   z-index: -1;
   pointer-events: none;
   background-image:
-    radial-gradient(60% 45% at 12% 0%, color-mix(in oklab, var(--fq-signal) 22%, transparent) 0%, transparent 62%),
-    radial-gradient(55% 40% at 92% 8%, color-mix(in oklab, var(--fq-brand, var(--fq-signal)) 16%, transparent) 0%, transparent 60%),
-    radial-gradient(70% 55% at 50% 108%, color-mix(in oklab, var(--fq-signal) 12%, transparent) 0%, transparent 66%);
+    radial-gradient(
+      60% 45% at 12% 0%,
+      color-mix(in oklab, var(--fq-signal) 22%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      55% 40% at 92% 8%,
+      color-mix(in oklab, var(--fq-brand, var(--fq-signal)) 16%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 55% at 50% 108%,
+      color-mix(in oklab, var(--fq-signal) 12%, transparent) 0%,
+      transparent 66%
+    );
   opacity: 0.55;
   animation: fq-canvas-drift 42s ease-in-out infinite alternate;
 }
@@ -1661,9 +1993,10 @@ html, body { overflow-x: clip; }
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
-  
+
   &:hover {
-    box-shadow: 0 8px 32px -8px color-mix(in oklab, var(--color-primary) 20%, transparent);
+    box-shadow: 0 8px 32px -8px
+      color-mix(in oklab, var(--color-primary) 20%, transparent);
     border-color: color-mix(in oklab, var(--color-primary) 30%, transparent);
     transform: translateY(-4px);
   }
@@ -1672,7 +2005,11 @@ html, body { overflow-x: clip; }
 @utility fq-feature-card-glow {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, color-mix(in oklab, var(--color-primary) 8%, transparent), transparent);
+  background: linear-gradient(
+    to bottom right,
+    color-mix(in oklab, var(--color-primary) 8%, transparent),
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -1682,8 +2019,12 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fq-shimmer {
-  0% { transform: translateX(-100%) skewX(-15deg); }
-  100% { transform: translateX(200%) skewX(-15deg); }
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
 }
 
 /* Primary CTA: Monochrome High-Contrast (Linear inspired) */
@@ -1691,16 +2032,22 @@ html, body { overflow-x: clip; }
   background-color: var(--color-foreground);
   color: var(--color-background);
   border: 1px solid transparent;
-  box-shadow: inset 0 -2px 4px color-mix(in oklab, var(--color-background) 20%, transparent), 0 2px 8px color-mix(in oklab, var(--color-foreground) 10%, transparent);
+  box-shadow:
+    inset 0 -2px 4px
+      color-mix(in oklab, var(--color-background) 20%, transparent),
+    0 2px 8px color-mix(in oklab, var(--color-foreground) 10%, transparent);
   transition: all 0.2s ease;
   font-weight: 600;
-  
+
   &:hover {
     transform: translateY(-1px);
-    box-shadow: inset 0 -1px 2px color-mix(in oklab, var(--color-background) 10%, transparent), 0 4px 12px color-mix(in oklab, var(--color-foreground) 20%, transparent);
+    box-shadow:
+      inset 0 -1px 2px
+        color-mix(in oklab, var(--color-background) 10%, transparent),
+      0 4px 12px color-mix(in oklab, var(--color-foreground) 20%, transparent);
     opacity: 0.95;
   }
-  
+
   &:active {
     transform: scale(0.98);
   }
@@ -1717,23 +2064,32 @@ html, body { overflow-x: clip; }
   box-shadow: 0 2px 8px -2px color-mix(in oklab, oklch(0 0 0) 20%, transparent);
   transition: all 0.3s ease;
   font-weight: 500;
-  
+
   &::after {
-    content: '';
+    content: "";
     position: absolute;
-    top: 0; left: 0; bottom: 0; width: 50%;
-    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--color-foreground) 4%, transparent), transparent);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 50%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--color-foreground) 4%, transparent),
+      transparent
+    );
     animation: fq-shimmer 4s infinite;
     pointer-events: none;
   }
-  
+
   &:hover {
     background: color-mix(in oklab, var(--color-card) 60%, transparent);
     border-color: color-mix(in oklab, var(--color-foreground) 15%, transparent);
-    box-shadow: 0 4px 12px -2px color-mix(in oklab, oklch(0 0 0) 30%, transparent);
+    box-shadow: 0 4px 12px -2px
+      color-mix(in oklab, oklch(0 0 0) 30%, transparent);
     transform: translateY(-1px);
   }
-  
+
   &:active {
     transform: scale(0.98) translateY(0);
   }
@@ -1745,9 +2101,21 @@ html, body { overflow-x: clip; }
 :root.dark .fq-site::before {
   opacity: 0.85;
   background-image:
-    radial-gradient(65% 55% at 15% 0%, color-mix(in oklab, oklch(0.55 0.12 280) 30%, transparent) 0%, transparent 70%),
-    radial-gradient(55% 40% at 85% 15%, color-mix(in oklab, oklch(0.60 0.15 65) 20%, transparent) 0%, transparent 60%),
-    radial-gradient(70% 55% at 50% 105%, color-mix(in oklab, oklch(0.50 0.10 200) 25%, transparent) 0%, transparent 70%);
+    radial-gradient(
+      65% 55% at 15% 0%,
+      color-mix(in oklab, oklch(0.55 0.12 280) 30%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      55% 40% at 85% 15%,
+      color-mix(in oklab, oklch(0.6 0.15 65) 20%, transparent) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      70% 55% at 50% 105%,
+      color-mix(in oklab, oklch(0.5 0.1 200) 25%, transparent) 0%,
+      transparent 70%
+    );
 }
 
 .fq-admin::after,
@@ -1758,15 +2126,29 @@ html, body { overflow-x: clip; }
   z-index: -1;
   pointer-events: none;
   background-image:
-    radial-gradient(circle at 1px 1px, color-mix(in oklab, var(--color-foreground) 12%, transparent) 1px, transparent 0),
-    radial-gradient(120% 90% at 50% 50%, transparent 55%, oklch(0 0 0 / 0.35) 100%);
-  background-size: 22px 22px, 100% 100%;
+    radial-gradient(
+      circle at 1px 1px,
+      color-mix(in oklab, var(--color-foreground) 12%, transparent) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      120% 90% at 50% 50%,
+      transparent 55%,
+      oklch(0 0 0 / 0.35) 100%
+    );
+  background-size:
+    22px 22px,
+    100% 100%;
   opacity: 0.5;
 }
 
 @keyframes fq-canvas-drift {
-  from { transform: translate3d(-1.5%, -1%, 0) scale(1.04); }
-  to { transform: translate3d(1.5%, 1.5%, 0) scale(1.09); }
+  from {
+    transform: translate3d(-1.5%, -1%, 0) scale(1.04);
+  }
+  to {
+    transform: translate3d(1.5%, 1.5%, 0) scale(1.09);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1788,7 +2170,8 @@ html, body { overflow-x: clip; }
 .fq-studio-bar {
   background: var(--fq-studio-bar);
   color: var(--fq-studio-bar-ink);
-  border-bottom: 1px solid color-mix(in oklab, var(--fq-studio-bar-ink) 14%, transparent);
+  border-bottom: 1px solid
+    color-mix(in oklab, var(--fq-studio-bar-ink) 14%, transparent);
 }
 
 .fq-studio-bar button:focus-visible,
@@ -1852,8 +2235,12 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fx-aurora-shift {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 
 /* text-effects.colorion.co — fx-spotlight subtle beam sweep */
@@ -1877,13 +2264,21 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fx-spotlight-sweep {
-  0%, 20% { transform: translateX(-100%); }
-  60%, 100% { transform: translateX(100%); }
+  0%,
+  20% {
+    transform: translateX(-100%);
+  }
+  60%,
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 /* text-effects.colorion.co — fx-decoder technical term spacing */
 @utility fx-decoder {
-  transition: letter-spacing 300ms var(--ease-fq-out, ease), opacity 300ms var(--ease-fq-out, ease);
+  transition:
+    letter-spacing 300ms var(--ease-fq-out, ease),
+    opacity 300ms var(--ease-fq-out, ease);
   letter-spacing: -0.01em;
 }
 
@@ -1915,9 +2310,17 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fx-scanner-line {
-  0% { top: 10%; opacity: 0.25; }
-  50% { opacity: 0.9; }
-  100% { top: 90%; opacity: 0.25; }
+  0% {
+    top: 10%;
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.9;
+  }
+  100% {
+    top: 90%;
+    opacity: 0.25;
+  }
 }
 
 /* text-effects.colorion.co — fx-ticker tabular metric styling */
@@ -1939,9 +2342,15 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fx-hologram-shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* text-effects.colorion.co — fx-softblur quote focus */
@@ -1974,8 +2383,13 @@ html, body { overflow-x: clip; }
 }
 
 @keyframes fx-caret-blink {
-  from, to { border-color: transparent; }
-  50% { border-color: var(--fq-signal); }
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: var(--fq-signal);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1993,7 +2407,6 @@ html, body { overflow-x: clip; }
     animation: none;
   }
 }
-
 
 @utility fq-viewport-floor {
   min-height: 100vh;

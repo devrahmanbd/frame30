@@ -1,1 +1,1687 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "label": "support.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1"}, {"id": "admin_support_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L25"}, {"id": "admin_support_tab", "label": "Tab", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L47"}, {"id": "admin_support_ticketpatch", "label": "TicketPatch", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L48"}, {"id": "admin_support_channelpatch", "label": "ChannelPatch", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L56"}, {"id": "admin_support_priorities", "label": "PRIORITIES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L65"}, {"id": "admin_support_statuses", "label": "STATUSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L66"}, {"id": "admin_support_supportdesk", "label": "SupportDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L75"}, {"id": "admin_support_ticket", "label": "Ticket", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L168"}, {"id": "admin_support_tickets", "label": "Tickets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L170"}, {"id": "admin_support_doc", "label": "Doc", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L381"}, {"id": "admin_support_auditdata", "label": "AuditData", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L382"}, {"id": "admin_support_knowledgebase", "label": "KnowledgeBase()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L384"}, {"id": "admin_support_channelrow", "label": "ChannelRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L547"}, {"id": "admin_support_channels", "label": "Channels()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L549"}, {"id": "admin_support_policyrow", "label": "PolicyRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L686"}, {"id": "admin_support_slapolicies", "label": "SlaPolicies()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L688"}, {"id": "admin_support_trust", "label": "Trust()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L791"}, {"id": "admin_support_callbacksqueue", "label": "CallbacksQueue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L944"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "users_rahman_documents_frame30_src_lib_support_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_getcsatanalyticsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_listcallbacksfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportauditfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportchannelsavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportdeskfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportkbdeletefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportkbsavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportslasavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportticketcreatefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportticketeventsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_supportticketupdatefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_functions_updatecallbackstatusfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "users_rahman_documents_frame30_src_lib_support_sla_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_sla_default_sla", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "lib_support_sla_priority", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "users_rahman_documents_frame30_src_components_admin_supportdeskui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_empty", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_pill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_sla_tone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_stat", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_minutes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_supportdeskui_ticketsla", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_tab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_ticketpatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_channelpatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_priorities", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_statuses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_supportdesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_ticket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_tickets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_doc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L381", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_auditdata", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L382", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_knowledgebase", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L384", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_channelrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L547", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_channels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L549", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_policyrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L686", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_slapolicies", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L688", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_trust", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L791", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx", "target": "admin_support_callbacksqueue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L944", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_support_supportdesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L76"}, {"caller_nid": "admin_support_supportdesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L77"}, {"caller_nid": "admin_support_supportdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L78"}, {"caller_nid": "admin_support_supportdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L79"}, {"caller_nid": "admin_support_supportdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L80"}, {"caller_nid": "admin_support_supportdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L82"}, {"caller_nid": "admin_support_supportdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L83"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L93"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L94"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L95"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L96"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L97"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L98"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L104"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L106"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L114"}, {"caller_nid": "admin_support_supportdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L114"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L115"}, {"caller_nid": "admin_support_supportdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L115"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L116"}, {"caller_nid": "admin_support_supportdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L116"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L118"}, {"caller_nid": "admin_support_supportdesk", "callee": "minutes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L119"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L120"}, {"caller_nid": "admin_support_supportdesk", "callee": "minutes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L120"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L124"}, {"caller_nid": "admin_support_supportdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L125"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L144"}, {"caller_nid": "admin_support_supportdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L148"}, {"caller_nid": "admin_support_tickets", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L171"}, {"caller_nid": "admin_support_tickets", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L172"}, {"caller_nid": "admin_support_tickets", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L173"}, {"caller_nid": "admin_support_tickets", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L174"}, {"caller_nid": "admin_support_tickets", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L175"}, {"caller_nid": "admin_support_tickets", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L176"}, {"caller_nid": "admin_support_tickets", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L177"}, {"caller_nid": "admin_support_tickets", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L178"}, {"caller_nid": "admin_support_tickets", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L180"}, {"caller_nid": "admin_support_tickets", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L185"}, {"caller_nid": "admin_support_tickets", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L188"}, {"caller_nid": "admin_support_tickets", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L191"}, {"caller_nid": "admin_support_tickets", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L201"}, {"caller_nid": "admin_support_tickets", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L211"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L216"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L217"}, {"caller_nid": "admin_support_tickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L220"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L243"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L245"}, {"caller_nid": "admin_support_tickets", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L247"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L249"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L254"}, {"caller_nid": "admin_support_tickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L257"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L295"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L296"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L299"}, {"caller_nid": "admin_support_tickets", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L305"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L310"}, {"caller_nid": "admin_support_tickets", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L323"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L328"}, {"caller_nid": "admin_support_tickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L330"}, {"caller_nid": "admin_support_tickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L341"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L355"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L357"}, {"caller_nid": "admin_support_tickets", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L359"}, {"caller_nid": "admin_support_tickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L362"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L385"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L386"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L387"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L388"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L396"}, {"caller_nid": "admin_support_knowledgebase", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L416"}, {"caller_nid": "admin_support_knowledgebase", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L425"}, {"caller_nid": "admin_support_knowledgebase", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L425"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L430"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L430"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L431"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L446"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L447"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L454"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L455"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L462"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L471"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L474"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L475"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L481"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L491"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L498"}, {"caller_nid": "admin_support_knowledgebase", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L500"}, {"caller_nid": "admin_support_knowledgebase", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L503"}, {"caller_nid": "admin_support_channels", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L550"}, {"caller_nid": "admin_support_channels", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L551"}, {"caller_nid": "admin_support_channels", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L552"}, {"caller_nid": "admin_support_channels", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L561"}, {"caller_nid": "admin_support_channels", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L571"}, {"caller_nid": "admin_support_channels", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L571"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L576"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L577"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L600"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L609"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L610"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L616"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L617"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L624"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L625"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L634"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L638"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L643"}, {"caller_nid": "admin_support_channels", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L645"}, {"caller_nid": "admin_support_channels", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L648"}, {"caller_nid": "admin_support_slapolicies", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L689"}, {"caller_nid": "admin_support_slapolicies", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L690"}, {"caller_nid": "admin_support_slapolicies", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L691"}, {"caller_nid": "admin_support_slapolicies", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L703"}, {"caller_nid": "admin_support_slapolicies", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L721"}, {"caller_nid": "admin_support_slapolicies", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L722"}, {"caller_nid": "admin_support_slapolicies", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L731"}, {"caller_nid": "admin_support_slapolicies", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L732"}, {"caller_nid": "admin_support_slapolicies", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L733"}, {"caller_nid": "admin_support_slapolicies", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L738"}, {"caller_nid": "admin_support_trust", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L792"}, {"caller_nid": "admin_support_trust", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L793"}, {"caller_nid": "admin_support_trust", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L794"}, {"caller_nid": "admin_support_trust", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L807"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L813"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L814"}, {"caller_nid": "admin_support_trust", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L823"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L827"}, {"caller_nid": "admin_support_trust", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L832"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L864"}, {"caller_nid": "admin_support_trust", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L867"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L892"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L893"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L899"}, {"caller_nid": "admin_support_trust", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L902"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L915"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L916"}, {"caller_nid": "admin_support_trust", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L922"}, {"caller_nid": "admin_support_trust", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L925"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L945"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L946"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L947"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L948"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L950"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L956"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L984"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L989"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L990"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L997"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1005"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1012"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1015"}, {"caller_nid": "admin_support_callbacksqueue", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx", "source_location": "L1018"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "label": "support.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_support_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L25"
+    },
+    {
+      "id": "admin_support_tab",
+      "label": "Tab",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L47"
+    },
+    {
+      "id": "admin_support_ticketpatch",
+      "label": "TicketPatch",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L48"
+    },
+    {
+      "id": "admin_support_channelpatch",
+      "label": "ChannelPatch",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L56"
+    },
+    {
+      "id": "admin_support_priorities",
+      "label": "PRIORITIES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L65"
+    },
+    {
+      "id": "admin_support_statuses",
+      "label": "STATUSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L66"
+    },
+    {
+      "id": "admin_support_supportdesk",
+      "label": "SupportDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L75"
+    },
+    {
+      "id": "admin_support_ticket",
+      "label": "Ticket",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L168"
+    },
+    {
+      "id": "admin_support_tickets",
+      "label": "Tickets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L170"
+    },
+    {
+      "id": "admin_support_doc",
+      "label": "Doc",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L381"
+    },
+    {
+      "id": "admin_support_auditdata",
+      "label": "AuditData",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L382"
+    },
+    {
+      "id": "admin_support_knowledgebase",
+      "label": "KnowledgeBase()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L384"
+    },
+    {
+      "id": "admin_support_channelrow",
+      "label": "ChannelRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L547"
+    },
+    {
+      "id": "admin_support_channels",
+      "label": "Channels()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L549"
+    },
+    {
+      "id": "admin_support_policyrow",
+      "label": "PolicyRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L686"
+    },
+    {
+      "id": "admin_support_slapolicies",
+      "label": "SlaPolicies()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L688"
+    },
+    {
+      "id": "admin_support_trust",
+      "label": "Trust()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L791"
+    },
+    {
+      "id": "admin_support_callbacksqueue",
+      "label": "CallbacksQueue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L944"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_support_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_getcsatanalyticsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_listcallbacksfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportauditfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportchannelsavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportdeskfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportkbdeletefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportkbsavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportslasavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportticketcreatefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportticketeventsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_supportticketupdatefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_functions_updatecallbackstatusfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_sla_default_sla",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "lib_support_sla_priority",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_supportdeskui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_empty",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_pill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_sla_tone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_stat",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_minutes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_supportdeskui_ticketsla",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_tab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_ticketpatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_channelpatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_priorities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_statuses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_supportdesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_ticket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_tickets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_doc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L381",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_auditdata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L382",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_knowledgebase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L384",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_channelrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L547",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_channels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L549",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_policyrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L686",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_slapolicies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L688",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_trust",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L791",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_support_tsx",
+      "target": "admin_support_callbacksqueue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L944",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "minutes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "minutes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "admin_support_supportdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L305"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L355"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "admin_support_tickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L385"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L396"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L416"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L425"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L425"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L430"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L430"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L431"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L446"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L447"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L455"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L471"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L474"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L475"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L481"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L491"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L498"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L500"
+    },
+    {
+      "caller_nid": "admin_support_knowledgebase",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L503"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L551"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L552"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L561"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L571"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L571"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L576"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L577"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L600"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L609"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L610"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L616"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L617"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L624"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L625"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L634"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L638"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L643"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L645"
+    },
+    {
+      "caller_nid": "admin_support_channels",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L689"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L690"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L691"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L703"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L721"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L722"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L731"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L732"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L733"
+    },
+    {
+      "caller_nid": "admin_support_slapolicies",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L738"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L792"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L793"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L807"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L813"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L814"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L823"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L832"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L864"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L867"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L892"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L893"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L899"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L902"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L915"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L916"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L922"
+    },
+    {
+      "caller_nid": "admin_support_trust",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L925"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L945"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L946"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L947"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L948"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L950"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L956"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L984"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L989"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L990"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L997"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1005"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1012"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1015"
+    },
+    {
+      "caller_nid": "admin_support_callbacksqueue",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/support.tsx",
+      "source_location": "L1018"
+    }
+  ]
+}

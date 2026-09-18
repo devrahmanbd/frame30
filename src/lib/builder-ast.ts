@@ -15,17 +15,33 @@ import { PRESET_BN } from "./theme-presets.bn";
 import { biTextState, bnKey, readBiText, type Locale } from "./bitext";
 import { isTaxonomyValue, type TaxonomySource } from "./taxonomy";
 import { UNIT_KINDS, type UnitKind } from "./unit-format";
-import { VISIBILITY_OPS, type VisibilityRule, type VisibilityKind } from "./visibility";
+import {
+  VISIBILITY_OPS,
+  type VisibilityRule,
+  type VisibilityKind,
+} from "./visibility";
 import { hasFixedWidth, isUppercaseHostile, spanClass } from "./responsive";
 import { headingIssues } from "./seo-technical";
-import { DEFAULT_GLOBALS, globalsToCss, parseGlobals, type ThemeGlobals } from "./theme-globals";
-import { JSONLD_SINGLETONS, jsonLdIssues, sectionJsonLd } from "./structured-data";
-import { answerBlockIssues, authorIssues, localeParityIssues } from "./seo-answers";
+import {
+  DEFAULT_GLOBALS,
+  globalsToCss,
+  parseGlobals,
+  type ThemeGlobals,
+} from "./theme-globals";
+import {
+  JSONLD_SINGLETONS,
+  jsonLdIssues,
+  sectionJsonLd,
+} from "./structured-data";
+import {
+  answerBlockIssues,
+  authorIssues,
+  localeParityIssues,
+} from "./seo-answers";
 import { guardrailIssues } from "./builder-guardrails";
-
+import { isValidTimezone, DEFAULT_MERCHANT_TIMEZONE } from "./timezone";
 
 export type { Locale };
-
 
 export const TEMPLATE_KEYS = [
   "index",
@@ -48,7 +64,13 @@ export type TemplateKey = (typeof TEMPLATE_KEYS)[number];
  * both directions: these templates must NOT contain an h1-claiming widget, and
  * every other template must contain exactly one.
  */
-export const ROUTE_H1_TEMPLATES = ["product", "collection", "page", "blog", "search"] as const;
+export const ROUTE_H1_TEMPLATES = [
+  "product",
+  "collection",
+  "page",
+  "blog",
+  "search",
+] as const;
 const ROUTE_H1 = new Set<string>(ROUTE_H1_TEMPLATES);
 export function routeSuppliesH1(template?: TemplateKey | null): boolean {
   return !!template && ROUTE_H1.has(template);
@@ -236,7 +258,11 @@ export type Section = {
   ab?: { experiment: string; variant: string };
 };
 
-export type ThemeAst = { header: Section[]; main: Section[]; footer: Section[] };
+export type ThemeAst = {
+  header: Section[];
+  main: Section[];
+  footer: Section[];
+};
 export type ThemeTemplates = Partial<Record<TemplateKey, ThemeAst>>;
 
 export const EMPTY_AST: ThemeAst = { header: [], main: [], footer: [] };
@@ -321,8 +347,6 @@ export type CatalogEntry = {
   fields: Field[];
 };
 
-
-
 const text = (key: string, label: string, max = 200): Field => ({
   key,
   label,
@@ -337,7 +361,12 @@ const area = (key: string, label: string, max = 2000): Field => ({
   max,
   panel: "content",
 });
-const num = (key: string, label: string): Field => ({ key, label, kind: "number", panel: "layout" });
+const num = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "number",
+  panel: "layout",
+});
 const cols = (key: string, label: string): Field => ({
   key,
   label,
@@ -345,10 +374,32 @@ const cols = (key: string, label: string): Field => ({
   panel: "layout",
   responsive: true,
 });
-const url = (key: string, label: string): Field => ({ key, label, kind: "url", max: 500, panel: "content" });
-const embed = (key: string, label: string): Field => ({ key, label, kind: "embed", max: 500, panel: "content" });
-const bool = (key: string, label: string): Field => ({ key, label, kind: "boolean", panel: "layout" });
-const menu = (key: string, label: string): Field => ({ key, label, kind: "menu", panel: "content" });
+const url = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "url",
+  max: 500,
+  panel: "content",
+});
+const embed = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "embed",
+  max: 500,
+  panel: "content",
+});
+const bool = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "boolean",
+  panel: "layout",
+});
+const menu = (key: string, label: string): Field => ({
+  key,
+  label,
+  kind: "menu",
+  panel: "content",
+});
 
 /**
  * Phase 7.4: guides make claims, so they carry attribution. Shared so every
@@ -387,7 +438,6 @@ const CARD_VARIANT: Field = {
 };
 
 const ALIGN: Field = {
-
   key: "align",
   label: "Alignment",
   kind: "select",
@@ -399,7 +449,6 @@ const ALIGN: Field = {
   ],
 };
 
-
 const BASE_CATALOG: CatalogEntry[] = [
   {
     // AST v3 unlock: the only node type that owns a subtree.
@@ -409,11 +458,30 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main", "footer"],
     heading: false,
     container: true,
-    defaults: { columns: 1, gap: 24, padY: 0, maxW: "container", align: "left", bg: "none" },
+    defaults: {
+      columns: 1,
+      gap: 24,
+      padY: 0,
+      maxW: "container",
+      align: "left",
+      bg: "none",
+    },
     fields: [
       cols("columns", "Columns (1-4)"),
-      { key: "gap", label: "Gap in px (0-64)", kind: "number", panel: "layout", responsive: true },
-      { key: "padY", label: "Vertical padding in px (0-160)", kind: "number", panel: "style", responsive: true },
+      {
+        key: "gap",
+        label: "Gap in px (0-64)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
+      {
+        key: "padY",
+        label: "Vertical padding in px (0-160)",
+        kind: "number",
+        panel: "style",
+        responsive: true,
+      },
       {
         key: "maxW",
         label: "Width",
@@ -447,11 +515,30 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main", "footer"],
     heading: false,
     container: true,
-    defaults: { columns: 2, gap: 24, padY: 0, maxW: "container", align: "left", bg: "none" },
+    defaults: {
+      columns: 2,
+      gap: 24,
+      padY: 0,
+      maxW: "container",
+      align: "left",
+      bg: "none",
+    },
     fields: [
       cols("columns", "Columns (1-4)"),
-      { key: "gap", label: "Gap in px (0-64)", kind: "number", panel: "layout", responsive: true },
-      { key: "padY", label: "Vertical padding in px (0-160)", kind: "number", panel: "style", responsive: true },
+      {
+        key: "gap",
+        label: "Gap in px (0-64)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
+      {
+        key: "padY",
+        label: "Vertical padding in px (0-160)",
+        kind: "number",
+        panel: "style",
+        responsive: true,
+      },
       ALIGN,
     ],
   },
@@ -462,7 +549,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main", "footer"],
     heading: false,
     defaults: { label: "", padY: 24 },
-    fields: [text("label", "Label (optional)", 60), num("padY", "Vertical padding in px (0-96)")],
+    fields: [
+      text("label", "Label (optional)", 60),
+      num("padY", "Vertical padding in px (0-96)"),
+    ],
   },
   {
     type: "hero",
@@ -504,7 +594,15 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: { text: "Section heading", level: "h2", align: "left" },
     fields: [
       text("text", "Text"),
-      { key: "level", label: "Level", kind: "select", options: [{ value: "h2", label: "H2" }, { value: "h3", label: "H3" }] },
+      {
+        key: "level",
+        label: "Level",
+        kind: "select",
+        options: [
+          { value: "h2", label: "H2" },
+          { value: "h3", label: "H3" },
+        ],
+      },
       ALIGN,
     ],
   },
@@ -528,7 +626,16 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("src", "Image URL"),
       text("alt", "Alt text (required for accessibility)", 160),
       text("caption", "Caption", 160),
-      { key: "ratio", label: "Aspect ratio", kind: "select", options: [{ value: "16/9", label: "16:9" }, { value: "4/3", label: "4:3" }, { value: "1/1", label: "Square" }] },
+      {
+        key: "ratio",
+        label: "Aspect ratio",
+        kind: "select",
+        options: [
+          { value: "16/9", label: "16:9" },
+          { value: "4/3", label: "4:3" },
+          { value: "1/1", label: "Square" },
+        ],
+      },
     ],
   },
   {
@@ -538,7 +645,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     defaults: { src: "", title: "" },
-    fields: [embed("src", "Embed URL (YouTube / Vimeo)"), text("title", "Accessible title", 120)],
+    fields: [
+      embed("src", "Embed URL (YouTube / Vimeo)"),
+      text("title", "Accessible title", 120),
+    ],
   },
   {
     type: "product_grid",
@@ -546,7 +656,15 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "Products", limit: 12, columns: 4, cardVariant: "standard", density: "comfortable", showRating: false, promise: "" },
+    defaults: {
+      heading: "Products",
+      limit: 12,
+      columns: 4,
+      cardVariant: "standard",
+      density: "comfortable",
+      showRating: false,
+      promise: "",
+    },
     fields: [
       text("heading", "Heading"),
       num("limit", "Max products"),
@@ -563,7 +681,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "Collections", limit: 8, columns: 4, cardVariant: "standard", showCount: true },
+    defaults: {
+      heading: "Collections",
+      limit: 8,
+      columns: 4,
+      cardVariant: "standard",
+      showCount: true,
+    },
     fields: [
       text("heading", "Heading"),
       num("limit", "Max collections"),
@@ -581,7 +705,16 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: { text: "Free delivery over BDT 2,000", tone: "info" },
     fields: [
       text("text", "Message"),
-      { key: "tone", label: "Tone", kind: "select", options: [{ value: "info", label: "Info" }, { value: "warn", label: "Warning" }, { value: "success", label: "Success" }] },
+      {
+        key: "tone",
+        label: "Tone",
+        kind: "select",
+        options: [
+          { value: "info", label: "Info" },
+          { value: "warn", label: "Warning" },
+          { value: "success", label: "Success" },
+        ],
+      },
     ],
   },
   {
@@ -590,8 +723,16 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "layout",
     slots: ["main", "footer"],
     heading: false,
-    defaults: { itemOne: "Cash on delivery", itemTwo: "Mobile payments", itemThree: "Nationwide shipping" },
-    fields: [text("itemOne", "Item 1", 80), text("itemTwo", "Item 2", 80), text("itemThree", "Item 3", 80)],
+    defaults: {
+      itemOne: "Cash on delivery",
+      itemTwo: "Mobile payments",
+      itemThree: "Nationwide shipping",
+    },
+    fields: [
+      text("itemOne", "Item 1", 80),
+      text("itemTwo", "Item 2", 80),
+      text("itemThree", "Item 3", 80),
+    ],
   },
   {
     type: "testimonial",
@@ -599,7 +740,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "engagement",
     slots: ["main"],
     heading: false,
-    defaults: { quote: "Great products and fast delivery.", author: "A happy customer" },
+    defaults: {
+      quote: "Great products and fast delivery.",
+      author: "A happy customer",
+    },
     fields: [area("quote", "Quote", 400), text("author", "Author", 80)],
   },
   {
@@ -608,12 +752,23 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "engagement",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "Frequently asked", q1: "", a1: "", q2: "", a2: "", q3: "", a3: "" },
+    defaults: {
+      heading: "Frequently asked",
+      q1: "",
+      a1: "",
+      q2: "",
+      a2: "",
+      q3: "",
+      a3: "",
+    },
     fields: [
       text("heading", "Heading"),
-      text("q1", "Question 1"), area("a1", "Answer 1", 600),
-      text("q2", "Question 2"), area("a2", "Answer 2", 600),
-      text("q3", "Question 3"), area("a3", "Answer 3", 600),
+      text("q1", "Question 1"),
+      area("a1", "Answer 1", 600),
+      text("q2", "Question 2"),
+      area("a2", "Answer 2", 600),
+      text("q3", "Question 3"),
+      area("a3", "Answer 3", 600),
     ],
   },
   {
@@ -623,7 +778,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main"],
     heading: false,
     defaults: { label: "Offer ends in", endsAt: "" },
-    fields: [text("label", "Label", 80), text("endsAt", "Ends at (ISO date-time)", 40)],
+    fields: [
+      text("label", "Label", 80),
+      text("endsAt", "Ends at (ISO date-time)", 40),
+    ],
   },
   {
     type: "marquee",
@@ -632,8 +790,16 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main"],
     heading: false,
     // Phase 2.6 [U]: pause on hover, and a static fallback under reduced motion.
-    defaults: { text: "New arrivals every week", speed: 30, pauseOnHover: true },
-    fields: [text("text", "Text"), num("speed", "Seconds per loop"), bool("pauseOnHover", "Pause on hover")],
+    defaults: {
+      text: "New arrivals every week",
+      speed: 30,
+      pauseOnHover: true,
+    },
+    fields: [
+      text("text", "Text"),
+      num("speed", "Seconds per loop"),
+      bool("pauseOnHover", "Pause on hover"),
+    ],
   },
   {
     type: "newsletter",
@@ -641,8 +807,18 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "engagement",
     slots: ["main", "footer"],
     heading: false,
-    defaults: { heading: "Stay in touch", body: "Get offers by email. Unsubscribe any time.", buttonLabel: "Subscribe", consentText: "" },
-    fields: [text("heading", "Heading"), area("body", "Body", 300), text("buttonLabel", "Button label", 40), text("consentText", "Consent line", 200)],
+    defaults: {
+      heading: "Stay in touch",
+      body: "Get offers by email. Unsubscribe any time.",
+      buttonLabel: "Subscribe",
+      consentText: "",
+    },
+    fields: [
+      text("heading", "Heading"),
+      area("body", "Body", 300),
+      text("buttonLabel", "Button label", 40),
+      text("consentText", "Consent line", 200),
+    ],
   },
   {
     type: "spacer",
@@ -664,7 +840,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       area("body", "Plain text — markup and scripts are stripped", 2000),
       {
         key: "markup",
-        label: "HTML — rendered inside a sandboxed frame (no cookies, no page access)",
+        label:
+          "HTML — rendered inside a sandboxed frame (no cookies, no page access)",
         kind: "html",
         max: 8000,
         panel: "advanced",
@@ -745,7 +922,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     templates: ["product", "cart"],
     defaults: { showCompareAt: true, note: "" },
-    fields: [bool("showCompareAt", "Show compare-at price"), text("note", "Note under price", 120)],
+    fields: [
+      bool("showCompareAt", "Show compare-at price"),
+      text("note", "Note under price", 120),
+    ],
   },
   {
     type: "add_to_cart",
@@ -755,7 +935,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     templates: ["product"],
     defaults: { label: "Add to cart", showQuantity: true },
-    fields: [text("label", "Button label", 40), bool("showQuantity", "Show quantity picker")],
+    fields: [
+      text("label", "Button label", 40),
+      bool("showQuantity", "Show quantity picker"),
+    ],
   },
   {
     type: "product_meta",
@@ -834,14 +1017,20 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     defaults: {
-      t1Label: "Overview", t1Body: "",
-      t2Label: "Details", t2Body: "",
-      t3Label: "", t3Body: "",
+      t1Label: "Overview",
+      t1Body: "",
+      t2Label: "Details",
+      t2Body: "",
+      t3Label: "",
+      t3Body: "",
     },
     fields: [
-      text("t1Label", "Tab 1 label", 60), area("t1Body", "Tab 1 body", 1200),
-      text("t2Label", "Tab 2 label", 60), area("t2Body", "Tab 2 body", 1200),
-      text("t3Label", "Tab 3 label", 60), area("t3Body", "Tab 3 body", 1200),
+      text("t1Label", "Tab 1 label", 60),
+      area("t1Body", "Tab 1 body", 1200),
+      text("t2Label", "Tab 2 label", 60),
+      area("t2Body", "Tab 2 body", 1200),
+      text("t3Label", "Tab 3 label", 60),
+      area("t3Body", "Tab 3 body", 1200),
     ],
   },
   {
@@ -853,16 +1042,22 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "",
-      i1Title: "", i1Body: "",
-      i2Title: "", i2Body: "",
-      i3Title: "", i3Body: "",
+      i1Title: "",
+      i1Body: "",
+      i2Title: "",
+      i2Body: "",
+      i3Title: "",
+      i3Body: "",
       openFirst: false,
     },
     fields: [
       text("heading", "Heading"),
-      text("i1Title", "Item 1 title"), area("i1Body", "Item 1 body", 1200),
-      text("i2Title", "Item 2 title"), area("i2Body", "Item 2 body", 1200),
-      text("i3Title", "Item 3 title"), area("i3Body", "Item 3 body", 1200),
+      text("i1Title", "Item 1 title"),
+      area("i1Body", "Item 1 body", 1200),
+      text("i2Title", "Item 2 title"),
+      area("i2Body", "Item 2 body", 1200),
+      text("i3Title", "Item 3 title"),
+      area("i3Body", "Item 3 body", 1200),
       bool("openFirst", "Open the first item by default"),
     ],
   },
@@ -872,7 +1067,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "engagement",
     slots: ["header", "footer"],
     heading: false,
-    defaults: { text: "Free delivery over BDT 2,000", ctaLabel: "", ctaHref: "", position: "bottom" },
+    defaults: {
+      text: "Free delivery over BDT 2,000",
+      ctaLabel: "",
+      ctaHref: "",
+      position: "bottom",
+    },
     fields: [
       text("text", "Message"),
       text("ctaLabel", "Button label", 40),
@@ -903,24 +1103,48 @@ const BASE_CATALOG: CatalogEntry[] = [
       columnLabel: "This product",
       grouped: true,
       handle: "",
-      r1Group: "", r1Label: "", r1Value: "",
-      r2Group: "", r2Label: "", r2Value: "",
-      r3Group: "", r3Label: "", r3Value: "",
-      r4Group: "", r4Label: "", r4Value: "",
-      r5Group: "", r5Label: "", r5Value: "",
-      r6Group: "", r6Label: "", r6Value: "",
+      r1Group: "",
+      r1Label: "",
+      r1Value: "",
+      r2Group: "",
+      r2Label: "",
+      r2Value: "",
+      r3Group: "",
+      r3Label: "",
+      r3Value: "",
+      r4Group: "",
+      r4Label: "",
+      r4Value: "",
+      r5Group: "",
+      r5Label: "",
+      r5Value: "",
+      r6Group: "",
+      r6Label: "",
+      r6Value: "",
     },
     fields: [
       text("caption", "Caption", 160),
       text("columnLabel", "Column heading", 80),
       bool("grouped", "Collapsible groups"),
       text("handle", "Product handle", 120),
-      text("r1Group", "Row 1 group", 60), text("r1Label", "Row 1 label", 80), text("r1Value", "Row 1 value", 160),
-      text("r2Group", "Row 2 group", 60), text("r2Label", "Row 2 label", 80), text("r2Value", "Row 2 value", 160),
-      text("r3Group", "Row 3 group", 60), text("r3Label", "Row 3 label", 80), text("r3Value", "Row 3 value", 160),
-      text("r4Group", "Row 4 group", 60), text("r4Label", "Row 4 label", 80), text("r4Value", "Row 4 value", 160),
-      text("r5Group", "Row 5 group", 60), text("r5Label", "Row 5 label", 80), text("r5Value", "Row 5 value", 160),
-      text("r6Group", "Row 6 group", 60), text("r6Label", "Row 6 label", 80), text("r6Value", "Row 6 value", 160),
+      text("r1Group", "Row 1 group", 60),
+      text("r1Label", "Row 1 label", 80),
+      text("r1Value", "Row 1 value", 160),
+      text("r2Group", "Row 2 group", 60),
+      text("r2Label", "Row 2 label", 80),
+      text("r2Value", "Row 2 value", 160),
+      text("r3Group", "Row 3 group", 60),
+      text("r3Label", "Row 3 label", 80),
+      text("r3Value", "Row 3 value", 160),
+      text("r4Group", "Row 4 group", 60),
+      text("r4Label", "Row 4 label", 80),
+      text("r4Value", "Row 4 value", 160),
+      text("r5Group", "Row 5 group", 60),
+      text("r5Label", "Row 5 label", 80),
+      text("r5Value", "Row 5 value", 160),
+      text("r6Group", "Row 6 group", 60),
+      text("r6Label", "Row 6 label", 80),
+      text("r6Value", "Row 6 value", 160),
     ],
   },
   {
@@ -934,21 +1158,36 @@ const BASE_CATALOG: CatalogEntry[] = [
       heading: "Find your match",
       resultBase: "/",
       resultLabel: "See my matches",
-      q1Key: "", q1Label: "", q1Choices: "", q1Multiple: false,
-      q2Key: "", q2Label: "", q2Choices: "", q2Multiple: false,
-      q3Key: "", q3Label: "", q3Choices: "", q3Multiple: false,
+      q1Key: "",
+      q1Label: "",
+      q1Choices: "",
+      q1Multiple: false,
+      q2Key: "",
+      q2Label: "",
+      q2Choices: "",
+      q2Multiple: false,
+      q3Key: "",
+      q3Label: "",
+      q3Choices: "",
+      q3Multiple: false,
       consentText: "",
     },
     fields: [
       text("heading", "Heading"),
       url("resultBase", "Result URL base"),
       text("resultLabel", "Result button label", 60),
-      text("q1Key", "Step 1 filter key", 40), text("q1Label", "Step 1 question"),
-      text("q1Choices", "Step 1 choices (comma separated)", 300), bool("q1Multiple", "Step 1 allows multiple"),
-      text("q2Key", "Step 2 filter key", 40), text("q2Label", "Step 2 question"),
-      text("q2Choices", "Step 2 choices (comma separated)", 300), bool("q2Multiple", "Step 2 allows multiple"),
-      text("q3Key", "Step 3 filter key", 40), text("q3Label", "Step 3 question"),
-      text("q3Choices", "Step 3 choices (comma separated)", 300), bool("q3Multiple", "Step 3 allows multiple"),
+      text("q1Key", "Step 1 filter key", 40),
+      text("q1Label", "Step 1 question"),
+      text("q1Choices", "Step 1 choices (comma separated)", 300),
+      bool("q1Multiple", "Step 1 allows multiple"),
+      text("q2Key", "Step 2 filter key", 40),
+      text("q2Label", "Step 2 question"),
+      text("q2Choices", "Step 2 choices (comma separated)", 300),
+      bool("q2Multiple", "Step 2 allows multiple"),
+      text("q3Key", "Step 3 filter key", 40),
+      text("q3Label", "Step 3 question"),
+      text("q3Choices", "Step 3 choices (comma separated)", 300),
+      bool("q3Multiple", "Step 3 allows multiple"),
       text("consentText", "Consent line", 200),
     ],
   },
@@ -960,7 +1199,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main", "footer"],
     heading: false,
     defaults: { heading: "Recently viewed", limit: 6, showClear: true },
-    fields: [text("heading", "Heading"), num("limit", "Max items (1-12)"), bool("showClear", "Show clear button")],
+    fields: [
+      text("heading", "Heading"),
+      num("limit", "Max items (1-12)"),
+      bool("showClear", "Show clear button"),
+    ],
   },
   {
     // Consumes the overlay host: focus trap, scroll lock, Escape, focus restore.
@@ -970,7 +1213,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     defaults: { heading: "Quick view", buttonLabel: "Quick view", limit: 6 },
-    fields: [text("heading", "Heading"), text("buttonLabel", "Button label", 40), num("limit", "Max products")],
+    fields: [
+      text("heading", "Heading"),
+      text("buttonLabel", "Button label", 40),
+      num("limit", "Max products"),
+    ],
   },
   {
     // Bundle/total contract: the item set posts to the server and the widget
@@ -983,18 +1230,26 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "Build your bundle",
       buttonLabel: "Calculate total",
-      i1Label: "", i1VariantId: "",
-      i2Label: "", i2VariantId: "",
-      i3Label: "", i3VariantId: "",
-      i4Label: "", i4VariantId: "",
+      i1Label: "",
+      i1VariantId: "",
+      i2Label: "",
+      i2VariantId: "",
+      i3Label: "",
+      i3VariantId: "",
+      i4Label: "",
+      i4VariantId: "",
     },
     fields: [
       text("heading", "Heading"),
       text("buttonLabel", "Button label", 40),
-      text("i1Label", "Item 1 label"), text("i1VariantId", "Item 1 variant id", 60),
-      text("i2Label", "Item 2 label"), text("i2VariantId", "Item 2 variant id", 60),
-      text("i3Label", "Item 3 label"), text("i3VariantId", "Item 3 variant id", 60),
-      text("i4Label", "Item 4 label"), text("i4VariantId", "Item 4 variant id", 60),
+      text("i1Label", "Item 1 label"),
+      text("i1VariantId", "Item 1 variant id", 60),
+      text("i2Label", "Item 2 label"),
+      text("i2VariantId", "Item 2 variant id", 60),
+      text("i3Label", "Item 3 label"),
+      text("i3VariantId", "Item 3 variant id", 60),
+      text("i4Label", "Item 4 label"),
+      text("i4VariantId", "Item 4 variant id", 60),
     ],
   },
 
@@ -1005,7 +1260,14 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "engagement",
     slots: ["header", "footer"],
     heading: false,
-    defaults: { m1: "Free delivery over BDT 2,000", m2: "", m3: "", href: "", dismissible: true, rotateMs: 6000 },
+    defaults: {
+      m1: "Free delivery over BDT 2,000",
+      m2: "",
+      m3: "",
+      href: "",
+      dismissible: true,
+      rotateMs: 6000,
+    },
     fields: [
       text("m1", "Message 1", 160),
       text("m2", "Message 2", 160),
@@ -1023,16 +1285,22 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       note: "",
-      l1Label: "", l1Href: "",
-      l2Label: "", l2Href: "",
-      l3Label: "", l3Href: "",
+      l1Label: "",
+      l1Href: "",
+      l2Label: "",
+      l2Href: "",
+      l3Label: "",
+      l3Href: "",
       showLanguage: true,
     },
     fields: [
       text("note", "Note", 120),
-      text("l1Label", "Link 1 label", 40), url("l1Href", "Link 1 URL"),
-      text("l2Label", "Link 2 label", 40), url("l2Href", "Link 2 URL"),
-      text("l3Label", "Link 3 label", 40), url("l3Href", "Link 3 URL"),
+      text("l1Label", "Link 1 label", 40),
+      url("l1Href", "Link 1 URL"),
+      text("l2Label", "Link 2 label", 40),
+      url("l2Href", "Link 2 URL"),
+      text("l3Label", "Link 3 label", 40),
+      url("l3Href", "Link 3 URL"),
       bool("showLanguage", "Show language toggle"),
     ],
   },
@@ -1043,16 +1311,32 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main", "footer"],
     heading: false,
     defaults: {
-      i1Icon: "delivery", i1Title: "Fast delivery", i1Body: "",
-      i2Icon: "returns", i2Title: "Easy returns", i2Body: "",
-      i3Icon: "secure", i3Title: "Secure payment", i3Body: "",
-      i4Icon: "support", i4Title: "", i4Body: "",
+      i1Icon: "delivery",
+      i1Title: "Fast delivery",
+      i1Body: "",
+      i2Icon: "returns",
+      i2Title: "Easy returns",
+      i2Body: "",
+      i3Icon: "secure",
+      i3Title: "Secure payment",
+      i3Body: "",
+      i4Icon: "support",
+      i4Title: "",
+      i4Body: "",
     },
     fields: [
-      text("i1Icon", "Item 1 icon key", 20), text("i1Title", "Item 1 title"), text("i1Body", "Item 1 body", 120),
-      text("i2Icon", "Item 2 icon key", 20), text("i2Title", "Item 2 title"), text("i2Body", "Item 2 body", 120),
-      text("i3Icon", "Item 3 icon key", 20), text("i3Title", "Item 3 title"), text("i3Body", "Item 3 body", 120),
-      text("i4Icon", "Item 4 icon key", 20), text("i4Title", "Item 4 title"), text("i4Body", "Item 4 body", 120),
+      text("i1Icon", "Item 1 icon key", 20),
+      text("i1Title", "Item 1 title"),
+      text("i1Body", "Item 1 body", 120),
+      text("i2Icon", "Item 2 icon key", 20),
+      text("i2Title", "Item 2 title"),
+      text("i2Body", "Item 2 body", 120),
+      text("i3Icon", "Item 3 icon key", 20),
+      text("i3Title", "Item 3 title"),
+      text("i3Body", "Item 3 body", 120),
+      text("i4Icon", "Item 4 icon key", 20),
+      text("i4Title", "Item 4 title"),
+      text("i4Body", "Item 4 body", 120),
     ],
   },
   {
@@ -1061,8 +1345,14 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["footer", "main"],
     heading: false,
-    defaults: { heading: "We accept", marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery" },
-    fields: [text("heading", "Heading"), area("marks", "Marks (comma separated)", 300)],
+    defaults: {
+      heading: "We accept",
+      marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+    },
+    fields: [
+      text("heading", "Heading"),
+      area("marks", "Marks (comma separated)", 300),
+    ],
   },
   {
     type: "notice",
@@ -1096,7 +1386,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header"],
     heading: false,
     defaults: { label: "Shop", limit: 8, columns: 4 },
-    fields: [text("label", "Trigger label", 40), num("limit", "Max top-level entries"), cols("columns", "Columns (1-4)")],
+    fields: [
+      text("label", "Trigger label", 40),
+      num("limit", "Max top-level entries"),
+      cols("columns", "Columns (1-4)"),
+    ],
   },
   {
     type: "department_strip",
@@ -1114,16 +1408,24 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["footer"],
     heading: false,
     defaults: {
-      c1Title: "Shop", c1Links: "New in|/, Best sellers|/",
-      c2Title: "Help", c2Links: "Contact|/, Shipping|/",
-      c3Title: "About", c3Links: "",
-      c4Title: "", c4Links: "",
+      c1Title: "Shop",
+      c1Links: "New in|/, Best sellers|/",
+      c2Title: "Help",
+      c2Links: "Contact|/, Shipping|/",
+      c3Title: "About",
+      c3Links: "",
+      c4Title: "",
+      c4Links: "",
     },
     fields: [
-      text("c1Title", "Column 1 title", 40), area("c1Links", "Column 1 links (Label|/href, …)", 600),
-      text("c2Title", "Column 2 title", 40), area("c2Links", "Column 2 links (Label|/href, …)", 600),
-      text("c3Title", "Column 3 title", 40), area("c3Links", "Column 3 links (Label|/href, …)", 600),
-      text("c4Title", "Column 4 title", 40), area("c4Links", "Column 4 links (Label|/href, …)", 600),
+      text("c1Title", "Column 1 title", 40),
+      area("c1Links", "Column 1 links (Label|/href, …)", 600),
+      text("c2Title", "Column 2 title", 40),
+      area("c2Links", "Column 2 links (Label|/href, …)", 600),
+      text("c3Title", "Column 3 title", 40),
+      area("c3Links", "Column 3 links (Label|/href, …)", 600),
+      text("c4Title", "Column 4 title", 40),
+      area("c4Links", "Column 4 links (Label|/href, …)", 600),
     ],
   },
   {
@@ -1133,7 +1435,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["header"],
     heading: false,
-    defaults: { placeholder: "Search products", buttonLabel: "Search", limit: 6 },
+    defaults: {
+      placeholder: "Search products",
+      buttonLabel: "Search",
+      limit: 6,
+    },
     fields: [
       text("placeholder", "Placeholder", 60),
       text("buttonLabel", "Button label", 40),
@@ -1195,7 +1501,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "Deal of the day", badgeLabel: "Save", endsAt: "", ctaLabel: "Shop now", ctaHref: "" },
+    defaults: {
+      heading: "Deal of the day",
+      badgeLabel: "Save",
+      endsAt: "",
+      ctaLabel: "Shop now",
+      ctaHref: "",
+    },
     fields: [
       text("heading", "Heading"),
       text("badgeLabel", "Save badge label", 24),
@@ -1210,7 +1522,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    defaults: { heading: "Today's deals", limit: 8, collection: "", badgeLabel: "Save", cardVariant: "compact" },
+    defaults: {
+      heading: "Today's deals",
+      limit: 8,
+      collection: "",
+      badgeLabel: "Save",
+      cardVariant: "compact",
+    },
     fields: [
       text("heading", "Heading"),
       text("badgeLabel", "Save badge label", 24),
@@ -1232,7 +1550,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main", "footer"],
     heading: false,
-    defaults: { heading: "Shop by brand", limit: 12, columns: 4, kind: "brand" },
+    defaults: {
+      heading: "Shop by brand",
+      limit: 12,
+      columns: 4,
+      kind: "brand",
+    },
     fields: [text("heading", "Heading"), cols("columns", "Columns (2-4)")],
   },
   {
@@ -1309,7 +1632,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", heading: "Choose an option", mode: "chip", axisOneLabel: "", axisTwoLabel: "" },
+    defaults: {
+      handle: "",
+      heading: "Choose an option",
+      mode: "chip",
+      axisOneLabel: "",
+      axisTwoLabel: "",
+    },
     fields: [
       text("handle", "Product handle", 120),
       text("heading", "Heading", 80),
@@ -1362,7 +1691,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", lowStockAt: 5, cutOff: "Order before 4pm for same-day dispatch" },
+    defaults: {
+      handle: "",
+      lowStockAt: 5,
+      cutOff: "Order before 4pm for same-day dispatch",
+    },
     fields: [
       text("handle", "Product handle", 120),
       num("lowStockAt", "Low-stock threshold"),
@@ -1376,7 +1709,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", heading: "Customer ratings", showHistogram: true, verifiedOnly: false },
+    defaults: {
+      handle: "",
+      heading: "Customer ratings",
+      showHistogram: true,
+      verifiedOnly: false,
+    },
     fields: [
       text("handle", "Product handle", 120),
       text("heading", "Heading", 80),
@@ -1391,7 +1729,14 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", heading: "Reviews", limit: 6, sort: "recent", verifiedOnly: false, emptyText: "No reviews yet." },
+    defaults: {
+      handle: "",
+      heading: "Reviews",
+      limit: 6,
+      sort: "recent",
+      verifiedOnly: false,
+      emptyText: "No reviews yet.",
+    },
     fields: [
       text("handle", "Product handle", 120),
       text("heading", "Heading", 80),
@@ -1476,7 +1821,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main", "footer"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", label: "Add to cart", showPrice: true, dockAfter: 320 },
+    defaults: {
+      handle: "",
+      label: "Add to cart",
+      showPrice: true,
+      dockAfter: 320,
+    },
     fields: [
       text("handle", "Product handle", 120),
       text("label", "Button label", 40),
@@ -1723,7 +2073,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: true,
     templates: ["checkout", "cart"],
-    defaults: { heading: "Payment method", note: "", emptyText: "No payment method is available right now." },
+    defaults: {
+      heading: "Payment method",
+      note: "",
+      emptyText: "No payment method is available right now.",
+    },
     fields: [
       text("heading", "Heading"),
       area("note", "Note", 200),
@@ -1818,18 +2172,34 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Lookbook",
-      i1Image: "", i1Alt: "", i1Href: "",
-      i2Image: "", i2Alt: "", i2Href: "",
-      i3Image: "", i3Alt: "", i3Href: "",
-      i4Image: "", i4Alt: "", i4Href: "",
+      i1Image: "",
+      i1Alt: "",
+      i1Href: "",
+      i2Image: "",
+      i2Alt: "",
+      i2Href: "",
+      i3Image: "",
+      i3Alt: "",
+      i3Href: "",
+      i4Image: "",
+      i4Alt: "",
+      i4Href: "",
       offset: true,
     },
     fields: [
       text("heading", "Heading", 80),
-      url("i1Image", "Image 1"), text("i1Alt", "Image 1 alt", 120), url("i1Href", "Image 1 link"),
-      url("i2Image", "Image 2"), text("i2Alt", "Image 2 alt", 120), url("i2Href", "Image 2 link"),
-      url("i3Image", "Image 3"), text("i3Alt", "Image 3 alt", 120), url("i3Href", "Image 3 link"),
-      url("i4Image", "Image 4"), text("i4Alt", "Image 4 alt", 120), url("i4Href", "Image 4 link"),
+      url("i1Image", "Image 1"),
+      text("i1Alt", "Image 1 alt", 120),
+      url("i1Href", "Image 1 link"),
+      url("i2Image", "Image 2"),
+      text("i2Alt", "Image 2 alt", 120),
+      url("i2Href", "Image 2 link"),
+      url("i3Image", "Image 3"),
+      text("i3Alt", "Image 3 alt", 120),
+      url("i3Href", "Image 3 link"),
+      url("i4Image", "Image 4"),
+      text("i4Alt", "Image 4 alt", 120),
+      url("i4Href", "Image 4 link"),
       bool("offset", "Offset alignment"),
     ],
   },
@@ -1845,10 +2215,14 @@ const BASE_CATALOG: CatalogEntry[] = [
       altText: "",
       limit: 4,
       collection: "",
-      p1x: 25, p1y: 30,
-      p2x: 60, p2y: 45,
-      p3x: 40, p3y: 70,
-      p4x: 75, p4y: 80,
+      p1x: 25,
+      p1y: 30,
+      p2x: 60,
+      p2y: 45,
+      p3x: 40,
+      p3y: 70,
+      p4x: 75,
+      p4y: 80,
     },
     fields: [
       text("heading", "Heading", 80),
@@ -1856,10 +2230,14 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("altText", "Image alt", 160),
       num("limit", "Max pins (1-4)"),
       text("collection", "Collection handle", 120),
-      num("p1x", "Pin 1 X %"), num("p1y", "Pin 1 Y %"),
-      num("p2x", "Pin 2 X %"), num("p2y", "Pin 2 Y %"),
-      num("p3x", "Pin 3 X %"), num("p3y", "Pin 3 Y %"),
-      num("p4x", "Pin 4 X %"), num("p4y", "Pin 4 Y %"),
+      num("p1x", "Pin 1 X %"),
+      num("p1y", "Pin 1 Y %"),
+      num("p2x", "Pin 2 X %"),
+      num("p2y", "Pin 2 Y %"),
+      num("p3x", "Pin 3 X %"),
+      num("p3y", "Pin 3 Y %"),
+      num("p4x", "Pin 4 X %"),
+      num("p4y", "Pin 4 Y %"),
     ],
   },
   {
@@ -1937,13 +2315,22 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "@yourstore",
       href: "",
-      i1Image: "", i2Image: "", i3Image: "", i4Image: "", i5Image: "", i6Image: "",
+      i1Image: "",
+      i2Image: "",
+      i3Image: "",
+      i4Image: "",
+      i5Image: "",
+      i6Image: "",
     },
     fields: [
       text("heading", "Heading", 60),
       url("href", "Profile link"),
-      url("i1Image", "Image 1"), url("i2Image", "Image 2"), url("i3Image", "Image 3"),
-      url("i4Image", "Image 4"), url("i5Image", "Image 5"), url("i6Image", "Image 6"),
+      url("i1Image", "Image 1"),
+      url("i2Image", "Image 2"),
+      url("i3Image", "Image 3"),
+      url("i4Image", "Image 4"),
+      url("i5Image", "Image 5"),
+      url("i6Image", "Image 6"),
     ],
   },
   {
@@ -1954,15 +2341,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Visit us",
-      s1Name: "", s1Address: "", s1Hours: "", s1Phone: "",
-      s2Name: "", s2Address: "", s2Hours: "", s2Phone: "",
-      s3Name: "", s3Address: "", s3Hours: "", s3Phone: "",
+      s1Name: "",
+      s1Address: "",
+      s1Hours: "",
+      s1Phone: "",
+      s2Name: "",
+      s2Address: "",
+      s2Hours: "",
+      s2Phone: "",
+      s3Name: "",
+      s3Address: "",
+      s3Hours: "",
+      s3Phone: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      text("s1Name", "Store 1 name", 80), area("s1Address", "Store 1 address", 300), text("s1Hours", "Store 1 hours", 120), text("s1Phone", "Store 1 phone", 40),
-      text("s2Name", "Store 2 name", 80), area("s2Address", "Store 2 address", 300), text("s2Hours", "Store 2 hours", 120), text("s2Phone", "Store 2 phone", 40),
-      text("s3Name", "Store 3 name", 80), area("s3Address", "Store 3 address", 300), text("s3Hours", "Store 3 hours", 120), text("s3Phone", "Store 3 phone", 40),
+      text("s1Name", "Store 1 name", 80),
+      area("s1Address", "Store 1 address", 300),
+      text("s1Hours", "Store 1 hours", 120),
+      text("s1Phone", "Store 1 phone", 40),
+      text("s2Name", "Store 2 name", 80),
+      area("s2Address", "Store 2 address", 300),
+      text("s2Hours", "Store 2 hours", 120),
+      text("s2Phone", "Store 2 phone", 40),
+      text("s3Name", "Store 3 name", 80),
+      area("s3Address", "Store 3 address", 300),
+      text("s3Hours", "Store 3 hours", 120),
+      text("s3Phone", "Store 3 phone", 40),
     ],
   },
   {
@@ -1972,7 +2377,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { handle: "", heading: "Size", notifyLabel: "Notify me", guideLabel: "Size guide" },
+    defaults: {
+      handle: "",
+      heading: "Size",
+      notifyLabel: "Notify me",
+      guideLabel: "Size guide",
+    },
     fields: [
       text("handle", "Product handle", 120),
       text("heading", "Heading", 60),
@@ -1994,10 +2404,22 @@ const BASE_CATALOG: CatalogEntry[] = [
       c1Label: "Chest",
       c2Label: "Waist",
       c3Label: "Length",
-      r1Label: "S", r1c1: 0, r1c2: 0, r1c3: 0,
-      r2Label: "M", r2c1: 0, r2c2: 0, r2c3: 0,
-      r3Label: "L", r3c1: 0, r3c2: 0, r3c3: 0,
-      r4Label: "XL", r4c1: 0, r4c2: 0, r4c3: 0,
+      r1Label: "S",
+      r1c1: 0,
+      r1c2: 0,
+      r1c3: 0,
+      r2Label: "M",
+      r2c1: 0,
+      r2c2: 0,
+      r2c3: 0,
+      r3Label: "L",
+      r3c1: 0,
+      r3c2: 0,
+      r3c3: 0,
+      r4Label: "XL",
+      r4c1: 0,
+      r4c2: 0,
+      r4c3: 0,
       note: "",
     },
     fields: [
@@ -2016,10 +2438,22 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("c1Label", "Measurement 1", 40),
       text("c2Label", "Measurement 2", 40),
       text("c3Label", "Measurement 3", 40),
-      text("r1Label", "Size 1", 20), num("r1c1", "Size 1 · m1 (cm)"), num("r1c2", "Size 1 · m2 (cm)"), num("r1c3", "Size 1 · m3 (cm)"),
-      text("r2Label", "Size 2", 20), num("r2c1", "Size 2 · m1 (cm)"), num("r2c2", "Size 2 · m2 (cm)"), num("r2c3", "Size 2 · m3 (cm)"),
-      text("r3Label", "Size 3", 20), num("r3c1", "Size 3 · m1 (cm)"), num("r3c2", "Size 3 · m2 (cm)"), num("r3c3", "Size 3 · m3 (cm)"),
-      text("r4Label", "Size 4", 20), num("r4c1", "Size 4 · m1 (cm)"), num("r4c2", "Size 4 · m2 (cm)"), num("r4c3", "Size 4 · m3 (cm)"),
+      text("r1Label", "Size 1", 20),
+      num("r1c1", "Size 1 · m1 (cm)"),
+      num("r1c2", "Size 1 · m2 (cm)"),
+      num("r1c3", "Size 1 · m3 (cm)"),
+      text("r2Label", "Size 2", 20),
+      num("r2c1", "Size 2 · m1 (cm)"),
+      num("r2c2", "Size 2 · m2 (cm)"),
+      num("r2c3", "Size 2 · m3 (cm)"),
+      text("r3Label", "Size 3", 20),
+      num("r3c1", "Size 3 · m1 (cm)"),
+      num("r3c2", "Size 3 · m2 (cm)"),
+      num("r3c3", "Size 3 · m3 (cm)"),
+      text("r4Label", "Size 4", 20),
+      num("r4c1", "Size 4 · m1 (cm)"),
+      num("r4c2", "Size 4 · m2 (cm)"),
+      num("r4c3", "Size 4 · m3 (cm)"),
       area("note", "Note", 300),
     ],
   },
@@ -2100,15 +2534,21 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "",
-      c1Label: "", c1Source: "",
-      c2Label: "", c2Source: "",
-      c3Label: "", c3Source: "",
+      c1Label: "",
+      c1Source: "",
+      c2Label: "",
+      c2Source: "",
+      c3Label: "",
+      c3Source: "",
     },
     fields: [
       text("heading", "Heading", 60),
-      text("c1Label", "Claim 1", 60), text("c1Source", "Claim 1 source", 200),
-      text("c2Label", "Claim 2", 60), text("c2Source", "Claim 2 source", 200),
-      text("c3Label", "Claim 3", 60), text("c3Source", "Claim 3 source", 200),
+      text("c1Label", "Claim 1", 60),
+      text("c1Source", "Claim 1 source", 200),
+      text("c2Label", "Claim 2", 60),
+      text("c2Source", "Claim 2 source", 200),
+      text("c3Label", "Claim 3", 60),
+      text("c3Source", "Claim 3 source", 200),
     ],
   },
   {
@@ -2118,7 +2558,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["main"],
     heading: false,
     templates: ["product"],
-    defaults: { heading: "Complete the look", limit: 4, collection: "", buttonLabel: "Add all" },
+    defaults: {
+      heading: "Complete the look",
+      limit: 4,
+      collection: "",
+      buttonLabel: "Add all",
+    },
     fields: [
       text("heading", "Heading", 80),
       num("limit", "Max items (2-6)"),
@@ -2132,7 +2577,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    defaults: { productId: "", addLabel: "Save", savedLabel: "Saved", showCount: false },
+    defaults: {
+      productId: "",
+      addLabel: "Save",
+      savedLabel: "Saved",
+      showCount: false,
+    },
     fields: [
       text("productId", "Product id", 120),
       text("addLabel", "Label", 40),
@@ -2152,22 +2602,34 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "At a glance",
       columns: 4,
-      t1Label: "Chipset", t1Value: "",
-      t2Label: "Memory", t2Value: "",
-      t3Label: "Battery", t3Value: "",
-      t4Label: "Warranty", t4Value: "",
-      t5Label: "", t5Value: "",
-      t6Label: "", t6Value: "",
+      t1Label: "Chipset",
+      t1Value: "",
+      t2Label: "Memory",
+      t2Value: "",
+      t3Label: "Battery",
+      t3Value: "",
+      t4Label: "Warranty",
+      t4Value: "",
+      t5Label: "",
+      t5Value: "",
+      t6Label: "",
+      t6Value: "",
     },
     fields: [
       text("heading", "Heading", 80),
       cols("columns", "Tiles per row (2-6)"),
-      text("t1Label", "Tile 1 label", 40), text("t1Value", "Tile 1 value", 60),
-      text("t2Label", "Tile 2 label", 40), text("t2Value", "Tile 2 value", 60),
-      text("t3Label", "Tile 3 label", 40), text("t3Value", "Tile 3 value", 60),
-      text("t4Label", "Tile 4 label", 40), text("t4Value", "Tile 4 value", 60),
-      text("t5Label", "Tile 5 label", 40), text("t5Value", "Tile 5 value", 60),
-      text("t6Label", "Tile 6 label", 40), text("t6Value", "Tile 6 value", 60),
+      text("t1Label", "Tile 1 label", 40),
+      text("t1Value", "Tile 1 value", 60),
+      text("t2Label", "Tile 2 label", 40),
+      text("t2Value", "Tile 2 value", 60),
+      text("t3Label", "Tile 3 label", 40),
+      text("t3Value", "Tile 3 value", 60),
+      text("t4Label", "Tile 4 label", 40),
+      text("t4Value", "Tile 4 value", 60),
+      text("t5Label", "Tile 5 label", 40),
+      text("t5Value", "Tile 5 value", 60),
+      text("t6Label", "Tile 6 label", 40),
+      text("t6Value", "Tile 6 value", 60),
     ],
   },
   {
@@ -2208,9 +2670,12 @@ const BASE_CATALOG: CatalogEntry[] = [
       official: true,
       officialLabel: "Official import",
       parallelLabel: "Parallel import",
-      s1Name: "", s1Address: "",
-      s2Name: "", s2Address: "",
-      s3Name: "", s3Address: "",
+      s1Name: "",
+      s1Address: "",
+      s2Name: "",
+      s2Address: "",
+      s3Name: "",
+      s3Address: "",
     },
     fields: [
       text("heading", "Heading", 60),
@@ -2219,9 +2684,12 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("official", "Official import"),
       text("officialLabel", "Official label", 40),
       text("parallelLabel", "Parallel label", 40),
-      text("s1Name", "Centre 1 name", 80), text("s1Address", "Centre 1 address", 160),
-      text("s2Name", "Centre 2 name", 80), text("s2Address", "Centre 2 address", 160),
-      text("s3Name", "Centre 3 name", 80), text("s3Address", "Centre 3 address", 160),
+      text("s1Name", "Centre 1 name", 80),
+      text("s1Address", "Centre 1 address", 160),
+      text("s2Name", "Centre 2 name", 80),
+      text("s2Address", "Centre 2 address", 160),
+      text("s3Name", "Centre 3 name", 80),
+      text("s3Address", "Centre 3 address", 160),
     ],
   },
   {
@@ -2318,17 +2786,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Documents",
-      d1Label: "User manual", d1Href: "", d1Meta: "PDF",
-      d2Label: "", d2Href: "", d2Meta: "",
-      d3Label: "", d3Href: "", d3Meta: "",
-      d4Label: "", d4Href: "", d4Meta: "",
+      d1Label: "User manual",
+      d1Href: "",
+      d1Meta: "PDF",
+      d2Label: "",
+      d2Href: "",
+      d2Meta: "",
+      d3Label: "",
+      d3Href: "",
+      d3Meta: "",
+      d4Label: "",
+      d4Href: "",
+      d4Meta: "",
     },
     fields: [
       text("heading", "Heading", 60),
-      text("d1Label", "Doc 1 label", 60), url("d1Href", "Doc 1 link"), text("d1Meta", "Doc 1 type / size", 40),
-      text("d2Label", "Doc 2 label", 60), url("d2Href", "Doc 2 link"), text("d2Meta", "Doc 2 type / size", 40),
-      text("d3Label", "Doc 3 label", 60), url("d3Href", "Doc 3 link"), text("d3Meta", "Doc 3 type / size", 40),
-      text("d4Label", "Doc 4 label", 60), url("d4Href", "Doc 4 link"), text("d4Meta", "Doc 4 type / size", 40),
+      text("d1Label", "Doc 1 label", 60),
+      url("d1Href", "Doc 1 link"),
+      text("d1Meta", "Doc 1 type / size", 40),
+      text("d2Label", "Doc 2 label", 60),
+      url("d2Href", "Doc 2 link"),
+      text("d2Meta", "Doc 2 type / size", 40),
+      text("d3Label", "Doc 3 label", 60),
+      url("d3Href", "Doc 3 link"),
+      text("d3Meta", "Doc 3 type / size", 40),
+      text("d4Label", "Doc 4 label", 60),
+      url("d4Href", "Doc 4 link"),
+      text("d4Meta", "Doc 4 type / size", 40),
     ],
   },
   {
@@ -2339,17 +2823,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Support",
-      t1Title: "Hotline", t1Body: "", t1Href: "",
-      t2Title: "WhatsApp", t2Body: "", t2Href: "",
-      t3Title: "Service centre", t3Body: "", t3Href: "",
-      t4Title: "Returns", t4Body: "", t4Href: "",
+      t1Title: "Hotline",
+      t1Body: "",
+      t1Href: "",
+      t2Title: "WhatsApp",
+      t2Body: "",
+      t2Href: "",
+      t3Title: "Service centre",
+      t3Body: "",
+      t3Href: "",
+      t4Title: "Returns",
+      t4Body: "",
+      t4Href: "",
     },
     fields: [
       text("heading", "Heading", 60),
-      text("t1Title", "Tile 1 title", 40), text("t1Body", "Tile 1 body", 120), url("t1Href", "Tile 1 link"),
-      text("t2Title", "Tile 2 title", 40), text("t2Body", "Tile 2 body", 120), url("t2Href", "Tile 2 link"),
-      text("t3Title", "Tile 3 title", 40), text("t3Body", "Tile 3 body", 120), url("t3Href", "Tile 3 link"),
-      text("t4Title", "Tile 4 title", 40), text("t4Body", "Tile 4 body", 120), url("t4Href", "Tile 4 link"),
+      text("t1Title", "Tile 1 title", 40),
+      text("t1Body", "Tile 1 body", 120),
+      url("t1Href", "Tile 1 link"),
+      text("t2Title", "Tile 2 title", 40),
+      text("t2Body", "Tile 2 body", 120),
+      url("t2Href", "Tile 2 link"),
+      text("t3Title", "Tile 3 title", 40),
+      text("t3Body", "Tile 3 body", 120),
+      url("t3Href", "Tile 3 link"),
+      text("t4Title", "Tile 4 title", 40),
+      text("t4Body", "Tile 4 body", 120),
+      url("t4Href", "Tile 4 link"),
     ],
   },
   {
@@ -2361,19 +2861,30 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "How to choose",
       body: "",
-      l1Label: "", l1Href: "",
-      l2Label: "", l2Href: "",
-      l3Label: "", l3Href: "",
-      l4Label: "", l4Href: "",
-      author: "", authorRole: "", reviewedBy: "", reviewedOn: "",
+      l1Label: "",
+      l1Href: "",
+      l2Label: "",
+      l2Href: "",
+      l3Label: "",
+      l3Href: "",
+      l4Label: "",
+      l4Href: "",
+      author: "",
+      authorRole: "",
+      reviewedBy: "",
+      reviewedOn: "",
     },
     fields: [
       text("heading", "Heading", 80),
       area("body", "Body", 600),
-      text("l1Label", "Link 1 label", 60), url("l1Href", "Link 1"),
-      text("l2Label", "Link 2 label", 60), url("l2Href", "Link 2"),
-      text("l3Label", "Link 3 label", 60), url("l3Href", "Link 3"),
-      text("l4Label", "Link 4 label", 60), url("l4Href", "Link 4"),
+      text("l1Label", "Link 1 label", 60),
+      url("l1Href", "Link 1"),
+      text("l2Label", "Link 2 label", 60),
+      url("l2Href", "Link 2"),
+      text("l3Label", "Link 3 label", 60),
+      url("l3Href", "Link 3"),
+      text("l4Label", "Link 4 label", 60),
+      url("l4Href", "Link 4"),
       ...AUTHOR_FIELDS,
     ],
   },
@@ -2487,24 +2998,48 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Key ingredients",
-      i1Name: "", i1Amount: "", i1Gloss: "",
-      i2Name: "", i2Amount: "", i2Gloss: "",
-      i3Name: "", i3Amount: "", i3Gloss: "",
-      i4Name: "", i4Amount: "", i4Gloss: "",
-      i5Name: "", i5Amount: "", i5Gloss: "",
-      i6Name: "", i6Amount: "", i6Gloss: "",
+      i1Name: "",
+      i1Amount: "",
+      i1Gloss: "",
+      i2Name: "",
+      i2Amount: "",
+      i2Gloss: "",
+      i3Name: "",
+      i3Amount: "",
+      i3Gloss: "",
+      i4Name: "",
+      i4Amount: "",
+      i4Gloss: "",
+      i5Name: "",
+      i5Amount: "",
+      i5Gloss: "",
+      i6Name: "",
+      i6Amount: "",
+      i6Gloss: "",
       inci: "",
       inciLabel: "Full ingredients (INCI)",
       handle: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      text("i1Name", "Ingredient 1", 80), text("i1Amount", "Amount 1", 20), text("i1Gloss", "Gloss 1", 160),
-      text("i2Name", "Ingredient 2", 80), text("i2Amount", "Amount 2", 20), text("i2Gloss", "Gloss 2", 160),
-      text("i3Name", "Ingredient 3", 80), text("i3Amount", "Amount 3", 20), text("i3Gloss", "Gloss 3", 160),
-      text("i4Name", "Ingredient 4", 80), text("i4Amount", "Amount 4", 20), text("i4Gloss", "Gloss 4", 160),
-      text("i5Name", "Ingredient 5", 80), text("i5Amount", "Amount 5", 20), text("i5Gloss", "Gloss 5", 160),
-      text("i6Name", "Ingredient 6", 80), text("i6Amount", "Amount 6", 20), text("i6Gloss", "Gloss 6", 160),
+      text("i1Name", "Ingredient 1", 80),
+      text("i1Amount", "Amount 1", 20),
+      text("i1Gloss", "Gloss 1", 160),
+      text("i2Name", "Ingredient 2", 80),
+      text("i2Amount", "Amount 2", 20),
+      text("i2Gloss", "Gloss 2", 160),
+      text("i3Name", "Ingredient 3", 80),
+      text("i3Amount", "Amount 3", 20),
+      text("i3Gloss", "Gloss 3", 160),
+      text("i4Name", "Ingredient 4", 80),
+      text("i4Amount", "Amount 4", 20),
+      text("i4Gloss", "Gloss 4", 160),
+      text("i5Name", "Ingredient 5", 80),
+      text("i5Amount", "Amount 5", 20),
+      text("i5Gloss", "Gloss 5", 160),
+      text("i6Name", "Ingredient 6", 80),
+      text("i6Amount", "Amount 6", 20),
+      text("i6Gloss", "Gloss 6", 160),
       area("inci", "Full INCI list", 2000),
       text("inciLabel", "INCI disclosure label", 60),
       text("handle", "Product handle", 120),
@@ -2518,21 +3053,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Ingredient glossary",
-      g1Term: "", g1Body: "",
-      g2Term: "", g2Body: "",
-      g3Term: "", g3Body: "",
-      g4Term: "", g4Body: "",
-      g5Term: "", g5Body: "",
-      g6Term: "", g6Body: "",
+      g1Term: "",
+      g1Body: "",
+      g2Term: "",
+      g2Body: "",
+      g3Term: "",
+      g3Body: "",
+      g4Term: "",
+      g4Body: "",
+      g5Term: "",
+      g5Body: "",
+      g6Term: "",
+      g6Body: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      text("g1Term", "Term 1", 60), area("g1Body", "Body 1", 400),
-      text("g2Term", "Term 2", 60), area("g2Body", "Body 2", 400),
-      text("g3Term", "Term 3", 60), area("g3Body", "Body 3", 400),
-      text("g4Term", "Term 4", 60), area("g4Body", "Body 4", 400),
-      text("g5Term", "Term 5", 60), area("g5Body", "Body 5", 400),
-      text("g6Term", "Term 6", 60), area("g6Body", "Body 6", 400),
+      text("g1Term", "Term 1", 60),
+      area("g1Body", "Body 1", 400),
+      text("g2Term", "Term 2", 60),
+      area("g2Body", "Body 2", 400),
+      text("g3Term", "Term 3", 60),
+      area("g3Body", "Body 3", 400),
+      text("g4Term", "Term 4", 60),
+      area("g4Body", "Body 4", 400),
+      text("g5Term", "Term 5", 60),
+      area("g5Body", "Body 5", 400),
+      text("g6Term", "Term 6", 60),
+      area("g6Body", "Body 6", 400),
     ],
   },
   {
@@ -2544,21 +3091,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Tested & certified",
-      c1Label: "", c1Source: "",
-      c2Label: "", c2Source: "",
-      c3Label: "", c3Source: "",
-      c4Label: "", c4Source: "",
-      c5Label: "", c5Source: "",
-      c6Label: "", c6Source: "",
+      c1Label: "",
+      c1Source: "",
+      c2Label: "",
+      c2Source: "",
+      c3Label: "",
+      c3Source: "",
+      c4Label: "",
+      c4Source: "",
+      c5Label: "",
+      c5Source: "",
+      c6Label: "",
+      c6Source: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      text("c1Label", "Claim 1", 60), text("c1Source", "Source 1", 160),
-      text("c2Label", "Claim 2", 60), text("c2Source", "Source 2", 160),
-      text("c3Label", "Claim 3", 60), text("c3Source", "Source 3", 160),
-      text("c4Label", "Claim 4", 60), text("c4Source", "Source 4", 160),
-      text("c5Label", "Claim 5", 60), text("c5Source", "Source 5", 160),
-      text("c6Label", "Claim 6", 60), text("c6Source", "Source 6", 160),
+      text("c1Label", "Claim 1", 60),
+      text("c1Source", "Source 1", 160),
+      text("c2Label", "Claim 2", 60),
+      text("c2Source", "Source 2", 160),
+      text("c3Label", "Claim 3", 60),
+      text("c3Source", "Source 3", 160),
+      text("c4Label", "Claim 4", 60),
+      text("c4Source", "Source 4", 160),
+      text("c5Label", "Claim 5", 60),
+      text("c5Source", "Source 5", 160),
+      text("c6Label", "Claim 6", 60),
+      text("c6Source", "Source 6", 160),
     ],
   },
   {
@@ -2626,9 +3185,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading", 80),
-      text("mfgLabel", "Manufactured label", 40), text("mfgDate", "Manufactured date", 40),
-      text("expiryLabel", "Expiry label", 40), text("expiryDate", "Expiry date", 40),
-      text("batchLabel", "Batch label", 40), text("batchCode", "Batch code", 40),
+      text("mfgLabel", "Manufactured label", 40),
+      text("mfgDate", "Manufactured date", 40),
+      text("expiryLabel", "Expiry label", 40),
+      text("expiryDate", "Expiry date", 40),
+      text("batchLabel", "Batch label", 40),
+      text("batchCode", "Batch code", 40),
       num("paoMonths", "Period after opening (months)"),
     ],
   },
@@ -2640,17 +3202,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Texture & finish",
-      t1Image: "", t1Label: "", t1Alt: "",
-      t2Image: "", t2Label: "", t2Alt: "",
-      t3Image: "", t3Label: "", t3Alt: "",
-      t4Image: "", t4Label: "", t4Alt: "",
+      t1Image: "",
+      t1Label: "",
+      t1Alt: "",
+      t2Image: "",
+      t2Label: "",
+      t2Alt: "",
+      t3Image: "",
+      t3Label: "",
+      t3Alt: "",
+      t4Image: "",
+      t4Label: "",
+      t4Alt: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      url("t1Image", "Image 1"), text("t1Label", "Label 1", 60), text("t1Alt", "Alt 1", 160),
-      url("t2Image", "Image 2"), text("t2Label", "Label 2", 60), text("t2Alt", "Alt 2", 160),
-      url("t3Image", "Image 3"), text("t3Label", "Label 3", 60), text("t3Alt", "Alt 3", 160),
-      url("t4Image", "Image 4"), text("t4Label", "Label 4", 60), text("t4Alt", "Alt 4", 160),
+      url("t1Image", "Image 1"),
+      text("t1Label", "Label 1", 60),
+      text("t1Alt", "Alt 1", 160),
+      url("t2Image", "Image 2"),
+      text("t2Label", "Label 2", 60),
+      text("t2Alt", "Alt 2", 160),
+      url("t3Image", "Image 3"),
+      text("t3Label", "Label 3", 60),
+      text("t3Alt", "Alt 3", 160),
+      url("t4Image", "Image 4"),
+      text("t4Label", "Label 4", 60),
+      text("t4Alt", "Alt 4", 160),
     ],
   },
   {
@@ -2661,20 +3239,33 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "How to use",
-      s1Title: "", s1Body: "",
-      s2Title: "", s2Body: "",
-      s3Title: "", s3Body: "",
-      s4Title: "", s4Body: "",
-      s5Title: "", s5Body: "",
-      author: "", authorRole: "", reviewedBy: "", reviewedOn: "",
+      s1Title: "",
+      s1Body: "",
+      s2Title: "",
+      s2Body: "",
+      s3Title: "",
+      s3Body: "",
+      s4Title: "",
+      s4Body: "",
+      s5Title: "",
+      s5Body: "",
+      author: "",
+      authorRole: "",
+      reviewedBy: "",
+      reviewedOn: "",
     },
     fields: [
       text("heading", "Heading", 80),
-      text("s1Title", "Step 1", 80), area("s1Body", "Step 1 body", 300),
-      text("s2Title", "Step 2", 80), area("s2Body", "Step 2 body", 300),
-      text("s3Title", "Step 3", 80), area("s3Body", "Step 3 body", 300),
-      text("s4Title", "Step 4", 80), area("s4Body", "Step 4 body", 300),
-      text("s5Title", "Step 5", 80), area("s5Body", "Step 5 body", 300),
+      text("s1Title", "Step 1", 80),
+      area("s1Body", "Step 1 body", 300),
+      text("s2Title", "Step 2", 80),
+      area("s2Body", "Step 2 body", 300),
+      text("s3Title", "Step 3", 80),
+      area("s3Body", "Step 3 body", 300),
+      text("s4Title", "Step 4", 80),
+      area("s4Body", "Step 4 body", 300),
+      text("s5Title", "Step 5", 80),
+      area("s5Body", "Step 5 body", 300),
       ...AUTHOR_FIELDS,
     ],
   },
@@ -2688,18 +3279,24 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       heading: "Refill & save",
       body: "Get a refill delivered on your schedule.",
-      c1Label: "Every month", c1Value: "30",
-      c2Label: "Every 2 months", c2Value: "60",
-      c3Label: "Every 3 months", c3Value: "90",
+      c1Label: "Every month",
+      c1Value: "30",
+      c2Label: "Every 2 months",
+      c2Value: "60",
+      c3Label: "Every 3 months",
+      c3Value: "90",
       buttonLabel: "Subscribe",
       handle: "",
     },
     fields: [
       text("heading", "Heading", 80),
       area("body", "Body", 300),
-      text("c1Label", "Cadence 1", 40), text("c1Value", "Cadence 1 days", 8),
-      text("c2Label", "Cadence 2", 40), text("c2Value", "Cadence 2 days", 8),
-      text("c3Label", "Cadence 3", 40), text("c3Value", "Cadence 3 days", 8),
+      text("c1Label", "Cadence 1", 40),
+      text("c1Value", "Cadence 1 days", 8),
+      text("c2Label", "Cadence 2", 40),
+      text("c2Value", "Cadence 2 days", 8),
+      text("c3Label", "Cadence 3", 40),
+      text("c3Value", "Cadence 3 days", 8),
       text("buttonLabel", "Button label", 40),
       text("handle", "Refill product handle", 120),
     ],
@@ -2792,10 +3389,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       label: "Points on this order",
       handle: "",
     },
-    fields: [
-      text("label", "Label", 80),
-      text("handle", "Product handle", 120),
-    ],
+    fields: [text("label", "Label", 80), text("handle", "Product handle", 120)],
   },
 
   /* ------------------------------------- Phase 7 — layout primitive pack.
@@ -2892,7 +3486,13 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
       text("label", "Caption", 60),
       url("href", "Link"),
-      { key: "size", label: "Size in px (16-96)", kind: "number", panel: "style", responsive: true },
+      {
+        key: "size",
+        label: "Size in px (16-96)",
+        kind: "number",
+        panel: "style",
+        responsive: true,
+      },
       {
         key: "tone",
         label: "Colour",
@@ -2982,7 +3582,13 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("alt", "Alt text", 120),
       text("text", "Wordmark (used when no image)", 40),
       url("href", "Link"),
-      { key: "height", label: "Height in px (16-120)", kind: "number", panel: "style", responsive: true },
+      {
+        key: "height",
+        label: "Height in px (16-120)",
+        kind: "number",
+        panel: "style",
+        responsive: true,
+      },
     ],
   },
   {
@@ -3118,8 +3724,20 @@ const BASE_CATALOG: CatalogEntry[] = [
  * All of them are responsive, i.e. writable per breakpoint bucket.
  */
 export const STYLE_FIELDS: Field[] = [
-  { key: "padY", label: "Vertical padding (0-160px)", kind: "number", panel: "style", responsive: true },
-  { key: "padX", label: "Horizontal padding (0-96px)", kind: "number", panel: "style", responsive: true },
+  {
+    key: "padY",
+    label: "Vertical padding (0-160px)",
+    kind: "number",
+    panel: "style",
+    responsive: true,
+  },
+  {
+    key: "padX",
+    label: "Horizontal padding (0-96px)",
+    kind: "number",
+    panel: "style",
+    responsive: true,
+  },
   {
     key: "bg",
     label: "Background",
@@ -3241,7 +3859,6 @@ const STYLE_DEFAULTS: Record<string, PropValue> = {
   span: 0,
 };
 
-
 /** Keys owned by the universal style layer. */
 export const STYLE_KEYS = STYLE_FIELDS.map((f) => f.key);
 
@@ -3281,16 +3898,68 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   marquee: ["text"],
   newsletter: ["heading", "body", "buttonLabel", "consentText"],
   tabs: ["t1Label", "t1Body", "t2Label", "t2Body", "t3Label", "t3Body"],
-  accordion: ["heading", "i1Title", "i1Body", "i2Title", "i2Body", "i3Title", "i3Body"],
+  accordion: [
+    "heading",
+    "i1Title",
+    "i1Body",
+    "i2Title",
+    "i2Body",
+    "i3Title",
+    "i3Body",
+  ],
   sticky_bar: ["text", "ctaLabel"],
-  spec_table: ["caption", "columnLabel", "r1Group", "r1Label", "r1Value", "r2Group", "r2Label", "r2Value", "r3Group", "r3Label", "r3Value", "r4Group", "r4Label", "r4Value", "r5Group", "r5Label", "r5Value", "r6Group", "r6Label", "r6Value"],
-  quiz: ["heading", "resultLabel", "q1Label", "q2Label", "q3Label", "consentText"],
+  spec_table: [
+    "caption",
+    "columnLabel",
+    "r1Group",
+    "r1Label",
+    "r1Value",
+    "r2Group",
+    "r2Label",
+    "r2Value",
+    "r3Group",
+    "r3Label",
+    "r3Value",
+    "r4Group",
+    "r4Label",
+    "r4Value",
+    "r5Group",
+    "r5Label",
+    "r5Value",
+    "r6Group",
+    "r6Label",
+    "r6Value",
+  ],
+  quiz: [
+    "heading",
+    "resultLabel",
+    "q1Label",
+    "q2Label",
+    "q3Label",
+    "consentText",
+  ],
   recently_viewed: ["heading"],
   quick_view: ["heading", "buttonLabel"],
-  bundle_offer: ["heading", "buttonLabel", "i1Label", "i2Label", "i3Label", "i4Label"],
+  bundle_offer: [
+    "heading",
+    "buttonLabel",
+    "i1Label",
+    "i2Label",
+    "i3Label",
+    "i4Label",
+  ],
   announcement_bar: ["m1", "m2", "m3"],
   utility_bar: ["note", "l1Label", "l2Label", "l3Label"],
-  trust_bar: ["i1Title", "i1Body", "i2Title", "i2Body", "i3Title", "i3Body", "i4Title", "i4Body"],
+  trust_bar: [
+    "i1Title",
+    "i1Body",
+    "i2Title",
+    "i2Body",
+    "i3Title",
+    "i3Body",
+    "i4Title",
+    "i4Body",
+  ],
   payment_icons: ["heading"],
   notice: ["text"],
   mega_menu: ["label"],
@@ -3311,7 +3980,14 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   product_media: ["altText"],
   buy_box: ["label", "note", "promise"],
   variant_picker: ["heading", "axisOneLabel", "axisTwoLabel"],
-  delivery_promise: ["heading", "insideLabel", "insideDays", "outsideLabel", "outsideDays", "note"],
+  delivery_promise: [
+    "heading",
+    "insideLabel",
+    "insideDays",
+    "outsideLabel",
+    "outsideDays",
+    "note",
+  ],
   stock_delivery: ["cutOff"],
   rating_summary: ["heading"],
   review_list: ["heading", "emptyText"],
@@ -3352,11 +4028,21 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "freeShippingSuffix",
     "freeShippingDone",
   ],
-  cart_drawer: ["heading", "triggerLabel", "removeLabel", "emptyText", "ctaLabel"],
+  cart_drawer: [
+    "heading",
+    "triggerLabel",
+    "removeLabel",
+    "emptyText",
+    "ctaLabel",
+  ],
   checkout_steps: ["heading", "step1", "step2", "step3", "step4"],
   payment_methods: ["heading", "note", "emptyText"],
   order_tracker: ["heading", "step1", "step2", "step3", "step4", "note"],
-  free_shipping_bar: ["freeShippingLabel", "freeShippingSuffix", "freeShippingDone"],
+  free_shipping_bar: [
+    "freeShippingLabel",
+    "freeShippingSuffix",
+    "freeShippingDone",
+  ],
   // Phase 2.6 Atelier (apparel).
   editorial_hero: ["eyebrow", "heading", "body", "ctaLabel"],
   lookbook: ["heading", "i1Alt", "i2Alt", "i3Alt", "i4Alt"],
@@ -3365,68 +4051,219 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   collection_story: ["eyebrow", "heading", "body", "ctaLabel"],
   ugc_gallery: ["heading", "note"],
   social_strip: ["heading"],
-  store_locator: ["heading", "s1Name", "s1Address", "s1Hours", "s2Name", "s2Address", "s2Hours", "s3Name", "s3Address", "s3Hours"],
+  store_locator: [
+    "heading",
+    "s1Name",
+    "s1Address",
+    "s1Hours",
+    "s2Name",
+    "s2Address",
+    "s2Hours",
+    "s3Name",
+    "s3Address",
+    "s3Hours",
+  ],
   size_selector: ["heading", "notifyLabel", "guideLabel"],
   size_guide: ["heading", "openLabel", "c1Label", "c2Label", "c3Label", "note"],
   fit_note: ["note", "modelHeight", "modelSize"],
   back_in_stock: ["heading", "body", "buttonLabel", "consentText"],
   care_panel: ["heading", "composition", "care", "origin"],
-  sustain_badge: ["heading", "c1Label", "c1Source", "c2Label", "c2Source", "c3Label", "c3Source"],
+  sustain_badge: [
+    "heading",
+    "c1Label",
+    "c1Source",
+    "c2Label",
+    "c2Source",
+    "c3Label",
+    "c3Source",
+  ],
   complete_the_look: ["heading", "buttonLabel"],
   wishlist_button: ["addLabel", "savedLabel"],
   // Phase 2.7 Circuit.
-  spec_highlights: ["heading", "t1Label", "t1Value", "t2Label", "t2Value", "t3Label", "t3Value", "t4Label", "t4Value", "t5Label", "t5Value", "t6Label", "t6Value"],
+  spec_highlights: [
+    "heading",
+    "t1Label",
+    "t1Value",
+    "t2Label",
+    "t2Value",
+    "t3Label",
+    "t3Value",
+    "t4Label",
+    "t4Value",
+    "t5Label",
+    "t5Value",
+    "t6Label",
+    "t6Value",
+  ],
   compare_tray: ["heading", "compareLabel", "clearLabel", "emptyText"],
-  warranty_panel: ["heading", "coverage", "officialLabel", "parallelLabel", "s1Name", "s1Address", "s2Name", "s2Address", "s3Name", "s3Address"],
+  warranty_panel: [
+    "heading",
+    "coverage",
+    "officialLabel",
+    "parallelLabel",
+    "s1Name",
+    "s1Address",
+    "s2Name",
+    "s2Address",
+    "s3Name",
+    "s3Address",
+  ],
   authenticity_badge: ["label", "note"],
   emi_calculator: ["heading", "note", "emptyText", "perMonthLabel"],
   price_sparkline: ["heading", "summary", "emptyText"],
   bundle_builder: ["heading", "buttonLabel", "note"],
-  doc_links: ["heading", "d1Label", "d1Meta", "d2Label", "d2Meta", "d3Label", "d3Meta", "d4Label", "d4Meta"],
-  support_strip: ["heading", "t1Title", "t1Body", "t2Title", "t2Body", "t3Title", "t3Body", "t4Title", "t4Body"],
+  doc_links: [
+    "heading",
+    "d1Label",
+    "d1Meta",
+    "d2Label",
+    "d2Meta",
+    "d3Label",
+    "d3Meta",
+    "d4Label",
+    "d4Meta",
+  ],
+  support_strip: [
+    "heading",
+    "t1Title",
+    "t1Body",
+    "t2Title",
+    "t2Body",
+    "t3Title",
+    "t3Body",
+    "t4Title",
+    "t4Body",
+  ],
   buying_guide: ["heading", "body", "l1Label", "l2Label", "l3Label", "l4Label"],
   trade_in: ["heading", "body", "buttonLabel", "pendingText", "consentText"],
   // Phase 2.8 Rupaboti (beauty).
   shade_finder: ["heading", "undertonePrompt", "depthPrompt", "emptyText"],
   skin_quiz: [
-    "heading", "body", "typePrompt", "concernPrompt", "sensitivityPrompt",
-    "finishPrompt", "resultText", "resultLabel",
+    "heading",
+    "body",
+    "typePrompt",
+    "concernPrompt",
+    "sensitivityPrompt",
+    "finishPrompt",
+    "resultText",
+    "resultLabel",
   ],
-  routine_builder: ["heading", "amLabel", "pmLabel", "swapLabel", "addAllLabel", "note"],
+  routine_builder: [
+    "heading",
+    "amLabel",
+    "pmLabel",
+    "swapLabel",
+    "addAllLabel",
+    "note",
+  ],
   ingredient_list: [
-    "heading", "inciLabel",
-    "i1Gloss", "i2Gloss", "i3Gloss", "i4Gloss", "i5Gloss", "i6Gloss",
+    "heading",
+    "inciLabel",
+    "i1Gloss",
+    "i2Gloss",
+    "i3Gloss",
+    "i4Gloss",
+    "i5Gloss",
+    "i6Gloss",
   ],
   ingredient_glossary: [
-    "heading", "g1Term", "g1Body", "g2Term", "g2Body", "g3Term", "g3Body",
-    "g4Term", "g4Body", "g5Term", "g5Body", "g6Term", "g6Body",
+    "heading",
+    "g1Term",
+    "g1Body",
+    "g2Term",
+    "g2Body",
+    "g3Term",
+    "g3Body",
+    "g4Term",
+    "g4Body",
+    "g5Term",
+    "g5Body",
+    "g6Term",
+    "g6Body",
   ],
   claim_chips: [
-    "heading", "c1Label", "c1Source", "c2Label", "c2Source", "c3Label", "c3Source",
-    "c4Label", "c4Source", "c5Label", "c5Source", "c6Label", "c6Source",
+    "heading",
+    "c1Label",
+    "c1Source",
+    "c2Label",
+    "c2Source",
+    "c3Label",
+    "c3Source",
+    "c4Label",
+    "c4Source",
+    "c5Label",
+    "c5Source",
+    "c6Label",
+    "c6Source",
   ],
-  before_after: ["heading", "beforeAlt", "beforeLabel", "afterAlt", "afterLabel", "disclaimer"],
+  before_after: [
+    "heading",
+    "beforeAlt",
+    "beforeLabel",
+    "afterAlt",
+    "afterLabel",
+    "disclaimer",
+  ],
   safety_note: ["heading", "body", "howTo", "howToLabel"],
   batch_info: ["heading", "mfgLabel", "expiryLabel", "batchLabel"],
-  texture_strip: ["heading", "t1Label", "t1Alt", "t2Label", "t2Alt", "t3Label", "t3Alt", "t4Label", "t4Alt"],
-  how_to_use: [
-    "heading", "s1Title", "s1Body", "s2Title", "s2Body", "s3Title", "s3Body",
-    "s4Title", "s4Body", "s5Title", "s5Body",
+  texture_strip: [
+    "heading",
+    "t1Label",
+    "t1Alt",
+    "t2Label",
+    "t2Alt",
+    "t3Label",
+    "t3Alt",
+    "t4Label",
+    "t4Alt",
   ],
-  refill_widget: ["heading", "body", "c1Label", "c2Label", "c3Label", "buttonLabel"],
+  how_to_use: [
+    "heading",
+    "s1Title",
+    "s1Body",
+    "s2Title",
+    "s2Body",
+    "s3Title",
+    "s3Body",
+    "s4Title",
+    "s4Body",
+    "s5Title",
+    "s5Body",
+  ],
+  refill_widget: [
+    "heading",
+    "body",
+    "c1Label",
+    "c2Label",
+    "c3Label",
+    "buttonLabel",
+  ],
   gift_builder: ["heading", "messageLabel", "buttonLabel", "note"],
   sample_picker: ["heading", "thresholdText"],
   consult_cta: [
-    "heading", "body", "whatsappLabel", "callLabel", "fieldLabel",
-    "buttonLabel", "pendingText", "consentText",
+    "heading",
+    "body",
+    "whatsappLabel",
+    "callLabel",
+    "fieldLabel",
+    "buttonLabel",
+    "pendingText",
+    "consentText",
   ],
   loyalty_strip: ["label"],
   // Phase 7 — layout primitive pack.
   button: ["label"],
   icon: ["label"],
   form: [
-    "heading", "body", "nameLabel", "emailLabel", "phoneLabel",
-    "messageLabel", "buttonLabel", "successText", "consentText",
+    "heading",
+    "body",
+    "nameLabel",
+    "emailLabel",
+    "phoneLabel",
+    "messageLabel",
+    "buttonLabel",
+    "successText",
+    "consentText",
   ],
   nav_menu: ["heading"],
   logo: ["alt", "text"],
@@ -3452,7 +4289,8 @@ function withBiText(entry: CatalogEntry): CatalogEntry {
     // Default copy ships translated where the platform dictionary has it, so a
     // freshly dropped widget is not English-only for বাংলা shoppers.
     const en = entry.defaults[field.key];
-    defaults[bnKey(field.key)] = typeof en === "string" ? (PRESET_BN[en] ?? "") : "";
+    defaults[bnKey(field.key)] =
+      typeof en === "string" ? (PRESET_BN[en] ?? "") : "";
   }
   return { ...entry, defaults, fields };
 }
@@ -3462,7 +4300,10 @@ export function biTextKeysOf(type: SectionType): string[] {
   // Phase 3.3: alt-text siblings are bilingual too, so read the built schema
   // rather than the declaration list.
   const fields = CATALOG.get(type)?.fields;
-  if (fields) return fields.filter((field) => field.kind === "bitext").map((field) => field.key);
+  if (fields)
+    return fields
+      .filter((field) => field.kind === "bitext")
+      .map((field) => field.key);
   return BITEXT_FIELDS[type] ?? [];
 }
 
@@ -3474,12 +4315,16 @@ export function biTextKeysOf(type: SectionType): string[] {
  * and a `sizes` preset for the responsive ladder. Existing stored ASTs need no
  * migration — both siblings default to empty / `full`.
  */
-const IMAGE_KEY = /(^|[a-z])(image|img|photo|banner|avatar|logo|cover|thumb|poster)/i;
+const IMAGE_KEY =
+  /(^|[a-z])(image|img|photo|banner|avatar|logo|cover|thumb|poster)/i;
 
 function looksLikeImage(field: Field): boolean {
   if (field.kind === "image") return true;
   if (field.kind !== "url") return false;
-  return IMAGE_KEY.test(field.key) || /image|photo|banner|avatar|logo|cover|thumbnail/i.test(field.label);
+  return (
+    IMAGE_KEY.test(field.key) ||
+    /image|photo|banner|avatar|logo|cover|thumbnail/i.test(field.label)
+  );
 }
 
 function withMedia(entry: CatalogEntry): CatalogEntry {
@@ -3494,7 +4339,13 @@ function withMedia(entry: CatalogEntry): CatalogEntry {
     const alt = altKey(field.key);
     const sizes = sizesKey(field.key);
     if (!(alt in defaults)) {
-      fields.push({ key: alt, label: `${field.label} alt text`, kind: "bitext", max: 200, panel: "content" });
+      fields.push({
+        key: alt,
+        label: `${field.label} alt text`,
+        kind: "bitext",
+        max: 200,
+        panel: "content",
+      });
       defaults[alt] = "";
       defaults[bnKey(alt)] = "";
     }
@@ -3504,7 +4355,10 @@ function withMedia(entry: CatalogEntry): CatalogEntry {
         label: `${field.label} rendered width`,
         kind: "select",
         panel: "layout",
-        options: SIZES_PRESETS.map((preset) => ({ value: preset, label: SIZES_LABEL[preset].en })),
+        options: SIZES_PRESETS.map((preset) => ({
+          value: preset,
+          label: SIZES_LABEL[preset].en,
+        })),
       });
       defaults[sizes] = "full";
     }
@@ -3514,13 +4368,14 @@ function withMedia(entry: CatalogEntry): CatalogEntry {
 
 /** Image prop keys declared by a widget type. */
 export function imageKeysOf(type: SectionType): string[] {
-  return (CATALOG.get(type)?.fields ?? []).filter((f) => f.kind === "image").map((f) => f.key);
+  return (CATALOG.get(type)?.fields ?? [])
+    .filter((f) => f.kind === "image")
+    .map((f) => f.key);
 }
 
 export const SECTION_CATALOG: CatalogEntry[] = BASE_CATALOG.map(withBiText)
   .map(withMedia)
   .map(withStyleLayer);
-
 
 /* ------------------------------------------- style props → rendered chrome */
 
@@ -3542,13 +4397,21 @@ const BORDER_CLASS: Record<string, string> = {
   hairline: "border border-border",
   strong: "border-2 border-border",
 };
-const SHADOW_CLASS: Record<string, string> = { none: "", sm: "shadow-sm", md: "shadow-md" };
+const SHADOW_CLASS: Record<string, string> = {
+  none: "",
+  sm: "shadow-sm",
+  md: "shadow-md",
+};
 const MAXW_CLASS: Record<string, string> = {
   container: "",
   narrow: "mx-auto max-w-2xl",
   full: "w-full",
 };
-const ALIGN_CLASS: Record<string, string> = { left: "", center: "text-center", right: "text-right" };
+const ALIGN_CLASS: Record<string, string> = {
+  left: "",
+  center: "text-center",
+  right: "text-right",
+};
 const RATIO_CLASS: Record<string, string> = {
   auto: "",
   "1-1": "aspect-square",
@@ -3561,7 +4424,11 @@ const REVEAL_CLASS: Record<string, string> = {
   rise: "fq-reveal fq-reveal-rise",
 };
 
-const clamp = (value: PropValue | undefined, min: number, max: number): number => {
+const clamp = (
+  value: PropValue | undefined,
+  min: number,
+  max: number,
+): number => {
   const n = typeof value === "number" ? value : Number(value);
   return Number.isFinite(n) ? Math.min(max, Math.max(min, Math.trunc(n))) : min;
 };
@@ -3574,7 +4441,8 @@ export function sectionStyle(props: Record<string, PropValue>): {
   className: string;
   style: Record<string, string>;
 } {
-  const pick = (map: Record<string, string>, key: string) => map[String(props[key] ?? "none")] ?? "";
+  const pick = (map: Record<string, string>, key: string) =>
+    map[String(props[key] ?? "none")] ?? "";
   const className = [
     pick(BG_CLASS, "bg"),
     pick(RADIUS_CLASS, "radius"),
@@ -3589,7 +4457,6 @@ export function sectionStyle(props: Record<string, PropValue>): {
   ]
     .filter(Boolean)
     .join(" ");
-
 
   const style: Record<string, string> = {};
   const padY = clamp(props["padY"], 0, 160);
@@ -3618,7 +4485,12 @@ export function newSection(type: SectionType): Section {
 /* ------------------------------------------------------------------ tokens */
 
 /** Designed dark counterpart — authored by the merchant, never auto-inverted. */
-export type DarkTokens = { brand: string; accent: string; surface: string; ink: string };
+export type DarkTokens = {
+  brand: string;
+  accent: string;
+  surface: string;
+  ink: string;
+};
 
 export type ThemeTokens = {
   brand: string;
@@ -3650,11 +4522,18 @@ export type ThemeTokens = {
   dark: DarkTokens | null;
   /** Named global colours and fonts every control can bind to. */
   globals: ThemeGlobals;
+  /** Primary store timezone */
+  timezone?: string;
+  /** Whether storefront visitors can view/customize timestamps in their local timezone */
+  allowCustomerTimezone?: boolean;
 };
 
 /** Theme-level font pairings — there are no per-widget font pickers. */
 export const FONT_PAIRINGS = {
-  "bengali-classic": { display: "Noto Sans Bengali", body: "Noto Sans Bengali" },
+  "bengali-classic": {
+    display: "Noto Sans Bengali",
+    body: "Noto Sans Bengali",
+  },
   "bengali-modern": { display: "Hind Siliguri", body: "Noto Sans Bengali" },
   "modern-sans": { display: "Inter", body: "Inter" },
   "editorial-mix": { display: "Hind Siliguri", body: "Inter" },
@@ -3688,6 +4567,8 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   fontPairing: "bengali-classic",
   dark: null,
   globals: DEFAULT_GLOBALS,
+  timezone: DEFAULT_MERCHANT_TIMEZONE,
+  allowCustomerTimezone: false,
 };
 
 export const DEFAULT_DARK_TOKENS: DarkTokens = {
@@ -3697,13 +4578,19 @@ export const DEFAULT_DARK_TOKENS: DarkTokens = {
   ink: "#E6EDF5",
 };
 
-
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const LENGTH = /^\d{1,4}(?:px|rem)$/;
 const FONT = /^[\w\s'-]{2,40}$/;
 
-function oneOf<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
-  return typeof value === "string" && (allowed as readonly string[]).includes(value) ? (value as T) : fallback;
+function oneOf<T extends string>(
+  value: unknown,
+  allowed: readonly T[],
+  fallback: T,
+): T {
+  return typeof value === "string" &&
+    (allowed as readonly string[]).includes(value)
+    ? (value as T)
+    : fallback;
 }
 
 /** Parses the authored dark set; anything malformed falls back to light-only. */
@@ -3712,16 +4599,25 @@ export function parseDarkTokens(input: unknown): DarkTokens | null {
   const raw = input as Record<string, unknown>;
   const hex = (key: keyof DarkTokens) => {
     const value = raw[key];
-    return typeof value === "string" && HEX.test(value) ? value : DEFAULT_DARK_TOKENS[key];
+    return typeof value === "string" && HEX.test(value)
+      ? value
+      : DEFAULT_DARK_TOKENS[key];
   };
-  return { brand: hex("brand"), accent: hex("accent"), surface: hex("surface"), ink: hex("ink") };
+  return {
+    brand: hex("brand"),
+    accent: hex("accent"),
+    surface: hex("surface"),
+    ink: hex("ink"),
+  };
 }
 
 export function parseTokens(input: unknown): ThemeTokens {
   const raw = (input ?? {}) as Record<string, unknown>;
   const pick = (key: keyof ThemeTokens, test: RegExp) => {
     const value = raw[key];
-    return typeof value === "string" && test.test(value) ? value : (DEFAULT_TOKENS[key] as string);
+    return typeof value === "string" && test.test(value)
+      ? value
+      : (DEFAULT_TOKENS[key] as string);
   };
   const density = raw["density"];
   const typeScale = raw["typeScale"];
@@ -3739,13 +4635,27 @@ export function parseTokens(input: unknown): ThemeTokens {
         ? density
         : DEFAULT_TOKENS.density,
     typeScale:
-      typeScale === "compact" || typeScale === "expressive" || typeScale === "default"
+      typeScale === "compact" ||
+      typeScale === "expressive" ||
+      typeScale === "default"
         ? typeScale
         : DEFAULT_TOKENS.typeScale,
     spaceUnit: pick("spaceUnit", LENGTH),
-    shadow: oneOf(raw["shadow"], ["none", "soft", "lifted"] as const, DEFAULT_TOKENS.shadow),
-    motion: oneOf(raw["motion"], ["none", "subtle", "lively"] as const, DEFAULT_TOKENS.motion),
-    digits: oneOf(raw["digits"], ["latin", "bengali"] as const, DEFAULT_TOKENS.digits),
+    shadow: oneOf(
+      raw["shadow"],
+      ["none", "soft", "lifted"] as const,
+      DEFAULT_TOKENS.shadow,
+    ),
+    motion: oneOf(
+      raw["motion"],
+      ["none", "subtle", "lively"] as const,
+      DEFAULT_TOKENS.motion,
+    ),
+    digits: oneOf(
+      raw["digits"],
+      ["latin", "bengali"] as const,
+      DEFAULT_TOKENS.digits,
+    ),
     locale: oneOf(raw["locale"], ["en", "bn"] as const, DEFAULT_TOKENS.locale),
     currencyDisplay: oneOf(
       raw["currencyDisplay"],
@@ -3759,21 +4669,43 @@ export function parseTokens(input: unknown): ThemeTokens {
     ),
     dark: parseDarkTokens(raw["dark"]),
     globals: parseGlobals(raw["globals"]),
+    timezone:
+      typeof raw["timezone"] === "string" && isValidTimezone(raw["timezone"])
+        ? raw["timezone"]
+        : (DEFAULT_TOKENS.timezone ?? DEFAULT_MERCHANT_TIMEZONE),
+    allowCustomerTimezone:
+      typeof raw["allowCustomerTimezone"] === "boolean"
+        ? raw["allowCustomerTimezone"]
+        : (DEFAULT_TOKENS.allowCustomerTimezone ?? false),
   };
 }
 
 /** Applies a theme-level font pairing to both faces at once. */
-export function applyFontPairing(tokens: ThemeTokens, key: FontPairingKey): ThemeTokens {
+export function applyFontPairing(
+  tokens: ThemeTokens,
+  key: FontPairingKey,
+): ThemeTokens {
   if (key === "custom") return { ...tokens, fontPairing: key };
   const pair = FONT_PAIRINGS[key];
-  return { ...tokens, fontPairing: key, fontDisplay: pair.display, fontBody: pair.body };
+  return {
+    ...tokens,
+    fontPairing: key,
+    fontDisplay: pair.display,
+    fontBody: pair.body,
+  };
 }
-
 
 /** Relative luminance contrast ratio — surfaced live in the token editor. */
 export function contrastRatio(a: string, b: string): number {
   const lum = (hex: string) => {
-    const full = hex.length === 4 ? `#${hex.slice(1).split("").map((c) => c + c).join("")}` : hex;
+    const full =
+      hex.length === 4
+        ? `#${hex
+            .slice(1)
+            .split("")
+            .map((c) => c + c)
+            .join("")}`
+        : hex;
     const channel = (i: number) => {
       const v = parseInt(full.slice(1 + i * 2, 3 + i * 2), 16) / 255;
       return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
@@ -3821,10 +4753,19 @@ export function tokensToCss(tokens: ThemeTokens): Record<string, string> {
     "--theme-container": tokens.container,
     "--theme-font-display": `"${tokens.fontDisplay}", system-ui, sans-serif`,
     "--theme-font-body": `"${tokens.fontBody}", system-ui, sans-serif`,
-    "--theme-gap": tokens.density === "dense" ? "0.75rem" : tokens.density === "airy" ? "2.5rem" : "1.5rem",
+    "--theme-gap":
+      tokens.density === "dense"
+        ? "0.75rem"
+        : tokens.density === "airy"
+          ? "2.5rem"
+          : "1.5rem",
     "--theme-space": tokens.spaceUnit,
     "--theme-type-scale":
-      tokens.typeScale === "compact" ? "1.15" : tokens.typeScale === "expressive" ? "1.4" : "1.25",
+      tokens.typeScale === "compact"
+        ? "1.15"
+        : tokens.typeScale === "expressive"
+          ? "1.4"
+          : "1.25",
     "--theme-shadow-sm":
       tokens.shadow === "none"
         ? "none"
@@ -3844,8 +4785,17 @@ export function tokensToCss(tokens: ThemeTokens): Record<string, string> {
           ? "0 24px 56px rgb(0 0 0 / 0.22)"
           : "0 8px 24px rgb(0 0 0 / 0.12)",
     "--theme-motion-duration":
-      tokens.motion === "none" ? "0ms" : tokens.motion === "lively" ? "620ms" : "420ms",
-    "--theme-motion-rise": tokens.motion === "none" ? "0px" : tokens.motion === "lively" ? "20px" : "12px",
+      tokens.motion === "none"
+        ? "0ms"
+        : tokens.motion === "lively"
+          ? "620ms"
+          : "420ms",
+    "--theme-motion-rise":
+      tokens.motion === "none"
+        ? "0px"
+        : tokens.motion === "lively"
+          ? "20px"
+          : "12px",
     "--theme-digits": tokens.digits,
     "--fq-digits": tokens.digits,
     // Phase 2.1 — বাংলা optical size bump, exposed as a theme token so a
@@ -3867,7 +4817,6 @@ export function tokensToCss(tokens: ThemeTokens): Record<string, string> {
       : {}),
   };
 }
-
 
 /* --------------------------------------------------------------- sanitising */
 
@@ -3921,7 +4870,8 @@ export function safeEmbedUrl(value: string): string {
   try {
     const parsed = new URL(trimmed);
     if (parsed.protocol !== "https:") throw new Error("scheme");
-    if (!(EMBED_HOSTS as readonly string[]).includes(parsed.hostname)) throw new Error("host");
+    if (!(EMBED_HOSTS as readonly string[]).includes(parsed.hostname))
+      throw new Error("host");
     return parsed.toString().slice(0, 500);
   } catch {
     sanitiserRejects += 1;
@@ -3934,7 +4884,8 @@ const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i;
 /** Clamps a numeric prop into the field's declared bounds. */
 function clampNumber(field: Field, n: number): number {
   const min = field.min ?? Number.NEGATIVE_INFINITY;
-  const max = typeof field.max === "number" ? field.max : Number.POSITIVE_INFINITY;
+  const max =
+    typeof field.max === "number" ? field.max : Number.POSITIVE_INFINITY;
   return Math.min(max, Math.max(min, Math.trunc(n)));
 }
 
@@ -3949,7 +4900,10 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
     if (coerced === null || Array.isArray(coerced)) continue;
     row[sub.key] = coerced;
     if (sub.kind === "bitext") {
-      const bn = coerceProp({ ...sub, key: bnKey(sub.key) }, source[bnKey(sub.key)]);
+      const bn = coerceProp(
+        { ...sub, key: bnKey(sub.key) },
+        source[bnKey(sub.key)],
+      );
       row[bnKey(sub.key)] = bn === null || Array.isArray(bn) ? "" : bn;
     }
   }
@@ -3969,10 +4923,16 @@ function coerceProp(field: Field, value: unknown): PropValue | null {
     }
     return rows;
   }
-  if (field.kind === "number" || field.kind === "range" || field.kind === "unit") {
+  if (
+    field.kind === "number" ||
+    field.kind === "range" ||
+    field.kind === "unit"
+  ) {
     const n = typeof value === "number" ? value : Number(value);
     if (!Number.isFinite(n)) return null;
-    return field.kind === "number" && field.min === undefined && field.max === undefined
+    return field.kind === "number" &&
+      field.min === undefined &&
+      field.max === undefined
       ? Math.trunc(n)
       : clampNumber(field, n);
   }
@@ -4015,7 +4975,6 @@ function coerceProp(field: Field, value: unknown): PropValue | null {
     return safe;
   }
   return sanitiseText(value, field.max ?? 200);
-
 }
 
 /** Flattens `group` fields so nested schemas still store flat props. */
@@ -4029,7 +4988,9 @@ export function flattenFields(fields: Field[]): Field[] {
 }
 
 /** Phase 3.2: shape guard for stored visibility rules. */
-export function parseVisibilityRules(value: unknown): VisibilityRule[] | undefined {
+export function parseVisibilityRules(
+  value: unknown,
+): VisibilityRule[] | undefined {
   if (!Array.isArray(value)) return undefined;
   const out: VisibilityRule[] = [];
   for (const raw of value.slice(0, 8)) {
@@ -4041,8 +5002,14 @@ export function parseVisibilityRules(value: unknown): VisibilityRule[] | undefin
     const op = typeof rule["op"] === "string" ? (rule["op"] as string) : "";
     if (!ops.includes(op)) continue;
     const value_ = rule["value"];
-    if (typeof value_ === "number" && Number.isFinite(value_)) out.push({ kind: kind as VisibilityKind, op, value: Math.trunc(value_) });
-    else if (typeof value_ === "string") out.push({ kind: kind as VisibilityKind, op, value: value_.slice(0, 80) });
+    if (typeof value_ === "number" && Number.isFinite(value_))
+      out.push({ kind: kind as VisibilityKind, op, value: Math.trunc(value_) });
+    else if (typeof value_ === "string")
+      out.push({
+        kind: kind as VisibilityKind,
+        op,
+        value: value_.slice(0, 80),
+      });
   }
   return out.length ? out : undefined;
 }
@@ -4050,8 +5017,10 @@ export function parseVisibilityRules(value: unknown): VisibilityRule[] | undefin
 function parseAb(value: unknown): Section["ab"] {
   if (!value || typeof value !== "object") return undefined;
   const raw = value as Record<string, unknown>;
-  const experiment = typeof raw["experiment"] === "string" ? raw["experiment"].slice(0, 64) : "";
-  const variant = typeof raw["variant"] === "string" ? raw["variant"].slice(0, 64) : "";
+  const experiment =
+    typeof raw["experiment"] === "string" ? raw["experiment"].slice(0, 64) : "";
+  const variant =
+    typeof raw["variant"] === "string" ? raw["variant"].slice(0, 64) : "";
   if (!experiment || !variant) return undefined;
   return { experiment, variant };
 }
@@ -4073,7 +5042,10 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
   // A payload can be a graph (shared or self-referencing objects). Nesting the
   // same object inside itself would recurse forever, so it is dropped.
   if (ctx.stack.has(node as object)) return null;
-  const raw = node as Partial<Section> & { props?: unknown; children?: unknown };
+  const raw = node as Partial<Section> & {
+    props?: unknown;
+    children?: unknown;
+  };
   if (typeof raw.id !== "string" || raw.id.length > 64) return null;
   // Duplicate ids break selection, data keying and reorder, so later copies get
   // a fresh suffixed id rather than shadowing the first node.
@@ -4084,22 +5056,36 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
     id = `${id}-${n}`.slice(0, 64);
   }
   ctx.ids.add(id);
-  const entry = typeof raw.type === "string" ? CATALOG.get(raw.type as SectionType) : undefined;
+  const entry =
+    typeof raw.type === "string"
+      ? CATALOG.get(raw.type as SectionType)
+      : undefined;
   if (!entry) {
     // Unknown widget: keep the node so the page renders a placeholder, never a crash.
     if (typeof raw.type !== "string") return null;
     ctx.budget.left -= 1;
-    return { id, type: "html", props: {}, invalid: `unknown_widget:${raw.type.slice(0, 40)}` };
+    return {
+      id,
+      type: "html",
+      props: {},
+      invalid: `unknown_widget:${raw.type.slice(0, 40)}`,
+    };
   }
   // Slot legality is checked against the slot this subtree lives in, at every depth.
   if (!entry.slots.includes(ctx.slot)) {
     ctx.budget.left -= 1;
-    return { id, type: "html", props: {}, invalid: `illegal_slot:${entry.type}` };
+    return {
+      id,
+      type: "html",
+      props: {},
+      invalid: `illegal_slot:${entry.type}`,
+    };
   }
   ctx.budget.left -= 1;
 
-
-  const source = (raw.props && typeof raw.props === "object" ? raw.props : {}) as Record<string, unknown>;
+  const source = (
+    raw.props && typeof raw.props === "object" ? raw.props : {}
+  ) as Record<string, unknown>;
   const props: Record<string, PropValue> = {};
   // Phase 3.2: `group` fields are presentation-only, so their sub-fields are
   // flattened here and keep storing flat props.
@@ -4107,7 +5093,9 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
   for (const field of fields) {
     const coerced = coerceProp(field, source[field.key]);
     props[field.key] =
-      coerced === null ? (entry.defaults[field.key] ?? (field.kind === "array" ? [] : "")) : coerced;
+      coerced === null
+        ? (entry.defaults[field.key] ?? (field.kind === "array" ? [] : ""))
+        : coerced;
     // Phase 1.1: the বাংলা sibling rides along, sanitised by the same rules.
     if (field.kind === "bitext") {
       const key = bnKey(field.key);
@@ -4115,12 +5103,19 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
       // Fall back to the widget's translated default only when the English side
       // is also the default; a blanked-out English prop stays blank on both.
       const usedDefault = coerced === null;
-      props[key] = bnValue === null ? (usedDefault ? (entry.defaults[key] ?? "") : "") : bnValue;
+      props[key] =
+        bnValue === null
+          ? usedDefault
+            ? (entry.defaults[key] ?? "")
+            : ""
+          : bnValue;
     }
   }
 
   const hidden = Array.isArray(raw.hidden)
-    ? raw.hidden.filter((b): b is Breakpoint => (BREAKPOINTS as readonly string[]).includes(b as string))
+    ? raw.hidden.filter((b): b is Breakpoint =>
+        (BREAKPOINTS as readonly string[]).includes(b as string),
+      )
     : undefined;
 
   // Per-breakpoint overrides are parsed through the same coercion as base props,
@@ -4163,7 +5158,11 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
       const stack = new Set(ctx.stack).add(node as object);
       for (const kid of kids) {
         if (ctx.budget.left <= 0) break;
-        const child = parseSection(kid, { ...ctx, depth: ctx.depth + 1, stack });
+        const child = parseSection(kid, {
+          ...ctx,
+          depth: ctx.depth + 1,
+          stack,
+        });
         if (child) parsed.push(child);
       }
       section.children = parsed;
@@ -4177,10 +5176,15 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
 }
 
 /** Depth-first walk of a slot's tree, parents before children. */
-export function walkSections(sections: Section[], visit: (section: Section, depth: number) => void, depth = 0): void {
+export function walkSections(
+  sections: Section[],
+  visit: (section: Section, depth: number) => void,
+  depth = 0,
+): void {
   for (const section of sections) {
     visit(section, depth);
-    if (section.children?.length) walkSections(section.children, visit, depth + 1);
+    if (section.children?.length)
+      walkSections(section.children, visit, depth + 1);
   }
 }
 
@@ -4193,9 +5197,12 @@ export function flattenSections(sections: Section[]): Section[] {
 
 /** Every node of a whole template as a flat list. */
 export function flattenAst(ast: ThemeAst): Section[] {
-  return [...flattenSections(ast.header), ...flattenSections(ast.main), ...flattenSections(ast.footer)];
+  return [
+    ...flattenSections(ast.header),
+    ...flattenSections(ast.main),
+    ...flattenSections(ast.footer),
+  ];
 }
-
 
 /**
  * Effective props for a device.
@@ -4207,9 +5214,17 @@ export function flattenAst(ast: ThemeAst): Section[] {
  * `compileResponsiveCss` emits, so what the merchant sees, what the storefront
  * renders and what the gate measures cannot disagree.
  */
-export function resolveProps(section: Section, device?: Breakpoint): Record<string, PropValue> {
+export function resolveProps(
+  section: Section,
+  device?: Breakpoint,
+): Record<string, PropValue> {
   if (!device || !section.bp) return section.props;
-  const layers: Breakpoint[] = device === "mobile" ? ["tablet", "mobile"] : device === "tablet" ? ["tablet"] : [];
+  const layers: Breakpoint[] =
+    device === "mobile"
+      ? ["tablet", "mobile"]
+      : device === "tablet"
+        ? ["tablet"]
+        : [];
   let out: Record<string, PropValue> | null = null;
   for (const layer of layers) {
     const bag = section.bp[layer];
@@ -4219,15 +5234,16 @@ export function resolveProps(section: Section, device?: Breakpoint): Record<stri
   return out ?? section.props;
 }
 
-
 /** True when the widget needs data this template cannot provide. */
-export function isContextMismatch(type: SectionType, template?: TemplateKey): boolean {
+export function isContextMismatch(
+  type: SectionType,
+  template?: TemplateKey,
+): boolean {
   if (!template) return false;
   const entry = CATALOG.get(type);
   if (!entry?.templates) return false;
   return !entry.templates.includes(template);
 }
-
 
 const MAX_SECTIONS_PER_SLOT = 60;
 
@@ -4244,7 +5260,12 @@ export const AST_LIMITS = {
 } as const;
 
 function depthOf(value: unknown, depth = 0): number {
-  if (depth > AST_LIMITS.maxDepth || value === null || typeof value !== "object") return depth;
+  if (
+    depth > AST_LIMITS.maxDepth ||
+    value === null ||
+    typeof value !== "object"
+  )
+    return depth;
   let deepest = depth;
   for (const child of Object.values(value as Record<string, unknown>)) {
     deepest = Math.max(deepest, depthOf(child, depth + 1));
@@ -4265,8 +5286,10 @@ export function assertPayloadWithinLimits(value: unknown): void {
   } catch {
     throw new Error("builder.payload_invalid");
   }
-  if (json.length > AST_LIMITS.maxPayloadChars) throw new Error("builder.payload_too_large");
-  if (depthOf(value) > AST_LIMITS.maxDepth) throw new Error("builder.payload_too_deep");
+  if (json.length > AST_LIMITS.maxPayloadChars)
+    throw new Error("builder.payload_too_large");
+  if (depthOf(value) > AST_LIMITS.maxDepth)
+    throw new Error("builder.payload_too_deep");
 }
 
 export function parseAst(input: unknown): ThemeAst {
@@ -4280,7 +5303,13 @@ export function parseAst(input: unknown): ThemeAst {
     const out: Section[] = [];
     for (const node of value.slice(0, MAX_SECTIONS_PER_SLOT)) {
       if (budget.left <= 0) break;
-      const parsed = parseSection(node, { slot: name, depth: 0, budget, stack: new Set(), ids });
+      const parsed = parseSection(node, {
+        slot: name,
+        depth: 0,
+        budget,
+        stack: new Set(),
+        ids,
+      });
       if (parsed) out.push(parsed);
     }
     return out;
@@ -4291,7 +5320,6 @@ export function parseAst(input: unknown): ThemeAst {
     footer: slot(raw.footer, "footer"),
   };
 }
-
 
 /**
  * AST v2 → v3 upgrader. Pure: it never mutates the input and always returns a
@@ -4305,7 +5333,10 @@ export function parseAst(input: unknown): ThemeAst {
  */
 export function upgradeAstV2ToV3(input: unknown): Record<string, unknown> {
   const raw = (input ?? {}) as Record<string, unknown>;
-  const upgradeNode = (node: unknown, stack: Set<object> = new Set()): unknown => {
+  const upgradeNode = (
+    node: unknown,
+    stack: Set<object> = new Set(),
+  ): unknown => {
     if (!node || typeof node !== "object" || Array.isArray(node)) return node;
     // Cycle guard: a self-referencing payload must not recurse forever.
     if (stack.has(node as object)) return undefined;
@@ -4316,17 +5347,32 @@ export function upgradeAstV2ToV3(input: unknown): Record<string, unknown> {
     delete out["sections"];
     if (Array.isArray(kidsRaw)) {
       const next = new Set(stack).add(node as object);
-      out["children"] = kidsRaw.map((kid) => upgradeNode(kid, next)).filter((kid) => kid !== undefined);
+      out["children"] = kidsRaw
+        .map((kid) => upgradeNode(kid, next))
+        .filter((kid) => kid !== undefined);
     }
     return out;
   };
   const slotOf = (value: unknown): unknown[] =>
-    Array.isArray(value) ? value.map((node) => upgradeNode(node)).filter((node) => node !== undefined) : [];
-  if (Array.isArray(raw["sections"]) && !raw["main"] && !raw["header"] && !raw["footer"]) {
+    Array.isArray(value)
+      ? value
+          .map((node) => upgradeNode(node))
+          .filter((node) => node !== undefined)
+      : [];
+  if (
+    Array.isArray(raw["sections"]) &&
+    !raw["main"] &&
+    !raw["header"] &&
+    !raw["footer"]
+  ) {
     // Flat v1/v2 document: everything belonged to the page body.
     return { header: [], main: slotOf(raw["sections"]), footer: [] };
   }
-  return { header: slotOf(raw["header"]), main: slotOf(raw["main"]), footer: slotOf(raw["footer"]) };
+  return {
+    header: slotOf(raw["header"]),
+    main: slotOf(raw["main"]),
+    footer: slotOf(raw["footer"]),
+  };
 }
 
 export function parseTemplates(input: unknown): ThemeTemplates {
@@ -4341,12 +5387,18 @@ export function parseTemplates(input: unknown): ThemeTemplates {
   return out;
 }
 
-export function templateOf(templates: ThemeTemplates, key: TemplateKey): ThemeAst {
+export function templateOf(
+  templates: ThemeTemplates,
+  key: TemplateKey,
+): ThemeAst {
   return templates[key] ?? EMPTY_AST;
 }
 
 /** Stable content hash used for autosave dedupe and version idempotency. */
-export function astDigest(templates: ThemeTemplates, tokens: ThemeTokens): string {
+export function astDigest(
+  templates: ThemeTemplates,
+  tokens: ThemeTokens,
+): string {
   const json = JSON.stringify({ templates, tokens });
   let h1 = 0x811c9dc5;
   for (let i = 0; i < json.length; i += 1) {
@@ -4357,7 +5409,11 @@ export function astDigest(templates: ThemeTemplates, tokens: ThemeTokens): strin
 }
 
 /** Editor-time lint: accessibility and completeness problems, before publish. */
-export type AstIssue = { level: "error" | "warn"; sectionId: string | null; message: string };
+export type AstIssue = {
+  level: "error" | "warn";
+  sectionId: string | null;
+  message: string;
+};
 
 /**
  * True when a heading-capable widget was authored with an explicitly blank
@@ -4369,13 +5425,18 @@ function blankHeading(section: Section): boolean {
   if (typeof value === "string") return value.trim() === "";
   if (value && typeof value === "object" && !Array.isArray(value)) {
     const bag = value as unknown as Record<string, unknown>;
-    const parts = ["en", "bn"].map((k) => (typeof bag[k] === "string" ? (bag[k] as string).trim() : ""));
+    const parts = ["en", "bn"].map((k) =>
+      typeof bag[k] === "string" ? (bag[k] as string).trim() : "",
+    );
     return parts.every((part) => part === "");
   }
   return false;
 }
 
-export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] {
+export function lintTemplate(
+  ast: ThemeAst,
+  template?: TemplateKey,
+): AstIssue[] {
   const issues: AstIssue[] = [];
   const all = flattenAst(ast);
   // Phase 0.1: tree-shape lint. The walker sees parents before children, so
@@ -4384,7 +5445,11 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
   for (const slot of SLOTS) {
     walkSections(ast[slot] ?? [], (section) => {
       if (seenIds.has(section.id)) {
-        issues.push({ level: "error", sectionId: section.id, message: "Duplicate node id in this template." });
+        issues.push({
+          level: "error",
+          sectionId: section.id,
+          message: "Duplicate node id in this template.",
+        });
       }
       seenIds.add(section.id);
       const entry = CATALOG.get(section.type);
@@ -4397,7 +5462,11 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
         });
       }
       if (isContainer && !(section.children?.length ?? 0)) {
-        issues.push({ level: "warn", sectionId: section.id, message: "Empty container — add a widget or remove it." });
+        issues.push({
+          level: "warn",
+          sectionId: section.id,
+          message: "Empty container — add a widget or remove it.",
+        });
       }
       if (entry && !entry.slots.includes(slot)) {
         issues.push({
@@ -4408,21 +5477,39 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
       }
     });
   }
-  const headings = all.filter((s) => !s.invalid && CATALOG.get(s.type)?.heading);
+  const headings = all.filter(
+    (s) => !s.invalid && CATALOG.get(s.type)?.heading,
+  );
   // Phase 5: the h1 claimant is declared, not inferred. On `ROUTE_H1_TEMPLATES`
   // the route data supplies the heading when no widget claims it, so silence is
   // legal there; everywhere else a template with no claimant has no <h1> at all.
   // More than one claimant stays an error on every template (below).
   if (headings.length === 0 && !routeSuppliesH1(template)) {
-    issues.push({ level: "warn", sectionId: null, message: "No primary heading on this template." });
+    issues.push({
+      level: "warn",
+      sectionId: null,
+      message: "No primary heading on this template.",
+    });
   }
-  const required: Partial<Record<TemplateKey, { type: SectionType; message: string }[]>> = {
+  const required: Partial<
+    Record<TemplateKey, { type: SectionType; message: string }[]>
+  > = {
     product: [
       { type: "price_block", message: "Product template has no price block." },
-      { type: "add_to_cart", message: "Product template has no add-to-cart widget." },
+      {
+        type: "add_to_cart",
+        message: "Product template has no add-to-cart widget.",
+      },
     ],
-    page: [{ type: "page_content", message: "Page template has no page content widget." }],
-    cart: [{ type: "cart_summary", message: "Cart template has no order summary." }],
+    page: [
+      {
+        type: "page_content",
+        message: "Page template has no page content widget.",
+      },
+    ],
+    cart: [
+      { type: "cart_summary", message: "Cart template has no order summary." },
+    ],
   };
   for (const rule of required[template!] ?? []) {
     if (!all.some((s) => s.type === rule.type)) {
@@ -4436,7 +5523,11 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
     const node = sectionJsonLd(section, { storeName: "Store", url: null });
     if (!node) continue;
     for (const message of jsonLdIssues(node)) {
-      issues.push({ level: "error", sectionId: section.id, message: `Structured data — ${message}` });
+      issues.push({
+        level: "error",
+        sectionId: section.id,
+        message: `Structured data — ${message}`,
+      });
     }
     const type = String(node["@type"] ?? "");
     // Phase 5: page-level singletons. Two of any of these on one URL is a
@@ -4463,7 +5554,9 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
     const entry = CATALOG.get(section.type);
     if (!entry) continue;
     if (section.type === "heading") {
-      headingLevels.push(String(section.props["level"] ?? "h2") === "h3" ? 3 : 2);
+      headingLevels.push(
+        String(section.props["level"] ?? "h2") === "h3" ? 3 : 2,
+      );
       continue;
     }
     if (entry.heading) {
@@ -4481,7 +5574,8 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
       issues.push({
         level: "error",
         sectionId: id,
-        message: "More than one widget claims the page <h1> — only one may be the primary heading.",
+        message:
+          "More than one widget claims the page <h1> — only one may be the primary heading.",
       });
     }
   }
@@ -4506,7 +5600,11 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
 
   for (const section of all) {
     if (section.invalid) {
-      issues.push({ level: "error", sectionId: section.id, message: `Unsupported widget (${section.invalid}).` });
+      issues.push({
+        level: "error",
+        sectionId: section.id,
+        message: `Unsupported widget (${section.invalid}).`,
+      });
       continue;
     }
     if (isContextMismatch(section.type, template)) {
@@ -4521,7 +5619,9 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
     const layers = [section.props, ...Object.values(section.bp ?? {})];
     const hasRawColour = layers.some((layer) =>
       Object.values(layer ?? {}).some(
-        (value) => typeof value === "string" && /#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl)a?\s*\(/.test(value),
+        (value) =>
+          typeof value === "string" &&
+          /#[0-9a-fA-F]{3,8}\b|\b(?:rgb|hsl)a?\s*\(/.test(value),
       ),
     );
     if (hasRawColour) {
@@ -4533,21 +5633,31 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
     }
     // Phase 6: fixed widths clip বাংলা (15–30% longer than English) and break
     // the 320px floor, so any hard pixel width in a prop blocks publish.
-    if (layers.some((layer) => Object.values(layer ?? {}).some((value) => hasFixedWidth(value)))) {
+    if (
+      layers.some((layer) =>
+        Object.values(layer ?? {}).some((value) => hasFixedWidth(value)),
+      )
+    ) {
       issues.push({
         level: "error",
         sectionId: section.id,
-        message: "Fixed pixel width — let the widget size itself so বাংলা copy is not clipped.",
+        message:
+          "Fixed pixel width — let the widget size itself so বাংলা copy is not clipped.",
       });
     }
     // Phase 6: uppercase is meaningless in Bangla and mangles conjuncts.
     const wantsUppercase = layers.some((layer) =>
       Object.values(layer ?? {}).some(
-        (value) => typeof value === "string" && /\buppercase\b|text-transform\s*:\s*uppercase/i.test(value),
+        (value) =>
+          typeof value === "string" &&
+          /\buppercase\b|text-transform\s*:\s*uppercase/i.test(value),
       ),
     );
     const hasBangla = Object.entries(section.props).some(
-      ([key, value]) => key.endsWith("_bn") && typeof value === "string" && isUppercaseHostile(value),
+      ([key, value]) =>
+        key.endsWith("_bn") &&
+        typeof value === "string" &&
+        isUppercaseHostile(value),
     );
     if (wantsUppercase && hasBangla) {
       issues.push({
@@ -4557,21 +5667,43 @@ export function lintTemplate(ast: ThemeAst, template?: TemplateKey): AstIssue[] 
       });
     }
 
-
-    if (section.type === "image" && !String(section.props["alt"] ?? "").trim()) {
-      issues.push({ level: "error", sectionId: section.id, message: "Image is missing alt text." });
+    if (
+      section.type === "image" &&
+      !String(section.props["alt"] ?? "").trim()
+    ) {
+      issues.push({
+        level: "error",
+        sectionId: section.id,
+        message: "Image is missing alt text.",
+      });
     }
-    if (section.type === "video" && !String(section.props["title"] ?? "").trim()) {
-      issues.push({ level: "error", sectionId: section.id, message: "Video is missing an accessible title." });
+    if (
+      section.type === "video" &&
+      !String(section.props["title"] ?? "").trim()
+    ) {
+      issues.push({
+        level: "error",
+        sectionId: section.id,
+        message: "Video is missing an accessible title.",
+      });
     }
-    if (section.type === "countdown" && Number.isNaN(Date.parse(String(section.props["endsAt"] ?? "")))) {
-      issues.push({ level: "warn", sectionId: section.id, message: "Countdown has no valid end time." });
+    if (
+      section.type === "countdown" &&
+      Number.isNaN(Date.parse(String(section.props["endsAt"] ?? "")))
+    ) {
+      issues.push({
+        level: "warn",
+        sectionId: section.id,
+        message: "Countdown has no valid end time.",
+      });
     }
     // Phase 1.1: translation coverage. বাংলা-only copy is blocking (an English
     // page would render বাংলা); missing বাংলা is a warning (it falls back).
     for (const key of biTextKeysOf(section.type)) {
       const state = biTextState(readBiText(section.props, key));
-      const label = CATALOG.get(section.type)?.fields.find((f) => f.key === key)?.label ?? key;
+      const label =
+        CATALOG.get(section.type)?.fields.find((f) => f.key === key)?.label ??
+        key;
       if (state === "empty") continue;
       if (!String(section.props[key] ?? "").trim()) {
         issues.push({

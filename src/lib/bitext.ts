@@ -28,7 +28,10 @@ export function isBnKey(key: string): boolean {
 
 export type BiText = { en: string; bn: string };
 
-export function readBiText(props: Record<string, unknown>, key: string): BiText {
+export function readBiText(
+  props: Record<string, unknown>,
+  key: string,
+): BiText {
   const en = props[key];
   const bn = props[bnKey(key)];
   return {
@@ -48,7 +51,11 @@ export function resolveBiText(value: BiText, locale: Locale): string {
 }
 
 /** Convenience: read + resolve in one call, straight off a props bag. */
-export function textOf(props: Record<string, unknown>, key: string, locale: Locale): string {
+export function textOf(
+  props: Record<string, unknown>,
+  key: string,
+  locale: Locale,
+): string {
   return resolveBiText(readBiText(props, key), locale);
 }
 
@@ -89,7 +96,8 @@ export type TaggedText = { text: string; lang: Locale; state: BiTextState };
 export function resolveBiTextTagged(value: BiText, locale: Locale): TaggedText {
   const state = biTextState(value);
   if (state === "empty") return { text: "", lang: locale, state };
-  if (locale === "bn" && state === "fallback") return { text: value.en, lang: "en", state };
+  if (locale === "bn" && state === "fallback")
+    return { text: value.en, lang: "en", state };
   return { text: locale === "bn" ? value.bn : value.en, lang: locale, state };
 }
 
@@ -111,7 +119,8 @@ export function taggedTextOf(
 export type ScriptRun = { text: string; ltr: boolean };
 
 /** Latin letters/digits plus the punctuation that binds a model number. */
-const LATIN_RUN = /[A-Za-z0-9]+(?:[-_/.+±×'"°%][A-Za-z0-9]+)*(?:\s?(?:mm|cm|kg|g|ml|l|GB|TB|MB|Hz|W|V|mAh|px))?/g;
+const LATIN_RUN =
+  /[A-Za-z0-9]+(?:[-_/.+±×'"°%][A-Za-z0-9]+)*(?:\s?(?:mm|cm|kg|g|ml|l|GB|TB|MB|Hz|W|V|mAh|px))?/g;
 const BENGALI = /[\u0980-\u09FF]/;
 
 /**

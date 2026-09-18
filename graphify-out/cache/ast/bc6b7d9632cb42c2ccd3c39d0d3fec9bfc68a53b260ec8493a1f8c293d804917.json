@@ -1,1 +1,792 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "label": "assets.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L1"}, {"id": "themes_assets_themeassetkind", "label": "ThemeAssetKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L9"}, {"id": "themes_assets_themeasset", "label": "ThemeAsset", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L11"}, {"id": "themes_assets_asset_kind_label", "label": "ASSET_KIND_LABEL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L26"}, {"id": "themes_assets_font_ext", "label": "FONT_EXT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L39"}, {"id": "themes_assets_image_ext", "label": "IMAGE_EXT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L40"}, {"id": "themes_assets_extensionof", "label": "extensionOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L42"}, {"id": "themes_assets_assetkindfromname", "label": "assetKindFromName()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L47"}, {"id": "themes_assets_cleanassetname", "label": "cleanAssetName()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L56"}, {"id": "themes_assets_csssanitiseresult", "label": "CssSanitiseResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L64"}, {"id": "themes_assets_css_bans", "label": "CSS_BANS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L66"}, {"id": "themes_assets_sanitisethemecss", "label": "sanitiseThemeCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L80"}, {"id": "themes_assets_iscsssafe", "label": "isCssSafe()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L93"}, {"id": "themes_assets_cssstats", "label": "CssStats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L97"}, {"id": "themes_assets_validatecss", "label": "validateCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L109"}, {"id": "themes_assets_parsetokenoverrides", "label": "parseTokenOverrides()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L127"}, {"id": "themes_assets_tokenstocss", "label": "tokensToCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L149"}, {"id": "themes_assets_validatetokens", "label": "validateTokens()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L155"}, {"id": "themes_assets_combinethemecss", "label": "combineThemeCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L173"}, {"id": "themes_assets_sortassets", "label": "sortAssets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L194"}, {"id": "themes_assets_assetsfortheme", "label": "assetsForTheme()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L203"}, {"id": "themes_assets_formatassetbytes", "label": "formatAssetBytes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L209"}, {"id": "themes_assets_assetsummary", "label": "assetSummary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L215"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_themeassetkind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_themeasset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_asset_kind_label", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_font_ext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_image_ext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_extensionof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_assetkindfromname", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_cleanassetname", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_csssanitiseresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L64", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_css_bans", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_sanitisethemecss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_iscsssafe", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L93", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_cssstats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_cssstats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_validatecss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L109", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_parsetokenoverrides", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L127", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_tokenstocss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L149", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_validatetokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L155", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_combinethemecss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_sortassets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_assetsfortheme", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L203", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_formatassetbytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L209", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_themes_assets_ts", "target": "themes_assets_assetsummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L215", "weight": 1.0}, {"source": "themes_assets_assetkindfromname", "target": "themes_assets_extensionof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L48", "weight": 1.0}, {"source": "themes_assets_iscsssafe", "target": "themes_assets_sanitisethemecss", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L94", "weight": 1.0}, {"source": "themes_assets_validatecss", "target": "themes_assets_cssstats", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L110", "weight": 1.0}, {"source": "themes_assets_combinethemecss", "target": "themes_assets_tokenstocss", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L179", "weight": 1.0}, {"source": "themes_assets_combinethemecss", "target": "themes_assets_parsetokenoverrides", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L179", "weight": 1.0}, {"source": "themes_assets_combinethemecss", "target": "themes_assets_sanitisethemecss", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L188", "weight": 1.0}, {"source": "themes_assets_assetsfortheme", "target": "themes_assets_sortassets", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L204", "weight": 1.0}, {"source": "themes_assets_assetsummary", "target": "themes_assets_formatassetbytes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L217", "weight": 1.0}], "raw_calls": [{"caller_nid": "themes_assets_extensionof", "callee": "lastIndexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L43"}, {"caller_nid": "themes_assets_extensionof", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L44"}, {"caller_nid": "themes_assets_extensionof", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L44"}, {"caller_nid": "themes_assets_assetkindfromname", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L51"}, {"caller_nid": "themes_assets_assetkindfromname", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L52"}, {"caller_nid": "themes_assets_cleanassetname", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L57"}, {"caller_nid": "themes_assets_cleanassetname", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L57"}, {"caller_nid": "themes_assets_cleanassetname", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L57"}, {"caller_nid": "themes_assets_sanitisethemecss", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L84"}, {"caller_nid": "themes_assets_sanitisethemecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L85"}, {"caller_nid": "themes_assets_sanitisethemecss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L86"}, {"caller_nid": "themes_assets_sanitisethemecss", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L90"}, {"caller_nid": "themes_assets_cssstats", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L100"}, {"caller_nid": "themes_assets_cssstats", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L103"}, {"caller_nid": "themes_assets_cssstats", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L104"}, {"caller_nid": "themes_assets_validatecss", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L111"}, {"caller_nid": "themes_assets_validatecss", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L112"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L131"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L135"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L137"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L138"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L139"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L139"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L139"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L140"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L142"}, {"caller_nid": "themes_assets_parsetokenoverrides", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L143"}, {"caller_nid": "themes_assets_tokenstocss", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L150"}, {"caller_nid": "themes_assets_tokenstocss", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L152"}, {"caller_nid": "themes_assets_tokenstocss", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L152"}, {"caller_nid": "themes_assets_validatetokens", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L156"}, {"caller_nid": "themes_assets_validatetokens", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L158"}, {"caller_nid": "themes_assets_validatetokens", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L159"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L174"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L178"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L179"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L180"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L182"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L182"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L183"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L187"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L188"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L189"}, {"caller_nid": "themes_assets_combinethemecss", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L189"}, {"caller_nid": "themes_assets_sortassets", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L196"}, {"caller_nid": "themes_assets_assetsfortheme", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L205"}, {"caller_nid": "themes_assets_formatassetbytes", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L211"}, {"caller_nid": "themes_assets_formatassetbytes", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts", "source_location": "L212"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "label": "assets.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "themes_assets_themeassetkind",
+      "label": "ThemeAssetKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "themes_assets_themeasset",
+      "label": "ThemeAsset",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "themes_assets_asset_kind_label",
+      "label": "ASSET_KIND_LABEL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "themes_assets_font_ext",
+      "label": "FONT_EXT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "themes_assets_image_ext",
+      "label": "IMAGE_EXT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "themes_assets_extensionof",
+      "label": "extensionOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "themes_assets_assetkindfromname",
+      "label": "assetKindFromName()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "themes_assets_cleanassetname",
+      "label": "cleanAssetName()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "themes_assets_csssanitiseresult",
+      "label": "CssSanitiseResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L64"
+    },
+    {
+      "id": "themes_assets_css_bans",
+      "label": "CSS_BANS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "themes_assets_sanitisethemecss",
+      "label": "sanitiseThemeCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "themes_assets_iscsssafe",
+      "label": "isCssSafe()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L93"
+    },
+    {
+      "id": "themes_assets_cssstats",
+      "label": "CssStats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "themes_assets_validatecss",
+      "label": "validateCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L109"
+    },
+    {
+      "id": "themes_assets_parsetokenoverrides",
+      "label": "parseTokenOverrides()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L127"
+    },
+    {
+      "id": "themes_assets_tokenstocss",
+      "label": "tokensToCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L149"
+    },
+    {
+      "id": "themes_assets_validatetokens",
+      "label": "validateTokens()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L155"
+    },
+    {
+      "id": "themes_assets_combinethemecss",
+      "label": "combineThemeCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "themes_assets_sortassets",
+      "label": "sortAssets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L194"
+    },
+    {
+      "id": "themes_assets_assetsfortheme",
+      "label": "assetsForTheme()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "themes_assets_formatassetbytes",
+      "label": "formatAssetBytes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L209"
+    },
+    {
+      "id": "themes_assets_assetsummary",
+      "label": "assetSummary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L215"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_themeassetkind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_themeasset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_asset_kind_label",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_font_ext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_image_ext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_extensionof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_assetkindfromname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_cleanassetname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_csssanitiseresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_css_bans",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_sanitisethemecss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_iscsssafe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_cssstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_cssstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_validatecss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_parsetokenoverrides",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_tokenstocss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_validatetokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_combinethemecss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_sortassets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_assetsfortheme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_formatassetbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_themes_assets_ts",
+      "target": "themes_assets_assetsummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_assetkindfromname",
+      "target": "themes_assets_extensionof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_iscsssafe",
+      "target": "themes_assets_sanitisethemecss",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_validatecss",
+      "target": "themes_assets_cssstats",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_combinethemecss",
+      "target": "themes_assets_tokenstocss",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_combinethemecss",
+      "target": "themes_assets_parsetokenoverrides",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_combinethemecss",
+      "target": "themes_assets_sanitisethemecss",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_assetsfortheme",
+      "target": "themes_assets_sortassets",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "themes_assets_assetsummary",
+      "target": "themes_assets_formatassetbytes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "themes_assets_extensionof",
+      "callee": "lastIndexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "themes_assets_extensionof",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "themes_assets_extensionof",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "themes_assets_assetkindfromname",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "themes_assets_assetkindfromname",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "themes_assets_cleanassetname",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "themes_assets_cleanassetname",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "themes_assets_cleanassetname",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "themes_assets_sanitisethemecss",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "themes_assets_sanitisethemecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "themes_assets_sanitisethemecss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "themes_assets_sanitisethemecss",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "themes_assets_cssstats",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "themes_assets_cssstats",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "themes_assets_cssstats",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "themes_assets_validatecss",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "themes_assets_validatecss",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "themes_assets_parsetokenoverrides",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "themes_assets_tokenstocss",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "themes_assets_tokenstocss",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "themes_assets_tokenstocss",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "themes_assets_validatetokens",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "themes_assets_validatetokens",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "themes_assets_validatetokens",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L189"
+    },
+    {
+      "caller_nid": "themes_assets_combinethemecss",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L189"
+    },
+    {
+      "caller_nid": "themes_assets_sortassets",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "themes_assets_assetsfortheme",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "themes_assets_formatassetbytes",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "themes_assets_formatassetbytes",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/themes/assets.ts",
+      "source_location": "L212"
+    }
+  ]
+}

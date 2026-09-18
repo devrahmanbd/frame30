@@ -4,30 +4,33 @@ description: Agent skill for coder - invoke with $agent-coder
 ---
 
 ---
+
 name: coder
 type: developer
 color: "#FF6B35"
 description: Implementation specialist for writing clean, efficient code
 capabilities:
-  - code_generation
-  - refactoring
-  - optimization
-  - api_design
-  - error_handling
-priority: high
-hooks:
+
+- code_generation
+- refactoring
+- optimization
+- api_design
+- error_handling
+  priority: high
+  hooks:
   pre: |
-    echo "💻 Coder agent implementing: $TASK"
-    # Check for existing tests
-    if grep -q "test\|spec" <<< "$TASK"; then
-      echo "⚠️  Remember: Write tests first (TDD)"
-    fi
+  echo "💻 Coder agent implementing: $TASK"
+  # Check for existing tests
+  if grep -q "test\|spec" <<< "$TASK"; then
+  echo "⚠️ Remember: Write tests first (TDD)"
+  fi
   post: |
-    echo "✨ Implementation complete"
-    # Run basic validation
-    if [ -f "package.json" ]; then
-      npm run lint --if-present
-    fi
+  echo "✨ Implementation complete"
+  # Run basic validation
+  if [ -f "package.json" ]; then
+  npm run lint --if-present
+  fi
+
 ---
 
 # Code Implementation Agent
@@ -92,22 +95,25 @@ const lookupMap = new Map<string, User>();
 const results = await Promise.all(items.map(processItem));
 
 // Lazy loading
-const heavyModule = () => import('.$heavy-module');
+const heavyModule = () => import(".$heavy-module");
 ```
 
 ## Implementation Process
 
 ### 1. Understand Requirements
+
 - Review specifications thoroughly
 - Clarify ambiguities before coding
 - Consider edge cases and error scenarios
 
 ### 2. Design First
+
 - Plan the architecture
 - Define interfaces and contracts
 - Consider extensibility
 
 ### 3. Test-Driven Development
+
 ```typescript
 // Write test first
 describe('UserService', () => {
@@ -125,6 +131,7 @@ calculateDiscount(user: User): number {
 ```
 
 ### 4. Incremental Implementation
+
 - Start with core functionality
 - Add features incrementally
 - Refactor continuously
@@ -132,6 +139,7 @@ calculateDiscount(user: User): number {
 ## Code Style Guidelines
 
 ### TypeScript/JavaScript
+
 ```typescript
 // Use modern syntax
 const processItems = async (items: Item[]): Promise<Result[]> => {
@@ -150,14 +158,19 @@ interface UserConfig {
 
 // Error boundaries
 class ServiceError extends Error {
-  constructor(message: string, public code: string, public details?: unknown) {
+  constructor(
+    message: string,
+    public code: string,
+    public details?: unknown,
+  ) {
     super(message);
-    this.name = 'ServiceError';
+    this.name = "ServiceError";
   }
 }
 ```
 
 ### File Organization
+
 ```
 src/
   modules/
@@ -172,6 +185,7 @@ src/
 ## Best Practices
 
 ### 1. Security
+
 - Never hardcode secrets
 - Validate all inputs
 - Sanitize outputs
@@ -179,6 +193,7 @@ src/
 - Implement proper authentication$authorization
 
 ### 2. Maintainability
+
 - Write self-documenting code
 - Add comments for complex logic
 - Keep functions small (<20 lines)
@@ -186,6 +201,7 @@ src/
 - Maintain consistent style
 
 ### 3. Testing
+
 - Aim for >80% coverage
 - Test edge cases
 - Mock external dependencies
@@ -193,6 +209,7 @@ src/
 - Keep tests fast and isolated
 
 ### 4. Documentation
+
 ```typescript
 /**
  * Calculates the discount rate for a user based on their purchase history
@@ -208,6 +225,7 @@ src/
 ## MCP Tool Integration
 
 ### Memory Coordination
+
 ```javascript
 // Report implementation status
 mcp__claude-flow__memory_usage {
@@ -245,6 +263,7 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### Performance Monitoring
+
 ```javascript
 // Track implementation metrics
 mcp__claude-flow__benchmark_run {

@@ -42,7 +42,11 @@ export function DensityProvider({
   density: Density;
   children: ReactNode;
 }) {
-  return <DensityContext.Provider value={density}>{children}</DensityContext.Provider>;
+  return (
+    <DensityContext.Provider value={density}>
+      {children}
+    </DensityContext.Provider>
+  );
 }
 
 export function useDensity(override?: Density): Density {
@@ -97,9 +101,13 @@ export function Page({
             >
               {title}
             </h1>
-            {description ? <p className="mt-1 text-sm fq-sub">{description}</p> : null}
+            {description ? (
+              <p className="mt-1 text-sm fq-sub">{description}</p>
+            ) : null}
           </div>
-          {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
+          {actions ? (
+            <div className="flex shrink-0 items-center gap-2">{actions}</div>
+          ) : null}
         </header>
         {tabs ? <div className="mb-5">{tabs}</div> : null}
         {/* Keyed on the title so content settles in once per route, not per render. */}
@@ -135,7 +143,12 @@ export function Card({
 }) {
   const d = useDensity(density);
   return (
-    <section className={cn("fq-card fq-beam fq-hover-spotlight fq-edge-inner overflow-hidden", className)}>
+    <section
+      className={cn(
+        "fq-card fq-beam fq-hover-spotlight fq-edge-inner overflow-hidden",
+        className,
+      )}
+    >
       {title || actions ? (
         <header
           className={cn(
@@ -144,10 +157,16 @@ export function Card({
           )}
         >
           <div className="min-w-0">
-            {title ? <h2 className="text-sm font-semibold text-foreground">{title}</h2> : null}
-            {description ? <p className="mt-0.5 text-xs fq-sub">{description}</p> : null}
+            {title ? (
+              <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+            ) : null}
+            {description ? (
+              <p className="mt-0.5 text-xs fq-sub">{description}</p>
+            ) : null}
           </div>
-          {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
+          {actions ? (
+            <div className="flex shrink-0 items-center gap-2">{actions}</div>
+          ) : null}
         </header>
       ) : null}
       <div className={padded ? BOX_PAD[d] : undefined}>{children}</div>
@@ -167,7 +186,8 @@ export function Card({
 
 /* ------------------------------------------------------------------- Badge */
 
-export type Tone = "neutral" | "success" | "warning" | "danger" | "info" | "brand";
+export type Tone =
+  "neutral" | "success" | "warning" | "danger" | "info" | "brand";
 
 const TONE_INK: Record<Tone, string> = {
   neutral: "text-muted-foreground",
@@ -198,7 +218,9 @@ export function Badge({
         className,
       )}
     >
-      {dot ? <span aria-hidden className="size-1.5 rounded-full bg-current" /> : null}
+      {dot ? (
+        <span aria-hidden className="size-1.5 rounded-full bg-current" />
+      ) : null}
       <span className="text-foreground/90">{children}</span>
     </span>
   );
@@ -255,7 +277,11 @@ export function Field({
     <div className="space-y-1.5">
       <label htmlFor={id} className="block text-sm font-medium text-foreground">
         {label}
-        {required ? <span aria-hidden className="ml-0.5 text-[var(--fq-danger)]">*</span> : null}
+        {required ? (
+          <span aria-hidden className="ml-0.5 text-[var(--fq-danger)]">
+            *
+          </span>
+        ) : null}
       </label>
       {children}
       {error ? (
@@ -292,7 +318,9 @@ export function Toolbar({
       )}
     >
       {children}
-      {end ? <div className="ml-auto flex flex-wrap items-center gap-2">{end}</div> : null}
+      {end ? (
+        <div className="ml-auto flex flex-wrap items-center gap-2">{end}</div>
+      ) : null}
     </div>
   );
 }
@@ -309,7 +337,11 @@ export function SavedViews({
   onSelect: (id: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap items-center gap-1" role="tablist" aria-label="Saved views">
+    <div
+      className="flex flex-wrap items-center gap-1"
+      role="tablist"
+      aria-label="Saved views"
+    >
       {views.map((v) => (
         <button
           key={v.id}
@@ -335,7 +367,6 @@ export function SavedViews({
     </div>
   );
 }
-
 
 export function BulkBar({
   count,
@@ -376,7 +407,11 @@ export function Skeleton({
   style?: React.CSSProperties;
 }) {
   return (
-    <div aria-hidden style={style} className={cn("fq-shimmer rounded-fq-sm bg-muted", className)} />
+    <div
+      aria-hidden
+      style={style}
+      className={cn("fq-shimmer rounded-fq-sm bg-muted", className)}
+    />
   );
 }
 
@@ -392,7 +427,11 @@ export function TableSkeleton({
 }) {
   const d = useDensity(density);
   return (
-    <div aria-busy="true" aria-live="polite" className="fq-card divide-y divide-border">
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      className="fq-card divide-y divide-border"
+    >
       {Array.from({ length: rows }).map((_, r) => (
         <div key={r} className={cn("flex items-center gap-4", CELL_PAD[d])}>
           {Array.from({ length: cols }).map((__, c) => (
@@ -409,14 +448,23 @@ export function TableSkeleton({
 }
 
 /** Card grids (KPIs, summaries) reserve their own boxes. */
-export function CardSkeleton({ count = 3, lines = 2 }: { count?: number; lines?: number }) {
+export function CardSkeleton({
+  count = 3,
+  lines = 2,
+}: {
+  count?: number;
+  lines?: number;
+}) {
   return (
     <div aria-busy="true" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="fq-card space-y-3 p-4">
           <Skeleton className="h-3 w-24" />
           {Array.from({ length: lines }).map((__, l) => (
-            <Skeleton key={l} className={cn("h-5", l === 0 ? "w-32" : "w-20")} />
+            <Skeleton
+              key={l}
+              className={cn("h-5", l === 0 ? "w-32" : "w-20")}
+            />
           ))}
         </div>
       ))}
@@ -437,7 +485,10 @@ export function ChartSkeleton({ height = 220 }: { height?: number }) {
 /** Two-column record editors, matching `DetailLayout`. */
 export function DetailSkeleton() {
   return (
-    <div aria-busy="true" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+    <div
+      aria-busy="true"
+      className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"
+    >
       <div className="space-y-4">
         <div className="fq-card space-y-3 p-4">
           <Skeleton className="h-3 w-24" />
@@ -486,7 +537,9 @@ export function EmptyState({
         {icon ?? <Inbox className="size-5" />}
       </div>
       <p className="text-sm font-medium text-foreground">{title}</p>
-      {description ? <p className="mx-auto mt-1 max-w-md text-sm fq-sub">{description}</p> : null}
+      {description ? (
+        <p className="mx-auto mt-1 max-w-md text-sm fq-sub">{description}</p>
+      ) : null}
       {action || secondaryAction ? (
         <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
           {action}
@@ -516,7 +569,10 @@ export function InlineError({
       className="fq-enter-fade flex flex-wrap items-start justify-between gap-3 rounded-fq-lg border border-[color-mix(in_oklab,var(--fq-danger)_35%,transparent)] bg-[color-mix(in_oklab,var(--fq-danger)_8%,transparent)] p-4 text-sm"
     >
       <div className="flex items-start gap-2">
-        <AlertTriangle aria-hidden className="mt-0.5 size-4 text-[var(--fq-danger)]" />
+        <AlertTriangle
+          aria-hidden
+          className="mt-0.5 size-4 text-[var(--fq-danger)]"
+        />
         <div>
           <p className="text-[var(--fq-danger)]">{message}</p>
           {detail ? <p className="mt-1 text-xs fq-sub">{detail}</p> : null}
@@ -546,7 +602,9 @@ export function ErrorState({
     <EmptyState
       icon={<AlertTriangle className="size-5 text-[var(--fq-danger)]" />}
       title={title}
-      description={message ?? "The request didn't complete. Nothing was changed."}
+      description={
+        message ?? "The request didn't complete. Nothing was changed."
+      }
       action={
         onRetry ? (
           <button type="button" onClick={onRetry} className={btnPrimary}>
@@ -699,9 +757,18 @@ export function DataTable<T>({
 
   return (
     <div className="fq-card fq-edge-inner overflow-hidden">
-      <div className={cn(stickyHeader ? "max-h-[70vh] overflow-auto" : "overflow-x-auto")}>
+      <div
+        className={cn(
+          stickyHeader ? "max-h-[70vh] overflow-auto" : "overflow-x-auto",
+        )}
+      >
         <table className="w-full border-collapse text-sm">
-          <thead className={cn("bg-card/95 backdrop-blur", stickyHeader && "sticky top-0 z-[1]")}>
+          <thead
+            className={cn(
+              "bg-card/95 backdrop-blur",
+              stickyHeader && "sticky top-0 z-[1]",
+            )}
+          >
             <tr className="border-b border-border">
               {onToggle ? (
                 <th scope="col" className="w-10 px-3 py-2">
@@ -723,7 +790,11 @@ export function DataTable<T>({
                     scope="col"
                     style={c.width ? { width: c.width } : undefined}
                     aria-sort={
-                      active ? (dir === "asc" ? "ascending" : "descending") : undefined
+                      active
+                        ? dir === "asc"
+                          ? "ascending"
+                          : "descending"
+                        : undefined
                     }
                     className={cn(
                       "px-3 py-2 text-xs font-medium fq-sub",
@@ -752,7 +823,9 @@ export function DataTable<T>({
                   </th>
                 );
               })}
-              {rowActions ? <th scope="col" className="w-24 px-3 py-2" /> : null}
+              {rowActions ? (
+                <th scope="col" className="w-24 px-3 py-2" />
+              ) : null}
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -760,9 +833,15 @@ export function DataTable<T>({
               const id = rowKey(row);
               const isSelected = selected?.has(id) ?? false;
               if (expandedKey === id && renderExpanded) {
-                const span = columns.length + (onToggle ? 1 : 0) + (rowActions ? 1 : 0);
+                const span =
+                  columns.length + (onToggle ? 1 : 0) + (rowActions ? 1 : 0);
                 return (
-                  <tr key={id} data-row-id={id} data-expanded="true" className="bg-muted/30">
+                  <tr
+                    key={id}
+                    data-row-id={id}
+                    data-expanded="true"
+                    className="bg-muted/30"
+                  >
                     <td colSpan={span} className="p-0">
                       {renderExpanded(row)}
                     </td>
@@ -825,7 +904,8 @@ export function DataTable<T>({
       {onPage && page && pages > 1 ? (
         <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2 text-xs">
           <span className="fq-sub">
-            Page <span className="fq-num">{page}</span> of <span className="fq-num">{pages}</span>
+            Page <span className="fq-num">{page}</span> of{" "}
+            <span className="fq-num">{pages}</span>
           </span>
           <div className="flex gap-1">
             <button
@@ -850,7 +930,6 @@ export function DataTable<T>({
     </div>
   );
 }
-
 
 /* ------------------------------------------------------------------ Drawer */
 
@@ -895,7 +974,9 @@ export function Drawer({
         <header className="flex items-start justify-between gap-2 border-b border-border px-4 py-3">
           <div className="min-w-0">
             <h2 className="text-sm font-semibold">{title}</h2>
-            {description ? <p className="mt-0.5 text-xs fq-sub">{description}</p> : null}
+            {description ? (
+              <p className="mt-0.5 text-xs fq-sub">{description}</p>
+            ) : null}
           </div>
           <button
             type="button"
@@ -966,7 +1047,9 @@ export function ConfirmDialog({
         className="fq-edge-inner fq-halo w-full max-w-sm rounded-fq-lg border border-border bg-card p-4 motion-safe:animate-in motion-safe:zoom-in-95 motion-safe:fade-in motion-safe:duration-150"
       >
         <h2 className="text-sm font-semibold">{title}</h2>
-        {description ? <p className="mt-1 text-sm fq-sub">{description}</p> : null}
+        {description ? (
+          <p className="mt-1 text-sm fq-sub">{description}</p>
+        ) : null}
         {requireReason ? (
           <div className="mt-3">
             <Field label="Reason" hint="Recorded in the audit trail.">
@@ -1021,8 +1104,12 @@ export function Timeline({ entries }: { entries: readonly TimelineEntry[] }) {
             aria-hidden
           />
           <p className="text-sm font-medium">{e.title}</p>
-          <p className="text-xs fq-sub fq-num">{new Date(e.at).toLocaleString()}</p>
-          {e.detail ? <div className="mt-1 text-sm fq-sub">{e.detail}</div> : null}
+          <p className="text-xs fq-sub fq-num">
+            {new Date(e.at).toLocaleString()}
+          </p>
+          {e.detail ? (
+            <div className="mt-1 text-sm fq-sub">{e.detail}</div>
+          ) : null}
         </li>
       ))}
     </ol>
@@ -1045,7 +1132,9 @@ export function DetailLayout({
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
       <div className="min-w-0 space-y-4">{children}</div>
-      {side ? <aside className="space-y-4 lg:sticky lg:top-[5.5rem]">{side}</aside> : null}
+      {side ? (
+        <aside className="space-y-4 lg:sticky lg:top-[5.5rem]">{side}</aside>
+      ) : null}
     </div>
   );
 }
@@ -1060,7 +1149,13 @@ const SAVE_COPY: Record<SaveState, string> = {
   error: "Not saved",
 };
 
-export function SaveIndicator({ state, className }: { state: SaveState; className?: string }) {
+export function SaveIndicator({
+  state,
+  className,
+}: {
+  state: SaveState;
+  className?: string;
+}) {
   return (
     <span
       role="status"

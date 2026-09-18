@@ -16,7 +16,8 @@ export const resolvePathFn = createServerFn({ method: "GET" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const { resolveStorefrontPath, recordResolvedMiss } = await import("./url-resolve.server");
+    const { resolveStorefrontPath, recordResolvedMiss } =
+      await import("./url-resolve.server");
     const resolution = await resolveStorefrontPath(data.path);
     if (resolution.type === "miss") {
       await recordResolvedMiss(data.path, data.referrer ?? null);
@@ -25,6 +26,7 @@ export const resolvePathFn = createServerFn({ method: "GET" })
     if (resolution.type !== "article") return { resolution, article: null };
     const { loadPublicArticle } = await import("./marketing.server");
     const loaded = await loadPublicArticle(resolution.slug);
-    if (!loaded) return { resolution: { type: "miss" as const }, article: null };
+    if (!loaded)
+      return { resolution: { type: "miss" as const }, article: null };
     return { resolution, article: loaded };
   });

@@ -59,12 +59,15 @@ export const HEAD_BUDGET = {
  * they buy is a *ratchet* — a new editor dependency has to be argued for.
  */
 export const ADMIN_CHUNK_BUDGET: Record<string, number> = {
-  "src/routes/_authenticated/admin/marketing/seo.tsx": 280 * 1024,
-  "src/routes/_authenticated/admin/marketing/articles.tsx": 320 * 1024,
+  "src/routes/_authenticated/dashboard/marketing/seo.tsx": 280 * 1024,
+  "src/routes/_authenticated/dashboard/marketing/articles.tsx": 320 * 1024,
 };
 
 /** The analysis worker is allowed to exist, but only lazily and only this big. */
-export const ANALYSIS_WORKER_BUDGET = { gzBytes: 40 * 1024, module: "src/lib/seo-analysis.worker.ts" };
+export const ANALYSIS_WORKER_BUDGET = {
+  gzBytes: 40 * 1024,
+  module: "src/lib/seo-analysis.worker.ts",
+};
 
 /** Render-path reads must be bounded in both time and rows. */
 export const RENDER_READ_CONTRACT = {
@@ -105,7 +108,8 @@ export function isBlocking(findings: WeightFinding[]): boolean {
 /** 100 minus a weighted penalty; floored at 0. Advisory, like every score here. */
 export function weightScore(findings: WeightFinding[]): number {
   const penalty = findings.reduce(
-    (sum, f) => sum + (f.severity === "error" ? 25 : f.severity === "warn" ? 8 : 2),
+    (sum, f) =>
+      sum + (f.severity === "error" ? 25 : f.severity === "warn" ? 8 : 2),
     0,
   );
   return Math.max(0, Math.min(100, 100 - penalty));
@@ -129,11 +133,15 @@ export function byteLength(text: string): number {
 }
 
 function escapeAttr(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;");
 }
 
 function renderMeta(tag: MetaTag): string {
-  if (tag["title"] !== undefined) return `<title>${escapeAttr(String(tag["title"]))}</title>`;
+  if (tag["title"] !== undefined)
+    return `<title>${escapeAttr(String(tag["title"]))}</title>`;
   const attrs = Object.entries(tag)
     .map(([k, v]) => `${k}="${escapeAttr(String(v))}"`)
     .join(" ");
@@ -190,7 +198,10 @@ export type HeadMeasurement = {
 function countNodes(value: unknown, depth = 0): number {
   if (depth > 12 || value === null || typeof value !== "object") return 0;
   if (Array.isArray(value)) {
-    return (value as unknown[]).reduce<number>((n, v) => n + countNodes(v, depth + 1), 0);
+    return (value as unknown[]).reduce<number>(
+      (n, v) => n + countNodes(v, depth + 1),
+      0,
+    );
   }
   const values: unknown[] = Object.values(value as Record<string, unknown>);
   return 1 + values.reduce<number>((n, v) => n + countNodes(v, depth + 1), 0);
@@ -202,7 +213,12 @@ export function measureGraph(script: ScriptTag): GraphMeasurement {
     const parsed = JSON.parse(script.children) as Record<string, unknown>;
     const type = parsed["@type"];
     return {
-      type: typeof type === "string" ? type : Array.isArray(type) ? String(type[0] ?? "unknown") : "unknown",
+      type:
+        typeof type === "string"
+          ? type
+          : Array.isArray(type)
+            ? String(type[0] ?? "unknown")
+            : "unknown",
       rawBytes,
       invalid: false,
       nodes: countNodes(parsed),
@@ -243,7 +259,12 @@ export function estimateGzipBytes(text: string): number {
       let guards = 0;
       while (at !== -1 && at < i && guards < 64) {
         let len = MIN_MATCH;
-        while (len < 258 && i + len < text.length && text[at + len] === text[i + len]) len += 1;
+        while (
+          len < 258 &&
+          i + len < text.length &&
+          text[at + len] === text[i + len]
+        )
+          len += 1;
         if (len > bestLen) bestLen = len;
         at = text.indexOf(probe, at + 1);
         guards += 1;
@@ -270,10 +291,20 @@ export function estimateGzipBytes(text: string): number {
   return Math.max(20, Math.round(bits / 8) + 18);
 }
 
-export function measureHead(route: string, head: HeadOutput, compress: Compressor = estimateGzipBytes): HeadMeasurement {
+export function measureHead(
+  route: string,
+  head: HeadOutput,
+  compress: Compressor = estimateGzipBytes,
+): HeadMeasurement {
   const html = serializeHead(head);
-  const metaBytes = head.meta.reduce((n, t) => n + byteLength(renderMeta(t)), 0);
-  const linkBytes = head.links.reduce((n, t) => n + byteLength(renderLink(t)), 0);
+  const metaBytes = head.meta.reduce(
+    (n, t) => n + byteLength(renderMeta(t)),
+    0,
+  );
+  const linkBytes = head.links.reduce(
+    (n, t) => n + byteLength(renderLink(t)),
+    0,
+  );
   const graphs = head.scripts.map(measureGraph);
   return {
     route,
@@ -296,7 +327,9 @@ export function measureHead(route: string, head: HeadOutput, compress: Compresso
 export function checkHeadBudget(measurement: HeadMeasurement): WeightFinding[] {
   const out: WeightFinding[] = [];
   const scope = measurement.route;
-  const heaviest = [...measurement.graphs].sort((a, b) => b.rawBytes - a.rawBytes)[0];
+  const heaviest = [...measurement.graphs].sort(
+    (a, b) => b.rawBytes - a.rawBytes,
+  )[0];
 
   if (measurement.gzBytes > HEAD_BUDGET.gzBytes) {
     out.push(
@@ -304,7 +337,9 @@ export function checkHeadBudget(measurement: HeadMeasurement): WeightFinding[] {
         code: "head:gz_over_budget",
         severity: "error",
         scope,
-        offender: heaviest ? `${heaviest.type} (${heaviest.rawBytes} B)` : "meta tags",
+        offender: heaviest
+          ? `${heaviest.type} (${heaviest.rawBytes} B)`
+          : "meta tags",
         actual: measurement.gzBytes,
         budget: HEAD_BUDGET.gzBytes,
         message: `Head payload is ${formatKb(measurement.gzBytes)} gzipped, over the ${formatKb(
@@ -351,7 +386,8 @@ export function checkHeadBudget(measurement: HeadMeasurement): WeightFinding[] {
           severity: "error",
           scope,
           offender: graph.type,
-          message: "A JSON-LD block is not valid JSON and will be dropped by every parser.",
+          message:
+            "A JSON-LD block is not valid JSON and will be dropped by every parser.",
           messageBn: "একটি JSON-LD ব্লক বৈধ JSON নয়; সব পার্সার এটি বাদ দেবে।",
         }),
       );
@@ -415,9 +451,12 @@ export function checkHeadBudget(measurement: HeadMeasurement): WeightFinding[] {
 }
 
 /** Duplicate `@type` in one page: two Products confuse every consumer. */
-export function checkGraphSingletons(measurement: HeadMeasurement): WeightFinding[] {
+export function checkGraphSingletons(
+  measurement: HeadMeasurement,
+): WeightFinding[] {
   const seen = new Map<string, number>();
-  for (const graph of measurement.graphs) seen.set(graph.type, (seen.get(graph.type) ?? 0) + 1);
+  for (const graph of measurement.graphs)
+    seen.set(graph.type, (seen.get(graph.type) ?? 0) + 1);
   return [...seen.entries()]
     .filter(([type, count]) => count > 1 && type !== "unknown")
     .map(([type, count]) =>
@@ -450,15 +489,33 @@ export { formatKb as formatWeight };
  * needs to know whether their new import is the same class of mistake.
  */
 export const STOREFRONT_FORBIDDEN: { module: string; reason: string }[] = [
-  { module: "seo-analysis", reason: "Rank-Math-class scoring; admin-only, ships a rules table." },
-  { module: "seo-analysis.worker", reason: "Worker entry for the score; never on a shopper's page." },
-  { module: "seo-weight", reason: "This audit itself — measuring the head must not enlarge it." },
+  {
+    module: "seo-analysis",
+    reason: "Rank-Math-class scoring; admin-only, ships a rules table.",
+  },
+  {
+    module: "seo-analysis.worker",
+    reason: "Worker entry for the score; never on a shopper's page.",
+  },
+  {
+    module: "seo-weight",
+    reason: "This audit itself — measuring the head must not enlarge it.",
+  },
   { module: "cms-lint", reason: "Editor lint rules." },
-  { module: "content-health", reason: "Crawl/graph analysis for the admin desk." },
-  { module: "seo-publish-gate", reason: "Publish-time gate; irrelevant at read time." },
+  {
+    module: "content-health",
+    reason: "Crawl/graph analysis for the admin desk.",
+  },
+  {
+    module: "seo-publish-gate",
+    reason: "Publish-time gate; irrelevant at read time.",
+  },
   { module: "blog-editor", reason: "Classic-editor surface." },
   { module: "recharts", reason: "Dashboard charting; ~90 kB gzipped." },
-  { module: "@/components/admin", reason: "Admin components must not be reachable from a storefront route." },
+  {
+    module: "@/components/admin",
+    reason: "Admin components must not be reachable from a storefront route.",
+  },
 ];
 
 /** Storefront route files the rule is enforced against. */
@@ -488,12 +545,15 @@ export function staticImports(source: string): string[] {
   const re = /(?:^|\n)\s*import\s+(?:[^'"]*?from\s*)?["']([^"']+)["']/g;
   let m: RegExpExecArray | null;
   while ((m = re.exec(source))) out.push(m[1]!);
-  const reExport = /(?:^|\n)\s*export\s+(?:\*|\{[^}]*\})\s*from\s*["']([^"']+)["']/g;
+  const reExport =
+    /(?:^|\n)\s*export\s+(?:\*|\{[^}]*\})\s*from\s*["']([^"']+)["']/g;
   while ((m = reExport.exec(source))) out.push(m[1]!);
   return out;
 }
 
-export function isForbiddenSpecifier(specifier: string): { module: string; reason: string } | null {
+export function isForbiddenSpecifier(
+  specifier: string,
+): { module: string; reason: string } | null {
   for (const rule of STOREFRONT_FORBIDDEN) {
     const normalized = specifier.replace(/^@\//, "src/").replace(/^\.\//, "");
     if (
@@ -530,7 +590,9 @@ export function auditImportGraph(
   for (const entry of entries) {
     if (!(entry in files)) continue;
     const seen = new Set<string>([entry]);
-    const queue: { file: string; chain: string[] }[] = [{ file: entry, chain: [entry] }];
+    const queue: { file: string; chain: string[] }[] = [
+      { file: entry, chain: [entry] },
+    ];
 
     while (queue.length) {
       const { file, chain } = queue.shift()!;
@@ -541,7 +603,12 @@ export function auditImportGraph(
           const key = `${entry}|${rule.module}`;
           if (!reported.has(key)) {
             reported.add(key);
-            violations.push({ entry, module: rule.module, reason: rule.reason, chain: [...chain, specifier] });
+            violations.push({
+              entry,
+              module: rule.module,
+              reason: rule.reason,
+              chain: [...chain, specifier],
+            });
           }
           continue;
         }
@@ -555,7 +622,9 @@ export function auditImportGraph(
   return violations;
 }
 
-export function importViolationFindings(violations: ImportViolation[]): WeightFinding[] {
+export function importViolationFindings(
+  violations: ImportViolation[],
+): WeightFinding[] {
   return violations.map((v) =>
     finding({
       code: "storefront:forbidden_import",
@@ -574,7 +643,9 @@ export function importViolationFindings(violations: ImportViolation[]): WeightFi
 
 export type ChunkMeasurement = { route: string; jsGzBytes: number };
 
-export function checkAdminChunkBudget(measurements: ChunkMeasurement[]): WeightFinding[] {
+export function checkAdminChunkBudget(
+  measurements: ChunkMeasurement[],
+): WeightFinding[] {
   const out: WeightFinding[] = [];
   for (const m of measurements) {
     const budget = ADMIN_CHUNK_BUDGET[m.route];
@@ -608,7 +679,10 @@ export function checkAdminChunkBudget(measurements: ChunkMeasurement[]): WeightF
 }
 
 /** The worker must be pulled in with a dynamic import, on first keystroke. */
-export function checkWorkerLaziness(source: string, file: string): WeightFinding[] {
+export function checkWorkerLaziness(
+  source: string,
+  file: string,
+): WeightFinding[] {
   const statics = staticImports(source);
   const eager = statics.some((s) => s.includes("seo-analysis.worker"));
   if (!eager) return [];
@@ -632,18 +706,48 @@ export function checkWorkerLaziness(source: string, file: string): WeightFinding
 export type RenderPathRead = { module: string; fn: string; note: string };
 
 export const RENDER_PATH_READS: RenderPathRead[] = [
-  { module: "src/lib/seo.server.ts", fn: "resolveSeo", note: "entity SEO override per rendered page" },
-  { module: "src/lib/seo.server.ts", fn: "loadStoreRobotsPolicy", note: "robots.txt policy" },
-  { module: "src/lib/seo.server.ts", fn: "loadSitemapByKind", note: "sitemap shard" },
-  { module: "src/lib/seo.server.ts", fn: "loadStoreLlmsSummary", note: "llms.txt catalogue" },
-  { module: "src/lib/template-seo.server.ts", fn: "loadTemplateSeoMap", note: "builder template SEO" },
-  { module: "src/lib/url-lifecycle.server.ts", fn: "loadRedirectMap", note: "redirect map on a 404" },
-  { module: "src/lib/custom-code.server.ts", fn: "publishedCustomCode", note: "merchant custom code" },
+  {
+    module: "src/lib/seo.server.ts",
+    fn: "resolveSeo",
+    note: "entity SEO override per rendered page",
+  },
+  {
+    module: "src/lib/seo.server.ts",
+    fn: "loadStoreRobotsPolicy",
+    note: "robots.txt policy",
+  },
+  {
+    module: "src/lib/seo.server.ts",
+    fn: "loadSitemapByKind",
+    note: "sitemap shard",
+  },
+  {
+    module: "src/lib/seo.server.ts",
+    fn: "loadStoreLlmsSummary",
+    note: "llms.txt catalogue",
+  },
+  {
+    module: "src/lib/template-seo.server.ts",
+    fn: "loadTemplateSeoMap",
+    note: "builder template SEO",
+  },
+  {
+    module: "src/lib/url-lifecycle.server.ts",
+    fn: "loadRedirectMap",
+    note: "redirect map on a 404",
+  },
+  {
+    module: "src/lib/custom-code.server.ts",
+    fn: "publishedCustomCode",
+    note: "merchant custom code",
+  },
 ];
 
 /** Extract the body of `export async function <name>(` up to its closing brace. */
 export function functionBody(source: string, name: string): string | null {
-  const signature = new RegExp(`export\\s+async\\s+function\\s+${name}\\s*[(<]`);
+  const signature = new RegExp(
+    `export\\s+async\\s+function\\s+${name}\\s*[(<]`,
+  );
   const match = signature.exec(source);
   if (!match) return null;
   const braceStart = source.indexOf("{", match.index + match[0].length - 1);
@@ -666,7 +770,10 @@ export function functionBody(source: string, name: string): string | null {
  * fallback + counter) or it is a finding. Text-level checking is the point —
  * it fails in CI before the read ever reaches production.
  */
-export function auditRenderPathRead(read: RenderPathRead, source: string): WeightFinding[] {
+export function auditRenderPathRead(
+  read: RenderPathRead,
+  source: string,
+): WeightFinding[] {
   const body = functionBody(source, read.fn);
   if (body === null) {
     return [
@@ -681,7 +788,10 @@ export function auditRenderPathRead(read: RenderPathRead, source: string): Weigh
     ];
   }
   const out: WeightFinding[] = [];
-  if (!body.includes(`${RENDER_READ_CONTRACT.requiredHelper}(`) && !body.includes(`${RENDER_READ_CONTRACT.requiredHelper}<`)) {
+  if (
+    !body.includes(`${RENDER_READ_CONTRACT.requiredHelper}(`) &&
+    !body.includes(`${RENDER_READ_CONTRACT.requiredHelper}<`)
+  ) {
     out.push(
       finding({
         code: "render_read:uncontracted",
@@ -756,7 +866,10 @@ export function auditRenderPathRead(read: RenderPathRead, source: string): Weigh
 }
 
 /** N+1 detector: an awaited query inside a `for`/`while`/`.map(` body. */
-export function auditQueryDiscipline(module: string, source: string): WeightFinding[] {
+export function auditQueryDiscipline(
+  module: string,
+  source: string,
+): WeightFinding[] {
   const out: WeightFinding[] = [];
   const lines = source.split("\n");
   let loopDepth = 0;
@@ -767,7 +880,8 @@ export function auditQueryDiscipline(module: string, source: string): WeightFind
       loopBrace = 0;
     }
     if (loopDepth > 0) {
-      loopBrace += (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
+      loopBrace +=
+        (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
       if (/await\s+[^;]*\.(from|rpc)\(/.test(line)) {
         out.push(
           finding({
@@ -817,6 +931,8 @@ export function composeWeightReport(input: {
     findings,
     heads: input.heads,
     generatedAt: input.generatedAt ?? new Date().toISOString(),
-    heaviest: heaviest ? { route: heaviest.route, gzBytes: heaviest.gzBytes } : null,
+    heaviest: heaviest
+      ? { route: heaviest.route, gzBytes: heaviest.gzBytes }
+      : null,
   };
 }

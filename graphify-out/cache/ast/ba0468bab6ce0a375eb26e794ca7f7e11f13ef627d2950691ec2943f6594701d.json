@@ -1,1 +1,375 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "label": "newsletter.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L1"}, {"id": "lib_newsletter_contract_test_read", "label": "read()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L13"}, {"id": "lib_newsletter_contract_test_src", "label": "src", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L25"}, {"id": "lib_newsletter_contract_test_route", "label": "route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L73"}, {"id": "lib_newsletter_contract_test_queueat", "label": "queueAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L100"}, {"id": "lib_newsletter_contract_test_sendat", "label": "sendAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L101"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_rate_limit_server_buckets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_newsletter_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_consent_text", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_newsletter_limits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_i18n_dict_dict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_mailer_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_mailer_server_mail_breaker", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_mailer_server_mail_timeout_ms", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L88", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_queueat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_sendat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts", "target": "lib_newsletter_contract_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L180", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_newsletter_contract_test_read", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts", "source_location": "L13"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "label": "newsletter.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_newsletter_contract_test_read",
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_newsletter_contract_test_src",
+      "label": "src",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_newsletter_contract_test_route",
+      "label": "route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L73"
+    },
+    {
+      "id": "lib_newsletter_contract_test_queueat",
+      "label": "queueAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_newsletter_contract_test_sendat",
+      "label": "sendAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L101"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_rate_limit_server_buckets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_newsletter_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_consent_text",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_newsletter_limits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_i18n_dict_dict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_mailer_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_mailer_server_mail_breaker",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_mailer_server_mail_timeout_ms",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_queueat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_sendat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_newsletter_contract_test_ts",
+      "target": "lib_newsletter_contract_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L180",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_newsletter_contract_test_read",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/newsletter.contract.test.ts",
+      "source_location": "L13"
+    }
+  ]
+}

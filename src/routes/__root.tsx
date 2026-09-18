@@ -32,58 +32,58 @@ const resolveBootLang = createIsomorphicFn()
   .client((): BootLang => readClientBootLang())
   .server((): BootLang => readServerBootLang());
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      // Phase 7.3 — both subsets are fetched up front so switching locale
-      // never swaps in an unloaded face (CLS budget is 0.02).
-      ...FONT_PRELOAD.origins.map((href) => ({
-        rel: "preconnect",
-        href,
-        crossOrigin: "anonymous" as const,
-      })),
-      { rel: "preload", as: "style", href: FONT_PRELOAD.stylesheet },
-      { rel: "stylesheet", href: FONT_PRELOAD.stylesheet },
-      // One pairing for the whole product: Space Grotesk (display, headings,
-      // metrics) + DM Sans (body and UI). Preloaded as well as linked — the
-      // stylesheet is a third-party request on the critical path, and
-      // discovering it late is what pushed the swap past the CLS measurement
-      // window on slow 320px runs.
-      {
-        rel: "preload",
-        as: "style",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap",
-      },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-      { rel: "alternate icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-
-
-    ],
-  }),
-  /**
-   * Resolves the document locale before the first byte of HTML (§10.6 CLS).
-   *
-   * On the server the `Cookie:` header is the only place a returning visitor's
-   * language is visible, so it is read here and threaded into `<html lang>` and
-   * the provider. On a client navigation the same value is recovered locally —
-   * no server round-trip is added to in-app navigation.
-   *
-   * Fail-soft on purpose: any failure resolving a cosmetic preference degrades
-   * to English rather than failing the document.
-   */
-  loader: (): { lang: BootLang } => ({ lang: resolveBootLang() }),
-  component: RootDocument,
-});
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        // Phase 7.3 — both subsets are fetched up front so switching locale
+        // never swaps in an unloaded face (CLS budget is 0.02).
+        ...FONT_PRELOAD.origins.map((href) => ({
+          rel: "preconnect",
+          href,
+          crossOrigin: "anonymous" as const,
+        })),
+        { rel: "preload", as: "style", href: FONT_PRELOAD.stylesheet },
+        { rel: "stylesheet", href: FONT_PRELOAD.stylesheet },
+        // One pairing for the whole product: Space Grotesk (display, headings,
+        // metrics) + DM Sans (body and UI). Preloaded as well as linked — the
+        // stylesheet is a third-party request on the critical path, and
+        // discovering it late is what pushed the swap past the CLS measurement
+        // window on slow 320px runs.
+        {
+          rel: "preload",
+          as: "style",
+          href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap",
+        },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap",
+        },
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+        { rel: "alternate icon", href: "/favicon.ico" },
+        { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
+      ],
+    }),
+    /**
+     * Resolves the document locale before the first byte of HTML (§10.6 CLS).
+     *
+     * On the server the `Cookie:` header is the only place a returning visitor's
+     * language is visible, so it is read here and threaded into `<html lang>` and
+     * the provider. On a client navigation the same value is recovered locally —
+     * no server round-trip is added to in-app navigation.
+     *
+     * Fail-soft on purpose: any failure resolving a cosmetic preference degrades
+     * to English rather than failing the document.
+     */
+    loader: (): { lang: BootLang } => ({ lang: resolveBootLang() }),
+    component: RootDocument,
+  },
+);
 
 function RootDocument() {
   // The router owns the QueryClient; the provider makes it reachable from

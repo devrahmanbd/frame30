@@ -2,7 +2,7 @@
 
 > **Target Query:** `custom domain ecommerce bd`, `how to connect com bd domain`, `btcl domain ecommerce setup`  
 > **Reading Time:** 8 minutes  
-> **Published:** December 2026  
+> **Published:** December 2026
 
 ---
 
@@ -31,18 +31,22 @@ In **FRAMIQUE**, custom domain connection is handled through an automated **edge
 ## 2. Step-by-Step Configuration Guide
 
 ### Step 1: Obtain Your DNS Records from BTCL
+
 1. Log into your BTCL domain portal (`bdia.btcl.com.bd`).
 2. Go to **DNS Management** for your domain.
 3. Configure your Primary and Secondary Nameservers to a modern DNS provider (such as Cloudflare, Porkbun, or Namecheap) for instant propagation.
 
 ### Step 2: Add CNAME Record
+
 In your DNS provider’s dashboard:
+
 - **Type:** `CNAME`
 - **Name / Host:** `@` or `store` (e.g. `store.yourbrand.com.bd` or root domain)
 - **Target / Value:** `edge.framique.com`
 - **TTL:** Automatic or 300 seconds
 
 ### Step 3: Connect Domain in Framique Admin
+
 1. Open your **FRAMIQUE Admin Console > Settings > Custom Domains**.
 2. Type `yourbrand.com.bd` and click **Verify & Connect**.
 3. Framique’s edge gateway executes an automatic DNS verification handshake and automatically provisions a free, 2048-bit TLS/SSL certificate via ACME challenge routing.

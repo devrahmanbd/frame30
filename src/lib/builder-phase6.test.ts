@@ -1,8 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { ADVANCED_FIELDS, advancedAttrs, advancedCssFor, isAdvancedKey, scopedCss } from "./builder-advanced";
-import { DYNAMIC_TAGS, dynamicTag, hasDynamicTag, resolveDynamicProps, resolveDynamicText } from "./dynamic-tags";
-import { DEFAULT_GLOBALS, globalRef, globalRefId, globalsToCss, parseGlobals } from "./theme-globals";
-import { DEFAULT_TOKENS, TEMPLATE_KEYS, lintTemplate, parseTokens, tokensToCss } from "./builder-ast";
+import {
+  ADVANCED_FIELDS,
+  advancedAttrs,
+  advancedCssFor,
+  isAdvancedKey,
+  scopedCss,
+} from "./builder-advanced";
+import {
+  DYNAMIC_TAGS,
+  dynamicTag,
+  hasDynamicTag,
+  resolveDynamicProps,
+  resolveDynamicText,
+} from "./dynamic-tags";
+import {
+  DEFAULT_GLOBALS,
+  globalRef,
+  globalRefId,
+  globalsToCss,
+  parseGlobals,
+} from "./theme-globals";
+import {
+  DEFAULT_TOKENS,
+  TEMPLATE_KEYS,
+  lintTemplate,
+  parseTokens,
+  tokensToCss,
+} from "./builder-ast";
 import { THEME_PRESETS } from "./theme-presets";
 import type { Section } from "./builder-ast";
 
@@ -11,20 +35,33 @@ const node = (id: string, props: Record<string, unknown>): Section =>
 
 describe("advanced controls", () => {
   it("exposes one field per advanced key, all on the advanced panel", () => {
-    expect(ADVANCED_FIELDS.every((field) => field.panel === "advanced")).toBe(true);
-    expect(ADVANCED_FIELDS.every((field) => isAdvancedKey(field.key))).toBe(true);
-    expect(new Set(ADVANCED_FIELDS.map((f) => f.key)).size).toBe(ADVANCED_FIELDS.length);
+    expect(ADVANCED_FIELDS.every((field) => field.panel === "advanced")).toBe(
+      true,
+    );
+    expect(ADVANCED_FIELDS.every((field) => isAdvancedKey(field.key))).toBe(
+      true,
+    );
+    expect(new Set(ADVANCED_FIELDS.map((f) => f.key)).size).toBe(
+      ADVANCED_FIELDS.length,
+    );
   });
 
   it("clamps spacing and stacking so a widget cannot escape the page", () => {
-    const attrs = advancedAttrs({ advMarginTop: 9999, advZIndex: 100000, advPadX: -50 });
+    const attrs = advancedAttrs({
+      advMarginTop: 9999,
+      advZIndex: 100000,
+      advPadX: -50,
+    });
     expect(attrs.style["marginTop"]).toBe("240px");
     expect(attrs.style["zIndex"]).toBe("999");
     expect(attrs.style["paddingInline"]).toBe("0px");
   });
 
   it("strips anything unsafe out of custom classes and ids", () => {
-    const attrs = advancedAttrs({ advClass: 'promo" onload=x hero', advId: "1bad id" });
+    const attrs = advancedAttrs({
+      advClass: 'promo" onload=x hero',
+      advId: "1bad id",
+    });
     expect(attrs.className).toBe("promo onloadx hero");
     expect(attrs.className).not.toContain('"');
     expect(attrs.id).toBeUndefined();
@@ -36,22 +73,33 @@ describe("advanced controls", () => {
   });
 
   it("scopes custom CSS to the node, however it was written", () => {
-    expect(scopedCss("abc", "selector{color:red}")).toBe('[data-fq-node="abc"]{color:red}');
-    expect(scopedCss("abc", "color:red")).toBe('[data-fq-node="abc"]{color:red}');
+    expect(scopedCss("abc", "selector{color:red}")).toBe(
+      '[data-fq-node="abc"]{color:red}',
+    );
+    expect(scopedCss("abc", "color:red")).toBe(
+      '[data-fq-node="abc"]{color:red}',
+    );
     // A rule that names some other selector is still confined to this node.
-    expect(scopedCss("abc", "body{display:none}")).toContain('[data-fq-node="abc"]');
+    expect(scopedCss("abc", "body{display:none}")).toContain(
+      '[data-fq-node="abc"]',
+    );
     expect(scopedCss("abc", "body{display:none}")).not.toMatch(/^body/);
   });
 
   it("drops imports, scripts and javascript urls from custom CSS", () => {
-    const css = scopedCss("abc", '@import url(evil.css); selector{background:url(javascript:alert(1))}');
+    const css = scopedCss(
+      "abc",
+      "@import url(evil.css); selector{background:url(javascript:alert(1))}",
+    );
     expect(css).not.toContain("@import");
     expect(css).not.toContain("javascript:");
   });
 
   it("caps the page stylesheet so one node cannot bloat every response", () => {
     const sections = Array.from({ length: 200 }, (_, i) =>
-      node(`n${i}`, { advCss: `selector{color:#${(i % 9) + 1}00000;padding:${i}px}` }),
+      node(`n${i}`, {
+        advCss: `selector{color:#${(i % 9) + 1}00000;padding:${i}px}`,
+      }),
     );
     expect(advancedCssFor(sections).length).toBeLessThanOrEqual(24_100);
   });
@@ -59,7 +107,11 @@ describe("advanced controls", () => {
 
 describe("dynamic tags", () => {
   it("resolves a known tag from context", () => {
-    expect(resolveDynamicText("Buy {{product.title}}", { product: { title: "Saree" } })).toBe("Buy Saree");
+    expect(
+      resolveDynamicText("Buy {{product.title}}", {
+        product: { title: "Saree" },
+      }),
+    ).toBe("Buy Saree");
   });
 
   it("uses the fallback, never the raw braces, when data is missing", () => {
@@ -70,7 +122,9 @@ describe("dynamic tags", () => {
 
   it("never leaves template syntax on the page for any known tag", () => {
     for (const tag of DYNAMIC_TAGS) {
-      expect(resolveDynamicText(dynamicTag(tag.value, "x"), {})).not.toContain("{{");
+      expect(resolveDynamicText(dynamicTag(tag.value, "x"), {})).not.toContain(
+        "{{",
+      );
     }
   });
 
@@ -86,7 +140,9 @@ describe("dynamic tags", () => {
       { rows: [{ label: "{{product.title}}" }] as never },
       { product: { title: "Panjabi" } },
     );
-    expect((out["rows"] as unknown as { label: string }[])[0]!.label).toBe("Panjabi");
+    expect((out["rows"] as unknown as { label: string }[])[0]!.label).toBe(
+      "Panjabi",
+    );
   });
 });
 
@@ -100,7 +156,10 @@ describe("global styles", () => {
   });
 
   it("rejects malformed globals and keeps the defaults", () => {
-    const parsed = parseGlobals({ colors: [{ id: "Bad Id!", value: "red" }], fonts: [] });
+    const parsed = parseGlobals({
+      colors: [{ id: "Bad Id!", value: "red" }],
+      fonts: [],
+    });
     expect(parsed.colors).toEqual(DEFAULT_GLOBALS.colors);
   });
 
@@ -116,7 +175,13 @@ describe("global styles", () => {
   });
 
   it("survives a tokens round-trip", () => {
-    const tokens = parseTokens({ ...DEFAULT_TOKENS, globals: { colors: [{ id: "brandx", name: "Brand", value: "#123456" }], fonts: [] } });
+    const tokens = parseTokens({
+      ...DEFAULT_TOKENS,
+      globals: {
+        colors: [{ id: "brandx", name: "Brand", value: "#123456" }],
+        fonts: [],
+      },
+    });
     expect(tokens.globals.colors[0]!.value).toBe("#123456");
   });
 });
@@ -137,7 +202,9 @@ describe("search template", () => {
 
   it("gives the results page exactly one h1", () => {
     for (const preset of THEME_PRESETS) {
-      const h1s = preset.templates.search.main.filter((s) => s.props["level"] === "h1");
+      const h1s = preset.templates.search.main.filter(
+        (s) => s.props["level"] === "h1",
+      );
       expect(h1s.length, preset.key).toBe(1);
     }
   });
@@ -147,7 +214,9 @@ describe("search template", () => {
       const ids: string[] = [];
       for (const key of TEMPLATE_KEYS) {
         const ast = preset.templates[key];
-        ids.push(...[...ast.header, ...ast.main, ...ast.footer].map((s) => s.id));
+        ids.push(
+          ...[...ast.header, ...ast.main, ...ast.footer].map((s) => s.id),
+        );
       }
       expect(new Set(ids).size, preset.key).toBe(ids.length);
     }

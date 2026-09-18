@@ -6,7 +6,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -34,7 +37,9 @@ beforeEach(() => recorder.reset());
 describe("randomCode", () => {
   it("uses only unambiguous characters", () => {
     for (let i = 0; i < 200; i += 1) {
-      expect(randomCode("EID")).toMatch(/^EID-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/);
+      expect(randomCode("EID")).toMatch(
+        /^EID-[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/,
+      );
     }
   });
 
@@ -47,7 +52,10 @@ describe("generateCodes", () => {
   it("denies a batch with no label (deny)", async () => {
     const db = fakeDb();
     await expect(
-      generateCodes(db.asClient(), MERCHANT, "staff-1", { ...base, batchLabel: "  " }),
+      generateCodes(db.asClient(), MERCHANT, "staff-1", {
+        ...base,
+        batchLabel: "  ",
+      }),
     ).rejects.toMatchObject({ code: "batch_required" });
     expect(db.callsOf("insert")).toHaveLength(0);
   });
@@ -55,7 +63,10 @@ describe("generateCodes", () => {
   it("denies a percent campaign with no percentage", async () => {
     const db = fakeDb();
     await expect(
-      generateCodes(db.asClient(), MERCHANT, "staff-1", { ...base, percentOff: 0 }),
+      generateCodes(db.asClient(), MERCHANT, "staff-1", {
+        ...base,
+        percentOff: 0,
+      }),
     ).rejects.toMatchObject({ code: "percent_required" });
   });
 
@@ -73,13 +84,19 @@ describe("generateCodes", () => {
 
   it("caps a runaway request at 500 codes", async () => {
     const db = fakeDb();
-    const out = await generateCodes(db.asClient(), MERCHANT, "staff-1", { ...base, count: 100_000 });
+    const out = await generateCodes(db.asClient(), MERCHANT, "staff-1", {
+      ...base,
+      count: 100_000,
+    });
     expect(out.codes).toHaveLength(500);
   });
 
   it("emits unique codes inside a batch (replay guard)", async () => {
     const db = fakeDb();
-    const out = await generateCodes(db.asClient(), MERCHANT, "staff-1", { ...base, count: 200 });
+    const out = await generateCodes(db.asClient(), MERCHANT, "staff-1", {
+      ...base,
+      count: 200,
+    });
     expect(new Set(out.codes).size).toBe(out.codes.length);
   });
 
@@ -103,7 +120,10 @@ describe("generateCodes", () => {
 
   it("counts generated codes so a batch is auditable after the fact (audit)", async () => {
     const db = fakeDb();
-    await generateCodes(db.asClient(), MERCHANT, "staff-1", { ...base, count: 7 });
+    await generateCodes(db.asClient(), MERCHANT, "staff-1", {
+      ...base,
+      count: 7,
+    });
     const samples = recorder.of("framique_discount_codes_generated_total");
     expect(samples).toHaveLength(1);
     expect(samples[0]!.value).toBe(7);

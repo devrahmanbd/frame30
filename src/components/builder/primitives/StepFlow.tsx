@@ -40,7 +40,10 @@ export function StepFlow({
         aria-valuemax={100}
         className="h-1 w-full overflow-hidden rounded-full bg-muted"
       >
-        <span className="block h-full bg-primary transition-[width]" style={{ width: `${progress}%` }} />
+        <span
+          className="block h-full bg-primary transition-[width]"
+          style={{ width: `${progress}%` }}
+        />
       </div>
 
       {step ? (
@@ -53,7 +56,9 @@ export function StepFlow({
                 <label
                   key={option.value}
                   className={`flex min-h-[44px] cursor-pointer items-center gap-2 rounded-full border px-3 text-sm ${
-                    chosen ? "border-primary ring-1 ring-primary" : "border-border"
+                    chosen
+                      ? "border-primary ring-1 ring-primary"
+                      : "border-border"
                   }`}
                 >
                   <input

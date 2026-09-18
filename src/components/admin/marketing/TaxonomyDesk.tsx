@@ -28,9 +28,21 @@ import {
   setArticleTermsFn,
   taxonomyStateFn,
 } from "@/lib/blog-taxonomy.functions";
-import { flattenTermTree, slugifyTerm, type TermKind, type TermNode } from "@/lib/blog-taxonomy";
+import {
+  flattenTermTree,
+  slugifyTerm,
+  type TermKind,
+  type TermNode,
+} from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
-import { ErrorFrame, Field, StatusPill, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  ErrorFrame,
+  Field,
+  StatusPill,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 
 type FieldError = { field: string; message: string } | null;
 
@@ -38,7 +50,8 @@ type FieldError = { field: string; message: string } | null;
 function readError(error: unknown, bn: boolean): FieldError {
   const raw = error instanceof Error ? error.message : String(error ?? "");
   const parts = raw.split("|");
-  if (parts.length === 4) return { field: parts[1]!, message: bn ? parts[3]! : parts[2]! };
+  if (parts.length === 4)
+    return { field: parts[1]!, message: bn ? parts[3]! : parts[2]! };
   return raw ? { field: "", message: raw } : null;
 }
 
@@ -72,7 +85,8 @@ export function TaxonomyDesk() {
     staleTime: 30_000,
   });
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["blog-taxonomy"] });
+  const invalidate = () =>
+    qc.invalidateQueries({ queryKey: ["blog-taxonomy"] });
 
   const save = useMutation({
     mutationFn: () =>
@@ -119,8 +133,9 @@ export function TaxonomyDesk() {
   });
 
   const reorder = useMutation({
-    mutationFn: (order: { id: string; sortOrder: number; parentId: string | null }[]) =>
-      reorderTermsFn({ data: { order } }),
+    mutationFn: (
+      order: { id: string; sortOrder: number; parentId: string | null }[],
+    ) => reorderTermsFn({ data: { order } }),
     onSuccess: () => void invalidate(),
     onError: (e: unknown) => setError(readError(e, lang === "bn")),
   });
@@ -128,24 +143,42 @@ export function TaxonomyDesk() {
   const recount = useMutation({
     mutationFn: () => refreshTermCountsFn({}),
     onSuccess: (result) => {
-      setNotice(t(`Recounted ${result.updated} terms.`, `${result.updated}টি টার্মের গণনা হালনাগাদ হয়েছে।`));
+      setNotice(
+        t(
+          `Recounted ${result.updated} terms.`,
+          `${result.updated}টি টার্মের গণনা হালনাগাদ হয়েছে।`,
+        ),
+      );
       void invalidate();
     },
   });
 
-  const categories = useMemo(() => flattenTermTree(state.data?.categories ?? []), [state.data]);
+  const categories = useMemo(
+    () => flattenTermTree(state.data?.categories ?? []),
+    [state.data],
+  );
   const tags = state.data?.tags ?? [];
   const emptyIds = new Set(state.data?.emptyTermIds ?? []);
 
   /** Swap a term with its previous/next visible sibling. */
   const move = (node: TermNode, direction: -1 | 1) => {
-    const siblings = categories.filter((item) => (item.parent_id ?? null) === (node.parent_id ?? null));
+    const siblings = categories.filter(
+      (item) => (item.parent_id ?? null) === (node.parent_id ?? null),
+    );
     const index = siblings.findIndex((item) => item.id === node.id);
     const target = siblings[index + direction];
     if (!target) return;
     reorder.mutate([
-      { id: node.id, sortOrder: target.sort_order ?? index + direction, parentId: node.parent_id ?? null },
-      { id: target.id, sortOrder: node.sort_order ?? index, parentId: target.parent_id ?? null },
+      {
+        id: node.id,
+        sortOrder: target.sort_order ?? index + direction,
+        parentId: node.parent_id ?? null,
+      },
+      {
+        id: target.id,
+        sortOrder: node.sort_order ?? index,
+        parentId: target.parent_id ?? null,
+      },
     ]);
   };
 
@@ -163,14 +196,24 @@ export function TaxonomyDesk() {
             )}
           </p>
         </div>
-        <button type="button" className={btnGhost} disabled={recount.isPending} onClick={() => recount.mutate()}>
-          {recount.isPending ? t("Recounting…", "গণনা চলছে…") : t("Recount articles", "লেখা গণনা করুন")}
+        <button
+          type="button"
+          className={btnGhost}
+          disabled={recount.isPending}
+          onClick={() => recount.mutate()}
+        >
+          {recount.isPending
+            ? t("Recounting…", "গণনা চলছে…")
+            : t("Recount articles", "লেখা গণনা করুন")}
         </button>
       </header>
 
       <ErrorFrame message={error?.message ?? null} />
       {notice && (
-        <p role="status" className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground">
+        <p
+          role="status"
+          className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground"
+        >
           {notice}
         </p>
       )}
@@ -186,7 +229,13 @@ export function TaxonomyDesk() {
           <select
             className={inputClass}
             value={form.kind}
-            onChange={(e) => setForm({ ...form, kind: e.target.value as TermKind, parentId: null })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                kind: e.target.value as TermKind,
+                parentId: null,
+              })
+            }
           >
             <option value="category">{t("Category", "ক্যাটাগরি")}</option>
             <option value="tag">{t("Tag", "ট্যাগ")}</option>
@@ -200,7 +249,10 @@ export function TaxonomyDesk() {
             required
           />
         </Field>
-        <Field label={t("English name", "ইংরেজি নাম")} hint={t("Used for the slug", "স্লাগের জন্য ব্যবহৃত")}>
+        <Field
+          label={t("English name", "ইংরেজি নাম")}
+          hint={t("Used for the slug", "স্লাগের জন্য ব্যবহৃত")}
+        >
           <input
             className={inputClass}
             value={form.nameEn}
@@ -222,9 +274,13 @@ export function TaxonomyDesk() {
             <select
               className={inputClass}
               value={form.parentId ?? ""}
-              onChange={(e) => setForm({ ...form, parentId: e.target.value || null })}
+              onChange={(e) =>
+                setForm({ ...form, parentId: e.target.value || null })
+              }
             >
-              <option value="">{t("None (top level)", "নেই (শীর্ষ স্তর)")}</option>
+              <option value="">
+                {t("None (top level)", "নেই (শীর্ষ স্তর)")}
+              </option>
               {categories
                 .filter((node) => node.id !== form.id)
                 .map((node) => (
@@ -254,23 +310,42 @@ export function TaxonomyDesk() {
           <input
             className={inputClass}
             value={form.metaDescription}
-            onChange={(e) => setForm({ ...form, metaDescription: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, metaDescription: e.target.value })
+            }
           />
         </Field>
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
             checked={form.robotsIndex}
-            onChange={(e) => setForm({ ...form, robotsIndex: e.target.checked })}
+            onChange={(e) =>
+              setForm({ ...form, robotsIndex: e.target.checked })
+            }
           />
-          {t("Allow search engines to index this archive", "সার্চ ইঞ্জিনকে এই আর্কাইভ ইনডেক্স করতে দিন")}
+          {t(
+            "Allow search engines to index this archive",
+            "সার্চ ইঞ্জিনকে এই আর্কাইভ ইনডেক্স করতে দিন",
+          )}
         </label>
         <div className="flex items-center gap-2 md:col-span-2">
-          <button type="submit" className={btnPrimary} disabled={save.isPending || !form.name.trim()}>
-            {save.isPending ? t("Saving…", "সংরক্ষণ হচ্ছে…") : form.id ? t("Update term", "টার্ম হালনাগাদ") : t("Add term", "টার্ম যোগ")}
+          <button
+            type="submit"
+            className={btnPrimary}
+            disabled={save.isPending || !form.name.trim()}
+          >
+            {save.isPending
+              ? t("Saving…", "সংরক্ষণ হচ্ছে…")
+              : form.id
+                ? t("Update term", "টার্ম হালনাগাদ")
+                : t("Add term", "টার্ম যোগ")}
           </button>
           {form.id && (
-            <button type="button" className={btnGhost} onClick={() => setForm(emptyForm)}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => setForm(emptyForm)}
+            >
               {t("Cancel", "বাতিল")}
             </button>
           )}
@@ -279,7 +354,9 @@ export function TaxonomyDesk() {
 
       <div className="overflow-x-auto rounded-fq-md border border-border">
         <table className="w-full text-sm">
-          <caption className="sr-only">{t("Taxonomy terms", "ট্যাক্সোনমি টার্ম")}</caption>
+          <caption className="sr-only">
+            {t("Taxonomy terms", "ট্যাক্সোনমি টার্ম")}
+          </caption>
           <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
             <tr>
               <th className="px-3 py-2">{t("Term", "টার্ম")}</th>
@@ -292,32 +369,57 @@ export function TaxonomyDesk() {
           <tbody>
             {state.isLoading && (
               <tr>
-                <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
+                <td
+                  colSpan={5}
+                  className="px-3 py-6 text-center text-muted-foreground"
+                >
                   {t("Loading…", "লোড হচ্ছে…")}
                 </td>
               </tr>
             )}
             {categories.map((node) => (
               <tr key={node.id} className="border-b border-border/60">
-                <td className="px-3 py-2" style={{ paddingLeft: `${12 + (node.depth - 1) * 18}px` }}>
+                <td
+                  className="px-3 py-2"
+                  style={{ paddingLeft: `${12 + (node.depth - 1) * 18}px` }}
+                >
                   {node.name}
-                  {node.name_en ? <span className="ml-2 text-xs text-muted-foreground">{node.name_en}</span> : null}
+                  {node.name_en ? (
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {node.name_en}
+                    </span>
+                  ) : null}
                 </td>
-                <td className="px-3 py-2 font-mono text-xs text-muted-foreground">/blog/category/{node.slug}</td>
+                <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
+                  /blog/category/{node.slug}
+                </td>
                 <td className="px-3 py-2">{node.article_count ?? 0}</td>
                 <td className="px-3 py-2">
                   {node.robots_index === false || emptyIds.has(node.id) ? (
                     <StatusPill tone="warning" label="noindex" />
                   ) : (
-                    <StatusPill tone="success" label={t("indexable", "ইনডেক্সযোগ্য")} />
+                    <StatusPill
+                      tone="success"
+                      label={t("indexable", "ইনডেক্সযোগ্য")}
+                    />
                   )}
                 </td>
                 <td className="px-3 py-2">
                   <div className="flex flex-wrap items-center gap-1">
-                    <button type="button" className={btnGhost} aria-label={t("Move up", "উপরে")} onClick={() => move(node, -1)}>
+                    <button
+                      type="button"
+                      className={btnGhost}
+                      aria-label={t("Move up", "উপরে")}
+                      onClick={() => move(node, -1)}
+                    >
                       ↑
                     </button>
-                    <button type="button" className={btnGhost} aria-label={t("Move down", "নিচে")} onClick={() => move(node, 1)}>
+                    <button
+                      type="button"
+                      className={btnGhost}
+                      aria-label={t("Move down", "নিচে")}
+                      onClick={() => move(node, 1)}
+                    >
                       ↓
                     </button>
                     <button
@@ -352,7 +454,11 @@ export function TaxonomyDesk() {
                         {t("Confirm delete", "নিশ্চিত করুন")}
                       </button>
                     ) : (
-                      <button type="button" className={btnGhost} onClick={() => setPendingDelete(node.id)}>
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        onClick={() => setPendingDelete(node.id)}
+                      >
                         {t("Delete", "মুছুন")}
                       </button>
                     )}
@@ -363,13 +469,18 @@ export function TaxonomyDesk() {
             {tags.map((tag) => (
               <tr key={tag.id} className="border-b border-border/60">
                 <td className="px-3 py-2">#{tag.name}</td>
-                <td className="px-3 py-2 font-mono text-xs text-muted-foreground">/blog/tag/{tag.slug}</td>
+                <td className="px-3 py-2 font-mono text-xs text-muted-foreground">
+                  /blog/tag/{tag.slug}
+                </td>
                 <td className="px-3 py-2">{tag.article_count ?? 0}</td>
                 <td className="px-3 py-2">
                   {tag.robots_index === false || emptyIds.has(tag.id) ? (
                     <StatusPill tone="warning" label="noindex" />
                   ) : (
-                    <StatusPill tone="success" label={t("indexable", "ইনডেক্সযোগ্য")} />
+                    <StatusPill
+                      tone="success"
+                      label={t("indexable", "ইনডেক্সযোগ্য")}
+                    />
                   )}
                 </td>
                 <td className="px-3 py-2">
@@ -395,11 +506,20 @@ export function TaxonomyDesk() {
                       {t("Edit", "সম্পাদনা")}
                     </button>
                     {pendingDelete === tag.id ? (
-                      <button type="button" className={btnPrimary} disabled={remove.isPending} onClick={() => remove.mutate(tag.id)}>
+                      <button
+                        type="button"
+                        className={btnPrimary}
+                        disabled={remove.isPending}
+                        onClick={() => remove.mutate(tag.id)}
+                      >
                         {t("Confirm delete", "নিশ্চিত করুন")}
                       </button>
                     ) : (
-                      <button type="button" className={btnGhost} onClick={() => setPendingDelete(tag.id)}>
+                      <button
+                        type="button"
+                        className={btnGhost}
+                        onClick={() => setPendingDelete(tag.id)}
+                      >
                         {t("Delete", "মুছুন")}
                       </button>
                     )}
@@ -409,8 +529,14 @@ export function TaxonomyDesk() {
             ))}
             {!state.isLoading && !categories.length && !tags.length && (
               <tr>
-                <td colSpan={5} className="px-3 py-6 text-center text-muted-foreground">
-                  {t("No categories or tags yet.", "এখনো কোনো ক্যাটাগরি বা ট্যাগ নেই।")}
+                <td
+                  colSpan={5}
+                  className="px-3 py-6 text-center text-muted-foreground"
+                >
+                  {t(
+                    "No categories or tags yet.",
+                    "এখনো কোনো ক্যাটাগরি বা ট্যাগ নেই।",
+                  )}
                 </td>
               </tr>
             )}
@@ -437,13 +563,19 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
   const [error, setError] = useState<FieldError>(null);
   const [saved, setSaved] = useState(false);
 
-  const state = useQuery({ queryKey: ["blog-taxonomy"], queryFn: () => loadState({}), staleTime: 30_000 });
+  const state = useQuery({
+    queryKey: ["blog-taxonomy"],
+    queryFn: () => loadState({}),
+    staleTime: 30_000,
+  });
   const assigned = useQuery({
     queryKey: ["article-terms", articleId],
     queryFn: () => loadAssigned({ data: { articleId } }),
   });
 
-  const [draft, setDraft] = useState<{ termId: string; isPrimary: boolean }[] | null>(null);
+  const [draft, setDraft] = useState<
+    { termId: string; isPrimary: boolean }[] | null
+  >(null);
   const current = draft ?? assigned.data ?? [];
 
   const persist = useMutation({
@@ -475,7 +607,9 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
     const withTerm = current.some((item) => item.termId === termId)
       ? current
       : [...current, { termId, isPrimary: false }];
-    setDraft(withTerm.map((item) => ({ ...item, isPrimary: item.termId === termId })));
+    setDraft(
+      withTerm.map((item) => ({ ...item, isPrimary: item.termId === termId })),
+    );
   };
 
   const options = state.data?.options ?? [];
@@ -484,17 +618,24 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
 
   return (
     <section className="space-y-3 rounded-fq-md border border-border bg-card p-4">
-      <h2 className="font-bangla-display text-base font-semibold">{t("Categories & tags", "ক্যাটাগরি ও ট্যাগ")}</h2>
+      <h2 className="font-bangla-display text-base font-semibold">
+        {t("Categories & tags", "ক্যাটাগরি ও ট্যাগ")}
+      </h2>
       <ErrorFrame message={error?.message ?? null} />
       {!options.length ? (
         <p className="text-sm text-muted-foreground">
-          {t("Create a category below to file this article.", "এই লেখাটি সাজাতে নিচে একটি ক্যাটাগরি তৈরি করুন।")}
+          {t(
+            "Create a category below to file this article.",
+            "এই লেখাটি সাজাতে নিচে একটি ক্যাটাগরি তৈরি করুন।",
+          )}
         </p>
       ) : null}
 
       {categories.length ? (
         <fieldset className="space-y-1">
-          <legend className="text-xs uppercase text-muted-foreground">{t("Categories", "ক্যাটাগরি")}</legend>
+          <legend className="text-xs uppercase text-muted-foreground">
+            {t("Categories", "ক্যাটাগরি")}
+          </legend>
           {categories.map((option) => {
             const entry = current.find((item) => item.termId === option.id);
             return (
@@ -525,7 +666,9 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
 
       {tags.length ? (
         <fieldset className="flex flex-wrap gap-2">
-          <legend className="w-full text-xs uppercase text-muted-foreground">{t("Tags", "ট্যাগ")}</legend>
+          <legend className="w-full text-xs uppercase text-muted-foreground">
+            {t("Tags", "ট্যাগ")}
+          </legend>
           {tags.map((option) => {
             const active = current.some((item) => item.termId === option.id);
             return (
@@ -535,7 +678,9 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
                 aria-pressed={active}
                 onClick={() => toggle(option.id)}
                 className={`inline-flex min-h-11 items-center rounded-full border px-3 text-sm ${
-                  active ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground"
+                  active
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground"
                 }`}
               >
                 #{option.label}
@@ -552,7 +697,9 @@ export function ArticleTermPicker({ articleId }: { articleId: string }) {
           disabled={persist.isPending || !options.length}
           onClick={() => persist.mutate(current)}
         >
-          {persist.isPending ? t("Saving…", "সংরক্ষণ হচ্ছে…") : t("Save terms", "টার্ম সংরক্ষণ")}
+          {persist.isPending
+            ? t("Saving…", "সংরক্ষণ হচ্ছে…")
+            : t("Save terms", "টার্ম সংরক্ষণ")}
         </button>
         {saved ? (
           <span role="status" className="text-xs text-success-foreground">

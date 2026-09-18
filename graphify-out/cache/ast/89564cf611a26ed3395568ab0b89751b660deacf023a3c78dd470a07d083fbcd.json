@@ -1,1 +1,442 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "label": "plugin-hooks.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L1"}, {"id": "lib_plugin_hooks_server_breakerstate", "label": "BreakerState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L18"}, {"id": "lib_plugin_hooks_server_breakers", "label": "breakers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L19"}, {"id": "lib_plugin_hooks_server_breakerkey", "label": "breakerKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L21"}, {"id": "lib_plugin_hooks_server_breakeropen", "label": "breakerOpen()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L25"}, {"id": "lib_plugin_hooks_server_recordfailure", "label": "recordFailure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L35"}, {"id": "lib_plugin_hooks_server_recordsuccess", "label": "recordSuccess()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L43"}, {"id": "lib_plugin_hooks_server_resetbreakers", "label": "resetBreakers()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L48"}, {"id": "lib_plugin_hooks_server_hookoutcome", "label": "HookOutcome", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L52"}, {"id": "lib_plugin_hooks_server_callone", "label": "callOne()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L60"}, {"id": "lib_plugin_hooks_server_runhook", "label": "runHook()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L108"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_manifest_installedplugin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_manifest_serverhook", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_breakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_breakers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_breakerkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_breakeropen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_recordfailure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_recordsuccess", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_resetbreakers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_hookoutcome", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_callone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "target": "lib_plugin_hooks_server_runhook", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L108", "weight": 1.0}, {"source": "lib_plugin_hooks_server_breakeropen", "target": "lib_plugin_hooks_server_breakerkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "lib_plugin_hooks_server_recordfailure", "target": "lib_plugin_hooks_server_breakerkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "lib_plugin_hooks_server_recordsuccess", "target": "lib_plugin_hooks_server_breakerkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L44", "weight": 1.0}, {"source": "lib_plugin_hooks_server_callone", "target": "lib_plugin_hooks_server_breakeropen", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L70", "weight": 1.0}, {"source": "lib_plugin_hooks_server_callone", "target": "lib_plugin_hooks_server_recordsuccess", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L88", "weight": 1.0}, {"source": "lib_plugin_hooks_server_callone", "target": "lib_plugin_hooks_server_recordfailure", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L91", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_plugin_hooks_server_breakeropen", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L26"}, {"caller_nid": "lib_plugin_hooks_server_breakeropen", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L29"}, {"caller_nid": "lib_plugin_hooks_server_recordfailure", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L37"}, {"caller_nid": "lib_plugin_hooks_server_recordfailure", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L40"}, {"caller_nid": "lib_plugin_hooks_server_recordsuccess", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L44"}, {"caller_nid": "lib_plugin_hooks_server_resetbreakers", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L49"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L66"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L67"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "setTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L74"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L76"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L84"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L87"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L87"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L89"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L97"}, {"caller_nid": "lib_plugin_hooks_server_callone", "callee": "clearTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L100"}, {"caller_nid": "lib_plugin_hooks_server_runhook", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L114"}, {"caller_nid": "lib_plugin_hooks_server_runhook", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L116"}, {"caller_nid": "lib_plugin_hooks_server_runhook", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L116"}, {"caller_nid": "lib_plugin_hooks_server_runhook", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L120"}, {"caller_nid": "lib_plugin_hooks_server_runhook", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts", "source_location": "L121"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "label": "plugin-hooks.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_plugin_hooks_server_breakerstate",
+      "label": "BreakerState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_plugin_hooks_server_breakers",
+      "label": "breakers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_plugin_hooks_server_breakerkey",
+      "label": "breakerKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_plugin_hooks_server_breakeropen",
+      "label": "breakerOpen()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_plugin_hooks_server_recordfailure",
+      "label": "recordFailure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_plugin_hooks_server_recordsuccess",
+      "label": "recordSuccess()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "lib_plugin_hooks_server_resetbreakers",
+      "label": "resetBreakers()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_plugin_hooks_server_hookoutcome",
+      "label": "HookOutcome",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_plugin_hooks_server_callone",
+      "label": "callOne()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_plugin_hooks_server_runhook",
+      "label": "runHook()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L108"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_manifest_installedplugin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_manifest_serverhook",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_breakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_breakers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_breakerkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_breakeropen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_recordfailure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_recordsuccess",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_resetbreakers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_hookoutcome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_callone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "target": "lib_plugin_hooks_server_runhook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_breakeropen",
+      "target": "lib_plugin_hooks_server_breakerkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_recordfailure",
+      "target": "lib_plugin_hooks_server_breakerkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_recordsuccess",
+      "target": "lib_plugin_hooks_server_breakerkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_callone",
+      "target": "lib_plugin_hooks_server_breakeropen",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_callone",
+      "target": "lib_plugin_hooks_server_recordsuccess",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_plugin_hooks_server_callone",
+      "target": "lib_plugin_hooks_server_recordfailure",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_plugin_hooks_server_breakeropen",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_breakeropen",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_recordfailure",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_recordfailure",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_recordsuccess",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_resetbreakers",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "setTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_callone",
+      "callee": "clearTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_runhook",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_runhook",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_runhook",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_runhook",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_plugin_hooks_server_runhook",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/plugin-hooks.server.ts",
+      "source_location": "L121"
+    }
+  ]
+}

@@ -30,7 +30,10 @@ export const requireCustomerScope = createMiddleware({ type: "function" })
   .server(async ({ next, context, data }) => {
     const { resolveCustomerScope } = await import("./customer.server");
     const scoped = data as { merchantId?: string } | undefined;
-    const customer = await resolveCustomerScope(context.userId, scoped?.merchantId ?? null);
+    const customer = await resolveCustomerScope(
+      context.userId,
+      scoped?.merchantId ?? null,
+    );
     return next({ context: { customer } });
   });
 

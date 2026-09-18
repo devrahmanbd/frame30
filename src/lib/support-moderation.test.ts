@@ -19,7 +19,9 @@ import { join } from "node:path";
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeConv(overrides: Partial<ModerationConversation> = {}): ModerationConversation {
+function makeConv(
+  overrides: Partial<ModerationConversation> = {},
+): ModerationConversation {
   const now = new Date().toISOString();
   return {
     id: `conv_${Math.random().toString(36).slice(2, 10)}`,
@@ -122,8 +124,12 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
     it("migration enables Supabase Realtime replication for ai_conversations and ai_messages", () => {
       const sql = readFileSync(migrationPath, "utf-8").toLowerCase();
       expect(sql).toContain("supabase_realtime");
-      expect(sql).toContain("alter publication supabase_realtime add table public.ai_conversations");
-      expect(sql).toContain("alter publication supabase_realtime add table public.ai_messages");
+      expect(sql).toContain(
+        "alter publication supabase_realtime add table public.ai_conversations",
+      );
+      expect(sql).toContain(
+        "alter publication supabase_realtime add table public.ai_messages",
+      );
     });
 
     it("migration creates the moderation_queue view with priority_rank and needs_human_agent", () => {
@@ -150,14 +156,20 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       const conv = makeConv({ id: "conv_takeover_01", takeoverMode: "ai" });
       seedMockConversation(conv);
 
-      const result = await setTakeoverMode("conv_takeover_01", "human_takeover", "operator_alice");
+      const result = await setTakeoverMode(
+        "conv_takeover_01",
+        "human_takeover",
+        "operator_alice",
+      );
 
       expect(result.success).toBe(true);
       expect(result.previousMode).toBe("ai");
       expect(result.newMode).toBe("human_takeover");
       expect(result.assignedOperatorId).toBe("operator_alice");
 
-      const updated = getMockConversations().find((c) => c.id === "conv_takeover_01");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_takeover_01",
+      );
       expect(updated?.takeoverMode).toBe("human_takeover");
       expect(updated?.assignedOperatorId).toBe("operator_alice");
       expect(updated?.lastOperatorMessageAt).not.toBeNull();
@@ -178,7 +190,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       expect(result.newMode).toBe("ai");
       expect(result.assignedOperatorId).toBeNull();
 
-      const updated = getMockConversations().find((c) => c.id === "conv_takeover_02");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_takeover_02",
+      );
       expect(updated?.takeoverMode).toBe("ai");
       expect(updated?.assignedOperatorId).toBeNull();
     });
@@ -190,7 +204,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
 
       await setTakeoverMode("conv_takeover_03", "human_takeover", "op_01");
 
-      const updated = getMockConversations().find((c) => c.id === "conv_takeover_03");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_takeover_03",
+      );
       expect(updated?.lastOperatorMessageAt).not.toBeNull();
       const ts = new Date(updated!.lastOperatorMessageAt!).getTime();
       expect(ts).toBeGreaterThanOrEqual(before);
@@ -203,7 +219,11 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
 
   describe("Priority Triage Queue Management", () => {
     it("escalates a conversation from normal to urgent and updates priorityRank to 4", async () => {
-      const conv = makeConv({ id: "conv_prio_01", priority: "normal", priorityRank: 2 });
+      const conv = makeConv({
+        id: "conv_prio_01",
+        priority: "normal",
+        priorityRank: 2,
+      });
       seedMockConversation(conv);
 
       const result = await setConversationPriority("conv_prio_01", "urgent");
@@ -212,13 +232,19 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       expect(result.previousPriority).toBe("normal");
       expect(result.newPriority).toBe("urgent");
 
-      const updated = getMockConversations().find((c) => c.id === "conv_prio_01");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_prio_01",
+      );
       expect(updated?.priority).toBe("urgent");
       expect(updated?.priorityRank).toBe(4);
     });
 
     it("de-escalates a conversation from high to low and updates priorityRank to 1", async () => {
-      const conv = makeConv({ id: "conv_prio_02", priority: "high", priorityRank: 3 });
+      const conv = makeConv({
+        id: "conv_prio_02",
+        priority: "high",
+        priorityRank: 3,
+      });
       seedMockConversation(conv);
 
       const result = await setConversationPriority("conv_prio_02", "low");
@@ -226,7 +252,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       expect(result.success).toBe(true);
       expect(result.newPriority).toBe("low");
 
-      const updated = getMockConversations().find((c) => c.id === "conv_prio_02");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_prio_02",
+      );
       expect(updated?.priorityRank).toBe(1);
     });
   });
@@ -247,20 +275,32 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
 
       expect(result.success).toBe(true);
 
-      const updated = getMockConversations().find((c) => c.id === "conv_notes_01");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_notes_01",
+      );
       expect(updated?.operatorNotes).toBe(
         "Customer threatening chargeback — escalate to billing team.",
       );
     });
 
     it("overwrites existing operator notes", async () => {
-      const conv = makeConv({ id: "conv_notes_02", operatorNotes: "Old note." });
+      const conv = makeConv({
+        id: "conv_notes_02",
+        operatorNotes: "Old note.",
+      });
       seedMockConversation(conv);
 
-      await saveOperatorNotes("conv_notes_02", "Updated: issue resolved by billing team.");
+      await saveOperatorNotes(
+        "conv_notes_02",
+        "Updated: issue resolved by billing team.",
+      );
 
-      const updated = getMockConversations().find((c) => c.id === "conv_notes_02");
-      expect(updated?.operatorNotes).toBe("Updated: issue resolved by billing team.");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_notes_02",
+      );
+      expect(updated?.operatorNotes).toBe(
+        "Updated: issue resolved by billing team.",
+      );
     });
   });
 
@@ -295,7 +335,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       expect(messages[0].conversationId).toBe("conv_msg_01");
 
       // Conversation's last_operator_message_at should be updated, needsHumanAgent cleared
-      const updated = getMockConversations().find((c) => c.id === "conv_msg_01");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_msg_01",
+      );
       expect(updated?.lastOperatorMessageAt).not.toBeNull();
       expect(updated?.needsHumanAgent).toBe(false);
     });
@@ -336,7 +378,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
         operatorId: "operator_alice",
       });
 
-      const messages = getMockMessages().filter((m) => m.conversationId === "conv_msg_03");
+      const messages = getMockMessages().filter(
+        (m) => m.conversationId === "conv_msg_03",
+      );
       expect(messages).toHaveLength(2);
     });
   });
@@ -363,9 +407,13 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       expect(result.success).toBe(true);
       expect(result.conversationId).toBe("conv_close_01");
       expect(result.resolvedAt).toBeTruthy();
-      expect(new Date(result.resolvedAt).getTime()).toBeLessThanOrEqual(Date.now());
+      expect(new Date(result.resolvedAt).getTime()).toBeLessThanOrEqual(
+        Date.now(),
+      );
 
-      const updated = getMockConversations().find((c) => c.id === "conv_close_01");
+      const updated = getMockConversations().find(
+        (c) => c.id === "conv_close_01",
+      );
       expect(updated?.status).toBe("closed");
       expect(updated?.takeoverMode).toBe("ai");
       expect(updated?.assignedOperatorId).toBeNull();
@@ -382,9 +430,30 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       const older = new Date(Date.now() - 30 * 60 * 1000).toISOString();
       const newer = new Date().toISOString();
 
-      seedMockConversation(makeConv({ id: "q_low",    priority: "low",    priorityRank: 1, lastCustomerMessageAt: newer }));
-      seedMockConversation(makeConv({ id: "q_urgent", priority: "urgent", priorityRank: 4, lastCustomerMessageAt: older }));
-      seedMockConversation(makeConv({ id: "q_high",   priority: "high",   priorityRank: 3, lastCustomerMessageAt: newer }));
+      seedMockConversation(
+        makeConv({
+          id: "q_low",
+          priority: "low",
+          priorityRank: 1,
+          lastCustomerMessageAt: newer,
+        }),
+      );
+      seedMockConversation(
+        makeConv({
+          id: "q_urgent",
+          priority: "urgent",
+          priorityRank: 4,
+          lastCustomerMessageAt: older,
+        }),
+      );
+      seedMockConversation(
+        makeConv({
+          id: "q_high",
+          priority: "high",
+          priorityRank: 3,
+          lastCustomerMessageAt: newer,
+        }),
+      );
 
       const queue = await getModerationQueue();
 
@@ -395,18 +464,26 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
     });
 
     it("filters by takeoverMode=human_takeover", async () => {
-      seedMockConversation(makeConv({ id: "q_ai",    takeoverMode: "ai" }));
-      seedMockConversation(makeConv({ id: "q_human", takeoverMode: "human_takeover" }));
+      seedMockConversation(makeConv({ id: "q_ai", takeoverMode: "ai" }));
+      seedMockConversation(
+        makeConv({ id: "q_human", takeoverMode: "human_takeover" }),
+      );
 
-      const queue = await getModerationQueue({ takeoverMode: "human_takeover" });
+      const queue = await getModerationQueue({
+        takeoverMode: "human_takeover",
+      });
 
       expect(queue.conversations).toHaveLength(1);
       expect(queue.conversations[0].id).toBe("q_human");
     });
 
     it("filters by needsAgentOnly=true — returns only conversations awaiting human", async () => {
-      seedMockConversation(makeConv({ id: "q_no_need",    needsHumanAgent: false }));
-      seedMockConversation(makeConv({ id: "q_needs_agent", needsHumanAgent: true }));
+      seedMockConversation(
+        makeConv({ id: "q_no_need", needsHumanAgent: false }),
+      );
+      seedMockConversation(
+        makeConv({ id: "q_needs_agent", needsHumanAgent: true }),
+      );
 
       const queue = await getModerationQueue({ needsAgentOnly: true });
 
@@ -415,10 +492,26 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
     });
 
     it("returns correct badge counts: needsAgentCount and humanTakeoverCount", async () => {
-      seedMockConversation(makeConv({ id: "q_1", needsHumanAgent: true,  takeoverMode: "ai" }));
-      seedMockConversation(makeConv({ id: "q_2", needsHumanAgent: true,  takeoverMode: "human_takeover" }));
-      seedMockConversation(makeConv({ id: "q_3", needsHumanAgent: false, takeoverMode: "human_takeover" }));
-      seedMockConversation(makeConv({ id: "q_4", needsHumanAgent: false, takeoverMode: "ai" }));
+      seedMockConversation(
+        makeConv({ id: "q_1", needsHumanAgent: true, takeoverMode: "ai" }),
+      );
+      seedMockConversation(
+        makeConv({
+          id: "q_2",
+          needsHumanAgent: true,
+          takeoverMode: "human_takeover",
+        }),
+      );
+      seedMockConversation(
+        makeConv({
+          id: "q_3",
+          needsHumanAgent: false,
+          takeoverMode: "human_takeover",
+        }),
+      );
+      seedMockConversation(
+        makeConv({ id: "q_4", needsHumanAgent: false, takeoverMode: "ai" }),
+      );
 
       const queue = await getModerationQueue();
 
@@ -428,8 +521,12 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
     });
 
     it("filters by merchantId for per-merchant scope", async () => {
-      seedMockConversation(makeConv({ id: "q_merch_a", merchantId: "merchant_alpha" }));
-      seedMockConversation(makeConv({ id: "q_merch_b", merchantId: "merchant_beta" }));
+      seedMockConversation(
+        makeConv({ id: "q_merch_a", merchantId: "merchant_alpha" }),
+      );
+      seedMockConversation(
+        makeConv({ id: "q_merch_b", merchantId: "merchant_beta" }),
+      );
 
       const queue = await getModerationQueue({ merchantId: "merchant_alpha" });
 
@@ -484,7 +581,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       seedMockConversation(withNeed);
 
       const urgentQueue = await getModerationQueue({ needsAgentOnly: true });
-      expect(urgentQueue.conversations.some((c) => c.id === "conv_e2e")).toBe(true);
+      expect(urgentQueue.conversations.some((c) => c.id === "conv_e2e")).toBe(
+        true,
+      );
 
       // 3. Operator escalates priority to urgent
       await setConversationPriority("conv_e2e", "urgent");
@@ -494,12 +593,17 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
 
       // 4. Operator takes over the conversation
       await setTakeoverMode("conv_e2e", "human_takeover", "operator_zara");
-      const afterTakeover = getMockConversations().find((c) => c.id === "conv_e2e");
+      const afterTakeover = getMockConversations().find(
+        (c) => c.id === "conv_e2e",
+      );
       expect(afterTakeover?.takeoverMode).toBe("human_takeover");
       expect(afterTakeover?.assignedOperatorId).toBe("operator_zara");
 
       // 5. Operator writes private internal note
-      await saveOperatorNotes("conv_e2e", "Customer escalated due to SteadFast delay. Opened ticket with courier.");
+      await saveOperatorNotes(
+        "conv_e2e",
+        "Customer escalated due to SteadFast delay. Opened ticket with courier.",
+      );
       const afterNote = getMockConversations().find((c) => c.id === "conv_e2e");
       expect(afterNote?.operatorNotes).toContain("SteadFast delay");
 
@@ -520,7 +624,9 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       );
       expect(closeResult.success).toBe(true);
 
-      const finalState = getMockConversations().find((c) => c.id === "conv_e2e");
+      const finalState = getMockConversations().find(
+        (c) => c.id === "conv_e2e",
+      );
       expect(finalState?.status).toBe("closed");
       expect(finalState?.takeoverMode).toBe("ai");
       expect(finalState?.resolvedAt).not.toBeNull();

@@ -21,24 +21,24 @@ on:
   push:
     branches: [main]
     paths:
-      - 'v3/@claude-flow/cli/src/funnel/**'
-      - 'v3/@claude-flow/cli/src/commands/funnel.ts'
-      - 'v3/@claude-flow/cli/src/commands/init.ts'
-      - 'v3/@claude-flow/cli/src/commands/hooks.ts'
-      - 'v3/@claude-flow/cli/src/init/statusline-generator.ts'
-      - 'v3/@claude-flow/cli/__tests__/funnel.test.ts'
-      - 'v3/docs/api/cognitum-v1.openapi.yaml'
-      - '.github/workflows/funnel-gates.yml'
+      - "v3/@claude-flow/cli/src/funnel/**"
+      - "v3/@claude-flow/cli/src/commands/funnel.ts"
+      - "v3/@claude-flow/cli/src/commands/init.ts"
+      - "v3/@claude-flow/cli/src/commands/hooks.ts"
+      - "v3/@claude-flow/cli/src/init/statusline-generator.ts"
+      - "v3/@claude-flow/cli/__tests__/funnel.test.ts"
+      - "v3/docs/api/cognitum-v1.openapi.yaml"
+      - ".github/workflows/funnel-gates.yml"
   pull_request:
     paths:
-      - 'v3/@claude-flow/cli/src/funnel/**'
-      - 'v3/@claude-flow/cli/src/commands/funnel.ts'
-      - 'v3/@claude-flow/cli/src/commands/init.ts'
-      - 'v3/@claude-flow/cli/src/commands/hooks.ts'
-      - 'v3/@claude-flow/cli/src/init/statusline-generator.ts'
-      - 'v3/@claude-flow/cli/__tests__/funnel.test.ts'
-      - 'v3/docs/api/cognitum-v1.openapi.yaml'
-      - '.github/workflows/funnel-gates.yml'
+      - "v3/@claude-flow/cli/src/funnel/**"
+      - "v3/@claude-flow/cli/src/commands/funnel.ts"
+      - "v3/@claude-flow/cli/src/commands/init.ts"
+      - "v3/@claude-flow/cli/src/commands/hooks.ts"
+      - "v3/@claude-flow/cli/src/init/statusline-generator.ts"
+      - "v3/@claude-flow/cli/__tests__/funnel.test.ts"
+      - "v3/docs/api/cognitum-v1.openapi.yaml"
+      - ".github/workflows/funnel-gates.yml"
   workflow_dispatch:
 
 # Setup mirrors the green "Build V3" job in v3-ci.yml exactly (pnpm 8 via
@@ -47,8 +47,8 @@ on:
 # deps from the registry instead of linking them, and the cli build then
 # can't find @claude-flow/cli-core's dist.
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '8'
+  NODE_VERSION: "20"
+  PNPM_VERSION: "8"
 
 jobs:
   invariants:
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: Install dependencies
         working-directory: v3
@@ -87,7 +87,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: Install dependencies
         working-directory: v3

@@ -1,6 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { RULE_CATALOG, ensureRules, maskPhone, writeAudit } from "./fraud.server";
+import {
+  RULE_CATALOG,
+  ensureRules,
+  maskPhone,
+  writeAudit,
+} from "./fraud.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import { incr, withSpan } from "./observability.server";
 
@@ -11,38 +16,41 @@ export type Decision = "approved" | "rejected" | "evidence_requested";
 export async function loadDesk(db: Client, merchantId: string) {
   return withSpan("fraud.desk_load", async () => {
     await enforceRateLimit("fraud.read", merchantId);
-    const [rules, cases, blacklist, audit, failedPayments, assessments] = await Promise.all([
-      ensureRules(db, merchantId),
-      db
-        .from("fraud_cases")
-        .select("*")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(200),
-      db
-        .from("fraud_blacklist")
-        .select("id, kind, value, reason, active, created_at")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(200),
-      db
-        .from("fraud_audit")
-        .select("id, action, payload, created_at, case_id")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(30),
-      db
-        .from("payments")
-        .select("id", { count: "exact", head: true })
-        .eq("merchant_id", merchantId)
-        .eq("payment_status", "failed"),
-      db
-        .from("fraud_assessments")
-        .select("id, order_id, score, action, decisive_code, signals, created_at")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(100),
-    ]);
+    const [rules, cases, blacklist, audit, failedPayments, assessments] =
+      await Promise.all([
+        ensureRules(db, merchantId),
+        db
+          .from("fraud_cases")
+          .select("*")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(200),
+        db
+          .from("fraud_blacklist")
+          .select("id, kind, value, reason, active, created_at")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(200),
+        db
+          .from("fraud_audit")
+          .select("id, action, payload, created_at, case_id")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(30),
+        db
+          .from("payments")
+          .select("id", { count: "exact", head: true })
+          .eq("merchant_id", merchantId)
+          .eq("payment_status", "failed"),
+        db
+          .from("fraud_assessments")
+          .select(
+            "id, order_id, score, action, decisive_code, signals, created_at",
+          )
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(100),
+      ]);
 
     const caseRows = (cases.data ?? []).map((c) => ({
       ...c,
@@ -62,7 +70,8 @@ export async function loadDesk(db: Client, merchantId: string) {
       counts: {
         pending: caseRows.filter((c) => c.status === "open").length,
         flagged: caseRows.length,
-        evidence: caseRows.filter((c) => c.status === "evidence_requested").length,
+        evidence: caseRows.filter((c) => c.status === "evidence_requested")
+          .length,
         failedPayments: failedPayments.count ?? 0,
         blacklisted: blacklistRows.filter((b) => b.active).length,
         blocked: assessmentRows.filter((a) => a.action === "block").length,
@@ -71,7 +80,6 @@ export async function loadDesk(db: Client, merchantId: string) {
     };
   });
 }
-
 
 export async function listAudit(db: Client, merchantId: string) {
   const { data } = await db
@@ -126,7 +134,11 @@ export async function decideCase(
     merchantId,
     actor,
     action,
-    { order_number: existing.order_number, risk_score: existing.risk_score, note },
+    {
+      order_number: existing.order_number,
+      risk_score: existing.risk_score,
+      note,
+    },
     caseId,
   );
   return { ok: true, status: decision, refundHint: decision === "rejected" };
@@ -164,7 +176,6 @@ export async function setRule(
   return { ok: true };
 }
 
-
 export async function addBlacklist(
   db: Client,
   merchantId: string,
@@ -173,7 +184,8 @@ export async function addBlacklist(
   value: string,
   reason: string | null,
 ) {
-  const normalized = kind === "email" ? value.toLowerCase() : value.replace(/\s/g, "");
+  const normalized =
+    kind === "email" ? value.toLowerCase() : value.replace(/\s/g, "");
   const { error } = await db.from("fraud_blacklist").upsert(
     {
       merchant_id: merchantId,
@@ -186,7 +198,10 @@ export async function addBlacklist(
     { onConflict: "merchant_id,kind,value" },
   );
   if (error) throw new Error("fraud_blacklist_failed");
-  await writeAudit(db, merchantId, actor, "fraud.blacklist_added", { kind, reason });
+  await writeAudit(db, merchantId, actor, "fraud.blacklist_added", {
+    kind,
+    reason,
+  });
   return { ok: true };
 }
 
@@ -203,7 +218,10 @@ export async function setBlacklistActive(
     .eq("merchant_id", merchantId)
     .eq("id", id);
   if (error) throw new Error("fraud_blacklist_failed");
-  await writeAudit(db, merchantId, actor, "fraud.blacklist_updated", { id, active });
+  await writeAudit(db, merchantId, actor, "fraud.blacklist_updated", {
+    id,
+    active,
+  });
   return { ok: true };
 }
 
@@ -220,7 +238,9 @@ export async function isBlacklisted(
     .eq("active", true);
   return (data ?? []).some(
     (row) =>
-      (row.kind === "phone" && phone && row.value === phone.replace(/\s/g, "")) ||
+      (row.kind === "phone" &&
+        phone &&
+        row.value === phone.replace(/\s/g, "")) ||
       (row.kind === "email" && email && row.value === email.toLowerCase()),
   );
 }

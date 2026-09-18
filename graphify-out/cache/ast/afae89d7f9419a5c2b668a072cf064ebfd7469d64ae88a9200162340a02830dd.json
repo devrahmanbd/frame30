@@ -1,1 +1,241 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "label": "LintPanel.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L1"}, {"id": "builder_lintpanel_lintpanel", "label": "LintPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L22"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_ast_astissue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_classifyissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_isactionable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_issuesummary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_planfix", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_classifiedissue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_lint_fixes_fixplan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx", "target": "builder_lintpanel_lintpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L22", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_lintpanel_lintpanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L34"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L35"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L36"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L37"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L38"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L43"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L49"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L51"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L57"}, {"caller_nid": "builder_lintpanel_lintpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx", "source_location": "L98"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "label": "LintPanel.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_lintpanel_lintpanel",
+      "label": "LintPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L22"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_ast_astissue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_classifyissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_isactionable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_issuesummary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_planfix",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_classifiedissue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_lint_fixes_fixplan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_lintpanel_tsx",
+      "target": "builder_lintpanel_lintpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "builder_lintpanel_lintpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LintPanel.tsx",
+      "source_location": "L98"
+    }
+  ]
+}

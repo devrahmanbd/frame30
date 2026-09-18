@@ -79,6 +79,7 @@ After a successful `git push origin main`:
 ```
 
 **Example detection output:**
+
 ```
 Push analysis:
   Files changed: 5
@@ -147,6 +148,7 @@ For migrations:
 > **NEW APPROACH:** Navigate immediately, check chat history for sync confirmation.
 
 **Verification process:**
+
 ```
 1. Navigate to Lovable project page IMMEDIATELY (no initial wait)
 
@@ -191,6 +193,7 @@ For migrations:
 ```
 
 **Sync verification output:**
+
 ```
 ⏳ Step 2/8: Checking for GitHub sync...
   Commit pushed: abc1234 "Add email notifications"
@@ -204,6 +207,7 @@ For migrations:
 ```
 
 **If sync times out:**
+
 ```
 ⚠️ Sync verification timeout
 
@@ -454,7 +458,7 @@ Add this to the Yolo Mode Configuration section:
 ## Yolo Mode Configuration (Beta)
 
 - **Status**: on
-- **Auto-Deploy**: on     # NEW: Deploy automatically after git push
+- **Auto-Deploy**: on # NEW: Deploy automatically after git push
 - **Deployment Testing**: on
 - **Auto-run Tests**: off
 - **Debug Mode**: off
@@ -462,6 +466,7 @@ Add this to the Yolo Mode Configuration section:
 ```
 
 **Configure with:**
+
 ```
 /lovable:yolo on --auto-deploy     # Enable auto-deploy
 /lovable:yolo on --no-auto-deploy  # Disable auto-deploy (manual commands only)
@@ -514,11 +519,13 @@ Starting automation workflow...
 ### When to Enable Auto-Deploy
 
 **Good for:**
+
 - Active development with frequent backend changes
 - Solo developers who want maximum automation
 - Teams with robust CI/CD who trust automated deployments
 
 **Less ideal for:**
+
 - Production environments requiring review
 - Teams with strict change management
 - Projects with complex secret dependencies
@@ -549,6 +556,7 @@ Starting automation workflow...
 If auto-deploy fails repeatedly:
 
 1. **Disable auto-deploy temporarily:**
+
    ```
    /lovable:yolo --no-auto-deploy
    ```
@@ -570,4 +578,4 @@ If auto-deploy fails repeatedly:
 
 ---
 
-*This reference enables fully automated deployment after git push while maintaining safety through graceful fallbacks and clear error messages.*
+_This reference enables fully automated deployment after git push while maintaining safety through graceful fallbacks and clear error messages._

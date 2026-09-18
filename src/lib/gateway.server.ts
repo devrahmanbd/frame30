@@ -59,13 +59,21 @@ export function stripPii(input: unknown): Record<string, unknown> {
   }
   if (typeof out["reference"] === "string") {
     const ref = out["reference"] as string;
-    out["reference"] = ref.length > 6 ? `${ref.slice(0, 4)}***${ref.slice(-2)}` : "***";
+    out["reference"] =
+      ref.length > 6 ? `${ref.slice(0, 4)}***${ref.slice(-2)}` : "***";
   }
   return out;
 }
 
-function signatureMatches(secret: string, webhookId: string, body: string, given: string) {
-  const expected = createHmac("sha256", secret).update(`${webhookId}.${body}`).digest("hex");
+function signatureMatches(
+  secret: string,
+  webhookId: string,
+  body: string,
+  given: string,
+) {
+  const expected = createHmac("sha256", secret)
+    .update(`${webhookId}.${body}`)
+    .digest("hex");
   const a = Buffer.from(expected);
   const b = Buffer.from(given.trim().replace(/^sha256=/, ""));
   return a.length === b.length && timingSafeEqual(a, b);
@@ -134,7 +142,13 @@ export async function ingestWebhook(
   const safePayload = stripPii(envelope);
 
   if (!signature) {
-    await deadLetter(admin, provider, envelope.webhookId, "hmac_invalid", safePayload);
+    await deadLetter(
+      admin,
+      provider,
+      envelope.webhookId,
+      "hmac_invalid",
+      safePayload,
+    );
     return { http: 401, status: "dead_letter", reason: "hmac_invalid" };
   }
 
@@ -146,11 +160,28 @@ export async function ingestWebhook(
     .maybeSingle();
 
   if (!account || !account.active) {
-    await deadLetter(admin, provider, envelope.webhookId, "unknown_gateway_account", safePayload);
-    return { http: 401, status: "dead_letter", reason: "unknown_gateway_account" };
+    await deadLetter(
+      admin,
+      provider,
+      envelope.webhookId,
+      "unknown_gateway_account",
+      safePayload,
+    );
+    return {
+      http: 401,
+      status: "dead_letter",
+      reason: "unknown_gateway_account",
+    };
   }
 
-  if (!signatureMatches(account.webhook_secret, envelope.webhookId, rawBody, signature)) {
+  if (
+    !signatureMatches(
+      account.webhook_secret,
+      envelope.webhookId,
+      rawBody,
+      signature,
+    )
+  ) {
     await deadLetter(
       admin,
       provider,
@@ -231,9 +262,14 @@ export async function loadGatewayEvents(db: Client, userId: string) {
 }
 
 /** Owner-console retry: re-signs the stored (PII-stripped) body and re-verifies. */
-export async function retryGatewayEvent(db: Client, userId: string, eventId: string) {
+export async function retryGatewayEvent(
+  db: Client,
+  userId: string,
+  eventId: string,
+) {
   await requirePlatformAdmin(db, userId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const { data: event } = await admin
@@ -249,7 +285,12 @@ export async function retryGatewayEvent(db: Client, userId: string, eventId: str
     .eq("merchant_id", event.merchant_id ?? "")
     .eq("provider", event.provider)
     .maybeSingle();
-  if (!account) return { ok: false, status: "dead_letter", reason: "unknown_gateway_account" };
+  if (!account)
+    return {
+      ok: false,
+      status: "dead_letter",
+      reason: "unknown_gateway_account",
+    };
 
   await admin.from("webhook_events").delete().eq("id", event.id);
 

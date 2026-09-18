@@ -28,9 +28,14 @@ export function tokenize(value: string): string[] {
 
 function trimCommon(a: string[], b: string[]) {
   let start = 0;
-  while (start < a.length && start < b.length && a[start] === b[start]) start += 1;
+  while (start < a.length && start < b.length && a[start] === b[start])
+    start += 1;
   let end = 0;
-  while (end < a.length - start && end < b.length - start && a[a.length - 1 - end] === b[b.length - 1 - end]) {
+  while (
+    end < a.length - start &&
+    end < b.length - start &&
+    a[a.length - 1 - end] === b[b.length - 1 - end]
+  ) {
     end += 1;
   }
   return { start, end };
@@ -46,7 +51,8 @@ function myers(a: string[], b: string[]): DiffChunk[] {
   for (let d = 0; d <= max; d += 1) {
     trace.push(new Map(v));
     for (let k = -d; k <= d; k += 2) {
-      const down = k === -d || (k !== d && (v.get(k - 1) ?? 0) < (v.get(k + 1) ?? 0));
+      const down =
+        k === -d || (k !== d && (v.get(k - 1) ?? 0) < (v.get(k + 1) ?? 0));
       let x = down ? (v.get(k + 1) ?? 0) : (v.get(k - 1) ?? 0) + 1;
       let y = x - k;
       while (x < n && y < m && a[x] === b[y]) {
@@ -64,14 +70,21 @@ function myers(a: string[], b: string[]): DiffChunk[] {
   return out;
 }
 
-function backtrack(a: string[], b: string[], trace: Map<number, number>[], d: number): DiffChunk[] {
+function backtrack(
+  a: string[],
+  b: string[],
+  trace: Map<number, number>[],
+  d: number,
+): DiffChunk[] {
   const ops: DiffChunk[] = [];
   let x = a.length;
   let y = b.length;
   for (let depth = d; depth > 0; depth -= 1) {
     const v = trace[depth]!;
     const k = x - y;
-    const down = k === -depth || (k !== depth && (v.get(k - 1) ?? 0) < (v.get(k + 1) ?? 0));
+    const down =
+      k === -depth ||
+      (k !== depth && (v.get(k - 1) ?? 0) < (v.get(k + 1) ?? 0));
     const prevK = down ? k + 1 : k - 1;
     const prevX = v.get(prevK) ?? 0;
     const prevY = prevX - prevK;
@@ -119,11 +132,23 @@ export function diffWords(before: string, after: string): DiffChunk[] {
   const { start, end } = trimCommon(a, b);
   const head = a.slice(0, start).join("");
   const tail = a.slice(a.length - end).join("");
-  const middle = myers(a.slice(start, a.length - end), b.slice(start, b.length - end));
-  return merge([{ op: "equal", text: head }, ...middle, { op: "equal", text: tail }]);
+  const middle = myers(
+    a.slice(start, a.length - end),
+    b.slice(start, b.length - end),
+  );
+  return merge([
+    { op: "equal", text: head },
+    ...middle,
+    { op: "equal", text: tail },
+  ]);
 }
 
-export type DiffSummary = { added: number; removed: number; unchanged: number; changed: boolean };
+export type DiffSummary = {
+  added: number;
+  removed: number;
+  unchanged: number;
+  changed: boolean;
+};
 
 export function summarizeDiff(chunks: DiffChunk[]): DiffSummary {
   const words = (text: string) => text.split(/\s+/).filter(Boolean).length;
@@ -139,7 +164,10 @@ export function summarizeDiff(chunks: DiffChunk[]): DiffSummary {
 }
 
 /** Field-level compare for the non-body columns of a revision. */
-export function diffFields<T extends Record<string, string | null>>(before: T, after: T) {
+export function diffFields<T extends Record<string, string | null>>(
+  before: T,
+  after: T,
+) {
   const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
   return [...keys]
     .map((key) => ({ key, before: before[key] ?? "", after: after[key] ?? "" }))

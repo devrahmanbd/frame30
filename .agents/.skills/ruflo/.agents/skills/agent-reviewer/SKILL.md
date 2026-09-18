@@ -4,25 +4,28 @@ description: Agent skill for reviewer - invoke with $agent-reviewer
 ---
 
 ---
+
 name: reviewer
 type: validator
 color: "#E74C3C"
 description: Code review and quality assurance specialist
 capabilities:
-  - code_review
-  - security_audit
-  - performance_analysis
-  - best_practices
-  - documentation_review
-priority: medium
-hooks:
+
+- code_review
+- security_audit
+- performance_analysis
+- best_practices
+- documentation_review
+  priority: medium
+  hooks:
   pre: |
-    echo "👀 Reviewer agent analyzing: $TASK"
-    # Create review checklist
-    memory_store "review_checklist_$(date +%s)" "functionality,security,performance,maintainability,documentation"
+  echo "👀 Reviewer agent analyzing: $TASK"
+  # Create review checklist
+  memory_store "review_checklist_$(date +%s)" "functionality,security,performance,maintainability,documentation"
   post: |
-    echo "✅ Review complete"
-    echo "📝 Review summary stored in memory"
+  echo "✅ Review complete"
+  echo "📝 Review summary stored in memory"
+
 ---
 
 # Code Review Agent
@@ -181,8 +184,8 @@ function proc(u, p) {
 
 // ✅ CLEAR NAMING:
 function calculateUserDiscount(user, minimumPoints) {
-  return user.points > minimumPoints 
-    ? applyDiscount(user) 
+  return user.points > minimumPoints
+    ? applyDiscount(user)
     : 0;
 }
 
@@ -205,30 +208,35 @@ function processOrder(date: Date, config: Config) {
 ## Code Review Summary
 
 ### ✅ Strengths
+
 - Clean architecture with good separation of concerns
 - Comprehensive error handling
 - Well-documented API endpoints
 
 ### 🔴 Critical Issues
+
 1. **Security**: SQL injection vulnerability in user search (line 45)
    - Impact: High
    - Fix: Use parameterized queries
-   
+
 2. **Performance**: N+1 query problem in data fetching (line 120)
    - Impact: High
    - Fix: Use eager loading or batch queries
 
 ### 🟡 Suggestions
+
 1. **Maintainability**: Extract magic numbers to constants
 2. **Testing**: Add edge case tests for boundary conditions
 3. **Documentation**: Update API docs with new endpoints
 
 ### 📊 Metrics
+
 - Code Coverage: 78% (Target: 80%)
 - Complexity: Average 4.2 (Good)
 - Duplication: 2.3% (Acceptable)
 
 ### 🎯 Action Items
+
 - [ ] Fix SQL injection vulnerability
 - [ ] Optimize database queries
 - [ ] Add missing tests
@@ -238,18 +246,21 @@ function processOrder(date: Date, config: Config) {
 ## Review Guidelines
 
 ### 1. Be Constructive
+
 - Focus on the code, not the person
 - Explain why something is an issue
 - Provide concrete suggestions
 - Acknowledge good practices
 
 ### 2. Prioritize Issues
+
 - **Critical**: Security, data loss, crashes
 - **Major**: Performance, functionality bugs
 - **Minor**: Style, naming, documentation
 - **Suggestions**: Improvements, optimizations
 
 ### 3. Consider Context
+
 - Development stage
 - Time constraints
 - Team standards
@@ -277,6 +288,7 @@ npm run complexity-check
 ## MCP Tool Integration
 
 ### Memory Coordination
+
 ```javascript
 // Report review status
 mcp__claude-flow__memory_usage {
@@ -314,6 +326,7 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### Code Analysis
+
 ```javascript
 // Analyze code quality
 mcp__claude-flow__github_repo_analyze {

@@ -34,7 +34,10 @@ function commit() {
 
 function describe(error: unknown): { message: string; stack?: string } {
   if (error instanceof Error) {
-    return { message: error.message || error.name, stack: error.stack?.slice(0, 4_000) };
+    return {
+      message: error.message || error.name,
+      stack: error.stack?.slice(0, 4_000),
+    };
   }
   if (typeof error === "string") return { message: error };
   try {
@@ -44,7 +47,10 @@ function describe(error: unknown): { message: string; stack?: string } {
   }
 }
 
-export function reportBrowserError(error: unknown, mechanism: BrowserReportMechanism = "manual") {
+export function reportBrowserError(
+  error: unknown,
+  mechanism: BrowserReportMechanism = "manual",
+) {
   if (typeof window === "undefined") return;
   if (sent >= MAX_REPORTS_PER_PAGE) return;
 

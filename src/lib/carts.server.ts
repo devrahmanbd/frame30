@@ -35,7 +35,10 @@ export async function captureCart(
   },
 ) {
   return withSpan("commerce.cart_capture", async () => {
-    await enforceRateLimit("commerce.cart_capture", `${input.merchantId}:${input.cartToken}`);
+    await enforceRateLimit(
+      "commerce.cart_capture",
+      `${input.merchantId}:${input.cartToken}`,
+    );
     if (!input.email && !input.phone) {
       // No contact, nothing to recover — capture is pointless and privacy-noisy.
       return null;
@@ -51,7 +54,9 @@ export async function captureCart(
       _currency: input.currencyCode ?? "BDT",
     });
     if (error) {
-      log("warn", "cart.capture_failed", { detail: error.message.slice(0, 120) });
+      log("warn", "cart.capture_failed", {
+        detail: error.message.slice(0, 120),
+      });
       return null;
     }
     incr("framique_abandoned_cart_total", { outcome: "captured" });
@@ -86,17 +91,37 @@ export async function loadCarts(
     .limit(200);
   if (status) q = q.eq("status", status);
   const { data, error } = await q;
-  if (error) throw new CommerceError("carts_unavailable", "Carts are temporarily unavailable");
+  if (error)
+    throw new CommerceError(
+      "carts_unavailable",
+      "Carts are temporarily unavailable",
+    );
   return data ?? [];
 }
 
-export function cartStats(rows: { status: string; subtotal_minor_int: number }[]) {
+export function cartStats(
+  rows: { status: string; subtotal_minor_int: number }[],
+) {
   const active = rows.filter((r) => r.status === "active");
   const recovered = rows.filter((r) => r.status === "recovered");
-  const openValue = active.reduce((s, r) => s + Number(r.subtotal_minor_int), 0);
-  const recoveredValue = recovered.reduce((s, r) => s + Number(r.subtotal_minor_int), 0);
-  const rate = rows.length ? Math.round((recovered.length / rows.length) * 100) : 0;
-  return { active: active.length, recovered: recovered.length, openValue, recoveredValue, rate };
+  const openValue = active.reduce(
+    (s, r) => s + Number(r.subtotal_minor_int),
+    0,
+  );
+  const recoveredValue = recovered.reduce(
+    (s, r) => s + Number(r.subtotal_minor_int),
+    0,
+  );
+  const rate = rows.length
+    ? Math.round((recovered.length / rows.length) * 100)
+    : 0;
+  return {
+    active: active.length,
+    recovered: recovered.length,
+    openValue,
+    recoveredValue,
+    rate,
+  };
 }
 
 /**

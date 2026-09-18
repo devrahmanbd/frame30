@@ -40,7 +40,9 @@ export function canAdvance(steps: FlowStep[], state: FlowState): boolean {
 /** 0–100, for a progress bar with an accessible value. */
 export function progressOf(steps: FlowStep[], state: FlowState): number {
   if (steps.length === 0) return 100;
-  const answered = steps.filter((s) => (state.answers[s.key] ?? []).length > 0).length;
+  const answered = steps.filter(
+    (s) => (state.answers[s.key] ?? []).length > 0,
+  ).length;
   return Math.round((answered / steps.length) * 100);
 }
 
@@ -50,7 +52,11 @@ export type FlowEvent =
   | { kind: "back" }
   | { kind: "reset" };
 
-export function flowReducer(steps: FlowStep[], state: FlowState, event: FlowEvent): FlowState {
+export function flowReducer(
+  steps: FlowStep[],
+  state: FlowState,
+  event: FlowEvent,
+): FlowState {
   switch (event.kind) {
     case "answer": {
       const step = steps.find((s) => s.key === event.step);

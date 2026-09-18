@@ -1,1 +1,12 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_agents_skills_security_audit_scripts_cve_remediate_sh", "label": "cve-remediate.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.agents/skills/security-audit/scripts/cve-remediate.sh", "source_location": "L1"}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_agents_skills_security_audit_scripts_cve_remediate_sh",
+      "label": "cve-remediate.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.agents/skills/security-audit/scripts/cve-remediate.sh",
+      "source_location": "L1"
+    }
+  ],
+  "edges": []
+}

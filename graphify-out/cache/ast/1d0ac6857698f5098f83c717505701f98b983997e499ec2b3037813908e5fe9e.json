@@ -1,1 +1,1528 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "label": "provider-gate.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L1"}, {"id": "lib_provider_gate_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L37"}, {"id": "lib_provider_gate_server_row", "label": "Row", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L38"}, {"id": "lib_provider_gate_server_providergateerror", "label": "ProviderGateError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L40"}, {"id": "lib_provider_gate_server_providergateerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L41"}, {"id": "lib_provider_gate_server_admin", "label": "admin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L50"}, {"id": "lib_provider_gate_server_assertmerchantadmin", "label": "assertMerchantAdmin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L55"}, {"id": "lib_provider_gate_server_transition", "label": "transition()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L62"}, {"id": "lib_provider_gate_server_credentialview", "label": "CredentialView", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L118"}, {"id": "lib_provider_gate_server_toview", "label": "toView()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L143"}, {"id": "lib_provider_gate_server_listcredentials", "label": "listCredentials()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L176"}, {"id": "lib_provider_gate_server_credentialhistory", "label": "credentialHistory()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L222"}, {"id": "lib_provider_gate_server_liveproviders", "label": "liveProviders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L241"}, {"id": "lib_provider_gate_server_upsertrow", "label": "upsertRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L258"}, {"id": "lib_provider_gate_server_editable_states", "label": "EDITABLE_STATES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L292"}, {"id": "lib_provider_gate_server_saveevidence", "label": "saveEvidence()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L294"}, {"id": "lib_provider_gate_server_savesecrets", "label": "saveSecrets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L332"}, {"id": "lib_provider_gate_server_submitforreview", "label": "submitForReview()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L378"}, {"id": "lib_provider_gate_server_reviewdecision", "label": "ReviewDecision", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L400"}, {"id": "lib_provider_gate_server_decidecredential", "label": "decideCredential()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L403"}, {"id": "lib_provider_gate_server_reviewqueue", "label": "reviewQueue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L447"}, {"id": "lib_provider_gate_server_notifymerchant", "label": "notifyMerchant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L460"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "supabase_types_loose_json", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_cache_server_invalidate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "users_rahman_documents_frame30_src_lib_provider_gate_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_provider_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_provider_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_candecide", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_checklistprogress", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_credentialcantransition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_evaluatesubmission", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_isproviderkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_masksecret", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_checklist", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_checklistkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_credentialstate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_providerkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_row", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_providergateerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L40", "weight": 1.0}, {"source": "lib_provider_gate_server_providergateerror", "target": "lib_provider_gate_server_providergateerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_assertmerchantadmin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_transition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_credentialview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_toview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_listcredentials", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L176", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_credentialhistory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L222", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_liveproviders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L241", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_upsertrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L258", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_editable_states", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L292", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_saveevidence", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L294", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_savesecrets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L332", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_submitforreview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L378", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_reviewdecision", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L400", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_decidecredential", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L403", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_reviewqueue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L447", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts", "target": "lib_provider_gate_server_notifymerchant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L460", "weight": 1.0}, {"source": "lib_provider_gate_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L51", "weight": 1.0}, {"source": "lib_provider_gate_server_transition", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_provider_gate_server_upsertrow", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L259", "weight": 1.0}, {"source": "lib_provider_gate_server_saveevidence", "target": "lib_provider_gate_server_assertmerchantadmin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L300", "weight": 1.0}, {"source": "lib_provider_gate_server_saveevidence", "target": "lib_provider_gate_server_upsertrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L302", "weight": 1.0}, {"source": "lib_provider_gate_server_saveevidence", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L306", "weight": 1.0}, {"source": "lib_provider_gate_server_saveevidence", "target": "lib_provider_gate_server_listcredentials", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L324", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "lib_provider_gate_server_assertmerchantadmin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L338", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "users_rahman_documents_frame30_src_lib_identity_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L340", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "lib_provider_gate_server_upsertrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L351", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "users_rahman_documents_frame30_src_lib_webhook_secret_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L355", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L361", "weight": 1.0}, {"source": "lib_provider_gate_server_savesecrets", "target": "lib_provider_gate_server_listcredentials", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L375", "weight": 1.0}, {"source": "lib_provider_gate_server_submitforreview", "target": "lib_provider_gate_server_assertmerchantadmin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L384", "weight": 1.0}, {"source": "lib_provider_gate_server_submitforreview", "target": "lib_provider_gate_server_upsertrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L386", "weight": 1.0}, {"source": "lib_provider_gate_server_submitforreview", "target": "lib_provider_gate_server_transition", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L393", "weight": 1.0}, {"source": "lib_provider_gate_server_submitforreview", "target": "lib_provider_gate_server_listcredentials", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L395", "weight": 1.0}, {"source": "lib_provider_gate_server_decidecredential", "target": "users_rahman_documents_frame30_src_lib_platform_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L408", "weight": 1.0}, {"source": "lib_provider_gate_server_decidecredential", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L412", "weight": 1.0}, {"source": "lib_provider_gate_server_decidecredential", "target": "lib_provider_gate_server_transition", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L424", "weight": 1.0}, {"source": "lib_provider_gate_server_decidecredential", "target": "lib_provider_gate_server_notifymerchant", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L430", "weight": 1.0}, {"source": "lib_provider_gate_server_decidecredential", "target": "lib_provider_gate_server_toview", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L443", "weight": 1.0}, {"source": "lib_provider_gate_server_reviewqueue", "target": "users_rahman_documents_frame30_src_lib_platform_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L448", "weight": 1.0}, {"source": "lib_provider_gate_server_reviewqueue", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L450", "weight": 1.0}, {"source": "lib_provider_gate_server_notifymerchant", "target": "lib_provider_gate_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L473", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_provider_gate_server_providergateerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L45"}, {"caller_nid": "lib_provider_gate_server_assertmerchantadmin", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L56"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "credentialCanTransition", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L71"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L72"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L78"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L81"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L85"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L89"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L92"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L101"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L101"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L110"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L111"}, {"caller_nid": "lib_provider_gate_server_transition", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L112"}, {"caller_nid": "lib_provider_gate_server_toview", "callee": "isProviderKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L144"}, {"caller_nid": "lib_provider_gate_server_toview", "callee": "evaluateSubmission", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L149"}, {"caller_nid": "lib_provider_gate_server_toview", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L149"}, {"caller_nid": "lib_provider_gate_server_toview", "callee": "checklistProgress", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L162"}, {"caller_nid": "lib_provider_gate_server_listcredentials", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L177"}, {"caller_nid": "lib_provider_gate_server_listcredentials", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L178"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_credentialhistory", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L223"}, {"caller_nid": "lib_provider_gate_server_liveproviders", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L242"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L260"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "single", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L268"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L268"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L268"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L268"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L281"}, {"caller_nid": "lib_provider_gate_server_upsertrow", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L281"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L301"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L303"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L308"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L308"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L308"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L313"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L316"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L316"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L321"}, {"caller_nid": "lib_provider_gate_server_saveevidence", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L323"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L339"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "requireStepUp", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L341"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L346"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L349"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L352"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "unsealSecret", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L356"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L357"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "sealSecret", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L358"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L358"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "fromEntries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L359"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L359"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L359"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L362"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L362"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L362"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L364"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L366"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L366"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L371"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L373"}, {"caller_nid": "lib_provider_gate_server_savesecrets", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L374"}, {"caller_nid": "lib_provider_gate_server_submitforreview", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L385"}, {"caller_nid": "lib_provider_gate_server_submitforreview", "callee": "evaluateSubmission", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L388"}, {"caller_nid": "lib_provider_gate_server_submitforreview", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L388"}, {"caller_nid": "lib_provider_gate_server_submitforreview", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L390"}, {"caller_nid": "lib_provider_gate_server_submitforreview", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L394"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L409"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L410"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L413"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L413"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L413"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L413"}, {"caller_nid": "lib_provider_gate_server_decidecredential", "callee": "canDecide", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L421"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L449"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L451"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L451"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "in", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L451"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L451"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L451"}, {"caller_nid": "lib_provider_gate_server_reviewqueue", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L457"}, {"caller_nid": "lib_provider_gate_server_notifymerchant", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L474"}, {"caller_nid": "lib_provider_gate_server_notifymerchant", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts", "source_location": "L474"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "label": "provider-gate.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_provider_gate_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_provider_gate_server_row",
+      "label": "Row",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_provider_gate_server_providergateerror",
+      "label": "ProviderGateError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_provider_gate_server_providergateerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_provider_gate_server_admin",
+      "label": "admin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_provider_gate_server_assertmerchantadmin",
+      "label": "assertMerchantAdmin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_provider_gate_server_transition",
+      "label": "transition()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_provider_gate_server_credentialview",
+      "label": "CredentialView",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "lib_provider_gate_server_toview",
+      "label": "toView()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "lib_provider_gate_server_listcredentials",
+      "label": "listCredentials()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L176"
+    },
+    {
+      "id": "lib_provider_gate_server_credentialhistory",
+      "label": "credentialHistory()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "id": "lib_provider_gate_server_liveproviders",
+      "label": "liveProviders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L241"
+    },
+    {
+      "id": "lib_provider_gate_server_upsertrow",
+      "label": "upsertRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L258"
+    },
+    {
+      "id": "lib_provider_gate_server_editable_states",
+      "label": "EDITABLE_STATES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L292"
+    },
+    {
+      "id": "lib_provider_gate_server_saveevidence",
+      "label": "saveEvidence()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L294"
+    },
+    {
+      "id": "lib_provider_gate_server_savesecrets",
+      "label": "saveSecrets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L332"
+    },
+    {
+      "id": "lib_provider_gate_server_submitforreview",
+      "label": "submitForReview()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L378"
+    },
+    {
+      "id": "lib_provider_gate_server_reviewdecision",
+      "label": "ReviewDecision",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L400"
+    },
+    {
+      "id": "lib_provider_gate_server_decidecredential",
+      "label": "decideCredential()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L403"
+    },
+    {
+      "id": "lib_provider_gate_server_reviewqueue",
+      "label": "reviewQueue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L447"
+    },
+    {
+      "id": "lib_provider_gate_server_notifymerchant",
+      "label": "notifyMerchant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L460"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "supabase_types_loose_json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_cache_server_invalidate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_provider_gate_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_provider_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_provider_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_candecide",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_checklistprogress",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_credentialcantransition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_evaluatesubmission",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_isproviderkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_masksecret",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_checklist",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_checklistkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_credentialstate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_providerkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_providergateerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_providergateerror",
+      "target": "lib_provider_gate_server_providergateerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_assertmerchantadmin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_transition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_credentialview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_toview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_listcredentials",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_credentialhistory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_liveproviders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_upsertrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_editable_states",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L292",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_saveevidence",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L294",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_savesecrets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L332",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_submitforreview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L378",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_reviewdecision",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L400",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_decidecredential",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L403",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_reviewqueue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L447",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_provider_gate_server_ts",
+      "target": "lib_provider_gate_server_notifymerchant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L460",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_transition",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_upsertrow",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_saveevidence",
+      "target": "lib_provider_gate_server_assertmerchantadmin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_saveevidence",
+      "target": "lib_provider_gate_server_upsertrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_saveevidence",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_saveevidence",
+      "target": "lib_provider_gate_server_listcredentials",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L324",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "lib_provider_gate_server_assertmerchantadmin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L338",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L340",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "lib_provider_gate_server_upsertrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L351",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "users_rahman_documents_frame30_src_lib_webhook_secret_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L361",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_savesecrets",
+      "target": "lib_provider_gate_server_listcredentials",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L375",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_submitforreview",
+      "target": "lib_provider_gate_server_assertmerchantadmin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L384",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_submitforreview",
+      "target": "lib_provider_gate_server_upsertrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_submitforreview",
+      "target": "lib_provider_gate_server_transition",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L393",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_submitforreview",
+      "target": "lib_provider_gate_server_listcredentials",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L395",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_decidecredential",
+      "target": "users_rahman_documents_frame30_src_lib_platform_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L408",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_decidecredential",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L412",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_decidecredential",
+      "target": "lib_provider_gate_server_transition",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L424",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_decidecredential",
+      "target": "lib_provider_gate_server_notifymerchant",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L430",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_decidecredential",
+      "target": "lib_provider_gate_server_toview",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L443",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_reviewqueue",
+      "target": "users_rahman_documents_frame30_src_lib_platform_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L448",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_reviewqueue",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L450",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_provider_gate_server_notifymerchant",
+      "target": "lib_provider_gate_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L473",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_provider_gate_server_providergateerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_assertmerchantadmin",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "credentialCanTransition",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_transition",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_toview",
+      "callee": "isProviderKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_toview",
+      "callee": "evaluateSubmission",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_toview",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_toview",
+      "callee": "checklistProgress",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_listcredentials",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_listcredentials",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_credentialhistory",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L223"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_liveproviders",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L242"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "single",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L281"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_upsertrow",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L281"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L321"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_saveevidence",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "requireStepUp",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "unsealSecret",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L356"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "sealSecret",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L358"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L358"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "fromEntries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L364"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L366"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L366"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_savesecrets",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L374"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_submitforreview",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L385"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_submitforreview",
+      "callee": "evaluateSubmission",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_submitforreview",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_submitforreview",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L390"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_submitforreview",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L410"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_decidecredential",
+      "callee": "canDecide",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "in",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_reviewqueue",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L457"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_notifymerchant",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L474"
+    },
+    {
+      "caller_nid": "lib_provider_gate_server_notifymerchant",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/provider-gate.server.ts",
+      "source_location": "L474"
+    }
+  ]
+}

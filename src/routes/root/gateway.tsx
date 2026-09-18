@@ -15,7 +15,10 @@ export const Route = createFileRoute("/root/gateway")({
         content:
           "Inspect every payment provider callback Framique received, review dead-letter reasons and retry failed deliveries.",
       },
-      { property: "og:title", content: "Payment gateway — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Payment gateway — Framique owner console",
+      },
       {
         property: "og:description",
         content: "Webhook ingest log, dead-letter reasons and one-click retry.",
@@ -28,11 +31,13 @@ export const Route = createFileRoute("/root/gateway")({
   component: GatewayOps,
 });
 
-const chip = "inline-flex items-center gap-1 rounded-fq-sm px-2 py-0.5 text-xs font-medium";
+const chip =
+  "inline-flex items-center gap-1 rounded-fq-sm px-2 py-0.5 text-xs font-medium";
 
 function statusChip(status: string) {
   if (status === "processed") return `${chip} bg-primary/10 text-primary`;
-  if (status === "dead_letter") return `${chip} bg-destructive/10 text-destructive`;
+  if (status === "dead_letter")
+    return `${chip} bg-destructive/10 text-destructive`;
   return `${chip} bg-muted text-muted-foreground`;
 }
 
@@ -42,13 +47,19 @@ function GatewayOps() {
   const load = useServerFn(gatewayEventsFn);
   const retry = useServerFn(gatewayRetryFn);
 
-  const { data, isLoading } = useQuery({ queryKey: ["gateway-events"], queryFn: () => load() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["gateway-events"],
+    queryFn: () => load(),
+  });
 
   const retryMutation = useMutation({
     mutationFn: (eventId: string) => retry({ data: { eventId } }),
     onSuccess: (result) => {
       if (result.ok) toast.success(tk("gateway.retry_ok"));
-      else toast.error(`${tk("gateway.retry_failed")}: ${result.reason ?? result.status}`);
+      else
+        toast.error(
+          `${tk("gateway.retry_failed")}: ${result.reason ?? result.status}`,
+        );
       void qc.invalidateQueries({ queryKey: ["gateway-events"] });
     },
     onError: () => toast.error(tk("gateway.retry_failed")),
@@ -60,10 +71,14 @@ function GatewayOps() {
     <section className="space-y-4">
       <div>
         <h2 className="text-lg font-semibold">{tk("gateway.title")}</h2>
-        <p className="text-sm text-muted-foreground">{tk("gateway.subtitle")}</p>
+        <p className="text-sm text-muted-foreground">
+          {tk("gateway.subtitle")}
+        </p>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
 
       {!isLoading && events.length === 0 ? (
         <p className="rounded-fq-md border border-dashed border-border p-6 text-sm text-muted-foreground">
@@ -78,9 +93,13 @@ function GatewayOps() {
             className="rounded-fq-md border border-border p-4 text-sm"
           >
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <code className="font-mono text-xs text-muted-foreground">{event.webhook_id}</code>
+              <code className="font-mono text-xs text-muted-foreground">
+                {event.webhook_id}
+              </code>
               <span className={statusChip(event.status)}>
-                <span aria-hidden>{event.status === "processed" ? "✓" : "!"}</span>
+                <span aria-hidden>
+                  {event.status === "processed" ? "✓" : "!"}
+                </span>
                 {event.status === "processed"
                   ? tk("gateway.status_processed")
                   : event.status === "dead_letter"
@@ -102,8 +121,8 @@ function GatewayOps() {
             </div>
             {event.reason ? (
               <p className="mt-2 text-xs font-medium text-destructive">
-                {tk("gateway.reason")}: {event.reason} · {tk("gateway.redeliveries")}{" "}
-                {event.redelivery_count}
+                {tk("gateway.reason")}: {event.reason} ·{" "}
+                {tk("gateway.redeliveries")} {event.redelivery_count}
               </p>
             ) : null}
             {event.status === "dead_letter" ? (

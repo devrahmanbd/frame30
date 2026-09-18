@@ -1,1 +1,1039 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "label": "shipping.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L1"}, {"id": "admin_shipping_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L22"}, {"id": "admin_shipping_steps", "label": "STEPS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L43"}, {"id": "admin_shipping_next", "label": "NEXT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L54"}, {"id": "admin_shipping_tabid", "label": "TabId", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L65"}, {"id": "admin_shipping_tabs", "label": "TABS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L67"}, {"id": "admin_shipping_shippingpage", "label": "ShippingPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L79"}, {"id": "admin_shipping_desk", "label": "Desk", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L160"}, {"id": "admin_shipping_panelprops", "label": "PanelProps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L161"}, {"id": "admin_shipping_parcelspanel", "label": "ParcelsPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L163"}, {"id": "admin_shipping_ratespanel", "label": "RatesPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L362"}, {"id": "admin_shipping_codpanel", "label": "CodPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L603"}, {"id": "admin_shipping_carrier_fields", "label": "CARRIER_FIELDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L683"}, {"id": "admin_shipping_carrierspanel", "label": "CarriersPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L704"}, {"id": "admin_shipping_healthpanel", "label": "HealthPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L870"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "users_rahman_documents_frame30_src_lib_pos_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_pos_functions_advanceshipmentfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_pos_functions_generatelabelfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_pos_functions_retryratefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "users_rahman_documents_frame30_src_lib_shipping_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_cancelshipmentfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_deleterulefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_quoteshippingfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_replaycouriereventfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_reconcilecodfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_savecarriercredentialsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_saverulefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_savezonefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_schedulepickupfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_setcarriermodefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "lib_shipping_functions_shippingdeskfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_steps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_next", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_tabid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_tabs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_shippingpage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_desk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_panelprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L161", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_parcelspanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L163", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_ratespanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L362", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_codpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L603", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_carrier_fields", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L683", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_carrierspanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L704", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx", "target": "admin_shipping_healthpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L870", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_shipping_shippingpage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L80"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L81"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L82"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L84"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L91"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L96"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L97"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L103"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L106"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L115"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L119"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L123"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L128"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L129"}, {"caller_nid": "admin_shipping_shippingpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L147"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L164"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L165"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L166"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L167"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L170"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L185"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L193"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L198"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L206"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L215"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L228"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L230"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L246"}, {"caller_nid": "admin_shipping_parcelspanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L250"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L363"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L366"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L373"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L374"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L376"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L399"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L408"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L426"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L442"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L450"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L453"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L461"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L470"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L479"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L484"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L485"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L490"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L492"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L515"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L517"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L543"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L550"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L551"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L559"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L568"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L577"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L586"}, {"caller_nid": "admin_shipping_ratespanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L595"}, {"caller_nid": "admin_shipping_codpanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L604"}, {"caller_nid": "admin_shipping_codpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L605"}, {"caller_nid": "admin_shipping_codpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L606"}, {"caller_nid": "admin_shipping_codpanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L608"}, {"caller_nid": "admin_shipping_codpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L622"}, {"caller_nid": "admin_shipping_codpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L627"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L705"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L706"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L707"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L708"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L710"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L717"}, {"caller_nid": "admin_shipping_carrierspanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L729"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L871"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L874"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L891"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L897"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L900"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L901"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L902"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L903"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L904"}, {"caller_nid": "admin_shipping_healthpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx", "source_location": "L908"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "label": "shipping.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_shipping_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "admin_shipping_steps",
+      "label": "STEPS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L43"
+    },
+    {
+      "id": "admin_shipping_next",
+      "label": "NEXT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L54"
+    },
+    {
+      "id": "admin_shipping_tabid",
+      "label": "TabId",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L65"
+    },
+    {
+      "id": "admin_shipping_tabs",
+      "label": "TABS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L67"
+    },
+    {
+      "id": "admin_shipping_shippingpage",
+      "label": "ShippingPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L79"
+    },
+    {
+      "id": "admin_shipping_desk",
+      "label": "Desk",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L160"
+    },
+    {
+      "id": "admin_shipping_panelprops",
+      "label": "PanelProps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L161"
+    },
+    {
+      "id": "admin_shipping_parcelspanel",
+      "label": "ParcelsPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L163"
+    },
+    {
+      "id": "admin_shipping_ratespanel",
+      "label": "RatesPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L362"
+    },
+    {
+      "id": "admin_shipping_codpanel",
+      "label": "CodPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L603"
+    },
+    {
+      "id": "admin_shipping_carrier_fields",
+      "label": "CARRIER_FIELDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L683"
+    },
+    {
+      "id": "admin_shipping_carrierspanel",
+      "label": "CarriersPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L704"
+    },
+    {
+      "id": "admin_shipping_healthpanel",
+      "label": "HealthPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L870"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_pos_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_pos_functions_advanceshipmentfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_pos_functions_generatelabelfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_pos_functions_retryratefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_shipping_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_cancelshipmentfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_deleterulefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_quoteshippingfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_replaycouriereventfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_reconcilecodfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_savecarriercredentialsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_saverulefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_savezonefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_schedulepickupfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_setcarriermodefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "lib_shipping_functions_shippingdeskfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_steps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_next",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_tabid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_tabs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_shippingpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_desk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_panelprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_parcelspanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_ratespanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L362",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_codpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L603",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_carrier_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L683",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_carrierspanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L704",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_shipping_tsx",
+      "target": "admin_shipping_healthpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L870",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "admin_shipping_shippingpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L215"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "admin_shipping_parcelspanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L363"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L366"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L374"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L376"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L399"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L426"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L442"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L453"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L461"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L470"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L479"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L484"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L485"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L490"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L492"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L515"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L517"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L543"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L551"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L559"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L568"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L577"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L586"
+    },
+    {
+      "caller_nid": "admin_shipping_ratespanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L595"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L604"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L605"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L606"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L608"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L622"
+    },
+    {
+      "caller_nid": "admin_shipping_codpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L627"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L705"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L706"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L707"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L708"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L710"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L717"
+    },
+    {
+      "caller_nid": "admin_shipping_carrierspanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L729"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L871"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L874"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L891"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L897"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L900"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L901"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L902"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L903"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L904"
+    },
+    {
+      "caller_nid": "admin_shipping_healthpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/shipping.tsx",
+      "source_location": "L908"
+    }
+  ]
+}

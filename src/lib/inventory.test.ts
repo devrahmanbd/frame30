@@ -6,7 +6,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -16,7 +19,13 @@ vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const inventory = await import("./inventory.server");
-const { createTransfer, receiveTransfer, mapRpcError, CommerceError, loadLevels } = inventory;
+const {
+  createTransfer,
+  receiveTransfer,
+  mapRpcError,
+  CommerceError,
+  loadLevels,
+} = inventory;
 
 const MERCHANT = "11111111-1111-1111-1111-111111111111";
 const OTHER = "22222222-2222-2222-2222-222222222222";
@@ -63,7 +72,9 @@ describe("createTransfer", () => {
     expect(lines).toHaveLength(1);
     expect(lines[0]!["quantity"]).toBe(3);
     expect(lines[0]!["merchant_id"]).toBe(MERCHANT);
-    expect(recorder.of("framique_inventory_transfer_total", ["outcome", "created"])).toHaveLength(1);
+    expect(
+      recorder.of("framique_inventory_transfer_total", ["outcome", "created"]),
+    ).toHaveLength(1);
   });
 });
 
@@ -74,11 +85,24 @@ describe("receiveTransfer", () => {
       rpc: () => {
         calls += 1;
         // The RPC holds the lock and reports the terminal state on replay.
-        return { data: { ok: true, status: "received", replayed: calls > 1 }, error: null };
+        return {
+          data: { ok: true, status: "received", replayed: calls > 1 },
+          error: null,
+        };
       },
     });
-    const first: any = await receiveTransfer(db.asClient(), MERCHANT, "staff-1", "trf-1");
-    const second: any = await receiveTransfer(db.asClient(), MERCHANT, "staff-1", "trf-1");
+    const first: any = await receiveTransfer(
+      db.asClient(),
+      MERCHANT,
+      "staff-1",
+      "trf-1",
+    );
+    const second: any = await receiveTransfer(
+      db.asClient(),
+      MERCHANT,
+      "staff-1",
+      "trf-1",
+    );
     expect(first.status).toBe("received");
     expect(second.status).toBe("received");
     expect(second.replayed).toBe(true);
@@ -86,11 +110,15 @@ describe("receiveTransfer", () => {
   });
 
   it("denies receiving a transfer the database rejects (deny)", async () => {
-    const db = fakeDb({ rpc: () => ({ data: null, error: { message: "transfer_not_found" } }) });
+    const db = fakeDb({
+      rpc: () => ({ data: null, error: { message: "transfer_not_found" } }),
+    });
     await expect(
       receiveTransfer(db.asClient(), MERCHANT, "staff-1", "nope"),
     ).rejects.toBeInstanceOf(CommerceError);
-    expect(recorder.of("framique_inventory_transfer_total", ["outcome", "received"])).toHaveLength(0);
+    expect(
+      recorder.of("framique_inventory_transfer_total", ["outcome", "received"]),
+    ).toHaveLength(0);
   });
 });
 
@@ -100,7 +128,9 @@ describe("mapRpcError", () => {
     expect(known).toBeInstanceOf(CommerceError);
     expect(known.code).toBe("transfer_not_found");
 
-    const unknown = mapRpcError('duplicate key value violates unique constraint "idx_secret"');
+    const unknown = mapRpcError(
+      'duplicate key value violates unique constraint "idx_secret"',
+    );
     expect(unknown.message).not.toMatch(/idx_secret/);
   });
 });

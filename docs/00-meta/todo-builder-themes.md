@@ -12,24 +12,24 @@ Legend: `[ ]` open · `[!]` blocking gate · numbers are measured, not estimated
 
 Better than the plans assume. The bricks are done; the **themes** are not shipped.
 
-| Layer | State |
-| --- | --- |
-| Widget registry | 117 `SectionType` keys, all with renderers. `WIDGET_COMPONENTS` is `Record<SectionType, WidgetComponent>`, so a missing renderer is a type error — "declared but unimplemented" is structurally impossible. |
-| AST v3 | Nesting (`children`), depth cap 6, 300-node cap, `container: true`, slot legality, lint — done (`builder-ast.ts:181-208`). |
-| Responsive + style panel | `bp` map (sm/md/lg), `hidden[]`, universal `padY/padX/bg/radius/border/shadow/maxW/align` as token-only style props — done. |
-| Data contract | One batched `resolveWidgetData` per template render, tenant-scoped, widgets never fetch — done (`widget-data.server.ts:593`, `storefront.server.ts:86`). |
-| Editor UX | Layer tree, drag/drop, multi-select, undo/redo history, saved blocks + export/import — done (`use-builder-editor.ts:89-101`, `saved-blocks.ts`). |
-| Demo import | `theme_import_demo` RPC wired (`themes.server.ts:775`). |
-| Themes | All four blueprints authored with all 7 templates — but only **Atelier** ships (`SHIPPED_BLUEPRINT_KEYS = ["atelier"]`). |
+| Layer                    | State                                                                                                                                                                                                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Widget registry          | 117 `SectionType` keys, all with renderers. `WIDGET_COMPONENTS` is `Record<SectionType, WidgetComponent>`, so a missing renderer is a type error — "declared but unimplemented" is structurally impossible. |
+| AST v3                   | Nesting (`children`), depth cap 6, 300-node cap, `container: true`, slot legality, lint — done (`builder-ast.ts:181-208`).                                                                                  |
+| Responsive + style panel | `bp` map (sm/md/lg), `hidden[]`, universal `padY/padX/bg/radius/border/shadow/maxW/align` as token-only style props — done.                                                                                 |
+| Data contract            | One batched `resolveWidgetData` per template render, tenant-scoped, widgets never fetch — done (`widget-data.server.ts:593`, `storefront.server.ts:86`).                                                    |
+| Editor UX                | Layer tree, drag/drop, multi-select, undo/redo history, saved blocks + export/import — done (`use-builder-editor.ts:89-101`, `saved-blocks.ts`).                                                            |
+| Demo import              | `theme_import_demo` RPC wired (`themes.server.ts:775`).                                                                                                                                                     |
+| Themes                   | All four blueprints authored with all 7 templates — but only **Atelier** ships (`SHIPPED_BLUEPRINT_KEYS = ["atelier"]`).                                                                                    |
 
 **The single biggest gap is বাংলা coverage, which is what gates shipping:**
 
 | Blueprint | Bilingual props filled | Coverage | Ships? |
-| --- | --- | --- | --- |
-| atelier | 195 / 195 | 100% | yes |
-| bazaar | 91 / 268 | 34.0% | no |
-| rupaboti | 86 / 311 | 27.7% | no |
-| circuit | 69 / 293 | 23.5% | no |
+| --------- | ---------------------- | -------- | ------ |
+| atelier   | 195 / 195              | 100%     | yes    |
+| bazaar    | 91 / 268               | 34.0%    | no     |
+| rupaboti  | 86 / 311               | 27.7%    | no     |
+| circuit   | 69 / 293               | 23.5%    | no     |
 
 Gate is ≥90%. Three flagship themes are invisible to merchants purely for translation debt.
 
@@ -63,13 +63,11 @@ Gate is ≥90%. Three flagship themes are invisible to merchants purely for tran
 - [x] Licence attestation (`font_assets.licence_confirmed_at`) required before publish; an unattested face is never emitted as `@font-face`.
 - [x] CSP `font-src 'self'` only — custom faces are served same-origin from `/api/public/font/*`; silent fallback + `framique_theme_font_fallback_total` on a 404.
 
-
 ## 4. Demo data lifecycle — done
 
 - [x] Per-vertical catalogues authored in `src/lib/demo-catalog.ts` and passed to `theme_import_demo` as `_catalog`: apparel (sizes, colourways, fabric, model measurements), marketplace (broad multi-category), electronics (specs, EMI, warranty), beauty (shades, ingredients, routine steps). Referential integrity asserted in `phase4-demo-catalog.test.ts`.
 - [x] `theme_purge_demo` removes only `is_demo` rows across products, variants, collection links, collections and categories, and reports counts; import is a no-op when demo rows already exist (idempotent + fully reversible).
 - [x] `theme.demo_imported` / `theme.demo_purged` recorded in `theme_audit` with row counts.
-
 
 ## 5. SEO / AEO per template — done
 
@@ -94,7 +92,6 @@ Gate is ≥90%. Three flagship themes are invisible to merchants purely for tran
 - [x] Storefront cache key is `tenant · template · locale · theme_version`; a publish purge clears one merchant and leaves every other tenant warm (asserted against the live cache).
 - [x] Hydration policy audited per widget: chrome `eager`, editorial `static`, rails/UGC `visible`, drawers/size guide/quick view/mobile filters `interaction`.
 - [x] Overlay invariants: no builder component other than `OverlayHost` locks scroll or declares `aria-modal`; the host owns focus trap, Escape and focus restore.
-
 
 ## 8. Consistency / documentation debt — done
 

@@ -8,11 +8,11 @@ step-up gate that protects money actions. It documents what exists, not a plan.
 
 ## 1. Data model (all tenant- or user-scoped, RLS on, service-role grants only where needed)
 
-| Table | Purpose | PII posture |
-|---|---|---|
-| `auth_events` | Append-only sign-in / failure / MFA / OAuth audit trail | email + IP stored as salted SHA-256 hashes; no raw values |
-| `auth_sessions` | Active session registry: device string (OS/browser), hashed IP, last seen | hashed IP only |
-| `step_up_grants` | Short-lived single-use grants for sensitive actions | no PII |
+| Table            | Purpose                                                                   | PII posture                                               |
+| ---------------- | ------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `auth_events`    | Append-only sign-in / failure / MFA / OAuth audit trail                   | email + IP stored as salted SHA-256 hashes; no raw values |
+| `auth_sessions`  | Active session registry: device string (OS/browser), hashed IP, last seen | hashed IP only                                            |
+| `step_up_grants` | Short-lived single-use grants for sensitive actions                       | no PII                                                    |
 
 `step_up_consume(_action, _merchant_id)` is `SECURITY DEFINER` and burns the grant
 in the same statement it validates, so a replayed refund cannot reuse a grant.

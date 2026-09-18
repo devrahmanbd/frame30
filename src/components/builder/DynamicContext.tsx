@@ -8,7 +8,10 @@
  */
 import { createContext, useContext, useMemo } from "react";
 import type { ReactNode } from "react";
-import { SAMPLE_DYNAMIC_CONTEXT, type DynamicContext as DynamicValues } from "@/lib/dynamic-tags";
+import {
+  SAMPLE_DYNAMIC_CONTEXT,
+  type DynamicContext as DynamicValues,
+} from "@/lib/dynamic-tags";
 
 const Ctx = createContext<DynamicValues | null>(null);
 

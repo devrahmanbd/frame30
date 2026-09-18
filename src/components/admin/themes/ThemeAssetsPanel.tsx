@@ -97,7 +97,9 @@ export function ThemeAssetsPanel({
   const save = useMutation({
     mutationFn: useServerFn(themeAssetSaveFn),
     onSuccess: () => {
-      toast.success("Saved. Your storefront picks this up on the next page load.");
+      toast.success(
+        "Saved. Your storefront picks this up on the next page load.",
+      );
       setDraft(null);
       refresh();
     },
@@ -148,7 +150,11 @@ export function ThemeAssetsPanel({
           >
             <Plus className="size-4" aria-hidden /> Colour tokens
           </button>
-          <button type="button" className={btnPrimary} onClick={() => setDraft(newDraft("css"))}>
+          <button
+            type="button"
+            className={btnPrimary}
+            onClick={() => setDraft(newDraft("css"))}
+          >
             <Plus className="size-4" aria-hidden /> Custom CSS
           </button>
         </div>
@@ -181,7 +187,11 @@ export function ThemeAssetsPanel({
           title="No custom CSS yet"
           description="Add a stylesheet or a set of colour tokens to fine-tune the theme you activated."
           action={
-            <button type="button" className={btnPrimary} onClick={() => setDraft(newDraft("css"))}>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => setDraft(newDraft("css"))}
+            >
               Add custom CSS
             </button>
           }
@@ -195,10 +205,11 @@ export function ThemeAssetsPanel({
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{asset.name}</p>
                     <p className="mt-0.5 text-xs fq-sub">
-                      {ASSET_KIND_LABEL[asset.kind].en} · {assetSummary(asset)} ·{" "}
+                      {ASSET_KIND_LABEL[asset.kind].en} · {assetSummary(asset)}{" "}
+                      ·{" "}
                       {asset.themeId
-                        ? (installed.find((theme) => theme.id === asset.themeId)?.name ??
-                          "Removed theme")
+                        ? (installed.find((theme) => theme.id === asset.themeId)
+                            ?.name ?? "Removed theme")
                         : "Every theme"}
                     </p>
                   </div>
@@ -210,7 +221,10 @@ export function ThemeAssetsPanel({
                         checked={asset.enabled}
                         onChange={(event) =>
                           toggle.mutate({
-                            data: { id: asset.id, enabled: event.currentTarget.checked },
+                            data: {
+                              id: asset.id,
+                              enabled: event.currentTarget.checked,
+                            },
                           })
                         }
                       />
@@ -273,8 +287,12 @@ function AssetEditor({
 
   const isCss = draft.kind === "css";
   const stats = cssStats(draft.content);
-  const sanitised = isCss ? sanitiseThemeCss(draft.content) : { css: draft.content, removed: [] };
-  const error = isCss ? validateCss(sanitised.css) : validateTokens(draft.content);
+  const sanitised = isCss
+    ? sanitiseThemeCss(draft.content)
+    : { css: draft.content, removed: [] };
+  const error = isCss
+    ? validateCss(sanitised.css)
+    : validateTokens(draft.content);
   const message =
     error === "css.too_large"
       ? `Stylesheets are limited to ${formatAssetBytes(MAX_CSS_BYTES)}.`
@@ -287,7 +305,13 @@ function AssetEditor({
             : null;
 
   return (
-    <Card title={draft.id ? `Edit ${draft.name}` : `New ${ASSET_KIND_LABEL[draft.kind].en}`}>
+    <Card
+      title={
+        draft.id
+          ? `Edit ${draft.name}`
+          : `New ${ASSET_KIND_LABEL[draft.kind].en}`
+      }
+    >
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm">
           <span className="mb-1 block text-xs font-medium fq-sub">Name</span>
@@ -295,11 +319,15 @@ function AssetEditor({
             className={cn(inputClass, "min-h-11")}
             value={draft.name}
             maxLength={80}
-            onChange={(event) => onChange({ ...draft, name: event.currentTarget.value })}
+            onChange={(event) =>
+              onChange({ ...draft, name: event.currentTarget.value })
+            }
           />
         </label>
         <label className="text-sm">
-          <span className="mb-1 block text-xs font-medium fq-sub">Applies to</span>
+          <span className="mb-1 block text-xs font-medium fq-sub">
+            Applies to
+          </span>
           <select
             className={cn(inputClass, "min-h-11")}
             value={draft.themeId ?? ""}
@@ -323,7 +351,10 @@ function AssetEditor({
           {isCss ? "Stylesheet" : "Token overrides (JSON)"}
         </span>
         <textarea
-          className={cn(inputClass, "min-h-[260px] font-mono text-xs leading-relaxed")}
+          className={cn(
+            inputClass,
+            "min-h-[260px] font-mono text-xs leading-relaxed",
+          )}
           spellCheck={false}
           value={draft.content}
           onChange={(event) => {
@@ -336,15 +367,15 @@ function AssetEditor({
       <p className="mt-2 text-xs fq-sub">
         {isCss
           ? `${stats.rules} rules · ${formatAssetBytes(stats.bytes)} of ${formatAssetBytes(MAX_CSS_BYTES)}`
-          : "Names become CSS custom properties, so \"color-primary\" sets --color-primary."}
+          : 'Names become CSS custom properties, so "color-primary" sets --color-primary.'}
       </p>
 
       {sanitised.removed.length > 0 && (
         <p className="mt-2 flex items-start gap-2 rounded-fq-sm bg-warning-soft px-2 py-1 text-xs text-warning-foreground">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
           <span>
-            {sanitised.removed.join(", ")} will be removed when this saves — those cannot run on a
-            storefront.
+            {sanitised.removed.join(", ")} will be removed when this saves —
+            those cannot run on a storefront.
           </span>
         </p>
       )}
@@ -360,7 +391,9 @@ function AssetEditor({
           type="button"
           className={btnPrimary}
           disabled={busy || Boolean(error)}
-          onClick={() => onSave({ ...draft, content: isCss ? sanitised.css : draft.content })}
+          onClick={() =>
+            onSave({ ...draft, content: isCss ? sanitised.css : draft.content })
+          }
         >
           <Check className="size-4" aria-hidden /> {busy ? "Saving…" : "Save"}
         </button>

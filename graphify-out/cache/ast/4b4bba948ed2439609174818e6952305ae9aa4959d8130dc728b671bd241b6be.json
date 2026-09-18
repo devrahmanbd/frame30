@@ -1,1 +1,655 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "label": "platform-billing.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L1"}, {"id": "lib_platform_billing_chargestatus", "label": "ChargeStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L22"}, {"id": "lib_platform_billing_terminal_charge_statuses", "label": "TERMINAL_CHARGE_STATUSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L24"}, {"id": "lib_platform_billing_transitions", "label": "TRANSITIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L35"}, {"id": "lib_platform_billing_cantransition", "label": "canTransition()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L44"}, {"id": "lib_platform_billing_isterminal", "label": "isTerminal()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L48"}, {"id": "lib_platform_billing_platform_method_keys", "label": "PLATFORM_METHOD_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L57"}, {"id": "lib_platform_billing_platformmethod", "label": "PlatformMethod", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L66"}, {"id": "lib_platform_billing_notes", "label": "NOTES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L74"}, {"id": "lib_platform_billing_platformmethods", "label": "platformMethods()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L83"}, {"id": "lib_platform_billing_isplatformmethod", "label": "isPlatformMethod()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L97"}, {"id": "lib_platform_billing_retry_backoff_minutes", "label": "RETRY_BACKOFF_MINUTES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L108"}, {"id": "lib_platform_billing_nextretryat", "label": "nextRetryAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L113"}, {"id": "lib_platform_billing_failureclass", "label": "FailureClass", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L122"}, {"id": "lib_platform_billing_failures", "label": "FAILURES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L131"}, {"id": "lib_platform_billing_classifyfailure", "label": "classifyFailure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L176"}, {"id": "lib_platform_billing_collectioninput", "label": "CollectionInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L183"}, {"id": "lib_platform_billing_collectionverdict", "label": "CollectionVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L194"}, {"id": "lib_platform_billing_receiptinput", "label": "ReceiptInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L290"}, {"id": "lib_platform_billing_receiptline", "label": "ReceiptLine", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L307"}, {"id": "lib_platform_billing_receiptlines", "label": "receiptLines()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L314"}, {"id": "lib_platform_billing_methodlabel", "label": "methodLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L350"}, {"id": "lib_platform_billing_receiptisfinal", "label": "receiptIsFinal()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L356"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_payment_rails_payment_method_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_payment_rails_paymentmethodkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_payment_rails_paymentmethodspec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_chargestatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_terminal_charge_statuses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_transitions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_cantransition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_isterminal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_platform_method_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_platformmethod", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_notes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_platformmethods", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_isplatformmethod", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_retry_backoff_minutes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_nextretryat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_failureclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_failures", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_classifyfailure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L176", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_collectioninput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_collectionverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_collectionverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L209", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_receiptinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L290", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_receiptline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L307", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_receiptlines", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L314", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_methodlabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L350", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_platform_billing_ts", "target": "lib_platform_billing_receiptisfinal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L356", "weight": 1.0}, {"source": "lib_platform_billing_collectionverdict", "target": "lib_platform_billing_classifyfailure", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L255", "weight": 1.0}, {"source": "lib_platform_billing_collectionverdict", "target": "lib_platform_billing_nextretryat", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L267", "weight": 1.0}, {"source": "lib_platform_billing_receiptlines", "target": "lib_platform_billing_methodlabel", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L334", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_platform_billing_cantransition", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L45"}, {"caller_nid": "lib_platform_billing_isterminal", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L49"}, {"caller_nid": "lib_platform_billing_platformmethods", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L85"}, {"caller_nid": "lib_platform_billing_platformmethods", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L85"}, {"caller_nid": "lib_platform_billing_isplatformmethod", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L98"}, {"caller_nid": "lib_platform_billing_nextretryat", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L116"}, {"caller_nid": "lib_platform_billing_nextretryat", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L117"}, {"caller_nid": "lib_platform_billing_nextretryat", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L118"}, {"caller_nid": "lib_platform_billing_classifyfailure", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L177"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L210"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L211"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L212"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L224"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L268"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L271"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L271"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L272"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L272"}, {"caller_nid": "lib_platform_billing_collectionverdict", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L273"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L325"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L325"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L327"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L331"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L333"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L336"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L336"}, {"caller_nid": "lib_platform_billing_receiptlines", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts", "source_location": "L341"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "label": "platform-billing.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_platform_billing_chargestatus",
+      "label": "ChargeStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_platform_billing_terminal_charge_statuses",
+      "label": "TERMINAL_CHARGE_STATUSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_platform_billing_transitions",
+      "label": "TRANSITIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_platform_billing_cantransition",
+      "label": "canTransition()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_platform_billing_isterminal",
+      "label": "isTerminal()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_platform_billing_platform_method_keys",
+      "label": "PLATFORM_METHOD_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_platform_billing_platformmethod",
+      "label": "PlatformMethod",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "lib_platform_billing_notes",
+      "label": "NOTES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_platform_billing_platformmethods",
+      "label": "platformMethods()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_platform_billing_isplatformmethod",
+      "label": "isPlatformMethod()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "lib_platform_billing_retry_backoff_minutes",
+      "label": "RETRY_BACKOFF_MINUTES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "lib_platform_billing_nextretryat",
+      "label": "nextRetryAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_platform_billing_failureclass",
+      "label": "FailureClass",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "lib_platform_billing_failures",
+      "label": "FAILURES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "lib_platform_billing_classifyfailure",
+      "label": "classifyFailure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L176"
+    },
+    {
+      "id": "lib_platform_billing_collectioninput",
+      "label": "CollectionInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L183"
+    },
+    {
+      "id": "lib_platform_billing_collectionverdict",
+      "label": "CollectionVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L194"
+    },
+    {
+      "id": "lib_platform_billing_receiptinput",
+      "label": "ReceiptInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L290"
+    },
+    {
+      "id": "lib_platform_billing_receiptline",
+      "label": "ReceiptLine",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L307"
+    },
+    {
+      "id": "lib_platform_billing_receiptlines",
+      "label": "receiptLines()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L314"
+    },
+    {
+      "id": "lib_platform_billing_methodlabel",
+      "label": "methodLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L350"
+    },
+    {
+      "id": "lib_platform_billing_receiptisfinal",
+      "label": "receiptIsFinal()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L356"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_payment_rails_payment_method_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_payment_rails_paymentmethodkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_payment_rails_paymentmethodspec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_chargestatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_terminal_charge_statuses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_transitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_cantransition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_isterminal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_platform_method_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_platformmethod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_notes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_platformmethods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_isplatformmethod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_retry_backoff_minutes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_nextretryat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_failureclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_failures",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_classifyfailure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_collectioninput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_collectionverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_collectionverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_receiptinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L290",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_receiptline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L307",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_receiptlines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L314",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_methodlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L350",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_platform_billing_ts",
+      "target": "lib_platform_billing_receiptisfinal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_platform_billing_collectionverdict",
+      "target": "lib_platform_billing_classifyfailure",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_platform_billing_collectionverdict",
+      "target": "lib_platform_billing_nextretryat",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_platform_billing_receiptlines",
+      "target": "lib_platform_billing_methodlabel",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L334",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_platform_billing_cantransition",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_platform_billing_isterminal",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_platform_billing_platformmethods",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_platform_billing_platformmethods",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_platform_billing_isplatformmethod",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_platform_billing_nextretryat",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_platform_billing_nextretryat",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_platform_billing_nextretryat",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_platform_billing_classifyfailure",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L224"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L268"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L271"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L271"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "lib_platform_billing_collectionverdict",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L331"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L333"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_platform_billing_receiptlines",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/platform-billing.ts",
+      "source_location": "L341"
+    }
+  ]
+}

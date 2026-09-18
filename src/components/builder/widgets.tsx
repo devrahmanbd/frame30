@@ -1,10 +1,23 @@
 import { useEffect, useReducer, useState } from "react";
-import type { Breakpoint, PropValue, Section, SectionType, TemplateKey } from "@/lib/builder-ast";
+import type {
+  Breakpoint,
+  PropValue,
+  Section,
+  SectionType,
+  TemplateKey,
+} from "@/lib/builder-ast";
 import { resolveProps, safeEmbedUrl } from "@/lib/builder-ast";
 import { bnKey, textOf, type Locale } from "@/lib/bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
-import { flowReducer, flowResultUrl, canAdvance, progressOf, startFlow, type FlowStep } from "@/lib/flow-machine";
+import {
+  flowReducer,
+  flowResultUrl,
+  canAdvance,
+  progressOf,
+  startFlow,
+  type FlowStep,
+} from "@/lib/flow-machine";
 import { quoteBundle } from "@/lib/bundle-quote.functions";
 import { ConsentChip } from "./primitives/ConsentChip";
 import { Disclosure, Tabs } from "./primitives/Disclosure";
@@ -23,9 +36,11 @@ import { BEAUTY_WIDGETS } from "./beauty";
 import { CIRCUIT_WIDGETS } from "./electronics";
 import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
-import { ProductCard, ProductCardSkeleton, type CardVariant } from "./primitives/ProductCard";
-
-
+import {
+  ProductCard,
+  ProductCardSkeleton,
+  type CardVariant,
+} from "./primitives/ProductCard";
 
 /**
  * Phase 0.2 — one renderer per widget, addressed by a closed map.
@@ -41,7 +56,10 @@ export type WidgetCtx = {
   bool: (key: string) => boolean;
   int: (key: string, fallback: number, min: number, max: number) => number;
   /** Phase 1.2: integer minor units → localised money string. Never divide. */
-  money: (minor: number | string | null | undefined, currency?: string) => string;
+  money: (
+    minor: number | string | null | undefined,
+    currency?: string,
+  ) => string;
   /** `h1` when this node owns the page's primary heading, else `h2`. */
   Heading: "h1" | "h2";
   primary: boolean;
@@ -101,7 +119,10 @@ export function Editable({
   const Component = Tag as React.ElementType;
   return (
     <Component
-      className={[className, editable ? "outline-none focus:ring-2 focus:ring-primary" : ""]
+      className={[
+        className,
+        editable ? "outline-none focus:ring-2 focus:ring-primary" : "",
+      ]
         .filter(Boolean)
         .join(" ")}
       {...(editable
@@ -125,7 +146,6 @@ export function Editable({
   );
 }
 
-
 export type WidgetComponent = (ctx: WidgetCtx) => React.ReactNode;
 
 /**
@@ -133,7 +153,11 @@ export type WidgetComponent = (ctx: WidgetCtx) => React.ReactNode;
  * a বাংলা sibling it resolves through the bilingual fallback chain, so widget
  * code never branches on language.
  */
-export function widgetReader(section: Section, device?: Breakpoint, locale: Locale = "en") {
+export function widgetReader(
+  section: Section,
+  device?: Breakpoint,
+  locale: Locale = "en",
+) {
   const props: Record<string, PropValue> = resolveProps(section, device);
   return {
     str(key: string) {
@@ -187,7 +211,8 @@ function DataGrid({
   showCount?: boolean;
   density?: "comfortable" | "compact";
 }) {
-  const cardVariant: CardVariant = variant ?? (ratio === "landscape" ? "wide" : "standard");
+  const cardVariant: CardVariant =
+    variant ?? (ratio === "landscape" ? "wide" : "standard");
   const grid = `${COLUMN_CLASS[cols] ?? COLUMN_CLASS[4]} ${density === "compact" ? "gap-2" : "gap-4"}`;
   if (pending || rows === undefined) {
     return (
@@ -201,7 +226,9 @@ function DataGrid({
     );
   }
   if (rows.length === 0) {
-    return <p className="text-sm text-muted-foreground">Nothing to show here yet.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">Nothing to show here yet.</p>
+    );
   }
   return (
     <ul className={grid}>
@@ -217,7 +244,8 @@ function DataGrid({
           />
           {showCount && typeof row.count === "number" && (
             <p className="mt-1 text-xs text-muted-foreground">
-              {formatDisplayNumber(row.count, { locale })} {locale === "bn" ? "পণ্য" : "items"}
+              {formatDisplayNumber(row.count, { locale })}{" "}
+              {locale === "bn" ? "পণ্য" : "items"}
             </p>
           )}
         </li>
@@ -225,7 +253,6 @@ function DataGrid({
     </ul>
   );
 }
-
 
 /** Container column counts are a closed set so Tailwind can see the classes. */
 const COLUMN_CLASS: Record<number, string> = {
@@ -235,8 +262,18 @@ const COLUMN_CLASS: Record<number, string> = {
   4: "grid grid-cols-2 lg:grid-cols-4",
 };
 
-function Countdown({ endsAt, label, locale = "en" }: { endsAt: string; label: string; locale?: Locale }) {
-  const [left, setLeft] = useState<number>(() => Date.parse(endsAt) - Date.now());
+function Countdown({
+  endsAt,
+  label,
+  locale = "en",
+}: {
+  endsAt: string;
+  label: string;
+  locale?: Locale;
+}) {
+  const [left, setLeft] = useState<number>(
+    () => Date.parse(endsAt) - Date.now(),
+  );
   // Reduced motion gets the end time as text instead of a ticking clock.
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
@@ -248,7 +285,10 @@ function Countdown({ endsAt, label, locale = "en" }: { endsAt: string; label: st
   }, []);
   useEffect(() => {
     if (reduced) return;
-    const id = setInterval(() => setLeft(Date.parse(endsAt) - Date.now()), 1000);
+    const id = setInterval(
+      () => setLeft(Date.parse(endsAt) - Date.now()),
+      1000,
+    );
     return () => clearInterval(id);
   }, [endsAt, reduced]);
   if (!Number.isFinite(left)) return null;
@@ -258,7 +298,9 @@ function Countdown({ endsAt, label, locale = "en" }: { endsAt: string; label: st
     return (
       <p className="rounded-fq-md border border-border bg-card px-4 py-2 text-sm">
         <span className="font-medium">{label}</span>{" "}
-        <time dateTime={ends.toISOString()}>{ends.toLocaleString(locale === "bn" ? "bn-BD" : "en-GB")}</time>
+        <time dateTime={ends.toISOString()}>
+          {ends.toLocaleString(locale === "bn" ? "bn-BD" : "en-GB")}
+        </time>
       </p>
     );
   }
@@ -271,13 +313,21 @@ function Countdown({ endsAt, label, locale = "en" }: { endsAt: string; label: st
   return (
     <p className="rounded-fq-md border border-border bg-card px-4 py-2 text-sm tabular-nums">
       <span className="font-medium">{label}</span>{" "}
-      <span aria-live="off">{parts.map((p) => String(p).padStart(2, "0")).join(":")}</span>
+      <span aria-live="off">
+        {parts.map((p) => String(p).padStart(2, "0")).join(":")}
+      </span>
     </p>
   );
 }
 
 /** AST v3 containers own a subtree; the host renders children back into us. */
-const Container: WidgetComponent = ({ section, str, int, editing, renderChildren }) => {
+const Container: WidgetComponent = ({
+  section,
+  str,
+  int,
+  editing,
+  renderChildren,
+}) => {
   const columns = int("columns", 1, 1, 4);
   const width = str("maxW");
   const background = str("bg");
@@ -292,14 +342,21 @@ const Container: WidgetComponent = ({ section, str, int, editing, renderChildren
           : width === "full"
             ? ""
             : "mx-auto max-w-[var(--theme-container,1200px)]",
-        background === "surface" ? "bg-card" : background === "muted" ? "bg-muted" : "",
+        background === "surface"
+          ? "bg-card"
+          : background === "muted"
+            ? "bg-muted"
+            : "",
         str("align") === "center" ? "text-center" : "",
       ]
         .filter(Boolean)
         .join(" ")}
       style={{ paddingTop: padY, paddingBottom: padY }}
     >
-      <div className={COLUMN_CLASS[columns]} style={{ gap: int("gap", 24, 0, 64) }}>
+      <div
+        className={COLUMN_CLASS[columns]}
+        style={{ gap: int("gap", 24, 0, 64) }}
+      >
         {renderChildren()}
       </div>
       {editing && kids.length === 0 && (
@@ -330,13 +387,16 @@ const ContextSlot: WidgetComponent = ({ str, Heading, slot }) =>
  */
 const ProductMedia: WidgetComponent = (ctx) => {
   const { str, bool, locale, slot } = ctx;
-  const images = ["image1", "image2", "image3", "image4"].map((k) => str(k)).filter(Boolean);
+  const images = ["image1", "image2", "image3", "image4"]
+    .map((k) => str(k))
+    .filter(Boolean);
   const [index, setIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   if (images.length === 0) return <ContextSlot {...ctx} />;
   const ratio = str("ratio") || "1/1";
   const active = Math.min(index, images.length - 1);
-  const alt = str("altText") || (locale === "bn" ? "পণ্যের ছবি" : "Product image");
+  const alt =
+    str("altText") || (locale === "bn" ? "পণ্যের ছবি" : "Product image");
   return (
     <section aria-roledescription="carousel" aria-label={alt}>
       <button
@@ -354,7 +414,10 @@ const ProductMedia: WidgetComponent = (ctx) => {
             : alt
         }
         className="block w-full overflow-hidden rounded-fq-lg border border-border bg-muted"
-        style={{ aspectRatio: ratio, cursor: bool("zoom") ? "zoom-in" : "default" }}
+        style={{
+          aspectRatio: ratio,
+          cursor: bool("zoom") ? "zoom-in" : "default",
+        }}
       >
         <img
           src={images[active]!}
@@ -378,10 +441,20 @@ const ProductMedia: WidgetComponent = (ctx) => {
                 setZoomed(false);
               }}
               className={`h-16 w-16 shrink-0 overflow-hidden rounded-fq-md border ${
-                i === active ? "border-primary ring-1 ring-primary" : "border-border"
+                i === active
+                  ? "border-primary ring-1 ring-primary"
+                  : "border-border"
               }`}
             >
-              <img src={src} alt="" width={64} height={64} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+              <img
+                src={src}
+                alt=""
+                width={64}
+                height={64}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
             </button>
           ))}
         </div>
@@ -389,8 +462,6 @@ const ProductMedia: WidgetComponent = (ctx) => {
     </section>
   );
 };
-
-
 
 /* ------------------------- Phase 1 — primitive consumers ------------------- */
 
@@ -419,8 +490,10 @@ const QuizWidget: WidgetComponent = ({ str, bool, locale, Heading }) => {
   const steps: FlowStep[] = authored.map((entry) => entry.step);
 
   const [state, dispatch] = useReducer(
-    (current: ReturnType<typeof startFlow>, event: Parameters<typeof flowReducer>[2]) =>
-      flowReducer(steps, current, event),
+    (
+      current: ReturnType<typeof startFlow>,
+      event: Parameters<typeof flowReducer>[2],
+    ) => flowReducer(steps, current, event),
     undefined,
     startFlow,
   );
@@ -434,7 +507,9 @@ const QuizWidget: WidgetComponent = ({ str, bool, locale, Heading }) => {
 
   return (
     <section className="rounded-fq-lg border border-border bg-card p-6">
-      {str("heading") && <Heading className="text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="text-lg font-semibold">{str("heading")}</Heading>
+      )}
       <div
         role="progressbar"
         aria-valuenow={progress}
@@ -456,9 +531,17 @@ const QuizWidget: WidgetComponent = ({ str, bool, locale, Heading }) => {
                 key={choice.value}
                 type="button"
                 aria-pressed={active}
-                onClick={() => dispatch({ kind: "answer", step: step.key, value: choice.value })}
+                onClick={() =>
+                  dispatch({
+                    kind: "answer",
+                    step: step.key,
+                    value: choice.value,
+                  })
+                }
                 className={`rounded-fq-md border px-3 py-1.5 text-sm ${
-                  active ? "border-primary bg-primary text-primary-foreground" : "border-border"
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border"
                 }`}
               >
                 {choice.label}
@@ -496,30 +579,61 @@ const QuizWidget: WidgetComponent = ({ str, bool, locale, Heading }) => {
           </button>
         )}
       </div>
-      <ConsentChip props={{ consentText: str("consentText") }} locale={locale} />
+      <ConsentChip
+        props={{ consentText: str("consentText") }}
+        locale={locale}
+      />
     </section>
   );
 };
 
 /** Recently viewed: order comes from the cross-section channel, rows from the batch. */
-const RecentlyViewedWidget: WidgetComponent = ({ str, int, bool, Heading, data, locale, storeSlug }) => {
+const RecentlyViewedWidget: WidgetComponent = ({
+  str,
+  int,
+  bool,
+  Heading,
+  data,
+  locale,
+  storeSlug,
+}) => {
   const limit = int("limit", 6, 1, 12);
-  const { ids, clear } = useSectionChannel(storeSlug ?? "preview", "recentlyViewed");
+  const { ids, clear } = useSectionChannel(
+    storeSlug ?? "preview",
+    "recentlyViewed",
+  );
   const rows = data?.rows ?? [];
   const ordered = ids
     .map((id) => rows.find((row) => row.id === id))
     .filter((row): row is WidgetRow => !!row)
     .slice(0, limit);
   if (data?.pending) {
-    return <DataGrid pending cols={4} ratio="square" locale={locale} withPrice />;
+    return (
+      <DataGrid pending cols={4} ratio="square" locale={locale} withPrice />
+    );
   }
   if (ordered.length === 0) return null;
   return (
     <section>
-      {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
-      <DataGrid rows={ordered} pending={false} cols={4} ratio="square" locale={locale} withPrice />
+      {str("heading") && (
+        <Heading className="mb-3 text-lg font-semibold">
+          {str("heading")}
+        </Heading>
+      )}
+      <DataGrid
+        rows={ordered}
+        pending={false}
+        cols={4}
+        ratio="square"
+        locale={locale}
+        withPrice
+      />
       {bool("showClear") && (
-        <button type="button" onClick={clear} className="mt-3 rounded-fq-md border border-border px-3 py-1.5 text-sm">
+        <button
+          type="button"
+          onClick={clear}
+          className="mt-3 rounded-fq-md border border-border px-3 py-1.5 text-sm"
+        >
           {locale === "bn" ? "মুছে ফেলুন" : "Clear"}
         </button>
       )}
@@ -540,8 +654,20 @@ const QuickViewWidget: WidgetComponent = ({ str, int, data, locale }) => {
       >
         {str("buttonLabel") || "Quick view"}
       </button>
-      <OverlayHost open={open} onClose={() => setOpen(false)} title={str("heading") || "Quick view"} side="right">
-        <DataGrid rows={rows} pending={data?.pending ?? false} cols={2} ratio="square" locale={locale} withPrice />
+      <OverlayHost
+        open={open}
+        onClose={() => setOpen(false)}
+        title={str("heading") || "Quick view"}
+        side="right"
+      >
+        <DataGrid
+          rows={rows}
+          pending={data?.pending ?? false}
+          cols={2}
+          ratio="square"
+          locale={locale}
+          withPrice
+        />
       </OverlayHost>
     </div>
   );
@@ -551,9 +677,18 @@ const QuickViewWidget: WidgetComponent = ({ str, int, data, locale }) => {
  * Bundle/total contract: the item set posts to the server and the widget
  * renders the total it is handed. No client money math, by design.
  */
-const BundleOfferWidget: WidgetComponent = ({ str, Heading, locale, money, storeSlug }) => {
+const BundleOfferWidget: WidgetComponent = ({
+  str,
+  Heading,
+  locale,
+  money,
+  storeSlug,
+}) => {
   const items = [1, 2, 3, 4]
-    .map((i) => ({ label: str(`i${i}Label`), variantId: str(`i${i}VariantId`) }))
+    .map((i) => ({
+      label: str(`i${i}Label`),
+      variantId: str(`i${i}VariantId`),
+    }))
     .filter((item) => item.label && item.variantId);
   const [picked, setPicked] = useState<string[]>([]);
   const [total, setTotal] = useState<number | null>(null);
@@ -569,11 +704,16 @@ const BundleOfferWidget: WidgetComponent = ({ str, Heading, locale, money, store
     setError(null);
     try {
       const quote = await quoteBundle({
-        data: { slug: storeSlug, items: picked.map((variantId) => ({ variantId, quantity: 1 })) },
+        data: {
+          slug: storeSlug,
+          items: picked.map((variantId) => ({ variantId, quantity: 1 })),
+        },
       });
       setTotal(quote.totalMinor);
     } catch {
-      setError(locale === "bn" ? "মূল্য আনা যায়নি" : "Could not price this bundle");
+      setError(
+        locale === "bn" ? "মূল্য আনা যায়নি" : "Could not price this bundle",
+      );
     } finally {
       setBusy(false);
     }
@@ -583,7 +723,9 @@ const BundleOfferWidget: WidgetComponent = ({ str, Heading, locale, money, store
 
   return (
     <section className="rounded-fq-lg border border-border bg-card p-6">
-      {str("heading") && <Heading className="text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="text-lg font-semibold">{str("heading")}</Heading>
+      )}
       <ul className="mt-3 space-y-2">
         {items.map((item) => (
           <li key={item.variantId}>
@@ -652,9 +794,13 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale }) => {
         />
       )}
       <div className="p-8">
-        <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">{active.heading}</Heading>
+        <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
+          {active.heading}
+        </Heading>
         {index === 0 && str("subheading") && (
-          <p className="mt-2 max-w-xl text-muted-foreground">{str("subheading")}</p>
+          <p className="mt-2 max-w-xl text-muted-foreground">
+            {str("subheading")}
+          </p>
         )}
         {str("ctaLabel") && (
           <a
@@ -665,7 +811,11 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale }) => {
           </a>
         )}
         {slides.length > 1 && (
-          <div className="mt-4 flex gap-2" role="group" aria-label={locale === "bn" ? "স্লাইড" : "Slides"}>
+          <div
+            className="mt-4 flex gap-2"
+            role="group"
+            aria-label={locale === "bn" ? "স্লাইড" : "Slides"}
+          >
             {slides.map((slide, i) => (
               <button
                 key={i}
@@ -747,7 +897,9 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   rich_text: ({ str, Heading, editing, inlineEdit, locale }) => (
     <section className="rounded-fq-lg border border-border bg-card p-6">
-      {str("heading") && <Heading className="text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="text-lg font-semibold">{str("heading")}</Heading>
+      )}
       <Editable
         as="p"
         field="body"
@@ -765,7 +917,9 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     return (
       <div className="space-y-3">
         {str("body") && (
-          <p className="whitespace-pre-line text-sm text-muted-foreground">{str("body")}</p>
+          <p className="whitespace-pre-line text-sm text-muted-foreground">
+            {str("body")}
+          </p>
         )}
         {markup && <HtmlSandbox markup={markup} title="Custom HTML" />}
       </div>
@@ -774,14 +928,19 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   plugin_block: ({ str, int, editing }) => (
     // Phase 5: plugin widgets render in a sandboxed island, never inline.
-    <PluginBlock pluginKey={str("pluginKey")} height={int("height", 320, 80, 1200)} editing={editing} />
+    <PluginBlock
+      pluginKey={str("pluginKey")}
+      height={int("height", 320, 80, 1200)}
+      editing={editing}
+    />
   ),
 
   image: ({ str }) => {
     const src = str("src");
     if (!src) return null;
     const declared = str("ratio");
-    const ratio = declared === "1/1" ? "square" : declared === "4/3" ? "landscape" : "wide";
+    const ratio =
+      declared === "1/1" ? "square" : declared === "4/3" ? "landscape" : "wide";
     return (
       <figure className="overflow-hidden rounded-fq-lg border border-border">
         {/* Phase 1.3: MediaFrame reserves the box before the bytes land. */}
@@ -793,7 +952,9 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           className="rounded-none"
         />
         {str("caption") && (
-          <figcaption className="px-3 py-2 text-xs text-muted-foreground">{str("caption")}</figcaption>
+          <figcaption className="px-3 py-2 text-xs text-muted-foreground">
+            {str("caption")}
+          </figcaption>
         )}
       </figure>
     );
@@ -827,13 +988,20 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
         : tone === "success"
           ? "bg-success-soft text-success-foreground"
           : "bg-info-soft text-foreground";
-    return <div className={`rounded-fq-md px-4 py-2 text-sm ${cls}`}>{str("text")}</div>;
+    return (
+      <div className={`rounded-fq-md px-4 py-2 text-sm ${cls}`}>
+        {str("text")}
+      </div>
+    );
   },
 
   feature_row: ({ str }) => (
     <ul className="grid gap-3 sm:grid-cols-3">
       {["itemOne", "itemTwo", "itemThree"].map((key) => (
-        <li key={key} className="rounded-fq-md border border-border bg-card p-4 text-sm">
+        <li
+          key={key}
+          className="rounded-fq-md border border-border bg-card p-4 text-sm"
+        >
           {str(key)}
         </li>
       ))}
@@ -843,18 +1011,26 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   testimonial: ({ str }) => (
     <figure className="rounded-fq-lg border border-border bg-card p-6">
       <blockquote className="text-sm italic">{str("quote")}</blockquote>
-      <figcaption className="mt-2 text-xs text-muted-foreground">{str("author")}</figcaption>
+      <figcaption className="mt-2 text-xs text-muted-foreground">
+        {str("author")}
+      </figcaption>
     </figure>
   ),
 
   // Phase 1.3: one Disclosure primitive, so FAQ, spec groups and size guides
   // all share the same keyboard and ARIA behaviour.
   faq: ({ str, Heading }) => {
-    const rows = [1, 2, 3].map((i) => ({ q: str(`q${i}`), a: str(`a${i}`) })).filter((row) => row.q);
+    const rows = [1, 2, 3]
+      .map((i) => ({ q: str(`q${i}`), a: str(`a${i}`) }))
+      .filter((row) => row.q);
     if (!rows.length) return null;
     return (
       <section className="rounded-fq-lg border border-border bg-card p-6">
-        {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+        {str("heading") && (
+          <Heading className="mb-3 text-lg font-semibold">
+            {str("heading")}
+          </Heading>
+        )}
         <div className="divide-y divide-border">
           {rows.map((row) => (
             <Disclosure key={row.q} summary={row.q}>
@@ -868,7 +1044,9 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   countdown: ({ str, locale, data }) => {
     // Phase 2.2: when the node is data-bound, the deal row owns the deadline.
-    const bound = data?.rows?.find((row) => row.subtitle && !Number.isNaN(Date.parse(row.subtitle)));
+    const bound = data?.rows?.find(
+      (row) => row.subtitle && !Number.isNaN(Date.parse(row.subtitle)),
+    );
     const endsAt = bound?.subtitle ?? str("endsAt");
     if (Number.isNaN(Date.parse(endsAt))) return null;
     return <Countdown endsAt={endsAt} label={str("label")} locale={locale} />;
@@ -897,7 +1075,11 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     <section className="rounded-fq-lg border border-border bg-card p-6">
       <Heading className="text-lg font-semibold">{str("heading")}</Heading>
       <p className="mt-1 text-sm text-muted-foreground">{str("body")}</p>
-      <form className="mt-3 flex flex-wrap gap-2" method="post" action="#newsletter">
+      <form
+        className="mt-3 flex flex-wrap gap-2"
+        method="post"
+        action="#newsletter"
+      >
         <label className="sr-only" htmlFor={`nl-${section.id}`}>
           {locale === "bn" ? "ইমেইল ঠিকানা" : "Email address"}
         </label>
@@ -917,17 +1099,26 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
         </button>
       </form>
       {/* Contact capture always carries consent copy — enforced by test. */}
-      <ConsentChip props={{ consentText: str("consentText") }} locale={locale} />
+      <ConsentChip
+        props={{ consentText: str("consentText") }}
+        locale={locale}
+      />
     </section>
   ),
 
-  spacer: ({ int }) => <div aria-hidden="true" style={{ height: int("size", 32, 8, 160) }} />,
+  spacer: ({ int }) => (
+    <div aria-hidden="true" style={{ height: int("size", 32, 8, 160) }} />
+  ),
 
   product_grid: ({ str, int, bool, Heading, productSlot, data, locale }) => {
     const cols = int("columns", 4, 2, 4);
     return (
       <section>
-        {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+        {str("heading") && (
+          <Heading className="mb-3 text-lg font-semibold">
+            {str("heading")}
+          </Heading>
+        )}
         {productSlot ?? (
           <DataGrid
             rows={data?.rows}
@@ -946,11 +1137,23 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     );
   },
 
-  collection_grid: ({ str, int, bool, Heading, collectionSlot, data, locale }) => {
+  collection_grid: ({
+    str,
+    int,
+    bool,
+    Heading,
+    collectionSlot,
+    data,
+    locale,
+  }) => {
     const cols = int("columns", 4, 2, 4);
     return (
       <section>
-        {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+        {str("heading") && (
+          <Heading className="mb-3 text-lg font-semibold">
+            {str("heading")}
+          </Heading>
+        )}
         {collectionSlot ?? (
           <DataGrid
             rows={data?.rows}
@@ -966,12 +1169,15 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     );
   },
 
-
   /* ----------------------- Phase 1 — shared primitives --------------------- */
 
   tabs: ({ str }) => {
     const items = [1, 2, 3]
-      .map((i) => ({ key: `t${i}`, label: str(`t${i}Label`), content: str(`t${i}Body`) }))
+      .map((i) => ({
+        key: `t${i}`,
+        label: str(`t${i}Label`),
+        content: str(`t${i}Body`),
+      }))
       .filter((item) => item.label);
     if (!items.length) return null;
     return <Tabs items={items} />;
@@ -984,10 +1190,18 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     if (!items.length) return null;
     return (
       <section className="rounded-fq-lg border border-border bg-card p-2">
-        {str("heading") && <Heading className="px-3 pt-2 text-lg font-semibold">{str("heading")}</Heading>}
+        {str("heading") && (
+          <Heading className="px-3 pt-2 text-lg font-semibold">
+            {str("heading")}
+          </Heading>
+        )}
         <div className="divide-y divide-border">
           {items.map((item, index) => (
-            <Disclosure key={item.title} summary={item.title} defaultOpen={index === 0 && bool("openFirst")}>
+            <Disclosure
+              key={item.title}
+              summary={item.title}
+              defaultOpen={index === 0 && bool("openFirst")}
+            >
               {item.body}
             </Disclosure>
           ))}

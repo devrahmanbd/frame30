@@ -25,11 +25,16 @@ export type SeoLocale = (typeof LOCALES)[number];
 export const HREFLANG: Record<SeoLocale, string> = { en: "en", bn: "bn-BD" };
 
 export function isSeoLocale(value: unknown): value is SeoLocale {
-  return typeof value === "string" && (LOCALES as readonly string[]).includes(value);
+  return (
+    typeof value === "string" && (LOCALES as readonly string[]).includes(value)
+  );
 }
 
 /** The same URL, pinned to a locale. Returns null when the base is not absolute. */
-export function localeUrl(canonical: string | null | undefined, locale: SeoLocale): string | null {
+export function localeUrl(
+  canonical: string | null | undefined,
+  locale: SeoLocale,
+): string | null {
   if (!canonical || !/^https?:\/\//.test(canonical)) return null;
   try {
     const url = new URL(canonical);
@@ -41,9 +46,12 @@ export function localeUrl(canonical: string | null | undefined, locale: SeoLocal
 }
 
 /** Reads the locale a URL (or query string) pins itself to. */
-export function localeFromSearch(search: string | URLSearchParams | null | undefined): SeoLocale | null {
+export function localeFromSearch(
+  search: string | URLSearchParams | null | undefined,
+): SeoLocale | null {
   if (!search) return null;
-  const params = typeof search === "string" ? new URLSearchParams(search) : search;
+  const params =
+    typeof search === "string" ? new URLSearchParams(search) : search;
   const value = params.get(LOCALE_PARAM);
   return isSeoLocale(value) ? value : null;
 }
@@ -53,12 +61,15 @@ export function localeFromSearch(search: string | URLSearchParams | null | undef
  * Emitting three identical hrefs (the old behaviour) tells Google nothing;
  * these are distinct, self-referencing and reciprocal.
  */
-export function hreflangAlternates(canonical: string | null | undefined): Record<string, string>[] {
+export function hreflangAlternates(
+  canonical: string | null | undefined,
+): Record<string, string>[] {
   if (!canonical || !/^https?:\/\//.test(canonical)) return [];
   const links: Record<string, string>[] = [];
   for (const locale of LOCALES) {
     const href = localeUrl(canonical, locale);
-    if (href) links.push({ rel: "alternate", hrefLang: HREFLANG[locale], href });
+    if (href)
+      links.push({ rel: "alternate", hrefLang: HREFLANG[locale], href });
   }
   links.push({ rel: "alternate", hrefLang: "x-default", href: canonical });
   return links;
@@ -70,7 +81,8 @@ export type IndexPolicy = {
   /** Path this URL should canonicalise to (clean collection when filtered). */
   canonicalPath: string;
   /** Why the decision was made — surfaced in the merchant SEO panel. */
-  reason: "indexable" | "query" | "facet-combo" | "facet-not-allowlisted" | "paged";
+  reason:
+    "indexable" | "query" | "facet-combo" | "facet-not-allowlisted" | "paged";
 };
 
 /**
@@ -79,9 +91,13 @@ export type IndexPolicy = {
  * canonical back to the clean collection so link equity is not shredded across
  * permutations. Free-text queries are never indexable.
  */
-export function facetIndexPolicy(basePath: string, params: SearchParams): IndexPolicy {
+export function facetIndexPolicy(
+  basePath: string,
+  params: SearchParams,
+): IndexPolicy {
   const clean = basePath;
-  if (params.q.trim()) return { robots: "noindex,follow", canonicalPath: clean, reason: "query" };
+  if (params.q.trim())
+    return { robots: "noindex,follow", canonicalPath: clean, reason: "query" };
   const active = FACET_KEYS.filter((key) => facetValue(params, key) !== null);
   if (params.page > 1) {
     // Paged URLs stay crawlable and self-canonical (rel prev/next does the
@@ -120,12 +136,20 @@ export type PaginationLinks = {
  * hrefs must exist as real `<a>` elements so a crawler (and a shopper without
  * JS) can walk the whole result set.
  */
-export function paginationLinks(basePath: string, params: SearchParams, total: number): PaginationLinks {
+export function paginationLinks(
+  basePath: string,
+  params: SearchParams,
+  total: number,
+): PaginationLinks {
   const last = pageCount(total);
   const prev =
-    params.page > 1 ? facetHref(basePath, withPage(params, params.page - 1, total)) : null;
+    params.page > 1
+      ? facetHref(basePath, withPage(params, params.page - 1, total))
+      : null;
   const next =
-    params.page < last ? facetHref(basePath, withPage(params, params.page + 1, total)) : null;
+    params.page < last
+      ? facetHref(basePath, withPage(params, params.page + 1, total))
+      : null;
   return { prev, next, last };
 }
 
@@ -138,7 +162,9 @@ export function paginationHeadLinks(
 ): Record<string, string>[] {
   const { prev, next } = paginationLinks(basePath, params, total);
   const abs = (path: string | null) =>
-    path && origin && /^https?:\/\//.test(origin) ? `${origin.replace(/\/+$/, "")}${path}` : null;
+    path && origin && /^https?:\/\//.test(origin)
+      ? `${origin.replace(/\/+$/, "")}${path}`
+      : null;
   const links: Record<string, string>[] = [];
   const prevHref = abs(prev);
   const nextHref = abs(next);
@@ -191,14 +217,20 @@ export function renderStoreRobots(policy: RobotsPolicy): string {
   lines.push("");
   for (const agent of AI_CRAWLERS) {
     lines.push(`User-agent: ${agent}`);
-    lines.push(policy.indexable && policy.aiCrawlers ? `Allow: ${base}` : "Disallow: /");
+    lines.push(
+      policy.indexable && policy.aiCrawlers ? `Allow: ${base}` : "Disallow: /",
+    );
     lines.push("");
   }
-  lines.push(`Sitemap: ${policy.origin.replace(/\/+$/, "")}${base}/sitemap.xml`);
+  lines.push(
+    `Sitemap: ${policy.origin.replace(/\/+$/, "")}${base}/sitemap.xml`,
+  );
   // Phase 7.4: answer engines get a catalogue map, but only where the merchant
   // let them in — the same opt-in the AI-crawler blocks above use.
   if (policy.indexable && policy.aiCrawlers) {
-    lines.push(`# llms.txt: ${policy.origin.replace(/\/+$/, "")}${base}/llms.txt`);
+    lines.push(
+      `# llms.txt: ${policy.origin.replace(/\/+$/, "")}${base}/llms.txt`,
+    );
   }
   return `${lines.join("\n")}\n`;
 }
@@ -211,8 +243,12 @@ export function renderStoreRobots(policy: RobotsPolicy): string {
 export function headingIssues(levels: number[]): string[] {
   const issues: string[] = [];
   const h1s = levels.filter((l) => l === 1).length;
-  if (h1s === 0) issues.push("Template has no <h1> — one widget must claim the primary heading.");
-  if (h1s > 1) issues.push(`Template has ${h1s} <h1> headings — exactly one is allowed.`);
+  if (h1s === 0)
+    issues.push(
+      "Template has no <h1> — one widget must claim the primary heading.",
+    );
+  if (h1s > 1)
+    issues.push(`Template has ${h1s} <h1> headings — exactly one is allowed.`);
   let previous = 0;
   for (const level of levels) {
     if (previous && level > previous + 1) {

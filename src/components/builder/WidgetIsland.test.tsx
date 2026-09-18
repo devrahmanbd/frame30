@@ -5,7 +5,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { WidgetIsland } from "./WidgetIsland";
 import { hydrationMode } from "@/lib/widget-hydration";
 
-function markup(mode: Parameters<typeof WidgetIsland>[0]["mode"], type: string) {
+function markup(
+  mode: Parameters<typeof WidgetIsland>[0]["mode"],
+  type: string,
+) {
   return renderToStaticMarkup(
     <WidgetIsland mode={mode} type={type}>
       <p>server copy</p>
@@ -31,7 +34,11 @@ describe("WidgetIsland", () => {
   });
 
   it("uses the registry policy for the widget it wraps", () => {
-    expect(markup(hydrationMode("rich_text"), "rich_text")).toContain('data-hydrate="static"');
-    expect(markup(hydrationMode("accordion"), "accordion")).toContain('data-hydrate="interaction"');
+    expect(markup(hydrationMode("rich_text"), "rich_text")).toContain(
+      'data-hydrate="static"',
+    );
+    expect(markup(hydrationMode("accordion"), "accordion")).toContain(
+      'data-hydrate="interaction"',
+    );
   });
 });

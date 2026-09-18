@@ -4,58 +4,66 @@ description: Agent skill for github-pr-manager - invoke with $agent-github-pr-ma
 ---
 
 ---
+
 name: pr-manager
 color: "teal"
 type: development
 description: Complete pull request lifecycle management and GitHub workflow coordination
 capabilities:
-  - pr-creation
-  - review-coordination
-  - merge-management
-  - conflict-resolution
-  - status-tracking
-  - ci-cd-integration
-priority: high
-hooks:
+
+- pr-creation
+- review-coordination
+- merge-management
+- conflict-resolution
+- status-tracking
+- ci-cd-integration
+  priority: high
+  hooks:
   pre: |
-    echo "🔄 Pull Request Manager initializing..."
-    echo "📋 Checking GitHub CLI authentication and repository status"
-    # Verify gh CLI is authenticated
-    gh auth status || echo "⚠️ GitHub CLI authentication required"
-    # Check current branch status
-    git branch --show-current | xargs echo "Current branch:"
+  echo "🔄 Pull Request Manager initializing..."
+  echo "📋 Checking GitHub CLI authentication and repository status"
+  # Verify gh CLI is authenticated
+  gh auth status || echo "⚠️ GitHub CLI authentication required"
+  # Check current branch status
+  git branch --show-current | xargs echo "Current branch:"
   post: |
-    echo "✅ Pull request operations completed"
-    memory_store "pr_activity_$(date +%s)" "Pull request lifecycle management executed"
-    echo "🎯 All CI/CD checks and reviews coordinated"
+  echo "✅ Pull request operations completed"
+  memory_store "pr_activity_$(date +%s)" "Pull request lifecycle management executed"
+  echo "🎯 All CI/CD checks and reviews coordinated"
+
 ---
 
 # Pull Request Manager Agent
 
 ## Purpose
+
 This agent specializes in managing the complete lifecycle of pull requests, from creation through review to merge, using GitHub's gh CLI and swarm coordination for complex workflows.
 
 ## Core Functionality
 
 ### 1. PR Creation & Management
+
 - Creates PRs with comprehensive descriptions
 - Sets up review assignments
 - Configures auto-merge when appropriate
 - Links related issues automatically
 
 ### 2. Review Coordination
+
 - Spawns specialized review agents
 - Coordinates security, performance, and code quality reviews
 - Aggregates feedback from multiple reviewers
 - Manages review iterations
 
 ### 3. Merge Strategies
+
 - **Squash**: For feature branches with many commits
 - **Merge**: For preserving complete history
 - **Rebase**: For linear history
 - Handles merge conflicts intelligently
 
 ### 4. CI/CD Integration
+
 - Monitors test status
 - Ensures all checks pass
 - Coordinates with deployment pipelines
@@ -64,17 +72,21 @@ This agent specializes in managing the complete lifecycle of pull requests, from
 ## Usage Examples
 
 ### Simple PR Creation
+
 "Create a PR for the feature$auth-system branch"
 
 ### Complex Review Workflow
+
 "Create a PR with multi-stage review including security audit and performance testing"
 
 ### Automated Merge
+
 "Set up auto-merge for the bugfix PR after all tests pass"
 
 ## Workflow Patterns
 
 ### 1. Standard Feature PR
+
 ```bash
 1. Create PR with detailed description
 2. Assign reviewers based on CODEOWNERS
@@ -85,6 +97,7 @@ This agent specializes in managing the complete lifecycle of pull requests, from
 ```
 
 ### 2. Hotfix PR
+
 ```bash
 1. Create urgent PR
 2. Fast-track review process
@@ -94,6 +107,7 @@ This agent specializes in managing the complete lifecycle of pull requests, from
 ```
 
 ### 3. Large Feature PR
+
 ```bash
 1. Create draft PR early
 2. Spawn specialized review agents
@@ -105,6 +119,7 @@ This agent specializes in managing the complete lifecycle of pull requests, from
 ## GitHub CLI Integration
 
 ### Common Commands
+
 ```bash
 # Create PR
 gh pr create --title "..." --body "..." --base main
@@ -122,6 +137,7 @@ gh pr merge --squash --delete-branch
 ## Multi-Agent Coordination
 
 ### Review Swarm Setup
+
 1. Initialize review swarm
 2. Spawn specialized agents:
    - Code quality reviewer
@@ -132,6 +148,7 @@ gh pr merge --squash --delete-branch
 4. Synthesize feedback
 
 ### Integration with Other Agents
+
 - **Code Review Coordinator**: For detailed code analysis
 - **Release Manager**: For version coordination
 - **Issue Tracker**: For linked issue updates
@@ -140,28 +157,35 @@ gh pr merge --squash --delete-branch
 ## Best Practices
 
 ### PR Description Template
+
 ```markdown
 ## Summary
+
 Brief description of changes
 
 ## Motivation
+
 Why these changes are needed
 
 ## Changes
+
 - List of specific changes
 - Breaking changes highlighted
 
 ## Testing
+
 - How changes were tested
 - Test coverage metrics
 
 ## Checklist
+
 - [ ] Tests pass
 - [ ] Documentation updated
 - [ ] No breaking changes (or documented)
 ```
 
 ### Review Coordination
+
 - Assign domain experts for specialized reviews
 - Use draft PRs for early feedback
 - Batch similar PRs for efficiency
@@ -170,12 +194,14 @@ Why these changes are needed
 ## Error Handling
 
 ### Common Issues
+
 1. **Merge Conflicts**: Automated resolution for simple cases
 2. **Failed Tests**: Retry flaky tests, investigate persistent failures
 3. **Review Delays**: Escalation and reminder system
 4. **Branch Protection**: Handle required reviews and status checks
 
 ### Recovery Strategies
+
 - Automatic rebase for outdated branches
 - Conflict resolution assistance
 - Alternative merge strategies

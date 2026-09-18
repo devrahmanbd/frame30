@@ -33,16 +33,16 @@ npx agentic-flow workers stats --integration
 
 Workers automatically dispatch to optimal agents based on trigger type:
 
-| Trigger | Primary Agents | Fallback | Pipeline Phases |
-|---------|---------------|----------|-----------------|
-| `ultralearn` | researcher, coder | planner | discovery → patterns → vectorization → summary |
-| `optimize` | performance-analyzer, coder | researcher | static-analysis → performance → patterns |
-| `audit` | security-analyst, tester | reviewer | security → secrets → vulnerability-scan |
-| `benchmark` | performance-analyzer | coder, tester | performance → metrics → report |
-| `testgaps` | tester | coder | discovery → coverage → gaps |
-| `document` | documenter, researcher | coder | api-discovery → patterns → indexing |
-| `deepdive` | researcher, security-analyst | coder | call-graph → deps → trace |
-| `refactor` | coder, reviewer | researcher | complexity → smells → patterns |
+| Trigger      | Primary Agents               | Fallback      | Pipeline Phases                                |
+| ------------ | ---------------------------- | ------------- | ---------------------------------------------- |
+| `ultralearn` | researcher, coder            | planner       | discovery → patterns → vectorization → summary |
+| `optimize`   | performance-analyzer, coder  | researcher    | static-analysis → performance → patterns       |
+| `audit`      | security-analyst, tester     | reviewer      | security → secrets → vulnerability-scan        |
+| `benchmark`  | performance-analyzer         | coder, tester | performance → metrics → report                 |
+| `testgaps`   | tester                       | coder         | discovery → coverage → gaps                    |
+| `document`   | documenter, researcher       | coder         | api-discovery → patterns → indexing            |
+| `deepdive`   | researcher, security-analyst | coder         | call-graph → deps → trace                      |
+| `refactor`   | coder, reviewer              | researcher    | complexity → smells → patterns                 |
 
 ## Performance-Based Selection
 
@@ -55,7 +55,7 @@ The system learns from execution history to improve agent selection:
 // 3. Average latency
 // 4. Execution count
 
-const { agent, confidence, reasoning } = selectBestAgent('optimize');
+const { agent, confidence, reasoning } = selectBestAgent("optimize");
 // agent: "performance-analyzer"
 // confidence: 0.87
 // reasoning: "Selected based on 45 executions with 94.2% success"
@@ -101,19 +101,20 @@ Agents are monitored against performance thresholds:
 Workers provide feedback for continuous improvement:
 
 ```typescript
-import { workerAgentIntegration } from 'agentic-flow$workers$worker-agent-integration';
+import { workerAgentIntegration } from "agentic-flow$workers$worker-agent-integration";
 
 // Record execution feedback
 workerAgentIntegration.recordFeedback(
-  'optimize',           // trigger
-  'coder',              // agent
-  true,                 // success
-  245,                  // latency ms
-  0.92                  // quality score
+  "optimize", // trigger
+  "coder", // agent
+  true, // success
+  245, // latency ms
+  0.92, // quality score
 );
 
 // Check compliance
-const { compliant, violations } = workerAgentIntegration.checkBenchmarkCompliance('coder');
+const { compliant, violations } =
+  workerAgentIntegration.checkBenchmarkCompliance("coder");
 ```
 
 ## Integration Statistics

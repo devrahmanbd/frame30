@@ -36,7 +36,9 @@ export function MarketingFigure({
           }`}
         />
         {caption ? (
-          <figcaption className="mt-3 text-xs text-muted-foreground">{caption}</figcaption>
+          <figcaption className="mt-3 text-xs text-muted-foreground">
+            {caption}
+          </figcaption>
         ) : null}
       </figure>
     </Reveal>

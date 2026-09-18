@@ -1,1 +1,918 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_governance_server_ts", "label": "governance.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L1"}, {"id": "lib_governance_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L5"}, {"id": "lib_governance_server_staffstatus", "label": "StaffStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L6"}, {"id": "lib_governance_server_mfastatus", "label": "MfaStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L7"}, {"id": "lib_governance_server_approvalstatus", "label": "ApprovalStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L8"}, {"id": "lib_governance_server_kycstate", "label": "KycState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L9"}, {"id": "lib_governance_server_asgrants", "label": "asGrants()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L14"}, {"id": "lib_governance_server_loadgovernance", "label": "loadGovernance()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L25"}, {"id": "lib_governance_server_summarize", "label": "summarize()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L162"}, {"id": "lib_governance_server_governanceerror", "label": "GovernanceError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L171"}, {"id": "lib_governance_server_governanceerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L172"}, {"id": "lib_governance_server_rethrow", "label": "rethrow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L178"}, {"id": "lib_governance_server_saverole", "label": "saveRole()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L182"}, {"id": "lib_governance_server_deleterole", "label": "deleteRole()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L198"}, {"id": "lib_governance_server_role_grant_rules", "label": "ROLE_GRANT_RULES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L204"}, {"id": "lib_governance_server_setmember", "label": "setMember()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L209"}, {"id": "lib_governance_server_setownmfa", "label": "setOwnMfa()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L221"}, {"id": "lib_governance_server_submitapproval", "label": "submitApproval()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L229"}, {"id": "lib_governance_server_decideapproval", "label": "decideApproval()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L244"}, {"id": "lib_governance_server_submitkyc", "label": "submitKyc()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L257"}, {"id": "lib_governance_server_invitemember", "label": "inviteMember()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L281"}, {"id": "lib_governance_server_revokesession", "label": "revokeSession()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L295"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "users_rahman_documents_frame30_src_lib_permissions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_permissions_grant", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_staffstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_mfastatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_approvalstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_kycstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_asgrants", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_loadgovernance", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_summarize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_governanceerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L171", "weight": 1.0}, {"source": "lib_governance_server_governanceerror", "target": "lib_governance_server_governanceerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_rethrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L178", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_saverole", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L182", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_deleterole", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L198", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_role_grant_rules", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L204", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_setmember", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L209", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_setownmfa", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_submitapproval", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_decideapproval", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L244", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_submitkyc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L257", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_invitemember", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L281", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_governance_server_ts", "target": "lib_governance_server_revokesession", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L295", "weight": 1.0}, {"source": "lib_governance_server_saverole", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L194", "weight": 1.0}, {"source": "lib_governance_server_deleterole", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L200", "weight": 1.0}, {"source": "lib_governance_server_setmember", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L218", "weight": 1.0}, {"source": "lib_governance_server_setownmfa", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L226", "weight": 1.0}, {"source": "lib_governance_server_submitapproval", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L241", "weight": 1.0}, {"source": "lib_governance_server_decideapproval", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L253", "weight": 1.0}, {"source": "lib_governance_server_submitkyc", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L276", "weight": 1.0}, {"source": "lib_governance_server_invitemember", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L292", "weight": 1.0}, {"source": "lib_governance_server_revokesession", "target": "lib_governance_server_rethrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L300", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_governance_server_asgrants", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L15"}, {"caller_nid": "lib_governance_server_asgrants", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L16"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L26"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L27"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L27"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L27"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L27"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L33"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L33"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L33"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L33"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L33"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L39"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L39"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L39"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L39"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L39"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L45"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L45"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L45"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L45"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L50"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L50"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L50"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L50"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L50"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L58"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L58"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "is", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L58"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L58"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L58"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L66"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L66"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L68"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L69"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L70"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "in", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L75"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L75"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L75"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L84"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L89"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L102"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L102"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L114"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L121"}, {"caller_nid": "lib_governance_server_loadgovernance", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L146"}, {"caller_nid": "lib_governance_server_summarize", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L164"}, {"caller_nid": "lib_governance_server_summarize", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L164"}, {"caller_nid": "lib_governance_server_summarize", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L164"}, {"caller_nid": "lib_governance_server_summarize", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L164"}, {"caller_nid": "lib_governance_server_summarize", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L168"}, {"caller_nid": "lib_governance_server_governanceerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L173"}, {"caller_nid": "lib_governance_server_saverole", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L187"}, {"caller_nid": "lib_governance_server_deleterole", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L199"}, {"caller_nid": "lib_governance_server_setmember", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L213"}, {"caller_nid": "lib_governance_server_setownmfa", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L222"}, {"caller_nid": "lib_governance_server_submitapproval", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L234"}, {"caller_nid": "lib_governance_server_decideapproval", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L248"}, {"caller_nid": "lib_governance_server_submitkyc", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L267"}, {"caller_nid": "lib_governance_server_invitemember", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L286"}, {"caller_nid": "lib_governance_server_revokesession", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts", "source_location": "L296"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "label": "governance.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_governance_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_governance_server_staffstatus",
+      "label": "StaffStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L6"
+    },
+    {
+      "id": "lib_governance_server_mfastatus",
+      "label": "MfaStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_governance_server_approvalstatus",
+      "label": "ApprovalStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "lib_governance_server_kycstate",
+      "label": "KycState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_governance_server_asgrants",
+      "label": "asGrants()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_governance_server_loadgovernance",
+      "label": "loadGovernance()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_governance_server_summarize",
+      "label": "summarize()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "lib_governance_server_governanceerror",
+      "label": "GovernanceError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L171"
+    },
+    {
+      "id": "lib_governance_server_governanceerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L172"
+    },
+    {
+      "id": "lib_governance_server_rethrow",
+      "label": "rethrow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L178"
+    },
+    {
+      "id": "lib_governance_server_saverole",
+      "label": "saveRole()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L182"
+    },
+    {
+      "id": "lib_governance_server_deleterole",
+      "label": "deleteRole()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L198"
+    },
+    {
+      "id": "lib_governance_server_role_grant_rules",
+      "label": "ROLE_GRANT_RULES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "id": "lib_governance_server_setmember",
+      "label": "setMember()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L209"
+    },
+    {
+      "id": "lib_governance_server_setownmfa",
+      "label": "setOwnMfa()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "lib_governance_server_submitapproval",
+      "label": "submitApproval()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "lib_governance_server_decideapproval",
+      "label": "decideApproval()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L244"
+    },
+    {
+      "id": "lib_governance_server_submitkyc",
+      "label": "submitKyc()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L257"
+    },
+    {
+      "id": "lib_governance_server_invitemember",
+      "label": "inviteMember()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L281"
+    },
+    {
+      "id": "lib_governance_server_revokesession",
+      "label": "revokeSession()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L295"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_permissions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_permissions_grant",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_staffstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_mfastatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_approvalstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_kycstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_asgrants",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_loadgovernance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_summarize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_governanceerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_governanceerror",
+      "target": "lib_governance_server_governanceerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_rethrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_saverole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L182",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_deleterole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_role_grant_rules",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_setmember",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_setownmfa",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_submitapproval",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_decideapproval",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_submitkyc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L257",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_invitemember",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_governance_server_ts",
+      "target": "lib_governance_server_revokesession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_saverole",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_deleterole",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_setmember",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_setownmfa",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_submitapproval",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_decideapproval",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_submitkyc",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L276",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_invitemember",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L292",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_governance_server_revokesession",
+      "target": "lib_governance_server_rethrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_governance_server_asgrants",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "lib_governance_server_asgrants",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L16"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "is",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "in",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_governance_server_loadgovernance",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_governance_server_summarize",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_governance_server_summarize",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_governance_server_summarize",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_governance_server_summarize",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_governance_server_summarize",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "lib_governance_server_governanceerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_governance_server_saverole",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "lib_governance_server_deleterole",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "lib_governance_server_setmember",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "lib_governance_server_setownmfa",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "lib_governance_server_submitapproval",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L234"
+    },
+    {
+      "caller_nid": "lib_governance_server_decideapproval",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "lib_governance_server_submitkyc",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L267"
+    },
+    {
+      "caller_nid": "lib_governance_server_invitemember",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L286"
+    },
+    {
+      "caller_nid": "lib_governance_server_revokesession",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/governance.server.ts",
+      "source_location": "L296"
+    }
+  ]
+}

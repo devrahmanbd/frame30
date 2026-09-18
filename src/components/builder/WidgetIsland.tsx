@@ -65,8 +65,15 @@ export function WidgetIsland({ mode, type, children }: Props) {
       return () => io.disconnect();
     }
 
-    const events = ["pointerenter", "pointerdown", "focusin", "touchstart", "keydown"] as const;
-    for (const event of events) node.addEventListener(event, wake, { once: true, passive: true });
+    const events = [
+      "pointerenter",
+      "pointerdown",
+      "focusin",
+      "touchstart",
+      "keydown",
+    ] as const;
+    for (const event of events)
+      node.addEventListener(event, wake, { once: true, passive: true });
     return () => {
       for (const event of events) node.removeEventListener(event, wake);
     };
@@ -86,7 +93,9 @@ export function WidgetIsland({ mode, type, children }: Props) {
       data-island={type}
       data-hydrate={mode}
       suppressHydrationWarning
-      {...(typeof document === "undefined" ? {} : { dangerouslySetInnerHTML: { __html: "" } })}
+      {...(typeof document === "undefined"
+        ? {}
+        : { dangerouslySetInnerHTML: { __html: "" } })}
     >
       {typeof document === "undefined" ? children : null}
     </div>

@@ -24,7 +24,9 @@ import {
 } from "@/lib/domains.functions";
 import { useLang } from "@/lib/i18n";
 
-export const Route = createFileRoute("/_authenticated/dashboard/settings_/domains")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/settings_/domains",
+)({
   loader: async () => domainsListFn(),
   head: () => ({
     meta: [
@@ -37,7 +39,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/settings_/domain
       { property: "og:title", content: "Custom domains — Framique admin" },
       {
         property: "og:description",
-        content: "Guided DNS setup, live verification and automatic HTTPS for your storefront.",
+        content:
+          "Guided DNS setup, live verification and automatic HTTPS for your storefront.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -63,7 +66,9 @@ function DomainsPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
-  const [open, setOpen] = useState<string | null>(initial.domains[0]?.id ?? null);
+  const [open, setOpen] = useState<string | null>(
+    initial.domains[0]?.id ?? null,
+  );
   const [history, setHistory] = useState<Record<string, HistoryRow[]>>({});
 
   const add = useServerFn(domainAddFn);
@@ -79,14 +84,32 @@ function DomainsPage() {
     () => (code: string) =>
       ({
         "domain.empty": t("Enter a domain name.", "একটি ডোমেইন লিখুন।"),
-        "domain.invalid": t("That does not look like a valid domain.", "ডোমেইনটি সঠিক মনে হচ্ছে না।"),
-        "domain.needs_tld": t("Include the extension, e.g. .com", "এক্সটেনশন দিন, যেমন .com"),
+        "domain.invalid": t(
+          "That does not look like a valid domain.",
+          "ডোমেইনটি সঠিক মনে হচ্ছে না।",
+        ),
+        "domain.needs_tld": t(
+          "Include the extension, e.g. .com",
+          "এক্সটেনশন দিন, যেমন .com",
+        ),
         "domain.too_long": t("That domain is too long.", "ডোমেইনটি অনেক বড়।"),
-        "domain.ip_not_allowed": t("IP addresses cannot be used.", "আইপি ঠিকানা ব্যবহার করা যাবে না।"),
+        "domain.ip_not_allowed": t(
+          "IP addresses cannot be used.",
+          "আইপি ঠিকানা ব্যবহার করা যাবে না।",
+        ),
         "domain.reserved": t("That domain is reserved.", "এই ডোমেইন সংরক্ষিত।"),
-        "domain.reserved_label": t("That sub-domain is reserved.", "এই সাব-ডোমেইন সংরক্ষিত।"),
-        "domain.taken": t("That domain is already connected.", "ডোমেইনটি আগেই যুক্ত আছে।"),
-        "domain.limit_reached": t("Domain limit reached.", "ডোমেইনের সীমা শেষ।"),
+        "domain.reserved_label": t(
+          "That sub-domain is reserved.",
+          "এই সাব-ডোমেইন সংরক্ষিত।",
+        ),
+        "domain.taken": t(
+          "That domain is already connected.",
+          "ডোমেইনটি আগেই যুক্ত আছে।",
+        ),
+        "domain.limit_reached": t(
+          "Domain limit reached.",
+          "ডোমেইনের সীমা শেষ।",
+        ),
         "domain.txt_missing": t(
           "TXT verification record not found yet.",
           "TXT যাচাই রেকর্ড এখনও পাওয়া যায়নি।",
@@ -99,8 +122,14 @@ function DomainsPage() {
           "DNS lookup failed — we will retry shortly.",
           "DNS দেখা যায়নি — আমরা আবার চেষ্টা করব।",
         ),
-        "domain.not_active": t("Only a live domain can be primary.", "শুধু চালু ডোমেইন প্রাইমারি হতে পারে।"),
-        "rate_limited": t("Too many attempts. Wait a moment.", "অনেকবার চেষ্টা হয়েছে। একটু অপেক্ষা করুন।"),
+        "domain.not_active": t(
+          "Only a live domain can be primary.",
+          "শুধু চালু ডোমেইন প্রাইমারি হতে পারে।",
+        ),
+        rate_limited: t(
+          "Too many attempts. Wait a moment.",
+          "অনেকবার চেষ্টা হয়েছে। একটু অপেক্ষা করুন।",
+        ),
       })[code] ?? code,
     [t],
   );
@@ -125,7 +154,11 @@ function DomainsPage() {
     days: t("d left", " দিন"),
   };
 
-  async function run(id: string | null, action: () => Promise<ListResult>, ok?: string) {
+  async function run(
+    id: string | null,
+    action: () => Promise<ListResult>,
+    ok?: string,
+  ) {
     setBusyId(id ?? "new");
     setError(null);
     setNotice(null);
@@ -192,11 +225,18 @@ function DomainsPage() {
             e.preventDefault();
             const value = hostname.trim();
             if (!value) return;
-            void run(null, async () => {
-              const next = await add({ data: { hostname: value } });
-              setHostname("");
-              return next;
-            }, t("Domain added — add the DNS records below.", "ডোমেইন যুক্ত হয়েছে — নিচের DNS রেকর্ড যোগ করুন।"));
+            void run(
+              null,
+              async () => {
+                const next = await add({ data: { hostname: value } });
+                setHostname("");
+                return next;
+              },
+              t(
+                "Domain added — add the DNS records below.",
+                "ডোমেইন যুক্ত হয়েছে — নিচের DNS রেকর্ড যোগ করুন।",
+              ),
+            );
           }}
         >
           <label className="sr-only" htmlFor="hostname">
@@ -211,8 +251,14 @@ function DomainsPage() {
             value={hostname}
             onChange={(e) => setHostname(e.target.value)}
           />
-          <button type="submit" className={btnPrimary} disabled={busyId === "new"}>
-            {busyId === "new" ? t("Adding…", "যোগ হচ্ছে…") : t("Add domain", "যোগ করুন")}
+          <button
+            type="submit"
+            className={btnPrimary}
+            disabled={busyId === "new"}
+          >
+            {busyId === "new"
+              ? t("Adding…", "যোগ হচ্ছে…")
+              : t("Add domain", "যোগ করুন")}
           </button>
         </form>
       </SectionCard>
@@ -240,7 +286,10 @@ function DomainsPage() {
                     {t("Primary", "প্রাইমারি")}
                   </span>
                 )}
-                <DomainStatusPill status={domain.status} label={statusLabels[domain.status] ?? domain.status} />
+                <DomainStatusPill
+                  status={domain.status}
+                  label={statusLabels[domain.status] ?? domain.status}
+                />
                 <CertBadge health={domain.certHealth} labels={certLabels} />
               </div>
             }
@@ -248,7 +297,9 @@ function DomainsPage() {
             <DomainProgress status={domain.status} labels={statusLabels} />
 
             {domain.lastError && domain.status !== "active" && (
-              <InlineNote tone={domain.status === "failed" ? "danger" : "warning"}>
+              <InlineNote
+                tone={domain.status === "failed" ? "danger" : "warning"}
+              >
                 {message(domain.lastError)}
                 {domain.checkAttempts > 0 &&
                   ` · ${t("attempt", "চেষ্টা")} ${domain.checkAttempts}`}
@@ -258,7 +309,10 @@ function DomainsPage() {
             {domain.status !== "active" && (
               <div className="space-y-2">
                 <p className="text-sm font-medium">
-                  {t("Add these DNS records at your registrar", "আপনার রেজিস্ট্রারে এই DNS রেকর্ডগুলো যোগ করুন")}
+                  {t(
+                    "Add these DNS records at your registrar",
+                    "আপনার রেজিস্ট্রারে এই DNS রেকর্ডগুলো যোগ করুন",
+                  )}
                 </p>
                 <DnsRecordTable
                   records={domain.records}
@@ -293,16 +347,24 @@ function DomainsPage() {
                 type="button"
                 className={btnPrimary}
                 disabled={busy || domain.status === "disabled"}
-                onClick={() => void run(domain.id, () => verify({ data: { id: domain.id } }))}
+                onClick={() =>
+                  void run(domain.id, () => verify({ data: { id: domain.id } }))
+                }
               >
-                {busy ? t("Checking…", "দেখা হচ্ছে…") : t("Check now", "এখনই যাচাই")}
+                {busy
+                  ? t("Checking…", "দেখা হচ্ছে…")
+                  : t("Check now", "এখনই যাচাই")}
               </button>
               {domain.status === "active" && !domain.isPrimary && (
                 <button
                   type="button"
                   className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
                   disabled={busy}
-                  onClick={() => void run(domain.id, () => primary({ data: { id: domain.id } }))}
+                  onClick={() =>
+                    void run(domain.id, () =>
+                      primary({ data: { id: domain.id } }),
+                    )
+                  }
                 >
                   {t("Make primary", "প্রাইমারি করুন")}
                 </button>
@@ -314,7 +376,12 @@ function DomainsPage() {
                   disabled={busy}
                   onClick={() =>
                     void run(domain.id, () =>
-                      redirect({ data: { id: domain.id, redirect: !domain.redirectToPrimary } }),
+                      redirect({
+                        data: {
+                          id: domain.id,
+                          redirect: !domain.redirectToPrimary,
+                        },
+                      }),
                     )
                   }
                 >
@@ -329,19 +396,36 @@ function DomainsPage() {
                 disabled={busy}
                 onClick={() =>
                   void run(domain.id, () =>
-                    enabled({ data: { id: domain.id, enabled: domain.status === "disabled" } }),
+                    enabled({
+                      data: {
+                        id: domain.id,
+                        enabled: domain.status === "disabled",
+                      },
+                    }),
                   )
                 }
               >
-                {domain.status === "disabled" ? t("Resume", "চালু করুন") : t("Pause", "বন্ধ করুন")}
+                {domain.status === "disabled"
+                  ? t("Resume", "চালু করুন")
+                  : t("Pause", "বন্ধ করুন")}
               </button>
               <button
                 type="button"
                 className="min-h-9 rounded-fq-md border border-destructive px-3 text-sm text-destructive"
                 disabled={busy}
                 onClick={() => {
-                  if (!window.confirm(t(`Remove ${domain.hostname}?`, `${domain.hostname} সরাবেন?`))) return;
-                  void run(domain.id, () => remove({ data: { id: domain.id } }));
+                  if (
+                    !window.confirm(
+                      t(
+                        `Remove ${domain.hostname}?`,
+                        `${domain.hostname} সরাবেন?`,
+                      ),
+                    )
+                  )
+                    return;
+                  void run(domain.id, () =>
+                    remove({ data: { id: domain.id } }),
+                  );
                 }}
               >
                 {t("Remove", "সরান")}
@@ -351,7 +435,9 @@ function DomainsPage() {
                 className="min-h-9 rounded-fq-md px-3 text-sm underline"
                 onClick={() => void toggleHistory(domain.id)}
               >
-                {open === domain.id ? t("Hide details", "বিস্তারিত লুকান") : t("Details", "বিস্তারিত")}
+                {open === domain.id
+                  ? t("Hide details", "বিস্তারিত লুকান")
+                  : t("Details", "বিস্তারিত")}
               </button>
             </div>
 
@@ -365,7 +451,9 @@ function DomainsPage() {
                   }}
                 />
                 <div className="space-y-1 text-xs text-muted-foreground">
-                  <p className="font-medium text-foreground">{t("Event history", "ইভেন্ট ইতিহাস")}</p>
+                  <p className="font-medium text-foreground">
+                    {t("Event history", "ইভেন্ট ইতিহাস")}
+                  </p>
                   {(history[domain.id] ?? []).length === 0 && (
                     <p>{t("No events yet.", "কোনো ইভেন্ট নেই।")}</p>
                   )}

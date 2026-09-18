@@ -36,7 +36,13 @@ import {
   type SearchEngine,
 } from "./search-backend";
 import { unsealSecret, sealSecret } from "./webhook-secret.server";
-import { captureError, incr, log, observe, setGauge } from "./observability.server";
+import {
+  captureError,
+  incr,
+  log,
+  observe,
+  setGauge,
+} from "./observability.server";
 import { enqueueJob } from "./job-queue.server";
 
 type Client = SupabaseClient<Database>;
@@ -50,7 +56,8 @@ export class SearchBackendError extends Error {
 }
 
 async function admin(): Promise<Client> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Client;
 }
 
@@ -68,9 +75,15 @@ export type StoredBackend = {
   documentsIndexed: number;
 };
 
-export async function loadBackend(merchantId: string, client?: Client): Promise<StoredBackend> {
+export async function loadBackend(
+  merchantId: string,
+  client?: Client,
+): Promise<StoredBackend> {
   const db = client ?? (await admin());
-  const { data } = await table(db, "search_backends").select("*").eq("merchant_id", merchantId).maybeSingle();
+  const { data } = await table(db, "search_backends")
+    .select("*")
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
   const row = (data ?? {}) as Row;
   return {
     config: normalizeBackend({
@@ -83,7 +96,9 @@ export async function loadBackend(merchantId: string, client?: Client): Promise<
     }),
     breaker: {
       consecutiveFailures: (row["consecutive_failures"] as number) ?? 0,
-      openedAt: row["breaker_opened_at"] ? Date.parse(row["breaker_opened_at"] as string) : null,
+      openedAt: row["breaker_opened_at"]
+        ? Date.parse(row["breaker_opened_at"] as string)
+        : null,
       lastFailureCode: (row["last_failure_code"] as string | null) ?? null,
     },
     apiKeySealed: (row["api_key_sealed"] as string | null) ?? null,
@@ -92,10 +107,16 @@ export async function loadBackend(merchantId: string, client?: Client): Promise<
   };
 }
 
-export type SaveBackendInput = Partial<BackendConfig> & { apiKey?: string | null };
+export type SaveBackendInput = Partial<BackendConfig> & {
+  apiKey?: string | null;
+};
 
 /** Writes config. The API key is sealed at rest and never returned to a client. */
-export async function saveBackend(merchantId: string, input: SaveBackendInput, client?: Client) {
+export async function saveBackend(
+  merchantId: string,
+  input: SaveBackendInput,
+  client?: Client,
+) {
   const db = client ?? (await admin());
   const config = normalizeBackend(input);
   const patch: Row = {
@@ -116,17 +137,25 @@ export async function saveBackend(merchantId: string, input: SaveBackendInput, c
   if (input.apiKey) patch["api_key_sealed"] = await sealSecret(input.apiKey);
   if (input.apiKey === null) patch["api_key_sealed"] = null;
 
-  const { error } = await table(db, "search_backends").upsert(patch, { onConflict: "merchant_id" });
+  const { error } = await table(db, "search_backends").upsert(patch, {
+    onConflict: "merchant_id",
+  });
   if (error) throw new SearchBackendError("search_backend_save_failed");
   log("info", "search.backend_saved", { engine: config.engine });
   return config;
 }
 
-async function persistBreaker(merchantId: string, breaker: BreakerState, client: Client) {
+async function persistBreaker(
+  merchantId: string,
+  breaker: BreakerState,
+  client: Client,
+) {
   await table(client, "search_backends")
     .update({
       consecutive_failures: breaker.consecutiveFailures,
-      breaker_opened_at: breaker.openedAt ? new Date(breaker.openedAt).toISOString() : null,
+      breaker_opened_at: breaker.openedAt
+        ? new Date(breaker.openedAt).toISOString()
+        : null,
       last_failure_code: breaker.lastFailureCode,
       updated_at: new Date().toISOString(),
     })
@@ -154,7 +183,9 @@ export type BackendSearchResult = {
 export async function searchWithBackend(
   merchantId: string,
   rawQuery: Partial<NeutralQuery>,
-  fallback: (query: NeutralQuery) => Promise<{ hits: SearchHit[]; total: number }>,
+  fallback: (
+    query: NeutralQuery,
+  ) => Promise<{ hits: SearchHit[]; total: number }>,
   opts: { lang?: "en" | "bn"; client?: Client } = {},
 ): Promise<BackendSearchResult> {
   const db = opts.client ?? (await admin());
@@ -165,7 +196,10 @@ export async function searchWithBackend(
 
   if (decision.action === "open" || stored.config.engine === "postgres") {
     const result = await fallback(query);
-    incr("framique_search_total", { engine: "postgres", outcome: decision.action === "open" ? "breaker_open" : "native" });
+    incr("framique_search_total", {
+      engine: "postgres",
+      outcome: decision.action === "open" ? "breaker_open" : "native",
+    });
     return {
       ...result,
       engine: "postgres",
@@ -177,15 +211,30 @@ export async function searchWithBackend(
   }
 
   try {
-    const apiKey = stored.apiKeySealed ? await unsealSecret(stored.apiKeySealed) : null;
+    const apiKey = stored.apiKeySealed
+      ? await unsealSecret(stored.apiKeySealed)
+      : null;
     const remote = await queryRemote(stored.config, apiKey, query);
-    if (stored.breaker.consecutiveFailures > 0 || stored.breaker.openedAt !== null) {
+    if (
+      stored.breaker.consecutiveFailures > 0 ||
+      stored.breaker.openedAt !== null
+    ) {
       await persistBreaker(merchantId, recordSuccess(), db);
-      incr("framique_search_breaker_recoveries_total", { engine: stored.config.engine });
+      incr("framique_search_breaker_recoveries_total", {
+        engine: stored.config.engine,
+      });
     }
-    setGauge("framique_search_breaker_open", 0, { merchant: merchantId, engine: stored.config.engine });
-    observe("framique_search_ms", Date.now() - started, { engine: stored.config.engine });
-    incr("framique_search_total", { engine: stored.config.engine, outcome: "ok" });
+    setGauge("framique_search_breaker_open", 0, {
+      merchant: merchantId,
+      engine: stored.config.engine,
+    });
+    observe("framique_search_ms", Date.now() - started, {
+      engine: stored.config.engine,
+    });
+    incr("framique_search_total", {
+      engine: stored.config.engine,
+      outcome: "ok",
+    });
     return {
       ...remote,
       engine: stored.config.engine,
@@ -195,10 +244,16 @@ export async function searchWithBackend(
       explanation: explainHealth("healthy", opts.lang ?? "en"),
     };
   } catch (error) {
-    const code = error instanceof SearchBackendError ? error.code : "search_upstream_error";
+    const code =
+      error instanceof SearchBackendError
+        ? error.code
+        : "search_upstream_error";
     const nextBreaker = recordFailure(stored.config, stored.breaker, code);
     await persistBreaker(merchantId, nextBreaker, db);
-    incr("framique_search_total", { engine: stored.config.engine, outcome: "fallback" });
+    incr("framique_search_total", {
+      engine: stored.config.engine,
+      outcome: "fallback",
+    });
     log("warn", "search.fallback", { engine: stored.config.engine, code });
     // A trip is the event on-call cares about; failures alone are noise.
     setGauge("framique_search_breaker_open", nextBreaker.openedAt ? 1 : 0, {
@@ -206,7 +261,10 @@ export async function searchWithBackend(
       engine: stored.config.engine,
     });
     if (nextBreaker.openedAt && !stored.breaker.openedAt) {
-      incr("framique_search_breaker_trips_total", { engine: stored.config.engine, code });
+      incr("framique_search_breaker_trips_total", {
+        engine: stored.config.engine,
+        code,
+      });
       await captureError(new Error(`search breaker opened: ${code}`), {
         scope: "search.breaker",
         engine: stored.config.engine,
@@ -221,12 +279,19 @@ export async function searchWithBackend(
       health: nextBreaker.openedAt ? "down" : "degraded",
       tookMs: Date.now() - started,
       fellBack: true,
-      explanation: explainHealth(nextBreaker.openedAt ? "down" : "degraded", opts.lang ?? "en"),
+      explanation: explainHealth(
+        nextBreaker.openedAt ? "down" : "degraded",
+        opts.lang ?? "en",
+      ),
     };
   }
 }
 
-async function queryRemote(config: BackendConfig, apiKey: string | null, query: NeutralQuery) {
+async function queryRemote(
+  config: BackendConfig,
+  apiKey: string | null,
+  query: NeutralQuery,
+) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), config.timeoutMs);
   try {
@@ -281,13 +346,20 @@ async function queryRemote(config: BackendConfig, apiKey: string | null, query: 
 
     if (config.engine === "meilisearch") {
       const hits = ((body["hits"] as SearchHit[]) ?? []).slice(0, query.limit);
-      return { hits, total: (body["estimatedTotalHits"] as number) ?? hits.length };
+      return {
+        hits,
+        total: (body["estimatedTotalHits"] as number) ?? hits.length,
+      };
     }
     const rawHits = (body["hits"] as Array<{ document: SearchHit }>) ?? [];
-    return { hits: rawHits.map((h) => h.document), total: (body["found"] as number) ?? rawHits.length };
+    return {
+      hits: rawHits.map((h) => h.document),
+      total: (body["found"] as number) ?? rawHits.length,
+    };
   } catch (error) {
     if (error instanceof SearchBackendError) throw error;
-    if ((error as { name?: string }).name === "AbortError") throw new SearchBackendError("search_timeout");
+    if ((error as { name?: string }).name === "AbortError")
+      throw new SearchBackendError("search_timeout");
     throw new SearchBackendError("search_unreachable");
   } finally {
     clearTimeout(timer);
@@ -308,7 +380,9 @@ export async function queueIndexOps(
 ) {
   if (ops.length === 0) return { queued: 0 };
   const db = client ?? (await admin());
-  const coalesced = coalesceIndexOps(ops.map((o, i) => ({ ...o, seq: o.seq ?? i })));
+  const coalesced = coalesceIndexOps(
+    ops.map((o, i) => ({ ...o, seq: o.seq ?? i })),
+  );
   await enqueueJob(
     {
       queue: "search-index",
@@ -333,7 +407,9 @@ export async function applyIndexOps(
   const stored = await loadBackend(merchantId, db);
   if (stored.config.engine === "postgres") return { skipped: true, applied: 0 };
 
-  const apiKey = stored.apiKeySealed ? await unsealSecret(stored.apiKeySealed) : null;
+  const apiKey = stored.apiKeySealed
+    ? await unsealSecret(stored.apiKeySealed)
+    : null;
   const base = (stored.config.host ?? "").replace(/\/+$/, "");
   const index = stored.config.indexName ?? "products";
   const upserts = ops.filter((o) => o.op === "upsert").map((o) => o.documentId);
@@ -341,7 +417,10 @@ export async function applyIndexOps(
 
   let applied = 0;
   if (upserts.length) {
-    const { data } = await table(db, "products").select("*").in("id", upserts).limit(1000);
+    const { data } = await table(db, "products")
+      .select("*")
+      .in("id", upserts)
+      .limit(1000);
     const docs = (data ?? []) as Row[];
     if (docs.length) {
       const url =
@@ -351,7 +430,10 @@ export async function applyIndexOps(
       const res = await fetch(url, {
         method: "POST",
         headers: {
-          "content-type": stored.config.engine === "meilisearch" ? "application/json" : "text/plain",
+          "content-type":
+            stored.config.engine === "meilisearch"
+              ? "application/json"
+              : "text/plain",
           ...(apiKey
             ? stored.config.engine === "meilisearch"
               ? { authorization: `Bearer ${apiKey}` }
@@ -363,7 +445,8 @@ export async function applyIndexOps(
             ? JSON.stringify(docs)
             : docs.map((d) => JSON.stringify(d)).join("\n"),
       });
-      if (!res.ok) throw new SearchBackendError(`search_index_http_${res.status}`);
+      if (!res.ok)
+        throw new SearchBackendError(`search_index_http_${res.status}`);
       applied += docs.length;
     }
   }

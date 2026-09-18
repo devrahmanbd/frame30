@@ -1,8 +1,8 @@
 # Framique — BUILD.md
 
 Single flat ledger of every feature in the product, split into four tiers by
-shipping priority. Tiers answer *when*; the `[A]` marker answers *how badly it
-hurts if it is wrong*.
+shipping priority. Tiers answer _when_; the `[A]` marker answers _how badly it
+hurts if it is wrong_.
 
 Source of truth for scope: `basic.md`, `plan.md`, `docs/**`, `SYSTEM.md`.
 Rules of engagement: `AGENTS.md`. This file is the checkbox surface — tick a box
@@ -10,12 +10,12 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 
 ## Legend
 
-| Marker | Meaning |
-|---|---|
-| `[ ]` | not built |
-| `[~]` | partial — shipped but a listed gate is still red |
-| `[x]` | built, doc-accepted, E2E green |
-| `[A]` | **special case** — money, transaction integrity, data safety, tenant leak, or vulnerability. A defect here can expose the business within a moment. |
+| Marker | Meaning                                                                                                                                             |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `[ ]`  | not built                                                                                                                                           |
+| `[~]`  | partial — shipped but a listed gate is still red                                                                                                    |
+| `[x]`  | built, doc-accepted, E2E green                                                                                                                      |
+| `[A]`  | **special case** — money, transaction integrity, data safety, tenant leak, or vulnerability. A defect here can expose the business within a moment. |
 
 ### Section A rules (non-negotiable, apply to every `[A]` line)
 
@@ -42,6 +42,7 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/`, reference credentials `user: maxw`). Provides identical merchant user journey, theme/plugin lifecycles, collapsible `#adminmenu` navigation, visual page builder integration, and isolated SaaS cloud architecture.
 
 ### 0.1 Appearance › Themes lifecycle (`themes.php` & `theme-install.php` parity)
+
 - [x] Active storefront theme showcase card (`ThemesScreen.tsx`) with version, author, live badge, and primary `Customize` launcher
 - [x] Installed themes grid with instant `Activate` action (swapping `is_active` while preserving published AST and storefront coherence)
 - [x] `Live Preview` action for installed inactive themes launching isolated preview customizer (`/dashboard/builder?preview_theme_id=:id`) — `ThemeCard.tsx` hover overlay with Activate + Live preview buttons; `ThemesScreen.tsx` calls `previewInstalled(theme)` → `navigate` to builder with `preview_theme_id` search param
@@ -51,6 +52,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Theme screenshot pipeline: `ThemeScreenshot.tsx` rewritten with dynamic storefront snapshot URL pipeline — renders real screenshot from `screenshotUrl` or falls back to seeded color gradient, dim-on-hover for overlay effects
 
 ### 0.2 Plugins lifecycle (`plugins.php` & `plugin-install.php` parity)
+
 - [x] Installed Plugins tabular management view (`InstalledApps.tsx`) with status filtering (`All`, `Active`, `Inactive`)
 - [x] Instant `Activate` and `Deactivate` toggles (`plugin_state.enabled` toggle with ledger status recording)
 - [x] `Delete` / Uninstall plugin action with confirmation dialog, cascading configuration cleanup, and terminal ledger audit (`InstalledApps.tsx` + `pluginUninstallFn`)
@@ -59,18 +61,21 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Bulk actions on installed plugins (`Activate`, `Deactivate`, `Delete` via table multi-selection) — `InstalledApps.tsx` bulk action bar with per-row checkboxes and apply button
 
 ### 0.3 Hierarchical CMS sidebar navigation (WP `#adminmenu` parity)
+
 - [x] Nav model reorganization: **Appearance** (Themes, Customize, Menus) and **Plugins** (Installed Plugins, Add New) elevated to first-class top-level CMS groups (`src/lib/console-nav.ts`)
 - [x] Expandable accordion submenus in open sidebar (`AdminShell.tsx`) matching WordPress collapsible submenus — `SidebarNav` accordion with `expandedSections` state and chevron toggle
 - [x] Collapsed hover flyout submenus in rail mode matching WordPress `#adminmenu` flyouts — `hoveredGroup` flyout panel rendered in rail/collapsed mode
 - [x] Capability-gated navigation entries with active-route highlighting and single navigation source of truth (`src/lib/console-nav.ts` `filterNav()` + `consoleRoute()` staticData gate)
 
 ### 0.4 Visual page builder & template management
+
 - [x] Appearance › Customize direct bridge into visual drag-and-drop AST page builder (`openCustomize` → `/dashboard/builder`)
 - [x] Content › Pages table row action "Edit with Page Builder" loaded with page AST (`content-desk.ts` `rowActions()` returns `"edit-builder"`, `cells.tsx` links to builder with page id)
 - [x] Immutable builder version commits, live publish pipeline, autosave drafts, and instant rollback
 - [x] Template hierarchy support (index, product, collection, page, blog, cart, checkout)
 
 ### 0.5 Foundational SaaS cloud architecture & tenant isolation
+
 - [~] `[A]` Wildcard subdomain isolation (`<slug>.framique.store`): storefront serves correctly under wildcard subdomain; path-based `/store/$slug` is still the primary route — full elimination of path routing pending edge rewrite config
 - [x] Onboarding Custom Domain Connection Step (`src/routes/_authenticated/onboarding.tsx`): real-time CNAME/A DNS instructions with "Skip for now" fallback to `<slug>.framique.store`
 - [x] `[A]` Edge request rewriting & custom domain edge cache parity: `isStorefrontPath` in `src/lib/storefront-cache.ts` caches custom-domain root paths (`/`, `/p/*`, `/c/*`, `/pages/*`, `/blog`) — personal paths guarded by `isPersonalizedStorefrontPath`
@@ -83,6 +88,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 ## 1. Core
 
 ### 1.1 Tenancy & data foundation
+
 - [x] `[A]` Postgres baseline schema versioned in-repo (`supabase/migrations/00000000000000_baseline_schema.sql`)
 - [x] `[A]` Multi-tenant model: `merchants`, `merchant_settings`, membership, `merchant_id` on every tenant table
 - [x] `[A]` RLS enabled on every public table + explicit GRANTs per role
@@ -101,6 +107,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Purge job scheduler (cron) so an elapsed cooling window executes without a human click — `src/routes/api/public/cron/purge.ts` + `ops/cron/crontab`
 
 ### 1.2 Identity & access
+
 - [x] Email/password auth, session hydration, `/auth` route
 - [x] `[A]` Authenticated route gate (`_authenticated/route.tsx`) — no protected loader on public routes
 - [x] `[A]` Bearer-token attach middleware for server functions (`src/start.ts`)
@@ -120,6 +127,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Recovery codes for TOTP loss — `src/lib/mfa-recovery.ts`, `mfa-recovery.server.ts`, tested in `mfa-recovery.test.ts`
 
 ### 1.3 Money engine
+
 - [x] `[A]` Integer minor-unit money type across schema (all `bigint`)
 - [x] `[A]` `fmtMinor` single presentation helper, tabular-nums
 - [x] `[A]` BDT-only default posture per store
@@ -132,6 +140,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] BIN on invoice PDF — sequential numbering, legal year VAT breakdown, business BIN, and printable document styling at `/dashboard/orders/$orderId/invoice`
 
 ### 1.4 Catalog core
+
 - [x] Products (physical) with media, status, slug
 - [x] Categories, brands, collections
 - [x] Product options & variants
@@ -150,6 +159,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] CSV export of the catalog with the same column contract — `exportCatalogCsv` in `src/lib/catalog.server.ts` + `exportCatalogCsvFn` in `src/lib/catalog.functions.ts`
 
 ### 1.5 Storefront core
+
 - [x] Tenant storefront at `/store/$slug` (index, product, checkout, order)
 - [x] Builder-AST section rendering
 - [x] `[A]` Single H1 per page, semantic landmarks, alt text
@@ -162,6 +172,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Sitemap per tenant + robots (`/store/$slug/sitemap.xml`, `/robots.txt`)
 
 ### 1.6 Checkout & orders core
+
 - [x] Checkout surface with shipping fee + free-shipping threshold
 - [x] `[A]` Server-side order creation (price, stock, totals recomputed server-side)
 - [x] Order confirmation page
@@ -173,6 +184,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Order edit with audited amount deltas
 
 ### 1.7 Payments core
+
 - [x] `[A]` Public webhook route with HMAC verify, timestamp skew window, dead-letter path
 - [x] `[A]` Idempotent webhook apply RPC (`gateway_apply_webhook`)
 - [x] `[A]` PII stripping before any provider body persists
@@ -186,6 +198,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Settlement + reconciliation ledger (`docs/06-payments/settlement-reconciliation.md`)
 
 ### 1.8 Platform billing core
+
 - [x] Plans table + seeded tiers (launch, growth, business, enterprise)
 - [x] Public `/pricing` reading live plan data
 - [x] `[A]` Subscriptions + entitlement triggers (product/staff limits enforced in DB)
@@ -196,8 +209,8 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Sweep cron `POST /api/public/cron/billing` (bearer-guarded, idempotent) + `billing_loop` in `e2e:critical`
 - See `docs/16-product-pricing/billing-core.md` for the as-built record
 
-
 ### 1.9 Engineering gates
+
 - [x] Playwright harness in `.e2e/` with fixtures + config
 - [x] `store_loop`, `admin_loop`, `builder_loop`, `market_loop`, `public_loop`, `failure_loop`, `storefront_loop`
 - [x] Seeded demo tenant so `store_loop` actually gates
@@ -212,6 +225,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 ## 2. Must have
 
 ### 2.1 Merchant admin
+
 - [x] Admin shell + navigation
 - [x] Dashboard KPIs (orders, revenue)
 - [x] Settings surface + API keys surface
@@ -222,6 +236,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Role editor with least-privilege defaults
 
 ### 2.2 Commerce depth
+
 - [x] Coupons (merchant-owned, percent-off)
 - [x] `[A]` Discounts: fixed, shipping, buy-X-get-Y, BOGO, thresholds — engine shipped (`commerce-desk`); failure suite in `discount-codes.test.ts` (deny + uniqueness replay + audit counter)
 - [x] Auto-generated discount codes + usage caps — `discount-codes.server.ts` + `discount-codes.test.ts` (9 cases: malformed-campaign deny, 500 cap, clamped money fields)
@@ -238,8 +253,8 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [~] `[A]` Tax-inclusive/exclusive display parity with stored totals — `commerce-vat.test.ts` covers math, not display parity
 - [x] `[A]` Invoice PDF with BIN, VAT breakdown, sequential numbering — sequential numbering, BIN, legal VAT table, and printable document styling with `@media print` and `window.print()` trigger at `/dashboard/orders/$orderId/invoice`
 
-
 ### 2.3 Builder & themes
+
 - [x] Builder AST engine v1 + editor slots (header / main / footer)
 - [x] Theme versions + publish state
 - [x] Section renderer with primary-heading resolution
@@ -255,6 +270,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Theme sandbox: theme code cannot read cross-tenant data or secrets
 
 ### 2.4 Shipping & delivery
+
 - [x] Shipping settings (flat fee, free-shipping threshold)
 - [x] Courier integrations: Steadfast, RedX, Pathao, Paperfly, eCourier, Sundarban
 - [x] `[A]` Standardized tracking events (dispatched → in-transit → delivered → COD collected)
@@ -264,6 +280,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Courier webhook verification + dead-letter parity with payments
 
 ### 2.5 POS
+
 - [x] POS surface + offline queue hook
 - [x] `[A]` Idempotent offline → online sync (replay-safe)
 - [x] `[A]` Split tender (cash / card / COD) with drawer reconcile
@@ -274,6 +291,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Receipt print (dual customer display pending hardware)
 
 ### 2.6 Marketing & SEO
+
 - [x] Campaigns, subscribers, articles, media surfaces
 - [x] Unsubscribe route
 - [x] `[A]` SEO panel (Yoast/RankMath-style): meta, canonical, robots, OG, live scoring, audit ledger (`seo_meta`, `seo_meta_audit`, `/admin/marketing/seo`)
@@ -287,6 +305,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Google Search Console + GA integration — Site Kit equivalent at `src/lib/search-console.ts`, `search-console.server.ts`, `SiteKitDesk.tsx`, and `/api/public/cron/search-console`
 
 ### 2.7 Owner console (platform)
+
 - [x] Rail navigation with the full platform map
 - [x] Plans, Tenants, Trial, Coupons, Marketing, Fraud, AI, Gateway, Users, Settings
 - [x] `[A]` Platform kill-switch flags (AI, fraud, marketing)
@@ -296,6 +315,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Merchant suspend / reinstate with payment freeze
 
 ### 2.8 Fraud & abuse (must-have layer)
+
 - [x] Fraud desk surface + audit view
 - [x] `[A]` Rate limiting + abuse identity scoring at the edge
 - [x] `[A]` Rule engine with ordered precedence + explainable score
@@ -305,6 +325,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Bot / fake-visitor filtering on the beacon layer
 
 ### 2.9 Operations
+
 - [x] `[A]` Automated backup + verified restore drill — nightly via `/api/public/cron/ops`, ledgered, deny+replay+audit tests
 - [x] `[A]` Dead-letter queue console with replay across all providers — `src/routes/root/ops.tsx` unifies `webhook_events` (payments) and `courier_webhook_events` (courier) with `source` filter (`all | payments | courier`), severity triage, and per-item replay action (`opsReplayFn`)
 - [~] Prometheus metrics + Grafana dashboards — 7 dashboards (platform, infrastructure, ad-fraud, commerce, marketing, developer platform, ecosystem/AI) + 54 alert rules; `observability-coverage.test.ts` pins the money/security metrics, long-tail counters still uncharted
@@ -313,12 +334,12 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Secret rotation runbook (gateway secrets, API keys) — `docs/ops/secret-rotation.md`: gateway webhook dual-sign rotation, Supabase service role + JWT rotation, merchant API key self-service + force-rotation, Redis, courier credentials, ACME key, emergency lockdown procedure
 - [x] Log retention policy (raw analytics 90d, PII-minimal)
 
-
 ---
 
 ## 3. Good to have — POST-MVP (deferred by owner decision, not missing)
 
 ### 3.1 Storefront & conversion
+
 - [x] Product reviews + moderation — `/dashboard/reviews` moderation desk + storefront PDP review intake and score rollups (`reviews.tsx`, `phase2-pdp.test.ts`, `ConversionSurfaces.tsx`)
 - [x] Wishlists — `customer_wishlist_items` table, `customer_toggle_wishlist` RPC, `store.$slug.account.tsx` wishlist tab, and builder `wishlist_button` widget
 - [x] Recently viewed / recommendations — `conversion.server.ts` rails, `ConversionSurfaces.tsx`, and `recently_viewed` builder widget
@@ -331,6 +352,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Server-side A/B experiments with stable variant assignment — `experiments.server.ts` + `experiments.test.ts` (stability replay, control-path degrade deny, integer-minor conversion guard)
 
 ### 3.2 Commerce
+
 - [x] Pre-orders + backorder — `BackorderPolicy` ("deny" | "allow" | "preorder"), `releaseAt` scheduling, `bulk-editor.tsx`, `commerce-desk.test.ts`
 - [x] Draft orders / invoice-by-link — `/dashboard/draft-orders` order builder, shareable quote link, convert to order once accepted
 - [x] B2B price lists + net terms — `/dashboard/pricing` wholesale quantity breaks, Net 15/30/60 terms calculation in `commerce-desk.ts`
@@ -341,6 +363,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] `[A]` Subscription billing for storefront customers (recurring charge idempotency) — `customer_subscriptions` + `subscription_charges`, worker `for update skip locked` idempotency, `commerce-desk.server.ts`
 
 ### 3.3 Marketplace & ecosystem
+
 - [x] Official themes + plugins store surface
 - [x] Creator submit + moderation surfaces
 - [x] Community upload with versioning + reviews — `marketplace-vault.server.ts` + `marketplace-vault.test.ts` (forward-version deny, identical-bytes replay)
@@ -352,6 +375,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] App blocks embeddable into merchant themes — `marketplace_app_blocks` insert/listing/entitlement (`marketplace-vault.server.ts`), `marketplace.functions.ts` fn, sandboxed `PluginBlock.tsx` renderer
 
 ### 3.4 Analytics
+
 - [x] Merchant analytics surface
 - [x] Event pipeline: beacon → Redis buffer → batch ETL
 - [x] Funnel + drop-off reports
@@ -362,6 +386,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Custom report builder + scheduled exports
 
 ### 3.5 AI & support
+
 - [x] AI assistant surface (admin) + AI oversight (owner)
 - [x] Support widget on the storefront
 - [x] `[A]` Behavior trajectory collection with consent gate
@@ -373,6 +398,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Ticket system + SLA view
 
 ### 3.6 Developer platform
+
 - [x] API key lifecycle surface
 - [x] Export jobs + export files
 - [x] `[A]` OAuth 2.1 auth-code + PKCE for third-party apps (consent screen, rotating refresh tokens with reuse detection, revocation)
@@ -386,6 +412,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [ ] GraphQL surface
 
 ### 3.7 Merchant experience
+
 - [x] Custom domain onboarding with automated TLS (ACME http-01 responder at `/.well-known/acme-challenge/$token`, HMAC-signed edge callback, auto-renew sweep)
 - [x] Domain state machine + verification UI (`src/lib/domains.ts` rules + tests, `domains.server.ts` transitions/audit, `/admin/settings/domains`)
 - [~] Onboarding checklist + guided tours — `SetupChecklist.tsx` dynamic progress checklist on dashboard; interactive tour pending
@@ -398,6 +425,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 ## 4. Optional / out of the box — POST-MVP (deferred by owner decision, not missing)
 
 ### 4.1 Provider-gated
+
 - [x] `[A]` Live MFS credentials (bKash / Nagad / Rocket / Upay / Tap / mCash / SureCash) behind explicit sign-off gate — `provider-gate.ts`, `payments-gate.test.ts`
 - [x] `[A]` Bank-wallet and aggregator rails (CellFin, SSLCOMMERZ, aamarPay, ShurjoPay, PortWallet) with PCI SAQ + bank-account checks — `payment-rails.ts`, `payment-rails.test.ts`
 - [ ] `[A]` Direct bank rails + card acquiring
@@ -407,6 +435,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Licensing / regulatory posture (`docs/06-payments/licensing.md`)
 
 ### 4.2 Differentiators (the moat)
+
 - [x] `[A]` Ad-fraud defense: click-fraud and fake-visitor protection for merchant FB/Google spend — `ad-fraud.ts` + `ad-fraud.test.ts`, ad-fraud dashboard, 3 alerts
 - [x] `[A]` Attribution-integrity report (which ad spend was poisoned and why) — `campaignIntegrity` / `summarizeIntegrity`, `ad_integrity_days`
 - [x] `[A]` Fake-visitor scoring model + intent signals — `scoreVisitor`, `ad_visitor_profiles`
@@ -414,6 +443,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Cross-merchant abuse network signals (privacy-preserving) — `ad_network_signals` keyed by salted digest, consumed by `scoreClick` via the `NETWORK_ABUSE` signal
 
 ### 4.3 Long tail
+
 - [x] Virtual product delivery (game keys, gift codes) by email + SMS — `virtual-delivery.*`, tested
 - [x] Loyalty points + referral program — `loyalty.*`, tested
 - [x] Affiliate program — `affiliates` / `affiliate_commissions`, `attributeOrder` tested
@@ -432,6 +462,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [ ] AI theme generation from a brief
 
 ### 4.4 Infrastructure options
+
 - [x] Meilisearch / Typesense search backend (Postgres FTS fallback first) — `search-backend.*` with breaker, charted + alerted
 - [x] imgproxy edge transforms (AVIF / WebP) — `image-transform.*`, charted + alerted
 - [ ] Go payments service extraction
@@ -448,15 +479,15 @@ Everything marked `[A]` above rolls up to these seven exposure classes. Each
 class needs a named owner, a failure-suite E2E case, and an audit trail before
 the surface it belongs to can be ticked.
 
-| Class | Exposure | Guard |
-|---|---|---|
-| A1 Money representation | wrong totals, silent rounding loss | integer minor units, no floats, CI conformance linter |
-| A2 Transaction integrity | double charge, double refund, lost payout | idempotency keys, append-only ledger, FSM in DB |
-| A3 Tenant isolation | one merchant reads another's orders/customers | RLS on every table, negative-policy test matrix, no admin client for ordinary reads |
-| A4 Data safety | irrecoverable loss, unverified backup | automated backup + restore drill, tombstones, purge job |
-| A5 Secret exposure | gateway secret, service key, API key leak | server-only reads inside handlers, no secrets in error bodies or logs, rotation runbook |
-| A6 Authorization | privilege escalation, role tampering, impersonation abuse | roles in a separate table, security-definer helpers, step-up MFA on money actions |
-| A7 Abuse & fraud | fake orders, COD loss, poisoned ad spend | edge rate limits, rule engine, risk-review hold, bot filtering |
+| Class                    | Exposure                                                  | Guard                                                                                   |
+| ------------------------ | --------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| A1 Money representation  | wrong totals, silent rounding loss                        | integer minor units, no floats, CI conformance linter                                   |
+| A2 Transaction integrity | double charge, double refund, lost payout                 | idempotency keys, append-only ledger, FSM in DB                                         |
+| A3 Tenant isolation      | one merchant reads another's orders/customers             | RLS on every table, negative-policy test matrix, no admin client for ordinary reads     |
+| A4 Data safety           | irrecoverable loss, unverified backup                     | automated backup + restore drill, tombstones, purge job                                 |
+| A5 Secret exposure       | gateway secret, service key, API key leak                 | server-only reads inside handlers, no secrets in error bodies or logs, rotation runbook |
+| A6 Authorization         | privilege escalation, role tampering, impersonation abuse | roles in a separate table, security-definer helpers, step-up MFA on money actions       |
+| A7 Abuse & fraud         | fake orders, COD loss, poisoned ad spend                  | edge rate limits, rule engine, risk-review hold, bot filtering                          |
 
 ### Standing rule
 

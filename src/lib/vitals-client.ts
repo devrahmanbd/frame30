@@ -34,7 +34,9 @@ type Pending = Partial<Record<VitalMetric, number>>;
 const ENDPOINT = "/api/public/vitals";
 
 function connectionClass(): string {
-  const nav = navigator as Navigator & { connection?: { effectiveType?: string } };
+  const nav = navigator as Navigator & {
+    connection?: { effectiveType?: string };
+  };
   return nav.connection?.effectiveType ?? "unknown";
 }
 
@@ -43,7 +45,11 @@ function connectionClass(): string {
  * the page view cleanly (the reporter is per page view, not per session).
  */
 export function startVitalsReporter(options: ReporterOptions): () => void {
-  if (typeof window === "undefined" || typeof PerformanceObserver === "undefined") return () => {};
+  if (
+    typeof window === "undefined" ||
+    typeof PerformanceObserver === "undefined"
+  )
+    return () => {};
 
   const rate = options.sampleRate ?? 1;
   if (rate < 1 && Math.random() > rate) return () => {};
@@ -52,7 +58,11 @@ export function startVitalsReporter(options: ReporterOptions): () => void {
   const observers: PerformanceObserver[] = [];
   let flushed = false;
 
-  const observe = (type: string, cb: (entries: PerformanceEntryList) => void, buffered = true) => {
+  const observe = (
+    type: string,
+    cb: (entries: PerformanceEntryList) => void,
+    buffered = true,
+  ) => {
     try {
       const po = new PerformanceObserver((list) => cb(list.getEntries()));
       po.observe({ type, buffered } as PerformanceObserverInit);
@@ -64,18 +74,21 @@ export function startVitalsReporter(options: ReporterOptions): () => void {
 
   // --- LCP: keep the latest candidate until interaction or hide. ----------
   observe("largest-contentful-paint", (entries) => {
-    const last = entries[entries.length - 1] as (PerformanceEntry & { startTime: number }) | undefined;
+    const last = entries[entries.length - 1] as
+      (PerformanceEntry & { startTime: number }) | undefined;
     if (last) pending.lcp = Math.round(last.startTime);
   });
 
   // --- FCP / TTFB: diagnostics that explain a bad LCP. --------------------
   observe("paint", (entries) => {
     for (const entry of entries) {
-      if (entry.name === "first-contentful-paint") pending.fcp = Math.round(entry.startTime);
+      if (entry.name === "first-contentful-paint")
+        pending.fcp = Math.round(entry.startTime);
     }
   });
   try {
-    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    const nav = performance.getEntriesByType("navigation")[0] as
+      PerformanceNavigationTiming | undefined;
     if (nav) pending.ttfb = Math.round(nav.responseStart);
   } catch {
     /* navigation timing unavailable */
@@ -88,9 +101,16 @@ export function startVitalsReporter(options: ReporterOptions): () => void {
   let windowLast = 0;
   observe("layout-shift", (entries) => {
     for (const raw of entries) {
-      const entry = raw as PerformanceEntry & { value: number; hadRecentInput: boolean };
+      const entry = raw as PerformanceEntry & {
+        value: number;
+        hadRecentInput: boolean;
+      };
       if (entry.hadRecentInput) continue;
-      if (windowValue && entry.startTime - windowLast < 1_000 && entry.startTime - windowStart < 5_000) {
+      if (
+        windowValue &&
+        entry.startTime - windowLast < 1_000 &&
+        entry.startTime - windowStart < 5_000
+      ) {
         windowValue += entry.value;
       } else {
         windowValue = entry.value;
@@ -105,9 +125,13 @@ export function startVitalsReporter(options: ReporterOptions): () => void {
   let worstInteraction = 0;
   observe("event", (entries) => {
     for (const raw of entries) {
-      const entry = raw as PerformanceEntry & { duration: number; interactionId?: number };
+      const entry = raw as PerformanceEntry & {
+        duration: number;
+        interactionId?: number;
+      };
       if (!entry.interactionId) continue;
-      if (entry.duration > worstInteraction) worstInteraction = Math.round(entry.duration);
+      if (entry.duration > worstInteraction)
+        worstInteraction = Math.round(entry.duration);
     }
   });
 
@@ -143,10 +167,18 @@ export function startVitalsReporter(options: ReporterOptions): () => void {
     const url = options.endpoint ?? ENDPOINT;
     try {
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+        navigator.sendBeacon(
+          url,
+          new Blob([body], { type: "application/json" }),
+        );
         return;
       }
-      void fetch(url, { method: "POST", body, keepalive: true, headers: { "content-type": "application/json" } });
+      void fetch(url, {
+        method: "POST",
+        body,
+        keepalive: true,
+        headers: { "content-type": "application/json" },
+      });
     } catch {
       /* the page is going away; a lost sample is acceptable */
     }

@@ -1,1 +1,846 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_root_access_tsx", "label": "access.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L1"}, {"id": "root_access_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L19"}, {"id": "root_access_statetone", "label": "stateTone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L48"}, {"id": "root_access_accessdesk", "label": "AccessDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L51"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownerimpersonaterequestfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownerimpersonaterevokefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownerimpersonateusefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownerimpersonationfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownerreinstatefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownersuspendfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "lib_owner_functions_ownersuspensionsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "users_rahman_documents_frame30_src_components_root_rootconfirmdialog_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_rootconfirmdialog_rootconfirmdialog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_ownerui_ownerheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_ownerui_ownertable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_ownerui_statcard", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_ownerui_statgrid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_ownerui_statepill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_access_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_access_statetone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_access_tsx", "target": "root_access_accessdesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L51", "weight": 1.0}], "raw_calls": [{"caller_nid": "root_access_accessdesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L52"}, {"caller_nid": "root_access_accessdesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L53"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L54"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L55"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L56"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L57"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L58"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L59"}, {"caller_nid": "root_access_accessdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L60"}, {"caller_nid": "root_access_accessdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L62"}, {"caller_nid": "root_access_accessdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L66"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L68"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L69"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L70"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L71"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L73"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L74"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L75"}, {"caller_nid": "root_access_accessdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L76"}, {"caller_nid": "root_access_accessdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L85"}, {"caller_nid": "root_access_accessdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L94"}, {"caller_nid": "root_access_accessdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L102"}, {"caller_nid": "root_access_accessdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L121"}, {"caller_nid": "root_access_accessdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L129"}, {"caller_nid": "root_access_accessdesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L140"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L146"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L147"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L154"}, {"caller_nid": "root_access_accessdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L154"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L155"}, {"caller_nid": "root_access_accessdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L155"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L157"}, {"caller_nid": "root_access_accessdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L158"}, {"caller_nid": "root_access_accessdesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L158"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L161"}, {"caller_nid": "root_access_accessdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L162"}, {"caller_nid": "root_access_accessdesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L162"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L169"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L172"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L179"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L185"}, {"caller_nid": "root_access_accessdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L186"}, {"caller_nid": "root_access_accessdesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L186"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L196"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L201"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L213"}, {"caller_nid": "root_access_accessdesk", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L218"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L221"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L227"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L228"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L229"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L230"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L231"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L238"}, {"caller_nid": "root_access_accessdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L242"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L279"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L282"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L289"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L291"}, {"caller_nid": "root_access_accessdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L292"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L300"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L305"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L309"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L315"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L316"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L320"}, {"caller_nid": "root_access_accessdesk", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L334"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L337"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L343"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L344"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L345"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L346"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L347"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L354"}, {"caller_nid": "root_access_accessdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L358"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L411"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L414"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L418"}, {"caller_nid": "root_access_accessdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx", "source_location": "L423"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "label": "access.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "root_access_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "root_access_statetone",
+      "label": "stateTone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L48"
+    },
+    {
+      "id": "root_access_accessdesk",
+      "label": "AccessDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L51"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownerimpersonaterequestfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownerimpersonaterevokefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownerimpersonateusefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownerimpersonationfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownerreinstatefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownersuspendfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "lib_owner_functions_ownersuspensionsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "users_rahman_documents_frame30_src_components_root_rootconfirmdialog_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_rootconfirmdialog_rootconfirmdialog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_ownerui_ownerheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_ownerui_ownertable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_ownerui_statcard",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_ownerui_statgrid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_ownerui_statepill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_access_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_access_statetone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_access_tsx",
+      "target": "root_access_accessdesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L231"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L238"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L242"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L282"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L291"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L292"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L305"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L320"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L337"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L343"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L354"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L358"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L411"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L414"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L418"
+    },
+    {
+      "caller_nid": "root_access_accessdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/access.tsx",
+      "source_location": "L423"
+    }
+  ]
+}

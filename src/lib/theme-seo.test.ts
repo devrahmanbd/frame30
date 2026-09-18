@@ -17,15 +17,32 @@ import {
 
 const ORIGIN = "https://shop.example.com";
 
-function meta(head: { meta: Record<string, string>[] }, key: string, value: string) {
+function meta(
+  head: { meta: Record<string, string>[] },
+  key: string,
+  value: string,
+) {
   return head.meta.find((m) => m[key] === value);
 }
-function content(head: { meta: Record<string, string>[] }, key: string, value: string) {
+function content(
+  head: { meta: Record<string, string>[] },
+  key: string,
+  value: string,
+) {
   return meta(head, key, value)?.["content"];
 }
-function ld(head: { scripts: { type: string; children: string }[] }, type: string) {
+function ld(
+  head: { scripts: { type: string; children: string }[] },
+  type: string,
+) {
   return head.scripts
-    .map((s) => JSON.parse(s.children.replace(/\\u003c/g, "<")) as Record<string, unknown>)
+    .map(
+      (s) =>
+        JSON.parse(s.children.replace(/\\u003c/g, "<")) as Record<
+          string,
+          unknown
+        >,
+    )
     .find((n) => n["@type"] === type) as unknown as never;
 }
 
@@ -34,12 +51,16 @@ describe("theme seo profiles", () => {
     for (const preset of THEME_PRESETS) {
       expect(THEME_SEO_CATEGORY[preset.key], preset.key).toBe(preset.category);
     }
-    expect(Object.keys(THEME_SEO_CATEGORY).sort()).toEqual(THEME_PRESETS.map((p) => p.key).sort());
+    expect(Object.keys(THEME_SEO_CATEGORY).sort()).toEqual(
+      THEME_PRESETS.map((p) => p.key).sort(),
+    );
   });
 
   it("falls back to the default profile for unknown themes", () => {
     expect(seoProfileFor(null).jsonld.product).toBe(true);
-    expect(seoProfileFor("does-not-exist").socialCard).toBe("summary_large_image");
+    expect(seoProfileFor("does-not-exist").socialCard).toBe(
+      "summary_large_image",
+    );
     expect(seoProfileFor("b2b").socialCard).toBe("summary");
   });
 });
@@ -54,7 +75,9 @@ describe("primitives", () => {
 
   it("only builds absolute URLs from a real origin", () => {
     expect(absUrl(ORIGIN, "/store/a")).toBe("https://shop.example.com/store/a");
-    expect(absUrl(ORIGIN + "/", "store/a")).toBe("https://shop.example.com/store/a");
+    expect(absUrl(ORIGIN + "/", "store/a")).toBe(
+      "https://shop.example.com/store/a",
+    );
     expect(absUrl(null, "/store/a")).toBeNull();
     expect(absUrl("shop.example.com", "/a")).toBeNull();
   });
@@ -74,26 +97,41 @@ describe("store head", () => {
     themeKey: "classic",
     tagline: "Fresh goods delivered across Dhaka",
     products: [
-      { title: "Rice 5kg", slug: "rice-5kg", image_url: "https://cdn.example.com/rice.jpg" },
+      {
+        title: "Rice 5kg",
+        slug: "rice-5kg",
+        image_url: "https://cdn.example.com/rice.jpg",
+      },
       { title: "Tea", slug: "tea", image_url: null },
     ],
   });
 
   it("emits canonical, hreflang and og:url", () => {
-    expect(head.links).toContainEqual({ rel: "canonical", href: `${ORIGIN}/store/char-bazaar` });
+    expect(head.links).toContainEqual({
+      rel: "canonical",
+      href: `${ORIGIN}/store/char-bazaar`,
+    });
     expect(head.links.filter((l) => l.rel === "alternate")).toHaveLength(3);
-    expect(content(head, "property", "og:url")).toBe(`${ORIGIN}/store/char-bazaar`);
+    expect(content(head, "property", "og:url")).toBe(
+      `${ORIGIN}/store/char-bazaar`,
+    );
   });
 
   it("keeps title and description within search limits", () => {
     expect(head.meta[0]?.["title"]?.length).toBeLessThanOrEqual(TITLE_MAX);
-    expect(content(head, "name", "description")!.length).toBeLessThanOrEqual(DESC_MAX);
+    expect(content(head, "name", "description")!.length).toBeLessThanOrEqual(
+      DESC_MAX,
+    );
   });
 
   it("emits Organization, WebSite search action and ItemList", () => {
     expect(ld(head, "Organization")).toBeTruthy();
-    const site = ld(head, "WebSite") as { potentialAction?: { target: string } };
-    expect(site.potentialAction?.target).toContain("/search?q={search_term_string}");
+    const site = ld(head, "WebSite") as {
+      potentialAction?: { target: string };
+    };
+    expect(site.potentialAction?.target).toContain(
+      "/search?q={search_term_string}",
+    );
     const list = ld(head, "ItemList") as { itemListElement: unknown[] };
     expect(list.itemListElement).toHaveLength(2);
   });
@@ -142,8 +180,13 @@ describe("product head", () => {
   });
 
   it("emits a two-step breadcrumb", () => {
-    const crumbs = ld(head, "BreadcrumbList") as { itemListElement: { name: string }[] };
-    expect(crumbs.itemListElement.map((i) => i.name)).toEqual(["Char Bazaar", "Rice 5kg"]);
+    const crumbs = ld(head, "BreadcrumbList") as {
+      itemListElement: { name: string }[];
+    };
+    expect(crumbs.itemListElement.map((i) => i.name)).toEqual([
+      "Char Bazaar",
+      "Rice 5kg",
+    ]);
   });
 
   it("marks out-of-stock products correctly", () => {
@@ -182,7 +225,11 @@ describe("page head", () => {
       path: "/store/a/pages/faq",
       storePath: "/store/a",
       storeName: "A",
-      page: { title: "FAQ", meta_title: "Delivery FAQ", meta_description: "Everything about delivery" },
+      page: {
+        title: "FAQ",
+        meta_title: "Delivery FAQ",
+        meta_description: "Everything about delivery",
+      },
       faq: [{ question: "When?", answer: "1-2 days" }],
     });
     expect(head.meta[0]?.["title"]).toBe("Delivery FAQ");

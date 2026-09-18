@@ -1,1 +1,503 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_authz_ts", "label": "authz.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L1"}, {"id": "lib_authz_permissions", "label": "PERMISSIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L22"}, {"id": "lib_authz_permission", "label": "Permission", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L94"}, {"id": "lib_authz_permission_set", "label": "PERMISSION_SET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L96"}, {"id": "lib_authz_ispermission", "label": "isPermission()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L98"}, {"id": "lib_authz_grantstopermissions", "label": "grantsToPermissions()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L103"}, {"id": "lib_authz_permissiontogrant", "label": "permissionToGrant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L114"}, {"id": "lib_authz_rolepreset", "label": "RolePreset", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L123"}, {"id": "lib_authz_read_only", "label": "READ_ONLY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L134"}, {"id": "lib_authz_role_presets", "label": "ROLE_PRESETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L148"}, {"id": "lib_authz_merchant_role_preset", "label": "MERCHANT_ROLE_PRESET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L221"}, {"id": "lib_authz_platform_permissions", "label": "PLATFORM_PERMISSIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L232"}, {"id": "lib_authz_platformpermission", "label": "PlatformPermission", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L250"}, {"id": "lib_authz_platform_set", "label": "PLATFORM_SET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L252"}, {"id": "lib_authz_isplatformpermission", "label": "isPlatformPermission()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L254"}, {"id": "lib_authz_anypermission", "label": "AnyPermission", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L258"}, {"id": "lib_authz_dangerouspermission", "label": "DangerousPermission", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L285"}, {"id": "lib_authz_dangerous_set", "label": "DANGEROUS_SET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L287"}, {"id": "lib_authz_isdangerous", "label": "isDangerous()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L289"}, {"id": "lib_authz_authzcontext", "label": "AuthzContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L297"}, {"id": "lib_authz_can", "label": "can()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L315"}, {"id": "lib_authz_canany", "label": "canAny()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L327"}, {"id": "lib_authz_permissionsforpreset", "label": "permissionsForPreset()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L331"}, {"id": "lib_authz_matrixpermissions", "label": "matrixPermissions()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L336"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "users_rahman_documents_frame30_src_lib_permissions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_permissions_permission_matrix", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_permissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_permission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_permission_set", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_ispermission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_grantstopermissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_permissiontogrant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_rolepreset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L123", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_read_only", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L134", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_role_presets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_merchant_role_preset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_platform_permissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L232", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_platformpermission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L250", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_platform_set", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L252", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_isplatformpermission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L254", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_anypermission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L258", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_dangerouspermission", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L285", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_dangerous_set", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L287", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_isdangerous", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L289", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_authzcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L297", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_can", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L315", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_canany", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L327", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_permissionsforpreset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L331", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_authz_ts", "target": "lib_authz_matrixpermissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L336", "weight": 1.0}, {"source": "lib_authz_grantstopermissions", "target": "lib_authz_ispermission", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L109", "weight": 1.0}, {"source": "lib_authz_can", "target": "lib_authz_isdangerous", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L316", "weight": 1.0}, {"source": "lib_authz_can", "target": "lib_authz_isplatformpermission", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L321", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_authz_ispermission", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L99"}, {"caller_nid": "lib_authz_grantstopermissions", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L109"}, {"caller_nid": "lib_authz_permissiontogrant", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L115"}, {"caller_nid": "lib_authz_permissiontogrant", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L116"}, {"caller_nid": "lib_authz_permissiontogrant", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L116"}, {"caller_nid": "lib_authz_isplatformpermission", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L255"}, {"caller_nid": "lib_authz_isdangerous", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L290"}, {"caller_nid": "lib_authz_can", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L324"}, {"caller_nid": "lib_authz_canany", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L328"}, {"caller_nid": "lib_authz_matrixpermissions", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts", "source_location": "L337"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "label": "authz.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_authz_permissions",
+      "label": "PERMISSIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_authz_permission",
+      "label": "Permission",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "lib_authz_permission_set",
+      "label": "PERMISSION_SET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_authz_ispermission",
+      "label": "isPermission()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_authz_grantstopermissions",
+      "label": "grantsToPermissions()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_authz_permissiontogrant",
+      "label": "permissionToGrant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_authz_rolepreset",
+      "label": "RolePreset",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L123"
+    },
+    {
+      "id": "lib_authz_read_only",
+      "label": "READ_ONLY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L134"
+    },
+    {
+      "id": "lib_authz_role_presets",
+      "label": "ROLE_PRESETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_authz_merchant_role_preset",
+      "label": "MERCHANT_ROLE_PRESET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "lib_authz_platform_permissions",
+      "label": "PLATFORM_PERMISSIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L232"
+    },
+    {
+      "id": "lib_authz_platformpermission",
+      "label": "PlatformPermission",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L250"
+    },
+    {
+      "id": "lib_authz_platform_set",
+      "label": "PLATFORM_SET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L252"
+    },
+    {
+      "id": "lib_authz_isplatformpermission",
+      "label": "isPlatformPermission()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L254"
+    },
+    {
+      "id": "lib_authz_anypermission",
+      "label": "AnyPermission",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L258"
+    },
+    {
+      "id": "lib_authz_dangerouspermission",
+      "label": "DangerousPermission",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L285"
+    },
+    {
+      "id": "lib_authz_dangerous_set",
+      "label": "DANGEROUS_SET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L287"
+    },
+    {
+      "id": "lib_authz_isdangerous",
+      "label": "isDangerous()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L289"
+    },
+    {
+      "id": "lib_authz_authzcontext",
+      "label": "AuthzContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L297"
+    },
+    {
+      "id": "lib_authz_can",
+      "label": "can()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L315"
+    },
+    {
+      "id": "lib_authz_canany",
+      "label": "canAny()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L327"
+    },
+    {
+      "id": "lib_authz_permissionsforpreset",
+      "label": "permissionsForPreset()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L331"
+    },
+    {
+      "id": "lib_authz_matrixpermissions",
+      "label": "matrixPermissions()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L336"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "users_rahman_documents_frame30_src_lib_permissions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_permissions_permission_matrix",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_permissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_permission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_permission_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_ispermission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_grantstopermissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_permissiontogrant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_rolepreset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_read_only",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_role_presets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_merchant_role_preset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_platform_permissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_platformpermission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_platform_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_isplatformpermission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_anypermission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_dangerouspermission",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_dangerous_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_isdangerous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_authzcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_can",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_canany",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L327",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_permissionsforpreset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L331",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "target": "lib_authz_matrixpermissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L336",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_authz_grantstopermissions",
+      "target": "lib_authz_ispermission",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_authz_can",
+      "target": "lib_authz_isdangerous",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L316",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_authz_can",
+      "target": "lib_authz_isplatformpermission",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L321",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_authz_ispermission",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_authz_grantstopermissions",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_authz_permissiontogrant",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_authz_permissiontogrant",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_authz_permissiontogrant",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_authz_isplatformpermission",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "lib_authz_isdangerous",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_authz_can",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_authz_canany",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_authz_matrixpermissions",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/authz.ts",
+      "source_location": "L337"
+    }
+  ]
+}

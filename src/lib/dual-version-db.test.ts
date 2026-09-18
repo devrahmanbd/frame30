@@ -49,7 +49,9 @@ describe("Phase 8.3 — Dual-Version Database Compatibility Test Suite", () => {
     expect(blueOrder.total_amount).toBe(3200.0);
     expect(blueOrder.status).toBe("confirmed");
     // Blue order does not have or require total_minor_int
-    expect((blueOrder as Record<string, unknown>)["total_minor_int"]).toBeUndefined();
+    expect(
+      (blueOrder as Record<string, unknown>)["total_minor_int"],
+    ).toBeUndefined();
   });
 
   it("maintains catalog backward and forward compatibility across schema expansions", () => {

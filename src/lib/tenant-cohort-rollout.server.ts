@@ -38,12 +38,7 @@ import {
 } from "./tenant-canary.server";
 
 export type RolloutStatus =
-  | "idle"
-  | "in_progress"
-  | "soaking"
-  | "halted"
-  | "rolled_back"
-  | "completed";
+  "idle" | "in_progress" | "soaking" | "halted" | "rolled_back" | "completed";
 
 export type CohortRingConfig = {
   tier: CohortTier;
@@ -133,7 +128,12 @@ export type TenantTelemetryEvent = {
   statusCode: number;
   isUnhandled5xx?: boolean;
   isFatalTransactionFailure?: boolean; // e.g. Courier API booking failed, payment gateway callback crash
-  transactionType?: "checkout" | "payment_callback" | "courier_booking" | "order_mutation" | "page_render";
+  transactionType?:
+    | "checkout"
+    | "payment_callback"
+    | "courier_booking"
+    | "order_mutation"
+    | "page_render";
   latencyMs: number;
   errorMessage?: string;
   timestamp?: string;
@@ -170,19 +170,31 @@ let localRolloutState: CohortRolloutState = {
 };
 
 // In-memory telemetry cache
-const localTenantErrors = new Map<string, { count: number; recentErrors: TenantTelemetryEvent[] }>();
-const localCohortMetrics = new Map<CohortTier, {
-  total: number;
-  errors: number;
-  courierFailures: number;
-  paymentFailures: number;
-  tenants: Set<string>;
-}>();
+const localTenantErrors = new Map<
+  string,
+  { count: number; recentErrors: TenantTelemetryEvent[] }
+>();
+const localCohortMetrics = new Map<
+  CohortTier,
+  {
+    total: number;
+    errors: number;
+    courierFailures: number;
+    paymentFailures: number;
+    tenants: Set<string>;
+  }
+>();
 
 function getOrCreateCohortMetrics(tier: CohortTier) {
   let m = localCohortMetrics.get(tier);
   if (!m) {
-    m = { total: 0, errors: 0, courierFailures: 0, paymentFailures: 0, tenants: new Set<string>() };
+    m = {
+      total: 0,
+      errors: 0,
+      courierFailures: 0,
+      paymentFailures: 0,
+      tenants: new Set<string>(),
+    };
     localCohortMetrics.set(tier, m);
   }
   return m;
@@ -194,7 +206,10 @@ function getOrCreateCohortMetrics(tier: CohortTier) {
 export async function getCohortRolloutState(): Promise<CohortRolloutState> {
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", redisKey("platform", COHORT_STATE_KEY)]);
+      const res = await redisCommand([
+        "GET",
+        redisKey("platform", COHORT_STATE_KEY),
+      ]);
       if (res.ok && typeof res.value === "string") {
         const parsed = JSON.parse(res.value) as CohortRolloutState;
         localRolloutState = parsed;
@@ -206,7 +221,10 @@ export async function getCohortRolloutState(): Promise<CohortRolloutState> {
   }
 
   // Check soak expiration on read
-  if (localRolloutState.status === "soaking" || localRolloutState.status === "in_progress") {
+  if (
+    localRolloutState.status === "soaking" ||
+    localRolloutState.status === "in_progress"
+  ) {
     const now = Date.now();
     const expires = new Date(localRolloutState.soakExpiresAt).getTime();
     localRolloutState.isSoakComplete = now >= expires;
@@ -218,7 +236,9 @@ export async function getCohortRolloutState(): Promise<CohortRolloutState> {
 /**
  * Persist progressive cohort rollout state.
  */
-export async function saveCohortRolloutState(state: CohortRolloutState): Promise<boolean> {
+export async function saveCohortRolloutState(
+  state: CohortRolloutState,
+): Promise<boolean> {
   state.updatedAt = new Date().toISOString();
   localRolloutState = { ...state };
 
@@ -243,12 +263,14 @@ export async function saveCohortRolloutState(state: CohortRolloutState): Promise
  * Initialize and start a progressive cohort rollout sequence.
  * Begins at Cohort 0 (Internal / Dogfood).
  */
-export async function startCohortRollout(options: {
-  gitSha?: string;
-  candidateSlot?: TopologySlot;
-  primarySlot?: TopologySlot;
-  initialTier?: CohortTier;
-} = {}): Promise<CohortRolloutState> {
+export async function startCohortRollout(
+  options: {
+    gitSha?: string;
+    candidateSlot?: TopologySlot;
+    primarySlot?: TopologySlot;
+    initialTier?: CohortTier;
+  } = {},
+): Promise<CohortRolloutState> {
   const candidateSlot = options.candidateSlot ?? "green";
   const primarySlot = options.primarySlot ?? "blue";
   const initialTier = options.initialTier ?? 0;
@@ -300,12 +322,16 @@ export async function startCohortRollout(options: {
  * triggers a critical fault, the watchdog IMMEDIATELY halts and initiates rollback.
  */
 export async function recordTenantTelemetry(
-  event: TenantTelemetryEvent
+  event: TenantTelemetryEvent,
 ): Promise<{ watchdogTripped: boolean; tripReason?: string }> {
   const state = await getCohortRolloutState();
 
   // If no rollout is active or already halted/rolled back, skip watchdog
-  if (!state.active || state.status === "halted" || state.status === "rolled_back") {
+  if (
+    !state.active ||
+    state.status === "halted" ||
+    state.status === "rolled_back"
+  ) {
     return { watchdogTripped: false };
   }
 
@@ -324,8 +350,10 @@ export async function recordTenantTelemetry(
 
   if (is5xx || isFatal) {
     cohortMetrics.errors += 1;
-    if (event.transactionType === "courier_booking") cohortMetrics.courierFailures += 1;
-    if (event.transactionType === "payment_callback") cohortMetrics.paymentFailures += 1;
+    if (event.transactionType === "courier_booking")
+      cohortMetrics.courierFailures += 1;
+    if (event.transactionType === "payment_callback")
+      cohortMetrics.paymentFailures += 1;
 
     // Track per-tenant error history
     let tenantRecord = localTenantErrors.get(event.tenantId);
@@ -345,7 +373,10 @@ export async function recordTenantTelemetry(
         ]);
         await redisCommand([
           "INCR",
-          redisKey("platform", `${COHORT_METRICS_KEY_PREFIX}:${event.cohortTier}:errors`),
+          redisKey(
+            "platform",
+            `${COHORT_METRICS_KEY_PREFIX}:${event.cohortTier}:errors`,
+          ),
         ]);
       } catch {
         // Non-blocking telemetry
@@ -387,9 +418,11 @@ export async function recordTenantTelemetry(
 export async function tripBlastRadiusWatchdog(
   reason: string,
   failedTenantId: string,
-  details: Record<string, unknown>
+  details: Record<string, unknown>,
 ): Promise<CohortRolloutState> {
-  incr("framique_blast_radius_watchdog_tripped_total", { failedTenant: failedTenantId });
+  incr("framique_blast_radius_watchdog_tripped_total", {
+    failedTenant: failedTenantId,
+  });
 
   log("error", "blast_radius_watchdog.TRIPPED", {
     reason,
@@ -422,7 +455,9 @@ export async function tripBlastRadiusWatchdog(
 /**
  * Evaluate health of the active cohort tier.
  */
-export async function evaluateCohortHealth(tier: CohortTier): Promise<CohortHealthReport> {
+export async function evaluateCohortHealth(
+  tier: CohortTier,
+): Promise<CohortHealthReport> {
   const metrics = getOrCreateCohortMetrics(tier);
   const ringConfig = COHORT_RING_CONFIGS[tier];
 
@@ -440,15 +475,21 @@ export async function evaluateCohortHealth(tier: CohortTier): Promise<CohortHeal
   const violations: string[] = [];
 
   if (errors > ringConfig.maxAllowedErrors) {
-    violations.push(`Total errors (${errors}) exceeded allowable budget (${ringConfig.maxAllowedErrors})`);
+    violations.push(
+      `Total errors (${errors}) exceeded allowable budget (${ringConfig.maxAllowedErrors})`,
+    );
   }
 
   if (ringConfig.requireCourierHealth && courierFailures > 0) {
-    violations.push(`Courier health failed: ${courierFailures} booking failures detected`);
+    violations.push(
+      `Courier health failed: ${courierFailures} booking failures detected`,
+    );
   }
 
   if (ringConfig.requirePaymentHealth && paymentFailures > 0) {
-    violations.push(`Payment health failed: ${paymentFailures} checkout/callback failures detected`);
+    violations.push(
+      `Payment health failed: ${paymentFailures} checkout/callback failures detected`,
+    );
   }
 
   const isHealthy = violations.length === 0;
@@ -474,7 +515,9 @@ export async function evaluateCohortHealth(tier: CohortTier): Promise<CohortHeal
  * 2. Soak timer for the current ring has completed.
  * 3. Cohort health report has zero violations.
  */
-export async function advanceCohortRollout(options: { force?: boolean } = {}): Promise<{
+export async function advanceCohortRollout(
+  options: { force?: boolean } = {},
+): Promise<{
   success: boolean;
   state: CohortRolloutState;
   reason?: string;
@@ -482,11 +525,19 @@ export async function advanceCohortRollout(options: { force?: boolean } = {}): P
   const state = await getCohortRolloutState();
 
   if (state.status === "halted" || state.status === "rolled_back") {
-    return { success: false, state, reason: `Cannot advance: Rollout is halted due to: ${state.haltReason}` };
+    return {
+      success: false,
+      state,
+      reason: `Cannot advance: Rollout is halted due to: ${state.haltReason}`,
+    };
   }
 
   if (!state.active) {
-    return { success: false, state, reason: `Cannot advance: Rollout is not active (status: ${state.status})` };
+    return {
+      success: false,
+      state,
+      reason: `Cannot advance: Rollout is not active (status: ${state.status})`,
+    };
   }
 
   const currentTier = state.currentTier as CohortTier;
@@ -509,7 +560,9 @@ export async function advanceCohortRollout(options: { force?: boolean } = {}): P
   const health = await evaluateCohortHealth(currentTier);
   if (!health.isHealthy && !options.force) {
     const reason = `Health check failed for ${COHORT_RING_CONFIGS[currentTier].name}: ${health.violations.join("; ")}`;
-    await tripBlastRadiusWatchdog(reason, "cohort_health_failure", { violations: health.violations });
+    await tripBlastRadiusWatchdog(reason, "cohort_health_failure", {
+      violations: health.violations,
+    });
     return { success: false, state: await getCohortRolloutState(), reason };
   }
 
@@ -542,7 +595,9 @@ export async function advanceCohortRollout(options: { force?: boolean } = {}): P
   await setActiveCohortRolloutTier(nextTier);
   await saveCohortRolloutState(state);
 
-  incr("framique_cohort_rollout_advanced_total", { nextTier: String(nextTier) });
+  incr("framique_cohort_rollout_advanced_total", {
+    nextTier: String(nextTier),
+  });
   setGauge("framique_cohort_rollout_active_tier", nextTier);
 
   log("info", "cohort_rollout.advanced", {
@@ -558,7 +613,9 @@ export async function advanceCohortRollout(options: { force?: boolean } = {}): P
 /**
  * Manual emergency abort / rollback of cohort rollout.
  */
-export async function abortCohortRollout(reason: string): Promise<CohortRolloutState> {
+export async function abortCohortRollout(
+  reason: string,
+): Promise<CohortRolloutState> {
   await setActiveCohortRolloutTier(-1);
 
   const state = await getCohortRolloutState();

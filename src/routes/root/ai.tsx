@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
@@ -100,8 +105,10 @@ type Message = {
 
 const btn =
   "rounded-fq-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50 transition-colors";
-const btnActive = "bg-primary text-primary-foreground border-primary hover:bg-primary/90";
-const btnDestructive = "border-destructive/40 text-destructive hover:bg-destructive/10";
+const btnActive =
+  "bg-primary text-primary-foreground border-primary hover:bg-primary/90";
+const btnDestructive =
+  "border-destructive/40 text-destructive hover:bg-destructive/10";
 
 const PRIORITY_BADGE: Record<string, string> = {
   urgent: "bg-destructive/15 text-destructive font-semibold",
@@ -177,8 +184,10 @@ function TakeoverBadge({ mode }: { mode: string | null }) {
 function SlaBadge({ metrics }: { metrics: SlaMetrics }) {
   const badgeColors: Record<SlaStatus, string> = {
     met: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-    at_risk: "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30 animate-pulse",
-    breached: "bg-destructive/15 text-destructive border-destructive/30 font-semibold",
+    at_risk:
+      "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30 animate-pulse",
+    breached:
+      "bg-destructive/15 text-destructive border-destructive/30 font-semibold",
     pending: "bg-muted text-muted-foreground border-border",
   };
 
@@ -211,7 +220,13 @@ function ConversationQueue({
   onSelect,
 }: {
   rows: ConvRow[];
-  counts: { open: number; needsAgent: number; humanTakeover: number; inProgress: number; resolved: number };
+  counts: {
+    open: number;
+    needsAgent: number;
+    humanTakeover: number;
+    inProgress: number;
+    resolved: number;
+  };
   selectedId: string | null;
   onSelect: (id: string) => void;
 }) {
@@ -223,7 +238,8 @@ function ConversationQueue({
       if (tab === "needs_agent") return c.needsHumanAgent;
       if (tab === "open") return c.status === "open";
       if (tab === "in_progress") return c.status === "in_progress";
-      if (tab === "closed") return c.status === "resolved" || c.status === "closed";
+      if (tab === "closed")
+        return c.status === "resolved" || c.status === "closed";
       return true;
     })
     .filter((c) => {
@@ -237,11 +253,19 @@ function ConversationQueue({
     })
     // Sort: needs human agent first, then by priorityRank desc, then last customer message desc
     .sort((a, b) => {
-      if (a.needsHumanAgent !== b.needsHumanAgent) return a.needsHumanAgent ? -1 : 1;
-      if (b.priorityRank !== a.priorityRank) return b.priorityRank - a.priorityRank;
+      if (a.needsHumanAgent !== b.needsHumanAgent)
+        return a.needsHumanAgent ? -1 : 1;
+      if (b.priorityRank !== a.priorityRank)
+        return b.priorityRank - a.priorityRank;
       if (a.last_customer_message_at && b.last_customer_message_at)
-        return new Date(b.last_customer_message_at).getTime() - new Date(a.last_customer_message_at).getTime();
-      return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
+        return (
+          new Date(b.last_customer_message_at).getTime() -
+          new Date(a.last_customer_message_at).getTime()
+        );
+      return (
+        new Date(b.last_message_at).getTime() -
+        new Date(a.last_message_at).getTime()
+      );
     });
 
   const tabs: { key: QueueFilter; label: string; count?: number }[] = [
@@ -304,7 +328,9 @@ function ConversationQueue({
       {/* Conversation list */}
       <div className="flex-1 overflow-y-auto">
         {filtered.length === 0 ? (
-          <p className="p-4 text-center text-sm text-muted-foreground">No conversations found.</p>
+          <p className="p-4 text-center text-sm text-muted-foreground">
+            No conversations found.
+          </p>
         ) : (
           <ul role="listbox" aria-label="Conversation queue">
             {filtered.map((c) => (
@@ -314,7 +340,9 @@ function ConversationQueue({
                   type="button"
                   onClick={() => onSelect(c.id)}
                   className={`w-full border-b border-border px-3 py-3 text-left transition-colors hover:bg-muted/50 ${
-                    c.id === selectedId ? "bg-primary/5 border-l-2 border-l-primary" : ""
+                    c.id === selectedId
+                      ? "bg-primary/5 border-l-2 border-l-primary"
+                      : ""
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
@@ -330,7 +358,10 @@ function ConversationQueue({
                           : relTime(c.last_message_at)}
                       </span>
                       {c.needsHumanAgent ? (
-                        <span className="h-2 w-2 animate-pulse rounded-full bg-destructive" aria-label="Needs agent" />
+                        <span
+                          className="h-2 w-2 animate-pulse rounded-full bg-destructive"
+                          aria-label="Needs agent"
+                        />
                       ) : null}
                     </div>
                   </div>
@@ -400,18 +431,25 @@ function MessageBubble({ msg }: { msg: Message }) {
 
   return (
     <div className={`my-1 flex flex-col ${align}`}>
-      <span className="mb-0.5 px-1 text-[10px] text-muted-foreground">{roleLabel}</span>
+      <span className="mb-0.5 px-1 text-[10px] text-muted-foreground">
+        {roleLabel}
+      </span>
       <div
         className={`max-w-[85%] rounded-fq-md px-3 py-2 text-sm ${bubbleStyle}`}
         aria-label={`${roleLabel} message`}
       >
         {msg.body}
         {msg.flagged ? (
-          <span className="ml-2 text-[10px] text-destructive font-semibold">⚠ flagged</span>
+          <span className="ml-2 text-[10px] text-destructive font-semibold">
+            ⚠ flagged
+          </span>
         ) : null}
       </div>
       <span className="mt-0.5 px-1 text-[9px] text-muted-foreground tabular-nums">
-        {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        {new Date(msg.created_at).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </span>
     </div>
   );
@@ -470,7 +508,9 @@ function ExportTranscriptDropdown({
               <span>📄</span>
               <div>
                 <p className="font-medium">Markdown (.md)</p>
-                <p className="text-[9px] text-muted-foreground">Human-readable log</p>
+                <p className="text-[9px] text-muted-foreground">
+                  Human-readable log
+                </p>
               </div>
             </button>
 
@@ -485,7 +525,9 @@ function ExportTranscriptDropdown({
               <span>🧾</span>
               <div>
                 <p className="font-medium">JSON Lines (.jsonl)</p>
-                <p className="text-[9px] text-muted-foreground">Machine-readable data</p>
+                <p className="text-[9px] text-muted-foreground">
+                  Machine-readable data
+                </p>
               </div>
             </button>
 
@@ -500,7 +542,9 @@ function ExportTranscriptDropdown({
               <span>📊</span>
               <div>
                 <p className="font-medium">CSV (.csv)</p>
-                <p className="text-[9px] text-muted-foreground">Spreadsheet analysis</p>
+                <p className="text-[9px] text-muted-foreground">
+                  Spreadsheet analysis
+                </p>
               </div>
             </button>
           </div>
@@ -533,15 +577,32 @@ function AuditTrailView({ events }: { events: AuditEvent[] }) {
     closed: "📁",
   };
 
-  const actorBadgeMap: Record<AuditEvent["actor"], { label: string; class: string }> = {
-    customer: { label: "Customer", class: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
-    operator: { label: "Operator", class: "bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold" },
-    bot: { label: "AI Bot", class: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+  const actorBadgeMap: Record<
+    AuditEvent["actor"],
+    { label: string; class: string }
+  > = {
+    customer: {
+      label: "Customer",
+      class: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    },
+    operator: {
+      label: "Operator",
+      class:
+        "bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold",
+    },
+    bot: {
+      label: "AI Bot",
+      class: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+    },
     system: { label: "System", class: "bg-muted text-muted-foreground" },
   };
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-3" role="region" aria-label="Audit trail timeline">
+    <div
+      className="flex-1 overflow-y-auto px-4 py-3"
+      role="region"
+      aria-label="Audit trail timeline"
+    >
       <div className="relative border-l-2 border-border/70 ml-3 space-y-4 py-2">
         {events.map((evt) => {
           const badge = actorBadgeMap[evt.actor] ?? actorBadgeMap.system;
@@ -555,18 +616,32 @@ function AuditTrailView({ events }: { events: AuditEvent[] }) {
               <div className="rounded-fq-md border border-border/60 bg-muted/20 p-2.5 hover:bg-muted/40 transition-colors">
                 <div className="flex flex-wrap items-center justify-between gap-1 mb-1">
                   <div className="flex items-center gap-1.5">
-                    <span className={`rounded px-1.5 py-0.5 text-[9px] ${badge.class}`}>
+                    <span
+                      className={`rounded px-1.5 py-0.5 text-[9px] ${badge.class}`}
+                    >
                       {badge.label}
                     </span>
-                    <span className="text-[11px] font-medium">{evt.description}</span>
+                    <span className="text-[11px] font-medium">
+                      {evt.description}
+                    </span>
                   </div>
                   <span className="text-[10px] text-muted-foreground tabular-nums">
-                    {time.toLocaleDateString([], { month: "short", day: "numeric" })} ·{" "}
-                    {time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
+                    {time.toLocaleDateString([], {
+                      month: "short",
+                      day: "numeric",
+                    })}{" "}
+                    ·{" "}
+                    {time.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    })}
                   </span>
                 </div>
                 {evt.descriptionBn ? (
-                  <p className="text-[10px] text-muted-foreground/80">{evt.descriptionBn}</p>
+                  <p className="text-[10px] text-muted-foreground/80">
+                    {evt.descriptionBn}
+                  </p>
                 ) : null}
               </div>
             </div>
@@ -601,8 +676,12 @@ function MacroPickerModal({
       <div className="w-full max-w-lg rounded-fq-lg border border-border bg-card p-4 shadow-xl flex flex-col max-h-[80vh]">
         <div className="flex items-center justify-between border-b border-border pb-3 mb-3">
           <div>
-            <h3 className="text-sm font-semibold">⚡ Canned Responses & Macros</h3>
-            <p className="text-xs text-muted-foreground">Select a snippet to interpolate into reply</p>
+            <h3 className="text-sm font-semibold">
+              ⚡ Canned Responses & Macros
+            </h3>
+            <p className="text-xs text-muted-foreground">
+              Select a snippet to interpolate into reply
+            </p>
           </div>
           <button
             type="button"
@@ -653,7 +732,9 @@ function MacroPickerModal({
 
         <div className="flex-1 overflow-y-auto space-y-2 pr-1">
           {results.length === 0 ? (
-            <p className="py-6 text-center text-xs text-muted-foreground">No matching canned responses.</p>
+            <p className="py-6 text-center text-xs text-muted-foreground">
+              No matching canned responses.
+            </p>
           ) : (
             results.map((m) => (
               <div
@@ -672,8 +753,12 @@ function MacroPickerModal({
                     {m.category}
                   </span>
                 </div>
-                <p className="text-[11px] text-muted-foreground line-clamp-2">{m.body}</p>
-                <p className="text-[10px] text-muted-foreground/80 line-clamp-1 mt-0.5 italic">{m.bodyBn}</p>
+                <p className="text-[11px] text-muted-foreground line-clamp-2">
+                  {m.body}
+                </p>
+                <p className="text-[10px] text-muted-foreground/80 line-clamp-1 mt-0.5 italic">
+                  {m.bodyBn}
+                </p>
               </div>
             ))
           )}
@@ -737,7 +822,9 @@ function ConversationDetail({
     mutationFn: (mode: "ai" | "human_takeover") =>
       setTakeover({ data: { conversationId: conv.id, mode } }),
     onSuccess: (res) => {
-      toast.success(`Takeover → ${res.mode === "human_takeover" ? "👤 Human" : "🤖 AI"}`);
+      toast.success(
+        `Takeover → ${res.mode === "human_takeover" ? "👤 Human" : "🤖 AI"}`,
+      );
       invalidate();
     },
     onError: () => toast.error("Failed to change takeover mode"),
@@ -757,14 +844,17 @@ function ConversationDetail({
     mutationFn: (priority: "low" | "normal" | "high" | "urgent") =>
       setPriority({ data: { conversationId: conv.id, priority } }),
     onSuccess: (res) => {
-      toast.success(`Priority → ${PRIORITY_LABELS[res.priority] ?? res.priority}`);
+      toast.success(
+        `Priority → ${PRIORITY_LABELS[res.priority] ?? res.priority}`,
+      );
       invalidate();
     },
     onError: () => toast.error("Failed to update priority"),
   });
 
   const notesMut = useMutation({
-    mutationFn: (notes: string) => saveNotes({ data: { conversationId: conv.id, notes } }),
+    mutationFn: (notes: string) =>
+      saveNotes({ data: { conversationId: conv.id, notes } }),
     onSuccess: () => {
       toast.success("Notes saved");
       invalidate();
@@ -823,7 +913,10 @@ function ConversationDetail({
     );
   }, [conv, messages]);
 
-  const handleExport = async (format: "markdown" | "jsonl" | "csv", redactPii: boolean) => {
+  const handleExport = async (
+    format: "markdown" | "jsonl" | "csv",
+    redactPii: boolean,
+  ) => {
     setIsExporting(true);
     try {
       const res = await exportTranscript({
@@ -846,7 +939,8 @@ function ConversationDetail({
         toast.success(`Exported transcript (${format.toUpperCase()})`);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to export transcript";
+      const msg =
+        err instanceof Error ? err.message : "Failed to export transcript";
       toast.error(msg);
     } finally {
       setIsExporting(false);
@@ -875,7 +969,9 @@ function ConversationDetail({
               {conv.merchantName ?? conv.merchant_id.slice(0, 8)}
             </p>
             {conv.merchantEmail ? (
-              <p className="text-[11px] text-muted-foreground">{conv.merchantEmail}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {conv.merchantEmail}
+              </p>
             ) : null}
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
               <TakeoverBadge mode={conv.takeover_mode} />
@@ -901,11 +997,15 @@ function ConversationDetail({
               takeoverMut.mutate(isHumanMode ? "ai" : "human_takeover")
             }
             className={`shrink-0 rounded-fq-md border px-3 py-1.5 text-xs font-semibold transition-all ${
-              isHumanMode ? `${btnActive} animate-none` : "border-border hover:bg-muted"
+              isHumanMode
+                ? `${btnActive} animate-none`
+                : "border-border hover:bg-muted"
             } disabled:opacity-50`}
             aria-pressed={isHumanMode}
           >
-            {isHumanMode ? "👤 Human Takeover — Click to release" : "🤖 AI Active — Take over"}
+            {isHumanMode
+              ? "👤 Human Takeover — Click to release"
+              : "🤖 AI Active — Take over"}
           </button>
         </div>
 
@@ -915,33 +1015,39 @@ function ConversationDetail({
             {/* Status lifecycle */}
             <div className="flex items-center gap-1">
               <span className="text-[10px] text-muted-foreground">Status:</span>
-              {(["open", "in_progress", "resolved", "closed"] as const).map((s) => (
-                <button
-                  key={s}
-                  id={`status-btn-${s}`}
-                  type="button"
-                  disabled={statusMut.isPending || conv.status === s}
-                  onClick={() => statusMut.mutate(s)}
-                  className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                    conv.status === s
-                      ? "bg-primary/15 text-primary"
-                      : "border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
-                  }`}
-                >
-                  {STATUS_LABELS[s]}
-                </button>
-              ))}
+              {(["open", "in_progress", "resolved", "closed"] as const).map(
+                (s) => (
+                  <button
+                    key={s}
+                    id={`status-btn-${s}`}
+                    type="button"
+                    disabled={statusMut.isPending || conv.status === s}
+                    onClick={() => statusMut.mutate(s)}
+                    className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
+                      conv.status === s
+                        ? "bg-primary/15 text-primary"
+                        : "border border-border text-muted-foreground hover:bg-muted disabled:opacity-40"
+                    }`}
+                  >
+                    {STATUS_LABELS[s]}
+                  </button>
+                ),
+              )}
             </div>
 
             {/* Priority selector */}
             <div className="flex items-center gap-1">
-              <span className="text-[10px] text-muted-foreground">Priority:</span>
+              <span className="text-[10px] text-muted-foreground">
+                Priority:
+              </span>
               {(["low", "normal", "high", "urgent"] as const).map((p) => (
                 <button
                   key={p}
                   id={`priority-btn-${p}`}
                   type="button"
-                  disabled={priorityMut.isPending || (conv.priority ?? "normal") === p}
+                  disabled={
+                    priorityMut.isPending || (conv.priority ?? "normal") === p
+                  }
                   onClick={() => priorityMut.mutate(p)}
                   className={`rounded px-2 py-0.5 text-[10px] transition-colors ${
                     (conv.priority ?? "normal") === p
@@ -1044,9 +1150,13 @@ function ConversationDetail({
             aria-label="Conversation transcript"
           >
             {msgsLoading ? (
-              <p className="text-center text-sm text-muted-foreground">Loading messages…</p>
+              <p className="text-center text-sm text-muted-foreground">
+                Loading messages…
+              </p>
             ) : messages.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground">No messages yet.</p>
+              <p className="text-center text-sm text-muted-foreground">
+                No messages yet.
+              </p>
             ) : (
               messages.map((m) => <MessageBubble key={m.id} msg={m} />)
             )}
@@ -1074,7 +1184,9 @@ function ConversationDetail({
                   className="inline-flex items-center gap-1 rounded border border-border/70 bg-muted/30 px-1.5 py-0.5 text-[10px] hover:bg-muted transition-colors"
                   title={m.title}
                 >
-                  <span className="font-mono text-[9px] text-primary">{m.shortcut}</span>
+                  <span className="font-mono text-[9px] text-primary">
+                    {m.shortcut}
+                  </span>
                 </button>
               ))}
             </div>
@@ -1096,7 +1208,8 @@ function ConversationDetail({
               </button>
               {!isHumanMode && !isInternalNote ? (
                 <span className="text-[10px] text-amber-600 dark:text-amber-500">
-                  ⚠ Bot is active — take over first to prevent AI from also replying
+                  ⚠ Bot is active — take over first to prevent AI from also
+                  replying
                 </span>
               ) : null}
             </div>
@@ -1107,7 +1220,11 @@ function ConversationDetail({
                 value={replyBody}
                 onChange={(e) => setReplyBody(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && replyBody.trim()) {
+                  if (
+                    e.key === "Enter" &&
+                    (e.ctrlKey || e.metaKey) &&
+                    replyBody.trim()
+                  ) {
                     e.preventDefault();
                     replyMut.mutate();
                   }
@@ -1119,7 +1236,11 @@ function ConversationDetail({
                     : "Write a reply to the customer… (Ctrl+Enter to send)"
                 }
                 className="flex-1 rounded-fq-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 resize-none"
-                aria-label={isInternalNote ? "Internal operator note" : "Reply to customer"}
+                aria-label={
+                  isInternalNote
+                    ? "Internal operator note"
+                    : "Reply to customer"
+                }
               />
               <div className="flex flex-col gap-1">
                 <button
@@ -1129,7 +1250,11 @@ function ConversationDetail({
                   onClick={() => replyMut.mutate()}
                   className={`${btn} ${isInternalNote ? "" : btnActive} disabled:opacity-50`}
                 >
-                  {replyMut.isPending ? "…" : isInternalNote ? "Add Note" : "Send"}
+                  {replyMut.isPending
+                    ? "…"
+                    : isInternalNote
+                      ? "Add Note"
+                      : "Send"}
                 </button>
                 <button
                   id="send-resolve-btn"
@@ -1142,7 +1267,9 @@ function ConversationDetail({
                 </button>
               </div>
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground">Ctrl+Enter to send</p>
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              Ctrl+Enter to send
+            </p>
           </div>
         </>
       )}
@@ -1169,7 +1296,9 @@ function AiDesk() {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(() => alertEngine.isMuted());
-  const [notifPerm, setNotifPerm] = useState(() => alertEngine.getNotificationPermission());
+  const [notifPerm, setNotifPerm] = useState(() =>
+    alertEngine.getNotificationPermission(),
+  );
 
   const prevNeedsAgentRef = useRef<number | null>(null);
   const prevLatestMsgMapRef = useRef<Map<string, string>>(new Map());
@@ -1219,7 +1348,11 @@ function AiDesk() {
       let hasNewCustomerMsg = false;
       for (const r of rows) {
         const prevMsgTime = prevLatestMsgMapRef.current.get(r.id);
-        if (r.last_customer_message_at && prevMsgTime && r.last_customer_message_at > prevMsgTime) {
+        if (
+          r.last_customer_message_at &&
+          prevMsgTime &&
+          r.last_customer_message_at > prevMsgTime
+        ) {
           hasNewCustomerMsg = true;
           break;
         }
@@ -1243,7 +1376,8 @@ function AiDesk() {
     prevNeedsAgentRef.current = currentNeedsAgent;
     const newMap = new Map<string, string>();
     for (const r of rows) {
-      if (r.last_customer_message_at) newMap.set(r.id, r.last_customer_message_at);
+      if (r.last_customer_message_at)
+        newMap.set(r.id, r.last_customer_message_at);
     }
     prevLatestMsgMapRef.current = newMap;
   }, [data, counts.needsAgent, rows]);
@@ -1327,11 +1461,11 @@ function AiDesk() {
 
         <StatGrid>
           <StatCard label="Open" value={String(counts.open)} />
+          <StatCard label="Needs Agent 🔴" value={String(counts.needsAgent)} />
           <StatCard
-            label="Needs Agent 🔴"
-            value={String(counts.needsAgent)}
+            label="Human Takeover"
+            value={String(counts.humanTakeover)}
           />
-          <StatCard label="Human Takeover" value={String(counts.humanTakeover)} />
           <StatCard label="In Progress" value={String(counts.inProgress)} />
           <StatCard label="Resolved" value={String(counts.resolved)} />
         </StatGrid>

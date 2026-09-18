@@ -1,1 +1,1356 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_telemetry_ts", "label": "telemetry.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L1"}, {"id": "lib_telemetry_labels", "label": "Labels", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L11"}, {"id": "lib_telemetry_metrickind", "label": "MetricKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L13"}, {"id": "lib_telemetry_metricmeta", "label": "MetricMeta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L15"}, {"id": "lib_telemetry_default_buckets_ms", "label": "DEFAULT_BUCKETS_MS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L18"}, {"id": "lib_telemetry_isvalidmetricname", "label": "isValidMetricName()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L21"}, {"id": "lib_telemetry_escapelabelvalue", "label": "escapeLabelValue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L26"}, {"id": "lib_telemetry_normalizelabelvalue", "label": "normalizeLabelValue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L34"}, {"id": "lib_telemetry_serieskey", "label": "seriesKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L40"}, {"id": "lib_telemetry_splitkey", "label": "splitKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L48"}, {"id": "lib_telemetry_histogramstate", "label": "HistogramState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L54"}, {"id": "lib_telemetry_metricregistry", "label": "MetricRegistry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L62"}, {"id": "lib_telemetry_metricregistry_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L69"}, {"id": "lib_telemetry_metricregistry_describe", "label": ".describe()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L71"}, {"id": "lib_telemetry_metricregistry_capped", "label": ".capped()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L76"}, {"id": "lib_telemetry_metricregistry_totalseries", "label": ".totalSeries()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L85"}, {"id": "lib_telemetry_metricregistry_droppedseries", "label": ".droppedSeries()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L89"}, {"id": "lib_telemetry_metricregistry_incr", "label": ".incr()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L93"}, {"id": "lib_telemetry_metricregistry_gauge", "label": ".gauge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L100"}, {"id": "lib_telemetry_metricregistry_observe", "label": ".observe()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L107"}, {"id": "lib_telemetry_metricregistry_snapshot", "label": ".snapshot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L121"}, {"id": "lib_telemetry_metricregistry_reset", "label": ".reset()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L136"}, {"id": "lib_telemetry_metricregistry_render", "label": ".render()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L144"}, {"id": "lib_telemetry_tracecontext", "label": "TraceContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L199"}, {"id": "lib_telemetry_randomhex", "label": "randomHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L206"}, {"id": "lib_telemetry_newtraceid", "label": "newTraceId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L214"}, {"id": "lib_telemetry_newspanid", "label": "newSpanId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L218"}, {"id": "lib_telemetry_parsetraceparent", "label": "parseTraceparent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L223"}, {"id": "lib_telemetry_formattraceparent", "label": "formatTraceparent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L233"}, {"id": "lib_telemetry_sampletrace", "label": "sampleTrace()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L241"}, {"id": "lib_telemetry_starttrace", "label": "startTrace()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L249"}, {"id": "lib_telemetry_sentrydsn", "label": "SentryDsn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L267"}, {"id": "lib_telemetry_parsesentrydsn", "label": "parseSentryDsn()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L269"}, {"id": "lib_telemetry_sentryenvelopeurl", "label": "sentryEnvelopeUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L281"}, {"id": "lib_telemetry_sentryauthheader", "label": "sentryAuthHeader()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L285"}, {"id": "lib_telemetry_breadcrumb", "label": "Breadcrumb", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L289"}, {"id": "lib_telemetry_buildenvelope", "label": "buildEnvelope()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L296"}, {"id": "lib_telemetry_errorfingerprint", "label": "errorFingerprint()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L313"}, {"id": "lib_telemetry_sendbudget", "label": "SendBudget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L325"}, {"id": "lib_telemetry_sendbudget_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L328"}, {"id": "lib_telemetry_sendbudget_allow", "label": ".allow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L333"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_labels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_metrickind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_metricmeta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_default_buckets_ms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_isvalidmetricname", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_escapelabelvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_normalizelabelvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_serieskey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_splitkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_histogramstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_metricregistry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L62", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L69", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_describe", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_capped", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L76", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_totalseries", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L85", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_droppedseries", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L89", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_incr", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L93", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_gauge", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L100", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_observe", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L107", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_snapshot", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L121", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_reset", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L136", "weight": 1.0}, {"source": "lib_telemetry_metricregistry", "target": "lib_telemetry_metricregistry_render", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_tracecontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L199", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_randomhex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L206", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_newtraceid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L214", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_newspanid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L218", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_parsetraceparent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L223", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_formattraceparent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L233", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_sampletrace", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L241", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_starttrace", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L249", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_sentrydsn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L267", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_parsesentrydsn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L269", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_sentryenvelopeurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L281", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_sentryauthheader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L285", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_breadcrumb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L289", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_buildenvelope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L296", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_errorfingerprint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L313", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_telemetry_ts", "target": "lib_telemetry_sendbudget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L325", "weight": 1.0}, {"source": "lib_telemetry_sendbudget", "target": "lib_telemetry_sendbudget_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L328", "weight": 1.0}, {"source": "lib_telemetry_sendbudget", "target": "lib_telemetry_sendbudget_allow", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L333", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_describe", "target": "lib_telemetry_isvalidmetricname", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L72", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_capped", "target": "lib_telemetry_metricregistry_totalseries", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L78", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_incr", "target": "lib_telemetry_isvalidmetricname", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L94", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_incr", "target": "lib_telemetry_serieskey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L95", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_incr", "target": "lib_telemetry_metricregistry_capped", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L96", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_gauge", "target": "lib_telemetry_isvalidmetricname", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L101", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_gauge", "target": "lib_telemetry_serieskey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L102", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_gauge", "target": "lib_telemetry_metricregistry_capped", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L103", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_observe", "target": "lib_telemetry_isvalidmetricname", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L108", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_observe", "target": "lib_telemetry_serieskey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L109", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_observe", "target": "lib_telemetry_metricregistry_capped", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L110", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_snapshot", "target": "lib_telemetry_metricregistry_totalseries", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L131", "weight": 1.0}, {"source": "lib_telemetry_metricregistry_render", "target": "lib_telemetry_splitkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L169", "weight": 1.0}, {"source": "lib_telemetry_newtraceid", "target": "lib_telemetry_randomhex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L215", "weight": 1.0}, {"source": "lib_telemetry_newspanid", "target": "lib_telemetry_randomhex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L219", "weight": 1.0}, {"source": "lib_telemetry_starttrace", "target": "lib_telemetry_parsetraceparent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L250", "weight": 1.0}, {"source": "lib_telemetry_starttrace", "target": "lib_telemetry_newspanid", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L254", "weight": 1.0}, {"source": "lib_telemetry_starttrace", "target": "lib_telemetry_newtraceid", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L259", "weight": 1.0}, {"source": "lib_telemetry_starttrace", "target": "lib_telemetry_sampletrace", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L260", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_telemetry_isvalidmetricname", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L22"}, {"caller_nid": "lib_telemetry_escapelabelvalue", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L27"}, {"caller_nid": "lib_telemetry_escapelabelvalue", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L27"}, {"caller_nid": "lib_telemetry_escapelabelvalue", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L27"}, {"caller_nid": "lib_telemetry_normalizelabelvalue", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L35"}, {"caller_nid": "lib_telemetry_normalizelabelvalue", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L36"}, {"caller_nid": "lib_telemetry_normalizelabelvalue", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L36"}, {"caller_nid": "lib_telemetry_normalizelabelvalue", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L37"}, {"caller_nid": "lib_telemetry_serieskey", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L41"}, {"caller_nid": "lib_telemetry_serieskey", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L41"}, {"caller_nid": "lib_telemetry_serieskey", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L41"}, {"caller_nid": "lib_telemetry_serieskey", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L41"}, {"caller_nid": "lib_telemetry_serieskey", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L45"}, {"caller_nid": "lib_telemetry_splitkey", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L49"}, {"caller_nid": "lib_telemetry_splitkey", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L51"}, {"caller_nid": "lib_telemetry_splitkey", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L51"}, {"caller_nid": "lib_telemetry_metricregistry_describe", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L73"}, {"caller_nid": "lib_telemetry_metricregistry_capped", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L77"}, {"caller_nid": "lib_telemetry_metricregistry_incr", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L94"}, {"caller_nid": "lib_telemetry_metricregistry_incr", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L97"}, {"caller_nid": "lib_telemetry_metricregistry_incr", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L97"}, {"caller_nid": "lib_telemetry_metricregistry_gauge", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L101"}, {"caller_nid": "lib_telemetry_metricregistry_gauge", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L104"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L108"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L111"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L112"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L112"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L115"}, {"caller_nid": "lib_telemetry_metricregistry_observe", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L118"}, {"caller_nid": "lib_telemetry_metricregistry_snapshot", "callee": "fromEntries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L123"}, {"caller_nid": "lib_telemetry_metricregistry_snapshot", "callee": "fromEntries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L124"}, {"caller_nid": "lib_telemetry_metricregistry_snapshot", "callee": "fromEntries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L125"}, {"caller_nid": "lib_telemetry_metricregistry_snapshot", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L126"}, {"caller_nid": "lib_telemetry_metricregistry_reset", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L137"}, {"caller_nid": "lib_telemetry_metricregistry_reset", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L138"}, {"caller_nid": "lib_telemetry_metricregistry_reset", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L139"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "emit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L164"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "emit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L165"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L170"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L170"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L172"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "header", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L173"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L174"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L178"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L183"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L183"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L184"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L186"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L187"}, {"caller_nid": "lib_telemetry_metricregistry_render", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L191"}, {"caller_nid": "lib_telemetry_randomhex", "callee": "getRandomValues", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L208"}, {"caller_nid": "lib_telemetry_randomhex", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L209"}, {"caller_nid": "lib_telemetry_randomhex", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L209"}, {"caller_nid": "lib_telemetry_randomhex", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L209"}, {"caller_nid": "lib_telemetry_parsetraceparent", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L225"}, {"caller_nid": "lib_telemetry_parsetraceparent", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L225"}, {"caller_nid": "lib_telemetry_parsetraceparent", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L229"}, {"caller_nid": "lib_telemetry_parsetraceparent", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L229"}, {"caller_nid": "lib_telemetry_parsetraceparent", "callee": "parseInt", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L230"}, {"caller_nid": "lib_telemetry_sampletrace", "callee": "parseInt", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L244"}, {"caller_nid": "lib_telemetry_sampletrace", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L244"}, {"caller_nid": "lib_telemetry_parsesentrydsn", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L273"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L300"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L302"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L303"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L303"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L304"}, {"caller_nid": "lib_telemetry_buildenvelope", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L306"}, {"caller_nid": "lib_telemetry_errorfingerprint", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L314"}, {"caller_nid": "lib_telemetry_errorfingerprint", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L314"}, {"caller_nid": "lib_telemetry_errorfingerprint", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L314"}, {"caller_nid": "lib_telemetry_sendbudget_allow", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L334"}, {"caller_nid": "lib_telemetry_sendbudget_allow", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts", "source_location": "L336"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "label": "telemetry.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_telemetry_labels",
+      "label": "Labels",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_telemetry_metrickind",
+      "label": "MetricKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_telemetry_metricmeta",
+      "label": "MetricMeta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_telemetry_default_buckets_ms",
+      "label": "DEFAULT_BUCKETS_MS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_telemetry_isvalidmetricname",
+      "label": "isValidMetricName()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_telemetry_escapelabelvalue",
+      "label": "escapeLabelValue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_telemetry_normalizelabelvalue",
+      "label": "normalizeLabelValue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_telemetry_serieskey",
+      "label": "seriesKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_telemetry_splitkey",
+      "label": "splitKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_telemetry_histogramstate",
+      "label": "HistogramState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_telemetry_metricregistry",
+      "label": "MetricRegistry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_describe",
+      "label": ".describe()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_capped",
+      "label": ".capped()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_totalseries",
+      "label": ".totalSeries()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_droppedseries",
+      "label": ".droppedSeries()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_incr",
+      "label": ".incr()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L93"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_gauge",
+      "label": ".gauge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_observe",
+      "label": ".observe()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_snapshot",
+      "label": ".snapshot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L121"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_reset",
+      "label": ".reset()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L136"
+    },
+    {
+      "id": "lib_telemetry_metricregistry_render",
+      "label": ".render()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "lib_telemetry_tracecontext",
+      "label": "TraceContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L199"
+    },
+    {
+      "id": "lib_telemetry_randomhex",
+      "label": "randomHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L206"
+    },
+    {
+      "id": "lib_telemetry_newtraceid",
+      "label": "newTraceId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L214"
+    },
+    {
+      "id": "lib_telemetry_newspanid",
+      "label": "newSpanId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L218"
+    },
+    {
+      "id": "lib_telemetry_parsetraceparent",
+      "label": "parseTraceparent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L223"
+    },
+    {
+      "id": "lib_telemetry_formattraceparent",
+      "label": "formatTraceparent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L233"
+    },
+    {
+      "id": "lib_telemetry_sampletrace",
+      "label": "sampleTrace()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L241"
+    },
+    {
+      "id": "lib_telemetry_starttrace",
+      "label": "startTrace()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L249"
+    },
+    {
+      "id": "lib_telemetry_sentrydsn",
+      "label": "SentryDsn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L267"
+    },
+    {
+      "id": "lib_telemetry_parsesentrydsn",
+      "label": "parseSentryDsn()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L269"
+    },
+    {
+      "id": "lib_telemetry_sentryenvelopeurl",
+      "label": "sentryEnvelopeUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L281"
+    },
+    {
+      "id": "lib_telemetry_sentryauthheader",
+      "label": "sentryAuthHeader()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L285"
+    },
+    {
+      "id": "lib_telemetry_breadcrumb",
+      "label": "Breadcrumb",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L289"
+    },
+    {
+      "id": "lib_telemetry_buildenvelope",
+      "label": "buildEnvelope()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L296"
+    },
+    {
+      "id": "lib_telemetry_errorfingerprint",
+      "label": "errorFingerprint()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L313"
+    },
+    {
+      "id": "lib_telemetry_sendbudget",
+      "label": "SendBudget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L325"
+    },
+    {
+      "id": "lib_telemetry_sendbudget_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L328"
+    },
+    {
+      "id": "lib_telemetry_sendbudget_allow",
+      "label": ".allow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L333"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_labels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_metrickind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_metricmeta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_default_buckets_ms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_isvalidmetricname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_escapelabelvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_normalizelabelvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_serieskey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_splitkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_histogramstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_metricregistry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_describe",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_capped",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_totalseries",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_droppedseries",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_incr",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_gauge",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_observe",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_snapshot",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_reset",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry",
+      "target": "lib_telemetry_metricregistry_render",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_tracecontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_randomhex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_newtraceid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_newspanid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_parsetraceparent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_formattraceparent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_sampletrace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_starttrace",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_sentrydsn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_parsesentrydsn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L269",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_sentryenvelopeurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_sentryauthheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_breadcrumb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_buildenvelope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L296",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_errorfingerprint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "target": "lib_telemetry_sendbudget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L325",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_sendbudget",
+      "target": "lib_telemetry_sendbudget_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_sendbudget",
+      "target": "lib_telemetry_sendbudget_allow",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_describe",
+      "target": "lib_telemetry_isvalidmetricname",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_capped",
+      "target": "lib_telemetry_metricregistry_totalseries",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_incr",
+      "target": "lib_telemetry_isvalidmetricname",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_incr",
+      "target": "lib_telemetry_serieskey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_incr",
+      "target": "lib_telemetry_metricregistry_capped",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_gauge",
+      "target": "lib_telemetry_isvalidmetricname",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_gauge",
+      "target": "lib_telemetry_serieskey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_gauge",
+      "target": "lib_telemetry_metricregistry_capped",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_observe",
+      "target": "lib_telemetry_isvalidmetricname",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_observe",
+      "target": "lib_telemetry_serieskey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_observe",
+      "target": "lib_telemetry_metricregistry_capped",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_snapshot",
+      "target": "lib_telemetry_metricregistry_totalseries",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_metricregistry_render",
+      "target": "lib_telemetry_splitkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_newtraceid",
+      "target": "lib_telemetry_randomhex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_newspanid",
+      "target": "lib_telemetry_randomhex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L219",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_starttrace",
+      "target": "lib_telemetry_parsetraceparent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_starttrace",
+      "target": "lib_telemetry_newspanid",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_starttrace",
+      "target": "lib_telemetry_newtraceid",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_telemetry_starttrace",
+      "target": "lib_telemetry_sampletrace",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L260",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_telemetry_isvalidmetricname",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "lib_telemetry_escapelabelvalue",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_telemetry_escapelabelvalue",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_telemetry_escapelabelvalue",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_telemetry_normalizelabelvalue",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "lib_telemetry_normalizelabelvalue",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_telemetry_normalizelabelvalue",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_telemetry_normalizelabelvalue",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_telemetry_serieskey",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_telemetry_serieskey",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_telemetry_serieskey",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_telemetry_serieskey",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_telemetry_serieskey",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_telemetry_splitkey",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_telemetry_splitkey",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "lib_telemetry_splitkey",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_describe",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_capped",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_incr",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_incr",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_incr",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_gauge",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_gauge",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_observe",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_snapshot",
+      "callee": "fromEntries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_snapshot",
+      "callee": "fromEntries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_snapshot",
+      "callee": "fromEntries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_snapshot",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_reset",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_reset",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_reset",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "emit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "emit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "header",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "lib_telemetry_metricregistry_render",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "lib_telemetry_randomhex",
+      "callee": "getRandomValues",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_telemetry_randomhex",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_telemetry_randomhex",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_telemetry_randomhex",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsetraceparent",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsetraceparent",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsetraceparent",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsetraceparent",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsetraceparent",
+      "callee": "parseInt",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "lib_telemetry_sampletrace",
+      "callee": "parseInt",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_telemetry_sampletrace",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_telemetry_parsesentrydsn",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L302"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "lib_telemetry_buildenvelope",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "lib_telemetry_errorfingerprint",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "lib_telemetry_errorfingerprint",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "lib_telemetry_errorfingerprint",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "lib_telemetry_sendbudget_allow",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_telemetry_sendbudget_allow",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/telemetry.ts",
+      "source_location": "L336"
+    }
+  ]
+}

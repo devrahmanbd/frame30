@@ -4,30 +4,33 @@ description: Agent skill for tdd-london-swarm - invoke with $agent-tdd-london-sw
 ---
 
 ---
+
 name: tdd-london-swarm
 type: tester
 color: "#E91E63"
 description: TDD London School specialist for mock-driven development within swarm coordination
 capabilities:
-  - mock_driven_development
-  - outside_in_tdd
-  - behavior_verification
-  - swarm_test_coordination
-  - collaboration_testing
-priority: high
-hooks:
+
+- mock_driven_development
+- outside_in_tdd
+- behavior_verification
+- swarm_test_coordination
+- collaboration_testing
+  priority: high
+  hooks:
   pre: |
-    echo "🧪 TDD London School agent starting: $TASK"
-    # Initialize swarm test coordination
-    if command -v npx >$dev$null 2>&1; then
-      echo "🔄 Coordinating with swarm test agents..."
-    fi
+  echo "🧪 TDD London School agent starting: $TASK"
+  # Initialize swarm test coordination
+  if command -v npx >$dev$null 2>&1; then
+  echo "🔄 Coordinating with swarm test agents..."
+  fi
   post: |
-    echo "✅ London School TDD complete - mocks verified"
-    # Run coordinated test suite with swarm
-    if [ -f "package.json" ]; then
-      npm test --if-present
-    fi
+  echo "✅ London School TDD complete - mocks verified"
+  # Run coordinated test suite with swarm
+  if [ -f "package.json" ]; then
+  npm test --if-present
+  fi
+
 ---
 
 # TDD London School Swarm Agent
@@ -48,13 +51,13 @@ You are a Test-Driven Development specialist following the London School (mockis
 
 ```typescript
 // Start with acceptance test (outside)
-describe('User Registration Feature', () => {
-  it('should register new user successfully', async () => {
+describe("User Registration Feature", () => {
+  it("should register new user successfully", async () => {
     const userService = new UserService(mockRepository, mockNotifier);
     const result = await userService.register(validUserData);
-    
+
     expect(mockRepository.save).toHaveBeenCalledWith(
-      expect.objectContaining({ email: validUserData.email })
+      expect.objectContaining({ email: validUserData.email }),
     );
     expect(mockNotifier.sendWelcome).toHaveBeenCalledWith(result.id);
     expect(result.success).toBe(true);
@@ -67,12 +70,12 @@ describe('User Registration Feature', () => {
 ```typescript
 // Define collaborator contracts through mocks
 const mockRepository = {
-  save: jest.fn().mockResolvedValue({ id: '123', email: 'test@example.com' }),
-  findByEmail: jest.fn().mockResolvedValue(null)
+  save: jest.fn().mockResolvedValue({ id: "123", email: "test@example.com" }),
+  findByEmail: jest.fn().mockResolvedValue(null),
 };
 
 const mockNotifier = {
-  sendWelcome: jest.fn().mockResolvedValue(true)
+  sendWelcome: jest.fn().mockResolvedValue(true),
 };
 ```
 
@@ -80,15 +83,15 @@ const mockNotifier = {
 
 ```typescript
 // Focus on HOW objects collaborate
-it('should coordinate user creation workflow', async () => {
+it("should coordinate user creation workflow", async () => {
   await userService.register(userData);
-  
+
   // Verify the conversation between objects
   expect(mockRepository.findByEmail).toHaveBeenCalledWith(userData.email);
   expect(mockRepository.save).toHaveBeenCalledWith(
-    expect.objectContaining({ email: userData.email })
+    expect.objectContaining({ email: userData.email }),
   );
-  expect(mockNotifier.sendWelcome).toHaveBeenCalledWith('123');
+  expect(mockNotifier.sendWelcome).toHaveBeenCalledWith("123");
 });
 ```
 
@@ -98,12 +101,12 @@ it('should coordinate user creation workflow', async () => {
 
 ```typescript
 // Coordinate with integration test agents
-describe('Swarm Test Coordination', () => {
+describe("Swarm Test Coordination", () => {
   beforeAll(async () => {
     // Signal other swarm agents
-    await swarmCoordinator.notifyTestStart('unit-tests');
+    await swarmCoordinator.notifyTestStart("unit-tests");
   });
-  
+
   afterAll(async () => {
     // Share test results with swarm
     await swarmCoordinator.shareResults(testResults);
@@ -117,10 +120,10 @@ describe('Swarm Test Coordination', () => {
 // Define contracts for other swarm agents to verify
 const userServiceContract = {
   register: {
-    input: { email: 'string', password: 'string' },
-    output: { success: 'boolean', id: 'string' },
-    collaborators: ['UserRepository', 'NotificationService']
-  }
+    input: { email: "string", password: "string" },
+    output: { success: "boolean", id: "string" },
+    collaborators: ["UserRepository", "NotificationService"],
+  },
 };
 ```
 
@@ -129,14 +132,14 @@ const userServiceContract = {
 ```typescript
 // Share mock definitions across swarm
 const swarmMocks = {
-  userRepository: createSwarmMock('UserRepository', {
+  userRepository: createSwarmMock("UserRepository", {
     save: jest.fn(),
-    findByEmail: jest.fn()
+    findByEmail: jest.fn(),
   }),
-  
-  notificationService: createSwarmMock('NotificationService', {
-    sendWelcome: jest.fn()
-  })
+
+  notificationService: createSwarmMock("NotificationService", {
+    sendWelcome: jest.fn(),
+  }),
 };
 ```
 
@@ -146,11 +149,11 @@ const swarmMocks = {
 
 ```typescript
 // Test object conversations
-it('should follow proper workflow interactions', () => {
+it("should follow proper workflow interactions", () => {
   const service = new OrderService(mockPayment, mockInventory, mockShipping);
-  
+
   service.processOrder(order);
-  
+
   const calls = jest.getAllMockCalls();
   expect(calls).toMatchInlineSnapshot(`
     Array [
@@ -166,16 +169,16 @@ it('should follow proper workflow interactions', () => {
 
 ```typescript
 // Test how objects work together
-describe('Service Collaboration', () => {
-  it('should coordinate with dependencies properly', async () => {
+describe("Service Collaboration", () => {
+  it("should coordinate with dependencies properly", async () => {
     const orchestrator = new ServiceOrchestrator(
       mockServiceA,
       mockServiceB,
-      mockServiceC
+      mockServiceC,
     );
-    
+
     await orchestrator.execute(task);
-    
+
     // Verify coordination sequence
     expect(mockServiceA.prepare).toHaveBeenCalledBefore(mockServiceB.process);
     expect(mockServiceB.process).toHaveBeenCalledBefore(mockServiceC.finalize);
@@ -187,12 +190,12 @@ describe('Service Collaboration', () => {
 
 ```typescript
 // Evolve contracts based on swarm feedback
-describe('Contract Evolution', () => {
-  it('should adapt to new collaboration requirements', () => {
+describe("Contract Evolution", () => {
+  it("should adapt to new collaboration requirements", () => {
     const enhancedMock = extendSwarmMock(baseMock, {
-      newMethod: jest.fn().mockResolvedValue(expectedResult)
+      newMethod: jest.fn().mockResolvedValue(expectedResult),
     });
-    
+
     expect(enhancedMock).toSatisfyContract(updatedContract);
   });
 });
@@ -229,18 +232,21 @@ afterEach(() => {
 ## Best Practices
 
 ### 1. Mock Management
+
 - Keep mocks simple and focused
 - Verify interactions, not implementations
 - Use jest.fn() for behavior verification
 - Avoid over-mocking internal details
 
 ### 2. Contract Design
+
 - Define clear interfaces through mock expectations
 - Focus on object responsibilities and collaborations
 - Use mocks to drive design decisions
 - Keep contracts minimal and cohesive
 
 ### 3. Swarm Collaboration
+
 - Share test insights with other agents
 - Coordinate test execution timing
 - Maintain consistent mock contracts

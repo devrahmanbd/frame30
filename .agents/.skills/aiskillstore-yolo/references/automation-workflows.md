@@ -11,22 +11,27 @@ This document provides step-by-step instructions for automating Lovable prompt s
 To maximize speed and reliability, this automation follows these principles:
 
 ### Use `ref` Parameters Instead of Coordinates
+
 - Always use `read_page` and `find` tools to get element references
 - Click elements using `ref="ref_X"` instead of coordinate-based `(x, y)` clicks
 - This eliminates "clicking wrong places" issues entirely
 
 ### Use `form_input` Instead of Typing
+
 - Set input values directly using `form_input(ref=X, value="...")`
 - Avoids character-by-character typing which is slow (~50ms per char) and error-prone
 - Results in 20x faster prompt entry with zero mistyping
 
 ### Minimize Screenshots
+
 - Use `read_page` to understand page state (fast, deterministic)
 - Only take screenshots on errors or for final user confirmation
 - Screenshots are slow (~1-2s each) and add unnecessary latency
 
 ### Model Selection (Hybrid Approach)
+
 For optimal speed + reliability:
+
 - **Use Haiku** for: clicking refs, form inputs, key presses, waiting
 - **Use Sonnet** for: initial page understanding, error handling, parsing responses
 
@@ -40,13 +45,17 @@ For optimal speed + reliability:
 ## Trigger Modes
 
 ### 1. Auto-Deploy Mode (Recommended)
+
 When `auto_deploy: on`:
+
 - Triggered automatically after `git push origin main`
 - Claude detects backend file changes and starts deployment
 - No manual command needed
 
 ### 2. Command-Triggered Mode
+
 When `auto_deploy: off` or using manual commands:
+
 - Triggered by `/deploy-edge` or `/apply-migration` commands
 - User explicitly initiates deployment
 
@@ -59,6 +68,7 @@ When `auto_deploy: off` or using manual commands:
 > **IMPORTANT:** After navigation, you MUST wait for GitHub sync before submitting any deployment prompts. See Step 1.5.
 
 1. **Read configuration:**
+
    ```
    - Read CLAUDE.md
    - Extract `lovable_url` field
@@ -66,6 +76,7 @@ When `auto_deploy: off` or using manual commands:
    ```
 
 2. **Open browser:**
+
    ```
    - Use Claude's browser automation to navigate
    - Target URL: [lovable_url from CLAUDE.md]
@@ -73,6 +84,7 @@ When `auto_deploy: off` or using manual commands:
    ```
 
 3. **Check for login:**
+
    ```
    - If URL redirects to /login or /signin:
      → User not logged in
@@ -95,6 +107,7 @@ When `auto_deploy: off` or using manual commands:
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 1 - Navigate to Lovable
 
@@ -117,13 +130,15 @@ Login status: Authenticated
 > **OPTIMIZED APPROACH:** Use DOM-based detection instead of visual scanning for speed and reliability.
 
 1. **Navigate to project immediately (no initial wait):**
+
    ```
    - Go directly to Lovable project page after git push
    - Don't wait 30 seconds first - sync detection starts immediately
    ```
 
 2. **DOM-Based Sync Detection (FAST & RELIABLE):**
-   ```
+
+   ````
    Use read_page or JavaScript to find sync confirmation:
 
    METHOD 1: Use read_page to search accessibility tree
@@ -141,7 +156,7 @@ Login status: Authenticated
      const text = sidebar?.textContent || '';
      // Check if commit message appears
      text.includes('YOUR_COMMIT_MESSAGE_PREFIX')
-     ```
+   ````
 
    METHOD 3: Use find tool
    - Call find(query="conversation item with YOUR_COMMIT_MESSAGE", tabId=X)
@@ -152,9 +167,13 @@ Login status: Authenticated
    - Deterministic - text matching vs visual icon recognition
    - Faster polling interval possible (2s vs 4s)
    - More reliable - doesn't depend on icon rendering
+
+   ```
+
    ```
 
 3. **Verification loop (optimized):**
+
    ```
    attempts = 0
    max_attempts = 30  # 2s each = 60 seconds max (faster checks)
@@ -180,12 +199,14 @@ Login status: Authenticated
    ```
 
 4. **If sync verified:**
+
    ```
    ✅ Step 2/8: Sync verified - Lovable has latest code
       Commit: abc1234 "Add email notifications"
    ```
 
 5. **If sync times out:**
+
    ```
    ⚠️ Sync verification timeout
 
@@ -215,6 +236,7 @@ Login status: Authenticated
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 1.5 - GitHub Sync Verification (DOM-based)
 
@@ -252,6 +274,7 @@ Result: ✅ Sync verified (4s) - DOM-based detection is faster and more reliable
 > **OPTIMIZED APPROACH:** Use `find` tool to get element ref directly - no coordinates needed!
 
 1. **Use `find` tool for reliable element location:**
+
    ```
    PREFERRED METHOD: Use find tool with natural language query
    - Call: find(query="Ask Lovable chat input textarea", tabId=X)
@@ -272,6 +295,7 @@ Result: ✅ Sync verified (4s) - DOM-based detection is faster and more reliable
    ```
 
 2. **Store the element ref for later use:**
+
    ```
    chatInputRef = result from find tool (e.g., "ref_42")
 
@@ -281,6 +305,7 @@ Result: ✅ Sync verified (4s) - DOM-based detection is faster and more reliable
    ```
 
 3. **Verify element is correct (quick check):**
+
    ```
    The find tool result includes element details:
    - role: "textbox" or "textarea"
@@ -306,6 +331,7 @@ Result: ✅ Sync verified (4s) - DOM-based detection is faster and more reliable
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 2 - Locate Chat Interface (ref-based)
 
@@ -336,6 +362,7 @@ Result: ✅ Chat input ref acquired (0.2s)
 > **OPTIMIZED APPROACH:** Use `form_input` tool - 20x faster than typing, zero mistyping!
 
 1. **Use `form_input` to set prompt value (FAST):**
+
    ```
    PREFERRED METHOD: Direct value setting
    - Call: form_input(ref=chatInputRef, value="Deploy the send-email edge function", tabId=X)
@@ -351,6 +378,7 @@ Result: ✅ Chat input ref acquired (0.2s)
    ```
 
 2. **Submit the prompt:**
+
    ```
    PREFERRED: Press Enter using ref
    - Call: computer(action="key", text="Enter", tabId=X)
@@ -362,6 +390,7 @@ Result: ✅ Chat input ref acquired (0.2s)
    ```
 
 3. **Confirm message sent (quick DOM check):**
+
    ```
    - Wait 1-2 seconds
    - Call: read_page(tabId=X) to check chat state
@@ -382,6 +411,7 @@ Result: ✅ Chat input ref acquired (0.2s)
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 3 - Submit Prompt (form_input)
 
@@ -409,6 +439,7 @@ Total time: 0.5s (vs ~2.5s with typing)
 > **OPTIMIZED APPROACH:** Use `read_page` polling instead of screenshots for speed.
 
 1. **Poll for assistant message using DOM:**
+
    ```
    PREFERRED METHOD: read_page polling
    - Wait 2-3 seconds initial delay (let Lovable start processing)
@@ -431,6 +462,7 @@ Total time: 0.5s (vs ~2.5s with typing)
    ```
 
 2. **Detect loading state:**
+
    ```
    During polling, check for loading indicators in DOM:
    - Text containing "Thinking", "Generating", "Loading"
@@ -443,6 +475,7 @@ Total time: 0.5s (vs ~2.5s with typing)
    ```
 
 3. **Capture response text:**
+
    ```
    Once response detected:
    - Extract assistant message text from DOM
@@ -464,6 +497,7 @@ Total time: 0.5s (vs ~2.5s with typing)
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 4 - Monitor Response (DOM polling)
 
@@ -498,6 +532,7 @@ Result: ✅ Response received (4s) - No screenshots used!
 Look for these keywords in the response (case-insensitive):
 
 For edge functions:
+
 - "deploy" or "deployed"
 - "function is live"
 - "successfully deployed"
@@ -505,6 +540,7 @@ For edge functions:
 - "available at"
 
 For migrations:
+
 - "migration applied"
 - "database updated"
 - "successfully ran"
@@ -549,6 +585,7 @@ Look for these keywords in the response:
 **Examples:**
 
 Success response:
+
 ```
 "I'll deploy the send-email edge function now..."
 → Found: "deploy", "function"
@@ -557,6 +594,7 @@ Success response:
 ```
 
 Error response:
+
 ```
 "I encountered an error deploying the function. The syntax is invalid..."
 → Found: "error", "invalid"
@@ -565,6 +603,7 @@ Error response:
 ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Step 5 - Detect Success/Failure
 
@@ -603,6 +642,7 @@ When `yolo_testing: on`, run these verification tests after successful deploymen
 **For Edge Functions:**
 
 1. **Ask Lovable for deployment logs:**
+
    ```
    Submit follow-up prompt:
    "Show logs for [function-name] edge function"
@@ -611,6 +651,7 @@ When `yolo_testing: on`, run these verification tests after successful deploymen
    ```
 
 2. **Check logs response:**
+
    ```
    Success indicators in logs:
    - No deployment errors
@@ -635,6 +676,7 @@ When `yolo_testing: on`, run these verification tests after successful deploymen
 **For Migrations:**
 
 1. **Ask Lovable for schema confirmation:**
+
    ```
    Submit follow-up prompt:
    "Show me the [table-name] table structure"
@@ -643,6 +685,7 @@ When `yolo_testing: on`, run these verification tests after successful deploymen
    ```
 
 2. **Check schema response:**
+
    ```
    Success indicators:
    - Table exists
@@ -663,6 +706,7 @@ When `yolo_testing: on`, run these verification tests after successful deploymen
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Level 1 - Basic Verification
 
@@ -689,6 +733,7 @@ Result: ✅ PASS (2.1s)
 **Goal:** Monitor the production URL for JavaScript and network errors.
 
 1. **Navigate to production URL:**
+
    ```
    - Read `production_url` from CLAUDE.md
    - Example: "https://my-app.lovable.app"
@@ -697,6 +742,7 @@ Result: ✅ PASS (2.1s)
    ```
 
 2. **Open browser console:**
+
    ```
    - Access browser developer tools
    - Navigate to Console tab
@@ -704,6 +750,7 @@ Result: ✅ PASS (2.1s)
    ```
 
 3. **Monitor for errors:**
+
    ```
    Watch for (10-15 seconds):
 
@@ -719,6 +766,7 @@ Result: ✅ PASS (2.1s)
    ```
 
 4. **Capture and categorize errors:**
+
    ```
    For each error found:
    - Source: Which file/line
@@ -746,6 +794,7 @@ Result: ✅ PASS (2.1s)
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Level 2 - Console Error Checking
 
@@ -782,6 +831,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
 **For Edge Functions:**
 
 1. **Determine function endpoint:**
+
    ```
    Pattern: https://{supabase-ref}.supabase.co/functions/v1/{function-name}
 
@@ -792,6 +842,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 2. **Determine test payload:**
+
    ```
    Option A: Known test payload
    - If function has documented test data
@@ -807,6 +858,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 3. **Make test request:**
+
    ```
    - HTTP POST to function endpoint
    - Include: Auth headers (if needed), test payload
@@ -815,6 +867,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 4. **Verify response:**
+
    ```
    Success indicators:
    - Status code: 200-299
@@ -846,6 +899,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
 **For Migrations:**
 
 1. **Determine test query:**
+
    ```
    Based on migration type:
 
@@ -855,6 +909,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 2. **Execute test query via Lovable:**
+
    ```
    Submit prompt to Lovable:
    "Run this query: [test-query]"
@@ -863,6 +918,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 3. **Verify query result:**
+
    ```
    Success indicators:
    - Query executes without error
@@ -888,6 +944,7 @@ Result: ✅ PASS - No errors (0.1s monitoring)
    ```
 
 **Debug output (if `yolo_debug: on`):**
+
 ```
 🐛 DEBUG: Level 3 - Functional Testing
 
@@ -1035,6 +1092,7 @@ For ANY automation failure:
 ### Progress Notifications
 
 **Standard mode (debug off):**
+
 ```
 🤖 Yolo mode: Deploying send-email edge function
 
@@ -1057,6 +1115,7 @@ For ANY automation failure:
 ### Summary Notifications
 
 **Success with all tests passed:**
+
 ```
 ## Deployment Summary
 
@@ -1086,6 +1145,7 @@ For ANY automation failure:
 ```
 
 **Success with test warnings:**
+
 ```
 ## Deployment Summary
 
@@ -1115,6 +1175,7 @@ For ANY automation failure:
 ```
 
 **Deployment succeeded but testing failed:**
+
 ```
 ## Deployment Summary
 
@@ -1155,29 +1216,37 @@ Would you like me to help you find your Resend API key?
 ### Testing Control
 
 **Enable all tests (default):**
+
 ```
 yolo_testing: on
 ```
+
 Runs all 3 testing levels after each deployment.
 
 **Disable all tests:**
+
 ```
 yolo_testing: off
 ```
+
 Only deploys, no verification. Faster but less safe.
 
 ### Debug Control
 
 **Enable debug output:**
+
 ```
 yolo_debug: on
 ```
+
 Shows verbose logs with timing, selectors, full responses.
 
 **Disable debug output (default):**
+
 ```
 yolo_debug: off
 ```
+
 Shows minimal progress indicators only.
 
 ---
@@ -1187,12 +1256,14 @@ Shows minimal progress indicators only.
 To maximize performance, follow these guidelines for screenshot usage:
 
 ### DO Take Screenshot:
+
 - **On errors** - Capture state for debugging when something fails
 - **Final confirmation** - One screenshot after deployment completes (optional)
 - **User request** - If user explicitly asks to see what happened
 - **Debugging mode** - When `yolo_debug: on` and investigating issues
 
 ### DO NOT Take Screenshot:
+
 - **For element location** - Use `read_page` and `find` tools instead
 - **For sync verification** - Use DOM-based text search
 - **Between each step** - Too slow, use DOM polling
@@ -1200,6 +1271,7 @@ To maximize performance, follow these guidelines for screenshot usage:
 - **For success detection** - Parse text from DOM, not screenshot
 
 ### Why This Matters:
+
 - Each screenshot adds ~1-2 seconds latency
 - Old approach: 5-8 screenshots = 5-16 seconds of overhead
 - New approach: 1-2 screenshots = 1-4 seconds of overhead
@@ -1210,6 +1282,7 @@ To maximize performance, follow these guidelines for screenshot usage:
 ## Performance Notes
 
 **Optimized timing (with ref-based approach):**
+
 - Navigation: 1-2s
 - Element location: 0.1-0.2s (using find/read_page)
 - Prompt submission: 0.1-0.3s (using form_input)
@@ -1220,18 +1293,21 @@ To maximize performance, follow these guidelines for screenshot usage:
 - Functional testing: 1-5s
 
 **Total automation time (optimized):**
+
 - Without testing: ~5-12s (was 15-45s)
 - With testing: ~15-30s (was 20-40s)
 
 **Improvement summary:**
-| Step | Old Time | New Time | Improvement |
-|------|----------|----------|-------------|
-| Element location | 0.5-2s | 0.1-0.2s | 5-10x faster |
-| Prompt entry | 2-3s | 0.1-0.3s | 10-20x faster |
-| Sync verification | 30-80s | 2-20s | 3-4x faster |
-| Screenshots | 5-16s overhead | 1-4s overhead | 75% reduction |
+
+| Step              | Old Time       | New Time      | Improvement   |
+| ----------------- | -------------- | ------------- | ------------- |
+| Element location  | 0.5-2s         | 0.1-0.2s      | 5-10x faster  |
+| Prompt entry      | 2-3s           | 0.1-0.3s      | 10-20x faster |
+| Sync verification | 30-80s         | 2-20s         | 3-4x faster   |
+| Screenshots       | 5-16s overhead | 1-4s overhead | 75% reduction |
 
 **Timeout limits:**
+
 - Page load: 10s
 - Element finding: 5s (usually <1s with find tool)
 - Sync verification: 60s (faster polling than before)
@@ -1273,6 +1349,7 @@ Attempt automation
 ### Fallback Message Templates
 
 **For auto-deploy failures:**
+
 ```
 ❌ Auto-deploy failed: [specific error]
 
@@ -1291,6 +1368,7 @@ Lovable will sync the code, but deployment requires a prompt.
 ```
 
 **For command-triggered failures:**
+
 ```
 ❌ Browser automation failed: [specific error]
 
@@ -1308,15 +1386,15 @@ Lovable will sync the code, but deployment requires a prompt.
 
 ### Error-Specific Fallbacks
 
-| Error | Fallback Message |
-|-------|------------------|
-| Extension not installed | Prompt + link to install Chrome extension |
-| Not logged in | Prompt + "Please log in to Lovable" |
-| GitHub sync timeout | Prompt + "Lovable hasn't synced yet, verify manually or wait" |
-| UI element not found | Prompt + "Lovable UI may have changed" + report link |
-| Timeout | Prompt + "Check Lovable manually, may still be processing" |
-| Deployment error | Prompt + error details + suggested fixes |
-| Network error | Prompt + "Check internet connection" |
+| Error                   | Fallback Message                                              |
+| ----------------------- | ------------------------------------------------------------- |
+| Extension not installed | Prompt + link to install Chrome extension                     |
+| Not logged in           | Prompt + "Please log in to Lovable"                           |
+| GitHub sync timeout     | Prompt + "Lovable hasn't synced yet, verify manually or wait" |
+| UI element not found    | Prompt + "Lovable UI may have changed" + report link          |
+| Timeout                 | Prompt + "Check Lovable manually, may still be processing"    |
+| Deployment error        | Prompt + error details + suggested fixes                      |
+| Network error           | Prompt + "Check internet connection"                          |
 
 ### Recovery Options
 
@@ -1329,4 +1407,4 @@ After any failure, offer these options:
 
 ---
 
-*This reference should be consulted for all browser automation operations in yolo mode.*
+_This reference should be consulted for all browser automation operations in yolo mode._

@@ -81,14 +81,19 @@ export function pluginWidgetKey(pluginId: string, widget: string) {
 export function parsePluginWidgetKey(
   key: string,
 ): { pluginId: string; widget: string } | null {
-  const m = /^plugin:([a-z][a-z0-9-]{2,39})\/([a-z][a-z0-9_-]{1,39})$/.exec(key.trim());
+  const m = /^plugin:([a-z][a-z0-9-]{2,39})\/([a-z][a-z0-9_-]{1,39})$/.exec(
+    key.trim(),
+  );
   return m ? { pluginId: m[1], widget: m[2] } : null;
 }
 
 // ------------------------------------------------------------ compatibility
 
 /** Supports `^x.y.z` and `>=a.b.c <d.e.f`; anything else is rejected. */
-export function satisfiesApiRange(range: string, api = BUILDER_API_VERSION): boolean {
+export function satisfiesApiRange(
+  range: string,
+  api = BUILDER_API_VERSION,
+): boolean {
   const target = parseSemver(api);
   if (!target) return false;
   const caret = /^\^(\d+\.\d+\.\d+)$/.exec(range.trim());
@@ -97,7 +102,9 @@ export function satisfiesApiRange(range: string, api = BUILDER_API_VERSION): boo
     if (!base) return false;
     return base.major === target.major && compareSemver(api, caret[1]) >= 0;
   }
-  const pair = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/.exec(range.trim());
+  const pair = /^>=\s*(\d+\.\d+\.\d+)\s+<\s*(\d+\.\d+\.\d+)$/.exec(
+    range.trim(),
+  );
   if (pair) {
     return compareSemver(api, pair[1]) >= 0 && compareSemver(api, pair[2]) < 0;
   }
@@ -110,7 +117,11 @@ export type ManifestVerdict =
   | { ok: true; manifest: PluginManifest; warnings: string[] }
   | { ok: false; errors: string[] };
 
-function settingField(raw: unknown, errors: string[], index: number): SettingField | null {
+function settingField(
+  raw: unknown,
+  errors: string[],
+  index: number,
+): SettingField | null {
   const r = (raw ?? {}) as Record<string, unknown>;
   const key = String(r.key ?? "");
   if (!KEY_RE.test(key)) {
@@ -126,7 +137,10 @@ function settingField(raw: unknown, errors: string[], index: number): SettingFie
     ? r.options
         .map((o) => o as Record<string, unknown>)
         .filter((o) => typeof o?.value === "string")
-        .map((o) => ({ value: String(o.value), label: String(o.label ?? o.value) }))
+        .map((o) => ({
+          value: String(o.value),
+          label: String(o.label ?? o.value),
+        }))
     : undefined;
   if (kind === "select" && (!options || options.length === 0)) {
     errors.push(`settings[${index}].options`);
@@ -151,7 +165,9 @@ export function parseManifest(input: unknown): ManifestVerdict {
   const warnings: string[] = [];
   const raw = (input ?? {}) as Record<string, unknown>;
 
-  const id = String(raw.id ?? "").trim().toLowerCase();
+  const id = String(raw.id ?? "")
+    .trim()
+    .toLowerCase();
   if (!ID_RE.test(id)) errors.push("id");
 
   const version = String(raw.version ?? "").trim();
@@ -172,7 +188,8 @@ export function parseManifest(input: unknown): ManifestVerdict {
   }
 
   const hooksUrl = typeof raw.hooksUrl === "string" ? raw.hooksUrl.trim() : "";
-  if (hooks.length && !/^https:\/\/[^\s]+$/.test(hooksUrl)) errors.push("hooksUrl");
+  if (hooks.length && !/^https:\/\/[^\s]+$/.test(hooksUrl))
+    errors.push("hooksUrl");
 
   const widgets: PluginWidgetDef[] = [];
   const rawWidgets = Array.isArray(raw.widgets) ? raw.widgets : [];
@@ -185,7 +202,9 @@ export function parseManifest(input: unknown): ManifestVerdict {
     }
     const slots = (Array.isArray(r.slots) ? r.slots : [])
       .map(String)
-      .filter((s): s is BlockSlot => (BLOCK_SLOTS as readonly string[]).includes(s));
+      .filter((s): s is BlockSlot =>
+        (BLOCK_SLOTS as readonly string[]).includes(s),
+      );
     if (slots.length === 0) {
       errors.push(`widgets[${i}].slots`);
       return;
@@ -208,23 +227,32 @@ export function parseManifest(input: unknown): ManifestVerdict {
       label: String(r.label ?? key).slice(0, 60),
       slots,
       entry,
-      height: typeof r.height === "number" ? Math.min(1200, Math.max(80, r.height)) : 320,
+      height:
+        typeof r.height === "number"
+          ? Math.min(1200, Math.max(80, r.height))
+          : 320,
     });
   });
-  if (widgets.some((w) => w.slots.length) && !scopes.includes("render_storefront")) {
+  if (
+    widgets.some((w) => w.slots.length) &&
+    !scopes.includes("render_storefront")
+  ) {
     errors.push("permissions.render_storefront_required");
   }
 
   const settings: SettingField[] = [];
   (Array.isArray(raw.settings) ? raw.settings : []).forEach((s, i) => {
     const field = settingField(s, errors, i);
-    if (field && !settings.some((f) => f.key === field.key)) settings.push(field);
+    if (field && !settings.some((f) => f.key === field.key))
+      settings.push(field);
   });
 
   const i18nRaw = (raw.i18n ?? {}) as Record<string, unknown>;
   const dict = (v: unknown) => {
     const out: Record<string, string> = {};
-    for (const [k, val] of Object.entries((v ?? {}) as Record<string, unknown>)) {
+    for (const [k, val] of Object.entries(
+      (v ?? {}) as Record<string, unknown>,
+    )) {
       if (typeof val === "string") out[k] = val;
     }
     return out;
@@ -235,14 +263,16 @@ export function parseManifest(input: unknown): ManifestVerdict {
 
   const budgetRaw = (raw.budget ?? {}) as Record<string, unknown>;
   const budget = {
-    jsKb: typeof budgetRaw.jsKb === "number" ? budgetRaw.jsKb : PLUGIN_BUDGET.jsKb,
+    jsKb:
+      typeof budgetRaw.jsKb === "number" ? budgetRaw.jsKb : PLUGIN_BUDGET.jsKb,
     mainThreadMs:
       typeof budgetRaw.mainThreadMs === "number"
         ? budgetRaw.mainThreadMs
         : PLUGIN_BUDGET.mainThreadMs,
   };
   if (budget.jsKb > PLUGIN_BUDGET.jsKb) errors.push("budget.jsKb");
-  if (budget.mainThreadMs > PLUGIN_BUDGET.mainThreadMs) errors.push("budget.mainThreadMs");
+  if (budget.mainThreadMs > PLUGIN_BUDGET.mainThreadMs)
+    errors.push("budget.mainThreadMs");
 
   if (errors.length) return { ok: false, errors };
   return {
@@ -286,7 +316,9 @@ export function permissionDiff(
 
 export type SettingsValues = Record<string, string | number | boolean>;
 
-export function defaultSettings(schema: readonly SettingField[]): SettingsValues {
+export function defaultSettings(
+  schema: readonly SettingField[],
+): SettingsValues {
   const out: SettingsValues = {};
   for (const f of schema) {
     if (f.default !== undefined) out[f.key] = f.default;
@@ -347,7 +379,12 @@ export type PluginResolution =
   | {
       ok: false;
       /** Every failure renders a labelled placeholder — never a crash. */
-      reason: "bad_key" | "not_installed" | "unknown_widget" | "incompatible" | "disabled";
+      reason:
+        | "bad_key"
+        | "not_installed"
+        | "unknown_widget"
+        | "incompatible"
+        | "disabled";
       pluginId?: string;
     };
 
@@ -360,12 +397,15 @@ export function resolvePluginWidget(
   const parsed = parsePluginWidgetKey(key);
   if (!parsed) return { ok: false, reason: "bad_key" };
   const plugin = installed.find((p) => p.manifest.id === parsed.pluginId);
-  if (!plugin) return { ok: false, reason: "not_installed", pluginId: parsed.pluginId };
-  if (!plugin.enabled) return { ok: false, reason: "disabled", pluginId: parsed.pluginId };
+  if (!plugin)
+    return { ok: false, reason: "not_installed", pluginId: parsed.pluginId };
+  if (!plugin.enabled)
+    return { ok: false, reason: "disabled", pluginId: parsed.pluginId };
   if (!satisfiesApiRange(plugin.manifest.api, api))
     return { ok: false, reason: "incompatible", pluginId: parsed.pluginId };
   const widget = plugin.manifest.widgets.find((w) => w.key === parsed.widget);
-  if (!widget) return { ok: false, reason: "unknown_widget", pluginId: parsed.pluginId };
+  if (!widget)
+    return { ok: false, reason: "unknown_widget", pluginId: parsed.pluginId };
   return { ok: true, plugin, widget };
 }
 

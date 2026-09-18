@@ -51,7 +51,12 @@ const VARIANTS = [
   // Phase 10.1 — the marketing motion layer must degrade, not disappear:
   // with reduced motion forced, every revealed section is settled and every
   // decorative loop is parked.
-  { name: "reduced-en", scheme: "light", locale: "en", reducedMotion: "reduce" },
+  {
+    name: "reduced-en",
+    scheme: "light",
+    locale: "en",
+    reducedMotion: "reduce",
+  },
 ];
 
 // Lighthouse-equivalent impact weights.
@@ -75,81 +80,106 @@ const failures = [];
 const browser = await chromium.launch();
 
 for (const variant of VARIANTS) {
-const context = await browser.newContext({
-  viewport: { width: 1280, height: 1800 },
-  colorScheme: variant.scheme,
-  reducedMotion: variant.reducedMotion ?? "no-preference",
-  locale: variant.locale === "bn" ? "bn-BD" : "en-US",
-});
+  const context = await browser.newContext({
+    viewport: { width: 1280, height: 1800 },
+    colorScheme: variant.scheme,
+    reducedMotion: variant.reducedMotion ?? "no-preference",
+    locale: variant.locale === "bn" ? "bn-BD" : "en-US",
+  });
 
-for (const page_ of PAGES) {
-  const page = await context.newPage();
-  try {
-    const sep = page_.path.includes("?") ? "&" : "?";
-    const res = await page.goto(`${base}${page_.path}${sep}lang=${variant.locale}`, {
-      waitUntil: "domcontentloaded",
-    });
-    if (!res || res.status() >= 400) {
-      failures.push(`${page_.name} [${variant.name}]: HTTP ${res ? res.status() : "no response"}`);
-      continue;
-    }
-    await page.waitForTimeout(1200);
-    await page.addScriptTag({ content: axeSource });
-    const results = await page.evaluate(async () =>
-      window.axe.run(document, {
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
-      }),
-    );
-    const value = score(results);
-    const blocking = results.violations.filter(
-      (v) => v.impact === "critical" || v.impact === "serious",
-    );
-    const line = `${value.toString().padStart(3)}  ${variant.name.padEnd(9)} ${page_.name.padEnd(12)} ${page_.path}`;
-    console.log(line);
-    for (const v of results.violations) {
-      console.log(`      ${v.impact ?? "minor"}  ${v.id} — ${v.help} (${v.nodes.length} node(s))`);
-    }
-    if (value < min) failures.push(`${page_.name} [${variant.name}]: score ${value} < ${min}`);
-    // Contrast is never allowed to slip, in any variant, on any surface.
-    const contrast = results.violations.filter((v) => v.id === "color-contrast");
-    if (contrast.length > 0) {
-      failures.push(
-        `${page_.name} [${variant.name}]: ${contrast[0].nodes.length} node(s) below 4.5:1 contrast`,
+  for (const page_ of PAGES) {
+    const page = await context.newPage();
+    try {
+      const sep = page_.path.includes("?") ? "&" : "?";
+      const res = await page.goto(
+        `${base}${page_.path}${sep}lang=${variant.locale}`,
+        {
+          waitUntil: "domcontentloaded",
+        },
       );
-    }
-    if (page_.strict && blocking.length > 0) {
-      failures.push(
-        `${page_.name} [${variant.name}]: ${blocking.length} serious/critical violation(s) on an AAA surface`,
+      if (!res || res.status() >= 400) {
+        failures.push(
+          `${page_.name} [${variant.name}]: HTTP ${res ? res.status() : "no response"}`,
+        );
+        continue;
+      }
+      await page.waitForTimeout(1200);
+      await page.addScriptTag({ content: axeSource });
+      const results = await page.evaluate(async () =>
+        window.axe.run(document, {
+          runOnly: {
+            type: "tag",
+            values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"],
+          },
+        }),
       );
-    }
+      const value = score(results);
+      const blocking = results.violations.filter(
+        (v) => v.impact === "critical" || v.impact === "serious",
+      );
+      const line = `${value.toString().padStart(3)}  ${variant.name.padEnd(9)} ${page_.name.padEnd(12)} ${page_.path}`;
+      console.log(line);
+      for (const v of results.violations) {
+        console.log(
+          `      ${v.impact ?? "minor"}  ${v.id} — ${v.help} (${v.nodes.length} node(s))`,
+        );
+      }
+      if (value < min)
+        failures.push(
+          `${page_.name} [${variant.name}]: score ${value} < ${min}`,
+        );
+      // Contrast is never allowed to slip, in any variant, on any surface.
+      const contrast = results.violations.filter(
+        (v) => v.id === "color-contrast",
+      );
+      if (contrast.length > 0) {
+        failures.push(
+          `${page_.name} [${variant.name}]: ${contrast[0].nodes.length} node(s) below 4.5:1 contrast`,
+        );
+      }
+      if (page_.strict && blocking.length > 0) {
+        failures.push(
+          `${page_.name} [${variant.name}]: ${blocking.length} serious/critical violation(s) on an AAA surface`,
+        );
+      }
 
-    // Motion invariants — checked in every variant, enforced hard under
-    // reduced motion. Content that is still `pending` after load is content a
-    // visitor cannot read, which is a worse bug than a missing animation.
-    const motion = await page.evaluate(() => ({
-      pending: document.querySelectorAll('[data-motion-state="pending"]').length,
-      running: document.querySelectorAll('[data-motion="marquee"][data-running="true"]').length,
-      drifting: document.querySelectorAll('[data-motion="gradient-mesh"][data-drifting="true"]').length,
-    }));
-    if (motion.pending > 0) {
+      // Motion invariants — checked in every variant, enforced hard under
+      // reduced motion. Content that is still `pending` after load is content a
+      // visitor cannot read, which is a worse bug than a missing animation.
+      const motion = await page.evaluate(() => ({
+        pending: document.querySelectorAll('[data-motion-state="pending"]')
+          .length,
+        running: document.querySelectorAll(
+          '[data-motion="marquee"][data-running="true"]',
+        ).length,
+        drifting: document.querySelectorAll(
+          '[data-motion="gradient-mesh"][data-drifting="true"]',
+        ).length,
+      }));
+      if (motion.pending > 0) {
+        failures.push(
+          `${page_.name} [${variant.name}]: ${motion.pending} node(s) stuck in a pending reveal`,
+        );
+      }
+      if (
+        variant.reducedMotion === "reduce" &&
+        (motion.running > 0 || motion.drifting > 0)
+      ) {
+        failures.push(
+          `${page_.name} [${variant.name}]: decorative motion still running under prefers-reduced-motion ` +
+            `(marquee=${motion.running}, mesh=${motion.drifting})`,
+        );
+      }
+    } catch (err) {
       failures.push(
-        `${page_.name} [${variant.name}]: ${motion.pending} node(s) stuck in a pending reveal`,
+        `${page_.name} [${variant.name}]: ${err instanceof Error ? err.message : String(err)}`,
       );
+    } finally {
+      await page.close();
     }
-    if (variant.reducedMotion === "reduce" && (motion.running > 0 || motion.drifting > 0)) {
-      failures.push(
-        `${page_.name} [${variant.name}]: decorative motion still running under prefers-reduced-motion ` +
-          `(marquee=${motion.running}, mesh=${motion.drifting})`,
-      );
-    }
-  } catch (err) {
-    failures.push(`${page_.name} [${variant.name}]: ${err instanceof Error ? err.message : String(err)}`);
-  } finally {
-    await page.close();
   }
-}
 
-await context.close();
+  await context.close();
 }
 
 await browser.close();

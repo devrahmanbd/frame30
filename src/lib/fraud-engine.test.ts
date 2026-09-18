@@ -11,7 +11,9 @@ import {
 
 const NOW = "2026-02-01T12:00:00.000Z";
 
-function rules(overrides: Partial<Record<string, Partial<RuleState>>> = {}): RuleState[] {
+function rules(
+  overrides: Partial<Record<string, Partial<RuleState>>> = {},
+): RuleState[] {
   const defaults = defaultParams();
   return RULE_CATALOG.map((r) => ({
     code: r.code,
@@ -44,13 +46,19 @@ const base = {
 
 describe("fraud engine", () => {
   it("allows a clean order", () => {
-    const v = assess({ ...base, history: [order({ createdAt: "2026-01-01T00:00:00.000Z" })] }, rules());
+    const v = assess(
+      { ...base, history: [order({ createdAt: "2026-01-01T00:00:00.000Z" })] },
+      rules(),
+    );
     expect(v.action).toBe("allow");
     expect(v.score).toBe(0);
   });
 
   it("blocks a blacklisted shopper before any other rule", () => {
-    const v = assess({ ...base, blacklisted: true, amountMinorInt: 9_000_000 }, rules());
+    const v = assess(
+      { ...base, blacklisted: true, amountMinorInt: 9_000_000 },
+      rules(),
+    );
     expect(v.action).toBe("block");
     expect(v.decisiveCode).toBe("BLACKLIST_MATCH");
     expect(v.signals).toHaveLength(1);
@@ -63,14 +71,18 @@ describe("fraud engine", () => {
   });
 
   it("evaluates rules in precedence order", () => {
-    const codes = [...RULE_CATALOG].sort((a, b) => a.precedence - b.precedence).map((r) => r.code);
+    const codes = [...RULE_CATALOG]
+      .sort((a, b) => a.precedence - b.precedence)
+      .map((r) => r.code);
     expect(codes[0]).toBe("BLACKLIST_MATCH");
     expect(codes[codes.length - 1]).toBe("COD_MAX_AMOUNT");
   });
 
   it("flags order velocity for review", () => {
     const history = Array.from({ length: 4 }, (_, i) =>
-      order({ createdAt: new Date(Date.parse(NOW) - i * 60_000).toISOString() }),
+      order({
+        createdAt: new Date(Date.parse(NOW) - i * 60_000).toISOString(),
+      }),
     );
     const v = assess({ ...base, history }, rules());
     expect(v.signals.some((s) => s.code === "VELOCITY_LIMIT")).toBe(true);
@@ -99,7 +111,11 @@ describe("fraud engine", () => {
 
   it("ignores address clustering when the address is empty", () => {
     const v = assess(
-      { ...base, addressLine: null, history: [order({ addressLine: null, phone: "01799000000" })] },
+      {
+        ...base,
+        addressLine: null,
+        history: [order({ addressLine: null, phone: "01799000000" })],
+      },
       rules(),
     );
     expect(v.signals.some((s) => s.code === "ADDRESS_CLUSTER")).toBe(false);
@@ -108,7 +124,10 @@ describe("fraud engine", () => {
   it("respects disabled rules", () => {
     const v = assess(
       { ...base, paymentMethod: "cod", amountMinorInt: 9_000_000 },
-      rules({ COD_MAX_AMOUNT: { enabled: false }, NEW_DEVICE_HIGH_VALUE: { enabled: false } }),
+      rules({
+        COD_MAX_AMOUNT: { enabled: false },
+        NEW_DEVICE_HIGH_VALUE: { enabled: false },
+      }),
     );
     expect(v.signals.some((s) => s.code === "COD_MAX_AMOUNT")).toBe(false);
   });
@@ -118,7 +137,9 @@ describe("fraud engine", () => {
       { ...base, amountMinorInt: 300_000 },
       rules({ COD_MAX_AMOUNT: { params: { cod_max_minor_int: 200_000 } } }),
     );
-    expect(v.signals.find((s) => s.code === "COD_MAX_AMOUNT")?.threshold).toBe(200_000);
+    expect(v.signals.find((s) => s.code === "COD_MAX_AMOUNT")?.threshold).toBe(
+      200_000,
+    );
   });
 
   it("is deterministic for the same input", () => {
@@ -128,7 +149,10 @@ describe("fraud engine", () => {
 
   it("caps the score at 100 and explains every signal", () => {
     const history = Array.from({ length: 6 }, (_, i) =>
-      order({ status: "cancelled", createdAt: new Date(Date.parse(NOW) - i * 60_000).toISOString() }),
+      order({
+        status: "cancelled",
+        createdAt: new Date(Date.parse(NOW) - i * 60_000).toISOString(),
+      }),
     );
     const v = assess({ ...base, history, amountMinorInt: 9_000_000 }, rules());
     expect(v.score).toBeLessThanOrEqual(100);
@@ -137,9 +161,20 @@ describe("fraud engine", () => {
   });
 
   it("scores headless automation as a bot", () => {
-    expect(botScore({ userAgent: "HeadlessChrome/120", webdriver: true, dwellMs: 200 })).toBe(100);
     expect(
-      botScore({ userAgent: "Mozilla/5.0 (iPhone)", interactions: 12, pointerMoves: 40, dwellMs: 30_000 }),
+      botScore({
+        userAgent: "HeadlessChrome/120",
+        webdriver: true,
+        dwellMs: 200,
+      }),
+    ).toBe(100);
+    expect(
+      botScore({
+        userAgent: "Mozilla/5.0 (iPhone)",
+        interactions: 12,
+        pointerMoves: 40,
+        dwellMs: 30_000,
+      }),
     ).toBe(0);
   });
 

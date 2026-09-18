@@ -42,7 +42,13 @@ import {
   type RedirectRow,
 } from "./content-health";
 import { buildPermalink, type PermalinkSettings } from "./permalink";
-import { captureError, incr, log, observe, withSpan } from "./observability.server";
+import {
+  captureError,
+  incr,
+  log,
+  observe,
+  withSpan,
+} from "./observability.server";
 
 type Client = SupabaseClient<Database>;
 type LooseClient = Client & { from: (table: string) => any };
@@ -69,7 +75,9 @@ const INSERT_CHUNK = 500;
 
 const nowIso = () => new Date().toISOString();
 const safeMessage = (err: unknown) =>
-  err instanceof Error ? err.message.slice(0, 240) : "Unknown content-health error";
+  err instanceof Error
+    ? err.message.slice(0, 240)
+    : "Unknown content-health error";
 
 function chunk<T>(rows: T[], size = INSERT_CHUNK): T[][] {
   const out: T[][] = [];
@@ -102,7 +110,11 @@ export function countWords(markup: string): number {
  * `/store/<slug>` prefix out of hrefs before analysis. Doing it here — once,
  * on load — keeps the pure domain free of tenant routing knowledge.
  */
-export function normaliseBodyLinks(body: string, storeSlug: string, origins: string[]): string {
+export function normaliseBodyLinks(
+  body: string,
+  storeSlug: string,
+  origins: string[],
+): string {
   let out = String(body ?? "");
   for (const origin of origins) {
     if (!origin) continue;
@@ -138,7 +150,10 @@ export type LoadedContent = {
  * Everything scannable the tenant owns, already normalised. Each kind is one
  * bounded query with a tenant-first index behind it — never a per-row fetch.
  */
-export async function loadContentGraph(db: Client, merchantId: string): Promise<LoadedContent> {
+export async function loadContentGraph(
+  db: Client,
+  merchantId: string,
+): Promise<LoadedContent> {
   const loose = db as LooseClient;
   const limit = CRAWL_POLICY.maxNodesPerKind;
 
@@ -147,60 +162,81 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
     .select("id, slug, name")
     .eq("id", merchantId)
     .maybeSingle();
-  if (merchantError) throw new ContentHealthError("read_failed", merchantError.message);
-  if (!merchant) throw new ContentHealthError("merchant_not_found", "Store not found.");
+  if (merchantError)
+    throw new ContentHealthError("read_failed", merchantError.message);
+  if (!merchant)
+    throw new ContentHealthError("merchant_not_found", "Store not found.");
 
   const { permalinkSettingsFor } = await import("./permalink.server");
   const permalinks = await permalinkSettingsFor(db, merchantId);
 
-  const [articles, pages, products, collections, redirects, metas, domains] = await Promise.all([
-    loose
-      .from("articles")
-      .select("id, title, title_en, slug, body, excerpt, tags, status, published_at, updated_at, robots, cover_image_url, category_id")
-      .eq("merchant_id", merchantId)
-      .is("deleted_at", null)
-      .order("updated_at", { ascending: false })
-      .limit(limit + 1),
-    loose
-      .from("storefront_pages")
-      .select("id, title, slug, body_markdown, excerpt, is_published, published_at, updated_at, robots, cover_image_url")
-      .eq("merchant_id", merchantId)
-      .is("deleted_at", null)
-      .order("updated_at", { ascending: false })
-      .limit(limit + 1),
-    loose
-      .from("products")
-      .select("id, title, slug, description, tags, status, image_url, updated_at, created_at")
-      .eq("merchant_id", merchantId)
-      .is("deleted_at", null)
-      .order("updated_at", { ascending: false })
-      .limit(limit + 1),
-    loose
-      .from("collections")
-      .select("id, name, slug, description, is_published, image_url, updated_at, created_at")
-      .eq("merchant_id", merchantId)
-      .is("deleted_at", null)
-      .order("updated_at", { ascending: false })
-      .limit(limit + 1),
-    loose
-      .from("url_redirects")
-      .select("from_path, to_path, status_code")
-      .eq("merchant_id", merchantId)
-      .limit(20_000),
-    loose
-      .from("seo_meta")
-      .select("entity_type, entity_id, focus_keyword, secondary_keywords, robots_index, sitemap_exclude")
-      .eq("merchant_id", merchantId)
-      .limit(20_000),
-    loose
-      .from("custom_domains")
-      .select("hostname, status")
-      .eq("merchant_id", merchantId)
-      .limit(20),
-  ]);
+  const [articles, pages, products, collections, redirects, metas, domains] =
+    await Promise.all([
+      loose
+        .from("articles")
+        .select(
+          "id, title, title_en, slug, body, excerpt, tags, status, published_at, updated_at, robots, cover_image_url, category_id",
+        )
+        .eq("merchant_id", merchantId)
+        .is("deleted_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(limit + 1),
+      loose
+        .from("storefront_pages")
+        .select(
+          "id, title, slug, body_markdown, excerpt, is_published, published_at, updated_at, robots, cover_image_url",
+        )
+        .eq("merchant_id", merchantId)
+        .is("deleted_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(limit + 1),
+      loose
+        .from("products")
+        .select(
+          "id, title, slug, description, tags, status, image_url, updated_at, created_at",
+        )
+        .eq("merchant_id", merchantId)
+        .is("deleted_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(limit + 1),
+      loose
+        .from("collections")
+        .select(
+          "id, name, slug, description, is_published, image_url, updated_at, created_at",
+        )
+        .eq("merchant_id", merchantId)
+        .is("deleted_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(limit + 1),
+      loose
+        .from("url_redirects")
+        .select("from_path, to_path, status_code")
+        .eq("merchant_id", merchantId)
+        .limit(20_000),
+      loose
+        .from("seo_meta")
+        .select(
+          "entity_type, entity_id, focus_keyword, secondary_keywords, robots_index, sitemap_exclude",
+        )
+        .eq("merchant_id", merchantId)
+        .limit(20_000),
+      loose
+        .from("custom_domains")
+        .select("hostname, status")
+        .eq("merchant_id", merchantId)
+        .limit(20),
+    ]);
 
-  for (const result of [articles, pages, products, collections, redirects, metas]) {
-    if (result?.error) throw new ContentHealthError("read_failed", result.error.message);
+  for (const result of [
+    articles,
+    pages,
+    products,
+    collections,
+    redirects,
+    metas,
+  ]) {
+    if (result?.error)
+      throw new ContentHealthError("read_failed", result.error.message);
   }
 
   const metaIndex = new Map<string, SeoMetaRow>();
@@ -209,8 +245,10 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
   }
 
   const origins: string[] = [];
-  for (const row of ((domains as { data?: { hostname?: string }[] })?.data ?? [])) {
-    if (row?.hostname) origins.push(`https://${row.hostname}`, `http://${row.hostname}`);
+  for (const row of (domains as { data?: { hostname?: string }[] })?.data ??
+    []) {
+    if (row?.hostname)
+      origins.push(`https://${row.hostname}`, `http://${row.hostname}`);
   }
 
   let truncated = false;
@@ -233,7 +271,9 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
   const indexable = (type: string, id: string, fallback: boolean) => {
     const meta = metaFor(type, id);
     if (!meta) return fallback;
-    return fallback && meta.robots_index !== false && meta.sitemap_exclude !== true;
+    return (
+      fallback && meta.robots_index !== false && meta.sitemap_exclude !== true
+    );
   };
 
   for (const row of take((articles?.data ?? []) as any[])) {
@@ -257,8 +297,14 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       secondaryKeywords: meta?.secondary_keywords ?? [],
       tags: Array.isArray(row.tags) ? row.tags : [],
       updatedAt: row.updated_at ?? nowIso(),
-      publishedAt: row.status === "published" ? (row.published_at ?? null) : null,
-      indexable: indexable("article", row.id, row.status === "published" && !String(row.robots ?? "").startsWith("noindex")),
+      publishedAt:
+        row.status === "published" ? (row.published_at ?? null) : null,
+      indexable: indexable(
+        "article",
+        row.id,
+        row.status === "published" &&
+          !String(row.robots ?? "").startsWith("noindex"),
+      ),
       hasImage: Boolean(row.cover_image_url),
       hasAuthor: true,
       hasDescription: Boolean(row.excerpt),
@@ -271,7 +317,12 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       type: "page",
       id: row.id,
       slug: row.slug,
-      path: buildPermalink(permalinks, { kind: "page", slug: row.slug, date: null, category: null }),
+      path: buildPermalink(permalinks, {
+        kind: "page",
+        slug: row.slug,
+        date: null,
+        category: null,
+      }),
       title: row.title ?? "",
       body: `${row.excerpt ?? ""}\n${row.body_markdown ?? ""}`,
       wordCount: countWords(row.body_markdown ?? ""),
@@ -279,8 +330,15 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       secondaryKeywords: meta?.secondary_keywords ?? [],
       tags: [],
       updatedAt: row.updated_at ?? nowIso(),
-      publishedAt: row.is_published ? (row.published_at ?? row.updated_at ?? null) : null,
-      indexable: indexable("page", row.id, Boolean(row.is_published) && !String(row.robots ?? "").startsWith("noindex")),
+      publishedAt: row.is_published
+        ? (row.published_at ?? row.updated_at ?? null)
+        : null,
+      indexable: indexable(
+        "page",
+        row.id,
+        Boolean(row.is_published) &&
+          !String(row.robots ?? "").startsWith("noindex"),
+      ),
       hasImage: Boolean(row.cover_image_url),
       hasDescription: Boolean(row.excerpt),
     });
@@ -292,7 +350,12 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       type: "product",
       id: row.id,
       slug: row.slug,
-      path: buildPermalink(permalinks, { kind: "product", slug: row.slug, date: null, category: null }),
+      path: buildPermalink(permalinks, {
+        kind: "product",
+        slug: row.slug,
+        date: null,
+        category: null,
+      }),
       title: row.title ?? "",
       body: row.description ?? "",
       wordCount: countWords(row.description ?? ""),
@@ -300,7 +363,10 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       secondaryKeywords: meta?.secondary_keywords ?? [],
       tags: Array.isArray(row.tags) ? row.tags : [],
       updatedAt: row.updated_at ?? nowIso(),
-      publishedAt: row.status === "active" ? (row.created_at ?? row.updated_at ?? null) : null,
+      publishedAt:
+        row.status === "active"
+          ? (row.created_at ?? row.updated_at ?? null)
+          : null,
       indexable: indexable("product", row.id, row.status === "active"),
       hasImage: Boolean(row.image_url),
       hasDescription: Boolean(row.description),
@@ -316,7 +382,12 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       type: "collection",
       id: row.id,
       slug: row.slug,
-      path: buildPermalink(permalinks, { kind: "collection", slug: row.slug, date: null, category: null }),
+      path: buildPermalink(permalinks, {
+        kind: "collection",
+        slug: row.slug,
+        date: null,
+        category: null,
+      }),
       title: row.name ?? "",
       body: row.description ?? "",
       wordCount: countWords(row.description ?? ""),
@@ -324,7 +395,10 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       secondaryKeywords: meta?.secondary_keywords ?? [],
       tags: [],
       updatedAt: row.updated_at ?? nowIso(),
-      publishedAt: row.is_published === false ? null : (row.created_at ?? row.updated_at ?? null),
+      publishedAt:
+        row.is_published === false
+          ? null
+          : (row.created_at ?? row.updated_at ?? null),
       indexable: indexable("collection", row.id, row.is_published !== false),
       hasImage: Boolean(row.image_url),
       hasDescription: Boolean(row.description),
@@ -339,9 +413,16 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
       .select("product_id, sku, price_amount_minor_int, stock_quantity")
       .in("product_id", productIds.slice(0, 2_000))
       .limit(20_000);
-    const byProduct = new Map<string, { sku: boolean; price: boolean; stock: boolean }>();
-    for (const v of ((variants ?? []) as any[])) {
-      const prev = byProduct.get(v.product_id) ?? { sku: false, price: false, stock: false };
+    const byProduct = new Map<
+      string,
+      { sku: boolean; price: boolean; stock: boolean }
+    >();
+    for (const v of (variants ?? []) as any[]) {
+      const prev = byProduct.get(v.product_id) ?? {
+        sku: false,
+        price: false,
+        stock: false,
+      };
       byProduct.set(v.product_id, {
         sku: prev.sku || Boolean(v.sku),
         price: prev.price || Number(v.price_amount_minor_int ?? 0) > 0,
@@ -357,11 +438,13 @@ export async function loadContentGraph(db: Client, merchantId: string): Promise<
     }
   }
 
-  const redirectRows: RedirectRow[] = ((redirects?.data ?? []) as any[]).map((r) => ({
-    from: r.from_path,
-    to: r.to_path ?? null,
-    status: Number(r.status_code ?? 301),
-  }));
+  const redirectRows: RedirectRow[] = ((redirects?.data ?? []) as any[]).map(
+    (r) => ({
+      from: r.from_path,
+      to: r.to_path ?? null,
+      status: Number(r.status_code ?? 301),
+    }),
+  );
 
   return {
     merchant: { id: merchant.id, slug: merchant.slug, name: merchant.name },
@@ -384,7 +467,8 @@ export type ExternalVerdict = {
   reason: string;
 };
 
-const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
  * Checks one external URL under the crawl policy: HEAD first (cheap for the
@@ -393,13 +477,24 @@ const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve,
  */
 export async function checkExternalUrl(
   url: string,
-  opts: { fetchImpl?: typeof fetch; timeoutMs?: number; maxAttempts?: number; deadline?: number } = {},
+  opts: {
+    fetchImpl?: typeof fetch;
+    timeoutMs?: number;
+    maxAttempts?: number;
+    deadline?: number;
+  } = {},
 ): Promise<ExternalVerdict> {
   const doFetch = opts.fetchImpl ?? fetch;
   const timeoutMs = opts.timeoutMs ?? CRAWL_POLICY.externalTimeoutMs;
   const maxAttempts = opts.maxAttempts ?? CRAWL_POLICY.maxAttempts;
   let attempts = 0;
-  let last: ExternalVerdict = { url, status: "unknown", httpStatus: null, attempts: 0, reason: "not_attempted" };
+  let last: ExternalVerdict = {
+    url,
+    status: "unknown",
+    httpStatus: null,
+    attempts: 0,
+    reason: "not_attempted",
+  };
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (opts.deadline && Date.now() > opts.deadline) {
@@ -437,9 +532,12 @@ export async function checkExternalUrl(
       };
       // A 405/501 on HEAD is the server refusing the method, not a dead link.
       if (last.status === "ok") return last;
-      if ((response.status === 405 || response.status === 501) && attempt === 0) continue;
+      if ((response.status === 405 || response.status === 501) && attempt === 0)
+        continue;
       if (!isRetryable(outcome)) return last;
-      const retryAfter = parseRetryAfter(response.headers?.get?.("retry-after") ?? null);
+      const retryAfter = parseRetryAfter(
+        response.headers?.get?.("retry-after") ?? null,
+      );
       await sleep(backoffMs(attempt, retryAfter));
     } catch (err) {
       const aborted = err instanceof Error && err.name === "AbortError";
@@ -467,7 +565,10 @@ export async function verifyExternalLinks(
   urls: string[],
   opts: { deadline?: number; fetchImpl?: typeof fetch; max?: number } = {},
 ): Promise<ExternalVerdict[]> {
-  const max = Math.min(opts.max ?? CRAWL_POLICY.maxExternalChecksPerRun, urls.length);
+  const max = Math.min(
+    opts.max ?? CRAWL_POLICY.maxExternalChecksPerRun,
+    urls.length,
+  );
   const queue = urls.slice(0, max);
   const verdicts: ExternalVerdict[] = [];
   const hostNextAt = new Map<string, number>();
@@ -484,7 +585,13 @@ export async function verifyExternalLinks(
       try {
         host = new URL(url).host.toLowerCase();
       } catch {
-        verdicts.push({ url, status: "unknown", httpStatus: null, attempts: 0, reason: "unparseable" });
+        verdicts.push({
+          url,
+          status: "unknown",
+          httpStatus: null,
+          attempts: 0,
+          reason: "unparseable",
+        });
         continue;
       }
       const readyAt = hostNextAt.get(host) ?? 0;
@@ -495,13 +602,23 @@ export async function verifyExternalLinks(
         ...(opts.fetchImpl ? { fetchImpl: opts.fetchImpl } : {}),
         ...(opts.deadline ? { deadline: opts.deadline } : {}),
       });
-      incr("framique_content_external_checks_total", { outcome: verdict.status });
+      incr("framique_content_external_checks_total", {
+        outcome: verdict.status,
+      });
       verdicts.push(verdict);
     }
   };
 
   await Promise.all(
-    Array.from({ length: Math.min(CRAWL_POLICY.externalConcurrency, Math.max(queue.length, 1)) }, worker),
+    Array.from(
+      {
+        length: Math.min(
+          CRAWL_POLICY.externalConcurrency,
+          Math.max(queue.length, 1),
+        ),
+      },
+      worker,
+    ),
   );
   return verdicts;
 }
@@ -520,8 +637,12 @@ export function externalFindings(
   for (const edge of edges) {
     if (edge.kind !== "external") continue;
     const verdict = byUrl.get(edge.href);
-    if (!verdict || verdict.status === "ok" || verdict.status === "unknown") continue;
-    const code: FindingCode = verdict.status === "dead" ? "link.external_dead" : "link.external_blocked";
+    if (!verdict || verdict.status === "ok" || verdict.status === "unknown")
+      continue;
+    const code: FindingCode =
+      verdict.status === "dead"
+        ? "link.external_dead"
+        : "link.external_blocked";
     const fingerprint = fingerprintOf(code, [edge.sourceId, edge.href]);
     if (seen.has(fingerprint)) continue;
     seen.add(fingerprint);
@@ -543,7 +664,11 @@ export function externalFindings(
         verdict.status === "dead"
           ? `${edge.href} লিংকটি কাজ করছে না (${verdict.httpStatus ?? "ত্রুটি"})। বদলান বা সরান।`
           : `${edge.href} স্বয়ংক্রিয় চেক আটকে দিয়েছে (${verdict.httpStatus ?? verdict.reason})। নিজে দেখে নিন।`,
-      detail: { httpStatus: verdict.httpStatus, attempts: verdict.attempts, reason: verdict.reason },
+      detail: {
+        httpStatus: verdict.httpStatus,
+        attempts: verdict.attempts,
+        reason: verdict.reason,
+      },
     });
   }
   return out;
@@ -556,7 +681,8 @@ export function externalFindings(
 type AdminClient = Client;
 
 async function adminClient(): Promise<AdminClient> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as AdminClient;
 }
 
@@ -580,10 +706,14 @@ export async function reconcileFindings(
     .select("id, code, fingerprint, state, occurrences")
     .eq("merchant_id", merchantId)
     .limit(50_000);
-  if (readError) throw new ContentHealthError("persist_failed", readError.message);
+  if (readError)
+    throw new ContentHealthError("persist_failed", readError.message);
 
-  const existing = new Map<string, { id: string; state: string; occurrences: number }>();
-  for (const row of ((existingRows ?? []) as any[])) {
+  const existing = new Map<
+    string,
+    { id: string; state: string; occurrences: number }
+  >();
+  for (const row of (existingRows ?? []) as any[]) {
     existing.set(`${row.code}|${row.fingerprint}`, {
       id: row.id,
       state: row.state,
@@ -658,7 +788,8 @@ export async function persistEdges(
     .delete()
     .eq("merchant_id", merchantId)
     .neq("run_id", runId);
-  if (clearError) throw new ContentHealthError("persist_failed", clearError.message);
+  if (clearError)
+    throw new ContentHealthError("persist_failed", clearError.message);
 
   const rows = edges.slice(0, CRAWL_POLICY.maxEdgesPerRun).map((e) => ({
     merchant_id: merchantId,
@@ -684,7 +815,10 @@ export async function persistEdges(
 }
 
 /** Keeps run history bounded so the desk query stays one indexed page. */
-export async function pruneRuns(db: AdminClient, merchantId: string): Promise<number> {
+export async function pruneRuns(
+  db: AdminClient,
+  merchantId: string,
+): Promise<number> {
   const loose = db as LooseClient;
   const { data } = await loose
     .from("content_health_runs")
@@ -733,7 +867,9 @@ export type ScanResult = {
  * One tenant's full content-health scan. Always terminal: it either finishes
  * and writes ok/partial, or it writes failed with a code the desk can explain.
  */
-export async function runContentHealthScan(input: ScanInput): Promise<ScanResult> {
+export async function runContentHealthScan(
+  input: ScanInput,
+): Promise<ScanResult> {
   const started = Date.now();
   const trigger = input.trigger ?? "manual";
   const deadline = input.deadline ?? started + CRAWL_POLICY.runBudgetMs;
@@ -748,7 +884,11 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
     .gte("started_at", new Date(Date.now() - STALE_RUN_MS).toISOString())
     .limit(1)
     .maybeSingle();
-  if (active) throw new ContentHealthError("scan_busy", "A content scan is already running for this store.");
+  if (active)
+    throw new ContentHealthError(
+      "scan_busy",
+      "A content scan is already running for this store.",
+    );
 
   const { data: run, error: createError } = await loose
     .from("content_health_runs")
@@ -761,7 +901,10 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
     .select("id")
     .single();
   if (createError || !run) {
-    throw new ContentHealthError("persist_failed", createError?.message ?? "Could not open a scan run.");
+    throw new ContentHealthError(
+      "persist_failed",
+      createError?.message ?? "Could not open a scan run.",
+    );
   }
   const runId = (run as { id: string }).id;
 
@@ -786,8 +929,18 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
           ...externalFindings(verdicts, report.edges, loaded.nodes),
         ];
 
-        const reconciliation = await reconcileFindings(db, input.merchantId, runId, allFindings);
-        const linksChecked = await persistEdges(db, input.merchantId, runId, report.edges);
+        const reconciliation = await reconcileFindings(
+          db,
+          input.merchantId,
+          runId,
+          allFindings,
+        );
+        const linksChecked = await persistEdges(
+          db,
+          input.merchantId,
+          runId,
+          report.edges,
+        );
 
         const bySeverity = { error: 0, warning: 0, notice: 0 } as Record<
           "error" | "warning" | "notice",
@@ -796,13 +949,21 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
         for (const f of allFindings) bySeverity[f.severity] += 1;
         const counts = { ...report.counts };
         for (const f of allFindings) {
-          if (f.code === "link.external_dead" || f.code === "link.external_blocked") counts[f.code] += 1;
+          if (
+            f.code === "link.external_dead" ||
+            f.code === "link.external_blocked"
+          )
+            counts[f.code] += 1;
         }
 
         const timedOut = Date.now() > deadline;
         const skippedExternal =
           input.checkExternal === false ||
-          verdicts.length < Math.min(report.externalTargets.length, CRAWL_POLICY.maxExternalChecksPerRun);
+          verdicts.length <
+            Math.min(
+              report.externalTargets.length,
+              CRAWL_POLICY.maxExternalChecksPerRun,
+            );
         const status: ScanResult["status"] =
           report.truncated || timedOut || skippedExternal ? "partial" : "ok";
         const durationMs = Date.now() - started;
@@ -823,15 +984,20 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
             finished_at: nowIso(),
           })
           .eq("id", runId);
-        if (finishError) throw new ContentHealthError("persist_failed", finishError.message);
+        if (finishError)
+          throw new ContentHealthError("persist_failed", finishError.message);
 
         await pruneRuns(db, input.merchantId);
 
         for (const [code, count] of Object.entries(counts)) {
-          if (count > 0) incr("framique_content_health_findings_total", { code }, count);
+          if (count > 0)
+            incr("framique_content_health_findings_total", { code }, count);
         }
         observe("framique_content_health_duration_ms", durationMs, { trigger });
-        incr("framique_content_health_runs_total", { trigger, outcome: status });
+        incr("framique_content_health_runs_total", {
+          trigger,
+          outcome: status,
+        });
         log("info", "content.health.completed", {
           merchantId: input.merchantId,
           runId,
@@ -874,7 +1040,11 @@ export async function runContentHealthScan(input: ScanInput): Promise<ScanResult
       })
       .eq("id", runId);
     incr("framique_content_health_runs_total", { trigger, outcome: "failed" });
-    void captureError(err, { scope: "content.health.scan", merchantId: input.merchantId, runId });
+    void captureError(err, {
+      scope: "content.health.scan",
+      merchantId: input.merchantId,
+      runId,
+    });
     throw err;
   }
 }
@@ -921,7 +1091,7 @@ export async function runContentHealthSweep(
     .order("started_at", { ascending: false })
     .limit(2_000);
   const lastRun = new Map<string, number>();
-  for (const row of ((recent ?? []) as any[])) {
+  for (const row of (recent ?? []) as any[]) {
     const at = Date.parse(row.started_at ?? "") || 0;
     if (!lastRun.has(row.merchant_id)) lastRun.set(row.merchant_id, at);
   }
@@ -960,9 +1130,24 @@ export async function runContentHealthSweep(
   }
 
   const durationMs = Date.now() - started;
-  log("info", "content.health.sweep", { considered: queue.length, scanned, skipped, failed, durationMs });
-  incr("framique_content_health_sweeps_total", { outcome: failed ? "partial" : "ok" });
-  return { considered: queue.length, scanned, skipped, failed, durationMs, deadlineHit };
+  log("info", "content.health.sweep", {
+    considered: queue.length,
+    scanned,
+    skipped,
+    failed,
+    durationMs,
+  });
+  incr("framique_content_health_sweeps_total", {
+    outcome: failed ? "partial" : "ok",
+  });
+  return {
+    considered: queue.length,
+    scanned,
+    skipped,
+    failed,
+    durationMs,
+    deadlineHit,
+  };
 }
 
 /* ==========================================================================
@@ -978,7 +1163,11 @@ export type FindingFilter = {
   offset?: number;
 };
 
-export async function loadFindings(db: Client, merchantId: string, filter: FindingFilter = {}) {
+export async function loadFindings(
+  db: Client,
+  merchantId: string,
+  filter: FindingFilter = {},
+) {
   const loose = db as LooseClient;
   const limit = Math.max(1, Math.min(filter.limit ?? 50, 200));
   const offset = Math.max(0, filter.offset ?? 0);
@@ -989,10 +1178,14 @@ export async function loadFindings(db: Client, merchantId: string, filter: Findi
       { count: "exact" },
     )
     .eq("merchant_id", merchantId);
-  if (!filter.state || filter.state !== "all") query = query.eq("state", filter.state ?? "open");
-  if (filter.code && filter.code !== "all") query = query.eq("code", filter.code);
-  if (filter.severity && filter.severity !== "all") query = query.eq("severity", filter.severity);
-  if (filter.entityType && filter.entityType !== "all") query = query.eq("entity_type", filter.entityType);
+  if (!filter.state || filter.state !== "all")
+    query = query.eq("state", filter.state ?? "open");
+  if (filter.code && filter.code !== "all")
+    query = query.eq("code", filter.code);
+  if (filter.severity && filter.severity !== "all")
+    query = query.eq("severity", filter.severity);
+  if (filter.entityType && filter.entityType !== "all")
+    query = query.eq("entity_type", filter.entityType);
 
   const { data, error, count } = await query
     .order("severity", { ascending: true })
@@ -1022,12 +1215,19 @@ export async function loadContentHealthState(db: Client, merchantId: string) {
       .limit(5_000),
     loadFindings(db, merchantId, { state: "open", limit: 50 }),
   ]);
-  if (runs.error) throw new ContentHealthError("read_failed", runs.error.message);
+  if (runs.error)
+    throw new ContentHealthError("read_failed", runs.error.message);
 
-  const openRows = ((open?.data ?? []) as any[]);
-  const bySeverity = { error: 0, warning: 0, notice: 0 } as Record<string, number>;
+  const openRows = (open?.data ?? []) as any[];
+  const bySeverity = { error: 0, warning: 0, notice: 0 } as Record<
+    string,
+    number
+  >;
   const byCode: Record<string, number> = {};
-  const byPage = new Map<string, { path: string; title: string; count: number }>();
+  const byPage = new Map<
+    string,
+    { path: string; title: string; count: number }
+  >();
   for (const row of openRows) {
     bySeverity[row.severity] = (bySeverity[row.severity] ?? 0) + 1;
     byCode[row.code] = (byCode[row.code] ?? 0) + 1;
@@ -1041,7 +1241,7 @@ export async function loadContentHealthState(db: Client, merchantId: string) {
     byPage.set(row.entity_path, prev);
   }
 
-  const history = ((runs.data ?? []) as any[]);
+  const history = (runs.data ?? []) as any[];
   const latest = history[0] ?? null;
   const scanned = (latest?.scanned ?? {}) as Record<ContentEntityType, number>;
 
@@ -1053,7 +1253,9 @@ export async function loadContentHealthState(db: Client, merchantId: string) {
       total: openRows.length,
       bySeverity,
       byCode,
-      worstPages: [...byPage.values()].sort((a, b) => b.count - a.count).slice(0, 10),
+      worstPages: [...byPage.values()]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10),
     },
     score: latest
       ? healthScore({
@@ -1092,8 +1294,14 @@ export async function setFindingState(
     .select("id, state")
     .maybeSingle();
   if (error) throw new ContentHealthError("persist_failed", error.message);
-  if (!data) throw new ContentHealthError("not_found", "That finding no longer exists.");
-  log("info", "content.health.triage", { merchantId, findingId, state, userId });
+  if (!data)
+    throw new ContentHealthError("not_found", "That finding no longer exists.");
+  log("info", "content.health.triage", {
+    merchantId,
+    findingId,
+    state,
+    userId,
+  });
   incr("framique_content_health_triage_total", { state });
   return data as { id: string; state: string };
 }
@@ -1102,7 +1310,13 @@ export async function setFindingState(
 export async function suggestLinksForDraft(
   db: Client,
   merchantId: string,
-  draft: { id?: string | null; title: string; body: string; focusKeyword?: string; tags?: string[] },
+  draft: {
+    id?: string | null;
+    title: string;
+    body: string;
+    focusKeyword?: string;
+    tags?: string[];
+  },
   limit?: number,
 ): Promise<LinkSuggestion[]> {
   const loaded = await loadContentGraph(db, merchantId);
@@ -1110,9 +1324,17 @@ export async function suggestLinksForDraft(
 }
 
 /** Structured-data completeness for one entity, straight from the domain. */
-export async function schemaReportFor(db: Client, merchantId: string, entityId: string) {
+export async function schemaReportFor(
+  db: Client,
+  merchantId: string,
+  entityId: string,
+) {
   const loaded = await loadContentGraph(db, merchantId);
   const node = loaded.nodes.find((n) => n.id === entityId);
-  if (!node) throw new ContentHealthError("not_found", "That content no longer exists.");
-  return { node: { id: node.id, type: node.type, title: node.title, path: node.path }, rows: schemaReport(node) };
+  if (!node)
+    throw new ContentHealthError("not_found", "That content no longer exists.");
+  return {
+    node: { id: node.id, type: node.type, title: node.title, path: node.path },
+    rows: schemaReport(node),
+  };
 }

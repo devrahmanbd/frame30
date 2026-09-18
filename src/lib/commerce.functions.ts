@@ -17,9 +17,8 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 export const inventoryLoadFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { loadLocations, loadLevels, loadTransfers, loadFulfilments } = await import(
-      "./inventory.server"
-    );
+    const { loadLocations, loadLevels, loadTransfers, loadFulfilments } =
+      await import("./inventory.server");
     const merchantId = await scope(context.supabase, context.userId);
     const [locations, levels, transfers, fulfilments] = await Promise.all([
       loadLocations(context.supabase, merchantId),
@@ -69,7 +68,6 @@ export const inventorySetLevelFn = createServerFn({ method: "POST" })
     return setLevel(context.supabase, merchantId, data);
   });
 
-
 export const inventoryTransferFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -77,7 +75,11 @@ export const inventoryTransferFn = createServerFn({ method: "POST" })
       .object({
         fromLocationId: uuid,
         toLocationId: uuid,
-        items: z.array(z.object({ variantId: uuid, quantity: z.number().int().min(1) })).min(1),
+        items: z
+          .array(
+            z.object({ variantId: uuid, quantity: z.number().int().min(1) }),
+          )
+          .min(1),
         note: z.string().max(300).optional(),
       })
       .parse(d),
@@ -97,7 +99,11 @@ export const fulfilmentCreateFn = createServerFn({ method: "POST" })
       .object({
         orderId: uuid,
         locationId: uuid.nullish(),
-        items: z.array(z.object({ orderItemId: uuid, quantity: z.number().int().min(1) })).min(1),
+        items: z
+          .array(
+            z.object({ orderItemId: uuid, quantity: z.number().int().min(1) }),
+          )
+          .min(1),
         idempotencyKey: z.string().min(8).max(128),
       })
       .parse(d),
@@ -123,7 +129,12 @@ export const fulfilmentAdvanceFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { advanceFulfilment } = await import("./inventory.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return advanceFulfilment(context.supabase, merchantId, context.userId, data);
+    return advanceFulfilment(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data,
+    );
   });
 
 /* -------------------------------- gift cards -------------------------------- */
@@ -133,7 +144,10 @@ export const giftCardsLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { loadGiftCards } = await import("./gift-cards.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, cards: await loadGiftCards(context.supabase, merchantId) };
+    return {
+      merchantId,
+      cards: await loadGiftCards(context.supabase, merchantId),
+    };
   });
 
 export const giftCardIssueFn = createServerFn({ method: "POST" })
@@ -160,7 +174,12 @@ export const giftCardVoidFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { voidGiftCard } = await import("./gift-cards.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return voidGiftCard(context.supabase, merchantId, context.userId, data.giftCardId);
+    return voidGiftCard(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.giftCardId,
+    );
   });
 
 /* ------------------------------ returns/disputes ------------------------------ */
@@ -183,7 +202,13 @@ export const returnAdvanceFn = createServerFn({ method: "POST" })
     z
       .object({
         returnId: uuid,
-        status: z.enum(["approved", "rejected", "received", "refunded", "cancelled"]),
+        status: z.enum([
+          "approved",
+          "rejected",
+          "received",
+          "refunded",
+          "cancelled",
+        ]),
         note: z.string().max(300).nullish(),
       })
       .parse(d),
@@ -224,11 +249,18 @@ export const cartsLoadFn = createServerFn({ method: "GET" })
 
 export const cartRecoveryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ cartIds: z.array(uuid).min(1).max(200) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ cartIds: z.array(uuid).min(1).max(200) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { sendRecovery } = await import("./carts.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return sendRecovery(context.supabase, merchantId, context.userId, data.cartIds);
+    return sendRecovery(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.cartIds,
+    );
   });
 
 export const bundlesLoadFn = createServerFn({ method: "GET" })
@@ -236,7 +268,10 @@ export const bundlesLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { loadBundles } = await import("./bundles.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, bundles: await loadBundles(context.supabase, merchantId) };
+    return {
+      merchantId,
+      bundles: await loadBundles(context.supabase, merchantId),
+    };
   });
 
 export const bundleSaveFn = createServerFn({ method: "POST" })
@@ -250,7 +285,9 @@ export const bundleSaveFn = createServerFn({ method: "POST" })
         percentOff: z.number().int().min(0).max(100).optional(),
         active: z.boolean().optional(),
         components: z
-          .array(z.object({ variantId: uuid, quantity: z.number().int().min(1) }))
+          .array(
+            z.object({ variantId: uuid, quantity: z.number().int().min(1) }),
+          )
           .min(2),
       })
       .parse(d),
@@ -275,7 +312,9 @@ export const bundleDeleteFn = createServerFn({ method: "POST" })
 
 export const customersLoadFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ term: z.string().max(120).optional() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ term: z.string().max(120).optional() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadCustomers, loadSegments } = await import("./bundles.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -291,7 +330,10 @@ export const discountBatchesFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { loadBatches } = await import("./discount-codes.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, batches: await loadBatches(context.supabase, merchantId) };
+    return {
+      merchantId,
+      batches: await loadBatches(context.supabase, merchantId),
+    };
   });
 
 export const discountGenerateFn = createServerFn({ method: "POST" })
@@ -328,7 +370,12 @@ export const invoiceIssueFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { issueOrderInvoice } = await import("./inventory.server");
     const merchantId = await scope(context.supabase, context.userId);
-    await issueOrderInvoice(context.supabase, merchantId, context.userId, data.orderId);
+    await issueOrderInvoice(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.orderId,
+    );
     const { loadInvoiceDocument } = await import("./invoices.server");
     return loadInvoiceDocument(context.supabase, merchantId, data.orderId);
   });

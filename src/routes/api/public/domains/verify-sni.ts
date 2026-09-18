@@ -11,6 +11,17 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
  * This prevents SNI rate-limit exhaustion attacks where attackers connect with
  * thousands of arbitrary hostnames to exhaust Let's Encrypt certificates quotas.
  */
+const NEGATIVE_CACHE = new Map<string, number>();
+
+function cleanNegativeCache() {
+  if (NEGATIVE_CACHE.size > 5000) {
+    const now = Date.now();
+    for (const [k, exp] of NEGATIVE_CACHE.entries()) {
+      if (exp <= now) NEGATIVE_CACHE.delete(k);
+    }
+  }
+}
+
 export const Route = createFileRoute("/api/public/domains/verify-sni")({
   server: {
     handlers: {
@@ -51,6 +62,33 @@ export const Route = createFileRoute("/api/public/domains/verify-sni")({
           );
         }
 
+        // Rate limit by client IP (REPORT WF-15)
+        const clientIp =
+          request.headers.get("cf-connecting-ip") ||
+          request.headers.get("x-real-ip") ||
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+          "127.0.0.1";
+
+        try {
+          const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+          await enforceRateLimit("domains.acme", clientIp);
+        } catch {
+          return Response.json(
+            { allowed: false, error: "rate_limit_exceeded" },
+            { status: 429, headers: { "Cache-Control": "no-store" } },
+          );
+        }
+
+        // Negative cache check to prevent repeated DB enumeration hits
+        cleanNegativeCache();
+        const cachedExp = NEGATIVE_CACHE.get(hostname);
+        if (cachedExp && cachedExp > Date.now()) {
+          return Response.json(
+            { allowed: false, error: "domain_not_registered" },
+            { status: 404, headers: { "Cache-Control": "public, max-age=15" } },
+          );
+        }
+
         // Check if custom domain exists and is in a valid state
         try {
           const { data: domain, error } = await supabaseAdmin
@@ -60,9 +98,13 @@ export const Route = createFileRoute("/api/public/domains/verify-sni")({
             .maybeSingle();
 
           if (error || !domain) {
+            NEGATIVE_CACHE.set(hostname, Date.now() + 15_000);
             return Response.json(
               { allowed: false, error: "domain_not_registered" },
-              { status: 404 },
+              {
+                status: 404,
+                headers: { "Cache-Control": "public, max-age=15" },
+              },
             );
           }
 

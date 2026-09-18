@@ -8,7 +8,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "./authz-middleware";
 
 const domainSchema = z.string().max(200).optional().default("framique.com");
-const databaseSchema = z.enum(["bd", "us", "in", "global"]).optional().default("bd");
+const databaseSchema = z
+  .enum(["bd", "us", "in", "global"])
+  .optional()
+  .default("bd");
 
 export const semrushOverviewFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])

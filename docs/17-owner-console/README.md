@@ -8,7 +8,7 @@ Owners: product: rafiq · eng: platform · qa: `@e2e_owner` (see `docs/15-e2e`)
 The platform-owner surface of Framique, reachable only at `/root` — the third and
 top shell in the SaaS topology (`/root` owner · `/admin` merchant staff ·
 `/dashboard` customer). It is the console the operator uses to watch the whole
-product and to act on things *no merchant shell can*: pricing drafts, platform
+product and to act on things _no merchant shell can_: pricing drafts, platform
 sign-offs, gateway environment toggles (mock → sandbox → live), platform-wide
 kill switches, fraud desk, and compliance settings.
 
@@ -32,6 +32,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
 ## 2. Surfaces (11 pages — each embeds Design-guidelines in-line)
 
 ### §2.1 — Shell & navigation (all pages)
+
 - Intent: one year, one place: routes `/root/{hub,pricing,marketing,coupons,trial,fraud,ai,users,gateway,settings}`; no new top-level navigation hidden behind knee-drop.
 - Key surfaces: top nav (10 links + settings), deep links from other surfaces (e.g. `/admin/orders` → `/root/gateway`), role badge.
 - Palette: neutral canvas + accent BD Teal for at-focus; money always tabular.
@@ -39,9 +40,10 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
 - Motion: opacity-only transitions (0.15s); reduced-motion always.
 - A11y: AAA on confirm/refund/live-gate modals; `aria-current` on rail; focus outline visible at 2:1.
 - Performance: route-level code-split ≤ 18KB gz per page; rail lazy.
-- Anti-slop: the rail is a *vertical* list (not top tabs) — owner's full product map visible in one scroll; no gradient; no custom icons beyond the design-system set.
+- Anti-slop: the rail is a _vertical_ list (not top tabs) — owner's full product map visible in one scroll; no gradient; no custom icons beyond the design-system set.
 
 ### §2.2 — Owner Dashboard (`/root/hub`)
+
 - Shows 7-day + 30-day KPIs (GMV ৳2.84cr ▲4.2% example, active shops 1,284,
   MFS/Wallet split, settlement in-flight, queue depth, fraud risk count, trial
   expiring, AI-ticket backlog) — every card pulls from the owning area's
@@ -58,6 +60,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   `/root/settings` level.
 
 ### §2.3 — Pricing Builder (drafts → signed)
+
 - Surface: `plan_definitions` writes go to the 16-pricing engine with status
   `draft`; publication requires a 2-key sign-off (`owner_ack` + `audit` row).
 - All values (tier prices, limits, cadence) come from `16-product-pricing` totals
@@ -71,8 +74,9 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   the exact pending copy state, live preview mirrors `/customer/#/pricing` rubric.
 
 ### §2.4 — Marketing
+
 - `docs/05` is the owner of campaigns/email/forms/ads; `/root/marketing` only
-  reads and *force-completes* (4-eyes) what 05's machine applied (e.g. "stop
+  reads and _force-completes_ (4-eyes) what 05's machine applied (e.g. "stop
   all": requires scope + reason).
 - Consent control: each channel page shows consent totals + opt-out counts and a
   "disable" button that honors 05's consent model (opt-in OFF default; the
@@ -82,6 +86,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   — moneyless but high-context (price fragments render in `fmtBDT` previews).
 
 ### §2.5 — Coupons & Promos (console ops on 07's rules)
+
 - `07` owns coupon/promo catalog + state machine (percent/fixed, usage caps,
   expirations). The console shows the catalog read-only + "vendor-quick fixes"
   (revoke a coupon globally = read-07, write-07 slug with 4-eyes).
@@ -90,6 +95,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   `offer.percent_cap_bdt` (advisory value, see §3) — server re-judges anyway.
 
 ### §2.6 — Trial Manager (draft)
+
 - Root sees trial ladder (5-days opt-in default in subscription engine) as
   funnel coordinates (signup→first order→paid) — read-only; extending trial
   requires reason + 4-eyes (`trial.extended.with_reason`).
@@ -97,6 +103,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   the 16-pricing engine, the console just submits the opinion.
 
 ### §2.7 — Spam & Abuse desk
+
 - Thin reader over `11-fraud` (rule engine, blacklist-honeypot, risk-review) —
   never re-implements scoring; shows review SLA breaches (`fraud.review_sla`
   advisory = 24h), honeypot window events (`fraud.honeypot_window` = 7d).
@@ -105,6 +112,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   event fires at SLA shock).
 
 ### §2.8 — AI/ML management (advisory-only)
+
 - Lists models/embedding/metadata from `10-ai-support`; kill switch per
   feature-flag (front) with 4-eyes; that switch truthfully lives in
   `ai.kill_switch.changed` — it never touches money reads (fraud/SLA decisions
@@ -112,13 +120,15 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
 - Read-only model table is refreshed from 10; parameters/sso data stay in 10.
 
 ### §2.9 — User & RBAC management (mirror only)
-- Identity + roles come from `02-merchant` (RBAC grants); `root` can *revoke*
+
+- Identity + roles come from `02-merchant` (RBAC grants); `root` can _revoke_
   (needs 13 export/SDK force-revoke key path, `export.api_key.revoked`), can
   never mint accounts (02 owns genesis).
 - Admin sees the permission map read-only; changes are logged with
   `tenant.permissions_changed` + user identity.
 
 ### §2.10 — Gateway management
+
 - Toggle per gateway/env: `mock` / `sandbox` / `live`; `live` requires 4-eyes +
   explicit sign-off reason; the actual state machine lives in `06-payments`
   (`gateway_credentials`, `gateway_env`) and the console only sends the
@@ -129,6 +139,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   throttled through 14's API.
 
 ### §2.11 — Settings & compliance
+
 - Year tables drive VAT (`vat_rates` per legal year — never constants), so the
   page forces year-scoped VAt viewer-writer via security archive.
 - Retention: raw analytics 90d, audit 3y, PII 90d + JSONL export behind
@@ -138,6 +149,7 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
   labeled with its own doc number.
 
 ### §2.12 — Deep-link passthrough (no duplicated views)
+
 - Beyond the 11 novel surfaces above, the rest of `/root` is deep links out to
   pages the product already has (backoffice screens) — the console never
   rebuilds a view that another surface owns.
@@ -146,19 +158,20 @@ measured or owned, it stays a named `TBD` with an owner (see §Named-TBD).
 
 Reads (all via area APIs, RLS, `check_entitlement` RPC where needed):
 
-| Table | Owner (area) | Console access |
-|---|---|---|
-| `analytics.batches` KPIs | `09` | read (dashboard §2.2) |
-| `wallet_ledger` (per merchant; securities) | `06` | read balances (gross, settled, float), never mutate via console |
-| `subscriptions` / `trial_runs` | `16` (incl. dunning) | read funnel; extend = owned RPC |
-| `queue_jobs` w/ DLQ | `14` | read + controlled flush (14 owns) |
-| `fraud_events`, `blacklist` | `11` | review actions only |
-| `ai.features` / logs | `10` | kill switches flags (4-eyes), no data edits |
-| `coupons`, promo rules | `07` | read; updates via 07 with 4-eyes |
-| `campaign_sink` | `05` | read + stop/cancel ops (05's) |
-| `users/role` | `02` | read; revoke via 02/13 |
+| Table                                      | Owner (area)         | Console access                                                  |
+| ------------------------------------------ | -------------------- | --------------------------------------------------------------- |
+| `analytics.batches` KPIs                   | `09`                 | read (dashboard §2.2)                                           |
+| `wallet_ledger` (per merchant; securities) | `06`                 | read balances (gross, settled, float), never mutate via console |
+| `subscriptions` / `trial_runs`             | `16` (incl. dunning) | read funnel; extend = owned RPC                                 |
+| `queue_jobs` w/ DLQ                        | `14`                 | read + controlled flush (14 owns)                               |
+| `fraud_events`, `blacklist`                | `11`                 | review actions only                                             |
+| `ai.features` / logs                       | `10`                 | kill switches flags (4-eyes), no data edits                     |
+| `coupons`, promo rules                     | `07`                 | read; updates via 07 with 4-eyes                                |
+| `campaign_sink`                            | `05`                 | read + stop/cancel ops (05's)                                   |
+| `users/role`                               | `02`                 | read; revoke via 02/13                                          |
 
 Writes (console never creates rows):
+
 - `plan_definitions` drafts → signed via 16 (4-eyes)
 - `gateway_env` transitions → 06 (`live` gates: 4-eyes + wallet check)
 - `feature_flags.ai_kill_switch` → 10 (4-eyes)
@@ -166,18 +179,18 @@ Writes (console never creates rows):
 
 ## 4. Named-TBD (every concrete value must trace; things without a home stay listed)
 
-| Key | Owner (area) | Value today (advisory) |
-|---|---|---|
-| `plan_values` (tier map) | `16` (plan-lead) | drafts only — no live value until signed |
-| `offer.percent_cap_bdt` (coupon engine cap) | `07` offer-engine | ৳ 400 / 20% — 07's call |
-| `fraud.review_sla` | `11` fraud-ops | 24 h from trigger |
-| `fraud.honeypot_window` | `11` fraud-ops | 7 d |
-| `ai.model` / `ai.embedding_dim` | `10` ML-eng | TBD (air-gapped/local store) |
-| `whatsapp_channel` (consent friendly) | `05` | disabled |
-| `usd_conversion` (pilot gate) | `06` currency | OFF — BDT-only on all consoles |
-| `rto` / `rpo` | `14` ops | after first drill (none claimed) |
-| `trial_default_days` (dunning reads) | `16` | 5 (matches 16's trial machine) |
-| `e2e_owner` | `15` QAT | TBD `@e2e_owner` — owner loop not green until set |
+| Key                                         | Owner (area)      | Value today (advisory)                            |
+| ------------------------------------------- | ----------------- | ------------------------------------------------- |
+| `plan_values` (tier map)                    | `16` (plan-lead)  | drafts only — no live value until signed          |
+| `offer.percent_cap_bdt` (coupon engine cap) | `07` offer-engine | ৳ 400 / 20% — 07's call                           |
+| `fraud.review_sla`                          | `11` fraud-ops    | 24 h from trigger                                 |
+| `fraud.honeypot_window`                     | `11` fraud-ops    | 7 d                                               |
+| `ai.model` / `ai.embedding_dim`             | `10` ML-eng       | TBD (air-gapped/local store)                      |
+| `whatsapp_channel` (consent friendly)       | `05`              | disabled                                          |
+| `usd_conversion` (pilot gate)               | `06` currency     | OFF — BDT-only on all consoles                    |
+| `rto` / `rpo`                               | `14` ops          | after first drill (none claimed)                  |
+| `trial_default_days` (dunning reads)        | `16`              | 5 (matches 16's trial machine)                    |
+| `e2e_owner`                                 | `15` QAT          | TBD `@e2e_owner` — owner loop not green until set |
 
 ## 5. State machines & gates (all owned upstream)
 
@@ -222,8 +235,8 @@ Writes (console never creates rows):
 ## 10. Build order (docs-first)
 
 1. Shell + nav (deep links) → 2. Hub dashboard (KPIs from read surfaces) →
-3. Pricing drafts (+sign-off) → 4. Coupons/trial/gateway read+act shells →
-5. Fraud/AI desks → 6. Settings/VAT/retention → 7. `owner_loop` green
+2. Pricing drafts (+sign-off) → 4. Coupons/trial/gateway read+act shells →
+3. Fraud/AI desks → 6. Settings/VAT/retention → 7. `owner_loop` green
    (15-e2e). No "root is real" claim before the owner loop passes.
 
 ## 11. Testing gates (map to `15-e2e`)
@@ -254,4 +267,4 @@ Writes (console never creates rows):
 8. **Testing** — no claims without `owner_loop` evidence; every section above
    maps to a named witness (naming `owner` in meetings, not chat).
 
-*End of phase-17 planning set (00–17).*
+_End of phase-17 planning set (00–17)._

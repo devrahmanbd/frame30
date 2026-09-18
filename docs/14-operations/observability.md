@@ -2,11 +2,11 @@
 
 Three pillars, one trace id.
 
-| Pillar | Where | Entry point |
-| --- | --- | --- |
-| Metrics | Prometheus scrapes `/api/public/metrics` | `incr` / `setGauge` / `observe` |
+| Pillar          | Where                                      | Entry point                                      |
+| --------------- | ------------------------------------------ | ------------------------------------------------ |
+| Metrics         | Prometheus scrapes `/api/public/metrics`   | `incr` / `setGauge` / `observe`                  |
 | Traces + errors | Sentry (performance transactions + issues) | `withRequestTrace` / `withSpan` / `captureError` |
-| Logs | JSON lines to stdout → Loki/Grafana | `log(level, event, fields)` |
+| Logs            | JSON lines to stdout → Loki/Grafana        | `log(level, event, fields)`                      |
 
 Every log line and every Sentry event carries `trace_id` and `span_id`, so a
 Grafana log panel links straight to the trace that produced it (the derived
@@ -14,13 +14,13 @@ field is wired in `ops/observability/grafana/provisioning-datasources.yml`).
 
 ## Environment
 
-| Variable | Purpose | Behaviour when unset |
-| --- | --- | --- |
-| `METRICS_TOKEN` | Bearer token for the scrape endpoint | endpoint returns 404 (closed by default) |
-| `SENTRY_DSN` | Sentry ingest | Sentry transport is a silent no-op |
-| `SENTRY_ENVIRONMENT` | `production` / `preview` | defaults to `preview` |
-| `SENTRY_RELEASE` | release tag for regressions | defaults to `dev` |
-| `SENTRY_TRACES_SAMPLE_RATE` | head sampling, `0`–`1` | defaults to `0.1` |
+| Variable                    | Purpose                              | Behaviour when unset                     |
+| --------------------------- | ------------------------------------ | ---------------------------------------- |
+| `METRICS_TOKEN`             | Bearer token for the scrape endpoint | endpoint returns 404 (closed by default) |
+| `SENTRY_DSN`                | Sentry ingest                        | Sentry transport is a silent no-op       |
+| `SENTRY_ENVIRONMENT`        | `production` / `preview`             | defaults to `preview`                    |
+| `SENTRY_RELEASE`            | release tag for regressions          | defaults to `dev`                        |
+| `SENTRY_TRACES_SAMPLE_RATE` | head sampling, `0`–`1`               | defaults to `0.1`                        |
 
 Sampling is deterministic on the trace id, so a distributed trace is never
 half-recorded, and an inbound `traceparent` is always honoured.
@@ -45,7 +45,7 @@ overview** (`framique-platform`).
 ## Metric conventions
 
 - Names are `framique_<domain>_<thing>_<unit>`; durations are milliseconds.
-- Counters are per-isolate and monotonic *within* an isolate only. Always
+- Counters are per-isolate and monotonic _within_ an isolate only. Always
   aggregate with `sum(rate(...))` — never read a raw counter.
 - Label values are truncated to 48 chars and the registry hard-caps at 6000
   series per isolate; overflow increments `framique_metrics_dropped_series`
@@ -53,19 +53,19 @@ overview** (`framique-platform`).
 
 ### Ad-fraud series
 
-| Metric | Type | Labels |
-| --- | --- | --- |
-| `framique_ad_clicks_total` | counter | `verdict`, `network` |
-| `framique_ad_click_rejected_total` | counter | `reason` |
-| `framique_ad_click_replay_total` | counter | `source` |
-| `framique_ad_ingest_ms` | histogram | `network`, `path` |
-| `framique_ad_score` | histogram | `network` |
-| `framique_ad_cron_runs_total` | counter | `outcome` |
-| `framique_ad_cron_duration_ms` | histogram | — |
-| `framique_ad_cron_rollups_total` | counter | — |
-| `framique_ad_blocklist_expired_total` | counter | — |
-| `framique_ad_last_sweep_timestamp` | gauge | — |
-| `framique_idempotency_total` | counter | `route`, `outcome` |
+| Metric                                | Type      | Labels               |
+| ------------------------------------- | --------- | -------------------- |
+| `framique_ad_clicks_total`            | counter   | `verdict`, `network` |
+| `framique_ad_click_rejected_total`    | counter   | `reason`             |
+| `framique_ad_click_replay_total`      | counter   | `source`             |
+| `framique_ad_ingest_ms`               | histogram | `network`, `path`    |
+| `framique_ad_score`                   | histogram | `network`            |
+| `framique_ad_cron_runs_total`         | counter   | `outcome`            |
+| `framique_ad_cron_duration_ms`        | histogram | —                    |
+| `framique_ad_cron_rollups_total`      | counter   | —                    |
+| `framique_ad_blocklist_expired_total` | counter   | —                    |
+| `framique_ad_last_sweep_timestamp`    | gauge     | —                    |
+| `framique_idempotency_total`          | counter   | `route`, `outcome`   |
 
 ## Click beacon hardening (`/api/public/ads/click`)
 
@@ -81,7 +81,7 @@ Checks run cheapest-first so a flood costs the attacker more than it costs us:
 7. Origin allowlist, when the merchant configured storefront hosts.
 8. HMAC signature over `merchantId\nnonce\nsentAt\nvisitorId\nnetwork`, when
    the merchant enabled signed beacons (constant-time compare).
-9. Durable replay claim in `api_idempotency_keys` — the unique index *is* the
+9. Durable replay claim in `api_idempotency_keys` — the unique index _is_ the
    lock, so two isolates racing the same nonce cannot both win. Replays return
    the stored response with `idempotent-replay: true`; same key + different
    body returns `409`. A failed handler releases the key so retries work.
@@ -101,27 +101,27 @@ leaks score reasoning. The nightly cron prunes spent keys after 24h.
 
 ## Runbook pointers
 
-| Alert | First move |
-| --- | --- |
-| `AdClickIngestErrors` | Sentry issues with `scope=ads.click`, stage tag tells you idempotency vs ingest |
-| `AdClickBeaconAbuseSpike` | Ad defense desk → offenders; consider enabling signed beacons for the store |
-| `AdFraudSweepStalled` | Check the cron caller and `framique_ad_cron_runs_total{outcome="unauthorized"}` |
-| `BeaconReplayConflicts` | A merchant SDK reusing an `Idempotency-Key`, or a tampered replay |
-| `SentryTransportFailing` | You are flying blind — fix the DSN/quota before anything else |
+| Alert                     | First move                                                                      |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `AdClickIngestErrors`     | Sentry issues with `scope=ads.click`, stage tag tells you idempotency vs ingest |
+| `AdClickBeaconAbuseSpike` | Ad defense desk → offenders; consider enabling signed beacons for the store     |
+| `AdFraudSweepStalled`     | Check the cron caller and `framique_ad_cron_runs_total{outcome="unauthorized"}` |
+| `BeaconReplayConflicts`   | A merchant SDK reusing an `Idempotency-Key`, or a tampered replay               |
+| `SentryTransportFailing`  | You are flying blind — fix the DSN/quota before anything else                   |
 
 ## Infrastructure signals (§4.4)
 
-| Signal | Metric | Alert |
-| --- | --- | --- |
-| Queue latency | `framique_queue_oldest_age_seconds{queue}` (gauge) | `QueueHeadSlow` 5m warn, `QueueHeadStalled` 15m critical |
-| Queue depth | `framique_queue_depth{queue,state}` (gauge: queued/running/dead) | `QueueBacklogGrowing` — depth **and** upward trend, never depth alone |
-| Queue verdict | `framique_queue_health{queue}` 0 healthy → 3 failing | `QueueUnhealthy` |
-| Dead letters | `framique_jobs_completed_total{outcome="dead"}` | `DeadLetterAppeared` (any) and `DeadLetterRateHigh` (>2%) |
-| Handler duration | `framique_job_duration_ms_bucket` | `JobDurationP95High` — long handlers risk visibility-timeout redelivery |
-| Breaker state | `framique_search_breaker_open{merchant,engine}` (gauge) | `SearchBreakerOpen` |
-| Breaker trips | `framique_search_breaker_trips_total{engine,code}` / `..._recoveries_total` | `SearchBreakerFlapping` (>3/h = unstable, not merely down) |
-| Shopper search | `framique_storefront_search_total{outcome,engine}`, `framique_storefront_search_ms` | `StorefrontSearchErrors`, `SearchFallbackShareHigh` |
-| Edge images | `framique_image_transform_total{outcome}`, `framique_image_transform_ms` | `ImageTransformSignatureAbuse` |
+| Signal           | Metric                                                                              | Alert                                                                   |
+| ---------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Queue latency    | `framique_queue_oldest_age_seconds{queue}` (gauge)                                  | `QueueHeadSlow` 5m warn, `QueueHeadStalled` 15m critical                |
+| Queue depth      | `framique_queue_depth{queue,state}` (gauge: queued/running/dead)                    | `QueueBacklogGrowing` — depth **and** upward trend, never depth alone   |
+| Queue verdict    | `framique_queue_health{queue}` 0 healthy → 3 failing                                | `QueueUnhealthy`                                                        |
+| Dead letters     | `framique_jobs_completed_total{outcome="dead"}`                                     | `DeadLetterAppeared` (any) and `DeadLetterRateHigh` (>2%)               |
+| Handler duration | `framique_job_duration_ms_bucket`                                                   | `JobDurationP95High` — long handlers risk visibility-timeout redelivery |
+| Breaker state    | `framique_search_breaker_open{merchant,engine}` (gauge)                             | `SearchBreakerOpen`                                                     |
+| Breaker trips    | `framique_search_breaker_trips_total{engine,code}` / `..._recoveries_total`         | `SearchBreakerFlapping` (>3/h = unstable, not merely down)              |
+| Shopper search   | `framique_storefront_search_total{outcome,engine}`, `framique_storefront_search_ms` | `StorefrontSearchErrors`, `SearchFallbackShareHigh`                     |
+| Edge images      | `framique_image_transform_total{outcome}`, `framique_image_transform_ms`            | `ImageTransformSignatureAbuse`                                          |
 
 Dashboard: `ops/observability/grafana/infrastructure-dashboard.json`
 (uid `framique-infra`). Sentry rules: `ops/observability/sentry-alerts.yml`,
@@ -132,7 +132,7 @@ matched on the `scope` tag (`job.queue.dead`, `cron.jobs`, `search.breaker`,
 
 A queue 5 000 jobs deep that drains in 90 seconds is healthy; a queue 12 jobs
 deep whose head has waited 20 minutes is broken. Head-of-line age is therefore
-the primary latency alert, and depth only pages when it is *also* trending up.
+the primary latency alert, and depth only pages when it is _also_ trending up.
 
 ### Storefront search path
 
@@ -148,12 +148,12 @@ secret never reaches the browser and the CDN cache stays hot.
 The stack is sized for one Bangladesh-region node running the app plus the
 self-hosted Supabase from Phase 10.
 
-| Component | Retention | Cap | Where it is set |
-| --- | --- | --- | --- |
-| Prometheus TSDB | 30d | 20GB (`--storage.tsdb.retention.size`) | `ops/docker-compose.observability.yml` |
-| Loki chunks | 30d (`retention_period: 720h`) | disk-bound, compacted every 10m | `ops/observability/loki-config.yml` |
-| Alertmanager state | 120h notification log | negligible | `alertmanager.yml` |
-| Grafana | dashboards are provisioned from git; the DB holds users/prefs only | <1GB | `provisioning-*.yml` |
+| Component          | Retention                                                          | Cap                                    | Where it is set                        |
+| ------------------ | ------------------------------------------------------------------ | -------------------------------------- | -------------------------------------- |
+| Prometheus TSDB    | 30d                                                                | 20GB (`--storage.tsdb.retention.size`) | `ops/docker-compose.observability.yml` |
+| Loki chunks        | 30d (`retention_period: 720h`)                                     | disk-bound, compacted every 10m        | `ops/observability/loki-config.yml`    |
+| Alertmanager state | 120h notification log                                              | negligible                             | `alertmanager.yml`                     |
+| Grafana            | dashboards are provisioned from git; the DB holds users/prefs only | <1GB                                   | `provisioning-*.yml`                   |
 
 Sizing rule of thumb at current cardinality (~6k app series, ~1.5GB/day of
 logs at INFO): **60GB** of dedicated disk for `/var/lib/framique-observability`

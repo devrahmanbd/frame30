@@ -114,12 +114,24 @@ export const FEATURE_FILTERS: FilterGroup[] = [
   },
 ];
 
-export type FeatureSelection = { subjects: string[]; features: string[]; layouts: string[] };
+export type FeatureSelection = {
+  subjects: string[];
+  features: string[];
+  layouts: string[];
+};
 
-export const EMPTY_SELECTION: FeatureSelection = { subjects: [], features: [], layouts: [] };
+export const EMPTY_SELECTION: FeatureSelection = {
+  subjects: [],
+  features: [],
+  layouts: [],
+};
 
 export function selectionCount(selection: FeatureSelection): number {
-  return selection.subjects.length + selection.features.length + selection.layouts.length;
+  return (
+    selection.subjects.length +
+    selection.features.length +
+    selection.layouts.length
+  );
 }
 
 export function toggleFeature(
@@ -137,13 +149,23 @@ export function toggleFeature(
 /* ------------------------------------------------------------ search + sort */
 
 function haystack(theme: CatalogTheme): string {
-  return [theme.name, theme.summary, theme.author, theme.category, ...theme.tags, ...theme.features]
+  return [
+    theme.name,
+    theme.summary,
+    theme.author,
+    theme.category,
+    ...theme.tags,
+    ...theme.features,
+  ]
     .join(" ")
     .toLowerCase();
 }
 
 /** Whitespace-separated AND search, same feel as the WordPress search box. */
-export function searchCatalog(themes: CatalogTheme[], query: string): CatalogTheme[] {
+export function searchCatalog(
+  themes: CatalogTheme[],
+  query: string,
+): CatalogTheme[] {
   const terms = query.trim().toLowerCase().split(/\s+/u).filter(Boolean);
   if (!terms.length) return themes;
   return themes.filter((theme) => {
@@ -152,7 +174,10 @@ export function searchCatalog(themes: CatalogTheme[], query: string): CatalogThe
   });
 }
 
-export function searchInstalled(themes: InstalledTheme[], query: string): InstalledTheme[] {
+export function searchInstalled(
+  themes: InstalledTheme[],
+  query: string,
+): InstalledTheme[] {
   const terms = query.trim().toLowerCase().split(/\s+/u).filter(Boolean);
   if (!terms.length) return themes;
   return themes.filter((theme) => {
@@ -164,7 +189,10 @@ export function searchInstalled(themes: InstalledTheme[], query: string): Instal
 }
 
 /** Every selected option must be present — WordPress' filter is an AND. */
-export function filterCatalog(themes: CatalogTheme[], selection: FeatureSelection): CatalogTheme[] {
+export function filterCatalog(
+  themes: CatalogTheme[],
+  selection: FeatureSelection,
+): CatalogTheme[] {
   if (selectionCount(selection) === 0) return themes;
   return themes.filter(
     (theme) =>
@@ -197,16 +225,23 @@ export function isNewerVersion(candidate: string, current: string): boolean {
   return compareVersion(candidate, current) > 0;
 }
 
-export function sortCatalog(themes: CatalogTheme[], tab: CatalogTab): CatalogTheme[] {
+export function sortCatalog(
+  themes: CatalogTheme[],
+  tab: CatalogTab,
+): CatalogTheme[] {
   const list = themes.slice();
   if (tab === "favourites") return list.filter((theme) => theme.favourite);
   if (tab === "latest") {
     return list.sort(
-      (a, b) => compareVersion(b.version, a.version) || a.name.localeCompare(b.name),
+      (a, b) =>
+        compareVersion(b.version, a.version) || a.name.localeCompare(b.name),
     );
   }
   return list.sort(
-    (a, b) => b.installs - a.installs || b.rating - a.rating || a.name.localeCompare(b.name),
+    (a, b) =>
+      b.installs - a.installs ||
+      b.rating - a.rating ||
+      a.name.localeCompare(b.name),
   );
 }
 
@@ -216,7 +251,10 @@ export function catalogView(
   options: { query?: string; selection?: FeatureSelection; tab?: CatalogTab },
 ): CatalogTheme[] {
   const searched = searchCatalog(themes, options.query ?? "");
-  const filtered = filterCatalog(searched, options.selection ?? EMPTY_SELECTION);
+  const filtered = filterCatalog(
+    searched,
+    options.selection ?? EMPTY_SELECTION,
+  );
   return sortCatalog(filtered, options.tab ?? "popular");
 }
 
@@ -238,9 +276,14 @@ export function orderInstalled(themes: InstalledTheme[]): InstalledTheme[] {
 const PLATE_HUES = [250, 190, 24, 300, 140, 12, 210, 84];
 
 /** Deterministic gradient plate for a theme without a screenshot. */
-export function screenshotPlate(seed: string): { from: string; to: string; angle: number } {
+export function screenshotPlate(seed: string): {
+  from: string;
+  to: string;
+  angle: number;
+} {
   let hash = 0;
-  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  for (let i = 0; i < seed.length; i += 1)
+    hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   const hue = PLATE_HUES[hash % PLATE_HUES.length]!;
   const second = PLATE_HUES[(hash >>> 3) % PLATE_HUES.length]!;
   return {
@@ -261,13 +304,18 @@ export function themeInitials(name: string): string {
 
 export const MAX_THEME_UPLOAD_BYTES = 20 * 1024 * 1024;
 
-export type UploadCheck = { ok: true; name: string } | { ok: false; reason: string };
+export type UploadCheck =
+  { ok: true; name: string } | { ok: false; reason: string };
 
 /** Front-of-house validation for the `.zip` drop-zone on the install screen. */
-export function validateThemeUpload(file: { name: string; size: number }): UploadCheck {
+export function validateThemeUpload(file: {
+  name: string;
+  size: number;
+}): UploadCheck {
   const name = file.name.trim();
   if (!name) return { ok: false, reason: "The file needs a name." };
-  if (!/\.zip$/iu.test(name)) return { ok: false, reason: "Theme packages must be a .zip file." };
+  if (!/\.zip$/iu.test(name))
+    return { ok: false, reason: "Theme packages must be a .zip file." };
   if (file.size <= 0) return { ok: false, reason: "That file is empty." };
   if (file.size > MAX_THEME_UPLOAD_BYTES) {
     return {

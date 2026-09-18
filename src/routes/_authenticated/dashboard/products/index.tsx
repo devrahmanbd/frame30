@@ -45,19 +45,37 @@ type Row = {
   title: string;
   slug: string;
   status: "draft" | "active" | "archived";
-  product_variants: { price_amount_minor_int: number; stock_quantity: number }[];
+  product_variants: {
+    price_amount_minor_int: number;
+    stock_quantity: number;
+  }[];
 };
 
-const stockOf = (p: Row) => p.product_variants.reduce((s, v) => s + v.stock_quantity, 0);
+const stockOf = (p: Row) =>
+  p.product_variants.reduce((s, v) => s + v.stock_quantity, 0);
 const priceOf = (p: Row) =>
-  p.product_variants.length ? Math.min(...p.product_variants.map((v) => v.price_amount_minor_int)) : null;
+  p.product_variants.length
+    ? Math.min(...p.product_variants.map((v) => v.price_amount_minor_int))
+    : null;
 
 const VIEWS = {
   all: { en: "All", bn: "সব", match: () => true },
-  active: { en: "Active", bn: "সক্রিয়", match: (p: Row) => p.status === "active" },
+  active: {
+    en: "Active",
+    bn: "সক্রিয়",
+    match: (p: Row) => p.status === "active",
+  },
   draft: { en: "Drafts", bn: "খসড়া", match: (p: Row) => p.status === "draft" },
-  out: { en: "Out of stock", bn: "স্টক শেষ", match: (p: Row) => stockOf(p) <= 0 },
-  archived: { en: "Archived", bn: "আর্কাইভ", match: (p: Row) => p.status === "archived" },
+  out: {
+    en: "Out of stock",
+    bn: "স্টক শেষ",
+    match: (p: Row) => stockOf(p) <= 0,
+  },
+  archived: {
+    en: "Archived",
+    bn: "আর্কাইভ",
+    match: (p: Row) => p.status === "archived",
+  },
 } as const;
 type ViewKey = keyof typeof VIEWS;
 
@@ -71,7 +89,11 @@ function ProductsPage() {
   const { data: merchant } = useMerchant();
   const { t } = useLang();
   const navigate = useNavigate();
-  const list = useListState({ defaultSort: "title", defaultDir: "asc", pageSize: 25 });
+  const list = useListState({
+    defaultSort: "title",
+    defaultDir: "asc",
+    pageSize: 25,
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ["products", merchant?.id],
@@ -79,7 +101,9 @@ function ProductsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
-        .select("id, title, slug, status, product_variants(price_amount_minor_int, stock_quantity)")
+        .select(
+          "id, title, slug, status, product_variants(price_amount_minor_int, stock_quantity)",
+        )
         .eq("merchant_id", merchant!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -93,7 +117,9 @@ function ProductsPage() {
   const filtered = rows.filter(
     (p) =>
       VIEWS[view].match(p) &&
-      (!q || p.title.toLowerCase().includes(q) || p.slug.toLowerCase().includes(q)),
+      (!q ||
+        p.title.toLowerCase().includes(q) ||
+        p.slug.toLowerCase().includes(q)),
   );
   const sorted = compareBy(
     filtered,
@@ -158,7 +184,8 @@ function ProductsPage() {
       description={t("Catalog products and stock", "ক্যাটালগ পণ্য ও স্টক")}
       actions={
         <Link to="/dashboard/products/new" className={btnPrimary}>
-          <Plus className="size-4" aria-hidden /> {t("New product", "নতুন পণ্য")}
+          <Plus className="size-4" aria-hidden />{" "}
+          {t("New product", "নতুন পণ্য")}
         </Link>
       }
     >
@@ -190,7 +217,12 @@ function ProductsPage() {
         columns={columns}
         rowKey={(p) => p.id}
         loading={isLoading}
-        onRowClick={(p) => navigate({ to: "/dashboard/products/$productId", params: { productId: p.id } })}
+        onRowClick={(p) =>
+          navigate({
+            to: "/dashboard/products/$productId",
+            params: { productId: p.id },
+          })
+        }
         rowActions={(p) => (
           <Link
             to="/dashboard/products/$productId"

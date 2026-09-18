@@ -42,10 +42,14 @@ function FraudDesk() {
   const load = useServerFn(ownerFraudFn);
   const setFlag = useServerFn(ownerSetFlagFn);
 
-  const { data, isLoading } = useQuery({ queryKey: ["owner-fraud"], queryFn: () => load() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["owner-fraud"],
+    queryFn: () => load(),
+  });
 
   const toggle = useMutation({
-    mutationFn: (value: boolean) => setFlag({ data: { key: "fraud_engine_enabled", value } }),
+    mutationFn: (value: boolean) =>
+      setFlag({ data: { key: "fraud_engine_enabled", value } }),
     onSuccess: () => {
       toast.success(tk("owner.flag_saved"));
       void qc.invalidateQueries({ queryKey: ["owner-fraud"] });
@@ -57,7 +61,10 @@ function FraudDesk() {
 
   return (
     <section className="space-y-4">
-      <OwnerHeader title={tk("owner.fraud.title")} subtitle={tk("owner.fraud.subtitle")} />
+      <OwnerHeader
+        title={tk("owner.fraud.title")}
+        subtitle={tk("owner.fraud.subtitle")}
+      />
 
       <FlagSwitch
         label={tk("owner.fraud.engine")}
@@ -70,22 +77,44 @@ function FraudDesk() {
       />
 
       <StatGrid>
-        <StatCard label={tk("owner.fraud.open")} value={String(data?.counts.open ?? 0)} />
-        <StatCard label={tk("owner.fraud.evidence")} value={String(data?.counts.evidence ?? 0)} />
-        <StatCard label={tk("owner.fraud.rejected")} value={String(data?.counts.rejected ?? 0)} />
-        <StatCard label={tk("owner.fraud.blacklist")} value={String(data?.blacklist.active ?? 0)} />
+        <StatCard
+          label={tk("owner.fraud.open")}
+          value={String(data?.counts.open ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.fraud.evidence")}
+          value={String(data?.counts.evidence ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.fraud.rejected")}
+          value={String(data?.counts.rejected ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.fraud.blacklist")}
+          value={String(data?.blacklist.active ?? 0)}
+        />
       </StatGrid>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
 
       {rows.length > 0 ? (
         <OwnerTable
-          head={["Order", tk("platform.tenants"), tk("owner.fraud.score"), "Amount", "Status"]}
+          head={[
+            "Order",
+            tk("platform.tenants"),
+            tk("owner.fraud.score"),
+            "Amount",
+            "Status",
+          ]}
         >
           {rows.map((c) => (
             <tr key={c.id} className="border-t border-border">
               <td className="px-3 py-2">
-                <code className="font-mono text-xs">{c.order_number || "—"}</code>
+                <code className="font-mono text-xs">
+                  {c.order_number || "—"}
+                </code>
               </td>
               <td className="px-3 py-2">{c.merchantName ?? c.merchant_id}</td>
               <td className="px-3 py-2 tabular-nums">{c.risk_score}</td>
@@ -94,7 +123,13 @@ function FraudDesk() {
               </td>
               <td className="px-3 py-2">
                 <StatePill
-                  tone={c.status === "rejected" ? "bad" : c.status === "approved" ? "ok" : "warn"}
+                  tone={
+                    c.status === "rejected"
+                      ? "bad"
+                      : c.status === "approved"
+                        ? "ok"
+                        : "warn"
+                  }
                 >
                   {c.status}
                 </StatePill>

@@ -5,12 +5,12 @@ output, per-type sitemaps, and the consent ledger that gates every send.
 
 ## Data model
 
-| Table | Purpose |
-| --- | --- |
-| `seo_meta` | Current override per `(merchant_id, entity_type, entity_id)`. `entity_id` is null for the store-level record. |
-| `seo_meta_audit` | Append-only before/after trail of every panel save. |
-| `consent_events` | Append-only consent ledger: channel, purpose, granted, source, actor, reason. |
-| `customer_consents` | Current consent state read by the send path; written only by `consent_record`. |
+| Table               | Purpose                                                                                                       |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `seo_meta`          | Current override per `(merchant_id, entity_type, entity_id)`. `entity_id` is null for the store-level record. |
+| `seo_meta_audit`    | Append-only before/after trail of every panel save.                                                           |
+| `consent_events`    | Append-only consent ledger: channel, purpose, granted, source, actor, reason.                                 |
+| `customer_consents` | Current consent state read by the send path; written only by `consent_record`.                                |
 
 `consent_record` writes the ledger row and the state row in one transaction, so a
 state row can never exist without the event that produced it.

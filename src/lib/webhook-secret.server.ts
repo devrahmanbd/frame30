@@ -8,10 +8,18 @@
  */
 export async function masterKey() {
   const material =
-    process.env["WEBHOOK_SIGNING_KEY"] ?? process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? "";
+    process.env["WEBHOOK_SIGNING_KEY"] ??
+    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
+    "";
   if (!material) throw new Error("webhook_signing_key_missing");
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(material));
-  return crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, ["encrypt", "decrypt"]);
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(material),
+  );
+  return crypto.subtle.importKey("raw", digest, { name: "AES-GCM" }, false, [
+    "encrypt",
+    "decrypt",
+  ]);
 }
 
 function b64(bytes: Uint8Array) {
@@ -53,5 +61,7 @@ export async function unsealSecret(sealed: string): Promise<string | null> {
 export function newWebhookSecret() {
   const buf = new Uint8Array(24);
   crypto.getRandomValues(buf);
-  return `whsec_${Array.from(buf).map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+  return `whsec_${Array.from(buf)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")}`;
 }

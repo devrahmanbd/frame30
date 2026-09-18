@@ -15,7 +15,8 @@ export const Route = createFileRoute("/store/$slug/sitemap.xml")({
       GET: async ({ request, params }) => {
         const origin = new URL(request.url).origin;
         try {
-          const { renderStoreSitemapIndex } = await import("@/lib/sitemap-config.server");
+          const { renderStoreSitemapIndex } =
+            await import("@/lib/sitemap-config.server");
           const doc = await renderStoreSitemapIndex(params.slug, origin);
           if (!doc) return new Response("Not found", { status: 404 });
           return new Response(doc.body, {
@@ -34,7 +35,10 @@ export const Route = createFileRoute("/store/$slug/sitemap.xml")({
           incr("framique_sitemap_error_total", { surface: "index" });
           return new Response("Sitemap temporarily unavailable", {
             status: 503,
-            headers: { "retry-after": "120", "content-type": "text/plain; charset=utf-8" },
+            headers: {
+              "retry-after": "120",
+              "content-type": "text/plain; charset=utf-8",
+            },
           });
         }
       },

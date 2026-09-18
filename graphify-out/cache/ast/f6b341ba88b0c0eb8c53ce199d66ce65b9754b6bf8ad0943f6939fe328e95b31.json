@@ -1,1 +1,363 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "label": "payment-rails.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L1"}, {"id": "lib_payment_rails_methodlayer", "label": "MethodLayer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L24"}, {"id": "lib_payment_rails_payment_method_keys", "label": "PAYMENT_METHOD_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L26"}, {"id": "lib_payment_rails_paymentmethodkey", "label": "PaymentMethodKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L50"}, {"id": "lib_payment_rails_paymentmethodspec", "label": "PaymentMethodSpec", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L52"}, {"id": "lib_payment_rails_spec", "label": "spec()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L80"}, {"id": "lib_payment_rails_payment_method_catalog", "label": "PAYMENT_METHOD_CATALOG", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L82"}, {"id": "lib_payment_rails_community_method_keys", "label": "COMMUNITY_METHOD_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L284"}, {"id": "lib_payment_rails_iscommunitymethod", "label": "isCommunityMethod()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L288"}, {"id": "lib_payment_rails_ispaymentmethodkey", "label": "isPaymentMethodKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L293"}, {"id": "lib_payment_rails_online_method_keys", "label": "ONLINE_METHOD_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L298"}, {"id": "lib_payment_rails_methodlabel", "label": "methodLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L300"}, {"id": "lib_payment_rails_methodavailability", "label": "MethodAvailability", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L305"}, {"id": "lib_payment_rails_availablemethods", "label": "availableMethods()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L321"}, {"id": "lib_payment_rails_assertmethodallowed", "label": "assertMethodAllowed()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L332"}, {"id": "lib_payment_rails_method_group_order", "label": "METHOD_GROUP_ORDER", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L341"}, {"id": "lib_payment_rails_groupmethods", "label": "groupMethods()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L343"}, {"id": "lib_payment_rails_credentialkeytomethod", "label": "credentialKeyToMethod()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L355"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_methodlayer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_payment_method_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_paymentmethodkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_paymentmethodspec", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_spec", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_payment_method_catalog", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_community_method_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L284", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_iscommunitymethod", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L288", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_ispaymentmethodkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L293", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_online_method_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L298", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_methodlabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L300", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_methodavailability", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L305", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_availablemethods", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L321", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_assertmethodallowed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L332", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_method_group_order", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L341", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_groupmethods", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L343", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payment_rails_ts", "target": "lib_payment_rails_credentialkeytomethod", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L355", "weight": 1.0}, {"source": "lib_payment_rails_assertmethodallowed", "target": "lib_payment_rails_ispaymentmethodkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L333", "weight": 1.0}, {"source": "lib_payment_rails_assertmethodallowed", "target": "lib_payment_rails_availablemethods", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L334", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_payment_rails_iscommunitymethod", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L289"}, {"caller_nid": "lib_payment_rails_ispaymentmethodkey", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L294"}, {"caller_nid": "lib_payment_rails_availablemethods", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L323"}, {"caller_nid": "lib_payment_rails_availablemethods", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L326"}, {"caller_nid": "lib_payment_rails_availablemethods", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L326"}, {"caller_nid": "lib_payment_rails_assertmethodallowed", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L334"}, {"caller_nid": "lib_payment_rails_groupmethods", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L344"}, {"caller_nid": "lib_payment_rails_groupmethods", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts", "source_location": "L344"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "label": "payment-rails.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_payment_rails_methodlayer",
+      "label": "MethodLayer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_payment_rails_payment_method_keys",
+      "label": "PAYMENT_METHOD_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_payment_rails_paymentmethodkey",
+      "label": "PaymentMethodKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_payment_rails_paymentmethodspec",
+      "label": "PaymentMethodSpec",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_payment_rails_spec",
+      "label": "spec()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "lib_payment_rails_payment_method_catalog",
+      "label": "PAYMENT_METHOD_CATALOG",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "lib_payment_rails_community_method_keys",
+      "label": "COMMUNITY_METHOD_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L284"
+    },
+    {
+      "id": "lib_payment_rails_iscommunitymethod",
+      "label": "isCommunityMethod()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L288"
+    },
+    {
+      "id": "lib_payment_rails_ispaymentmethodkey",
+      "label": "isPaymentMethodKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L293"
+    },
+    {
+      "id": "lib_payment_rails_online_method_keys",
+      "label": "ONLINE_METHOD_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L298"
+    },
+    {
+      "id": "lib_payment_rails_methodlabel",
+      "label": "methodLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L300"
+    },
+    {
+      "id": "lib_payment_rails_methodavailability",
+      "label": "MethodAvailability",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L305"
+    },
+    {
+      "id": "lib_payment_rails_availablemethods",
+      "label": "availableMethods()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L321"
+    },
+    {
+      "id": "lib_payment_rails_assertmethodallowed",
+      "label": "assertMethodAllowed()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L332"
+    },
+    {
+      "id": "lib_payment_rails_method_group_order",
+      "label": "METHOD_GROUP_ORDER",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L341"
+    },
+    {
+      "id": "lib_payment_rails_groupmethods",
+      "label": "groupMethods()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L343"
+    },
+    {
+      "id": "lib_payment_rails_credentialkeytomethod",
+      "label": "credentialKeyToMethod()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L355"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_methodlayer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_payment_method_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_paymentmethodkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_paymentmethodspec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_spec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_payment_method_catalog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_community_method_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L284",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_iscommunitymethod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L288",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_ispaymentmethodkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_online_method_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_methodlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_methodavailability",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L305",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_availablemethods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_assertmethodallowed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L332",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_method_group_order",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L341",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_groupmethods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payment_rails_ts",
+      "target": "lib_payment_rails_credentialkeytomethod",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_payment_rails_assertmethodallowed",
+      "target": "lib_payment_rails_ispaymentmethodkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_payment_rails_assertmethodallowed",
+      "target": "lib_payment_rails_availablemethods",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L334",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_payment_rails_iscommunitymethod",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_payment_rails_ispaymentmethodkey",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_payment_rails_availablemethods",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "lib_payment_rails_availablemethods",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L326"
+    },
+    {
+      "caller_nid": "lib_payment_rails_availablemethods",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L326"
+    },
+    {
+      "caller_nid": "lib_payment_rails_assertmethodallowed",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_payment_rails_groupmethods",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_payment_rails_groupmethods",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payment-rails.ts",
+      "source_location": "L344"
+    }
+  ]
+}

@@ -111,7 +111,10 @@ export function grantsToPermissions(
   return out;
 }
 
-export function permissionToGrant(permission: Permission): { group: string; action: string } {
+export function permissionToGrant(permission: Permission): {
+  group: string;
+  action: string;
+} {
   const idx = permission.indexOf(".");
   return { group: permission.slice(0, idx), action: permission.slice(idx + 1) };
 }
@@ -251,7 +254,9 @@ export type PlatformPermission = (typeof PLATFORM_PERMISSIONS)[number];
 
 const PLATFORM_SET: ReadonlySet<string> = new Set(PLATFORM_PERMISSIONS);
 
-export function isPlatformPermission(value: string): value is PlatformPermission {
+export function isPlatformPermission(
+  value: string,
+): value is PlatformPermission {
   return PLATFORM_SET.has(value);
 }
 
@@ -331,15 +336,22 @@ export function can(permission: AnyPermission, ctx: AuthzContext): boolean {
   return (ctx.permissions ?? []).includes(permission);
 }
 
-export function canAny(permissions: readonly AnyPermission[], ctx: AuthzContext): boolean {
+export function canAny(
+  permissions: readonly AnyPermission[],
+  ctx: AuthzContext,
+): boolean {
   return permissions.some((p) => can(p, ctx));
 }
 
-export function permissionsForPreset(preset: RolePreset): readonly Permission[] {
+export function permissionsForPreset(
+  preset: RolePreset,
+): readonly Permission[] {
   return ROLE_PRESETS[preset];
 }
 
 /** Every permission the editable matrix can express must exist in PERMISSIONS. */
 export function matrixPermissions(): string[] {
-  return PERMISSION_MATRIX.flatMap((g) => g.actions.map((a) => `${g.group}.${a}`));
+  return PERMISSION_MATRIX.flatMap((g) =>
+    g.actions.map((a) => `${g.group}.${a}`),
+  );
 }

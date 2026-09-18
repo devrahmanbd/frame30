@@ -6,7 +6,12 @@
  * trailing for three. Children beyond the cap share the final delay rather than
  * disappearing off the end of the schedule.
  */
-import { Children, isValidElement, type ElementType, type ReactNode } from "react";
+import {
+  Children,
+  isValidElement,
+  type ElementType,
+  type ReactNode,
+} from "react";
 import { MOTION_TOKENS, staggerSchedule } from "@/lib/motion-policy";
 import { useMotionIntent } from "@/lib/motion-runtime";
 import { Reveal, type RevealProps } from "./Reveal";
@@ -37,9 +42,16 @@ export function Stagger({
   const Tag = (as ?? "div") as ElementType;
   const intent = useMotionIntent();
   const items = Children.toArray(children).filter(
-    (child) => isValidElement(child) || typeof child === "string" || typeof child === "number",
+    (child) =>
+      isValidElement(child) ||
+      typeof child === "string" ||
+      typeof child === "number",
   );
-  const delays = staggerSchedule(items.length, { stepMs: step, maxTotalMs: maxTotal, intent });
+  const delays = staggerSchedule(items.length, {
+    stepMs: step,
+    maxTotalMs: maxTotal,
+    intent,
+  });
 
   return (
     <Tag className={className} data-motion="stagger">

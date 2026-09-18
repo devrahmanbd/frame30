@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { Field, StatusPill, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  Field,
+  StatusPill,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import {
   CodeBlock,
   DeliveryBadge,
@@ -29,7 +34,10 @@ import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/dashboard/developers")({
   loader: async () => {
-    const [apps, webhooks] = await Promise.all([oauthClientsListFn(), webhooksListFn()]);
+    const [apps, webhooks] = await Promise.all([
+      oauthClientsListFn(),
+      webhooksListFn(),
+    ]);
     return { apps, webhooks };
   },
   head: () => ({
@@ -43,7 +51,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/developers")({
       { property: "og:title", content: "Developer platform — Framique admin" },
       {
         property: "og:description",
-        content: "OAuth 2.1 apps, rotating webhook secrets and a live delivery log.",
+        content:
+          "OAuth 2.1 apps, rotating webhook secrets and a live delivery log.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -77,7 +86,9 @@ function DevelopersPage() {
   const replay = useServerFn(webhookReplayFn);
 
   const [appName, setAppName] = useState("");
-  const [appType, setAppType] = useState<"public" | "confidential">("confidential");
+  const [appType, setAppType] = useState<"public" | "confidential">(
+    "confidential",
+  );
   const [redirects, setRedirects] = useState("");
   const [appScopes, setAppScopes] = useState<Scope[]>(["orders.read"]);
 
@@ -86,7 +97,10 @@ function DevelopersPage() {
   const [hookEvents, setHookEvents] = useState<string[]>(["order.paid"]);
 
   /** One wrapper so every mutation gets the same busy/error/refresh handling. */
-  async function run(fn: () => Promise<unknown>, onSecret?: (r: unknown) => string | null) {
+  async function run(
+    fn: () => Promise<unknown>,
+    onSecret?: (r: unknown) => string | null,
+  ) {
     setBusy(true);
     setError(null);
     try {
@@ -95,14 +109,20 @@ function DevelopersPage() {
       if (revealed) setSecret(revealed);
       await router.invalidate();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("Something went wrong", "কিছু ভুল হয়েছে"));
+      setError(
+        err instanceof Error
+          ? err.message
+          : t("Something went wrong", "কিছু ভুল হয়েছে"),
+      );
     } finally {
       setBusy(false);
     }
   }
 
   const failing = webhooks.endpoints.filter((e) => e.failure_count > 0).length;
-  const queued = webhooks.deliveries.filter((d) => d.status === "pending" || d.status === "failed").length;
+  const queued = webhooks.deliveries.filter(
+    (d) => d.status === "pending" || d.status === "failed",
+  ).length;
   const dead = webhooks.deliveries.filter((d) => d.status === "dead").length;
 
   return (
@@ -122,11 +142,17 @@ function DevelopersPage() {
       <dl className="grid gap-3 sm:grid-cols-4">
         {[
           { label: t("Apps", "অ্যাপ"), value: apps.clients.length },
-          { label: t("Endpoints", "এন্ডপয়েন্ট"), value: webhooks.endpoints.length },
+          {
+            label: t("Endpoints", "এন্ডপয়েন্ট"),
+            value: webhooks.endpoints.length,
+          },
           { label: t("Queued deliveries", "কিউতে ডেলিভারি"), value: queued },
           { label: t("Dead-lettered", "ডেড-লেটার"), value: dead },
         ].map((s) => (
-          <div key={s.label} className="rounded-fq-md border border-border bg-card p-3">
+          <div
+            key={s.label}
+            className="rounded-fq-md border border-border bg-card p-3"
+          >
             <dt className="text-xs text-muted-foreground">{s.label}</dt>
             <dd className="text-lg font-semibold">{s.value}</dd>
           </div>
@@ -143,7 +169,10 @@ function DevelopersPage() {
       )}
 
       {error && (
-        <p role="alert" className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm">
+        <p
+          role="alert"
+          className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm"
+        >
           {error}
         </p>
       )}
@@ -151,7 +180,10 @@ function DevelopersPage() {
       {secret && (
         <SecretReveal
           secret={secret}
-          note={t("Copy this now — it is never shown again.", "এখনই কপি করুন — আর কখনো দেখানো হবে না।")}
+          note={t(
+            "Copy this now — it is never shown again.",
+            "এখনই কপি করুন — আর কখনো দেখানো হবে না।",
+          )}
           onDismiss={() => setSecret(null)}
           copyLabel={t("Copy", "কপি")}
           closeLabel={t("Close", "বন্ধ")}
@@ -188,15 +220,23 @@ function DevelopersPage() {
                       data: {
                         name: appName,
                         clientType: appType,
-                        redirectUris: redirects.split(/\s|,/).map((s) => s.trim()).filter(Boolean),
+                        redirectUris: redirects
+                          .split(/\s|,/)
+                          .map((s) => s.trim())
+                          .filter(Boolean),
                         scopes: appScopes,
                       },
                     }),
                   (res) => {
-                    const r = res as { clientId: string | null; secret: string | null };
+                    const r = res as {
+                      clientId: string | null;
+                      secret: string | null;
+                    };
                     setAppName("");
                     setRedirects("");
-                    return r.secret ? `client_id=${r.clientId}\nclient_secret=${r.secret}` : r.clientId;
+                    return r.secret
+                      ? `client_id=${r.clientId}\nclient_secret=${r.secret}`
+                      : r.clientId;
                   },
                 );
               }}
@@ -214,13 +254,20 @@ function DevelopersPage() {
                 <select
                   className={inputClass}
                   value={appType}
-                  onChange={(e) => setAppType(e.target.value as "public" | "confidential")}
+                  onChange={(e) =>
+                    setAppType(e.target.value as "public" | "confidential")
+                  }
                 >
                   <option value="confidential">confidential</option>
                   <option value="public">public (SPA / mobile)</option>
                 </select>
               </Field>
-              <Field label={t("Redirect URIs (one per line)", "রিডাইরেক্ট URI (প্রতি লাইনে একটি)")}>
+              <Field
+                label={t(
+                  "Redirect URIs (one per line)",
+                  "রিডাইরেক্ট URI (প্রতি লাইনে একটি)",
+                )}
+              >
                 <textarea
                   className={`${inputClass} min-h-20`}
                   value={redirects}
@@ -239,21 +286,30 @@ function DevelopersPage() {
                         checked={appScopes.includes(s.scope)}
                         onChange={(e) =>
                           setAppScopes((prev) =>
-                            e.target.checked ? [...prev, s.scope] : prev.filter((x) => x !== s.scope),
+                            e.target.checked
+                              ? [...prev, s.scope]
+                              : prev.filter((x) => x !== s.scope),
                           )
                         }
                       />
                       <span>
                         <code className="font-mono text-xs">{s.scope}</code>
-                        <span className="block text-xs text-muted-foreground">{t(s.en, s.bn)}</span>
+                        <span className="block text-xs text-muted-foreground">
+                          {t(s.en, s.bn)}
+                        </span>
                       </span>
                     </label>
                   ))}
                 </div>
               </fieldset>
               <div className="sm:col-span-2">
-                <button className={btnPrimary} disabled={busy || appScopes.length === 0}>
-                  {busy ? t("Saving…", "সেভ হচ্ছে…") : t("Create app", "অ্যাপ তৈরি")}
+                <button
+                  className={btnPrimary}
+                  disabled={busy || appScopes.length === 0}
+                >
+                  {busy
+                    ? t("Saving…", "সেভ হচ্ছে…")
+                    : t("Create app", "অ্যাপ তৈরি")}
                 </button>
               </div>
             </form>
@@ -265,14 +321,22 @@ function DevelopersPage() {
             ) : (
               <ul className="space-y-2">
                 {apps.clients.map((c) => (
-                  <li key={c.id} className="rounded-fq-md border border-border p-3 text-sm">
+                  <li
+                    key={c.id}
+                    className="rounded-fq-md border border-border p-3 text-sm"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div>
                         <p className="font-medium">{c.name}</p>
-                        <code className="font-mono text-xs text-muted-foreground">{c.client_id}</code>
+                        <code className="font-mono text-xs text-muted-foreground">
+                          {c.client_id}
+                        </code>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <StatusPill label={c.status} tone={c.status === "active" ? "success" : "neutral"} />
+                        <StatusPill
+                          label={c.status}
+                          tone={c.status === "active" ? "success" : "neutral"}
+                        />
                         <button
                           type="button"
                           className="min-h-9 rounded-fq-md border border-border px-3 text-xs"
@@ -293,25 +357,38 @@ function DevelopersPage() {
                           onClick={() =>
                             void run(() =>
                               appStatus({
-                                data: { id: c.id, status: c.status === "active" ? "disabled" : "active" },
+                                data: {
+                                  id: c.id,
+                                  status:
+                                    c.status === "active"
+                                      ? "disabled"
+                                      : "active",
+                                },
                               }),
                             )
                           }
                         >
-                          {c.status === "active" ? t("Disable", "বন্ধ") : t("Enable", "চালু")}
+                          {c.status === "active"
+                            ? t("Disable", "বন্ধ")
+                            : t("Enable", "চালু")}
                         </button>
                       </div>
                     </div>
                     <p className="mt-2 flex flex-wrap gap-1">
                       {(c.scopes as string[]).map((s) => (
-                        <code key={s} className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]">
+                        <code
+                          key={s}
+                          className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]"
+                        >
                           {s}
                         </code>
                       ))}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {t("Redirects", "রিডাইরেক্ট")}: {(c.redirect_uris as string[]).join(", ")} ·{" "}
-                      {t("Secret rotated", "সিক্রেট রোটেট")}: {fmt(c.secret_rotated_at)}
+                      {t("Redirects", "রিডাইরেক্ট")}:{" "}
+                      {(c.redirect_uris as string[]).join(", ")} ·{" "}
+                      {t("Secret rotated", "সিক্রেট রোটেট")}:{" "}
+                      {fmt(c.secret_rotated_at)}
                     </p>
                   </li>
                 ))}
@@ -327,16 +404,28 @@ function DevelopersPage() {
             )}
           >
             {apps.consents.length === 0 ? (
-              <EmptyRow>{t("No app has been authorised yet.", "এখনো কোনো অ্যাপ অনুমোদিত হয়নি।")}</EmptyRow>
+              <EmptyRow>
+                {t(
+                  "No app has been authorised yet.",
+                  "এখনো কোনো অ্যাপ অনুমোদিত হয়নি।",
+                )}
+              </EmptyRow>
             ) : (
               <ul className="space-y-2 text-sm">
                 {apps.consents.map((c) => (
-                  <li key={c.id} className="flex flex-wrap items-center justify-between gap-2 rounded-fq-md border border-border p-3">
+                  <li
+                    key={c.id}
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-fq-md border border-border p-3"
+                  >
                     <span>
-                      <code className="font-mono text-xs">{(c.scopes as string[]).join(" ")}</code>
+                      <code className="font-mono text-xs">
+                        {(c.scopes as string[]).join(" ")}
+                      </code>
                       <span className="block text-xs text-muted-foreground">
                         {t("Granted", "অনুমোদিত")}: {fmt(c.granted_at)}
-                        {c.revoked_at ? ` · ${t("revoked", "বাতিল")} ${fmt(c.revoked_at)}` : ""}
+                        {c.revoked_at
+                          ? ` · ${t("revoked", "বাতিল")} ${fmt(c.revoked_at)}`
+                          : ""}
                       </span>
                     </span>
                     {!c.revoked_at && (
@@ -344,7 +433,11 @@ function DevelopersPage() {
                         type="button"
                         className="min-h-9 rounded-fq-md border border-border px-3 text-xs"
                         disabled={busy}
-                        onClick={() => void run(() => revokeConsent({ data: { consentId: c.id } }))}
+                        onClick={() =>
+                          void run(() =>
+                            revokeConsent({ data: { consentId: c.id } }),
+                          )
+                        }
                       >
                         {t("Revoke", "বাতিল")}
                       </button>
@@ -371,7 +464,14 @@ function DevelopersPage() {
               onSubmit={(e) => {
                 e.preventDefault();
                 void run(
-                  () => saveHook({ data: { url: hookUrl, description: hookDesc, events: hookEvents } }),
+                  () =>
+                    saveHook({
+                      data: {
+                        url: hookUrl,
+                        description: hookDesc,
+                        events: hookEvents,
+                      },
+                    }),
                   (res) => {
                     setHookUrl("");
                     setHookDesc("");
@@ -390,7 +490,11 @@ function DevelopersPage() {
                 />
               </Field>
               <Field label={t("Description", "বর্ণনা")}>
-                <input className={inputClass} value={hookDesc} onChange={(e) => setHookDesc(e.target.value)} />
+                <input
+                  className={inputClass}
+                  value={hookDesc}
+                  onChange={(e) => setHookDesc(e.target.value)}
+                />
               </Field>
               <fieldset className="space-y-1 text-sm sm:col-span-2">
                 <legend className="font-medium">{t("Events", "ইভেন্ট")}</legend>
@@ -401,7 +505,11 @@ function DevelopersPage() {
                         type="checkbox"
                         checked={hookEvents.includes(ev)}
                         onChange={(e) =>
-                          setHookEvents((prev) => (e.target.checked ? [...prev, ev] : prev.filter((x) => x !== ev)))
+                          setHookEvents((prev) =>
+                            e.target.checked
+                              ? [...prev, ev]
+                              : prev.filter((x) => x !== ev),
+                          )
                         }
                       />
                       <code className="font-mono text-xs">{ev}</code>
@@ -410,8 +518,13 @@ function DevelopersPage() {
                 </div>
               </fieldset>
               <div className="sm:col-span-2">
-                <button className={btnPrimary} disabled={busy || hookEvents.length === 0}>
-                  {busy ? t("Saving…", "সেভ হচ্ছে…") : t("Add endpoint", "এন্ডপয়েন্ট যোগ")}
+                <button
+                  className={btnPrimary}
+                  disabled={busy || hookEvents.length === 0}
+                >
+                  {busy
+                    ? t("Saving…", "সেভ হচ্ছে…")
+                    : t("Add endpoint", "এন্ডপয়েন্ট যোগ")}
                 </button>
               </div>
             </form>
@@ -419,26 +532,43 @@ function DevelopersPage() {
 
           <SectionCard title={t("Endpoints", "এন্ডপয়েন্ট")}>
             {webhooks.endpoints.length === 0 ? (
-              <EmptyRow>{t("No endpoints registered.", "কোনো এন্ডপয়েন্ট নেই।")}</EmptyRow>
+              <EmptyRow>
+                {t("No endpoints registered.", "কোনো এন্ডপয়েন্ট নেই।")}
+              </EmptyRow>
             ) : (
               <ul className="space-y-2 text-sm">
                 {webhooks.endpoints.map((e) => (
-                  <li key={e.id} className="rounded-fq-md border border-border p-3">
+                  <li
+                    key={e.id}
+                    className="rounded-fq-md border border-border p-3"
+                  >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="min-w-0">
                         <p className="truncate font-medium">{e.url}</p>
                         <p className="text-xs text-muted-foreground">
                           {e.description || "—"} · {e.secret_prefix}… ·{" "}
-                          {t("last delivery", "শেষ ডেলিভারি")}: {fmt(e.last_delivery_at)}
+                          {t("last delivery", "শেষ ডেলিভারি")}:{" "}
+                          {fmt(e.last_delivery_at)}
                         </p>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <StatusPill label={e.status} tone={e.status === "active" ? "success" : e.status === "paused" ? "warning" : "neutral"} />
+                        <StatusPill
+                          label={e.status}
+                          tone={
+                            e.status === "active"
+                              ? "success"
+                              : e.status === "paused"
+                                ? "warning"
+                                : "neutral"
+                          }
+                        />
                         <button
                           type="button"
                           className="min-h-9 rounded-fq-md border border-border px-3 text-xs"
                           disabled={busy}
-                          onClick={() => void run(() => testHook({ data: { id: e.id } }))}
+                          onClick={() =>
+                            void run(() => testHook({ data: { id: e.id } }))
+                          }
                         >
                           {t("Send test", "টেস্ট পাঠান")}
                         </button>
@@ -462,25 +592,35 @@ function DevelopersPage() {
                           onClick={() =>
                             void run(() =>
                               hookStatus({
-                                data: { id: e.id, status: e.status === "active" ? "paused" : "active" },
+                                data: {
+                                  id: e.id,
+                                  status:
+                                    e.status === "active" ? "paused" : "active",
+                                },
                               }),
                             )
                           }
                         >
-                          {e.status === "active" ? t("Pause", "পজ") : t("Resume", "চালু")}
+                          {e.status === "active"
+                            ? t("Pause", "পজ")
+                            : t("Resume", "চালু")}
                         </button>
                       </div>
                     </div>
                     <p className="mt-2 flex flex-wrap gap-1">
                       {(e.events as string[]).map((ev) => (
-                        <code key={ev} className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]">
+                        <code
+                          key={ev}
+                          className="rounded bg-muted px-1.5 py-0.5 font-mono text-[11px]"
+                        >
                           {ev}
                         </code>
                       ))}
                     </p>
                     {e.last_error && (
                       <p className="mt-1 text-xs text-danger">
-                        {t("Last error", "শেষ ত্রুটি")}: {e.last_error} ({e.failure_count})
+                        {t("Last error", "শেষ ত্রুটি")}: {e.last_error} (
+                        {e.failure_count})
                       </p>
                     )}
                   </li>
@@ -500,7 +640,9 @@ function DevelopersPage() {
           )}
         >
           {webhooks.deliveries.length === 0 ? (
-            <EmptyRow>{t("No deliveries yet.", "এখনো কোনো ডেলিভারি নেই।")}</EmptyRow>
+            <EmptyRow>
+              {t("No deliveries yet.", "এখনো কোনো ডেলিভারি নেই।")}
+            </EmptyRow>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -511,22 +653,30 @@ function DevelopersPage() {
                     <th className="py-2 pr-3">{t("Attempt", "চেষ্টা")}</th>
                     <th className="py-2 pr-3">HTTP</th>
                     <th className="py-2 pr-3">{t("Latency", "লেটেন্সি")}</th>
-                    <th className="py-2 pr-3">{t("Next attempt", "পরবর্তী চেষ্টা")}</th>
+                    <th className="py-2 pr-3">
+                      {t("Next attempt", "পরবর্তী চেষ্টা")}
+                    </th>
                     <th className="py-2" />
                   </tr>
                 </thead>
                 <tbody>
                   {webhooks.deliveries.map((d) => (
                     <tr key={d.id} className="border-t border-border">
-                      <td className="py-2 pr-3 font-mono text-xs">{d.event_type}</td>
+                      <td className="py-2 pr-3 font-mono text-xs">
+                        {d.event_type}
+                      </td>
                       <td className="py-2 pr-3">
                         <DeliveryBadge status={d.status} />
                       </td>
                       <td className="py-2 pr-3">{d.attempt}</td>
                       <td className="py-2 pr-3">{d.response_status ?? "—"}</td>
-                      <td className="py-2 pr-3">{d.response_ms ? `${d.response_ms}ms` : "—"}</td>
+                      <td className="py-2 pr-3">
+                        {d.response_ms ? `${d.response_ms}ms` : "—"}
+                      </td>
                       <td className="py-2 pr-3 text-xs text-muted-foreground">
-                        {d.status === "delivered" ? fmt(d.delivered_at) : fmt(d.next_attempt_at)}
+                        {d.status === "delivered"
+                          ? fmt(d.delivered_at)
+                          : fmt(d.next_attempt_at)}
                       </td>
                       <td className="py-2">
                         {d.status !== "delivered" && (
@@ -534,7 +684,11 @@ function DevelopersPage() {
                             type="button"
                             className="min-h-9 rounded-fq-md border border-border px-3 text-xs"
                             disabled={busy}
-                            onClick={() => void run(() => replay({ data: { deliveryId: d.id } }))}
+                            onClick={() =>
+                              void run(() =>
+                                replay({ data: { deliveryId: d.id } }),
+                              )
+                            }
                           >
                             {t("Replay", "রিপ্লে")}
                           </button>

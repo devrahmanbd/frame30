@@ -70,7 +70,6 @@ export type StudioDoc = {
   classes?: StudioClass[];
 };
 
-
 export const STUDIO_VERSION = 2 as const;
 
 export const uid = (): string => Math.random().toString(36).slice(2, 10);
@@ -86,14 +85,27 @@ export function defaultPageSettings(title = "New page"): PageSettings {
 }
 
 export function emptyStudioDoc(title = "New page"): StudioDoc {
-  return { version: STUDIO_VERSION, root: [], page: defaultPageSettings(title) };
+  return {
+    version: STUDIO_VERSION,
+    root: [],
+    page: defaultPageSettings(title),
+  };
 }
 
-export function newContainer(settings: ContainerSettings = {}, children: StudioNode[] = []): StudioNode {
+export function newContainer(
+  settings: ContainerSettings = {},
+  children: StudioNode[] = [],
+): StudioNode {
   return {
     id: uid(),
     el: "container",
-    settings: { layout: "flex", direction: "column", gap: 20, contentWidth: "boxed", ...settings } as NodeSettings,
+    settings: {
+      layout: "flex",
+      direction: "column",
+      gap: 20,
+      contentWidth: "boxed",
+      ...settings,
+    } as NodeSettings,
     children,
   };
 }
@@ -102,7 +114,12 @@ export function newGrid(columns = 3, children: StudioNode[] = []): StudioNode {
   return {
     id: uid(),
     el: "grid",
-    settings: { layout: "grid", columns, gap: 20, contentWidth: "boxed" } as NodeSettings,
+    settings: {
+      layout: "grid",
+      columns,
+      gap: 20,
+      contentWidth: "boxed",
+    } as NodeSettings,
     children,
   };
 }
@@ -129,7 +146,10 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   const node: StudioNode = {
     id: typeof raw.id === "string" && raw.id ? raw.id : uid(),
     el: raw.el,
-    settings: raw.settings && typeof raw.settings === "object" ? (raw.settings as NodeSettings) : {},
+    settings:
+      raw.settings && typeof raw.settings === "object"
+        ? (raw.settings as NodeSettings)
+        : {},
   };
   if (typeof raw.name === "string") node.name = raw.name;
   if (raw.collapsed === true) node.collapsed = true;
@@ -138,7 +158,8 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
     const children = raw.children
       .map((child) => sanitiseNode(child, depth + 1))
       .filter((child): child is StudioNode => child !== null);
-    if (children.length > 0 || raw.el === "container" || raw.el === "grid") node.children = children;
+    if (children.length > 0 || raw.el === "container" || raw.el === "grid")
+      node.children = children;
   }
   return node;
 }
@@ -154,23 +175,32 @@ export function parseStudioDoc(input: unknown): StudioDoc | null {
     version: STUDIO_VERSION,
     root,
     page: { ...defaultPageSettings(), ...(raw.page ?? {}) },
-    breakpoints: Array.isArray(raw.breakpoints) ? (raw.breakpoints as DeviceKey[]) : undefined,
+    breakpoints: Array.isArray(raw.breakpoints)
+      ? (raw.breakpoints as DeviceKey[])
+      : undefined,
     classes: Array.isArray(raw.classes)
       ? (raw.classes as StudioClass[]).filter(
-          (item) => item && typeof item.id === "string" && typeof item.name === "string",
+          (item) =>
+            item &&
+            typeof item.id === "string" &&
+            typeof item.name === "string",
         )
       : undefined,
-
   };
 }
 
-export function parseStudioBody(body: string | null | undefined): StudioDoc | null {
+export function parseStudioBody(
+  body: string | null | undefined,
+): StudioDoc | null {
   if (!body) return null;
   const start = body.indexOf(OPEN);
   if (start < 0) return null;
   const end = body.indexOf(CLOSE, start);
   if (end < 0) return null;
-  const json = body.slice(start + OPEN.length, end).replace(/-->\s*$/, "").trim();
+  const json = body
+    .slice(start + OPEN.length, end)
+    .replace(/-->\s*$/, "")
+    .trim();
   try {
     return parseStudioDoc(JSON.parse(json));
   } catch {
@@ -186,7 +216,10 @@ export function serializeStudioBody(doc: StudioDoc): string {
  * Read whatever the body holds: a Studio v2 document, an upgraded v1
  * page-builder document, or nothing.
  */
-export function readStudioBody(body: string | null | undefined, title?: string): StudioDoc | null {
+export function readStudioBody(
+  body: string | null | undefined,
+  title?: string,
+): StudioDoc | null {
   const v2 = parseStudioBody(body);
   if (v2) return v2;
   const v1 = parseBuilderBody(body);
@@ -237,7 +270,11 @@ export function upgradeV1(doc: BuilderDoc, title?: string): StudioDoc {
     if (section.background) wrapper.settings.background = section.background;
     return wrapper;
   });
-  return { version: STUDIO_VERSION, root, page: defaultPageSettings(title ?? "Page") };
+  return {
+    version: STUDIO_VERSION,
+    root,
+    page: defaultPageSettings(title ?? "Page"),
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -267,7 +304,9 @@ function str(value: SettingValue, fallback = ""): string {
 
 function num(value: SettingValue, fallback: number): number {
   const resolved = resolveResponsive(value as Maybe<number>);
-  return typeof resolved === "number" && Number.isFinite(resolved) ? resolved : fallback;
+  return typeof resolved === "number" && Number.isFinite(resolved)
+    ? resolved
+    : fallback;
 }
 
 function widgetHtml(node: StudioNode): string {
@@ -339,7 +378,10 @@ function nodeHtml(node: StudioNode): string {
       layout === "grid"
         ? `display:grid;grid-template-columns:repeat(${num(s.columns, 3)},minmax(0,1fr))`
         : `display:flex;flex-direction:${str(s.direction, "column")};flex-wrap:${str(s.wrap, "nowrap")}`;
-    const width = str(s.contentWidth, "boxed") === "full" ? "none" : `${num(s.maxWidth, 1140)}px`;
+    const width =
+      str(s.contentWidth, "boxed") === "full"
+        ? "none"
+        : `${num(s.maxWidth, 1140)}px`;
     const outer = [
       s.background ? `background:${str(s.background)}` : "",
       `padding:${num(s.paddingY, 24)}px ${num(s.paddingX, 16)}px`,
@@ -384,5 +426,8 @@ export function studioPlainText(doc: StudioDoc): string {
 }
 
 export function countNodes(nodes: StudioNode[]): number {
-  return nodes.reduce((sum, node) => sum + 1 + countNodes(node.children ?? []), 0);
+  return nodes.reduce(
+    (sum, node) => sum + 1 + countNodes(node.children ?? []),
+    0,
+  );
 }

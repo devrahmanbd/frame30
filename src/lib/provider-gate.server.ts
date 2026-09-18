@@ -48,13 +48,17 @@ export class ProviderGateError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
 async function assertMerchantAdmin(db: Client, merchantId: string) {
-  const { data, error } = await db.rpc("is_merchant_admin", { _merchant_id: merchantId });
-  if (error || data !== true) throw new ProviderGateError("provider.forbidden", 403);
+  const { data, error } = await db.rpc("is_merchant_admin", {
+    _merchant_id: merchantId,
+  });
+  if (error || data !== true)
+    throw new ProviderGateError("provider.forbidden", 403);
 }
 
 /* -------------------------------- transitions ------------------------------ */
@@ -69,14 +73,22 @@ async function transition(
   const from = row.state as CredentialState;
   if (from === to) return row;
   if (!credentialCanTransition(from, to)) {
-    incr("framique_provider_transition_total", { from, to, outcome: "rejected" });
-    throw new ProviderGateError(`provider.illegal_transition:${from}->${to}`, 409);
+    incr("framique_provider_transition_total", {
+      from,
+      to,
+      outcome: "rejected",
+    });
+    throw new ProviderGateError(
+      `provider.illegal_transition:${from}->${to}`,
+      409,
+    );
   }
   const service = await admin();
-  const patch: Database["public"]["Tables"]["provider_credentials"]["Update"] = {
-    state: to,
-    updated_at: new Date().toISOString(),
-  };
+  const patch: Database["public"]["Tables"]["provider_credentials"]["Update"] =
+    {
+      state: to,
+      updated_at: new Date().toISOString(),
+    };
   if (to === "submitted") {
     patch["submitted_at"] = new Date().toISOString();
     patch["submitted_by"] = actor;
@@ -87,7 +99,8 @@ async function transition(
     patch["decision_note"] = (detail["note"] as string) ?? null;
   }
   if (to === "live") patch["activated_at"] = new Date().toISOString();
-  if (to === "suspended") patch["suspended_reason"] = (detail["reason"] as string) ?? null;
+  if (to === "suspended")
+    patch["suspended_reason"] = (detail["reason"] as string) ?? null;
 
   const { data, error } = await service
     .from("provider_credentials")
@@ -96,7 +109,8 @@ async function transition(
     .eq("state", from) // optimistic lock: a concurrent decision cannot be overwritten
     .select("*")
     .maybeSingle();
-  if (error || !data) throw new ProviderGateError("provider.transition_conflict", 409);
+  if (error || !data)
+    throw new ProviderGateError("provider.transition_conflict", 409);
 
   await service.from("provider_credential_events").insert({
     credential_id: row.id,
@@ -108,7 +122,13 @@ async function transition(
     detail: detail as Json,
   });
   incr("framique_provider_transition_total", { from, to, outcome: "ok" });
-  log("info", "provider.transition", { credential: row.id, provider: row.provider_key, from, to, event });
+  log("info", "provider.transition", {
+    credential: row.id,
+    provider: row.provider_key,
+    from,
+    to,
+    event,
+  });
   await invalidate(`provider:${row.merchant_id}`);
   return data as Row;
 }
@@ -146,7 +166,12 @@ function toView(row: Row): CredentialView {
   const checklist = (row.checklist ?? {}) as Checklist;
   const hints = (row.secret_hints ?? {}) as Record<string, string>;
   const environment = row.environment === "sandbox" ? "sandbox" : "live";
-  const verdict = evaluateSubmission(provider, environment, checklist, Object.keys(hints));
+  const verdict = evaluateSubmission(
+    provider,
+    environment,
+    checklist,
+    Object.keys(hints),
+  );
   return {
     id: row.id,
     provider,
@@ -162,7 +187,10 @@ function toView(row: Row): CredentialView {
     progress: checklistProgress(provider, checklist),
     secretHints: hints,
     secretFields: spec.secretFields,
-    missing: { evidence: verdict.missingEvidence, secrets: verdict.missingSecrets },
+    missing: {
+      evidence: verdict.missingEvidence,
+      secrets: verdict.missingSecrets,
+    },
     providerRef: row.provider_merchant_ref,
     submittedAt: row.submitted_at,
     decidedAt: row.decided_at,
@@ -173,7 +201,11 @@ function toView(row: Row): CredentialView {
   };
 }
 
-export async function listCredentials(db: Client, merchantId: string, userId: string) {
+export async function listCredentials(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   await enforceRateLimit("provider.read", `${merchantId}:${userId}`);
   return withSpan("provider.list", async () => {
     const { data, error } = await db
@@ -183,7 +215,9 @@ export async function listCredentials(db: Client, merchantId: string, userId: st
       .order("created_at", { ascending: true });
     if (error) throw new ProviderGateError("provider.read_failed", 500);
     const rows = (data ?? []) as Row[];
-    const byKey = new Map(rows.map((r) => [`${r.provider_key}:${r.environment}`, r]));
+    const byKey = new Map(
+      rows.map((r) => [`${r.provider_key}:${r.environment}`, r]),
+    );
     // Present the whole catalogue so an un-started rail is discoverable rather
     // than invisible; unsaved rails render as a draft placeholder.
     const catalogue = PROVIDER_KEYS.map((key) => {
@@ -219,7 +253,11 @@ export async function listCredentials(db: Client, merchantId: string, userId: st
   });
 }
 
-export async function credentialHistory(db: Client, merchantId: string, credentialId: string) {
+export async function credentialHistory(
+  db: Client,
+  merchantId: string,
+  credentialId: string,
+) {
   const { data } = await db
     .from("provider_credential_events")
     .select("id, event, from_state, to_state, created_at, detail")
@@ -238,7 +276,9 @@ export async function credentialHistory(db: Client, merchantId: string, credenti
 }
 
 /** Cheap predicate used by the checkout/payment paths. */
-export async function liveProviders(merchantId: string): Promise<ProviderKey[]> {
+export async function liveProviders(
+  merchantId: string,
+): Promise<ProviderKey[]> {
   return cached(`provider:${merchantId}:live`, 60, async () => {
     const service = await admin();
     const { data } = await service
@@ -255,7 +295,11 @@ export async function liveProviders(merchantId: string): Promise<ProviderKey[]> 
 
 /* ---------------------------------- writes --------------------------------- */
 
-async function upsertRow(merchantId: string, provider: ProviderKey, userId: string) {
+async function upsertRow(
+  merchantId: string,
+  provider: ProviderKey,
+  userId: string,
+) {
   const service = await admin();
   const { data: existing } = await service
     .from("provider_credentials")
@@ -277,7 +321,8 @@ async function upsertRow(merchantId: string, provider: ProviderKey, userId: stri
     })
     .select("*")
     .single();
-  if (error || !data) throw new ProviderGateError("provider.create_failed", 500);
+  if (error || !data)
+    throw new ProviderGateError("provider.create_failed", 500);
   await service.from("provider_credential_events").insert({
     credential_id: data.id,
     merchant_id: merchantId,
@@ -289,13 +334,21 @@ async function upsertRow(merchantId: string, provider: ProviderKey, userId: stri
   return data as Row;
 }
 
-const EDITABLE_STATES: CredentialState[] = ["draft", "changes_requested", "rejected"];
+const EDITABLE_STATES: CredentialState[] = [
+  "draft",
+  "changes_requested",
+  "rejected",
+];
 
 export async function saveEvidence(
   db: Client,
   merchantId: string,
   userId: string,
-  input: { provider: ProviderKey; checklist: Checklist; providerRef?: string | null },
+  input: {
+    provider: ProviderKey;
+    checklist: Checklist;
+    providerRef?: string | null;
+  },
 ) {
   await assertMerchantAdmin(db, merchantId);
   await enforceRateLimit("provider.write", `${merchantId}:${userId}`);
@@ -304,7 +357,10 @@ export async function saveEvidence(
     throw new ProviderGateError("provider.locked_for_review", 409);
   }
   const service = await admin();
-  const merged = { ...((row.checklist ?? {}) as Checklist), ...input.checklist };
+  const merged = {
+    ...((row.checklist ?? {}) as Checklist),
+    ...input.checklist,
+  };
   await service
     .from("provider_credentials")
     .update({
@@ -346,22 +402,34 @@ export async function saveSecrets(
     const value = (input.secrets[field] ?? "").trim();
     if (value) clean[field] = value;
   }
-  if (Object.keys(clean).length === 0) throw new ProviderGateError("provider.no_secrets", 400);
+  if (Object.keys(clean).length === 0)
+    throw new ProviderGateError("provider.no_secrets", 400);
 
   const row = await upsertRow(merchantId, input.provider, userId);
   if (!EDITABLE_STATES.includes(row.state as CredentialState)) {
     throw new ProviderGateError("provider.locked_for_review", 409);
   }
   const { sealSecret, unsealSecret } = await import("./webhook-secret.server");
-  const previous = row.secret_ciphertext ? await unsealSecret(row.secret_ciphertext) : null;
-  const merged = { ...(previous ? (JSON.parse(previous) as Record<string, string>) : {}), ...clean };
+  const previous = row.secret_ciphertext
+    ? await unsealSecret(row.secret_ciphertext)
+    : null;
+  const merged = {
+    ...(previous ? (JSON.parse(previous) as Record<string, string>) : {}),
+    ...clean,
+  };
   const sealed = await sealSecret(JSON.stringify(merged));
-  const hints = Object.fromEntries(Object.entries(merged).map(([k, v]) => [k, maskSecret(v)]));
+  const hints = Object.fromEntries(
+    Object.entries(merged).map(([k, v]) => [k, maskSecret(v)]),
+  );
 
   const service = await admin();
   await service
     .from("provider_credentials")
-    .update({ secret_ciphertext: sealed, secret_hints: hints as Json, updated_at: new Date().toISOString() })
+    .update({
+      secret_ciphertext: sealed,
+      secret_hints: hints as Json,
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", row.id);
   await service.from("provider_credential_events").insert({
     credential_id: row.id,
@@ -385,7 +453,12 @@ export async function submitForReview(
   await enforceRateLimit("provider.submit", `${merchantId}:${provider}`);
   const row = await upsertRow(merchantId, provider, userId);
   const hints = (row.secret_hints ?? {}) as Record<string, string>;
-  const verdict = evaluateSubmission(provider, "live", (row.checklist ?? {}) as Checklist, Object.keys(hints));
+  const verdict = evaluateSubmission(
+    provider,
+    "live",
+    (row.checklist ?? {}) as Checklist,
+    Object.keys(hints),
+  );
   if (!verdict.ok) {
     incr("framique_provider_submit_total", { provider, outcome: "incomplete" });
     throw new ProviderGateError("provider.submission_incomplete", 400);
@@ -397,13 +470,24 @@ export async function submitForReview(
 
 /* -------------------------------- review side ------------------------------ */
 
-export type ReviewDecision = "in_review" | "approved" | "changes_requested" | "rejected" | "live" | "suspended" | "revoked";
+export type ReviewDecision =
+  | "in_review"
+  | "approved"
+  | "changes_requested"
+  | "rejected"
+  | "live"
+  | "suspended"
+  | "revoked";
 
 /** Platform-reviewer action. The merchant can never call this path. */
 export async function decideCredential(
   db: Client,
   reviewerId: string,
-  input: { credentialId: string; decision: ReviewDecision; note?: string | null },
+  input: {
+    credentialId: string;
+    decision: ReviewDecision;
+    note?: string | null;
+  },
 ) {
   const { requirePlatformAdmin } = await import("./platform.server");
   await requirePlatformAdmin(db, reviewerId);
@@ -421,12 +505,22 @@ export async function decideCredential(
   const allowed = canDecide(true, reviewerId, row.submitted_by);
   if (!allowed.ok) throw new ProviderGateError(allowed.reason, 403);
 
-  const updated = await transition(row, input.decision, reviewerId, `credential.${input.decision}`, {
-    note: input.note ?? null,
-    reason: input.note ?? null,
-  });
+  const updated = await transition(
+    row,
+    input.decision,
+    reviewerId,
+    `credential.${input.decision}`,
+    {
+      note: input.note ?? null,
+      reason: input.note ?? null,
+    },
+  );
 
-  if (input.decision === "live" || input.decision === "suspended" || input.decision === "rejected") {
+  if (
+    input.decision === "live" ||
+    input.decision === "suspended" ||
+    input.decision === "rejected"
+  ) {
     await notifyMerchant(row.merchant_id, {
       kind: `provider.${input.decision}`,
       severity: input.decision === "live" ? "info" : "warning",
@@ -434,7 +528,10 @@ export async function decideCredential(
         input.decision === "live"
           ? `${PROVIDER_CATALOG[row.provider_key as ProviderKey]?.label ?? row.provider_key} is live`
           : `${row.provider_key} ${input.decision}`,
-      titleBn: input.decision === "live" ? "পেমেন্ট রেইল লাইভ হয়েছে" : "পেমেন্ট রেইল আপডেট",
+      titleBn:
+        input.decision === "live"
+          ? "পেমেন্ট রেইল লাইভ হয়েছে"
+          : "পেমেন্ট রেইল আপডেট",
       bodyEn: input.note ?? "Reviewed by the Framique payments team.",
       bodyBn: input.note ?? "ফ্রেমিক পেমেন্ট টিম রিভিউ করেছে।",
       href: "/dashboard/settings/providers",
@@ -454,7 +551,10 @@ export async function reviewQueue(db: Client, reviewerId: string) {
     .in("state", ["submitted", "in_review", "approved"])
     .order("submitted_at", { ascending: true })
     .limit(100);
-  return ((data ?? []) as Row[]).map((r) => ({ merchantId: r.merchant_id, ...toView(r) }));
+  return ((data ?? []) as Row[]).map((r) => ({
+    merchantId: r.merchant_id,
+    ...toView(r),
+  }));
 }
 
 async function notifyMerchant(

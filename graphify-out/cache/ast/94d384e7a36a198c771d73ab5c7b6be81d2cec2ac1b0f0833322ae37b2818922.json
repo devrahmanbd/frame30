@@ -1,1 +1,257 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "label": "taxonomy.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L1"}, {"id": "lib_taxonomy_taxonomysource", "label": "TaxonomySource", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L10"}, {"id": "lib_taxonomy_taxonomyoption", "label": "TaxonomyOption", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L12"}, {"id": "lib_taxonomy_beauty", "label": "beauty()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L14"}, {"id": "lib_taxonomy_brands", "label": "BRANDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L25"}, {"id": "lib_taxonomy_categories", "label": "CATEGORIES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L31"}, {"id": "lib_taxonomy_taxonomy_sources", "label": "TAXONOMY_SOURCES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L39"}, {"id": "lib_taxonomy_taxonomyoptions", "label": "taxonomyOptions()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L48"}, {"id": "lib_taxonomy_taxonomylabel", "label": "taxonomyLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L68"}, {"id": "lib_taxonomy_istaxonomyvalue", "label": "isTaxonomyValue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L74"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "users_rahman_documents_frame30_src_lib_beauty_taxonomy_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_beauty_taxonomy_beauty_taxonomy", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "users_rahman_documents_frame30_src_lib_bitext_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_bitext_locale", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_taxonomysource", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_taxonomyoption", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_beauty", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_brands", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_categories", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_taxonomy_sources", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_taxonomyoptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_taxonomylabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_taxonomy_ts", "target": "lib_taxonomy_istaxonomyvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L74", "weight": 1.0}, {"source": "lib_taxonomy_taxonomyoptions", "target": "lib_taxonomy_beauty", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L51", "weight": 1.0}, {"source": "lib_taxonomy_taxonomylabel", "target": "lib_taxonomy_taxonomyoptions", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L69", "weight": 1.0}, {"source": "lib_taxonomy_istaxonomyvalue", "target": "lib_taxonomy_taxonomyoptions", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L75", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_taxonomy_beauty", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L15"}, {"caller_nid": "lib_taxonomy_beauty", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L15"}, {"caller_nid": "lib_taxonomy_taxonomylabel", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L69"}, {"caller_nid": "lib_taxonomy_istaxonomyvalue", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts", "source_location": "L75"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "label": "taxonomy.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_taxonomy_taxonomysource",
+      "label": "TaxonomySource",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_taxonomy_taxonomyoption",
+      "label": "TaxonomyOption",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "lib_taxonomy_beauty",
+      "label": "beauty()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_taxonomy_brands",
+      "label": "BRANDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_taxonomy_categories",
+      "label": "CATEGORIES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_taxonomy_taxonomy_sources",
+      "label": "TAXONOMY_SOURCES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_taxonomy_taxonomyoptions",
+      "label": "taxonomyOptions()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_taxonomy_taxonomylabel",
+      "label": "taxonomyLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_taxonomy_istaxonomyvalue",
+      "label": "isTaxonomyValue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L74"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "users_rahman_documents_frame30_src_lib_beauty_taxonomy_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_beauty_taxonomy_beauty_taxonomy",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "users_rahman_documents_frame30_src_lib_bitext_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_bitext_locale",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_taxonomysource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_taxonomyoption",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_beauty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_brands",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_categories",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_taxonomy_sources",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_taxonomyoptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_taxonomylabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_taxonomy_ts",
+      "target": "lib_taxonomy_istaxonomyvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_taxonomy_taxonomyoptions",
+      "target": "lib_taxonomy_beauty",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_taxonomy_taxonomylabel",
+      "target": "lib_taxonomy_taxonomyoptions",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_taxonomy_istaxonomyvalue",
+      "target": "lib_taxonomy_taxonomyoptions",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_taxonomy_beauty",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "lib_taxonomy_beauty",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "lib_taxonomy_taxonomylabel",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_taxonomy_istaxonomyvalue",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/taxonomy.ts",
+      "source_location": "L75"
+    }
+  ]
+}

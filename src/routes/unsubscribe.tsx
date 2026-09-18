@@ -13,7 +13,8 @@ export const Route = createFileRoute("/unsubscribe")({
       { title: "Unsubscribe — Framique" },
       {
         name: "description",
-        content: "Stop receiving marketing emails from this store with one click.",
+        content:
+          "Stop receiving marketing emails from this store with one click.",
       },
       { name: "robots", content: "noindex" },
       { property: "og:title", content: "Unsubscribe" },
@@ -28,13 +29,20 @@ export const Route = createFileRoute("/unsubscribe")({
 function UnsubscribePage() {
   const { t } = useLang();
   const { token } = Route.useSearch();
-  const [state, setState] = useState<"idle" | "working" | "done" | "already" | "error">("idle");
+  const [state, setState] = useState<
+    "idle" | "working" | "done" | "already" | "error"
+  >("idle");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!token) {
       setState("error");
-      setMessage(t("The link is incomplete — please use the button from the email again.", "লিঙ্কটি অসম্পূর্ণ — ইমেইলের বোতামটি আবার ব্যবহার করুন।"));
+      setMessage(
+        t(
+          "The link is incomplete — please use the button from the email again.",
+          "লিঙ্কটি অসম্পূর্ণ — ইমেইলের বোতামটি আবার ব্যবহার করুন।",
+        ),
+      );
       return;
     }
     setState("working");
@@ -61,14 +69,31 @@ function UnsubscribePage() {
 
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-md flex-col justify-center px-4 py-16 text-center">
-      <h1 className="font-bangla-display text-2xl font-semibold">{t("Unsubscribe email", "ইমেইল বন্ধ করা")}</h1>
-      <p role="status" aria-live="polite" className="mt-4 text-sm text-muted-foreground">
+      <h1 className="font-bangla-display text-2xl font-semibold">
+        {t("Unsubscribe email", "ইমেইল বন্ধ করা")}
+      </h1>
+      <p
+        role="status"
+        aria-live="polite"
+        className="mt-4 text-sm text-muted-foreground"
+      >
         {state === "working" && t("Processing…", "প্রক্রিয়া চলছে…")}
-        {state === "done" && t(`${message} — you will no longer receive marketing emails.`, `${message} — আপনাকে আর কোনো মার্কেটিং ইমেইল পাঠানো হবে না।`)}
-        {state === "already" && t(`${message} was already unsubscribed.`, `${message} আগেই আনসাবস্ক্রাইব করা হয়েছে।`)}
+        {state === "done" &&
+          t(
+            `${message} — you will no longer receive marketing emails.`,
+            `${message} — আপনাকে আর কোনো মার্কেটিং ইমেইল পাঠানো হবে না।`,
+          )}
+        {state === "already" &&
+          t(
+            `${message} was already unsubscribed.`,
+            `${message} আগেই আনসাবস্ক্রাইব করা হয়েছে।`,
+          )}
         {state === "error" && message}
       </p>
-      <Link to="/" className="mt-6 inline-flex min-h-11 items-center justify-center text-sm text-primary underline">
+      <Link
+        to="/"
+        className="mt-6 inline-flex min-h-11 items-center justify-center text-sm text-primary underline"
+      >
         {t("Back to home", "হোমে ফিরে যান")}
       </Link>
     </main>

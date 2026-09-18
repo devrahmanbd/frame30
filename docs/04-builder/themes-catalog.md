@@ -20,13 +20,13 @@ the builder brand editor (design-system §3.3); contrast is re-verified at publi
 
 ### 1.1 Token role map — never reinvented
 
-| semantic token | role | source primitive |
-| --- | --- | --- |
-| `--fq-accent` / `--fq-accent-fg` | brand identity, primary action | BD Teal `#0d9488`-family |
-| `--fq-danger` | sale/urgency, offer alert | Rickshaw Red `#e11d48`-family |
-| `--fq-warning` | COD-pending, low-stock, warn | Bondhu Amber `#f59e0b`-family |
-| `--fq-success` | paid / delivered / settled | Mint `#10b981`-family |
-| `--fq-bg-canvas` / `--fq-text-*` | neutral canvas/text | Slate 50–950 |
+| semantic token                   | role                           | source primitive              |
+| -------------------------------- | ------------------------------ | ----------------------------- |
+| `--fq-accent` / `--fq-accent-fg` | brand identity, primary action | BD Teal `#0d9488`-family      |
+| `--fq-danger`                    | sale/urgency, offer alert      | Rickshaw Red `#e11d48`-family |
+| `--fq-warning`                   | COD-pending, low-stock, warn   | Bondhu Amber `#f59e0b`-family |
+| `--fq-success`                   | paid / delivered / settled     | Mint `#10b981`-family         |
+| `--fq-bg-canvas` / `--fq-text-*` | neutral canvas/text            | Slate 50–950                  |
 
 Dark mode: semantic swap to dark surfaces; BD Teal brightens to the 400-range accent
 (design-system §3.1). Status is never communicated by color alone — icon + text always (design §7).
@@ -55,19 +55,19 @@ mobile; touch targets ≥ 44×44.
 
 ### 1.4 Catalog index
 
-| # | theme_key | family | light canvas | signature element | hero CTA → action CTA |
-| --- | --- | --- | --- | --- | --- |
-| 1 | `framique/airviva` | Classic | slate-50 | jamdani dori/weave motif | "আপনার সাজে ঐতিহ্য" → "সংগ্রহ দেখুন" |
-| 2 | `framique/sona` | Classic | warm white | gold laurel arch frame | "বিয়ের কালেকশন প্রস্তুত" → "কালেকশন দেখুন" |
-| 3 | `framique/mithai` | Classic | milk white | tray-handle motif | "আজকের মিষ্টি দেখুন" |
-| 4 | `framique/pathshala` | Classic | paper warm-white | bookmark thread + chapter markers | "পাঠশালা শুরু করুন" → "কিনুন" |
-| 5 | `framique/impulse` | Modern | off-white | editorial cutout strip | "এক্সক্লুসিভ ড্রপ" → "সংগ্রহ দেখুন" |
-| 6 | `framique/bazaar` | Modern | clean white | quantity stepper | "মোট ৳১২৩৪" → "চেকআউট" |
-| 7 | `framique/circuit` | Modern | slate | PCB trace motif | "আগে কিনলে ছাড়" → "তুলনা করুন" |
-| 8 | `framique/zoom` | Modern | bright neutral | magnifier-peek ring | "খেলনা নিন" ("ফ্রি ডেলিভারি") |
-| 9 | `framique/krishok` | Sensory | slate-50 | freshness stamp + leaf-tip separators | "আজকের ফসল দেখুন" |
-| 10 | `framique/probash` | Sensory | ivory | three-step care tray | "এক ট্যাচে কিনুন" |
-| 11 | `framique/baking` | Sensory | cream | baking-bag squiggle + toasted stamp | "ফ্রেশ অর্ডার করুন" |
+| #   | theme_key            | family  | light canvas     | signature element                     | hero CTA → action CTA                       |
+| --- | -------------------- | ------- | ---------------- | ------------------------------------- | ------------------------------------------- |
+| 1   | `framique/airviva`   | Classic | slate-50         | jamdani dori/weave motif              | "আপনার সাজে ঐতিহ্য" → "সংগ্রহ দেখুন"        |
+| 2   | `framique/sona`      | Classic | warm white       | gold laurel arch frame                | "বিয়ের কালেকশন প্রস্তুত" → "কালেকশন দেখুন" |
+| 3   | `framique/mithai`    | Classic | milk white       | tray-handle motif                     | "আজকের মিষ্টি দেখুন"                        |
+| 4   | `framique/pathshala` | Classic | paper warm-white | bookmark thread + chapter markers     | "পাঠশালা শুরু করুন" → "কিনুন"               |
+| 5   | `framique/impulse`   | Modern  | off-white        | editorial cutout strip                | "এক্সক্লুসিভ ড্রপ" → "সংগ্রহ দেখুন"         |
+| 6   | `framique/bazaar`    | Modern  | clean white      | quantity stepper                      | "মোট ৳১২৩৪" → "চেকআউট"                      |
+| 7   | `framique/circuit`   | Modern  | slate            | PCB trace motif                       | "আগে কিনলে ছাড়" → "তুলনা করুন"             |
+| 8   | `framique/zoom`      | Modern  | bright neutral   | magnifier-peek ring                   | "খেলনা নিন" ("ফ্রি ডেলিভারি")               |
+| 9   | `framique/krishok`   | Sensory | slate-50         | freshness stamp + leaf-tip separators | "আজকের ফসল দেখুন"                           |
+| 10  | `framique/probash`   | Sensory | ivory            | three-step care tray                  | "এক ট্যাচে কিনুন"                           |
+| 11  | `framique/baking`    | Sensory | cream            | baking-bag squiggle + toasted stamp   | "ফ্রেশ অর্ডার করুন"                         |
 
 Every purchase CTA on a product card is "কার্টে যোগ করুন" unless a theme specifies a
 whole-total CTA (bazaar §6.2 only).

@@ -215,7 +215,12 @@
     {
       "id": "storefront_landing_value_props",
       "label": "Storefront Landing Page Value Propositions",
-      "nodes": ["storefront_hero_headline", "storefront_bilingual_support", "storefront_payment_methods", "storefront_cta"],
+      "nodes": [
+        "storefront_hero_headline",
+        "storefront_bilingual_support",
+        "storefront_payment_methods",
+        "storefront_cta"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,

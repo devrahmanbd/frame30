@@ -7,7 +7,10 @@ import {
 } from "../../scripts/build-immutable-artifact";
 
 describe("Phase 6.1 — Immutable Docker Artifacts & Tagging", () => {
-  const dockerfilePath = resolve(process.cwd(), "ops/docker/Dockerfile.production");
+  const dockerfilePath = resolve(
+    process.cwd(),
+    "ops/docker/Dockerfile.production",
+  );
 
   it("production Dockerfile exists and is readable", () => {
     expect(existsSync(dockerfilePath)).toBe(true);
@@ -51,15 +54,21 @@ describe("Phase 6.1 — Immutable Docker Artifacts & Tagging", () => {
     expect(content).toContain("LABEL org.opencontainers.image.title=");
     expect(content).toContain("org.opencontainers.image.revision=");
     expect(content).toContain("org.opencontainers.image.created=");
-    expect(content).toContain("org.opencontainers.image.vendor=\"Framique\"");
+    expect(content).toContain('org.opencontainers.image.vendor="Framique"');
   });
 
   it("generates immutable commit SHA tags and rejects mutable floating tags", () => {
-    const manifest = generateBuildManifest({ imageRepository: "registry.framique.internal/framique" });
+    const manifest = generateBuildManifest({
+      imageRepository: "registry.framique.internal/framique",
+    });
 
-    expect(manifest.canonicalTag).toMatch(/^registry\.framique\.internal\/framique:sha-[0-9a-f]{8,}$/);
+    expect(manifest.canonicalTag).toMatch(
+      /^registry\.framique\.internal\/framique:sha-[0-9a-f]{8,}$/,
+    );
     expect(manifest.canonicalTag).not.toContain(":latest");
-    expect(manifest.versionTag).toContain(`registry.framique.internal/framique:${manifest.version}-`);
+    expect(manifest.versionTag).toContain(
+      `registry.framique.internal/framique:${manifest.version}-`,
+    );
     expect(manifest.gitSha).toHaveLength(40);
   });
 

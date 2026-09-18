@@ -17,7 +17,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
-import { ErrorFrame, Field, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  ErrorFrame,
+  Field,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import {
   crawlPreviewFn,
   crawlSaveFn,
@@ -67,19 +73,25 @@ export function CrawlDesk() {
   });
 
   const [draft, setDraft] = useState<CrawlSettings>(DEFAULT_CRAWL_SETTINGS);
-  const [preview, setPreview] = useState<Awaited<ReturnType<typeof crawlPreviewFn>> | null>(null);
+  const [preview, setPreview] = useState<Awaited<
+    ReturnType<typeof crawlPreviewFn>
+  > | null>(null);
   const [testPath, setTestPath] = useState("/store/");
   const [testAgent, setTestAgent] = useState("*");
-  const [verdict, setVerdict] = useState<{ allowed: boolean; rule: string | null; path: string } | null>(
-    null,
-  );
+  const [verdict, setVerdict] = useState<{
+    allowed: boolean;
+    rule: string | null;
+    path: string;
+  } | null>(null);
 
   useEffect(() => {
     if (state.data?.settings) setDraft(state.data.settings as CrawlSettings);
   }, [state.data?.settings]);
 
   const dirty = useMemo(
-    () => JSON.stringify(draft) !== JSON.stringify(state.data?.settings ?? DEFAULT_CRAWL_SETTINGS),
+    () =>
+      JSON.stringify(draft) !==
+      JSON.stringify(state.data?.settings ?? DEFAULT_CRAWL_SETTINGS),
     [draft, state.data?.settings],
   );
 
@@ -94,30 +106,48 @@ export function CrawlDesk() {
     onSuccess: (result) => {
       setPreview(result);
       qc.invalidateQueries({ queryKey: ["crawl-state"] });
-      toast.success(bn ? "ক্রল সেটিংস সংরক্ষিত হয়েছে" : "Crawl settings saved");
+      toast.success(
+        bn ? "ক্রল সেটিংস সংরক্ষিত হয়েছে" : "Crawl settings saved",
+      );
     },
     onError: (error) => toast.error(errText(error)),
   });
 
   const testMutation = useMutation({
-    mutationFn: () => testFn({ data: { origin, path: testPath, agent: testAgent || "*" } }),
+    mutationFn: () =>
+      testFn({ data: { origin, path: testPath, agent: testAgent || "*" } }),
     onSuccess: (result) => setVerdict(result),
     onError: (error) => toast.error(errText(error)),
   });
 
-  const patchSitemap = useCallback((patch: Partial<CrawlSettings["sitemap"]>) => {
-    setDraft((current) => ({ ...current, sitemap: { ...current.sitemap, ...patch } }));
-  }, []);
+  const patchSitemap = useCallback(
+    (patch: Partial<CrawlSettings["sitemap"]>) => {
+      setDraft((current) => ({
+        ...current,
+        sitemap: { ...current.sitemap, ...patch },
+      }));
+    },
+    [],
+  );
   const patchRobots = useCallback((patch: Partial<CrawlSettings["robots"]>) => {
-    setDraft((current) => ({ ...current, robots: { ...current.robots, ...patch } }));
+    setDraft((current) => ({
+      ...current,
+      robots: { ...current.robots, ...patch },
+    }));
   }, []);
   const patchKind = useCallback(
-    (kind: SitemapKind, patch: Partial<CrawlSettings["sitemap"]["kinds"][SitemapKind]>) => {
+    (
+      kind: SitemapKind,
+      patch: Partial<CrawlSettings["sitemap"]["kinds"][SitemapKind]>,
+    ) => {
       setDraft((current) => ({
         ...current,
         sitemap: {
           ...current.sitemap,
-          kinds: { ...current.sitemap.kinds, [kind]: { ...current.sitemap.kinds[kind], ...patch } },
+          kinds: {
+            ...current.sitemap.kinds,
+            [kind]: { ...current.sitemap.kinds[kind], ...patch },
+          },
         },
       }));
     },
@@ -134,14 +164,17 @@ export function CrawlDesk() {
     return <ErrorFrame message={errText(state.error)} />;
   }
 
-
-  const counts = (preview?.counts ?? state.data?.counts ?? {}) as Partial<Record<SitemapKind, number>>;
+  const counts = (preview?.counts ?? state.data?.counts ?? {}) as Partial<
+    Record<SitemapKind, number>
+  >;
   const shards = preview?.shards ?? state.data?.shards ?? [];
 
   return (
     <section className="space-y-6">
       <header className="space-y-1">
-        <h2 className="text-lg font-semibold">{bn ? "সাইটম্যাপ ও robots.txt" : "Sitemap & robots.txt"}</h2>
+        <h2 className="text-lg font-semibold">
+          {bn ? "সাইটম্যাপ ও robots.txt" : "Sitemap & robots.txt"}
+        </h2>
         <p className="text-sm text-muted-foreground">
           {bn
             ? "কোন কনটেন্ট ক্রলাররা দেখবে তা এখান থেকেই নিয়ন্ত্রণ করুন — সেভের আগে রেন্ডার করা ফাইল দেখে নিন।"
@@ -151,7 +184,9 @@ export function CrawlDesk() {
 
       {/* ------------------------------ sitemap ------------------------------ */}
       <div className="rounded-fq-md border border-border p-4">
-        <h3 className="text-sm font-semibold">{bn ? "সাইটম্যাপ" : "Sitemap"}</h3>
+        <h3 className="text-sm font-semibold">
+          {bn ? "সাইটম্যাপ" : "Sitemap"}
+        </h3>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase text-muted-foreground">
@@ -168,13 +203,17 @@ export function CrawlDesk() {
                 const cfg = draft.sitemap.kinds[kind];
                 return (
                   <tr key={kind} className="border-t border-border">
-                    <td className="py-2 font-medium">{bn ? KIND_LABELS[kind].bn : KIND_LABELS[kind].en}</td>
+                    <td className="py-2 font-medium">
+                      {bn ? KIND_LABELS[kind].bn : KIND_LABELS[kind].en}
+                    </td>
                     <td>
                       <input
                         type="checkbox"
                         aria-label={`include ${kind}`}
                         checked={cfg.include}
-                        onChange={(event) => patchKind(kind, { include: event.target.checked })}
+                        onChange={(event) =>
+                          patchKind(kind, { include: event.target.checked })
+                        }
                       />
                     </td>
                     <td>
@@ -183,7 +222,10 @@ export function CrawlDesk() {
                         aria-label={`${kind} changefreq`}
                         value={cfg.changefreq}
                         onChange={(event) =>
-                          patchKind(kind, { changefreq: event.target.value as (typeof CHANGEFREQS)[number] })
+                          patchKind(kind, {
+                            changefreq: event.target
+                              .value as (typeof CHANGEFREQS)[number],
+                          })
                         }
                       >
                         {CHANGEFREQS.map((value) => (
@@ -198,7 +240,9 @@ export function CrawlDesk() {
                         className={inputClass}
                         aria-label={`${kind} priority`}
                         value={cfg.priority}
-                        onChange={(event) => patchKind(kind, { priority: event.target.value })}
+                        onChange={(event) =>
+                          patchKind(kind, { priority: event.target.value })
+                        }
                       />
                     </td>
                     <td className="text-right tabular-nums text-muted-foreground">
@@ -219,14 +263,18 @@ export function CrawlDesk() {
               min={ENTRIES_PER_FILE_MIN}
               max={ENTRIES_PER_FILE_MAX}
               value={draft.sitemap.entriesPerFile}
-              onChange={(event) => patchSitemap({ entriesPerFile: Number(event.target.value) })}
+              onChange={(event) =>
+                patchSitemap({ entriesPerFile: Number(event.target.value) })
+              }
             />
           </Field>
           <label className="flex items-end gap-2 text-sm">
             <input
               type="checkbox"
               checked={draft.sitemap.includeImages}
-              onChange={(event) => patchSitemap({ includeImages: event.target.checked })}
+              onChange={(event) =>
+                patchSitemap({ includeImages: event.target.checked })
+              }
             />
             {bn ? "ছবি সাইটম্যাপে যোগ করুন" : "Include images in sitemap"}
           </label>
@@ -234,7 +282,8 @@ export function CrawlDesk() {
 
         <p className="mt-3 text-xs text-muted-foreground">
           {bn ? "বর্তমান শার্ড" : "Current shards"}: {shards.length}
-          {shards.length > 0 && ` — ${shards.map((s) => `${s.kind}-${s.page} (${s.count})`).join(", ")}`}
+          {shards.length > 0 &&
+            ` — ${shards.map((s) => `${s.kind}-${s.page} (${s.count})`).join(", ")}`}
         </p>
       </div>
 
@@ -246,22 +295,36 @@ export function CrawlDesk() {
             <input
               type="checkbox"
               checked={draft.robots.indexable}
-              onChange={(event) => patchRobots({ indexable: event.target.checked })}
+              onChange={(event) =>
+                patchRobots({ indexable: event.target.checked })
+              }
             />
-            {bn ? "সার্চ ইঞ্জিন ইনডেক্স করতে পারবে" : "Allow search engines to index this store"}
+            {bn
+              ? "সার্চ ইঞ্জিন ইনডেক্স করতে পারবে"
+              : "Allow search engines to index this store"}
           </label>
           <label className="flex items-center gap-2">
             <input
               type="checkbox"
               checked={draft.robots.aiCrawlers}
               disabled={!draft.robots.indexable}
-              onChange={(event) => patchRobots({ aiCrawlers: event.target.checked })}
+              onChange={(event) =>
+                patchRobots({ aiCrawlers: event.target.checked })
+              }
             />
-            {bn ? "AI উত্তর-ইঞ্জিনকে অনুমতি দিন" : "Allow AI answer crawlers (GPTBot, ClaudeBot, …)"}
+            {bn
+              ? "AI উত্তর-ইঞ্জিনকে অনুমতি দিন"
+              : "Allow AI answer crawlers (GPTBot, ClaudeBot, …)"}
           </label>
         </div>
 
-        <Field label={bn ? "অতিরিক্ত সাইটম্যাপ URL (প্রতি লাইনে একটি)" : "Extra sitemap URLs (one per line)"}>
+        <Field
+          label={
+            bn
+              ? "অতিরিক্ত সাইটম্যাপ URL (প্রতি লাইনে একটি)"
+              : "Extra sitemap URLs (one per line)"
+          }
+        >
           <textarea
             className={`${inputClass} min-h-20 font-mono text-xs`}
             value={draft.robots.extraSitemaps.join("\n")}
@@ -312,9 +375,21 @@ export function CrawlDesk() {
           className={btnPrimary}
           onClick={() => saveMutation.mutate()}
           disabled={!dirty || !preview || saveMutation.isPending}
-          title={!preview ? (bn ? "আগে প্রিভিউ দেখুন" : "Preview before saving") : undefined}
+          title={
+            !preview
+              ? bn
+                ? "আগে প্রিভিউ দেখুন"
+                : "Preview before saving"
+              : undefined
+          }
         >
-          {saveMutation.isPending ? (bn ? "সেভ হচ্ছে…" : "Saving…") : bn ? "সেভ করুন" : "Save"}
+          {saveMutation.isPending
+            ? bn
+              ? "সেভ হচ্ছে…"
+              : "Saving…"
+            : bn
+              ? "সেভ করুন"
+              : "Save"}
         </button>
         {dirty && (
           <span className="text-xs text-muted-foreground">
@@ -343,7 +418,11 @@ export function CrawlDesk() {
                       : "text-muted-foreground"
                 }
               >
-                {line.kind === "added" ? "+ " : line.kind === "removed" ? "- " : "  "}
+                {line.kind === "added"
+                  ? "+ "
+                  : line.kind === "removed"
+                    ? "- "
+                    : "  "}
                 {line.text}
               </div>
             ))}
@@ -353,7 +432,9 @@ export function CrawlDesk() {
 
       {preview?.sitemapIndex && (
         <div className="rounded-fq-md border border-border p-4">
-          <h3 className="text-sm font-semibold">{bn ? "সাইটম্যাপ ইনডেক্স" : "Sitemap index"}</h3>
+          <h3 className="text-sm font-semibold">
+            {bn ? "সাইটম্যাপ ইনডেক্স" : "Sitemap index"}
+          </h3>
           <pre className="mt-3 max-h-64 overflow-auto rounded bg-muted p-3 font-mono text-xs leading-5">
             {preview.sitemapIndex}
           </pre>
@@ -362,7 +443,9 @@ export function CrawlDesk() {
 
       {/* ---------------------------- path tester ---------------------------- */}
       <div className="rounded-fq-md border border-border p-4">
-        <h3 className="text-sm font-semibold">{bn ? "পাথ পরীক্ষা করুন" : "Test a path"}</h3>
+        <h3 className="text-sm font-semibold">
+          {bn ? "পাথ পরীক্ষা করুন" : "Test a path"}
+        </h3>
         <div className="mt-3 flex flex-wrap items-end gap-2">
           <Field label={bn ? "পাথ" : "Path"}>
             <input
@@ -390,10 +473,22 @@ export function CrawlDesk() {
         {verdict && (
           <p className="mt-3 text-sm">
             <code>{verdict.path}</code>{" "}
-            <strong className={verdict.allowed ? "text-emerald-600" : "text-destructive"}>
-              {verdict.allowed ? (bn ? "অনুমোদিত" : "Allowed") : bn ? "ব্লকড" : "Blocked"}
+            <strong
+              className={
+                verdict.allowed ? "text-emerald-600" : "text-destructive"
+              }
+            >
+              {verdict.allowed
+                ? bn
+                  ? "অনুমোদিত"
+                  : "Allowed"
+                : bn
+                  ? "ব্লকড"
+                  : "Blocked"}
             </strong>
-            {verdict.rule && <span className="text-muted-foreground"> — {verdict.rule}</span>}
+            {verdict.rule && (
+              <span className="text-muted-foreground"> — {verdict.rule}</span>
+            )}
           </p>
         )}
       </div>

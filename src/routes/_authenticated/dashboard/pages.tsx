@@ -7,7 +7,11 @@ import { AlertTriangle, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
 import { renderPageMarkdown } from "@/lib/storefront-search";
-import { archivePageFn, pagesDeskFn, savePageFn } from "@/lib/storefront-search.functions";
+import {
+  archivePageFn,
+  pagesDeskFn,
+  savePageFn,
+} from "@/lib/storefront-search.functions";
 import { PageBuilder } from "@/components/builder/page/PageBuilder";
 import { PageCanvas } from "@/components/builder/page/PageCanvas";
 import {
@@ -31,7 +35,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/pages")({
       { property: "og:title", content: "Store pages desk" },
       {
         property: "og:description",
-        content: "Tenant-scoped content pages with preview, metadata and publish control.",
+        content:
+          "Tenant-scoped content pages with preview, metadata and publish control.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -105,19 +110,26 @@ function PagesDeskPage() {
     onError: (e: Error) =>
       toast.error(
         e.message.includes("slug")
-          ? t("Use lowercase letters, numbers and dashes only.", "শুধু ছোট হাতের অক্ষর, সংখ্যা ও ড্যাশ ব্যবহার করুন।")
+          ? t(
+              "Use lowercase letters, numbers and dashes only.",
+              "শুধু ছোট হাতের অক্ষর, সংখ্যা ও ড্যাশ ব্যবহার করুন।",
+            )
           : t("Could not save this page.", "এই পেজটি সংরক্ষণ করা যায়নি।"),
       ),
   });
 
   const archiveFn = useServerFn(archivePageFn);
   const archive = useMutation({
-    mutationFn: (pageId: string) => archiveFn({ data: { merchantId: merchantId!, pageId } }),
+    mutationFn: (pageId: string) =>
+      archiveFn({ data: { merchantId: merchantId!, pageId } }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["pages-desk", merchantId] });
       toast.success(t("Page archived", "পেজ আর্কাইভ হয়েছে"));
     },
-    onError: () => toast.error(t("Could not archive this page.", "পেজটি আর্কাইভ করা যায়নি।")),
+    onError: () =>
+      toast.error(
+        t("Could not archive this page.", "পেজটি আর্কাইভ করা যায়নি।"),
+      ),
   });
 
   const stats = desk.data?.stats;
@@ -155,24 +167,34 @@ function PagesDeskPage() {
   }, [desk.data]);
 
   const builderDoc: BuilderDoc | null = parseBuilderBody(draft.bodyMarkdown);
-  const mode: "markdown" | "builder" = isBuilderBody(draft.bodyMarkdown) ? "builder" : "markdown";
+  const mode: "markdown" | "builder" = isBuilderBody(draft.bodyMarkdown)
+    ? "builder"
+    : "markdown";
   const switchMode = (next: "markdown" | "builder") => {
     if (next === mode) return;
     setDraft((p) => ({
       ...p,
       bodyMarkdown:
         next === "builder"
-          ? serializeBuilderBody(p.bodyMarkdown.trim() ? emptyDoc() : starterDoc(p.title || "New page"))
+          ? serializeBuilderBody(
+              p.bodyMarkdown.trim()
+                ? emptyDoc()
+                : starterDoc(p.title || "New page"),
+            )
           : "",
     }));
   };
-  const setDoc = (doc: BuilderDoc) => setDraft((p) => ({ ...p, bodyMarkdown: serializeBuilderBody(doc) }));
-  const preview = mode === "builder" ? "" : renderPageMarkdown(draft.bodyMarkdown);
+  const setDoc = (doc: BuilderDoc) =>
+    setDraft((p) => ({ ...p, bodyMarkdown: serializeBuilderBody(doc) }));
+  const preview =
+    mode === "builder" ? "" : renderPageMarkdown(draft.bodyMarkdown);
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-2xl font-bold">{t("Store pages", "দোকানের পেজ")}</h1>
+        <h1 className="font-bangla-display text-2xl font-bold">
+          {t("Store pages", "দোকানের পেজ")}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {t(
             "Policy, delivery and about pages shoppers can read before they buy. Only published pages appear in your storefront and sitemap.",
@@ -216,7 +238,9 @@ function PagesDeskPage() {
           }}
         >
           <h2 className="font-bangla-display text-lg font-semibold">
-            {draft.id ? t("Edit page", "পেজ সম্পাদনা") : t("New page", "নতুন পেজ")}
+            {draft.id
+              ? t("Edit page", "পেজ সম্পাদনা")
+              : t("New page", "নতুন পেজ")}
           </h2>
 
           {!draft.id && (
@@ -225,7 +249,9 @@ function PagesDeskPage() {
                 <button
                   key={s.slug}
                   type="button"
-                  onClick={() => setDraft((p) => ({ ...p, slug: s.slug, title: s.title }))}
+                  onClick={() =>
+                    setDraft((p) => ({ ...p, slug: s.slug, title: s.title }))
+                  }
                   className="min-h-9 rounded-full border border-border px-3 text-xs text-muted-foreground hover:bg-muted"
                 >
                   {s.title}
@@ -242,7 +268,9 @@ function PagesDeskPage() {
                 required
                 maxLength={160}
                 value={draft.title}
-                onChange={(e) => setDraft((p) => ({ ...p, title: e.target.value }))}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, title: e.target.value }))
+                }
                 className={`mt-1 ${input}`}
               />
             </label>
@@ -254,27 +282,39 @@ function PagesDeskPage() {
                 maxLength={60}
                 value={draft.slug}
                 onChange={(e) =>
-                  setDraft((p) => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") }))
+                  setDraft((p) => ({
+                    ...p,
+                    slug: e.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]/g, "-"),
+                  }))
                 }
                 className={`mt-1 ${input}`}
               />
             </label>
           </div>
 
-          <label htmlFor="pg-excerpt" className="mt-3 block text-xs text-muted-foreground">
+          <label
+            htmlFor="pg-excerpt"
+            className="mt-3 block text-xs text-muted-foreground"
+          >
             {t("Short summary", "ছোট সারসংক্ষেপ")}
             <input
               id="pg-excerpt"
               maxLength={300}
               value={draft.excerpt}
-              onChange={(e) => setDraft((p) => ({ ...p, excerpt: e.target.value }))}
+              onChange={(e) =>
+                setDraft((p) => ({ ...p, excerpt: e.target.value }))
+              }
               className={`mt-1 ${input}`}
             />
           </label>
 
           <div className="mt-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-xs text-muted-foreground">{t("Content", "বিষয়বস্তু")}</span>
+              <span className="text-xs text-muted-foreground">
+                {t("Content", "বিষয়বস্তু")}
+              </span>
               <div className="flex gap-1 rounded-fq-md border border-border p-0.5">
                 {(["markdown", "builder"] as const).map((m) => (
                   <button
@@ -284,20 +324,27 @@ function PagesDeskPage() {
                     onClick={() => switchMode(m)}
                     className={`min-h-8 rounded-fq-sm px-3 text-xs font-medium ${mode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
                   >
-                    {m === "markdown" ? t("Markdown", "মার্কডাউন") : t("Page builder", "পেজ বিল্ডার")}
+                    {m === "markdown"
+                      ? t("Markdown", "মার্কডাউন")
+                      : t("Page builder", "পেজ বিল্ডার")}
                   </button>
                 ))}
               </div>
             </div>
 
             {mode === "markdown" ? (
-              <label htmlFor="pg-body" className="mt-2 block text-xs text-muted-foreground">
+              <label
+                htmlFor="pg-body"
+                className="mt-2 block text-xs text-muted-foreground"
+              >
                 <textarea
                   id="pg-body"
                   rows={10}
                   maxLength={40000}
                   value={draft.bodyMarkdown}
-                  onChange={(e) => setDraft((p) => ({ ...p, bodyMarkdown: e.target.value }))}
+                  onChange={(e) =>
+                    setDraft((p) => ({ ...p, bodyMarkdown: e.target.value }))
+                  }
                   className="mt-1 w-full rounded-fq-md border border-border bg-background p-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 />
                 <span className="money mt-1 block text-right text-xs text-muted-foreground">
@@ -314,43 +361,74 @@ function PagesDeskPage() {
             )}
           </div>
 
-
           <fieldset className="mt-3 grid gap-3 sm:grid-cols-2">
-            <legend className="text-xs font-medium text-muted-foreground">{t("Search listing", "সার্চ তালিকা")}</legend>
-            <label htmlFor="pg-meta-title" className="text-xs text-muted-foreground">
+            <legend className="text-xs font-medium text-muted-foreground">
+              {t("Search listing", "সার্চ তালিকা")}
+            </legend>
+            <label
+              htmlFor="pg-meta-title"
+              className="text-xs text-muted-foreground"
+            >
               {t("Meta title", "মেটা শিরোনাম")}
               <input
                 id="pg-meta-title"
                 maxLength={60}
                 value={draft.metaTitle}
-                onChange={(e) => setDraft((p) => ({ ...p, metaTitle: e.target.value }))}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, metaTitle: e.target.value }))
+                }
                 className={`mt-1 ${input}`}
               />
             </label>
-            <label htmlFor="pg-meta-desc" className="text-xs text-muted-foreground">
+            <label
+              htmlFor="pg-meta-desc"
+              className="text-xs text-muted-foreground"
+            >
               {t("Meta description", "মেটা বিবরণ")}
               <input
                 id="pg-meta-desc"
                 maxLength={160}
                 value={draft.metaDescription}
-                onChange={(e) => setDraft((p) => ({ ...p, metaDescription: e.target.value }))}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, metaDescription: e.target.value }))
+                }
                 className={`mt-1 ${input}`}
               />
             </label>
-            <label htmlFor="pg-robots" className="text-xs text-muted-foreground">
+            <label
+              htmlFor="pg-robots"
+              className="text-xs text-muted-foreground"
+            >
               {t("Indexing", "ইনডেক্সিং")}
               <select
                 id="pg-robots"
                 value={draft.robots}
-                onChange={(e) => setDraft((p) => ({ ...p, robots: e.target.value as Draft["robots"] }))}
+                onChange={(e) =>
+                  setDraft((p) => ({
+                    ...p,
+                    robots: e.target.value as Draft["robots"],
+                  }))
+                }
                 className={`mt-1 ${input}`}
               >
-                <option value="index,follow">{t("Show in search results", "সার্চে দেখান")}</option>
-                <option value="noindex,follow">{t("Hide from search results", "সার্চে দেখাবেন না")}</option>
-                <option value="noindex,nofollow">{t("Hide and do not follow links", "লুকান ও লিংক অনুসরণ করবেন না")}</option>
+                <option value="index,follow">
+                  {t("Show in search results", "সার্চে দেখান")}
+                </option>
+                <option value="noindex,follow">
+                  {t("Hide from search results", "সার্চে দেখাবেন না")}
+                </option>
+                <option value="noindex,nofollow">
+                  {t(
+                    "Hide and do not follow links",
+                    "লুকান ও লিংক অনুসরণ করবেন না",
+                  )}
+                </option>
               </select>
             </label>
-            <label htmlFor="pg-position" className="text-xs text-muted-foreground">
+            <label
+              htmlFor="pg-position"
+              className="text-xs text-muted-foreground"
+            >
               {t("Order in menu", "মেনুর ক্রম")}
               <input
                 id="pg-position"
@@ -358,7 +436,12 @@ function PagesDeskPage() {
                 min={0}
                 max={999}
                 value={draft.position}
-                onChange={(e) => setDraft((p) => ({ ...p, position: Number(e.target.value) || 0 }))}
+                onChange={(e) =>
+                  setDraft((p) => ({
+                    ...p,
+                    position: Number(e.target.value) || 0,
+                  }))
+                }
                 className={`money mt-1 ${input}`}
               />
             </label>
@@ -369,7 +452,9 @@ function PagesDeskPage() {
               <input
                 type="checkbox"
                 checked={draft.isPublished}
-                onChange={(e) => setDraft((p) => ({ ...p, isPublished: e.target.checked }))}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, isPublished: e.target.checked }))
+                }
                 className="size-4 accent-[var(--bd-teal-700)]"
               />
               {t("Published", "প্রকাশিত")}
@@ -378,7 +463,9 @@ function PagesDeskPage() {
               <input
                 type="checkbox"
                 checked={draft.showInNav}
-                onChange={(e) => setDraft((p) => ({ ...p, showInNav: e.target.checked }))}
+                onChange={(e) =>
+                  setDraft((p) => ({ ...p, showInNav: e.target.checked }))
+                }
                 className="size-4 accent-[var(--bd-teal-700)]"
               />
               {t("Show in store menu", "দোকানের মেনুতে দেখান")}
@@ -391,7 +478,9 @@ function PagesDeskPage() {
               disabled={save.isPending || !merchantId}
               className="min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
             >
-              {save.isPending ? t("Saving…", "সংরক্ষণ হচ্ছে…") : t("Save page", "পেজ সংরক্ষণ")}
+              {save.isPending
+                ? t("Saving…", "সংরক্ষণ হচ্ছে…")
+                : t("Save page", "পেজ সংরক্ষণ")}
             </button>
             {draft.id && (
               <button
@@ -406,7 +495,9 @@ function PagesDeskPage() {
         </form>
 
         <section className={card} aria-label={t("Preview", "প্রিভিউ")}>
-          <h2 className="font-bangla-display text-lg font-semibold">{t("Preview", "প্রিভিউ")}</h2>
+          <h2 className="font-bangla-display text-lg font-semibold">
+            {t("Preview", "প্রিভিউ")}
+          </h2>
           <p className="mt-1 text-xs text-muted-foreground">
             {t(
               "This is exactly how shoppers will see the page. Only headings, lists, links, bold and italic are kept.",
@@ -414,23 +505,38 @@ function PagesDeskPage() {
             )}
           </p>
           <div className="mt-4 rounded-fq-md border border-border bg-background p-4">
-            <h3 className="font-bangla-display text-xl font-bold">{draft.title || t("Untitled page", "শিরোনামহীন পেজ")}</h3>
-            {draft.excerpt && <p className="mt-1 text-sm text-muted-foreground">{draft.excerpt}</p>}
+            <h3 className="font-bangla-display text-xl font-bold">
+              {draft.title || t("Untitled page", "শিরোনামহীন পেজ")}
+            </h3>
+            {draft.excerpt && (
+              <p className="mt-1 text-sm text-muted-foreground">
+                {draft.excerpt}
+              </p>
+            )}
             {mode === "builder" && builderDoc ? (
               <PageCanvas doc={builderDoc} />
             ) : (
-              <div className="fq-prose mt-3 space-y-3 text-sm" dangerouslySetInnerHTML={{ __html: preview }} />
+              <div
+                className="fq-prose mt-3 space-y-3 text-sm"
+                dangerouslySetInnerHTML={{ __html: preview }}
+              />
             )}
           </div>
         </section>
       </div>
 
       {mode === "builder" && builderDoc && (
-        <PageBuilder doc={builderDoc} onChange={setDoc} title={draft.title || t("Untitled page", "শিরোনামহীন পেজ")} />
+        <PageBuilder
+          doc={builderDoc}
+          onChange={setDoc}
+          title={draft.title || t("Untitled page", "শিরোনামহীন পেজ")}
+        />
       )}
 
       <section className={card}>
-        <h2 className="font-bangla-display text-lg font-semibold">{t("All pages", "সব পেজ")}</h2>
+        <h2 className="font-bangla-display text-lg font-semibold">
+          {t("All pages", "সব পেজ")}
+        </h2>
         {desk.isPending && (
           <p className="mt-2 text-sm text-muted-foreground" aria-live="polite">
             {t("Loading pages…", "পেজ লোড হচ্ছে…")}
@@ -438,27 +544,40 @@ function PagesDeskPage() {
         )}
         {desk.data?.pages.length === 0 && (
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("No pages yet — start with a delivery or returns policy.", "এখনও কোনো পেজ নেই — ডেলিভারি বা রিটার্ন নীতি দিয়ে শুরু করুন।")}
+            {t(
+              "No pages yet — start with a delivery or returns policy.",
+              "এখনও কোনো পেজ নেই — ডেলিভারি বা রিটার্ন নীতি দিয়ে শুরু করুন।",
+            )}
           </p>
         )}
         <ul className="mt-3 space-y-2">
           {desk.data?.pages.map((p) => (
-            <li key={p.id} className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-border p-3">
+            <li
+              key={p.id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-border p-3"
+            >
               <span className="min-w-0">
                 <span className="flex items-center gap-2 text-sm font-medium">
-                  <FileText className="size-4 text-muted-foreground" aria-hidden />
+                  <FileText
+                    className="size-4 text-muted-foreground"
+                    aria-hidden
+                  />
                   {p.title}
                 </span>
-                <span className="money block text-xs text-muted-foreground">/{p.slug}</span>
+                <span className="money block text-xs text-muted-foreground">
+                  /{p.slug}
+                </span>
               </span>
               <span className="flex items-center gap-2 text-xs">
                 {p.is_published ? (
                   <span className="inline-flex items-center gap-1 text-success-foreground">
-                    <Eye className="size-3.5" aria-hidden /> {t("Published", "প্রকাশিত")}
+                    <Eye className="size-3.5" aria-hidden />{" "}
+                    {t("Published", "প্রকাশিত")}
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 text-muted-foreground">
-                    <EyeOff className="size-3.5" aria-hidden /> {t("Draft", "খসড়া")}
+                    <EyeOff className="size-3.5" aria-hidden />{" "}
+                    {t("Draft", "খসড়া")}
                   </span>
                 )}
               </span>
@@ -486,7 +605,10 @@ function PagesDeskPage() {
                 </button>
                 <button
                   type="button"
-                  aria-label={t(`Archive ${p.title}`, `${p.title} আর্কাইভ করুন`)}
+                  aria-label={t(
+                    `Archive ${p.title}`,
+                    `${p.title} আর্কাইভ করুন`,
+                  )}
                   onClick={() => archive.mutate(p.id)}
                   className="rounded-fq-md p-2 text-danger-foreground hover:bg-danger/10"
                 >

@@ -1,1 +1,1052 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "label": "vitals-report.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L1"}, {"id": "lib_vitals_report_vital_metrics", "label": "VITAL_METRICS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L17"}, {"id": "lib_vitals_report_vitalmetric", "label": "VitalMetric", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L18"}, {"id": "lib_vitals_report_budget_key", "label": "BUDGET_KEY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L21"}, {"id": "lib_vitals_report_vital_clamp", "label": "VITAL_CLAMP", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L33"}, {"id": "lib_vitals_report_device_classes", "label": "DEVICE_CLASSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L41"}, {"id": "lib_vitals_report_deviceclass", "label": "DeviceClass", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L42"}, {"id": "lib_vitals_report_connection_classes", "label": "CONNECTION_CLASSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L44"}, {"id": "lib_vitals_report_connectionclass", "label": "ConnectionClass", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L45"}, {"id": "lib_vitals_report_rawsample", "label": "RawSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L52"}, {"id": "lib_vitals_report_vitalsample", "label": "VitalSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L63"}, {"id": "lib_vitals_report_text", "label": "text()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L77"}, {"id": "lib_vitals_report_normalizepath", "label": "normalizePath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L89"}, {"id": "lib_vitals_report_devicefromwidth", "label": "deviceFromWidth()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L107"}, {"id": "lib_vitals_report_ratemetric", "label": "rateMetric()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L114"}, {"id": "lib_vitals_report_normalizesample", "label": "normalizeSample()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L131"}, {"id": "lib_vitals_report_normalizeresult", "label": "NormalizeResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L164"}, {"id": "lib_vitals_report_normalizebatch", "label": "normalizeBatch()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L174"}, {"id": "lib_vitals_report_percentile", "label": "percentile()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L210"}, {"id": "lib_vitals_report_metricrollup", "label": "MetricRollup", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L217"}, {"id": "lib_vitals_report_vitalssummary", "label": "VitalsSummary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L229"}, {"id": "lib_vitals_report_budgetfor", "label": "budgetFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L239"}, {"id": "lib_vitals_report_rollup", "label": "rollup()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L244"}, {"id": "lib_vitals_report_summarize", "label": "summarize()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L266"}, {"id": "lib_vitals_report_push", "label": "push()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L310"}, {"id": "lib_vitals_report_describesummary", "label": "describeSummary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L317"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "users_rahman_documents_frame30_src_lib_web_vitals_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_web_vitals_vitals_budget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_web_vitals_ratevital", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_web_vitals_vitalname", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_web_vitals_vitalrating", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_vital_metrics", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_vitalmetric", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_budget_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_vital_clamp", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_device_classes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_deviceclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_connection_classes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_connectionclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_rawsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_vitalsample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_normalizepath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L89", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_deviceclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_connectionclass", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_devicefromwidth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_ratemetric", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_normalizesample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_normalizeresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_normalizebatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L174", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_percentile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_metricrollup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L217", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_vitalssummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_budgetfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L239", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_rollup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L244", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_summarize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L266", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_push", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L310", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "target": "lib_vitals_report_describesummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L317", "weight": 1.0}, {"source": "lib_vitals_report_normalizepath", "target": "lib_vitals_report_text", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L90", "weight": 1.0}, {"source": "lib_vitals_report_deviceclass", "target": "lib_vitals_report_text", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L97", "weight": 1.0}, {"source": "lib_vitals_report_connectionclass", "target": "lib_vitals_report_text", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L102", "weight": 1.0}, {"source": "lib_vitals_report_normalizesample", "target": "lib_vitals_report_text", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L132", "weight": 1.0}, {"source": "lib_vitals_report_normalizesample", "target": "lib_vitals_report_ratemetric", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L153", "weight": 1.0}, {"source": "lib_vitals_report_normalizesample", "target": "lib_vitals_report_normalizepath", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L155", "weight": 1.0}, {"source": "lib_vitals_report_normalizesample", "target": "lib_vitals_report_deviceclass", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L157", "weight": 1.0}, {"source": "lib_vitals_report_normalizesample", "target": "lib_vitals_report_connectionclass", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L158", "weight": 1.0}, {"source": "lib_vitals_report_normalizebatch", "target": "lib_vitals_report_normalizesample", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L183", "weight": 1.0}, {"source": "lib_vitals_report_normalizebatch", "target": "lib_vitals_report_push", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L189", "weight": 1.0}, {"source": "lib_vitals_report_rollup", "target": "lib_vitals_report_percentile", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L245", "weight": 1.0}, {"source": "lib_vitals_report_rollup", "target": "lib_vitals_report_budgetfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L246", "weight": 1.0}, {"source": "lib_vitals_report_rollup", "target": "lib_vitals_report_ratemetric", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L253", "weight": 1.0}, {"source": "lib_vitals_report_summarize", "target": "lib_vitals_report_deviceclass", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L277", "weight": 1.0}, {"source": "lib_vitals_report_summarize", "target": "lib_vitals_report_push", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L278", "weight": 1.0}, {"source": "lib_vitals_report_summarize", "target": "lib_vitals_report_normalizepath", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L280", "weight": 1.0}, {"source": "lib_vitals_report_summarize", "target": "lib_vitals_report_rollup", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L290", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_vitals_report_text", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L79"}, {"caller_nid": "lib_vitals_report_text", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L81"}, {"caller_nid": "lib_vitals_report_normalizepath", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L91"}, {"caller_nid": "lib_vitals_report_normalizepath", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L91"}, {"caller_nid": "lib_vitals_report_normalizepath", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L92"}, {"caller_nid": "lib_vitals_report_normalizepath", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L93"}, {"caller_nid": "lib_vitals_report_deviceclass", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L97"}, {"caller_nid": "lib_vitals_report_deviceclass", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L98"}, {"caller_nid": "lib_vitals_report_connectionclass", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L102"}, {"caller_nid": "lib_vitals_report_connectionclass", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L103"}, {"caller_nid": "lib_vitals_report_devicefromwidth", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L108"}, {"caller_nid": "lib_vitals_report_ratemetric", "callee": "rateVital", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L123"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L132"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L133"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L135"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L136"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L139"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L139"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L139"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L143"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L145"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L146"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L148"}, {"caller_nid": "lib_vitals_report_normalizesample", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L154"}, {"caller_nid": "lib_vitals_report_normalizebatch", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L175"}, {"caller_nid": "lib_vitals_report_normalizebatch", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L177"}, {"caller_nid": "lib_vitals_report_normalizebatch", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L198"}, {"caller_nid": "lib_vitals_report_normalizebatch", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L199"}, {"caller_nid": "lib_vitals_report_normalizebatch", "callee": "values", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L202"}, {"caller_nid": "lib_vitals_report_percentile", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L212"}, {"caller_nid": "lib_vitals_report_percentile", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L213"}, {"caller_nid": "lib_vitals_report_percentile", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L213"}, {"caller_nid": "lib_vitals_report_percentile", "callee": "ceil", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L213"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L251"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L251"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L251"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L252"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L252"}, {"caller_nid": "lib_vitals_report_rollup", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L252"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L273"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L273"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L274"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L275"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L276"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L287"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L292"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L297"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L301"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L301"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L301"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L301"}, {"caller_nid": "lib_vitals_report_summarize", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L301"}, {"caller_nid": "lib_vitals_report_push", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L311"}, {"caller_nid": "lib_vitals_report_push", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L313"}, {"caller_nid": "lib_vitals_report_describesummary", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L319"}, {"caller_nid": "lib_vitals_report_describesummary", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L319"}, {"caller_nid": "lib_vitals_report_describesummary", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts", "source_location": "L322"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "label": "vitals-report.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_vitals_report_vital_metrics",
+      "label": "VITAL_METRICS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_vitals_report_vitalmetric",
+      "label": "VitalMetric",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_vitals_report_budget_key",
+      "label": "BUDGET_KEY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_vitals_report_vital_clamp",
+      "label": "VITAL_CLAMP",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_vitals_report_device_classes",
+      "label": "DEVICE_CLASSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_vitals_report_deviceclass",
+      "label": "DeviceClass",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_vitals_report_connection_classes",
+      "label": "CONNECTION_CLASSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_vitals_report_connectionclass",
+      "label": "ConnectionClass",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_vitals_report_rawsample",
+      "label": "RawSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_vitals_report_vitalsample",
+      "label": "VitalSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_vitals_report_text",
+      "label": "text()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_vitals_report_normalizepath",
+      "label": "normalizePath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "lib_vitals_report_devicefromwidth",
+      "label": "deviceFromWidth()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_vitals_report_ratemetric",
+      "label": "rateMetric()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_vitals_report_normalizesample",
+      "label": "normalizeSample()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L131"
+    },
+    {
+      "id": "lib_vitals_report_normalizeresult",
+      "label": "NormalizeResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L164"
+    },
+    {
+      "id": "lib_vitals_report_normalizebatch",
+      "label": "normalizeBatch()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L174"
+    },
+    {
+      "id": "lib_vitals_report_percentile",
+      "label": "percentile()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "lib_vitals_report_metricrollup",
+      "label": "MetricRollup",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L217"
+    },
+    {
+      "id": "lib_vitals_report_vitalssummary",
+      "label": "VitalsSummary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "lib_vitals_report_budgetfor",
+      "label": "budgetFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L239"
+    },
+    {
+      "id": "lib_vitals_report_rollup",
+      "label": "rollup()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L244"
+    },
+    {
+      "id": "lib_vitals_report_summarize",
+      "label": "summarize()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L266"
+    },
+    {
+      "id": "lib_vitals_report_push",
+      "label": "push()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L310"
+    },
+    {
+      "id": "lib_vitals_report_describesummary",
+      "label": "describeSummary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L317"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "users_rahman_documents_frame30_src_lib_web_vitals_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_web_vitals_vitals_budget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_web_vitals_ratevital",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_web_vitals_vitalname",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_web_vitals_vitalrating",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_vital_metrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_vitalmetric",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_budget_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_vital_clamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_device_classes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_deviceclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_connection_classes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_connectionclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_rawsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_vitalsample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_normalizepath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_deviceclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_connectionclass",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_devicefromwidth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_ratemetric",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_normalizesample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_normalizeresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_normalizebatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_percentile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_metricrollup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_vitalssummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_budgetfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L239",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_rollup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_summarize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_push",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "target": "lib_vitals_report_describesummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L317",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizepath",
+      "target": "lib_vitals_report_text",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_deviceclass",
+      "target": "lib_vitals_report_text",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_connectionclass",
+      "target": "lib_vitals_report_text",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizesample",
+      "target": "lib_vitals_report_text",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizesample",
+      "target": "lib_vitals_report_ratemetric",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizesample",
+      "target": "lib_vitals_report_normalizepath",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizesample",
+      "target": "lib_vitals_report_deviceclass",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizesample",
+      "target": "lib_vitals_report_connectionclass",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizebatch",
+      "target": "lib_vitals_report_normalizesample",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_normalizebatch",
+      "target": "lib_vitals_report_push",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_rollup",
+      "target": "lib_vitals_report_percentile",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_rollup",
+      "target": "lib_vitals_report_budgetfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_rollup",
+      "target": "lib_vitals_report_ratemetric",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_summarize",
+      "target": "lib_vitals_report_deviceclass",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_summarize",
+      "target": "lib_vitals_report_push",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L278",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_summarize",
+      "target": "lib_vitals_report_normalizepath",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_report_summarize",
+      "target": "lib_vitals_report_rollup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L290",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_vitals_report_text",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "lib_vitals_report_text",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizepath",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizepath",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizepath",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizepath",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "lib_vitals_report_deviceclass",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_vitals_report_deviceclass",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_vitals_report_connectionclass",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_vitals_report_connectionclass",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "lib_vitals_report_devicefromwidth",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_vitals_report_ratemetric",
+      "callee": "rateVital",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizesample",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizebatch",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizebatch",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizebatch",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizebatch",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "lib_vitals_report_normalizebatch",
+      "callee": "values",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "lib_vitals_report_percentile",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "lib_vitals_report_percentile",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "lib_vitals_report_percentile",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "lib_vitals_report_percentile",
+      "callee": "ceil",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_vitals_report_rollup",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L287"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L292"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_vitals_report_summarize",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_vitals_report_push",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "lib_vitals_report_push",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_vitals_report_describesummary",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "lib_vitals_report_describesummary",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "lib_vitals_report_describesummary",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals-report.ts",
+      "source_location": "L322"
+    }
+  ]
+}

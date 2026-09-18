@@ -1,1 +1,877 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "label": "phase5-responsive.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L1"}, {"id": "lib_phase5_responsive_contract_test_mk", "label": "mk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L37"}, {"id": "lib_phase5_responsive_contract_test_ast", "label": "ast()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L41"}, {"id": "lib_phase5_responsive_contract_test_node", "label": "node", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L79"}, {"id": "lib_phase5_responsive_contract_test_plain", "label": "plain", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L98"}, {"id": "lib_phase5_responsive_contract_test_out", "label": "out", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L107"}, {"id": "lib_phase5_responsive_contract_test_nodes", "label": "nodes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L125"}, {"id": "lib_phase5_responsive_contract_test_a", "label": "a", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L134"}, {"id": "lib_phase5_responsive_contract_test_b", "label": "b", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L135"}, {"id": "lib_phase5_responsive_contract_test_child", "label": "child", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L180"}, {"id": "lib_phase5_responsive_contract_test_container", "label": "container", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L181"}, {"id": "lib_phase5_responsive_contract_test_issues", "label": "issues", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L189"}, {"id": "lib_phase5_responsive_contract_test_vh", "label": "vh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L202"}, {"id": "lib_phase5_responsive_contract_test_tap", "label": "tap", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L203"}, {"id": "lib_phase5_responsive_contract_test_fixed", "label": "fixed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L204"}, {"id": "lib_phase5_responsive_contract_test_codes", "label": "codes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L205"}, {"id": "lib_phase5_responsive_contract_test_one", "label": "one", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L213"}, {"id": "lib_phase5_responsive_contract_test_two", "label": "two", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L215"}, {"id": "lib_phase5_responsive_contract_test_report", "label": "report", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L220"}, {"id": "lib_phase5_responsive_contract_test_bad", "label": "bad", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L230"}, {"id": "lib_phase5_responsive_contract_test_gate", "label": "gate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L231"}, {"id": "lib_phase5_responsive_contract_test_clean", "label": "clean", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L238"}, {"id": "lib_phase5_responsive_contract_test_entry", "label": "entry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L245"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_responsive_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_breakpoint_px", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_device_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_layer_cascade", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_layer_range", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_min_floor_width_px", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_min_preferred_width_px", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_min_touch_px", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_responsive_layout_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_bucketforwidth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_inheritanceof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_isresponsivelayoutkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_layermedia", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_css_responsive_css_budget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_css_compileresponsivecss", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_css_responsiveclassof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_css_responsivesignature", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_css_signaturekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_responsive_lint_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_lint_responsivegate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_lint_responsiveissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_responsive_lint_scroll_lock_owners", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_newsection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_parseast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_resolveprops", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_publish_gates_composepublishgate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_publish_gates_release_gates", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_builder_ast_default_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_theme_presets_theme_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_mk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_ast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L88", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_plain", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L105", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_nodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L125", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_a", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L134", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_b", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_nodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L165", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_child", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L180", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_container", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L181", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L189", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L195", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L196", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_vh", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L202", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_tap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L203", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_fixed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L204", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_codes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_one", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L213", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_two", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L215", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L220", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_bad", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L230", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_gate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L231", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_clean", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L238", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_gate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L239", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_entry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L245", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts", "target": "lib_phase5_responsive_contract_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L253", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_phase5_responsive_contract_test_mk", "callee": "newSection", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L38"}, {"caller_nid": "lib_phase5_responsive_contract_test_ast", "callee": "parseAst", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts", "source_location": "L42"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "label": "phase5-responsive.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_mk",
+      "label": "mk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_ast",
+      "label": "ast()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_node",
+      "label": "node",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_plain",
+      "label": "plain",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_out",
+      "label": "out",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_nodes",
+      "label": "nodes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L125"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_a",
+      "label": "a",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L134"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_b",
+      "label": "b",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L135"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_child",
+      "label": "child",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L180"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_container",
+      "label": "container",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L181"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_issues",
+      "label": "issues",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L189"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_vh",
+      "label": "vh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L202"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_tap",
+      "label": "tap",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_fixed",
+      "label": "fixed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L204"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_codes",
+      "label": "codes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L205"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_one",
+      "label": "one",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L213"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_two",
+      "label": "two",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L215"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_report",
+      "label": "report",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L220"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_bad",
+      "label": "bad",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L230"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_gate",
+      "label": "gate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L231"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_clean",
+      "label": "clean",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L238"
+    },
+    {
+      "id": "lib_phase5_responsive_contract_test_entry",
+      "label": "entry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L245"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_breakpoint_px",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_device_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_layer_cascade",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_layer_range",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_min_floor_width_px",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_min_preferred_width_px",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_min_touch_px",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_responsive_layout_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_bucketforwidth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_inheritanceof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_isresponsivelayoutkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_layermedia",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_css_responsive_css_budget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_css_compileresponsivecss",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_css_responsiveclassof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_css_responsivesignature",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_css_signaturekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_lint_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_lint_responsivegate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_lint_responsiveissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_responsive_lint_scroll_lock_owners",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_newsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_parseast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_resolveprops",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_publish_gates_composepublishgate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_publish_gates_release_gates",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_builder_ast_default_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_theme_presets_theme_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_mk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_ast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_plain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_nodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_nodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_child",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_container",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_vh",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_tap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_fixed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_codes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_one",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_two",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_bad",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_gate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_clean",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_gate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L239",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_responsive_contract_test_ts",
+      "target": "lib_phase5_responsive_contract_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_phase5_responsive_contract_test_mk",
+      "callee": "newSection",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_phase5_responsive_contract_test_ast",
+      "callee": "parseAst",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-responsive.contract.test.ts",
+      "source_location": "L42"
+    }
+  ]
+}

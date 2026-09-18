@@ -33,14 +33,16 @@ import {
   type ViewportMeasurement,
 } from "./design-exit";
 
-const codes = (findings: readonly { code: string }[]) => findings.map((f) => f.code);
+const codes = (findings: readonly { code: string }[]) =>
+  findings.map((f) => f.code);
 
 /* -------------------------------------------------------------------------- */
 /* Rule 1 — colour discipline                                                 */
 /* -------------------------------------------------------------------------- */
 
 describe("auditSourceColors", () => {
-  const scan = (contents: string) => auditSourceColors({ path: "src/x.tsx", contents });
+  const scan = (contents: string) =>
+    auditSourceColors({ path: "src/x.tsx", contents });
 
   it("flags literal palette utilities, including variant-prefixed ones", () => {
     for (const token of [
@@ -84,19 +86,25 @@ describe("auditSourceColors", () => {
   });
 
   it("does not flag non-colour arbitrary values", () => {
-    const found = scan(`<div className="w-[420px] leading-[1.6] grid-cols-[1fr_auto]" />`);
+    const found = scan(
+      `<div className="w-[420px] leading-[1.6] grid-cols-[1fr_auto]" />`,
+    );
     expect(found).toEqual([]);
   });
 
   it("flags inline style colours", () => {
-    expect(codes(scan(`<div style={{ color: "#fff" }} />`))).toContain("color.inline_style");
-    expect(codes(scan(`<div style={{ backgroundColor: "rgba(0,0,0,.4)" }} />`))).toContain(
+    expect(codes(scan(`<div style={{ color: "#fff" }} />`))).toContain(
       "color.inline_style",
     );
+    expect(
+      codes(scan(`<div style={{ backgroundColor: "rgba(0,0,0,.4)" }} />`)),
+    ).toContain("color.inline_style");
   });
 
   it("permits an inline style that references a token", () => {
-    const found = scan(`<div style={{ backgroundColor: "var(--fq-surface-2)" }} />`);
+    const found = scan(
+      `<div style={{ backgroundColor: "var(--fq-surface-2)" }} />`,
+    );
     expect(codes(found)).not.toContain("color.inline_style");
   });
 
@@ -108,18 +116,25 @@ describe("auditSourceColors", () => {
   });
 
   it("ignores hex-looking noise in urls and svg paths", () => {
-    const found = scan(`<a href="https://x.test/#abcdef">x</a><path d="M0 0h#aabbcc" />`);
+    const found = scan(
+      `<a href="https://x.test/#abcdef">x</a><path d="M0 0h#aabbcc" />`,
+    );
     expect(codes(found)).not.toContain("color.raw_hex");
   });
 
   it("honours a written-down escape on the same line", () => {
-    const found = scan(`<div className="bg-white" /> // ${COLOR_ESCAPE_COMMENT}: print stylesheet`);
+    const found = scan(
+      `<div className="bg-white" /> // ${COLOR_ESCAPE_COMMENT}: print stylesheet`,
+    );
     expect(found).toEqual([]);
   });
 
   it("reports an actionable path:line and never repeats one token per line", () => {
     const contents = `a\nb\n<div className="text-white text-white" />\n`;
-    const found = auditSourceColors({ path: "src/components/public/X.tsx", contents });
+    const found = auditSourceColors({
+      path: "src/components/public/X.tsx",
+      contents,
+    });
     expect(found).toHaveLength(1);
     expect(found[0].where).toBe("src/components/public/X.tsx:3");
     expect(lineOf(contents, contents.indexOf("text-white"))).toBe(3);
@@ -144,7 +159,12 @@ describe("colour maths", () => {
     expect(parseColor("#fff")).toEqual({ r: 255, g: 255, b: 255, a: 1 });
     expect(parseColor("#0b0f14")).toEqual({ r: 11, g: 15, b: 20, a: 1 });
     expect(parseColor("#00000080")?.a).toBeCloseTo(0.502, 2);
-    expect(parseColor("rgb(255, 255, 255)")).toEqual({ r: 255, g: 255, b: 255, a: 1 });
+    expect(parseColor("rgb(255, 255, 255)")).toEqual({
+      r: 255,
+      g: 255,
+      b: 255,
+      a: 1,
+    });
     expect(parseColor("rgba(255, 255, 255, 0.62)")?.a).toBeCloseTo(0.62, 5);
     expect(parseColor("rgb(255 255 255 / 62%)")?.a).toBeCloseTo(0.62, 5);
     expect(parseColor("transparent")?.a).toBe(0);
@@ -197,7 +217,9 @@ describe("auditContrast", () => {
   });
 
   it("blocks body copy that fails 4.5:1 once alpha is composited", () => {
-    const found = auditContrast([onCanvas({ color: "rgba(255,255,255,0.30)" })]);
+    const found = auditContrast([
+      onCanvas({ color: "rgba(255,255,255,0.30)" }),
+    ]);
     expect(found).toHaveLength(1);
     expect(found[0].code).toBe("contrast.body");
     expect(found[0].severity).toBe("error");
@@ -206,25 +228,41 @@ describe("auditContrast", () => {
 
   it("treats a near-miss on muted copy as advisory and a real miss as blocking", () => {
     const near = auditContrast([
-      onCanvas({ role: "muted", label: "muted", color: "rgba(255,255,255,0.55)" }),
+      onCanvas({
+        role: "muted",
+        label: "muted",
+        color: "rgba(255,255,255,0.55)",
+      }),
     ]);
     if (near.length) {
       expect(near[0].code).toBe("contrast.muted");
-      expect(Number(near[0].actual)).toBeGreaterThanOrEqual(CONTRAST.mutedWarnFloor);
+      expect(Number(near[0].actual)).toBeGreaterThanOrEqual(
+        CONTRAST.mutedWarnFloor,
+      );
       expect(near[0].severity).toBe("warn");
     }
     const bad = auditContrast([
-      onCanvas({ role: "muted", label: "muted", color: "rgba(255,255,255,0.22)" }),
+      onCanvas({
+        role: "muted",
+        label: "muted",
+        color: "rgba(255,255,255,0.22)",
+      }),
     ]);
     expect(bad[0].severity).toBe("error");
   });
 
   it("applies the 3:1 large-text rule at 24px and to bold 18.66px", () => {
     const grey = "rgba(255,255,255,0.42)";
-    expect(auditContrast([onCanvas({ color: grey, fontSizePx: 17 })])).toHaveLength(1);
-    expect(auditContrast([onCanvas({ color: grey, fontSizePx: 24 })])).toEqual([]);
     expect(
-      auditContrast([onCanvas({ color: grey, fontSizePx: 19, fontWeight: 700 })]),
+      auditContrast([onCanvas({ color: grey, fontSizePx: 17 })]),
+    ).toHaveLength(1);
+    expect(auditContrast([onCanvas({ color: grey, fontSizePx: 24 })])).toEqual(
+      [],
+    );
+    expect(
+      auditContrast([
+        onCanvas({ color: grey, fontSizePx: 19, fontWeight: 700 }),
+      ]),
     ).toEqual([]);
   });
 
@@ -242,14 +280,22 @@ describe("auditContrast", () => {
     expect(found[0].message).toContain("hover state");
 
     const disabled = auditContrast([
-      onCanvas({ role: "cta-disabled", state: "disabled", color: "rgba(255,255,255,0.45)" }),
+      onCanvas({
+        role: "cta-disabled",
+        state: "disabled",
+        color: "rgba(255,255,255,0.45)",
+      }),
     ]);
     expect(disabled).toEqual([]);
   });
 
   it("holds focus rings to the 3:1 non-text rule", () => {
     const weak = auditContrast([
-      onCanvas({ role: "focus-ring", label: "focus ring", color: "rgba(255,255,255,0.18)" }),
+      onCanvas({
+        role: "focus-ring",
+        label: "focus ring",
+        color: "rgba(255,255,255,0.18)",
+      }),
     ]);
     expect(weak[0].code).toBe("contrast.focus_ring");
     expect(weak[0].expected).toBe(CONTRAST.nonTextMin);
@@ -257,13 +303,19 @@ describe("auditContrast", () => {
 
   it("skips fully transparent text and reports unparseable colours instead of hiding them", () => {
     expect(auditContrast([onCanvas({ color: "transparent" })])).toEqual([]);
-    const found = auditContrast([onCanvas({ color: "color(display-p3 1 1 1)" })]);
+    const found = auditContrast([
+      onCanvas({ color: "color(display-p3 1 1 1)" }),
+    ]);
     expect(found[0].code).toBe("contrast.unmeasurable");
     expect(found[0].severity).toBe("warn");
   });
 
   it("reports CTA states that never resolved", () => {
-    const rest = onCanvas({ role: "cta", label: "Start free [rest]", state: "rest" });
+    const rest = onCanvas({
+      role: "cta",
+      label: "Start free [rest]",
+      state: "rest",
+    });
     const found = auditCtaStates([rest]);
     expect(found).toHaveLength(1);
     expect(found[0].message).toContain("hover");
@@ -276,7 +328,9 @@ describe("auditContrast", () => {
 /* -------------------------------------------------------------------------- */
 
 describe("auditResponsive", () => {
-  const view = (over: Partial<ViewportMeasurement> = {}): ViewportMeasurement => ({
+  const view = (
+    over: Partial<ViewportMeasurement> = {},
+  ): ViewportMeasurement => ({
     route: "home",
     viewportPx: 320,
     locale: "bn",
@@ -292,9 +346,11 @@ describe("auditResponsive", () => {
   });
 
   it("absorbs sub-pixel scroll slack", () => {
-    expect(auditResponsive(view({ documentScrollWidthPx: 320 + RESPONSIVE.scrollSlackPx }))).toEqual(
-      [],
-    );
+    expect(
+      auditResponsive(
+        view({ documentScrollWidthPx: 320 + RESPONSIVE.scrollSlackPx }),
+      ),
+    ).toEqual([]);
   });
 
   it("blocks horizontal scroll and names the widest culprits", () => {
@@ -303,13 +359,20 @@ describe("auditResponsive", () => {
         documentScrollWidthPx: 372,
         overflow: [
           { label: "table.matrix", rightPx: 372, widthPx: 700, clipped: false },
-          { label: "section.aurora", rightPx: 352, widthPx: 360, clipped: false },
+          {
+            label: "section.aurora",
+            rightPx: 352,
+            widthPx: 360,
+            clipped: false,
+          },
           { label: "div.marquee", rightPx: 900, widthPx: 2000, clipped: true },
         ],
       }),
     );
     expect(codes(found)).toContain("responsive.horizontal_scroll");
-    const overflowFindings = found.filter((f) => f.code === "responsive.element_overflow");
+    const overflowFindings = found.filter(
+      (f) => f.code === "responsive.element_overflow",
+    );
     expect(overflowFindings.map((f) => f.where.split("· ")[1])).toEqual([
       "table.matrix",
       "section.aurora",
@@ -347,7 +410,9 @@ describe("auditResponsive", () => {
       text: "বাংলা লেখা",
     };
     expect(auditResponsive(view({ bangla: [ok] }))).toEqual([]);
-    const clipped = auditResponsive(view({ bangla: [{ ...ok, heightPx: 28 }] }));
+    const clipped = auditResponsive(
+      view({ bangla: [{ ...ok, heightPx: 28 }] }),
+    );
     expect(codes(clipped)).toEqual(["responsive.matra_clipped"]);
   });
 
@@ -391,7 +456,9 @@ describe("auditResponsive", () => {
       view({
         viewportPx: 1440,
         documentScrollWidthPx: 1440,
-        tapTargets: [{ label: "button", widthPx: 36, heightPx: 36, inline: false }],
+        tapTargets: [
+          { label: "button", widthPx: 36, heightPx: 36, inline: false },
+        ],
       }),
     );
     expect(found).toEqual([]);
@@ -407,22 +474,49 @@ describe("auditVitals", () => {
 
   it("passes a fast, stable home page", () => {
     expect(
-      auditVitals({ ...base, lcpMs: 900, clsScore: 0.004, ttfbMs: 120, fontsReadyMs: 400 }),
+      auditVitals({
+        ...base,
+        lcpMs: 900,
+        clsScore: 0.004,
+        ttfbMs: 120,
+        fontsReadyMs: 400,
+      }),
     ).toEqual([]);
   });
 
   it("blocks a slow LCP on the budgeted route and warns elsewhere", () => {
-    const home = auditVitals({ ...base, lcpMs: 2400, clsScore: 0, ttfbMs: 100 });
+    const home = auditVitals({
+      ...base,
+      lcpMs: 2400,
+      clsScore: 0,
+      ttfbMs: 100,
+    });
     expect(home[0].code).toBe("vitals.lcp");
     expect(home[0].severity).toBe("error");
-    const docs = auditVitals({ ...base, route: "docs", lcpMs: 2400, clsScore: 0, ttfbMs: 100 });
+    const docs = auditVitals({
+      ...base,
+      route: "docs",
+      lcpMs: 2400,
+      clsScore: 0,
+      ttfbMs: 100,
+    });
     expect(docs[0].severity).toBe("warn");
   });
 
   it("warns when LCP is inside budget but has no headroom, and blames TTFB when it is the cost", () => {
-    const tight = auditVitals({ ...base, lcpMs: 1800, clsScore: 0, ttfbMs: 100 });
+    const tight = auditVitals({
+      ...base,
+      lcpMs: 1800,
+      clsScore: 0,
+      ttfbMs: 100,
+    });
     expect(tight[0].severity).toBe("warn");
-    const slowServer = auditVitals({ ...base, lcpMs: 2600, clsScore: 0, ttfbMs: 1500 });
+    const slowServer = auditVitals({
+      ...base,
+      lcpMs: 2600,
+      clsScore: 0,
+      ttfbMs: 1500,
+    });
     expect(slowServer[0].message).toContain("TTFB");
   });
 
@@ -440,13 +534,23 @@ describe("auditVitals", () => {
   });
 
   it("warns on visible-but-legal CLS", () => {
-    const found = auditVitals({ ...base, lcpMs: 800, clsScore: 0.03, ttfbMs: 90 });
+    const found = auditVitals({
+      ...base,
+      lcpMs: 800,
+      clsScore: 0.03,
+      ttfbMs: 90,
+    });
     expect(found[0].severity).toBe("warn");
     expect(found[0].expected).toBe(VITALS.clsWarnLevel);
   });
 
   it("says 'unmeasured' rather than 'fast' when nothing was reported", () => {
-    const found = auditVitals({ ...base, lcpMs: null, clsScore: null, ttfbMs: null });
+    const found = auditVitals({
+      ...base,
+      lcpMs: null,
+      clsScore: null,
+      ttfbMs: null,
+    });
     expect(codes(found)).toEqual(["vitals.missing", "vitals.missing"]);
     expect(found.every((f) => f.severity === "warn")).toBe(true);
   });
@@ -480,7 +584,9 @@ describe("auditHeadings", () => {
   });
 
   it("blocks a missing H1 and duplicate H1s", () => {
-    expect(codes(auditHeadings([{ level: 2, text: "Pricing" }]))).toContain("heading.h1_missing");
+    expect(codes(auditHeadings([{ level: 2, text: "Pricing" }]))).toContain(
+      "heading.h1_missing",
+    );
     const dup = auditHeadings([
       { level: 1, text: "A" },
       { level: 1, text: "B" },
@@ -563,9 +669,14 @@ describe("auditExitPage and reporting helpers", () => {
     expect(report.ok).toBe(true);
     expect(report.counts).toEqual({ error: 0, warn: 0, info: 0 });
 
-    const broken = auditExitPage({ ...clean, headings: [{ level: 2, text: "Section" }] });
+    const broken = auditExitPage({
+      ...clean,
+      headings: [{ level: 2, text: "Section" }],
+    });
     expect(broken.ok).toBe(false);
-    expect(broken.findings.every((f) => f.where.startsWith("home @1440/en"))).toBe(true);
+    expect(
+      broken.findings.every((f) => f.where.startsWith("home @1440/en")),
+    ).toBe(true);
   });
 
   it("is deterministic", () => {
@@ -580,13 +691,27 @@ describe("auditExitPage and reporting helpers", () => {
       where: `home @${w}/${l}`,
       message: "m",
     });
-    expect(dedupeFindings([at(320, "en"), at(768, "en"), at(320, "bn")])).toHaveLength(1);
+    expect(
+      dedupeFindings([at(320, "en"), at(768, "en"), at(320, "bn")]),
+    ).toHaveLength(1);
   });
 
   it("counts, filters and formats findings for CI output", () => {
     const findings = [
-      { code: "vitals.cls" as const, severity: "error" as const, rule: "r", where: "home", message: "m" },
-      { code: "vitals.lcp" as const, severity: "warn" as const, rule: "r", where: "home", message: "m" },
+      {
+        code: "vitals.cls" as const,
+        severity: "error" as const,
+        rule: "r",
+        where: "home",
+        message: "m",
+      },
+      {
+        code: "vitals.lcp" as const,
+        severity: "warn" as const,
+        rule: "r",
+        where: "home",
+        message: "m",
+      },
     ];
     expect(countBySeverity(findings)).toEqual({ error: 1, warn: 1, info: 0 });
     expect(errorsOnly(findings)).toHaveLength(1);

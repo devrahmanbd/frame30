@@ -1,1 +1,378 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "label": "click.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L1"}, {"id": "ads_click_clickschema", "label": "clickSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L31"}, {"id": "ads_click_clientip", "label": "clientIp()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L53"}, {"id": "ads_click_nostore", "label": "noStore()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L58"}, {"id": "ads_click_reject", "label": "reject()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L62"}, {"id": "ads_click_hmachex", "label": "hmacHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L68"}, {"id": "ads_click_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L82"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "zod", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "users_rahman_documents_frame30_src_lib_beacon_guard_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_beacon_max_body_bytes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_checktimestamp", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_isbodywithinlimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_isjsoncontenttype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_isoriginallowed", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_isvalidnonce", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_rejectionstatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_safelandingpath", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_safereferrerhost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_signaturepayload", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_timingsafeequalhex", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "lib_beacon_guard_beaconrejection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_clickschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_clientip", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_nostore", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_reject", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_hmachex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts", "target": "ads_click_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L82", "weight": 1.0}, {"source": "ads_click_reject", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L63", "weight": 1.0}, {"source": "ads_click_reject", "target": "ads_click_nostore", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L65", "weight": 1.0}], "raw_calls": [{"caller_nid": "ads_click_clientip", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L54"}, {"caller_nid": "ads_click_clientip", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L54"}, {"caller_nid": "ads_click_clientip", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L55"}, {"caller_nid": "ads_click_clientip", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L55"}, {"caller_nid": "ads_click_reject", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L64"}, {"caller_nid": "ads_click_reject", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L65"}, {"caller_nid": "ads_click_reject", "callee": "rejectionStatus", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L65"}, {"caller_nid": "ads_click_hmachex", "callee": "importKey", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L69"}, {"caller_nid": "ads_click_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L71"}, {"caller_nid": "ads_click_hmachex", "callee": "sign", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L76"}, {"caller_nid": "ads_click_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L76"}, {"caller_nid": "ads_click_hmachex", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L77"}, {"caller_nid": "ads_click_hmachex", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L77"}, {"caller_nid": "ads_click_hmachex", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts", "source_location": "L77"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "label": "click.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "ads_click_clickschema",
+      "label": "clickSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "ads_click_clientip",
+      "label": "clientIp()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "ads_click_nostore",
+      "label": "noStore()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "ads_click_reject",
+      "label": "reject()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "ads_click_hmachex",
+      "label": "hmacHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "ads_click_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L82"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "users_rahman_documents_frame30_src_lib_beacon_guard_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_beacon_max_body_bytes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_checktimestamp",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_isbodywithinlimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_isjsoncontenttype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_isoriginallowed",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_isvalidnonce",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_rejectionstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_safelandingpath",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_safereferrerhost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_signaturepayload",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_timingsafeequalhex",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "lib_beacon_guard_beaconrejection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_clickschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_clientip",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_nostore",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_reject",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_hmachex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_ads_click_ts",
+      "target": "ads_click_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "ads_click_reject",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "ads_click_reject",
+      "target": "ads_click_nostore",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "ads_click_clientip",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "ads_click_clientip",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "ads_click_clientip",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "ads_click_clientip",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "ads_click_reject",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "ads_click_reject",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "ads_click_reject",
+      "callee": "rejectionStatus",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "importKey",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "sign",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "ads_click_hmachex",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/ads/click.ts",
+      "source_location": "L77"
+    }
+  ]
+}

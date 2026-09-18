@@ -45,7 +45,12 @@ describe("facet URL algebra", () => {
   });
 
   it("clears every facet but keeps the search term and sort", () => {
-    const params = normalizeSearchParams({ q: "boot", sort: "newest", category: "shoes", stock: "1" });
+    const params = normalizeSearchParams({
+      q: "boot",
+      sort: "newest",
+      category: "shoes",
+      stock: "1",
+    });
     const cleared = clearFacets(params);
     expect(cleared.q).toBe("boot");
     expect(cleared.sort).toBe("newest");
@@ -55,21 +60,40 @@ describe("facet URL algebra", () => {
 
   it("lists active filters as removable chips", () => {
     const params = normalizeSearchParams({ category: "shoes", stock: "1" });
-    expect(activeFilters(params).map((c) => c.key).sort()).toEqual(["category", "stock"]);
+    expect(
+      activeFilters(params)
+        .map((c) => c.key)
+        .sort(),
+    ).toEqual(["category", "stock"]);
     for (const chip of activeFilters(params)) {
-      expect(activeFilters(withFacet(params, chip.key, null))).not.toContainEqual(chip);
+      expect(
+        activeFilters(withFacet(params, chip.key, null)),
+      ).not.toContainEqual(chip);
     }
   });
 
   it("only marks allowlisted single-facet page-1 URLs indexable", () => {
     expect(isIndexableFacetState(normalizeSearchParams({}))).toBe(true);
-    expect(isIndexableFacetState(normalizeSearchParams({ category: "shoes" }))).toBe(true);
-    expect(isIndexableFacetState(normalizeSearchParams({ category: "shoes", page: "2" }))).toBe(false);
-    expect(isIndexableFacetState(normalizeSearchParams({ category: "shoes", stock: "1" }))).toBe(false);
+    expect(
+      isIndexableFacetState(normalizeSearchParams({ category: "shoes" })),
+    ).toBe(true);
+    expect(
+      isIndexableFacetState(
+        normalizeSearchParams({ category: "shoes", page: "2" }),
+      ),
+    ).toBe(false);
+    expect(
+      isIndexableFacetState(
+        normalizeSearchParams({ category: "shoes", stock: "1" }),
+      ),
+    ).toBe(false);
   });
 
   it("builds crawlable hrefs on the given base path", () => {
-    const href = facetHref("/store/acme/search", normalizeSearchParams({ category: "shoes" }));
+    const href = facetHref(
+      "/store/acme/search",
+      normalizeSearchParams({ category: "shoes" }),
+    );
     expect(href.startsWith("/store/acme/search?")).toBe(true);
     expect(href).toContain("category=shoes");
   });
@@ -84,7 +108,9 @@ describe("facet URL algebra", () => {
     expect(window[0]).toBe(1);
     expect(window.at(-1)).toBe(30);
     expect(window).toContain(10);
-    expect(new Set(window.filter((p) => p !== -1)).size).toBe(window.filter((p) => p !== -1).length);
+    expect(new Set(window.filter((p) => p !== -1)).size).toBe(
+      window.filter((p) => p !== -1).length,
+    );
   });
 });
 
@@ -106,7 +132,10 @@ describe("facet rows", () => {
 describe("collection widgets are registered", () => {
   it("has a catalogue entry and registry meta for each", () => {
     for (const type of TYPES) {
-      expect(SECTION_CATALOG.some((e) => e.type === type), type).toBe(true);
+      expect(
+        SECTION_CATALOG.some((e) => e.type === type),
+        type,
+      ).toBe(true);
       expect(widgetMeta(type), type).toBeTruthy();
     }
   });

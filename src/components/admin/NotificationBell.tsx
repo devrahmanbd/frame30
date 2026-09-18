@@ -4,12 +4,21 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Bell, AlertTriangle, AlertOctagon, Info } from "lucide-react";
 import { useLang } from "@/lib/i18n";
-import { adminNotificationsFn, adminMarkNotificationsFn } from "@/lib/merchant-admin.functions";
+import {
+  adminNotificationsFn,
+  adminMarkNotificationsFn,
+} from "@/lib/merchant-admin.functions";
 
 const TONE = {
   info: { icon: Info, cls: "text-info-foreground bg-info-soft" },
-  warning: { icon: AlertTriangle, cls: "text-warning-foreground bg-warning-soft" },
-  critical: { icon: AlertOctagon, cls: "text-danger-foreground bg-danger-soft" },
+  warning: {
+    icon: AlertTriangle,
+    cls: "text-warning-foreground bg-warning-soft",
+  },
+  critical: {
+    icon: AlertOctagon,
+    cls: "text-danger-foreground bg-danger-soft",
+  },
 } as const;
 
 export function NotificationBell() {
@@ -79,7 +88,9 @@ export function NotificationBell() {
           className="absolute right-0 top-11 z-20 w-80 overflow-hidden rounded-fq-md border border-border bg-card shadow-lg"
         >
           <div className="flex items-center justify-between border-b border-border px-3 py-2">
-            <h2 className="text-sm font-semibold">{t("Alerts", "অ্যালার্ট")}</h2>
+            <h2 className="text-sm font-semibold">
+              {t("Alerts", "অ্যালার্ট")}
+            </h2>
             <button
               type="button"
               onClick={clearAll}
@@ -92,8 +103,14 @@ export function NotificationBell() {
 
           <ul className="max-h-96 divide-y divide-border overflow-y-auto">
             {isError && (
-              <li role="alert" className="px-3 py-4 text-sm text-danger-foreground">
-                {t("Alerts unavailable right now", "এই মুহূর্তে অ্যালার্ট পাওয়া যাচ্ছে না")}
+              <li
+                role="alert"
+                className="px-3 py-4 text-sm text-danger-foreground"
+              >
+                {t(
+                  "Alerts unavailable right now",
+                  "এই মুহূর্তে অ্যালার্ট পাওয়া যাচ্ছে না",
+                )}
               </li>
             )}
             {!isError && items.length === 0 && (
@@ -108,12 +125,22 @@ export function NotificationBell() {
               const body = lang === "bn" ? n.bodyBn || n.bodyEn : n.bodyEn;
               const inner = (
                 <div className="flex gap-2.5">
-                  <span className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full ${tone.cls}`}>
+                  <span
+                    className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full ${tone.cls}`}
+                  >
                     <Icon className="size-3.5" aria-hidden />
                   </span>
                   <div className="min-w-0">
-                    <p className={`truncate text-sm ${n.read ? "" : "font-semibold"}`}>{title}</p>
-                    {body && <p className="mt-0.5 text-xs text-muted-foreground">{body}</p>}
+                    <p
+                      className={`truncate text-sm ${n.read ? "" : "font-semibold"}`}
+                    >
+                      {title}
+                    </p>
+                    {body && (
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {body}
+                      </p>
+                    )}
                     <p className="mt-1 text-[11px] tabular-nums text-muted-foreground">
                       {new Date(n.createdAt).toLocaleString()}
                     </p>
@@ -131,7 +158,6 @@ export function NotificationBell() {
                       {inner}
                     </a>
                   ) : (
-
                     <div className="px-3 py-2.5">{inner}</div>
                   )}
                 </li>

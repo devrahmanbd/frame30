@@ -28,7 +28,12 @@
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
-import { uiStill, stillSources, stillSizes, STILLS } from "@/lib/marketing-assets";
+import {
+  uiStill,
+  stillSources,
+  stillSizes,
+  STILLS,
+} from "@/lib/marketing-assets";
 import { stillCaptured } from "@/lib/still-manifest";
 
 const warned = new Set<string>();
@@ -44,7 +49,13 @@ export type UiStillProps = {
   frameClassName?: string;
 };
 
-export function UiStill({ id, caption, priority, className, frameClassName }: UiStillProps) {
+export function UiStill({
+  id,
+  caption,
+  priority,
+  className,
+  frameClassName,
+}: UiStillProps) {
   const { t } = useLang();
   const [failed, setFailed] = useState(false);
 
@@ -101,7 +112,9 @@ export function UiStill({ id, caption, priority, className, frameClassName }: Ui
           "fq-glass relative overflow-hidden rounded-[var(--fq-radius-lg,18px)]",
           frameClassName,
         )}
-        style={{ aspectRatio: `${spec.intrinsic.width} / ${spec.intrinsic.height}` }}
+        style={{
+          aspectRatio: `${spec.intrinsic.width} / ${spec.intrinsic.height}`,
+        }}
       >
         {showFallback ? (
           <div
@@ -110,7 +123,10 @@ export function UiStill({ id, caption, priority, className, frameClassName }: Ui
             data-still-fallback={spec.id}
             className="flex h-full w-full items-center justify-center px-6 text-center"
           >
-            <span data-type-role="caption" className="text-[var(--fq-muted,inherit)]">
+            <span
+              data-type-role="caption"
+              className="text-[var(--fq-muted,inherit)]"
+            >
               {caption ?? alt}
             </span>
           </div>
@@ -143,7 +159,10 @@ export function UiStill({ id, caption, priority, className, frameClassName }: Ui
         )}
       </div>
       {caption ? (
-        <figcaption data-type-role="caption" className="mt-3 text-[var(--fq-muted,inherit)]">
+        <figcaption
+          data-type-role="caption"
+          className="mt-3 text-[var(--fq-muted,inherit)]"
+        >
           {caption}
         </figcaption>
       ) : null}

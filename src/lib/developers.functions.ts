@@ -33,7 +33,10 @@ export const oauthClientsListFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listClients } = await import("./oauth.server");
-    return listClients(context.supabase, await scope(context.supabase, context.userId));
+    return listClients(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+    );
   });
 
 export const oauthClientSaveFn = createServerFn({ method: "POST" })
@@ -67,27 +70,47 @@ export const oauthClientRotateFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { rotateClientSecret } = await import("./oauth.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return rotateClientSecret(context.supabase, merchantId, context.userId, data.id);
+    return rotateClientSecret(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+    );
   });
 
 export const oauthClientStatusFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), status: z.enum(["active", "disabled"]) }).parse(d),
+    z
+      .object({ id: z.string().uuid(), status: z.enum(["active", "disabled"]) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setClientStatus } = await import("./oauth.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setClientStatus(context.supabase, merchantId, context.userId, data.id, data.status);
+    return setClientStatus(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+      data.status,
+    );
   });
 
 export const oauthConsentRevokeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ consentId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ consentId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { revokeConsent } = await import("./oauth.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return revokeConsent(context.supabase, merchantId, context.userId, data.consentId);
+    return revokeConsent(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.consentId,
+    );
   });
 
 /* ------------------------- Consent screen (grant) ---------------------- */
@@ -106,10 +129,17 @@ export const oauthAuthorizeDescribeFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authorizeInput.parse(d))
   .handler(async ({ data }) => {
     const { describeAuthorization } = await import("./oauth.server");
-    const described = await describeAuthorization({ ...data, state: data.state ?? null });
+    const described = await describeAuthorization({
+      ...data,
+      state: data.state ?? null,
+    });
     // Never hand the merchant row id to the browser; the consent screen only
     // needs the app name and the scope decision.
-    return { appName: described.appName, granted: described.granted, refused: described.refused };
+    return {
+      appName: described.appName,
+      granted: described.granted,
+      refused: described.refused,
+    };
   });
 
 export const oauthAuthorizeGrantFn = createServerFn({ method: "POST" })
@@ -117,7 +147,10 @@ export const oauthAuthorizeGrantFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => authorizeInput.parse(d))
   .handler(async ({ data, context }) => {
     const { issueCode } = await import("./oauth.server");
-    const result = await issueCode(context.userId, { ...data, state: data.state ?? null });
+    const result = await issueCode(context.userId, {
+      ...data,
+      state: data.state ?? null,
+    });
     return { redirectTo: result.redirectTo };
   });
 
@@ -127,7 +160,10 @@ export const webhooksListFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listWebhooks } = await import("./webhooks.server");
-    return listWebhooks(context.supabase, await scope(context.supabase, context.userId));
+    return listWebhooks(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+    );
   });
 
 export const webhookSaveFn = createServerFn({ method: "POST" })
@@ -159,18 +195,34 @@ export const webhookRotateFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { rotateWebhookSecret } = await import("./webhooks.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return rotateWebhookSecret(context.supabase, merchantId, context.userId, data.id);
+    return rotateWebhookSecret(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+    );
   });
 
 export const webhookStatusFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), status: z.enum(["active", "paused", "disabled"]) }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum(["active", "paused", "disabled"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setWebhookStatus } = await import("./webhooks.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setWebhookStatus(context.supabase, merchantId, context.userId, data.id, data.status);
+    return setWebhookStatus(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+      data.status,
+    );
   });
 
 export const webhookTestFn = createServerFn({ method: "POST" })
@@ -184,9 +236,16 @@ export const webhookTestFn = createServerFn({ method: "POST" })
 
 export const webhookReplayFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ deliveryId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ deliveryId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { replayDelivery } = await import("./webhooks.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return replayDelivery(context.supabase, merchantId, context.userId, data.deliveryId);
+    return replayDelivery(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.deliveryId,
+    );
   });

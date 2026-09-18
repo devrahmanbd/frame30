@@ -49,7 +49,9 @@ function Bars({
             <li key={r.key}>
               <div className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="min-w-0 truncate">{r.label ?? r.key}</span>
-                <span className="fq-num shrink-0 text-muted-foreground">{r.value.toLocaleString()}</span>
+                <span className="fq-num shrink-0 text-muted-foreground">
+                  {r.value.toLocaleString()}
+                </span>
               </div>
               <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-muted">
                 <div
@@ -87,7 +89,10 @@ export function Traffic() {
     ? [
         { label: t("Product views", "পণ্য দেখা"), value: funnel.productViews },
         { label: t("Added to cart", "কার্টে যোগ"), value: funnel.cartAdds },
-        { label: t("Checkout started", "চেকআউট শুরু"), value: funnel.checkouts },
+        {
+          label: t("Checkout started", "চেকআউট শুরু"),
+          value: funnel.checkouts,
+        },
         { label: t("Orders placed", "অর্ডার সম্পন্ন"), value: funnel.orders },
       ]
     : [];
@@ -127,24 +132,45 @@ export function Traffic() {
       </header>
 
       {error ? (
-        <p role="alert" className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+        <p
+          role="alert"
+          className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
           {(error as Error).message}
         </p>
       ) : null}
 
       {isLoading && !data ? (
-        <div className="h-32 animate-pulse rounded-fq-md bg-muted/40" aria-busy />
+        <div
+          className="h-32 animate-pulse rounded-fq-md bg-muted/40"
+          aria-busy
+        />
       ) : null}
 
       {data ? (
         <>
           <section className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {[
-              { label: t("Visitors", "ভিজিটর"), value: data.totals.visitors.toLocaleString() },
-              { label: t("Sessions", "সেশন"), value: data.totals.sessions.toLocaleString() },
-              { label: t("Events", "ইভেন্ট"), value: data.totals.events.toLocaleString() },
-              { label: t("Clicks", "ক্লিক"), value: data.totals.clicks.toLocaleString() },
-              { label: t("Orders", "অর্ডার"), value: data.totals.orders.toLocaleString() },
+              {
+                label: t("Visitors", "ভিজিটর"),
+                value: data.totals.visitors.toLocaleString(),
+              },
+              {
+                label: t("Sessions", "সেশন"),
+                value: data.totals.sessions.toLocaleString(),
+              },
+              {
+                label: t("Events", "ইভেন্ট"),
+                value: data.totals.events.toLocaleString(),
+              },
+              {
+                label: t("Clicks", "ক্লিক"),
+                value: data.totals.clicks.toLocaleString(),
+              },
+              {
+                label: t("Orders", "অর্ডার"),
+                value: data.totals.orders.toLocaleString(),
+              },
               {
                 label: t("Revenue", "বিক্রি"),
                 value: fmtMinor(data.totals.revenueMinorInt, currency),
@@ -159,7 +185,9 @@ export function Traffic() {
 
           <section className="fq-card fq-edge-inner p-4">
             <div className="flex items-baseline justify-between gap-3">
-              <h2 className="text-sm font-semibold">{t("Visitors per day", "প্রতিদিনের ভিজিটর")}</h2>
+              <h2 className="text-sm font-semibold">
+                {t("Visitors per day", "প্রতিদিনের ভিজিটর")}
+              </h2>
               <span className="text-xs text-muted-foreground">
                 {data.lastEventAt
                   ? `${t("Last activity", "সর্বশেষ কার্যক্রম")}: ${new Date(data.lastEventAt).toLocaleString()}`
@@ -177,7 +205,10 @@ export function Traffic() {
               <div className="mt-1">
                 <TrendChart
                   label={t("Visitors", "ভিজিটর")}
-                  points={data.series.map((p) => ({ date: p.day, value: p.visitors }))}
+                  points={data.series.map((p) => ({
+                    date: p.day,
+                    value: p.visitors,
+                  }))}
                   format={(v) => v.toLocaleString()}
                 />
               </div>
@@ -185,7 +216,9 @@ export function Traffic() {
           </section>
 
           <section className="fq-card fq-edge-inner p-4">
-            <h2 className="text-sm font-semibold">{t("Path to checkout", "চেকআউট পর্যন্ত পথ")}</h2>
+            <h2 className="text-sm font-semibold">
+              {t("Path to checkout", "চেকআউট পর্যন্ত পথ")}
+            </h2>
             <ul className="mt-3 space-y-2">
               {steps.map((s, i) => (
                 <li key={s.label}>
@@ -201,7 +234,9 @@ export function Traffic() {
                   <div className="mt-1 h-2 overflow-hidden rounded-full bg-muted">
                     <div
                       className="h-full rounded-full bg-primary"
-                      style={{ width: `${Math.round((s.value / funnelMax) * 100)}%` }}
+                      style={{
+                        width: `${Math.round((s.value / funnelMax) * 100)}%`,
+                      }}
                     />
                   </div>
                 </li>
@@ -222,7 +257,11 @@ export function Traffic() {
             <Bars
               title={t("Regions", "অঞ্চল")}
               empty={t("No region data yet.", "এখনো অঞ্চলের তথ্য নেই।")}
-              rows={data.regions.map((r) => ({ key: r.key, label: r.label, value: r.visitors }))}
+              rows={data.regions.map((r) => ({
+                key: r.key,
+                label: r.label,
+                value: r.visitors,
+              }))}
             />
             <Bars
               title={t("Devices", "ডিভাইস")}
@@ -237,7 +276,10 @@ export function Traffic() {
             <Bars
               title={t("Most clicked", "সর্বাধিক ক্লিক")}
               empty={t("No clicks recorded yet.", "এখনো কোনো ক্লিক নেই।")}
-              rows={data.clickTargets.map((c) => ({ key: c.key, value: c.events }))}
+              rows={data.clickTargets.map((c) => ({
+                key: c.key,
+                value: c.events,
+              }))}
             />
           </div>
         </>

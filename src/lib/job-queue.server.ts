@@ -28,7 +28,13 @@ import {
   type JobState,
   type QueueDepth,
 } from "./job-queue";
-import { incr, log, observe, setGauge, captureError } from "./observability.server";
+import {
+  incr,
+  log,
+  observe,
+  setGauge,
+  captureError,
+} from "./observability.server";
 
 type Client = SupabaseClient<Database>;
 type Row = Record<string, unknown>;
@@ -44,7 +50,8 @@ export class JobQueueError extends Error {
 }
 
 async function admin(): Promise<Client> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Client;
 }
 
@@ -70,7 +77,9 @@ export type EnqueueInput = {
 export async function enqueueJob(input: EnqueueInput, client?: Client) {
   const db = client ?? (await admin());
   const policy = policyFor(input.queue);
-  const runAfter = new Date(Date.now() + Math.max(0, input.delaySeconds ?? 0) * 1000).toISOString();
+  const runAfter = new Date(
+    Date.now() + Math.max(0, input.delaySeconds ?? 0) * 1000,
+  ).toISOString();
 
   const row = {
     queue: input.queue,
@@ -91,22 +100,37 @@ export async function enqueueJob(input: EnqueueInput, client?: Client) {
       .eq("idempotency_key", input.idempotencyKey)
       .maybeSingle();
     if (existing) {
-      incr("framique_jobs_enqueued_total", { queue: input.queue, result: "duplicate" });
+      incr("framique_jobs_enqueued_total", {
+        queue: input.queue,
+        result: "duplicate",
+      });
       return { id: (existing as Row)["id"] as string, duplicate: true };
     }
   }
 
-  const { data, error } = await table(db, "job_queue").insert(row).select("id").single();
+  const { data, error } = await table(db, "job_queue")
+    .insert(row)
+    .select("id")
+    .single();
   if (error) {
     // Unique violation = another isolate won the same dedupe key. Not an error.
     if ((error as { code?: string }).code === "23505" && input.idempotencyKey) {
-      incr("framique_jobs_enqueued_total", { queue: input.queue, result: "duplicate" });
+      incr("framique_jobs_enqueued_total", {
+        queue: input.queue,
+        result: "duplicate",
+      });
       return { id: null, duplicate: true };
     }
-    throw new JobQueueError("job_enqueue_failed", (error as { message?: string }).message);
+    throw new JobQueueError(
+      "job_enqueue_failed",
+      (error as { message?: string }).message,
+    );
   }
 
-  incr("framique_jobs_enqueued_total", { queue: input.queue, result: "accepted" });
+  incr("framique_jobs_enqueued_total", {
+    queue: input.queue,
+    result: "accepted",
+  });
   log("info", "job.enqueued", { queue: input.queue, name: input.name });
   return { id: (data as Row)["id"] as string, duplicate: false };
 }
@@ -140,7 +164,9 @@ export async function claimJobs(
   const nowIso = new Date().toISOString();
 
   const { data: candidates, error } = await table(db, "job_queue")
-    .select("id,queue,name,payload,attempts,max_attempts,merchant_id,state,locked_at")
+    .select(
+      "id,queue,name,payload,attempts,max_attempts,merchant_id,state,locked_at",
+    )
     .eq("queue", queue)
     .in("state", ["queued", "running"])
     .lte("run_after", nowIso)
@@ -148,14 +174,21 @@ export async function claimJobs(
     .order("run_after", { ascending: true })
     .limit(take * 3);
 
-  if (error) throw new JobQueueError("job_claim_failed", (error as { message?: string }).message);
+  if (error)
+    throw new JobQueueError(
+      "job_claim_failed",
+      (error as { message?: string }).message,
+    );
 
   const claimed: ClaimedJob[] = [];
   for (const raw of (candidates ?? []) as Row[]) {
     if (claimed.length >= take) break;
     const state = raw["state"] as JobState;
     // A running job is only stealable once its lease has expired.
-    if (state === "running" && !isLeaseExpired(raw["locked_at"] as string | null, policy.leaseSeconds)) {
+    if (
+      state === "running" &&
+      !isLeaseExpired(raw["locked_at"] as string | null, policy.leaseSeconds)
+    ) {
       continue;
     }
 
@@ -194,7 +227,11 @@ export async function claimJobs(
 
 /* --------------------------------------------------------- complete / fail */
 
-export async function completeJob(id: string, result: Record<string, unknown> = {}, client?: Client) {
+export async function completeJob(
+  id: string,
+  result: Record<string, unknown> = {},
+  client?: Client,
+) {
   const db = client ?? (await admin());
   await table(db, "job_queue")
     .update({
@@ -223,18 +260,27 @@ export async function failJob(
   await table(db, "job_queue")
     .update({
       state: outcome.next,
-      run_after: new Date(Date.now() + outcome.runAfterSeconds * 1000).toISOString(),
+      run_after: new Date(
+        Date.now() + outcome.runAfterSeconds * 1000,
+      ).toISOString(),
       locked_at: null,
       locked_by: null,
-      last_error_code: err.code ?? (err.status ? String(err.status) : "unknown"),
+      last_error_code:
+        err.code ?? (err.status ? String(err.status) : "unknown"),
       last_error_message: err.message.slice(0, 500),
       updated_at: new Date().toISOString(),
     })
     .eq("id", job.id);
 
-  incr("framique_jobs_completed_total", { outcome: outcome.dead ? "dead" : "retry" });
+  incr("framique_jobs_completed_total", {
+    outcome: outcome.dead ? "dead" : "retry",
+  });
   if (outcome.dead) {
-    log("error", "job.dead_letter", { queue: job.queue, name: job.name, code: err.code ?? "unknown" });
+    log("error", "job.dead_letter", {
+      queue: job.queue,
+      name: job.name,
+      code: err.code ?? "unknown",
+    });
     await captureError(new Error(`job dead-lettered: ${job.name}`), {
       scope: "job.queue.dead",
       queue: job.queue,
@@ -246,7 +292,9 @@ export async function failJob(
 
 /* -------------------------------------------------------------------- drain */
 
-export type JobHandler = (job: ClaimedJob) => Promise<Record<string, unknown> | void>;
+export type JobHandler = (
+  job: ClaimedJob,
+) => Promise<Record<string, unknown> | void>;
 
 /**
  * Runs one drain pass. Bounded by the queue policy's batch size so a single
@@ -268,7 +316,15 @@ export async function drainQueue(
     const handler = handlers[job.name];
     const started = Date.now();
     if (!handler) {
-      await failJob(job, { status: 400, code: "no_handler", message: `no handler for ${job.name}` }, db);
+      await failJob(
+        job,
+        {
+          status: 400,
+          code: "no_handler",
+          message: `no handler for ${job.name}`,
+        },
+        db,
+      );
       failed += 1;
       continue;
     }
@@ -279,7 +335,11 @@ export async function drainQueue(
     } catch (error) {
       const status = (error as { status?: number }).status ?? null;
       const message = error instanceof Error ? error.message : String(error);
-      await failJob(job, { status, code: (error as { code?: string }).code, message }, db);
+      await failJob(
+        job,
+        { status, code: (error as { code?: string }).code, message },
+        db,
+      );
       failed += 1;
     } finally {
       observe("framique_job_duration_ms", Date.now() - started, { queue });
@@ -302,7 +362,8 @@ export async function reclaimStalled(client?: Client) {
   let reclaimed = 0;
   for (const raw of (data ?? []) as Row[]) {
     const policy = policyFor(raw["queue"] as string);
-    if (!isLeaseExpired(raw["locked_at"] as string | null, policy.leaseSeconds)) continue;
+    if (!isLeaseExpired(raw["locked_at"] as string | null, policy.leaseSeconds))
+      continue;
     const attempts = raw["attempts"] as number;
     const exhausted = attempts >= (raw["max_attempts"] as number);
     await table(db, "job_queue")
@@ -311,7 +372,8 @@ export async function reclaimStalled(client?: Client) {
         locked_at: null,
         locked_by: null,
         last_error_code: "lease_expired",
-        last_error_message: "Worker lease expired before the job reported back.",
+        last_error_message:
+          "Worker lease expired before the job reported back.",
         updated_at: new Date().toISOString(),
       })
       .eq("id", raw["id"] as string)
@@ -349,7 +411,12 @@ export async function replayJob(id: string, client?: Client) {
 export async function cancelJob(id: string, client?: Client) {
   const db = client ?? (await admin());
   const { data } = await table(db, "job_queue")
-    .update({ state: "cancelled", locked_at: null, locked_by: null, updated_at: new Date().toISOString() })
+    .update({
+      state: "cancelled",
+      locked_at: null,
+      locked_by: null,
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", id)
     .in("state", ["queued", "failed"])
     .select("id")
@@ -360,7 +427,9 @@ export async function cancelJob(id: string, client?: Client) {
 
 /* ------------------------------------------------------------------- health */
 
-export async function queueDepths(client?: Client): Promise<(QueueDepth & { verdict: ReturnType<typeof judgeQueue> })[]> {
+export async function queueDepths(
+  client?: Client,
+): Promise<(QueueDepth & { verdict: ReturnType<typeof judgeQueue> })[]> {
   const db = client ?? (await admin());
   const { data } = await table(db, "job_queue")
     .select("queue,state,run_after")
@@ -371,27 +440,49 @@ export async function queueDepths(client?: Client): Promise<(QueueDepth & { verd
   const now = Date.now();
   for (const raw of (data ?? []) as Row[]) {
     const queue = raw["queue"] as string;
-    const cur = byQueue.get(queue) ?? { queue, queued: 0, running: 0, dead: 0, oldestQueuedAgeSeconds: 0 };
+    const cur = byQueue.get(queue) ?? {
+      queue,
+      queued: 0,
+      running: 0,
+      dead: 0,
+      oldestQueuedAgeSeconds: 0,
+    };
     const state = raw["state"] as JobState;
     if (state === "queued") {
       cur.queued += 1;
-      const age = Math.max(0, Math.round((now - Date.parse(raw["run_after"] as string)) / 1000));
+      const age = Math.max(
+        0,
+        Math.round((now - Date.parse(raw["run_after"] as string)) / 1000),
+      );
       cur.oldestQueuedAgeSeconds = Math.max(cur.oldestQueuedAgeSeconds, age);
     } else if (state === "running") cur.running += 1;
     else cur.dead += 1;
     byQueue.set(queue, cur);
   }
 
-  const depths = [...byQueue.values()].map((d) => ({ ...d, verdict: judgeQueue(d) }));
+  const depths = [...byQueue.values()].map((d) => ({
+    ...d,
+    verdict: judgeQueue(d),
+  }));
   // Gauges, not counters: depth is a level, and Grafana must be able to read
   // the current value rather than a rate. Oldest-queued-age is the honest
   // latency signal — a shallow queue whose head is 20 minutes old is broken.
   for (const d of depths) {
-    setGauge("framique_queue_depth", d.queued, { queue: d.queue, state: "queued" });
-    setGauge("framique_queue_depth", d.running, { queue: d.queue, state: "running" });
+    setGauge("framique_queue_depth", d.queued, {
+      queue: d.queue,
+      state: "queued",
+    });
+    setGauge("framique_queue_depth", d.running, {
+      queue: d.queue,
+      state: "running",
+    });
     setGauge("framique_queue_depth", d.dead, { queue: d.queue, state: "dead" });
-    setGauge("framique_queue_oldest_age_seconds", d.oldestQueuedAgeSeconds, { queue: d.queue });
-    const severity = { healthy: 0, backlogged: 1, stalled: 2, failing: 3 }[d.verdict.status] ?? 0;
+    setGauge("framique_queue_oldest_age_seconds", d.oldestQueuedAgeSeconds, {
+      queue: d.queue,
+    });
+    const severity =
+      { healthy: 0, backlogged: 1, stalled: 2, failing: 3 }[d.verdict.status] ??
+      0;
     setGauge("framique_queue_health", severity, { queue: d.queue });
   }
   return depths;
@@ -402,7 +493,10 @@ export async function queueDepths(client?: Client): Promise<(QueueDepth & { verd
 /** Fires every enabled schedule whose cron expression is due, exactly once. */
 export async function runDueSchedules(now = new Date(), client?: Client) {
   const db = client ?? (await admin());
-  const { data } = await table(db, "job_schedules").select("*").eq("enabled", true).limit(200);
+  const { data } = await table(db, "job_schedules")
+    .select("*")
+    .eq("enabled", true)
+    .limit(200);
 
   let fired = 0;
   for (const raw of (data ?? []) as Row[]) {
@@ -410,7 +504,9 @@ export async function runDueSchedules(now = new Date(), client?: Client) {
     const lastRun = (raw["last_run_at"] as string | null) ?? null;
     if (!scheduleIsDue(cron, lastRun, now)) continue;
 
-    const minuteKey = new Date(Math.floor(now.getTime() / 60000) * 60000).toISOString();
+    const minuteKey = new Date(
+      Math.floor(now.getTime() / 60000) * 60000,
+    ).toISOString();
     await enqueueJob(
       {
         queue: raw["queue"] as string,
@@ -421,7 +517,11 @@ export async function runDueSchedules(now = new Date(), client?: Client) {
       db,
     );
     await table(db, "job_schedules")
-      .update({ last_run_at: now.toISOString(), last_status: "enqueued", updated_at: now.toISOString() })
+      .update({
+        last_run_at: now.toISOString(),
+        last_status: "enqueued",
+        updated_at: now.toISOString(),
+      })
       .eq("id", raw["id"] as string);
     fired += 1;
   }

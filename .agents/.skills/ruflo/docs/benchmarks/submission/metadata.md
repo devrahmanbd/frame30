@@ -14,6 +14,7 @@ Score: 34/53 (64.2%) — n=1 only; n=3 mean pending
 Long-horizon agent performance on GAIA L1 is dominated less by raw reasoning capability and more by **execution convergence, retrieval entropy, and bounded stabilization dynamics**.
 
 The stable configuration achieves 34/53 (64.2%) not because the model is unusually capable, but because the harness has been tuned to:
+
 1. prevent empty-answer failures through deterministic convergence,
 2. avoid tool-use noise sources that degrade rather than improve accuracy,
 3. maintain bounded turn budgets that limit error accumulation.
@@ -26,16 +27,16 @@ This is an engineering result, not a model capability result. The same model (cl
 
 All deltas are measured against the iter 49 baseline (21/53, 39.6%). Each component was isolated in a dedicated run before being accepted or rejected.
 
-| Component | Run | Questions | Delta | Decision |
-|-----------|-----|-----------|-------|----------|
-| Baseline (iter 49, untuned) | iter49 | 21/53 | — | Reference |
-| T2 narrowed extraction | iter53a | 27/53 | +6 vs baseline | Accepted |
-| T1 attachment tools (xlsx, pptx, py, png, mp3) | iter53b | 29/53 | +2 | Accepted |
-| Combined T2+T1 (n=4 mean) | iter53b mean | ~31.5/53 | — | Stable config gate 1 |
-| visit_webpage (isolation test) | iter61a | 28/53 | -3 vs 31 | **Rejected** |
-| Hybrid routing (isolation test) | iter61b | 31/53 | +0 neutral | Tested, not adopted |
-| CodeAgent smolagents (isolation test) | iter56 | 30/53 | -4 vs iter63 | **Rejected** |
-| Convergence layer | iter63 | 34/53 | +2.5 vs prior stable | Accepted |
+| Component                                      | Run          | Questions | Delta                | Decision             |
+| ---------------------------------------------- | ------------ | --------- | -------------------- | -------------------- |
+| Baseline (iter 49, untuned)                    | iter49       | 21/53     | —                    | Reference            |
+| T2 narrowed extraction                         | iter53a      | 27/53     | +6 vs baseline       | Accepted             |
+| T1 attachment tools (xlsx, pptx, py, png, mp3) | iter53b      | 29/53     | +2                   | Accepted             |
+| Combined T2+T1 (n=4 mean)                      | iter53b mean | ~31.5/53  | —                    | Stable config gate 1 |
+| visit_webpage (isolation test)                 | iter61a      | 28/53     | -3 vs 31             | **Rejected**         |
+| Hybrid routing (isolation test)                | iter61b      | 31/53     | +0 neutral           | Tested, not adopted  |
+| CodeAgent smolagents (isolation test)          | iter56       | 30/53     | -4 vs iter63         | **Rejected**         |
+| Convergence layer                              | iter63       | 34/53     | +2.5 vs prior stable | Accepted             |
 
 **Cumulative stable score: 34/53 (64.2%)**
 
@@ -62,15 +63,18 @@ Isolated in iter60 (28/53) and iter61b (31/53). In iter60 the hybrid added visit
 ## Variance Analysis
 
 **n=4 runs spanning T2+T1 configuration (iters 53a through 61b):**
+
 - Mean: 29.5/53 (range: 27–31)
 - Standard deviation: ±1.7 questions
 
 **Question-level stability (same config, n=4):**
+
 - Stable PASS (correct in all 4 runs): approximately 22 questions
 - Stable FAIL (wrong in all 4 runs): approximately 13 questions
 - Flipping (inconsistent across runs): approximately 18 questions (47% of total question pool before convergence)
 
 The 47% flip rate is the primary motivation for the convergence layer. Questions that produce inconsistent answers across runs are typically in one of three categories:
+
 1. Multi-hop web retrieval where page availability varies
 2. Long-document extraction where model attention is noisy
 3. Math/logic tasks where the model sometimes invokes the wrong reasoning chain

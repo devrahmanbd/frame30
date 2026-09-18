@@ -33,11 +33,15 @@ import {
 type Client = SupabaseClient<Database>;
 type Admin = {
   from: (table: string) => ReturnType<Client["from"]>;
-  rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 async function admin(): Promise<Admin> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Admin;
 }
 
@@ -66,7 +70,8 @@ function stateFromRow(row: Record<string, unknown>): CronJobState {
     lastRunAt: (row["last_run_at"] as string | null) ?? null,
     lastSuccessAt: (row["last_success_at"] as string | null) ?? null,
     lastStatus: (row["last_status"] as string | null) ?? null,
-    lastDurationMs: row["last_duration_ms"] === null ? null : Number(row["last_duration_ms"]),
+    lastDurationMs:
+      row["last_duration_ms"] === null ? null : Number(row["last_duration_ms"]),
     lastError: (row["last_error"] as string | null) ?? null,
     consecutiveFailures: Number(row["consecutive_failures"] ?? 0),
     totalRuns: Number(row["total_runs"] ?? 0),
@@ -88,10 +93,19 @@ export async function syncRegistry(): Promise<{
 }> {
   return withSpan("cron.sync_registry", async () => {
     const a = await admin();
-    const { data, error } = await a.from("ops_cron_jobs").select("key, schedule, enabled");
-    if (error) throw new OwnerError("cron.registry_unreadable", String((error as Error).message));
+    const { data, error } = await a
+      .from("ops_cron_jobs")
+      .select("key, schedule, enabled");
+    if (error)
+      throw new OwnerError(
+        "cron.registry_unreadable",
+        String((error as Error).message),
+      );
     const existing = new Map(
-      ((data ?? []) as Record<string, unknown>[]).map((r) => [String(r["key"]), r]),
+      ((data ?? []) as Record<string, unknown>[]).map((r) => [
+        String(r["key"]),
+        r,
+      ]),
     );
     const inserted: string[] = [];
     const updated: string[] = [];
@@ -116,18 +130,23 @@ export async function syncRegistry(): Promise<{
           .from("ops_cron_jobs")
           .update(payload as never)
           .eq("key", job.key);
-        if (upErr) log("error", "cron.registry_update_failed", { job: job.key });
+        if (upErr)
+          log("error", "cron.registry_update_failed", { job: job.key });
         else updated.push(job.key);
       } else {
-        const { error: insErr } = await a.from("ops_cron_jobs").insert(payload as never);
-        if (insErr) log("error", "cron.registry_insert_failed", { job: job.key });
+        const { error: insErr } = await a
+          .from("ops_cron_jobs")
+          .insert(payload as never);
+        if (insErr)
+          log("error", "cron.registry_insert_failed", { job: job.key });
         else inserted.push(job.key);
       }
     }
 
     const known = new Set(CRON_JOBS.map((j) => j.key));
     const orphaned = [...existing.keys()].filter((k) => !known.has(k));
-    if (orphaned.length) log("warn", "cron.registry_orphans", { keys: orphaned.join(",") });
+    if (orphaned.length)
+      log("warn", "cron.registry_orphans", { keys: orphaned.join(",") });
     incr("framique_cron_registry_sync_total", { outcome: "ok" });
     return { inserted, updated, orphaned };
   });
@@ -138,7 +157,9 @@ export async function reapStaleLeases() {
   const a = await admin();
   const { data, error } = await a.rpc("ops_cron_reap_stale");
   if (error) {
-    log("error", "cron.reap_failed", { message: String((error as Error).message) });
+    log("error", "cron.reap_failed", {
+      message: String((error as Error).message),
+    });
     return { reaped: 0 };
   }
   const reaped = Number((data as { reaped?: number } | null)?.reaped ?? 0);
@@ -155,9 +176,14 @@ export async function evaluateFleet(now = new Date()): Promise<CronJobView[]> {
       "key, enabled, last_run_at, last_success_at, last_status, last_duration_ms, last_error, consecutive_failures, total_runs, total_failures, next_run_at, lease_expires_at",
     );
   const states = new Map(
-    ((data ?? []) as Record<string, unknown>[]).map((r) => [String(r["key"]), stateFromRow(r)]),
+    ((data ?? []) as Record<string, unknown>[]).map((r) => [
+      String(r["key"]),
+      stateFromRow(r),
+    ]),
   );
-  return CRON_JOBS.map((job) => classifyJob(job, states.get(job.key) ?? null, now));
+  return CRON_JOBS.map((job) =>
+    classifyJob(job, states.get(job.key) ?? null, now),
+  );
 }
 
 /**
@@ -177,7 +203,11 @@ export async function watchFleet() {
     if (out.delivered) alerted.push(view.definition.key);
   }
   for (const view of views) {
-    incr("framique_cron_health", { job: view.definition.key, health: view.health }, 0);
+    incr(
+      "framique_cron_health",
+      { job: view.definition.key, health: view.health },
+      0,
+    );
   }
   log("info", "cron.fleet_evaluated", {
     total: summary.total,
@@ -187,12 +217,14 @@ export async function watchFleet() {
   return {
     summary,
     alerted,
-    attention: views.filter((v) => isUnhealthy(v.health)).map((v) => ({
-      key: v.definition.key,
-      health: v.health,
-      overdueSeconds: v.overdueSeconds,
-      reasons: v.reasons,
-    })),
+    attention: views
+      .filter((v) => isUnhealthy(v.health))
+      .map((v) => ({
+        key: v.definition.key,
+        health: v.health,
+        overdueSeconds: v.overdueSeconds,
+        reasons: v.reasons,
+      })),
   };
 }
 
@@ -202,8 +234,16 @@ export type CronDesk = {
   jobs: CronJobView[];
   summary: ReturnType<typeof summarizeFleet>;
   runs: CronRunRow[];
-  alerts: Awaited<ReturnType<typeof import("./ops-alerts.server").loadAlertHistory>>;
-  channels: { key: string; label: string; kind: string; minSeverity: string; configured: boolean }[];
+  alerts: Awaited<
+    ReturnType<typeof import("./ops-alerts.server").loadAlertHistory>
+  >;
+  channels: {
+    key: string;
+    label: string;
+    kind: string;
+    minSeverity: string;
+    configured: boolean;
+  }[];
   objectives: typeof import("./cron-registry").OPS_OBJECTIVES;
   lastDrillAt: string | null;
   drillStale: boolean;
@@ -214,7 +254,12 @@ export async function loadCronDesk(db: Client, userId: string) {
   return ownerGate(
     db,
     userId,
-    { action: "cron.desk_read", entity: "ops_cron_jobs", bucket: "ops.read", kind: "read" },
+    {
+      action: "cron.desk_read",
+      entity: "ops_cron_jobs",
+      bucket: "ops.read",
+      kind: "read",
+    },
     async (): Promise<CronDesk> => {
       const a = await admin();
       const [views, runsRes, alerts, channels, drillAt] = await Promise.all([
@@ -233,7 +278,8 @@ export async function loadCronDesk(db: Client, userId: string) {
       const { OPS_OBJECTIVES } = await import("./cron-registry");
       const drillStale =
         !drillAt ||
-        Date.now() - new Date(drillAt).getTime() > OPS_OBJECTIVES.drillMaxAgeDays * 86_400_000;
+        Date.now() - new Date(drillAt).getTime() >
+          OPS_OBJECTIVES.drillMaxAgeDays * 86_400_000;
       return {
         jobs: views,
         summary: summarizeFleet(views),
@@ -274,10 +320,14 @@ export async function setCronJobEnabled(
     },
     async () => {
       const job = cronJob(input.key);
-      if (!job) throw new OwnerError("cron.unknown_job", "No such scheduled job");
+      if (!job)
+        throw new OwnerError("cron.unknown_job", "No such scheduled job");
       const reason = (input.reason ?? "").trim().slice(0, 300);
       if (!input.enabled && reason.length < 4) {
-        throw new OwnerError("cron.reason_required", "Pausing a job requires a reason");
+        throw new OwnerError(
+          "cron.reason_required",
+          "Pausing a job requires a reason",
+        );
       }
       const a = await admin();
       const { error } = await a
@@ -287,9 +337,20 @@ export async function setCronJobEnabled(
           paused_reason: input.enabled ? null : reason,
         } as never)
         .eq("key", input.key);
-      if (error) throw new OwnerError("cron.toggle_failed", String((error as Error).message));
-      incr("framique_cron_toggle_total", { job: input.key, enabled: String(input.enabled) });
-      log("warn", "cron.toggled", { job: input.key, enabled: input.enabled, actor: userId });
+      if (error)
+        throw new OwnerError(
+          "cron.toggle_failed",
+          String((error as Error).message),
+        );
+      incr("framique_cron_toggle_total", {
+        job: input.key,
+        enabled: String(input.enabled),
+      });
+      log("warn", "cron.toggled", {
+        job: input.key,
+        enabled: input.enabled,
+        actor: userId,
+      });
       return { key: input.key, enabled: input.enabled };
     },
   );
@@ -317,7 +378,8 @@ export async function triggerCronJob(db: Client, userId: string, key: string) {
     },
     async () => {
       const job = cronJob(key);
-      if (!job) throw new OwnerError("cron.unknown_job", "No such scheduled job");
+      if (!job)
+        throw new OwnerError("cron.unknown_job", "No such scheduled job");
       const secret = process.env["BILLING_CRON_SECRET"];
       if (!secret) {
         throw new OwnerError(
@@ -340,11 +402,20 @@ export async function triggerCronJob(db: Client, userId: string, key: string) {
       try {
         const res = await fetch(url, {
           method: "POST",
-          headers: { authorization: `Bearer ${secret}`, "user-agent": "framique-owner-console/1" },
+          headers: {
+            authorization: `Bearer ${secret}`,
+            "user-agent": "framique-owner-console/1",
+          },
           signal: controller.signal,
         });
-        const body = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-        incr("framique_cron_manual_total", { job: key, outcome: res.ok ? "ok" : "failed" });
+        const body = (await res.json().catch(() => ({}))) as Record<
+          string,
+          unknown
+        >;
+        incr("framique_cron_manual_total", {
+          job: key,
+          outcome: res.ok ? "ok" : "failed",
+        });
         return {
           ok: res.ok,
           httpStatus: res.status,
@@ -354,7 +425,10 @@ export async function triggerCronJob(db: Client, userId: string, key: string) {
           reason: (body["reason"] as string | undefined) ?? null,
         };
       } catch (err) {
-        incr("framique_cron_manual_total", { job: key, outcome: "unreachable" });
+        incr("framique_cron_manual_total", {
+          job: key,
+          outcome: "unreachable",
+        });
         throw new OwnerError(
           "cron.trigger_failed",
           (err as Error)?.name === "AbortError"
@@ -377,7 +451,13 @@ export async function exportSchedules(
   return ownerGate(
     db,
     userId,
-    { action: "cron.export", entity: "ops_cron_jobs", bucket: "ops.read", kind: "read", meta: { format } },
+    {
+      action: "cron.export",
+      entity: "ops_cron_jobs",
+      bucket: "ops.read",
+      kind: "read",
+      meta: { format },
+    },
     async () => {
       const base = (
         process.env["PUBLIC_SITE_URL"] ??
@@ -401,7 +481,12 @@ export async function testAlerting(db: Client, userId: string) {
   return ownerGate(
     db,
     userId,
-    { action: "ops.alert_test", entity: "ops_alert_channels", bucket: "ops.incident", kind: "write" },
+    {
+      action: "ops.alert_test",
+      entity: "ops_alert_channels",
+      bucket: "ops.incident",
+      kind: "write",
+    },
     async () => {
       const { sendSyntheticAlert } = await import("./ops-alerts.server");
       const out = await sendSyntheticAlert(userId);

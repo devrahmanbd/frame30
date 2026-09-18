@@ -14,24 +14,39 @@ export type SlaPolicy = {
   resolution_minutes: number;
 };
 
-export const DEFAULT_SLA: Record<Priority, { first: number; resolution: number }> = {
+export const DEFAULT_SLA: Record<
+  Priority,
+  { first: number; resolution: number }
+> = {
   urgent: { first: 15, resolution: 240 },
   high: { first: 30, resolution: 480 },
   normal: { first: 60, resolution: 1440 },
   low: { first: 240, resolution: 4320 },
 };
 
-export function policyFor(priority: Priority, rows: SlaPolicy[]): { first: number; resolution: number } {
+export function policyFor(
+  priority: Priority,
+  rows: SlaPolicy[],
+): { first: number; resolution: number } {
   const row = rows.find((r) => r.priority === priority);
   if (!row) return DEFAULT_SLA[priority];
-  return { first: row.first_response_minutes, resolution: row.resolution_minutes };
+  return {
+    first: row.first_response_minutes,
+    resolution: row.resolution_minutes,
+  };
 }
 
-export function dueDates(priority: Priority, rows: SlaPolicy[], from = new Date()) {
+export function dueDates(
+  priority: Priority,
+  rows: SlaPolicy[],
+  from = new Date(),
+) {
   const { first, resolution } = policyFor(priority, rows);
   return {
     firstResponseDueAt: new Date(from.getTime() + first * 60_000).toISOString(),
-    resolutionDueAt: new Date(from.getTime() + resolution * 60_000).toISOString(),
+    resolutionDueAt: new Date(
+      from.getTime() + resolution * 60_000,
+    ).toISOString(),
   };
 }
 
@@ -50,7 +65,9 @@ export type SlaState = "met" | "at_risk" | "breached" | "closed";
 /** At risk = inside the final 20% of the window with no response yet. */
 export function slaState(t: TicketLike, now = Date.now()): SlaState {
   if (t.status === "resolved" || t.status === "closed") return "closed";
-  const deadline = t.first_response_at ? t.resolution_due_at : t.first_response_due_at;
+  const deadline = t.first_response_at
+    ? t.resolution_due_at
+    : t.first_response_due_at;
   const done = t.first_response_at ? t.resolved_at : t.first_response_at;
   if (done) return "met";
   if (!deadline) return "met";
@@ -73,20 +90,28 @@ function median(values: number[]): number | null {
   if (!values.length) return null;
   const s = [...values].sort((a, b) => a - b);
   const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? (s[mid] as number) : (((s[mid - 1] as number) + (s[mid] as number)) / 2);
+  return s.length % 2
+    ? (s[mid] as number)
+    : ((s[mid - 1] as number) + (s[mid] as number)) / 2;
 }
 
 export function summarise(tickets: TicketLike[], now = Date.now()): SlaSummary {
-  const minutes = (a: string, b: string) => (new Date(b).getTime() - new Date(a).getTime()) / 60_000;
+  const minutes = (a: string, b: string) =>
+    (new Date(b).getTime() - new Date(a).getTime()) / 60_000;
   return {
-    open: tickets.filter((t) => t.status === "open" || t.status === "pending").length,
+    open: tickets.filter((t) => t.status === "open" || t.status === "pending")
+      .length,
     breached: tickets.filter((t) => slaState(t, now) === "breached").length,
     atRisk: tickets.filter((t) => slaState(t, now) === "at_risk").length,
     firstResponseP50Minutes: median(
-      tickets.filter((t) => t.first_response_at).map((t) => minutes(t.created_at, t.first_response_at as string)),
+      tickets
+        .filter((t) => t.first_response_at)
+        .map((t) => minutes(t.created_at, t.first_response_at as string)),
     ),
     resolutionP50Minutes: median(
-      tickets.filter((t) => t.resolved_at).map((t) => minutes(t.created_at, t.resolved_at as string)),
+      tickets
+        .filter((t) => t.resolved_at)
+        .map((t) => minutes(t.created_at, t.resolved_at as string)),
     ),
   };
 }
@@ -156,7 +181,9 @@ export function formatDuration(ms: number | null): string {
   const hours = Math.floor(totalMinutes / 60);
   const remainingMinutes = totalMinutes % 60;
   if (hours < 24) {
-    return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+    return remainingMinutes > 0
+      ? `${hours}h ${remainingMinutes}m`
+      : `${hours}h`;
   }
   const days = Math.floor(hours / 24);
   const remainingHours = hours % 24;
@@ -195,7 +222,8 @@ export function computeSlaMetrics(input: {
   if (operatorTime && operatorTime >= createdTime) {
     firstResponseMs = operatorTime - createdTime;
     firstResponseMinutes = Math.round(firstResponseMs / 60000);
-    firstResponseBreached = firstResponseMinutes > thresholds.firstResponseMaxMinutes;
+    firstResponseBreached =
+      firstResponseMinutes > thresholds.firstResponseMaxMinutes;
   } else if (!operatorTime) {
     const elapsedMinutes = (now - createdTime) / 60000;
     firstResponseBreached = elapsedMinutes > thresholds.firstResponseMaxMinutes;
@@ -227,7 +255,11 @@ export function computeSlaMetrics(input: {
     } else {
       slaStatus = "pending";
     }
-  } else if (!resolvedTime && input.status !== "resolved" && input.status !== "closed") {
+  } else if (
+    !resolvedTime &&
+    input.status !== "resolved" &&
+    input.status !== "closed"
+  ) {
     // Operator responded within target; check if resolution is at risk
     const elapsedHours = (now - createdTime) / 3600000;
     if (elapsedHours > thresholds.resolutionMaxHours * 0.75) {
@@ -282,7 +314,10 @@ export function buildAuditTrail(
   }> = [],
 ): AuditEvent[] {
   const events: AuditEvent[] = [];
-  const convCreatedAt = conversation.createdAt ?? conversation.created_at ?? new Date().toISOString();
+  const convCreatedAt =
+    conversation.createdAt ??
+    conversation.created_at ??
+    new Date().toISOString();
   const convResolvedAt = conversation.resolvedAt ?? conversation.resolved_at;
 
   // 1. Creation event
@@ -297,7 +332,8 @@ export function buildAuditTrail(
 
   // 2. Message events
   for (const m of messages) {
-    const msgCreatedAt = m.createdAt ?? m.created_at ?? new Date().toISOString();
+    const msgCreatedAt =
+      m.createdAt ?? m.created_at ?? new Date().toISOString();
     const isInternal = Boolean(m.isInternalNote ?? m.is_internal_note);
     const opId = m.sentByOperatorId ?? m.sent_by_operator_id ?? null;
 

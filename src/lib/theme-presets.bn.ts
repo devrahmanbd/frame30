@@ -10,8 +10,10 @@ export const PRESET_BN: Record<string, string> = {
   "Search results": "সার্চ ফলাফল",
   /* shared chrome */
   "Free delivery over BDT 2,000": "২,০০০ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি",
-  "Trusted local shopping since day one.": "শুরু থেকেই নির্ভরযোগ্য দেশীয় কেনাকাটা।",
-  "Everyday essentials, delivered": "প্রতিদিনের প্রয়োজনীয় পণ্য, ঘরে পৌঁছে যায়",
+  "Trusted local shopping since day one.":
+    "শুরু থেকেই নির্ভরযোগ্য দেশীয় কেনাকাটা।",
+  "Everyday essentials, delivered":
+    "প্রতিদিনের প্রয়োজনীয় পণ্য, ঘরে পৌঁছে যায়",
   "Shop now": "এখনই কিনুন",
   "Cash on delivery": "ক্যাশ অন ডেলিভারি",
   "bKash / Nagad": "বিকাশ / নগদ",
@@ -36,12 +38,14 @@ export const PRESET_BN: Record<string, string> = {
   "Yes, within 7 days of delivery in unused condition.":
     "হ্যাঁ, ডেলিভারির ৭ দিনের মধ্যে অব্যবহৃত অবস্থায়।",
   "Which payments do you accept?": "কোন কোন পেমেন্ট নেওয়া হয়?",
-  "Cash on delivery, bKash, Nagad and Rocket.": "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ ও রকেট।",
+  "Cash on delivery, bKash, Nagad and Rocket.":
+    "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ ও রকেট।",
   "You may also like": "আপনার পছন্দ হতে পারে",
   Collections: "কালেকশন",
   "Common questions": "সাধারণ প্রশ্ন",
   "Get the next post": "পরের লেখাটি পান",
-  "One email when we publish. No spam.": "নতুন লেখা প্রকাশ হলে একটি ইমেইল। কোনো স্প্যাম নয়।",
+  "One email when we publish. No spam.":
+    "নতুন লেখা প্রকাশ হলে একটি ইমেইল। কোনো স্প্যাম নয়।",
   "Your cart": "আপনার কার্ট",
   "Order summary": "অর্ডার সারসংক্ষেপ",
   "Shipping and COD charges are calculated at checkout.":
@@ -99,7 +103,8 @@ export const PRESET_BN: Record<string, string> = {
 
   /* grocery */
   "Fresh stock every morning": "প্রতিদিন সকালে টাটকা পণ্য",
-  "Grocery, fresh produce and daily needs.": "মুদি, টাটকা সবজি ও দৈনন্দিন প্রয়োজন।",
+  "Grocery, fresh produce and daily needs.":
+    "মুদি, টাটকা সবজি ও দৈনন্দিন প্রয়োজন।",
   "Your neighbourhood supershop": "আপনার পাড়ার সুপারশপ",
   "Start shopping": "কেনাকাটা শুরু করুন",
   "Same-day slots": "একই দিনের স্লট",
@@ -107,7 +112,8 @@ export const PRESET_BN: Record<string, string> = {
   "Today's basket": "আজকের বাজার",
   "Fresh today": "আজকের টাটকা",
   "Delivery slots": "ডেলিভারি স্লট",
-  "Morning 9-12, afternoon 3-6, evening 7-10.": "সকাল ৯-১২, দুপুর ৩-৬, সন্ধ্যা ৭-১০।",
+  "Morning 9-12, afternoon 3-6, evening 7-10.":
+    "সকাল ৯-১২, দুপুর ৩-৬, সন্ধ্যা ৭-১০।",
   "Fresh produce sourced each morning and delivered the same day across the city.":
     "প্রতিদিন সকালে সংগ্রহ করা টাটকা পণ্য, শহরজুড়ে একই দিনে ডেলিভারি।",
   "When do you deliver?": "ডেলিভারি কখন হয়?",
@@ -121,7 +127,8 @@ export const PRESET_BN: Record<string, string> = {
 
   /* wholesale */
   "Wholesale pricing on request": "অনুরোধে পাইকারি দাম",
-  "Tiered pricing and quotes for trade buyers.": "ব্যবসায়ী ক্রেতাদের জন্য ধাপভিত্তিক দাম ও কোটেশন।",
+  "Tiered pricing and quotes for trade buyers.":
+    "ব্যবসায়ী ক্রেতাদের জন্য ধাপভিত্তিক দাম ও কোটেশন।",
   "Wholesale, simplified": "পাইকারি, সহজভাবে",
   "Request a quote": "কোটেশন চান",
   "VAT invoices": "ভ্যাট চালান",
@@ -140,14 +147,16 @@ export const PRESET_BN: Record<string, string> = {
   "Yes, a Mushak-compliant invoice is issued for every order.":
     "হ্যাঁ, প্রতিটি অর্ডারে মুসক-সম্মত চালান দেওয়া হয়।",
   "What is the minimum order quantity?": "সর্বনিম্ন অর্ডার পরিমাণ কত?",
-  "Ten units per SKU for tier pricing.": "ধাপভিত্তিক দামের জন্য প্রতি এসকেইউতে দশ ইউনিট।",
+  "Ten units per SKU for tier pricing.":
+    "ধাপভিত্তিক দামের জন্য প্রতি এসকেইউতে দশ ইউনিট।",
   "Can I pay on credit?": "বাকিতে পেমেন্ট করা যাবে?",
   "Credit terms are available after three settled orders.":
     "তিনটি সম্পন্ন অর্ডারের পর বাকিতে কেনার সুবিধা পাওয়া যায়।",
 
   /* apparel */
   "Free exchange within 7 days": "৭ দিনের মধ্যে ফ্রি এক্সচেঞ্জ",
-  "Contemporary clothing, cut for Bangladesh.": "সমকালীন পোশাক, বাংলাদেশের জন্য তৈরি।",
+  "Contemporary clothing, cut for Bangladesh.":
+    "সমকালীন পোশাক, বাংলাদেশের জন্য তৈরি।",
   "The new edit": "নতুন কালেকশন",
   "Shop the edit": "কালেকশন কিনুন",
   "Free size exchange": "ফ্রি সাইজ এক্সচেঞ্জ",
@@ -169,7 +178,8 @@ export const PRESET_BN: Record<string, string> = {
 
   /* handloom */
   "Handloom, straight from the weaver": "তাঁতির হাত থেকে সরাসরি হ্যান্ডলুম",
-  "Sari, panjabi and handloom classics.": "শাড়ি, পাঞ্জাবি ও তাঁতের চিরায়ত পোশাক।",
+  "Sari, panjabi and handloom classics.":
+    "শাড়ি, পাঞ্জাবি ও তাঁতের চিরায়ত পোশাক।",
   "Woven with care": "যত্নে বোনা",
   "Explore handloom": "হ্যান্ডলুম দেখুন",
   "Direct from weavers": "সরাসরি তাঁতির কাছ থেকে",
@@ -182,7 +192,8 @@ export const PRESET_BN: Record<string, string> = {
     "টাঙ্গাইল ও সিরাজগঞ্জের তাঁত, সরাসরি তাঁতি পরিবারের কাছ থেকে কেনা।",
 
   /* accessible */
-  "Large type and high contrast everywhere": "সর্বত্র বড় লেখা ও উচ্চ কনট্রাস্ট",
+  "Large type and high contrast everywhere":
+    "সর্বত্র বড় লেখা ও উচ্চ কনট্রাস্ট",
   "Built for readability first.": "সবার আগে পড়ার সুবিধার কথা ভেবে তৈরি।",
   "Shop without strain": "চোখে চাপ ছাড়াই কেনাকাটা",
   "High contrast": "উচ্চ কনট্রাস্ট",
@@ -226,18 +237,20 @@ export const PRESET_BN: Record<string, string> = {
   Spend: "খরচ করুন",
   "more for free shipping": "আরও, ফ্রি ডেলিভারি পেতে",
   "Free shipping unlocked.": "ফ্রি ডেলিভারি চালু হয়েছে।",
-  "Remove": "সরান",
+  Remove: "সরান",
   "Your cart is empty.": "আপনার কার্ট খালি।",
-  "Payment": "পেমেন্ট",
-  "No payment method is enabled yet.": "এখনো কোনো পেমেন্ট পদ্ধতি চালু করা হয়নি।",
+  Payment: "পেমেন্ট",
+  "No payment method is enabled yet.":
+    "এখনো কোনো পেমেন্ট পদ্ধতি চালু করা হয়নি।",
   "Choose a method at the final step.": "শেষ ধাপে একটি পদ্ধতি বেছে নিন।",
-  "Cart": "কার্ট",
-  "Details": "তথ্য",
-  "Address": "ঠিকানা",
-  "Bag": "ব্যাগ",
-  "Done": "সম্পন্ন",
+  Cart: "কার্ট",
+  Details: "তথ্য",
+  Address: "ঠিকানা",
+  Bag: "ব্যাগ",
+  Done: "সম্পন্ন",
   "Items in this order": "এই অর্ডারের পণ্য",
   "Your items": "আপনার পণ্য",
-  "No payment method is available right now.": "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
+  "No payment method is available right now.":
+    "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
   "Payment method": "পেমেন্ট পদ্ধতি",
 };

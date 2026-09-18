@@ -4,7 +4,7 @@ Status: Planning · Co-located depth spec (parent: `01-architecture/README.md`)
 Owners: Platform/Edge (verification, TLS, routing) + Backend (domains surface, entitlements)
 References: `01-architecture/README.md` (edge, tenancy, RLS, Storage+imgproxy) · `03-storefront/README.md` (serving path, 60s edge-cache TTL) · `03-storefront/accounts.md` (cookie/session contract) · `05-marketing/README.md` (consent, analytics retention) · `16-product-pricing/README.md` (plan entitlements) · `00-meta/design-system.md` §1–§3, §5, §10 · `15-e2e/README.md` (`.e2e/` suite naming)
 
-Design decision (approved): **every storefront always has one canonical FQDN — the platform subdomain `<merchant>.store.framique.com` for life — plus at most one verified custom FQDN** (`custom_domains`, below) served from the **same edge and serving path** as the platform subdomain. **No new service and no storefront code change**: the edge resolves the Host header to a tenant, adds the trusted `X-Tenant`/`merchant` context *server-side*, and proxies to the unchanged theme runtime. A custom domain never binds serving until its ownership proof **and** its ACME certificate both succeed; on any lapse the store automatically falls back to the platform subdomain (fail closed, never fail open to a stranger's host).
+Design decision (approved): **every storefront always has one canonical FQDN — the platform subdomain `<merchant>.store.framique.com` for life — plus at most one verified custom FQDN** (`custom_domains`, below) served from the **same edge and serving path** as the platform subdomain. **No new service and no storefront code change**: the edge resolves the Host header to a tenant, adds the trusted `X-Tenant`/`merchant` context _server-side_, and proxies to the unchanged theme runtime. A custom domain never binds serving until its ownership proof **and** its ACME certificate both succeed; on any lapse the store automatically falls back to the platform subdomain (fail closed, never fail open to a stranger's host).
 
 ---
 
@@ -100,14 +100,14 @@ custom_domains {
 
 ## 9. Named-parameter ledger (approved TBD — owner-signed)
 
-| Parameter | Default | Owner | Where it is read |
-|---|---|---|---|
-| `verify_interval` | 60 s | SRE | §3 poll; §6 window copy |
-| `verify_timeout_minutes` | 720 (12 h) | SRE | §2 window; `admin_loop` |
-| `renew_lead_days` | T-60 | Backend/Edge | §4 `domain.renewal_scheduled` |
-| `cert_valid_days` | 90 | Backend/Edge | §4 `cert_not_after` |
-| `hsts_max_age_secs` | pending (platform policy) | SRE | §5 HSTS header |
-| `check_entitlement('domains')` | 1 | Product (16) | §2 quantity |
+| Parameter                      | Default                   | Owner        | Where it is read              |
+| ------------------------------ | ------------------------- | ------------ | ----------------------------- |
+| `verify_interval`              | 60 s                      | SRE          | §3 poll; §6 window copy       |
+| `verify_timeout_minutes`       | 720 (12 h)                | SRE          | §2 window; `admin_loop`       |
+| `renew_lead_days`              | T-60                      | Backend/Edge | §4 `domain.renewal_scheduled` |
+| `cert_valid_days`              | 90                        | Backend/Edge | §4 `cert_not_after`           |
+| `hsts_max_age_secs`            | pending (platform policy) | SRE          | §5 HSTS header                |
+| `check_entitlement('domains')` | 1                         | Product (16) | §2 quantity                   |
 
 ## 10. Residual v0 gaps
 

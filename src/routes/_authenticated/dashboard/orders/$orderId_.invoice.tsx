@@ -3,7 +3,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { invoiceDocumentFn, invoiceIssueFn } from "@/lib/commerce.functions";
 import { fmtMinor } from "@/lib/money";
 
-export const Route = createFileRoute("/_authenticated/dashboard/orders/$orderId_/invoice")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/orders/$orderId_/invoice",
+)({
   head: () => ({
     meta: [
       { title: "Invoice — Framique Admin" },
@@ -15,7 +17,9 @@ export const Route = createFileRoute("/_authenticated/dashboard/orders/$orderId_
 });
 
 function InvoicePage() {
-  const { orderId } = useParams({ from: "/_authenticated/dashboard/orders/$orderId_/invoice" });
+  const { orderId } = useParams({
+    from: "/_authenticated/dashboard/orders/$orderId_/invoice",
+  });
 
   const doc = useQuery({
     queryKey: ["invoice", orderId],
@@ -50,13 +54,16 @@ function InvoicePage() {
         )}
       </header>
 
-      {doc.isLoading && <p className="mt-8 text-sm text-muted-foreground">Loading invoice…</p>}
+      {doc.isLoading && (
+        <p className="mt-8 text-sm text-muted-foreground">Loading invoice…</p>
+      )}
 
       {!doc.isLoading && !d && (
         <div className="mt-8 rounded-fq-lg border border-border bg-card p-6">
           <h1 className="text-lg font-semibold">No invoice issued yet</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Issuing mints a sequential, immutable invoice number for the legal year. This cannot be undone.
+            Issuing mints a sequential, immutable invoice number for the legal
+            year. This cannot be undone.
           </p>
           <button
             type="button"
@@ -76,33 +83,50 @@ function InvoicePage() {
         <article className="mt-6 rounded-fq-lg border border-border bg-card p-6 text-sm print:border-0 print:p-0">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <h1 className="font-bangla-display text-xl font-semibold">{d.merchant.name}</h1>
+              <h1 className="font-bangla-display text-xl font-semibold">
+                {d.merchant.name}
+              </h1>
               {d.invoice.businessBin && (
-                <p className="text-xs text-muted-foreground">BIN: {d.invoice.businessBin}</p>
+                <p className="text-xs text-muted-foreground">
+                  BIN: {d.invoice.businessBin}
+                </p>
               )}
               {d.merchant.supportPhone && (
-                <p className="text-xs text-muted-foreground">{d.merchant.supportPhone}</p>
+                <p className="text-xs text-muted-foreground">
+                  {d.merchant.supportPhone}
+                </p>
               )}
               {d.merchant.supportEmail && (
-                <p className="text-xs text-muted-foreground">{d.merchant.supportEmail}</p>
+                <p className="text-xs text-muted-foreground">
+                  {d.merchant.supportEmail}
+                </p>
               )}
             </div>
             <div className="text-right">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">VAT invoice</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                VAT invoice
+              </p>
               <p className="font-semibold">{d.invoice.number}</p>
               <p className="text-xs text-muted-foreground">
-                Issued {new Date(d.invoice.issuedAt).toLocaleDateString("en-BD")}
+                Issued{" "}
+                {new Date(d.invoice.issuedAt).toLocaleDateString("en-BD")}
               </p>
-              <p className="text-xs text-muted-foreground">Order {d.order.number}</p>
+              <p className="text-xs text-muted-foreground">
+                Order {d.order.number}
+              </p>
             </div>
           </div>
 
           <div className="mt-6 rounded-fq-md bg-muted/40 p-3">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Billed to</p>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Billed to
+            </p>
             <p className="font-medium">{d.order.customer.name}</p>
             <p className="text-muted-foreground">
               {d.order.customer.address}, {d.order.customer.city}
-              {d.order.customer.postcode ? ` — ${d.order.customer.postcode}` : ""}
+              {d.order.customer.postcode
+                ? ` — ${d.order.customer.postcode}`
+                : ""}
             </p>
             <p className="text-muted-foreground">{d.order.customer.phone}</p>
           </div>
@@ -111,10 +135,18 @@ function InvoicePage() {
             <caption className="sr-only">Invoice lines</caption>
             <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th scope="col" className="py-2">Item</th>
-                <th scope="col" className="py-2 text-right">Qty</th>
-                <th scope="col" className="py-2 text-right">Unit</th>
-                <th scope="col" className="py-2 text-right">Amount</th>
+                <th scope="col" className="py-2">
+                  Item
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Qty
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Unit
+                </th>
+                <th scope="col" className="py-2 text-right">
+                  Amount
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -128,21 +160,37 @@ function InvoicePage() {
                     </span>
                   </td>
                   <td className="py-2 text-right money">{l.quantity}</td>
-                  <td className="py-2 text-right money">{fmtMinor(l.unitPriceMinor, d.invoice.currency)}</td>
-                  <td className="py-2 text-right money">{fmtMinor(l.lineTotalMinor, d.invoice.currency)}</td>
+                  <td className="py-2 text-right money">
+                    {fmtMinor(l.unitPriceMinor, d.invoice.currency)}
+                  </td>
+                  <td className="py-2 text-right money">
+                    {fmtMinor(l.lineTotalMinor, d.invoice.currency)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
           <dl className="ml-auto mt-4 w-full max-w-xs space-y-1">
-            <TotalRow label="Subtotal" value={fmtMinor(d.invoice.subtotalMinor, d.invoice.currency)} />
+            <TotalRow
+              label="Subtotal"
+              value={fmtMinor(d.invoice.subtotalMinor, d.invoice.currency)}
+            />
             {d.invoice.discountMinor > 0 && (
-              <TotalRow label="Discount" value={`− ${fmtMinor(d.invoice.discountMinor, d.invoice.currency)}`} />
+              <TotalRow
+                label="Discount"
+                value={`− ${fmtMinor(d.invoice.discountMinor, d.invoice.currency)}`}
+              />
             )}
-            <TotalRow label="Delivery" value={fmtMinor(d.invoice.shippingMinor, d.invoice.currency)} />
+            <TotalRow
+              label="Delivery"
+              value={fmtMinor(d.invoice.shippingMinor, d.invoice.currency)}
+            />
             {d.order.codSurchargeMinor > 0 && (
-              <TotalRow label="COD surcharge" value={fmtMinor(d.order.codSurchargeMinor, d.invoice.currency)} />
+              <TotalRow
+                label="COD surcharge"
+                value={fmtMinor(d.order.codSurchargeMinor, d.invoice.currency)}
+              />
             )}
             <TotalRow
               label={`VAT (${(d.invoice.vatRateBasisPoints / 100).toFixed(1)}%)${d.merchant.pricesIncludeVat ? " — included" : ""}`}
@@ -150,13 +198,16 @@ function InvoicePage() {
             />
             <div className="flex justify-between border-t border-border pt-2 font-semibold">
               <dt>Total</dt>
-              <dd className="money">{fmtMinor(d.invoice.totalMinor, d.invoice.currency)}</dd>
+              <dd className="money">
+                {fmtMinor(d.invoice.totalMinor, d.invoice.currency)}
+              </dd>
             </div>
           </dl>
 
           <p className="mt-6 text-xs text-muted-foreground">
-            Invoice {d.invoice.sequenceNo} of legal year {d.invoice.sequenceYear}. Amounts are computed
-            server-side from the order record and the legal VAT table.
+            Invoice {d.invoice.sequenceNo} of legal year{" "}
+            {d.invoice.sequenceYear}. Amounts are computed server-side from the
+            order record and the legal VAT table.
           </p>
         </article>
       )}

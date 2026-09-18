@@ -24,7 +24,13 @@ type SharedProps = {
   onToggle: (item: Attachment, shift: boolean) => void;
 };
 
-export function MediaGrid({ items, selecting, selected, onOpen, onToggle }: SharedProps) {
+export function MediaGrid({
+  items,
+  selecting,
+  selected,
+  onOpen,
+  onToggle,
+}: SharedProps) {
   return (
     <ul
       className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
@@ -37,16 +43,26 @@ export function MediaGrid({ items, selecting, selected, onOpen, onToggle }: Shar
             <button
               type="button"
               aria-pressed={selecting ? picked : undefined}
-              onClick={(event) => (selecting ? onToggle(item, event.shiftKey) : onOpen(item))}
+              onClick={(event) =>
+                selecting ? onToggle(item, event.shiftKey) : onOpen(item)
+              }
               className={cn(
                 "group relative block w-full overflow-hidden rounded-fq-md border bg-card text-left transition-shadow",
-                picked ? "border-primary shadow-fq-md" : "border-border hover:shadow-fq-md",
+                picked
+                  ? "border-primary shadow-fq-md"
+                  : "border-border hover:shadow-fq-md",
               )}
             >
               <span className="block aspect-square overflow-hidden">
-                <MediaThumb item={item} sizes="(max-width: 640px) 45vw, 200px" />
+                <MediaThumb
+                  item={item}
+                  sizes="(max-width: 640px) 45vw, 200px"
+                />
               </span>
-              <span className="block truncate border-t border-border px-2 py-1.5 text-xs" title={item.fileName}>
+              <span
+                className="block truncate border-t border-border px-2 py-1.5 text-xs"
+                title={item.fileName}
+              >
                 {item.fileName}
               </span>
               {selecting && (
@@ -75,7 +91,13 @@ export function MediaGrid({ items, selecting, selected, onOpen, onToggle }: Shar
   );
 }
 
-export function MediaList({ items, selecting, selected, onOpen, onToggle }: SharedProps) {
+export function MediaList({
+  items,
+  selecting,
+  selected,
+  onOpen,
+  onToggle,
+}: SharedProps) {
   return (
     <div className="overflow-x-auto rounded-fq-md border border-border bg-card">
       <table className="w-full min-w-[640px] text-sm">
@@ -103,7 +125,10 @@ export function MediaList({ items, selecting, selected, onOpen, onToggle }: Shar
             return (
               <tr
                 key={item.id}
-                className={cn("border-b border-border/70 last:border-0", picked && "bg-primary/5")}
+                className={cn(
+                  "border-b border-border/70 last:border-0",
+                  picked && "bg-primary/5",
+                )}
               >
                 {selecting && (
                   <td className="px-3 py-2">
@@ -114,7 +139,10 @@ export function MediaList({ items, selecting, selected, onOpen, onToggle }: Shar
                         className="size-4"
                         checked={picked}
                         onChange={(event) =>
-                          onToggle(item, (event.nativeEvent as MouseEvent).shiftKey ?? false)
+                          onToggle(
+                            item,
+                            (event.nativeEvent as MouseEvent).shiftKey ?? false,
+                          )
                         }
                       />
                     </label>
@@ -130,19 +158,32 @@ export function MediaList({ items, selecting, selected, onOpen, onToggle }: Shar
                       <MediaThumb item={item} sizes="44px" />
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate font-medium text-primary">{item.title || item.fileName}</span>
+                      <span className="block truncate font-medium text-primary">
+                        {item.title || item.fileName}
+                      </span>
                       <span className="block truncate text-xs text-muted-foreground">
                         {item.fileName}
-                        {dimensionLabel(item) ? ` · ${dimensionLabel(item)}` : ""}
+                        {dimensionLabel(item)
+                          ? ` · ${dimensionLabel(item)}`
+                          : ""}
                       </span>
                     </span>
                   </button>
                 </td>
                 <td className="px-3 py-2 text-muted-foreground">
-                  {item.altText || (needsAltText(item) ? <span className="text-warning">Missing</span> : "—")}
+                  {item.altText ||
+                    (needsAltText(item) ? (
+                      <span className="text-warning">Missing</span>
+                    ) : (
+                      "—"
+                    ))}
                 </td>
-                <td className="px-3 py-2 tabular-nums text-muted-foreground">{formatBytes(item.sizeBytes)}</td>
-                <td className="px-3 py-2 text-muted-foreground">{uploadedLabel(item.createdAt)}</td>
+                <td className="px-3 py-2 tabular-nums text-muted-foreground">
+                  {formatBytes(item.sizeBytes)}
+                </td>
+                <td className="px-3 py-2 text-muted-foreground">
+                  {uploadedLabel(item.createdAt)}
+                </td>
               </tr>
             );
           })}

@@ -109,4 +109,5 @@ Payment success → order `paid`, dispatch courier. COD → order `cod_confirmed
 - Full named-TBD inventory + sign-off gate lives in `licensing.md` (companion skeleton, canonical for this surface).
 
 Built runtime contract: [`money-runtime.md`](money-runtime.md) — integer money type, pinned half-up rounding, legal-year VAT service, FX snapshot boundary, append-only ledger writer.
+
 - `payments-runtime.md` — charge intent lifecycle, signed returns, mock MFS sandbox, refund engine, COD reconcile, settlement posting.

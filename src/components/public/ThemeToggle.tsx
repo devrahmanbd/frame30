@@ -16,12 +16,15 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   useEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem("fq_public_theme") as "light" | "dark" | null;
+    const stored = localStorage.getItem("fq_public_theme") as
+      "light" | "dark" | null;
     if (stored === "light" || stored === "dark") {
       setTheme(stored);
       applyTheme(stored);
     } else {
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
       // Default to light to showcase the signature calm blush/pink palette
       const initial = prefersDark ? "dark" : "light";
       setTheme(initial);
@@ -72,9 +75,15 @@ export function ThemeToggle({ className }: { className?: string }) {
       )}
     >
       {theme === "light" ? (
-        <Moon className="size-4 transition-transform duration-200 hover:-rotate-12" aria-hidden="true" />
+        <Moon
+          className="size-4 transition-transform duration-200 hover:-rotate-12"
+          aria-hidden="true"
+        />
       ) : (
-        <Sun className="size-4 transition-transform duration-200 hover:rotate-45" aria-hidden="true" />
+        <Sun
+          className="size-4 transition-transform duration-200 hover:rotate-45"
+          aria-hidden="true"
+        />
       )}
     </button>
   );

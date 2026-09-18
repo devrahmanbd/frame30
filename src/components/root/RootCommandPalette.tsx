@@ -200,7 +200,9 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
         className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border/80 bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground transition-all duration-150 hover:bg-muted/70 hover:text-foreground hover:border-border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
       >
         <Search className="size-3.5 shrink-0" aria-hidden="true" />
-        <span className="hidden sm:inline font-medium">{tk("common.search")}</span>
+        <span className="hidden sm:inline font-medium">
+          {tk("common.search")}
+        </span>
         <kbd className="inline-flex items-center gap-0.5 rounded border border-border/80 bg-card px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground shadow-2xs">
           <span>⌘</span>
           <span>K</span>
@@ -223,7 +225,10 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative flex items-center border-b border-border/80 px-4 py-3 bg-muted/20">
-          <Search className="size-4 shrink-0 text-muted-foreground mr-3" aria-hidden="true" />
+          <Search
+            className="size-4 shrink-0 text-muted-foreground mr-3"
+            aria-hidden="true"
+          />
           <input
             ref={inputRef}
             value={query}
@@ -279,9 +284,7 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
                       <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <r.icon className="size-3.5" />
                       </div>
-                      <span className="truncate font-medium">
-                        {r.label}
-                      </span>
+                      <span className="truncate font-medium">{r.label}</span>
                     </div>
                     <span className="shrink-0 rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary font-mono">
                       {r.group}
@@ -290,9 +293,7 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
                 ) : r.kind === "dest" ? (
                   <>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="truncate font-medium">
-                        {r.label}
-                      </span>
+                      <span className="truncate font-medium">{r.label}</span>
                     </div>
                     <span className="shrink-0 text-xs text-muted-foreground font-mono">
                       {r.group}
@@ -314,7 +315,9 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] uppercase">{r.tenant.plan ?? "launch"}</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] uppercase">
+                        {r.tenant.plan ?? "launch"}
+                      </span>
                       <span className="text-border">·</span>
                       <span className="capitalize">{r.tenant.status}</span>
                       <ArrowRight className="size-3 text-muted-foreground" />

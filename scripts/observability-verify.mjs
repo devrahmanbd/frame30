@@ -40,7 +40,8 @@ const PROM = process.env.PROM_URL ?? "http://localhost:9090";
 const LOKI = process.env.LOKI_URL ?? "http://localhost:3100";
 const GRAFANA = process.env.GRAFANA_URL ?? "http://localhost:3001";
 const ALERTMANAGER = process.env.ALERTMANAGER_URL ?? "http://localhost:9093";
-const APP_METRICS = process.env.APP_METRICS_URL ?? "http://localhost:3000/api/public/metrics";
+const APP_METRICS =
+  process.env.APP_METRICS_URL ?? "http://localhost:3000/api/public/metrics";
 
 /** Jobs that must have a healthy target — the Phase 10 database included. */
 const REQUIRED_JOBS = [
@@ -60,11 +61,17 @@ const REQUIRED_JOBS = [
 const results = [];
 const record = (name, ok, detail) => {
   results.push({ name, ok, detail });
-  if (!asJson) console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? ` — ${detail}` : ""}`);
+  if (!asJson)
+    console.log(
+      `${ok ? "PASS" : "FAIL"}  ${name}${detail ? ` — ${detail}` : ""}`,
+    );
 };
 
 async function getJson(url, init) {
-  const res = await fetch(url, { ...init, signal: AbortSignal.timeout(15_000) });
+  const res = await fetch(url, {
+    ...init,
+    signal: AbortSignal.timeout(15_000),
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
   return res.json();
 }
@@ -87,7 +94,9 @@ async function promQuery(expr) {
 
 async function main() {
   await check("prometheus is healthy", async () => {
-    const res = await fetch(`${PROM}/-/healthy`, { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(`${PROM}/-/healthy`, {
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return PROM;
   });
@@ -96,47 +105,67 @@ async function main() {
     const body = await getJson(`${PROM}/api/v1/rules`);
     const groups = body.data.groups ?? [];
     const rules = groups.flatMap((g) => g.rules ?? []);
-    const broken = groups.filter((g) => g.rules?.some((r) => r.health === "err"));
+    const broken = groups.filter((g) =>
+      g.rules?.some((r) => r.health === "err"),
+    );
     if (!rules.length) throw new Error("no rules loaded");
-    if (broken.length) throw new Error(`rule groups in error: ${broken.map((g) => g.name).join(", ")}`);
+    if (broken.length)
+      throw new Error(
+        `rule groups in error: ${broken.map((g) => g.name).join(", ")}`,
+      );
     return `${groups.length} groups, ${rules.length} rules`;
   });
 
   await check("every scrape job has a healthy target", async () => {
     const body = await getJson(`${PROM}/api/v1/targets?state=active`);
     const active = body.data.activeTargets ?? [];
-    const healthyJobs = new Set(active.filter((t) => t.health === "up").map((t) => t.labels.job));
+    const healthyJobs = new Set(
+      active.filter((t) => t.health === "up").map((t) => t.labels.job),
+    );
     const missing = REQUIRED_JOBS.filter((j) => !healthyJobs.has(j));
-    if (missing.length) throw new Error(`jobs with no healthy target: ${missing.join(", ")}`);
+    if (missing.length)
+      throw new Error(`jobs with no healthy target: ${missing.join(", ")}`);
     return `${active.filter((t) => t.health === "up").length}/${active.length} targets up`;
   });
 
   await check("app exposes framique_* metrics", async () => {
-    const res = await fetch(APP_METRICS, { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(APP_METRICS, {
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status} from ${APP_METRICS}`);
     const text = await res.text();
-    const names = new Set([...text.matchAll(/^([a-z_]+)\{|^([a-z_]+) /gm)].map((m) => m[1] ?? m[2]));
+    const names = new Set(
+      [...text.matchAll(/^([a-z_]+)\{|^([a-z_]+) /gm)].map((m) => m[1] ?? m[2]),
+    );
     const framique = [...names].filter((n) => n?.startsWith("framique_"));
-    if (framique.length < 10) throw new Error(`only ${framique.length} framique_* series exposed`);
+    if (framique.length < 10)
+      throw new Error(`only ${framique.length} framique_* series exposed`);
     return `${framique.length} framique_* series`;
   });
 
   await check("prometheus stored the app metrics", async () => {
     const rows = await promQuery('count({__name__=~"framique_.+"})');
     const value = Number(rows[0]?.value?.[1] ?? 0);
-    if (!value) throw new Error("no framique_* series in the TSDB — scrape is not landing");
+    if (!value)
+      throw new Error(
+        "no framique_* series in the TSDB — scrape is not landing",
+      );
     return `${value} series in TSDB`;
   });
 
   await check("postgres exporter reports the database up", async () => {
     const rows = await promQuery("pg_up");
-    if (!rows.length) throw new Error("pg_up absent — postgres exporter not scraped");
-    if (rows.every((r) => Number(r.value[1]) !== 1)) throw new Error("pg_up == 0");
+    if (!rows.length)
+      throw new Error("pg_up absent — postgres exporter not scraped");
+    if (rows.every((r) => Number(r.value[1]) !== 1))
+      throw new Error("pg_up == 0");
     return `${rows.length} database target(s) up`;
   });
 
   await check("loki is ready", async () => {
-    const res = await fetch(`${LOKI}/ready`, { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(`${LOKI}/ready`, {
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return LOKI;
   });
@@ -148,7 +177,9 @@ async function main() {
       'sum(count_over_time({service=~"app|worker|payments"}[15m]))',
     )}&start=${start}&end=${end}&step=60`;
     const body = await getJson(url);
-    const total = (body.data?.result ?? []).flatMap((r) => r.values ?? []).reduce((a, [, v]) => a + Number(v), 0);
+    const total = (body.data?.result ?? [])
+      .flatMap((r) => r.values ?? [])
+      .reduce((a, [, v]) => a + Number(v), 0);
     if (!total) throw new Error("no app log lines in the last 15 minutes");
     return `${total} lines/15m`;
   });
@@ -157,7 +188,9 @@ async function main() {
     const body = await getJson(`${LOKI}/loki/api/v1/label/service/values`);
     const values = body.data ?? [];
     if (!values.some((v) => /db|postgres/.test(v))) {
-      throw new Error(`no database stream; services seen: ${values.join(", ") || "none"}`);
+      throw new Error(
+        `no database stream; services seen: ${values.join(", ") || "none"}`,
+      );
     }
     return values.join(", ");
   });
@@ -165,15 +198,24 @@ async function main() {
   await check("grafana is up with both datasources answering", async () => {
     const auth = grafanaAuth();
     const health = await getJson(`${GRAFANA}/api/health`);
-    if (health.database !== "ok") throw new Error(`grafana database ${health.database}`);
-    const sources = await getJson(`${GRAFANA}/api/datasources`, { headers: auth });
+    if (health.database !== "ok")
+      throw new Error(`grafana database ${health.database}`);
+    const sources = await getJson(`${GRAFANA}/api/datasources`, {
+      headers: auth,
+    });
     const types = sources.map((s) => s.type);
     for (const want of ["prometheus", "loki"]) {
       if (!types.includes(want)) throw new Error(`missing ${want} datasource`);
     }
     for (const source of sources) {
-      const probe = await fetch(`${GRAFANA}/api/datasources/${source.id}/health`, { headers: auth });
-      if (!probe.ok) throw new Error(`datasource ${source.name} health HTTP ${probe.status}`);
+      const probe = await fetch(
+        `${GRAFANA}/api/datasources/${source.id}/health`,
+        { headers: auth },
+      );
+      if (!probe.ok)
+        throw new Error(
+          `datasource ${source.name} health HTTP ${probe.status}`,
+        );
     }
     return types.join(", ");
   });
@@ -183,7 +225,10 @@ async function main() {
     const titles = readdirSync(dir)
       .filter((f) => f.endsWith(".json"))
       .map((f) => JSON.parse(readFileSync(join(dir, f), "utf8")).title);
-    const search = await getJson(`${GRAFANA}/api/search?type=dash-db&limit=500`, { headers: grafanaAuth() });
+    const search = await getJson(
+      `${GRAFANA}/api/search?type=dash-db&limit=500`,
+      { headers: grafanaAuth() },
+    );
     const live = new Set(search.map((d) => d.title));
     const missing = titles.filter((t) => !live.has(t));
     if (missing.length) throw new Error(`not loaded: ${missing.join(", ")}`);
@@ -191,9 +236,13 @@ async function main() {
   });
 
   await check("grafana anonymous access is disabled", async () => {
-    const res = await fetch(`${GRAFANA}/api/datasources`, { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(`${GRAFANA}/api/datasources`, {
+      signal: AbortSignal.timeout(10_000),
+    });
     if (res.status !== 401 && res.status !== 403) {
-      throw new Error(`unauthenticated API call returned HTTP ${res.status} — anonymous access is open`);
+      throw new Error(
+        `unauthenticated API call returned HTTP ${res.status} — anonymous access is open`,
+      );
     }
     return `unauthenticated read rejected (${res.status})`;
   });
@@ -217,7 +266,8 @@ async function main() {
           },
           annotations: {
             summary: "Synthetic alert from scripts/observability-verify.mjs",
-            runbook: "docs/14-operations/runbooks.md#observability-verification",
+            runbook:
+              "docs/14-operations/runbooks.md#observability-verification",
           },
           startsAt: new Date().toISOString(),
           endsAt: new Date(Date.now() + 120_000).toISOString(),
@@ -232,9 +282,13 @@ async function main() {
       if (!post.ok) throw new Error(`POST alerts HTTP ${post.status}`);
       for (let attempt = 0; attempt < 10; attempt += 1) {
         await new Promise((r) => setTimeout(r, 2000));
-        const groups = await getJson(`${ALERTMANAGER}/api/v2/alerts/groups?active=true`);
+        const groups = await getJson(
+          `${ALERTMANAGER}/api/v2/alerts/groups?active=true`,
+        );
         const hit = groups
-          .flatMap((g) => (g.alerts ?? []).map((a) => ({ receiver: g.receiver?.name, a })))
+          .flatMap((g) =>
+            (g.alerts ?? []).map((a) => ({ receiver: g.receiver?.name, a })),
+          )
           .find((x) => x.a.labels?.instance === fingerprint);
         if (hit) return `routed to ${hit.receiver ?? "unknown receiver"}`;
       }
@@ -243,8 +297,12 @@ async function main() {
   }
 
   const failed = results.filter((r) => !r.ok);
-  if (asJson) console.log(JSON.stringify({ ok: failed.length === 0, results }, null, 2));
-  else console.log(`\n${results.length - failed.length}/${results.length} checks passed`);
+  if (asJson)
+    console.log(JSON.stringify({ ok: failed.length === 0, results }, null, 2));
+  else
+    console.log(
+      `\n${results.length - failed.length}/${results.length} checks passed`,
+    );
   process.exit(failed.length ? 1 : 0);
 }
 
@@ -252,7 +310,9 @@ function grafanaAuth() {
   const user = process.env.GRAFANA_USER ?? "admin";
   const pass = process.env.GRAFANA_PASSWORD ?? "";
   if (!pass) return {};
-  return { authorization: `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}` };
+  return {
+    authorization: `Basic ${Buffer.from(`${user}:${pass}`).toString("base64")}`,
+  };
 }
 
 main().catch((err) => {

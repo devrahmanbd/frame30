@@ -1,1 +1,622 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_sla_ts", "label": "support-sla.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L1"}, {"id": "lib_support_sla_priority", "label": "Priority", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L9"}, {"id": "lib_support_sla_slapolicy", "label": "SlaPolicy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L11"}, {"id": "lib_support_sla_default_sla", "label": "DEFAULT_SLA", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L17"}, {"id": "lib_support_sla_policyfor", "label": "policyFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L24"}, {"id": "lib_support_sla_duedates", "label": "dueDates()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L30"}, {"id": "lib_support_sla_ticketlike", "label": "TicketLike", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L38"}, {"id": "lib_support_sla_slastate", "label": "SlaState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L48"}, {"id": "lib_support_sla_slasummary", "label": "SlaSummary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L64"}, {"id": "lib_support_sla_median", "label": "median()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L72"}, {"id": "lib_support_sla_summarise", "label": "summarise()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L79"}, {"id": "lib_support_sla_slathresholds", "label": "SlaThresholds", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L98"}, {"id": "lib_support_sla_sla_tiers", "label": "SLA_TIERS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L103"}, {"id": "lib_support_sla_slastatus", "label": "SlaStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L110"}, {"id": "lib_support_sla_slametrics", "label": "SlaMetrics", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L112"}, {"id": "lib_support_sla_auditevent", "label": "AuditEvent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L125"}, {"id": "lib_support_sla_formatduration", "label": "formatDuration()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L150"}, {"id": "lib_support_sla_computeslametrics", "label": "computeSlaMetrics()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L169"}, {"id": "lib_support_sla_buildaudittrail", "label": "buildAuditTrail()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L259"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_priority", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slapolicy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_default_sla", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_policyfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_duedates", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_ticketlike", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slastate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slastate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slasummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L64", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_median", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_summarise", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slathresholds", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_sla_tiers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slastatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_slametrics", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_auditevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L125", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_formatduration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L150", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_computeslametrics", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L169", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_sla_ts", "target": "lib_support_sla_buildaudittrail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L259", "weight": 1.0}, {"source": "lib_support_sla_duedates", "target": "lib_support_sla_policyfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L31", "weight": 1.0}, {"source": "lib_support_sla_summarise", "target": "lib_support_sla_median", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L85", "weight": 1.0}, {"source": "lib_support_sla_computeslametrics", "target": "lib_support_sla_formatduration", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L251", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_sla_policyfor", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L25"}, {"caller_nid": "lib_support_sla_duedates", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L33"}, {"caller_nid": "lib_support_sla_duedates", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L33"}, {"caller_nid": "lib_support_sla_duedates", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L34"}, {"caller_nid": "lib_support_sla_duedates", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L34"}, {"caller_nid": "lib_support_sla_slastate", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L57"}, {"caller_nid": "lib_support_sla_slastate", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L59"}, {"caller_nid": "lib_support_sla_slastate", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L60"}, {"caller_nid": "lib_support_sla_median", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L74"}, {"caller_nid": "lib_support_sla_median", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L75"}, {"caller_nid": "lib_support_sla_summarise", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L82"}, {"caller_nid": "lib_support_sla_summarise", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L83"}, {"caller_nid": "lib_support_sla_summarise", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L84"}, {"caller_nid": "lib_support_sla_summarise", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L86"}, {"caller_nid": "lib_support_sla_summarise", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L86"}, {"caller_nid": "lib_support_sla_summarise", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L89"}, {"caller_nid": "lib_support_sla_summarise", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L89"}, {"caller_nid": "lib_support_sla_formatduration", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L152"}, {"caller_nid": "lib_support_sla_formatduration", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L154"}, {"caller_nid": "lib_support_sla_formatduration", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L156"}, {"caller_nid": "lib_support_sla_formatduration", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L161"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L180"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L182"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L184"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L187"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L197"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L211"}, {"caller_nid": "lib_support_sla_computeslametrics", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L211"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L285"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L289"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L300"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L301"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L305"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L310"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L311"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L315"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L325"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L334"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L347"}, {"caller_nid": "lib_support_sla_buildaudittrail", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts", "source_location": "L358"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "label": "support-sla.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_sla_priority",
+      "label": "Priority",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_support_sla_slapolicy",
+      "label": "SlaPolicy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_support_sla_default_sla",
+      "label": "DEFAULT_SLA",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_support_sla_policyfor",
+      "label": "policyFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_support_sla_duedates",
+      "label": "dueDates()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_support_sla_ticketlike",
+      "label": "TicketLike",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_support_sla_slastate",
+      "label": "SlaState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_support_sla_slasummary",
+      "label": "SlaSummary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L64"
+    },
+    {
+      "id": "lib_support_sla_median",
+      "label": "median()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "lib_support_sla_summarise",
+      "label": "summarise()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_support_sla_slathresholds",
+      "label": "SlaThresholds",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_support_sla_sla_tiers",
+      "label": "SLA_TIERS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_support_sla_slastatus",
+      "label": "SlaStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_support_sla_slametrics",
+      "label": "SlaMetrics",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_support_sla_auditevent",
+      "label": "AuditEvent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L125"
+    },
+    {
+      "id": "lib_support_sla_formatduration",
+      "label": "formatDuration()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L150"
+    },
+    {
+      "id": "lib_support_sla_computeslametrics",
+      "label": "computeSlaMetrics()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L169"
+    },
+    {
+      "id": "lib_support_sla_buildaudittrail",
+      "label": "buildAuditTrail()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L259"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_priority",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slapolicy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_default_sla",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_policyfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_duedates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_ticketlike",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slastate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slastate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slasummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_median",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_summarise",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slathresholds",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_sla_tiers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slastatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_slametrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_auditevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_formatduration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_computeslametrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "target": "lib_support_sla_buildaudittrail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L259",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_sla_duedates",
+      "target": "lib_support_sla_policyfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_sla_summarise",
+      "target": "lib_support_sla_median",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_sla_computeslametrics",
+      "target": "lib_support_sla_formatduration",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L251",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_sla_policyfor",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_support_sla_duedates",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_support_sla_duedates",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_support_sla_duedates",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "lib_support_sla_duedates",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "lib_support_sla_slastate",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_support_sla_slastate",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_support_sla_slastate",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_support_sla_median",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_support_sla_median",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_support_sla_summarise",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_support_sla_formatduration",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_support_sla_formatduration",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_support_sla_formatduration",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_support_sla_formatduration",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "lib_support_sla_computeslametrics",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L305"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_support_sla_buildaudittrail",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-sla.ts",
+      "source_location": "L358"
+    }
+  ]
+}

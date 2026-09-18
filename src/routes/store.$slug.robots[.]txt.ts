@@ -15,7 +15,8 @@ export const Route = createFileRoute("/store/$slug/robots.txt")({
       GET: async ({ request, params }) => {
         const origin = new URL(request.url).origin;
         try {
-          const { renderStoreRobotsTxt } = await import("@/lib/sitemap-config.server");
+          const { renderStoreRobotsTxt } =
+            await import("@/lib/sitemap-config.server");
           const doc = await renderStoreRobotsTxt(params.slug, origin);
           if (!doc) return new Response("Not found", { status: 404 });
           return new Response(doc.body, {

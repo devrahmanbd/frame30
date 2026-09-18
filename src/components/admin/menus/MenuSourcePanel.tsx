@@ -50,14 +50,18 @@ export function MenuSourcePanel({
           items={group.items}
           expanded={open === group.kind}
           disabled={disabled}
-          onToggle={() => setOpen((current) => (current === group.kind ? "" : group.kind))}
+          onToggle={() =>
+            setOpen((current) => (current === group.kind ? "" : group.kind))
+          }
           onAdd={onAdd}
         />
       ))}
       <CustomLinkBox
         expanded={open === "custom"}
         disabled={disabled}
-        onToggle={() => setOpen((current) => (current === "custom" ? "" : "custom"))}
+        onToggle={() =>
+          setOpen((current) => (current === "custom" ? "" : "custom"))
+        }
         onAdd={onAddCustom}
       />
     </div>
@@ -90,11 +94,18 @@ function Box({
           {label}
           <ChevronDown
             aria-hidden
-            className={cn("size-4 text-muted-foreground transition-transform", expanded && "rotate-180")}
+            className={cn(
+              "size-4 text-muted-foreground transition-transform",
+              expanded && "rotate-180",
+            )}
           />
         </button>
       </h3>
-      <div id={`menu-source-${id}`} hidden={!expanded} className="border-t border-border p-3">
+      <div
+        id={`menu-source-${id}`}
+        hidden={!expanded}
+        className="border-t border-border p-3"
+      >
         {children}
       </div>
     </section>
@@ -136,7 +147,9 @@ function SourceGroupBox({
       </label>
 
       {shown.length === 0 ? (
-        <p className="py-2 text-sm text-muted-foreground">Nothing matches “{query}”.</p>
+        <p className="py-2 text-sm text-muted-foreground">
+          Nothing matches “{query}”.
+        </p>
       ) : (
         <ul className="max-h-64 space-y-0.5 overflow-y-auto pr-1">
           {shown.map((source) => {
@@ -156,8 +169,12 @@ function SourceGroupBox({
                       )
                     }
                   />
-                  <span className="min-w-0 flex-1 truncate">{source.label}</span>
-                  <span className="shrink-0 truncate text-xs text-muted-foreground">{source.url}</span>
+                  <span className="min-w-0 flex-1 truncate">
+                    {source.label}
+                  </span>
+                  <span className="shrink-0 truncate text-xs text-muted-foreground">
+                    {source.url}
+                  </span>
                 </label>
               </li>
             );
@@ -172,11 +189,15 @@ function SourceGroupBox({
           disabled={shown.length === 0}
           onClick={() =>
             setPicked((current) =>
-              current.length === shown.length ? [] : shown.map((source) => source.id),
+              current.length === shown.length
+                ? []
+                : shown.map((source) => source.id),
             )
           }
         >
-          {picked.length === shown.length && shown.length > 0 ? "Deselect all" : "Select all"}
+          {picked.length === shown.length && shown.length > 0
+            ? "Deselect all"
+            : "Select all"}
         </button>
         <button
           type="button"
@@ -209,23 +230,40 @@ function CustomLinkBox({
   const [url, setUrl] = useState("https://");
 
   return (
-    <Box id="custom" label="Custom links" expanded={expanded} onToggle={onToggle}>
+    <Box
+      id="custom"
+      label="Custom links"
+      expanded={expanded}
+      onToggle={onToggle}
+    >
       <div className="space-y-2">
         <label className="block space-y-1">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Link text
           </span>
-          <input className={inputClass} value={label} onChange={(event) => setLabel(event.target.value)} />
+          <input
+            className={inputClass}
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+          />
         </label>
         <label className="block space-y-1">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Address</span>
-          <input className={inputClass} value={url} onChange={(event) => setUrl(event.target.value)} />
+          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Address
+          </span>
+          <input
+            className={inputClass}
+            value={url}
+            onChange={(event) => setUrl(event.target.value)}
+          />
         </label>
         <div className="flex justify-end">
           <button
             type="button"
             className={btnPrimary}
-            disabled={disabled || label.trim().length === 0 || url.trim().length === 0}
+            disabled={
+              disabled || label.trim().length === 0 || url.trim().length === 0
+            }
             onClick={() => {
               onAdd({ label: label.trim(), url: url.trim() });
               setLabel("");

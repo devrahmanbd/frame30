@@ -96,7 +96,9 @@ describe("token overrides", () => {
   });
 
   it("projects tokens into custom properties", () => {
-    expect(tokensToCss({ "color-primary": "#000" })).toBe(":root{--color-primary:#000}");
+    expect(tokensToCss({ "color-primary": "#000" })).toBe(
+      ":root{--color-primary:#000}",
+    );
     expect(tokensToCss({})).toBe("");
   });
 });
@@ -111,20 +113,42 @@ describe("combining", () => {
           kind: "tokens",
           content: JSON.stringify({ "color-primary": "#111" }),
         }),
-        asset({ id: "3", kind: "font", name: "Inter.woff2", url: "/f/Inter.woff2" }),
-        asset({ id: "4", kind: "css", themeId: "other", content: ".b{color:blue}" }),
-        asset({ id: "5", kind: "css", enabled: false, content: ".c{color:green}" }),
+        asset({
+          id: "3",
+          kind: "font",
+          name: "Inter.woff2",
+          url: "/f/Inter.woff2",
+        }),
+        asset({
+          id: "4",
+          kind: "css",
+          themeId: "other",
+          content: ".b{color:blue}",
+        }),
+        asset({
+          id: "5",
+          kind: "css",
+          enabled: false,
+          content: ".c{color:green}",
+        }),
       ],
       "mine",
     );
-    expect(css.indexOf("--color-primary")).toBeLessThan(css.indexOf("@font-face"));
-    expect(css.indexOf("@font-face")).toBeLessThan(css.indexOf(".a{color:red}"));
+    expect(css.indexOf("--color-primary")).toBeLessThan(
+      css.indexOf("@font-face"),
+    );
+    expect(css.indexOf("@font-face")).toBeLessThan(
+      css.indexOf(".a{color:red}"),
+    );
     expect(css).not.toContain(".b{color:blue}");
     expect(css).not.toContain(".c{color:green}");
   });
 
   it("sanitises stored css on the way out", () => {
-    const css = combineThemeCss([asset({ content: "@import 'x'; .a{color:red}" })], null);
+    const css = combineThemeCss(
+      [asset({ content: "@import 'x'; .a{color:red}" })],
+      null,
+    );
     expect(css).not.toContain("@import");
     expect(css).toContain(".a{color:red}");
   });
@@ -139,15 +163,19 @@ describe("listing helpers", () => {
       asset({ id: "4", kind: "css", name: "x.css", themeId: "t2" }),
     ];
     expect(sortAssets(list).map((a) => a.id)).toEqual(["3", "4", "2", "1"]);
-    expect(assetsForTheme(list, "t1").map((a) => a.id)).toEqual(["3", "2", "1"]);
+    expect(assetsForTheme(list, "t1").map((a) => a.id)).toEqual([
+      "3",
+      "2",
+      "1",
+    ]);
   });
 
   it("formats sizes and summaries", () => {
     expect(formatAssetBytes(512)).toBe("512 B");
     expect(formatAssetBytes(2048)).toBe("2.0 KB");
     expect(formatAssetBytes(3 * 1024 * 1024)).toBe("3.0 MB");
-    expect(assetSummary(asset({ bytes: 1024, themeId: "t1", enabled: false }))).toBe(
-      "This theme · 1.0 KB · off",
-    );
+    expect(
+      assetSummary(asset({ bytes: 1024, themeId: "t1", enabled: false })),
+    ).toBe("This theme · 1.0 KB · off");
   });
 });

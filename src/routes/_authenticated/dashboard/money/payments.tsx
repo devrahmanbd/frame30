@@ -7,7 +7,9 @@
  */
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/dashboard/money/payments")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/money/payments",
+)({
   beforeLoad: () => {
     throw redirect({ to: "/dashboard/payments" });
   },

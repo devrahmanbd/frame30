@@ -4,7 +4,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -30,7 +33,14 @@ function widgetDb() {
           merchant_id: MERCHANT,
         },
       ],
-      plugin_state: [{ id: "p-1", merchant_id: MERCHANT, plugin_id: "whatsapp-chat", enabled: true }],
+      plugin_state: [
+        {
+          id: "p-1",
+          merchant_id: MERCHANT,
+          plugin_id: "whatsapp-chat",
+          enabled: true,
+        },
+      ],
     },
   });
 }
@@ -41,7 +51,11 @@ describe("uninstallWidgetInstall", () => {
   it("refuses an unknown install without touching anything", async () => {
     const db = widgetDb();
     await expect(
-      uninstallWidgetInstall(db.asClient(), MERCHANT, "00000000-0000-4000-a000-000000000000"),
+      uninstallWidgetInstall(
+        db.asClient(),
+        MERCHANT,
+        "00000000-0000-4000-a000-000000000000",
+      ),
     ).rejects.toThrow("market_install_not_found");
     expect(db.rows("marketplace_installs")).toHaveLength(1);
     expect(db.rows("plugin_state")).toHaveLength(1);
@@ -49,7 +63,12 @@ describe("uninstallWidgetInstall", () => {
 
   it("removes the plugin row and retires the ledger row", async () => {
     const db = widgetDb();
-    const out: any = await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
+    const out: any = await uninstallWidgetInstall(
+      db.asClient(),
+      MERCHANT,
+      INSTALL,
+      "user-9",
+    );
     expect(out.ok).toBe(true);
     expect(out.removedPlugin).toBe(true);
     expect(db.rows("plugin_state")).toHaveLength(0);
@@ -73,12 +92,22 @@ describe("uninstallWidgetInstall", () => {
     const db = fakeDb({
       tables: {
         marketplace_installs: [
-          { id: INSTALL, kind: "widget", listing_slug: "ghost", status: "paused", merchant_id: MERCHANT },
+          {
+            id: INSTALL,
+            kind: "widget",
+            listing_slug: "ghost",
+            status: "paused",
+            merchant_id: MERCHANT,
+          },
         ],
         plugin_state: [],
       },
     });
-    const out: any = await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL);
+    const out: any = await uninstallWidgetInstall(
+      db.asClient(),
+      MERCHANT,
+      INSTALL,
+    );
     expect(out.ok).toBe(true);
     expect(out.removedPlugin).toBe(false);
     expect(db.rows("marketplace_installs")[0].status).toBe("removed");

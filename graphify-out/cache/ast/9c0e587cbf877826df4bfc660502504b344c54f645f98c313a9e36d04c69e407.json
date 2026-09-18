@@ -1,1 +1,411 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "label": "assistant.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L1"}, {"id": "ai_assistant_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L12"}, {"id": "ai_assistant_msg", "label": "Msg", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L28"}, {"id": "ai_assistant_usestatuslabel", "label": "useStatusLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L30"}, {"id": "ai_assistant_assistantpanel", "label": "AssistantPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L41"}, {"id": "ai_assistant_stat", "label": "Stat()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L177"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "users_rahman_documents_frame30_src_components_admin_adminshell_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "admin_adminshell_adminshell", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "lib_ai_support_functions_supportinboxfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "lib_ai_support_functions_supportthreadfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "lib_ai_support_functions_supportreplyfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "lib_ai_support_functions_supportstatusfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "ai_assistant_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "ai_assistant_msg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "ai_assistant_usestatuslabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "ai_assistant_assistantpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx", "target": "ai_assistant_stat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L177", "weight": 1.0}, {"source": "ai_assistant_assistantpanel", "target": "ai_assistant_usestatuslabel", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L45", "weight": 1.0}], "raw_calls": [{"caller_nid": "ai_assistant_usestatuslabel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L31"}, {"caller_nid": "ai_assistant_usestatuslabel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L33"}, {"caller_nid": "ai_assistant_usestatuslabel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L34"}, {"caller_nid": "ai_assistant_usestatuslabel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L35"}, {"caller_nid": "ai_assistant_usestatuslabel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L36"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useLoaderData", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L42"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useRouter", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L43"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L44"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L46"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L47"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L48"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L74"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L76"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L84"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L84"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L85"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L85"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L86"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L86"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L88"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L89"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L96"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L98"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L123"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L127"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L134"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L149"}, {"caller_nid": "ai_assistant_assistantpanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx", "source_location": "L165"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "label": "assistant.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "ai_assistant_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "ai_assistant_msg",
+      "label": "Msg",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "ai_assistant_usestatuslabel",
+      "label": "useStatusLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "ai_assistant_assistantpanel",
+      "label": "AssistantPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "ai_assistant_stat",
+      "label": "Stat()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L177"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_adminshell_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "admin_adminshell_adminshell",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "lib_ai_support_functions_supportinboxfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "lib_ai_support_functions_supportthreadfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "lib_ai_support_functions_supportreplyfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "lib_ai_support_functions_supportstatusfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "ai_assistant_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "ai_assistant_msg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "ai_assistant_usestatuslabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "ai_assistant_assistantpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_ai_assistant_tsx",
+      "target": "ai_assistant_stat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "ai_assistant_assistantpanel",
+      "target": "ai_assistant_usestatuslabel",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L45",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "ai_assistant_usestatuslabel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "ai_assistant_usestatuslabel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "ai_assistant_usestatuslabel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "ai_assistant_usestatuslabel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "ai_assistant_usestatuslabel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useLoaderData",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useRouter",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "ai_assistant_assistantpanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/ai/assistant.tsx",
+      "source_location": "L165"
+    }
+  ]
+}

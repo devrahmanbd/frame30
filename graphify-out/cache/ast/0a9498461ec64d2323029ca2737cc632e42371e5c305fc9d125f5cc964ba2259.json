@@ -1,1 +1,148 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "label": "WidgetSkeleton.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L1"}, {"id": "primitives_widgetskeleton_block", "label": "Block()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L11"}, {"id": "primitives_widgetskeleton_widgetskeleton", "label": "WidgetSkeleton()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L15"}, {"id": "primitives_widgetskeleton_nodeskeleton", "label": "NodeSkeleton()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L71"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "users_rahman_documents_frame30_src_lib_widget_skeletons_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "lib_widget_skeletons_skeletonspec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "lib_widget_skeletons_skeletonspec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "primitives_widgetskeleton_block", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "primitives_widgetskeleton_widgetskeleton", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx", "target": "primitives_widgetskeleton_nodeskeleton", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L71", "weight": 1.0}], "raw_calls": [{"caller_nid": "primitives_widgetskeleton_widgetskeleton", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L19"}, {"caller_nid": "primitives_widgetskeleton_widgetskeleton", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L41"}, {"caller_nid": "primitives_widgetskeleton_widgetskeleton", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L51"}, {"caller_nid": "primitives_widgetskeleton_widgetskeleton", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L63"}, {"caller_nid": "primitives_widgetskeleton_nodeskeleton", "callee": "skeletonSpec", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx", "source_location": "L72"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "label": "WidgetSkeleton.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "primitives_widgetskeleton_block",
+      "label": "Block()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "primitives_widgetskeleton_widgetskeleton",
+      "label": "WidgetSkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "primitives_widgetskeleton_nodeskeleton",
+      "label": "NodeSkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L71"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_widget_skeletons_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "lib_widget_skeletons_skeletonspec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "lib_widget_skeletons_skeletonspec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "primitives_widgetskeleton_block",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "primitives_widgetskeleton_widgetskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_widgetskeleton_tsx",
+      "target": "primitives_widgetskeleton_nodeskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L71",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "primitives_widgetskeleton_widgetskeleton",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "primitives_widgetskeleton_widgetskeleton",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "primitives_widgetskeleton_widgetskeleton",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "primitives_widgetskeleton_widgetskeleton",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "primitives_widgetskeleton_nodeskeleton",
+      "callee": "skeletonSpec",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/WidgetSkeleton.tsx",
+      "source_location": "L72"
+    }
+  ]
+}

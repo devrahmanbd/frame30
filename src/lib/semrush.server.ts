@@ -45,50 +45,72 @@ export async function fetchSemrushDomainRank(
   const apiKey = resolveSemrushApiKey();
   const cacheKey = `semrush:rank:${domain}:${database}`;
 
-  return cached(
-    cacheKey,
-    CACHE_TTL_HOURS * 3600,
-    async () => {
-      const url = buildSemrushUrl({
-        type: "domain_ranks",
-        key: apiKey,
-        domain,
-        database,
-      });
+  return cached(cacheKey, CACHE_TTL_HOURS * 3600, async () => {
+    const url = buildSemrushUrl({
+      type: "domain_ranks",
+      key: apiKey,
+      domain,
+      database,
+    });
 
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeout);
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
 
-        if (!res.ok) {
-          return { ...DEFAULT_SEMRUSH_DOMAIN_RANK, domain, database };
-        }
-
-        const text = await res.text();
-        const rows = parseSemrushTable(text);
-        if (rows.length === 0) {
-          return { ...DEFAULT_SEMRUSH_DOMAIN_RANK, domain, database };
-        }
-
-        const first = rows[0];
-        return {
-          domain,
-          database,
-          rank: Number(first["Rank"] || first["Rk"] || DEFAULT_SEMRUSH_DOMAIN_RANK.rank),
-          organicKeywords: Number(first["Organic Keywords"] || first["Or"] || DEFAULT_SEMRUSH_DOMAIN_RANK.organicKeywords),
-          organicTraffic: Number(first["Organic Traffic"] || first["Ot"] || DEFAULT_SEMRUSH_DOMAIN_RANK.organicTraffic),
-          organicCost: Number(first["Organic Cost"] || first["Oc"] || DEFAULT_SEMRUSH_DOMAIN_RANK.organicCost),
-          adwordsKeywords: Number(first["Adwords Keywords"] || first["Ad"] || DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsKeywords),
-          adwordsTraffic: Number(first["Adwords Traffic"] || first["At"] || DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsTraffic),
-          adwordsCost: Number(first["Adwords Cost"] || first["Ac"] || DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsCost),
-        };
-      } catch {
+      if (!res.ok) {
         return { ...DEFAULT_SEMRUSH_DOMAIN_RANK, domain, database };
       }
-    },
-  );
+
+      const text = await res.text();
+      const rows = parseSemrushTable(text);
+      if (rows.length === 0) {
+        return { ...DEFAULT_SEMRUSH_DOMAIN_RANK, domain, database };
+      }
+
+      const first = rows[0];
+      return {
+        domain,
+        database,
+        rank: Number(
+          first["Rank"] || first["Rk"] || DEFAULT_SEMRUSH_DOMAIN_RANK.rank,
+        ),
+        organicKeywords: Number(
+          first["Organic Keywords"] ||
+            first["Or"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.organicKeywords,
+        ),
+        organicTraffic: Number(
+          first["Organic Traffic"] ||
+            first["Ot"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.organicTraffic,
+        ),
+        organicCost: Number(
+          first["Organic Cost"] ||
+            first["Oc"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.organicCost,
+        ),
+        adwordsKeywords: Number(
+          first["Adwords Keywords"] ||
+            first["Ad"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsKeywords,
+        ),
+        adwordsTraffic: Number(
+          first["Adwords Traffic"] ||
+            first["At"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsTraffic,
+        ),
+        adwordsCost: Number(
+          first["Adwords Cost"] ||
+            first["Ac"] ||
+            DEFAULT_SEMRUSH_DOMAIN_RANK.adwordsCost,
+        ),
+      };
+    } catch {
+      return { ...DEFAULT_SEMRUSH_DOMAIN_RANK, domain, database };
+    }
+  });
 }
 
 export async function fetchSemrushKeywords(
@@ -99,50 +121,46 @@ export async function fetchSemrushKeywords(
   const apiKey = resolveSemrushApiKey();
   const cacheKey = `semrush:keywords:${domain}:${database}:${limit}`;
 
-  return cached(
-    cacheKey,
-    CACHE_TTL_HOURS * 3600,
-    async () => {
-      const url = buildSemrushUrl({
-        type: "domain_organic",
-        key: apiKey,
-        domain,
-        database,
-        limit,
-      });
+  return cached(cacheKey, CACHE_TTL_HOURS * 3600, async () => {
+    const url = buildSemrushUrl({
+      type: "domain_organic",
+      key: apiKey,
+      domain,
+      database,
+      limit,
+    });
 
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeout);
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
 
-        if (!res.ok) {
-          return DEFAULT_SEMRUSH_KEYWORDS;
-        }
-
-        const text = await res.text();
-        const rows = parseSemrushTable(text);
-        if (rows.length === 0) {
-          return DEFAULT_SEMRUSH_KEYWORDS;
-        }
-
-        return rows.map((r, idx) => ({
-          keyword: r["Keyword"] || r["Ph"] || `keyword-${idx}`,
-          position: Number(r["Position"] || r["Po"] || idx + 1),
-          previousPosition: Number(r["Previous Position"] || r["Pp"] || idx + 2),
-          searchVolume: Number(r["Search Volume"] || r["Nq"] || 1000),
-          cpc: Number(r["CPC"] || r["Cp"] || 0.5),
-          competition: Number(r["Competition"] || r["Co"] || 0.5),
-          url: r["URL"] || r["Ur"] || `https://${domain}`,
-          trafficPercentage: Number(r["Traffic (%)"] || r["Tr"] || 5),
-          database,
-        }));
-      } catch {
+      if (!res.ok) {
         return DEFAULT_SEMRUSH_KEYWORDS;
       }
-    },
-  );
+
+      const text = await res.text();
+      const rows = parseSemrushTable(text);
+      if (rows.length === 0) {
+        return DEFAULT_SEMRUSH_KEYWORDS;
+      }
+
+      return rows.map((r, idx) => ({
+        keyword: r["Keyword"] || r["Ph"] || `keyword-${idx}`,
+        position: Number(r["Position"] || r["Po"] || idx + 1),
+        previousPosition: Number(r["Previous Position"] || r["Pp"] || idx + 2),
+        searchVolume: Number(r["Search Volume"] || r["Nq"] || 1000),
+        cpc: Number(r["CPC"] || r["Cp"] || 0.5),
+        competition: Number(r["Competition"] || r["Co"] || 0.5),
+        url: r["URL"] || r["Ur"] || `https://${domain}`,
+        trafficPercentage: Number(r["Traffic (%)"] || r["Tr"] || 5),
+        database,
+      }));
+    } catch {
+      return DEFAULT_SEMRUSH_KEYWORDS;
+    }
+  });
 }
 
 export async function fetchSemrushCompetitors(
@@ -153,47 +171,45 @@ export async function fetchSemrushCompetitors(
   const apiKey = resolveSemrushApiKey();
   const cacheKey = `semrush:competitors:${domain}:${database}:${limit}`;
 
-  return cached(
-    cacheKey,
-    CACHE_TTL_HOURS * 3600,
-    async () => {
-      const url = buildSemrushUrl({
-        type: "domain_organic_organic",
-        key: apiKey,
-        domain,
-        database,
-        limit,
-      });
+  return cached(cacheKey, CACHE_TTL_HOURS * 3600, async () => {
+    const url = buildSemrushUrl({
+      type: "domain_organic_organic",
+      key: apiKey,
+      domain,
+      database,
+      limit,
+    });
 
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-        const res = await fetch(url, { signal: controller.signal });
-        clearTimeout(timeout);
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
 
-        if (!res.ok) {
-          return DEFAULT_SEMRUSH_COMPETITORS;
-        }
-
-        const text = await res.text();
-        const rows = parseSemrushTable(text);
-        if (rows.length === 0) {
-          return DEFAULT_SEMRUSH_COMPETITORS;
-        }
-
-        return rows.map((r) => ({
-          domain: r["Domain"] || r["Dn"] || "competitor.com",
-          competitorRelevance: Number(r["Competitor Relevance"] || r["Cr"] || 0.5),
-          commonKeywords: Number(r["Common Keywords"] || r["Np"] || 100),
-          organicKeywords: Number(r["Organic Keywords"] || r["Or"] || 1000),
-          organicTraffic: Number(r["Organic Traffic"] || r["Ot"] || 5000),
-          organicCost: Number(r["Organic Cost"] || r["Oc"] || 1000),
-        }));
-      } catch {
+      if (!res.ok) {
         return DEFAULT_SEMRUSH_COMPETITORS;
       }
-    },
-  );
+
+      const text = await res.text();
+      const rows = parseSemrushTable(text);
+      if (rows.length === 0) {
+        return DEFAULT_SEMRUSH_COMPETITORS;
+      }
+
+      return rows.map((r) => ({
+        domain: r["Domain"] || r["Dn"] || "competitor.com",
+        competitorRelevance: Number(
+          r["Competitor Relevance"] || r["Cr"] || 0.5,
+        ),
+        commonKeywords: Number(r["Common Keywords"] || r["Np"] || 100),
+        organicKeywords: Number(r["Organic Keywords"] || r["Or"] || 1000),
+        organicTraffic: Number(r["Organic Traffic"] || r["Ot"] || 5000),
+        organicCost: Number(r["Organic Cost"] || r["Oc"] || 1000),
+      }));
+    } catch {
+      return DEFAULT_SEMRUSH_COMPETITORS;
+    }
+  });
 }
 
 export async function fetchSemrushCrawlAudit(
@@ -201,17 +217,13 @@ export async function fetchSemrushCrawlAudit(
 ): Promise<SemrushCrawlAudit> {
   const cacheKey = `semrush:crawl-audit:${domain}`;
 
-  return cached(
-    cacheKey,
-    3600 * 2,
-    async () => {
-      return {
-        ...DEFAULT_SEMRUSH_AUDIT,
-        domain,
-        crawledAt: new Date().toISOString(),
-      };
-    },
-  );
+  return cached(cacheKey, 3600 * 2, async () => {
+    return {
+      ...DEFAULT_SEMRUSH_AUDIT,
+      domain,
+      crawledAt: new Date().toISOString(),
+    };
+  });
 }
 
 export async function fetchSemrushBacklinks(
@@ -219,16 +231,12 @@ export async function fetchSemrushBacklinks(
 ): Promise<SemrushBacklinks> {
   const cacheKey = `semrush:backlinks:${domain}`;
 
-  return cached(
-    cacheKey,
-    3600 * 6,
-    async () => {
-      return {
-        ...DEFAULT_SEMRUSH_BACKLINKS,
-        domain,
-      };
-    },
-  );
+  return cached(cacheKey, 3600 * 6, async () => {
+    return {
+      ...DEFAULT_SEMRUSH_BACKLINKS,
+      domain,
+    };
+  });
 }
 
 export async function fetchSemrushOverview(
@@ -236,13 +244,14 @@ export async function fetchSemrushOverview(
   database: SemrushDatabase = "bd",
 ): Promise<SemrushOverview> {
   const key = resolveSemrushApiKey();
-  const [domainRank, keywords, competitors, crawlAudit, backlinks] = await Promise.all([
-    fetchSemrushDomainRank(domain, database),
-    fetchSemrushKeywords(domain, database, 10),
-    fetchSemrushCompetitors(domain, database, 5),
-    fetchSemrushCrawlAudit(domain),
-    fetchSemrushBacklinks(domain),
-  ]);
+  const [domainRank, keywords, competitors, crawlAudit, backlinks] =
+    await Promise.all([
+      fetchSemrushDomainRank(domain, database),
+      fetchSemrushKeywords(domain, database, 10),
+      fetchSemrushCompetitors(domain, database, 5),
+      fetchSemrushCrawlAudit(domain),
+      fetchSemrushBacklinks(domain),
+    ]);
 
   return {
     apiKeyMask: maskSemrushKey(key),

@@ -36,9 +36,15 @@ export function TryItPanel({ routeKey }: { routeKey: string }) {
   const run = async () => {
     setState({ phase: "running" });
     try {
-      const response = await docsTryItFn({ data: { route: routeKey, limit: 3 } });
+      const response = await docsTryItFn({
+        data: { route: routeKey, limit: 3 },
+      });
       if (!response.ok) {
-        setState({ phase: "error", message: response.message, resetAt: response.resetAt ?? null });
+        setState({
+          phase: "error",
+          message: response.message,
+          resetAt: response.resetAt ?? null,
+        });
         return;
       }
       const r = response.result;
@@ -56,14 +62,18 @@ export function TryItPanel({ routeKey }: { routeKey: string }) {
       // A network failure on the docs site must not look like an API failure.
       setState({
         phase: "error",
-        message: "Could not reach the docs server. Your own integration is unaffected.",
+        message:
+          "Could not reach the docs server. Your own integration is unaffected.",
         resetAt: null,
       });
     }
   };
 
   return (
-    <section className="my-8 rounded-fq-md border border-border bg-card p-4" aria-label="Try this endpoint">
+    <section
+      className="my-8 rounded-fq-md border border-border bg-card p-4"
+      aria-label="Try this endpoint"
+    >
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="rounded-fq-md bg-info-soft px-2 py-1 font-mono text-xs font-semibold text-info">
@@ -82,22 +92,29 @@ export function TryItPanel({ routeKey }: { routeKey: string }) {
       </header>
 
       <p className="mt-2 text-sm text-muted-foreground">
-        Read-only, against a demo store. Requires <code className="font-mono">{route.scope}</code> on a real
-        credential.
+        Read-only, against a demo store. Requires{" "}
+        <code className="font-mono">{route.scope}</code> on a real credential.
       </p>
 
       <div aria-live="polite">
         {state.phase === "error" && (
           <p className="mt-4 rounded-fq-md border border-danger bg-danger-soft p-3 text-sm">
             {state.message}
-            {state.resetAt && ` Resets ${new Date(state.resetAt).toLocaleTimeString()}.`}
+            {state.resetAt &&
+              ` Resets ${new Date(state.resetAt).toLocaleTimeString()}.`}
           </p>
         )}
 
         {state.phase === "done" && (
           <div className="mt-4 space-y-2">
             <p className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-              <span className={state.ok ? "font-semibold text-success" : "font-semibold text-danger"}>
+              <span
+                className={
+                  state.ok
+                    ? "font-semibold text-success"
+                    : "font-semibold text-danger"
+                }
+              >
                 {state.status}
               </span>
               <span>{state.durationMs} ms</span>
@@ -108,14 +125,24 @@ export function TryItPanel({ routeKey }: { routeKey: string }) {
               )}
               <span>{state.remaining} sandbox calls left</span>
             </p>
-            {state.error && <p className="text-sm text-danger">{state.error}</p>}
-            {state.body && <CodeBlock code={state.body} lang="json" label="sandbox response" />}
+            {state.error && (
+              <p className="text-sm text-danger">{state.error}</p>
+            )}
+            {state.body && (
+              <CodeBlock
+                code={state.body}
+                lang="json"
+                label="sandbox response"
+              />
+            )}
           </div>
         )}
       </div>
 
       <details className="mt-4">
-        <summary className="cursor-pointer text-sm font-medium">Same call as curl</summary>
+        <summary className="cursor-pointer text-sm font-medium">
+          Same call as curl
+        </summary>
         <CodeBlock code={curlSample(route)} lang="bash" label="curl sample" />
       </details>
     </section>

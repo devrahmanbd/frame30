@@ -44,7 +44,11 @@ type Admin = {
           order: (
             c: string,
             o: { ascending: boolean },
-          ) => { limit: (n: number) => Promise<{ data: { finished_at: string | null }[] | null }> };
+          ) => {
+            limit: (
+              n: number,
+            ) => Promise<{ data: { finished_at: string | null }[] | null }>;
+          };
         };
       };
     };
@@ -52,7 +56,8 @@ type Admin = {
 };
 
 async function admin(): Promise<Admin> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Admin;
 }
 
@@ -64,7 +69,9 @@ async function countManifest(a: Admin): Promise<TableCount[]> {
   const counts = await Promise.all(
     BACKUP_MANIFEST.map(async (table) => {
       // Count with "*": some manifest tables key on merchant_id, not id.
-      const { count, error } = await a.from(table).select("*", { count: "exact", head: true });
+      const { count, error } = await a
+        .from(table)
+        .select("*", { count: "exact", head: true });
 
       if (error) {
         log("error", "backup.count_failed", { table, message: error.message });
@@ -107,7 +114,10 @@ async function recordRun(
   if (error) {
     // An unrecorded drill is an unproven drill.
     incr("framique_backup_ledger_failures_total", { kind: row.kind });
-    log("error", "backup.ledger_write_failed", { kind: row.kind, message: error.message });
+    log("error", "backup.ledger_write_failed", {
+      kind: row.kind,
+      message: error.message,
+    });
     throw new Error(`ops.backup_ledger_unavailable: ${error.message}`);
   }
 }
@@ -177,8 +187,14 @@ export async function runBackupDrill(
     });
 
     // Read-back leg: the artifact is only trusted once it is re-read.
-    const readBack = buildSnapshot(scope, await countManifest(a), new Date().toISOString());
-    const verdict = evaluateDrill(snapshot, readBack, { driftTolerance: DRIFT_TOLERANCE });
+    const readBack = buildSnapshot(
+      scope,
+      await countManifest(a),
+      new Date().toISOString(),
+    );
+    const verdict = evaluateDrill(snapshot, readBack, {
+      driftTolerance: DRIFT_TOLERANCE,
+    });
 
     await recordRun(a, {
       kind: "restore_drill",
@@ -195,14 +211,21 @@ export async function runBackupDrill(
     incr("framique_backup_drill_total", { outcome: verdict.status });
     // Freshness gauge — alerting on staleness catches a drill that stopped running.
     if (verdict.status === "passed") {
-      setGauge("framique_backup_drill_timestamp", Math.floor(Date.now() / 1000));
+      setGauge(
+        "framique_backup_drill_timestamp",
+        Math.floor(Date.now() / 1000),
+      );
     }
-    log(verdict.status === "passed" ? "info" : "error", "backup.drill_completed", {
-      scope,
-      status: verdict.status,
-      rowsVerified: verdict.rowsVerified,
-      failures: verdict.failures.join(","),
-    });
+    log(
+      verdict.status === "passed" ? "info" : "error",
+      "backup.drill_completed",
+      {
+        scope,
+        status: verdict.status,
+        rowsVerified: verdict.rowsVerified,
+        failures: verdict.failures.join(","),
+      },
+    );
 
     return {
       ran: true,
@@ -219,7 +242,11 @@ export async function runBackupDrill(
 }
 
 /** Owner-console entry point: platform-admin check, rate limit, audit row. */
-export async function runBackupDrillAsOwner(db: Client, userId: string, scope = "platform") {
+export async function runBackupDrillAsOwner(
+  db: Client,
+  userId: string,
+  scope = "platform",
+) {
   return ownerGate(
     db,
     userId,

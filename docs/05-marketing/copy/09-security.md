@@ -54,7 +54,7 @@ Route: `src/routes/security.tsx` · Shell: public marketing layout, top-nav + fo
 
 ## 1. Hero
 
-*Lever:* specificity beats reassurance — a concrete mechanism ("row-level security on every table") is more persuasive to a technical buyer than an adjective ("bank-grade").
+_Lever:_ specificity beats reassurance — a concrete mechanism ("row-level security on every table") is more persuasive to a technical buyer than an adjective ("bank-grade").
 
 - **Eyebrow**: `Security`
 - **H1**: **Tenant isolation you can verify.**
@@ -73,7 +73,7 @@ Aurora hero, low-alpha violet/teal mesh behind headline only — no gradient tex
 
 ## 2. The tenancy isolation model
 
-*Lever:* dual-audience framing — trust is won twice: the buyer needs to believe it, the buyer's engineer needs to verify it. Explaining the same fact at two altitudes prevents either reader from bouncing.
+_Lever:_ dual-audience framing — trust is won twice: the buyer needs to believe it, the buyer's engineer needs to verify it. Explaining the same fact at two altitudes prevents either reader from bouncing.
 
 ### 2.1 For a non-engineer
 
@@ -99,14 +99,14 @@ Concretely:
 
 **Table — where each control lives:**
 
-| Layer | Mechanism | Fails how, if misconfigured |
-|---|---|---|
-| Connection | Explicit `GRANT` per role, per table | No grant → connection-level denial, before RLS even evaluates |
-| Row | `ENABLE ROW LEVEL SECURITY` + policy per table | No policy → zero rows returned to any role, a loud break not a leak |
-| Policy logic | `SECURITY DEFINER` helper functions, not inlined per-policy SQL | Centralised, so a fix or audit touches one function, not forty policies |
-| Identity vs entitlement | `merchant_members(user_id, merchant_id, role)` — never a column on `profiles` | Revocation is a row delete; escalation cannot happen through a profile update |
-| Privileged operations | Service role loaded inside the handler, after caller verification, action audit-logged | Never the default client; never reachable before authorization |
-| Regression protection | Negative-assertion E2E suite as a release gate | A broken policy fails CI, not a customer's trust |
+| Layer                   | Mechanism                                                                              | Fails how, if misconfigured                                                   |
+| ----------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Connection              | Explicit `GRANT` per role, per table                                                   | No grant → connection-level denial, before RLS even evaluates                 |
+| Row                     | `ENABLE ROW LEVEL SECURITY` + policy per table                                         | No policy → zero rows returned to any role, a loud break not a leak           |
+| Policy logic            | `SECURITY DEFINER` helper functions, not inlined per-policy SQL                        | Centralised, so a fix or audit touches one function, not forty policies       |
+| Identity vs entitlement | `merchant_members(user_id, merchant_id, role)` — never a column on `profiles`          | Revocation is a row delete; escalation cannot happen through a profile update |
+| Privileged operations   | Service role loaded inside the handler, after caller verification, action audit-logged | Never the default client; never reachable before authorization                |
+| Regression protection   | Negative-assertion E2E suite as a release gate                                         | A broken policy fails CI, not a customer's trust                              |
 
 ### Design note
 
@@ -116,7 +116,7 @@ Two-column Z row echoing the hero's request-path strip: left column plain-langua
 
 ## 3. Authentication and session handling
 
-*Lever:* mechanism transparency reduces perceived risk more than a badge does — naming the exact token type and its lifetime lets a security reviewer check a box instead of asking a follow-up.
+_Lever:_ mechanism transparency reduces perceived risk more than a badge does — naming the exact token type and its lifetime lets a security reviewer check a box instead of asking a follow-up.
 
 Authentication runs through GoTrue (part of our self-hosted Supabase distribution), issuing short-lived JWTs plus a longer-lived refresh token. Practically:
 
@@ -138,22 +138,22 @@ Hairline list band, four rows, icon-left (key, clock, shield, refresh), on canva
 
 ## 4. Roles and least-privilege permission matrix
 
-*Lever:* the concreteness effect — a matrix with real permission names is unfalsifiable in a way "role-based access" is not; it invites the reader to test it, which itself builds trust.
+_Lever:_ the concreteness effect — a matrix with real permission names is unfalsifiable in a way "role-based access" is not; it invites the reader to test it, which itself builds trust.
 
 Every staff member operating inside a merchant's account holds exactly one role per merchant, and every route/serverFn checks a specific permission via `staff_has(permission)` rather than checking a role name directly — so a permission can be re-assigned across roles without touching call sites.
 
-| Permission | Owner | Manager | Staff | Support (viewer) | Platform admin |
-|---|---|---|---|---|---|
-| View orders & customers | ✓ | ✓ | ✓ | ✓ (read-only, audited) | ✓ (audited, break-glass) |
-| Edit products & inventory | ✓ | ✓ | ✓ | — | — |
-| Issue refunds | ✓ | ✓ | Limit-capped | — | — |
-| Manage staff & roles | ✓ | — | — | — | — |
-| View payout account details | ✓ | Masked | — | — | Masked |
-| Rotate / revoke API keys | ✓ | ✓ | — | — | — |
-| Export customer data | ✓ | ✓ | — | — | Audited, on request only |
-| Delete store / close account | ✓ | — | — | — | — |
-| Access billing & plan | ✓ | — | — | — | — |
-| Cross-merchant visibility | — | — | — | — | ✓ (audited, scoped, time-boxed) |
+| Permission                   | Owner | Manager | Staff        | Support (viewer)       | Platform admin                  |
+| ---------------------------- | ----- | ------- | ------------ | ---------------------- | ------------------------------- |
+| View orders & customers      | ✓     | ✓       | ✓            | ✓ (read-only, audited) | ✓ (audited, break-glass)        |
+| Edit products & inventory    | ✓     | ✓       | ✓            | —                      | —                               |
+| Issue refunds                | ✓     | ✓       | Limit-capped | —                      | —                               |
+| Manage staff & roles         | ✓     | —       | —            | —                      | —                               |
+| View payout account details  | ✓     | Masked  | —            | —                      | Masked                          |
+| Rotate / revoke API keys     | ✓     | ✓       | —            | —                      | —                               |
+| Export customer data         | ✓     | ✓       | —            | —                      | Audited, on request only        |
+| Delete store / close account | ✓     | —       | —            | —                      | —                               |
+| Access billing & plan        | ✓     | —       | —            | —                      | —                               |
+| Cross-merchant visibility    | —     | —       | —            | —                      | ✓ (audited, scoped, time-boxed) |
 
 Notes on the interesting rows:
 
@@ -171,7 +171,7 @@ Comparison-table treatment, sticky first column, checkmarks in `accent-teal`, em
 
 ## 5. API key scoping and rotation
 
-*Lever:* granting the reader control (rotation, visible last-used) lowers anxiety more than promising the key is "safe," because control is verifiable and safety is a claim.
+_Lever:_ granting the reader control (rotation, visible last-used) lowers anxiety more than promising the key is "safe," because control is verifiable and safety is a claim.
 
 API keys authenticate server-to-server integrations — custom apps, couriers, accounting exports — not end users. Each key:
 
@@ -192,7 +192,7 @@ Glass card grid, 3-up: "Scope it," "Watch it," "Rotate it" — each with a one-l
 
 ## 6. Secret handling — what we never log
 
-*Lever:* a negative list ("we never log X") is more credible than a positive claim ("we protect your data") because it commits us to a falsifiable, checkable behaviour.
+_Lever:_ a negative list ("we never log X") is more credible than a positive claim ("we protect your data") because it commits us to a falsifiable, checkable behaviour.
 
 Secrets — API keys, session tokens, payment credentials, service-role keys, webhook signing secrets — follow one rule: **read inside the handler that needs them, never at module scope, never passed further than necessary.** Concretely:
 
@@ -212,7 +212,7 @@ Hairline list, monospace prefix "Never:" repeated per row for rhythm, on canvas,
 
 ## 7. Payment data handling and tokenisation boundary
 
-*Lever:* boundary drawing — explicitly stating what we do *not* touch is more reassuring to a payments-literate buyer than a vague "secure payments" claim, because it shows we understand where the real risk sits.
+_Lever:_ boundary drawing — explicitly stating what we do _not_ touch is more reassuring to a payments-literate buyer than a vague "secure payments" claim, because it shows we understand where the real risk sits.
 
 Framique supports cash on delivery, mobile financial services (bKash, Nagad, Rocket), bank transfer and BNPL, routed through an in-house payments aggregator with provider adapters behind one idempotent `charge`/`refund`/`payout` contract. The boundary that matters:
 
@@ -233,7 +233,7 @@ Flip row, left text / right diagram: a simple boundary diagram — `Buyer → pr
 
 ## 8. Encryption in transit and at rest
 
-*Lever:* specificity over adjective — naming TLS termination point and at-rest scope is checkable; "encrypted everywhere" is not.
+_Lever:_ specificity over adjective — naming TLS termination point and at-rest scope is checkable; "encrypted everywhere" is not.
 
 - **In transit**: TLS terminates at the OpenResty edge with ACME-managed certificates auto-renewed ahead of expiry; internal service-to-service traffic (app → Supabase, app → Redis, app → Go payment services) runs inside a private network boundary, not exposed to the public internet.
 - **At rest**: the underlying Postgres volumes and Storage buckets are encrypted at the disk layer; secrets and credentials that must be recoverable (not just verifiable, unlike passwords) are stored using envelope encryption rather than a single static key baked into configuration.
@@ -249,7 +249,7 @@ Two-column hairline rows under a small padlock/lock-open icon pairing (transit v
 
 ## 9. Backups, retention and restore testing
 
-*Lever:* the "untested backup" framing (a backup you haven't restored is not a backup) is a well-known operational-maturity signal to technical buyers — stating it plainly does more work than any adjective.
+_Lever:_ the "untested backup" framing (a backup you haven't restored is not a backup) is a well-known operational-maturity signal to technical buyers — stating it plainly does more work than any adjective.
 
 - Backups run **hourly**, retained on a rolling window sized to support point-in-time recovery within the retention period, with older backups aged out on a documented schedule rather than kept indefinitely by default (which would itself be a data-minimisation problem).
 - **Restore drills are scheduled, not aspirational.** A backup that has never been restored is a hope, not a control; we rehearse restoring into an isolated environment and verify data integrity and row counts against expectations before calling a drill successful.
@@ -258,12 +258,12 @@ Two-column hairline rows under a small padlock/lock-open icon pairing (transit v
 
 **Table — retention at a glance:**
 
-| Data class | Backup frequency | Restore drill cadence | Deletion on request |
-|---|---|---|---|
-| Transactional (orders, payments) | Hourly | Scheduled, documented | Retained per legal tax record requirement, then purged |
-| Operational (products, inventory, staff) | Hourly | Scheduled, documented | Deleted on confirmed request |
-| Observability (metrics/logs/traces) | N/A — bounded retention, see Band 10 | N/A | Aged out automatically |
-| Customer PII (profile, address) | Hourly | Scheduled, documented | Deleted on confirmed request, subject to legal hold if applicable |
+| Data class                               | Backup frequency                     | Restore drill cadence | Deletion on request                                               |
+| ---------------------------------------- | ------------------------------------ | --------------------- | ----------------------------------------------------------------- |
+| Transactional (orders, payments)         | Hourly                               | Scheduled, documented | Retained per legal tax record requirement, then purged            |
+| Operational (products, inventory, staff) | Hourly                               | Scheduled, documented | Deleted on confirmed request                                      |
+| Observability (metrics/logs/traces)      | N/A — bounded retention, see Band 10 | N/A                   | Aged out automatically                                            |
+| Customer PII (profile, address)          | Hourly                               | Scheduled, documented | Deleted on confirmed request, subject to legal hold if applicable |
 
 ### Design note
 
@@ -273,16 +273,16 @@ Table on a `surface-1` card; a small horizontal timeline graphic above it — `B
 
 ## 10. Observability and alerting contract
 
-*Lever:* transparency about how we'd know something is wrong is a stronger trust signal than a claim of "24/7 monitoring," because it shows the actual instrumentation rather than asserting an outcome.
+_Lever:_ transparency about how we'd know something is wrong is a stronger trust signal than a claim of "24/7 monitoring," because it shows the actual instrumentation rather than asserting an outcome.
 
 Our observability stack is entirely self-hosted — Prometheus, Grafana, Loki/Promtail, Sentry, Alertmanager — for the same reason our data layer is self-hosted: no vendor can throttle our visibility into our own platform, and retention is a decision we make, not a plan tier we buy.
 
-| Signal | What it captures | Path | Retention |
-|---|---|---|---|
-| Metrics | Counters, gauges, histograms — request rates, error rates, latency, queue depth | App → Prometheus scrape (30s) | 30 days / 20GB |
-| Logs | Structured JSON, PII-scrubbed, carrying `trace_id`/`span_id` | App stdout → Promtail → Loki | 30 days |
-| Errors & traces | Exceptions and distributed traces via `withSpan`/`withRequestTrace` | App → self-hosted Sentry | Per configured Sentry quota |
-| Alerts | Burn-rate and threshold rules (`alerts.rules.yml`, `slo.rules.yml`, `infra.rules.yml`) | Prometheus → Alertmanager → PagerDuty / Slack | — |
+| Signal          | What it captures                                                                       | Path                                          | Retention                   |
+| --------------- | -------------------------------------------------------------------------------------- | --------------------------------------------- | --------------------------- |
+| Metrics         | Counters, gauges, histograms — request rates, error rates, latency, queue depth        | App → Prometheus scrape (30s)                 | 30 days / 20GB              |
+| Logs            | Structured JSON, PII-scrubbed, carrying `trace_id`/`span_id`                           | App stdout → Promtail → Loki                  | 30 days                     |
+| Errors & traces | Exceptions and distributed traces via `withSpan`/`withRequestTrace`                    | App → self-hosted Sentry                      | Per configured Sentry quota |
+| Alerts          | Burn-rate and threshold rules (`alerts.rules.yml`, `slo.rules.yml`, `infra.rules.yml`) | Prometheus → Alertmanager → PagerDuty / Slack | —                           |
 
 Paging discipline, because an alert that pages for the wrong thing trains people to ignore alerts:
 
@@ -301,16 +301,16 @@ Table plus a small three-node "correlation" diagram (Grafana → Loki → Sentry
 
 ## 11. Incident response runbook
 
-*Lever:* pre-committing to a communication timeline (rather than "we'll let you know") removes the ambiguity that makes incidents feel scarier than the technical impact alone.
+_Lever:_ pre-committing to a communication timeline (rather than "we'll let you know") removes the ambiguity that makes incidents feel scarier than the technical impact alone.
 
 ### 11.1 Severity table
 
-| Severity | Definition | Example | Page? | First merchant update |
-|---|---|---|---|---|
-| SEV-1 | Data breach, cross-tenant data exposure, or platform-wide outage | RLS bypass discovered; checkout down platform-wide | Immediate page, on-call + security lead | Within 1 hour of confirmation |
-| SEV-2 | Significant degraded service or a contained security issue affecting a subset of merchants | Elevated checkout error rate; one integration's key leaked | Immediate page, on-call | Within 4 hours |
-| SEV-3 | Limited-impact bug or a vulnerability with no evidence of exploitation | A dependency CVE with no known exploit path in our usage | Ticket, next business day | Included in routine disclosure if applicable |
-| SEV-4 | Cosmetic or non-security operational issue | A dashboard chart mislabels a unit | Ticket | Not applicable |
+| Severity | Definition                                                                                 | Example                                                    | Page?                                   | First merchant update                        |
+| -------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- | --------------------------------------- | -------------------------------------------- |
+| SEV-1    | Data breach, cross-tenant data exposure, or platform-wide outage                           | RLS bypass discovered; checkout down platform-wide         | Immediate page, on-call + security lead | Within 1 hour of confirmation                |
+| SEV-2    | Significant degraded service or a contained security issue affecting a subset of merchants | Elevated checkout error rate; one integration's key leaked | Immediate page, on-call                 | Within 4 hours                               |
+| SEV-3    | Limited-impact bug or a vulnerability with no evidence of exploitation                     | A dependency CVE with no known exploit path in our usage   | Ticket, next business day               | Included in routine disclosure if applicable |
+| SEV-4    | Cosmetic or non-security operational issue                                                 | A dashboard chart mislabels a unit                         | Ticket                                  | Not applicable                               |
 
 ### 11.2 Runbook sequence
 
@@ -342,7 +342,7 @@ Timeline band, horizontal on desktop, vertical accordion on mobile, each node a 
 
 ## 12. Vulnerability disclosure policy
 
-*Lever:* an explicit, friendly path for researchers converts adversarial discovery into cooperative discovery — ambiguity here is what pushes a researcher toward public disclosure instead of a private report.
+_Lever:_ an explicit, friendly path for researchers converts adversarial discovery into cooperative discovery — ambiguity here is what pushes a researcher toward public disclosure instead of a private report.
 
 We welcome good-faith security research and would rather hear from you first.
 
@@ -365,7 +365,7 @@ Simple two-column band: left "How to report" numbered list, right a glass card w
 
 ## 13. Dependency and supply-chain scanning
 
-*Lever:* naming the actual gate ("blocks the release," not "we monitor for issues") converts a soft claim into a checkable process fact.
+_Lever:_ naming the actual gate ("blocks the release," not "we monitor for issues") converts a soft claim into a checkable process fact.
 
 - Automated dependency scanning runs against every change, flagging known-vulnerable packages before merge, not on a periodic sweep that could leave a window open for weeks.
 - A confirmed high or critical severity finding with a known exploit path **blocks release** until patched or explicitly risk-accepted by a named engineer, in writing, with a remediation deadline.
@@ -382,7 +382,7 @@ Hairline list, six rows, each with a small outcome tag ("blocks release," "revie
 
 ## 14. Self-hosting and data residency options
 
-*Lever:* offering the reader an escape valve from "trust us" to "control it yourself" is the strongest possible trust signal for a merchant with strict residency requirements — it proves the claim of no-lock-in is real rather than rhetorical.
+_Lever:_ offering the reader an escape valve from "trust us" to "control it yourself" is the strongest possible trust signal for a merchant with strict residency requirements — it proves the claim of no-lock-in is real rather than rhetorical.
 
 Framique is built self-hosted-first: Postgres, Redis, auth, storage and the entire observability stack run on infrastructure we control, and the application only ever talks to them through swappable, provider-agnostic connection strings (`SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `REDIS_URL`) — nothing in the application code names a specific hosting provider.
 
@@ -404,16 +404,16 @@ Three-card glass grid (Standard / Regional / Fully self-hosted), middle card on 
 
 ## 15. Subprocessor transparency table
 
-*Lever:* naming exactly who touches data, and for what narrow purpose, is more convincing than a blanket "we use trusted partners" line — specificity here is the entire point of a subprocessor table.
+_Lever:_ naming exactly who touches data, and for what narrow purpose, is more convincing than a blanket "we use trusted partners" line — specificity here is the entire point of a subprocessor table.
 
 We minimise third parties in the data path by design — most of the stack is self-hosted precisely to avoid an ever-growing subprocessor list. The template below reflects categories named in our own architecture; merchants should confirm current entries via the DPA before relying on this table contractually.
 
-| Category | Purpose | Data involved | Location commitment |
-|---|---|---|---|
+| Category                                    | Purpose                                                           | Data involved                                         | Location commitment                                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------------------------------------- |
 | Payment processing (MFS/bank/BNPL partners) | Processing charges, refunds and payouts initiated by the merchant | Transaction reference, amount, masked payment details | Per processor's own regulatory jurisdiction; raw credentials never transit our servers |
-| Courier partners | Fulfilling shipments the merchant creates | Recipient name, address, phone, order reference | Bangladesh-based courier operations |
-| Infrastructure hosting | Running self-hosted Postgres, Redis, and the application | All merchant data, self-hosted per Band 14 | Per hosting/residency option selected |
-| Email/SMS delivery (transactional) | Order confirmations, OTPs, account notifications | Recipient contact detail, message content | Disclosed in the DPA on request |
+| Courier partners                            | Fulfilling shipments the merchant creates                         | Recipient name, address, phone, order reference       | Bangladesh-based courier operations                                                    |
+| Infrastructure hosting                      | Running self-hosted Postgres, Redis, and the application          | All merchant data, self-hosted per Band 14            | Per hosting/residency option selected                                                  |
+| Email/SMS delivery (transactional)          | Order confirmations, OTPs, account notifications                  | Recipient contact detail, message content             | Disclosed in the DPA on request                                                        |
 
 Full, current subprocessor names and jurisdictions are listed in `/legal/dpa`, kept current as agreements change; this page describes the categories and boundaries, the DPA is the contractual source of truth.
 
@@ -425,7 +425,7 @@ Plain table on canvas, no card — deliberately unglamorous, consistent with tre
 
 ## 16. Customer-side security checklist
 
-*Lever:* the "shared responsibility" framing — handing the merchant concrete actions — converts security from something done *to* them into something they participate in, which is both more accurate and more trust-building than implying we handle 100% of it.
+_Lever:_ the "shared responsibility" framing — handing the merchant concrete actions — converts security from something done _to_ them into something they participate in, which is both more accurate and more trust-building than implying we handle 100% of it.
 
 Security is shared: we harden the platform, and these ten habits close the gaps only the merchant controls.
 
@@ -450,17 +450,17 @@ Numbered hairline list on `surface-1`, checkbox glyph left of each item (static,
 
 ## 17. Compliance roadmap — clearly marked
 
-*Lever:* explicitly separating "have" from "building toward" prevents the single most damaging trust failure on a security page — a reader later discovering a claimed certification was aspirational.
+_Lever:_ explicitly separating "have" from "building toward" prevents the single most damaging trust failure on a security page — a reader later discovering a claimed certification was aspirational.
 
 > **This band lists work in progress. Nothing here is a current certification or audit status. Items move out of this band only once genuinely completed, and this page is updated at that point — not before.**
 
-| Initiative | Status | What it means when complete |
-|---|---|---|
-| Formal penetration test by an independent third party | Roadmap | External validation of the isolation model and API surface, with findings remediated and summarised publicly |
-| Bug bounty program | Roadmap | A standing paid incentive for external researchers, replacing the current goodwill disclosure process in Band 12 |
-| SOC 2 Type II readiness review | Roadmap | Not a claim of certification today; a scoped effort to align controls with SOC 2 Type II criteria ahead of a future audit |
-| PCI DSS scope reduction review | Roadmap | Formal confirmation of the tokenisation boundary described in Band 7, ahead of any assessment |
-| ISO 27001 gap assessment | Roadmap | Structured comparison of current practices against the standard, as a precursor to a certification decision |
+| Initiative                                            | Status  | What it means when complete                                                                                               |
+| ----------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Formal penetration test by an independent third party | Roadmap | External validation of the isolation model and API surface, with findings remediated and summarised publicly              |
+| Bug bounty program                                    | Roadmap | A standing paid incentive for external researchers, replacing the current goodwill disclosure process in Band 12          |
+| SOC 2 Type II readiness review                        | Roadmap | Not a claim of certification today; a scoped effort to align controls with SOC 2 Type II criteria ahead of a future audit |
+| PCI DSS scope reduction review                        | Roadmap | Formal confirmation of the tokenisation boundary described in Band 7, ahead of any assessment                             |
+| ISO 27001 gap assessment                              | Roadmap | Structured comparison of current practices against the standard, as a precursor to a certification decision               |
 
 ### Design note
 
@@ -470,7 +470,7 @@ Distinct visual treatment from every other band on the page: dashed hairline bor
 
 ## 18. FAQ
 
-*Lever:* pre-empting the exact questions a procurement reviewer would otherwise email us removes friction from the sales cycle and reads as confidence rather than evasion.
+_Lever:_ pre-empting the exact questions a procurement reviewer would otherwise email us removes friction from the sales cycle and reads as confidence rather than evasion.
 
 1. **Do you hold SOC 2 or ISO 27001 certification today?**
    No. We describe our controls and practices on this page; formal third-party certification work is listed as roadmap in Band 17 and we do not claim a status we have not achieved.
@@ -510,7 +510,7 @@ Standard FAQ accordion band on canvas, one open at a time, `FAQPage` JSON-LD mir
 
 ## 19. Final CTA
 
-*Lever:* lowering the commitment for the specific reader most likely to be here (a security reviewer with a questionnaire) converts a page visit into a qualified lead without requiring a sales call.
+_Lever:_ lowering the commitment for the specific reader most likely to be here (a security reviewer with a questionnaire) converts a page visit into a qualified lead without requiring a sales call.
 
 **H2**: Send us your security questionnaire.
 **Sub**: Most vendor security reviews map directly onto the bands above. Send us yours and we'll respond with citations back to this page and our DPA, not a generic template.

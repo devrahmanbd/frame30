@@ -70,7 +70,10 @@ function createMockDb(): { db: unknown; store: MockStore } {
           }),
         }),
 
-        upsert: (record: Record<string, unknown>, opts?: { onConflict?: string }) => ({
+        upsert: (
+          record: Record<string, unknown>,
+          opts?: { onConflict?: string },
+        ) => ({
           select: () => ({
             single: async () => {
               const key = `${record["merchant_id"]}:${record["provider"]}`;
@@ -87,7 +90,10 @@ function createMockDb(): { db: unknown; store: MockStore } {
               select: () => ({
                 single: async () => {
                   const key = `${val2}:${val1}`;
-                  const existing = tableMap.get(key) ?? { [col1]: val1, [col2]: val2 };
+                  const existing = tableMap.get(key) ?? {
+                    [col1]: val1,
+                    [col2]: val2,
+                  };
                   const merged = { ...existing, ...patch };
                   tableMap.set(key, merged);
                   return { data: merged, error: null };
@@ -115,7 +121,8 @@ function createMockDb(): { db: unknown; store: MockStore } {
 describe("Dynamic Multi-Tenant Channel System", () => {
   beforeEach(() => {
     // Ensure master encryption key is configured
-    process.env["WEBHOOK_SIGNING_KEY"] = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    process.env["WEBHOOK_SIGNING_KEY"] =
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
   });
 
   it("proves distinct users/merchants run on their own isolated payment credentials", async () => {
@@ -154,26 +161,42 @@ describe("Dynamic Multi-Tenant Channel System", () => {
     );
 
     // Assert encrypted storage at rest (AES-GCM ciphertext)
-    const storedA = store.gateway_accounts.get(`${tenantA}:bkash`) as { credentials_ciphertext: string };
+    const storedA = store.gateway_accounts.get(`${tenantA}:bkash`) as {
+      credentials_ciphertext: string;
+    };
     expect(storedA.credentials_ciphertext).toMatch(/^v1\./);
     expect(storedA.credentials_ciphertext).not.toContain("apex_bkash_key_111");
 
-    const storedB = store.gateway_accounts.get(`${tenantB}:nagad`) as { credentials_ciphertext: string };
+    const storedB = store.gateway_accounts.get(`${tenantB}:nagad`) as {
+      credentials_ciphertext: string;
+    };
     expect(storedB.credentials_ciphertext).toMatch(/^v1\./);
     expect(storedB.credentials_ciphertext).not.toContain("zenith_nagad_id_222");
 
     // Dynamic recovery on-the-fly per tenant
-    const loadedA = await loadTenantPaymentChannel(db as never, tenantA, "bkash");
+    const loadedA = await loadTenantPaymentChannel(
+      db as never,
+      tenantA,
+      "bkash",
+    );
     expect(loadedA).not.toBeNull();
     expect(loadedA?.credentials.appKey).toBe("apex_bkash_key_111");
     expect(loadedA?.credentials.username).toBe("apex_user");
 
-    const loadedB = await loadTenantPaymentChannel(db as never, tenantB, "nagad");
+    const loadedB = await loadTenantPaymentChannel(
+      db as never,
+      tenantB,
+      "nagad",
+    );
     expect(loadedB).not.toBeNull();
     expect(loadedB?.credentials.merchantId).toBe("zenith_nagad_id_222");
 
     // Negative verification: Tenant A cannot load Tenant B's credentials
-    const crossLoad = await loadTenantPaymentChannel(db as never, tenantA, "nagad");
+    const crossLoad = await loadTenantPaymentChannel(
+      db as never,
+      tenantA,
+      "nagad",
+    );
     expect(crossLoad).toBeNull();
   });
 
@@ -208,12 +231,20 @@ describe("Dynamic Multi-Tenant Channel System", () => {
     );
 
     // Assert encrypted storage
-    const storedA = store.carriers.get(`${tenantA}:steadfast`) as { config: { credentialsCiphertext: string } };
+    const storedA = store.carriers.get(`${tenantA}:steadfast`) as {
+      config: { credentialsCiphertext: string };
+    };
     expect(storedA.config.credentialsCiphertext).toMatch(/^v1\./);
-    expect(storedA.config.credentialsCiphertext).not.toContain("EXAMPLE_apex_steadfast_key_111");
+    expect(storedA.config.credentialsCiphertext).not.toContain(
+      "EXAMPLE_apex_steadfast_key_111",
+    );
 
     // Unseal and invoke courier adapter dynamically
-    const loadedA = await loadTenantCourierChannel(db as never, tenantA, "steadfast");
+    const loadedA = await loadTenantCourierChannel(
+      db as never,
+      tenantA,
+      "steadfast",
+    );
     expect(loadedA?.credentials.apiKey).toBe("EXAMPLE_apex_steadfast_key_111");
 
     const adapterA = adapterFor("steadfast", loadedA?.credentials);
@@ -227,7 +258,11 @@ describe("Dynamic Multi-Tenant Channel System", () => {
     });
     expect(shipmentA.awb).toMatch(/^STE/);
 
-    const loadedB = await loadTenantCourierChannel(db as never, tenantB, "pathao");
+    const loadedB = await loadTenantCourierChannel(
+      db as never,
+      tenantB,
+      "pathao",
+    );
     expect(loadedB?.credentials.clientId).toBe("EXAMPLE_zenith_pathao_id_222");
 
     const adapterB = adapterFor("pathao", loadedB?.credentials);
@@ -273,7 +308,9 @@ describe("Dynamic Multi-Tenant Channel System", () => {
     };
     expect(storedA.seo_settings.facebook_pixel_id).toBe("PIXEL_APEX_111");
     expect(storedA.seo_settings.facebook_capi_token).toMatch(/^v1\./);
-    expect(storedA.seo_settings.facebook_capi_token).not.toContain("CAPI_TOKEN_APEX_SECRET_111");
+    expect(storedA.seo_settings.facebook_capi_token).not.toContain(
+      "CAPI_TOKEN_APEX_SECRET_111",
+    );
 
     // Dynamic recovery
     const loadedA = await loadTenantAnalyticsChannel(db as never, tenantA);

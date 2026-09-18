@@ -20,7 +20,10 @@ export type ClaimVerdict =
   | { status: "conflict" };
 
 export async function hashRequest(value: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value),
+  );
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
@@ -32,7 +35,12 @@ export async function hashRequest(value: string) {
  */
 export async function claimIdempotency(
   admin: Client,
-  input: { merchantId: string; route: string; key: string; requestHash: string },
+  input: {
+    merchantId: string;
+    route: string;
+    key: string;
+    requestHash: string;
+  },
 ): Promise<ClaimVerdict> {
   const { error } = await admin.from("api_idempotency_keys").insert({
     merchant_id: input.merchantId,
@@ -43,13 +51,19 @@ export async function claimIdempotency(
   });
 
   if (!error) {
-    incr("framique_idempotency_total", { route: input.route, outcome: "fresh" });
+    incr("framique_idempotency_total", {
+      route: input.route,
+      outcome: "fresh",
+    });
     return { status: "fresh" };
   }
 
   // 23505 = unique_violation: someone already claimed this key.
   if (error.code !== "23505") {
-    log("error", "idempotency.claim_failed", { route: input.route, code: error.code });
+    log("error", "idempotency.claim_failed", {
+      route: input.route,
+      code: error.code,
+    });
     throw new Error("idempotency_unavailable");
   }
 
@@ -62,7 +76,10 @@ export async function claimIdempotency(
     .maybeSingle();
 
   if (existing && existing.request_hash !== input.requestHash) {
-    incr("framique_idempotency_total", { route: input.route, outcome: "conflict" });
+    incr("framique_idempotency_total", {
+      route: input.route,
+      outcome: "conflict",
+    });
     return { status: "conflict" };
   }
 
@@ -77,7 +94,13 @@ export async function claimIdempotency(
 /** Store the outcome so a replay returns exactly what the first call returned. */
 export async function completeIdempotency(
   admin: Client,
-  input: { merchantId: string; route: string; key: string; response: unknown; httpStatus: number },
+  input: {
+    merchantId: string;
+    route: string;
+    key: string;
+    response: unknown;
+    httpStatus: number;
+  },
 ) {
   await admin
     .from("api_idempotency_keys")
@@ -101,9 +124,16 @@ export async function releaseIdempotency(
 }
 
 /** Housekeeping: keys older than the replay window carry no value. */
-export async function pruneIdempotency(admin: Client, olderThanHours = 24, route?: string) {
+export async function pruneIdempotency(
+  admin: Client,
+  olderThanHours = 24,
+  route?: string,
+) {
   const cutoff = new Date(Date.now() - olderThanHours * 3600_000).toISOString();
-  let query = admin.from("api_idempotency_keys").delete().lt("created_at", cutoff);
+  let query = admin
+    .from("api_idempotency_keys")
+    .delete()
+    .lt("created_at", cutoff);
   if (route) query = query.eq("route", route);
   const { data } = await query.select("id");
   return data?.length ?? 0;

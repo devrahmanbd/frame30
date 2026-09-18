@@ -7,6 +7,7 @@ Detailed guide to pair programming modes and their optimal use cases.
 In driver mode, you write the code while the AI acts as navigator.
 
 ### Usage
+
 ```bash
 claude-flow pair --start --mode driver
 ```
@@ -14,12 +15,14 @@ claude-flow pair --start --mode driver
 ### Responsibilities
 
 **You (Driver):**
+
 - Write the actual code
 - Implement solutions
 - Make immediate decisions
 - Handle syntax and structure
 
 **AI (Navigator):**
+
 - Provide strategic guidance
 - Spot potential issues
 - Suggest improvements
@@ -27,12 +30,14 @@ claude-flow pair --start --mode driver
 - Track overall direction
 
 ### Best For
+
 - Learning new patterns
 - Implementing familiar features
 - Quick iterations
 - Hands-on debugging
 
 ### Example Session
+
 ```bash
 claude-flow pair --start \
   --mode driver \
@@ -42,6 +47,7 @@ claude-flow pair --start \
 ```
 
 ### Commands in Driver Mode
+
 ```
 /suggest     - Get implementation suggestions
 /review      - Request code review
@@ -55,6 +61,7 @@ claude-flow pair --start \
 In navigator mode, the AI writes code while you provide guidance.
 
 ### Usage
+
 ```bash
 claude-flow pair --start --mode navigator
 ```
@@ -62,12 +69,14 @@ claude-flow pair --start --mode navigator
 ### Responsibilities
 
 **You (Navigator):**
+
 - Provide high-level direction
 - Review generated code
 - Make architectural decisions
 - Ensure business requirements
 
 **AI (Driver):**
+
 - Write implementation code
 - Handle syntax details
 - Implement your guidance
@@ -75,12 +84,14 @@ claude-flow pair --start --mode navigator
 - Execute refactoring
 
 ### Best For
+
 - Rapid prototyping
 - Boilerplate generation
 - Learning from AI patterns
 - Exploring solutions
 
 ### Example Session
+
 ```bash
 claude-flow pair --start \
   --mode navigator \
@@ -90,6 +101,7 @@ claude-flow pair --start \
 ```
 
 ### Commands in Navigator Mode
+
 ```
 /implement   - Direct implementation
 /refactor    - Request refactoring
@@ -103,17 +115,20 @@ claude-flow pair --start \
 Automatically alternates between driver and navigator roles.
 
 ### Usage
+
 ```bash
 claude-flow pair --start --mode switch [--interval <time>]
 ```
 
 ### Default Intervals
+
 - **10 minutes** - Standard switching
 - **5 minutes** - Rapid collaboration
 - **15 minutes** - Deep focus periods
 - **Custom** - Set your preference
 
 ### Configuration
+
 ```bash
 # 5-minute intervals
 claude-flow pair --start --mode switch --interval 5m
@@ -128,6 +143,7 @@ claude-flow pair --start --mode switch --interval 1h
 ### Role Transitions
 
 **Handoff Process:**
+
 1. 30-second warning before switch
 2. Current driver completes thought
 3. Context summary generated
@@ -135,12 +151,14 @@ claude-flow pair --start --mode switch --interval 1h
 5. New driver continues
 
 ### Best For
+
 - Balanced collaboration
 - Knowledge sharing
 - Complex features
 - Extended sessions
 
 ### Example Session
+
 ```bash
 claude-flow pair --start \
   --mode switch \
@@ -152,6 +170,7 @@ claude-flow pair --start \
 ## Specialized Modes
 
 ### TDD Mode
+
 Test-Driven Development focus.
 
 ```bash
@@ -162,12 +181,14 @@ claude-flow pair --start \
 ```
 
 **Workflow:**
+
 1. Write failing test (Red)
 2. Implement minimal code (Green)
 3. Refactor (Refactor)
 4. Repeat cycle
 
 ### Review Mode
+
 Continuous code review focus.
 
 ```bash
@@ -178,12 +199,14 @@ claude-flow pair --start \
 ```
 
 **Features:**
+
 - Real-time feedback
 - Security scanning
 - Performance analysis
 - Best practice enforcement
 
 ### Mentor Mode
+
 Learning-focused collaboration.
 
 ```bash
@@ -194,12 +217,14 @@ claude-flow pair --start \
 ```
 
 **Features:**
+
 - Detailed explanations
 - Step-by-step guidance
 - Pattern teaching
 - Best practice examples
 
 ### Debug Mode
+
 Problem-solving focus.
 
 ```bash
@@ -210,6 +235,7 @@ claude-flow pair --start \
 ```
 
 **Features:**
+
 - Issue identification
 - Root cause analysis
 - Fix suggestions
@@ -218,24 +244,28 @@ claude-flow pair --start \
 ## Mode Selection Guide
 
 ### Choose Driver Mode When:
+
 - You want hands-on practice
 - Learning new concepts
 - Implementing your ideas
 - Prefer writing code yourself
 
 ### Choose Navigator Mode When:
+
 - Need rapid implementation
 - Generating boilerplate
 - Exploring AI suggestions
 - Learning from examples
 
 ### Choose Switch Mode When:
+
 - Long sessions planned
 - Balanced collaboration needed
 - Complex features
 - Team simulation
 
 ### Choose Specialized Modes When:
+
 - **TDD**: Building with tests
 - **Review**: Quality focus
 - **Mentor**: Learning priority
@@ -243,19 +273,20 @@ claude-flow pair --start \
 
 ## Mode Comparison
 
-| Mode | You Write | AI Writes | Best For | Switch Time |
-|------|-----------|-----------|----------|-------------|
-| Driver | ✅ | ❌ | Learning, Control | N/A |
-| Navigator | ❌ | ✅ | Speed, Generation | N/A |
-| Switch | ✅/❌ | ✅/❌ | Balance, Long Sessions | 5-60min |
-| TDD | ✅/❌ | ✅/❌ | Test-First | Per cycle |
-| Review | ✅ | ❌ | Quality | N/A |
-| Mentor | ✅ | ❌ | Learning | N/A |
-| Debug | ✅/❌ | ✅/❌ | Fixing | N/A |
+| Mode      | You Write | AI Writes | Best For               | Switch Time |
+| --------- | --------- | --------- | ---------------------- | ----------- |
+| Driver    | ✅        | ❌        | Learning, Control      | N/A         |
+| Navigator | ❌        | ✅        | Speed, Generation      | N/A         |
+| Switch    | ✅/❌     | ✅/❌     | Balance, Long Sessions | 5-60min     |
+| TDD       | ✅/❌     | ✅/❌     | Test-First             | Per cycle   |
+| Review    | ✅        | ❌        | Quality                | N/A         |
+| Mentor    | ✅        | ❌        | Learning               | N/A         |
+| Debug     | ✅/❌     | ✅/❌     | Fixing                 | N/A         |
 
 ## Mode Combinations
 
 ### Quality-Focused
+
 ```bash
 claude-flow pair --start \
   --mode switch \
@@ -266,6 +297,7 @@ claude-flow pair --start \
 ```
 
 ### Learning-Focused
+
 ```bash
 claude-flow pair --start \
   --mode mentor \
@@ -275,6 +307,7 @@ claude-flow pair --start \
 ```
 
 ### Speed-Focused
+
 ```bash
 claude-flow pair --start \
   --mode navigator \
@@ -284,6 +317,7 @@ claude-flow pair --start \
 ```
 
 ### Debug-Focused
+
 ```bash
 claude-flow pair --start \
   --mode debug \
@@ -323,18 +357,21 @@ Save mode preferences:
 ## Best Practices by Mode
 
 ### Driver Mode
+
 1. Ask questions frequently
 2. Request reviews often
 3. Use suggestions wisely
 4. Learn from feedback
 
 ### Navigator Mode
+
 1. Provide clear direction
 2. Review thoroughly
 3. Test generated code
 4. Understand implementations
 
 ### Switch Mode
+
 1. Prepare for handoffs
 2. Maintain context
 3. Document decisions

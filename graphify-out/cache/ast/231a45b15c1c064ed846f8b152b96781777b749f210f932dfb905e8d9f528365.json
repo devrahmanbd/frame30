@@ -1,1 +1,1248 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "label": "menu.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L1"}, {"id": "menus_menu_menuitemkind", "label": "MenuItemKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L9"}, {"id": "menus_menu_menuitem", "label": "MenuItem", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L11"}, {"id": "menus_menu_menulocation", "label": "MenuLocation", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L24"}, {"id": "menus_menu_menu_locations", "label": "MENU_LOCATIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L26"}, {"id": "menus_menu_navmenu", "label": "NavMenu", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L32"}, {"id": "menus_menu_kind_label", "label": "KIND_LABEL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L42"}, {"id": "menus_menu_menuhandle", "label": "menuHandle()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L52"}, {"id": "menus_menu_uniquehandle", "label": "uniqueHandle()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L62"}, {"id": "menus_menu_menunode", "label": "MenuNode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L75"}, {"id": "menus_menu_buildtree", "label": "buildTree()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L78"}, {"id": "menus_menu_flattentree", "label": "flattenTree()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L100"}, {"id": "menus_menu_flatten", "label": "flatten()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L112"}, {"id": "menus_menu_depthof", "label": "depthOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L116"}, {"id": "menus_menu_subtreeids", "label": "subtreeIds()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L120"}, {"id": "menus_menu_subtreeheight", "label": "subtreeHeight()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L133"}, {"id": "menus_menu_normalise", "label": "normalise()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L150"}, {"id": "menus_menu_additem", "label": "addItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L162"}, {"id": "menus_menu_updateitem", "label": "updateItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L168"}, {"id": "menus_menu_removeitem", "label": "removeItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L172"}, {"id": "menus_menu_canindent", "label": "canIndent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L182"}, {"id": "menus_menu_indentitem", "label": "indentItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L193"}, {"id": "menus_menu_canoutdent", "label": "canOutdent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L212"}, {"id": "menus_menu_outdentitem", "label": "outdentItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L216"}, {"id": "menus_menu_menudropposition", "label": "MenuDropPosition", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L226"}, {"id": "menus_menu_moveitem", "label": "moveItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L229"}, {"id": "menus_menu_movevertical", "label": "moveVertical()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L252"}, {"id": "menus_menu_menuissue", "label": "MenuIssue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L269"}, {"id": "menus_menu_validatemenu", "label": "validateMenu()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L271"}, {"id": "menus_menu_ismenuvalid", "label": "isMenuValid()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L289"}, {"id": "menus_menu_menusource", "label": "MenuSource", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L295"}, {"id": "menus_menu_sourcegroup", "label": "SourceGroup", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L303"}, {"id": "menus_menu_searchsources", "label": "searchSources()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L305"}, {"id": "menus_menu_sourcetoitem", "label": "sourceToItem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L311"}, {"id": "menus_menu_locationslabel", "label": "locationsLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L326"}, {"id": "menus_menu_togglelocation", "label": "toggleLocation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L333"}, {"id": "menus_menu_menudirty", "label": "menuDirty()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L343"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menuitemkind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menuitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menulocation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menu_locations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_navmenu", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_kind_label", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menuhandle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_uniquehandle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menunode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_buildtree", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_flattentree", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_flatten", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_depthof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L116", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_subtreeids", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_subtreeheight", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_normalise", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L150", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_additem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_updateitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_removeitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_canindent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L182", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_indentitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L193", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_canoutdent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L212", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_outdentitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L216", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menudropposition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L226", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_moveitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_movevertical", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L252", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menuissue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L269", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_validatemenu", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L271", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_ismenuvalid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L289", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menusource", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L295", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_sourcegroup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L303", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_searchsources", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L305", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_sourcetoitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L311", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_locationslabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L326", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_togglelocation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L333", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "target": "menus_menu_menudirty", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L343", "weight": 1.0}, {"source": "menus_menu_uniquehandle", "target": "menus_menu_menuhandle", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L63", "weight": 1.0}, {"source": "menus_menu_flatten", "target": "menus_menu_flattentree", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L113", "weight": 1.0}, {"source": "menus_menu_flatten", "target": "menus_menu_buildtree", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L113", "weight": 1.0}, {"source": "menus_menu_depthof", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L117", "weight": 1.0}, {"source": "menus_menu_subtreeids", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L121", "weight": 1.0}, {"source": "menus_menu_subtreeheight", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L134", "weight": 1.0}, {"source": "menus_menu_normalise", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L151", "weight": 1.0}, {"source": "menus_menu_additem", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L165", "weight": 1.0}, {"source": "menus_menu_removeitem", "target": "menus_menu_subtreeids", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L173", "weight": 1.0}, {"source": "menus_menu_removeitem", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L174", "weight": 1.0}, {"source": "menus_menu_canindent", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L183", "weight": 1.0}, {"source": "menus_menu_canindent", "target": "menus_menu_subtreeheight", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L190", "weight": 1.0}, {"source": "menus_menu_indentitem", "target": "menus_menu_canindent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L194", "weight": 1.0}, {"source": "menus_menu_indentitem", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L195", "weight": 1.0}, {"source": "menus_menu_indentitem", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L209", "weight": 1.0}, {"source": "menus_menu_indentitem", "target": "menus_menu_updateitem", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L209", "weight": 1.0}, {"source": "menus_menu_canoutdent", "target": "menus_menu_depthof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L213", "weight": 1.0}, {"source": "menus_menu_outdentitem", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L217", "weight": 1.0}, {"source": "menus_menu_outdentitem", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L221", "weight": 1.0}, {"source": "menus_menu_outdentitem", "target": "menus_menu_updateitem", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L222", "weight": 1.0}, {"source": "menus_menu_moveitem", "target": "menus_menu_subtreeids", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L236", "weight": 1.0}, {"source": "menus_menu_moveitem", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L238", "weight": 1.0}, {"source": "menus_menu_moveitem", "target": "menus_menu_subtreeheight", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L245", "weight": 1.0}, {"source": "menus_menu_moveitem", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L249", "weight": 1.0}, {"source": "menus_menu_moveitem", "target": "menus_menu_updateitem", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L249", "weight": 1.0}, {"source": "menus_menu_movevertical", "target": "menus_menu_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L253", "weight": 1.0}, {"source": "menus_menu_movevertical", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L260", "weight": 1.0}, {"source": "menus_menu_movevertical", "target": "menus_menu_updateitem", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L261", "weight": 1.0}, {"source": "menus_menu_ismenuvalid", "target": "menus_menu_validatemenu", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L290", "weight": 1.0}, {"source": "menus_menu_menudirty", "target": "menus_menu_normalise", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L344", "weight": 1.0}], "raw_calls": [{"caller_nid": "menus_menu_menuhandle", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L54"}, {"caller_nid": "menus_menu_menuhandle", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L54"}, {"caller_nid": "menus_menu_menuhandle", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L54"}, {"caller_nid": "menus_menu_menuhandle", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L54"}, {"caller_nid": "menus_menu_uniquehandle", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L65"}, {"caller_nid": "menus_menu_uniquehandle", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L68"}, {"caller_nid": "menus_menu_uniquehandle", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L70"}, {"caller_nid": "menus_menu_uniquehandle", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L70"}, {"caller_nid": "menus_menu_buildtree", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L79"}, {"caller_nid": "menus_menu_buildtree", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L82"}, {"caller_nid": "menus_menu_buildtree", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L83"}, {"caller_nid": "menus_menu_buildtree", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L84"}, {"caller_nid": "menus_menu_buildtree", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L85"}, {"caller_nid": "menus_menu_buildtree", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L96"}, {"caller_nid": "menus_menu_flattentree", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L108"}, {"caller_nid": "menus_menu_depthof", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L117"}, {"caller_nid": "menus_menu_subtreeids", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L122"}, {"caller_nid": "menus_menu_subtreeids", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L128"}, {"caller_nid": "menus_menu_subtreeheight", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L135"}, {"caller_nid": "menus_menu_subtreeheight", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L142"}, {"caller_nid": "menus_menu_normalise", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L153"}, {"caller_nid": "menus_menu_additem", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L163"}, {"caller_nid": "menus_menu_additem", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L164"}, {"caller_nid": "menus_menu_updateitem", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L169"}, {"caller_nid": "menus_menu_removeitem", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L174"}, {"caller_nid": "menus_menu_canindent", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L184"}, {"caller_nid": "menus_menu_indentitem", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L196"}, {"caller_nid": "menus_menu_outdentitem", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L218"}, {"caller_nid": "menus_menu_outdentitem", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L220"}, {"caller_nid": "menus_menu_moveitem", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L237"}, {"caller_nid": "menus_menu_moveitem", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L239"}, {"caller_nid": "menus_menu_moveitem", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L240"}, {"caller_nid": "menus_menu_movevertical", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L253"}, {"caller_nid": "menus_menu_movevertical", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L253"}, {"caller_nid": "menus_menu_movevertical", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L256"}, {"caller_nid": "menus_menu_validatemenu", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L274"}, {"caller_nid": "menus_menu_validatemenu", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L274"}, {"caller_nid": "menus_menu_validatemenu", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L275"}, {"caller_nid": "menus_menu_validatemenu", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L277"}, {"caller_nid": "menus_menu_validatemenu", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L278"}, {"caller_nid": "menus_menu_validatemenu", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L279"}, {"caller_nid": "menus_menu_searchsources", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L306"}, {"caller_nid": "menus_menu_searchsources", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L306"}, {"caller_nid": "menus_menu_searchsources", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L308"}, {"caller_nid": "menus_menu_locationslabel", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L328"}, {"caller_nid": "menus_menu_locationslabel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L328"}, {"caller_nid": "menus_menu_locationslabel", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L328"}, {"caller_nid": "menus_menu_togglelocation", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L337"}, {"caller_nid": "menus_menu_togglelocation", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L338"}, {"caller_nid": "menus_menu_menudirty", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L344"}, {"caller_nid": "menus_menu_menudirty", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts", "source_location": "L344"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "label": "menu.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "menus_menu_menuitemkind",
+      "label": "MenuItemKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "menus_menu_menuitem",
+      "label": "MenuItem",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "menus_menu_menulocation",
+      "label": "MenuLocation",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "menus_menu_menu_locations",
+      "label": "MENU_LOCATIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "menus_menu_navmenu",
+      "label": "NavMenu",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "menus_menu_kind_label",
+      "label": "KIND_LABEL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "menus_menu_menuhandle",
+      "label": "menuHandle()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "menus_menu_uniquehandle",
+      "label": "uniqueHandle()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "menus_menu_menunode",
+      "label": "MenuNode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L75"
+    },
+    {
+      "id": "menus_menu_buildtree",
+      "label": "buildTree()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "menus_menu_flattentree",
+      "label": "flattenTree()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "menus_menu_flatten",
+      "label": "flatten()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "menus_menu_depthof",
+      "label": "depthOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L116"
+    },
+    {
+      "id": "menus_menu_subtreeids",
+      "label": "subtreeIds()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "menus_menu_subtreeheight",
+      "label": "subtreeHeight()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "menus_menu_normalise",
+      "label": "normalise()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L150"
+    },
+    {
+      "id": "menus_menu_additem",
+      "label": "addItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "menus_menu_updateitem",
+      "label": "updateItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L168"
+    },
+    {
+      "id": "menus_menu_removeitem",
+      "label": "removeItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L172"
+    },
+    {
+      "id": "menus_menu_canindent",
+      "label": "canIndent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L182"
+    },
+    {
+      "id": "menus_menu_indentitem",
+      "label": "indentItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L193"
+    },
+    {
+      "id": "menus_menu_canoutdent",
+      "label": "canOutdent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L212"
+    },
+    {
+      "id": "menus_menu_outdentitem",
+      "label": "outdentItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L216"
+    },
+    {
+      "id": "menus_menu_menudropposition",
+      "label": "MenuDropPosition",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L226"
+    },
+    {
+      "id": "menus_menu_moveitem",
+      "label": "moveItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "menus_menu_movevertical",
+      "label": "moveVertical()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L252"
+    },
+    {
+      "id": "menus_menu_menuissue",
+      "label": "MenuIssue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L269"
+    },
+    {
+      "id": "menus_menu_validatemenu",
+      "label": "validateMenu()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L271"
+    },
+    {
+      "id": "menus_menu_ismenuvalid",
+      "label": "isMenuValid()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L289"
+    },
+    {
+      "id": "menus_menu_menusource",
+      "label": "MenuSource",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L295"
+    },
+    {
+      "id": "menus_menu_sourcegroup",
+      "label": "SourceGroup",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L303"
+    },
+    {
+      "id": "menus_menu_searchsources",
+      "label": "searchSources()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L305"
+    },
+    {
+      "id": "menus_menu_sourcetoitem",
+      "label": "sourceToItem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L311"
+    },
+    {
+      "id": "menus_menu_locationslabel",
+      "label": "locationsLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L326"
+    },
+    {
+      "id": "menus_menu_togglelocation",
+      "label": "toggleLocation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L333"
+    },
+    {
+      "id": "menus_menu_menudirty",
+      "label": "menuDirty()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L343"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menuitemkind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menuitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menulocation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menu_locations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_navmenu",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_kind_label",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menuhandle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_uniquehandle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menunode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_buildtree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_flattentree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_flatten",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_depthof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_subtreeids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_subtreeheight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_normalise",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_additem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_updateitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_removeitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_canindent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L182",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_indentitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L193",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_canoutdent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L212",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_outdentitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menudropposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_moveitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_movevertical",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menuissue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L269",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_validatemenu",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_ismenuvalid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L289",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menusource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_sourcegroup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L303",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_searchsources",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L305",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_sourcetoitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L311",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_locationslabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L326",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_togglelocation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "target": "menus_menu_menudirty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_uniquehandle",
+      "target": "menus_menu_menuhandle",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_flatten",
+      "target": "menus_menu_flattentree",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_flatten",
+      "target": "menus_menu_buildtree",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_depthof",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_subtreeids",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_subtreeheight",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_normalise",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_additem",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_removeitem",
+      "target": "menus_menu_subtreeids",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_removeitem",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_canindent",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_canindent",
+      "target": "menus_menu_subtreeheight",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_indentitem",
+      "target": "menus_menu_canindent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_indentitem",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_indentitem",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_indentitem",
+      "target": "menus_menu_updateitem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_canoutdent",
+      "target": "menus_menu_depthof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_outdentitem",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_outdentitem",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_outdentitem",
+      "target": "menus_menu_updateitem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_moveitem",
+      "target": "menus_menu_subtreeids",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L236",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_moveitem",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_moveitem",
+      "target": "menus_menu_subtreeheight",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_moveitem",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_moveitem",
+      "target": "menus_menu_updateitem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_movevertical",
+      "target": "menus_menu_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_movevertical",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_movevertical",
+      "target": "menus_menu_updateitem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L261",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_ismenuvalid",
+      "target": "menus_menu_validatemenu",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L290",
+      "weight": 1.0
+    },
+    {
+      "source": "menus_menu_menudirty",
+      "target": "menus_menu_normalise",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L344",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "menus_menu_menuhandle",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "menus_menu_menuhandle",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "menus_menu_menuhandle",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "menus_menu_menuhandle",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "menus_menu_uniquehandle",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "menus_menu_uniquehandle",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "menus_menu_uniquehandle",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "menus_menu_uniquehandle",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "menus_menu_buildtree",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "menus_menu_flattentree",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "menus_menu_depthof",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "menus_menu_subtreeids",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "menus_menu_subtreeids",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "menus_menu_subtreeheight",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "menus_menu_subtreeheight",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "menus_menu_normalise",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "menus_menu_additem",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "menus_menu_additem",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "menus_menu_updateitem",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "menus_menu_removeitem",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "menus_menu_canindent",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L184"
+    },
+    {
+      "caller_nid": "menus_menu_indentitem",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "menus_menu_outdentitem",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "menus_menu_outdentitem",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "menus_menu_moveitem",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L237"
+    },
+    {
+      "caller_nid": "menus_menu_moveitem",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "menus_menu_moveitem",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "menus_menu_movevertical",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "menus_menu_movevertical",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "menus_menu_movevertical",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L277"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L278"
+    },
+    {
+      "caller_nid": "menus_menu_validatemenu",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "menus_menu_searchsources",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "menus_menu_searchsources",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "menus_menu_searchsources",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "menus_menu_locationslabel",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "menus_menu_locationslabel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "menus_menu_locationslabel",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "menus_menu_togglelocation",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L337"
+    },
+    {
+      "caller_nid": "menus_menu_togglelocation",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "menus_menu_menudirty",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "menus_menu_menudirty",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/menus/menu.ts",
+      "source_location": "L344"
+    }
+  ]
+}

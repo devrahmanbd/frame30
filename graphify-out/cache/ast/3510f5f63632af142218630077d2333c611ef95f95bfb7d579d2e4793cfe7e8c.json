@@ -1,1 +1,443 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "label": "lint-migrations.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L1"}, {"id": "scripts_lint_migrations_printresult", "label": "printResult()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L25"}, {"id": "scripts_lint_migrations_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L54"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "users_rahman_documents_frame30_src_lib_migration_linter_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "lib_migration_linter_server_lintmigrationdirectory", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "lib_migration_linter_server_lintmigrationfile", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "lib_migration_linter_server_lintresult", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "scripts_lint_migrations_printresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_lint_migrations_ts", "target": "scripts_lint_migrations_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L54", "weight": 1.0}, {"source": "scripts_lint_migrations_main", "target": "scripts_lint_migrations_printresult", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L68", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_lint_migrations_printresult", "callee": "pop", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L26"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L26"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L30"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L35"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L37"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L38"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L39"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L44"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L47"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L48"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L49"}, {"caller_nid": "scripts_lint_migrations_printresult", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L50"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L55"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L56"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L57"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L59"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L59"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L60"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L61"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L62"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L62"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L65"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L65"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L66"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "lintMigrationFile", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L67"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L70"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L70"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L72"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L73"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L75"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L81"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L81"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L82"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L82"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L84"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "lintMigrationDirectory", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L85"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L91"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L91"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L92"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L93"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L94"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L95"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L95"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L98"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L99"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L100"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L101"}, {"caller_nid": "scripts_lint_migrations_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts", "source_location": "L104"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "label": "lint-migrations.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_lint_migrations_printresult",
+      "label": "printResult()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "scripts_lint_migrations_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L54"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "users_rahman_documents_frame30_src_lib_migration_linter_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "lib_migration_linter_server_lintmigrationdirectory",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "lib_migration_linter_server_lintmigrationfile",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "lib_migration_linter_server_lintresult",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "scripts_lint_migrations_printresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_lint_migrations_ts",
+      "target": "scripts_lint_migrations_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_lint_migrations_main",
+      "target": "scripts_lint_migrations_printresult",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "pop",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_printresult",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "lintMigrationFile",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "lintMigrationDirectory",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "scripts_lint_migrations_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/lint-migrations.ts",
+      "source_location": "L104"
+    }
+  ]
+}

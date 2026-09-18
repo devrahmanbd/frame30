@@ -6,6 +6,9 @@ export const dashboardHomeFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadDashboardHome } = await import("./dashboard.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return loadDashboardHome(context.supabase, merchantId);
   });

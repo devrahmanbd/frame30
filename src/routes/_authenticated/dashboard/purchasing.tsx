@@ -22,7 +22,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/purchasing")({
           "Track suppliers, raise purchase orders and receive stock partially or in full — inventory updates as each delivery lands.",
       },
       { property: "og:title", content: "Suppliers and purchase orders" },
-      { property: "og:description", content: "Restock with partial receiving and live inventory updates." },
+      {
+        property: "og:description",
+        content: "Restock with partial receiving and live inventory updates.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -46,14 +49,26 @@ function PurchasingPage() {
   const act = useServerFn(purchaseOrderActionFn);
 
   const data = useQuery({ queryKey: ["purchasing"], queryFn: () => load() });
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["purchasing"] });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["purchasing"] });
 
-  const [supplier, setSupplier] = useState({ code: "", name: "", email: "", phone: "", leadTimeDays: 0 });
+  const [supplier, setSupplier] = useState({
+    code: "",
+    name: "",
+    email: "",
+    phone: "",
+    leadTimeDays: 0,
+  });
   const [po, setPo] = useState({
     supplierId: "",
     expectedAt: "",
     note: "",
-    items: [] as { variantId: string; sku: string; quantityOrdered: number; unitCostMinorInt: number }[],
+    items: [] as {
+      variantId: string;
+      sku: string;
+      quantityOrdered: number;
+      unitCostMinorInt: number;
+    }[],
   });
   const [receiving, setReceiving] = useState<Record<string, number>>({});
 
@@ -61,7 +76,13 @@ function PurchasingPage() {
     mutationFn: () =>
       saveSupplier({ data: { ...supplier, addressLine: "", isActive: true } }),
     onSuccess: () => {
-      setSupplier({ code: "", name: "", email: "", phone: "", leadTimeDays: 0 });
+      setSupplier({
+        code: "",
+        name: "",
+        email: "",
+        phone: "",
+        leadTimeDays: 0,
+      });
       invalidate();
       toast.success("Supplier saved");
     },
@@ -89,15 +110,25 @@ function PurchasingPage() {
   });
 
   const poAction = useMutation({
-    mutationFn: (vars: { id: string; action: "submit" | "cancel" | "receive"; lines?: { itemId: string; quantity: number }[] }) =>
-      act({ data: { id: vars.id, action: vars.action, lines: vars.lines ?? [] } }),
+    mutationFn: (vars: {
+      id: string;
+      action: "submit" | "cancel" | "receive";
+      lines?: { itemId: string; quantity: number }[];
+    }) =>
+      act({
+        data: { id: vars.id, action: vars.action, lines: vars.lines ?? [] },
+      }),
     onSuccess: () => {
       setReceiving({});
       invalidate();
       toast.success("Purchase order updated");
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "That action could not be completed"),
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "That action could not be completed",
+      ),
   });
 
   const suppliers = data.data?.suppliers ?? [];
@@ -105,10 +136,13 @@ function PurchasingPage() {
   return (
     <section className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">Purchasing</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          Purchasing
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Raise a purchase order with a supplier, then receive the boxes as they arrive. Stock is added the
-          moment you record a delivery — partial deliveries are normal and safe to record more than once.
+          Raise a purchase order with a supplier, then receive the boxes as they
+          arrive. Stock is added the moment you record a delivery — partial
+          deliveries are normal and safe to record more than once.
         </p>
       </header>
 
@@ -124,11 +158,16 @@ function PurchasingPage() {
                 ["phone", "Phone"],
               ] as const
             ).map(([key, label]) => (
-              <label key={key} className="text-xs font-medium text-muted-foreground">
+              <label
+                key={key}
+                className="text-xs font-medium text-muted-foreground"
+              >
                 {label}
                 <input
                   value={supplier[key]}
-                  onChange={(e) => setSupplier((s) => ({ ...s, [key]: e.target.value }))}
+                  onChange={(e) =>
+                    setSupplier((s) => ({ ...s, [key]: e.target.value }))
+                  }
                   className="mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
                 />
               </label>
@@ -139,14 +178,23 @@ function PurchasingPage() {
                 type="number"
                 min={0}
                 value={supplier.leadTimeDays}
-                onChange={(e) => setSupplier((s) => ({ ...s, leadTimeDays: Number(e.target.value) || 0 }))}
+                onChange={(e) =>
+                  setSupplier((s) => ({
+                    ...s,
+                    leadTimeDays: Number(e.target.value) || 0,
+                  }))
+                }
                 className="money mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
               />
             </label>
           </div>
           <button
             type="button"
-            disabled={supplierMutation.isPending || supplier.code.length < 2 || supplier.name.length < 2}
+            disabled={
+              supplierMutation.isPending ||
+              supplier.code.length < 2 ||
+              supplier.name.length < 2
+            }
             onClick={() => supplierMutation.mutate()}
             className="mt-3 min-h-10 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
@@ -161,7 +209,9 @@ function PurchasingPage() {
                 </span>
               </li>
             ))}
-            {!suppliers.length ? <li className="py-2 text-muted-foreground">No suppliers yet.</li> : null}
+            {!suppliers.length ? (
+              <li className="py-2 text-muted-foreground">No suppliers yet.</li>
+            ) : null}
           </ul>
         </div>
 
@@ -172,7 +222,9 @@ function PurchasingPage() {
               Supplier
               <select
                 value={po.supplierId}
-                onChange={(e) => setPo((p) => ({ ...p, supplierId: e.target.value }))}
+                onChange={(e) =>
+                  setPo((p) => ({ ...p, supplierId: e.target.value }))
+                }
                 className="mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
               >
                 <option value="">Choose a supplier</option>
@@ -188,7 +240,9 @@ function PurchasingPage() {
               <input
                 type="date"
                 value={po.expectedAt}
-                onChange={(e) => setPo((p) => ({ ...p, expectedAt: e.target.value }))}
+                onChange={(e) =>
+                  setPo((p) => ({ ...p, expectedAt: e.target.value }))
+                }
                 className="mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
               />
             </label>
@@ -199,7 +253,15 @@ function PurchasingPage() {
             onClick={() =>
               setPo((p) => ({
                 ...p,
-                items: [...p.items, { variantId: "", sku: "", quantityOrdered: 1, unitCostMinorInt: 0 }],
+                items: [
+                  ...p.items,
+                  {
+                    variantId: "",
+                    sku: "",
+                    quantityOrdered: 1,
+                    unitCostMinorInt: 0,
+                  },
+                ],
               }))
             }
             className="mt-3 min-h-9 rounded-fq-md border border-border px-2 text-xs hover:bg-muted"
@@ -209,7 +271,10 @@ function PurchasingPage() {
 
           <ul className="mt-2 space-y-2">
             {po.items.map((line, index) => (
-              <li key={index} className="grid gap-2 sm:grid-cols-[1fr_80px_110px]">
+              <li
+                key={index}
+                className="grid gap-2 sm:grid-cols-[1fr_80px_110px]"
+              >
                 <input
                   aria-label={`Line ${index + 1} variant id`}
                   placeholder="Variant id"
@@ -217,7 +282,9 @@ function PurchasingPage() {
                   onChange={(e) =>
                     setPo((p) => ({
                       ...p,
-                      items: p.items.map((l, i) => (i === index ? { ...l, variantId: e.target.value } : l)),
+                      items: p.items.map((l, i) =>
+                        i === index ? { ...l, variantId: e.target.value } : l,
+                      ),
                     }))
                   }
                   className="min-h-9 rounded-fq-md border border-border bg-background px-2 text-sm"
@@ -231,7 +298,12 @@ function PurchasingPage() {
                     setPo((p) => ({
                       ...p,
                       items: p.items.map((l, i) =>
-                        i === index ? { ...l, quantityOrdered: Number(e.target.value) || 1 } : l,
+                        i === index
+                          ? {
+                              ...l,
+                              quantityOrdered: Number(e.target.value) || 1,
+                            }
+                          : l,
                       ),
                     }))
                   }
@@ -246,7 +318,12 @@ function PurchasingPage() {
                     setPo((p) => ({
                       ...p,
                       items: p.items.map((l, i) =>
-                        i === index ? { ...l, unitCostMinorInt: Number(e.target.value) || 0 } : l,
+                        i === index
+                          ? {
+                              ...l,
+                              unitCostMinorInt: Number(e.target.value) || 0,
+                            }
+                          : l,
                       ),
                     }))
                   }
@@ -258,7 +335,9 @@ function PurchasingPage() {
 
           <button
             type="button"
-            disabled={poMutation.isPending || !po.supplierId || po.items.length === 0}
+            disabled={
+              poMutation.isPending || !po.supplierId || po.items.length === 0
+            }
             onClick={() => poMutation.mutate()}
             className="mt-3 min-h-10 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
@@ -271,36 +350,54 @@ function PurchasingPage() {
         {(data.data?.purchaseOrders ?? []).map((order) => {
           const items = order.purchase_order_items ?? [];
           const progress = receivingProgress(
-            items.map((i) => ({ ordered: i.quantity_ordered, received: i.quantity_received })),
+            items.map((i) => ({
+              ordered: i.quantity_ordered,
+              received: i.quantity_received,
+            })),
           );
           return (
-            <article key={order.id} className="rounded-fq-lg border border-border bg-card p-4">
+            <article
+              key={order.id}
+              className="rounded-fq-lg border border-border bg-card p-4"
+            >
               <header className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h3 className="money text-sm font-semibold">{order.number}</h3>
+                  <h3 className="money text-sm font-semibold">
+                    {order.number}
+                  </h3>
                   <p className="text-xs text-muted-foreground">
                     {order.suppliers?.name ?? "—"} ·{" "}
-                    {fmtMinor(Number(order.total_minor_int), order.currency_code)} ·{" "}
-                    {progress.received}/{progress.ordered} units received
+                    {fmtMinor(
+                      Number(order.total_minor_int),
+                      order.currency_code,
+                    )}{" "}
+                    · {progress.received}/{progress.ordered} units received
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className={`rounded-full px-2 py-0.5 text-xs ${PO_TONE[order.status] ?? ""}`}>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs ${PO_TONE[order.status] ?? ""}`}
+                  >
                     {order.status}
                   </span>
                   {order.status === "draft" ? (
                     <button
                       type="button"
-                      onClick={() => poAction.mutate({ id: order.id, action: "submit" })}
+                      onClick={() =>
+                        poAction.mutate({ id: order.id, action: "submit" })
+                      }
                       className="min-h-9 rounded-fq-md border border-border px-2 text-xs hover:bg-muted"
                     >
                       Submit
                     </button>
                   ) : null}
-                  {order.status !== "cancelled" && order.status !== "received" ? (
+                  {order.status !== "cancelled" &&
+                  order.status !== "received" ? (
                     <button
                       type="button"
-                      onClick={() => poAction.mutate({ id: order.id, action: "cancel" })}
+                      onClick={() =>
+                        poAction.mutate({ id: order.id, action: "cancel" })
+                      }
                       className="min-h-9 rounded-fq-md border border-border px-2 text-xs text-muted-foreground hover:bg-muted"
                     >
                       Cancel
@@ -317,16 +414,24 @@ function PurchasingPage() {
                 aria-valuemax={100}
                 aria-label={`${order.number} receiving progress`}
               >
-                <div className="h-full bg-primary" style={{ width: `${progress.percent}%` }} />
+                <div
+                  className="h-full bg-primary"
+                  style={{ width: `${progress.percent}%` }}
+                />
               </div>
 
               <ul className="mt-3 divide-y divide-border text-sm">
                 {items.map((i) => (
-                  <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
+                  <li
+                    key={i.id}
+                    className="flex flex-wrap items-center justify-between gap-2 py-2"
+                  >
                     <span className="money">
-                      {i.sku || (i.variant_id ?? "").slice(0, 8)} · {i.quantity_received}/{i.quantity_ordered}
+                      {i.sku || (i.variant_id ?? "").slice(0, 8)} ·{" "}
+                      {i.quantity_received}/{i.quantity_ordered}
                     </span>
-                    {order.status === "submitted" || order.status === "partial" ? (
+                    {order.status === "submitted" ||
+                    order.status === "partial" ? (
                       <label className="text-xs text-muted-foreground">
                         Receive now
                         <input
@@ -335,7 +440,10 @@ function PurchasingPage() {
                           max={i.quantity_ordered - i.quantity_received}
                           value={receiving[i.id] ?? 0}
                           onChange={(e) =>
-                            setReceiving((r) => ({ ...r, [i.id]: Number(e.target.value) || 0 }))
+                            setReceiving((r) => ({
+                              ...r,
+                              [i.id]: Number(e.target.value) || 0,
+                            }))
                           }
                           className="money ml-2 min-h-9 w-24 rounded-fq-md border border-border bg-background px-2 text-sm"
                         />
@@ -355,7 +463,10 @@ function PurchasingPage() {
                       action: "receive",
                       lines: items
                         .filter((i) => (receiving[i.id] ?? 0) > 0)
-                        .map((i) => ({ itemId: i.id, quantity: receiving[i.id] ?? 0 })),
+                        .map((i) => ({
+                          itemId: i.id,
+                          quantity: receiving[i.id] ?? 0,
+                        })),
                     })
                   }
                   className="mt-3 min-h-10 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
@@ -366,9 +477,13 @@ function PurchasingPage() {
             </article>
           );
         })}
-        {data.isLoading ? <p className="text-sm text-muted-foreground">Loading…</p> : null}
+        {data.isLoading ? (
+          <p className="text-sm text-muted-foreground">Loading…</p>
+        ) : null}
         {!data.isLoading && !(data.data?.purchaseOrders ?? []).length ? (
-          <p className="text-sm text-muted-foreground">No purchase orders yet.</p>
+          <p className="text-sm text-muted-foreground">
+            No purchase orders yet.
+          </p>
         ) : null}
       </div>
     </section>

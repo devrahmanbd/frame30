@@ -44,25 +44,38 @@ export function emiPlan(
   const principal = Math.trunc(principalMinor);
   if (!Number.isFinite(principal) || principal <= 0) return null;
   // Only the published tenures are quotable; anything else is a data bug.
-  if (!Number.isFinite(tenureMonths) || !isEmiTenure(Math.trunc(tenureMonths))) return null;
-  const bp = Number.isFinite(rateBasisPoints) ? Math.max(0, Math.trunc(rateBasisPoints)) : 0;
+  if (!Number.isFinite(tenureMonths) || !isEmiTenure(Math.trunc(tenureMonths)))
+    return null;
+  const bp = Number.isFinite(rateBasisPoints)
+    ? Math.max(0, Math.trunc(rateBasisPoints))
+    : 0;
 
   const months = Math.trunc(tenureMonths);
   // Interest for the tenure = principal × annual bp × months / (10000 × 12).
   const interest = Math.floor((principal * bp * months) / (10000 * 12) + 0.5);
   const total = principal + interest;
   const perMonth = Math.floor(total / months + 0.5);
-  return { bank, tenureMonths: months, rateBasisPoints: bp, perMonthMinor: perMonth, totalMinor: total };
+  return {
+    bank,
+    tenureMonths: months,
+    rateBasisPoints: bp,
+    perMonthMinor: perMonth,
+    totalMinor: total,
+  };
 }
 
 /** The instalment schedule, remainder absorbed by the first month. */
 export function emiSchedule(plan: EmiPlan): number[] {
   const base = Math.floor(plan.totalMinor / plan.tenureMonths);
   const remainder = plan.totalMinor - base * plan.tenureMonths;
-  return Array.from({ length: plan.tenureMonths }, (_, i) => (i === 0 ? base + remainder : base));
+  return Array.from({ length: plan.tenureMonths }, (_, i) =>
+    i === 0 ? base + remainder : base,
+  );
 }
 
 /** Stable label for a plan row; locale-resolved copy lives in the widget. */
-export function emiPlanKey(plan: Pick<EmiPlan, "bank" | "tenureMonths">): string {
+export function emiPlanKey(
+  plan: Pick<EmiPlan, "bank" | "tenureMonths">,
+): string {
   return `${plan.bank}:${plan.tenureMonths}`;
 }

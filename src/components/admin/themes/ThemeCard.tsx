@@ -41,7 +41,8 @@ export function ThemeCard({
       onMouseLeave={() => setHover(false)}
       onFocus={() => setFocus(true)}
       onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node)) setFocus(false);
+        if (!event.currentTarget.contains(event.relatedTarget as Node))
+          setFocus(false);
       }}
       data-active={theme.isActive ? "true" : "false"}
     >
@@ -75,7 +76,11 @@ export function ThemeCard({
               >
                 Activate
               </button>
-              <button type="button" className={cn(btnPrimary, "min-h-11")} onClick={onPreview}>
+              <button
+                type="button"
+                className={cn(btnPrimary, "min-h-11")}
+                onClick={onPreview}
+              >
                 Live preview
               </button>
             </div>
@@ -84,12 +89,17 @@ export function ThemeCard({
         <button
           type="button"
           aria-pressed={theme.favourite}
-          aria-label={theme.favourite ? `Unstar ${theme.name}` : `Star ${theme.name}`}
+          aria-label={
+            theme.favourite ? `Unstar ${theme.name}` : `Star ${theme.name}`
+          }
           onClick={onToggleFavourite}
           className="absolute right-2 top-2 grid size-9 place-items-center rounded-full border border-border bg-card/90 text-muted-foreground backdrop-blur transition-colors hover:text-primary"
         >
           <Star
-            className={cn("size-4", theme.favourite && "fill-current text-primary")}
+            className={cn(
+              "size-4",
+              theme.favourite && "fill-current text-primary",
+            )}
             aria-hidden
           />
         </button>
@@ -117,12 +127,18 @@ export function ThemeCard({
       ) : (
         <div className="flex items-center justify-between gap-2 px-3 py-2">
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-foreground">{theme.name}</p>
+            <p className="truncate text-sm font-medium text-foreground">
+              {theme.name}
+            </p>
             <p className="truncate text-xs fq-sub">
               Version {theme.version} · {theme.author}
             </p>
           </div>
-          <button type="button" className={cn(btnGhost, "shrink-0")} onClick={onDetails}>
+          <button
+            type="button"
+            className={cn(btnGhost, "shrink-0")}
+            onClick={onDetails}
+          >
             Details
           </button>
         </div>

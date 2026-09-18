@@ -37,7 +37,9 @@ export function RevisionCompare({
   onRestore: (revisionId: string) => void;
 }) {
   const { t } = useLang();
-  const [leftId, setLeftId] = useState<string>(revisions[1]?.id ?? revisions[0]?.id ?? "");
+  const [leftId, setLeftId] = useState<string>(
+    revisions[1]?.id ?? revisions[0]?.id ?? "",
+  );
   const [rightId, setRightId] = useState<string>(revisions[0]?.id ?? "");
   const fetchPair = useServerFn(revisionPairFn);
 
@@ -89,14 +91,26 @@ export function RevisionCompare({
 
       <div className="mt-3 flex flex-wrap items-end gap-2">
         <label className="text-xs">
-          <span className="block text-muted-foreground">{t("Compare", "তুলনা")}</span>
-          <select className="rounded-fq-md border border-border bg-background px-2 py-1" value={leftId} onChange={(e) => setLeftId(e.target.value)}>
+          <span className="block text-muted-foreground">
+            {t("Compare", "তুলনা")}
+          </span>
+          <select
+            className="rounded-fq-md border border-border bg-background px-2 py-1"
+            value={leftId}
+            onChange={(e) => setLeftId(e.target.value)}
+          >
             {options}
           </select>
         </label>
         <label className="text-xs">
-          <span className="block text-muted-foreground">{t("With", "সঙ্গে")}</span>
-          <select className="rounded-fq-md border border-border bg-background px-2 py-1" value={rightId} onChange={(e) => setRightId(e.target.value)}>
+          <span className="block text-muted-foreground">
+            {t("With", "সঙ্গে")}
+          </span>
+          <select
+            className="rounded-fq-md border border-border bg-background px-2 py-1"
+            value={rightId}
+            onChange={(e) => setRightId(e.target.value)}
+          >
             {options}
           </select>
         </label>
@@ -116,25 +130,34 @@ export function RevisionCompare({
         </p>
       )}
       {pair.isPending && leftId !== rightId && (
-        <p className="mt-2 text-muted-foreground">{t("Loading diff…", "পার্থক্য আনা হচ্ছে…")}</p>
+        <p className="mt-2 text-muted-foreground">
+          {t("Loading diff…", "পার্থক্য আনা হচ্ছে…")}
+        </p>
       )}
 
       {diff && (
         <>
           <p className="mt-3 text-xs text-muted-foreground" aria-live="polite">
             +{diff.summary.added} / −{diff.summary.removed} {t("words", "শব্দ")}
-            {!diff.summary.changed && ` · ${t("body identical", "বডি অপরিবর্তিত")}`}
+            {!diff.summary.changed &&
+              ` · ${t("body identical", "বডি অপরিবর্তিত")}`}
           </p>
           <div className="mt-2 max-h-72 overflow-y-auto whitespace-pre-wrap rounded-fq-md border border-border bg-background p-2 leading-relaxed">
             {diff.chunks.map((chunk, index) =>
               chunk.op === "equal" ? (
                 <span key={index}>{chunk.text}</span>
               ) : chunk.op === "insert" ? (
-                <ins key={index} className="bg-success-soft text-success-foreground no-underline">
+                <ins
+                  key={index}
+                  className="bg-success-soft text-success-foreground no-underline"
+                >
                   {chunk.text}
                 </ins>
               ) : (
-                <del key={index} className="bg-danger-soft text-danger-foreground">
+                <del
+                  key={index}
+                  className="bg-danger-soft text-danger-foreground"
+                >
                   {chunk.text}
                 </del>
               ),
@@ -147,7 +170,8 @@ export function RevisionCompare({
         <ul className="mt-2 space-y-1 text-xs">
           {fields.map((field) => (
             <li key={field.key}>
-              <span className="font-medium">{field.key}</span>: <del className="text-muted-foreground">{field.before || "—"}</del>{" "}
+              <span className="font-medium">{field.key}</span>:{" "}
+              <del className="text-muted-foreground">{field.before || "—"}</del>{" "}
               → <ins className="no-underline">{field.after || "—"}</ins>
             </li>
           ))}
@@ -156,12 +180,23 @@ export function RevisionCompare({
 
       <ul className="mt-3 space-y-1">
         {revisions.map((revision) => (
-          <li key={revision.id} className="flex items-center justify-between gap-2">
+          <li
+            key={revision.id}
+            className="flex items-center justify-between gap-2"
+          >
             <span className="truncate text-muted-foreground">
               {new Date(revision.created_at).toLocaleString()}
-              {revision.is_autosave ? ` · ${t("autosave", "স্বয়ংক্রিয়")}` : ""} · {revision.status}
+              {revision.is_autosave
+                ? ` · ${t("autosave", "স্বয়ংক্রিয়")}`
+                : ""}{" "}
+              · {revision.status}
             </span>
-            <button type="button" className={btnGhost} disabled={restoring} onClick={() => onRestore(revision.id)}>
+            <button
+              type="button"
+              className={btnGhost}
+              disabled={restoring}
+              onClick={() => onRestore(revision.id)}
+            >
               {t("Restore", "ফেরত")}
             </button>
           </li>

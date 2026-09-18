@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requirePermission } from "./authz-middleware";
 
 async function scope(db: SupabaseClient<Database>, userId: string) {
   const { currentMerchantId } = await import("./marketing.server");
@@ -12,15 +13,19 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 const kindSchema = z.enum(["theme", "widget"]);
 
 export const marketCatalogFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.read")])
   .handler(async ({ context }) => {
     const { listCatalog, APP_VERSION } = await import("./marketplace.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, appVersion: APP_VERSION, ...(await listCatalog(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      appVersion: APP_VERSION,
+      ...(await listCatalog(context.supabase, merchantId)),
+    };
   });
 
 export const marketInstallFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -30,7 +35,10 @@ export const marketInstallFn = createServerFn({ method: "POST" })
         trial: z.boolean().default(false),
         idempotencyKey: z.string().min(8).max(80),
         versionId: z.string().uuid().nullable().default(null),
-        grantedScopes: z.array(z.string().trim().min(2).max(40)).max(20).default([]),
+        grantedScopes: z
+          .array(z.string().trim().min(2).max(40))
+          .max(20)
+          .default([]),
       })
       .parse(d),
   )
@@ -38,7 +46,8 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     const { rateLimit } = await import("./rate-limit.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.install", merchantId);
-    const { BUILTIN_PREFIX, APP_VERSION } = await import("./marketplace.server");
+    const { BUILTIN_PREFIX, APP_VERSION } =
+      await import("./marketplace.server");
     const builtinSlug = data.listingId.startsWith(BUILTIN_PREFIX)
       ? data.listingId.slice(BUILTIN_PREFIX.length)
       : null;
@@ -69,7 +78,8 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     if (data.kind === "theme" && builtinSlug) {
       // WordPress semantics: a marketplace install adds a NEW INACTIVE
       // theme. Activation is a separate, explicit step.
-      const { installBuiltinTheme } = await import("./marketplace-install.server");
+      const { installBuiltinTheme } =
+        await import("./marketplace-install.server");
       const installed = await installBuiltinTheme(
         context.supabase,
         merchantId,
@@ -132,11 +142,14 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       };
     }
     const { installListing } = await import("./marketplace-install.server");
-    return installListing(context.supabase, merchantId, { ...data, consentedBy: context.userId });
+    return installListing(context.supabase, merchantId, {
+      ...data,
+      consentedBy: context.userId,
+    });
   });
 
 export const marketInstallStatusFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -148,7 +161,13 @@ export const marketInstallStatusFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setInstallStatus } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setInstallStatus(context.supabase, merchantId, data.installId, data.status, context.userId);
+    return setInstallStatus(
+      context.supabase,
+      merchantId,
+      data.installId,
+      data.status,
+      context.userId,
+    );
   });
 
 /**
@@ -157,7 +176,7 @@ export const marketInstallStatusFn = createServerFn({ method: "POST" })
  * aborts the rest of the batch.
  */
 export const marketBulkInstallsFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -169,7 +188,13 @@ export const marketBulkInstallsFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { bulkInstallStatus } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return bulkInstallStatus(context.supabase, merchantId, context.userId, data.installIds, data.action);
+    return bulkInstallStatus(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.installIds,
+      data.action,
+    );
   });
 
 /**
@@ -178,8 +203,10 @@ export const marketBulkInstallsFn = createServerFn({ method: "POST" })
  * session, and everyone else sees the published theme.
  */
 export const marketPreviewTokenFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ themeId: z.string().uuid() }).parse(d))
+  .middleware([requirePermission("themes.read")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     const { data: theme } = await context.supabase
@@ -195,9 +222,8 @@ export const marketPreviewTokenFn = createServerFn({ method: "POST" })
       .eq("id", merchantId)
       .maybeSingle();
     if (!merchant?.slug) throw new Error("market_store_missing");
-    const { issuePreviewToken, previewSecret, PREVIEW_TTL_MS } = await import(
-      "./theme-preview.server"
-    );
+    const { issuePreviewToken, previewSecret, PREVIEW_TTL_MS } =
+      await import("./theme-preview.server");
     const token = issuePreviewToken(previewSecret(), merchantId, data.themeId);
     return {
       url: `/store/${merchant.slug}?preview_token=${encodeURIComponent(token)}`,
@@ -207,22 +233,38 @@ export const marketPreviewTokenFn = createServerFn({ method: "POST" })
 
 /** WordPress-style uninstall: removes an inactive installed theme. */
 export const marketUninstallThemeFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ installId: z.string().uuid() }).parse(d))
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ installId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
-    const { uninstallBuiltinTheme } = await import("./marketplace-install.server");
+    const { uninstallBuiltinTheme } =
+      await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallBuiltinTheme(context.supabase, merchantId, data.installId, context.userId);
+    return uninstallBuiltinTheme(
+      context.supabase,
+      merchantId,
+      data.installId,
+      context.userId,
+    );
   });
 
 /** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */
 export const marketUninstallWidgetFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ installId: z.string().uuid() }).parse(d))
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ installId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
-    const { uninstallWidgetInstall } = await import("./marketplace-install.server");
+    const { uninstallWidgetInstall } =
+      await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallWidgetInstall(context.supabase, merchantId, data.installId, context.userId);
+    return uninstallWidgetInstall(
+      context.supabase,
+      merchantId,
+      data.installId,
+      context.userId,
+    );
   });
 
 export const marketMineFn = createServerFn({ method: "GET" })
@@ -280,13 +322,20 @@ export const marketListingStatusFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { sellerTransition } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return sellerTransition(context.supabase, merchantId, data.kind, data.id, data.status);
+    return sellerTransition(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.id,
+      data.status,
+    );
   });
 
 export const marketModerationFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { listModeration, isPlatformAdmin } = await import("./marketplace.server");
+    const { listModeration, isPlatformAdmin } =
+      await import("./marketplace.server");
     const admin = await isPlatformAdmin(context.supabase, context.userId);
     if (!admin) return { admin: false, listings: [] };
     return { admin: true, listings: await listModeration(context.supabase) };
@@ -322,7 +371,10 @@ export const marketPublishVersionFn = createServerFn({ method: "POST" })
       .object({
         kind: kindSchema,
         listingId: z.string().uuid(),
-        version: z.string().trim().regex(/^\d+\.\d+\.\d+$/),
+        version: z
+          .string()
+          .trim()
+          .regex(/^\d+\.\d+\.\d+$/),
         changelog: z.string().trim().max(1000).nullable().default(null),
         scopes: scopeListSchema,
         source: z.record(z.string(), z.unknown()),
@@ -356,7 +408,10 @@ export const marketVersionsFn = createServerFn({ method: "GET" })
     const { listVersions } = await import("./marketplace-vault.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.read", merchantId);
-    return { merchantId, ...(await listVersions(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await listVersions(context.supabase, merchantId)),
+    };
   });
 
 export const marketVersionQueueFn = createServerFn({ method: "GET" })
@@ -364,7 +419,8 @@ export const marketVersionQueueFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { isPlatformAdmin } = await import("./marketplace.server");
     const { listReviewQueue } = await import("./marketplace-vault.server");
-    if (!(await isPlatformAdmin(context.supabase, context.userId))) return { admin: false, versions: [] };
+    if (!(await isPlatformAdmin(context.supabase, context.userId)))
+      return { admin: false, versions: [] };
     return { admin: true, versions: await listReviewQueue(context.supabase) };
   });
 
@@ -383,13 +439,19 @@ export const marketReviewVersionFn = createServerFn({ method: "POST" })
     const { rateLimit } = await import("./rate-limit.server");
     const { isPlatformAdmin } = await import("./marketplace.server");
     const { reviewVersion } = await import("./marketplace-vault.server");
-    if (!(await isPlatformAdmin(context.supabase, context.userId))) throw new Error("market_forbidden");
+    if (!(await isPlatformAdmin(context.supabase, context.userId)))
+      throw new Error("market_forbidden");
     await rateLimit("market.moderate", context.userId);
-    return reviewVersion(context.supabase, data.versionId, data.status, data.note);
+    return reviewVersion(
+      context.supabase,
+      data.versionId,
+      data.status,
+      data.note,
+    );
   });
 
 export const marketListingVersionsFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.read")])
   .inputValidator((d: unknown) =>
     z.object({ kind: kindSchema, listingId: z.string().uuid() }).parse(d),
   )
@@ -402,11 +464,14 @@ export const marketListingVersionsFn = createServerFn({ method: "POST" })
   });
 
 export const marketAppBlocksFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.read")])
   .handler(async ({ context }) => {
     const { entitledBlocks } = await import("./marketplace-vault.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, ...(await entitledBlocks(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await entitledBlocks(context.supabase, merchantId)),
+    };
   });
 
 export const marketPayoutsFn = createServerFn({ method: "GET" })
@@ -416,7 +481,10 @@ export const marketPayoutsFn = createServerFn({ method: "GET" })
     const { payoutOverview } = await import("./marketplace-vault.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.read", merchantId);
-    return { merchantId, ...(await payoutOverview(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await payoutOverview(context.supabase, merchantId)),
+    };
   });
 
 export const marketPayoutAccrueFn = createServerFn({ method: "POST" })
@@ -445,9 +513,16 @@ export const marketPayoutSettleFn = createServerFn({ method: "POST" })
     const { rateLimit } = await import("./rate-limit.server");
     const { isPlatformAdmin } = await import("./marketplace.server");
     const { settlePayout } = await import("./marketplace-vault.server");
-    if (!(await isPlatformAdmin(context.supabase, context.userId))) throw new Error("market_forbidden");
+    if (!(await isPlatformAdmin(context.supabase, context.userId)))
+      throw new Error("market_forbidden");
     await rateLimit("market.payout", context.userId);
-    return settlePayout(context.supabase, data.payoutId, data.outcome, data.reference, data.reason);
+    return settlePayout(
+      context.supabase,
+      data.payoutId,
+      data.outcome,
+      data.reference,
+      data.reason,
+    );
   });
 
 export const marketSubmitReviewFn = createServerFn({ method: "POST" })
@@ -466,7 +541,12 @@ export const marketSubmitReviewFn = createServerFn({ method: "POST" })
     const { submitReview } = await import("./marketplace-vault.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("market.review", merchantId);
-    return submitReview(context.supabase, data.installId, data.rating, data.comment);
+    return submitReview(
+      context.supabase,
+      data.installId,
+      data.rating,
+      data.comment,
+    );
   });
 
 export const marketMyReviewsFn = createServerFn({ method: "POST" })

@@ -3,7 +3,8 @@
  * Captures React boundary errors and forwards to telemetry instrumentation.
  */
 type ClientErrorOptions = {
-  mechanism?: "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
+  mechanism?:
+    "manual" | "onerror" | "unhandledrejection" | "react_error_boundary";
   handled?: boolean;
   severity?: "error" | "warning" | "info";
 };
@@ -27,7 +28,10 @@ declare global {
   }
 }
 
-export function reportClientBoundaryError(error: unknown, context: Record<string, unknown> = {}) {
+export function reportClientBoundaryError(
+  error: unknown,
+  context: Record<string, unknown> = {},
+) {
   if (typeof window === "undefined") return;
   window.__clientEvents?.captureException?.(
     error,

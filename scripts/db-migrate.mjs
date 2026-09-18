@@ -38,7 +38,9 @@ function discover() {
   for (const dir of DIRS) {
     const abs = join(ROOT, dir);
     if (!existsSync(abs)) continue;
-    for (const name of readdirSync(abs).filter((f) => f.endsWith(".sql")).sort()) {
+    for (const name of readdirSync(abs)
+      .filter((f) => f.endsWith(".sql"))
+      .sort()) {
       const body = readFileSync(join(abs, name), "utf8");
       out.push({
         id: `${dir}/${name}`,
@@ -78,7 +80,9 @@ function psql({ sql, file }) {
     stdio: ["pipe", "pipe", "inherit"],
   });
   if (res.status !== 0) {
-    throw new Error(`psql failed (${res.status ?? "spawn error"}) for ${file ?? "inline SQL"}`);
+    throw new Error(
+      `psql failed (${res.status ?? "spawn error"}) for ${file ?? "inline SQL"}`,
+    );
   }
   return res.stdout ?? "";
 }
@@ -90,7 +94,8 @@ function applied() {
   const map = new Map();
   for (const line of rows.split("\n")) {
     const [filename, checksum] = line.trim().split(/\s+/);
-    if (filename && checksum && !filename.startsWith("(")) map.set(filename, checksum);
+    if (filename && checksum && !filename.startsWith("("))
+      map.set(filename, checksum);
   }
   return map;
 }
@@ -110,7 +115,9 @@ function main() {
   psql({ sql: LEDGER });
   const done = applied();
 
-  const drifted = files.filter((f) => done.has(f.id) && done.get(f.id) !== f.checksum);
+  const drifted = files.filter(
+    (f) => done.has(f.id) && done.get(f.id) !== f.checksum,
+  );
   if (drifted.length) {
     console.error("applied migrations were edited after the fact:");
     for (const f of drifted) console.error(`  ${f.id}`);
@@ -141,7 +148,11 @@ function main() {
     });
     console.log(`ok (${ms}ms)`);
   }
-  console.log(pending.length ? `applied ${pending.length} migration(s)` : "nothing to apply");
+  console.log(
+    pending.length
+      ? `applied ${pending.length} migration(s)`
+      : "nothing to apply",
+  );
 }
 
 main();

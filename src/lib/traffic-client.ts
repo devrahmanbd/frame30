@@ -19,7 +19,8 @@ const SESSION_KEY = "fq.session";
 const MAX_BATCH = 25;
 const FLUSH_MS = 4000;
 
-export type TrackEntity = "page" | "product" | "cart" | "checkout" | "order" | "search";
+export type TrackEntity =
+  "page" | "product" | "cart" | "checkout" | "order" | "search";
 
 export type TrackEvent = {
   entity: TrackEntity;
@@ -57,11 +58,17 @@ function attribution() {
   try {
     const params = new URLSearchParams(window.location.search);
     const utmSource = params.get("utm_source");
-    const campaign = params.get("utm_campaign") ?? params.get("utm_content") ?? "";
-    if (utmSource) return { source: utmSource.slice(0, 60), campaign: campaign.slice(0, 60) };
+    const campaign =
+      params.get("utm_campaign") ?? params.get("utm_content") ?? "";
+    if (utmSource)
+      return {
+        source: utmSource.slice(0, 60),
+        campaign: campaign.slice(0, 60),
+      };
     if (!document.referrer) return { source: "direct", campaign: "" };
     const host = new URL(document.referrer).hostname;
-    if (host === window.location.hostname) return { source: "internal", campaign: "" };
+    if (host === window.location.hostname)
+      return { source: "internal", campaign: "" };
     return { source: host.replace(/^www\./, "").slice(0, 60), campaign: "" };
   } catch {
     return { source: "direct", campaign: "" };
@@ -128,13 +135,20 @@ export function startTrafficReporter(options: {
         campaign,
         valueMinorInt: e.valueMinorInt,
         currencyCode: e.currencyCode,
-        payload: { template: options.template, path: window.location.pathname, ...(e.payload ?? {}) },
+        payload: {
+          template: options.template,
+          path: window.location.pathname,
+          ...(e.payload ?? {}),
+        },
         dedupeKey: e.dedupeKey,
       })),
     });
     try {
       if (useBeacon && navigator.sendBeacon) {
-        navigator.sendBeacon(endpoint, new Blob([body], { type: "application/json" }));
+        navigator.sendBeacon(
+          endpoint,
+          new Blob([body], { type: "application/json" }),
+        );
         return;
       }
       void fetch(endpoint, {
@@ -174,7 +188,9 @@ export function startTrafficReporter(options: {
   // Clicks on anything the theme marked as trackable, plus every link.
   function onClick(ev: MouseEvent) {
     const target = ev.target as Element | null;
-    const el = target?.closest?.("[data-fq-track],a,button") as HTMLElement | null;
+    const el = target?.closest?.(
+      "[data-fq-track],a,button",
+    ) as HTMLElement | null;
     if (!el) return;
     const label =
       el.getAttribute("data-fq-track") ||
@@ -207,7 +223,9 @@ export function startTrafficReporter(options: {
   return () => {
     stopped = true;
     flush(true);
-    document.removeEventListener("click", onClick, { capture: true } as EventListenerOptions);
+    document.removeEventListener("click", onClick, {
+      capture: true,
+    } as EventListenerOptions);
     document.removeEventListener("visibilitychange", onHide);
     if (active && active.track === track) active = null;
   };

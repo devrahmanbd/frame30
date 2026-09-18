@@ -23,11 +23,13 @@ claude-flow pair --start [options]
 ## Examples
 
 ### Basic Start
+
 ```bash
 claude-flow pair --start
 ```
 
 ### Expert Refactoring Session
+
 ```bash
 claude-flow pair --start \
   --agent senior-dev \
@@ -37,6 +39,7 @@ claude-flow pair --start \
 ```
 
 ### TDD Session
+
 ```bash
 claude-flow pair --start \
   --mode driver \
@@ -46,6 +49,7 @@ claude-flow pair --start \
 ```
 
 ### Debugging Session
+
 ```bash
 claude-flow pair --start \
   --agent debugger-expert \
@@ -66,21 +70,27 @@ When starting a session, the system:
 ## Modes Explained
 
 ### Driver Mode
+
 You write code while AI:
+
 - Provides real-time suggestions
 - Reviews changes instantly
 - Catches potential issues
 - Suggests improvements
 
 ### Navigator Mode
+
 AI writes code while you:
+
 - Provide high-level guidance
 - Review generated code
 - Request modifications
 - Control direction
 
 ### Switch Mode
+
 Automatically alternates roles:
+
 - Default: 10-minute intervals
 - Configurable timing
 - Smooth handoffs
@@ -89,24 +99,28 @@ Automatically alternates roles:
 ## Focus Areas
 
 ### Refactor
+
 - Code structure improvements
 - Pattern implementation
 - Performance optimization
 - Readability enhancement
 
 ### Test
+
 - Test-driven development
 - Test coverage improvement
 - Edge case identification
 - Mock creation
 
 ### Debug
+
 - Issue identification
 - Root cause analysis
 - Fix suggestions
 - Prevention strategies
 
 ### Implement
+
 - Feature development
 - API creation
 - UI components
@@ -115,18 +129,21 @@ Automatically alternates roles:
 ## Quality Features
 
 ### Verification
+
 - Real-time truth scoring
 - Automatic rollback on failures
 - Quality gates before commits
 - Continuous monitoring
 
 ### Code Review
+
 - Instant feedback
 - Best practice enforcement
 - Security scanning
 - Performance analysis
 
 ### Testing
+
 - Automatic test generation
 - Coverage tracking
 - Integration suggestions
@@ -179,16 +196,19 @@ claude-flow pair --end session_id
 ## Integration
 
 ### With Git
+
 ```bash
 claude-flow pair --start --git --auto-commit
 ```
 
 ### With CI/CD
+
 ```bash
 claude-flow pair --start --ci --non-interactive
 ```
 
 ### With IDE
+
 ```bash
 claude-flow pair --start --ide vscode
 ```

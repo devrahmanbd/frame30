@@ -7,6 +7,7 @@ import { PUBLIC_BANGLA_ENABLED } from "@/lib/public-locale";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
 import { PublicFooter } from "@/components/public/PublicFooter";
+import { SupportWidget } from "@/components/store/SupportWidget";
 
 const NAV = [
   { to: "/features", key: "site.nav.features" },
@@ -48,11 +49,19 @@ export function PublicShell({
     <div className="fq-site fq-marketing flex min-h-screen flex-col bg-background selection:bg-primary/20 selection:text-primary">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl transition-all">
         <div className="fq-band-inner flex h-16 items-center justify-between gap-4 md:grid md:grid-cols-[auto_1fr_auto]">
-          <Link to="/" className="inline-flex min-h-11 items-center gap-2.5 group">
+          <Link
+            to="/"
+            className="inline-flex min-h-11 items-center gap-2.5 group"
+          >
             <BrandLogo size={32} className="group-hover:scale-105" />
-            <span className="fq-display text-base font-bold tracking-tight text-foreground">Framique</span>
+            <span className="fq-display text-base font-bold tracking-tight text-foreground">
+              Framique
+            </span>
           </Link>
-          <nav className="hidden items-center justify-center gap-1 text-sm md:flex" aria-label={tk("site.nav.label")}>
+          <nav
+            className="hidden items-center justify-center gap-1 text-sm md:flex"
+            aria-label={tk("site.nav.label")}
+          >
             {NAV.map((item) => (
               <Link
                 key={item.to}
@@ -63,7 +72,6 @@ export function PublicShell({
                 {tk(item.key)}
               </Link>
             ))}
-            
           </nav>
           <div className="flex min-w-0 shrink items-center justify-end gap-1 sm:gap-2">
             {PUBLIC_BANGLA_ENABLED ? <LanguageToggle /> : null}
@@ -94,7 +102,11 @@ export function PublicShell({
               aria-label={tk("site.nav.label")}
               className="inline-flex size-11 shrink-0 items-center justify-center rounded-fq-md border border-border text-foreground transition-colors hover:bg-muted md:hidden"
             >
-              {menuOpen ? <X className="size-5" aria-hidden /> : <Menu className="size-5" aria-hidden />}
+              {menuOpen ? (
+                <X className="size-5" aria-hidden />
+              ) : (
+                <Menu className="size-5" aria-hidden />
+              )}
             </button>
           </div>
         </div>
@@ -117,7 +129,7 @@ export function PublicShell({
                   </Link>
                 </li>
               ))}
-              
+
               <li className="mt-1 border-t border-border pt-1">
                 <Link
                   to="/auth"
@@ -135,6 +147,9 @@ export function PublicShell({
 
       {/* Modern architectural glassmorphic footer matching header and image layout */}
       <PublicFooter hideCta={hideFooterCta} />
+
+      {/* Platform AI Assistant for front pages: answering visitor queries & collecting leads */}
+      <SupportWidget slug="framique" mode="platform" />
     </div>
   );
 }

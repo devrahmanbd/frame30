@@ -4,10 +4,22 @@ import { resolve } from "node:path";
 import { normalizeHostname } from "./domains";
 
 describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () => {
-  const dockerfilePath = resolve(process.cwd(), "ops/docker/Dockerfile.openresty");
-  const nginxConfPath = resolve(process.cwd(), "ops/routing/nginx-blue-green.conf");
-  const composePath = resolve(process.cwd(), "ops/docker-compose.blue-green.yml");
-  const prometheusPath = resolve(process.cwd(), "ops/observability/prometheus.yml");
+  const dockerfilePath = resolve(
+    process.cwd(),
+    "ops/docker/Dockerfile.openresty",
+  );
+  const nginxConfPath = resolve(
+    process.cwd(),
+    "ops/routing/nginx-blue-green.conf",
+  );
+  const composePath = resolve(
+    process.cwd(),
+    "ops/docker-compose.blue-green.yml",
+  );
+  const prometheusPath = resolve(
+    process.cwd(),
+    "ops/observability/prometheus.yml",
+  );
 
   describe("Dockerfile.openresty", () => {
     it("exists and is based on Alpine OpenResty", () => {
@@ -18,7 +30,9 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
 
     it("installs fffonion/lua-resty-acme and pintsized/lua-resty-http", () => {
       const content = readFileSync(dockerfilePath, "utf8");
-      expect(content).toContain("opm get fffonion/lua-resty-acme pintsized/lua-resty-http");
+      expect(content).toContain(
+        "opm get fffonion/lua-resty-acme pintsized/lua-resty-http",
+      );
     });
 
     it("creates persistent ACME directory and generates fallback SSL certificates", () => {
@@ -33,7 +47,9 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
       const content = readFileSync(dockerfilePath, "utf8");
       expect(content).toContain("HEALTHCHECK");
       expect(content).toContain("curl -f -s http://127.0.0.1/healthz");
-      expect(content).toContain('CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]');
+      expect(content).toContain(
+        'CMD ["/usr/local/openresty/bin/openresty", "-g", "daemon off;"]',
+      );
     });
   });
 
@@ -55,7 +71,9 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
       expect(content).toContain("tos_accepted = true");
       expect(content).toContain('storage_adapter = "file"');
       expect(content).toContain('dir = "/var/lib/openresty/acme"');
-      expect(content).toContain("domain_whitelist_callback = function(domain, is_new_cert_needed)");
+      expect(content).toContain(
+        "domain_whitelist_callback = function(domain, is_new_cert_needed)",
+      );
       expect(content).toContain("/api/public/domains/verify-sni");
     });
 
@@ -68,16 +86,24 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
     it("handles ACME HTTP-01 challenges on port 80 and 443", () => {
       const content = readFileSync(nginxConfPath, "utf8");
       expect(content).toContain("location /.well-known/acme-challenge/ {");
-      expect(content).toContain('require("resty.acme.autossl").serve_http_challenge()');
+      expect(content).toContain(
+        'require("resty.acme.autossl").serve_http_challenge()',
+      );
     });
 
     it("terminates SSL on port 443 with dynamic SNI certificate dispatch", () => {
       const content = readFileSync(nginxConfPath, "utf8");
       expect(content).toContain("listen 443 ssl;");
-      expect(content).toContain("ssl_certificate /etc/openresty/ssl/default.pem;");
-      expect(content).toContain("ssl_certificate_key /etc/openresty/ssl/default.key;");
+      expect(content).toContain(
+        "ssl_certificate /etc/openresty/ssl/default.pem;",
+      );
+      expect(content).toContain(
+        "ssl_certificate_key /etc/openresty/ssl/default.key;",
+      );
       expect(content).toContain("ssl_certificate_by_lua_block {");
-      expect(content).toContain('require("resty.acme.autossl").ssl_certificate()');
+      expect(content).toContain(
+        'require("resty.acme.autossl").ssl_certificate()',
+      );
     });
 
     it("preserves blue-green upstream load balancing and zero-downtime draining", () => {
@@ -86,7 +112,9 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
       expect(content).toContain("upstream framique_target_green");
       expect(content).toContain("proxy_http_version 1.1;");
       expect(content).toContain('proxy_set_header Connection "";');
-      expect(content).toContain("proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;");
+      expect(content).toContain(
+        "proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;",
+      );
       expect(content).toContain("proxy_next_upstream_tries 3;");
       expect(content).toContain("keepalive_requests 10000;");
     });
@@ -128,8 +156,12 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
 
   describe("Custom Domain Whitelist Normalization", () => {
     it("normalizes and accepts legitimate merchant custom domains", () => {
-      expect(normalizeHostname("https://Shop.FashionBD.com/")).toBe("shop.fashionbd.com");
-      expect(normalizeHostname("store.clothing.com.bd")).toBe("store.clothing.com.bd");
+      expect(normalizeHostname("https://Shop.FashionBD.com/")).toBe(
+        "shop.fashionbd.com",
+      );
+      expect(normalizeHostname("store.clothing.com.bd")).toBe(
+        "store.clothing.com.bd",
+      );
       expect(normalizeHostname("my-brand.store")).toBe("my-brand.store");
     });
 

@@ -71,7 +71,9 @@ export const platformSetQuotaFn = createServerFn({ method: "POST" })
 
 export const platformClearQuotaFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("tenant.limits")])
-  .inputValidator((d: unknown) => z.object({ merchantId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { clearTenantQuota } = await import("./platform.server");
     return clearTenantQuota(context.supabase, context.userId, data.merchantId);
@@ -99,7 +101,8 @@ export const platformIsAdminFn = createServerFn({ method: "GET" })
       }
 
       // Check via service role client if user token has RLS lookup restrictions
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       if (supabaseAdmin) {
         const { data: adminRow } = await (supabaseAdmin as any)
           .from("platform_admins")

@@ -9,7 +9,12 @@
  * Everything untrusted goes through `parseEntitySeo`, so a hand-edited request
  * body cannot put a `javascript:` canonical or a 1 MB string into a head tag.
  */
-import { analyseSeo, type SeoCheck, type SeoReport, type FaqItem } from "@/lib/seo-analysis";
+import {
+  analyseSeo,
+  type SeoCheck,
+  type SeoReport,
+  type FaqItem,
+} from "@/lib/seo-analysis";
 import { serpMetrics, type SerpDevice } from "@/lib/seo-pixels";
 
 /* ------------------------------------------------------------------ model */
@@ -51,7 +56,11 @@ export type AdvancedRobots = {
   maxImagePreview: ImagePreview;
 };
 
-export type SeoRedirect = { enabled: boolean; target: string; code: RedirectCode };
+export type SeoRedirect = {
+  enabled: boolean;
+  target: string;
+  code: RedirectCode;
+};
 
 export type HowToStep = { name: string; text: string };
 
@@ -63,7 +72,12 @@ export type SeoSchema = {
   steps: HowToStep[];
 };
 
-export type SocialCard = { title: string; description: string; image: string; useSeo: boolean };
+export type SocialCard = {
+  title: string;
+  description: string;
+  image: string;
+  useSeo: boolean;
+};
 
 export type EntitySeo = {
   focusKeywords: string[];
@@ -87,7 +101,12 @@ export const EMPTY_ROBOTS: RobotsFlags = {
   nosnippet: false,
 };
 
-export const EMPTY_SOCIAL: SocialCard = { title: "", description: "", image: "", useSeo: true };
+export const EMPTY_SOCIAL: SocialCard = {
+  title: "",
+  description: "",
+  image: "",
+  useSeo: true,
+};
 
 export const EMPTY_ENTITY_SEO: EntitySeo = {
   focusKeywords: [],
@@ -96,7 +115,11 @@ export const EMPTY_ENTITY_SEO: EntitySeo = {
   canonical: "",
   breadcrumbTitle: "",
   robots: EMPTY_ROBOTS,
-  advancedRobots: { maxSnippet: null, maxVideoPreview: null, maxImagePreview: "" },
+  advancedRobots: {
+    maxSnippet: null,
+    maxVideoPreview: null,
+    maxImagePreview: "",
+  },
   redirect: { enabled: false, target: "", code: 301 },
   schema: { type: "none", headline: "", description: "", faq: [], steps: [] },
   facebook: EMPTY_SOCIAL,
@@ -130,7 +153,9 @@ export function safeAbsoluteUrl(value: string): string {
   if (!value) return "";
   try {
     const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : "";
+    return url.protocol === "http:" || url.protocol === "https:"
+      ? url.toString()
+      : "";
   } catch {
     return "";
   }
@@ -139,14 +164,19 @@ export function safeAbsoluteUrl(value: string): string {
 /** Redirect targets may be relative site paths as well as absolute URLs. */
 export function safeTarget(value: string): string {
   if (!value) return "";
-  if (value.startsWith("/") && !value.startsWith("//")) return value.slice(0, LIMIT.url);
+  if (value.startsWith("/") && !value.startsWith("//"))
+    return value.slice(0, LIMIT.url);
   return safeAbsoluteUrl(value);
 }
 
 function num(value: unknown, min: number, max: number): number | null {
   // An absent or blank value means "not set" — `Number("")` is 0, which would
   // silently store `max-snippet:0` and stop Google showing any snippet.
-  if (value === null || value === undefined || (typeof value === "string" && value.trim() === ""))
+  if (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  )
     return null;
   const n = typeof value === "number" ? value : Number(String(value).trim());
   if (!Number.isFinite(n)) return null;
@@ -154,7 +184,11 @@ function num(value: unknown, min: number, max: number): number | null {
 }
 
 export function parseFocusKeywords(input: unknown): string[] {
-  const list = Array.isArray(input) ? input : typeof input === "string" ? input.split(",") : [];
+  const list = Array.isArray(input)
+    ? input
+    : typeof input === "string"
+      ? input.split(",")
+      : [];
   const seen = new Set<string>();
   const out: string[] = [];
   for (const raw of list) {
@@ -168,7 +202,10 @@ export function parseFocusKeywords(input: unknown): string[] {
   return out;
 }
 
-function parseSocial(input: unknown, fallback: SocialCard = EMPTY_SOCIAL): SocialCard {
+function parseSocial(
+  input: unknown,
+  fallback: SocialCard = EMPTY_SOCIAL,
+): SocialCard {
   const raw = (input ?? {}) as Record<string, unknown>;
   return {
     title: text(raw["title"], LIMIT.title),
@@ -195,7 +232,10 @@ function parseSteps(input: unknown): HowToStep[] {
     .slice(0, 20)
     .map((item) => {
       const raw = (item ?? {}) as Record<string, unknown>;
-      return { name: text(raw["name"], LIMIT.short), text: text(raw["text"], LIMIT.long) };
+      return {
+        name: text(raw["name"], LIMIT.short),
+        text: text(raw["text"], LIMIT.long),
+      };
     })
     .filter((step) => step.name || step.text);
 }
@@ -207,7 +247,9 @@ export function parseEntitySeo(input: unknown): EntitySeo {
   const redirect = (raw["redirect"] ?? {}) as Record<string, unknown>;
   const schema = (raw["schema"] ?? {}) as Record<string, unknown>;
   const twitter = parseSocial(raw["twitter"], EMPTY_ENTITY_SEO.twitter);
-  const card = String((raw["twitter"] as Record<string, unknown> | undefined)?.["card"] ?? "");
+  const card = String(
+    (raw["twitter"] as Record<string, unknown> | undefined)?.["card"] ?? "",
+  );
   const codeRaw = num(redirect["code"], 300, 308) ?? 301;
   const schemaType = String(schema["type"] ?? "none") as SchemaType;
   const preview = String(advanced["maxImagePreview"] ?? "") as ImagePreview;
@@ -228,7 +270,9 @@ export function parseEntitySeo(input: unknown): EntitySeo {
     advancedRobots: {
       maxSnippet: num(advanced["maxSnippet"], -1, 1000),
       maxVideoPreview: num(advanced["maxVideoPreview"], -1, 1000),
-      maxImagePreview: (IMAGE_PREVIEWS as readonly string[]).includes(preview) ? preview : "",
+      maxImagePreview: (IMAGE_PREVIEWS as readonly string[]).includes(preview)
+        ? preview
+        : "",
     },
     redirect: {
       enabled: bool(redirect["enabled"]),
@@ -238,7 +282,9 @@ export function parseEntitySeo(input: unknown): EntitySeo {
         : 301) as RedirectCode,
     },
     schema: {
-      type: (SCHEMA_TYPES as readonly string[]).includes(schemaType) ? schemaType : "none",
+      type: (SCHEMA_TYPES as readonly string[]).includes(schemaType)
+        ? schemaType
+        : "none",
       headline: text(schema["headline"], LIMIT.title),
       description: text(schema["description"], LIMIT.description),
       faq: parseFaq(schema["faq"]),
@@ -271,13 +317,16 @@ export function robotsContent(seo: EntitySeo): string {
   if (seo.robots.nosnippet) parts.push("nosnippet");
   const { maxSnippet, maxVideoPreview, maxImagePreview } = seo.advancedRobots;
   if (maxSnippet !== null) parts.push(`max-snippet:${maxSnippet}`);
-  if (maxVideoPreview !== null) parts.push(`max-video-preview:${maxVideoPreview}`);
+  if (maxVideoPreview !== null)
+    parts.push(`max-video-preview:${maxVideoPreview}`);
   if (maxImagePreview) parts.push(`max-image-preview:${maxImagePreview}`);
   return parts.join(",");
 }
 
 /** Read a stored `index,follow`-style string back into the checkbox model. */
-export function robotsFromContent(value: string | null | undefined): RobotsFlags {
+export function robotsFromContent(
+  value: string | null | undefined,
+): RobotsFlags {
   const parts = String(value ?? "")
     .toLowerCase()
     .split(/[,\s]+/)
@@ -316,7 +365,10 @@ export const SEO_TOKENS = [
 export const SEPARATORS = ["-", "·", "|", "–", "»"] as const;
 
 /** Replace `%token%` placeholders, then collapse the gaps empty ones leave. */
-export function applyTokens(template: string, vars: Partial<TokenVars>): string {
+export function applyTokens(
+  template: string,
+  vars: Partial<TokenVars>,
+): string {
   const map: Record<string, string> = {
     "%title%": vars.title ?? "",
     "%sep%": vars.sep ?? "-",
@@ -326,7 +378,9 @@ export function applyTokens(template: string, vars: Partial<TokenVars>): string 
     "%date%": vars.date ?? "",
     "%author%": vars.author ?? "",
   };
-  const resolved = template.replace(/%[a-z]+%/g, (m) => (m in map ? map[m]! : ""));
+  const resolved = template.replace(/%[a-z]+%/g, (m) =>
+    m in map ? map[m]! : "",
+  );
   const sep = (vars.sep ?? "-").trim();
   return resolved
     .split(sep)
@@ -349,12 +403,18 @@ export type JsonLdContext = {
 };
 
 /** The JSON-LD object this record describes, or null for `none`. */
-export function buildJsonLd(seo: EntitySeo, ctx: JsonLdContext): Record<string, unknown> | null {
+export function buildJsonLd(
+  seo: EntitySeo,
+  ctx: JsonLdContext,
+): Record<string, unknown> | null {
   const type = seo.schema.type;
   if (type === "none") return null;
   const headline = seo.schema.headline || seo.title;
   const description = seo.schema.description || seo.description;
-  const base: Record<string, unknown> = { "@context": "https://schema.org", "@type": type };
+  const base: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": type,
+  };
 
   if (type === "FAQPage") {
     const entries = seo.schema.faq.filter((f) => f.q && f.a);
@@ -410,7 +470,9 @@ export function buildJsonLd(seo: EntitySeo, ctx: JsonLdContext): Record<string, 
     description,
     mainEntityOfPage: ctx.url,
     ...(ctx.imageUrl ? { image: ctx.imageUrl } : {}),
-    ...(ctx.authorName ? { author: { "@type": "Person", name: ctx.authorName } } : {}),
+    ...(ctx.authorName
+      ? { author: { "@type": "Person", name: ctx.authorName } }
+      : {}),
     ...(ctx.publishedAt ? { datePublished: ctx.publishedAt } : {}),
     ...(ctx.updatedAt ? { dateModified: ctx.updatedAt } : {}),
     publisher: { "@type": "Organization", name: ctx.siteName },
@@ -430,13 +492,22 @@ export function rankMathBand(score: number): {
   return { tone: "danger", en: "Poor", bn: "দুর্বল" };
 }
 
-export type AnalysisGroupId = "basic" | "additional" | "titleReadability" | "contentReadability";
+export type AnalysisGroupId =
+  "basic" | "additional" | "titleReadability" | "contentReadability";
 
-export const ANALYSIS_GROUPS: { id: AnalysisGroupId; en: string; bn: string }[] = [
+export const ANALYSIS_GROUPS: {
+  id: AnalysisGroupId;
+  en: string;
+  bn: string;
+}[] = [
   { id: "basic", en: "Basic SEO", bn: "বেসিক SEO" },
   { id: "additional", en: "Additional", bn: "অতিরিক্ত" },
   { id: "titleReadability", en: "Title readability", bn: "টাইটেল পাঠযোগ্যতা" },
-  { id: "contentReadability", en: "Content readability", bn: "কনটেন্ট পাঠযোগ্যতা" },
+  {
+    id: "contentReadability",
+    en: "Content readability",
+    bn: "কনটেন্ট পাঠযোগ্যতা",
+  },
 ];
 
 /** Which Rank Math group an analyser check belongs to. */
@@ -486,7 +557,13 @@ function titleChecks(resolvedTitle: string, keyword: string): SeoCheck[] {
     group: "meta",
     label: "Focus keyword near the beginning of the title",
     labelBn: "টাইটেলের শুরুতে মূল কীওয়ার্ড",
-    status: !kw ? "skip" : lower.indexOf(kw) === 0 ? "pass" : lower.includes(kw) ? "warn" : "fail",
+    status: !kw
+      ? "skip"
+      : lower.indexOf(kw) === 0
+        ? "pass"
+        : lower.includes(kw)
+          ? "warn"
+          : "fail",
     hint: "Search engines weight the first words of a title most heavily.",
     hintBn: "টাইটেলের প্রথম শব্দগুলোই বেশি গুরুত্ব পায়।",
     weight: 2,
@@ -530,7 +607,9 @@ export function analyseEntitySeo(input: SeoMetaInput): SeoMetaReport {
     excerpt: input.excerpt ?? "",
     category: input.category ?? "",
   };
-  const resolvedTitle = input.seo.title ? applyTokens(input.seo.title, vars) : input.fallbackTitle;
+  const resolvedTitle = input.seo.title
+    ? applyTokens(input.seo.title, vars)
+    : input.fallbackTitle;
   const resolvedDescription = input.seo.description
     ? applyTokens(input.seo.description, vars)
     : input.fallbackDescription;
@@ -558,7 +637,9 @@ export function analyseEntitySeo(input: SeoMetaInput): SeoMetaReport {
   const all = [...report.checks, ...extra];
   const groups: MetaGroup[] = ANALYSIS_GROUPS.map((g) => {
     const checks = all
-      .filter((c) => (extra.includes(c) ? g.id === "titleReadability" : groupOf(c) === g.id))
+      .filter((c) =>
+        extra.includes(c) ? g.id === "titleReadability" : groupOf(c) === g.id,
+      )
       .sort((a, b) => rank(a.status) - rank(b.status));
     return {
       ...g,
@@ -577,10 +658,20 @@ export function analyseEntitySeo(input: SeoMetaInput): SeoMetaReport {
 }
 
 function rank(status: SeoCheck["status"]): number {
-  return status === "fail" ? 0 : status === "warn" ? 1 : status === "pass" ? 2 : 3;
+  return status === "fail"
+    ? 0
+    : status === "warn"
+      ? 1
+      : status === "pass"
+        ? 2
+        : 3;
 }
 
 /** Pixel meters for the preview card, at the device the merchant is viewing. */
-export function metaMeters(title: string, description: string, device: SerpDevice) {
+export function metaMeters(
+  title: string,
+  description: string,
+  device: SerpDevice,
+) {
   return serpMetrics({ title, description }, device);
 }

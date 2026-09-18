@@ -17,8 +17,14 @@ export const Route = createFileRoute("/store/$slug/sitemaps/$kind")({
         if (!parsed) return new Response("Not found", { status: 404 });
         const origin = new URL(request.url).origin;
         try {
-          const { renderStoreSitemapShard } = await import("@/lib/sitemap-config.server");
-          const doc = await renderStoreSitemapShard(params.slug, parsed.kind, parsed.page, origin);
+          const { renderStoreSitemapShard } =
+            await import("@/lib/sitemap-config.server");
+          const doc = await renderStoreSitemapShard(
+            params.slug,
+            parsed.kind,
+            parsed.page,
+            origin,
+          );
           if (!doc) return new Response("Not found", { status: 404 });
           return new Response(doc.body, {
             headers: {
@@ -38,7 +44,10 @@ export const Route = createFileRoute("/store/$slug/sitemaps/$kind")({
           incr("framique_sitemap_error_total", { surface: "shard" });
           return new Response("Sitemap temporarily unavailable", {
             status: 503,
-            headers: { "retry-after": "120", "content-type": "text/plain; charset=utf-8" },
+            headers: {
+              "retry-after": "120",
+              "content-type": "text/plain; charset=utf-8",
+            },
           });
         }
       },

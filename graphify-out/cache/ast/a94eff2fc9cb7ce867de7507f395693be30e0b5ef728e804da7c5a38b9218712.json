@@ -1,1 +1,702 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "label": "support-moderation-console.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L1"}, {"id": "lib_support_moderation_console_test_reltime", "label": "relTime()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L17"}, {"id": "lib_support_moderation_console_test_slacolor", "label": "slaColor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L25"}, {"id": "lib_support_moderation_console_test_prioritytorank", "label": "priorityToRank()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L33"}, {"id": "lib_support_moderation_console_test_mockconv", "label": "MockConv", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L37"}, {"id": "lib_support_moderation_console_test_filterqueue", "label": "filterQueue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L51"}, {"id": "lib_support_moderation_console_test_makeconv", "label": "makeConv()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L85"}, {"id": "lib_support_moderation_console_test_computeneedshumanagent", "label": "computeNeedsHumanAgent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L107"}, {"id": "lib_support_moderation_console_test_iso", "label": "iso", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L133"}, {"id": "lib_support_moderation_console_test_recent", "label": "recent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L190"}, {"id": "lib_support_moderation_console_test_older", "label": "older", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L191"}, {"id": "lib_support_moderation_console_test_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L254"}, {"id": "lib_support_moderation_console_test_r", "label": "r", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L267"}, {"id": "lib_support_moderation_console_test_ids", "label": "ids", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L274"}, {"id": "lib_support_moderation_console_test_now", "label": "now", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L299"}, {"id": "lib_support_moderation_console_test_sorted", "label": "sorted", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L304"}, {"id": "lib_support_moderation_console_test_newer", "label": "newer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L321"}, {"id": "lib_support_moderation_console_test_toggletakeover", "label": "toggleTakeover()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L374"}, {"id": "lib_support_moderation_console_test_valid_statuses", "label": "VALID_STATUSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L392"}, {"id": "lib_support_moderation_console_test_resolving", "label": "RESOLVING", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L393"}, {"id": "lib_support_moderation_console_test_getresolvedat", "label": "getResolvedAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L395"}, {"id": "lib_support_moderation_console_test_msgrole", "label": "MsgRole", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L423"}, {"id": "lib_support_moderation_console_test_classifybubble", "label": "classifyBubble()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L425"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_reltime", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_slacolor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_prioritytorank", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_mockconv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_filterqueue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_makeconv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_computeneedshumanagent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L152", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L156", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_iso", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_recent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L190", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_older", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L191", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_recent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L236", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_older", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L237", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L254", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L267", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L273", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_ids", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L274", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L280", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L286", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_ids", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L287", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_now", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L299", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L300", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_sorted", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L304", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_now", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L309", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L310", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_sorted", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L315", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_older", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L320", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_newer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L321", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L322", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_sorted", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L326", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L336", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L343", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L349", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_r", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L355", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_toggletakeover", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L374", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_valid_statuses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L392", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_resolving", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L393", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_getresolvedat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L395", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_msgrole", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L423", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts", "target": "lib_support_moderation_console_test_classifybubble", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L425", "weight": 1.0}, {"source": "lib_support_moderation_console_test_reltime", "target": "lib_support_moderation_console_test_now", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "lib_support_moderation_console_test_slacolor", "target": "lib_support_moderation_console_test_now", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L27", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_moderation_console_test_reltime", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L18"}, {"caller_nid": "lib_support_moderation_console_test_reltime", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L18"}, {"caller_nid": "lib_support_moderation_console_test_reltime", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L20"}, {"caller_nid": "lib_support_moderation_console_test_reltime", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L21"}, {"caller_nid": "lib_support_moderation_console_test_reltime", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L22"}, {"caller_nid": "lib_support_moderation_console_test_slacolor", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L27"}, {"caller_nid": "lib_support_moderation_console_test_filterqueue", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L56"}, {"caller_nid": "lib_support_moderation_console_test_filterqueue", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L56"}, {"caller_nid": "lib_support_moderation_console_test_filterqueue", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L56"}, {"caller_nid": "lib_support_moderation_console_test_makeconv", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L86"}, {"caller_nid": "lib_support_moderation_console_test_makeconv", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L88"}, {"caller_nid": "lib_support_moderation_console_test_makeconv", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L88"}, {"caller_nid": "lib_support_moderation_console_test_makeconv", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L88"}, {"caller_nid": "lib_support_moderation_console_test_getresolvedat", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts", "source_location": "L396"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "label": "support-moderation-console.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_moderation_console_test_reltime",
+      "label": "relTime()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_support_moderation_console_test_slacolor",
+      "label": "slaColor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_support_moderation_console_test_prioritytorank",
+      "label": "priorityToRank()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_support_moderation_console_test_mockconv",
+      "label": "MockConv",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_support_moderation_console_test_filterqueue",
+      "label": "filterQueue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_support_moderation_console_test_makeconv",
+      "label": "makeConv()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_support_moderation_console_test_computeneedshumanagent",
+      "label": "computeNeedsHumanAgent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_support_moderation_console_test_iso",
+      "label": "iso",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_support_moderation_console_test_recent",
+      "label": "recent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L190"
+    },
+    {
+      "id": "lib_support_moderation_console_test_older",
+      "label": "older",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "lib_support_moderation_console_test_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L254"
+    },
+    {
+      "id": "lib_support_moderation_console_test_r",
+      "label": "r",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L267"
+    },
+    {
+      "id": "lib_support_moderation_console_test_ids",
+      "label": "ids",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L274"
+    },
+    {
+      "id": "lib_support_moderation_console_test_now",
+      "label": "now",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L299"
+    },
+    {
+      "id": "lib_support_moderation_console_test_sorted",
+      "label": "sorted",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L304"
+    },
+    {
+      "id": "lib_support_moderation_console_test_newer",
+      "label": "newer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L321"
+    },
+    {
+      "id": "lib_support_moderation_console_test_toggletakeover",
+      "label": "toggleTakeover()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L374"
+    },
+    {
+      "id": "lib_support_moderation_console_test_valid_statuses",
+      "label": "VALID_STATUSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L392"
+    },
+    {
+      "id": "lib_support_moderation_console_test_resolving",
+      "label": "RESOLVING",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L393"
+    },
+    {
+      "id": "lib_support_moderation_console_test_getresolvedat",
+      "label": "getResolvedAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L395"
+    },
+    {
+      "id": "lib_support_moderation_console_test_msgrole",
+      "label": "MsgRole",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L423"
+    },
+    {
+      "id": "lib_support_moderation_console_test_classifybubble",
+      "label": "classifyBubble()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L425"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_reltime",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_slacolor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_prioritytorank",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_mockconv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_filterqueue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_makeconv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_computeneedshumanagent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_iso",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_recent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_older",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_recent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L236",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_older",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L237",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L254",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L273",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_ids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L274",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L286",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_ids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_now",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_sorted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L304",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_now",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L309",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_sorted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_older",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_newer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L322",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_sorted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L326",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L336",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L343",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L349",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_r",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_toggletakeover",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L374",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_valid_statuses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L392",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_resolving",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L393",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_getresolvedat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L395",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_msgrole",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L423",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_moderation_console_test_ts",
+      "target": "lib_support_moderation_console_test_classifybubble",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L425",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_moderation_console_test_reltime",
+      "target": "lib_support_moderation_console_test_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_moderation_console_test_slacolor",
+      "target": "lib_support_moderation_console_test_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_moderation_console_test_reltime",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_reltime",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_reltime",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_reltime",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_reltime",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_slacolor",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_filterqueue",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_filterqueue",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_filterqueue",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_makeconv",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_makeconv",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_makeconv",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_makeconv",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_support_moderation_console_test_getresolvedat",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-moderation-console.test.ts",
+      "source_location": "L396"
+    }
+  ]
+}

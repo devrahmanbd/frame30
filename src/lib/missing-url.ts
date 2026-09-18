@@ -8,8 +8,14 @@ import { resolveMissingUrlFn } from "./url-lifecycle.functions";
  * and anything else is a genuine 404. Returning the same soft-404 for all
  * three is what leaves dead URLs in the index for months.
  */
-export async function handleMissingStoreUrl(slug: string, path: string): Promise<unknown> {
-  let verdict: { kind: string; status: number; location?: string } = { kind: "miss", status: 404 };
+export async function handleMissingStoreUrl(
+  slug: string,
+  path: string,
+): Promise<unknown> {
+  let verdict: { kind: string; status: number; location?: string } = {
+    kind: "miss",
+    status: 404,
+  };
   try {
     verdict = await resolveMissingUrlFn({ data: { slug, path } });
   } catch {

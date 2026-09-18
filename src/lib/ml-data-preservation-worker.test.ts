@@ -20,13 +20,18 @@ describe("Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink
 
   describe("Residual PII Scanner", () => {
     it("detects unredacted Bangladeshi phone numbers, emails, and card numbers", () => {
-      const rawText = "Contact me at 01712345678 or support@teststore.com with card 4111 2222 3333 4444";
+      const rawText =
+        "Contact me at 01712345678 or support@teststore.com with card 4111 2222 3333 4444";
       const result = scanResidualPii(rawText);
 
       expect(result.hasPii).toBe(true);
       expect(result.matches.some((m) => m.includes("01712345678"))).toBe(true);
-      expect(result.matches.some((m) => m.includes("support@teststore.com"))).toBe(true);
-      expect(result.matches.some((m) => m.includes("4111 2222 3333 4444"))).toBe(true);
+      expect(
+        result.matches.some((m) => m.includes("support@teststore.com")),
+      ).toBe(true);
+      expect(
+        result.matches.some((m) => m.includes("4111 2222 3333 4444")),
+      ).toBe(true);
     });
 
     it("verifies clean text scrubbed by PII redactor", () => {
@@ -72,7 +77,8 @@ describe("Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink
         conversationId: "conv_891",
         systemPrompt: "You are the Framique support agent.",
         userMessage: "How do I ship my order to Chittagong via SteadFast?",
-        agentReply: "You can create a SteadFast consignment directly from the Orders tab.",
+        agentReply:
+          "You can create a SteadFast consignment directly from the Orders tab.",
         latencyMs: 340,
         grounded: true,
       });

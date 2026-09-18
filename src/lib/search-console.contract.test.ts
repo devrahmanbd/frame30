@@ -29,7 +29,9 @@ const CRON = read("src/routes/api/public/cron/search-console.ts");
 
 describe("domain policy", () => {
   it("drops invalid analytics ids instead of persisting them", () => {
-    const { value, issues } = validateSiteKit({ analytics: { enabled: { ga4: "nope" } } });
+    const { value, issues } = validateSiteKit({
+      analytics: { enabled: { ga4: "nope" } },
+    });
     expect(value.analytics.enabled["ga4"]).toBeUndefined();
     expect(issues).not.toHaveLength(0);
   });
@@ -72,8 +74,20 @@ describe("domain policy", () => {
   it("weights ctr and position by impressions", () => {
     const rows = normaliseRows(
       [
-        { keys: ["2026-01-01", "shoes"], clicks: 1, impressions: 10, ctr: 0.1, position: 10 },
-        { keys: ["2026-01-02", "shoes"], clicks: 9, impressions: 90, ctr: 0.1, position: 1 },
+        {
+          keys: ["2026-01-01", "shoes"],
+          clicks: 1,
+          impressions: 10,
+          ctr: 0.1,
+          position: 10,
+        },
+        {
+          keys: ["2026-01-02", "shoes"],
+          clicks: 9,
+          impressions: 90,
+          ctr: 0.1,
+          position: 1,
+        },
       ],
       "query",
     );
@@ -83,8 +97,14 @@ describe("domain policy", () => {
   });
 
   it("reports position improvements as positive change", () => {
-    const current = normaliseRows([{ keys: ["2026-02-01", "x"], impressions: 10, position: 4 }], "query");
-    const previous = normaliseRows([{ keys: ["2026-01-01", "x"], impressions: 10, position: 9 }], "query");
+    const current = normaliseRows(
+      [{ keys: ["2026-02-01", "x"], impressions: 10, position: 4 }],
+      "query",
+    );
+    const previous = normaliseRows(
+      [{ keys: ["2026-01-01", "x"], impressions: 10, position: 9 }],
+      "query",
+    );
     expect(comparePeriods(current, previous)[0]?.positionChange).toBe(5);
   });
 
@@ -95,15 +115,28 @@ describe("domain policy", () => {
   });
 
   it("submits a sitemap only when its content changed", () => {
-    const base = { sitemapUrl: "https://s.test/sitemap.xml", lastSubmittedUrl: "https://s.test/sitemap.xml" };
-    expect(shouldSubmitSitemap({ ...base, lastSubmittedAt: null, changed: false }).submit).toBe(false);
+    const base = {
+      sitemapUrl: "https://s.test/sitemap.xml",
+      lastSubmittedUrl: "https://s.test/sitemap.xml",
+    };
     expect(
-      shouldSubmitSitemap({ ...base, lastSubmittedAt: new Date().toISOString(), changed: true }).submit,
+      shouldSubmitSitemap({ ...base, lastSubmittedAt: null, changed: false })
+        .submit,
+    ).toBe(false);
+    expect(
+      shouldSubmitSitemap({
+        ...base,
+        lastSubmittedAt: new Date().toISOString(),
+        changed: true,
+      }).submit,
     ).toBe(false);
   });
 
   it("loads the heaviest tag last", () => {
-    const plan = tagPlan({ enabled: { gtm: "GTM-ABCDE", ga4: "G-ABCDEF" }, consentRequired: true });
+    const plan = tagPlan({
+      enabled: { gtm: "GTM-ABCDE", ga4: "G-ABCDEF" },
+      consentRequired: true,
+    });
     expect(plan.at(-1)?.vendor).toBe("gtm");
   });
 });
@@ -115,7 +148,13 @@ describe("runtime wiring", () => {
   });
 
   it("keeps Google calls behind rate-limit buckets", () => {
-    for (const bucket of ["gsc.properties", "gsc.refresh", "gsc.inspect", "gsc.sitemap", "gsc.sweep"]) {
+    for (const bucket of [
+      "gsc.properties",
+      "gsc.refresh",
+      "gsc.inspect",
+      "gsc.sitemap",
+      "gsc.sweep",
+    ]) {
       expect(read("src/lib/rate-limit.server.ts")).toContain(`"${bucket}"`);
     }
   });

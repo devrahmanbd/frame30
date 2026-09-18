@@ -1,1 +1,863 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "label": "coupons.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L1"}, {"id": "marketing_coupons_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L27"}, {"id": "marketing_coupons_coupontype", "label": "CouponType", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L41"}, {"id": "marketing_coupons_couponstatus", "label": "CouponStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L42"}, {"id": "marketing_coupons_emptyform", "label": "emptyForm", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L44"}, {"id": "marketing_coupons_statustone", "label": "statusTone", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L62"}, {"id": "marketing_coupons_statuslabel", "label": "statusLabel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L68"}, {"id": "marketing_coupons_typelabel", "label": "typeLabel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L74"}, {"id": "marketing_coupons_tominor", "label": "toMinor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L81"}, {"id": "marketing_coupons_views", "label": "VIEWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L85"}, {"id": "marketing_coupons_viewkey", "label": "ViewKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L92"}, {"id": "marketing_coupons_couponspage", "label": "CouponsPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L94"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "supabase_client_loose_supabase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "hooks_use_merchant_usemerchant", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_lib_marketing_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "lib_marketing_functions_savecouponfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_copylink", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_errorframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_field", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_money", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_statuspill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "admin_marketingui_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_lib_use_list_state_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "lib_use_list_state_useliststate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "lib_use_list_state_compareby", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "users_rahman_documents_frame30_src_components_console_kit_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "console_kit_column", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "console_kit_datatable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "console_kit_emptystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "console_kit_savedviews", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "console_kit_toolbar", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_coupontype", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_couponstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_emptyform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_statustone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_statuslabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_typelabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_tominor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_views", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_viewkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx", "target": "marketing_coupons_couponspage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L94", "weight": 1.0}], "raw_calls": [{"caller_nid": "marketing_coupons_tominor", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L82"}, {"caller_nid": "marketing_coupons_tominor", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L82"}, {"caller_nid": "marketing_coupons_tominor", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L82"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L95"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useMerchant", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L96"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L98"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useListState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L99"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L100"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L101"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L102"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L103"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L106"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L120"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L135"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L170"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L170"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L171"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "compareBy", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L174"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L190"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L196"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L201"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L218"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L225"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L232"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L246"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L248"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L263"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L264"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L272"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L272"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L300"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L301"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L308"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L310"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L317"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L332"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L333"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L341"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L347"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L347"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L355"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L367"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L380"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L389"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L400"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L411"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L420"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L431"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L439"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L454"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L462"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L464"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L470"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L470"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L478"}, {"caller_nid": "marketing_coupons_couponspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx", "source_location": "L483"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "label": "coupons.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketing_coupons_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L27"
+    },
+    {
+      "id": "marketing_coupons_coupontype",
+      "label": "CouponType",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "marketing_coupons_couponstatus",
+      "label": "CouponStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "marketing_coupons_emptyform",
+      "label": "emptyForm",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L44"
+    },
+    {
+      "id": "marketing_coupons_statustone",
+      "label": "statusTone",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "marketing_coupons_statuslabel",
+      "label": "statusLabel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L68"
+    },
+    {
+      "id": "marketing_coupons_typelabel",
+      "label": "typeLabel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L74"
+    },
+    {
+      "id": "marketing_coupons_tominor",
+      "label": "toMinor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L81"
+    },
+    {
+      "id": "marketing_coupons_views",
+      "label": "VIEWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L85"
+    },
+    {
+      "id": "marketing_coupons_viewkey",
+      "label": "ViewKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L92"
+    },
+    {
+      "id": "marketing_coupons_couponspage",
+      "label": "CouponsPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L94"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "supabase_client_loose_supabase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "hooks_use_merchant_usemerchant",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_marketing_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "lib_marketing_functions_savecouponfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_copylink",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_errorframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_money",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_statuspill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "admin_marketingui_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_use_list_state_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "lib_use_list_state_useliststate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "lib_use_list_state_compareby",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "users_rahman_documents_frame30_src_components_console_kit_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "console_kit_column",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "console_kit_datatable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "console_kit_emptystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "console_kit_savedviews",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "console_kit_toolbar",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_coupontype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_couponstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_emptyform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_statustone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_statuslabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_typelabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_tominor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_views",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_viewkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_coupons_tsx",
+      "target": "marketing_coupons_couponspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L94",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "marketing_coupons_tominor",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "marketing_coupons_tominor",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "marketing_coupons_tominor",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useMerchant",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useListState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "compareBy",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L190"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L232"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L263"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L272"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L333"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L355"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L367"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L400"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L411"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L420"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L431"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L439"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L464"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L470"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L470"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L478"
+    },
+    {
+      "caller_nid": "marketing_coupons_couponspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/coupons.tsx",
+      "source_location": "L483"
+    }
+  ]
+}

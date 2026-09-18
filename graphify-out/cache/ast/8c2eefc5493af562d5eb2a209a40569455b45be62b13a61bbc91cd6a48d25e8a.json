@@ -1,1 +1,286 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "label": "builder.content.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L1"}, {"id": "marketing_builder_content_bilingual", "label": "Bilingual", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L18"}, {"id": "marketing_builder_content_hero", "label": "hero", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L24"}, {"id": "marketing_builder_content_canvasmock", "label": "canvasMock", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L38"}, {"id": "marketing_builder_content_editingrows", "label": "editingRows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L52"}, {"id": "marketing_builder_content_lifecycle", "label": "lifecycle", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L91"}, {"id": "marketing_builder_content_themes", "label": "themes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L112"}, {"id": "marketing_builder_content_themedecisiontable", "label": "themeDecisionTable", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L145"}, {"id": "marketing_builder_content_tokensband", "label": "tokensBand", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L161"}, {"id": "marketing_builder_content_bilingualcatalogue", "label": "bilingualCatalogue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L174"}, {"id": "marketing_builder_content_fontsandcode", "label": "fontsAndCode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L191"}, {"id": "marketing_builder_content_perfband", "label": "perfBand", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L210"}, {"id": "marketing_builder_content_productpagechecklist", "label": "productPageChecklist", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L233"}, {"id": "marketing_builder_content_firsthour", "label": "firstHour", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L255"}, {"id": "marketing_builder_content_comparison", "label": "comparison", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L271"}, {"id": "marketing_builder_content_accessibility", "label": "accessibility", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L296"}, {"id": "marketing_builder_content_faq", "label": "faq", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L306"}, {"id": "marketing_builder_content_cta", "label": "cta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L372"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_bilingual", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_hero", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_canvasmock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_editingrows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_lifecycle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L91", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_themes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_themedecisiontable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_tokensband", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L161", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_bilingualcatalogue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L174", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_fontsandcode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L191", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_perfband", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_productpagechecklist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L233", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_firsthour", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L255", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_comparison", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L271", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_accessibility", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L296", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_faq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L306", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts", "target": "marketing_builder_content_cta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts", "source_location": "L372", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "label": "builder.content.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketing_builder_content_bilingual",
+      "label": "Bilingual",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "marketing_builder_content_hero",
+      "label": "hero",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "marketing_builder_content_canvasmock",
+      "label": "canvasMock",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "marketing_builder_content_editingrows",
+      "label": "editingRows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "marketing_builder_content_lifecycle",
+      "label": "lifecycle",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "marketing_builder_content_themes",
+      "label": "themes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "marketing_builder_content_themedecisiontable",
+      "label": "themeDecisionTable",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "marketing_builder_content_tokensband",
+      "label": "tokensBand",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L161"
+    },
+    {
+      "id": "marketing_builder_content_bilingualcatalogue",
+      "label": "bilingualCatalogue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L174"
+    },
+    {
+      "id": "marketing_builder_content_fontsandcode",
+      "label": "fontsAndCode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "marketing_builder_content_perfband",
+      "label": "perfBand",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "marketing_builder_content_productpagechecklist",
+      "label": "productPageChecklist",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L233"
+    },
+    {
+      "id": "marketing_builder_content_firsthour",
+      "label": "firstHour",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L255"
+    },
+    {
+      "id": "marketing_builder_content_comparison",
+      "label": "comparison",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L271"
+    },
+    {
+      "id": "marketing_builder_content_accessibility",
+      "label": "accessibility",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L296"
+    },
+    {
+      "id": "marketing_builder_content_faq",
+      "label": "faq",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L306"
+    },
+    {
+      "id": "marketing_builder_content_cta",
+      "label": "cta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L372"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_bilingual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_hero",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_canvasmock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_editingrows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_lifecycle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_themes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_themedecisiontable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_tokensband",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_bilingualcatalogue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L174",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_fontsandcode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_perfband",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_productpagechecklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_firsthour",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_comparison",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_accessibility",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L296",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_faq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_builder_content_ts",
+      "target": "marketing_builder_content_cta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/builder.content.ts",
+      "source_location": "L372",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

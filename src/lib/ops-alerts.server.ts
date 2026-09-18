@@ -53,25 +53,38 @@ export type AlertResult = {
   delivered: number;
   suppressed: number;
   failed: number;
-  channels: { key: string; status: "sent" | "failed" | "suppressed"; detail?: string }[];
+  channels: {
+    key: string;
+    status: "sent" | "failed" | "suppressed";
+    detail?: string;
+  }[];
 };
 
-const SEVERITY_RANK: Record<CronSeverity, number> = { info: 1, warning: 2, critical: 3 };
+const SEVERITY_RANK: Record<CronSeverity, number> = {
+  info: 1,
+  warning: 2,
+  critical: 3,
+};
 const DELIVERY_TIMEOUT_MS = 8_000;
 const MAX_ATTEMPTS = 3;
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as {
     from: (t: string) => any;
-    rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+    rpc: (
+      fn: string,
+      args?: Record<string, unknown>,
+    ) => Promise<{ data: unknown; error: unknown }>;
   };
 }
 
 function envChannel(): AlertChannel | null {
   const url = process.env["OPS_ALERT_WEBHOOK_URL"];
   if (!url) return null;
-  const min = (process.env["OPS_ALERT_MIN_SEVERITY"] ?? "warning") as CronSeverity;
+  const min = (process.env["OPS_ALERT_MIN_SEVERITY"] ??
+    "warning") as CronSeverity;
   return {
     id: null,
     key: "env-webhook",
@@ -79,7 +92,8 @@ function envChannel(): AlertChannel | null {
     kind: url.includes("hooks.slack.com") ? "slack" : "webhook",
     target: url,
     minSeverity: SEVERITY_RANK[min] ? min : "warning",
-    cooldownSeconds: Number(process.env["OPS_ALERT_COOLDOWN_SECONDS"] ?? 900) || 900,
+    cooldownSeconds:
+      Number(process.env["OPS_ALERT_COOLDOWN_SECONDS"] ?? 900) || 900,
     enabled: true,
   };
 }
@@ -91,22 +105,30 @@ export async function loadAlertChannels(): Promise<AlertChannel[]> {
     const a = await admin();
     const { data } = await a
       .from("ops_alert_channels")
-      .select("id, key, label, kind, target, min_severity, cooldown_seconds, enabled")
+      .select(
+        "id, key, label, kind, target, min_severity, cooldown_seconds, enabled",
+      )
       .eq("enabled", true);
     for (const row of (data ?? []) as Record<string, unknown>[]) {
       out.push({
         id: String(row["id"]),
         key: String(row["key"]),
         label: String(row["label"]),
-        kind: (String(row["kind"]) === "slack" ? "slack" : "webhook") as AlertChannel["kind"],
+        kind: (String(row["kind"]) === "slack"
+          ? "slack"
+          : "webhook") as AlertChannel["kind"],
         target: String(row["target"]),
-        minSeverity: (String(row["min_severity"] ?? "warning") as CronSeverity) ?? "warning",
+        minSeverity:
+          (String(row["min_severity"] ?? "warning") as CronSeverity) ??
+          "warning",
         cooldownSeconds: Number(row["cooldown_seconds"] ?? 900),
         enabled: Boolean(row["enabled"]),
       });
     }
   } catch (err) {
-    log("warn", "alerts.channels_unreadable", { message: (err as Error)?.message });
+    log("warn", "alerts.channels_unreadable", {
+      message: (err as Error)?.message,
+    });
   }
   const env = envChannel();
   if (env && !out.some((c) => c.target === env.target)) out.push(env);
@@ -114,10 +136,15 @@ export async function loadAlertChannels(): Promise<AlertChannel[]> {
 }
 
 /** True when this key already went out to this channel inside the cooldown. */
-async function withinCooldown(channel: AlertChannel, dedupeKey: string): Promise<boolean> {
+async function withinCooldown(
+  channel: AlertChannel,
+  dedupeKey: string,
+): Promise<boolean> {
   try {
     const a = await admin();
-    const since = new Date(Date.now() - channel.cooldownSeconds * 1000).toISOString();
+    const since = new Date(
+      Date.now() - channel.cooldownSeconds * 1000,
+    ).toISOString();
     const q = a
       .from("ops_alert_deliveries")
       .select("id")
@@ -125,7 +152,9 @@ async function withinCooldown(channel: AlertChannel, dedupeKey: string): Promise
       .eq("status", "sent")
       .gte("created_at", since)
       .limit(1);
-    const { data } = await (channel.id ? q.eq("channel_id", channel.id) : q.is("channel_id", null));
+    const { data } = await (channel.id
+      ? q.eq("channel_id", channel.id)
+      : q.is("channel_id", null));
     return Array.isArray(data) && data.length > 0;
   } catch {
     // Never let a ledger read decide to swallow a critical page.
@@ -136,10 +165,16 @@ async function withinCooldown(channel: AlertChannel, dedupeKey: string): Promise
 async function ledger(row: Record<string, unknown>): Promise<string | null> {
   try {
     const a = await admin();
-    const { data } = await a.from("ops_alert_deliveries").insert(row as never).select("id").single();
+    const { data } = await a
+      .from("ops_alert_deliveries")
+      .insert(row as never)
+      .select("id")
+      .single();
     return (data as { id?: string } | null)?.id ?? null;
   } catch (err) {
-    log("error", "alerts.ledger_write_failed", { message: (err as Error)?.message });
+    log("error", "alerts.ledger_write_failed", {
+      message: (err as Error)?.message,
+    });
     return null;
   }
 }
@@ -148,7 +183,10 @@ async function ledgerUpdate(id: string | null, patch: Record<string, unknown>) {
   if (!id) return;
   try {
     const a = await admin();
-    await a.from("ops_alert_deliveries").update(patch as never).eq("id", id);
+    await a
+      .from("ops_alert_deliveries")
+      .update(patch as never)
+      .eq("id", id);
   } catch {
     /* the alert already went out; the ledger is best-effort from here */
   }
@@ -162,8 +200,14 @@ function renderPayload(channel: AlertChannel, input: AlertInput) {
     return {
       text: `${prefix}${title}`,
       blocks: [
-        { type: "header", text: { type: "plain_text", text: `${prefix}${title}`.slice(0, 150) } },
-        { type: "section", text: { type: "mrkdwn", text: `\`\`\`${body}\`\`\`` } },
+        {
+          type: "header",
+          text: { type: "plain_text", text: `${prefix}${title}`.slice(0, 150) },
+        },
+        {
+          type: "section",
+          text: { type: "mrkdwn", text: `\`\`\`${body}\`\`\`` },
+        },
         {
           type: "context",
           elements: [
@@ -193,19 +237,32 @@ async function postOnce(channel: AlertChannel, body: unknown) {
   try {
     const res = await fetch(channel.target, {
       method: "POST",
-      headers: { "content-type": "application/json", "user-agent": "framique-alerts/1" },
+      headers: {
+        "content-type": "application/json",
+        "user-agent": "framique-alerts/1",
+      },
       body: JSON.stringify(body),
       signal: controller.signal,
     });
-    observe("framique_alert_delivery_ms", Date.now() - started, { channel: channel.key });
+    observe("framique_alert_delivery_ms", Date.now() - started, {
+      channel: channel.key,
+    });
     if (!res.ok) {
       const text = (await res.text().catch(() => "")).slice(0, 200);
-      return { ok: false as const, status: res.status, error: text || `http_${res.status}` };
+      return {
+        ok: false as const,
+        status: res.status,
+        error: text || `http_${res.status}`,
+      };
     }
     return { ok: true as const, status: res.status };
   } catch (err) {
     const aborted = (err as Error)?.name === "AbortError";
-    return { ok: false as const, status: 0, error: aborted ? "timeout" : String((err as Error)?.message ?? err) };
+    return {
+      ok: false as const,
+      status: 0,
+      error: aborted ? "timeout" : String((err as Error)?.message ?? err),
+    };
   } finally {
     clearTimeout(timer);
   }
@@ -239,8 +296,14 @@ export async function emitAlert(input: AlertInput): Promise<AlertResult> {
   }
 
   if (!channels.length) {
-    incr("framique_alert_total", { outcome: "no_channel", severity: input.severity });
-    log("warn", "alerts.no_channel", { source: input.source, title: input.title });
+    incr("framique_alert_total", {
+      outcome: "no_channel",
+      severity: input.severity,
+    });
+    log("warn", "alerts.no_channel", {
+      source: input.source,
+      title: input.title,
+    });
     await ledger({
       channel_id: null,
       dedupe_key: input.dedupeKey,
@@ -259,13 +322,24 @@ export async function emitAlert(input: AlertInput): Promise<AlertResult> {
   for (const channel of channels) {
     if (SEVERITY_RANK[input.severity] < SEVERITY_RANK[channel.minSeverity]) {
       result.suppressed += 1;
-      result.channels.push({ key: channel.key, status: "suppressed", detail: "below_min_severity" });
+      result.channels.push({
+        key: channel.key,
+        status: "suppressed",
+        detail: "below_min_severity",
+      });
       continue;
     }
     if (!input.synthetic && (await withinCooldown(channel, input.dedupeKey))) {
       result.suppressed += 1;
-      result.channels.push({ key: channel.key, status: "suppressed", detail: "cooldown" });
-      incr("framique_alert_total", { outcome: "suppressed", severity: input.severity });
+      result.channels.push({
+        key: channel.key,
+        status: "suppressed",
+        detail: "cooldown",
+      });
+      incr("framique_alert_total", {
+        outcome: "suppressed",
+        severity: input.severity,
+      });
       await ledger({
         channel_id: channel.id,
         dedupe_key: input.dedupeKey,
@@ -275,7 +349,10 @@ export async function emitAlert(input: AlertInput): Promise<AlertResult> {
         source: input.source,
         status: "suppressed",
         attempts: 0,
-        payload: { reason: "cooldown", cooldown_seconds: channel.cooldownSeconds },
+        payload: {
+          reason: "cooldown",
+          cooldown_seconds: channel.cooldownSeconds,
+        },
       });
       continue;
     }
@@ -320,13 +397,19 @@ export async function emitAlert(input: AlertInput): Promise<AlertResult> {
     if (sent) {
       result.delivered += 1;
       result.channels.push({ key: channel.key, status: "sent" });
-      incr("framique_alert_total", { outcome: "sent", severity: input.severity });
+      incr("framique_alert_total", {
+        outcome: "sent",
+        severity: input.severity,
+      });
       if (channel.id) {
         try {
           const a = await admin();
           await a
             .from("ops_alert_channels")
-            .update({ last_delivery_at: new Date().toISOString(), last_error: null } as never)
+            .update({
+              last_delivery_at: new Date().toISOString(),
+              last_error: null,
+            } as never)
             .eq("id", channel.id);
         } catch {
           /* non-fatal */
@@ -334,8 +417,15 @@ export async function emitAlert(input: AlertInput): Promise<AlertResult> {
       }
     } else {
       result.failed += 1;
-      result.channels.push({ key: channel.key, status: "failed", detail: lastError });
-      incr("framique_alert_total", { outcome: "failed", severity: input.severity });
+      result.channels.push({
+        key: channel.key,
+        status: "failed",
+        detail: lastError,
+      });
+      incr("framique_alert_total", {
+        outcome: "failed",
+        severity: input.severity,
+      });
       log("error", "alerts.delivery_failed", {
         channel: channel.key,
         status: lastStatus,
@@ -401,7 +491,9 @@ export type AlertDeliveryRow = {
   sent_at: string | null;
 };
 
-export async function loadAlertHistory(limit = 40): Promise<AlertDeliveryRow[]> {
+export async function loadAlertHistory(
+  limit = 40,
+): Promise<AlertDeliveryRow[]> {
   const a = await admin();
   const { data } = await a
     .from("ops_alert_deliveries")

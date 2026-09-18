@@ -46,11 +46,14 @@ export function clientIp(request: Request): string | null {
   return header.split(",")[0]!.trim().slice(0, 64) || null;
 }
 
-export function deviceClassOf(userAgent: string | null): RequestGeo["deviceClass"] {
+export function deviceClassOf(
+  userAgent: string | null,
+): RequestGeo["deviceClass"] {
   const ua = (userAgent ?? "").toLowerCase();
   if (!ua) return "unknown";
   if (/ipad|tablet|playbook|silk|kindle/.test(ua)) return "tablet";
-  if (/mobi|iphone|ipod|android.*mobile|windows phone/.test(ua)) return "mobile";
+  if (/mobi|iphone|ipod|android.*mobile|windows phone/.test(ua))
+    return "mobile";
   if (/android/.test(ua)) return "tablet";
   return "desktop";
 }
@@ -62,15 +65,25 @@ function clean(value: string | null, max: number) {
 function headerGeo(request: Request): RequestGeo {
   const h = request.headers;
   const country = clean(
-    h.get("cf-ipcountry") ?? h.get("x-vercel-ip-country") ?? h.get("x-geo-country"),
+    h.get("cf-ipcountry") ??
+      h.get("x-vercel-ip-country") ??
+      h.get("x-geo-country"),
     2,
   ).toUpperCase();
   const asnRaw = clean(h.get("x-geo-asn") ?? h.get("cf-asn"), 12);
   const asn = /^\d+$/.test(asnRaw) ? Number(asnRaw) : null;
   return {
     countryCode: country === "XX" || country === "T1" ? "" : country,
-    region: clean(h.get("x-vercel-ip-country-region") ?? h.get("cf-region") ?? h.get("x-geo-region"), 60),
-    city: clean(h.get("x-vercel-ip-city") ?? h.get("cf-ipcity") ?? h.get("x-geo-city"), 80),
+    region: clean(
+      h.get("x-vercel-ip-country-region") ??
+        h.get("cf-region") ??
+        h.get("x-geo-region"),
+      60,
+    ),
+    city: clean(
+      h.get("x-vercel-ip-city") ?? h.get("cf-ipcity") ?? h.get("x-geo-city"),
+      80,
+    ),
     asn,
     network: clean(h.get("x-geo-network") ?? h.get("cf-asorganization"), 80),
     deviceClass: deviceClassOf(h.get("user-agent")),
@@ -103,10 +116,14 @@ async function lookupGeo(ip: string): Promise<Partial<RequestGeo>> {
     const body = (await res.json()) as LookupAnswer;
     const asnValue = Number(body.asn ?? NaN);
     return {
-      countryCode: clean(body.country_code ?? body.country ?? "", 2).toUpperCase(),
+      countryCode: clean(
+        body.country_code ?? body.country ?? "",
+        2,
+      ).toUpperCase(),
       region: clean(body.region ?? "", 60),
       city: clean(body.city ?? "", 80),
-      asn: Number.isFinite(asnValue) && asnValue > 0 ? Math.trunc(asnValue) : null,
+      asn:
+        Number.isFinite(asnValue) && asnValue > 0 ? Math.trunc(asnValue) : null,
       network: clean(body.network ?? "", 80),
     };
   } catch {

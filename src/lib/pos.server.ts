@@ -14,11 +14,15 @@ import { enforceRateLimit } from "./rate-limit.server";
 
 type Client = SupabaseClient<Database>;
 
-export type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
+export type Json =
+  string | number | boolean | null | Json[] | { [k: string]: Json };
 export type JsonRecord = { [k: string]: Json };
 
 type RpcClient = {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 export class PosError extends Error {
@@ -37,7 +41,8 @@ const RPC_MESSAGES: Record<string, string> = {
   pos_tender_mismatch: "Tendered amounts do not add up to the sale total",
   pos_order_not_found: "Sale not found",
   pos_order_voided: "This sale was voided",
-  pos_refund_exceeds_total: "Refund is larger than the remaining refundable amount",
+  pos_refund_exceeds_total:
+    "Refund is larger than the remaining refundable amount",
   pos_shift_not_found: "Shift not found",
 };
 
@@ -46,7 +51,10 @@ function mapRpcError(message: string): PosError {
   const code = Object.keys(RPC_MESSAGES).find((k) => message.includes(k));
   if (code) return new PosError(code, RPC_MESSAGES[code] as string);
   log("warn", "pos.rpc_failed", { detail: message.slice(0, 120) });
-  return new PosError("pos_unavailable", "That till action is temporarily unavailable");
+  return new PosError(
+    "pos_unavailable",
+    "That till action is temporarily unavailable",
+  );
 }
 
 export type PosLine = { variantId: string; quantity: number };
@@ -72,7 +80,6 @@ export type PosCaptureInput = {
   lines: PosLine[];
 };
 
-
 const CASH_METHODS = ["cash", "card"];
 
 export async function openShift(
@@ -89,7 +96,8 @@ export async function openShift(
     .eq("staff_user_id", staffUserId)
     .eq("status", "open")
     .maybeSingle();
-  if (open) throw new PosError("pos_shift_already_open", "Shift is already open");
+  if (open)
+    throw new PosError("pos_shift_already_open", "Shift is already open");
 
   const { data, error } = await supabase
     .from("pos_sessions")
@@ -112,26 +120,48 @@ export async function openShift(
  */
 async function sessionTotals(supabase: Client, sessionId: string) {
   const [orders, tenders, refunds] = await Promise.all([
-    supabase.from("pos_orders").select("id, total_minor_int, status").eq("session_id", sessionId),
+    supabase
+      .from("pos_orders")
+      .select("id, total_minor_int, status")
+      .eq("session_id", sessionId),
     supabase
       .from("pos_payments")
       .select("method, amount_minor_int, pos_orders!inner(session_id, status)")
       .eq("pos_orders.session_id", sessionId),
-    supabase.from("pos_refunds").select("method, amount_minor_int").eq("session_id", sessionId),
+    supabase
+      .from("pos_refunds")
+      .select("method, amount_minor_int")
+      .eq("session_id", sessionId),
   ]);
   if (orders.error) throw orders.error;
 
   const live = (orders.data ?? []).filter((r) => r.status !== "voided");
   const tenderRows = (tenders.data ?? []).filter(
-    (r) => (r as unknown as { pos_orders?: { status?: string } }).pos_orders?.status !== "voided",
+    (r) =>
+      (r as unknown as { pos_orders?: { status?: string } }).pos_orders
+        ?.status !== "voided",
   );
   const refundRows = refunds.data ?? [];
-  const sum = (rows: { method: string; amount_minor_int: number }[], m: string) =>
-    rows.filter((r) => r.method === m).reduce((a, r) => a + Number(r.amount_minor_int), 0);
+  const sum = (
+    rows: { method: string; amount_minor_int: number }[],
+    m: string,
+  ) =>
+    rows
+      .filter((r) => r.method === m)
+      .reduce((a, r) => a + Number(r.amount_minor_int), 0);
 
-  const tenderTyped = tenderRows as unknown as { method: string; amount_minor_int: number }[];
-  const refundTyped = refundRows as unknown as { method: string; amount_minor_int: number }[];
-  const refundTotal = refundTyped.reduce((a, r) => a + Number(r.amount_minor_int), 0);
+  const tenderTyped = tenderRows as unknown as {
+    method: string;
+    amount_minor_int: number;
+  }[];
+  const refundTyped = refundRows as unknown as {
+    method: string;
+    amount_minor_int: number;
+  }[];
+  const refundTotal = refundTyped.reduce(
+    (a, r) => a + Number(r.amount_minor_int),
+    0,
+  );
   const grossMinorInt = live.reduce((a, r) => a + Number(r.total_minor_int), 0);
 
   return {
@@ -147,8 +177,11 @@ async function sessionTotals(supabase: Client, sessionId: string) {
   };
 }
 
-
-export async function currentShift(supabase: Client, merchantId: string, staffUserId: string) {
+export async function currentShift(
+  supabase: Client,
+  merchantId: string,
+  staffUserId: string,
+) {
   const { data } = await supabase
     .from("pos_sessions")
     .select("*")
@@ -175,9 +208,11 @@ export async function closeShift(
     .maybeSingle();
   if (readError) throw readError;
   if (!session) throw new PosError("pos_shift_not_found", "Shift not found");
-  if (session.status === "closed") throw new PosError("pos_shift_closed", "Shift has been closed");
+  if (session.status === "closed")
+    throw new PosError("pos_shift_closed", "Shift has been closed");
 
-  const expected = Number(session.starting_cash_minor_int) + totals.drawerCashMinorInt;
+  const expected =
+    Number(session.starting_cash_minor_int) + totals.drawerCashMinorInt;
   const { data, error } = await supabase
     .from("pos_sessions")
     .update({
@@ -202,7 +237,8 @@ async function emit(
   eventType: string,
   payload: Record<string, string | number | boolean | null>,
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   await supabaseAdmin.from("local_transactions").upsert(
     {
       merchant_id: merchantId,
@@ -238,32 +274,42 @@ export async function capturePosOrder(
       method: t.method,
       amountMinorInt: Math.max(0, Math.trunc(t.amountMinorInt)),
       tenderedMinorInt: Math.max(0, Math.trunc(t.tenderedMinorInt ?? 0)),
-      authCode: t.method === "card" ? (t.authCode ?? authCode(input.clientId)) : null,
+      authCode:
+        t.method === "card" ? (t.authCode ?? authCode(input.clientId)) : null,
     }));
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc("pos_sale_capture", {
-      _merchant_id: merchantId,
-      _session_id: input.sessionId ?? null,
-      _client_id: input.clientId,
-      _origin: input.origin,
-      _lines: input.lines.map((l) => ({
-        variantId: l.variantId,
-        quantity: Math.max(1, Math.trunc(l.quantity)),
-      })),
-      _tenders: tenders,
-      _discount_minor_int: Math.max(0, Math.trunc(input.discountMinorInt)),
-      _customer: {
-        name: input.customerName ?? "",
-        phone: input.customerPhone ?? "",
-        addressLine: input.addressLine ?? "",
-        city: input.city ?? "",
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc(
+      "pos_sale_capture",
+      {
+        _merchant_id: merchantId,
+        _session_id: input.sessionId ?? null,
+        _client_id: input.clientId,
+        _origin: input.origin,
+        _lines: input.lines.map((l) => ({
+          variantId: l.variantId,
+          quantity: Math.max(1, Math.trunc(l.quantity)),
+        })),
+        _tenders: tenders,
+        _discount_minor_int: Math.max(0, Math.trunc(input.discountMinorInt)),
+        _customer: {
+          name: input.customerName ?? "",
+          phone: input.customerPhone ?? "",
+          addressLine: input.addressLine ?? "",
+          city: input.city ?? "",
+        },
+        _captured_at: input.capturedAt ?? new Date().toISOString(),
       },
-      _captured_at: input.capturedAt ?? new Date().toISOString(),
-    });
+    );
     if (error) {
-      incr("framique_pos_capture_total", { outcome: "error", origin: input.origin });
-      throw mapRpcError((error as { message?: string }).message ?? "pos_unavailable");
+      incr("framique_pos_capture_total", {
+        outcome: "error",
+        origin: input.origin,
+      });
+      throw mapRpcError(
+        (error as { message?: string }).message ?? "pos_unavailable",
+      );
     }
 
     const result = (data ?? {}) as { order: JsonRecord; duplicate: boolean };
@@ -276,7 +322,10 @@ export async function capturePosOrder(
       {
         merchant_id: merchantId,
         client_id: input.clientId,
-        payload: { origin: input.origin, total_minor_int: Number(result.order?.["total_minor_int"] ?? 0) },
+        payload: {
+          origin: input.origin,
+          total_minor_int: Number(result.order?.["total_minor_int"] ?? 0),
+        },
         status: "synced",
       },
       { onConflict: "merchant_id,client_id" },
@@ -315,34 +364,46 @@ export async function refundPosOrder(
 ) {
   return withSpan("pos.refund", async () => {
     await enforceRateLimit("pos.refund", merchantId);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc("pos_refund", {
-      _merchant_id: merchantId,
-      _pos_order_id: input.posOrderId,
-      _staff_user_id: staffUserId,
-      _idempotency_key: input.idempotencyKey,
-      _amount_minor_int: Math.trunc(input.amountMinorInt),
-      _method: input.method,
-      _reason: input.reason ?? "",
-      _restock: input.restock,
-      _lines: input.lines.map((l) => ({
-        variantId: l.variantId,
-        quantity: Math.max(0, Math.trunc(l.quantity)),
-      })),
-    });
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc(
+      "pos_refund",
+      {
+        _merchant_id: merchantId,
+        _pos_order_id: input.posOrderId,
+        _staff_user_id: staffUserId,
+        _idempotency_key: input.idempotencyKey,
+        _amount_minor_int: Math.trunc(input.amountMinorInt),
+        _method: input.method,
+        _reason: input.reason ?? "",
+        _restock: input.restock,
+        _lines: input.lines.map((l) => ({
+          variantId: l.variantId,
+          quantity: Math.max(0, Math.trunc(l.quantity)),
+        })),
+      },
+    );
     if (error) {
       incr("framique_pos_refund_total", { outcome: "error" });
-      throw mapRpcError((error as { message?: string }).message ?? "pos_unavailable");
+      throw mapRpcError(
+        (error as { message?: string }).message ?? "pos_unavailable",
+      );
     }
     const result = (data ?? {}) as JsonRecord & { replayed?: boolean };
-    incr("framique_pos_refund_total", { outcome: result.replayed ? "replayed" : "refunded" });
+    incr("framique_pos_refund_total", {
+      outcome: result.replayed ? "replayed" : "refunded",
+    });
     log("info", "pos.refunded", { merchantId, replayed: !!result.replayed });
     return result as JsonRecord;
   });
 }
 
 /** Z-report for a shift: tender split, refunds, drawer variance, top items. */
-export async function shiftReport(supabase: Client, merchantId: string, sessionId: string) {
+export async function shiftReport(
+  supabase: Client,
+  merchantId: string,
+  sessionId: string,
+) {
   return withSpan("pos.report", async () => {
     await enforceRateLimit("pos.report", merchantId);
     const { data: owned } = await supabase
@@ -353,42 +414,58 @@ export async function shiftReport(supabase: Client, merchantId: string, sessionI
       .maybeSingle();
     if (!owned) throw new PosError("pos_shift_not_found", "Shift not found");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc("pos_shift_report", {
-      _merchant_id: merchantId,
-      _session_id: sessionId,
-    });
-    if (error) throw mapRpcError((error as { message?: string }).message ?? "pos_unavailable");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const { data, error } = await (supabaseAdmin as unknown as RpcClient).rpc(
+      "pos_shift_report",
+      {
+        _merchant_id: merchantId,
+        _session_id: sessionId,
+      },
+    );
+    if (error)
+      throw mapRpcError(
+        (error as { message?: string }).message ?? "pos_unavailable",
+      );
     return (data ?? {}) as JsonRecord;
   });
 }
 
 /** Barcode / SKU quick-add. Exact SKU wins; otherwise a narrow prefix match. */
-export async function lookupBarcode(supabase: Client, merchantId: string, code: string) {
+export async function lookupBarcode(
+  supabase: Client,
+  merchantId: string,
+  code: string,
+) {
   const term = code.trim();
   if (term.length < 2) return null;
   const { data, error } = await supabase
     .from("product_variants")
-    .select("id, name, sku, price_amount_minor_int, stock_quantity, products(title)")
+    .select(
+      "id, name, sku, price_amount_minor_int, stock_quantity, products(title)",
+    )
     .eq("merchant_id", merchantId)
     .ilike("sku", term)
     .limit(1);
   if (error) throw error;
-  incr("framique_pos_scan_total", { outcome: (data ?? []).length ? "hit" : "miss" });
+  incr("framique_pos_scan_total", {
+    outcome: (data ?? []).length ? "hit" : "miss",
+  });
   return (data ?? [])[0] ?? null;
 }
 
 export async function listPosOrders(supabase: Client, merchantId: string) {
   const { data, error } = await supabase
     .from("pos_orders")
-    .select("*, pos_payments(method, amount_minor_int, change_minor_int), pos_refunds(amount_minor_int)")
+    .select(
+      "*, pos_payments(method, amount_minor_int, change_minor_int), pos_refunds(amount_minor_int)",
+    )
     .eq("merchant_id", merchantId)
     .order("captured_at", { ascending: false })
     .limit(50);
   if (error) throw error;
   return data ?? [];
 }
-
 
 export async function recordFailure(
   supabase: Client,

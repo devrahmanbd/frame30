@@ -1,1 +1,498 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "label": "support-callbacks.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L1"}, {"id": "lib_support_callbacks_server_callbackerror", "label": "CallbackError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L21"}, {"id": "lib_support_callbacks_server_callbackerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L22"}, {"id": "lib_support_callbacks_server_callbacktimewindow", "label": "CallbackTimeWindow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L28"}, {"id": "lib_support_callbacks_server_callback_windows", "label": "CALLBACK_WINDOWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L30"}, {"id": "lib_support_callbacks_server_createcallbackinput", "label": "CreateCallbackInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L48"}, {"id": "lib_support_callbacks_server_callbackrecord", "label": "CallbackRecord", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L58"}, {"id": "lib_support_callbacks_server_normalisebdphone", "label": "normaliseBdPhone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L74"}, {"id": "lib_support_callbacks_server_validatebdphone", "label": "validateBdPhone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L91"}, {"id": "lib_support_callbacks_server_in_memory_callbacks", "label": "IN_MEMORY_CALLBACKS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L106"}, {"id": "lib_support_callbacks_server_clearinmemorycallbacks", "label": "clearInMemoryCallbacks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L108"}, {"id": "lib_support_callbacks_server_getinmemorycallbacks", "label": "getInMemoryCallbacks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L112"}, {"id": "lib_support_callbacks_server_createcallback", "label": "createCallback()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L119"}, {"id": "lib_support_callbacks_server_listcallbacks", "label": "listCallbacks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L212"}, {"id": "lib_support_callbacks_server_updatecallbackstatus", "label": "updateCallbackStatus()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L238"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_callbackerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "lib_support_callbacks_server_callbackerror", "target": "lib_support_callbacks_server_callbackerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_callbacktimewindow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_callback_windows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_createcallbackinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_callbackrecord", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_normalisebdphone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_validatebdphone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L91", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_in_memory_callbacks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_clearinmemorycallbacks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_getinmemorycallbacks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_createcallback", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_listcallbacks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L212", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts", "target": "lib_support_callbacks_server_updatecallbackstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L238", "weight": 1.0}, {"source": "lib_support_callbacks_server_validatebdphone", "target": "lib_support_callbacks_server_normalisebdphone", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L93", "weight": 1.0}, {"source": "lib_support_callbacks_server_listcallbacks", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L216", "weight": 1.0}, {"source": "lib_support_callbacks_server_listcallbacks", "target": "lib_support_callbacks_server_getinmemorycallbacks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L231", "weight": 1.0}, {"source": "lib_support_callbacks_server_updatecallbackstatus", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L244", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_callbacks_server_callbackerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L23"}, {"caller_nid": "lib_support_callbacks_server_normalisebdphone", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L75"}, {"caller_nid": "lib_support_callbacks_server_normalisebdphone", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L76"}, {"caller_nid": "lib_support_callbacks_server_normalisebdphone", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L79"}, {"caller_nid": "lib_support_callbacks_server_normalisebdphone", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L80"}, {"caller_nid": "lib_support_callbacks_server_normalisebdphone", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L82"}, {"caller_nid": "lib_support_callbacks_server_validatebdphone", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L94"}, {"caller_nid": "lib_support_callbacks_server_getinmemorycallbacks", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L113"}, {"caller_nid": "lib_support_callbacks_server_createcallback", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L128"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L213"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L217"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L217"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L217"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L217"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L217"}, {"caller_nid": "lib_support_callbacks_server_listcallbacks", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L225"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L245"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L245"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L245"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L245"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L247"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L253"}, {"caller_nid": "lib_support_callbacks_server_updatecallbackstatus", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts", "source_location": "L257"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "label": "support-callbacks.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_callbacks_server_callbackerror",
+      "label": "CallbackError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_support_callbacks_server_callbackerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_support_callbacks_server_callbacktimewindow",
+      "label": "CallbackTimeWindow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_support_callbacks_server_callback_windows",
+      "label": "CALLBACK_WINDOWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_support_callbacks_server_createcallbackinput",
+      "label": "CreateCallbackInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_support_callbacks_server_callbackrecord",
+      "label": "CallbackRecord",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_support_callbacks_server_normalisebdphone",
+      "label": "normaliseBdPhone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_support_callbacks_server_validatebdphone",
+      "label": "validateBdPhone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "lib_support_callbacks_server_in_memory_callbacks",
+      "label": "IN_MEMORY_CALLBACKS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "lib_support_callbacks_server_clearinmemorycallbacks",
+      "label": "clearInMemoryCallbacks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "lib_support_callbacks_server_getinmemorycallbacks",
+      "label": "getInMemoryCallbacks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_support_callbacks_server_createcallback",
+      "label": "createCallback()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L119"
+    },
+    {
+      "id": "lib_support_callbacks_server_listcallbacks",
+      "label": "listCallbacks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L212"
+    },
+    {
+      "id": "lib_support_callbacks_server_updatecallbackstatus",
+      "label": "updateCallbackStatus()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L238"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_callbackerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_callbacks_server_callbackerror",
+      "target": "lib_support_callbacks_server_callbackerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_callbacktimewindow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_callback_windows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_createcallbackinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_callbackrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_normalisebdphone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_validatebdphone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_in_memory_callbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_clearinmemorycallbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_getinmemorycallbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_createcallback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_listcallbacks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L212",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_callbacks_server_ts",
+      "target": "lib_support_callbacks_server_updatecallbackstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_callbacks_server_validatebdphone",
+      "target": "lib_support_callbacks_server_normalisebdphone",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_callbacks_server_listcallbacks",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_callbacks_server_listcallbacks",
+      "target": "lib_support_callbacks_server_getinmemorycallbacks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_callbacks_server_updatecallbackstatus",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_callbacks_server_callbackerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_normalisebdphone",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_normalisebdphone",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_normalisebdphone",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_normalisebdphone",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_normalisebdphone",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_validatebdphone",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_getinmemorycallbacks",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_createcallback",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_listcallbacks",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "lib_support_callbacks_server_updatecallbackstatus",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-callbacks.server.ts",
+      "source_location": "L257"
+    }
+  ]
+}

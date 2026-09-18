@@ -2,7 +2,7 @@
 
 > **Standards:** Google Search Central, Schema.org Community Group, Koray Tuğberk Gübür Semantic SEO Framework  
 > **Target Scope:** All marketing routes (`/`, `/features`, `/pricing`, `/about`, `/compare/*`) and tenant storefronts (`/store/$slug/*`)  
-> **Key Objective:** 100% Rich Result Eligibility in Google Search, AI Overviews, and Knowledge Graph Entity Canonicalization  
+> **Key Objective:** 100% Rich Result Eligibility in Google Search, AI Overviews, and Knowledge Graph Entity Canonicalization
 
 ---
 
@@ -34,13 +34,14 @@ Google's semantic parsing algorithms and natural language processing models (suc
 ```
 
 ### 1.1 Strict On-Page Heading Rules
+
 1. **Single `H1` Per Route:** Every indexable URL must feature exactly one `<h1>` containing the primary entity and core value proposition.
 2. **Predictable Tree Traversal:** `H2` defines the macro section; `H3` defines supporting micro-attributes. Never place an `H3` outside of an `H2` container.
 3. **No Fluff In Headings:** Avoid vague headings like "Why Choose Us", "Features", or "Get Started".  
-   *Bad:* `<h2>Features</h2>`  
-   *Good:* `<h2>Visual E-Commerce Builder with Framer-Grade Design Freedom</h2>`  
-   *Bad:* `<h2>Pricing</h2>`  
-   *Good:* `<h2>Zero Platform Transaction Fees: Transparent Monthly Plans</h2>`
+   _Bad:_ `<h2>Features</h2>`  
+   _Good:_ `<h2>Visual E-Commerce Builder with Framer-Grade Design Freedom</h2>`  
+   _Bad:_ `<h2>Pricing</h2>`  
+   _Good:_ `<h2>Zero Platform Transaction Fees: Transparent Monthly Plans</h2>`
 
 ---
 
@@ -207,13 +208,13 @@ To ensure Google's knowledge graph accurately identifies Framique as a high-auth
 
 Koray Tuğberk Gübür's on-page SEO doctrine demonstrates that Google computes query relevance by analyzing **anchor text distribution and surrounding sentence vectors**.
 
-| Target Destination URL | Required Contextual Anchor Text | Surrounding Sentence Semantic Vector |
-| :--- | :--- | :--- |
-| `/compare/shopify` | `Shopify alternative with zero transaction fees` | *"Merchants looking to avoid high monthly fees and gateway penalties should evaluate a [Shopify alternative with zero transaction fees](/compare/shopify)."* |
-| `/features/builder` | `visual e-commerce builder with Framer-level design freedom` | *"Design unique storefront layouts without code using our [visual e-commerce builder with Framer-level design freedom](/features/builder)."* |
-| `/payments` | `native bKash and Nagad payment gateway integrations` | *"Accept direct mobile payments with [native bKash and Nagad payment gateway integrations](/payments) without third-party app fees."* |
-| `/fulfilment` | `automated Steadfast and Pathao courier dispatch` | *"Fulfill customer orders in seconds through [automated Steadfast and Pathao courier dispatch](/fulfilment) directly from your dashboard."* |
-| `/pricing` | `transparent zero percent platform fee pricing` | *"Scale your business without paying revenue royalties under our [transparent zero percent platform fee pricing](/pricing)."* |
+| Target Destination URL | Required Contextual Anchor Text                              | Surrounding Sentence Semantic Vector                                                                                                                         |
+| :--------------------- | :----------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/compare/shopify`     | `Shopify alternative with zero transaction fees`             | _"Merchants looking to avoid high monthly fees and gateway penalties should evaluate a [Shopify alternative with zero transaction fees](/compare/shopify)."_ |
+| `/features/builder`    | `visual e-commerce builder with Framer-level design freedom` | _"Design unique storefront layouts without code using our [visual e-commerce builder with Framer-level design freedom](/features/builder)."_                 |
+| `/payments`            | `native bKash and Nagad payment gateway integrations`        | _"Accept direct mobile payments with [native bKash and Nagad payment gateway integrations](/payments) without third-party app fees."_                        |
+| `/fulfilment`          | `automated Steadfast and Pathao courier dispatch`            | _"Fulfill customer orders in seconds through [automated Steadfast and Pathao courier dispatch](/fulfilment) directly from your dashboard."_                  |
+| `/pricing`             | `transparent zero percent platform fee pricing`              | _"Scale your business without paying revenue royalties under our [transparent zero percent platform fee pricing](/pricing)."_                                |
 
 ---
 
@@ -221,12 +222,12 @@ Koray Tuğberk Gübür's on-page SEO doctrine demonstrates that Google computes 
 
 To maintain top-tier rankings in Google Search, every page on Framique adheres to the following thresholds:
 
-| Core Web Vital Metric | Target Threshold | Implementation Mechanism in Framique |
-| :--- | :--- | :--- |
-| **TTFB (Time to First Byte)** | **< 80ms** | TanStack Start edge rendering deployed across regional CDN nodes. |
-| **LCP (Largest Contentful Paint)**| **< 1.2s** | Preload priority on hero webp/avif assets, inline critical CSS tokens. |
-| **INP (Interaction to Next Paint)**| **< 50ms** | Selective asynchronous hydration, zero blocking main-thread loops. |
-| **CLS (Cumulative Layout Shift)** | **0.00** | Strict CSS aspect-ratio containment on all image and media containers. |
+| Core Web Vital Metric               | Target Threshold | Implementation Mechanism in Framique                                   |
+| :---------------------------------- | :--------------- | :--------------------------------------------------------------------- |
+| **TTFB (Time to First Byte)**       | **< 80ms**       | TanStack Start edge rendering deployed across regional CDN nodes.      |
+| **LCP (Largest Contentful Paint)**  | **< 1.2s**       | Preload priority on hero webp/avif assets, inline critical CSS tokens. |
+| **INP (Interaction to Next Paint)** | **< 50ms**       | Selective asynchronous hydration, zero blocking main-thread loops.     |
+| **CLS (Cumulative Layout Shift)**   | **0.00**         | Strict CSS aspect-ratio containment on all image and media containers. |
 
 ---
 
@@ -236,19 +237,37 @@ Every route dynamically sets self-referencing canonical URLs and Open Graph tags
 
 ```html
 <!-- Canonical Link Tag -->
-<link rel="canonical" href="https://framique.com/compare/shopify-webflow-framer" />
+<link
+  rel="canonical"
+  href="https://framique.com/compare/shopify-webflow-framer"
+/>
 
 <!-- Title Tag (50-60 characters, Entity + Keyword) -->
 <title>FRAMIQUE vs Shopify vs Webflow vs Framer: 2026 Comparison</title>
 
 <!-- Meta Description (140-155 characters, Actionable Value Proposition) -->
-<meta name="description" content="Compare FRAMIQUE, Shopify, Webflow, and Framer. Discover the sovereign cloud e-commerce CMS with 0% fees, native bKash/Nagad checkouts, and edge SSR speed." />
+<meta
+  name="description"
+  content="Compare FRAMIQUE, Shopify, Webflow, and Framer. Discover the sovereign cloud e-commerce CMS with 0% fees, native bKash/Nagad checkouts, and edge SSR speed."
+/>
 
 <!-- Open Graph / Twitter Protocol -->
 <meta property="og:type" content="article" />
-<meta property="og:title" content="FRAMIQUE vs Shopify vs Webflow vs Framer: 2026 Comparison" />
-<meta property="og:description" content="Explore why modern brands are choosing FRAMIQUE over Shopify, Webflow, and Framer for design freedom and zero platform fees." />
-<meta property="og:url" content="https://framique.com/compare/shopify-webflow-framer" />
-<meta property="og:image" content="https://framique.com/assets/og-framique-vs-shopify.png" />
+<meta
+  property="og:title"
+  content="FRAMIQUE vs Shopify vs Webflow vs Framer: 2026 Comparison"
+/>
+<meta
+  property="og:description"
+  content="Explore why modern brands are choosing FRAMIQUE over Shopify, Webflow, and Framer for design freedom and zero platform fees."
+/>
+<meta
+  property="og:url"
+  content="https://framique.com/compare/shopify-webflow-framer"
+/>
+<meta
+  property="og:image"
+  content="https://framique.com/assets/og-framique-vs-shopify.png"
+/>
 <meta name="twitter:card" content="summary_large_image" />
 ```

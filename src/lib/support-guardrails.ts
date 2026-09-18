@@ -13,7 +13,8 @@
  * behind `LLMService` never changes the safety envelope.
  */
 
-export type GuardKind = "injection" | "unsafe" | "cross_tenant" | "authority" | "pii";
+export type GuardKind =
+  "injection" | "unsafe" | "cross_tenant" | "authority" | "pii";
 
 export type GuardVerdict = {
   allowed: boolean;
@@ -22,31 +23,62 @@ export type GuardVerdict = {
 };
 
 const INJECTION_RULES: Array<[string, RegExp]> = [
-  ["ignore_previous", /\b(ignore|disregard|forget)\b[^.]{0,30}\b(previous|prior|above|earlier)\b/i],
+  [
+    "ignore_previous",
+    /\b(ignore|disregard|forget)\b[^.]{0,30}\b(previous|prior|above|earlier)\b/i,
+  ],
   ["system_prompt", /\b(system|developer)\s*(prompt|message|instructions?)\b/i],
-  ["role_override", /\byou are now\b|\bact as\b[^.]{0,20}\b(admin|owner|developer|root)\b/i],
-  ["secret_exfil", /\b(api[_\s-]?key|service[_\s-]?role|secret|token|password|env var)\b/i],
+  [
+    "role_override",
+    /\byou are now\b|\bact as\b[^.]{0,20}\b(admin|owner|developer|root)\b/i,
+  ],
+  [
+    "secret_exfil",
+    /\b(api[_\s-]?key|service[_\s-]?role|secret|token|password|env var)\b/i,
+  ],
   ["tenant_probe", /\b(other|another|all)\s+(store|merchant|tenant|shop)s?\b/i],
-  ["sql_probe", /\b(select\s+\*|drop\s+table|insert\s+into|update\s+\w+\s+set)\b/i],
-  ["tool_forgery", /\b(tool_call|function_call|<\|im_start\|>|```json\s*\{\s*"tool")/i],
+  [
+    "sql_probe",
+    /\b(select\s+\*|drop\s+table|insert\s+into|update\s+\w+\s+set)\b/i,
+  ],
+  [
+    "tool_forgery",
+    /\b(tool_call|function_call|<\|im_start\|>|```json\s*\{\s*"tool")/i,
+  ],
 ];
 
 const AUTHORITY_RULES: Array<[string, RegExp]> = [
-  ["grant_refund", /\b(i (will|can|have)|we (will|can|have))\b[^.]{0,40}\b(refund|reimburse|credit)\b/i],
-  ["change_price", /\b(i|we)\b[^.]{0,30}\b(set|change|lower|discount)\b[^.]{0,20}\bprice\b/i],
-  ["cancel_order", /\b(i|we)\b[^.]{0,20}\b(cancelled|cancelled it|have cancelled|will cancel)\b/i],
-  ["guarantee_stock", /\b(guarantee|promise)\b[^.]{0,25}\b(stock|in stock|delivery date)\b/i],
+  [
+    "grant_refund",
+    /\b(i (will|can|have)|we (will|can|have))\b[^.]{0,40}\b(refund|reimburse|credit)\b/i,
+  ],
+  [
+    "change_price",
+    /\b(i|we)\b[^.]{0,30}\b(set|change|lower|discount)\b[^.]{0,20}\bprice\b/i,
+  ],
+  [
+    "cancel_order",
+    /\b(i|we)\b[^.]{0,20}\b(cancelled|cancelled it|have cancelled|will cancel)\b/i,
+  ],
+  [
+    "guarantee_stock",
+    /\b(guarantee|promise)\b[^.]{0,25}\b(stock|in stock|delivery date)\b/i,
+  ],
 ];
 
 /** Digits that look like BD money/quantity claims made without a pinned tool result. */
-const NUMERIC_CLAIM = /(৳|BDT|Tk\.?)\s?[\d,]+|[\d,]+\s?(pieces?|pcs|units?|টাকা)/i;
+const NUMERIC_CLAIM =
+  /(৳|BDT|Tk\.?)\s?[\d,]+|[\d,]+\s?(pieces?|pcs|units?|টাকা)/i;
 
 /** Raw identifiers that must never round-trip into a reply or a log line. */
 const PII_PATTERNS: Array<[string, RegExp]> = [
   ["email", /[\w.+-]+@[\w-]+\.[\w.]{2,}/g],
   ["phone", /(?:\+?88)?01[3-9]\d{8}/g],
   ["card", /\b(?:\d[ -]?){13,19}\b/g],
-  ["uuid", /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi],
+  [
+    "uuid",
+    /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi,
+  ],
 ];
 
 /** Inbound scan. Runs on every user turn before retrieval or any tool call. */
@@ -65,7 +97,10 @@ export function screenInbound(text: string): GuardVerdict {
  * Outbound scan. `pinned` is true only when every figure in the draft came
  * from a recorded tool call against a tenant-scoped source table.
  */
-export function screenOutbound(text: string, opts: { pinned: boolean }): GuardVerdict {
+export function screenOutbound(
+  text: string,
+  opts: { pinned: boolean },
+): GuardVerdict {
   for (const [rule, re] of AUTHORITY_RULES) {
     if (re.test(text)) return { allowed: false, kind: "authority", rule };
   }

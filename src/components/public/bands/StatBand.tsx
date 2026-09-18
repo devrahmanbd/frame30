@@ -32,7 +32,9 @@ export type StatBandProps = {
 };
 
 export function StatBand({ stats, columns = 4, className }: StatBandProps) {
-  const shown = stats.filter((stat) => stat.display != null || stat.value != null);
+  const shown = stats.filter(
+    (stat) => stat.display != null || stat.value != null,
+  );
   if (shown.length === 0) return null;
 
   return (
@@ -44,8 +46,14 @@ export function StatBand({ stats, columns = 4, className }: StatBandProps) {
       )}
     >
       {shown.map((stat) => (
-        <Reveal key={stat.id} className="fq-glass fq-dots fq-hover-spotlight fq-edge-inner rounded-fq-lg p-6">
-          <p data-type-role="numeral" className="fq-display text-3xl tabular-nums sm:text-4xl">
+        <Reveal
+          key={stat.id}
+          className="fq-glass fq-dots fq-hover-spotlight fq-edge-inner rounded-fq-lg p-6"
+        >
+          <p
+            data-type-role="numeral"
+            className="fq-display text-3xl tabular-nums sm:text-4xl"
+          >
             {stat.display != null ? (
               <>
                 {stat.prefix}
@@ -61,8 +69,20 @@ export function StatBand({ stats, columns = 4, className }: StatBandProps) {
               />
             )}
           </p>
-          <p data-type-role="caption" className="mt-3 text-sm text-muted-foreground">{stat.label}</p>
-          {stat.hint ? <p data-type-role="caption" className="mt-1 text-xs text-muted-foreground">{stat.hint}</p> : null}
+          <p
+            data-type-role="caption"
+            className="mt-3 text-sm text-muted-foreground"
+          >
+            {stat.label}
+          </p>
+          {stat.hint ? (
+            <p
+              data-type-role="caption"
+              className="mt-1 text-xs text-muted-foreground"
+            >
+              {stat.hint}
+            </p>
+          ) : null}
         </Reveal>
       ))}
     </Stagger>

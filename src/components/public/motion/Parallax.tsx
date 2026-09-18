@@ -34,7 +34,11 @@ export function Parallax({ children, depth = 0.2, className }: ParallaxProps) {
         end: "bottom top",
         onUpdate: (self) => {
           // self.progress is 0…1 across the pass; map to -1…1 around centre.
-          const y = parallaxOffset(self.progress * 2 - 1, depth, MOTION_TOKENS.distance.parallaxMax);
+          const y = parallaxOffset(
+            self.progress * 2 - 1,
+            depth,
+            MOTION_TOKENS.distance.parallaxMax,
+          );
           gsap.set(node, { y, force3D: true });
         },
       });

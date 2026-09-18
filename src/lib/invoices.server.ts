@@ -37,10 +37,31 @@ export type InvoiceDocument = {
     paymentMethod: string;
     placedAt: string;
     codSurchargeMinor: number;
-    customer: { name: string; phone: string; email: string | null; address: string; city: string; postcode: string | null };
+    customer: {
+      name: string;
+      phone: string;
+      email: string | null;
+      address: string;
+      city: string;
+      postcode: string | null;
+    };
   };
-  merchant: { name: string; slug: string; supportEmail: string | null; supportPhone: string | null; pricesIncludeVat: boolean };
-  lines: { id: string; title: string; variant: string; sku: string | null; quantity: number; unitPriceMinor: number; lineTotalMinor: number }[];
+  merchant: {
+    name: string;
+    slug: string;
+    supportEmail: string | null;
+    supportPhone: string | null;
+    pricesIncludeVat: boolean;
+  };
+  lines: {
+    id: string;
+    title: string;
+    variant: string;
+    sku: string | null;
+    quantity: number;
+    unitPriceMinor: number;
+    lineTotalMinor: number;
+  }[];
 };
 
 /**
@@ -73,11 +94,17 @@ export async function loadInvoiceDocument(
         .maybeSingle(),
       db
         .from("order_items")
-        .select("id, product_title, variant_name, sku, quantity, unit_price_minor_int, line_total_minor_int")
+        .select(
+          "id, product_title, variant_name, sku, quantity, unit_price_minor_int, line_total_minor_int",
+        )
         .eq("merchant_id", merchantId)
         .eq("order_id", orderId)
         .order("created_at", { ascending: true }),
-      db.from("merchants").select("name, slug").eq("id", merchantId).maybeSingle(),
+      db
+        .from("merchants")
+        .select("name, slug")
+        .eq("id", merchantId)
+        .maybeSingle(),
       db
         .from("merchant_settings")
         .select("support_email, support_phone, prices_include_vat")

@@ -1,1 +1,263 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "label": "ops-capacity.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L1"}, {"id": "lib_ops_capacity_test_capacity", "label": "CAPACITY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L5"}, {"id": "lib_ops_capacity_test_runbooks", "label": "RUNBOOKS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L6"}, {"id": "lib_ops_capacity_test_anchors", "label": "anchors()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L8"}, {"id": "lib_ops_capacity_test_keys", "label": "keys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L28"}, {"id": "lib_ops_capacity_test_md", "label": "md", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L45"}, {"id": "lib_ops_capacity_test_links", "label": "links", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L67"}, {"id": "lib_ops_capacity_test_available", "label": "available", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L69"}, {"id": "lib_ops_capacity_test_files", "label": "files", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L74"}, {"id": "lib_ops_capacity_test_body", "label": "body", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L77"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "users_rahman_documents_frame30_scripts_load_suite_mjs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "scripts_load_suite_scenarios", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "scripts_load_suite_markdowntable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "scripts_load_suite_scenarioverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_capacity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_runbooks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_anchors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_md", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_links", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_available", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_files", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_available", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts", "target": "lib_ops_capacity_test_body", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L77", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_ops_capacity_test_anchors", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L9"}, {"caller_nid": "lib_ops_capacity_test_anchors", "callee": "matchAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L9"}, {"caller_nid": "lib_ops_capacity_test_anchors", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L12"}, {"caller_nid": "lib_ops_capacity_test_anchors", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L12"}, {"caller_nid": "lib_ops_capacity_test_anchors", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts", "source_location": "L12"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "label": "ops-capacity.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ops_capacity_test_capacity",
+      "label": "CAPACITY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_ops_capacity_test_runbooks",
+      "label": "RUNBOOKS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L6"
+    },
+    {
+      "id": "lib_ops_capacity_test_anchors",
+      "label": "anchors()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "lib_ops_capacity_test_keys",
+      "label": "keys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_ops_capacity_test_md",
+      "label": "md",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_ops_capacity_test_links",
+      "label": "links",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L67"
+    },
+    {
+      "id": "lib_ops_capacity_test_available",
+      "label": "available",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_ops_capacity_test_files",
+      "label": "files",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_ops_capacity_test_body",
+      "label": "body",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L77"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "scripts_load_suite_scenarios",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "scripts_load_suite_markdowntable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "scripts_load_suite_scenarioverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_capacity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_runbooks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_anchors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_md",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_links",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_available",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_available",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ops_capacity_test_ts",
+      "target": "lib_ops_capacity_test_body",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_ops_capacity_test_anchors",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "lib_ops_capacity_test_anchors",
+      "callee": "matchAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "lib_ops_capacity_test_anchors",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "lib_ops_capacity_test_anchors",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "lib_ops_capacity_test_anchors",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ops-capacity.test.ts",
+      "source_location": "L12"
+    }
+  ]
+}

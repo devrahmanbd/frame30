@@ -48,7 +48,12 @@ export type SeoGateInput = {
   /** Whether the entity is advertised in a sitemap when indexable. */
   inSitemap: boolean;
   /** Live siblings in the same tenant, for the duplicate-title check. */
-  siblings: readonly { type: string; id: string | null; label: string; title: string }[];
+  siblings: readonly {
+    type: string;
+    id: string | null;
+    label: string;
+    title: string;
+  }[];
 };
 
 export type SeoGateReport = {
@@ -71,7 +76,10 @@ function samePage(a: string, b: string): boolean {
     const left = new URL(a);
     const right = new URL(b);
     const strip = (p: string) => p.replace(/\/+$/, "") || "/";
-    return left.origin === right.origin && strip(left.pathname) === strip(right.pathname);
+    return (
+      left.origin === right.origin &&
+      strip(left.pathname) === strip(right.pathname)
+    );
   } catch {
     return false;
   }
@@ -92,7 +100,8 @@ export function composeSeoPublishGate(input: SeoGateInput): SeoGateReport {
     failures.push({
       code: "title_missing",
       blocking: true,
-      message: "This page has no title — every search result would show the store name instead.",
+      message:
+        "This page has no title — every search result would show the store name instead.",
       messageBn: "এই পেজের কোনো টাইটেল নেই — সার্চে শুধু স্টোরের নাম দেখাবে।",
     });
   } else {
@@ -100,7 +109,10 @@ export function composeSeoPublishGate(input: SeoGateInput): SeoGateReport {
     const clash = input.siblings.find(
       (s) =>
         titleKey(s.title) === key &&
-        !(s.type === input.entityType && (s.id ?? null) === (input.entityId ?? null)),
+        !(
+          s.type === input.entityType &&
+          (s.id ?? null) === (input.entityId ?? null)
+        ),
     );
     if (clash) {
       failures.push({
@@ -117,7 +129,8 @@ export function composeSeoPublishGate(input: SeoGateInput): SeoGateReport {
     notices.push({
       code: "description_missing",
       blocking: false,
-      message: "No description — Google will assemble a snippet from whatever it finds on the page.",
+      message:
+        "No description — Google will assemble a snippet from whatever it finds on the page.",
       messageBn: "বর্ণনা নেই — গুগল পেজ থেকে যা পায় তা দিয়েই স্নিপেট বানাবে।",
     });
   }
@@ -131,8 +144,14 @@ export function composeSeoPublishGate(input: SeoGateInput): SeoGateReport {
         message: "The canonical URL must be an absolute https:// address.",
         messageBn: "ক্যানোনিকাল URL অবশ্যই সম্পূর্ণ https:// ঠিকানা হতে হবে।",
       });
-    } else if (input.robotsIndex && input.selfUrl && !samePage(canonical, input.selfUrl)) {
-      const offsite = input.selfUrl ? !sameOrigin(canonical, input.selfUrl) : true;
+    } else if (
+      input.robotsIndex &&
+      input.selfUrl &&
+      !samePage(canonical, input.selfUrl)
+    ) {
+      const offsite = input.selfUrl
+        ? !sameOrigin(canonical, input.selfUrl)
+        : true;
       failures.push({
         code: "canonical_offsite",
         blocking: true,
@@ -146,7 +165,8 @@ export function composeSeoPublishGate(input: SeoGateInput): SeoGateReport {
     failures.push({
       code: "noindex_in_sitemap",
       blocking: true,
-      message: "The page is set to noindex but is still advertised in the sitemap — remove one of the two.",
+      message:
+        "The page is set to noindex but is still advertised in the sitemap — remove one of the two.",
       messageBn: "পেজটি noindex, অথচ সাইটম্যাপে এখনো আছে — দুটির একটি বদলান।",
     });
   }

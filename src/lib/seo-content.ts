@@ -17,7 +17,12 @@
 
 export type DocHeading = { level: number; text: string };
 export type DocImage = { src: string; alt: string; hasDimensions: boolean };
-export type DocLink = { href: string; text: string; internal: boolean; nofollow: boolean };
+export type DocLink = {
+  href: string;
+  text: string;
+  internal: boolean;
+  nofollow: boolean;
+};
 
 export type DocumentFacts = {
   /** Tag-free, entity-decoded, whitespace-collapsed body copy. */
@@ -51,8 +56,13 @@ const ENTITIES: Record<string, string> = {
 export function decodeEntities(input: string): string {
   return input.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, body: string) => {
     if (body.startsWith("#")) {
-      const code = body[1] === "x" || body[1] === "X" ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
-      return Number.isFinite(code) && code > 0 && code < 0x110000 ? String.fromCodePoint(code) : match;
+      const code =
+        body[1] === "x" || body[1] === "X"
+          ? parseInt(body.slice(2), 16)
+          : parseInt(body.slice(1), 10);
+      return Number.isFinite(code) && code > 0 && code < 0x110000
+        ? String.fromCodePoint(code)
+        : match;
     }
     return ENTITIES[body.toLowerCase()] ?? match;
   });
@@ -77,7 +87,10 @@ export function toPlainText(source: string): string {
 }
 
 function attr(tag: string, name: string): string {
-  const match = new RegExp(`${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s>]+))`, "i").exec(tag);
+  const match = new RegExp(
+    `${name}\\s*=\\s*("([^"]*)"|'([^']*)'|([^\\s>]+))`,
+    "i",
+  ).exec(tag);
   if (!match) return "";
   return decodeEntities(match[2] ?? match[3] ?? match[4] ?? "").trim();
 }
@@ -108,11 +121,15 @@ export function splitSentences(text: string): string[] {
 }
 
 export function countWords(text: string): number {
-  return text.split(/[\s\u200b]+/u).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  return text.split(/[\s\u200b]+/u).filter((w) => /[\p{L}\p{N}]/u.test(w))
+    .length;
 }
 
 /** Everything the analyser needs, extracted in one pass over the source. */
-export function documentFacts(source: string, options: { origin?: string } = {}): DocumentFacts {
+export function documentFacts(
+  source: string,
+  options: { origin?: string } = {},
+): DocumentFacts {
   const raw = typeof source === "string" ? source : "";
   const html = /<\/?[a-z][\s\S]*>/i.test(raw);
 
@@ -123,7 +140,12 @@ export function documentFacts(source: string, options: { origin?: string } = {})
   if (html) {
     const headingRe = /<h([1-6])\b[^>]*>([\s\S]*?)<\/h\1>/gi;
     for (let m = headingRe.exec(raw); m; m = headingRe.exec(raw)) {
-      headings.push({ level: Number(m[1]), text: toPlainText(m[2] ?? "").replace(/\n/g, " ").trim() });
+      headings.push({
+        level: Number(m[1]),
+        text: toPlainText(m[2] ?? "")
+          .replace(/\n/g, " ")
+          .trim(),
+      });
     }
     const imgRe = /<img\b[^>]*>/gi;
     for (let m = imgRe.exec(raw); m; m = imgRe.exec(raw)) {
@@ -141,7 +163,9 @@ export function documentFacts(source: string, options: { origin?: string } = {})
       if (!href) continue;
       links.push({
         href,
-        text: toPlainText(m[2] ?? "").replace(/\n/g, " ").trim(),
+        text: toPlainText(m[2] ?? "")
+          .replace(/\n/g, " ")
+          .trim(),
         internal: isInternalHref(href, options.origin),
         nofollow: /nofollow/i.test(attr(`<a ${attrs}>`, "rel")),
       });
@@ -154,7 +178,11 @@ export function documentFacts(source: string, options: { origin?: string } = {})
     }
     const mdImage = /!\[([^\]]*)\]\(([^)\s]+)/g;
     for (let m = mdImage.exec(raw); m; m = mdImage.exec(raw)) {
-      images.push({ src: m[2] ?? "", alt: (m[1] ?? "").trim(), hasDimensions: false });
+      images.push({
+        src: m[2] ?? "",
+        alt: (m[1] ?? "").trim(),
+        hasDimensions: false,
+      });
     }
     const mdLink = /(^|[^!])\[([^\]]+)\]\(([^)\s]+)/g;
     for (let m = mdLink.exec(raw); m; m = mdLink.exec(raw)) {
@@ -239,12 +267,28 @@ export function phrasePosition(haystack: string, phrase: string): number {
 /* ------------------------------ readability -------------------------------- */
 
 const TRANSITIONS = [
-  "because", "therefore", "however", "meanwhile", "in addition", "for example",
-  "in short", "as a result", "on the other hand", "finally", "first", "second",
-  "instead", "besides", "although", "so that", "in fact", "that is why",
+  "because",
+  "therefore",
+  "however",
+  "meanwhile",
+  "in addition",
+  "for example",
+  "in short",
+  "as a result",
+  "on the other hand",
+  "finally",
+  "first",
+  "second",
+  "instead",
+  "besides",
+  "although",
+  "so that",
+  "in fact",
+  "that is why",
 ];
 
-const PASSIVE_AUX = /\b(?:is|are|was|were|been|being|be)\b\s+(?:\w+ly\s+)?(\w+(?:ed|en))\b/gi;
+const PASSIVE_AUX =
+  /\b(?:is|are|was|were|been|being|be)\b\s+(?:\w+ly\s+)?(\w+(?:ed|en))\b/gi;
 
 export type Readability = {
   /** Honest opt-out: বাংলা has no validated readability model here. */
@@ -264,9 +308,7 @@ function syllables(word: string): number {
   const w = word.toLowerCase().replace(/[^a-z]/g, "");
   if (!w) return 0;
   if (w.length <= 3) return 1;
-  const groups = w
-    .replace(/(?:es|ed|e)$/g, "")
-    .match(/[aeiouy]{1,2}/g);
+  const groups = w.replace(/(?:es|ed|e)$/g, "").match(/[aeiouy]{1,2}/g);
   return Math.max(1, groups ? groups.length : 1);
 }
 
@@ -274,7 +316,10 @@ function syllables(word: string): number {
  * English readability. For `bn` we return `applicable: false` rather than
  * running an English model over বাংলা and reporting a confident wrong number.
  */
-export function readability(facts: DocumentFacts, locale: "en" | "bn"): Readability {
+export function readability(
+  facts: DocumentFacts,
+  locale: "en" | "bn",
+): Readability {
   const empty: Readability = {
     applicable: locale === "en",
     sentences: facts.sentences.length,
@@ -286,12 +331,16 @@ export function readability(facts: DocumentFacts, locale: "en" | "bn"): Readabil
     transitionRatio: 0,
     ease: 0,
   };
-  if (locale !== "en" || facts.words === 0 || facts.sentences.length === 0) return empty;
+  if (locale !== "en" || facts.words === 0 || facts.sentences.length === 0)
+    return empty;
 
   const sentenceWordCounts = facts.sentences.map((s) => countWords(s));
-  const totalWords = sentenceWordCounts.reduce((a, b) => a + b, 0) || facts.words;
+  const totalWords =
+    sentenceWordCounts.reduce((a, b) => a + b, 0) || facts.words;
   const longSentences = sentenceWordCounts.filter((n) => n > 20).length;
-  const longParagraphs = facts.paragraphs.filter((p) => countWords(p) > 150).length;
+  const longParagraphs = facts.paragraphs.filter(
+    (p) => countWords(p) > 150,
+  ).length;
 
   const lower = facts.text.toLowerCase();
   const passiveHits = (facts.text.match(PASSIVE_AUX) ?? []).length;
@@ -315,7 +364,9 @@ export function readability(facts: DocumentFacts, locale: "en" | "bn"): Readabil
     words: facts.words,
     avgSentenceWords: totalWords / facts.sentences.length,
     longSentenceRatio: longSentences / facts.sentences.length,
-    longParagraphRatio: facts.paragraphs.length ? longParagraphs / facts.paragraphs.length : 0,
+    longParagraphRatio: facts.paragraphs.length
+      ? longParagraphs / facts.paragraphs.length
+      : 0,
     passiveRatio: passiveHits / facts.sentences.length,
     transitionRatio: transitionHits / facts.sentences.length,
     ease: Math.max(0, Math.min(100, Math.round(ease))),

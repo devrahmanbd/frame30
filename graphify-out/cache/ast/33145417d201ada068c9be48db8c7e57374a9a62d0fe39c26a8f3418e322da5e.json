@@ -1,1 +1,350 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "label": "support-loop-detector.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L1"}, {"id": "lib_support_loop_detector_server_loopdetectionresult", "label": "LoopDetectionResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L19"}, {"id": "lib_support_loop_detector_server_trajectoryturn", "label": "TrajectoryTurn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L28"}, {"id": "lib_support_loop_detector_server_normalizeforloopcheck", "label": "normalizeForLoopCheck()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L36"}, {"id": "lib_support_loop_detector_server_jaccardsimilarity", "label": "jaccardSimilarity()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L45"}, {"id": "lib_support_loop_detector_server_detecttrajectoryloop", "label": "detectTrajectoryLoop()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L68"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_i18n_dict_en", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_support_loop_detector_server_loopdetectionresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_support_loop_detector_server_trajectoryturn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_support_loop_detector_server_normalizeforloopcheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_support_loop_detector_server_jaccardsimilarity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "target": "lib_support_loop_detector_server_detecttrajectoryloop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L68", "weight": 1.0}, {"source": "lib_support_loop_detector_server_jaccardsimilarity", "target": "lib_support_loop_detector_server_normalizeforloopcheck", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L46", "weight": 1.0}, {"source": "lib_support_loop_detector_server_detecttrajectoryloop", "target": "lib_support_loop_detector_server_normalizeforloopcheck", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L84", "weight": 1.0}, {"source": "lib_support_loop_detector_server_detecttrajectoryloop", "target": "lib_support_loop_detector_server_jaccardsimilarity", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L104", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L37"}, {"caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L37"}, {"caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L37"}, {"caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L37"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L46"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L46"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L47"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L47"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L54"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L59"}, {"caller_nid": "lib_support_loop_detector_server_jaccardsimilarity", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L62"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L97"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L97"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L111"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L112"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L127"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L127"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L131"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L133"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L134"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L149"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L149"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L149"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L158"}, {"caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts", "source_location": "L159"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "label": "support-loop-detector.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_loop_detector_server_loopdetectionresult",
+      "label": "LoopDetectionResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_support_loop_detector_server_trajectoryturn",
+      "label": "TrajectoryTurn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "label": "normalizeForLoopCheck()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_support_loop_detector_server_jaccardsimilarity",
+      "label": "jaccardSimilarity()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "label": "detectTrajectoryLoop()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L68"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_i18n_dict_en",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_support_loop_detector_server_loopdetectionresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_support_loop_detector_server_trajectoryturn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_support_loop_detector_server_jaccardsimilarity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "target": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_loop_detector_server_jaccardsimilarity",
+      "target": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "target": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "target": "lib_support_loop_detector_server_jaccardsimilarity",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_normalizeforloopcheck",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_jaccardsimilarity",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-loop-detector.server.ts",
+      "source_location": "L159"
+    }
+  ]
+}

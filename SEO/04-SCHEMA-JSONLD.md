@@ -4,13 +4,14 @@
 **Standards:** Schema.org Core v26+ | Google Search Central Specifications (2026 Updated)  
 **Platform Invariant:** SSR-Only Hydration Guard (`typeof window !== "undefined" ? [] : [...]`)  
 **Parent Organization:** devrahmanbd (Framique Engineering Council)  
-**Date:** September 2026  
+**Date:** September 2026
 
 ---
 
 ## 1. Architectural Guardrails & 2026 Schema Compliance
 
 In accordance with Google Search Central's updated guidelines and enterprise structured data principles:
+
 1. **SSR-Only Emission:** All `<script type="application/ld+json">` tags must be rendered exclusively during Server-Side Rendering (SSR). Client hydration must never duplicate or re-inject JSON-LD scripts, preventing duplicate entity nodes and hydration mismatches in Googlebot and Bingbot render trees.
 2. **Post-May 2026 Google Schema Deprecations:**
    - **`FAQPage`:** Google completely retired FAQ rich results for all commercial websites on May 7, 2026. Do NOT output `FAQPage` expecting SERP accordion expansions. All on-page Q&A content is rendered via semantic HTML5 `<details>` and `<summary>` elements for optimal user experience and direct crawlability.
@@ -22,7 +23,7 @@ In accordance with Google Search Central's updated guidelines and enterprise str
 
 ## 2. Core Platform Schema: `SoftwareApplication`
 
-*Rendered on the Flagship Homepage (`/`), Product Overview (`/features`), and Architecture pages.*
+_Rendered on the Flagship Homepage (`/`), Product Overview (`/features`), and Architecture pages._
 
 ```json
 {
@@ -101,7 +102,7 @@ In accordance with Google Search Central's updated guidelines and enterprise str
 
 ## 3. Dedicated Comparison Route Schema (`/compare/shopify`)
 
-*Validating Entity Disambiguation and Feature Differentiation.*
+_Validating Entity Disambiguation and Feature Differentiation._
 
 ```json
 {
@@ -151,7 +152,7 @@ In accordance with Google Search Central's updated guidelines and enterprise str
 
 ## 4. Technical Editorial Article Schema (`/blog/*`)
 
-*Structured for News, TechArticle, and AI Answer Engine citation.*
+_Structured for News, TechArticle, and AI Answer Engine citation._
 
 ```json
 {
@@ -194,7 +195,9 @@ In accordance with Google Search Central's updated guidelines and enterprise str
 To ensure SSR safety, schema is injected via deterministic helper functions evaluated on the server:
 
 ```typescript
-export function renderJsonLd(schema: Record<string, unknown> | Array<Record<string, unknown>>): string {
+export function renderJsonLd(
+  schema: Record<string, unknown> | Array<Record<string, unknown>>,
+): string {
   // Prevent hydration drift and duplicate client-side script execution
   if (typeof window !== "undefined") {
     return "";

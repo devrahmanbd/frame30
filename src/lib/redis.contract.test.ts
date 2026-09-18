@@ -107,20 +107,30 @@ describe("configuration", () => {
   });
 
   it("defaults the port and leaves db unset when absent", () => {
-    expect(parseRedisUrl("redis://localhost")).toMatchObject({ port: 6379, tls: false, db: undefined });
+    expect(parseRedisUrl("redis://localhost")).toMatchObject({
+      port: 6379,
+      tls: false,
+      db: undefined,
+    });
   });
 
   it("answers unavailable immediately when disabled — no socket, no wait", async () => {
     const started = Date.now();
     const result = await redisCommand(["PING"]);
-    expect(result).toMatchObject({ ok: false, outcome: "unavailable", value: null });
+    expect(result).toMatchObject({
+      ok: false,
+      outcome: "unavailable",
+      value: null,
+    });
     expect(Date.now() - started).toBeLessThan(50);
   });
 
   it("namespaces keys with the configured prefix", () => {
     const previous = process.env["REDIS_PREFIX"];
     process.env["REDIS_PREFIX"] = "preview";
-    expect(redisKey("rl", "auth.signin", "abc")).toBe("preview:rl:auth.signin:abc");
+    expect(redisKey("rl", "auth.signin", "abc")).toBe(
+      "preview:rl:auth.signin:abc",
+    );
     if (previous === undefined) delete process.env["REDIS_PREFIX"];
     else process.env["REDIS_PREFIX"] = previous;
   });
@@ -128,7 +138,8 @@ describe("configuration", () => {
 
 describe("sliding-window script", () => {
   const source = readFileSync("src/lib/rate-limit.server.ts", "utf8");
-  const lua = source.split("const SLIDING_WINDOW_LUA = `")[1]?.split("`;")[0] ?? "";
+  const lua =
+    source.split("const SLIDING_WINDOW_LUA = `")[1]?.split("`;")[0] ?? "";
 
   it("is present and executed as a script, not as multiple round trips", () => {
     expect(lua).not.toBe("");

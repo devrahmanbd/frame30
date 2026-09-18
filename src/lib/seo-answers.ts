@@ -115,9 +115,15 @@ const IMAGE_VALUE = /\.(?:png|jpe?g|webp|gif|avif|svg)(?:\?|#|$)/i;
  * Crawlability of every answer-first block in a tree. Walks children so nesting
  * is visible; `flattenAst` output loses the parent chain the rule needs.
  */
-export function answerBlockIssues(nodes: Section[] | null | undefined): AnswerIssue[] {
+export function answerBlockIssues(
+  nodes: Section[] | null | undefined,
+): AnswerIssue[] {
   const issues: AnswerIssue[] = [];
-  const walk = (list: Section[], opaqueAncestor: string | null, deferredAncestor: string | null) => {
+  const walk = (
+    list: Section[],
+    opaqueAncestor: string | null,
+    deferredAncestor: string | null,
+  ) => {
     for (const section of list) {
       if (section.invalid) continue;
       if (isAnswerFirst(section.type)) {
@@ -139,34 +145,44 @@ export function answerBlockIssues(nodes: Section[] | null | undefined): AnswerIs
           });
         }
         const keys = ANSWER_KEYS[section.type] ?? [];
-        if (keys.length && !hasText(section.props, keys) && !DATA_BACKED.has(section.type)) {
+        if (
+          keys.length &&
+          !hasText(section.props, keys) &&
+          !DATA_BACKED.has(section.type)
+        ) {
           issues.push({
             level: "error",
             sectionId: section.id,
-            message: "Answer block has no readable text — an empty block earns no answer.",
+            message:
+              "Answer block has no readable text — an empty block earns no answer.",
           });
         }
         const imageOnly =
           !hasText(section.props, keys) &&
-          Object.values(section.props).some((v) => typeof v === "string" && IMAGE_VALUE.test(v));
+          Object.values(section.props).some(
+            (v) => typeof v === "string" && IMAGE_VALUE.test(v),
+          );
         if (imageOnly) {
           issues.push({
             level: "error",
             sectionId: section.id,
-            message: "Answer block is an image — spec and comparison content must be real HTML text.",
+            message:
+              "Answer block is an image — spec and comparison content must be real HTML text.",
           });
         }
       }
       const children = (section as { children?: Section[] }).children;
       if (children?.length) {
         const opaque =
-          OPAQUE_CONTAINERS.has(section.type) || CLIENT_ONLY_CONTAINERS.has(section.type)
+          OPAQUE_CONTAINERS.has(section.type) ||
+          CLIENT_ONLY_CONTAINERS.has(section.type)
             ? section.type
             : null;
         walk(
           children,
           opaqueAncestor ?? opaque,
-          deferredAncestor ?? (DEFERRED_CONTAINERS.has(section.type) ? section.type : null),
+          deferredAncestor ??
+            (DEFERRED_CONTAINERS.has(section.type) ? section.type : null),
         );
       }
     }
@@ -178,9 +194,17 @@ export function answerBlockIssues(nodes: Section[] | null | undefined): AnswerIs
 /* ------------------------------ author metadata ---------------------------- */
 
 /** Guides make claims, so they carry attribution. */
-export const AUTHORED_WIDGETS = ["buying_guide", "how_to_use"] as const satisfies readonly SectionType[];
+export const AUTHORED_WIDGETS = [
+  "buying_guide",
+  "how_to_use",
+] as const satisfies readonly SectionType[];
 
-export const AUTHOR_KEYS = ["author", "authorRole", "reviewedBy", "reviewedOn"] as const;
+export const AUTHOR_KEYS = [
+  "author",
+  "authorRole",
+  "reviewedBy",
+  "reviewedOn",
+] as const;
 
 export type GuideAuthor = {
   name: string;
@@ -210,7 +234,8 @@ export function authorIssues(sections: Section[]): AnswerIssue[] {
       issues.push({
         level: "warn",
         sectionId: section.id,
-        message: "Guide has no author — named expertise is a trust signal for readers and answer engines.",
+        message:
+          "Guide has no author — named expertise is a trust signal for readers and answer engines.",
       });
     } else if (!author.role) {
       issues.push({
@@ -240,7 +265,9 @@ export function authorIssues(sections: Section[]): AnswerIssue[] {
 }
 
 /** The `author` / `reviewedBy` / `dateModified` fragment for a guide's JSON-LD. */
-export function authorJsonLd(props: Record<string, unknown>): Record<string, unknown> {
+export function authorJsonLd(
+  props: Record<string, unknown>,
+): Record<string, unknown> {
   const a = readGuideAuthor(props);
   const out: Record<string, unknown> = {};
   if (a.name) {
@@ -277,9 +304,18 @@ export function banglaShare(value: string): number {
   return bn / letters.length;
 }
 
-export type ParityField = { key: string; label: string; en: string; bn: string };
+export type ParityField = {
+  key: string;
+  label: string;
+  en: string;
+  bn: string;
+};
 
-export type ParityFinding = { level: "warn" | "error"; key: string; message: string };
+export type ParityFinding = {
+  level: "warn" | "error";
+  key: string;
+  message: string;
+};
 
 export type ParityReport = {
   total: number;
@@ -295,7 +331,10 @@ export type ParityReport = {
  * Parity for one indexed page. A `bn` page that falls back to English is worse
  * than an untranslated one: the crawler indexes the বাংলা URL and finds English.
  */
-export function parityReport(fields: ParityField[], threshold = 90): ParityReport {
+export function parityReport(
+  fields: ParityField[],
+  threshold = 90,
+): ParityReport {
   const findings: ParityFinding[] = [];
   const scored = fields.filter((f) => f.en.trim() || f.bn.trim());
   let translated = 0;
@@ -303,11 +342,19 @@ export function parityReport(fields: ParityField[], threshold = 90): ParityRepor
     const en = field.en.trim();
     const bn = field.bn.trim();
     if (!bn) {
-      findings.push({ level: "error", key: field.key, message: `${field.label}: no বাংলা copy — the page falls back to English.` });
+      findings.push({
+        level: "error",
+        key: field.key,
+        message: `${field.label}: no বাংলা copy — the page falls back to English.`,
+      });
       continue;
     }
     if (!en) {
-      findings.push({ level: "error", key: field.key, message: `${field.label}: English copy is missing.` });
+      findings.push({
+        level: "error",
+        key: field.key,
+        message: `${field.label}: English copy is missing.`,
+      });
       continue;
     }
     if (banglaShare(bn) < 0.3) {
@@ -320,7 +367,9 @@ export function parityReport(fields: ParityField[], threshold = 90): ParityRepor
     }
     translated += 1;
   }
-  const percent = scored.length ? Math.round((translated / scored.length) * 100) : 100;
+  const percent = scored.length
+    ? Math.round((translated / scored.length) * 100)
+    : 100;
   if (scored.length && percent < threshold) {
     findings.push({
       level: "warn",
@@ -328,7 +377,13 @@ export function parityReport(fields: ParityField[], threshold = 90): ParityRepor
       message: `বাংলা coverage is ${percent}% — below the ${threshold}% threshold for a bn-indexed page.`,
     });
   }
-  return { total: scored.length, translated, percent, ok: findings.length === 0, findings };
+  return {
+    total: scored.length,
+    translated,
+    percent,
+    ok: findings.length === 0,
+    findings,
+  };
 }
 
 /**
@@ -383,7 +438,8 @@ export function templateIssues(template: string): string[] {
   for (const match of template.matchAll(VAR_RE)) {
     if (!known.has(match[1]!)) issues.push(`Unknown variable {{${match[1]}}}.`);
   }
-  const braces = (template.match(/\{/g)?.length ?? 0) + (template.match(/\}/g)?.length ?? 0);
+  const braces =
+    (template.match(/\{/g)?.length ?? 0) + (template.match(/\}/g)?.length ?? 0);
   if (braces % 4 !== 0) issues.push("Unbalanced {{ }} in template.");
   return issues;
 }
@@ -443,14 +499,19 @@ const clean = (value: string) => value.replace(/\s+/g, " ").trim();
 export function renderLlmsTxt(input: LlmsInput): string {
   const origin = input.origin.replace(/\/+$/, "");
   const base = `${origin}/store/${input.slug}`;
-  const abs = (path: string) => (path.startsWith("http") ? path : `${origin}${path.startsWith("/") ? path : `/${path}`}`);
+  const abs = (path: string) =>
+    path.startsWith("http")
+      ? path
+      : `${origin}${path.startsWith("/") ? path : `/${path}`}`;
   const lines: string[] = [`# ${clean(input.storeName)}`, ""];
   if (input.tagline) lines.push(`> ${clean(input.tagline)}`, "");
 
   const facts: string[] = [`Storefront: ${base}`];
-  if (typeof input.productCount === "number") facts.push(`Products listed: ${input.productCount}`);
+  if (typeof input.productCount === "number")
+    facts.push(`Products listed: ${input.productCount}`);
   if (input.currency) facts.push(`Prices in ${input.currency}`);
-  if (input.locales?.length) facts.push(`Content locales: ${input.locales.join(", ")}`);
+  if (input.locales?.length)
+    facts.push(`Content locales: ${input.locales.join(", ")}`);
   if (input.contact) facts.push(`Contact: ${clean(input.contact)}`);
   lines.push(...facts.map((f) => `- ${f}`), "");
 
@@ -458,7 +519,9 @@ export function renderLlmsTxt(input: LlmsInput): string {
     if (!entries?.length) return;
     lines.push(`## ${heading}`, "");
     for (const entry of entries) {
-      lines.push(`- [${clean(entry.title)}](${abs(entry.path)})${entry.note ? `: ${clean(entry.note)}` : ""}`);
+      lines.push(
+        `- [${clean(entry.title)}](${abs(entry.path)})${entry.note ? `: ${clean(entry.note)}` : ""}`,
+      );
     }
     lines.push("");
   };

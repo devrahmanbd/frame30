@@ -52,7 +52,8 @@ type LooseClient = SupabaseClient<Database> & { from: (table: string) => any };
 const SETTINGS_KEY = (merchantId: string) => `crawl-settings|${merchantId}`;
 const STORE_KEY = (slug: string) => `crawl-store|${slug}`;
 const COUNTS_KEY = (slug: string) => `sitemap-counts|${slug}`;
-const SHARD_KEY = (slug: string, kind: string, page: number) => `sitemap-shard|${slug}|${kind}|${page}`;
+const SHARD_KEY = (slug: string, kind: string, page: number) =>
+  `sitemap-shard|${slug}|${kind}|${page}`;
 
 /** Hard ceiling for any single read taken on the render path. */
 const READ_TIMEOUT_MS = 2_000;
@@ -74,9 +75,16 @@ export class CrawlServerError extends Error {
   }
 }
 
-function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new CrawlServerError("timeout", `${label}_timeout`)), ms);
+    const timer = setTimeout(
+      () => reject(new CrawlServerError("timeout", `${label}_timeout`)),
+      ms,
+    );
     promise.then(
       (value) => {
         clearTimeout(timer);
@@ -92,7 +100,10 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
 
 /* ------------------------------- settings ---------------------------------- */
 
-async function readSettingsRow(db: LooseClient, merchantId: string): Promise<CrawlSettings> {
+async function readSettingsRow(
+  db: LooseClient,
+  merchantId: string,
+): Promise<CrawlSettings> {
   const { data, error } = await db
     .from("merchant_settings")
     .select("crawl_settings")
@@ -114,17 +125,28 @@ async function readSettingsRow(db: LooseClient, merchantId: string): Promise<Cra
 }
 
 /** Admin read: authoritative, uncached, surfaces real errors. */
-export async function loadCrawlSettings(db: Client, merchantId: string): Promise<CrawlSettings> {
+export async function loadCrawlSettings(
+  db: Client,
+  merchantId: string,
+): Promise<CrawlSettings> {
   return readSettingsRow(db as LooseClient, merchantId);
 }
 
 /** Render-path read: cached, timed out, defaults on any failure. Never throws. */
-export async function crawlSettingsFor(db: Client, merchantId: string): Promise<CrawlSettings> {
+export async function crawlSettingsFor(
+  db: Client,
+  merchantId: string,
+): Promise<CrawlSettings> {
   try {
     return await cached(
       SETTINGS_KEY(merchantId),
       SETTINGS_TTL,
-      () => withTimeout(readSettingsRow(db as LooseClient, merchantId), READ_TIMEOUT_MS, "crawl_settings"),
+      () =>
+        withTimeout(
+          readSettingsRow(db as LooseClient, merchantId),
+          READ_TIMEOUT_MS,
+          "crawl_settings",
+        ),
       { staleSeconds: 900 },
     );
   } catch (error) {
@@ -137,7 +159,10 @@ export async function crawlSettingsFor(db: Client, merchantId: string): Promise<
   }
 }
 
-export function invalidateCrawlCaches(merchantId: string, storeSlug?: string | null) {
+export function invalidateCrawlCaches(
+  merchantId: string,
+  storeSlug?: string | null,
+) {
   invalidate(SETTINGS_KEY(merchantId));
   if (storeSlug) {
     invalidate(STORE_KEY(storeSlug));
@@ -168,13 +193,21 @@ export async function saveCrawlSettings(
   const { error } = await loose
     .from("merchant_settings")
     .upsert(
-      { merchant_id: merchantId, crawl_settings: next, updated_at: new Date().toISOString() },
+      {
+        merchant_id: merchantId,
+        crawl_settings: next,
+        updated_at: new Date().toISOString(),
+      },
       { onConflict: "merchant_id" },
     );
   if (error) throw new CrawlServerError("write_failed", error.message);
   observe("framique_crawl_settings_write_ms", Date.now() - started);
 
-  const { data: merchant } = await loose.from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+  const { data: merchant } = await loose
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   invalidateCrawlCaches(merchantId, merchant?.slug ?? null);
 
   await auditAction(
@@ -185,7 +218,9 @@ export async function saveCrawlSettings(
     "merchant_settings",
     {
       entries_per_file: next.sitemap.entriesPerFile,
-      kinds_included: SITEMAP_KINDS.filter((k) => next.sitemap.kinds[k].include),
+      kinds_included: SITEMAP_KINDS.filter(
+        (k) => next.sitemap.kinds[k].include,
+      ),
       indexable: next.robots.indexable,
       ai_crawlers: next.robots.aiCrawlers,
       custom_rules: next.robots.rules.length,
@@ -216,7 +251,11 @@ export async function setEntitySitemapExclusion(
     { onConflict: "merchant_id,entity_type,entity_id" },
   );
   if (error) throw new CrawlServerError("write_failed", error.message);
-  const { data: merchant } = await loose.from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+  const { data: merchant } = await loose
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   invalidateCrawlCaches(merchantId, merchant?.slug ?? null);
   await auditAction(
     db,
@@ -227,7 +266,6 @@ export async function setEntitySitemapExclusion(
     { exclude: input.exclude },
     input.entityId,
   );
-
 }
 
 /* --------------------------- tenant + exclusions ---------------------------- */
@@ -274,7 +312,9 @@ async function readStoreContext(slug: string): Promise<StoreContext | null> {
   ]);
 
   const excluded = new Set<string>(
-    (exclusionRows as any[]).map((row) => `${row.entity_type}:${row.entity_id ?? "-"}`),
+    (exclusionRows as any[]).map(
+      (row) => `${row.entity_type}:${row.entity_id ?? "-"}`,
+    ),
   );
   return {
     merchantId: merchant.id,
@@ -287,8 +327,12 @@ async function readStoreContext(slug: string): Promise<StoreContext | null> {
 }
 
 /** Cached, fail-soft tenant context for every crawl surface. */
-export async function storeCrawlContext(slug: string): Promise<StoreContext | null> {
-  return cached(STORE_KEY(slug), SETTINGS_TTL, () => readStoreContext(slug), { staleSeconds: 900 });
+export async function storeCrawlContext(
+  slug: string,
+): Promise<StoreContext | null> {
+  return cached(STORE_KEY(slug), SETTINGS_TTL, () => readStoreContext(slug), {
+    staleSeconds: 900,
+  });
 }
 
 /* --------------------------------- counts ----------------------------------- */
@@ -300,7 +344,9 @@ async function countRows(
   table: string,
   apply: (q: any) => any,
 ): Promise<number> {
-  const { count, error } = await apply(db.from(table).select("id", { count: "exact", head: true }));
+  const { count, error } = await apply(
+    db.from(table).select("id", { count: "exact", head: true }),
+  );
   if (error) {
     log("warn", "crawl.count_failed", { table, message: error.message });
     return 0;
@@ -326,13 +372,22 @@ export async function sitemapCounts(slug: string): Promise<CountMap | null> {
 
     const [pages, products, collections, articles] = await Promise.all([
       countRows(db, "storefront_pages", (q) =>
-        q.eq("merchant_id", ctx.merchantId).eq("is_published", true).is("deleted_at", null),
+        q
+          .eq("merchant_id", ctx.merchantId)
+          .eq("is_published", true)
+          .is("deleted_at", null),
       ),
       countRows(db, "products", (q) =>
-        q.eq("merchant_id", ctx.merchantId).eq("status", "active").is("deleted_at", null),
+        q
+          .eq("merchant_id", ctx.merchantId)
+          .eq("status", "active")
+          .is("deleted_at", null),
       ),
       countRows(db, "collections", (q) =>
-        q.eq("merchant_id", ctx.merchantId).eq("is_published", true).is("deleted_at", null),
+        q
+          .eq("merchant_id", ctx.merchantId)
+          .eq("is_published", true)
+          .is("deleted_at", null),
       ),
       countRows(db, "articles", (q) =>
         q
@@ -343,15 +398,23 @@ export async function sitemapCounts(slug: string): Promise<CountMap | null> {
       ),
     ]);
 
-    const hidden = (entityType: string) => ctx.hiddenTemplates.has(ENTITY_TEMPLATE[entityType] ?? entityType);
+    const hidden = (entityType: string) =>
+      ctx.hiddenTemplates.has(ENTITY_TEMPLATE[entityType] ?? entityType);
     const counts: CountMap = {
       // +2 for the storefront home and search entries appended to the first
       // `pages` shard.
-      pages: (hidden("page") ? 0 : Math.max(0, pages - excludedOf("page"))) +
+      pages:
+        (hidden("page") ? 0 : Math.max(0, pages - excludedOf("page"))) +
         (ctx.hiddenTemplates.has("index") ? 0 : 2),
-      products: hidden("product") ? 0 : Math.max(0, products - excludedOf("product")),
-      collections: hidden("collection") ? 0 : Math.max(0, collections - excludedOf("collection")),
-      articles: hidden("article") ? 0 : Math.max(0, articles - excludedOf("article")),
+      products: hidden("product")
+        ? 0
+        : Math.max(0, products - excludedOf("product")),
+      collections: hidden("collection")
+        ? 0
+        : Math.max(0, collections - excludedOf("collection")),
+      articles: hidden("article")
+        ? 0
+        : Math.max(0, articles - excludedOf("article")),
     };
 
     incr("framique_sitemap_counts_total", {});
@@ -387,7 +450,6 @@ export function isExcluded(
   return false;
 }
 
-
 /**
  * One shard of URLs. Range-queried off a stable ordering so page N costs the
  * same as page 1 and nothing outside the window is materialised.
@@ -408,7 +470,10 @@ export async function loadSitemapShardEntries(
       async () => {
         const { publicClient } = await import("./pricing.server");
         const db = publicClient() as unknown as LooseClient;
-        const { from, to } = shardRange(page, ctx.settings.sitemap.entriesPerFile);
+        const { from, to } = shardRange(
+          page,
+          ctx.settings.sitemap.entriesPerFile,
+        );
         const includeImages = ctx.settings.sitemap.includeImages;
         const entries: SitemapEntry[] = [];
         const base = `/store/${slug}`;
@@ -419,7 +484,11 @@ export async function loadSitemapShardEntries(
         });
 
         if (kind === "pages") {
-          if (page === 1 && !ctx.excluded.has("store:-") && !ctx.hiddenTemplates.has("index")) {
+          if (
+            page === 1 &&
+            !ctx.excluded.has("store:-") &&
+            !ctx.hiddenTemplates.has("index")
+          ) {
             entries.push(decorate({ path: base }));
             entries.push(decorate({ path: `${base}/search` }));
           }
@@ -457,7 +526,8 @@ export async function loadSitemapShardEntries(
               decorate({
                 path: `${base}${buildPermalink(ctx.permalinks, { kind: "product", slug: row.slug })}`,
                 lastmod: entityLastmod(row.updated_at),
-                images: includeImages && row.image_url ? [row.image_url] : undefined,
+                images:
+                  includeImages && row.image_url ? [row.image_url] : undefined,
               }),
             );
           }
@@ -487,7 +557,9 @@ export async function loadSitemapShardEntries(
           const nowIso = new Date().toISOString();
           const { data } = await db
             .from("articles")
-            .select("id, slug, updated_at, published_at, robots, cover_image_url")
+            .select(
+              "id, slug, updated_at, published_at, robots, cover_image_url",
+            )
             .eq("merchant_id", ctx.merchantId)
             .eq("status", "published")
             .is("deleted_at", null)
@@ -504,7 +576,10 @@ export async function loadSitemapShardEntries(
                   date: row.published_at ?? null,
                 }),
                 lastmod: entityLastmod(row.updated_at, row.published_at),
-                images: includeImages && row.cover_image_url ? [row.cover_image_url] : undefined,
+                images:
+                  includeImages && row.cover_image_url
+                    ? [row.cover_image_url]
+                    : undefined,
               }),
             );
           }
@@ -523,8 +598,10 @@ export async function loadSitemapShardEntries(
 
 export type RenderedDocument = { body: string; cacheControl: string };
 
-const SITEMAP_CACHE_CONTROL = "public, max-age=600, stale-while-revalidate=3600";
-const ROBOTS_CACHE_CONTROL = "public, max-age=3600, stale-while-revalidate=86400";
+const SITEMAP_CACHE_CONTROL =
+  "public, max-age=600, stale-while-revalidate=3600";
+const ROBOTS_CACHE_CONTROL =
+  "public, max-age=3600, stale-while-revalidate=86400";
 
 export async function renderStoreSitemapIndex(
   slug: string,
@@ -551,7 +628,9 @@ export async function renderStoreSitemapShard(
   const entries = await loadSitemapShardEntries(slug, kind, page);
   if (!entries) return null;
   return {
-    body: renderUrlset(origin, entries, { includeImages: ctx.settings.sitemap.includeImages }),
+    body: renderUrlset(origin, entries, {
+      includeImages: ctx.settings.sitemap.includeImages,
+    }),
     cacheControl: SITEMAP_CACHE_CONTROL,
   };
 }
@@ -593,7 +672,11 @@ export async function previewCrawlDocuments(
   shards: Shard[];
 }> {
   const loose = db as LooseClient;
-  const { data: merchant } = await loose.from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+  const { data: merchant } = await loose
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   const storeSlug: string | null = merchant?.slug ?? null;
   const current = await loadCrawlSettings(db, merchantId);
   const raw = (candidate ?? {}) as Partial<CrawlSettings>;

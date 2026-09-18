@@ -1,1 +1,120 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "label": "ExperimentContext.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L1"}, {"id": "builder_experimentcontext_experimentvalue", "label": "ExperimentValue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L11"}, {"id": "builder_experimentcontext_experimentcontext", "label": "ExperimentContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L18"}, {"id": "builder_experimentcontext_useexperiments", "label": "useExperiments()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L22"}, {"id": "builder_experimentcontext_useexposure", "label": "useExposure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L27"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "target": "builder_experimentcontext_experimentvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "target": "builder_experimentcontext_experimentcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "target": "builder_experimentcontext_useexperiments", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx", "target": "builder_experimentcontext_useexposure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L27", "weight": 1.0}, {"source": "builder_experimentcontext_useexposure", "target": "builder_experimentcontext_useexperiments", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L32", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_experimentcontext_useexperiments", "callee": "useContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L23"}, {"caller_nid": "builder_experimentcontext_useexposure", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L33"}, {"caller_nid": "builder_experimentcontext_useexposure", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx", "source_location": "L34"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "label": "ExperimentContext.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_experimentcontext_experimentvalue",
+      "label": "ExperimentValue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "builder_experimentcontext_experimentcontext",
+      "label": "ExperimentContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "builder_experimentcontext_useexperiments",
+      "label": "useExperiments()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "builder_experimentcontext_useexposure",
+      "label": "useExposure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L27"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "target": "builder_experimentcontext_experimentvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "target": "builder_experimentcontext_experimentcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "target": "builder_experimentcontext_useexperiments",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_experimentcontext_tsx",
+      "target": "builder_experimentcontext_useexposure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "builder_experimentcontext_useexposure",
+      "target": "builder_experimentcontext_useexperiments",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_experimentcontext_useexperiments",
+      "callee": "useContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "builder_experimentcontext_useexposure",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "builder_experimentcontext_useexposure",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/ExperimentContext.tsx",
+      "source_location": "L34"
+    }
+  ]
+}

@@ -1,1 +1,416 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "label": "dual-version-db.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L1"}, {"id": "lib_dual_version_db_server_versionnorder", "label": "VersionNOrder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L26"}, {"id": "lib_dual_version_db_server_versionnplusoneorder", "label": "VersionNPlusOneOrder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L36"}, {"id": "lib_dual_version_db_server_databaseorderrow", "label": "DatabaseOrderRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L49"}, {"id": "lib_dual_version_db_server_versionnproduct", "label": "VersionNProduct", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L65"}, {"id": "lib_dual_version_db_server_versionnplusoneproduct", "label": "VersionNPlusOneProduct", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L73"}, {"id": "lib_dual_version_db_server_databaseproductrow", "label": "DatabaseProductRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L84"}, {"id": "lib_dual_version_db_server_readorderasversionn", "label": "readOrderAsVersionN()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L103"}, {"id": "lib_dual_version_db_server_readorderasversionnplusone", "label": "readOrderAsVersionNPlusOne()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L118"}, {"id": "lib_dual_version_db_server_writeorderasversionn", "label": "writeOrderAsVersionN()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L141"}, {"id": "lib_dual_version_db_server_writeorderasversionnplusone", "label": "writeOrderAsVersionNPlusOne()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L162"}, {"id": "lib_dual_version_db_server_readproductasversionn", "label": "readProductAsVersionN()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L191"}, {"id": "lib_dual_version_db_server_readproductasversionnplusone", "label": "readProductAsVersionNPlusOne()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L205"}, {"id": "lib_dual_version_db_server_simulationresult", "label": "SimulationResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L222"}, {"id": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "label": "simulateDualVersionConcurrentTraffic()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L237"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_versionnorder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_versionnplusoneorder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_databaseorderrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_versionnproduct", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_versionnplusoneproduct", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_databaseproductrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_readorderasversionn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_readorderasversionnplusone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_writeorderasversionn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_writeorderasversionnplusone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_readproductasversionn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L191", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_readproductasversionnplusone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_simulationresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L222", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts", "target": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L237", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_dual_version_db_server_readorderasversionn", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L108"}, {"caller_nid": "lib_dual_version_db_server_readorderasversionnplusone", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L121"}, {"caller_nid": "lib_dual_version_db_server_readorderasversionnplusone", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L122"}, {"caller_nid": "lib_dual_version_db_server_readorderasversionnplusone", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L122"}, {"caller_nid": "lib_dual_version_db_server_readorderasversionnplusone", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L128"}, {"caller_nid": "lib_dual_version_db_server_readorderasversionnplusone", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L131"}, {"caller_nid": "lib_dual_version_db_server_writeorderasversionn", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L154"}, {"caller_nid": "lib_dual_version_db_server_writeorderasversionnplusone", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L183"}, {"caller_nid": "lib_dual_version_db_server_readproductasversionn", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L196"}, {"caller_nid": "lib_dual_version_db_server_readproductasversionn", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L197"}, {"caller_nid": "lib_dual_version_db_server_readproductasversionnplusone", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L210"}, {"caller_nid": "lib_dual_version_db_server_readproductasversionnplusone", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L211"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L244"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L265"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L295"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L333"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L334"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L334"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L337"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L339"}, {"caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts", "source_location": "L350"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "label": "dual-version-db.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_dual_version_db_server_versionnorder",
+      "label": "VersionNOrder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_dual_version_db_server_versionnplusoneorder",
+      "label": "VersionNPlusOneOrder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_dual_version_db_server_databaseorderrow",
+      "label": "DatabaseOrderRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_dual_version_db_server_versionnproduct",
+      "label": "VersionNProduct",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_dual_version_db_server_versionnplusoneproduct",
+      "label": "VersionNPlusOneProduct",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "id": "lib_dual_version_db_server_databaseproductrow",
+      "label": "DatabaseProductRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_dual_version_db_server_readorderasversionn",
+      "label": "readOrderAsVersionN()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_dual_version_db_server_readorderasversionnplusone",
+      "label": "readOrderAsVersionNPlusOne()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "lib_dual_version_db_server_writeorderasversionn",
+      "label": "writeOrderAsVersionN()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L141"
+    },
+    {
+      "id": "lib_dual_version_db_server_writeorderasversionnplusone",
+      "label": "writeOrderAsVersionNPlusOne()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "lib_dual_version_db_server_readproductasversionn",
+      "label": "readProductAsVersionN()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "lib_dual_version_db_server_readproductasversionnplusone",
+      "label": "readProductAsVersionNPlusOne()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L205"
+    },
+    {
+      "id": "lib_dual_version_db_server_simulationresult",
+      "label": "SimulationResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "id": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "label": "simulateDualVersionConcurrentTraffic()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L237"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_versionnorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_versionnplusoneorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_databaseorderrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_versionnproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_versionnplusoneproduct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_databaseproductrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_readorderasversionn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_readorderasversionnplusone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_writeorderasversionn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_writeorderasversionnplusone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_readproductasversionn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_readproductasversionnplusone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_simulationresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_dual_version_db_server_ts",
+      "target": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L237",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionn",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionnplusone",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionnplusone",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionnplusone",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionnplusone",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readorderasversionnplusone",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_writeorderasversionn",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_writeorderasversionnplusone",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readproductasversionn",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readproductasversionn",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readproductasversionnplusone",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L210"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_readproductasversionnplusone",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L244"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L333"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L337"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "lib_dual_version_db_server_simulatedualversionconcurrenttraffic",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/dual-version-db.server.ts",
+      "source_location": "L350"
+    }
+  ]
+}

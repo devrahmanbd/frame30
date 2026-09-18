@@ -143,7 +143,10 @@ export const COPY_LIMITS = {
 } as const;
 
 const wordBoundary = (phrase: string) =>
-  new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRegExp(phrase)}($|[^\\p{L}\\p{N}])`, "iu");
+  new RegExp(
+    `(^|[^\\p{L}\\p{N}])${escapeRegExp(phrase)}($|[^\\p{L}\\p{N}])`,
+    "iu",
+  );
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -167,7 +170,11 @@ export function placeholders(text: string): string[] {
  * `BDT 1,200` — a bare number in pricing copy is how a merchant ends up
  * believing a figure is in dollars.
  */
-export function moneyFindings(key: string, text: string, locale: "en" | "bn"): CopyFinding[] {
+export function moneyFindings(
+  key: string,
+  text: string,
+  locale: "en" | "bn",
+): CopyFinding[] {
   const out: CopyFinding[] = [];
   const priceish = /(?:^|\s)(?:tk|taka|৳|BDT)\s*([0-9][0-9,]*)/gi;
   for (const match of text.matchAll(priceish)) {
@@ -178,7 +185,8 @@ export function moneyFindings(key: string, text: string, locale: "en" | "bn"): C
         locale,
         rule: "money.currency-token",
         severity: "error",
-        message: "Write BDT money as `৳1,200` or `BDT 1,200`, never `Tk`/`Taka`.",
+        message:
+          "Write BDT money as `৳1,200` or `BDT 1,200`, never `Tk`/`Taka`.",
         sample: token,
       });
     }
@@ -206,21 +214,39 @@ const DEFAULT_OPTIONS: Required<AuditOptions> = {
 };
 
 function matchesPrefix(key: string, prefixes: string[]) {
-  return prefixes.some((p) => (p.startsWith(".") ? key.endsWith(p) : key.startsWith(p)));
+  return prefixes.some((p) =>
+    p.startsWith(".") ? key.endsWith(p) : key.startsWith(p),
+  );
 }
 
 /** Audit a single dictionary entry against every voice rule. */
-export function auditEntry(key: string, entry: CopyEntry, options: AuditOptions = {}): CopyFinding[] {
+export function auditEntry(
+  key: string,
+  entry: CopyEntry,
+  options: AuditOptions = {},
+): CopyFinding[] {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   const out: CopyFinding[] = [];
   const en = (entry.en ?? "").trim();
   const bn = (entry.bn ?? "").trim();
 
   if (!en) {
-    out.push({ key, locale: "en", rule: "locale.missing", severity: "error", message: "English copy is empty." });
+    out.push({
+      key,
+      locale: "en",
+      rule: "locale.missing",
+      severity: "error",
+      message: "English copy is empty.",
+    });
   }
   if (!bn) {
-    out.push({ key, locale: "bn", rule: "locale.missing", severity: "error", message: "Bangla copy is empty — Bangla is not optional." });
+    out.push({
+      key,
+      locale: "bn",
+      rule: "locale.missing",
+      severity: "error",
+      message: "Bangla copy is empty — Bangla is not optional.",
+    });
   }
   if (en && bn && en === bn && !LOCALE_IDENTICAL_ALLOWLIST.has(en)) {
     out.push({
@@ -247,13 +273,27 @@ export function auditEntry(key: string, entry: CopyEntry, options: AuditOptions 
 
   for (const phrase of BANNED_HYPE) {
     if (wordBoundary(phrase).test(en)) {
-      out.push({ key, locale: "en", rule: "voice.hype", severity: "error", message: `Banned hype word "${phrase}" — state the fact instead.`, sample: phrase });
+      out.push({
+        key,
+        locale: "en",
+        rule: "voice.hype",
+        severity: "error",
+        message: `Banned hype word "${phrase}" — state the fact instead.`,
+        sample: phrase,
+      });
     }
   }
 
   for (const phrase of FORBIDDEN_CLAIMS) {
     if (wordBoundary(phrase).test(en)) {
-      out.push({ key, locale: "en", rule: "voice.unsupported-claim", severity: "error", message: `"${phrase}" is a promise we cannot evidence.`, sample: phrase });
+      out.push({
+        key,
+        locale: "en",
+        rule: "voice.unsupported-claim",
+        severity: "error",
+        message: `"${phrase}" is a promise we cannot evidence.`,
+        sample: phrase,
+      });
     }
   }
 
@@ -287,18 +327,37 @@ export function auditEntry(key: string, entry: CopyEntry, options: AuditOptions 
 
   const bangs = (en.match(/!/g) ?? []).length + (bn.match(/!/g) ?? []).length;
   if (bangs > COPY_LIMITS.maxExclamations) {
-    out.push({ key, locale: "both", rule: "voice.exclamation", severity: "error", message: "No exclamation marks in product copy." });
+    out.push({
+      key,
+      locale: "both",
+      rule: "voice.exclamation",
+      severity: "error",
+      message: "No exclamation marks in product copy.",
+    });
   }
 
-  if (/\b(lorem ipsum|TODO|TBD|FIXME|placeholder text)\b/i.test(`${en} ${bn}`)) {
-    out.push({ key, locale: "both", rule: "voice.placeholder-copy", severity: "error", message: "Placeholder copy shipped to a user-visible string." });
+  if (
+    /\b(lorem ipsum|TODO|TBD|FIXME|placeholder text)\b/i.test(`${en} ${bn}`)
+  ) {
+    out.push({
+      key,
+      locale: "both",
+      rule: "voice.placeholder-copy",
+      severity: "error",
+      message: "Placeholder copy shipped to a user-visible string.",
+    });
   }
 
   // Some `common.*` keys are prose (errors, offline notices, body copy), not
   // labels. A trailing sentence terminator is the reliable signal, so the
   // button cap only applies to label-shaped strings.
-  const looksLikeProse = /[.!?।]\s*$/.test(en) || key.includes(".error.") || key.endsWith(".body");
-  if (!looksLikeProse && matchesPrefix(key, opts.buttonPrefixes) && en.length > COPY_LIMITS.buttonMaxChars) {
+  const looksLikeProse =
+    /[.!?।]\s*$/.test(en) || key.includes(".error.") || key.endsWith(".body");
+  if (
+    !looksLikeProse &&
+    matchesPrefix(key, opts.buttonPrefixes) &&
+    en.length > COPY_LIMITS.buttonMaxChars
+  ) {
     out.push({
       key,
       locale: "en",
@@ -308,7 +367,10 @@ export function auditEntry(key: string, entry: CopyEntry, options: AuditOptions 
     });
   }
 
-  if (matchesPrefix(key, opts.headingPrefixes) && en.length > COPY_LIMITS.headingMaxChars) {
+  if (
+    matchesPrefix(key, opts.headingPrefixes) &&
+    en.length > COPY_LIMITS.headingMaxChars
+  ) {
     out.push({
       key,
       locale: "en",
@@ -352,7 +414,10 @@ export function errorsOnly(findings: CopyFinding[]): CopyFinding[] {
 
 export function formatFindings(findings: CopyFinding[]): string {
   return findings
-    .map((f) => `  • [${f.severity}] ${f.key} (${f.locale}) ${f.rule}: ${f.message}${f.sample ? ` — "${f.sample}"` : ""}`)
+    .map(
+      (f) =>
+        `  • [${f.severity}] ${f.key} (${f.locale}) ${f.rule}: ${f.message}${f.sample ? ` — "${f.sample}"` : ""}`,
+    )
     .join("\n");
 }
 
@@ -360,10 +425,22 @@ export function formatFindings(findings: CopyFinding[]): string {
 export function auditMeta(title: string, description: string): CopyFinding[] {
   const out: CopyFinding[] = [];
   if (title.length > COPY_LIMITS.metaTitleMaxChars) {
-    out.push({ key: title, locale: "en", rule: "meta.title", severity: "error", message: `Title is ${title.length} chars (max ${COPY_LIMITS.metaTitleMaxChars}).` });
+    out.push({
+      key: title,
+      locale: "en",
+      rule: "meta.title",
+      severity: "error",
+      message: `Title is ${title.length} chars (max ${COPY_LIMITS.metaTitleMaxChars}).`,
+    });
   }
   if (description.length > COPY_LIMITS.metaDescriptionMaxChars) {
-    out.push({ key: title, locale: "en", rule: "meta.description", severity: "error", message: `Description is ${description.length} chars (max ${COPY_LIMITS.metaDescriptionMaxChars}).` });
+    out.push({
+      key: title,
+      locale: "en",
+      rule: "meta.description",
+      severity: "error",
+      message: `Description is ${description.length} chars (max ${COPY_LIMITS.metaDescriptionMaxChars}).`,
+    });
   }
   return out;
 }

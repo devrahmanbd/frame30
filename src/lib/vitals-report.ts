@@ -11,7 +11,12 @@
  * The ingest route, the aggregation job and the tests share it, so a sample
  * can never be validated one way on the way in and read back another way.
  */
-import { VITALS_BUDGET, rateVital, type VitalName, type VitalRating } from "./web-vitals";
+import {
+  VITALS_BUDGET,
+  rateVital,
+  type VitalName,
+  type VitalRating,
+} from "./web-vitals";
 
 /** Metrics accepted from the browser. TTFB/FCP are diagnostics, not budgets. */
 export const VITAL_METRICS = ["lcp", "inp", "cls", "ttfb", "fcp"] as const;
@@ -38,10 +43,21 @@ export const VITAL_CLAMP: Record<VitalMetric, { min: number; max: number }> = {
   fcp: { min: 0, max: 60_000 },
 };
 
-export const DEVICE_CLASSES = ["mobile", "tablet", "desktop", "unknown"] as const;
+export const DEVICE_CLASSES = [
+  "mobile",
+  "tablet",
+  "desktop",
+  "unknown",
+] as const;
 export type DeviceClass = (typeof DEVICE_CLASSES)[number];
 
-export const CONNECTION_CLASSES = ["slow-2g", "2g", "3g", "4g", "unknown"] as const;
+export const CONNECTION_CLASSES = [
+  "slow-2g",
+  "2g",
+  "3g",
+  "4g",
+  "unknown",
+] as const;
 export type ConnectionClass = (typeof CONNECTION_CLASSES)[number];
 
 /** Max samples one beacon may carry — bounds parse cost and abuse. */
@@ -95,12 +111,16 @@ export function normalizePath(value: unknown): string {
 
 export function deviceClass(value: unknown): DeviceClass {
   const raw = text(value, "unknown").toLowerCase();
-  return (DEVICE_CLASSES as readonly string[]).includes(raw) ? (raw as DeviceClass) : "unknown";
+  return (DEVICE_CLASSES as readonly string[]).includes(raw)
+    ? (raw as DeviceClass)
+    : "unknown";
 }
 
 export function connectionClass(value: unknown): ConnectionClass {
   const raw = text(value, "unknown").toLowerCase();
-  return (CONNECTION_CLASSES as readonly string[]).includes(raw) ? (raw as ConnectionClass) : "unknown";
+  return (CONNECTION_CLASSES as readonly string[]).includes(raw)
+    ? (raw as ConnectionClass)
+    : "unknown";
 }
 
 /** Device class from viewport width, used when the client sends no hint. */
@@ -128,7 +148,10 @@ export function rateMetric(metric: VitalMetric, value: number): VitalRating {
  * payload cannot be salvaged. Never throws: a malformed beacon must cost the
  * server nothing.
  */
-export function normalizeSample(raw: RawSample, now = Date.now()): VitalSample | null {
+export function normalizeSample(
+  raw: RawSample,
+  now = Date.now(),
+): VitalSample | null {
   const metric = text(raw.metric, "").toLowerCase() as VitalMetric;
   if (!(VITAL_METRICS as readonly string[]).includes(metric)) return null;
 
@@ -136,13 +159,18 @@ export function normalizeSample(raw: RawSample, now = Date.now()): VitalSample |
   if (!Number.isFinite(numeric) || numeric < 0) return null;
 
   const clamp = VITAL_CLAMP[metric];
-  const value = Math.min(clamp.max, Math.max(clamp.min, metric === "cls" ? numeric : Math.round(numeric)));
+  const value = Math.min(
+    clamp.max,
+    Math.max(clamp.min, metric === "cls" ? numeric : Math.round(numeric)),
+  );
   const clamped = value !== numeric;
 
   // Timestamps are trusted only within a sane window; anything else is "now".
   const tsNumber = Number(raw.ts);
   const withinWindow =
-    Number.isFinite(tsNumber) && tsNumber > now - 6 * 3_600_000 && tsNumber < now + 60_000;
+    Number.isFinite(tsNumber) &&
+    tsNumber > now - 6 * 3_600_000 &&
+    tsNumber < now + 60_000;
   const occurredAt = new Date(withinWindow ? tsNumber : now).toISOString();
 
   const localeRaw = text(raw.locale, "en").toLowerCase();
@@ -171,7 +199,10 @@ export type NormalizeResult = {
   truncated: boolean;
 };
 
-export function normalizeBatch(input: unknown, now = Date.now()): NormalizeResult {
+export function normalizeBatch(
+  input: unknown,
+  now = Date.now(),
+): NormalizeResult {
   const rows = Array.isArray(input) ? input : [];
   const truncated = rows.length > MAX_BATCH;
   const slice = rows.slice(0, MAX_BATCH);
@@ -180,7 +211,10 @@ export function normalizeBatch(input: unknown, now = Date.now()): NormalizeResul
   let clamped = false;
 
   for (const row of slice) {
-    const sample = row && typeof row === "object" ? normalizeSample(row as RawSample, now) : null;
+    const sample =
+      row && typeof row === "object"
+        ? normalizeSample(row as RawSample, now)
+        : null;
     if (!sample) {
       rejected += 1;
       continue;
@@ -210,7 +244,10 @@ export function normalizeBatch(input: unknown, now = Date.now()): NormalizeResul
 export function percentile(values: readonly number[], p = 0.75): number {
   if (!values.length) return 0;
   const sorted = [...values].sort((a, b) => a - b);
-  const rank = Math.min(sorted.length - 1, Math.max(0, Math.ceil(p * sorted.length) - 1));
+  const rank = Math.min(
+    sorted.length - 1,
+    Math.max(0, Math.ceil(p * sorted.length) - 1),
+  );
   return sorted[rank]!;
 }
 
@@ -241,7 +278,11 @@ function budgetFor(metric: VitalMetric): number | null {
   return key ? VITALS_BUDGET[key] : null;
 }
 
-function rollup(metric: VitalMetric, device: DeviceClass, values: number[]): MetricRollup {
+function rollup(
+  metric: VitalMetric,
+  device: DeviceClass,
+  values: number[],
+): MetricRollup {
   const p75 = percentile(values, 0.75);
   const budget = budgetFor(metric);
   return {
@@ -249,7 +290,10 @@ function rollup(metric: VitalMetric, device: DeviceClass, values: number[]): Met
     device,
     samples: values.length,
     p75: metric === "cls" ? Number(p75.toFixed(3)) : Math.round(p75),
-    p95: metric === "cls" ? Number(percentile(values, 0.95).toFixed(3)) : Math.round(percentile(values, 0.95)),
+    p95:
+      metric === "cls"
+        ? Number(percentile(values, 0.95).toFixed(3))
+        : Math.round(percentile(values, 0.95)),
     rating: rateMetric(metric, p75),
     budget,
     withinBudget: budget === null ? true : p75 <= budget,
@@ -264,7 +308,12 @@ function rollup(metric: VitalMetric, device: DeviceClass, values: number[]): Met
 export const MIN_SAMPLES_TO_JUDGE = 20;
 
 export function summarize(
-  rows: readonly { metric: VitalMetric | string; value: number; device?: string; path?: string }[],
+  rows: readonly {
+    metric: VitalMetric | string;
+    value: number;
+    device?: string;
+    path?: string;
+  }[],
 ): VitalsSummary {
   const byMetricDevice = new Map<string, number[]>();
   const byPathLcp = new Map<string, number[]>();
@@ -290,16 +339,22 @@ export function summarize(
         rollups.push({ ...rollup(metric, "unknown", all), device: "unknown" });
       }
       const values = byMetricDevice.get(key);
-      if (values && device !== "unknown") rollups.push(rollup(metric, device, values));
+      if (values && device !== "unknown")
+        rollups.push(rollup(metric, device, values));
     }
   }
 
   const failing = rollups.filter(
-    (r) => r.budget !== null && !r.withinBudget && r.samples >= MIN_SAMPLES_TO_JUDGE,
+    (r) =>
+      r.budget !== null && !r.withinBudget && r.samples >= MIN_SAMPLES_TO_JUDGE,
   );
 
   const worstPaths = [...byPathLcp.entries()]
-    .map(([path, values]) => ({ path, samples: values.length, lcpP75: Math.round(percentile(values, 0.75)) }))
+    .map(([path, values]) => ({
+      path,
+      samples: values.length,
+      lcpP75: Math.round(percentile(values, 0.75)),
+    }))
     .filter((row) => row.samples >= 5)
     .sort((a, b) => b.lcpP75 - a.lcpP75)
     .slice(0, 10);
@@ -318,6 +373,9 @@ export function describeSummary(summary: VitalsSummary): string {
   if (!summary.total) return "no field data yet";
   const parts = summary.rollups
     .filter((r) => r.device === "unknown" && r.budget !== null)
-    .map((r) => `${r.metric.toUpperCase()} p75 ${r.metric === "cls" ? r.p75 : `${r.p75}ms`} (${r.rating})`);
+    .map(
+      (r) =>
+        `${r.metric.toUpperCase()} p75 ${r.metric === "cls" ? r.p75 : `${r.p75}ms`} (${r.rating})`,
+    );
   return `${summary.total} samples · ${parts.join(" · ") || "—"}`;
 }

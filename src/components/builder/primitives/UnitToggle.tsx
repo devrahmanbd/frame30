@@ -24,7 +24,11 @@ export function UnitToggle({
   label: string;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex rounded-fq-md border border-border p-0.5">
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="inline-flex rounded-fq-md border border-border p-0.5"
+    >
       {(["cm", "in"] as SizeUnit[]).map((option) => (
         <button
           key={option}
@@ -34,7 +38,9 @@ export function UnitToggle({
           onClick={() => onChange(option)}
           className={[
             "min-h-11 rounded-fq-sm px-3 text-sm",
-            unit === option ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+            unit === option
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground",
           ].join(" ")}
         >
           {option}

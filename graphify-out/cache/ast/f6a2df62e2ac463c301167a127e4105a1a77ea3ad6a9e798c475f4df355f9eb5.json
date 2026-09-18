@@ -1,1 +1,945 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "label": "rest-gateway.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L1"}, {"id": "lib_rest_gateway_server_admin", "label": "Admin", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L27"}, {"id": "lib_rest_gateway_server_principal", "label": "Principal", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L31"}, {"id": "lib_rest_gateway_server_apierror", "label": "ApiError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L39"}, {"id": "lib_rest_gateway_server_apierror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L40"}, {"id": "lib_rest_gateway_server_problem", "label": "problem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L51"}, {"id": "lib_rest_gateway_server_authenticate", "label": "authenticate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L62"}, {"id": "lib_rest_gateway_server_hashbody", "label": "hashBody()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L98"}, {"id": "lib_rest_gateway_server_idempotencyhit", "label": "IdempotencyHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L105"}, {"id": "lib_rest_gateway_server_checkidempotency", "label": "checkIdempotency()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L110"}, {"id": "lib_rest_gateway_server_ctx", "label": "Ctx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L134"}, {"id": "lib_rest_gateway_server_handled", "label": "Handled", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L142"}, {"id": "lib_rest_gateway_server_page", "label": "page()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L144"}, {"id": "lib_rest_gateway_server_applycursor", "label": "applyCursor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L149"}, {"id": "lib_rest_gateway_server_nextcursor", "label": "nextCursor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L159"}, {"id": "lib_rest_gateway_server_money", "label": "money()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L165"}, {"id": "lib_rest_gateway_server_handlers", "label": "handlers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L169"}, {"id": "lib_rest_gateway_server_handleapirequest", "label": "handleApiRequest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L560"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "supabase_types_loose_json", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_clamplimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_decodecursor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_encodecursor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_matchroute", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_parsescopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_requiresidempotency", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_satisfies", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_api_scopes_scope", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rate_limit_server_ratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_principal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_apierror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L39", "weight": 1.0}, {"source": "lib_rest_gateway_server_apierror", "target": "lib_rest_gateway_server_apierror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_problem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_authenticate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_hashbody", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_idempotencyhit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L105", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_checkidempotency", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_ctx", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L134", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_handled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_page", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_applycursor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L149", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_nextcursor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_money", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L165", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_handlers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L169", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "target": "lib_rest_gateway_server_handleapirequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L560", "weight": 1.0}, {"source": "lib_rest_gateway_server_authenticate", "target": "users_rahman_documents_frame30_src_lib_oauth_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_rest_gateway_server_authenticate", "target": "users_rahman_documents_frame30_src_lib_api_keys_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L82", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "lib_rest_gateway_server_authenticate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L571", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "lib_rest_gateway_server_problem", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L590", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L605", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "lib_rest_gateway_server_hashbody", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L611", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "lib_rest_gateway_server_checkidempotency", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L614", "weight": 1.0}, {"source": "lib_rest_gateway_server_handleapirequest", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L656", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_rest_gateway_server_apierror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L46"}, {"caller_nid": "lib_rest_gateway_server_problem", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L52"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L63"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L64"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L65"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L70"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "resolveAccessToken", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L72"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "resolveBearer", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L83"}, {"caller_nid": "lib_rest_gateway_server_authenticate", "callee": "parseScopes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L88"}, {"caller_nid": "lib_rest_gateway_server_hashbody", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L99"}, {"caller_nid": "lib_rest_gateway_server_hashbody", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L99"}, {"caller_nid": "lib_rest_gateway_server_hashbody", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L100"}, {"caller_nid": "lib_rest_gateway_server_hashbody", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L100"}, {"caller_nid": "lib_rest_gateway_server_hashbody", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L100"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_checkidempotency", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L117"}, {"caller_nid": "lib_rest_gateway_server_page", "callee": "clampLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L145"}, {"caller_nid": "lib_rest_gateway_server_page", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L145"}, {"caller_nid": "lib_rest_gateway_server_page", "callee": "decodeCursor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L145"}, {"caller_nid": "lib_rest_gateway_server_page", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L145"}, {"caller_nid": "lib_rest_gateway_server_applycursor", "callee": "or", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L154"}, {"caller_nid": "lib_rest_gateway_server_nextcursor", "callee": "encodeCursor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L162"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L561"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L563"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L564"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "matchRoute", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L565"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "satisfies", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L573"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "rateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L582"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L584"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L585"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L589"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "text", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L595"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L599"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L610"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "requiresIdempotency", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L612"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L619"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L620"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "handler", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L629"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "requiresIdempotency", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L631"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L632"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L632"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L642"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L642"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L643"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L643"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L644"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "captureError", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L657"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L659"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L659"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L660"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L660"}, {"caller_nid": "lib_rest_gateway_server_handleapirequest", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts", "source_location": "L661"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "label": "rest-gateway.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_rest_gateway_server_admin",
+      "label": "Admin",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_rest_gateway_server_principal",
+      "label": "Principal",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_rest_gateway_server_apierror",
+      "label": "ApiError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_rest_gateway_server_apierror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_rest_gateway_server_problem",
+      "label": "problem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_rest_gateway_server_authenticate",
+      "label": "authenticate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_rest_gateway_server_hashbody",
+      "label": "hashBody()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_rest_gateway_server_idempotencyhit",
+      "label": "IdempotencyHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "id": "lib_rest_gateway_server_checkidempotency",
+      "label": "checkIdempotency()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_rest_gateway_server_ctx",
+      "label": "Ctx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L134"
+    },
+    {
+      "id": "lib_rest_gateway_server_handled",
+      "label": "Handled",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "id": "lib_rest_gateway_server_page",
+      "label": "page()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "lib_rest_gateway_server_applycursor",
+      "label": "applyCursor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "id": "lib_rest_gateway_server_nextcursor",
+      "label": "nextCursor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_rest_gateway_server_money",
+      "label": "money()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "id": "lib_rest_gateway_server_handlers",
+      "label": "handlers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L169"
+    },
+    {
+      "id": "lib_rest_gateway_server_handleapirequest",
+      "label": "handleApiRequest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L560"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "supabase_types_loose_json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_clamplimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_decodecursor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_encodecursor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_matchroute",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_parsescopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_requiresidempotency",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_satisfies",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_api_scopes_scope",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rate_limit_server_ratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_principal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_apierror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_apierror",
+      "target": "lib_rest_gateway_server_apierror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_problem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_authenticate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_hashbody",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_idempotencyhit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_checkidempotency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_ctx",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_handled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_page",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_applycursor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_nextcursor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_money",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_handlers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "target": "lib_rest_gateway_server_handleapirequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L560",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_authenticate",
+      "target": "users_rahman_documents_frame30_src_lib_oauth_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_authenticate",
+      "target": "users_rahman_documents_frame30_src_lib_api_keys_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "lib_rest_gateway_server_authenticate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L571",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "lib_rest_gateway_server_problem",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L590",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L605",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "lib_rest_gateway_server_hashbody",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L611",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "lib_rest_gateway_server_checkidempotency",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L614",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rest_gateway_server_handleapirequest",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L656",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_rest_gateway_server_apierror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_problem",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "resolveAccessToken",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "resolveBearer",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_authenticate",
+      "callee": "parseScopes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_hashbody",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_hashbody",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_hashbody",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_hashbody",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_hashbody",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_checkidempotency",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_page",
+      "callee": "clampLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_page",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_page",
+      "callee": "decodeCursor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_page",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_applycursor",
+      "callee": "or",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_nextcursor",
+      "callee": "encodeCursor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L561"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L563"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L564"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "matchRoute",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L565"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "satisfies",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L573"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "rateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L582"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L584"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L585"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L589"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "text",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L595"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L599"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L610"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "requiresIdempotency",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L612"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L619"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L620"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "handler",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L629"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "requiresIdempotency",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L631"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L632"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L632"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L642"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L642"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L643"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L643"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L644"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "captureError",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L657"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L659"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L659"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L660"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L660"
+    },
+    {
+      "caller_nid": "lib_rest_gateway_server_handleapirequest",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rest-gateway.server.ts",
+      "source_location": "L661"
+    }
+  ]
+}

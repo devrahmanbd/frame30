@@ -21,7 +21,10 @@ export const docsTryItFn = createServerFn({ method: "POST" })
     const { runTryIt, TryItError } = await import("./docs.server");
     const { requestOrigin } = await import("./site-origin.server");
     try {
-      return { ok: true as const, result: await runTryIt(data, requestOrigin()) };
+      return {
+        ok: true as const,
+        result: await runTryIt(data, requestOrigin()),
+      };
     } catch (error) {
       if (error instanceof TryItError) {
         return {
@@ -35,6 +38,11 @@ export const docsTryItFn = createServerFn({ method: "POST" })
       log("error", "docs.tryit.unhandled", {
         reason: String((error as Error)?.message ?? error).slice(0, 200),
       });
-      return { ok: false as const, code: "unavailable" as const, message: "The sandbox is unavailable right now.", resetAt: null };
+      return {
+        ok: false as const,
+        code: "unavailable" as const,
+        message: "The sandbox is unavailable right now.",
+        resetAt: null,
+      };
     }
   });

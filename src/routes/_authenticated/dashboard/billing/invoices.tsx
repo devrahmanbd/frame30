@@ -3,7 +3,9 @@ import { CollectionDesk } from "@/components/admin/billing/CollectionDesk";
 import { UsagePanel } from "@/components/admin/billing/UsagePanel";
 import { useLang } from "@/lib/i18n";
 
-export const Route = createFileRoute("/_authenticated/dashboard/billing/invoices")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/billing/invoices",
+)({
   head: () => ({
     meta: [
       { title: "ইনভয়েস — Framique বিলিং" },
@@ -15,7 +17,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/billing/invoices
       { property: "og:title", content: "Framique invoices" },
       {
         property: "og:description",
-        content: "Subscription invoices with VAT lines, period and payment status.",
+        content:
+          "Subscription invoices with VAT lines, period and payment status.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -30,7 +33,9 @@ function InvoicesPage() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-bangla-display text-2xl font-semibold">{t("Invoices", "ইনভয়েস")}</h1>
+          <h1 className="font-bangla-display text-2xl font-semibold">
+            {t("Invoices", "ইনভয়েস")}
+          </h1>
           <p className="text-sm text-muted-foreground">
             {t(
               "Server-issued subscription invoices, VAT from the legal rate table, and the payment rail for settling them.",

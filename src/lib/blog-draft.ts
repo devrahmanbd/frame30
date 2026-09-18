@@ -48,7 +48,10 @@ export type StoredDraft = DraftPayload & {
   baseHash: string;
 };
 
-export type DraftStorage = Pick<Storage, "getItem" | "setItem" | "removeItem"> & {
+export type DraftStorage = Pick<
+  Storage,
+  "getItem" | "setItem" | "removeItem"
+> & {
   readonly length?: number;
   key?(index: number): string | null;
 };
@@ -91,8 +94,11 @@ function safeStorage(): DraftStorage | null {
 
 export type DraftStore = ReturnType<typeof createDraftStore>;
 
-export function createDraftStore(options: { storage?: DraftStorage | null; now?: () => number } = {}) {
-  const storage = options.storage === undefined ? safeStorage() : options.storage;
+export function createDraftStore(
+  options: { storage?: DraftStorage | null; now?: () => number } = {},
+) {
+  const storage =
+    options.storage === undefined ? safeStorage() : options.storage;
   const now = options.now ?? (() => Date.now());
   /** Mirror so the current tab keeps working even when persistence is refused. */
   const memory = new Map<string, StoredDraft>();
@@ -102,9 +108,11 @@ export function createDraftStore(options: { storage?: DraftStorage | null; now?:
     try {
       const value = JSON.parse(raw) as Partial<StoredDraft>;
       if (!value || value.version !== DRAFT_LIMITS.version) return null;
-      if (typeof value.savedAt !== "string" || typeof value.body !== "string") return null;
+      if (typeof value.savedAt !== "string" || typeof value.body !== "string")
+        return null;
       const age = now() - Date.parse(value.savedAt);
-      if (!Number.isFinite(age) || age < 0 || age > DRAFT_LIMITS.ttlMs) return null;
+      if (!Number.isFinite(age) || age < 0 || age > DRAFT_LIMITS.ttlMs)
+        return null;
       return value as StoredDraft;
     } catch {
       return null; // another tab, another version, or corruption
@@ -113,7 +121,12 @@ export function createDraftStore(options: { storage?: DraftStorage | null; now?:
 
   /** Best-effort eviction of expired and surplus entries. Never throws. */
   function prune(): number {
-    if (!storage || typeof storage.length !== "number" || typeof storage.key !== "function") return 0;
+    if (
+      !storage ||
+      typeof storage.length !== "number" ||
+      typeof storage.key !== "function"
+    )
+      return 0;
     const mine: { key: string; savedAt: number }[] = [];
     for (let index = 0; index < (storage.length ?? 0); index += 1) {
       const key = storage.key(index);
@@ -144,7 +157,12 @@ export function createDraftStore(options: { storage?: DraftStorage | null; now?:
   return {
     prune,
 
-    write(merchantId: string, articleId: string, payload: DraftPayload, baseHash: string): WriteResult {
+    write(
+      merchantId: string,
+      articleId: string,
+      payload: DraftPayload,
+      baseHash: string,
+    ): WriteResult {
       const key = draftKey(merchantId, articleId);
       const draft: StoredDraft = {
         ...payload,
@@ -155,7 +173,8 @@ export function createDraftStore(options: { storage?: DraftStorage | null; now?:
         baseHash,
       };
       const serialized = JSON.stringify(draft);
-      if (serialized.length > DRAFT_LIMITS.maxBytes) return { ok: false, reason: "too_large" };
+      if (serialized.length > DRAFT_LIMITS.maxBytes)
+        return { ok: false, reason: "too_large" };
       memory.set(key, draft);
       if (!storage) return { ok: true, persisted: false };
       try {
@@ -211,11 +230,16 @@ export function recoveryOffer(
   serverUpdatedAt: string | null,
 ): { offer: boolean; reason: "none" | "identical" | "stale" | "diverged" } {
   if (!draft) return { offer: false, reason: "none" };
-  if (draftHash(draft) === draftHash(server)) return { offer: false, reason: "identical" };
+  if (draftHash(draft) === draftHash(server))
+    return { offer: false, reason: "identical" };
   if (serverUpdatedAt) {
     const serverTime = Date.parse(serverUpdatedAt);
     const draftTime = Date.parse(draft.savedAt);
-    if (Number.isFinite(serverTime) && Number.isFinite(draftTime) && draftTime <= serverTime) {
+    if (
+      Number.isFinite(serverTime) &&
+      Number.isFinite(draftTime) &&
+      draftTime <= serverTime
+    ) {
       return { offer: false, reason: "stale" };
     }
   }

@@ -18,6 +18,7 @@ This directory contains agent configuration and skills for OpenAI Codex CLI.
 ## Configuration
 
 The `config.toml` file controls:
+
 - Model selection
 - Approval policies
 - Sandbox modes
@@ -27,6 +28,7 @@ The `config.toml` file controls:
 ## Skills
 
 Skills are invoked using `$skill-name` syntax. Each skill has:
+
 - YAML frontmatter with metadata
 - Trigger and skip conditions
 - Commands and examples

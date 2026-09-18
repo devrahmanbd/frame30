@@ -39,7 +39,9 @@ describe("css scoping", () => {
 
 describe("javascript review", () => {
   it("rejects document.write and eval", () => {
-    expect(reviewJs("document.write('x')").some((f) => f.level === "error")).toBe(true);
+    expect(
+      reviewJs("document.write('x')").some((f) => f.level === "error"),
+    ).toBe(true);
     expect(reviewJs("eval('1+1')").some((f) => f.level === "error")).toBe(true);
   });
 
@@ -52,7 +54,9 @@ describe("javascript review", () => {
   });
 
   it("accepts an ordinary analytics snippet", () => {
-    const out = reviewJs("window.addEventListener('load', () => console.log('hi'));");
+    const out = reviewJs(
+      "window.addEventListener('load', () => console.log('hi'));",
+    );
     expect(out.filter((f) => f.level === "error")).toHaveLength(0);
   });
 });
@@ -67,21 +71,31 @@ describe("head and body snippets", () => {
   });
 
   it("allows ld+json but never a script src", () => {
-    const ok = parseHeadSnippet('<script type="application/ld+json">{"@type":"Store"}</script>');
+    const ok = parseHeadSnippet(
+      '<script type="application/ld+json">{"@type":"Store"}</script>',
+    );
     expect(ok.tags).toHaveLength(1);
-    const bad = parseHeadSnippet('<script src="https://evil.example/x.js"></script>');
+    const bad = parseHeadSnippet(
+      '<script src="https://evil.example/x.js"></script>',
+    );
     expect(bad.tags).toHaveLength(0);
   });
 
   it("strips scripts and event handlers from body snippets", () => {
-    const out = sanitiseBodySnippet('<div onclick="steal()">hi</div><script>x()</script>', "body_start");
+    const out = sanitiseBodySnippet(
+      '<div onclick="steal()">hi</div><script>x()</script>',
+      "body_start",
+    );
     expect(out.html).not.toContain("onclick");
     expect(out.html).not.toContain("<script");
     expect(out.html).toContain("hi");
   });
 
   it("rejects javascript: urls", () => {
-    const out = sanitiseBodySnippet('<a href="javascript:alert(1)">x</a>', "body_end");
+    const out = sanitiseBodySnippet(
+      '<a href="javascript:alert(1)">x</a>',
+      "body_end",
+    );
     expect(out.html).not.toContain("javascript:");
   });
 });
@@ -121,7 +135,15 @@ describe("compile", () => {
 describe("html widget markup", () => {
   it("keeps markup but removes scripts and handlers", () => {
     const ast = parseAst({
-      main: [{ id: "n1", type: "html", props: { markup: '<div onclick="x()">ok</div><script>bad()</script>' } }],
+      main: [
+        {
+          id: "n1",
+          type: "html",
+          props: {
+            markup: '<div onclick="x()">ok</div><script>bad()</script>',
+          },
+        },
+      ],
     });
     const markup = String(ast.main[0]?.props["markup"] ?? "");
     expect(markup).toContain("ok");

@@ -71,7 +71,10 @@ export function descendantIds(node: Section): string[] {
 }
 
 /** Apply `fn` to every node in the tree, preserving structure. */
-export function mapTree(sections: Section[], fn: (section: Section) => Section): Section[] {
+export function mapTree(
+  sections: Section[],
+  fn: (section: Section) => Section,
+): Section[] {
   return sections.map((section) => {
     const next = fn(section);
     if (!next.children) return next;
@@ -117,7 +120,10 @@ export function insertNodes(
         inserted = true;
         const children = node.children ?? [];
         const at = clampIndex(index, children.length);
-        return { ...node, children: [...children.slice(0, at), ...nodes, ...children.slice(at)] };
+        return {
+          ...node,
+          children: [...children.slice(0, at), ...nodes, ...children.slice(at)],
+        };
       }
       if (!node.children) return node;
       return { ...node, children: walk(node.children) };
@@ -152,10 +158,12 @@ export function canDrop(
   if (parentId !== null) {
     const target = locate(sections, parentId);
     if (!target) return { ok: false, reason: "missing_parent" };
-    if (!isContainer(target.node)) return { ok: false, reason: "not_a_container" };
+    if (!isContainer(target.node))
+      return { ok: false, reason: "not_a_container" };
     for (const node of nodes) {
       if (node.id === parentId) return { ok: false, reason: "self_drop" };
-      if (descendantIds(node).includes(parentId)) return { ok: false, reason: "descendant_drop" };
+      if (descendantIds(node).includes(parentId))
+        return { ok: false, reason: "descendant_drop" };
     }
   }
   const base = parentDepth(sections, parentId) + 1;
@@ -183,7 +191,8 @@ export function moveRelative(
   const source = locate(sections, dragId);
   if (!source) return sections;
   if (targetId === null) {
-    if (!canDrop(sections, [source.node], null, { moving: true }).ok) return sections;
+    if (!canDrop(sections, [source.node], null, { moving: true }).ok)
+      return sections;
     const { tree, removed } = removeNodes(sections, [dragId]);
     return insertNodes(tree, null, tree.length, removed);
   }
@@ -193,21 +202,36 @@ export function moveRelative(
   if (descendantIds(source.node).includes(targetId)) return sections;
 
   const parentId = position === "inside" ? targetId : target.parentId;
-  if (!canDrop(sections, [source.node], parentId, { moving: true }).ok) return sections;
+  if (!canDrop(sections, [source.node], parentId, { moving: true }).ok)
+    return sections;
 
   const { tree, removed } = removeNodes(sections, [dragId]);
   if (removed.length === 0) return sections;
   if (position === "inside") {
     const container = locate(tree, targetId);
-    return insertNodes(tree, targetId, container?.node.children?.length ?? 0, removed);
+    return insertNodes(
+      tree,
+      targetId,
+      container?.node.children?.length ?? 0,
+      removed,
+    );
   }
   const after = locate(tree, targetId);
   if (!after) return sections;
-  return insertNodes(tree, after.parentId, after.index + (position === "after" ? 1 : 0), removed);
+  return insertNodes(
+    tree,
+    after.parentId,
+    after.index + (position === "after" ? 1 : 0),
+    removed,
+  );
 }
 
 /** Nudge a node up or down inside its own parent — the keyboard reorder path. */
-export function nudge(sections: Section[], id: string, delta: -1 | 1): Section[] {
+export function nudge(
+  sections: Section[],
+  id: string,
+  delta: -1 | 1,
+): Section[] {
   const found = locate(sections, id);
   if (!found) return sections;
   const siblings =
@@ -250,7 +274,8 @@ export function topMost(sections: Section[], ids: readonly string[]): string[] {
   const covered = new Set<string>();
   for (const id of ids) {
     const found = locate(sections, id);
-    if (found) for (const child of descendantIds(found.node)) covered.add(child);
+    if (found)
+      for (const child of descendantIds(found.node)) covered.add(child);
   }
   return outline(sections)
     .filter((entry) => wanted.has(entry.node.id) && !covered.has(entry.node.id))

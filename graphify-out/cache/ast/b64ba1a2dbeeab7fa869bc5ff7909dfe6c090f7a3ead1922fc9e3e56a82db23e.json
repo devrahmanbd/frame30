@@ -1,1 +1,675 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "label": "publish-gates.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L1"}, {"id": "lib_publish_gates_contrast_floor", "label": "CONTRAST_FLOOR", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L29"}, {"id": "lib_publish_gates_colourscheme", "label": "ColourScheme", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L31"}, {"id": "lib_publish_gates_gatelocale", "label": "GateLocale", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L32"}, {"id": "lib_publish_gates_gate_matrix", "label": "GATE_MATRIX", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L35"}, {"id": "lib_publish_gates_gatefailure", "label": "GateFailure", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L42"}, {"id": "lib_publish_gates_effectivedark", "label": "effectiveDark()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L53"}, {"id": "lib_publish_gates_pair", "label": "Pair", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L57"}, {"id": "lib_publish_gates_pairsfor", "label": "pairsFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L59"}, {"id": "lib_publish_gates_contrastrow", "label": "ContrastRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L83"}, {"id": "lib_publish_gates_contrastreport", "label": "contrastReport()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L94"}, {"id": "lib_publish_gates_contrastgate", "label": "contrastGate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L119"}, {"id": "lib_publish_gates_reserved_ratios", "label": "RESERVED_RATIOS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L132"}, {"id": "lib_publish_gates_skeletonparitygate", "label": "skeletonParityGate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L135"}, {"id": "lib_publish_gates_release_gates", "label": "RELEASE_GATES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L175"}, {"id": "lib_publish_gates_composepublishgate", "label": "composePublishGate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L221"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_default_dark_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_contrastratio", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_inkon", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_darktokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_themetokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_web_vitals_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_web_vitals_lighthouse_budget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_web_vitals_vitals_budget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_widget_registry_widget_registry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_widget_registry_widget_types", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_widget_skeletons_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_widget_skeletons_skeletonspec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_widget_weight_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_widget_weight_perfgate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_widget_weight_perfgatereport", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_responsive_lint_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_responsive_lint_responsivegate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_responsive_lint_responsivegatereport", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_contrast_floor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_colourscheme", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_gatelocale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_gate_matrix", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_gatefailure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_effectivedark", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_pair", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_pairsfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_contrastrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_contrastreport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_contrastgate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_reserved_ratios", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_skeletonparitygate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_release_gates", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L175", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "target": "lib_publish_gates_composepublishgate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L221", "weight": 1.0}, {"source": "lib_publish_gates_contrastreport", "target": "lib_publish_gates_effectivedark", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L97", "weight": 1.0}, {"source": "lib_publish_gates_contrastgate", "target": "lib_publish_gates_contrastreport", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L120", "weight": 1.0}, {"source": "lib_publish_gates_composepublishgate", "target": "lib_publish_gates_contrastgate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L253", "weight": 1.0}, {"source": "lib_publish_gates_composepublishgate", "target": "lib_publish_gates_skeletonparitygate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L254", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_publish_gates_pairsfor", "callee": "inkOn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L64"}, {"caller_nid": "lib_publish_gates_pairsfor", "callee": "inkOn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L71"}, {"caller_nid": "lib_publish_gates_contrastreport", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L99"}, {"caller_nid": "lib_publish_gates_contrastgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L120"}, {"caller_nid": "lib_publish_gates_contrastgate", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L120"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "skeletonSpec", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L140"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L142"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L149"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L155"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L160"}, {"caller_nid": "lib_publish_gates_skeletonparitygate", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L161"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "perfGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L245"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "responsiveGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L248"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L250"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L251"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L252"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L255"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L256"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L259"}, {"caller_nid": "lib_publish_gates_composepublishgate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts", "source_location": "L260"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "label": "publish-gates.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_publish_gates_contrast_floor",
+      "label": "CONTRAST_FLOOR",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_publish_gates_colourscheme",
+      "label": "ColourScheme",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_publish_gates_gatelocale",
+      "label": "GateLocale",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_publish_gates_gate_matrix",
+      "label": "GATE_MATRIX",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_publish_gates_gatefailure",
+      "label": "GateFailure",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_publish_gates_effectivedark",
+      "label": "effectiveDark()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_publish_gates_pair",
+      "label": "Pair",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_publish_gates_pairsfor",
+      "label": "pairsFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "lib_publish_gates_contrastrow",
+      "label": "ContrastRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_publish_gates_contrastreport",
+      "label": "contrastReport()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "lib_publish_gates_contrastgate",
+      "label": "contrastGate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L119"
+    },
+    {
+      "id": "lib_publish_gates_reserved_ratios",
+      "label": "RESERVED_RATIOS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_publish_gates_skeletonparitygate",
+      "label": "skeletonParityGate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L135"
+    },
+    {
+      "id": "lib_publish_gates_release_gates",
+      "label": "RELEASE_GATES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L175"
+    },
+    {
+      "id": "lib_publish_gates_composepublishgate",
+      "label": "composePublishGate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L221"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_default_dark_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_contrastratio",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_inkon",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_darktokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_themetokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_web_vitals_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_web_vitals_lighthouse_budget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_web_vitals_vitals_budget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_widget_registry_widget_registry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_widget_registry_widget_types",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_skeletons_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_widget_skeletons_skeletonspec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_weight_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_widget_weight_perfgate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_widget_weight_perfgatereport",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_lint_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_responsive_lint_responsivegate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_responsive_lint_responsivegatereport",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_contrast_floor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_colourscheme",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_gatelocale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_gate_matrix",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_gatefailure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_effectivedark",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_pair",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_pairsfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_contrastrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_contrastreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_contrastgate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_reserved_ratios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_skeletonparitygate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_release_gates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "target": "lib_publish_gates_composepublishgate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_publish_gates_contrastreport",
+      "target": "lib_publish_gates_effectivedark",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_publish_gates_contrastgate",
+      "target": "lib_publish_gates_contrastreport",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_publish_gates_composepublishgate",
+      "target": "lib_publish_gates_contrastgate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_publish_gates_composepublishgate",
+      "target": "lib_publish_gates_skeletonparitygate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L254",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_publish_gates_pairsfor",
+      "callee": "inkOn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_publish_gates_pairsfor",
+      "callee": "inkOn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "lib_publish_gates_contrastreport",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_publish_gates_contrastgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_publish_gates_contrastgate",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "skeletonSpec",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_publish_gates_skeletonparitygate",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "perfGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "responsiveGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "lib_publish_gates_composepublishgate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/publish-gates.ts",
+      "source_location": "L260"
+    }
+  ]
+}

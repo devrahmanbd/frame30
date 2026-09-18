@@ -6,56 +6,56 @@
 
 ## What's New in 2026
 
-| Finding | Source | Confidence |
-|---------|--------|------------|
-| NapMem: RL-navigated multi-granularity memory pyramid beats passive retrieval on long-horizon tasks | Xu et al., arXiv 2026-07-06 | B |
-| StateFuse: CRDT conflict-preserving memory enables auditable multi-agent state divergence | Volkov et al., arXiv 2026-07-07 | B |
-| Memory in the Loop: in-process microsecond stores eliminate redundant agent actions vs disk-backed retrieval | Khan & Lipizzi, arXiv 2026-07-06 | B |
-| MRMS: 3-temporal-axis (short/medium/long-term) unified memory substrate for long-lived agents | Li & Shi-Nash, arXiv 2026-07-05 | B |
-| Mem0 2026: fused scoring (semantic + BM25 + entity) yields +29.6 pts temporal, +23.1 pts multi-hop vs prior | mem0.ai, 2026 | B (vendor) |
-| Sovereign Memory Stack: L1 Redis <1 ms, L2 Qdrant HNSW+BQ 20 ms p99, L3 Pinecone episodic | Ranksquire, verified Mar 2026 | B |
-| Princeton NLP: single agent matches multi-agent on 64% of benchmarked tasks at ~half the cost | presenc.ai/research, 2026 | C (secondary) |
-| 12–20% of agent marketplace skills found malicious in public registry audits | Tony Kipkemboi, 2026 | C (single source) |
+| Finding                                                                                                      | Source                           | Confidence        |
+| ------------------------------------------------------------------------------------------------------------ | -------------------------------- | ----------------- |
+| NapMem: RL-navigated multi-granularity memory pyramid beats passive retrieval on long-horizon tasks          | Xu et al., arXiv 2026-07-06      | B                 |
+| StateFuse: CRDT conflict-preserving memory enables auditable multi-agent state divergence                    | Volkov et al., arXiv 2026-07-07  | B                 |
+| Memory in the Loop: in-process microsecond stores eliminate redundant agent actions vs disk-backed retrieval | Khan & Lipizzi, arXiv 2026-07-06 | B                 |
+| MRMS: 3-temporal-axis (short/medium/long-term) unified memory substrate for long-lived agents                | Li & Shi-Nash, arXiv 2026-07-05  | B                 |
+| Mem0 2026: fused scoring (semantic + BM25 + entity) yields +29.6 pts temporal, +23.1 pts multi-hop vs prior  | mem0.ai, 2026                    | B (vendor)        |
+| Sovereign Memory Stack: L1 Redis <1 ms, L2 Qdrant HNSW+BQ 20 ms p99, L3 Pinecone episodic                    | Ranksquire, verified Mar 2026    | B                 |
+| Princeton NLP: single agent matches multi-agent on 64% of benchmarked tasks at ~half the cost                | presenc.ai/research, 2026        | C (secondary)     |
+| 12–20% of agent marketplace skills found malicious in public registry audits                                 | Tony Kipkemboi, 2026             | C (single source) |
 
 ---
 
 ## Ruflo Current Capability
 
-| Component | Current State | Gap |
-|-----------|---------------|-----|
-| AgentDB storage | sql.js SQLite + HNSW (measured 1.9×–4.7× vs brute force at N=5k–20k) | No active RL navigation |
-| Retrieval | Passive HNSW vector similarity (384-dim ONNX) | No fused BM25+entity+semantic scoring |
-| Multi-agent state | Each agent writes independently; no conflict object model | No CRDT divergence surface |
-| Memory tiers | Single layer (AgentDB); no explicit short/medium/long-term axis | No MRMS-style temporal tiering |
-| Plugin security | IPFS registry with trust levels; no runtime malice scanning | No behavioral audit at install time |
-| Working memory | Context window + retrieval; no in-process sub-millisecond store | Potential latency overhead on high-frequency queries |
+| Component         | Current State                                                        | Gap                                                  |
+| ----------------- | -------------------------------------------------------------------- | ---------------------------------------------------- |
+| AgentDB storage   | sql.js SQLite + HNSW (measured 1.9×–4.7× vs brute force at N=5k–20k) | No active RL navigation                              |
+| Retrieval         | Passive HNSW vector similarity (384-dim ONNX)                        | No fused BM25+entity+semantic scoring                |
+| Multi-agent state | Each agent writes independently; no conflict object model            | No CRDT divergence surface                           |
+| Memory tiers      | Single layer (AgentDB); no explicit short/medium/long-term axis      | No MRMS-style temporal tiering                       |
+| Plugin security   | IPFS registry with trust levels; no runtime malice scanning          | No behavioral audit at install time                  |
+| Working memory    | Context window + retrieval; no in-process sub-millisecond store      | Potential latency overhead on high-frequency queries |
 
 ---
 
 ## Competitor Comparison
 
-| Framework | Memory Architecture | 2026 Notable Update | GitHub Stars |
-|-----------|---------------------|---------------------|--------------|
-| **LangGraph** | State graph + reducer logic + DeltaChannel | Per-node timeouts, typed streaming v2 | ~35K |
-| **CrewAI** | Pluggable RAG/knowledge/vector backends | v1.14: Snowflake Cortex, pluggable memory (May 2026) | ~29K |
-| **MS Agent Framework** (AutoGen + SK) | Stateful + MCP + A2A native | Merged Apr 2026; unified .NET + Python | ~35K combined |
-| **Mem0** | Hybrid vector+graph, update-not-duplicate | +29.6 temporal / +23.1 multi-hop (2026 algorithm); 21 framework integrations | ~26K |
-| **Letta** | Stateful episodic persistence, core memory + archival | Gold standard chatbot memory; 20 vector backends | ~47K |
-| **OpenAI Agents SDK** | Context-passing + tool calls | Production SDK (replaced Swarm, Mar 2025) | N/A (closed) |
-| **Ruflo AgentDB** | HNSW + sql.js + ONNX 384-dim | Measured 1.9×–4.7× HNSW speedup; no RL nav | ~6K |
+| Framework                             | Memory Architecture                                   | 2026 Notable Update                                                          | GitHub Stars  |
+| ------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- | ------------- |
+| **LangGraph**                         | State graph + reducer logic + DeltaChannel            | Per-node timeouts, typed streaming v2                                        | ~35K          |
+| **CrewAI**                            | Pluggable RAG/knowledge/vector backends               | v1.14: Snowflake Cortex, pluggable memory (May 2026)                         | ~29K          |
+| **MS Agent Framework** (AutoGen + SK) | Stateful + MCP + A2A native                           | Merged Apr 2026; unified .NET + Python                                       | ~35K combined |
+| **Mem0**                              | Hybrid vector+graph, update-not-duplicate             | +29.6 temporal / +23.1 multi-hop (2026 algorithm); 21 framework integrations | ~26K          |
+| **Letta**                             | Stateful episodic persistence, core memory + archival | Gold standard chatbot memory; 20 vector backends                             | ~47K          |
+| **OpenAI Agents SDK**                 | Context-passing + tool calls                          | Production SDK (replaced Swarm, Mar 2025)                                    | N/A (closed)  |
+| **Ruflo AgentDB**                     | HNSW + sql.js + ONNX 384-dim                          | Measured 1.9×–4.7× HNSW speedup; no RL nav                                   | ~6K           |
 
 ---
 
 ## Benchmarks
 
-| Benchmark | Result | Method | Grade |
-|-----------|--------|---------|-------|
-| Mem0 LoCoMo (2026 algorithm) | 92.5 / 100, 6,956 tokens/query avg | 1,540-question long-context eval | B (vendor) |
-| Mem0 LongMemEval (2026 algorithm) | 94.4 / 100, 6,787 tokens/query avg | 500-question, 6 categories | B (vendor) |
-| Mem0 BEAM at 1M token scale | 64.1 / 100 | Large-scale stress test | B (vendor) |
-| Mem0 BEAM at 10M token scale | 48.6 / 100 | Large-scale stress test | B (vendor) |
-| Ruflo AgentDB HNSW (measured) | ~1.9× at N=20k; ~3.2×–4.7× at N=5k (recall@10 ~0.99) | Internal benchmark, ruvector NAPI | A (reproduced) |
-| Princeton NLP multi-agent vs single | Single wins 64% tasks; multi adds 2.1 pp at 2× cost | Comparison benchmark, 2026 | C (secondary) |
+| Benchmark                           | Result                                               | Method                            | Grade          |
+| ----------------------------------- | ---------------------------------------------------- | --------------------------------- | -------------- |
+| Mem0 LoCoMo (2026 algorithm)        | 92.5 / 100, 6,956 tokens/query avg                   | 1,540-question long-context eval  | B (vendor)     |
+| Mem0 LongMemEval (2026 algorithm)   | 94.4 / 100, 6,787 tokens/query avg                   | 500-question, 6 categories        | B (vendor)     |
+| Mem0 BEAM at 1M token scale         | 64.1 / 100                                           | Large-scale stress test           | B (vendor)     |
+| Mem0 BEAM at 10M token scale        | 48.6 / 100                                           | Large-scale stress test           | B (vendor)     |
+| Ruflo AgentDB HNSW (measured)       | ~1.9× at N=20k; ~3.2×–4.7× at N=5k (recall@10 ~0.99) | Internal benchmark, ruvector NAPI | A (reproduced) |
+| Princeton NLP multi-agent vs single | Single wins 64% tasks; multi adds 2.1 pp at 2× cost  | Comparison benchmark, 2026        | C (secondary)  |
 
 **No 2026 Grade A data for NapMem RL navigation — arXiv preprints only (Grade B until peer-reviewed).**
 
@@ -79,12 +79,12 @@
 
 ## SOTA Proof & Witness
 
-| Field | Value |
-|-------|-------|
-| Session commit | `a444930d88d753e04793f55bd38861e82d9cb062` |
-| Report SHA-256 | `f48ab1c13ba2c452f0659a1635a330bf18c75d3ea57983e85b948a2a36bdd85d` |
-| Witness stamp | `0ed34f66403970b78e8ae70ec1b40a9e921f7ef43b2145b050a00713749847e9` |
-| Verification | `sha256(report_file) → concat session_commit → sha256 → must equal witness` |
+| Field          | Value                                                                       |
+| -------------- | --------------------------------------------------------------------------- |
+| Session commit | `a444930d88d753e04793f55bd38861e82d9cb062`                                  |
+| Report SHA-256 | `f48ab1c13ba2c452f0659a1635a330bf18c75d3ea57983e85b948a2a36bdd85d`          |
+| Witness stamp  | `0ed34f66403970b78e8ae70ec1b40a9e921f7ef43b2145b050a00713749847e9`          |
+| Verification   | `sha256(report_file) → concat session_commit → sha256 → must equal witness` |
 
 ---
 

@@ -20,9 +20,17 @@ import {
   type SortKey,
 } from "./storefront-search";
 
-export type FacetKey = "category" | "collection" | "kind" | "min" | "max" | "stock";
+export type FacetKey =
+  "category" | "collection" | "kind" | "min" | "max" | "stock";
 
-export const FACET_KEYS: FacetKey[] = ["category", "collection", "kind", "min", "max", "stock"];
+export const FACET_KEYS: FacetKey[] = [
+  "category",
+  "collection",
+  "kind",
+  "min",
+  "max",
+  "stock",
+];
 
 /**
  * Facets that may be indexed on their own URL. Everything else must be
@@ -79,7 +87,11 @@ export function facetValue(params: SearchParams, key: FacetKey): string | null {
  * narrows or widens the result set resets pagination — page 3 of the old
  * result set is meaningless for the new one.
  */
-export function withFacet(params: SearchParams, key: FacetKey, value: string | null): SearchParams {
+export function withFacet(
+  params: SearchParams,
+  key: FacetKey,
+  value: string | null,
+): SearchParams {
   const query = { ...toSearchQuery(params) };
   const target = key === "stock" ? "stock" : key;
   if (value === null || value === "") delete query[target];
@@ -89,8 +101,16 @@ export function withFacet(params: SearchParams, key: FacetKey, value: string | n
 }
 
 /** Toggles a value: clicking the active option clears it, like every facet UI. */
-export function toggleFacet(params: SearchParams, key: FacetKey, value: string): SearchParams {
-  return withFacet(params, key, facetValue(params, key) === value ? null : value);
+export function toggleFacet(
+  params: SearchParams,
+  key: FacetKey,
+  value: string,
+): SearchParams {
+  return withFacet(
+    params,
+    key,
+    facetValue(params, key) === value ? null : value,
+  );
 }
 
 /** Clears every facet but keeps the search term and the sort. */
@@ -102,13 +122,26 @@ export function clearFacets(params: SearchParams): SearchParams {
 }
 
 export function withSort(params: SearchParams, sort: string): SearchParams {
-  const next = (SORTS as readonly string[]).includes(sort) ? (sort as SortKey) : params.sort;
-  return normalizeSearchParams({ ...toSearchQuery(params), sort: next, page: 1 });
+  const next = (SORTS as readonly string[]).includes(sort)
+    ? (sort as SortKey)
+    : params.sort;
+  return normalizeSearchParams({
+    ...toSearchQuery(params),
+    sort: next,
+    page: 1,
+  });
 }
 
 /** Clamps to the real page range so a hand-typed `?page=9999` cannot deep-scan. */
-export function withPage(params: SearchParams, page: number, total: number): SearchParams {
-  const last = Math.min(pageCount(total), Math.floor(MAX_OFFSET / PAGE_SIZE) + 1);
+export function withPage(
+  params: SearchParams,
+  page: number,
+  total: number,
+): SearchParams {
+  const last = Math.min(
+    pageCount(total),
+    Math.floor(MAX_OFFSET / PAGE_SIZE) + 1,
+  );
   const clamped = Math.min(Math.max(1, Math.trunc(page) || 1), last);
   return normalizeSearchParams({ ...toSearchQuery(params), page: clamped });
 }
@@ -134,7 +167,11 @@ export function activeFilters(
   for (const key of FACET_KEYS) {
     const value = facetValue(params, key);
     if (value === null) continue;
-    out.push({ key, value, label: labels[`${key}:${value}`] ?? labels[value] ?? value });
+    out.push({
+      key,
+      value,
+      label: labels[`${key}:${value}`] ?? labels[value] ?? value,
+    });
   }
   return out;
 }
@@ -143,7 +180,8 @@ export function activeFilters(
 export function pageWindow(current: number, last: number, span = 2): number[] {
   if (last <= 1) return [1];
   const pages = new Set<number>([1, last]);
-  for (let p = current - span; p <= current + span; p += 1) if (p > 1 && p < last) pages.add(p);
+  for (let p = current - span; p <= current + span; p += 1)
+    if (p > 1 && p < last) pages.add(p);
   const sorted = [...pages].sort((a, b) => a - b);
   const out: number[] = [];
   let previous = 0;

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { TEMPLATE_KEYS, biTextKeysOf, lintTemplate, parseTemplates, parseTokens } from "./builder-ast";
+import {
+  TEMPLATE_KEYS,
+  biTextKeysOf,
+  lintTemplate,
+  parseTemplates,
+  parseTokens,
+} from "./builder-ast";
 import type { Section } from "./builder-ast";
 import { bnKey } from "./bitext";
 import { THEME_PRESETS } from "./theme-presets";
@@ -24,7 +30,9 @@ describe("official theme presets", () => {
       });
 
       it("defines every template", () => {
-        expect(Object.keys(preset.templates).sort()).toEqual([...TEMPLATE_KEYS].sort());
+        expect(Object.keys(preset.templates).sort()).toEqual(
+          [...TEMPLATE_KEYS].sort(),
+        );
       });
 
       it("survives AST parsing without dropping sections", () => {
@@ -35,7 +43,9 @@ describe("official theme presets", () => {
           expect(out.header).toHaveLength(source.header.length);
           expect(out.main).toHaveLength(source.main.length);
           expect(out.footer).toHaveLength(source.footer.length);
-          expect([...out.header, ...out.main, ...out.footer].some((s) => s.invalid)).toBe(false);
+          expect(
+            [...out.header, ...out.main, ...out.footer].some((s) => s.invalid),
+          ).toBe(false);
         }
       });
 
@@ -49,11 +59,9 @@ describe("official theme presets", () => {
       });
 
       it("uses globally unique section ids", () => {
-        const ids = Object.values(preset.templates).flatMap((ast) => [
-          ...ast.header,
-          ...ast.main,
-          ...ast.footer,
-        ]).map((s) => s.id);
+        const ids = Object.values(preset.templates)
+          .flatMap((ast) => [...ast.header, ...ast.main, ...ast.footer])
+          .map((s) => s.id);
         expect(new Set(ids).size).toBe(ids.length);
       });
 
@@ -67,7 +75,8 @@ describe("official theme presets", () => {
                 const en = node.props?.[key];
                 if (typeof en !== "string" || !en.trim()) continue;
                 total += 1;
-                if (String(node.props?.[bnKey(key)] ?? "").trim()) translated += 1;
+                if (String(node.props?.[bnKey(key)] ?? "").trim())
+                  translated += 1;
               }
             });
         const coverage = total === 0 ? 1 : translated / total;

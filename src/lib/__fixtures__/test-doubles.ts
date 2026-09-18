@@ -7,11 +7,19 @@
  */
 import { vi } from "vitest";
 
-export type Metric = { name: string; labels: Record<string, string>; value: number };
+export type Metric = {
+  name: string;
+  labels: Record<string, string>;
+  value: number;
+};
 
 export function metricRecorder() {
   const metrics: Metric[] = [];
-  const logs: { level: string; event: string; fields: Record<string, unknown> }[] = [];
+  const logs: {
+    level: string;
+    event: string;
+    fields: Record<string, unknown>;
+  }[] = [];
 
   const observability = {
     incr: (name: string, labels: Record<string, string> = {}, by = 1) => {
@@ -20,7 +28,11 @@ export function metricRecorder() {
     setGauge: () => {},
     observe: () => {},
     registerMetric: () => {},
-    log: (level: string, event: string, fields: Record<string, unknown> = {}) => {
+    log: (
+      level: string,
+      event: string,
+      fields: Record<string, unknown> = {},
+    ) => {
       logs.push({ level, event, fields });
     },
     addBreadcrumb: () => {},
@@ -29,7 +41,7 @@ export function metricRecorder() {
     traceHeaders: () => ({}),
     captureError: async () => {},
     sentryEnabled: () => false,
-    withSpan: async <T,>(_name: string, fn: () => Promise<T>) => fn(),
+    withSpan: async <T>(_name: string, fn: () => Promise<T>) => fn(),
   };
 
   return {

@@ -10,7 +10,11 @@ export type SwatchValue = { hex?: string; gradient?: string; image?: string };
 
 /** Only safe, self-authored swatch values reach inline styles. */
 export function swatchStyle(value: SwatchValue): React.CSSProperties {
-  if (value.image) return { backgroundImage: `url(${JSON.stringify(value.image)})`, backgroundSize: "cover" };
+  if (value.image)
+    return {
+      backgroundImage: `url(${JSON.stringify(value.image)})`,
+      backgroundSize: "cover",
+    };
   if (value.gradient && /^linear-gradient\([^;"']*\)$/.test(value.gradient)) {
     return { backgroundImage: value.gradient };
   }
@@ -43,7 +47,11 @@ export function SwatchDot({
         selected ? "border-primary ring-1 ring-primary" : "border-border"
       } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
     >
-      <span className="h-4 w-4 rounded-full border border-border" style={swatchStyle(value)} aria-hidden="true" />
+      <span
+        className="h-4 w-4 rounded-full border border-border"
+        style={swatchStyle(value)}
+        aria-hidden="true"
+      />
       <span className="truncate">{label}</span>
     </button>
   );

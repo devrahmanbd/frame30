@@ -44,13 +44,23 @@ type ProductRow = {
 
 function minPrice(variants: VariantRow[]): number {
   if (variants.length === 0) return 0;
-  return Math.min(...variants.map((v) => Number(v.price_amount_minor_int) || 0));
+  return Math.min(
+    ...variants.map((v) => Number(v.price_amount_minor_int) || 0),
+  );
 }
 
 function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
   const out = [...rows];
-  if (sort === "price_asc") out.sort((a, b) => minPrice(a.product_variants ?? []) - minPrice(b.product_variants ?? []));
-  else if (sort === "price_desc") out.sort((a, b) => minPrice(b.product_variants ?? []) - minPrice(a.product_variants ?? []));
+  if (sort === "price_asc")
+    out.sort(
+      (a, b) =>
+        minPrice(a.product_variants ?? []) - minPrice(b.product_variants ?? []),
+    );
+  else if (sort === "price_desc")
+    out.sort(
+      (a, b) =>
+        minPrice(b.product_variants ?? []) - minPrice(a.product_variants ?? []),
+    );
   else if (sort === "title") out.sort((a, b) => a.title.localeCompare(b.title));
   else out.sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
   return out;
@@ -67,7 +77,9 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
     MAX_WIDGET_ROWS,
     Math.max(...requests.map((r) => Number(r.params["limit"]) || 12)),
   );
-  const wantsHandles = requests.some((r) => typeof r.params["collection"] === "string");
+  const wantsHandles = requests.some(
+    (r) => typeof r.params["collection"] === "string",
+  );
 
   const [{ data: products }, collections] = await Promise.all([
     db
@@ -80,25 +92,41 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
       .order("created_at", { ascending: false })
       .limit(MAX_WIDGET_ROWS),
     wantsHandles
-      ? db.from("collections").select("id, slug").eq("merchant_id", merchantId).eq("is_published", true)
+      ? db
+          .from("collections")
+          .select("id, slug")
+          .eq("merchant_id", merchantId)
+          .eq("is_published", true)
       : Promise.resolve({ data: [] as { id: string; slug: string }[] }),
   ]);
 
-  const handleToId = new Map((collections.data ?? []).map((c) => [c.slug, c.id]));
+  const handleToId = new Map(
+    (collections.data ?? []).map((c) => [c.slug, c.id]),
+  );
   const rows = (products ?? []) as ProductRow[];
   const out: Record<string, WidgetRow[]> = {};
 
   for (const request of requests) {
-    const limit = Math.min(MAX_WIDGET_ROWS, Math.max(1, Number(request.params["limit"]) || window));
+    const limit = Math.min(
+      MAX_WIDGET_ROWS,
+      Math.max(1, Number(request.params["limit"]) || window),
+    );
     const handle = request.params["collection"];
     let scoped = rows;
     if (typeof handle === "string") {
       const collectionId = handleToId.get(handle);
       scoped = collectionId
-        ? rows.filter((p) => (p.collection_products ?? []).some((cp) => cp.collection_id === collectionId))
+        ? rows.filter((p) =>
+            (p.collection_products ?? []).some(
+              (cp) => cp.collection_id === collectionId,
+            ),
+          )
         : [];
     }
-    out[request.key] = sortProducts(scoped, String(request.params["sort"] ?? "newest"))
+    out[request.key] = sortProducts(
+      scoped,
+      String(request.params["sort"] ?? "newest"),
+    )
       .slice(0, limit)
       .map((p) => {
         const variants = p.product_variants ?? [];
@@ -119,12 +147,14 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
   return out;
 };
 
-
 /**
  * Brands for `taxonomy` requests that ask for `kind=brand`. Collections and
  * brands share the loader so a page with both still costs one round trip.
  */
-const loadBrands = async (merchantId: string, requests: WidgetDataRequest[]) => {
+const loadBrands = async (
+  merchantId: string,
+  requests: WidgetDataRequest[],
+) => {
   const db = publicClient();
   const { data } = await db
     .from("brands")
@@ -135,7 +165,10 @@ const loadBrands = async (merchantId: string, requests: WidgetDataRequest[]) => 
   const rows = data ?? [];
   const out: Record<string, WidgetRow[]> = {};
   for (const request of requests) {
-    const limit = Math.min(MAX_WIDGET_ROWS, Math.max(1, Number(request.params["limit"]) || 12));
+    const limit = Math.min(
+      MAX_WIDGET_ROWS,
+      Math.max(1, Number(request.params["limit"]) || 12),
+    );
     out[request.key] = rows.slice(0, limit).map((b) => ({
       id: b.id,
       title: b.name,
@@ -149,7 +182,9 @@ const loadBrands = async (merchantId: string, requests: WidgetDataRequest[]) => 
 /** Published collections for every `taxonomy`-sourced widget, in one query. */
 const loadTaxonomySource: SourceLoader = async (merchantId, requests) => {
   const brandRequests = requests.filter((r) => r.params["kind"] === "brand");
-  const collectionRequests = requests.filter((r) => r.params["kind"] !== "brand");
+  const collectionRequests = requests.filter(
+    (r) => r.params["kind"] !== "brand",
+  );
   if (brandRequests.length > 0) {
     const [brands, rest] = await Promise.all([
       loadBrands(merchantId, brandRequests),
@@ -170,7 +205,10 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests) => {
   const rows = data ?? [];
   const out: Record<string, WidgetRow[]> = {};
   for (const request of requests) {
-    const limit = Math.min(MAX_WIDGET_ROWS, Math.max(1, Number(request.params["limit"]) || 8));
+    const limit = Math.min(
+      MAX_WIDGET_ROWS,
+      Math.max(1, Number(request.params["limit"]) || 8),
+    );
     out[request.key] = rows.slice(0, limit).map((c) => ({
       id: c.id,
       title: c.name,
@@ -210,7 +248,11 @@ function discountOf(row: WidgetRow): number {
  */
 const loadVariantSource: SourceLoader = async (merchantId, requests) => {
   const db = publicClient();
-  const handles = [...new Set(requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean))];
+  const handles = [
+    ...new Set(
+      requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean),
+    ),
+  ];
   const out: Record<string, WidgetRow[]> = {};
   if (handles.length === 0) {
     for (const request of requests) out[request.key] = [];
@@ -227,21 +269,26 @@ const loadVariantSource: SourceLoader = async (merchantId, requests) => {
   const bySlug = new Map((data ?? []).map((p) => [p.slug, p]));
   for (const request of requests) {
     const product = bySlug.get(String(request.params["handle"] ?? ""));
-    const variants = [...(product?.product_variants ?? [])].sort((a, b) => a.position - b.position);
-    out[request.key] = variants.slice(0, MAX_WIDGET_ROWS).map((v) => ({
-      id: v.id,
-      title: product?.title ?? v.name,
-      options: v.name,
-      href: product?.slug,
-      imageUrl: product?.image_url ?? null,
-      priceMinor: Number(v.price_amount_minor_int) || 0,
-      ...(Number(v.compare_at_amount_minor_int) > 0
-        ? { compareAtMinor: Number(v.compare_at_amount_minor_int) }
-        : {}),
-      currency: v.currency_code,
-      inStock: v.stock_quantity > 0,
-      count: v.stock_quantity,
-    } satisfies WidgetRow));
+    const variants = [...(product?.product_variants ?? [])].sort(
+      (a, b) => a.position - b.position,
+    );
+    out[request.key] = variants.slice(0, MAX_WIDGET_ROWS).map(
+      (v) =>
+        ({
+          id: v.id,
+          title: product?.title ?? v.name,
+          options: v.name,
+          href: product?.slug,
+          imageUrl: product?.image_url ?? null,
+          priceMinor: Number(v.price_amount_minor_int) || 0,
+          ...(Number(v.compare_at_amount_minor_int) > 0
+            ? { compareAtMinor: Number(v.compare_at_amount_minor_int) }
+            : {}),
+          currency: v.currency_code,
+          inStock: v.stock_quantity > 0,
+          count: v.stock_quantity,
+        }) satisfies WidgetRow,
+    );
   }
   return out;
 };
@@ -253,7 +300,11 @@ const loadVariantSource: SourceLoader = async (merchantId, requests) => {
  */
 const loadReviewSource: SourceLoader = async (merchantId, requests) => {
   const db = publicClient();
-  const handles = [...new Set(requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean))];
+  const handles = [
+    ...new Set(
+      requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean),
+    ),
+  ];
   const out: Record<string, WidgetRow[]> = {};
   if (handles.length === 0) {
     for (const request of requests) out[request.key] = [];
@@ -269,7 +320,9 @@ const loadReviewSource: SourceLoader = async (merchantId, requests) => {
   const { data: reviews } = ids.length
     ? await db
         .from("product_reviews")
-        .select("id, product_id, author_name, title, body, rating, verified_purchase, created_at")
+        .select(
+          "id, product_id, author_name, title, body, rating, verified_purchase, created_at",
+        )
         .eq("merchant_id", merchantId)
         .eq("status", "published")
         .in("product_id", ids)
@@ -279,15 +332,18 @@ const loadReviewSource: SourceLoader = async (merchantId, requests) => {
   for (const request of requests) {
     const productId = idBySlug.get(String(request.params["handle"] ?? ""));
     const rows = (reviews ?? []).filter((r) => r.product_id === productId);
-    out[request.key] = rows.slice(0, MAX_WIDGET_ROWS).map((r) => ({
-      id: r.id,
-      title: r.title || r.author_name,
-      subtitle: r.author_name,
-      body: r.body,
-      rating: Number(r.rating) || 0,
-      verified: r.verified_purchase === true,
-      date: r.created_at,
-    } satisfies WidgetRow));
+    out[request.key] = rows.slice(0, MAX_WIDGET_ROWS).map(
+      (r) =>
+        ({
+          id: r.id,
+          title: r.title || r.author_name,
+          subtitle: r.author_name,
+          body: r.body,
+          rating: Number(r.rating) || 0,
+          verified: r.verified_purchase === true,
+          date: r.created_at,
+        }) satisfies WidgetRow,
+    );
   }
   return out;
 };
@@ -318,7 +374,11 @@ const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
       .eq("merchant_id", merchantId)
       .eq("status", "active")
       .limit(500),
-    db.from("categories").select("id, name, slug").eq("merchant_id", merchantId).order("name"),
+    db
+      .from("categories")
+      .select("id, name, slug")
+      .eq("merchant_id", merchantId)
+      .order("name"),
   ]);
 
   type P = {
@@ -334,29 +394,56 @@ const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
   const byKind = new Map<string, number>();
   let inStock = 0;
   for (const product of rows) {
-    if (product.category_id) byCategory.set(product.category_id, (byCategory.get(product.category_id) ?? 0) + 1);
+    if (product.category_id)
+      byCategory.set(
+        product.category_id,
+        (byCategory.get(product.category_id) ?? 0) + 1,
+      );
     const kind = product.product_kind ?? "physical";
     byKind.set(kind, (byKind.get(kind) ?? 0) + 1);
-    if ((product.product_variants ?? []).some((v) => v.stock_quantity > 0)) inStock += 1;
+    if ((product.product_variants ?? []).some((v) => v.stock_quantity > 0))
+      inStock += 1;
   }
 
   const categoryRows: WidgetRow[] = [...byCategory.entries()]
     .flatMap(([id, count]): WidgetRow[] => {
       const category = catById.get(id);
       if (!category) return [];
-      return [{ id: category.slug, title: category.name, href: category.slug, count, subtitle: "category" }];
+      return [
+        {
+          id: category.slug,
+          title: category.name,
+          href: category.slug,
+          count,
+          subtitle: "category",
+        },
+      ];
     })
     .sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
 
   const kindRows: WidgetRow[] = [...byKind.entries()]
-    .map(([kind, count]) => ({ id: kind, title: kind, href: kind, count, subtitle: "kind" }))
+    .map(([kind, count]) => ({
+      id: kind,
+      title: kind,
+      href: kind,
+      count,
+      subtitle: "kind",
+    }))
     .sort((a, b) => (b.count ?? 0) - (a.count ?? 0));
 
-  const stockRow: WidgetRow = { id: "1", title: "in_stock", count: inStock, subtitle: "stock" };
+  const stockRow: WidgetRow = {
+    id: "1",
+    title: "in_stock",
+    count: inStock,
+    subtitle: "stock",
+  };
 
   const out: Record<string, WidgetRow[]> = {};
   for (const request of requests) {
-    const limit = Math.min(MAX_WIDGET_ROWS, Math.max(1, Number(request.params["limit"]) || 12));
+    const limit = Math.min(
+      MAX_WIDGET_ROWS,
+      Math.max(1, Number(request.params["limit"]) || 12),
+    );
     out[request.key] = [
       ...categoryRows.slice(0, limit),
       ...kindRows.slice(0, limit),
@@ -382,7 +469,9 @@ const loadOrderSource: SourceLoader = async (merchantId, requests) => {
         .filter((value) => value.length > 0),
     ),
   ];
-  const out: Record<string, WidgetRow[]> = Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
+  const out: Record<string, WidgetRow[]> = Object.fromEntries(
+    requests.map((r) => [r.key, [] as WidgetRow[]]),
+  );
   if (numbers.length === 0) return out;
 
   const db = publicClient();
@@ -418,8 +507,14 @@ const loadOrderSource: SourceLoader = async (merchantId, requests) => {
  */
 const loadSpecsSource: SourceLoader = async (merchantId, requests) => {
   const db = publicClient();
-  const handles = [...new Set(requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean))];
-  const out: Record<string, WidgetRow[]> = Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
+  const handles = [
+    ...new Set(
+      requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean),
+    ),
+  ];
+  const out: Record<string, WidgetRow[]> = Object.fromEntries(
+    requests.map((r) => [r.key, [] as WidgetRow[]]),
+  );
   if (handles.length === 0) return out;
 
   const { data: products } = await db
@@ -449,7 +544,10 @@ const loadSpecsSource: SourceLoader = async (merchantId, requests) => {
       .map((row) => {
         const [head, tail] = String(row.key).split("/");
         const label = (tail ?? head ?? "").trim();
-        const value = typeof row.value === "string" ? row.value : JSON.stringify(row.value ?? "");
+        const value =
+          typeof row.value === "string"
+            ? row.value
+            : JSON.stringify(row.value ?? "");
         return {
           id: row.id,
           title: label,
@@ -470,13 +568,21 @@ const loadSpecsSource: SourceLoader = async (merchantId, requests) => {
  */
 const loadFinanceSource: SourceLoader = async (merchantId, requests) => {
   const db = publicClient();
-  const handles = [...new Set(requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean))];
-  const out: Record<string, WidgetRow[]> = Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
+  const handles = [
+    ...new Set(
+      requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean),
+    ),
+  ];
+  const out: Record<string, WidgetRow[]> = Object.fromEntries(
+    requests.map((r) => [r.key, [] as WidgetRow[]]),
+  );
   if (handles.length === 0) return out;
 
   const { data: products } = await db
     .from("products")
-    .select("id, slug, product_variants(price_amount_minor_int, currency_code, position)")
+    .select(
+      "id, slug, product_variants(price_amount_minor_int, currency_code, position)",
+    )
     .eq("merchant_id", merchantId)
     .eq("status", "active")
     .in("slug", handles);
@@ -493,8 +599,16 @@ const loadFinanceSource: SourceLoader = async (merchantId, requests) => {
   const plans = (rates ?? [])
     .map((row) => {
       const [bank, tenure] = String(row.key).split("/");
-      const bp = Number(typeof row.value === "string" ? row.value.replace(/[^\d.-]/g, "") : row.value);
-      return { bank: (bank ?? "").trim(), tenure: Number(tenure), bp: Number.isFinite(bp) ? bp : 0 };
+      const bp = Number(
+        typeof row.value === "string"
+          ? row.value.replace(/[^\d.-]/g, "")
+          : row.value,
+      );
+      return {
+        bank: (bank ?? "").trim(),
+        tenure: Number(tenure),
+        bp: Number.isFinite(bp) ? bp : 0,
+      };
     })
     .filter((plan) => plan.bank && isEmiTenure(plan.tenure));
 
@@ -512,16 +626,19 @@ const loadFinanceSource: SourceLoader = async (merchantId, requests) => {
       .filter((plan): plan is NonNullable<typeof plan> => plan !== null)
       .sort((a, b) => a.tenureMonths - b.tenureMonths)
       .slice(0, MAX_WIDGET_ROWS)
-      .map((plan) => ({
-        id: emiPlanKey(plan),
-        title: plan.bank,
-        options: String(plan.tenureMonths),
-        priceMinor: plan.perMonthMinor,
-        compareAtMinor: plan.totalMinor,
-        ...(currency ? { currency } : {}),
-        count: plan.tenureMonths,
-        unit: "months",
-      } satisfies WidgetRow));
+      .map(
+        (plan) =>
+          ({
+            id: emiPlanKey(plan),
+            title: plan.bank,
+            options: String(plan.tenureMonths),
+            priceMinor: plan.perMonthMinor,
+            compareAtMinor: plan.totalMinor,
+            ...(currency ? { currency } : {}),
+            count: plan.tenureMonths,
+            unit: "months",
+          }) satisfies WidgetRow,
+      );
   }
   return out;
 };
@@ -535,13 +652,21 @@ const loadFinanceSource: SourceLoader = async (merchantId, requests) => {
  */
 const loadProductSource: SourceLoader = async (merchantId, requests) => {
   const db = publicClient();
-  const handles = [...new Set(requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean))];
-  const out: Record<string, WidgetRow[]> = Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
+  const handles = [
+    ...new Set(
+      requests.map((r) => String(r.params["handle"] ?? "")).filter(Boolean),
+    ),
+  ];
+  const out: Record<string, WidgetRow[]> = Object.fromEntries(
+    requests.map((r) => [r.key, [] as WidgetRow[]]),
+  );
   if (handles.length === 0) return out;
 
   const { data: products } = await db
     .from("products")
-    .select("id, slug, title, image_url, product_variants(price_amount_minor_int, currency_code)")
+    .select(
+      "id, slug, title, image_url, product_variants(price_amount_minor_int, currency_code)",
+    )
     .eq("merchant_id", merchantId)
     .eq("status", "active")
     .in("slug", handles);
@@ -600,7 +725,8 @@ export const RESOLVER_TIMEOUT_MS = 2500;
 const LAST_GOOD_MAX = 500;
 const lastGood = new Map<string, WidgetRow[]>();
 
-const lastGoodKey = (tenantId: string, requestKey: string) => `${tenantId}\u0000${requestKey}`;
+const lastGoodKey = (tenantId: string, requestKey: string) =>
+  `${tenantId}\u0000${requestKey}`;
 
 function rememberLastGood(tenantId: string, rows: Record<string, WidgetRow[]>) {
   for (const [key, value] of Object.entries(rows)) {
@@ -617,14 +743,18 @@ function rememberLastGood(tenantId: string, rows: Record<string, WidgetRow[]>) {
 }
 
 /** Cached last-good rows for one request, or `[]` when nothing was ever good. */
-export function lastGoodRows(tenantId: string, requestKey: string): WidgetRow[] {
+export function lastGoodRows(
+  tenantId: string,
+  requestKey: string,
+): WidgetRow[] {
   return lastGood.get(lastGoodKey(tenantId, requestKey)) ?? [];
 }
 
 /** Test/ops seam: drop the fallback cache (a whole tenant, or everything). */
 export function clearLastGood(tenantId?: string) {
   if (!tenantId) return void lastGood.clear();
-  for (const key of [...lastGood.keys()]) if (key.startsWith(`${tenantId}\u0000`)) lastGood.delete(key);
+  for (const key of [...lastGood.keys()])
+    if (key.startsWith(`${tenantId}\u0000`)) lastGood.delete(key);
 }
 
 class ResolverTimeout extends Error {
@@ -667,7 +797,8 @@ export async function resolveWidgetData(
   // Request-scoped dedupe: the bundle is already de-duplicated, but a caller
   // may hand-assemble requests, so collapse by key again before querying.
   const unique = new Map<string, WidgetDataRequest>();
-  for (const request of bundle.requests) if (!unique.has(request.key)) unique.set(request.key, request);
+  for (const request of bundle.requests)
+    if (!unique.has(request.key)) unique.set(request.key, request);
 
   const grouped = new Map<WidgetDataSource, WidgetDataRequest[]>();
   for (const request of unique.values()) {
@@ -680,17 +811,24 @@ export async function resolveWidgetData(
   const results = await Promise.all(
     [...grouped.entries()].map(async ([source, requests]) => {
       const loader = loaders[source];
-      if (!loader) return Object.fromEntries(requests.map((r) => [r.key, [] as WidgetRow[]]));
+      if (!loader)
+        return Object.fromEntries(
+          requests.map((r) => [r.key, [] as WidgetRow[]]),
+        );
       const sourceStarted = Date.now();
       try {
         const rows = await withTimeout(loader(tenantId, requests), timeoutMs);
-        observe("framique_widget_resolver_ms", Date.now() - sourceStarted, { source });
+        observe("framique_widget_resolver_ms", Date.now() - sourceStarted, {
+          source,
+        });
         incr("framique_widget_resolver_total", { source, outcome: "ok" });
         rememberLastGood(tenantId, rows);
         return rows;
       } catch (error) {
         const outcome = error instanceof ResolverTimeout ? "timeout" : "error";
-        observe("framique_widget_resolver_ms", Date.now() - sourceStarted, { source });
+        observe("framique_widget_resolver_ms", Date.now() - sourceStarted, {
+          source,
+        });
         incr("framique_widget_resolver_total", { source, outcome });
         // A failing source degrades to its last good payload, and to empty rows
         // only when there has never been one — never to a thrown render.
@@ -698,7 +836,10 @@ export async function resolveWidgetData(
           requests.map((r) => [r.key, lastGoodRows(tenantId, r.key)]),
         );
         if (Object.values(fallback).some((rows) => rows.length > 0)) {
-          incr("framique_widget_resolver_total", { source, outcome: "last_good" });
+          incr("framique_widget_resolver_total", {
+            source,
+            outcome: "last_good",
+          });
         }
         return fallback;
       }
@@ -706,12 +847,16 @@ export async function resolveWidgetData(
   );
   for (const chunk of results) Object.assign(map, chunk);
   for (const request of unique.values()) map[request.key] ??= [];
-  observe("framique_widget_resolver_ms", Date.now() - startedAt, { source: "batch" });
+  observe("framique_widget_resolver_ms", Date.now() - startedAt, {
+    source: "batch",
+  });
   return map;
 }
 
 /** Convenience for storefront loaders that already hold a parsed template. */
-export async function resolveTemplateData(merchantId: string, bundle: WidgetDataBundle) {
+export async function resolveTemplateData(
+  merchantId: string,
+  bundle: WidgetDataBundle,
+) {
   return resolveWidgetData(merchantId, bundle);
 }
-

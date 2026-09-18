@@ -28,7 +28,14 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { cached, invalidate } from "./cache.server";
 import { auditAction } from "./hardening.server";
-import { captureError, incr, log, observe, registerMetric, withSpan } from "./observability.server";
+import {
+  captureError,
+  incr,
+  log,
+  observe,
+  registerMetric,
+  withSpan,
+} from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import { publicClient } from "./pricing.server";
 import {
@@ -49,6 +56,7 @@ import {
   tagPlan,
   validateSiteKit,
   verificationTags,
+  DEFAULT_ANALYTICS,
   type AnalyticsSettings,
   type Delta,
   type GscApiRow,
@@ -100,18 +108,48 @@ const SETTINGS_TTL = 300;
 const SITES_TTL = 300;
 const STOREFRONT_TTL = 600;
 
-registerMetric("framique_gsc_request_total", "counter", "Search Console gateway calls by operation and outcome");
-registerMetric("framique_gsc_request_ms", "histogram", "Search Console gateway latency in milliseconds", [
-  100, 250, 500, 1000, 2500, 5000, 10000, 20000,
-]);
-registerMetric("framique_gsc_retry_total", "counter", "Search Console gateway retries by reason");
-registerMetric("framique_gsc_refresh_total", "counter", "Search Console snapshot refreshes by trigger and outcome");
-registerMetric("framique_gsc_rows_written_total", "counter", "Snapshot rows persisted by dimension");
-registerMetric("framique_gsc_sweep_ms", "histogram", "Scheduled Search Console sweep duration in milliseconds", [
-  500, 2000, 10000, 30000, 60000, 120000, 240000,
-]);
-registerMetric("framique_gsc_sitemap_total", "counter", "Sitemap submissions by outcome");
-registerMetric("framique_gsc_inspect_total", "counter", "URL inspections by verdict");
+registerMetric(
+  "framique_gsc_request_total",
+  "counter",
+  "Search Console gateway calls by operation and outcome",
+);
+registerMetric(
+  "framique_gsc_request_ms",
+  "histogram",
+  "Search Console gateway latency in milliseconds",
+  [100, 250, 500, 1000, 2500, 5000, 10000, 20000],
+);
+registerMetric(
+  "framique_gsc_retry_total",
+  "counter",
+  "Search Console gateway retries by reason",
+);
+registerMetric(
+  "framique_gsc_refresh_total",
+  "counter",
+  "Search Console snapshot refreshes by trigger and outcome",
+);
+registerMetric(
+  "framique_gsc_rows_written_total",
+  "counter",
+  "Snapshot rows persisted by dimension",
+);
+registerMetric(
+  "framique_gsc_sweep_ms",
+  "histogram",
+  "Scheduled Search Console sweep duration in milliseconds",
+  [500, 2000, 10000, 30000, 60000, 120000, 240000],
+);
+registerMetric(
+  "framique_gsc_sitemap_total",
+  "counter",
+  "Sitemap submissions by outcome",
+);
+registerMetric(
+  "framique_gsc_inspect_total",
+  "counter",
+  "URL inspections by verdict",
+);
 
 /* ========================================================================== *
  * Errors
@@ -148,7 +186,10 @@ export class SearchConsoleError extends Error {
 
 function asError(err: unknown): SearchConsoleError {
   if (err instanceof SearchConsoleError) return err;
-  return new SearchConsoleError("upstream", err instanceof Error ? err.message : String(err));
+  return new SearchConsoleError(
+    "upstream",
+    err instanceof Error ? err.message : String(err),
+  );
 }
 
 /* ========================================================================== *
@@ -163,7 +204,10 @@ type Credentials = { apiKey: string; connectionKey: string };
  * freeze whatever was (or was not) present at cold start.
  */
 function credentials(): Credentials {
-  const apiKey = process.env["SEARCH_CONSOLE_API_KEY"] || process.env["GOOGLE_SEARCH_CONSOLE_API_KEY"] || "";
+  const apiKey =
+    process.env["SEARCH_CONSOLE_API_KEY"] ||
+    process.env["GOOGLE_SEARCH_CONSOLE_API_KEY"] ||
+    "";
   const connectionKey = process.env["GOOGLE_SEARCH_CONSOLE_API_KEY"] || apiKey;
   if (!apiKey && !connectionKey) {
     throw new SearchConsoleError(
@@ -176,7 +220,10 @@ function credentials(): Credentials {
 
 /** Is the connector linked at all? Used to render setup state without calling out. */
 export function siteKitConfigured(): boolean {
-  return Boolean(process.env["SEARCH_CONSOLE_API_KEY"] || process.env["GOOGLE_SEARCH_CONSOLE_API_KEY"]);
+  return Boolean(
+    process.env["SEARCH_CONSOLE_API_KEY"] ||
+    process.env["GOOGLE_SEARCH_CONSOLE_API_KEY"],
+  );
 }
 
 function sleep(ms: number) {
@@ -207,9 +254,14 @@ type GatewayOptions = {
  * on every failure path; the provider's own body is logged, never rethrown to
  * a caller that might render it.
  */
-async function gatewayCall<T>(operation: string, path: string, opts: GatewayOptions = {}): Promise<T> {
+async function gatewayCall<T>(
+  operation: string,
+  path: string,
+  opts: GatewayOptions = {},
+): Promise<T> {
   const { apiKey, connectionKey } = credentials();
-  const deadline = opts.deadline ?? Date.now() + REQUEST_TIMEOUT_MS * MAX_ATTEMPTS;
+  const deadline =
+    opts.deadline ?? Date.now() + REQUEST_TIMEOUT_MS * MAX_ATTEMPTS;
   const method = opts.method ?? "GET";
 
   let attempt = 0;
@@ -218,18 +270,24 @@ async function gatewayCall<T>(operation: string, path: string, opts: GatewayOpti
     attempt += 1;
     const started = Date.now();
     const controller = new AbortController();
-    const budget = Math.min(REQUEST_TIMEOUT_MS, Math.max(1_000, deadline - Date.now()));
+    const budget = Math.min(
+      REQUEST_TIMEOUT_MS,
+      Math.max(1_000, deadline - Date.now()),
+    );
     const timer = setTimeout(() => controller.abort(), budget);
 
     let response: Response;
     try {
-      const gateway = process.env["GOOGLE_SEARCH_CONSOLE_GATEWAY_URL"] || DEFAULT_GATEWAY;
+      const gateway =
+        process.env["GOOGLE_SEARCH_CONSOLE_GATEWAY_URL"] || DEFAULT_GATEWAY;
       response = await fetch(`${gateway}${path}`, {
         method,
         headers: {
           Authorization: `Bearer ${apiKey || connectionKey}`,
           "X-Connection-Api-Key": connectionKey,
-          ...(opts.body === undefined ? {} : { "Content-Type": "application/json" }),
+          ...(opts.body === undefined
+            ? {}
+            : { "Content-Type": "application/json" }),
         },
         ...(opts.body === undefined ? {} : { body: JSON.stringify(opts.body) }),
         signal: controller.signal,
@@ -241,8 +299,18 @@ async function gatewayCall<T>(operation: string, path: string, opts: GatewayOpti
       const code: SearchConsoleErrorCode = aborted ? "timeout" : "upstream";
       if (attempt >= MAX_ATTEMPTS || Date.now() >= deadline) {
         incr("framique_gsc_request_total", { operation, outcome: code });
-        log("warn", "gsc.transport_failed", { operation, attempt, aborted, merchantId: opts.merchantId ?? null });
-        throw new SearchConsoleError(code, "Google could not be reached.", null, true);
+        log("warn", "gsc.transport_failed", {
+          operation,
+          attempt,
+          aborted,
+          merchantId: opts.merchantId ?? null,
+        });
+        throw new SearchConsoleError(
+          code,
+          "Google could not be reached.",
+          null,
+          true,
+        );
       }
       incr("framique_gsc_retry_total", { operation, reason: code });
       await sleep(jitter(backoffSeconds(attempt)));
@@ -259,8 +327,15 @@ async function gatewayCall<T>(operation: string, path: string, opts: GatewayOpti
     }
 
     const body = truncate(await response.text().catch(() => ""));
-    const verdict = classifyResponse(response.status, response.headers, attempt);
-    if (verdict.action === "retry" && Date.now() + verdict.afterSeconds * 1000 < deadline) {
+    const verdict = classifyResponse(
+      response.status,
+      response.headers,
+      attempt,
+    );
+    if (
+      verdict.action === "retry" &&
+      Date.now() + verdict.afterSeconds * 1000 < deadline
+    ) {
       incr("framique_gsc_retry_total", { operation, reason: verdict.reason });
       log("warn", "gsc.retry", {
         operation,
@@ -292,7 +367,9 @@ async function gatewayCall<T>(operation: string, path: string, opts: GatewayOpti
     });
     throw new SearchConsoleError(
       code,
-      verdict.action === "stop" ? verdict.reason : `Google rejected the request (HTTP ${response.status}).`,
+      verdict.action === "stop"
+        ? verdict.reason
+        : `Google rejected the request (HTTP ${response.status}).`,
       response.status,
       code === "rate_limited" || code === "upstream",
     );
@@ -303,7 +380,9 @@ async function gatewayCall<T>(operation: string, path: string, opts: GatewayOpti
  * Property discovery
  * ========================================================================== */
 
-type SitesResponse = { siteEntry?: { siteUrl?: string; permissionLevel?: string }[] };
+type SitesResponse = {
+  siteEntry?: { siteUrl?: string; permissionLevel?: string }[];
+};
 
 /**
  * The verified properties on the connected account.
@@ -312,13 +391,24 @@ type SitesResponse = { siteEntry?: { siteUrl?: string; permissionLevel?: string 
  * on the interactive path of the settings screen. Not tenant data — it belongs
  * to the workspace connection — so the key carries no merchant id.
  */
-export async function listVerifiedProperties(force = false): Promise<GscProperty[]> {
+export async function listVerifiedProperties(
+  force = false,
+): Promise<GscProperty[]> {
   if (force) invalidate("gsc-sites");
   return cached("gsc-sites", SITES_TTL, async () => {
-    const payload = await gatewayCall<SitesResponse>("sites.list", "/webmasters/v3/sites");
+    const payload = await gatewayCall<SitesResponse>(
+      "sites.list",
+      "/webmasters/v3/sites",
+    );
     return (payload.siteEntry ?? [])
-      .filter((entry) => entry.siteUrl && entry.permissionLevel !== "siteUnverifiedUser")
-      .map((entry) => ({ siteUrl: entry.siteUrl as string, permissionLevel: entry.permissionLevel ?? "unknown" }));
+      .filter(
+        (entry) =>
+          entry.siteUrl && entry.permissionLevel !== "siteUnverifiedUser",
+      )
+      .map((entry) => ({
+        siteUrl: entry.siteUrl as string,
+        permissionLevel: entry.permissionLevel ?? "unknown",
+      }));
   });
 }
 
@@ -337,7 +427,9 @@ function hostOf(origin: string): string {
  * `selection_required` and the merchant picks. Auto-picking binds reporting to
  * the wrong property and the mistake only shows up weeks later.
  */
-export async function resolvePropertyForStore(origin: string): Promise<PropertyResolution> {
+export async function resolvePropertyForStore(
+  origin: string,
+): Promise<PropertyResolution> {
   const host = hostOf(origin);
   if (!host) return { status: "none", reason: "no_verified_property" };
   return resolveProperty(await listVerifiedProperties(), host);
@@ -365,49 +457,101 @@ const settingsKey = (merchantId: string) => `sitekit|${merchantId}`;
 const storefrontKey = (merchantId: string) => `sitekit-public|${merchantId}`;
 
 /** Merchant-scoped read through the caller's own client, so RLS still applies. */
-export async function loadSiteKit(db: Client, merchantId: string): Promise<SiteKitSettings> {
+export async function loadSiteKit(
+  db: Client,
+  merchantId: string,
+): Promise<SiteKitSettings> {
   const { data, error } = await (db as LooseClient)
     .from("merchant_settings")
     .select("site_kit")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (error) throw new SearchConsoleError("read_failed", "Could not read Site Kit settings.");
+  if (error)
+    throw new SearchConsoleError(
+      "read_failed",
+      "Could not read Site Kit settings.",
+    );
   return validateSiteKit(data?.site_kit ?? null).value;
 }
 
 export type StorefrontSiteKit = {
   verification: VerificationSettings;
+  /**
+   * Analytics is ONLY populated when the merchant has an active custom domain.
+   * On slug-based storefronts (store.framique.com/<slug>) this is always
+   * DEFAULT_ANALYTICS so no tag IDs ever reach the shopper's browser.
+   */
   analytics: AnalyticsSettings;
+  /**
+   * True when the store is being served via a merchant-owned custom domain.
+   * Drives the client-side belt-and-suspenders check in SiteKitSurface.
+   */
+  hasCustomDomain: boolean;
+  /** Mirrors SiteKitSettings.botProtection — enables Turnstile on storefont forms. */
+  botProtection: boolean;
 };
 
 /**
  * The projection the storefront is allowed to see: verification tags (public
  * by design — they live in the HTML) and the analytics plan. The chosen
  * Search Console property never ships to a shopper's browser.
+ *
+ * Custom-domain gate: analytics IDs are stripped unless the merchant has at
+ * least one active custom domain. This prevents GA4/GTM tags from firing on
+ * shared framique.com slug URLs where the measurement domain mismatch would
+ * corrupt the merchant's property data anyway.
  */
-export async function storefrontSiteKit(merchantId: string): Promise<StorefrontSiteKit> {
+export async function storefrontSiteKit(
+  merchantId: string,
+): Promise<StorefrontSiteKit> {
   return cached(storefrontKey(merchantId), STOREFRONT_TTL, async () => {
     try {
       const db = publicClient();
-      const { data } = await (db as LooseClient)
-        .from("merchant_settings")
-        .select("site_kit")
-        .eq("merchant_id", merchantId)
-        .maybeSingle();
-      const value = validateSiteKit(data?.site_kit ?? null).value;
-      return { verification: value.verification, analytics: value.analytics };
+      const [settingsResult, domainResult] = await Promise.all([
+        (db as LooseClient)
+          .from("merchant_settings")
+          .select("site_kit")
+          .eq("merchant_id", merchantId)
+          .maybeSingle(),
+        (db as LooseClient)
+          .from("merchant_domains")
+          .select("id", { count: "exact", head: true })
+          .eq("merchant_id", merchantId)
+          .eq("status", "active"),
+      ]);
+      const value = validateSiteKit(
+        settingsResult.data?.site_kit ?? null,
+      ).value;
+      const hasCustomDomain = (domainResult.count ?? 0) > 0;
+      // Strip analytics on slug-based storefronts — tags would misfire anyway
+      // because the GA4 / GTM property is scoped to the custom domain.
+      const analytics = hasCustomDomain ? value.analytics : DEFAULT_ANALYTICS;
+      return {
+        verification: value.verification,
+        analytics,
+        hasCustomDomain,
+        botProtection: value.botProtection,
+      };
     } catch (err) {
       // The storefront must never 500 because a settings row misbehaved.
       log("warn", "sitekit.storefront_read_failed", { merchantId });
       void captureError(err, { scope: "sitekit.storefront" });
-      return { verification: DEFAULT_SITE_KIT.verification, analytics: DEFAULT_SITE_KIT.analytics };
+      return {
+        verification: DEFAULT_SITE_KIT.verification,
+        analytics: DEFAULT_SITE_KIT.analytics,
+        hasCustomDomain: false,
+        botProtection: false,
+      };
     }
   });
 }
 
 /** Head tags for a storefront document, ready to spread into `head().meta`. */
 export function siteKitHeadMeta(kit: StorefrontSiteKit) {
-  return verificationTags(kit.verification).map((tag) => ({ name: tag.name, content: tag.content }));
+  return verificationTags(kit.verification).map((tag) => ({
+    name: tag.name,
+    content: tag.content,
+  }));
 }
 
 export type SaveResult = {
@@ -433,7 +577,10 @@ export async function saveSiteKit(
   const previous = await loadSiteKit(db, merchantId);
   const { value, issues } = validateSiteKit(input);
 
-  if (value.searchConsoleSiteUrl && value.searchConsoleSiteUrl !== previous.searchConsoleSiteUrl) {
+  if (
+    value.searchConsoleSiteUrl &&
+    value.searchConsoleSiteUrl !== previous.searchConsoleSiteUrl
+  ) {
     // Never store a property the connected account cannot actually read.
     await assertSelectable(value.searchConsoleSiteUrl);
   }
@@ -444,7 +591,10 @@ export async function saveSiteKit(
     .eq("merchant_id", merchantId);
   if (error) {
     log("error", "sitekit.save_failed", { merchantId, message: error.message });
-    throw new SearchConsoleError("write_failed", "Could not save Site Kit settings.");
+    throw new SearchConsoleError(
+      "write_failed",
+      "Could not save Site Kit settings.",
+    );
   }
 
   if (value.searchConsoleSiteUrl !== previous.searchConsoleSiteUrl) {
@@ -467,15 +617,26 @@ export async function saveSiteKit(
 
   invalidate(settingsKey(merchantId));
   invalidate(storefrontKey(merchantId));
-  await auditAction(db, merchantId, actor, "sitekit.save", "merchant_settings", {
-    verification: Object.keys(value.verification.tokens),
-    customTags: value.verification.custom.length,
-    analytics: Object.keys(value.analytics.enabled),
-    consentRequired: value.analytics.consentRequired,
-    property: value.searchConsoleSiteUrl,
-    rejected: issues.length,
+  await auditAction(
+    db,
+    merchantId,
+    actor,
+    "sitekit.save",
+    "merchant_settings",
+    {
+      verification: Object.keys(value.verification.tokens),
+      customTags: value.verification.custom.length,
+      analytics: Object.keys(value.analytics.enabled),
+      consentRequired: value.analytics.consentRequired,
+      property: value.searchConsoleSiteUrl,
+      rejected: issues.length,
+    },
+  );
+  log("info", "sitekit.saved", {
+    merchantId,
+    issues: issues.length,
+    tags: tagPlan(value.analytics).length,
   });
-  log("info", "sitekit.saved", { merchantId, issues: issues.length, tags: tagPlan(value.analytics).length });
   return { settings: value, issues };
 }
 
@@ -501,26 +662,44 @@ export type ConnectionRow = {
 };
 
 async function admin(): Promise<LooseClient> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as LooseClient;
 }
 
-export async function readConnection(db: Client, merchantId: string): Promise<ConnectionRow | null> {
+export async function readConnection(
+  db: Client,
+  merchantId: string,
+): Promise<ConnectionRow | null> {
   const { data, error } = await (db as LooseClient)
     .from("search_console_connections")
     .select("*")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (error) throw new SearchConsoleError("read_failed", "Could not read the Search Console connection.");
+  if (error)
+    throw new SearchConsoleError(
+      "read_failed",
+      "Could not read the Search Console connection.",
+    );
   return (data as ConnectionRow | null) ?? null;
 }
 
-async function upsertConnection(merchantId: string, patch: Record<string, unknown>) {
+async function upsertConnection(
+  merchantId: string,
+  patch: Record<string, unknown>,
+) {
   const db = await admin();
   const { error } = await db
     .from("search_console_connections")
-    .upsert({ merchant_id: merchantId, ...patch }, { onConflict: "merchant_id" });
-  if (error) log("error", "gsc.connection_write_failed", { merchantId, message: error.message });
+    .upsert(
+      { merchant_id: merchantId, ...patch },
+      { onConflict: "merchant_id" },
+    );
+  if (error)
+    log("error", "gsc.connection_write_failed", {
+      merchantId,
+      message: error.message,
+    });
 }
 
 /* ========================================================================== *
@@ -556,7 +735,10 @@ async function startJob(input: {
   } catch (err) {
     // A job row is observability, not correctness: losing it must not abort
     // the work the merchant asked for.
-    log("warn", "gsc.job_start_failed", { merchantId: input.merchantId, kind: input.kind });
+    log("warn", "gsc.job_start_failed", {
+      merchantId: input.merchantId,
+      kind: input.kind,
+    });
     void captureError(err, { scope: "gsc.job_start" });
     return null;
   }
@@ -587,7 +769,9 @@ async function finishJob(
         days_covered: patch.daysCovered ?? 0,
         duration_ms: patch.durationMs ?? null,
         error_code: patch.errorCode ?? null,
-        error_message: patch.errorMessage ? truncate(patch.errorMessage, 300) : null,
+        error_message: patch.errorMessage
+          ? truncate(patch.errorMessage, 300)
+          : null,
         detail: patch.detail ?? {},
         finished_at: new Date().toISOString(),
       })
@@ -668,7 +852,11 @@ async function persistRows(
     .eq("site_url", siteUrl)
     .gte("day", range.start)
     .lte("day", range.end);
-  if (delError) throw new SearchConsoleError("write_failed", "Could not replace the snapshot window.");
+  if (delError)
+    throw new SearchConsoleError(
+      "write_failed",
+      "Could not replace the snapshot window.",
+    );
 
   let written = 0;
   const fetchedAt = new Date().toISOString();
@@ -686,17 +874,28 @@ async function persistRows(
       fetched_at: fetchedAt,
     }));
     const { error } = await db.from("search_console_daily").insert(chunk);
-    if (error) throw new SearchConsoleError("write_failed", "Could not persist the search snapshot.");
+    if (error)
+      throw new SearchConsoleError(
+        "write_failed",
+        "Could not persist the search snapshot.",
+      );
     written += chunk.length;
   }
   return written;
 }
 
 async function pruneOld(merchantId: string) {
-  const cutoff = new Date(Date.now() - RETENTION_DAYS * 86_400_000).toISOString().slice(0, 10);
+  const cutoff = new Date(Date.now() - RETENTION_DAYS * 86_400_000)
+    .toISOString()
+    .slice(0, 10);
   const db = await admin();
-  const { error } = await db.from("search_console_daily").delete().eq("merchant_id", merchantId).lt("day", cutoff);
-  if (error) log("warn", "gsc.prune_failed", { merchantId, message: error.message });
+  const { error } = await db
+    .from("search_console_daily")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .lt("day", cutoff);
+  if (error)
+    log("warn", "gsc.prune_failed", { merchantId, message: error.message });
 }
 
 export type RefreshResult = {
@@ -734,8 +933,13 @@ export async function refreshMerchant(input: {
   });
 
   try {
-    const siteUrl = input.siteUrl ?? (await connectionSiteUrl(input.merchantId));
-    if (!siteUrl) throw new SearchConsoleError("no_property", "No Search Console property is selected.");
+    const siteUrl =
+      input.siteUrl ?? (await connectionSiteUrl(input.merchantId));
+    if (!siteUrl)
+      throw new SearchConsoleError(
+        "no_property",
+        "No Search Console property is selected.",
+      );
     await assertSelectable(siteUrl);
 
     const range = dateRange(latestUsableDay(new Date()), days);
@@ -749,11 +953,20 @@ export async function refreshMerchant(input: {
         deadline,
         input.merchantId,
       );
-      incr("framique_gsc_rows_written_total", { dimension: spec.dimension }, rows.length);
+      incr(
+        "framique_gsc_rows_written_total",
+        { dimension: spec.dimension },
+        rows.length,
+      );
       collected.push(...rows);
     }
 
-    const rowsWritten = await persistRows(input.merchantId, siteUrl, range, collected);
+    const rowsWritten = await persistRows(
+      input.merchantId,
+      siteUrl,
+      range,
+      collected,
+    );
     await pruneOld(input.merchantId);
 
     const now = new Date();
@@ -762,7 +975,9 @@ export async function refreshMerchant(input: {
       status: "connected",
       last_refresh_at: now.toISOString(),
       last_success_at: now.toISOString(),
-      next_refresh_at: new Date(now.getTime() + REFRESH_INTERVAL_HOURS * 3_600_000).toISOString(),
+      next_refresh_at: new Date(
+        now.getTime() + REFRESH_INTERVAL_HOURS * 3_600_000,
+      ).toISOString(),
       consecutive_failures: 0,
       last_error_code: null,
       last_error_message: null,
@@ -778,9 +993,24 @@ export async function refreshMerchant(input: {
       durationMs,
       detail: { range, siteUrl },
     });
-    incr("framique_gsc_refresh_total", { trigger: input.trigger, outcome: "ok" });
-    log("info", "gsc.refresh", { merchantId: input.merchantId, rowsWritten, daysCovered, durationMs });
-    return { merchantId: input.merchantId, siteUrl, rowsWritten, daysCovered, range, durationMs };
+    incr("framique_gsc_refresh_total", {
+      trigger: input.trigger,
+      outcome: "ok",
+    });
+    log("info", "gsc.refresh", {
+      merchantId: input.merchantId,
+      rowsWritten,
+      daysCovered,
+      durationMs,
+    });
+    return {
+      merchantId: input.merchantId,
+      siteUrl,
+      rowsWritten,
+      daysCovered,
+      range,
+      durationMs,
+    };
   } catch (err) {
     const error = asError(err);
     const failures = await bumpFailure(input.merchantId, error);
@@ -791,14 +1021,20 @@ export async function refreshMerchant(input: {
       errorMessage: error.message,
       detail: { failures },
     });
-    incr("framique_gsc_refresh_total", { trigger: input.trigger, outcome: error.code });
+    incr("framique_gsc_refresh_total", {
+      trigger: input.trigger,
+      outcome: error.code,
+    });
     log("error", "gsc.refresh_failed", {
       merchantId: input.merchantId,
       code: error.code,
       status: error.status,
       failures,
     });
-    void captureError(error, { scope: "gsc.refresh", merchantId: input.merchantId });
+    void captureError(error, {
+      scope: "gsc.refresh",
+      merchantId: input.merchantId,
+    });
     throw error;
   }
 }
@@ -810,7 +1046,8 @@ async function connectionSiteUrl(merchantId: string): Promise<string | null> {
     .select("site_url")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if ((data as { site_url?: string } | null)?.site_url) return (data as { site_url: string }).site_url;
+  if ((data as { site_url?: string } | null)?.site_url)
+    return (data as { site_url: string }).site_url;
   // Fall back to the settings envelope: a merchant may have chosen a property
   // before the connection row existed.
   const { data: settings } = await db
@@ -818,7 +1055,9 @@ async function connectionSiteUrl(merchantId: string): Promise<string | null> {
     .select("site_kit")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  return validateSiteKit((settings as { site_kit?: unknown } | null)?.site_kit ?? null).value.searchConsoleSiteUrl;
+  return validateSiteKit(
+    (settings as { site_kit?: unknown } | null)?.site_kit ?? null,
+  ).value.searchConsoleSiteUrl;
 }
 
 /**
@@ -828,15 +1067,25 @@ async function connectionSiteUrl(merchantId: string): Promise<string | null> {
  * human reconnecting, and retrying them every twelve hours is pure quota burn
  * plus a log full of noise that hides real incidents.
  */
-async function bumpFailure(merchantId: string, error: SearchConsoleError): Promise<number> {
+async function bumpFailure(
+  merchantId: string,
+  error: SearchConsoleError,
+): Promise<number> {
   const db = await admin();
   const { data } = await db
     .from("search_console_connections")
     .select("consecutive_failures")
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  const failures = Number((data as { consecutive_failures?: number } | null)?.consecutive_failures ?? 0) + 1;
-  const terminal = error.code === "unauthorized" || error.code === "forbidden" || error.code === "invalid";
+  const failures =
+    Number(
+      (data as { consecutive_failures?: number } | null)
+        ?.consecutive_failures ?? 0,
+    ) + 1;
+  const terminal =
+    error.code === "unauthorized" ||
+    error.code === "forbidden" ||
+    error.code === "invalid";
   const parked = terminal || failures >= FAILURE_PARK_THRESHOLD;
   await upsertConnection(merchantId, {
     status: terminal ? "needs_reconnect" : parked ? "parked" : "degraded",
@@ -844,7 +1093,9 @@ async function bumpFailure(merchantId: string, error: SearchConsoleError): Promi
     consecutive_failures: failures,
     last_error_code: error.code,
     last_error_message: truncate(error.message, 300),
-    next_refresh_at: new Date(Date.now() + (parked ? 24 : 1) * 3_600_000).toISOString(),
+    next_refresh_at: new Date(
+      Date.now() + (parked ? 24 : 1) * 3_600_000,
+    ).toISOString(),
   });
   return failures;
 }
@@ -867,7 +1118,9 @@ export type SweepResult = {
  * fan-out against a shared, project-level quota converts one slow tenant into
  * a 429 for everybody.
  */
-export async function runSearchConsoleSweep(options: { limit?: number; days?: number } = {}): Promise<SweepResult> {
+export async function runSearchConsoleSweep(
+  options: { limit?: number; days?: number } = {},
+): Promise<SweepResult> {
   const started = Date.now();
   await enforceRateLimit("gsc.sweep", "platform");
   return withSpan("gsc.sweep", async () => {
@@ -879,10 +1132,16 @@ export async function runSearchConsoleSweep(options: { limit?: number; days?: nu
       .select("merchant_id, site_url, next_refresh_at, status")
       .not("site_url", "is", null)
       .neq("status", "needs_reconnect")
-      .or(`next_refresh_at.is.null,next_refresh_at.lte.${new Date().toISOString()}`)
+      .or(
+        `next_refresh_at.is.null,next_refresh_at.lte.${new Date().toISOString()}`,
+      )
       .order("next_refresh_at", { ascending: true, nullsFirst: true })
       .limit(limit);
-    if (error) throw new SearchConsoleError("read_failed", "Could not list connections due for refresh.");
+    if (error)
+      throw new SearchConsoleError(
+        "read_failed",
+        "Could not list connections due for refresh.",
+      );
 
     const due = (data ?? []) as { merchant_id: string; site_url: string }[];
     const result: SweepResult = {
@@ -919,7 +1178,10 @@ export async function runSearchConsoleSweep(options: { limit?: number; days?: nu
         // rate limit, however, means every remaining call would fail too.
         if (error.code === "rate_limited") {
           result.skipped += due.length - (result.refreshed + result.failed);
-          log("warn", "gsc.sweep_rate_limited", { done: result.refreshed, remaining: result.skipped });
+          log("warn", "gsc.sweep_rate_limited", {
+            done: result.refreshed,
+            remaining: result.skipped,
+          });
           break;
         }
       }
@@ -936,7 +1198,11 @@ export async function runSearchConsoleSweep(options: { limit?: number; days?: nu
  * Sitemap submission
  * ========================================================================== */
 
-export type SitemapSubmission = { submitted: boolean; reason: string; sitemapUrl: string };
+export type SitemapSubmission = {
+  submitted: boolean;
+  reason: string;
+  sitemapUrl: string;
+};
 
 /**
  * Submits a sitemap **only when its content actually changed**. Google treats
@@ -953,11 +1219,18 @@ export async function submitSitemapIfChanged(input: {
   const db = await admin();
   const { data } = await db
     .from("search_console_connections")
-    .select("site_url, last_sitemap_url, last_sitemap_fingerprint, last_sitemap_submitted_at")
+    .select(
+      "site_url, last_sitemap_url, last_sitemap_fingerprint, last_sitemap_submitted_at",
+    )
     .eq("merchant_id", input.merchantId)
     .maybeSingle();
   const row = (data ?? null) as Partial<ConnectionRow> | null;
-  if (!row?.site_url) return { submitted: false, reason: "no_property", sitemapUrl: input.sitemapUrl };
+  if (!row?.site_url)
+    return {
+      submitted: false,
+      reason: "no_property",
+      sitemapUrl: input.sitemapUrl,
+    };
 
   const verdict = shouldSubmitSitemap({
     sitemapUrl: input.sitemapUrl,
@@ -967,7 +1240,11 @@ export async function submitSitemapIfChanged(input: {
   });
   if (!verdict.submit) {
     incr("framique_gsc_sitemap_total", { outcome: "skipped" });
-    return { submitted: false, reason: verdict.reason, sitemapUrl: input.sitemapUrl };
+    return {
+      submitted: false,
+      reason: verdict.reason,
+      sitemapUrl: input.sitemapUrl,
+    };
   }
 
   await enforceRateLimit("gsc.sitemap", input.merchantId);
@@ -990,10 +1267,20 @@ export async function submitSitemapIfChanged(input: {
       last_sitemap_fingerprint: input.fingerprint,
       last_sitemap_submitted_at: new Date().toISOString(),
     });
-    await finishJob(jobId, { status: "success", durationMs: Date.now() - started });
+    await finishJob(jobId, {
+      status: "success",
+      durationMs: Date.now() - started,
+    });
     incr("framique_gsc_sitemap_total", { outcome: "ok" });
-    log("info", "gsc.sitemap_submitted", { merchantId: input.merchantId, reason: verdict.reason });
-    return { submitted: true, reason: verdict.reason, sitemapUrl: input.sitemapUrl };
+    log("info", "gsc.sitemap_submitted", {
+      merchantId: input.merchantId,
+      reason: verdict.reason,
+    });
+    return {
+      submitted: true,
+      reason: verdict.reason,
+      sitemapUrl: input.sitemapUrl,
+    };
   } catch (err) {
     const error = asError(err);
     await finishJob(jobId, {
@@ -1003,7 +1290,10 @@ export async function submitSitemapIfChanged(input: {
       errorMessage: error.message,
     });
     incr("framique_gsc_sitemap_total", { outcome: error.code });
-    log("error", "gsc.sitemap_failed", { merchantId: input.merchantId, code: error.code });
+    log("error", "gsc.sitemap_failed", {
+      merchantId: input.merchantId,
+      code: error.code,
+    });
     throw error;
   }
 }
@@ -1027,7 +1317,11 @@ export async function inspectUrl(input: {
 }): Promise<UrlInspection> {
   await enforceRateLimit("gsc.inspect", input.merchantId);
   const siteUrl = await connectionSiteUrl(input.merchantId);
-  if (!siteUrl) throw new SearchConsoleError("no_property", "No Search Console property is selected.");
+  if (!siteUrl)
+    throw new SearchConsoleError(
+      "no_property",
+      "No Search Console property is selected.",
+    );
   await assertSelectable(siteUrl);
 
   const jobId = await startJob({
@@ -1039,11 +1333,15 @@ export async function inspectUrl(input: {
   });
   const started = Date.now();
   try {
-    const payload = await gatewayCall<unknown>("urlInspection", "/v1/urlInspection/index:inspect", {
-      method: "POST",
-      merchantId: input.merchantId,
-      body: { inspectionUrl: input.url, siteUrl },
-    });
+    const payload = await gatewayCall<unknown>(
+      "urlInspection",
+      "/v1/urlInspection/index:inspect",
+      {
+        method: "POST",
+        merchantId: input.merchantId,
+        body: { inspectionUrl: input.url, siteUrl },
+      },
+    );
     const result = readInspection(payload, input.url);
     await finishJob(jobId, {
       status: "success",
@@ -1091,7 +1389,11 @@ async function readWindow(
     .gte("day", range.start)
     .lte("day", range.end)
     .limit(20_000);
-  if (error) throw new SearchConsoleError("read_failed", "Could not read the search snapshot.");
+  if (error)
+    throw new SearchConsoleError(
+      "read_failed",
+      "Could not read the search snapshot.",
+    );
   return ((data ?? []) as DailyRow[]).map((row) => ({
     day: row.day,
     dimension: row.dimension,
@@ -1105,9 +1407,24 @@ async function readWindow(
 
 export type SnapshotCards = {
   window: { start: string; end: string; days: number; lagDays: number };
-  totals: { clicks: number; impressions: number; ctr: number; position: number };
-  previousTotals: { clicks: number; impressions: number; ctr: number; position: number };
-  timeseries: { day: string; clicks: number; impressions: number; position: number }[];
+  totals: {
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+  };
+  previousTotals: {
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+  };
+  timeseries: {
+    day: string;
+    clicks: number;
+    impressions: number;
+    position: number;
+  }[];
   topQueries: Delta[];
   topPages: Delta[];
   freshness: { lastSuccessAt: string | null; stale: boolean };
@@ -1137,8 +1454,12 @@ export async function snapshotCards(
   const window = Math.min(90, Math.max(7, days));
   const end = latestUsableDay(new Date());
   const current = dateRange(end, window);
-  const previousEnd = new Date(`${current.start}T00:00:00Z`).getTime() - 86_400_000;
-  const previous = dateRange(new Date(previousEnd).toISOString().slice(0, 10), window);
+  const previousEnd =
+    new Date(`${current.start}T00:00:00Z`).getTime() - 86_400_000;
+  const previous = dateRange(
+    new Date(previousEnd).toISOString().slice(0, 10),
+    window,
+  );
 
   const [currentRows, previousRows, connection] = await Promise.all([
     readWindow(db, merchantId, current),
@@ -1150,17 +1471,29 @@ export async function snapshotCards(
     rows.filter((r) => r.dimension === dimension);
 
   const lastSuccessAt = connection?.last_success_at ?? null;
-  const stale = !lastSuccessAt || Date.now() - Date.parse(lastSuccessAt) > 48 * 3_600_000;
+  const stale =
+    !lastSuccessAt || Date.now() - Date.parse(lastSuccessAt) > 48 * 3_600_000;
 
   return {
     window: { ...current, days: window, lagDays: DATA_LAG_DAYS },
     totals: totalsOf(currentRows),
     previousTotals: totalsOf(previousRows),
     timeseries: aggregate(currentRows.filter((r) => r.dimension === "date"))
-      .map((row) => ({ day: row.value, clicks: row.clicks, impressions: row.impressions, position: row.position }))
+      .map((row) => ({
+        day: row.value,
+        clicks: row.clicks,
+        impressions: row.impressions,
+        position: row.position,
+      }))
       .sort((a, b) => a.day.localeCompare(b.day)),
-    topQueries: comparePeriods(byDimension(currentRows, "query"), byDimension(previousRows, "query")).slice(0, 25),
-    topPages: comparePeriods(byDimension(currentRows, "page"), byDimension(previousRows, "page")).slice(0, 25),
+    topQueries: comparePeriods(
+      byDimension(currentRows, "query"),
+      byDimension(previousRows, "query"),
+    ).slice(0, 25),
+    topPages: comparePeriods(
+      byDimension(currentRows, "page"),
+      byDimension(previousRows, "page"),
+    ).slice(0, 25),
     freshness: { lastSuccessAt, stale },
   };
 }
@@ -1189,7 +1522,10 @@ export async function articlePerformance(
   days = DEFAULT_WINDOW_DAYS,
 ): Promise<ArticlePerformance[]> {
   await enforceRateLimit("sitekit.read", merchantId);
-  const range = dateRange(latestUsableDay(new Date()), Math.min(90, Math.max(7, days)));
+  const range = dateRange(
+    latestUsableDay(new Date()),
+    Math.min(90, Math.max(7, days)),
+  );
   const [rows, articles] = await Promise.all([
     readWindow(db, merchantId, range),
     (db as LooseClient)
@@ -1201,7 +1537,11 @@ export async function articlePerformance(
   ]);
 
   const pages = aggregate(rows.filter((r) => r.dimension === "page"));
-  const list = (articles.data ?? []) as { id: string; slug: string; title: string }[];
+  const list = (articles.data ?? []) as {
+    id: string;
+    slug: string;
+    title: string;
+  }[];
   return list
     .map((article) => {
       const matches = pages.filter((page) => {
@@ -1214,7 +1554,10 @@ export async function articlePerformance(
       });
       const clicks = matches.reduce((s, m) => s + m.clicks, 0);
       const impressions = matches.reduce((s, m) => s + m.impressions, 0);
-      const weighted = matches.reduce((s, m) => s + m.position * m.impressions, 0);
+      const weighted = matches.reduce(
+        (s, m) => s + m.position * m.impressions,
+        0,
+      );
       return {
         articleId: article.id,
         slug: article.slug,
@@ -1223,7 +1566,8 @@ export async function articlePerformance(
         clicks,
         impressions,
         ctr: impressions > 0 ? Number((clicks / impressions).toFixed(4)) : 0,
-        position: impressions > 0 ? Number((weighted / impressions).toFixed(2)) : 0,
+        position:
+          impressions > 0 ? Number((weighted / impressions).toFixed(2)) : 0,
       };
     })
     .sort((a, b) => b.clicks - a.clicks || b.impressions - a.impressions);
@@ -1242,13 +1586,23 @@ export type JobRow = {
   finished_at: string | null;
 };
 
-export async function jobHistory(db: Client, merchantId: string, limit = 20): Promise<JobRow[]> {
+export async function jobHistory(
+  db: Client,
+  merchantId: string,
+  limit = 20,
+): Promise<JobRow[]> {
   const { data, error } = await (db as LooseClient)
     .from("search_console_jobs")
-    .select("id, kind, status, trigger, rows_written, days_covered, duration_ms, error_code, started_at, finished_at")
+    .select(
+      "id, kind, status, trigger, rows_written, days_covered, duration_ms, error_code, started_at, finished_at",
+    )
     .eq("merchant_id", merchantId)
     .order("started_at", { ascending: false })
     .limit(Math.min(100, Math.max(1, limit)));
-  if (error) throw new SearchConsoleError("read_failed", "Could not read the job history.");
+  if (error)
+    throw new SearchConsoleError(
+      "read_failed",
+      "Could not read the job history.",
+    );
   return (data ?? []) as JobRow[];
 }

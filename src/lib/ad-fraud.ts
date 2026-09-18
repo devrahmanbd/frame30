@@ -15,9 +15,19 @@
 export const AD_FRAUD_ENGINE_VERSION = 1;
 
 export const AD_NETWORKS = [
-  { key: "facebook", en: "Facebook / Meta", bn: "ফেসবুক / মেটা", clickIdParam: "fbclid" },
+  {
+    key: "facebook",
+    en: "Facebook / Meta",
+    bn: "ফেসবুক / মেটা",
+    clickIdParam: "fbclid",
+  },
   { key: "google", en: "Google Ads", bn: "গুগল অ্যাডস", clickIdParam: "gclid" },
-  { key: "tiktok", en: "TikTok Ads", bn: "টিকটক অ্যাডস", clickIdParam: "ttclid" },
+  {
+    key: "tiktok",
+    en: "TikTok Ads",
+    bn: "টিকটক অ্যাডস",
+    clickIdParam: "ttclid",
+  },
   { key: "other", en: "Other / direct", bn: "অন্যান্য", clickIdParam: "clid" },
 ] as const;
 
@@ -75,8 +85,10 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "Known abusive source across stores",
     bn: "একাধিক দোকানে অপব্যবহারকারী সোর্স",
-    fixEn: "Other Framique stores reported this fingerprint. No shopper data is shared — only a one-way hash.",
-    fixBn: "অন্য ফ্রেমিক দোকানও এই ফিঙ্গারপ্রিন্ট রিপোর্ট করেছে। কোনো ক্রেতার তথ্য শেয়ার হয় না, শুধু একমুখী হ্যাশ।",
+    fixEn:
+      "Other Framique stores reported this fingerprint. No shopper data is shared — only a one-way hash.",
+    fixBn:
+      "অন্য ফ্রেমিক দোকানও এই ফিঙ্গারপ্রিন্ট রিপোর্ট করেছে। কোনো ক্রেতার তথ্য শেয়ার হয় না, শুধু একমুখী হ্যাশ।",
   },
   {
     code: "DATACENTER_IP",
@@ -84,7 +96,8 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "Datacenter / proxy network",
     bn: "ডেটাসেন্টার বা প্রক্সি নেটওয়ার্ক",
-    fixEn: "Real shoppers browse from mobile or broadband networks, not servers.",
+    fixEn:
+      "Real shoppers browse from mobile or broadband networks, not servers.",
     fixBn: "আসল ক্রেতা মোবাইল বা ব্রডব্যান্ড থেকে আসে, সার্ভার থেকে নয়।",
   },
   {
@@ -111,7 +124,8 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "No JavaScript execution",
     bn: "জাভাস্ক্রিপ্ট চলেনি",
-    fixEn: "The landing page never executed, so nobody actually saw your ad page.",
+    fixEn:
+      "The landing page never executed, so nobody actually saw your ad page.",
     fixBn: "ল্যান্ডিং পেজ চালুই হয়নি, অর্থাৎ কেউ আসলে আপনার পেজ দেখেনি।",
   },
   {
@@ -129,7 +143,8 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "Many identities behind one address",
     bn: "এক আইপি থেকে অনেক পরিচয়",
-    fixEn: "Dozens of distinct visitors from one address usually means a click farm.",
+    fixEn:
+      "Dozens of distinct visitors from one address usually means a click farm.",
     fixBn: "এক ঠিকানা থেকে বহু আলাদা ভিজিটর মানে সাধারণত ক্লিক ফার্ম।",
   },
   {
@@ -156,8 +171,10 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "Reused ad click id",
     bn: "একই অ্যাড ক্লিক আইডি পুনরায় ব্যবহৃত",
-    fixEn: "The network's click id was replayed, which points at a scripted click.",
-    fixBn: "নেটওয়ার্কের ক্লিক আইডি রিপ্লে হয়েছে, যা স্ক্রিপ্টেড ক্লিক নির্দেশ করে।",
+    fixEn:
+      "The network's click id was replayed, which points at a scripted click.",
+    fixBn:
+      "নেটওয়ার্কের ক্লিক আইডি রিপ্লে হয়েছে, যা স্ক্রিপ্টেড ক্লিক নির্দেশ করে।",
   },
   {
     code: "GEO_MISMATCH",
@@ -183,8 +200,10 @@ export const SIGNAL_CATALOG: SignalDef[] = [
     decisive: false,
     en: "Click id without an ad referrer",
     bn: "রেফারার ছাড়া ক্লিক আইডি",
-    fixEn: "The visit carried an ad click id but never came from the ad network.",
-    fixBn: "ভিজিটে অ্যাড ক্লিক আইডি ছিল কিন্তু আসলে অ্যাড নেটওয়ার্ক থেকে আসেনি।",
+    fixEn:
+      "The visit carried an ad click id but never came from the ad network.",
+    fixBn:
+      "ভিজিটে অ্যাড ক্লিক আইডি ছিল কিন্তু আসলে অ্যাড নেটওয়ার্ক থেকে আসেনি।",
   },
   {
     code: "IMPOSSIBLE_SPEED",
@@ -247,7 +266,8 @@ export type ClickScore = {
   engineVersion: number;
 };
 
-const BOT_UA = /(bot|crawler|spider|headless|phantom|curl|wget|python-requests|scrapy|axios|http-client)/i;
+const BOT_UA =
+  /(bot|crawler|spider|headless|phantom|curl|wget|python-requests|scrapy|axios|http-client)/i;
 
 /** Bangladesh time is UTC+6; other targets fall back to a generous window. */
 const COUNTRY_OFFSETS: Record<string, number[]> = {
@@ -259,7 +279,11 @@ const COUNTRY_OFFSETS: Record<string, number[]> = {
 function push(list: FiredSignal[], code: SignalCode, detail?: string) {
   const def = SIGNAL_BY_CODE.get(code);
   if (!def) return;
-  list.push(detail ? { code, weight: def.weight, detail } : { code, weight: def.weight });
+  list.push(
+    detail
+      ? { code, weight: def.weight, detail }
+      : { code, weight: def.weight },
+  );
 }
 
 /**
@@ -270,38 +294,56 @@ export function scoreClick(input: ClickInput): ClickScore {
   const signals: FiredSignal[] = [];
 
   if (input.blocklisted) push(signals, "BLOCKLISTED");
-  if (input.networkReports >= 3) push(signals, "NETWORK_ABUSE", `${input.networkReports} reports`);
+  if (input.networkReports >= 3)
+    push(signals, "NETWORK_ABUSE", `${input.networkReports} reports`);
   if (input.ipClass === "datacenter" || input.ipClass === "vpn") {
     push(signals, "DATACENTER_IP", input.ipClass);
   }
-  if (input.automationHints >= 2) push(signals, "HEADLESS_SIGNATURE", `${input.automationHints} flags`);
+  if (input.automationHints >= 2)
+    push(signals, "HEADLESS_SIGNATURE", `${input.automationHints} flags`);
   if (BOT_UA.test(input.userAgent)) push(signals, "BOT_USER_AGENT");
   if (!input.javascriptRan) push(signals, "NO_JAVASCRIPT");
-  if (input.clicksLastHour >= 5) push(signals, "CLICK_FLOOD", `${input.clicksLastHour}/hr`);
+  if (input.clicksLastHour >= 5)
+    push(signals, "CLICK_FLOOD", `${input.clicksLastHour}/hr`);
   if (input.distinctVisitorsPerIp >= 25) {
     push(signals, "IP_FANOUT", `${input.distinctVisitorsPerIp} identities`);
   }
-  if (input.javascriptRan && input.dwellMs < 2000) push(signals, "DWELL_TOO_SHORT", `${input.dwellMs}ms`);
-  if (input.javascriptRan && input.interactions === 0) push(signals, "NO_INTERACTION");
-  if (input.clickId && input.clickIdSeenBefore) push(signals, "REPEAT_CLICK_ID");
+  if (input.javascriptRan && input.dwellMs < 2000)
+    push(signals, "DWELL_TOO_SHORT", `${input.dwellMs}ms`);
+  if (input.javascriptRan && input.interactions === 0)
+    push(signals, "NO_INTERACTION");
+  if (input.clickId && input.clickIdSeenBefore)
+    push(signals, "REPEAT_CLICK_ID");
   if (
     input.targetCountry &&
     input.visitorCountry &&
     input.visitorCountry.toUpperCase() !== input.targetCountry.toUpperCase()
   ) {
-    push(signals, "GEO_MISMATCH", `${input.visitorCountry} ≠ ${input.targetCountry}`);
+    push(
+      signals,
+      "GEO_MISMATCH",
+      `${input.visitorCountry} ≠ ${input.targetCountry}`,
+    );
   }
   if (input.visitorCountry && input.timezoneOffsetMinutes !== null) {
     const allowed = COUNTRY_OFFSETS[input.visitorCountry.toUpperCase()];
-    if (allowed && !allowed.includes(input.timezoneOffsetMinutes)) push(signals, "TIMEZONE_MISMATCH");
+    if (allowed && !allowed.includes(input.timezoneOffsetMinutes))
+      push(signals, "TIMEZONE_MISMATCH");
   }
   if (input.clickId && !input.referrerHost) push(signals, "MISSING_REFERRER");
-  if (input.minutesSinceDistantHop !== null && input.minutesSinceDistantHop <= 5) {
+  if (
+    input.minutesSinceDistantHop !== null &&
+    input.minutesSinceDistantHop <= 5
+  ) {
     push(signals, "IMPOSSIBLE_SPEED", `${input.minutesSinceDistantHop}m`);
   }
 
-  const score = Math.min(100, signals.reduce((sum, s) => sum + s.weight, 0));
-  const decisive = signals.find((s) => SIGNAL_BY_CODE.get(s.code)?.decisive) ?? null;
+  const score = Math.min(
+    100,
+    signals.reduce((sum, s) => sum + s.weight, 0),
+  );
+  const decisive =
+    signals.find((s) => SIGNAL_BY_CODE.get(s.code)?.decisive) ?? null;
 
   let verdict: AdVerdict = "valid";
   if (decisive || score >= INVALID_THRESHOLD) verdict = "invalid";
@@ -375,7 +417,12 @@ export function scoreVisitor(input: VisitorInput): VisitorScore {
   fake = Math.max(0, Math.min(100, fake - (input.orders > 0 ? 60 : 0)));
   intent = Math.max(0, Math.min(100, intent));
 
-  const verdict: AdVerdict = fake >= INVALID_THRESHOLD ? "invalid" : fake >= SUSPICIOUS_THRESHOLD ? "suspicious" : "valid";
+  const verdict: AdVerdict =
+    fake >= INVALID_THRESHOLD
+      ? "invalid"
+      : fake >= SUSPICIOUS_THRESHOLD
+        ? "suspicious"
+        : "valid";
   return { fakeScore: fake, intentScore: intent, verdict, reasons };
 }
 
@@ -433,7 +480,10 @@ function grade(score: number): CampaignIntegrity["grade"] {
 export function campaignIntegrity(row: CampaignDayInput): CampaignIntegrity {
   const clicks = Math.max(0, row.clicks);
   const invalid = Math.min(clicks, Math.max(0, row.invalidClicks));
-  const suspicious = Math.min(clicks - invalid, Math.max(0, row.suspiciousClicks));
+  const suspicious = Math.min(
+    clicks - invalid,
+    Math.max(0, row.suspiciousClicks),
+  );
   const spend = Math.max(0, Math.trunc(row.spendMinorInt));
   const genuine = clicks - invalid;
 
@@ -478,11 +528,18 @@ export type IntegritySummary = {
   integrityScore: number;
   grade: CampaignIntegrity["grade"];
   currencyCode: string;
-  worstCampaign: { network: AdNetwork; campaign: string; wastedSpendMinorInt: number } | null;
+  worstCampaign: {
+    network: AdNetwork;
+    campaign: string;
+    wastedSpendMinorInt: number;
+  } | null;
 };
 
 /** Folds per-campaign integrity into the single headline a merchant reads. */
-export function summarizeIntegrity(rows: CampaignIntegrity[], currencyCode = "BDT"): IntegritySummary {
+export function summarizeIntegrity(
+  rows: CampaignIntegrity[],
+  currencyCode = "BDT",
+): IntegritySummary {
   const totals = rows.reduce(
     (acc, r) => {
       acc.clicks += r.clicks;
@@ -492,13 +549,27 @@ export function summarizeIntegrity(rows: CampaignIntegrity[], currencyCode = "BD
       acc.wastedSpendMinorInt += r.wastedSpendMinorInt;
       return acc;
     },
-    { clicks: 0, invalidClicks: 0, suspiciousClicks: 0, spendMinorInt: 0, wastedSpendMinorInt: 0 },
+    {
+      clicks: 0,
+      invalidClicks: 0,
+      suspiciousClicks: 0,
+      spendMinorInt: 0,
+      wastedSpendMinorInt: 0,
+    },
   );
 
-  const invalidRate = totals.clicks === 0 ? 0 : round1((totals.invalidClicks / totals.clicks) * 100);
+  const invalidRate =
+    totals.clicks === 0
+      ? 0
+      : round1((totals.invalidClicks / totals.clicks) * 100);
   const suspiciousRate =
-    totals.clicks === 0 ? 0 : round1((totals.suspiciousClicks / totals.clicks) * 100);
-  const integrityScore = Math.max(0, Math.round(100 - invalidRate - suspiciousRate * 0.5));
+    totals.clicks === 0
+      ? 0
+      : round1((totals.suspiciousClicks / totals.clicks) * 100);
+  const integrityScore = Math.max(
+    0,
+    Math.round(100 - invalidRate - suspiciousRate * 0.5),
+  );
 
   const worst = rows
     .filter((r) => r.wastedSpendMinorInt > 0)
@@ -511,7 +582,11 @@ export function summarizeIntegrity(rows: CampaignIntegrity[], currencyCode = "BD
     grade: grade(integrityScore),
     currencyCode: rows[0]?.currencyCode ?? currencyCode,
     worstCampaign: worst
-      ? { network: worst.network, campaign: worst.campaign, wastedSpendMinorInt: worst.wastedSpendMinorInt }
+      ? {
+          network: worst.network,
+          campaign: worst.campaign,
+          wastedSpendMinorInt: worst.wastedSpendMinorInt,
+        }
       : null,
   };
 }
@@ -520,7 +595,10 @@ export function summarizeIntegrity(rows: CampaignIntegrity[], currencyCode = "BD
  * Merchant-facing Bangla explainer. The merchant never sees raw weights — they
  * see what happened and what to do, ordered by how much it cost them.
  */
-export function explainSignals(signals: FiredSignal[], lang: "bn" | "en" = "bn") {
+export function explainSignals(
+  signals: FiredSignal[],
+  lang: "bn" | "en" = "bn",
+) {
   return signals
     .map((s) => {
       const def = SIGNAL_BY_CODE.get(s.code);
@@ -538,7 +616,10 @@ export function explainSignals(signals: FiredSignal[], lang: "bn" | "en" = "bn")
 }
 
 /** Advice block shown above the report — plain Bangla, no jargon. */
-export function integrityAdvice(summary: IntegritySummary, lang: "bn" | "en" = "bn") {
+export function integrityAdvice(
+  summary: IntegritySummary,
+  lang: "bn" | "en" = "bn",
+) {
   if (summary.clicks === 0) {
     return lang === "bn"
       ? "এখনো কোনো অ্যাড ক্লিক আসেনি। ক্যাম্পেইন চালু হলে এখানে হিসাব দেখা যাবে।"

@@ -45,18 +45,30 @@ export const DICT = {
   "builder.save_draft": { en: "Save draft", bn: "ড্রাফট সেভ" },
   "builder.publish": { en: "Publish", bn: "পাবলিশ" },
   "builder.draft_saved": { en: "Draft saved", bn: "ড্রাফট সেভ হয়েছে" },
-  "builder.published": { en: "Published to your storefront", bn: "স্টোরফ্রন্টে পাবলিশ হয়েছে" },
+  "builder.published": {
+    en: "Published to your storefront",
+    bn: "স্টোরফ্রন্টে পাবলিশ হয়েছে",
+  },
   "builder.slots": { en: "Layout slots", bn: "লেআউট স্লট" },
   "builder.slot_header": { en: "Header", bn: "হেডার" },
   "builder.slot_main": { en: "Main", bn: "মেইন" },
   "builder.slot_footer": { en: "Footer", bn: "ফুটার" },
   "builder.sections": { en: "Sections", bn: "সেকশন" },
   "builder.add_section": { en: "Add section", bn: "সেকশন যোগ করুন" },
-  "builder.empty_slot": { en: "No sections yet. Add one to get started.", bn: "এখনো কোনো সেকশন নেই। একটি যোগ করুন।" },
+  "builder.empty_slot": {
+    en: "No sections yet. Add one to get started.",
+    bn: "এখনো কোনো সেকশন নেই। একটি যোগ করুন।",
+  },
   "builder.inspector": { en: "Settings", bn: "সেটিংস" },
-  "builder.select_section": { en: "Select a section to edit its content.", bn: "কন্টেন্ট এডিট করতে একটি সেকশন বাছুন।" },
+  "builder.select_section": {
+    en: "Select a section to edit its content.",
+    bn: "কন্টেন্ট এডিট করতে একটি সেকশন বাছুন।",
+  },
   "builder.preview": { en: "Preview", bn: "প্রিভিউ" },
-  "builder.product_grid_placeholder": { en: "Product grid renders live products on your storefront.", bn: "প্রোডাক্ট গ্রিড স্টোরফ্রন্টে সরাসরি পণ্য দেখাবে।" },
+  "builder.product_grid_placeholder": {
+    en: "Product grid renders live products on your storefront.",
+    bn: "প্রোডাক্ট গ্রিড স্টোরফ্রন্টে সরাসরি পণ্য দেখাবে।",
+  },
   "builder.versions": { en: "Versions", bn: "ভার্সন" },
   "builder.restore": { en: "Restore", bn: "রিস্টোর" },
 
@@ -72,7 +84,10 @@ export const DICT = {
   "site.nav.dashboard": { en: "Dashboard", bn: "ড্যাশবোর্ড" },
   "site.cta.trial": { en: "Get started", bn: "শুরু করুন" },
   "site.cta.trial_short": { en: "Get started", bn: "শুরু করুন" },
-  "site.cta.headline": { en: "Ready to open your store?", bn: "স্টোর খুলতে প্রস্তুত?" },
+  "site.cta.headline": {
+    en: "Ready to open your store?",
+    bn: "স্টোর খুলতে প্রস্তুত?",
+  },
   "site.cta.body": {
     en: "Create a store in minutes. No credit card required.",
     bn: "কয়েক মিনিটেই স্টোর তৈরি করুন। কোন কার্ড লাগবে না।",
@@ -89,7 +104,10 @@ export const DICT = {
     bn: "Framique। মূল্য BDT-তে, ভ্যাট ছাড়া। ইনভয়েসের সময় ভ্যাট যোগ হয়।",
   },
 
-  "home.eyebrow": { en: "Cloud-hosted commerce CMS", bn: "ক্লাউড-হোস্টেড কমার্স সিএমএস" },
+  "home.eyebrow": {
+    en: "Cloud-hosted commerce CMS",
+    bn: "ক্লাউড-হোস্টেড কমার্স সিএমএস",
+  },
   "home.headline": {
     en: "Everything you need to run an online business in Bangladesh",
     bn: "বাংলাদেশে অনলাইন ব্যবসা চালানোর সবকিছু",
@@ -99,10 +117,19 @@ export const DICT = {
     bn: "Framique দেয় হোস্টেড স্টোরফ্রন্ট, লো-কোড পেজ বিল্ডার এবং ক্যাটালগ, অর্ডার, পেমেন্ট ও মার্কেটিংয়ের সম্পূর্ণ অ্যাডমিন — সার্ভার সামলানোর ঝামেলা ছাড়াই।",
   },
   "home.cta.pricing": { en: "See pricing", bn: "প্রাইসিং দেখুন" },
-  "home.cta.demo": { en: "View a live demo store", bn: "লাইভ ডেমো স্টোর দেখুন" },
+  "home.cta.demo": {
+    en: "View a live demo store",
+    bn: "লাইভ ডেমো স্টোর দেখুন",
+  },
   "home.badge.cod": { en: "Cash on delivery", bn: "ক্যাশ অন ডেলিভারি" },
-  "home.badge.bilingual": { en: "Bangla and English storefronts", bn: "বাংলা ও ইংরেজি স্টোরফ্রন্ট" },
-  "home.features_title": { en: "One platform, every commerce surface", bn: "একটি প্ল্যাটফর্ম, সব কমার্স সারফেস" },
+  "home.badge.bilingual": {
+    en: "Bangla and English storefronts",
+    bn: "বাংলা ও ইংরেজি স্টোরফ্রন্ট",
+  },
+  "home.features_title": {
+    en: "One platform, every commerce surface",
+    bn: "একটি প্ল্যাটফর্ম, সব কমার্স সারফেস",
+  },
   "home.features_subtitle": {
     en: "Storefront, admin, point of sale and reporting stay in sync because they share one tenant.",
     bn: "স্টোরফ্রন্ট, অ্যাডমিন, পিওএস ও রিপোর্টিং এক টেন্যান্টে থাকায় সব সিঙ্কে থাকে।",
@@ -114,7 +141,10 @@ export const DICT = {
     en: "Sign up, pick a web address and a plan. Your tenant is provisioned instantly.",
     bn: "সাইন আপ করুন, ওয়েব ঠিকানা ও প্ল্যান বাছুন। টেন্যান্ট সঙ্গে সঙ্গে তৈরি হয়।",
   },
-  "home.step.two.title": { en: "Add products and design", bn: "পণ্য যোগ করুন ও ডিজাইন করুন" },
+  "home.step.two.title": {
+    en: "Add products and design",
+    bn: "পণ্য যোগ করুন ও ডিজাইন করুন",
+  },
   "home.step.two.body": {
     en: "Upload the catalog, then arrange your home page from sections in the page builder.",
     bn: "ক্যাটালগ যোগ করুন, তারপর পেজ বিল্ডারে সেকশন দিয়ে হোম পেজ সাজান।",
@@ -125,59 +155,131 @@ export const DICT = {
     bn: "ক্যাশ অন ডেলিভারি ও মোবাইল পেমেন্ট চালু করে নিজের ঠিকানায় পাবলিশ করুন।",
   },
 
-  "features.title": { en: "Everything in one commerce platform", bn: "এক কমার্স প্ল্যাটফর্মে সবকিছু" },
+  "features.title": {
+    en: "Everything in one commerce platform",
+    bn: "এক কমার্স প্ল্যাটফর্মে সবকিছু",
+  },
   "features.subtitle": {
     en: "Built for merchants migrating from spreadsheets, Facebook pages or another store platform.",
     bn: "স্প্রেডশিট, ফেসবুক পেজ বা অন্য স্টোর প্ল্যাটফর্ম থেকে আসা মার্চেন্টদের জন্য তৈরি।",
   },
-  "features.builder.title": { en: "Low-code page builder", bn: "লো-কোড পেজ বিল্ডার" },
+  "features.builder.title": {
+    en: "Low-code page builder",
+    bn: "লো-কোড পেজ বিল্ডার",
+  },
   "features.builder.summary": {
     en: "Compose pages from sections, save drafts and publish without a deployment.",
     bn: "সেকশন দিয়ে পেজ সাজান, ড্রাফট সেভ করুন, ডিপ্লয়মেন্ট ছাড়াই পাবলিশ করুন।",
   },
-  "features.builder_1": { en: "Drag-free section list with live preview", bn: "লাইভ প্রিভিউসহ সেকশন তালিকা" },
-  "features.builder_2": { en: "Draft and published versions with history", bn: "ড্রাফট ও পাবলিশড ভার্সন হিস্ট্রি" },
-  "features.builder_3": { en: "Themes shared across your storefront", bn: "স্টোরফ্রন্টজুড়ে থিম" },
-  "features.catalog.title": { en: "Catalog and inventory", bn: "ক্যাটালগ ও ইনভেন্টরি" },
+  "features.builder_1": {
+    en: "Drag-free section list with live preview",
+    bn: "লাইভ প্রিভিউসহ সেকশন তালিকা",
+  },
+  "features.builder_2": {
+    en: "Draft and published versions with history",
+    bn: "ড্রাফট ও পাবলিশড ভার্সন হিস্ট্রি",
+  },
+  "features.builder_3": {
+    en: "Themes shared across your storefront",
+    bn: "স্টোরফ্রন্টজুড়ে থিম",
+  },
+  "features.catalog.title": {
+    en: "Catalog and inventory",
+    bn: "ক্যাটালগ ও ইনভেন্টরি",
+  },
   "features.catalog.summary": {
     en: "Products, variants, collections, brands and stock in a single admin.",
     bn: "পণ্য, ভ্যারিয়েন্ট, কালেকশন, ব্র্যান্ড ও স্টক এক অ্যাডমিনে।",
   },
-  "features.catalog_1": { en: "Variant pricing in BDT minor units", bn: "BDT-তে ভ্যারিয়েন্ট মূল্য" },
-  "features.catalog_2": { en: "Stock counts shared with POS", bn: "পিওএসের সঙ্গে স্টক শেয়ার" },
-  "features.catalog_3": { en: "Bulk import and export", bn: "বাল্ক ইমপোর্ট ও এক্সপোর্ট" },
-  "features.payments.title": { en: "Payments built for Bangladesh", bn: "বাংলাদেশের জন্য পেমেন্ট" },
+  "features.catalog_1": {
+    en: "Variant pricing in BDT minor units",
+    bn: "BDT-তে ভ্যারিয়েন্ট মূল্য",
+  },
+  "features.catalog_2": {
+    en: "Stock counts shared with POS",
+    bn: "পিওএসের সঙ্গে স্টক শেয়ার",
+  },
+  "features.catalog_3": {
+    en: "Bulk import and export",
+    bn: "বাল্ক ইমপোর্ট ও এক্সপোর্ট",
+  },
+  "features.payments.title": {
+    en: "Payments built for Bangladesh",
+    bn: "বাংলাদেশের জন্য পেমেন্ট",
+  },
   "features.payments.summary": {
     en: "bKash, Nagad, Rocket and cash on delivery, with VAT calculated server-side.",
     bn: "bKash, Nagad, Rocket ও ক্যাশ অন ডেলিভারি, ভ্যাট সার্ভারে হিসাব হয়।",
   },
-  "features.payments_1": { en: "Mobile financial services checkout", bn: "মোবাইল ফিনান্সিয়াল সার্ভিস চেকআউট" },
-  "features.payments_2": { en: "Cash on delivery with risk flags", bn: "রিস্ক ফ্ল্যাগসহ ক্যাশ অন ডেলিভারি" },
-  "features.payments_3": { en: "VAT from the legal year table", bn: "আইনি বছরের টেবিল থেকে ভ্যাট" },
-  "features.operations.title": { en: "Orders, POS and shipping", bn: "অর্ডার, পিওএস ও শিপিং" },
+  "features.payments_1": {
+    en: "Mobile financial services checkout",
+    bn: "মোবাইল ফিনান্সিয়াল সার্ভিস চেকআউট",
+  },
+  "features.payments_2": {
+    en: "Cash on delivery with risk flags",
+    bn: "রিস্ক ফ্ল্যাগসহ ক্যাশ অন ডেলিভারি",
+  },
+  "features.payments_3": {
+    en: "VAT from the legal year table",
+    bn: "আইনি বছরের টেবিল থেকে ভ্যাট",
+  },
+  "features.operations.title": {
+    en: "Orders, POS and shipping",
+    bn: "অর্ডার, পিওএস ও শিপিং",
+  },
   "features.operations.summary": {
     en: "One order timeline from checkout to courier delivery, plus an offline-tolerant POS.",
     bn: "চেকআউট থেকে কুরিয়ার ডেলিভারি পর্যন্ত এক টাইমলাইন, সঙ্গে অফলাইন-সহনশীল পিওএস।",
   },
-  "features.operations_1": { en: "Courier handover and tracking", bn: "কুরিয়ার হ্যান্ডওভার ও ট্র্যাকিং" },
-  "features.operations_2": { en: "Counter sales from the same catalog", bn: "একই ক্যাটালগ থেকে কাউন্টার সেল" },
-  "features.operations_3": { en: "Refunds with an auditable trail", bn: "অডিটযোগ্য রিফান্ড ট্রেইল" },
-  "features.growth.title": { en: "Marketing and analytics", bn: "মার্কেটিং ও অ্যানালিটিক্স" },
+  "features.operations_1": {
+    en: "Courier handover and tracking",
+    bn: "কুরিয়ার হ্যান্ডওভার ও ট্র্যাকিং",
+  },
+  "features.operations_2": {
+    en: "Counter sales from the same catalog",
+    bn: "একই ক্যাটালগ থেকে কাউন্টার সেল",
+  },
+  "features.operations_3": {
+    en: "Refunds with an auditable trail",
+    bn: "অডিটযোগ্য রিফান্ড ট্রেইল",
+  },
+  "features.growth.title": {
+    en: "Marketing and analytics",
+    bn: "মার্কেটিং ও অ্যানালিটিক্স",
+  },
   "features.growth.summary": {
     en: "Campaigns, coupons, abandoned-cart recovery and consent-aware reporting.",
     bn: "ক্যাম্পেইন, কুপন, অ্যাবানডনড কার্ট রিকভারি ও কনসেন্ট-সচেতন রিপোর্টিং।",
   },
   "features.growth_1": { en: "Coupons and promotions", bn: "কুপন ও প্রোমোশন" },
-  "features.growth_2": { en: "Subscriber lists with opt-out", bn: "অপ্ট-আউটসহ সাবস্ক্রাইবার তালিকা" },
-  "features.growth_3": { en: "Sales and traffic reporting", bn: "সেলস ও ট্রাফিক রিপোর্ট" },
-  "features.platform.title": { en: "Multi-tenant by design", bn: "মাল্টি-টেন্যান্ট আর্কিটেকচার" },
+  "features.growth_2": {
+    en: "Subscriber lists with opt-out",
+    bn: "অপ্ট-আউটসহ সাবস্ক্রাইবার তালিকা",
+  },
+  "features.growth_3": {
+    en: "Sales and traffic reporting",
+    bn: "সেলস ও ট্রাফিক রিপোর্ট",
+  },
+  "features.platform.title": {
+    en: "Multi-tenant by design",
+    bn: "মাল্টি-টেন্যান্ট আর্কিটেকচার",
+  },
   "features.platform.summary": {
     en: "Every store is an isolated tenant with plan limits enforced server-side.",
     bn: "প্রতিটি স্টোর আলাদা টেন্যান্ট, প্ল্যান লিমিট সার্ভারে প্রয়োগ হয়।",
   },
-  "features.platform_1": { en: "Row-level isolation per store", bn: "প্রতি স্টোরে রো-লেভেল আইসোলেশন" },
-  "features.platform_2": { en: "Staff roles and permissions", bn: "স্টাফ রোল ও পারমিশন" },
-  "features.platform_3": { en: "Plan limits with usage meters", bn: "ইউসেজ মিটারসহ প্ল্যান লিমিট" },
+  "features.platform_1": {
+    en: "Row-level isolation per store",
+    bn: "প্রতি স্টোরে রো-লেভেল আইসোলেশন",
+  },
+  "features.platform_2": {
+    en: "Staff roles and permissions",
+    bn: "স্টাফ রোল ও পারমিশন",
+  },
+  "features.platform_3": {
+    en: "Plan limits with usage meters",
+    bn: "ইউসেজ মিটারসহ প্ল্যান লিমিট",
+  },
 
   "pricing.title": { en: "Plans and pricing", bn: "প্ল্যান ও প্রাইসিং" },
   "pricing.subtitle": {
@@ -192,15 +294,27 @@ export const DICT = {
   "pricing.products": { en: "{count} products", bn: "{count}টি পণ্য" },
   "pricing.staff": { en: "{count} staff seats", bn: "{count}টি স্টাফ সিট" },
   "pricing.payments": { en: "Payments: {methods}", bn: "পেমেন্ট: {methods}" },
-  "pricing.trial": { en: "{days}-day free trial", bn: "{days} দিনের ফ্রি ট্রায়াল" },
+  "pricing.trial": {
+    en: "{days}-day free trial",
+    bn: "{days} দিনের ফ্রি ট্রায়াল",
+  },
   "pricing.choose": { en: "Choose plan", bn: "প্ল্যান বাছুন" },
-  "pricing.contact_admin": { en: "Contact your platform admin", bn: "প্ল্যাটফর্ম অ্যাডমিনের সঙ্গে যোগাযোগ করুন" },
+  "pricing.contact_admin": {
+    en: "Contact your platform admin",
+    bn: "প্ল্যাটফর্ম অ্যাডমিনের সঙ্গে যোগাযোগ করুন",
+  },
   "pricing.unavailable": {
     en: "Plans are not published yet. Contact your platform admin.",
     bn: "প্ল্যান এখনো প্রকাশিত হয়নি। প্ল্যাটফর্ম অ্যাডমিনের সঙ্গে যোগাযোগ করুন।",
   },
-  "pricing.faq_title": { en: "Billing questions", bn: "বিলিং সংক্রান্ত প্রশ্ন" },
-  "pricing.faq.limits.q": { en: "What happens at a plan limit?", bn: "প্ল্যান লিমিটে পৌঁছালে কী হয়?" },
+  "pricing.faq_title": {
+    en: "Billing questions",
+    bn: "বিলিং সংক্রান্ত প্রশ্ন",
+  },
+  "pricing.faq.limits.q": {
+    en: "What happens at a plan limit?",
+    bn: "প্ল্যান লিমিটে পৌঁছালে কী হয়?",
+  },
   "pricing.faq.limits.a": {
     en: "The write is blocked with a clear message and an upgrade link. Nothing is silently deleted.",
     bn: "লেখা ব্লক হয় এবং আপগ্রেড লিংকসহ বার্তা দেখানো হয়। কিছুই নিঃশব্দে মুছে যায় না।",
@@ -210,18 +324,27 @@ export const DICT = {
     en: "No. VAT is added on the invoice using the rate for the legal year.",
     bn: "না। আইনি বছরের হার অনুযায়ী ইনভয়েসে ভ্যাট যোগ হয়।",
   },
-  "pricing.faq.downgrade.q": { en: "Can I downgrade?", bn: "ডাউনগ্রেড করা যাবে?" },
+  "pricing.faq.downgrade.q": {
+    en: "Can I downgrade?",
+    bn: "ডাউনগ্রেড করা যাবে?",
+  },
   "pricing.faq.downgrade.a": {
     en: "Yes. Your data stays, but writes above the new limits are blocked until you are within them.",
     bn: "হ্যাঁ। ডেটা থাকে, তবে নতুন লিমিটের বেশি লেখা ব্লক থাকে।",
   },
-  "pricing.faq.payouts.q": { en: "When do payouts start?", bn: "পেআউট কবে শুরু হয়?" },
+  "pricing.faq.payouts.q": {
+    en: "When do payouts start?",
+    bn: "পেআউট কবে শুরু হয়?",
+  },
   "pricing.faq.payouts.a": {
     en: "After identity verification is approved for your store.",
     bn: "আপনার স্টোরের পরিচয় যাচাই অনুমোদনের পর।",
   },
 
-  "contact.title": { en: "Talk to the Framique team", bn: "Framique টিমের সঙ্গে কথা বলুন" },
+  "contact.title": {
+    en: "Talk to the Framique team",
+    bn: "Framique টিমের সঙ্গে কথা বলুন",
+  },
   "contact.subtitle": {
     en: "Questions about plans, migrating an existing store, or enterprise terms? We answer in Bangla or English.",
     bn: "প্ল্যান, বিদ্যমান স্টোর মাইগ্রেশন বা এন্টারপ্রাইজ শর্ত নিয়ে প্রশ্ন? আমরা বাংলা বা ইংরেজিতে উত্তর দিই।",
@@ -235,47 +358,107 @@ export const DICT = {
   },
   "contact.hours": { en: "Hours", bn: "সময়" },
   "contact.office": { en: "Office", bn: "অফিস" },
-  "contact.hours_body": { en: "Sunday to Thursday, 10:00–18:00 (BST).", bn: "রবি–বৃহস্পতি, ১০:০০–১৮:০০ (BST)।" },
+  "contact.hours_body": {
+    en: "Sunday to Thursday, 10:00–18:00 (BST).",
+    bn: "রবি–বৃহস্পতি, ১০:০০–১৮:০০ (BST)।",
+  },
   "contact.form_title": { en: "Send a message", bn: "বার্তা পাঠান" },
-  "contact.form_intro": { en: "Choose a team and include enough detail for a useful first reply.", bn: "একটি টিম বাছুন এবং কার্যকর প্রথম উত্তরের জন্য প্রয়োজনীয় তথ্য দিন।" },
+  "contact.form_intro": {
+    en: "Choose a team and include enough detail for a useful first reply.",
+    bn: "একটি টিম বাছুন এবং কার্যকর প্রথম উত্তরের জন্য প্রয়োজনীয় তথ্য দিন।",
+  },
   "contact.name": { en: "Name", bn: "নাম" },
   "contact.email": { en: "Work email", bn: "কাজের ইমেইল" },
   "contact.phone": { en: "Phone (optional)", bn: "ফোন (ঐচ্ছিক)" },
   "contact.topic": { en: "Topic", bn: "বিষয়" },
-  "contact.message": { en: "How can we help?", bn: "আমরা কীভাবে সাহায্য করতে পারি?" },
-  "contact.message_hint": { en: "20–4000 characters. Do not include passwords or payment details.", bn: "২০–৪০০০ অক্ষর। পাসওয়ার্ড বা পেমেন্টের তথ্য দেবেন না।" },
+  "contact.message": {
+    en: "How can we help?",
+    bn: "আমরা কীভাবে সাহায্য করতে পারি?",
+  },
+  "contact.message_hint": {
+    en: "20–4000 characters. Do not include passwords or payment details.",
+    bn: "২০–৪০০০ অক্ষর। পাসওয়ার্ড বা পেমেন্টের তথ্য দেবেন না।",
+  },
   "contact.submit": { en: "Send message", bn: "বার্তা পাঠান" },
   "contact.submitting": { en: "Sending…", bn: "পাঠানো হচ্ছে…" },
-  "contact.success": { en: "Message received. Reference: {reference}. We sent a receipt to your email.", bn: "বার্তা পেয়েছি। রেফারেন্স: {reference}। আপনার ইমেইলে একটি রসিদ পাঠানো হয়েছে।" },
-  "contact.rate_limited": { en: "Too many attempts. Please wait before trying again.", bn: "অনেকবার চেষ্টা হয়েছে। আবার চেষ্টা করার আগে অপেক্ষা করুন।" },
-  "contact.error.generic": { en: "We could not receive your message. Please email us instead.", bn: "আমরা আপনার বার্তা নিতে পারিনি। অনুগ্রহ করে ইমেইল করুন।" },
-  "contact.error.name_invalid": { en: "Enter your full name.", bn: "আপনার পূর্ণ নাম লিখুন।" },
-  "contact.error.email_invalid": { en: "Enter a valid email address.", bn: "একটি সঠিক ইমেইল ঠিকানা লিখুন।" },
-  "contact.error.phone_invalid": { en: "Enter a valid phone number or leave it blank.", bn: "সঠিক ফোন নম্বর লিখুন অথবা খালি রাখুন।" },
-  "contact.error.message_too_short": { en: "Add a little more detail (at least 20 characters).", bn: "আরও কিছু বিস্তারিত লিখুন (কমপক্ষে ২০ অক্ষর)।" },
-  "contact.error.message_too_long": { en: "Keep the message under 4000 characters.", bn: "বার্তা ৪০০০ অক্ষরের মধ্যে রাখুন।" },
-  "contact.response.sales": { en: "Replies within 4 business hours", bn: "৪ কর্মঘণ্টার মধ্যে উত্তর" },
-  "contact.response.support": { en: "Replies within 2 business hours", bn: "২ কর্মঘণ্টার মধ্যে উত্তর" },
-  "contact.response.migration": { en: "Replies within 8 business hours", bn: "৮ কর্মঘণ্টার মধ্যে উত্তর" },
+  "contact.success": {
+    en: "Message received. Reference: {reference}. We sent a receipt to your email.",
+    bn: "বার্তা পেয়েছি। রেফারেন্স: {reference}। আপনার ইমেইলে একটি রসিদ পাঠানো হয়েছে।",
+  },
+  "contact.rate_limited": {
+    en: "Too many attempts. Please wait before trying again.",
+    bn: "অনেকবার চেষ্টা হয়েছে। আবার চেষ্টা করার আগে অপেক্ষা করুন।",
+  },
+  "contact.error.generic": {
+    en: "We could not receive your message. Please email us instead.",
+    bn: "আমরা আপনার বার্তা নিতে পারিনি। অনুগ্রহ করে ইমেইল করুন।",
+  },
+  "contact.error.name_invalid": {
+    en: "Enter your full name.",
+    bn: "আপনার পূর্ণ নাম লিখুন।",
+  },
+  "contact.error.email_invalid": {
+    en: "Enter a valid email address.",
+    bn: "একটি সঠিক ইমেইল ঠিকানা লিখুন।",
+  },
+  "contact.error.phone_invalid": {
+    en: "Enter a valid phone number or leave it blank.",
+    bn: "সঠিক ফোন নম্বর লিখুন অথবা খালি রাখুন।",
+  },
+  "contact.error.message_too_short": {
+    en: "Add a little more detail (at least 20 characters).",
+    bn: "আরও কিছু বিস্তারিত লিখুন (কমপক্ষে ২০ অক্ষর)।",
+  },
+  "contact.error.message_too_long": {
+    en: "Keep the message under 4000 characters.",
+    bn: "বার্তা ৪০০০ অক্ষরের মধ্যে রাখুন।",
+  },
+  "contact.response.sales": {
+    en: "Replies within 4 business hours",
+    bn: "৪ কর্মঘণ্টার মধ্যে উত্তর",
+  },
+  "contact.response.support": {
+    en: "Replies within 2 business hours",
+    bn: "২ কর্মঘণ্টার মধ্যে উত্তর",
+  },
+  "contact.response.migration": {
+    en: "Replies within 8 business hours",
+    bn: "৮ কর্মঘণ্টার মধ্যে উত্তর",
+  },
   "contact.map": { en: "Open in Maps", bn: "ম্যাপে দেখুন" },
 
   "marketplace.trial_started": {
     en: "Trial started — your wallet was not charged.",
     bn: "ট্রায়াল শুরু হয়েছে — ওয়ালেট চার্জ হয়নি।",
   },
-  "marketplace.install_complete": { en: "Install complete.", bn: "ইনস্টল সম্পন্ন।" },
-  "marketplace.theme_activated": { en: "Theme activated — it is now live.", bn: "থিম সক্রিয় — এখন লাইভ।" },
-  "marketplace.theme_deleted": { en: "Theme deleted.", bn: "থিম মুছে ফেলা হয়েছে।" },
+  "marketplace.install_complete": {
+    en: "Install complete.",
+    bn: "ইনস্টল সম্পন্ন।",
+  },
+  "marketplace.theme_activated": {
+    en: "Theme activated — it is now live.",
+    bn: "থিম সক্রিয় — এখন লাইভ।",
+  },
+  "marketplace.theme_deleted": {
+    en: "Theme deleted.",
+    bn: "থিম মুছে ফেলা হয়েছে।",
+  },
   "marketplace.confirm_delete_theme": {
     en: "Delete this theme and its versions? This cannot be undone.",
     bn: "এই থিম ও এর সংস্করণগুলো মুছুন? এটি ফেরানো যাবে না।",
   },
-  "marketplace.widget_deleted": { en: "App deleted.", bn: "অ্যাপ মুছে ফেলা হয়েছে।" },
+  "marketplace.widget_deleted": {
+    en: "App deleted.",
+    bn: "অ্যাপ মুছে ফেলা হয়েছে।",
+  },
   "marketplace.confirm_delete_widget": {
     en: "Remove this app and its settings? This cannot be undone.",
     bn: "এই অ্যাপ ও এর সেটিংস সরিয়ে ফেলুন? এটি ফেরানো যাবে না।",
   },
-  "marketplace.status_updated": { en: "Status updated.", bn: "স্ট্যাটাস হালনাগাদ।" },
+  "marketplace.status_updated": {
+    en: "Status updated.",
+    bn: "স্ট্যাটাস হালনাগাদ।",
+  },
   "marketplace.rolled_back": { en: "Rolled back.", bn: "রোলব্যাক সম্পন্ন।" },
   "marketplace.theme.applied": {
     en: "The theme is now live on your storefront. Edit it in the page builder.",
@@ -307,7 +490,10 @@ export const DICT = {
   "onboarding.step_address": { en: "Web address", bn: "ওয়েব ঠিকানা" },
   "onboarding.step_plan": { en: "Plan", bn: "প্ল্যান" },
   "onboarding.store_name": { en: "Store name", bn: "স্টোরের নাম" },
-  "onboarding.store_name_placeholder": { en: "e.g. Char Handloom", bn: "যেমন: চর হ্যান্ডলুম" },
+  "onboarding.store_name_placeholder": {
+    en: "e.g. Char Handloom",
+    bn: "যেমন: চর হ্যান্ডলুম",
+  },
   "onboarding.store_name_hint": {
     en: "This is shown to customers. You can change it later in Settings.",
     bn: "এটি ক্রেতারা দেখবেন। পরে সেটিংস থেকে বদলানো যাবে।",
@@ -323,7 +509,10 @@ export const DICT = {
     en: "{products} products · {staff} staff seats",
     bn: "{products} পণ্য · {staff} স্টাফ সিট",
   },
-  "onboarding.trial_days": { en: "{days}-day trial", bn: "{days} দিনের ট্রায়াল" },
+  "onboarding.trial_days": {
+    en: "{days}-day trial",
+    bn: "{days} দিনের ট্রায়াল",
+  },
   "onboarding.create_store": { en: "Create store", bn: "স্টোর তৈরি করুন" },
   "onboarding.created": { en: "Store created", bn: "স্টোর তৈরি হয়েছে" },
   "onboarding.required": {
@@ -402,18 +591,27 @@ export const DICT = {
     en: "Every provider callback we received, with dead-letter reasons and retry.",
     bn: "প্রাপ্ত সব প্রোভাইডার কলব্যাক, ডেড-লেটার কারণ ও রিট্রাই সহ।",
   },
-  "gateway.empty": { en: "No provider callbacks received yet.", bn: "এখনও কোনো কলব্যাক আসেনি।" },
+  "gateway.empty": {
+    en: "No provider callbacks received yet.",
+    bn: "এখনও কোনো কলব্যাক আসেনি।",
+  },
   "gateway.status_processed": { en: "Processed", bn: "প্রসেসড" },
   "gateway.status_dead_letter": { en: "Dead letter", bn: "ডেড লেটার" },
   "gateway.status_received": { en: "Received", bn: "গৃহীত" },
   "gateway.reason": { en: "Reason", bn: "কারণ" },
   "gateway.redeliveries": { en: "Redeliveries", bn: "পুনঃডেলিভারি" },
   "gateway.retry": { en: "Retry delivery", bn: "আবার চেষ্টা করুন" },
-  "gateway.retry_ok": { en: "Delivery replayed successfully", bn: "ডেলিভারি সফলভাবে রিপ্লে হয়েছে" },
+  "gateway.retry_ok": {
+    en: "Delivery replayed successfully",
+    bn: "ডেলিভারি সফলভাবে রিপ্লে হয়েছে",
+  },
   "gateway.retry_failed": { en: "Retry failed", bn: "রিট্রাই ব্যর্থ" },
   "gateway.no_merchant": { en: "Unmatched store", bn: "স্টোর মেলেনি" },
   "platform.gateway": { en: "Payment gateway", bn: "পেমেন্ট গেটওয়ে" },
-  "platform.console": { en: "Platform owner console", bn: "প্ল্যাটফর্ম ওনার কনসোল" },
+  "platform.console": {
+    en: "Platform owner console",
+    bn: "প্ল্যাটফর্ম ওনার কনসোল",
+  },
   "platform.plans_and_limits": { en: "Plans & limits", bn: "প্ল্যান ও লিমিট" },
   "platform.tenants": { en: "Tenants", bn: "টেন্যান্ট" },
   "platform.audit_trail": { en: "Audit trail", bn: "অডিট ট্রেইল" },
@@ -422,7 +620,10 @@ export const DICT = {
     bn: "প্ল্যাটফর্ম ওনার অ্যাক্সেস প্রয়োজন",
   },
   "platform.plan_saved": { en: "Plan saved", bn: "প্ল্যান সেভ হয়েছে" },
-  "platform.limits_saved": { en: "Tenant limits updated", bn: "টেন্যান্ট লিমিট আপডেট হয়েছে" },
+  "platform.limits_saved": {
+    en: "Tenant limits updated",
+    bn: "টেন্যান্ট লিমিট আপডেট হয়েছে",
+  },
   "platform.limits_reset": {
     en: "Tenant limits reset to the plan definition",
     bn: "টেন্যান্ট লিমিট প্ল্যান অনুযায়ী রিসেট হয়েছে",
@@ -432,8 +633,14 @@ export const DICT = {
     bn: "এই টেন্যান্টকে প্ল্যান লিমিটে ফেরাবেন? ওভাররাইড মুছে যাবে।",
   },
 
-  "support.store_not_found": { en: "Store not found", bn: "স্টোর পাওয়া যায়নি" },
-  "support.chat_failed": { en: "Could not start the chat", bn: "চ্যাট শুরু করা যায়নি" },
+  "support.store_not_found": {
+    en: "Store not found",
+    bn: "স্টোর পাওয়া যায়নি",
+  },
+  "support.chat_failed": {
+    en: "Could not start the chat",
+    bn: "চ্যাট শুরু করা যায়নি",
+  },
   "support.ask_order_details": {
     en: "Share your order number and the phone number on the order, and I will check the status from our records.",
     bn: "অর্ডার নম্বর এবং অর্ডারে দেওয়া ফোন নম্বরটি দিন, আমি রেকর্ড থেকে অবস্থা দেখে জানাচ্ছি।",
@@ -442,8 +649,14 @@ export const DICT = {
     en: "No order matched those details. Please check the number or contact customer care.",
     bn: "এই তথ্যে কোনো অর্ডার মেলেনি। অনুগ্রহ করে নম্বরটি যাচাই করুন বা কাস্টমার কেয়ারে জানান।",
   },
-  "support.provenance.orders": { en: "Source: order record", bn: "উৎস: অর্ডার রেকর্ড" },
-  "support.provenance.kb": { en: "Source: help article", bn: "উৎস: সহায়তা নথি" },
+  "support.provenance.orders": {
+    en: "Source: order record",
+    bn: "উৎস: অর্ডার রেকর্ড",
+  },
+  "support.provenance.kb": {
+    en: "Source: help article",
+    bn: "উৎস: সহায়তা নথি",
+  },
   "support.rate_limited": {
     en: "You are sending messages a little too quickly. Please wait a moment, or open a support ticket and our team will reply.",
     bn: "আপনি খুব দ্রুত বার্তা পাঠাচ্ছেন। একটু অপেক্ষা করুন, অথবা টিকিট খুলুন — আমাদের টিম উত্তর দেবে।",
@@ -460,9 +673,18 @@ export const DICT = {
     en: "I cannot reach our records right now. Your question has been passed to the store team.",
     bn: "এই মুহূর্তে রেকর্ডে পৌঁছাতে পারছি না। আপনার প্রশ্ন স্টোর টিমকে পাঠানো হয়েছে।",
   },
-  "support.confidence.pinned": { en: "Verified from records", bn: "রেকর্ড থেকে যাচাই করা" },
-  "support.confidence.grounded": { en: "From help articles", bn: "সহায়তা নথি থেকে" },
-  "support.confidence.unsure": { en: "Needs a human", bn: "মানুষের সহায়তা দরকার" },
+  "support.confidence.pinned": {
+    en: "Verified from records",
+    bn: "রেকর্ড থেকে যাচাই করা",
+  },
+  "support.confidence.grounded": {
+    en: "From help articles",
+    bn: "সহায়তা নথি থেকে",
+  },
+  "support.confidence.unsure": {
+    en: "Needs a human",
+    bn: "মানুষের সহায়তা দরকার",
+  },
 
   // Action agent tool prompts (Phase 9.3 & 9.4)
   "support.ticket_prompt": {
@@ -486,7 +708,10 @@ export const DICT = {
   "desk.kpi.open": { en: "Open tickets", bn: "খোলা টিকিট" },
   "desk.kpi.breached": { en: "SLA breached", bn: "এসএলএ ভঙ্গ" },
   "desk.kpi.at_risk": { en: "At risk", bn: "ঝুঁকিতে" },
-  "desk.kpi.first_response": { en: "Median first response", bn: "মধ্যক প্রথম উত্তর" },
+  "desk.kpi.first_response": {
+    en: "Median first response",
+    bn: "মধ্যক প্রথম উত্তর",
+  },
   "desk.sla.met": { en: "On track", bn: "ঠিক আছে" },
   "desk.sla.at_risk": { en: "At risk", bn: "ঝুঁকিতে" },
   "desk.sla.breached": { en: "Breached", bn: "ভঙ্গ" },
@@ -496,12 +721,24 @@ export const DICT = {
     en: "No help articles yet. Add one so the assistant can answer from your own policies.",
     bn: "এখনো কোনো সহায়তা নথি নেই। একটি যোগ করুন যাতে অ্যাসিস্ট্যান্ট আপনার নীতিমালা থেকে উত্তর দিতে পারে।",
   },
-  "desk.empty.channels": { en: "No messaging channels connected.", bn: "কোনো মেসেজিং চ্যানেল যুক্ত নেই।" },
-  "desk.empty.audit": { en: "No assistant events recorded yet.", bn: "এখনো কোনো অ্যাসিস্ট্যান্ট ইভেন্ট নেই।" },
+  "desk.empty.channels": {
+    en: "No messaging channels connected.",
+    bn: "কোনো মেসেজিং চ্যানেল যুক্ত নেই।",
+  },
+  "desk.empty.audit": {
+    en: "No assistant events recorded yet.",
+    bn: "এখনো কোনো অ্যাসিস্ট্যান্ট ইভেন্ট নেই।",
+  },
   "desk.action.new_ticket": { en: "New ticket", bn: "নতুন টিকিট" },
   "desk.action.new_doc": { en: "New article", bn: "নতুন নথি" },
-  "desk.action.new_channel": { en: "Connect channel", bn: "চ্যানেল যুক্ত করুন" },
-  "desk.action.mark_responded": { en: "Mark first response", bn: "প্রথম উত্তর চিহ্নিত করুন" },
+  "desk.action.new_channel": {
+    en: "Connect channel",
+    bn: "চ্যানেল যুক্ত করুন",
+  },
+  "desk.action.mark_responded": {
+    en: "Mark first response",
+    bn: "প্রথম উত্তর চিহ্নিত করুন",
+  },
   "desk.action.timeline": { en: "Timeline", bn: "টাইমলাইন" },
   "desk.field.subject": { en: "Subject", bn: "বিষয়" },
   "desk.field.body": { en: "Message", bn: "বার্তা" },
@@ -512,12 +749,21 @@ export const DICT = {
   "desk.field.tags": { en: "Tags (comma separated)", bn: "ট্যাগ (কমা দিয়ে)" },
   "desk.field.channel": { en: "Channel", bn: "চ্যানেল" },
   "desk.field.display_name": { en: "Display name", bn: "প্রদর্শন নাম" },
-  "desk.field.external_id": { en: "Provider account id", bn: "প্রোভাইডার অ্যাকাউন্ট আইডি" },
+  "desk.field.external_id": {
+    en: "Provider account id",
+    bn: "প্রোভাইডার অ্যাকাউন্ট আইডি",
+  },
   "desk.field.secret": { en: "Signing secret", bn: "সাইনিং সিক্রেট" },
   "desk.field.enabled": { en: "Enabled", bn: "সক্রিয়" },
   "desk.saved": { en: "Saved", bn: "সংরক্ষিত" },
-  "desk.save_failed": { en: "Could not save. Please try again.", bn: "সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।" },
-  "desk.audit.guardrails": { en: "Blocked by guardrails", bn: "গার্ডরেইলে আটকানো" },
+  "desk.save_failed": {
+    en: "Could not save. Please try again.",
+    bn: "সংরক্ষণ করা যায়নি। আবার চেষ্টা করুন।",
+  },
+  "desk.audit.guardrails": {
+    en: "Blocked by guardrails",
+    bn: "গার্ডরেইলে আটকানো",
+  },
   "desk.audit.tools": { en: "Record lookups", bn: "রেকর্ড অনুসন্ধান" },
   "desk.audit.note": {
     en: "The assistant is advisory only: it reads records and drafts answers, but every money or order change stays with your team.",
@@ -550,13 +796,22 @@ export const DICT = {
     en: "Repeated failed payments from the same customer",
     bn: "একই গ্রাহকের একাধিক ব্যর্থ পেমেন্ট",
   },
-  "fraud.rule.CARDTESTING.param": { en: "Failed payment threshold", bn: "ব্যর্থ পেমেন্ট সীমা" },
-  "fraud.rule.VELOCITY_LIMIT.title": { en: "Velocity limit", bn: "ভেলোসিটি লিমিট" },
+  "fraud.rule.CARDTESTING.param": {
+    en: "Failed payment threshold",
+    bn: "ব্যর্থ পেমেন্ট সীমা",
+  },
+  "fraud.rule.VELOCITY_LIMIT.title": {
+    en: "Velocity limit",
+    bn: "ভেলোসিটি লিমিট",
+  },
   "fraud.rule.VELOCITY_LIMIT.hint": {
     en: "Orders per hour from the same phone number",
     bn: "প্রতি ঘণ্টায় একই ফোনে অর্ডার সীমা",
   },
-  "fraud.rule.VELOCITY_LIMIT.param": { en: "Orders per hour", bn: "অর্ডার/ঘণ্টা" },
+  "fraud.rule.VELOCITY_LIMIT.param": {
+    en: "Orders per hour",
+    bn: "অর্ডার/ঘণ্টা",
+  },
   "fraud.rule.NEW_DEVICE_HIGH_VALUE.title": {
     en: "New customer, high value",
     bn: "নতুন গ্রাহক + উচ্চমূল্য",
@@ -569,22 +824,40 @@ export const DICT = {
     en: "High value threshold (minor units)",
     bn: "উচ্চমূল্য সীমা (পয়সা)",
   },
-  "fraud.rule.COD_MAX_AMOUNT.title": { en: "COD maximum", bn: "COD সর্বোচ্চ সীমা" },
+  "fraud.rule.COD_MAX_AMOUNT.title": {
+    en: "COD maximum",
+    bn: "COD সর্বোচ্চ সীমা",
+  },
   "fraud.rule.COD_MAX_AMOUNT.hint": {
     en: "Flag cash-on-delivery orders above the limit",
     bn: "ক্যাশ-অন-ডেলিভারিতে অঙ্ক বেশি হলে ফ্ল্যাগ",
   },
-  "fraud.rule.COD_MAX_AMOUNT.param": { en: "COD limit (minor units)", bn: "COD সীমা (পয়সা)" },
-  "fraud.signal.velocity": { en: "{count} orders in the last hour", bn: "১ ঘণ্টায় {count}টি অর্ডার" },
-  "fraud.signal.card_testing": { en: "{count} failed payments", bn: "{count}টি ব্যর্থ পেমেন্ট" },
+  "fraud.rule.COD_MAX_AMOUNT.param": {
+    en: "COD limit (minor units)",
+    bn: "COD সীমা (পয়সা)",
+  },
+  "fraud.signal.velocity": {
+    en: "{count} orders in the last hour",
+    bn: "১ ঘণ্টায় {count}টি অর্ডার",
+  },
+  "fraud.signal.card_testing": {
+    en: "{count} failed payments",
+    bn: "{count}টি ব্যর্থ পেমেন্ট",
+  },
   "fraud.signal.new_customer_high_value": {
     en: "New customer, high value order",
     bn: "নতুন গ্রাহক, বড় অঙ্ক",
   },
-  "fraud.signal.cod_over_limit": { en: "Above the COD limit", bn: "COD সীমা ছাড়িয়েছে" },
+  "fraud.signal.cod_over_limit": {
+    en: "Above the COD limit",
+    bn: "COD সীমা ছাড়িয়েছে",
+  },
 
   "order.status.pending": { en: "Pending", bn: "অপেক্ষমাণ" },
-  "order.status.payment_pending": { en: "Payment pending", bn: "পেমেন্ট অপেক্ষমাণ" },
+  "order.status.payment_pending": {
+    en: "Payment pending",
+    bn: "পেমেন্ট অপেক্ষমাণ",
+  },
   "order.status.confirmed": { en: "Confirmed", bn: "নিশ্চিত হয়েছে" },
   "order.status.paid": { en: "Paid", bn: "পেমেন্ট সম্পন্ন" },
   "order.status.packed": { en: "Packed", bn: "প্যাক হয়েছে" },
@@ -597,7 +870,10 @@ export const DICT = {
     en: "Order {number} — current status: {status}. Total: {total}.",
     bn: "অর্ডার {number} — বর্তমান অবস্থা: {status}। মোট: {total}।",
   },
-  "support.suggestion.order_status.label": { en: "Order update", bn: "অর্ডার আপডেট" },
+  "support.suggestion.order_status.label": {
+    en: "Order update",
+    bn: "অর্ডার আপডেট",
+  },
   "support.suggestion.order_status.body": {
     en: "Your order is being processed. We will send the tracking number once it is handed to the courier.",
     bn: "আপনার অর্ডারটি প্রসেসিংয়ে আছে, কুরিয়ারে হস্তান্তরের পর ট্র্যাকিং নম্বর পাঠানো হবে।",
@@ -612,7 +888,10 @@ export const DICT = {
     en: "Inside Dhaka 1–2 days, outside Dhaka 2–4 days.",
     bn: "ঢাকার ভেতরে ১–২ দিন, ঢাকার বাইরে ২–৪ দিনে ডেলিভারি হয়।",
   },
-  "support.suggestion.other.label": { en: "Customer care", bn: "কাস্টমার কেয়ার" },
+  "support.suggestion.other.label": {
+    en: "Customer care",
+    bn: "কাস্টমার কেয়ার",
+  },
   "support.suggestion.other.body": {
     en: "Our team will contact you shortly. Thank you for your patience.",
     bn: "আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে। ধন্যবাদ ধৈর্য ধরার জন্য।",
@@ -622,7 +901,10 @@ export const DICT = {
   "export.type.products": { en: "Products", bn: "পণ্য" },
   "export.type.customers": { en: "Customers", bn: "কাস্টমার" },
   "export.type.product_events": { en: "Product events", bn: "পণ্য ইভেন্ট" },
-  "export.type.analytics_raw": { en: "Analytics raw (90d)", bn: "অ্যানালিটিক্স র (৯০ দিন)" },
+  "export.type.analytics_raw": {
+    en: "Analytics raw (90d)",
+    bn: "অ্যানালিটিক্স র (৯০ দিন)",
+  },
   "staff.title": { en: "Staff & permissions", bn: "স্টাফ ও অনুমতি" },
   "staff.subtitle": {
     en: "Delegate admin access with granular roles. Every change is recorded in the staff audit trail.",
@@ -642,8 +924,14 @@ export const DICT = {
   "staff.mfa.none": { en: "Not set up", bn: "সেট করা হয়নি" },
   "staff.mfa.enrolled": { en: "Enrolled", bn: "নিবন্ধিত" },
   "staff.mfa.enforced": { en: "Enforced", bn: "বাধ্যতামূলক" },
-  "staff.mfa_own": { en: "Your two-factor status", bn: "আপনার টু-ফ্যাক্টর স্ট্যাটাস" },
-  "staff.mfa_updated": { en: "Two-factor status updated", bn: "টু-ফ্যাক্টর স্ট্যাটাস হালনাগাদ" },
+  "staff.mfa_own": {
+    en: "Your two-factor status",
+    bn: "আপনার টু-ফ্যাক্টর স্ট্যাটাস",
+  },
+  "staff.mfa_updated": {
+    en: "Two-factor status updated",
+    bn: "টু-ফ্যাক্টর স্ট্যাটাস হালনাগাদ",
+  },
   "staff.member_updated": { en: "Member updated", bn: "মেম্বার হালনাগাদ" },
   "staff.roles": { en: "Roles", bn: "রোল" },
   "staff.role_name": { en: "Role name", bn: "রোলের নাম" },
@@ -663,7 +951,10 @@ export const DICT = {
   "staff.grant_invalid": { en: "Invalid permission", bn: "অবৈধ অনুমতি" },
   "staff.grant_owner_only": { en: "owner only", bn: "শুধু ওনার" },
   "staff.grant_forbidden": { en: "never delegated", bn: "কখনো দেওয়া হয় না" },
-  "staff.grant_implied": { en: "included automatically", bn: "স্বয়ংক্রিয়ভাবে যুক্ত" },
+  "staff.grant_implied": {
+    en: "included automatically",
+    bn: "স্বয়ংক্রিয়ভাবে যুক্ত",
+  },
   "staff.least_privilege_note": {
     en: "Least privilege by default: every write permission includes its read, role administration is never delegated, and money and store settings stay with the owner.",
     bn: "ডিফল্টে ন্যূনতম অনুমতি: প্রতিটি লেখার অনুমতির সঙ্গে পড়ার অনুমতি যুক্ত হয়, রোল ব্যবস্থাপনা কখনো হস্তান্তর হয় না, আর অর্থ ও স্টোর সেটিংস ওনারের হাতেই থাকে।",
@@ -680,7 +971,10 @@ export const DICT = {
     bn: "এই ইমেইলে আগে থেকেই ফ্রেমিক অ্যাকাউন্ট থাকতে হবে; গ্রহণ না করা পর্যন্ত স্ট্যাটাস আমন্ত্রিত থাকবে।",
   },
   "staff.sessions": { en: "Active device sessions", bn: "সক্রিয় ডিভাইস সেশন" },
-  "staff.sessions_empty": { en: "No active sessions", bn: "কোনো সক্রিয় সেশন নেই" },
+  "staff.sessions_empty": {
+    en: "No active sessions",
+    bn: "কোনো সক্রিয় সেশন নেই",
+  },
   "staff.session_current": { en: "this device", bn: "এই ডিভাইস" },
   "staff.session_revoke": { en: "Revoke", bn: "বাতিল" },
   "staff.session_revoked": { en: "Session revoked", bn: "সেশন বাতিল হয়েছে" },
@@ -690,15 +984,27 @@ export const DICT = {
     en: "You cannot change your own access",
     bn: "নিজের অ্যাক্সেস নিজে বদলানো যাবে না",
   },
-  "staff.owner_protected": { en: "Only an owner can change an owner", bn: "শুধু ওনার ওনারকে বদলাতে পারে" },
-  "staff.role_name_invalid": { en: "Enter a role name of at least 2 characters", bn: "কমপক্ষে ২ অক্ষরের রোল নাম দিন" },
+  "staff.owner_protected": {
+    en: "Only an owner can change an owner",
+    bn: "শুধু ওনার ওনারকে বদলাতে পারে",
+  },
+  "staff.role_name_invalid": {
+    en: "Enter a role name of at least 2 characters",
+    bn: "কমপক্ষে ২ অক্ষরের রোল নাম দিন",
+  },
   "staff.role_grant_forbidden": {
     en: "Custom roles cannot manage roles",
     bn: "কাস্টম রোল অন্য রোল পরিচালনা করতে পারে না",
   },
-  "staff.role_fixed": { en: "Built-in roles cannot be edited", bn: "বিল্ট-ইন রোল সম্পাদনা করা যায় না" },
+  "staff.role_fixed": {
+    en: "Built-in roles cannot be edited",
+    bn: "বিল্ট-ইন রোল সম্পাদনা করা যায় না",
+  },
   "staff.role_missing": { en: "Role not found", bn: "রোল পাওয়া যায়নি" },
-  "staff.member_missing": { en: "Member not found", bn: "মেম্বার পাওয়া যায়নি" },
+  "staff.member_missing": {
+    en: "Member not found",
+    bn: "মেম্বার পাওয়া যায়নি",
+  },
 
   "approval.title": { en: "Approvals", bn: "অনুমোদন" },
   "approval.subtitle": {
@@ -710,7 +1016,10 @@ export const DICT = {
   "approval.resource_action": { en: "Action", bn: "কাজ" },
   "approval.note": { en: "Note for the reviewer", bn: "রিভিউয়ারের জন্য নোট" },
   "approval.comment": { en: "Decision comment", bn: "সিদ্ধান্তের মন্তব্য" },
-  "approval.submitted": { en: "Submitted for review", bn: "রিভিউয়ের জন্য পাঠানো হয়েছে" },
+  "approval.submitted": {
+    en: "Submitted for review",
+    bn: "রিভিউয়ের জন্য পাঠানো হয়েছে",
+  },
   "approval.approve": { en: "Approve", bn: "অনুমোদন" },
   "approval.reject": { en: "Reject", bn: "প্রত্যাখ্যান" },
   "approval.cancel": { en: "Withdraw", bn: "প্রত্যাহার" },
@@ -726,10 +1035,19 @@ export const DICT = {
     en: "You cannot approve your own request",
     bn: "নিজের অনুরোধ নিজে অনুমোদন করা যাবে না",
   },
-  "approval.reason_required": { en: "A reason is required to reject", bn: "প্রত্যাখ্যানের কারণ দিতে হবে" },
-  "approval.not_pending": { en: "This request was already decided", bn: "এই অনুরোধের সিদ্ধান্ত হয়ে গেছে" },
+  "approval.reason_required": {
+    en: "A reason is required to reject",
+    bn: "প্রত্যাখ্যানের কারণ দিতে হবে",
+  },
+  "approval.not_pending": {
+    en: "This request was already decided",
+    bn: "এই অনুরোধের সিদ্ধান্ত হয়ে গেছে",
+  },
   "approval.missing": { en: "Request not found", bn: "অনুরোধ পাওয়া যায়নি" },
-  "approval.decision_invalid": { en: "Invalid decision", bn: "সিদ্ধান্ত সঠিক নয়" },
+  "approval.decision_invalid": {
+    en: "Invalid decision",
+    bn: "সিদ্ধান্ত সঠিক নয়",
+  },
 
   "kyc.title": { en: "Store verification", bn: "স্টোর ভেরিফিকেশন" },
   "kyc.subtitle": {
@@ -738,10 +1056,16 @@ export const DICT = {
   },
   "kyc.legal_name": { en: "Legal business name", bn: "আইনি ব্যবসার নাম" },
   "kyc.contact_phone": { en: "Contact phone", bn: "যোগাযোগ ফোন" },
-  "kyc.trade_license": { en: "Trade licence number", bn: "ট্রেড লাইসেন্স নম্বর" },
+  "kyc.trade_license": {
+    en: "Trade licence number",
+    bn: "ট্রেড লাইসেন্স নম্বর",
+  },
   "kyc.bin": { en: "BIN", bn: "বিআইএন" },
   "kyc.submit": { en: "Submit for verification", bn: "ভেরিফিকেশনে পাঠান" },
-  "kyc.submitted_toast": { en: "Sent for verification", bn: "ভেরিফিকেশনে পাঠানো হয়েছে" },
+  "kyc.submitted_toast": {
+    en: "Sent for verification",
+    bn: "ভেরিফিকেশনে পাঠানো হয়েছে",
+  },
   "kyc.state.pending": { en: "Not started", bn: "শুরু হয়নি" },
   "kyc.state.submitted": { en: "Under review", bn: "রিভিউতে" },
   "kyc.state.verified": { en: "Verified", bn: "ভেরিফাইড" },
@@ -750,9 +1074,18 @@ export const DICT = {
     en: "Legal name and contact phone are required",
     bn: "আইনি নাম ও যোগাযোগ ফোন দিতে হবে",
   },
-  "kyc.reason_required": { en: "A reason is required to reject", bn: "প্রত্যাখ্যানের কারণ দিতে হবে" },
-  "kyc.state_invalid": { en: "Invalid verification state", bn: "ভেরিফিকেশন স্ট্যাটাস সঠিক নয়" },
-  "kyc.missing": { en: "No verification record yet", bn: "এখনো ভেরিফিকেশন রেকর্ড নেই" },
+  "kyc.reason_required": {
+    en: "A reason is required to reject",
+    bn: "প্রত্যাখ্যানের কারণ দিতে হবে",
+  },
+  "kyc.state_invalid": {
+    en: "Invalid verification state",
+    bn: "ভেরিফিকেশন স্ট্যাটাস সঠিক নয়",
+  },
+  "kyc.missing": {
+    en: "No verification record yet",
+    bn: "এখনো ভেরিফিকেশন রেকর্ড নেই",
+  },
 
   "perm.group.catalog": { en: "Catalog", bn: "ক্যাটালগ" },
   "perm.group.inventory": { en: "Inventory", bn: "ইনভেন্টরি" },
@@ -782,15 +1115,24 @@ export const DICT = {
   "owner.snapshots": { en: "Time machine", bn: "টাইম মেশিন" },
   "owner.users": { en: "People", bn: "মানুষ" },
   "owner.settings": { en: "Settings", bn: "সেটিংস" },
-  "owner.flag_saved": { en: "Platform switch saved", bn: "প্ল্যাটফর্ম সুইচ সেভ হয়েছে" },
-  "owner.flag_failed": { en: "Could not save the switch", bn: "সুইচ সেভ করা যায়নি" },
+  "owner.flag_saved": {
+    en: "Platform switch saved",
+    bn: "প্ল্যাটফর্ম সুইচ সেভ হয়েছে",
+  },
+  "owner.flag_failed": {
+    en: "Could not save the switch",
+    bn: "সুইচ সেভ করা যায়নি",
+  },
   "owner.on": { en: "On", bn: "চালু" },
   "owner.off": { en: "Off", bn: "বন্ধ" },
   "owner.audited": {
     en: "Every change here is written to the platform audit trail.",
     bn: "এখানকার প্রতিটি পরিবর্তন প্ল্যাটফর্ম অডিট ট্রেইলে লেখা হয়।",
   },
-  "owner.trial.title": { en: "Trials and subscription states", bn: "ট্রায়াল ও সাবস্ক্রিপশন" },
+  "owner.trial.title": {
+    en: "Trials and subscription states",
+    bn: "ট্রায়াল ও সাবস্ক্রিপশন",
+  },
   "owner.trial.subtitle": {
     en: "Trial length is read from each plan definition, never from a constant.",
     bn: "ট্রায়ালের দৈর্ঘ্য প্ল্যান ডেফিনিশন থেকে আসে, কোনো ধ্রুবক থেকে নয়।",
@@ -801,16 +1143,25 @@ export const DICT = {
   "owner.trial.ends": { en: "Trial ends", bn: "ট্রায়াল শেষ" },
   "owner.trial.next_billing": { en: "Next billing", bn: "পরের বিলিং" },
   "owner.trial.days": { en: "Plan trial days", bn: "প্ল্যান ট্রায়াল দিন" },
-  "owner.coupons.title": { en: "Platform coupon oversight", bn: "প্ল্যাটফর্ম কুপন তদারকি" },
+  "owner.coupons.title": {
+    en: "Platform coupon oversight",
+    bn: "প্ল্যাটফর্ম কুপন তদারকি",
+  },
   "owner.coupons.subtitle": {
     en: "Read-only view of the highest-volume coupons and the redemption ledger behind them.",
     bn: "সর্বাধিক ব্যবহৃত কুপন ও তাদের রিডেম্পশন লেজারের রিড-অনলি ভিউ।",
   },
-  "owner.coupons.over_cap": { en: "Over its usage cap", bn: "ব্যবহারের সীমা ছাড়িয়েছে" },
+  "owner.coupons.over_cap": {
+    en: "Over its usage cap",
+    bn: "ব্যবহারের সীমা ছাড়িয়েছে",
+  },
   "owner.coupons.ledger": { en: "Ledger redemptions", bn: "লেজার রিডেম্পশন" },
   "owner.coupons.counter": { en: "Counter", bn: "কাউন্টার" },
   "owner.coupons.cap": { en: "Cap", bn: "সীমা" },
-  "owner.marketing.title": { en: "Marketing consent channels", bn: "মার্কেটিং কনসেন্ট চ্যানেল" },
+  "owner.marketing.title": {
+    en: "Marketing consent channels",
+    bn: "মার্কেটিং কনসেন্ট চ্যানেল",
+  },
   "owner.marketing.subtitle": {
     en: "Switching a channel off stops platform sends; recorded opt-outs are always honoured.",
     bn: "চ্যানেল বন্ধ করলে প্ল্যাটফর্ম পাঠানো থামে; রেকর্ড করা অপ্ট-আউট সর্বদা মানা হয়।",
@@ -820,7 +1171,10 @@ export const DICT = {
   "owner.marketing.push": { en: "Push channel", bn: "পুশ চ্যানেল" },
   "owner.marketing.subscribers": { en: "Subscribers", bn: "সাবস্ক্রাইবার" },
   "owner.marketing.unsubscribed": { en: "Opted out", bn: "অপ্ট-আউট" },
-  "owner.fraud.title": { en: "Platform fraud desk", bn: "প্ল্যাটফর্ম ফ্রড ডেস্ক" },
+  "owner.fraud.title": {
+    en: "Platform fraud desk",
+    bn: "প্ল্যাটফর্ম ফ্রড ডেস্ক",
+  },
   "owner.fraud.subtitle": {
     en: "Switching the engine off sends new orders to manual review — it never auto-approves.",
     bn: "ইঞ্জিন বন্ধ করলে নতুন অর্ডার ম্যানুয়াল রিভিউতে যায় — স্বয়ংক্রিয় অনুমোদন কখনও নয়।",
@@ -829,7 +1183,10 @@ export const DICT = {
   "owner.fraud.open": { en: "Open cases", bn: "খোলা কেস" },
   "owner.fraud.evidence": { en: "Awaiting evidence", bn: "প্রমাণের অপেক্ষায়" },
   "owner.fraud.rejected": { en: "Rejected", bn: "প্রত্যাখ্যাত" },
-  "owner.fraud.blacklist": { en: "Active blacklist entries", bn: "সক্রিয় ব্ল্যাকলিস্ট" },
+  "owner.fraud.blacklist": {
+    en: "Active blacklist entries",
+    bn: "সক্রিয় ব্ল্যাকলিস্ট",
+  },
   "owner.fraud.score": { en: "Risk score", bn: "রিস্ক স্কোর" },
   "owner.ai.title": { en: "AI support desk", bn: "এআই সাপোর্ট ডেস্ক" },
   "owner.ai.subtitle": {
@@ -837,7 +1194,10 @@ export const DICT = {
     bn: "অ্যাসিস্ট্যান্ট বন্ধ থাকলে স্টোরফ্রন্ট স্ট্যাটিক এফএকিউ দেখায় — কখনও নিষ্ক্রিয় চ্যাট নয়।",
   },
   "owner.ai.assistant": { en: "Assistant", bn: "অ্যাসিস্ট্যান্ট" },
-  "owner.ai.needs_agent": { en: "Escalated to an agent", bn: "এজেন্টে এস্কেলেট" },
+  "owner.ai.needs_agent": {
+    en: "Escalated to an agent",
+    bn: "এজেন্টে এস্কেলেট",
+  },
   "owner.ai.open": { en: "Open conversations", bn: "খোলা কথোপকথন" },
   "owner.ai.resolved": { en: "Resolved", bn: "সমাধান হয়েছে" },
   "owner.users.title": { en: "Platform owners", bn: "প্ল্যাটফর্ম ওনার" },
@@ -870,7 +1230,10 @@ export const DICT = {
     en: "The instruction stops before any money leaves. The store keeps the balance and can request again.",
     bn: "টাকা যাওয়ার আগেই নির্দেশ থামবে। ব্যালান্স স্টোরের কাছেই থাকবে।",
   },
-  "owner.payouts.empty": { en: "No payout has been requested yet.", bn: "এখনো কোনো পেআউট অনুরোধ হয়নি।" },
+  "owner.payouts.empty": {
+    en: "No payout has been requested yet.",
+    bn: "এখনো কোনো পেআউট অনুরোধ হয়নি।",
+  },
   "owner.payouts.holds": { en: "Platform holds", bn: "প্ল্যাটফর্ম হোল্ড" },
   "owner.payouts.holds_hint": {
     en: "A hold reserves part of a store's balance so it cannot be withdrawn while a case is open.",
@@ -882,7 +1245,10 @@ export const DICT = {
   "owner.payouts.release": { en: "Release", bn: "রিলিজ" },
   "owner.payouts.released": { en: "Released", bn: "রিলিজ হয়েছে" },
   "owner.payouts.active_hold": { en: "Active", bn: "সক্রিয়" },
-  "owner.payouts.no_holds": { en: "No hold is in place.", bn: "কোনো হোল্ড নেই।" },
+  "owner.payouts.no_holds": {
+    en: "No hold is in place.",
+    bn: "কোনো হোল্ড নেই।",
+  },
   "owner.people.title": { en: "People and access", bn: "মানুষ ও অ্যাক্সেস" },
   "owner.people.subtitle": {
     en: "Every account that can sign in, the stores they belong to, and who holds platform owner rights.",
@@ -892,14 +1258,23 @@ export const DICT = {
   "owner.people.owners": { en: "Platform owners", bn: "প্ল্যাটফর্ম ওনার" },
   "owner.people.unconfirmed": { en: "Unconfirmed email", bn: "ইমেইল অনিশ্চিত" },
   "owner.people.stores": { en: "Stores", bn: "স্টোর" },
-  "owner.people.search": { en: "Search by email or store", bn: "ইমেইল বা স্টোর দিয়ে খুঁজুন" },
+  "owner.people.search": {
+    en: "Search by email or store",
+    bn: "ইমেইল বা স্টোর দিয়ে খুঁজুন",
+  },
   "owner.people.account": { en: "Account", bn: "অ্যাকাউন্ট" },
   "owner.people.last_sign_in": { en: "Last sign-in", bn: "শেষ সাইন ইন" },
   "owner.people.never": { en: "Never", bn: "কখনো নয়" },
   "owner.people.rights": { en: "Rights", bn: "অধিকার" },
-  "owner.people.platform_owner": { en: "Platform owner", bn: "প্ল্যাটফর্ম ওনার" },
+  "owner.people.platform_owner": {
+    en: "Platform owner",
+    bn: "প্ল্যাটফর্ম ওনার",
+  },
   "owner.people.merchant_only": { en: "Store user", bn: "স্টোর ইউজার" },
-  "owner.people.grant": { en: "Make platform owner", bn: "প্ল্যাটফর্ম ওনার করুন" },
+  "owner.people.grant": {
+    en: "Make platform owner",
+    bn: "প্ল্যাটফর্ম ওনার করুন",
+  },
   "owner.people.revoke": { en: "Remove owner rights", bn: "ওনার অধিকার সরান" },
   "owner.people.grant_hint": {
     en: "This person will see every store's data in this console. The change is audited.",
@@ -911,10 +1286,22 @@ export const DICT = {
   },
   "owner.people.prev": { en: "Previous", bn: "পূর্ববর্তী" },
   "owner.people.next": { en: "Next", bn: "পরবর্তী" },
-  "owner.people.create_account": { en: "Create account", bn: "অ্যাকাউন্ট তৈরি করুন" },
-  "owner.people.add_owner": { en: "Add platform owner", bn: "প্ল্যাটফর্ম ওনার যুক্ত করুন" },
-  "owner.people.edit_account": { en: "Edit account", bn: "অ্যাকাউন্ট সম্পাদনা" },
-  "owner.people.delete_account": { en: "Delete account", bn: "অ্যাকাউন্ট মুছুন" },
+  "owner.people.create_account": {
+    en: "Create account",
+    bn: "অ্যাকাউন্ট তৈরি করুন",
+  },
+  "owner.people.add_owner": {
+    en: "Add platform owner",
+    bn: "প্ল্যাটফর্ম ওনার যুক্ত করুন",
+  },
+  "owner.people.edit_account": {
+    en: "Edit account",
+    bn: "অ্যাকাউন্ট সম্পাদনা",
+  },
+  "owner.people.delete_account": {
+    en: "Delete account",
+    bn: "অ্যাকাউন্ট মুছুন",
+  },
   "owner.people.delete_confirm": {
     en: "Are you sure you want to permanently delete this account? All storefront memberships and console credentials will be deleted.",
     bn: "আপনি কি নিশ্চিতভাবে এই অ্যাকাউন্টটি মুছে ফেলতে চান? সমস্ত স্টোর সদস্যতা এবং কনসোল অ্যাক্সেস মুছে যাবে।",
@@ -927,38 +1314,83 @@ export const DICT = {
   },
   "owner.people.save": { en: "Save changes", bn: "সংরক্ষণ করুন" },
   "owner.people.cancel": { en: "Cancel", bn: "বাতিল" },
-  "owner.settings.title": { en: "Compliance and retention", bn: "কমপ্লায়েন্স ও রিটেনশন" },
+  "owner.settings.title": {
+    en: "Compliance and retention",
+    bn: "কমপ্লায়েন্স ও রিটেনশন",
+  },
   "owner.settings.subtitle": {
     en: "Retention windows and the queue health the platform is accountable for.",
     bn: "রিটেনশন উইন্ডো এবং প্ল্যাটফর্মের দায়িত্বে থাকা কিউ-এর স্বাস্থ্য।",
   },
-  "owner.settings.raw": { en: "Raw analytics retention (days)", bn: "র অ্যানালিটিক্স রিটেনশন (দিন)" },
-  "owner.settings.audit": { en: "Audit retention (days)", bn: "অডিট রিটেনশন (দিন)" },
-  "owner.settings.dead_letter": { en: "Dead-letter callbacks", bn: "ডেড-লেটার কলব্যাক" },
-  "owner.settings.processed": { en: "Processed callbacks", bn: "প্রসেসড কলব্যাক" },
-  "owner.settings.approvals": { en: "Pending approvals", bn: "অপেক্ষমাণ অনুমোদন" },
-  "owner.settings.open_gateway": { en: "Open the gateway log", bn: "গেটওয়ে লগ খুলুন" },
-  "tenancy": { en: "Tenancy", bn: "টেন্যান্সি" },
-  "money": { en: "Money", bn: "মানি" },
+  "owner.settings.raw": {
+    en: "Raw analytics retention (days)",
+    bn: "র অ্যানালিটিক্স রিটেনশন (দিন)",
+  },
+  "owner.settings.audit": {
+    en: "Audit retention (days)",
+    bn: "অডিট রিটেনশন (দিন)",
+  },
+  "owner.settings.dead_letter": {
+    en: "Dead-letter callbacks",
+    bn: "ডেড-লেটার কলব্যাক",
+  },
+  "owner.settings.processed": {
+    en: "Processed callbacks",
+    bn: "প্রসেসড কলব্যাক",
+  },
+  "owner.settings.approvals": {
+    en: "Pending approvals",
+    bn: "অপেক্ষমাণ অনুমোদন",
+  },
+  "owner.settings.open_gateway": {
+    en: "Open the gateway log",
+    bn: "গেটওয়ে লগ খুলুন",
+  },
+  tenancy: { en: "Tenancy", bn: "টেন্যান্সি" },
+  money: { en: "Money", bn: "মানি" },
   "tenancy.title": { en: "Tenancy foundation", bn: "টেন্যান্সি ফাউন্ডেশন" },
-  "tenancy.subtitle": { en: "Isolation posture, schema drift, tombstones and the store purge queue.", bn: "আইসোলেশন অবস্থা, স্কিমা ড্রিফট, টম্বস্টোন এবং স্টোর পার্জ কিউ।" },
+  "tenancy.subtitle": {
+    en: "Isolation posture, schema drift, tombstones and the store purge queue.",
+    bn: "আইসোলেশন অবস্থা, স্কিমা ড্রিফট, টম্বস্টোন এবং স্টোর পার্জ কিউ।",
+  },
   "tenancy.tables": { en: "Public tables", bn: "পাবলিক টেবিল" },
   "tenancy.drift": { en: "Schema drift", bn: "স্কিমা ড্রিফট" },
-  "tenancy.drift_hint": { en: "Live database shape compared with the snapshot committed next to the migrations.", bn: "লাইভ ডেটাবেস আকৃতি মাইগ্রেশনের পাশে কমিট করা স্ন্যাপশটের সাথে তুলনা।" },
+  "tenancy.drift_hint": {
+    en: "Live database shape compared with the snapshot committed next to the migrations.",
+    bn: "লাইভ ডেটাবেস আকৃতি মাইগ্রেশনের পাশে কমিট করা স্ন্যাপশটের সাথে তুলনা।",
+  },
   "tenancy.no_drift": { en: "No drift", bn: "কোনো ড্রিফট নেই" },
   "tenancy.isolation": { en: "Tenant isolation", bn: "টেন্যান্ট আইসোলেশন" },
-  "tenancy.isolation_hint": { en: "Two shapes leak: row security off, or on with no policy at all.", bn: "দুটি অবস্থা ফাঁস করে: রো সিকিউরিটি বন্ধ, বা চালু কিন্তু কোনো পলিসি নেই।" },
+  "tenancy.isolation_hint": {
+    en: "Two shapes leak: row security off, or on with no policy at all.",
+    bn: "দুটি অবস্থা ফাঁস করে: রো সিকিউরিটি বন্ধ, বা চালু কিন্তু কোনো পলিসি নেই।",
+  },
   "tenancy.tombstones": { en: "Tombstones", bn: "টম্বস্টোন" },
-  "tenancy.tombstones_hint": { en: "A merchant delete marks a record deleted; history and money rows stay intact.", bn: "মার্চেন্ট ডিলিট রেকর্ডকে মুছে-চিহ্নিত করে; ইতিহাস ও অর্থের সারি অক্ষত থাকে।" },
+  "tenancy.tombstones_hint": {
+    en: "A merchant delete marks a record deleted; history and money rows stay intact.",
+    bn: "মার্চেন্ট ডিলিট রেকর্ডকে মুছে-চিহ্নিত করে; ইতিহাস ও অর্থের সারি অক্ষত থাকে।",
+  },
   "tenancy.table": { en: "Table", bn: "টেবিল" },
   "tenancy.live": { en: "Live", bn: "সক্রিয়" },
   "tenancy.tombstoned": { en: "Tombstoned", bn: "টম্বস্টোনড" },
   "tenancy.purge": { en: "Store purge queue", bn: "স্টোর পার্জ কিউ" },
-  "tenancy.purge_hint": { en: "A request suspends the store at once; the hard delete only runs after the cooling window and writes an audit line with per-table row counts.", bn: "অনুরোধ সাথে সাথে স্টোর সাসপেন্ড করে; হার্ড ডিলিট কুলিং উইন্ডোর পরেই চলে এবং টেবিলভিত্তিক সারি গণনা সহ অডিট লাইন লেখে।" },
+  "tenancy.purge_hint": {
+    en: "A request suspends the store at once; the hard delete only runs after the cooling window and writes an audit line with per-table row counts.",
+    bn: "অনুরোধ সাথে সাথে স্টোর সাসপেন্ড করে; হার্ড ডিলিট কুলিং উইন্ডোর পরেই চলে এবং টেবিলভিত্তিক সারি গণনা সহ অডিট লাইন লেখে।",
+  },
   "tenancy.purge_pending": { en: "Purges pending", bn: "অপেক্ষমাণ পার্জ" },
-  "tenancy.purge_queued": { en: "Purge queued and store suspended", bn: "পার্জ কিউ হয়েছে, স্টোর সাসপেন্ড" },
-  "tenancy.purge_cancelled": { en: "Purge cancelled, store restored", bn: "পার্জ বাতিল, স্টোর ফেরত" },
-  "tenancy.purge_executed": { en: "Tenant purged", bn: "টেন্যান্ট পার্জ সম্পন্ন" },
+  "tenancy.purge_queued": {
+    en: "Purge queued and store suspended",
+    bn: "পার্জ কিউ হয়েছে, স্টোর সাসপেন্ড",
+  },
+  "tenancy.purge_cancelled": {
+    en: "Purge cancelled, store restored",
+    bn: "পার্জ বাতিল, স্টোর ফেরত",
+  },
+  "tenancy.purge_executed": {
+    en: "Tenant purged",
+    bn: "টেন্যান্ট পার্জ সম্পন্ন",
+  },
   "tenancy.store": { en: "Store", bn: "স্টোর" },
   "tenancy.reason": { en: "Reason", bn: "কারণ" },
   "tenancy.cooling": { en: "Cooling", bn: "কুলিং" },
@@ -969,14 +1401,23 @@ export const DICT = {
   "tenancy.execute": { en: "Purge now", bn: "এখনই পার্জ" },
   "tenancy.rows": { en: "rows", bn: "সারি" },
   "tenancy.runtime": { en: "Runtime health", bn: "রানটাইম স্বাস্থ্য" },
-  "tenancy.runtime_hint": { en: "The same counters Prometheus scrapes from /api/public/metrics.", bn: "একই কাউন্টার Prometheus /api/public/metrics থেকে সংগ্রহ করে।" },
+  "tenancy.runtime_hint": {
+    en: "The same counters Prometheus scrapes from /api/public/metrics.",
+    bn: "একই কাউন্টার Prometheus /api/public/metrics থেকে সংগ্রহ করে।",
+  },
   /* ---------------------------------------------------- Phase 10.2 landing */
-  "home.hero.trust": { en: "Built in Dhaka for Bangladeshi commerce", bn: "ঢাকায় তৈরি, বাংলাদেশি কমার্সের জন্য" },
+  "home.hero.trust": {
+    en: "Built in Dhaka for Bangladeshi commerce",
+    bn: "ঢাকায় তৈরি, বাংলাদেশি কমার্সের জন্য",
+  },
   "home.hero.note": {
     en: "No card required. Your data stays exportable from day one.",
     bn: "কার্ড লাগবে না। প্রথম দিন থেকেই আপনার ডেটা এক্সপোর্টযোগ্য।",
   },
-  "home.rail.label": { en: "Payment methods Framique settles", bn: "ফ্রেমিক যেসব পেমেন্ট নিষ্পত্তি করে" },
+  "home.rail.label": {
+    en: "Payment methods Framique settles",
+    bn: "ফ্রেমিক যেসব পেমেন্ট নিষ্পত্তি করে",
+  },
   "home.rail.bank": { en: "Bank transfer", bn: "ব্যাংক ট্রান্সফার" },
   "home.rail.pos": { en: "In-store POS", bn: "ইন-স্টোর পিওএস" },
   "home.rail.caption": {
@@ -984,64 +1425,142 @@ export const DICT = {
     bn: "ওয়ালেট, কার্ড, ব্যাংক ট্রান্সফার ও ক্যাশ অন ডেলিভারি — এক লেজারে মিলিয়ে দেওয়া।",
   },
 
-  "home.tour.title": { en: "The whole operation, one login", bn: "পুরো ব্যবসা, একটি লগইন" },
+  "home.tour.title": {
+    en: "The whole operation, one login",
+    bn: "পুরো ব্যবসা, একটি লগইন",
+  },
   "home.tour.subtitle": {
     en: "Storefront, catalog, orders, counter and money. Each surface is bilingual and works on a 3G phone.",
     bn: "স্টোরফ্রন্ট, ক্যাটালগ, অর্ডার, কাউন্টার আর টাকা। প্রতিটি সারফেস দ্বিভাষিক এবং ৩জি ফোনেও চলে।",
   },
   "home.tour.see": { en: "See how it works", bn: "কীভাবে কাজ করে দেখুন" },
-  "home.tour.builder.title": { en: "Visual page builder", bn: "ভিজ্যুয়াল পেজ বিল্ডার" },
+  "home.tour.builder.title": {
+    en: "Visual page builder",
+    bn: "ভিজ্যুয়াল পেজ বিল্ডার",
+  },
   "home.tour.builder.body": {
     en: "Compose your home page from sections, save a draft, publish when it looks right. Every version is kept, so a bad launch is one click away from being undone.",
     bn: "সেকশন দিয়ে হোম পেজ সাজান, ড্রাফট সেভ করুন, ঠিক লাগলে পাবলিশ করুন। প্রতিটি ভার্সন রাখা হয়, তাই ভুল লঞ্চ এক ক্লিকে ফেরানো যায়।",
   },
-  "home.tour.builder.b1": { en: "Draft, preview and publish separately", bn: "ড্রাফট, প্রিভিউ ও পাবলিশ আলাদা" },
-  "home.tour.builder.b2": { en: "Version history with restore", bn: "রিস্টোরসহ ভার্সন হিস্ট্রি" },
-  "home.tour.builder.b3": { en: "Bangla and English in the same layout", bn: "একই লেআউটে বাংলা ও ইংরেজি" },
-  "home.tour.catalog.title": { en: "Catalog that holds up", bn: "নির্ভরযোগ্য ক্যাটালগ" },
+  "home.tour.builder.b1": {
+    en: "Draft, preview and publish separately",
+    bn: "ড্রাফট, প্রিভিউ ও পাবলিশ আলাদা",
+  },
+  "home.tour.builder.b2": {
+    en: "Version history with restore",
+    bn: "রিস্টোরসহ ভার্সন হিস্ট্রি",
+  },
+  "home.tour.builder.b3": {
+    en: "Bangla and English in the same layout",
+    bn: "একই লেআউটে বাংলা ও ইংরেজি",
+  },
+  "home.tour.catalog.title": {
+    en: "Catalog that holds up",
+    bn: "নির্ভরযোগ্য ক্যাটালগ",
+  },
   "home.tour.catalog.body": {
     en: "Variants, stock, categories and media with per-variant pricing in BDT. Stock moves are recorded, not guessed.",
     bn: "ভ্যারিয়েন্ট, স্টক, ক্যাটাগরি ও মিডিয়া — প্রতিটি ভ্যারিয়েন্টের দাম টাকায়। স্টক পরিবর্তন অনুমান নয়, রেকর্ড হয়।",
   },
-  "home.tour.catalog.b1": { en: "Per-variant price and stock", bn: "ভ্যারিয়েন্টভিত্তিক দাম ও স্টক" },
-  "home.tour.catalog.b2": { en: "Bulk edits with an audit trail", bn: "অডিট ট্রেইলসহ বাল্ক এডিট" },
-  "home.tour.catalog.b3": { en: "Image variants served resized", bn: "ইমেজ রিসাইজ করে সার্ভ" },
-  "home.tour.orders.title": { en: "Orders and delivery", bn: "অর্ডার ও ডেলিভারি" },
+  "home.tour.catalog.b1": {
+    en: "Per-variant price and stock",
+    bn: "ভ্যারিয়েন্টভিত্তিক দাম ও স্টক",
+  },
+  "home.tour.catalog.b2": {
+    en: "Bulk edits with an audit trail",
+    bn: "অডিট ট্রেইলসহ বাল্ক এডিট",
+  },
+  "home.tour.catalog.b3": {
+    en: "Image variants served resized",
+    bn: "ইমেজ রিসাইজ করে সার্ভ",
+  },
+  "home.tour.orders.title": {
+    en: "Orders and delivery",
+    bn: "অর্ডার ও ডেলিভারি",
+  },
   "home.tour.orders.body": {
     en: "One queue from placed to delivered, with COD reconciliation and courier handover states your team already uses.",
     bn: "অর্ডার থেকে ডেলিভারি পর্যন্ত এক কিউ — ক্যাশ অন ডেলিভারি মেলানো ও কুরিয়ার হ্যান্ডওভারসহ।",
   },
-  "home.tour.orders.b1": { en: "COD reconciliation built in", bn: "সিওডি রিকনসিলিয়েশন অন্তর্ভুক্ত" },
-  "home.tour.orders.b2": { en: "Courier handover and tracking", bn: "কুরিয়ার হ্যান্ডওভার ও ট্র্যাকিং" },
-  "home.tour.orders.b3": { en: "Refunds recorded against the order", bn: "রিফান্ড অর্ডারের সঙ্গে রেকর্ড" },
-  "home.tour.pos.title": { en: "Counter and warehouse", bn: "কাউন্টার ও গুদাম" },
+  "home.tour.orders.b1": {
+    en: "COD reconciliation built in",
+    bn: "সিওডি রিকনসিলিয়েশন অন্তর্ভুক্ত",
+  },
+  "home.tour.orders.b2": {
+    en: "Courier handover and tracking",
+    bn: "কুরিয়ার হ্যান্ডওভার ও ট্র্যাকিং",
+  },
+  "home.tour.orders.b3": {
+    en: "Refunds recorded against the order",
+    bn: "রিফান্ড অর্ডারের সঙ্গে রেকর্ড",
+  },
+  "home.tour.pos.title": {
+    en: "Counter and warehouse",
+    bn: "কাউন্টার ও গুদাম",
+  },
   "home.tour.pos.body": {
     en: "Sell at the counter against the same stock the website uses, so a shop sale cannot oversell an online order.",
     bn: "ওয়েবসাইটের একই স্টক থেকে কাউন্টারে বিক্রি — দোকানের বিক্রি অনলাইন অর্ডারকে ওভারসেল করতে পারে না।",
   },
-  "home.tour.pos.b1": { en: "Shared stock, no double selling", bn: "একই স্টক, ডাবল বিক্রি নয়" },
-  "home.tour.pos.b2": { en: "Shift totals and cash drawer", bn: "শিফট টোটাল ও ক্যাশ ড্রয়ার" },
-  "home.tour.pos.b3": { en: "Works on a phone or tablet", bn: "ফোন বা ট্যাবলেটে চলে" },
-  "home.tour.payments.title": { en: "Money you can audit", bn: "যে টাকা অডিট করা যায়" },
+  "home.tour.pos.b1": {
+    en: "Shared stock, no double selling",
+    bn: "একই স্টক, ডাবল বিক্রি নয়",
+  },
+  "home.tour.pos.b2": {
+    en: "Shift totals and cash drawer",
+    bn: "শিফট টোটাল ও ক্যাশ ড্রয়ার",
+  },
+  "home.tour.pos.b3": {
+    en: "Works on a phone or tablet",
+    bn: "ফোন বা ট্যাবলেটে চলে",
+  },
+  "home.tour.payments.title": {
+    en: "Money you can audit",
+    bn: "যে টাকা অডিট করা যায়",
+  },
   "home.tour.payments.body": {
     en: "Wallets, cards, bank transfer and cash land in one ledger with invoices, VAT and payouts you can hand to an accountant.",
     bn: "ওয়ালেট, কার্ড, ব্যাংক ও ক্যাশ — সব এক লেজারে; ইনভয়েস, ভ্যাট ও পেআউটসহ, যা হিসাবরক্ষককে দেওয়া যায়।",
   },
-  "home.tour.payments.b1": { en: "Invoices with VAT lines", bn: "ভ্যাটসহ ইনভয়েস" },
-  "home.tour.payments.b2": { en: "Every state change is audited", bn: "প্রতিটি পরিবর্তন অডিট হয়" },
-  "home.tour.payments.b3": { en: "Export to CSV any time", bn: "যেকোনো সময় সিএসভি এক্সপোর্ট" },
+  "home.tour.payments.b1": {
+    en: "Invoices with VAT lines",
+    bn: "ভ্যাটসহ ইনভয়েস",
+  },
+  "home.tour.payments.b2": {
+    en: "Every state change is audited",
+    bn: "প্রতিটি পরিবর্তন অডিট হয়",
+  },
+  "home.tour.payments.b3": {
+    en: "Export to CSV any time",
+    bn: "যেকোনো সময় সিএসভি এক্সপোর্ট",
+  },
 
-  "home.numbers.title": { en: "Where the platform stands today", bn: "প্ল্যাটফর্ম আজ যেখানে" },
+  "home.numbers.title": {
+    en: "Where the platform stands today",
+    bn: "প্ল্যাটফর্ম আজ যেখানে",
+  },
   "home.numbers.note": {
     en: "Read live from the platform database. Figures are rounded down, never up.",
     bn: "প্ল্যাটফর্ম ডেটাবেস থেকে সরাসরি নেওয়া। সংখ্যা নিচের দিকে রাউন্ড করা হয়, কখনও বাড়িয়ে নয়।",
   },
-  "home.numbers.merchants": { en: "Active verified stores", bn: "সক্রিয় ভেরিফায়েড স্টোর" },
+  "home.numbers.merchants": {
+    en: "Active verified stores",
+    bn: "সক্রিয় ভেরিফায়েড স্টোর",
+  },
   "home.numbers.products": { en: "Products published", bn: "প্রকাশিত পণ্য" },
-  "home.numbers.articles": { en: "Articles published", bn: "প্রকাশিত আর্টিকেল" },
-  "home.numbers.paymentRails": { en: "Payment methods supported", bn: "সমর্থিত পেমেন্ট মেথড" },
+  "home.numbers.articles": {
+    en: "Articles published",
+    bn: "প্রকাশিত আর্টিকেল",
+  },
+  "home.numbers.paymentRails": {
+    en: "Payment methods supported",
+    bn: "সমর্থিত পেমেন্ট মেথড",
+  },
 
-  "home.stories.title": { en: "From the Framique journal", bn: "ফ্রেমিক জার্নাল থেকে" },
+  "home.stories.title": {
+    en: "From the Framique journal",
+    bn: "ফ্রেমিক জার্নাল থেকে",
+  },
   "home.stories.subtitle": {
     en: "Playbooks and release notes written by the team and by merchants running on the platform.",
     bn: "টিম ও প্ল্যাটফর্মে চলা মার্চেন্টদের লেখা প্লেবুক ও রিলিজ নোট।",
@@ -1052,7 +1571,10 @@ export const DICT = {
     bn: "প্রথম লেখাগুলো তৈরি হচ্ছে। ব্লগ থেকে সাবস্ক্রাইব করুন।",
   },
 
-  "home.cmp.title": { en: "Compared with selling from a page and a spreadsheet", bn: "পেজ আর স্প্রেডশিটে বিক্রির সঙ্গে তুলনা" },
+  "home.cmp.title": {
+    en: "Compared with selling from a page and a spreadsheet",
+    bn: "পেজ আর স্প্রেডশিটে বিক্রির সঙ্গে তুলনা",
+  },
   "home.cmp.subtitle": {
     en: "Nothing here is a knock on Facebook selling — it is how most stores start. It stops scaling at about fifty orders a day.",
     bn: "ফেসবুকে বিক্রি খারাপ নয় — বেশিরভাগ দোকান এভাবেই শুরু করে। দিনে প্রায় পঞ্চাশ অর্ডারের পর এটি আর টেকে না।",
@@ -1060,56 +1582,119 @@ export const DICT = {
   "home.cmp.today": { en: "Page + spreadsheet", bn: "পেজ + স্প্রেডশিট" },
   "home.cmp.framique": { en: "Framique", bn: "ফ্রেমিক" },
   "home.cmp.catalog": { en: "Catalog", bn: "ক্যাটালগ" },
-  "home.cmp.catalog.sq": { en: "Photos in an album, prices in comments", bn: "অ্যালবামে ছবি, কমেন্টে দাম" },
-  "home.cmp.catalog.fq": { en: "Structured products, variants and stock", bn: "স্ট্রাকচার্ড পণ্য, ভ্যারিয়েন্ট ও স্টক" },
+  "home.cmp.catalog.sq": {
+    en: "Photos in an album, prices in comments",
+    bn: "অ্যালবামে ছবি, কমেন্টে দাম",
+  },
+  "home.cmp.catalog.fq": {
+    en: "Structured products, variants and stock",
+    bn: "স্ট্রাকচার্ড পণ্য, ভ্যারিয়েন্ট ও স্টক",
+  },
   "home.cmp.orders": { en: "Orders", bn: "অর্ডার" },
-  "home.cmp.orders.sq": { en: "Inbox threads copied into a sheet", bn: "ইনবক্স থেকে কপি করে শিটে" },
-  "home.cmp.orders.fq": { en: "One queue with status, courier and COD", bn: "স্ট্যাটাস, কুরিয়ার ও সিওডিসহ এক কিউ" },
+  "home.cmp.orders.sq": {
+    en: "Inbox threads copied into a sheet",
+    bn: "ইনবক্স থেকে কপি করে শিটে",
+  },
+  "home.cmp.orders.fq": {
+    en: "One queue with status, courier and COD",
+    bn: "স্ট্যাটাস, কুরিয়ার ও সিওডিসহ এক কিউ",
+  },
   "home.cmp.payments": { en: "Payments", bn: "পেমেন্ট" },
-  "home.cmp.payments.sq": { en: "Screenshots of wallet transfers", bn: "ওয়ালেট ট্রান্সফারের স্ক্রিনশট" },
-  "home.cmp.payments.fq": { en: "Verified payments against the order", bn: "অর্ডারের সঙ্গে যাচাই করা পেমেন্ট" },
+  "home.cmp.payments.sq": {
+    en: "Screenshots of wallet transfers",
+    bn: "ওয়ালেট ট্রান্সফারের স্ক্রিনশট",
+  },
+  "home.cmp.payments.fq": {
+    en: "Verified payments against the order",
+    bn: "অর্ডারের সঙ্গে যাচাই করা পেমেন্ট",
+  },
   "home.cmp.seo": { en: "Being found", bn: "খুঁজে পাওয়া" },
-  "home.cmp.seo.sq": { en: "Only visible inside the app", bn: "শুধু অ্যাপের ভেতরে দৃশ্যমান" },
-  "home.cmp.seo.fq": { en: "Indexable pages, sitemaps and schema", bn: "ইনডেক্সেবল পেজ, সাইটম্যাপ ও স্কিমা" },
+  "home.cmp.seo.sq": {
+    en: "Only visible inside the app",
+    bn: "শুধু অ্যাপের ভেতরে দৃশ্যমান",
+  },
+  "home.cmp.seo.fq": {
+    en: "Indexable pages, sitemaps and schema",
+    bn: "ইনডেক্সেবল পেজ, সাইটম্যাপ ও স্কিমা",
+  },
   "home.cmp.staff": { en: "Team", bn: "টিম" },
-  "home.cmp.staff.sq": { en: "One shared login and password", bn: "একটাই শেয়ার করা লগইন" },
-  "home.cmp.staff.fq": { en: "Named staff with roles and an audit log", bn: "রোলসহ আলাদা স্টাফ ও অডিট লগ" },
+  "home.cmp.staff.sq": {
+    en: "One shared login and password",
+    bn: "একটাই শেয়ার করা লগইন",
+  },
+  "home.cmp.staff.fq": {
+    en: "Named staff with roles and an audit log",
+    bn: "রোলসহ আলাদা স্টাফ ও অডিট লগ",
+  },
   "home.cmp.data": { en: "Your data", bn: "আপনার ডেটা" },
-  "home.cmp.data.sq": { en: "Locked inside someone else's app", bn: "অন্যের অ্যাপে আটকে থাকে" },
-  "home.cmp.data.fq": { en: "CSV export of catalog, orders and customers", bn: "ক্যাটালগ, অর্ডার ও কাস্টমারের সিএসভি এক্সপোর্ট" },
+  "home.cmp.data.sq": {
+    en: "Locked inside someone else's app",
+    bn: "অন্যের অ্যাপে আটকে থাকে",
+  },
+  "home.cmp.data.fq": {
+    en: "CSV export of catalog, orders and customers",
+    bn: "ক্যাটালগ, অর্ডার ও কাস্টমারের সিএসভি এক্সপোর্ট",
+  },
 
-  "home.pricing.title": { en: "Pricing you can read in one line", bn: "এক লাইনে বোঝা যায় এমন প্রাইসিং" },
+  "home.pricing.title": {
+    en: "Pricing you can read in one line",
+    bn: "এক লাইনে বোঝা যায় এমন প্রাইসিং",
+  },
   "home.pricing.from": { en: "From {price} / month", bn: "মাসে {price} থেকে" },
-  "home.pricing.plan_count": { en: "{count} plans, VAT added at invoice", bn: "{count}টি প্ল্যান, ইনভয়েসে ভ্যাট যোগ হয়" },
-  "home.pricing.trial": { en: "{days}-day free trial on every plan", bn: "প্রতিটি প্ল্যানে {days} দিনের ফ্রি ট্রায়াল" },
+  "home.pricing.plan_count": {
+    en: "{count} plans, VAT added at invoice",
+    bn: "{count}টি প্ল্যান, ইনভয়েসে ভ্যাট যোগ হয়",
+  },
+  "home.pricing.trial": {
+    en: "{days}-day free trial on every plan",
+    bn: "প্রতিটি প্ল্যানে {days} দিনের ফ্রি ট্রায়াল",
+  },
   "home.pricing.unavailable": {
     en: "Live prices are on the pricing page.",
     bn: "সরাসরি দাম প্রাইসিং পেজে দেখুন।",
   },
   "home.pricing.compare": { en: "Compare plans", bn: "প্ল্যান তুলনা করুন" },
 
-  "home.faq.title": { en: "Questions merchants actually ask", bn: "মার্চেন্টরা যা সত্যিই জিজ্ঞেস করেন" },
-  "home.faq.trial.q": { en: "Do I need a card to start?", bn: "শুরু করতে কি কার্ড লাগবে?" },
+  "home.faq.title": {
+    en: "Questions merchants actually ask",
+    bn: "মার্চেন্টরা যা সত্যিই জিজ্ঞেস করেন",
+  },
+  "home.faq.trial.q": {
+    en: "Do I need a card to start?",
+    bn: "শুরু করতে কি কার্ড লাগবে?",
+  },
   "home.faq.trial.a": {
     en: "No. You create a store, use the trial, and only add billing details when you choose a paid plan.",
     bn: "না। আপনি স্টোর তৈরি করে ট্রায়াল ব্যবহার করবেন; পেইড প্ল্যান নেওয়ার সময়ই কেবল বিলিং তথ্য দেবেন।",
   },
-  "home.faq.payments.q": { en: "Which payment methods work?", bn: "কোন পেমেন্ট মেথড কাজ করে?" },
+  "home.faq.payments.q": {
+    en: "Which payment methods work?",
+    bn: "কোন পেমেন্ট মেথড কাজ করে?",
+  },
   "home.faq.payments.a": {
     en: "Cash on delivery, bKash, Nagad, Rocket, bank transfer, in-store POS and cards through the gateway your account is approved for.",
     bn: "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ, রকেট, ব্যাংক ট্রান্সফার, ইন-স্টোর পিওএস এবং আপনার অনুমোদিত গেটওয়ের কার্ড।",
   },
-  "home.faq.bangla.q": { en: "Can my storefront be in Bangla?", bn: "স্টোরফ্রন্ট কি বাংলায় হবে?" },
+  "home.faq.bangla.q": {
+    en: "Can my storefront be in Bangla?",
+    bn: "স্টোরফ্রন্ট কি বাংলায় হবে?",
+  },
   "home.faq.bangla.a": {
     en: "Yes. Every surface ships in Bangla and English, and shoppers can switch language on your store without losing their cart.",
     bn: "হ্যাঁ। প্রতিটি সারফেস বাংলা ও ইংরেজিতে আছে, এবং ক্রেতা কার্ট না হারিয়ে ভাষা বদলাতে পারেন।",
   },
-  "home.faq.domain.q": { en: "Can I use my own domain?", bn: "নিজের ডোমেইন ব্যবহার করা যাবে?" },
+  "home.faq.domain.q": {
+    en: "Can I use my own domain?",
+    bn: "নিজের ডোমেইন ব্যবহার করা যাবে?",
+  },
   "home.faq.domain.a": {
     en: "Yes. Point your domain at the platform and a certificate is issued automatically; the store keeps working on its Framique address meanwhile.",
     bn: "হ্যাঁ। ডোমেইন প্ল্যাটফর্মে পয়েন্ট করলে সার্টিফিকেট স্বয়ংক্রিয়ভাবে ইস্যু হয়; এর মধ্যেও স্টোর ফ্রেমিক ঠিকানায় চলতে থাকে।",
   },
-  "home.faq.export.q": { en: "What happens to my data if I leave?", bn: "আমি চলে গেলে আমার ডেটার কী হবে?" },
+  "home.faq.export.q": {
+    en: "What happens to my data if I leave?",
+    bn: "আমি চলে গেলে আমার ডেটার কী হবে?",
+  },
   "home.faq.export.a": {
     en: "You can export products, orders and customers to CSV at any time, including after you cancel, for the retention window shown in your settings.",
     bn: "আপনি যেকোনো সময় — বাতিল করার পরেও, সেটিংসে দেখানো রিটেনশন সময় পর্যন্ত — পণ্য, অর্ডার ও কাস্টমার সিএসভিতে এক্সপোর্ট করতে পারবেন।",
@@ -1172,7 +1757,10 @@ export const DICT = {
     bn: "মাসে একটি ইমেইল: প্রোডাক্টের পরিবর্তন, বাংলাদেশের কমার্স নিয়ম আর মার্চেন্টদের গল্প।",
   },
   "news.email_label": { en: "Email address", bn: "ইমেইল ঠিকানা" },
-  "news.email_placeholder": { en: "you@yourstore.com", bn: "you@yourstore.com" },
+  "news.email_placeholder": {
+    en: "you@yourstore.com",
+    bn: "you@yourstore.com",
+  },
   "news.submit": { en: "Subscribe", bn: "সাবস্ক্রাইব" },
   "news.submitting": { en: "Sending…", bn: "পাঠানো হচ্ছে…" },
   "news.consent": {
@@ -1191,9 +1779,18 @@ export const DICT = {
     en: "Too many attempts from this connection. Try again in a few minutes.",
     bn: "এই সংযোগ থেকে অনেকবার চেষ্টা হয়েছে। কয়েক মিনিট পরে আবার চেষ্টা করুন।",
   },
-  "news.err.email_required": { en: "Enter an email address.", bn: "একটি ইমেইল ঠিকানা লিখুন।" },
-  "news.err.email_invalid": { en: "That address does not look deliverable.", bn: "এই ঠিকানায় ইমেইল পৌঁছাবে বলে মনে হচ্ছে না।" },
-  "news.err.email_too_long": { en: "That address is too long.", bn: "ঠিকানাটি অনেক বড়।" },
+  "news.err.email_required": {
+    en: "Enter an email address.",
+    bn: "একটি ইমেইল ঠিকানা লিখুন।",
+  },
+  "news.err.email_invalid": {
+    en: "That address does not look deliverable.",
+    bn: "এই ঠিকানায় ইমেইল পৌঁছাবে বলে মনে হচ্ছে না।",
+  },
+  "news.err.email_too_long": {
+    en: "That address is too long.",
+    bn: "ঠিকানাটি অনেক বড়।",
+  },
   "news.err.email_disposable": {
     en: "Throwaway mailboxes are not accepted. Use an address you read.",
     bn: "সাময়িক মেইলবক্স নেওয়া হয় না। আপনি পড়েন এমন ঠিকানা দিন।",
@@ -1202,18 +1799,42 @@ export const DICT = {
     en: "Shared mailboxes such as info@ cannot give consent. Use a personal address.",
     bn: "info@ এর মতো শেয়ার্ড মেইলবক্স সম্মতি দিতে পারে না। ব্যক্তিগত ঠিকানা দিন।",
   },
-  "news.err.consent_required": { en: "Tick the consent box to continue.", bn: "চালিয়ে যেতে সম্মতির ঘরটি টিক দিন।" },
-  "news.err.bot_honeypot": { en: "This submission was refused.", bn: "এই সাবমিশন গ্রহণ করা হয়নি।" },
-  "news.err.bot_timing": { en: "That was too quick. Please submit again.", bn: "খুব দ্রুত হয়ে গেছে। আবার সাবমিট করুন।" },
-  "news.err.form_expired": { en: "This form went stale. Reload the page.", bn: "ফর্মটি পুরনো হয়ে গেছে। পেজটি রিলোড করুন।" },
-  "news.err.generic": { en: "Subscription is unavailable right now.", bn: "এই মুহূর্তে সাবস্ক্রিপশন নেওয়া যাচ্ছে না।" },
-  "news.verify.title": { en: "Confirming your subscription", bn: "সাবস্ক্রিপশন নিশ্চিত করা হচ্ছে" },
-  "news.verify.working": { en: "Checking the link…", bn: "লিঙ্কটি যাচাই করা হচ্ছে…" },
+  "news.err.consent_required": {
+    en: "Tick the consent box to continue.",
+    bn: "চালিয়ে যেতে সম্মতির ঘরটি টিক দিন।",
+  },
+  "news.err.bot_honeypot": {
+    en: "This submission was refused.",
+    bn: "এই সাবমিশন গ্রহণ করা হয়নি।",
+  },
+  "news.err.bot_timing": {
+    en: "That was too quick. Please submit again.",
+    bn: "খুব দ্রুত হয়ে গেছে। আবার সাবমিট করুন।",
+  },
+  "news.err.form_expired": {
+    en: "This form went stale. Reload the page.",
+    bn: "ফর্মটি পুরনো হয়ে গেছে। পেজটি রিলোড করুন।",
+  },
+  "news.err.generic": {
+    en: "Subscription is unavailable right now.",
+    bn: "এই মুহূর্তে সাবস্ক্রিপশন নেওয়া যাচ্ছে না।",
+  },
+  "news.verify.title": {
+    en: "Confirming your subscription",
+    bn: "সাবস্ক্রিপশন নিশ্চিত করা হচ্ছে",
+  },
+  "news.verify.working": {
+    en: "Checking the link…",
+    bn: "লিঙ্কটি যাচাই করা হচ্ছে…",
+  },
   "news.verify.confirmed": {
     en: "Confirmed. You are on the list, and every email carries a one-click unsubscribe link.",
     bn: "নিশ্চিত হয়েছে। আপনি তালিকায় আছেন, প্রতিটি ইমেইলে এক ক্লিকের আনসাবস্ক্রাইব লিঙ্ক থাকবে।",
   },
-  "news.verify.already": { en: "This address was already confirmed.", bn: "এই ঠিকানা আগেই নিশ্চিত করা হয়েছে।" },
+  "news.verify.already": {
+    en: "This address was already confirmed.",
+    bn: "এই ঠিকানা আগেই নিশ্চিত করা হয়েছে।",
+  },
   "news.verify.expired": {
     en: "This link expired. Subscribe again and we will send a fresh one.",
     bn: "লিঙ্কটির মেয়াদ শেষ। আবার সাবস্ক্রাইব করুন, নতুন লিঙ্ক পাঠানো হবে।",
@@ -1232,7 +1853,10 @@ export const DICT = {
 
 export type MessageKey = keyof typeof DICT;
 
-export function interpolate(template: string, vars?: Record<string, string | number>) {
+export function interpolate(
+  template: string,
+  vars?: Record<string, string | number>,
+) {
   if (!vars) return template;
   return template.replace(/\{(\w+)\}/g, (m, k: string) =>
     k in vars ? String(vars[k]) : m,
@@ -1257,5 +1881,8 @@ export function parseMessageKey(raw: string): {
   if (!match) return null;
   const key = match[1] as string;
   if (!(key in DICT)) return null;
-  return { key, vars: match[2] === undefined ? {} : { cap: match[2], count: match[2] } };
+  return {
+    key,
+    vars: match[2] === undefined ? {} : { cap: match[2], count: match[2] },
+  };
 }

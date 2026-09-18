@@ -1,1 +1,270 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "label": "openresty-acme.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L1"}, {"id": "lib_openresty_acme_test_dockerfilepath", "label": "dockerfilePath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L7"}, {"id": "lib_openresty_acme_test_nginxconfpath", "label": "nginxConfPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L8"}, {"id": "lib_openresty_acme_test_composepath", "label": "composePath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L9"}, {"id": "lib_openresty_acme_test_prometheuspath", "label": "prometheusPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L10"}, {"id": "lib_openresty_acme_test_content", "label": "content", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L15"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "users_rahman_documents_frame30_src_lib_domains_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_domains_normalizehostname", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_dockerfilepath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_nginxconfpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_composepath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_prometheuspath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L105", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L115", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts", "target": "lib_openresty_acme_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts", "source_location": "L123", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "label": "openresty-acme.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_openresty_acme_test_dockerfilepath",
+      "label": "dockerfilePath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_openresty_acme_test_nginxconfpath",
+      "label": "nginxConfPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "lib_openresty_acme_test_composepath",
+      "label": "composePath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_openresty_acme_test_prometheuspath",
+      "label": "prometheusPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_openresty_acme_test_content",
+      "label": "content",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L15"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_domains_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_domains_normalizehostname",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_dockerfilepath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_nginxconfpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_composepath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_prometheuspath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_openresty_acme_test_ts",
+      "target": "lib_openresty_acme_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/openresty-acme.test.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

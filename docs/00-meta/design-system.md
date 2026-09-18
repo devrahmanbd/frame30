@@ -22,11 +22,11 @@ Scope: All pages (merchant admin, storefront themes, builder editor, POS, market
 
 Three layers, emitted as CSS custom properties (runtime-agnostic — themes consume tokens, not compiled design):
 
-| Layer | Contents | Mutation |
-|---|---|---|
-| **Primitive** | `--fq-color-bd-teal-50..950`, `--fq-radius-xs..3xl`, `--fq-space-1..16`, `--fq-font-bangla`, `--fq-font-latin`, elevation shadows, motion durations/easings | Never changes; semantic maps to them |
-| **Semantic** | `--fq-bg-canvas`, `--fq-bg-surface`, `--fq-text-primary`, `--fq-text-muted`, `--fq-border`, `--fq-accent`, `--fq-accent-fg`, `--fq-success`, `--fq-warning`, `--fq-danger`, `--fq-info`, `--fq-focus-ring`, `--fq-overlay`, status chips, input states | Mapped per theme (light/dark; storefront theme overrides) |
-| **Component** | button/input/card/table/stepper/kbd/modal variants consuming semantic tokens | Per-theme tweaks only |
+| Layer         | Contents                                                                                                                                                                                                                                               | Mutation                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| **Primitive** | `--fq-color-bd-teal-50..950`, `--fq-radius-xs..3xl`, `--fq-space-1..16`, `--fq-font-bangla`, `--fq-font-latin`, elevation shadows, motion durations/easings                                                                                            | Never changes; semantic maps to them                      |
+| **Semantic**  | `--fq-bg-canvas`, `--fq-bg-surface`, `--fq-text-primary`, `--fq-text-muted`, `--fq-border`, `--fq-accent`, `--fq-accent-fg`, `--fq-success`, `--fq-warning`, `--fq-danger`, `--fq-info`, `--fq-focus-ring`, `--fq-overlay`, status chips, input states | Mapped per theme (light/dark; storefront theme overrides) |
+| **Component** | button/input/card/table/stepper/kbd/modal variants consuming semantic tokens                                                                                                                                                                           | Per-theme tweaks only                                     |
 
 Theming rule: **merchant admin themes and storefront themes only ever override semantic + component layers.** Storefront theme authors get a documented subset (brand palette → semantic mapping) — see 03-storefront and 04-builder.
 
@@ -35,6 +35,7 @@ Theming rule: **merchant admin themes and storefront themes only ever override s
 ## 3. Color
 
 ### 3.1 Brand palette (primitives, single source of truth)
+
 - **BD Teal** (primary identity; evokes river + rickshaw-green commerce): scale `#0d9488`-family (50–950).
 - **Rickshaw Red** (secondary accent / sale & urgency): `#e11d48`-family.
 - **Bondhu Amber** (warning / COD-pending / attention): `#f59e0b`-family.
@@ -43,11 +44,13 @@ Theming rule: **merchant admin themes and storefront themes only ever override s
 - Dark mode: semantic maps swap to dark surfaces; BD Teal brightens (e.g. 400-range as accent).
 
 ### 3.2 Semantic usage rules
+
 - Success (`paid`, `delivered`, `active`): mint. Warning (`COD pending`, `low stock`, `trial expiring`): amber. Danger (`refunded? no — danger = failed/cancelled/overdue payout`): red. Info (`processing`, `in transit`, `syncing`): BD teal. Neutral (`draft`, `queued`): slate.
 - **Status never communicated by color alone** — always pair with icon + text label (WCAG 1.4.1).
 - Text contrast ≥ 4.5:1 on canvas; large text ≥ 3:1; UI component borders ≥ 3:1 against adjacent.
 
 ### 3.3 Storefront brand mapping
+
 Themes map merchant brand (primary/secondary/background) → semantic tokens via the builder's brand editor; contrast is auto-checked with a live badge ("This color makes text hard to read" / "contrast too low").
 
 ---
@@ -125,6 +128,7 @@ Each planning doc page must include:
 
 ```markdown
 ### Design guidelines — <page>
+
 - Intent: <one sentence: what the page must feel like>
 - Key surfaces: <list of surfaces/components specific to this page>
 - Palette emphasis: <which semantic tokens dominate + why>
@@ -170,14 +174,14 @@ One direction, committed to: **teal-on-warm-paper, editorial, numbers-forward.**
 
 ### Tokens (`src/styles.css`, `@utility fq-marketing`)
 
-| Token | Use |
-| --- | --- |
-| `--fq-gradient-hero` | hero/section wash, two radial stops, never on text |
-| `--fq-gradient-ink` | headline ink gradient, foreground → teal |
-| `--shadow-lift`, `--shadow-lift-lg` | card and panel elevation |
-| `--ring-focus` | the *only* focus treatment; outlines are replaced, never removed |
-| `--fq-rhythm-xs…lg` | every vertical gap on the site comes from this scale |
-| `--fq-measure` | 68ch max line length for long-form copy |
+| Token                               | Use                                                              |
+| ----------------------------------- | ---------------------------------------------------------------- |
+| `--fq-gradient-hero`                | hero/section wash, two radial stops, never on text               |
+| `--fq-gradient-ink`                 | headline ink gradient, foreground → teal                         |
+| `--shadow-lift`, `--shadow-lift-lg` | card and panel elevation                                         |
+| `--ring-focus`                      | the _only_ focus treatment; outlines are replaced, never removed |
+| `--fq-rhythm-xs…lg`                 | every vertical gap on the site comes from this scale             |
+| `--fq-measure`                      | 68ch max line length for long-form copy                          |
 
 ### Motion
 

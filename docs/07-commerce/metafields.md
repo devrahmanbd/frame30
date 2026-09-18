@@ -36,21 +36,21 @@ All tables tenant-scoped (`merchant_id uuid not null` + RLS). Definitions are pe
 
 ### `meta_definitions` — the macro enum (definition catalog)
 
-| column             | type                                   | note                                                                 |
-| ------------------ | -------------------------------------- | ------------------------------------------------------------------- |
-| `id`               | uuid pk                                |                                                                      |
-| `merchant_id`      | uuid not null                          | RLS scope                                                            |
-| `namespace`        | text not null                           | logical bucket, e.g. `shop`, `product`, `order`                     |
-| `key`              | text not null                                                   | unique per `(merchant_id, namespace)`                                |
-| `name` / `name_bn` | text not null                                                   | admin labels (Bangla-first UI)                                      |
-| `kind`             | text not null check (`metaobject_scalar` / `metaobject_record`) | scalar metafield vs metaobject record stub                          |
-| `value_type`       | text not null check (see enum)                                   | `string` · `rich_text` · `number` · `integer` · `money` · `boolean` · `datetime` · `date` · `url` · `color` · `reference` · `list_of_references` · `file` · `json`    |
-| `definition_schema`| jsonb not null default `{}`             | record field list for `kind = metaobject_record`: `{fields: [{name, field_type, label, label_bn, required, visibility}]}` |
-| `visibility`       | text not null default `'admin'`                                   | `admin` (ops only) \| `storefront` (renders when host is published) |
-| `pii`              | bool not null default false                                | flags PII fields → approval + consent pipeline (§8)                 |
-| `status`           | text not null default `'draft'`          | machine A (see §3)                                                   |
-| `version`          | int not null default 1                   | definition version (pin-rule mirror)                                 |
-| `created_by`/`updated_by` | uuid not null                                          | staff actor; masked in logs                                          |
+| column                    | type                                                            | note                                                                                                                                                               |
+| ------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                      | uuid pk                                                         |                                                                                                                                                                    |
+| `merchant_id`             | uuid not null                                                   | RLS scope                                                                                                                                                          |
+| `namespace`               | text not null                                                   | logical bucket, e.g. `shop`, `product`, `order`                                                                                                                    |
+| `key`                     | text not null                                                   | unique per `(merchant_id, namespace)`                                                                                                                              |
+| `name` / `name_bn`        | text not null                                                   | admin labels (Bangla-first UI)                                                                                                                                     |
+| `kind`                    | text not null check (`metaobject_scalar` / `metaobject_record`) | scalar metafield vs metaobject record stub                                                                                                                         |
+| `value_type`              | text not null check (see enum)                                  | `string` · `rich_text` · `number` · `integer` · `money` · `boolean` · `datetime` · `date` · `url` · `color` · `reference` · `list_of_references` · `file` · `json` |
+| `definition_schema`       | jsonb not null default `{}`                                     | record field list for `kind = metaobject_record`: `{fields: [{name, field_type, label, label_bn, required, visibility}]}`                                          |
+| `visibility`              | text not null default `'admin'`                                 | `admin` (ops only) \| `storefront` (renders when host is published)                                                                                                |
+| `pii`                     | bool not null default false                                     | flags PII fields → approval + consent pipeline (§8)                                                                                                                |
+| `status`                  | text not null default `'draft'`                                 | machine A (see §3)                                                                                                                                                 |
+| `version`                 | int not null default 1                                          | definition version (pin-rule mirror)                                                                                                                               |
+| `created_by`/`updated_by` | uuid not null                                                   | staff actor; masked in logs                                                                                                                                        |
 
 `UNIQUE (merchant_id, namespace, key)`; unique `(merchant_id, namespace, key, version)` per definition lineage.
 
@@ -58,35 +58,35 @@ All tables tenant-scoped (`merchant_id uuid not null` + RLS). Definitions are pe
 
 Validation rules bound to a definition/version. One row per rule.
 
-| column       | type                          | notes |
-| ------------ | ----------------------------- | ----- |
-| `id`         | uuid PK                       |       |
-| `merchant_id`| uuid not null                 | RLS   |
-| `definition_id` | uuid not null → `meta_definitions.id` | FK; also carries definition `version` |
-| `version`    | int not null                  | rules apply to values written under this definition version |
-| `rule_type`  | text not null                 | regex · min · max · min_length · max_length · allowed_values · required · query · url_scheme · datetime_range · file(max_bytes, content_type) |
-| `params`     | jsonb not null default `{}`    | rule params (see §5 table)                                      |
-| `error_code` | text not null                  | exact error emitted on violation (see §5 / §7)                   |
-| `order`      | int not null default 0         | evaluation order; first violation wins                          |
+| column          | type                                  | notes                                                                                                                                         |
+| --------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`            | uuid PK                               |                                                                                                                                               |
+| `merchant_id`   | uuid not null                         | RLS                                                                                                                                           |
+| `definition_id` | uuid not null → `meta_definitions.id` | FK; also carries definition `version`                                                                                                         |
+| `version`       | int not null                          | rules apply to values written under this definition version                                                                                   |
+| `rule_type`     | text not null                         | regex · min · max · min_length · max_length · allowed_values · required · query · url_scheme · datetime_range · file(max_bytes, content_type) |
+| `params`        | jsonb not null default `{}`           | rule params (see §5 table)                                                                                                                    |
+| `error_code`    | text not null                         | exact error emitted on violation (see §5 / §7)                                                                                                |
+| `order`         | int not null default 0                | evaluation order; first violation wins                                                                                                        |
 
 ### `meta_field_values`
 
 The polymorphic value store.
 
-| column        | type                       | notes                                                          |
-| ------------- | -------------------------- | -------------------------------------------------------------- |
-| `id`          | uuid PK                    |                                                                |
-| `merchant_id` | uuid not null              | RLS                                                            |
-| `owner_type`  | enum not null              | admissible surface (see §4 enum)                              |
-| `owner_key`   | uuid not null              | PK of the host object (product `id`, page `id`, order `id`, …) |
-| `definition_id` | uuid not null → `meta_definitions` | |
-| `definition_version` | int not null        | version at write time (pin rule)                               |
-| `value`       | jsonb not null             | scalar for metafields; record `{field: value}` for metaobjects |
-| `status`      | text not null default `'draft'`       | value machine `draft \| published \| archived` (see §3)         |
-| `version`     | int not null default 1               | per-value version; every write appends to `metafield_audits`  |
-| `search`      | jsonb not null default '{}'          | denormalized payload for index tie (see §3.3)                 |
-| `indexed_at`  | timestamptz null                     | last successful search-index sync; null = pending backfill    |
-| `updated_by`  | uuid not null               | staff/API actor                                              |
+| column               | type                               | notes                                                          |
+| -------------------- | ---------------------------------- | -------------------------------------------------------------- |
+| `id`                 | uuid PK                            |                                                                |
+| `merchant_id`        | uuid not null                      | RLS                                                            |
+| `owner_type`         | enum not null                      | admissible surface (see §4 enum)                               |
+| `owner_key`          | uuid not null                      | PK of the host object (product `id`, page `id`, order `id`, …) |
+| `definition_id`      | uuid not null → `meta_definitions` |                                                                |
+| `definition_version` | int not null                       | version at write time (pin rule)                               |
+| `value`              | jsonb not null                     | scalar for metafields; record `{field: value}` for metaobjects |
+| `status`             | text not null default `'draft'`    | value machine `draft \| published \| archived` (see §3)        |
+| `version`            | int not null default 1             | per-value version; every write appends to `metafield_audits`   |
+| `search`             | jsonb not null default '{}'        | denormalized payload for index tie (see §3.3)                  |
+| `indexed_at`         | timestamptz null                   | last successful search-index sync; null = pending backfill     |
+| `updated_by`         | uuid not null                      | staff/API actor                                                |
 
 `UNIQUE (merchant_id, owner_type, owner_key, definition_id)` — one current value per definition per owner. Composite indexes: `(merchant_id, owner_type, owner_key)`, `(merchant_id, namespace, definition_version)`, `(merchant_id, definition_id, status)`.
 
@@ -131,18 +131,18 @@ draft → published → archived
 
 ### Operation C — Per-surface composition
 
-Metafield visibility *derives from the host object's own machine*; a metafield renders only when **both** the host object is in a live/published state and the value is `published`:
+Metafield visibility _derives from the host object's own machine_; a metafield renders only when **both** the host object is in a live/published state and the value is `published`:
 
-| host surface | host machine (owned by) | metafield visibility rule |
-| ------------ | ----------------------- | ------------------------- |
-| product / variant / category | 02-merchant publish machine (`endpoint`): `draft → active → archived` | renders only when product `active` AND value `published` |
-| page / theme | 04-builder: `draft → preview → published` (rollback = restore previous `revisions` row) | renders on `?preview`/published pages; drafts + previews render only via preview mode |
-| article / media | 05-marketing content-cms publish machine | renders when article published |
-| order / line items | 07 root order machine (shared with 06) | **admin-visibility only**; never render; writable until host reaches a terminal state (exact terminal set: TBD — `07` root owner) |
-| offers / coupons | 07 promotions (server-side calc) | admin only; never read by discount/VAT math |
-| pos_capture / pos order | 08 `pending → confirmed` (offline-first) | admin only; offline writes merge via `metafield_audits` conflict window (TBD — `08` owner) |
-| marketplace listing | 12 marketplace listing machine | transforms affect the **listing only** (never the source product) |
-| customer / addresses | 03 customer accounts | `pii` definitions require consent approval (see §8); PII never enters analytics/AI |
+| host surface                 | host machine (owned by)                                                                 | metafield visibility rule                                                                                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| product / variant / category | 02-merchant publish machine (`endpoint`): `draft → active → archived`                   | renders only when product `active` AND value `published`                                                                          |
+| page / theme                 | 04-builder: `draft → preview → published` (rollback = restore previous `revisions` row) | renders on `?preview`/published pages; drafts + previews render only via preview mode                                             |
+| article / media              | 05-marketing content-cms publish machine                                                | renders when article published                                                                                                    |
+| order / line items           | 07 root order machine (shared with 06)                                                  | **admin-visibility only**; never render; writable until host reaches a terminal state (exact terminal set: TBD — `07` root owner) |
+| offers / coupons             | 07 promotions (server-side calc)                                                        | admin only; never read by discount/VAT math                                                                                       |
+| pos_capture / pos order      | 08 `pending → confirmed` (offline-first)                                                | admin only; offline writes merge via `metafield_audits` conflict window (TBD — `08` owner)                                        |
+| marketplace listing          | 12 marketplace listing machine                                                          | transforms affect the **listing only** (never the source product)                                                                 |
+| customer / addresses         | 03 customer accounts                                                                    | `pii` definitions require consent approval (see §8); PII never enters analytics/AI                                                |
 
 ---
 
@@ -172,19 +172,19 @@ Covered surfaces (docs that grant/receive attachment): `02-merchant`, `03-storef
 
 Server-side only. Client never trusted (AGENTS.md no client-trusted decisions). Every write validates the definition `version`, each active rule in `meta_definitions.validation` (evaluation order: `order`), and returns the **first** violating `error_code`.
 
-| rule_type            | params jsonb                                          | applies to `value_type`              | `error_code` (exact)    |
-| -------------------- | ----------------------------------------------------- | ------------------------------------ | ----------------------- |
-| `required`           | —                                                     | any                                   | `validation_meta_required` |
-| `regex`              | `{pattern, flags}`                                    | `string`, `rich_text`                | `validation_meta_regex` |
-| `min` / `max`        | `{value}`                                             | `number`, `integer`, `money`         | `validation_meta_min` / `validation_meta_max` |
-| `min_length`/`max_length` | `{value}`                                        | `string`, `rich_text`                | `validation_meta_min_length` / `validation_meta_max_length` |
-| `allowed_values`     | `{values: []}`                                        | `string`, `number`                   | `validation_meta_allowed` |
-| `url_schemes`        | `{schemes: ["https"]}`                                | `url`                                | `validation_meta_url` |
-| `datetime_range`     | `{min, max}`                                          | `datetime`, `date`                   | `validation_meta_datetime` |
-| `query`             | `{owner_type, filter}` (reference must resolve to an existing host row) | `reference`, `list_of_references` | `validation_meta_reference` |
-| `file`              | `{max_bytes, content_type: []}` (opt → Storage URL; file bytes live in 02 Storage, signed short TTL) | `file`  | `validation_meta_file` |
-| `color` — parseable hex only | —                                         | `color`                                | `validation_meta_color` |
-| `json` — must parse + respect `definition_schema` | `{max_depth}` TBD | `json` | `validation_meta_json` |
+| rule_type                                         | params jsonb                                                                                         | applies to `value_type`           | `error_code` (exact)                                        |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------- |
+| `required`                                        | —                                                                                                    | any                               | `validation_meta_required`                                  |
+| `regex`                                           | `{pattern, flags}`                                                                                   | `string`, `rich_text`             | `validation_meta_regex`                                     |
+| `min` / `max`                                     | `{value}`                                                                                            | `number`, `integer`, `money`      | `validation_meta_min` / `validation_meta_max`               |
+| `min_length`/`max_length`                         | `{value}`                                                                                            | `string`, `rich_text`             | `validation_meta_min_length` / `validation_meta_max_length` |
+| `allowed_values`                                  | `{values: []}`                                                                                       | `string`, `number`                | `validation_meta_allowed`                                   |
+| `url_schemes`                                     | `{schemes: ["https"]}`                                                                               | `url`                             | `validation_meta_url`                                       |
+| `datetime_range`                                  | `{min, max}`                                                                                         | `datetime`, `date`                | `validation_meta_datetime`                                  |
+| `query`                                           | `{owner_type, filter}` (reference must resolve to an existing host row)                              | `reference`, `list_of_references` | `validation_meta_reference`                                 |
+| `file`                                            | `{max_bytes, content_type: []}` (opt → Storage URL; file bytes live in 02 Storage, signed short TTL) | `file`                            | `validation_meta_file`                                      |
+| `color` — parseable hex only                      | —                                                                                                    | `color`                           | `validation_meta_color`                                     |
+| `json` — must parse + respect `definition_schema` | `{max_depth}` TBD                                                                                    | `json`                            | `validation_meta_json`                                      |
 
 Integrity/anti-pattern hard guardrails: prices, stock, and discount values are never legal `value_type` in sections gating compute; `money` values are integer taka, rendered via `fmtBDT`, and **must not** be read by the pricing/order/coupon/stock engines (server-side `check` + `RI 4` guardrails). Every write is idempotent when an `Idempotency-Key` header is provided (mirror 06-payments Redis-key pattern: `idem:{merchant_id}:{key}`; TTL e.g. 24h — TBD `06` owner). Rate limit shared with 06 (Go rate-limiter).
 
@@ -235,61 +235,66 @@ Mirrors `13-export-sdk` REST conventions (tenant-scoped PostgREST/RPC views + HM
 
 ### Error-code table (editor surfaces)
 
-| error_code                                    | meaning                                | UI                                                                 |
-| --------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| `plan_limit_exceeded`                          | entitlement at limit                   | blocked + "আপনার প্ল্যানের সীমা শেষ — আপগ্রেড করুন" (upgrade link) |
-| `validation_meta_*` (see §5)                    | rule violated                           | field-level message + badge; first error wins                    |
-| `meta_definition_deprecated`                   | write on deprecated definition                 | blocked, no value change; keep readable                          |
-| `meta_owner_not_found` (`reference` rule)      | owner row missing                       | inline reference resolve                                   |
-| `meta_definition_not_active`                   | value write before definition `active`  | blocked with definition status pill                            |
-| `owner_publish_state_locked`                   | host object reverted/archived              | read-only grid mode                                            |
-| `not_found` / `forbidden`                      | RLS scoping            | not exposed; 404/403 behind RLS (no existence oracle)         |
+| error_code                                | meaning                                | UI                                                                 |
+| ----------------------------------------- | -------------------------------------- | ------------------------------------------------------------------ |
+| `plan_limit_exceeded`                     | entitlement at limit                   | blocked + "আপনার প্ল্যানের সীমা শেষ — আপগ্রেড করুন" (upgrade link) |
+| `validation_meta_*` (see §5)              | rule violated                          | field-level message + badge; first error wins                      |
+| `meta_definition_deprecated`              | write on deprecated definition         | blocked, no value change; keep readable                            |
+| `meta_owner_not_found` (`reference` rule) | owner row missing                      | inline reference resolve                                           |
+| `meta_definition_not_active`              | value write before definition `active` | blocked with definition status pill                                |
+| `owner_publish_state_locked`              | host object reverted/archived          | read-only grid mode                                                |
+| `not_found` / `forbidden`                 | RLS scoping                            | not exposed; 404/403 behind RLS (no existence oracle)              |
 
 ---
 
 ## 8. Guardrails
 
 ### 8.1 Data & tenancy
+
 - All tables + audits `merchant_id`-scoped with RLS; `v_metafields_published` is the only pattern that can read values, and it is published-only. Cross-tenant reads impossible.
 
 ### 8.2 Integrity & trust
+
 - Prices/stock/discounts never computed from metafields; `money` display-only. `check_entitlement` before writes + Postgres constraint backstop (deprecated view); over-limit → `plan_limit_exceeded`, never silent truncate. Idempotency keys honored for all mutating endpoints.
 
 ### 8.3 Consent & PII
+
 - `pii = true` definitions require staff approval (`staff-approval.md` in 02) before `draft → active`; `customer` metafields only with marketing consent (AGENTS.md consent rule); opt-out honored everywhere; excluded from analytics (`09`) and AI context (`10`) unless consented; `metafield_audits` actor rows minimal (no PII).
 
 ### 8.4 Publish & visibility
+
 - Anon-RLS view returns only `status='published'` values on published hosts; drafts never leak; the `.team-storefront` cache (60s edge TTL / purge-coupled transitions) preserves last-render on purge blip (fallback = stale render, never blank).
 
 ### 8.5 Ops & compliance
+
 - `metafield_audits` append-only, 90-day hot retention then archive (mirror `14-operations`); marketplace listing metafields affect only the listing row; `10-ai-support` reads metafields as advisory context with provenance title only — never as authoritative for order/payment/refund/stock outcomes.
 
 ---
 
 ## 9. Testing gates (named)
 
-| gate | scope |
-| ---- | ----- |
-| `api_metafields_crud` | CRUD + RLS isolation between 2 tenants; published vs draft visibility via `v_metafields_published`; delete hard block on non-draft |
-| `ci_validation_matrix` | every §5 rule × success+failure; asserts exact `error_code` per row (first-error); invalid reference + file (Storage reference) |
-| `e2e_metafield_editor` | editor: define → validate → publish → archive + bulk grid; keyboard nav; color → token; contrast; `plan_limit_exceeded` inline upgrade link |
-| `store_loop` (critical) | published metafield renders on storefront; unpublished value missing from `v_published`; purge → stale-while-blip |
-| `admin_loop` | RBAC: staff without `metafields.manage` blocked (403/404); `pii` defs need approval to become `active` |
-| `market_loop` | listing metafields transform listing only; product unchanged |
-| `api_metafields_failure` (f-set) | provider (index) down → backoff + `indexed_at` null; dead-letter event on DLQ; entitlement-at-limit → `plan_limit_exceeded` exact |
+| gate                             | scope                                                                                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api_metafields_crud`            | CRUD + RLS isolation between 2 tenants; published vs draft visibility via `v_metafields_published`; delete hard block on non-draft          |
+| `ci_validation_matrix`           | every §5 rule × success+failure; asserts exact `error_code` per row (first-error); invalid reference + file (Storage reference)             |
+| `e2e_metafield_editor`           | editor: define → validate → publish → archive + bulk grid; keyboard nav; color → token; contrast; `plan_limit_exceeded` inline upgrade link |
+| `store_loop` (critical)          | published metafield renders on storefront; unpublished value missing from `v_published`; purge → stale-while-blip                           |
+| `admin_loop`                     | RBAC: staff without `metafields.manage` blocked (403/404); `pii` defs need approval to become `active`                                      |
+| `market_loop`                    | listing metafields transform listing only; product unchanged                                                                                |
+| `api_metafields_failure` (f-set) | provider (index) down → backoff + `indexed_at` null; dead-letter event on DLQ; entitlement-at-limit → `plan_limit_exceeded` exact           |
 
 ---
 
 ## 10. Open gaps (`TBD` + owner)
 
-| # | Gap | Owner |
-| --- | ---- | ----- |
-| 1 | Hardcoded value `N` in `meta_field_values.search` — the exact metafield-query/facet surface that consumes it | 03-storefront |
-| 2 | `seo_meta` merge precedence vs host content CMS SEO fields | 05-marketing |
-| 3 | Offline-first merge window for POS order metafields (08 parent) | 08-pos-shipping |
-| 4 | Terminal-state set for `order`/`line_item` metafield writability | 07-commerce root |
-| 5 | `metafield_audits` backfill cadence + hot-vs-cold retention boundary | 09-analytics |
-| 6 | Webhook event schema + versioning for `metafield.*` (v1) | 13-export-sdk |
-| 7 | Entitlement quotas (`metafields`, `metaobject_record`, `storage`) exact numbers | 16-product-pricing |
-| 8 | AI ingestion scope + provenance title for metafields (which namespaces) | 10-ai-support |
-| 9 | Marketplace listing metafield schema approval flow (enterprise) | 12-marketplace |
+| #   | Gap                                                                                                          | Owner              |
+| --- | ------------------------------------------------------------------------------------------------------------ | ------------------ |
+| 1   | Hardcoded value `N` in `meta_field_values.search` — the exact metafield-query/facet surface that consumes it | 03-storefront      |
+| 2   | `seo_meta` merge precedence vs host content CMS SEO fields                                                   | 05-marketing       |
+| 3   | Offline-first merge window for POS order metafields (08 parent)                                              | 08-pos-shipping    |
+| 4   | Terminal-state set for `order`/`line_item` metafield writability                                             | 07-commerce root   |
+| 5   | `metafield_audits` backfill cadence + hot-vs-cold retention boundary                                         | 09-analytics       |
+| 6   | Webhook event schema + versioning for `metafield.*` (v1)                                                     | 13-export-sdk      |
+| 7   | Entitlement quotas (`metafields`, `metaobject_record`, `storage`) exact numbers                              | 16-product-pricing |
+| 8   | AI ingestion scope + provenance title for metafields (which namespaces)                                      | 10-ai-support      |
+| 9   | Marketplace listing metafield schema approval flow (enterprise)                                              | 12-marketplace     |

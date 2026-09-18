@@ -27,8 +27,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "support",
     author: "Framique",
-    summaryEn: "Direct WhatsApp chat bubble on your storefront for instant customer messaging and order inquiries.",
-    summaryBn: "স্টোরফ্রন্টে সরাসরি হোয়াটসঅ্যাপ চ্যাট বাবল — তাৎক্ষণিক গ্রাহক যোগাযোগ ও অর্ডার তথ্যের জন্য।",
+    summaryEn:
+      "Direct WhatsApp chat bubble on your storefront for instant customer messaging and order inquiries.",
+    summaryBn:
+      "স্টোরফ্রন্টে সরাসরি হোয়াটসঅ্যাপ চ্যাট বাবল — তাৎক্ষণিক গ্রাহক যোগাযোগ ও অর্ডার তথ্যের জন্য।",
     manifest: {
       id: "whatsapp-chat",
       name: "WhatsApp Quick Chat",
@@ -87,8 +89,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "marketing",
     author: "Framique",
-    summaryEn: "Points, badges and rewards program to boost repeat purchases and customer retention.",
-    summaryBn: "ক্রেতাদের পয়েন্ট ও রিওয়ার্ড প্রোগ্রাম — পুনরাবৃত্ত অর্ডার বৃদ্ধির জন্য।",
+    summaryEn:
+      "Points, badges and rewards program to boost repeat purchases and customer retention.",
+    summaryBn:
+      "ক্রেতাদের পয়েন্ট ও রিওয়ার্ড প্রোগ্রাম — পুনরাবৃত্ত অর্ডার বৃদ্ধির জন্য।",
     manifest: {
       id: "loyalty-lite",
       name: "Loyalty Lite",
@@ -134,7 +138,11 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
       ],
       i18n: {
         en: { tier: "Tier", rate: "Points per ৳100", show_badge: "Show badge" },
-        bn: { tier: "টিয়ার", rate: "প্রতি ১০০ টাকায় পয়েন্ট", show_badge: "ব্যাজ প্রদর্শন" },
+        bn: {
+          tier: "টিয়ার",
+          rate: "প্রতি ১০০ টাকায় পয়েন্ট",
+          show_badge: "ব্যাজ প্রদর্শন",
+        },
       },
       budget: { jsKb: 45, mainThreadMs: 20 },
     },
@@ -142,8 +150,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "social",
     author: "Framique",
-    summaryEn: "Verified buyer reviews, customer photos and 5-star ratings displayed beautifully on product pages.",
-    summaryBn: "যাচাইকৃত ক্রেতা রিভিউ, ছবি ও রেটিং প্রোডাক্ট পেজে সুন্দরভাবে প্রদর্শনের প্লাগইন।",
+    summaryEn:
+      "Verified buyer reviews, customer photos and 5-star ratings displayed beautifully on product pages.",
+    summaryBn:
+      "যাচাইকৃত ক্রেতা রিভিউ, ছবি ও রেটিং প্রোডাক্ট পেজে সুন্দরভাবে প্রদর্শনের প্লাগইন।",
     manifest: {
       id: "product-reviews",
       name: "Verified Product Reviews",
@@ -190,8 +200,16 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
         },
       ],
       i18n: {
-        en: { auto_approve: "Auto-approve high ratings", require_photo: "Require photo", reviews_per_page: "Reviews per page" },
-        bn: { auto_approve: "উচ্চ রেটিং স্বয়ংক্রিয় প্রকাশ", require_photo: "ছবি আবশ্যক", reviews_per_page: "প্রতি পেজে রিভিউ সংখ্যা" },
+        en: {
+          auto_approve: "Auto-approve high ratings",
+          require_photo: "Require photo",
+          reviews_per_page: "Reviews per page",
+        },
+        bn: {
+          auto_approve: "উচ্চ রেটিং স্বয়ংক্রিয় প্রকাশ",
+          require_photo: "ছবি আবশ্যক",
+          reviews_per_page: "প্রতি পেজে রিভিউ সংখ্যা",
+        },
       },
       budget: { jsKb: 60, mainThreadMs: 30 },
     },
@@ -199,8 +217,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "fulfillment",
     author: "Framique",
-    summaryEn: "Real-time delivery status checker for Steadfast, Pathao, RedX and Paperfly parcel deliveries.",
-    summaryBn: "স্টেডফাস্ট, পাঠাও ও রেডএক্স পার্সেল ট্র্যাকিং উইজেট — ক্রেতা ফোন নম্বর দিয়ে স্ট্যাটাস দেখতে পারে।",
+    summaryEn:
+      "Real-time delivery status checker for Steadfast, Pathao, RedX and Paperfly parcel deliveries.",
+    summaryBn:
+      "স্টেডফাস্ট, পাঠাও ও রেডএক্স পার্সেল ট্র্যাকিং উইজেট — ক্রেতা ফোন নম্বর দিয়ে স্ট্যাটাস দেখতে পারে।",
     manifest: {
       id: "order-tracker",
       name: "Live Courier & Order Tracker",
@@ -232,8 +252,14 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
         },
       ],
       i18n: {
-        en: { support_phone: "Support phone", show_courier_name: "Show courier name" },
-        bn: { support_phone: "সাপোর্ট নম্বর", show_courier_name: "কুরিয়ারের নাম প্রদর্শন" },
+        en: {
+          support_phone: "Support phone",
+          show_courier_name: "Show courier name",
+        },
+        bn: {
+          support_phone: "সাপোর্ট নম্বর",
+          show_courier_name: "কুরিয়ারের নাম প্রদর্শন",
+        },
       },
       budget: { jsKb: 40, mainThreadMs: 20 },
     },
@@ -241,8 +267,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "conversion",
     author: "Framique",
-    summaryEn: "Real-time sales alerts and recent purchase popups to create urgency and social proof.",
-    summaryBn: "সাম্প্রতিক অর্ডার নোটিফিকেশন — ক্রেতার আস্থার সাথে সেলস কনভার্সন বৃদ্ধির জন্য।",
+    summaryEn:
+      "Real-time sales alerts and recent purchase popups to create urgency and social proof.",
+    summaryBn:
+      "সাম্প্রতিক অর্ডার নোটিফিকেশন — ক্রেতার আস্থার সাথে সেলস কনভার্সন বৃদ্ধির জন্য।",
     manifest: {
       id: "social-proof",
       name: "Social Proof Popups",
@@ -270,14 +298,21 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
         },
         {
           key: "show_city",
-          label: "Display customer district / city (e.g. Someone in Sylhet bought...)",
+          label:
+            "Display customer district / city (e.g. Someone in Sylhet bought...)",
           kind: "boolean",
           default: true,
         },
       ],
       i18n: {
-        en: { display_interval_sec: "Popup interval (seconds)", show_city: "Show customer city" },
-        bn: { display_interval_sec: "পপআপ বিরতি (সেকেন্ড)", show_city: "ক্রেতার জেলা প্রদর্শন" },
+        en: {
+          display_interval_sec: "Popup interval (seconds)",
+          show_city: "Show customer city",
+        },
+        bn: {
+          display_interval_sec: "পপআপ বিরতি (সেকেন্ড)",
+          show_city: "ক্রেতার জেলা প্রদর্শন",
+        },
       },
       budget: { jsKb: 30, mainThreadMs: 15 },
     },
@@ -285,8 +320,10 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
   {
     category: "security",
     author: "Framique",
-    summaryEn: "Detect and block invalid bot clicks and scraper traffic from wasting your marketing ad spend.",
-    summaryBn: "বিজ্ঞাপন বাজেট সুরক্ষা — বট ক্লিক ও স্ক্র্যাপার শনাক্ত করে নষ্ট হওয়া বাজেট রক্ষা করুন।",
+    summaryEn:
+      "Detect and block invalid bot clicks and scraper traffic from wasting your marketing ad spend.",
+    summaryBn:
+      "বিজ্ঞাপন বাজেট সুরক্ষা — বট ক্লিক ও স্ক্র্যাপার শনাক্ত করে নষ্ট হওয়া বাজেট রক্ষা করুন।",
     manifest: {
       id: "ad-shield",
       name: "Ad Defense & Click Fraud Shield",
@@ -318,15 +355,23 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
         },
       ],
       i18n: {
-        en: { aggressive_mode: "Aggressive mode", log_blocked_ips: "Log blocked attempts" },
-        bn: { aggressive_mode: "কঠোর সুরক্ষা মোড", log_blocked_ips: "ব্লক করা ক্লিক লগ রাখুন" },
+        en: {
+          aggressive_mode: "Aggressive mode",
+          log_blocked_ips: "Log blocked attempts",
+        },
+        bn: {
+          aggressive_mode: "কঠোর সুরক্ষা মোড",
+          log_blocked_ips: "ব্লক করা ক্লিক লগ রাখুন",
+        },
       },
       budget: { jsKb: 25, mainThreadMs: 10 },
     },
   },
 ];
 
-export function getBuiltinPlugin(pluginId: string): BuiltinPluginDef | undefined {
+export function getBuiltinPlugin(
+  pluginId: string,
+): BuiltinPluginDef | undefined {
   return BUILTIN_PLUGINS.find((p) => p.manifest.id === pluginId);
 }
 

@@ -2,7 +2,7 @@
 
 Status: **Executable TODO (Phase 11)** · Companions: `theme-runtime.md`, `theme-registry.md`, `theme-plan-apparel.md`, `publishing.md`, `../12-marketplace/themes.md`
 
-Model to match: WordPress + Elementor. Widgets are **global**; the *theme* supplies colour, type,
+Model to match: WordPress + Elementor. Widgets are **global**; the _theme_ supplies colour, type,
 spacing and per-widget default styling. Fonts are chosen **per theme, in the builder**, not in code.
 Designs are **exportable** (`.json` + image folder in a `.zip`), and developers can build and export a
 **fully coded theme** on our TanStack stack.
@@ -25,13 +25,13 @@ pairing only.
 - [ ] Google catalogue is a **build-time snapshot** (`src/lib/google-fonts.ts`, family + weights +
       subsets only). No runtime call to the Google API from the builder or the storefront.
 - [!] Server-side validation on save: family must exist in the snapshot, ≤ 4 weights per family,
-      ≤ 2 families per theme, subsets limited to `latin` + `bengali`. Reject with
-      `font_spec_invalid`; never persist an unvalidated family name into a stylesheet URL.
+  ≤ 2 families per theme, subsets limited to `latin` + `bengali`. Reject with
+  `font_spec_invalid`; never persist an unvalidated family name into a stylesheet URL.
 - [ ] Derive the stylesheet per theme: `themeFontStylesheet(tokens)` builds the `css2?family=…&display=swap`
       URL from `tokens.fonts`; `FONT_PRELOAD` keeps only `origins` + `fallbackFaces` as the defaults.
       `__root.tsx` uses the platform default; storefront routes emit the **published theme's** URL.
 - [!] Every theme must resolve a Bangla-capable body face — otherwise a Bangla fallback is appended
-      automatically at render time (`--font-bangla` stack). Font resolver test per pairing × locale.
+  automatically at render time (`--font-bangla` stack). Font resolver test per pairing × locale.
 - [ ] Metric-matched `@font-face` fallback per newly allowed family (`size-adjust` captured once);
       missing fallback fails the vitals gate.
 - [ ] Merchant custom upload: bucket `theme-fonts`, path `{merchantId}/{family}/{weight}.woff2`,
@@ -48,11 +48,11 @@ pairing only.
 - [x] `WidgetMeta` carries no `themeKey`; no renderer branches on a theme key (asserted in
       `definition-of-done.test.ts`).
 - [ ] Rename the "vertical" registry comment groups (Atelier / Circuit / Rupaboti) to capability
-      groups (`editorial`, `spec-heavy`, `beauty-fit`) so nothing *reads* theme-exclusive; every widget
+      groups (`editorial`, `spec-heavy`, `beauty-fit`) so nothing _reads_ theme-exclusive; every widget
       stays listed in the tray for every theme.
 - [!] Each of the 117 widgets ships a **theme-neutral default style** driven by tokens only: no
-      hardcoded colour utilities, no per-widget font pickers, no inline `transition`/`animation` in
-      preset `html` blocks. Lint rule + test.
+  hardcoded colour utilities, no per-widget font pickers, no inline `transition`/`animation` in
+  preset `html` blocks. Lint rule + test.
 - [ ] `themeStyleOverrides`: an optional token-only style map on the theme
       (`{ [widgetType]: { surface?, ink?, radius?, density?, reveal? } }`) merged **under** section-level
       props, so a theme can restyle any widget without touching its renderer.
@@ -65,14 +65,14 @@ pairing only.
 ## 3. Design export — `.zip` (`design.json` + `images/`)
 
 - [ ] `exportDesign(merchantId)` server fn produces:
-      ```text
-      export.zip
-        design.json          # { apiVersion, theme: { tokens, fonts }, templates: {…AST}, assets: [{ id, path, alt }] }
-        images/
-          hero-home.webp
-          product-01.webp
-        README.txt           # provenance: store, theme key/version, exported_at
-      ```
+      `text
+  export.zip
+    design.json          # { apiVersion, theme: { tokens, fonts }, templates: {…AST}, assets: [{ id, path, alt }] }
+    images/
+      hero-home.webp
+      product-01.webp
+    README.txt           # provenance: store, theme key/version, exported_at
+  `
 - [ ] Image filenames are derived from the asset's role + slug (never opaque UUIDs) and rewritten
       inside `design.json` as relative `images/…` paths.
 - [ ] Zip built in-memory with a Worker-safe pure-JS zip writer (no native deps); budget ≤ 50MB,
@@ -80,7 +80,7 @@ pairing only.
 - [ ] `importDesign(zip)`: validates `apiVersion` against `BUILDER_API_VERSION`, parses every template
       through `parseTemplates`, uploads images tenant-scoped, then writes a **draft** version only.
 - [!] Import never publishes, never overwrites the live revision, and runs the full lint +
-      বাংলা-coverage gate before it can be published.
+  বাংলা-coverage gate before it can be published.
 - [ ] Rate-limited (`builder.design_export`, `builder.design_import`) and audit-logged.
 
 ---
@@ -95,7 +95,7 @@ pairing only.
       `fonts.json`, `demo/*.json`, `assets/`, plus a TanStack starter (`package.json`, `tsconfig.json`,
       `src/theme.ts`) so a developer can round-trip a builder design back into code.
 - [!] Coded themes stay **renderer-free**: they may not ship React components for storefront render;
-      interactivity goes through sandboxed widget JS (`theme-runtime.md` TR-5) and the plugin platform.
+  interactivity goes through sandboxed widget JS (`theme-runtime.md` TR-5) and the plugin platform.
 - [ ] Marketplace submission reuses the same package + review gate; `api` range checked with
       `satisfiesApiRange` against `BUILDER_API_VERSION`.
 - [ ] Docs: authoring quickstart, token reference, widget catalogue, budget table, review checklist.
@@ -105,9 +105,9 @@ pairing only.
 ## 5. Cross-checks to keep green
 
 - [!] Fonts: pairing × locale resolver, weight/family/subset budget, fallback faces present, per-theme
-      stylesheet derived (never hardcoded on storefront routes).
+  stylesheet derived (never hardcoded on storefront routes).
 - [!] Widgets: every registry type reachable in every theme, no `themeKey`, no theme branch, token-only styling.
 - [!] Themes: all presets parse/lint/round-trip in EN + বাংলা, ≥ 90% বাংলা coverage, designed dark set
-      where declared, export → import → export is byte-stable for the AST.
+  where declared, export → import → export is byte-stable for the AST.
 - [!] Plugins: manifest parse, permission diff, `PLUGIN_BUDGET`, sandbox attributes, kill switch,
-      `api` range gate.
+  `api` range gate.

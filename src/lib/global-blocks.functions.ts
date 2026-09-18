@@ -16,11 +16,17 @@ const uuid = z.string().uuid();
 export const globalBlockListFn = createServerFn({ method: "GET" })
   .middleware([requirePermission("themes.read")])
   .inputValidator((d: unknown) =>
-    z.object({ merchantId: uuid.optional(), themeId: uuid.nullish() }).parse(d ?? {}),
+    z
+      .object({ merchantId: uuid.optional(), themeId: uuid.nullish() })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { listGlobalBlocks } = await import("./global-blocks.server");
-    return listGlobalBlocks(context.supabase, context.actor.merchantId!, data.themeId ?? null);
+    return listGlobalBlocks(
+      context.supabase,
+      context.actor.merchantId!,
+      data.themeId ?? null,
+    );
   });
 
 export const globalBlockCreateFn = createServerFn({ method: "POST" })
@@ -37,11 +43,16 @@ export const globalBlockCreateFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { createGlobalBlock } = await import("./global-blocks.server");
-    return createGlobalBlock(context.supabase, context.actor.merchantId!, context.userId, {
-      name: data.name,
-      nodes: data.nodes,
-      themeId: data.themeId ?? null,
-    });
+    return createGlobalBlock(
+      context.supabase,
+      context.actor.merchantId!,
+      context.userId,
+      {
+        name: data.name,
+        nodes: data.nodes,
+        themeId: data.themeId ?? null,
+      },
+    );
   });
 
 export const globalBlockUpdateFn = createServerFn({ method: "POST" })
@@ -59,13 +70,25 @@ export const globalBlockUpdateFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { updateGlobalBlock } = await import("./global-blocks.server");
-    return updateGlobalBlock(context.supabase, context.actor.merchantId!, context.userId, data);
+    return updateGlobalBlock(
+      context.supabase,
+      context.actor.merchantId!,
+      context.userId,
+      data,
+    );
   });
 
 export const globalBlockDeleteFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
-  .inputValidator((d: unknown) => z.object({ merchantId: uuid.optional(), id: uuid }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: uuid.optional(), id: uuid }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteGlobalBlock } = await import("./global-blocks.server");
-    return deleteGlobalBlock(context.supabase, context.actor.merchantId!, context.userId, data.id);
+    return deleteGlobalBlock(
+      context.supabase,
+      context.actor.merchantId!,
+      context.userId,
+      data.id,
+    );
   });

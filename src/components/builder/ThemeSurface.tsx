@@ -6,8 +6,18 @@
  * for dark), the motion budget, and the locale/digit defaults every money
  * string reads. Widgets stay theme-agnostic — they only see semantic tokens.
  */
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { DEFAULT_TOKENS, tokensToCss, type ThemeTokens } from "@/lib/builder-ast";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import {
+  DEFAULT_TOKENS,
+  tokensToCss,
+  type ThemeTokens,
+} from "@/lib/builder-ast";
 import { formatDisplayMoney } from "@/lib/money-display";
 
 export type ThemeLocaleValue = {
@@ -32,7 +42,11 @@ export function useThemeLocale(): ThemeLocaleValue {
  */
 export function useThemeMoney() {
   const theme = useThemeLocale();
-  return (amountMinor: number | string | null | undefined, currency?: string, compact = true) =>
+  return (
+    amountMinor: number | string | null | undefined,
+    currency?: string,
+    compact = true,
+  ) =>
     formatDisplayMoney(amountMinor, {
       digits: theme.digits,
       locale: theme.locale,
@@ -64,7 +78,9 @@ type Props = {
 
 export function ThemeSurface({ tokens, className, children }: Props) {
   const dark = usePrefersDark(Boolean(tokens?.dark));
-  const style = tokens ? (tokensToCss(tokens) as React.CSSProperties) : undefined;
+  const style = tokens
+    ? (tokensToCss(tokens) as React.CSSProperties)
+    : undefined;
   const value: ThemeLocaleValue = {
     digits: tokens?.digits ?? DEFAULT_TOKENS.digits,
     locale: tokens?.locale ?? DEFAULT_TOKENS.locale,

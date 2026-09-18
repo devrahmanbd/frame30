@@ -72,7 +72,9 @@ describe("tree", () => {
   });
 
   it("promotes orphans to root", () => {
-    expect(buildTree([item("x", { parentId: "gone" })]).map((n) => n.id)).toEqual(["x"]);
+    expect(
+      buildTree([item("x", { parentId: "gone" })]).map((n) => n.id),
+    ).toEqual(["x"]);
   });
 
   it("returns the subtree ids", () => {
@@ -84,7 +86,11 @@ describe("mutations", () => {
   it("appends at root and renumbers", () => {
     const next = addItem(base, item("d"));
     expect(next.find((i) => i.id === "d")?.parentId).toBeNull();
-    expect(normalise(next).filter((i) => i.parentId === null).map((i) => i.position)).toEqual([0, 1, 2, 3]);
+    expect(
+      normalise(next)
+        .filter((i) => i.parentId === null)
+        .map((i) => i.position),
+    ).toEqual([0, 1, 2, 3]);
   });
 
   it("removes an item with its children", () => {
@@ -92,7 +98,11 @@ describe("mutations", () => {
   });
 
   it("patches fields without changing the id", () => {
-    expect(updateItem(base, "a", { label: "Home", id: "zzz" }).find((i) => i.id === "a")?.label).toBe("Home");
+    expect(
+      updateItem(base, "a", { label: "Home", id: "zzz" }).find(
+        (i) => i.id === "a",
+      )?.label,
+    ).toBe("Home");
   });
 
   it("indents under the previous sibling and outdents back", () => {
@@ -101,7 +111,9 @@ describe("mutations", () => {
     const indented = indentItem(base, "c");
     expect(indented.find((i) => i.id === "c")?.parentId).toBe("b");
     expect(canOutdent(indented, "c")).toBe(true);
-    expect(outdentItem(indented, "c").find((i) => i.id === "c")?.parentId).toBeNull();
+    expect(
+      outdentItem(indented, "c").find((i) => i.id === "c")?.parentId,
+    ).toBeNull();
   });
 
   it("refuses to indent past the depth limit", () => {
@@ -115,34 +127,49 @@ describe("mutations", () => {
   });
 
   it("moves before, after and into an item", () => {
-    expect(moveItem(base, "c", "a", "before").filter((i) => i.parentId === null).map((i) => i.id)).toEqual([
-      "c",
-      "a",
-      "b",
-    ]);
-    expect(moveItem(base, "a", "b", "child").find((i) => i.id === "a")?.parentId).toBe("b");
+    expect(
+      moveItem(base, "c", "a", "before")
+        .filter((i) => i.parentId === null)
+        .map((i) => i.id),
+    ).toEqual(["c", "a", "b"]);
+    expect(
+      moveItem(base, "a", "b", "child").find((i) => i.id === "a")?.parentId,
+    ).toBe("b");
   });
 
   it("never drops an item into its own subtree", () => {
-    expect(moveItem(base, "b", "b1", "child").find((i) => i.id === "b")?.parentId).toBeNull();
+    expect(
+      moveItem(base, "b", "b1", "child").find((i) => i.id === "b")?.parentId,
+    ).toBeNull();
   });
 
   it("moves an item up and down among its siblings", () => {
     const moved = moveVertical(base, "c", -1);
-    expect(moved.filter((i) => i.parentId === null).sort((a, b) => a.position - b.position).map((i) => i.id)).toEqual(
-      ["a", "c", "b"],
-    );
+    expect(
+      moved
+        .filter((i) => i.parentId === null)
+        .sort((a, b) => a.position - b.position)
+        .map((i) => i.id),
+    ).toEqual(["a", "c", "b"]);
   });
 });
 
 describe("validation", () => {
   it("flags empty labels and bad addresses", () => {
-    const issues = validateMenu([item("a", { label: " " }), item("b", { url: "nope" })]);
+    const issues = validateMenu([
+      item("a", { label: " " }),
+      item("b", { url: "nope" }),
+    ]);
     expect(issues.map((i) => i.field)).toEqual(["label", "url"]);
     expect(isMenuValid(base)).toBe(true);
   });
   it("accepts relative, hash, mail and tel links", () => {
-    expect(isMenuValid([item("a", { url: "#top" }), item("b", { url: "mailto:a@b.test" })])).toBe(true);
+    expect(
+      isMenuValid([
+        item("a", { url: "#top" }),
+        item("b", { url: "mailto:a@b.test" }),
+      ]),
+    ).toBe(true);
   });
 });
 
@@ -155,7 +182,11 @@ describe("sources and locations", () => {
     expect(searchSources(sources, "kett").map((s) => s.id)).toEqual(["p2"]);
   });
   it("converts a source into a menu item", () => {
-    expect(sourceToItem(sources[0]!, "new")).toMatchObject({ id: "new", kind: "page", refId: "p1" });
+    expect(sourceToItem(sources[0]!, "new")).toMatchObject({
+      id: "new",
+      kind: "page",
+      refId: "p1",
+    });
   });
   it("labels and toggles display locations", () => {
     expect(locationsLabel([])).toBe("Not displayed");
@@ -167,7 +198,14 @@ describe("sources and locations", () => {
 
 describe("dirty tracking", () => {
   it("ignores position gaps but sees real edits", () => {
-    expect(menuDirty(base, base.map((i) => ({ ...i, position: i.position * 10 })))).toBe(false);
-    expect(menuDirty(base, updateItem(base, "a", { label: "Changed" }))).toBe(true);
+    expect(
+      menuDirty(
+        base,
+        base.map((i) => ({ ...i, position: i.position * 10 })),
+      ),
+    ).toBe(false);
+    expect(menuDirty(base, updateItem(base, "a", { label: "Changed" }))).toBe(
+      true,
+    );
   });
 });

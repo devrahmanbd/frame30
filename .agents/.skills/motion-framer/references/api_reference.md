@@ -25,75 +25,102 @@ All motion components (`motion.div`, `motion.button`, etc.) accept these props:
 ```typescript
 interface MotionProps {
   // Animation state
-  animate?: AnimationControls | TargetAndTransition | VariantLabels
-  initial?: boolean | Target | VariantLabels
-  exit?: TargetAndTransition | VariantLabels
+  animate?: AnimationControls | TargetAndTransition | VariantLabels;
+  initial?: boolean | Target | VariantLabels;
+  exit?: TargetAndTransition | VariantLabels;
 
   // Transition
-  transition?: Transition
+  transition?: Transition;
 
   // Variants
-  variants?: Variants
+  variants?: Variants;
 
   // Style
-  style?: MotionStyle
+  style?: MotionStyle;
 
   // Layout
-  layout?: boolean | "position" | "size"
-  layoutId?: string
-  layoutDependency?: any
-  layoutScroll?: boolean
+  layout?: boolean | "position" | "size";
+  layoutId?: string;
+  layoutDependency?: any;
+  layoutScroll?: boolean;
 
   // Gestures
-  whileHover?: VariantLabels | TargetAndTransition
-  whileTap?: VariantLabels | TargetAndTransition
-  whileFocus?: VariantLabels | TargetAndTransition
-  whileDrag?: VariantLabels | TargetAndTransition
-  whileInView?: VariantLabels | TargetAndTransition
+  whileHover?: VariantLabels | TargetAndTransition;
+  whileTap?: VariantLabels | TargetAndTransition;
+  whileFocus?: VariantLabels | TargetAndTransition;
+  whileDrag?: VariantLabels | TargetAndTransition;
+  whileInView?: VariantLabels | TargetAndTransition;
 
   // Drag
-  drag?: boolean | "x" | "y"
-  dragConstraints?: Constraints | RefObject<Element>
-  dragElastic?: DragElastic
-  dragMomentum?: boolean
-  dragTransition?: InertiaOptions
-  dragPropagation?: boolean
-  dragSnapToOrigin?: boolean
+  drag?: boolean | "x" | "y";
+  dragConstraints?: Constraints | RefObject<Element>;
+  dragElastic?: DragElastic;
+  dragMomentum?: boolean;
+  dragTransition?: InertiaOptions;
+  dragPropagation?: boolean;
+  dragSnapToOrigin?: boolean;
 
   // Viewport
-  viewport?: ViewportOptions
+  viewport?: ViewportOptions;
 
   // Events
-  onUpdate?: (latest: Target) => void
-  onAnimationStart?: (definition: AnimationDefinition) => void
-  onAnimationComplete?: (definition: AnimationDefinition) => void
+  onUpdate?: (latest: Target) => void;
+  onAnimationStart?: (definition: AnimationDefinition) => void;
+  onAnimationComplete?: (definition: AnimationDefinition) => void;
 
   // Hover events
-  onHoverStart?: (event: MouseEvent, info: EventInfo) => void
-  onHoverEnd?: (event: MouseEvent, info: EventInfo) => void
+  onHoverStart?: (event: MouseEvent, info: EventInfo) => void;
+  onHoverEnd?: (event: MouseEvent, info: EventInfo) => void;
 
   // Tap events
-  onTap?: (event: MouseEvent | TouchEvent | PointerEvent, info: TapInfo) => void
-  onTapStart?: (event: MouseEvent | TouchEvent | PointerEvent, info: TapInfo) => void
-  onTapCancel?: (event: MouseEvent | TouchEvent | PointerEvent, info: TapInfo) => void
+  onTap?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: TapInfo,
+  ) => void;
+  onTapStart?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: TapInfo,
+  ) => void;
+  onTapCancel?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: TapInfo,
+  ) => void;
 
   // Focus events
-  onFocus?: (event: FocusEvent) => void
-  onBlur?: (event: FocusEvent) => void
+  onFocus?: (event: FocusEvent) => void;
+  onBlur?: (event: FocusEvent) => void;
 
   // Drag events
-  onDragStart?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
-  onDrag?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
-  onDragEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
+  onDragStart?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
+  onDrag?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
+  onDragEnd?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
 
   // Viewport events
-  onViewportEnter?: (entry: IntersectionObserverEntry | null) => void
-  onViewportLeave?: (entry: IntersectionObserverEntry | null) => void
+  onViewportEnter?: (entry: IntersectionObserverEntry | null) => void;
+  onViewportLeave?: (entry: IntersectionObserverEntry | null) => void;
 
   // Pan events
-  onPan?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
-  onPanStart?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
-  onPanEnd?: (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void
+  onPan?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
+  onPanStart?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
+  onPanEnd?: (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo,
+  ) => void;
 }
 ```
 
@@ -120,6 +147,7 @@ Defines the target animation state. Accepts object, variant label, or animation 
 ```
 
 **Type:**
+
 ```typescript
 animate?: AnimationControls | TargetAndTransition | VariantLabels
 ```
@@ -140,6 +168,7 @@ Sets the initial state before animation. Set to `false` to disable initial anima
 ```
 
 **Type:**
+
 ```typescript
 initial?: boolean | Target | VariantLabels
 ```
@@ -159,6 +188,7 @@ Defines animation when component is removed from DOM. Requires `AnimatePresence`
 ```
 
 **Type:**
+
 ```typescript
 exit?: TargetAndTransition | VariantLabels
 ```
@@ -182,6 +212,7 @@ Motion-specific style prop that supports individual transform properties.
 ```
 
 **Transform properties:**
+
 - `x`, `y`, `z` - Translation (px)
 - `scale`, `scaleX`, `scaleY` - Scale (unitless)
 - `rotate`, `rotateX`, `rotateY`, `rotateZ` - Rotation (deg)
@@ -209,6 +240,7 @@ Animation applied while element is hovered.
 ```
 
 **Type:**
+
 ```typescript
 whileHover?: VariantLabels | TargetAndTransition
 ```
@@ -224,6 +256,7 @@ Animation applied while element is pressed.
 ```
 
 **Type:**
+
 ```typescript
 whileTap?: VariantLabels | TargetAndTransition
 ```
@@ -239,6 +272,7 @@ Animation applied while element has focus.
 ```
 
 **Type:**
+
 ```typescript
 whileFocus?: VariantLabels | TargetAndTransition
 ```
@@ -255,6 +289,7 @@ Animation applied while element is being dragged.
 ```
 
 **Type:**
+
 ```typescript
 whileDrag?: VariantLabels | TargetAndTransition
 ```
@@ -272,6 +307,7 @@ Animation applied while element is in viewport.
 ```
 
 **Type:**
+
 ```typescript
 whileInView?: VariantLabels | TargetAndTransition
 ```
@@ -296,6 +332,7 @@ Enables automatic layout animations for position/size changes.
 ```
 
 **Type:**
+
 ```typescript
 layout?: boolean | "position" | "size"
 ```
@@ -317,6 +354,7 @@ Creates shared layout animations between different components.
 ```
 
 **Type:**
+
 ```typescript
 layoutId?: string
 ```
@@ -333,6 +371,7 @@ Forces layout animation when this value changes.
 ```
 
 **Type:**
+
 ```typescript
 layoutDependency?: any
 ```
@@ -346,37 +385,37 @@ layoutDependency?: any
 ```typescript
 interface Transition {
   // Duration-based (tween)
-  duration?: number
-  ease?: Easing | Easing[]
-  times?: number[]
+  duration?: number;
+  ease?: Easing | Easing[];
+  times?: number[];
 
   // Spring-based
-  type?: "tween" | "spring" | "inertia"
-  stiffness?: number
-  damping?: number
-  mass?: number
-  velocity?: number
-  restSpeed?: number
-  restDelta?: number
+  type?: "tween" | "spring" | "inertia";
+  stiffness?: number;
+  damping?: number;
+  mass?: number;
+  velocity?: number;
+  restSpeed?: number;
+  restDelta?: number;
 
   // Visual spring (easier configuration)
-  visualDuration?: number
-  bounce?: number
+  visualDuration?: number;
+  bounce?: number;
 
   // Timing
-  delay?: number
-  delayChildren?: number
-  staggerChildren?: number
-  staggerDirection?: 1 | -1
+  delay?: number;
+  delayChildren?: number;
+  staggerChildren?: number;
+  staggerDirection?: 1 | -1;
 
   // Orchestration
-  when?: "beforeChildren" | "afterChildren" | false
-  repeat?: number
-  repeatType?: "loop" | "reverse" | "mirror"
-  repeatDelay?: number
+  when?: "beforeChildren" | "afterChildren" | false;
+  repeat?: number;
+  repeatType?: "loop" | "reverse" | "mirror";
+  repeatDelay?: number;
 
   // Per-property transitions
-  [key: string]: any
+  [key: string]: any;
 }
 ```
 
@@ -395,6 +434,7 @@ interface Transition {
 ```
 
 **Easing options:**
+
 - `"linear"`
 - `"easeIn"`, `"easeOut"`, `"easeInOut"`
 - `"circIn"`, `"circOut"`, `"circInOut"`
@@ -456,13 +496,13 @@ Used automatically in drag. Can be customized:
 const containerVariants = {
   visible: {
     transition: {
-      staggerChildren: 0.1,        // Delay between each child
-      delayChildren: 0.2,          // Delay before first child
-      staggerDirection: 1,         // 1 = forward, -1 = reverse
-      when: "beforeChildren"       // Animate parent before/after children
-    }
-  }
-}
+      staggerChildren: 0.1, // Delay between each child
+      delayChildren: 0.2, // Delay before first child
+      staggerDirection: 1, // 1 = forward, -1 = reverse
+      when: "beforeChildren", // Animate parent before/after children
+    },
+  },
+};
 ```
 
 **Per-property transitions:**
@@ -502,22 +542,22 @@ Variants are predefined animation states that can be applied to components and t
 
 ```typescript
 type Variants = {
-  [key: string]: TargetAndTransition
-}
+  [key: string]: TargetAndTransition;
+};
 
 // Example
 const variants: Variants = {
   hidden: {
     opacity: 0,
     y: 20,
-    transition: { duration: 0.3 }
+    transition: { duration: 0.3 },
   },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, delay: 0.1 }
-  }
-}
+    transition: { duration: 0.5, delay: 0.1 },
+  },
+};
 ```
 
 ### Variant Propagation
@@ -605,15 +645,16 @@ function Component() {
 **Returns:** `[scope: RefObject, animate: AnimateFunction]`
 
 **AnimationControls methods:**
+
 ```typescript
-const controls = animate(element, { x: 100 })
-controls.play()
-controls.pause()
-controls.stop()
-controls.cancel()
-controls.speed = 0.5
-controls.time = 0
-controls.then(() => console.log("Complete"))
+const controls = animate(element, { x: 100 });
+controls.play();
+controls.pause();
+controls.stop();
+controls.cancel();
+controls.speed = 0.5;
+controls.time = 0;
+controls.then(() => console.log("Complete"));
 ```
 
 ### useMotionValue
@@ -676,14 +717,15 @@ const springX = useSpring(x, { stiffness: 300, damping: 20 })
 ```
 
 **Options:**
+
 ```typescript
 interface SpringOptions {
-  stiffness?: number
-  damping?: number
-  mass?: number
-  velocity?: number
-  restSpeed?: number
-  restDelta?: number
+  stiffness?: number;
+  damping?: number;
+  mass?: number;
+  velocity?: number;
+  restSpeed?: number;
+  restDelta?: number;
 }
 ```
 
@@ -707,12 +749,13 @@ const { scrollYProgress } = useScroll({
 ```
 
 **Options:**
+
 ```typescript
 interface ScrollOptions {
-  target?: RefObject<Element>
-  offset?: ["start" | "end" | string, "start" | "end" | string]
-  container?: RefObject<Element>
-  layoutEffect?: boolean
+  target?: RefObject<Element>;
+  offset?: ["start" | "end" | string, "start" | "end" | string];
+  container?: RefObject<Element>;
+  layoutEffect?: boolean;
 }
 ```
 
@@ -736,12 +779,13 @@ const isInView = useInView(ref, {
 ```
 
 **Options:**
+
 ```typescript
 interface InViewOptions {
-  once?: boolean
-  amount?: "some" | "all" | number
-  margin?: string
-  root?: RefObject<Element>
+  once?: boolean;
+  amount?: "some" | "all" | number;
+  margin?: string;
+  root?: RefObject<Element>;
 }
 ```
 
@@ -781,16 +825,16 @@ controls.set({ x: 0 })
 Detect if component is present (for custom exit animations).
 
 ```typescript
-import { usePresence } from "framer-motion"
+import { usePresence } from "framer-motion";
 
-const [isPresent, safeToRemove] = usePresence()
+const [isPresent, safeToRemove] = usePresence();
 
 useEffect(() => {
   if (!isPresent) {
     // Perform exit animation
-    animate(ref.current, { opacity: 0 }).then(safeToRemove)
+    animate(ref.current, { opacity: 0 }).then(safeToRemove);
   }
-}, [isPresent])
+}, [isPresent]);
 ```
 
 ---
@@ -821,25 +865,26 @@ import { AnimatePresence } from "framer-motion"
 ```typescript
 interface AnimatePresenceProps {
   // Initial animation on first mount
-  initial?: boolean
+  initial?: boolean;
 
   // Custom data for exit animations
-  custom?: any
+  custom?: any;
 
   // Wait for all exiting animations to complete
-  mode?: "wait" | "sync" | "popLayout"
+  mode?: "wait" | "sync" | "popLayout";
 
   // Callback when all exit animations complete
-  onExitComplete?: () => void
+  onExitComplete?: () => void;
 
   // Propagate exit to nested AnimatePresence
-  propagate?: boolean
+  propagate?: boolean;
 }
 ```
 
 ### Mode Options
 
 **"sync"** (default) - Exit and enter animations happen simultaneously:
+
 ```typescript
 <AnimatePresence mode="sync">
   <Component key={page} />
@@ -847,6 +892,7 @@ interface AnimatePresenceProps {
 ```
 
 **"wait"** - Wait for exit animation before starting enter animation:
+
 ```typescript
 <AnimatePresence mode="wait">
   <Component key={page} />
@@ -854,6 +900,7 @@ interface AnimatePresenceProps {
 ```
 
 **"popLayout"** - Exit components render in a separate layer:
+
 ```typescript
 <AnimatePresence mode="popLayout">
   {items.map(item => (
@@ -892,16 +939,16 @@ const variants = {
 Create staggered delays for child animations.
 
 ```typescript
-import { stagger } from "framer-motion"
+import { stagger } from "framer-motion";
 
-animate("li", { opacity: 1 }, { delay: stagger(0.1) })
+animate("li", { opacity: 1 }, { delay: stagger(0.1) });
 
 // With options
 stagger(0.1, {
   startDelay: 0.2,
   from: "first" | "last" | "center" | number,
-  ease: "easeInOut"
-})
+  ease: "easeInOut",
+});
 ```
 
 ### animate (standalone)
@@ -909,17 +956,17 @@ stagger(0.1, {
 Animate any element imperatively.
 
 ```typescript
-import { animate } from "framer-motion"
+import { animate } from "framer-motion";
 
 // Single element
-animate(element, { x: 100 }, { duration: 0.5 })
+animate(element, { x: 100 }, { duration: 0.5 });
 
 // Selector
-animate(".box", { opacity: 1 })
+animate(".box", { opacity: 1 });
 
 // Returns controls
-const controls = animate(element, { x: 100 })
-controls.pause()
+const controls = animate(element, { x: 100 });
+controls.pause();
 ```
 
 ### transform
@@ -927,9 +974,9 @@ controls.pause()
 Transform values without motion values.
 
 ```typescript
-import { transform } from "framer-motion"
+import { transform } from "framer-motion";
 
-const output = transform(input, [0, 100], [0, 1])
+const output = transform(input, [0, 100], [0, 1]);
 ```
 
 ### mix
@@ -937,9 +984,9 @@ const output = transform(input, [0, 100], [0, 1])
 Mix two values.
 
 ```typescript
-import { mix } from "framer-motion"
+import { mix } from "framer-motion";
 
-const output = mix(0, 100, 0.5) // 50
+const output = mix(0, 100, 0.5); // 50
 ```
 
 ### clamp
@@ -947,9 +994,9 @@ const output = mix(0, 100, 0.5) // 50
 Clamp value between min and max.
 
 ```typescript
-import { clamp } from "framer-motion"
+import { clamp } from "framer-motion";
 
-const output = clamp(0, 100, 150) // 100
+const output = clamp(0, 100, 150); // 100
 ```
 
 ---
@@ -960,10 +1007,10 @@ const output = clamp(0, 100, 150) // 100
 
 ```typescript
 interface PanInfo {
-  point: Point         // Page coordinates
-  delta: Point         // Change since last event
-  offset: Point        // Offset from gesture start
-  velocity: Point      // Current velocity
+  point: Point; // Page coordinates
+  delta: Point; // Change since last event
+  offset: Point; // Offset from gesture start
+  velocity: Point; // Current velocity
 }
 ```
 
@@ -971,7 +1018,7 @@ interface PanInfo {
 
 ```typescript
 interface TapInfo {
-  point: Point         // Page coordinates
+  point: Point; // Page coordinates
 }
 ```
 
@@ -979,8 +1026,8 @@ interface TapInfo {
 
 ```typescript
 interface Point {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 ```
 
@@ -998,8 +1045,8 @@ import type {
   MotionProps,
   AnimationControls,
   PanInfo,
-  TapInfo
-} from "framer-motion"
+  TapInfo,
+} from "framer-motion";
 ```
 
 ### Custom Component with Motion

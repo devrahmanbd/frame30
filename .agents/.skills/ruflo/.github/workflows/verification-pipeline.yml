@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       verification_mode:
-        description: 'Verification mode'
+        description: "Verification mode"
         required: false
-        default: 'full'
+        default: "full"
         type: choice
         options:
           - full
@@ -18,7 +18,7 @@ on:
           - security-only
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
   CACHE_VERSION: v1
 
 jobs:
@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Generate verification ID
         id: setup
@@ -76,7 +76,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Restore dependencies
         uses: actions/cache@v4
@@ -129,7 +129,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Restore dependencies
         uses: actions/cache@v4
@@ -191,7 +191,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: |
@@ -228,7 +228,7 @@ jobs:
           echo "📊 Generating coverage report..."
           npm run test:coverage || echo "⚠️ Coverage generation failed (non-blocking)"
         continue-on-error: true
-          
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -252,7 +252,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -321,7 +321,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       # NOTE: The previous `download-artifact` step here pointed at an
       # artifact name (`build-artifacts-${verification-id}`) that no job

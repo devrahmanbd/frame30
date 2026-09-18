@@ -10,6 +10,7 @@ description: Modern animation library for React and JavaScript. Create smooth, p
 Motion (formerly Framer Motion) is a production-ready animation library for React and JavaScript that enables declarative, performant animations with minimal code. It provides `motion` components that wrap HTML elements with animation superpowers, supports gesture recognition (hover, tap, drag, focus), and includes advanced features like layout animations, exit animations, and spring physics.
 
 **When to use this skill:**
+
 - Building interactive UI components (buttons, cards, menus)
 - Creating micro-interactions and hover effects
 - Implementing page transitions and route animations
@@ -20,6 +21,7 @@ Motion (formerly Framer Motion) is a production-ready animation library for Reac
 - Replacing CSS transitions with more powerful, controllable animations
 
 **Technology:**
+
 - **Motion** (v11+) - The modern, smaller library from Framer Motion creators
 - **Framer Motion** - The full-featured predecessor (still widely used)
 - React 18+ compatible, also supports Vue
@@ -65,10 +67,7 @@ const [isOpen, setIsOpen] = useState(false)
 Set the initial state before animation using the `initial` prop:
 
 ```jsx
-<motion.div
-  initial={{ opacity: 0, y: 50 }}
-  animate={{ opacity: 1, y: 0 }}
-/>
+<motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} />
 ```
 
 Set `initial={false}` to disable initial animations on mount.
@@ -101,6 +100,7 @@ Control how animations move between states using the `transition` prop:
 ```
 
 **Transition types:**
+
 - `"tween"` (default) - Duration-based with easing
 - `"spring"` - Physics-based spring animation
 - `"inertia"` - Decelerating animation (used in drag)
@@ -285,7 +285,7 @@ Make elements draggable with the `drag` prop:
 Animate components when they're removed from the DOM using `AnimatePresence`:
 
 ```jsx
-import { AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion";
 
 // Basic exit animation
 <AnimatePresence>
@@ -297,10 +297,11 @@ import { AnimatePresence } from "framer-motion"
       exit={{ opacity: 0 }}
     />
   )}
-</AnimatePresence>
+</AnimatePresence>;
 ```
 
 **Key requirements:**
+
 - Component must be direct child of `<AnimatePresence>`
 - Must have a unique `key` prop
 - Use `exit` prop to define exit animation
@@ -309,13 +310,13 @@ import { AnimatePresence } from "framer-motion"
 
 ```jsx
 <AnimatePresence>
-  {items.map(item => (
+  {items.map((item) => (
     <motion.li
       key={item.id}
       initial={{ opacity: 0, x: -50 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 50 }}
-      layout  // Smooth layout shifts
+      layout // Smooth layout shifts
     >
       {item.name}
     </motion.li>
@@ -431,7 +432,7 @@ Animate elements when they enter the viewport using `whileInView`:
 <motion.div
   initial={{ opacity: 0, y: 50 }}
   whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true, amount: 0.8 }}  // once: trigger once, amount: 80% visible
+  viewport={{ once: true, amount: 0.8 }} // once: trigger once, amount: 80% visible
   transition={{ duration: 0.5 }}
 >
   Animates when scrolled into view
@@ -439,6 +440,7 @@ Animate elements when they enter the viewport using `whileInView`:
 ```
 
 **Viewport options:**
+
 - `once: true` - Animation triggers only once
 - `amount: 0.5` - Percentage of element visible (0-1) or "some" | "all"
 - `margin: "-100px"` - Offset viewport boundaries
@@ -453,9 +455,9 @@ Animate elements when they enter the viewport using `whileInView`:
   variants={{
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 }
+      transition: { staggerChildren: 0.1 },
     },
-    hidden: { opacity: 0 }
+    hidden: { opacity: 0 },
   }}
 >
   <motion.li variants={itemVariants} />
@@ -498,6 +500,7 @@ Use spring physics for natural, bouncy animations:
 ```
 
 **Spring presets:**
+
 - **Gentle**: `stiffness: 100, damping: 20`
 - **Wobbly**: `stiffness: 200, damping: 10`
 - **Stiff**: `stiffness: 400, damping: 30`
@@ -511,11 +514,11 @@ Motion provides declarative gesture handlers:
 
 ```jsx
 <motion.div
-  whileHover={{ scale: 1.1 }}        // Pointer hovers over element
-  whileTap={{ scale: 0.9 }}          // Primary pointer presses element
-  whileFocus={{ outline: "2px" }}    // Element gains focus
-  whileDrag={{ scale: 1.1 }}         // Element is being dragged
-  whileInView={{ opacity: 1 }}       // Element is in viewport
+  whileHover={{ scale: 1.1 }} // Pointer hovers over element
+  whileTap={{ scale: 0.9 }} // Primary pointer presses element
+  whileFocus={{ outline: "2px" }} // Element gains focus
+  whileDrag={{ scale: 1.1 }} // Element is being dragged
+  whileInView={{ opacity: 1 }} // Element is in viewport
 />
 ```
 
@@ -537,6 +540,7 @@ Motion provides declarative gesture handlers:
 ```
 
 **Event info objects contain:**
+
 - `point: { x, y }` - Page coordinates
 - `offset: { x, y }` - Offset from drag start
 - `velocity: { x, y }` - Drag velocity
@@ -548,19 +552,19 @@ Motion provides declarative gesture handlers:
 Manually control animations with the `useAnimate` hook:
 
 ```jsx
-import { useAnimate } from "framer-motion"
+import { useAnimate } from "framer-motion";
 
 function Component() {
-  const [scope, animate] = useAnimate()
+  const [scope, animate] = useAnimate();
 
   useEffect(() => {
     // Animate multiple elements
     animate([
       [scope.current, { opacity: 1 }],
       ["li", { x: 0, opacity: 1 }, { delay: stagger(0.1) }],
-      [".button", { scale: 1.2 }]
-    ])
-  }, [])
+      [".button", { scale: 1.2 }],
+    ]);
+  }, []);
 
   return (
     <div ref={scope}>
@@ -570,19 +574,19 @@ function Component() {
       </ul>
       <button className="button">Click</button>
     </div>
-  )
+  );
 }
 ```
 
 **Animation controls:**
 
 ```jsx
-const controls = animate(element, { x: 100 })
-controls.play()
-controls.pause()
-controls.stop()
-controls.speed = 0.5
-controls.time = 0  // Seek to start
+const controls = animate(element, { x: 100 });
+controls.play();
+controls.pause();
+controls.stop();
+controls.speed = 0.5;
+controls.time = 0; // Seek to start
 ```
 
 ### useSpring
@@ -590,16 +594,16 @@ controls.time = 0  // Seek to start
 Create spring-animated motion values:
 
 ```jsx
-import { useSpring } from "framer-motion"
+import { useSpring } from "framer-motion";
 
 function Component() {
-  const x = useSpring(0, { stiffness: 300, damping: 20 })
+  const x = useSpring(0, { stiffness: 300, damping: 20 });
 
   return (
     <motion.div style={{ x }}>
       <button onClick={() => x.set(100)}>Move</button>
     </motion.div>
-  )
+  );
 }
 ```
 
@@ -608,17 +612,13 @@ function Component() {
 Detect when an element is in viewport:
 
 ```jsx
-import { useInView } from "framer-motion"
+import { useInView } from "framer-motion";
 
 function Component() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, amount: 0.5 })
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.5 });
 
-  return (
-    <div ref={ref}>
-      {isInView ? "In view!" : "Not in view"}
-    </div>
-  )
+  return <div ref={ref}>{isInView ? "In view!" : "Not in view"}</div>;
 }
 ```
 
@@ -629,18 +629,20 @@ function Component() {
 Combine Motion for React state-based animations and GSAP for complex timelines:
 
 ```jsx
-import { motion } from "framer-motion"
-import gsap from "gsap"
+import { motion } from "framer-motion";
+import gsap from "gsap";
 
 function Component() {
-  const boxRef = useRef()
+  const boxRef = useRef();
 
   const handleClick = () => {
     // Use GSAP for complex timeline
-    const tl = gsap.timeline()
-    tl.to(boxRef.current, { rotation: 360, duration: 1 })
-      .to(boxRef.current, { scale: 1.5, duration: 0.5 })
-  }
+    const tl = gsap.timeline();
+    tl.to(boxRef.current, { rotation: 360, duration: 1 }).to(boxRef.current, {
+      scale: 1.5,
+      duration: 0.5,
+    });
+  };
 
   return (
     // Use Motion for hover/tap/layout animations
@@ -649,7 +651,7 @@ function Component() {
       whileHover={{ scale: 1.1 }}
       onClick={handleClick}
     />
-  )
+  );
 }
 ```
 
@@ -658,16 +660,16 @@ function Component() {
 Animate 3D objects using Motion values:
 
 ```jsx
-import { motion } from "framer-motion"
-import { useFrame } from "@react-three/fiber"
+import { motion } from "framer-motion";
+import { useFrame } from "@react-three/fiber";
 
 function Box() {
-  const x = useMotionValue(0)
+  const x = useMotionValue(0);
 
   useFrame(() => {
     // Sync Motion value with Three.js position
-    meshRef.current.position.x = x.get()
-  })
+    meshRef.current.position.x = x.get();
+  });
 
   return (
     <>
@@ -681,7 +683,7 @@ function Box() {
         dragConstraints={{ left: -5, right: 5 }}
       />
     </>
-  )
+  );
 }
 ```
 
@@ -690,7 +692,7 @@ function Box() {
 Animate form validation states:
 
 ```jsx
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion";
 
 function FormField({ error }) {
   return (
@@ -698,7 +700,7 @@ function FormField({ error }) {
       <motion.input
         animate={{
           borderColor: error ? "#ff0000" : "#cccccc",
-          x: error ? [0, -10, 10, -10, 10, 0] : 0  // Shake animation
+          x: error ? [0, -10, 10, -10, 10, 0] : 0, // Shake animation
         }}
         transition={{ duration: 0.4 }}
       />
@@ -715,7 +717,7 @@ function FormField({ error }) {
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }
 ```
 
@@ -750,17 +752,17 @@ Motion supports individual transform properties for cleaner code:
 Respect user preferences for reduced motion:
 
 ```jsx
-import { useReducedMotion } from "framer-motion"
+import { useReducedMotion } from "framer-motion";
 
 function Component() {
-  const shouldReduceMotion = useReducedMotion()
+  const shouldReduceMotion = useReducedMotion();
 
   return (
     <motion.div
       animate={{ x: 100 }}
       transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.5 }}
     />
-  )
+  );
 }
 ```
 
@@ -793,7 +795,9 @@ Layout animations can be expensive. Optimize with:
 
 ```jsx
 // ❌ Wrong - No AnimatePresence
-{show && <motion.div exit={{ opacity: 0 }} />}
+{
+  show && <motion.div exit={{ opacity: 0 }} />;
+}
 ```
 
 ```jsx
@@ -810,14 +814,16 @@ Layout animations can be expensive. Optimize with:
 ```jsx
 // ❌ Wrong - No key
 <AnimatePresence>
-  {items.map(item => <motion.div exit={{ opacity: 0 }} />)}
+  {items.map((item) => (
+    <motion.div exit={{ opacity: 0 }} />
+  ))}
 </AnimatePresence>
 ```
 
 ```jsx
 // ✅ Correct - Unique keys
 <AnimatePresence>
-  {items.map(item => (
+  {items.map((item) => (
     <motion.div key={item.id} exit={{ opacity: 0 }} />
   ))}
 </AnimatePresence>
@@ -843,18 +849,22 @@ Layout animations can be expensive. Optimize with:
 
 ```jsx
 // ❌ Too many layout animations
-{items.map(item => <motion.div layout>{item}</motion.div>)}
+{
+  items.map((item) => <motion.div layout>{item}</motion.div>);
+}
 ```
 
 ```jsx
 // ✅ Use layout only where needed, optimize others
-{items.map(item => (
-  <motion.div
-    key={item.id}
-    animate={{ opacity: 1 }}  // Cheaper animation
-    exit={{ opacity: 0 }}
-  />
-))}
+{
+  items.map((item) => (
+    <motion.div
+      key={item.id}
+      animate={{ opacity: 1 }} // Cheaper animation
+      exit={{ opacity: 0 }}
+    />
+  ));
+}
 ```
 
 ### 5. Not Using Variants for Complex Animations
@@ -886,7 +896,7 @@ const variants = {
 // ❌ Wrong - General transition won't apply to whileHover
 <motion.div
   whileHover={{ scale: 1.2 }}
-  transition={{ duration: 1 }}  // This applies to animate prop, not whileHover
+  transition={{ duration: 1 }} // This applies to animate prop, not whileHover
 />
 ```
 
@@ -895,15 +905,16 @@ const variants = {
 <motion.div
   whileHover={{
     scale: 1.2,
-    transition: { duration: 0.2 }  // Applies to hover start
+    transition: { duration: 0.2 }, // Applies to hover start
   }}
-  transition={{ duration: 0.5 }}  // Applies to hover end
+  transition={{ duration: 0.5 }} // Applies to hover end
 />
 ```
 
 ## Resources
 
 ### Official Documentation
+
 - [Motion Docs](https://motion.dev/) - Official Motion documentation
 - [Framer Motion Docs](https://www.framer.com/motion/) - Framer Motion (legacy)
 - [Motion GitHub](https://github.com/framer/motion) - Source code & examples
@@ -913,19 +924,23 @@ const variants = {
 This skill includes:
 
 **references/**
+
 - `api_reference.md` - Complete Motion API reference
 - `variants_patterns.md` - Variant patterns and orchestration
 - `gesture_guide.md` - Comprehensive gesture handling guide
 
 **scripts/**
+
 - `animation_generator.py` - Generate Motion component boilerplate
 - `variant_builder.py` - Interactive variant configuration tool
 
 **assets/**
+
 - `starter_motion/` - Complete Motion + Vite starter template
 - `examples/` - Real-world Motion component patterns
 
 ### Community Resources
+
 - [Motion Dev Discord](https://discord.gg/motion) - Official community
 - [Framer Motion Examples](https://www.framer.com/motion/examples/) - Interactive examples
 - [Motion Recipes](https://motion.dev/docs/recipes) - Common patterns

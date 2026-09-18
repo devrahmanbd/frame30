@@ -20,7 +20,15 @@
  * The module is dependency-injected (`storage`, `channel`, `now`, `logger`) so
  * the contract test drives it with fakes and no jsdom.
  */
-import { STYLE_KEYS, parseAst, type Breakpoint, type PropValue, type Section, type Slot, type TemplateKey } from "./builder-ast";
+import {
+  STYLE_KEYS,
+  parseAst,
+  type Breakpoint,
+  type PropValue,
+  type Section,
+  type Slot,
+  type TemplateKey,
+} from "./builder-ast";
 
 export const CLIPBOARD_VERSION = 2;
 export const CLIPBOARD_KEY = "framique.builder.clipboard.v2";
@@ -79,7 +87,10 @@ export function styleSubsetOf(node: Section): StylePatch {
   const patch: StylePatch = { props };
   if (node.bp) {
     const bp: Partial<Record<Breakpoint, Record<string, PropValue>>> = {};
-    for (const [device, layer] of Object.entries(node.bp) as [Breakpoint, Record<string, PropValue>][]) {
+    for (const [device, layer] of Object.entries(node.bp) as [
+      Breakpoint,
+      Record<string, PropValue>,
+    ][]) {
       const kept: Record<string, PropValue> = {};
       for (const [key, value] of Object.entries(layer ?? {})) {
         if (STYLE_KEY_SET.has(key)) kept[key] = value;
@@ -97,7 +108,10 @@ export function applyStylePatch(node: Section, patch: StylePatch): Section {
   const next: Section = { ...node, props: { ...node.props, ...patch.props } };
   if (patch.bp) {
     const bp = { ...(node.bp ?? {}) } as NonNullable<Section["bp"]>;
-    for (const [device, layer] of Object.entries(patch.bp) as [Breakpoint, Record<string, PropValue>][]) {
+    for (const [device, layer] of Object.entries(patch.bp) as [
+      Breakpoint,
+      Record<string, PropValue>,
+    ][]) {
       bp[device] = { ...(bp[device] ?? {}), ...layer };
     }
     next.bp = bp;
@@ -107,7 +121,10 @@ export function applyStylePatch(node: Section, patch: StylePatch): Section {
 }
 
 function countNodesDeep(nodes: Section[]): number {
-  return nodes.reduce((total, node) => total + 1 + countNodesDeep(node.children ?? []), 0);
+  return nodes.reduce(
+    (total, node) => total + 1 + countNodesDeep(node.children ?? []),
+    0,
+  );
 }
 
 /**
@@ -120,7 +137,11 @@ export function sanitiseClipboardNodes(nodes: unknown, slot: Slot): Section[] {
   return ast[slot].filter((node) => !node.invalid);
 }
 
-export function parseClipboard(raw: string | null): { ok: true; payload: ClipboardPayload } | { ok: false; reason: ClipboardRejection } {
+export function parseClipboard(
+  raw: string | null,
+):
+  | { ok: true; payload: ClipboardPayload }
+  | { ok: false; reason: ClipboardRejection } {
   if (!raw) return { ok: false, reason: "empty" };
   let value: unknown;
   try {
@@ -128,16 +149,24 @@ export function parseClipboard(raw: string | null): { ok: true; payload: Clipboa
   } catch {
     return { ok: false, reason: "malformed" };
   }
-  if (!value || typeof value !== "object") return { ok: false, reason: "malformed" };
+  if (!value || typeof value !== "object")
+    return { ok: false, reason: "malformed" };
   const envelope = value as Partial<ClipboardPayload>;
-  if (envelope.v !== CLIPBOARD_VERSION) return { ok: false, reason: "version_mismatch" };
+  if (envelope.v !== CLIPBOARD_VERSION)
+    return { ok: false, reason: "version_mismatch" };
   const slot = envelope.from?.slot;
   const template = envelope.from?.template;
   if (!slot || !template) return { ok: false, reason: "malformed" };
   const kind: ClipboardKind = envelope.kind === "style" ? "style" : "nodes";
   const nodes = sanitiseClipboardNodes(envelope.nodes, slot);
-  if (kind === "nodes" && nodes.length === 0) return { ok: false, reason: "malformed" };
-  const style = kind === "style" ? (nodes[0] ? styleSubsetOf(nodes[0]) : undefined) : undefined;
+  if (kind === "nodes" && nodes.length === 0)
+    return { ok: false, reason: "malformed" };
+  const style =
+    kind === "style"
+      ? nodes[0]
+        ? styleSubsetOf(nodes[0])
+        : undefined
+      : undefined;
   if (kind === "style" && !style) return { ok: false, reason: "malformed" };
   const payload: ClipboardPayload = {
     v: CLIPBOARD_VERSION,
@@ -180,17 +209,26 @@ export type ClipboardStoreDeps = {
 
 export type ClipboardStore = {
   read: () => ClipboardPayload | null;
-  write: (input: { kind: ClipboardKind; from: { template: TemplateKey; slot: Slot }; nodes: Section[] }) => WriteResult;
+  write: (input: {
+    kind: ClipboardKind;
+    from: { template: TemplateKey; slot: Slot };
+    nodes: Section[];
+  }) => WriteResult;
   clear: () => void;
-  subscribe: (listener: (payload: ClipboardPayload | null) => void) => () => void;
+  subscribe: (
+    listener: (payload: ClipboardPayload | null) => void,
+  ) => () => void;
   /** Called from a `storage` event handler; returns true when state changed. */
   ingestExternal: (raw: string | null) => boolean;
   dispose: () => void;
 };
 
-export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardStore {
+export function createClipboardStore(
+  deps: ClipboardStoreDeps = {},
+): ClipboardStore {
   const now = deps.now ?? (() => Date.now());
-  const origin = deps.origin ?? `tab-${Math.random().toString(36).slice(2, 10)}`;
+  const origin =
+    deps.origin ?? `tab-${Math.random().toString(36).slice(2, 10)}`;
   const log = deps.logger ?? (() => {});
   const listeners = new Set<(payload: ClipboardPayload | null) => void>();
   let memory: ClipboardPayload | null = null;
@@ -216,7 +254,8 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
     }
     const parsed = parseClipboard(raw);
     if (parsed.ok) return parsed.payload;
-    if (raw && parsed.reason !== "empty") log("builder.clipboard.rejected", { reason: parsed.reason });
+    if (raw && parsed.reason !== "empty")
+      log("builder.clipboard.rejected", { reason: parsed.reason });
     return null;
   };
 
@@ -224,7 +263,10 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
 
   if (deps.channel) {
     deps.channel.onmessage = (event: { data: unknown }) => {
-      const data = event.data as { origin?: string; raw?: string | null } | null;
+      const data = event.data as {
+        origin?: string;
+        raw?: string | null;
+      } | null;
       if (!data || data.origin === origin) return;
       if (typeof data.raw === "undefined") return;
       const parsed = parseClipboard(data.raw ?? null);
@@ -244,7 +286,8 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
     write({ kind, from, nodes }) {
       if (!nodes.length) return { ok: false, reason: "empty" };
       const total = countNodesDeep(nodes);
-      if (total > CLIPBOARD_LIMITS.maxNodes) return { ok: false, reason: "too_many_nodes" };
+      if (total > CLIPBOARD_LIMITS.maxNodes)
+        return { ok: false, reason: "too_many_nodes" };
       const payload: ClipboardPayload = {
         v: CLIPBOARD_VERSION,
         ts: now(),
@@ -252,7 +295,9 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
         kind,
         from,
         nodes,
-        ...(kind === "style" && nodes[0] ? { style: styleSubsetOf(nodes[0]) } : {}),
+        ...(kind === "style" && nodes[0]
+          ? { style: styleSubsetOf(nodes[0]) }
+          : {}),
       };
       let raw: string;
       try {
@@ -260,7 +305,8 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
       } catch {
         return { ok: false, reason: "malformed" };
       }
-      if (raw.length > CLIPBOARD_LIMITS.maxBytes) return { ok: false, reason: "too_large" };
+      if (raw.length > CLIPBOARD_LIMITS.maxBytes)
+        return { ok: false, reason: "too_large" };
       memory = payload;
       let persisted = false;
       if (deps.storage) {
@@ -270,7 +316,10 @@ export function createClipboardStore(deps: ClipboardStoreDeps = {}): ClipboardSt
         } catch (error) {
           // Quota or private-mode failure: the in-memory clipboard still works
           // for this tab, which is strictly better than throwing at ⌘C.
-          log("builder.clipboard.persist_failed", { error: String(error), bytes: raw.length });
+          log("builder.clipboard.persist_failed", {
+            error: String(error),
+            bytes: raw.length,
+          });
         }
       }
       try {

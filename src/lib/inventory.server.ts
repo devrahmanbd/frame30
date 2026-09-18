@@ -40,7 +40,10 @@ export function mapRpcError(message: string): CommerceError {
   const code = Object.keys(RPC_MESSAGES).find((k) => message.includes(k));
   if (code) return new CommerceError(code, RPC_MESSAGES[code] as string);
   log("warn", "commerce.rpc_failed", { detail: message.slice(0, 120) });
-  return new CommerceError("commerce_unavailable", "That action is temporarily unavailable");
+  return new CommerceError(
+    "commerce_unavailable",
+    "That action is temporarily unavailable",
+  );
 }
 
 export async function loadLocations(db: Client, merchantId: string) {
@@ -79,7 +82,11 @@ export async function saveLocation(
       active: input.active ?? true,
     };
     const query = input.id
-      ? db.from("inventory_locations").update(row).eq("id", input.id).eq("merchant_id", merchantId)
+      ? db
+          .from("inventory_locations")
+          .update(row)
+          .eq("id", input.id)
+          .eq("merchant_id", merchantId)
       : db.from("inventory_locations").insert(row);
     const { data, error } = await query.select("*").single();
     if (error) throw mapRpcError(error.message);
@@ -108,7 +115,11 @@ export type LevelRow = {
   lowStockThreshold: number | null;
 };
 
-export async function loadLevels(db: Client, merchantId: string, locationId?: string) {
+export async function loadLevels(
+  db: Client,
+  merchantId: string,
+  locationId?: string,
+) {
   return withSpan("commerce.levels_load", async () => {
     let q = db
       .from("inventory_levels")
@@ -176,9 +187,15 @@ export async function setLevel(
   });
 }
 
-export async function lowStock(db: Client, merchantId: string, fallbackThreshold = 5) {
+export async function lowStock(
+  db: Client,
+  merchantId: string,
+  fallbackThreshold = 5,
+) {
   const levels = await loadLevels(db, merchantId);
-  return levels.filter((l) => l.onHand <= (l.lowStockThreshold ?? fallbackThreshold));
+  return levels.filter(
+    (l) => l.onHand <= (l.lowStockThreshold ?? fallbackThreshold),
+  );
 }
 
 export async function loadTransfers(db: Client, merchantId: string) {
@@ -211,7 +228,8 @@ export async function createTransfer(
     const items = input.items
       .map((i) => ({ ...i, quantity: Math.floor(i.quantity) }))
       .filter((i) => i.quantity > 0);
-    if (items.length === 0) throw new CommerceError("no_items", "Add at least one item");
+    if (items.length === 0)
+      throw new CommerceError("no_items", "Add at least one item");
 
     const reference = `TRF-${Date.now().toString(36).toUpperCase()}`;
     const { data: transfer, error } = await db
@@ -229,14 +247,16 @@ export async function createTransfer(
       .single();
     if (error) throw mapRpcError(error.message);
 
-    const { error: itemError } = await db.from("inventory_transfer_items").insert(
-      items.map((i) => ({
-        merchant_id: merchantId,
-        transfer_id: transfer.id,
-        variant_id: i.variantId,
-        quantity: i.quantity,
-      })),
-    );
+    const { error: itemError } = await db
+      .from("inventory_transfer_items")
+      .insert(
+        items.map((i) => ({
+          merchant_id: merchantId,
+          transfer_id: transfer.id,
+          variant_id: i.variantId,
+          quantity: i.quantity,
+        })),
+      );
     if (itemError) throw mapRpcError(itemError.message);
     incr("framique_inventory_transfer_total", { outcome: "created" });
     return transfer;
@@ -252,7 +272,9 @@ export async function receiveTransfer(
 ) {
   return withSpan("commerce.transfer_receive", async () => {
     await enforceRateLimit("commerce.transfer", `${merchantId}:${actor}`);
-    const { data, error } = await db.rpc("inventory_transfer_receive", { _transfer_id: transferId });
+    const { data, error } = await db.rpc("inventory_transfer_receive", {
+      _transfer_id: transferId,
+    });
     if (error) throw mapRpcError(error.message);
     incr("framique_inventory_transfer_total", { outcome: "received" });
     return data;
@@ -261,7 +283,11 @@ export async function receiveTransfer(
 
 /* ---------------------------------- fulfilments --------------------------------- */
 
-export async function loadFulfilments(db: Client, merchantId: string, orderId?: string) {
+export async function loadFulfilments(
+  db: Client,
+  merchantId: string,
+  orderId?: string,
+) {
   let q = db
     .from("fulfilments")
     .select("*, fulfilment_items(id, order_item_id, quantity)")
@@ -297,10 +323,13 @@ export async function createFulfilment(
       );
     }
     const items = input.items
-      .map((i) => ({ order_item_id: i.orderItemId, quantity: Math.floor(i.quantity) }))
+      .map((i) => ({
+        order_item_id: i.orderItemId,
+        quantity: Math.floor(i.quantity),
+      }))
       .filter((i) => i.quantity > 0);
-    if (items.length === 0) throw new CommerceError("no_items", "Select at least one item");
-
+    if (items.length === 0)
+      throw new CommerceError("no_items", "Select at least one item");
 
     const { data, error } = await db.rpc("fulfilment_create", {
       _order_id: input.orderId,
@@ -329,8 +358,11 @@ export async function advanceFulfilment(
   return withSpan("commerce.fulfilment_advance", async () => {
     await enforceRateLimit("commerce.fulfil", `${merchantId}:${actor}`);
     const now = new Date().toISOString();
-    const patch: Database["public"]["Tables"]["fulfilments"]["Update"] = { status: input.status };
-    if (input.trackingNumber !== undefined) patch.tracking_number = input.trackingNumber;
+    const patch: Database["public"]["Tables"]["fulfilments"]["Update"] = {
+      status: input.status,
+    };
+    if (input.trackingNumber !== undefined)
+      patch.tracking_number = input.trackingNumber;
     if (input.carrierCode !== undefined) patch.carrier_code = input.carrierCode;
     if (input.status === "shipped") patch.shipped_at = now;
     if (input.status === "delivered") patch.delivered_at = now;
@@ -358,14 +390,20 @@ export async function issueOrderInvoice(
 ) {
   return withSpan("commerce.invoice_issue", async () => {
     await enforceRateLimit("commerce.invoice", `${merchantId}:${actor}`);
-    const { data, error } = await db.rpc("order_invoice_issue", { _order_id: orderId });
+    const { data, error } = await db.rpc("order_invoice_issue", {
+      _order_id: orderId,
+    });
     if (error) throw mapRpcError(error.message);
     incr("framique_order_invoice_total", {});
     return data;
   });
 }
 
-export async function loadOrderInvoice(db: Client, merchantId: string, orderId: string) {
+export async function loadOrderInvoice(
+  db: Client,
+  merchantId: string,
+  orderId: string,
+) {
   const { data } = await db
     .from("order_invoices")
     .select("*")

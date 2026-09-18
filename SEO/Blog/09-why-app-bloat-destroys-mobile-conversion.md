@@ -2,7 +2,7 @@
 
 > **Target Query:** `how to speed up shopify store on mobile`, `ecommerce page speed conversion`, `app bloat core web vitals`  
 > **Reading Time:** 8 minutes  
-> **Published:** October 2026  
+> **Published:** October 2026
 
 ---
 
@@ -35,6 +35,7 @@ Yet, the average Shopify and WooCommerce store takes **3.5 to 6 seconds to load*
 ## 2. What Happens When You Install 10 Shopify Apps
 
 When you install an app from the Shopify App Store, you aren't just adding a feature—you are granting external developers permission to inject JavaScript tags into your `theme.liquid` header:
+
 1. **Unminified External Requests:** Your customer's phone must initiate dozens of DNS lookups to third-party CDNs across the globe.
 2. **Main-Thread CPU Thrashing:** The mobile browser's single CPU thread is hijacked to parse megabytes of untracked JavaScript, causing visible UI freezes (**Interaction to Next Paint / INP > 250ms**).
 3. **Cumulative Layout Shift (CLS):** Late-loading popups, banners, and review stars cause content to jump on the screen while a customer is attempting to tap "Buy Now," triggering accidental mis-taps and cart abandonment.

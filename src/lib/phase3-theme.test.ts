@@ -57,7 +57,12 @@ describe("phase 3.1 tokens", () => {
   });
 
   it("emits shadow, motion and digit variables", () => {
-    const css = tokensToCss({ ...DEFAULT_TOKENS, shadow: "none", motion: "none", digits: "bengali" });
+    const css = tokensToCss({
+      ...DEFAULT_TOKENS,
+      shadow: "none",
+      motion: "none",
+      digits: "bengali",
+    });
     expect(css["--theme-shadow-md"]).toBe("none");
     expect(css["--theme-motion-duration"]).toBe("0ms");
     expect(css["--theme-digits"]).toBe("bengali");
@@ -72,7 +77,9 @@ describe("phase 3.1 tokens", () => {
 
   it("validates dark contrast independently of light", () => {
     // The shipped dark default must clear AA on its own, not by inheriting light.
-    expect(contrastRatio(DEFAULT_DARK_TOKENS.ink, DEFAULT_DARK_TOKENS.surface)).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(DEFAULT_DARK_TOKENS.ink, DEFAULT_DARK_TOKENS.surface),
+    ).toBeGreaterThanOrEqual(4.5);
   });
 
   it("font pairing sets both faces, custom leaves them alone", () => {
@@ -85,7 +92,10 @@ describe("phase 3.1 tokens", () => {
 
   it("currency display swaps the symbol without touching digits", () => {
     expect(formatDisplayMoney(120000, { compact: true })).toContain("৳");
-    const code = formatDisplayMoney(120000, { compact: true, currencyDisplay: "code" });
+    const code = formatDisplayMoney(120000, {
+      compact: true,
+      currencyDisplay: "code",
+    });
     expect(code.startsWith("BDT")).toBe(true);
     expect(code).toContain("1,200");
   });
@@ -98,7 +108,13 @@ describe("phase 3.1 preset swap", () => {
     const current = {
       index: {
         header: [],
-        main: [{ id: "mine-1", type: "rich_text" as const, props: { body: "keep me" } }],
+        main: [
+          {
+            id: "mine-1",
+            type: "rich_text" as const,
+            props: { body: "keep me" },
+          },
+        ],
         footer: [],
       },
     };
@@ -112,13 +128,23 @@ describe("phase 3.1 preset swap", () => {
   });
 
   it("does not duplicate a widget type the document already has", () => {
-    const presetHero = preset.templates.index.main.find((s) => s.type === "hero");
+    const presetHero = preset.templates.index.main.find(
+      (s) => s.type === "hero",
+    );
     if (!presetHero) return;
     const current = {
-      index: { header: [], main: [{ ...presetHero, id: "authored-hero", props: { heading: "Mine" } }], footer: [] },
+      index: {
+        header: [],
+        main: [
+          { ...presetHero, id: "authored-hero", props: { heading: "Mine" } },
+        ],
+        footer: [],
+      },
     };
     const result = applyPreset(current, preset);
-    const heroes = result.templates.index!.main.filter((s) => s.type === "hero");
+    const heroes = result.templates.index!.main.filter(
+      (s) => s.type === "hero",
+    );
     expect(heroes).toHaveLength(1);
     expect(heroes[0]?.props["heading"]).toBe("Mine");
   });
@@ -126,7 +152,9 @@ describe("phase 3.1 preset swap", () => {
   it("fills every template the preset ships", () => {
     const result = applyPreset({}, preset);
     for (const key of Object.keys(preset.templates)) {
-      expect(result.templates[key as keyof typeof result.templates]).toBeTruthy();
+      expect(
+        result.templates[key as keyof typeof result.templates],
+      ).toBeTruthy();
     }
     expect(result.kept).toBe(0);
     expect(result.added).toBeGreaterThan(0);

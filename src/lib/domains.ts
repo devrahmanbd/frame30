@@ -87,7 +87,8 @@ export function normalizeHostname(input: string): string {
   if (value.includes(":")) value = value.split(":")[0] ?? "";
   if (!value) throw new DomainInputError("domain.empty");
   if (value.length > 253) throw new DomainInputError("domain.too_long");
-  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(value)) throw new DomainInputError("domain.ip_not_allowed");
+  if (/^\d{1,3}(\.\d{1,3}){3}$/.test(value))
+    throw new DomainInputError("domain.ip_not_allowed");
 
   // Unicode domains are stored as punycode so DNS lookups and certificates match.
   let ascii = value;
@@ -107,7 +108,8 @@ export function normalizeHostname(input: string): string {
   for (const label of labels) {
     if (!LABEL_RE.test(label)) throw new DomainInputError("domain.invalid");
   }
-  if (/^\d+$/.test(labels[labels.length - 1] ?? "")) throw new DomainInputError("domain.invalid");
+  if (/^\d+$/.test(labels[labels.length - 1] ?? ""))
+    throw new DomainInputError("domain.invalid");
   if (labels.length > 2 && RESERVED_LABELS.has(labels[0] ?? "")) {
     throw new DomainInputError("domain.reserved_label");
   }
@@ -118,7 +120,9 @@ export function normalizeHostname(input: string): string {
 export function isApex(hostname: string): boolean {
   const labels = hostname.split(".");
   const lastTwo = labels.slice(-2).join(".");
-  return MULTI_PART_TLDS.has(lastTwo) ? labels.length === 3 : labels.length === 2;
+  return MULTI_PART_TLDS.has(lastTwo)
+    ? labels.length === 3
+    : labels.length === 2;
 }
 
 export const CHALLENGE_PREFIX = "_framique-challenge";
@@ -156,7 +160,13 @@ export function dnsInstructions(
   ];
   if (isApex(hostname)) {
     for (const ip of target.ips) {
-      records.push({ type: "A", name: hostname, value: ip, required: true, note: "routing" });
+      records.push({
+        type: "A",
+        name: hostname,
+        value: ip,
+        required: true,
+        note: "routing",
+      });
     }
     records.push({
       type: "ALIAS",
@@ -208,7 +218,10 @@ export type CertHealth = {
   daysLeft: number | null;
 };
 
-export function certHealth(expiresAt: string | null, now = Date.now()): CertHealth {
+export function certHealth(
+  expiresAt: string | null,
+  now = Date.now(),
+): CertHealth {
   if (!expiresAt) return { state: "none", daysLeft: null };
   const ms = new Date(expiresAt).getTime() - now;
   if (Number.isNaN(ms)) return { state: "none", daysLeft: null };
@@ -239,8 +252,20 @@ export function statusTone(status: DomainStatus): DomainTone {
 
 /** Ordered checklist rendered next to each domain so progress is legible. */
 export const DOMAIN_STAGES: { key: DomainStatus; reached: DomainStatus[] }[] = [
-  { key: "pending_dns", reached: ["pending_dns", "verifying", "dns_verified", "issuing_cert", "active"] },
-  { key: "verifying", reached: ["verifying", "dns_verified", "issuing_cert", "active"] },
+  {
+    key: "pending_dns",
+    reached: [
+      "pending_dns",
+      "verifying",
+      "dns_verified",
+      "issuing_cert",
+      "active",
+    ],
+  },
+  {
+    key: "verifying",
+    reached: ["verifying", "dns_verified", "issuing_cert", "active"],
+  },
   { key: "dns_verified", reached: ["dns_verified", "issuing_cert", "active"] },
   { key: "issuing_cert", reached: ["issuing_cert", "active"] },
   { key: "active", reached: ["active"] },
@@ -256,7 +281,9 @@ export function evaluateDns(input: {
   target: { cname: string; ips: string[] };
 }): { ownership: boolean; routing: boolean; reason: string | null } {
   const want = `framique-verification=${input.token}`;
-  const ownership = input.txt.some((t) => t.replace(/^"|"$/g, "").trim() === want);
+  const ownership = input.txt.some(
+    (t) => t.replace(/^"|"$/g, "").trim() === want,
+  );
   const wantHost = input.target.cname.replace(/\.$/, "").toLowerCase();
   const routing =
     input.cname.some((c) => c.replace(/\.$/, "").toLowerCase() === wantHost) ||

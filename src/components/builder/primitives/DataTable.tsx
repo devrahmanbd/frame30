@@ -8,7 +8,11 @@
  */
 
 export type DataTableColumn = { key: string; label: React.ReactNode };
-export type DataTableRow = { key: string; label: React.ReactNode; cells: Record<string, React.ReactNode> };
+export type DataTableRow = {
+  key: string;
+  label: React.ReactNode;
+  cells: Record<string, React.ReactNode>;
+};
 
 export function DataTable({
   caption,
@@ -27,7 +31,11 @@ export function DataTable({
       {/* Wide: a real table with sticky chrome. */}
       <div className="hidden max-h-[32rem] overflow-auto md:block">
         <table className="w-full border-collapse text-sm">
-          {caption && <caption className="px-3 py-2 text-left text-xs text-muted-foreground">{caption}</caption>}
+          {caption && (
+            <caption className="px-3 py-2 text-left text-xs text-muted-foreground">
+              {caption}
+            </caption>
+          )}
           <thead>
             <tr>
               <th
@@ -39,7 +47,11 @@ export function DataTable({
                 <span className="sr-only">Attribute</span>
               </th>
               {columns.map((column) => (
-                <th key={column.key} scope="col" className="sticky top-0 z-10 bg-muted px-3 py-2 text-left font-medium">
+                <th
+                  key={column.key}
+                  scope="col"
+                  className="sticky top-0 z-10 bg-muted px-3 py-2 text-left font-medium"
+                >
                   {column.label}
                 </th>
               ))}
@@ -55,7 +67,10 @@ export function DataTable({
                   {row.label}
                 </th>
                 {columns.map((column) => (
-                  <td key={column.key} className="px-3 py-2 text-muted-foreground">
+                  <td
+                    key={column.key}
+                    className="px-3 py-2 text-muted-foreground"
+                  >
                     {row.cells[column.key] ?? "—"}
                   </td>
                 ))}
@@ -72,7 +87,10 @@ export function DataTable({
             <h4 className="text-sm font-semibold">{column.label}</h4>
             <dl className="mt-2 space-y-1">
               {rows.map((row) => (
-                <div key={row.key} className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 text-sm">
+                <div
+                  key={row.key}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 text-sm"
+                >
                   <dt className="min-w-0 text-muted-foreground">{row.label}</dt>
                   <dd className="text-right">{row.cells[column.key] ?? "—"}</dd>
                 </div>

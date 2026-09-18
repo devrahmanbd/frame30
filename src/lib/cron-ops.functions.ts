@@ -56,7 +56,12 @@ export const cronSyncFn = createServerFn({ method: "POST" })
     return ownerGate(
       context.supabase,
       context.userId,
-      { action: "cron.sync", entity: "ops_cron_jobs", bucket: "ops.backup", kind: "write" },
+      {
+        action: "cron.sync",
+        entity: "ops_cron_jobs",
+        bucket: "ops.backup",
+        kind: "write",
+      },
       async () => ({ ...(await syncRegistry()), ...(await reapStaleLeases()) }),
     );
   });

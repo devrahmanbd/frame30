@@ -1,1 +1,395 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "label": "fraud.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L1"}, {"id": "root_fraud_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L17"}, {"id": "root_fraud_frauddesk", "label": "FraudDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L39"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "lib_owner_functions_ownerfraudfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "lib_owner_functions_ownersetflagfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_flagswitch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_ownerheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_ownertable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_statcard", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_statgrid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_ownerui_statepill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_fraud_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx", "target": "root_fraud_frauddesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L39", "weight": 1.0}], "raw_calls": [{"caller_nid": "root_fraud_frauddesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L40"}, {"caller_nid": "root_fraud_frauddesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L41"}, {"caller_nid": "root_fraud_frauddesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L42"}, {"caller_nid": "root_fraud_frauddesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L43"}, {"caller_nid": "root_fraud_frauddesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L45"}, {"caller_nid": "root_fraud_frauddesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L47"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L60"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L60"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L63"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L64"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L66"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L67"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L73"}, {"caller_nid": "root_fraud_frauddesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L73"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L74"}, {"caller_nid": "root_fraud_frauddesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L74"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L75"}, {"caller_nid": "root_fraud_frauddesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L75"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L76"}, {"caller_nid": "root_fraud_frauddesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L76"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L79"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L83"}, {"caller_nid": "root_fraud_frauddesk", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L83"}, {"caller_nid": "root_fraud_frauddesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx", "source_location": "L85"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "label": "fraud.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "root_fraud_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "root_fraud_frauddesk",
+      "label": "FraudDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L39"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "lib_owner_functions_ownerfraudfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "lib_owner_functions_ownersetflagfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_flagswitch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_ownerheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_ownertable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_statcard",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_statgrid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_ownerui_statepill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_fraud_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_fraud_tsx",
+      "target": "root_fraud_frauddesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "root_fraud_frauddesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/fraud.tsx",
+      "source_location": "L85"
+    }
+  ]
+}

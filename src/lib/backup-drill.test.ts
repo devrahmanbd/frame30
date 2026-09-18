@@ -10,8 +10,10 @@ import {
   totalRows,
 } from "./backup-drill";
 
-const full = () => BACKUP_MANIFEST.map((table, i) => ({ table, rows: (i + 1) * 10 }));
-const snap = (counts = full(), at = "2026-01-01T00:00:00.000Z") => buildSnapshot("platform", counts, at);
+const full = () =>
+  BACKUP_MANIFEST.map((table, i) => ({ table, rows: (i + 1) * 10 }));
+const snap = (counts = full(), at = "2026-01-01T00:00:00.000Z") =>
+  buildSnapshot("platform", counts, at);
 
 describe("checksumCounts", () => {
   it("is order-independent and stable", () => {
@@ -51,7 +53,10 @@ describe("buildSnapshot", () => {
 describe("evaluateDrill — happy path", () => {
   it("passes an identical read-back with every check green", () => {
     const before = snap();
-    const verdict = evaluateDrill(before, snap(full(), "2026-01-01T00:05:00.000Z"));
+    const verdict = evaluateDrill(
+      before,
+      snap(full(), "2026-01-01T00:05:00.000Z"),
+    );
     expect(verdict.status).toBe("passed");
     expect(verdict.failures).toEqual([]);
     expect(verdict.rowsVerified).toBe(totalRows(before));
@@ -72,15 +77,21 @@ describe("evaluateDrill — deny cases", () => {
     const verdict = evaluateDrill(snap(partial), snap(partial));
     expect(verdict.status).toBe("failed");
     expect(verdict.failures).toContain("manifest_coverage");
-    expect(verdict.checks.find((c) => c.name === "manifest_coverage")?.detail).toContain("missing:");
+    expect(
+      verdict.checks.find((c) => c.name === "manifest_coverage")?.detail,
+    ).toContain("missing:");
   });
 
   it("fails on row loss even when the rest of the artifact is intact", () => {
-    const after = full().map((c) => (c.table === "orders" ? { ...c, rows: c.rows - 1 } : c));
+    const after = full().map((c) =>
+      c.table === "orders" ? { ...c, rows: c.rows - 1 } : c,
+    );
     const verdict = evaluateDrill(snap(), snap(after));
     expect(verdict.status).toBe("failed");
     expect(verdict.failures).toContain("row_counts");
-    expect(verdict.checks.find((c) => c.name === "row_counts")?.detail).toContain("orders");
+    expect(
+      verdict.checks.find((c) => c.name === "row_counts")?.detail,
+    ).toContain("orders");
   });
 
   it("fails when a table disappears entirely after restore", () => {
@@ -108,7 +119,9 @@ describe("evaluateDrill — deny cases", () => {
 describe("evaluateDrill — replay", () => {
   it("is deterministic: replaying the same pair yields the same verdict", () => {
     const before = snap();
-    const after = snap(full().map((c) => (c.table === "refunds" ? { ...c, rows: 0 } : c)));
+    const after = snap(
+      full().map((c) => (c.table === "refunds" ? { ...c, rows: 0 } : c)),
+    );
     const first = evaluateDrill(before, after);
     const second = evaluateDrill(before, after);
     expect(second).toEqual(first);
@@ -130,14 +143,19 @@ describe("cadence", () => {
   });
 
   it("reports the next due time", () => {
-    expect(nextDrillAt("2026-01-01T00:00:00.000Z", 24)).toBe("2026-01-02T00:00:00.000Z");
+    expect(nextDrillAt("2026-01-01T00:00:00.000Z", 24)).toBe(
+      "2026-01-02T00:00:00.000Z",
+    );
     expect(nextDrillAt(null)).toBeNull();
   });
 });
 
 describe("audit trail", () => {
   it("renders every check into the ledger note, bounded and PII-free", () => {
-    const verdict = evaluateDrill(snap(), snap(full().filter((c) => c.table !== "orders")));
+    const verdict = evaluateDrill(
+      snap(),
+      snap(full().filter((c) => c.table !== "orders")),
+    );
     const notes = drillNotes(verdict);
     for (const check of verdict.checks) expect(notes).toContain(check.name);
     expect(notes).toContain("FAIL row_counts");

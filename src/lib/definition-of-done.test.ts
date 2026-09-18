@@ -7,7 +7,13 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import { TEMPLATE_KEYS, lintTemplate, parseAst, type Section, type ThemeAst } from "./builder-ast";
+import {
+  TEMPLATE_KEYS,
+  lintTemplate,
+  parseAst,
+  type Section,
+  type ThemeAst,
+} from "./builder-ast";
 import { THEME_PRESETS } from "./theme-presets";
 import { SHIPPED_BLUEPRINT_KEYS } from "./theme-blueprints";
 import { collectWidgetRequests } from "./widget-data";
@@ -38,7 +44,10 @@ describe("DoD 1 — presets parse clean, lint clean, render 7 templates EN + ব
   it("ships all seven templates on every preset", () => {
     for (const preset of PRESETS) {
       for (const template of TEMPLATE_KEYS) {
-        expect(preset.templates[template], `${preset.key}/${template}`).toBeTruthy();
+        expect(
+          preset.templates[template],
+          `${preset.key}/${template}`,
+        ).toBeTruthy();
       }
     }
   });
@@ -48,11 +57,17 @@ describe("DoD 1 — presets parse clean, lint clean, render 7 templates EN + ব
       for (const template of TEMPLATE_KEYS) {
         const ast = preset.templates[template];
         const parsed = parseAst(ast);
-        expect(JSON.parse(JSON.stringify(parsed)), `${preset.key}/${template}`).toEqual(
-          JSON.parse(JSON.stringify(parseAst(parsed))),
+        expect(
+          JSON.parse(JSON.stringify(parsed)),
+          `${preset.key}/${template}`,
+        ).toEqual(JSON.parse(JSON.stringify(parseAst(parsed))));
+        const errors = lintTemplate(parsed, template).filter(
+          (issue) => issue.level === "error",
         );
-        const errors = lintTemplate(parsed, template).filter((issue) => issue.level === "error");
-        expect(errors, `${preset.key}/${template}: ${errors.map((e) => e.message).join(", ")}`).toEqual([]);
+        expect(
+          errors,
+          `${preset.key}/${template}: ${errors.map((e) => e.message).join(", ")}`,
+        ).toEqual([]);
       }
     }
   });
@@ -74,13 +89,18 @@ describe("DoD 3 — one batched data call per template render", () => {
       for (const template of TEMPLATE_KEYS) {
         const bundle = collectWidgetRequests(preset.templates[template]);
         const keys = new Set(bundle.requests.map((r) => r.key));
-        expect(keys.size, `${preset.key}/${template} dedupe`).toBe(bundle.requests.length);
+        expect(keys.size, `${preset.key}/${template} dedupe`).toBe(
+          bundle.requests.length,
+        );
         const dataNodes = allSections(preset.templates[template]).filter(
           (node) => WIDGET_REGISTRY[node.type]?.data,
         );
         // Every data widget maps into the one bundle — no widget fetches alone.
         for (const node of dataNodes) {
-          expect(Object.keys(bundle.byNode), `${preset.key}/${template}/${node.type}`).toContain(node.id);
+          expect(
+            Object.keys(bundle.byNode),
+            `${preset.key}/${template}/${node.type}`,
+          ).toContain(node.id);
         }
       }
     }
@@ -90,15 +110,25 @@ describe("DoD 3 — one batched data call per template render", () => {
 describe("DoD 4 — money is a server integer with tabular numerals", () => {
   it("formats integer minor units and never accepts client math", () => {
     expect(formatDisplayMoney(120000, { compact: true })).toContain("1,200");
-    expect(formatDisplayMoney(120000, { compact: true, locale: "bn", digits: "bengali" })).toMatch(/[০-৯]/);
+    expect(
+      formatDisplayMoney(120000, {
+        compact: true,
+        locale: "bn",
+        digits: "bengali",
+      }),
+    ).toMatch(/[০-৯]/);
   });
 
   it("keeps money arithmetic out of widget renderers", () => {
     const dir = join(process.cwd(), "src/components/builder");
-    const files = readdirSync(dir).filter((f) => f.endsWith(".tsx") && !f.includes(".test."));
+    const files = readdirSync(dir).filter(
+      (f) => f.endsWith(".tsx") && !f.includes(".test."),
+    );
     for (const file of files) {
       const src = readFileSync(join(dir, file), "utf8");
-      expect(src, `${file} divides money client-side`).not.toMatch(/(price|total|amount)\w*\s*\/\s*100\b/i);
+      expect(src, `${file} divides money client-side`).not.toMatch(
+        /(price|total|amount)\w*\s*\/\s*100\b/i,
+      );
     }
   });
 });
@@ -109,14 +139,20 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     // so a widget authored for one vertical can be dropped into any theme. The
     // vertical modules (apparel / beauty / electronics) are code organisation
     // only — the tray reads the registry, never a per-theme allow list.
-    const registrySrc = readFileSync(join(process.cwd(), "src/lib/widget-registry.ts"), "utf8");
+    const registrySrc = readFileSync(
+      join(process.cwd(), "src/lib/widget-registry.ts"),
+      "utf8",
+    );
     const metaBlock = registrySrc.slice(
       registrySrc.indexOf("export type WidgetMeta"),
       registrySrc.indexOf("/** Per-type additions"),
     );
     expect(metaBlock).not.toMatch(/\btheme(s|Key)?\s*[?:]/);
 
-    const traySrc = readFileSync(join(process.cwd(), "src/components/builder/WidgetTray.tsx"), "utf8");
+    const traySrc = readFileSync(
+      join(process.cwd(), "src/components/builder/WidgetTray.tsx"),
+      "utf8",
+    );
     expect(traySrc).not.toMatch(/theme(Key)?\s*===/);
 
     // Vertical modules must stay a minority of the registry.
@@ -126,7 +162,8 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       const src = readFileSync(join(dir, file), "utf8");
       const map = src.slice(src.indexOf("_WIDGETS: Record<"));
       for (const match of map.matchAll(/^\s{2}([a-z_]+):/gm)) {
-        if ((WIDGET_TYPES as string[]).includes(match[1])) verticalTypes.add(match[1]);
+        if ((WIDGET_TYPES as string[]).includes(match[1]))
+          verticalTypes.add(match[1]);
       }
     }
     expect(verticalTypes.size / WIDGET_TYPES.length).toBeLessThan(0.5);
@@ -154,7 +191,10 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     for (const preset of PRESETS.filter((p) => blueprintKeys.has(p.key))) {
       for (const template of TEMPLATE_KEYS) {
         for (const node of allSections(preset.templates[template])) {
-          expect(WIDGET_REGISTRY[node.type], `${preset.key}: ${node.type}`).toBeDefined();
+          expect(
+            WIDGET_REGISTRY[node.type],
+            `${preset.key}: ${node.type}`,
+          ).toBeDefined();
         }
       }
     }
@@ -167,21 +207,34 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     // is asserted: each such widget drops into another blueprint's copy of the
     // same template kind (route data is a route contract, not a theme one) and
     // parses and lints clean.
-    const blueprints = PRESETS.filter((p) => (SHIPPED_BLUEPRINT_KEYS as readonly string[]).includes(p.key));
+    const blueprints = PRESETS.filter((p) =>
+      (SHIPPED_BLUEPRINT_KEYS as readonly string[]).includes(p.key),
+    );
     const usage = new Map<
       string,
-      { themes: Set<string>; template: (typeof TEMPLATE_KEYS)[number]; node: Section }
+      {
+        themes: Set<string>;
+        template: (typeof TEMPLATE_KEYS)[number];
+        node: Section;
+      }
     >();
     for (const preset of blueprints) {
       for (const template of TEMPLATE_KEYS) {
         for (const node of allSections(preset.templates[template])) {
           const entry = usage.get(node.type);
           if (entry) entry.themes.add(preset.key);
-          else usage.set(node.type, { themes: new Set([preset.key]), template, node });
+          else
+            usage.set(node.type, {
+              themes: new Set([preset.key]),
+              template,
+              node,
+            });
         }
       }
     }
-    const soloTypes = [...usage.entries()].filter(([, use]) => use.themes.size === 1);
+    const soloTypes = [...usage.entries()].filter(
+      ([, use]) => use.themes.size === 1,
+    );
     expect(soloTypes.length).toBeGreaterThan(0);
 
     for (const [type, use] of soloTypes) {
@@ -193,14 +246,20 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       // Page-level singletons (one FAQPage, one h1) are a page rule, not a
       // theme rule: drop the host's claimant so the graft is the only one.
       const clash = (node: Section) =>
-        (meta.seo?.jsonLd && WIDGET_REGISTRY[node.type]?.seo?.jsonLd === meta.seo.jsonLd) ||
+        (meta.seo?.jsonLd &&
+          WIDGET_REGISTRY[node.type]?.seo?.jsonLd === meta.seo.jsonLd) ||
         (meta.seo?.heading && WIDGET_REGISTRY[node.type]?.seo?.heading);
       const grafted = parseAst({
         ...base,
-        [slot]: [...(base[slot] ?? []).filter((node) => !clash(node)), { ...use.node, id: `graft-${type}` }],
+        [slot]: [
+          ...(base[slot] ?? []).filter((node) => !clash(node)),
+          { ...use.node, id: `graft-${type}` },
+        ],
       });
 
-      const placed = allSections(grafted).find((node) => node.id === `graft-${type}`);
+      const placed = allSections(grafted).find(
+        (node) => node.id === `graft-${type}`,
+      );
       expect(placed?.type, `${type} rejected by ${host.key}`).toBe(type);
       const errors = lintTemplate(grafted, use.template)
         .filter((issue) => issue.level === "error")
@@ -212,12 +271,12 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     }
   });
 
-
-
   it("has no renderer that branches on a theme key", () => {
     const dir = join(process.cwd(), "src/components/builder");
     const keys = PRESETS.map((p) => p.key);
-    for (const file of readdirSync(dir).filter((f) => f.endsWith(".tsx") && !f.includes(".test."))) {
+    for (const file of readdirSync(dir).filter(
+      (f) => f.endsWith(".tsx") && !f.includes(".test."),
+    )) {
       const src = readFileSync(join(dir, file), "utf8");
       for (const key of keys) {
         expect(src, `${file} branches on theme "${key}"`).not.toMatch(
@@ -229,7 +288,6 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
     }
   });
 
-
   it("keeps the registry a closed enum with a renderer for each type", () => {
     expect(WIDGET_TYPES.length).toBe(Object.keys(WIDGET_REGISTRY).length);
     for (const type of WIDGET_TYPES) {
@@ -240,7 +298,10 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
 
 describe("DoD 6 — custom code and plugins are sandboxed, versioned, budgeted, kill-switchable", () => {
   it("renders third-party markup only inside the sandbox", () => {
-    const sandbox = readFileSync(join(process.cwd(), "src/components/builder/HtmlSandbox.tsx"), "utf8");
+    const sandbox = readFileSync(
+      join(process.cwd(), "src/components/builder/HtmlSandbox.tsx"),
+      "utf8",
+    );
     expect(sandbox).toMatch(/sandbox=/);
     expect(sandbox).not.toMatch(/allow-same-origin[^"']*allow-scripts/);
   });
@@ -253,14 +314,20 @@ describe("DoD 6 — custom code and plugins are sandboxed, versioned, budgeted, 
   });
 
   it("keeps a kill switch on plugin blocks", () => {
-    const manifest = readFileSync(join(process.cwd(), "src/lib/plugin-manifest.ts"), "utf8");
+    const manifest = readFileSync(
+      join(process.cwd(), "src/lib/plugin-manifest.ts"),
+      "utf8",
+    );
     expect(manifest).toMatch(/disabled/);
   });
 });
 
 describe("DoD 7 — demo import is idempotent and fully reversible", () => {
   it("exposes both import and purge, tenant-scoped", () => {
-    const src = readFileSync(join(process.cwd(), "src/lib/themes.server.ts"), "utf8");
+    const src = readFileSync(
+      join(process.cwd(), "src/lib/themes.server.ts"),
+      "utf8",
+    );
     expect(src).toMatch(/importDemoContent/);
     expect(src).toMatch(/purgeDemoContent/);
     expect(src).toMatch(/theme_import_demo/);

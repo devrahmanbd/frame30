@@ -5,6 +5,7 @@ Welcome to the centralized SEO intelligence, content marketing, and topical auth
 FRAMIQUE is positioned as a **SaaS Cloud CMS, Visual Storefront Builder, and Zero-Transaction-Fee Commerce Engine**, competing directly and locally with Shopify, Webflow, and Framer across global and high-growth emerging markets.
 
 This repository unifies:
+
 1. **Claude SEO Framework** ([AgriciDaniel/claude-seo](https://github.com/AgriciDaniel/claude-seo)) — 25 sub-skills, SaaS architecture, 10-principle synthesis, and AI search citability.
 2. **Semrush Keyword & Market Intelligence** (`semrtkn-pat-HS2Xf0KFSqmTFHX54b57ZQ-XN9oQNgl5SPraldanWrPdNz1P-qKFlYd`) — Multi-persona search volumes, KD%, intent classification, and competitor SERP gap analysis against Shopify, Webflow, Framer, and WooCommerce.
 3. **Koray Tuğberk Gübür's Holistic Semantic SEO** ([holisticseo.digital](https://www.holisticseo.digital/on-page-seo/)) — Central Entity modeling (`FRAMIQUE`), Source Context (`devrahmanbd`), Macro/Micro Context, Information Trees, EAV Triples, and Cost of Retrieval minimization.

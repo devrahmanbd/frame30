@@ -20,17 +20,21 @@ export type SweepResult = {
 export async function runBillingSweep(subject = "cron"): Promise<SweepResult> {
   return withSpan("billing.sweep", async () => {
     await enforceRateLimit("billing.sweep", subject);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await (
       supabaseAdmin as unknown as {
-        rpc: (fn: string) => Promise<{ data: unknown; error: { message: string } | null }>;
+        rpc: (
+          fn: string,
+        ) => Promise<{ data: unknown; error: { message: string } | null }>;
       }
     ).rpc("billing_sweep");
     if (error) throw new Error(`billing_sweep_failed: ${error.message}`);
 
     const result = data as SweepResult;
     for (const [key, value] of Object.entries(result)) {
-      if (typeof value === "number") incr("framique_billing_sweep_total", { bucket: key }, value);
+      if (typeof value === "number")
+        incr("framique_billing_sweep_total", { bucket: key }, value);
     }
     // Freshness gauge: a sweep that stops running is invisible in error ratios.
     setGauge("framique_billing_sweep_timestamp", Math.floor(Date.now() / 1000));

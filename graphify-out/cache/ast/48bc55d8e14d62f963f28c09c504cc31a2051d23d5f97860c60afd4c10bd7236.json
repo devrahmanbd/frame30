@@ -1,1 +1,557 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_consent_server_ts", "label": "consent.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L1"}, {"id": "lib_consent_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L18"}, {"id": "lib_consent_server_consentchannel", "label": "ConsentChannel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L19"}, {"id": "lib_consent_server_consentpurpose", "label": "ConsentPurpose", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L20"}, {"id": "lib_consent_server_consenterror", "label": "ConsentError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L22"}, {"id": "lib_consent_server_consenterror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L24"}, {"id": "lib_consent_server_subjecthash", "label": "subjectHash()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L35"}, {"id": "lib_consent_server_consentinput", "label": "ConsentInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L42"}, {"id": "lib_consent_server_recordconsent", "label": "recordConsent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L57"}, {"id": "lib_consent_server_recipient", "label": "Recipient", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L98"}, {"id": "lib_consent_server_audienceverdict", "label": "AudienceVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L100"}, {"id": "lib_consent_server_channelaudience", "label": "channelAudience()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L110"}, {"id": "lib_consent_server_consentledger", "label": "consentLedger()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L154"}, {"id": "lib_consent_server_withdrawallchannels", "label": "withdrawAllChannels()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L167"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_consentchannel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_consentpurpose", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_consenterror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "lib_consent_server_consenterror", "target": "lib_consent_server_consenterror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_subjecthash", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_consentinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_recordconsent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_recipient", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_audienceverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_channelaudience", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_consentledger", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_consent_server_ts", "target": "lib_consent_server_withdrawallchannels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L167", "weight": 1.0}, {"source": "lib_consent_server_channelaudience", "target": "lib_consent_server_subjecthash", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L141", "weight": 1.0}, {"source": "lib_consent_server_withdrawallchannels", "target": "lib_consent_server_recordconsent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L177", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_consent_server_consenterror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L25"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L36"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L36"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L37"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L38"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L39"}, {"caller_nid": "lib_consent_server_subjecthash", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L39"}, {"caller_nid": "lib_consent_server_recordconsent", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L58"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L117"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L125"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L125"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L126"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L126"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L133"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L136"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L137"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L142"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L143"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L147"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L149"}, {"caller_nid": "lib_consent_server_channelaudience", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L150"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L155"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L156"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L156"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L156"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L156"}, {"caller_nid": "lib_consent_server_consentledger", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts", "source_location": "L156"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "label": "consent.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_consent_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_consent_server_consentchannel",
+      "label": "ConsentChannel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_consent_server_consentpurpose",
+      "label": "ConsentPurpose",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_consent_server_consenterror",
+      "label": "ConsentError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_consent_server_consenterror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_consent_server_subjecthash",
+      "label": "subjectHash()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_consent_server_consentinput",
+      "label": "ConsentInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_consent_server_recordconsent",
+      "label": "recordConsent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_consent_server_recipient",
+      "label": "Recipient",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_consent_server_audienceverdict",
+      "label": "AudienceVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_consent_server_channelaudience",
+      "label": "channelAudience()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_consent_server_consentledger",
+      "label": "consentLedger()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_consent_server_withdrawallchannels",
+      "label": "withdrawAllChannels()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L167"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_consentchannel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_consentpurpose",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_consenterror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_consent_server_consenterror",
+      "target": "lib_consent_server_consenterror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_subjecthash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_consentinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_recordconsent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_recipient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_audienceverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_channelaudience",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_consentledger",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_consent_server_ts",
+      "target": "lib_consent_server_withdrawallchannels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_consent_server_channelaudience",
+      "target": "lib_consent_server_subjecthash",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_consent_server_withdrawallchannels",
+      "target": "lib_consent_server_recordconsent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_consent_server_consenterror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_consent_server_subjecthash",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_consent_server_recordconsent",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_consent_server_channelaudience",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_consent_server_consentledger",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/consent.server.ts",
+      "source_location": "L156"
+    }
+  ]
+}

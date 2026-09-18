@@ -78,12 +78,18 @@ export function OrderDesk({
   const noteDelete = useServerFn(deleteOrderNote);
   const tagsSave = useServerFn(setOrderTags);
 
-  const { data } = useQuery({ queryKey: deskKey, queryFn: () => load({ data: { orderId } }) });
+  const { data } = useQuery({
+    queryKey: deskKey,
+    queryFn: () => load({ data: { orderId } }),
+  });
 
   const refundedByItem = useMemo(() => {
     const map = new Map<string, number>();
     for (const l of data?.refundLines ?? []) {
-      map.set(l.order_item_id, (map.get(l.order_item_id) ?? 0) + Number(l.quantity));
+      map.set(
+        l.order_item_id,
+        (map.get(l.order_item_id) ?? 0) + Number(l.quantity),
+      );
     }
     return map;
   }, [data]);
@@ -103,7 +109,10 @@ export function OrderDesk({
   const selected = items
     .map((i) => ({ item: i, q: qty[i.id] ?? 0 }))
     .filter((s) => s.q > 0);
-  const selectedTotal = selected.reduce((s, x) => s + x.q * Number(x.item.unit_price_minor_int), 0);
+  const selectedTotal = selected.reduce(
+    (s, x) => s + x.q * Number(x.item.unit_price_minor_int),
+    0,
+  );
 
   const refundMutation = useMutation({
     mutationFn: () =>
@@ -134,7 +143,13 @@ export function OrderDesk({
 
   const callMutation = useMutation({
     mutationFn: (outcome: string) =>
-      codCall({ data: { orderId, outcome: outcome as "confirmed", note: noteDraft || undefined } }),
+      codCall({
+        data: {
+          orderId,
+          outcome: outcome as "confirmed",
+          note: noteDraft || undefined,
+        },
+      }),
     onSuccess: (r) => {
       toast.success(`${t("Call logged", "কল লেখা হয়েছে")} · ${r.orderStatus}`);
       invalidate();
@@ -173,7 +188,9 @@ export function OrderDesk({
     <div className="mt-4 grid gap-4 lg:grid-cols-2">
       {/* ---------------------------- line-level refund ---------------------------- */}
       <section className={`${card} lg:col-span-2`}>
-        <h2 className="text-sm font-semibold">{t("Refund lines", "লাইন রিফান্ড")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Refund lines", "লাইন রিফান্ড")}
+        </h2>
         <p className="mt-1 text-xs text-muted-foreground">
           {t(
             "Choose the units to refund and whether each one comes back into stock. A damaged unit returns money but not stock.",
@@ -186,23 +203,37 @@ export function OrderDesk({
             <caption className="sr-only">Refundable order lines</caption>
             <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th scope="col" className="p-2">{t("Item", "পণ্য")}</th>
-                <th scope="col" className="p-2">{t("Refundable", "রিফান্ডযোগ্য")}</th>
-                <th scope="col" className="p-2">{t("Qty to refund", "কত ইউনিট")}</th>
-                <th scope="col" className="p-2">{t("Restock", "স্টকে ফেরত")}</th>
-                <th scope="col" className="p-2">{t("Amount", "পরিমাণ")}</th>
+                <th scope="col" className="p-2">
+                  {t("Item", "পণ্য")}
+                </th>
+                <th scope="col" className="p-2">
+                  {t("Refundable", "রিফান্ডযোগ্য")}
+                </th>
+                <th scope="col" className="p-2">
+                  {t("Qty to refund", "কত ইউনিট")}
+                </th>
+                <th scope="col" className="p-2">
+                  {t("Restock", "স্টকে ফেরত")}
+                </th>
+                <th scope="col" className="p-2">
+                  {t("Amount", "পরিমাণ")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {items.map((i) => {
-                const remaining = Number(i.quantity) - (refundedByItem.get(i.id) ?? 0);
+                const remaining =
+                  Number(i.quantity) - (refundedByItem.get(i.id) ?? 0);
                 const q = qty[i.id] ?? 0;
                 return (
                   <tr key={i.id}>
                     <td className="p-2">
                       {i.product_title}
                       {i.variant_name ? (
-                        <span className="text-muted-foreground"> · {i.variant_name}</span>
+                        <span className="text-muted-foreground">
+                          {" "}
+                          · {i.variant_name}
+                        </span>
                       ) : null}
                     </td>
                     <td className="money p-2">{remaining}</td>
@@ -217,7 +248,10 @@ export function OrderDesk({
                         onChange={(e) =>
                           setQty((prev) => ({
                             ...prev,
-                            [i.id]: Math.max(0, Math.min(remaining, Number(e.target.value) || 0)),
+                            [i.id]: Math.max(
+                              0,
+                              Math.min(remaining, Number(e.target.value) || 0),
+                            ),
                           }))
                         }
                         className={`${input} money w-24`}
@@ -229,7 +263,12 @@ export function OrderDesk({
                         checked={restock[i.id] ?? true}
                         disabled={remaining <= 0 || closed}
                         aria-label={`Return ${i.product_title} to stock`}
-                        onChange={(e) => setRestock((p) => ({ ...p, [i.id]: e.target.checked }))}
+                        onChange={(e) =>
+                          setRestock((p) => ({
+                            ...p,
+                            [i.id]: e.target.checked,
+                          }))
+                        }
                         className="size-4"
                       />
                     </td>
@@ -245,7 +284,9 @@ export function OrderDesk({
 
         <div className="mt-3 grid gap-3 sm:grid-cols-[200px_1fr_auto]">
           <label className="text-sm">
-            <span className="block text-muted-foreground">{t("Reason", "কারণ")}</span>
+            <span className="block text-muted-foreground">
+              {t("Reason", "কারণ")}
+            </span>
             <select
               value={reason}
               onChange={(e) => setReason(e.target.value)}
@@ -259,7 +300,9 @@ export function OrderDesk({
             </select>
           </label>
           <label className="text-sm">
-            <span className="block text-muted-foreground">{t("Note (optional)", "নোট (ঐচ্ছিক)")}</span>
+            <span className="block text-muted-foreground">
+              {t("Note (optional)", "নোট (ঐচ্ছিক)")}
+            </span>
             <input
               value={refundNote}
               maxLength={300}
@@ -269,7 +312,9 @@ export function OrderDesk({
           </label>
           <button
             type="button"
-            disabled={selected.length === 0 || refundMutation.isPending || closed}
+            disabled={
+              selected.length === 0 || refundMutation.isPending || closed
+            }
             onClick={() => refundMutation.mutate()}
             className={`${primary} mt-6`}
           >
@@ -294,10 +339,15 @@ export function OrderDesk({
 
       {/* ------------------------------- COD calls -------------------------------- */}
       <section className={card}>
-        <h2 className="text-sm font-semibold">{t("Confirm by call", "কলে নিশ্চিত করুন")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Confirm by call", "কলে নিশ্চিত করুন")}
+        </h2>
         {!isCod ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("This order is prepaid — no call needed.", "এই অর্ডার প্রিপেইড — কল দরকার নেই।")}
+            {t(
+              "This order is prepaid — no call needed.",
+              "এই অর্ডার প্রিপেইড — কল দরকার নেই।",
+            )}
           </p>
         ) : (
           <>
@@ -322,18 +372,25 @@ export function OrderDesk({
             </div>
             <ol className="mt-3 space-y-2">
               {calls.map((c) => (
-                <li key={c.id} className="rounded-fq-md border border-border p-2 text-xs">
+                <li
+                  key={c.id}
+                  className="rounded-fq-md border border-border p-2 text-xs"
+                >
                   <span className="font-medium">
                     #{c.attempt_no} {c.outcome}
                   </span>
-                  {c.note ? <span className="text-muted-foreground"> · {c.note}</span> : null}
+                  {c.note ? (
+                    <span className="text-muted-foreground"> · {c.note}</span>
+                  ) : null}
                   <span className="money block text-muted-foreground">
                     {new Date(c.created_at).toLocaleString("en-BD")}
                   </span>
                 </li>
               ))}
               {calls.length === 0 && (
-                <li className="text-xs text-muted-foreground">{t("No calls yet.", "এখনো কোনো কল নেই।")}</li>
+                <li className="text-xs text-muted-foreground">
+                  {t("No calls yet.", "এখনো কোনো কল নেই।")}
+                </li>
               )}
             </ol>
           </>
@@ -342,14 +399,22 @@ export function OrderDesk({
 
       {/* --------------------------- notes and internal tags ---------------------- */}
       <section className={card}>
-        <h2 className="text-sm font-semibold">{t("Internal notes & tags", "অভ্যন্তরীণ নোট ও ট্যাগ")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Internal notes & tags", "অভ্যন্তরীণ নোট ও ট্যাগ")}
+        </h2>
         <p className="mt-1 text-xs text-muted-foreground">
-          {t("Staff only — the customer never sees these.", "শুধু স্টাফের জন্য — গ্রাহক দেখতে পান না।")}
+          {t(
+            "Staff only — the customer never sees these.",
+            "শুধু স্টাফের জন্য — গ্রাহক দেখতে পান না।",
+          )}
         </p>
 
         <div className="mt-3 flex flex-wrap gap-2">
           {tags.map((tag) => (
-            <span key={tag} className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs">
+            <span
+              key={tag}
+              className="flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs"
+            >
               {tag}
               <button
                 type="button"
@@ -372,7 +437,10 @@ export function OrderDesk({
           <input
             value={tagDraft}
             maxLength={32}
-            placeholder={t("vip, call-before-delivery", "vip, ডেলিভারির আগে কল")}
+            placeholder={t(
+              "vip, call-before-delivery",
+              "vip, ডেলিভারির আগে কল",
+            )}
             onChange={(e) => setTagDraft(e.target.value)}
             className={input}
           />
@@ -389,7 +457,9 @@ export function OrderDesk({
           }}
         >
           <label className="block text-sm">
-            <span className="block text-muted-foreground">{t("Add a note", "নোট লিখুন")}</span>
+            <span className="block text-muted-foreground">
+              {t("Add a note", "নোট লিখুন")}
+            </span>
             <textarea
               value={noteDraft}
               maxLength={2000}
@@ -398,14 +468,21 @@ export function OrderDesk({
               className="mt-1 w-full rounded-fq-md border border-border bg-background p-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             />
           </label>
-          <button type="submit" className={primary} disabled={addNote.isPending}>
+          <button
+            type="submit"
+            className={primary}
+            disabled={addNote.isPending}
+          >
             {t("Save note", "নোট সংরক্ষণ")}
           </button>
         </form>
 
         <ul className="mt-3 space-y-2">
           {(data?.notes ?? []).map((n) => (
-            <li key={n.id} className="rounded-fq-md border border-border p-2 text-sm">
+            <li
+              key={n.id}
+              className="rounded-fq-md border border-border p-2 text-sm"
+            >
               <p>{n.body}</p>
               <div className="mt-1 flex items-center justify-between gap-2">
                 <span className="money text-xs text-muted-foreground">

@@ -43,7 +43,9 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
     expect(verdict.tripped).toBe(true);
     expect(verdict.reason).toContain("HTTP 5xx error rate");
     expect(verdict.rollbackDurationMs).toBeDefined();
-    expect(verdict.rollbackDurationMs!).toBeLessThan(CIRCUIT_BREAKER_THRESHOLDS.ROLLBACK_SLA_MS);
+    expect(verdict.rollbackDurationMs!).toBeLessThan(
+      CIRCUIT_BREAKER_THRESHOLDS.ROLLBACK_SLA_MS,
+    );
 
     // Verify Circuit State
     const state = await getCircuitBreakerState();
@@ -77,7 +79,9 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
       p99LatencyMs: 920,
     });
     expect(cycle2.tripped).toBe(true);
-    expect(cycle2.reason).toContain("p99 latency (920ms) exceeded 800ms for 2 consecutive checks");
+    expect(cycle2.reason).toContain(
+      "p99 latency (920ms) exceeded 800ms for 2 consecutive checks",
+    );
 
     const stateAfter2 = await getCircuitBreakerState();
     expect(stateAfter2.status).toBe("OPEN");
@@ -85,12 +89,20 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
 
   it("resets consecutive latency breaches if latency recovers in the next cycle", async () => {
     // Cycle 1: Latency spike
-    await evaluateCanaryMetrics({ totalRequests: 500, errors5xx: 0, p99LatencyMs: 850 });
+    await evaluateCanaryMetrics({
+      totalRequests: 500,
+      errors5xx: 0,
+      p99LatencyMs: 850,
+    });
     let state = await getCircuitBreakerState();
     expect(state.consecutiveLatencyBreaches).toBe(1);
 
     // Cycle 2: Latency recovers to 150ms
-    const recovered = await evaluateCanaryMetrics({ totalRequests: 500, errors5xx: 0, p99LatencyMs: 150 });
+    const recovered = await evaluateCanaryMetrics({
+      totalRequests: 500,
+      errors5xx: 0,
+      p99LatencyMs: 150,
+    });
     expect(recovered.tripped).toBe(false);
 
     state = await getCircuitBreakerState();
@@ -106,7 +118,9 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
     });
 
     expect(verdict.tripped).toBe(true);
-    expect(verdict.reason).toContain("Unhandled exceptions count (12) exceeded maximum limit (10)");
+    expect(verdict.reason).toContain(
+      "Unhandled exceptions count (12) exceeded maximum limit (10)",
+    );
 
     const state = await getCircuitBreakerState();
     expect(state.status).toBe("OPEN");
@@ -123,7 +137,8 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
             severity: "critical",
           },
           annotations: {
-            description: "Surge in HTTP 502/503 responses detected on framique-green upstream",
+            description:
+              "Surge in HTTP 502/503 responses detected on framique-green upstream",
           },
         },
       ],
@@ -132,7 +147,9 @@ describe("Phase 7.4 — Automated Circuit Breaker & Instant Rollback", () => {
     const outcome = await processPrometheusAlertWebhook(webhookPayload);
     expect(outcome.tripped).toBe(true);
     expect(outcome.reason).toContain("CanarySurge5xxErrors");
-    expect(outcome.rollbackDurationMs).toBeLessThan(CIRCUIT_BREAKER_THRESHOLDS.ROLLBACK_SLA_MS);
+    expect(outcome.rollbackDurationMs).toBeLessThan(
+      CIRCUIT_BREAKER_THRESHOLDS.ROLLBACK_SLA_MS,
+    );
 
     const state = await getCircuitBreakerState();
     expect(state.status).toBe("OPEN");

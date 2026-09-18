@@ -165,7 +165,8 @@ export type MotionFinding = {
 };
 
 export function formatMotionFinding(f: MotionFinding) {
-  const label = f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
+  const label =
+    f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
   return `${label} [${f.code}] ${f.where}: ${f.message}`;
 }
 
@@ -271,7 +272,10 @@ export type MotionPageMeasurement = {
 const near = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol;
 
 function at(
-  m: Pick<MotionPageMeasurement, "route" | "viewportPx" | "locale" | "intent" | "hydrated">,
+  m: Pick<
+    MotionPageMeasurement,
+    "route" | "viewportPx" | "locale" | "intent" | "hydrated"
+  >,
   label: string,
 ) {
   // The pass is part of the location: "the LCP node animates" means something
@@ -294,7 +298,10 @@ export function auditReveal(m: MotionPageMeasurement): MotionFinding[] {
   for (const s of m.reveals) {
     const where = at(m, s.label);
 
-    if (s.durationMs > 0 && !near(s.durationMs, REVEAL.durationMs, REVEAL.durationToleranceMs)) {
+    if (
+      s.durationMs > 0 &&
+      !near(s.durationMs, REVEAL.durationMs, REVEAL.durationToleranceMs)
+    ) {
       findings.push({
         code: "motion.reveal.duration",
         severity: "warn",
@@ -307,7 +314,9 @@ export function auditReveal(m: MotionPageMeasurement): MotionFinding[] {
     }
 
     const illegal = s.properties.filter(
-      (p) => p !== "all" && !(REVEAL.allowedProperties as readonly string[]).includes(p),
+      (p) =>
+        p !== "all" &&
+        !(REVEAL.allowedProperties as readonly string[]).includes(p),
     );
     if (illegal.length) {
       findings.push({
@@ -369,7 +378,9 @@ export function auditDrift(m: MotionPageMeasurement): MotionFinding[] {
   const findings: MotionFinding[] = [];
 
   if (m.intent === "reduced") {
-    for (const d of m.drifts.filter((x) => x.durationMs > 0 && x.iterationCount === "infinite")) {
+    for (const d of m.drifts.filter(
+      (x) => x.durationMs > 0 && x.iterationCount === "infinite",
+    )) {
       findings.push({
         code: "motion.reduced.loop",
         severity: "error",
@@ -473,7 +484,8 @@ export function auditMagnetic(m: MotionPageMeasurement): MotionFinding[] {
         severity: "error",
         rule: "Reduced motion disables pointer-follow",
         where,
-        message: "Magnet still follows the pointer after a reduced-motion request.",
+        message:
+          "Magnet still follows the pointer after a reduced-motion request.",
       });
     }
 
@@ -533,7 +545,9 @@ export function auditReducedMotion(m: MotionPageMeasurement): MotionFinding[] {
     }
 
     const illegal = s.properties.filter(
-      (p) => p !== "all" && !(REDUCED.allowedProperties as readonly string[]).includes(p),
+      (p) =>
+        p !== "all" &&
+        !(REDUCED.allowedProperties as readonly string[]).includes(p),
     );
     if (illegal.length || s.translatePx > 0.5) {
       findings.push({
@@ -614,7 +628,9 @@ export function auditFold(m: MotionPageMeasurement): MotionFinding[] {
    * a false positive that trains reviewers to ignore the gate.
    */
   if (m.lcp && !FOLD.lcpMotionAllowed && m.intent !== "reduced") {
-    const animated = m.lcp.durationMs > 0 || (m.lcp.animationName && m.lcp.animationName !== "none");
+    const animated =
+      m.lcp.durationMs > 0 ||
+      (m.lcp.animationName && m.lcp.animationName !== "none");
     if (animated) {
       findings.push({
         code: "motion.fold.lcp",
@@ -633,7 +649,8 @@ export function auditFold(m: MotionPageMeasurement): MotionFinding[] {
 export function auditBudget(m: MotionPageMeasurement): MotionFinding[] {
   const peak = m.peakConcurrentAnimations;
   const max = m.budgetMax;
-  if (typeof peak !== "number" || typeof max !== "number" || max <= 0) return [];
+  if (typeof peak !== "number" || typeof max !== "number" || max <= 0)
+    return [];
   if (peak <= max) return [];
   return [
     {

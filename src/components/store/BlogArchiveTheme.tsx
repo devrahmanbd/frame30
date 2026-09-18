@@ -16,7 +16,9 @@ import { presetByKey, THEME_PRESETS } from "@/lib/theme-presets";
 
 /** The platform blog wears the default published preset. */
 function blogTheme(themeKey?: string) {
-  return presetByKey(themeKey ?? "") ?? presetByKey("classic") ?? THEME_PRESETS[0]!;
+  return (
+    presetByKey(themeKey ?? "") ?? presetByKey("classic") ?? THEME_PRESETS[0]!
+  );
 }
 
 export function BlogArchiveTheme({
@@ -44,7 +46,11 @@ export function BlogArchiveTheme({
         // and pager nodes have to be declared here even though their live rows
         // arrive through `BlogFeedProvider` rather than through a slot. Without
         // these three keys the themed blog renders an empty page.
-        contextSlots={{ blog_archive: null, blog_terms: null, blog_pager: null }}
+        contextSlots={{
+          blog_archive: null,
+          blog_terms: null,
+          blog_pager: null,
+        }}
         ownsPrimary
 
         containerClassName="mx-auto max-w-6xl px-4 py-8"
@@ -59,7 +65,9 @@ export function BlogArchiveTheme({
           )
         }
       />
-      {feed.articles.length ? null : <div className="mx-auto max-w-6xl px-4 pb-8">{empty}</div>}
+      {feed.articles.length ? null : (
+        <div className="mx-auto max-w-6xl px-4 pb-8">{empty}</div>
+      )}
     </BlogFeedProvider>
   );
 }

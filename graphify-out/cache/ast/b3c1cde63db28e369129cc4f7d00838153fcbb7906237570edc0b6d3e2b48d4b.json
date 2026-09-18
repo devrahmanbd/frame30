@@ -1,1 +1,12 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_update_v3_progress_sh", "label": "update-v3-progress.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/update-v3-progress.sh", "source_location": "L1"}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_update_v3_progress_sh",
+      "label": "update-v3-progress.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/update-v3-progress.sh",
+      "source_location": "L1"
+    }
+  ],
+  "edges": []
+}

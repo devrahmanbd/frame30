@@ -6,7 +6,7 @@ Open issues that the supply-chain audit + recent CI hardening surfaced but requi
 
 **Status**: HIGH, open. Tracked at https://github.com/ruvnet/ruflo/issues/2047.
 
-**Root cause**: the 12-hour scheduled verification job runs in a bare-source environment (no `npm ci && npm run build`), but the signed witness manifest references 95 compiled `dist/**` artifacts. In a pre-build state those files don't exist on disk → verify reports them as missing. The Ed25519 signature itself is valid; this is *not* tamper.
+**Root cause**: the 12-hour scheduled verification job runs in a bare-source environment (no `npm ci && npm run build`), but the signed witness manifest references 95 compiled `dist/**` artifacts. In a pre-build state those files don't exist on disk → verify reports them as missing. The Ed25519 signature itself is valid; this is _not_ tamper.
 
 **Right fix** (when someone has cycles for it):
 
@@ -15,7 +15,8 @@ Open issues that the supply-chain audit + recent CI hardening surfaced but requi
 3. Alternative: split the witness manifest into `src/`-only entries (always present) and `dist/`-only entries (built-by-CI), and have verify.mjs treat `missing` on dist entries as `expected-when-not-built` rather than HIGH.
 
 **Interim CI guard** (already in place):
-- `witness-verify-precondition-smoke` job in `v3-ci.yml` exercises the verify path on PRs *after* a build, so the manifest stays internally consistent against the buildable surface.
+
+- `witness-verify-precondition-smoke` job in `v3-ci.yml` exercises the verify path on PRs _after_ a build, so the manifest stays internally consistent against the buildable surface.
 - `witness-marker-drift-smoke` runs the marker-presence layer (no signature, no build, no native deps) on every push/PR.
 
 ## #2048 — `agentic-flow/reasoningbank` ESM import fails on Windows (onnxruntime native binding)
@@ -36,6 +37,7 @@ Open issues that the supply-chain audit + recent CI hardening surfaced but requi
 - Regenerated root `package-lock.json`, `v3/@claude-flow/browser/package-lock.json` (npm `--no-workspaces`), and `v3/pnpm-lock.yaml`.
 
 **Acceptance test** (verified locally on 2.0.13):
+
 ```bash
 # Full install — binding present, but never loaded at module import
 npm install agentic-flow@2.0.13
@@ -48,6 +50,7 @@ node -e "import('agentic-flow/router').then(()=>console.log('OK'))"  # → OK (w
 ```
 
 **Follow-up CI guard** (now possible):
+
 - Add a Windows-runner smoke job that does `node -e "import('agentic-flow/reasoningbank').then(()=>console.log('OK'))"` under `--omit=optional` to lock the lazy-load contract in place. Add to `v3-ci.yml` alongside the existing supply-chain audit jobs.
 
 **Related**: `--omit=optional` surfaced a separate import (agentdb static import via reasoningbank graph). That's NOT #2048 (which was specifically the Windows native binding crash with the binding present). Tracking separately if it becomes user-facing.

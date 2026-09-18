@@ -2,10 +2,13 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { StatusPill, inputClass, btnGhost } from "@/components/admin/MarketingUi";
+import {
+  StatusPill,
+  inputClass,
+  btnGhost,
+} from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
 import { adminActivityFn } from "@/lib/merchant-admin.functions";
-
 
 const RESOURCES = [
   "products",
@@ -91,7 +94,9 @@ export function ActivityLog() {
           </select>
         </label>
         <label className="text-sm">
-          <span className="mb-1 block text-xs text-muted-foreground">{t("Action", "অ্যাকশন")}</span>
+          <span className="mb-1 block text-xs text-muted-foreground">
+            {t("Action", "অ্যাকশন")}
+          </span>
           <select
             className={inputClass}
             value={action}
@@ -108,7 +113,10 @@ export function ActivityLog() {
       </div>
 
       {isError && (
-        <p role="alert" className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+        <p
+          role="alert"
+          className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
           {(error as Error).message}
         </p>
       )}
@@ -129,10 +137,15 @@ export function ActivityLog() {
             <li key={row.id} className="px-4 py-3">
               <div className="flex flex-wrap items-center gap-2">
                 <StatusPill
-                  tone={ACTION_TONE[row.action as keyof typeof ACTION_TONE] ?? "neutral"}
+                  tone={
+                    ACTION_TONE[row.action as keyof typeof ACTION_TONE] ??
+                    "neutral"
+                  }
                   label={row.action}
                 />
-                <span className="text-sm font-medium">{row.resourceType.replace(/_/g, " ")}</span>
+                <span className="text-sm font-medium">
+                  {row.resourceType.replace(/_/g, " ")}
+                </span>
                 <span className="text-sm text-muted-foreground">
                   {row.actor ?? t("System", "সিস্টেম")}
                 </span>
@@ -146,10 +159,16 @@ export function ActivityLog() {
               {row.fields.length > 0 && (
                 <dl className="mt-2 grid gap-1 text-xs sm:grid-cols-2">
                   {row.fields.map((f) => (
-                    <div key={f.field} className="flex flex-wrap gap-1 rounded-fq-md bg-muted px-2 py-1">
-                      <dt className="font-medium">{f.field.replace(/_/g, " ")}</dt>
+                    <div
+                      key={f.field}
+                      className="flex flex-wrap gap-1 rounded-fq-md bg-muted px-2 py-1"
+                    >
+                      <dt className="font-medium">
+                        {f.field.replace(/_/g, " ")}
+                      </dt>
                       <dd className="text-muted-foreground">
-                        {f.before} → <span className="text-foreground">{f.after}</span>
+                        {f.before} →{" "}
+                        <span className="text-foreground">{f.after}</span>
                       </dd>
                     </div>
                   ))}
@@ -180,7 +199,9 @@ export function ActivityLog() {
           disabled={!data?.nextCursor}
           onClick={() => {
             if (!data?.nextCursor) return;
-            setStack((s) => [...s, cursor ?? ""].filter((v, i, a) => i < a.length));
+            setStack((s) =>
+              [...s, cursor ?? ""].filter((v, i, a) => i < a.length),
+            );
             setCursor(data.nextCursor);
           }}
         >

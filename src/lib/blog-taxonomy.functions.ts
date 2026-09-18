@@ -24,7 +24,9 @@ import { requirePermission } from "./authz-middleware";
 
 /* --------------------------------------------------------------- public API */
 
-const pageSchema = z.object({ page: z.number().int().min(1).max(500).optional() });
+const pageSchema = z.object({
+  page: z.number().int().min(1).max(500).optional(),
+});
 const archiveSchema = pageSchema.extend({
   kind: z.enum(["category", "tag"]),
   slug: z.string().min(1).max(120),
@@ -50,7 +52,8 @@ export const blogArchiveFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => archiveSchema.parse(d))
   .handler(async ({ data }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const { loadTermArchive, TermNotFound } = await import("./blog-index.server");
+    const { loadTermArchive, TermNotFound } =
+      await import("./blog-index.server");
     await enforceRateLimit("blog.read", await readerSubject());
     try {
       return await loadTermArchive(data.kind, data.slug, data.page ?? 1);
@@ -81,9 +84,20 @@ const termSchema = z.object({
 
 /** Keep merchant-actionable failures readable; keep everything else opaque. */
 function toClientError(error: unknown): Error {
-  if (error && typeof error === "object" && (error as { name?: string }).name === "TaxonomyError") {
-    const detail = error as { code: string; field: string; en: string; bn: string };
-    const wrapped = new Error(`${detail.code}|${detail.field}|${detail.en}|${detail.bn}`);
+  if (
+    error &&
+    typeof error === "object" &&
+    (error as { name?: string }).name === "TaxonomyError"
+  ) {
+    const detail = error as {
+      code: string;
+      field: string;
+      en: string;
+      bn: string;
+    };
+    const wrapped = new Error(
+      `${detail.code}|${detail.field}|${detail.en}|${detail.bn}`,
+    );
     wrapped.name = "TaxonomyError";
     return wrapped;
   }
@@ -94,9 +108,13 @@ export const taxonomyStateFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { loadTaxonomy, termOptions } = await import("./blog-taxonomy.server");
+    const { loadTaxonomy, termOptions } =
+      await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("taxonomy.read", `${merchantId}:${context.userId}`);
     const [state, options] = await Promise.all([
       loadTaxonomy(context.supabase, merchantId),
@@ -112,7 +130,10 @@ export const saveTermFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { saveTerm } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("taxonomy.write", `${merchantId}:${context.userId}`);
     try {
       return await saveTerm(context.supabase, merchantId, context.userId, data);
@@ -128,10 +149,21 @@ export const deleteTermFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { deleteTerm } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("taxonomy.delete", `${merchantId}:${context.userId}`);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "taxonomy.delete",
+      `${merchantId}:${context.userId}`,
+    );
     try {
-      return await deleteTerm(context.supabase, merchantId, context.userId, data.id);
+      return await deleteTerm(
+        context.supabase,
+        merchantId,
+        context.userId,
+        data.id,
+      );
     } catch (error) {
       throw toClientError(error);
     }
@@ -158,10 +190,21 @@ export const reorderTermsFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { reorderTerms } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("taxonomy.reorder", `${merchantId}:${context.userId}`);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "taxonomy.reorder",
+      `${merchantId}:${context.userId}`,
+    );
     try {
-      return await reorderTerms(context.supabase, merchantId, context.userId, data.order);
+      return await reorderTerms(
+        context.supabase,
+        merchantId,
+        context.userId,
+        data.order,
+      );
     } catch (error) {
       throw toClientError(error);
     }
@@ -169,12 +212,17 @@ export const reorderTermsFn = createServerFn({ method: "POST" })
 
 export const articleTermsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ articleId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ articleId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { articleTerms } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("taxonomy.read", `${merchantId}:${context.userId}`);
     return articleTerms(context.supabase, merchantId, data.articleId);
   });
@@ -186,7 +234,9 @@ export const setArticleTermsFn = createServerFn({ method: "POST" })
       .object({
         articleId: z.string().uuid(),
         terms: z
-          .array(z.object({ termId: z.string().uuid(), isPrimary: z.boolean() }))
+          .array(
+            z.object({ termId: z.string().uuid(), isPrimary: z.boolean() }),
+          )
           .max(12),
       })
       .parse(d),
@@ -195,7 +245,10 @@ export const setArticleTermsFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { setArticleTerms } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("taxonomy.write", `${merchantId}:${context.userId}`);
     try {
       return await setArticleTerms(
@@ -217,7 +270,13 @@ export const refreshTermCountsFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { refreshCounts } = await import("./blog-taxonomy.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("taxonomy.delete", `${merchantId}:${context.userId}`);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "taxonomy.delete",
+      `${merchantId}:${context.userId}`,
+    );
     return refreshCounts(context.supabase, merchantId);
   });

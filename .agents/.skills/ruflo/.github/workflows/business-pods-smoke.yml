@@ -9,20 +9,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'plugins/ruflo-business-pods/**'
-      - 'v3/@claude-flow/cli/src/business-pods/**'
-      - 'v3/@claude-flow/cli/src/mcp-tools/business-pod-tools.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/index.ts'
-      - 'v3/@claude-flow/cli/src/mcp-client.ts'
-      - '.github/workflows/business-pods-smoke.yml'
+      - "plugins/ruflo-business-pods/**"
+      - "v3/@claude-flow/cli/src/business-pods/**"
+      - "v3/@claude-flow/cli/src/mcp-tools/business-pod-tools.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/index.ts"
+      - "v3/@claude-flow/cli/src/mcp-client.ts"
+      - ".github/workflows/business-pods-smoke.yml"
   pull_request:
     paths:
-      - 'plugins/ruflo-business-pods/**'
-      - 'v3/@claude-flow/cli/src/business-pods/**'
-      - 'v3/@claude-flow/cli/src/mcp-tools/business-pod-tools.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/index.ts'
-      - 'v3/@claude-flow/cli/src/mcp-client.ts'
-      - '.github/workflows/business-pods-smoke.yml'
+      - "plugins/ruflo-business-pods/**"
+      - "v3/@claude-flow/cli/src/business-pods/**"
+      - "v3/@claude-flow/cli/src/mcp-tools/business-pod-tools.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/index.ts"
+      - "v3/@claude-flow/cli/src/mcp-client.ts"
+      - ".github/workflows/business-pods-smoke.yml"
   workflow_dispatch:
 
 jobs:
@@ -36,8 +36,8 @@ jobs:
           version: 8
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
+          node-version: "20"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: install + build CLI (pnpm, v3 workspace)
         # The root package.json uses npm/workspaces but the v3/ tree is a

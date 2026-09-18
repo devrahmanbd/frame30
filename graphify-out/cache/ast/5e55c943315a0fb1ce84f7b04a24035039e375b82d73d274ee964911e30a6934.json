@@ -1,1 +1,230 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "label": "ai-support.functions.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L1"}, {"id": "lib_ai_support_functions_askschema", "label": "askSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L5"}, {"id": "lib_ai_support_functions_askassistantfn", "label": "askAssistantFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L13"}, {"id": "lib_ai_support_functions_supportinboxfn", "label": "supportInboxFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L30"}, {"id": "lib_ai_support_functions_supportthreadfn", "label": "supportThreadFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L42"}, {"id": "lib_ai_support_functions_supportreplyfn", "label": "supportReplyFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L52"}, {"id": "lib_ai_support_functions_supportstatusfn", "label": "supportStatusFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L66"}, {"id": "lib_ai_support_functions_getaigatewayconfigfn", "label": "getAiGatewayConfigFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L83"}, {"id": "lib_ai_support_functions_probeschema", "label": "probeSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L103"}, {"id": "lib_ai_support_functions_testaigatewayprobefn", "label": "testAiGatewayProbeFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L109"}, {"id": "lib_ai_support_functions_updateconfigschema", "label": "updateConfigSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L142"}, {"id": "lib_ai_support_functions_updateaigatewayconfigfn", "label": "updateAiGatewayConfigFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L150"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "zod", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_auth_middleware_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "supabase_auth_middleware_requiresupabaseauth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_askschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_askassistantfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_supportinboxfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_supportthreadfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_supportreplyfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_supportstatusfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_getaigatewayconfigfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_probeschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_testaigatewayprobefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L109", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_updateconfigschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts", "target": "lib_ai_support_functions_updateaigatewayconfigfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts", "source_location": "L150", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "label": "ai-support.functions.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ai_support_functions_askschema",
+      "label": "askSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_ai_support_functions_askassistantfn",
+      "label": "askAssistantFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_ai_support_functions_supportinboxfn",
+      "label": "supportInboxFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_ai_support_functions_supportthreadfn",
+      "label": "supportThreadFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_ai_support_functions_supportreplyfn",
+      "label": "supportReplyFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_ai_support_functions_supportstatusfn",
+      "label": "supportStatusFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "lib_ai_support_functions_getaigatewayconfigfn",
+      "label": "getAiGatewayConfigFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_ai_support_functions_probeschema",
+      "label": "probeSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_ai_support_functions_testaigatewayprobefn",
+      "label": "testAiGatewayProbeFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L109"
+    },
+    {
+      "id": "lib_ai_support_functions_updateconfigschema",
+      "label": "updateConfigSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L142"
+    },
+    {
+      "id": "lib_ai_support_functions_updateaigatewayconfigfn",
+      "label": "updateAiGatewayConfigFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L150"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_auth_middleware_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "supabase_auth_middleware_requiresupabaseauth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_askschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_askassistantfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_supportinboxfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_supportthreadfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_supportreplyfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_supportstatusfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_getaigatewayconfigfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_probeschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_testaigatewayprobefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_updateconfigschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_functions_ts",
+      "target": "lib_ai_support_functions_updateaigatewayconfigfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support.functions.ts",
+      "source_location": "L150",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -12,17 +12,9 @@
       "baseBytes": 520603,
       "agenticow": {
         "branchMsMedian": 7.955,
-        "branchMsAll": [
-          8.971,
-          7.928,
-          7.955
-        ],
+        "branchMsAll": [8.971, 7.928, 7.955],
         "branchBytesMedian": 162,
-        "branchBytesAll": [
-          162,
-          162,
-          162
-        ]
+        "branchBytesAll": [162, 162, 162]
       },
       "fullCopy": {
         "copyMsMedian": 0.442,
@@ -51,17 +43,9 @@
       "baseBytes": 2603117,
       "agenticow": {
         "branchMsMedian": 9.546,
-        "branchMsAll": [
-          9.624,
-          9.504,
-          9.546
-        ],
+        "branchMsAll": [9.624, 9.504, 9.546],
         "branchBytesMedian": 162,
-        "branchBytesAll": [
-          162,
-          162,
-          162
-        ]
+        "branchBytesAll": [162, 162, 162]
       },
       "fullCopy": {
         "copyMsMedian": 2.397,

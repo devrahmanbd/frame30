@@ -1,1 +1,1068 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "label": "time-machine-daemon.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L1"}, {"id": "lib_time_machine_daemon_server_timemachinedaemonstatus", "label": "TimeMachineDaemonStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L18"}, {"id": "lib_time_machine_daemon_server_basebackupmanifest", "label": "BasebackupManifest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L30"}, {"id": "lib_time_machine_daemon_server_drdrillreport", "label": "DrDrillReport", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L46"}, {"id": "lib_time_machine_daemon_server_defaultbackupbase", "label": "defaultBackupBase()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L63"}, {"id": "lib_time_machine_daemon_server_computesha256", "label": "computeSha256()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L67"}, {"id": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "label": "getTimeMachineDaemonStatus()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L74"}, {"id": "lib_time_machine_daemon_server_executewalsync", "label": "executeWalSync()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L147"}, {"id": "lib_time_machine_daemon_server_createtimemachinebasebackup", "label": "createTimeMachineBasebackup()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L185"}, {"id": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "label": "pruneTimeMachineSnapshots()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L228"}, {"id": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "label": "runDisasterRecoveryDrill()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L277"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "node_crypto", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_timemachinedaemonstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_basebackupmanifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_drdrillreport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_computesha256", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_executewalsync", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_createtimemachinebasebackup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L185", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L228", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts", "target": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L277", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L77", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_executewalsync", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L151", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_createtimemachinebasebackup", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L190", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_createtimemachinebasebackup", "target": "lib_time_machine_daemon_server_computesha256", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L204", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L232", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "target": "lib_time_machine_daemon_server_defaultbackupbase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L282", "weight": 1.0}, {"source": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "target": "lib_time_machine_daemon_server_createtimemachinebasebackup", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L292", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_time_machine_daemon_server_defaultbackupbase", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L64"}, {"caller_nid": "lib_time_machine_daemon_server_defaultbackupbase", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L64"}, {"caller_nid": "lib_time_machine_daemon_server_computesha256", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L68"}, {"caller_nid": "lib_time_machine_daemon_server_computesha256", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L68"}, {"caller_nid": "lib_time_machine_daemon_server_computesha256", "callee": "createHash", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L68"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L78"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L79"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L80"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L81"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L82"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L87"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L89"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L89"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "parseInt", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L90"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "isNaN", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L91"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "kill", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L94"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L107"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L108"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L108"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L112"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L113"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L113"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L117"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L119"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L119"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L127"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L128"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L128"}, {"caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L135"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L152"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L153"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L155"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L156"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L161"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L161"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L161"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L166"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L168"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L169"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L170"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L170"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L173"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L174"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L174"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L176"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L176"}, {"caller_nid": "lib_time_machine_daemon_server_executewalsync", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L177"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L191"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L192"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L194"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L194"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L194"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L196"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L197"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L202"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L204"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L204"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L215"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L215"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L215"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L216"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L216"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L218"}, {"caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L219"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L233"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L236"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "reverse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L240"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L240"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L240"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L240"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L249"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "rmSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L251"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L251"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L252"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L256"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L256"}, {"caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L257"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L283"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L284"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L288"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L289"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L290"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L290"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L296"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L297"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L302"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "rmSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L303"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "mkdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L304"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L304"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L307"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L307"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L307"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L310"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L312"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L316"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L316"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L317"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L317"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L324"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L324"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L324"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L327"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L328"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "rmSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L344"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L346"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L346"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L346"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L348"}, {"caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts", "source_location": "L349"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "label": "time-machine-daemon.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_timemachinedaemonstatus",
+      "label": "TimeMachineDaemonStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_basebackupmanifest",
+      "label": "BasebackupManifest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_drdrillreport",
+      "label": "DrDrillReport",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_defaultbackupbase",
+      "label": "defaultBackupBase()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_computesha256",
+      "label": "computeSha256()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L67"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "label": "getTimeMachineDaemonStatus()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_executewalsync",
+      "label": "executeWalSync()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L147"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "label": "createTimeMachineBasebackup()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L185"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "label": "pruneTimeMachineSnapshots()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L228"
+    },
+    {
+      "id": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "label": "runDisasterRecoveryDrill()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L277"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "node_crypto",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_timemachinedaemonstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_basebackupmanifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_drdrillreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_computesha256",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_executewalsync",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L228",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_time_machine_daemon_server_ts",
+      "target": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_executewalsync",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "target": "lib_time_machine_daemon_server_computesha256",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "target": "lib_time_machine_daemon_server_defaultbackupbase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L282",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "target": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L292",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_time_machine_daemon_server_defaultbackupbase",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_defaultbackupbase",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_computesha256",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_computesha256",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_computesha256",
+      "callee": "createHash",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "parseInt",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "isNaN",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "kill",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_gettimemachinedaemonstatus",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_executewalsync",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L215"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L215"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L215"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_createtimemachinebasebackup",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L233"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L236"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "reverse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "rmSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L252"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_prunetimemachinesnapshots",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L283"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L302"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "rmSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "mkdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L307"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "rmSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "lib_time_machine_daemon_server_rundisasterrecoverydrill",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/time-machine-daemon.server.ts",
+      "source_location": "L349"
+    }
+  ]
+}

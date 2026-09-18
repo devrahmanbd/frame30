@@ -31,18 +31,36 @@ export type DocVersion = {
 
 export const DOC_VERSIONS: readonly DocVersion[] = [
   { id: "v1", label: "v1", status: "current", released: "2026-02-01" },
-  { id: "v0", label: "v0", status: "sunset", released: "2025-06-01", sunsetOn: "2026-06-30" },
+  {
+    id: "v0",
+    label: "v0",
+    status: "sunset",
+    released: "2025-06-01",
+    sunsetOn: "2026-06-30",
+  },
 ] as const;
 
 export const CURRENT_VERSION: DocVersionId = "v1";
 
 export type DocGroupId = "start" | "api" | "extend" | "operate";
 
-export const DOC_GROUPS: readonly { id: DocGroupId; label: DocBilingual; order: number }[] = [
+export const DOC_GROUPS: readonly {
+  id: DocGroupId;
+  label: DocBilingual;
+  order: number;
+}[] = [
   { id: "start", label: { en: "Getting started", bn: "শুরু করা" }, order: 1 },
   { id: "api", label: { en: "REST API", bn: "রেস্ট এপিআই" }, order: 2 },
-  { id: "extend", label: { en: "Extending Framique", bn: "এক্সটেনশন" }, order: 3 },
-  { id: "operate", label: { en: "Running in production", bn: "প্রোডাকশন" }, order: 4 },
+  {
+    id: "extend",
+    label: { en: "Extending Framique", bn: "এক্সটেনশন" },
+    order: 3,
+  },
+  {
+    id: "operate",
+    label: { en: "Running in production", bn: "প্রোডাকশন" },
+    order: 4,
+  },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -53,7 +71,12 @@ export type DocBlock =
   | { kind: "h"; level: 2 | 3; text: string; bn?: string }
   | { kind: "p"; text: string; bn?: string }
   | { kind: "list"; ordered?: boolean; items: string[] }
-  | { kind: "code"; lang: "bash" | "ts" | "json" | "http" | "text"; code: string; caption?: string }
+  | {
+      kind: "code";
+      lang: "bash" | "ts" | "json" | "http" | "text";
+      code: string;
+      caption?: string;
+    }
   | { kind: "table"; head: string[]; rows: string[][]; caption?: string }
   | { kind: "note"; tone: "info" | "warn"; text: string }
   /** Auto-generated endpoint table + samples, sourced from `API_ROUTES`. */
@@ -91,7 +114,13 @@ export const DOC_PAGES: readonly DocPage[] = [
       en: "Create an API key, make your first authenticated call and read a paginated list in under five minutes.",
       bn: "একটি এপিআই কী তৈরি করে প্রথম কল করুন এবং পেজিনেটেড তালিকা পড়ুন — পাঁচ মিনিটেই।",
     },
-    keywords: ["getting started", "first call", "api key", "curl", "hello world"],
+    keywords: [
+      "getting started",
+      "first call",
+      "api key",
+      "curl",
+      "hello world",
+    ],
     since: "v0",
     updated: "2026-02-01",
     blocks: [
@@ -187,7 +216,15 @@ export const DOC_PAGES: readonly DocPage[] = [
       en: "API keys for your own backend, OAuth for apps acting on a merchant's behalf, and the scope algebra both share.",
       bn: "নিজের ব্যাকএন্ডের জন্য এপিআই কী, মার্চেন্টের হয়ে কাজ করা অ্যাপের জন্য ওএথ — এবং দুটোর সাধারণ স্কোপ নিয়ম।",
     },
-    keywords: ["oauth", "api key", "bearer", "scopes", "pkce", "token", "consent"],
+    keywords: [
+      "oauth",
+      "api key",
+      "bearer",
+      "scopes",
+      "pkce",
+      "token",
+      "consent",
+    ],
     since: "v0",
     updated: "2026-02-01",
     blocks: [
@@ -200,10 +237,26 @@ export const DOC_PAGES: readonly DocPage[] = [
         head: ["", "API key", "OAuth app"],
         rows: [
           ["Use when", "You own the store", "You build for other merchants"],
-          ["Credential lives", "Your server, in a secret manager", "Issued per merchant, refreshable"],
-          ["Consent", "Implicit (you are the owner)", "Explicit consent screen, revocable"],
-          ["Scopes", "Chosen at key creation", "Requested ∩ allowed by registration"],
-          ["Rotation", "Manual, zero-downtime overlap", "Refresh token rotation on every use"],
+          [
+            "Credential lives",
+            "Your server, in a secret manager",
+            "Issued per merchant, refreshable",
+          ],
+          [
+            "Consent",
+            "Implicit (you are the owner)",
+            "Explicit consent screen, revocable",
+          ],
+          [
+            "Scopes",
+            "Chosen at key creation",
+            "Requested ∩ allowed by registration",
+          ],
+          [
+            "Rotation",
+            "Manual, zero-downtime overlap",
+            "Refresh token rotation on every use",
+          ],
         ],
       },
       { kind: "h", level: 2, text: "API keys" },
@@ -261,7 +314,15 @@ Accept: application/json`,
       en: "Every endpoint, the scope it needs, its cursor pagination contract and a runnable curl and TypeScript sample.",
       bn: "প্রতিটি এন্ডপয়েন্ট, প্রয়োজনীয় স্কোপ, কার্সর পেজিনেশন এবং চালানোর মতো curl ও টাইপস্ক্রিপ্ট নমুনা।",
     },
-    keywords: ["endpoints", "orders", "products", "customers", "exports", "pagination", "cursor"],
+    keywords: [
+      "endpoints",
+      "orders",
+      "products",
+      "customers",
+      "exports",
+      "pagination",
+      "cursor",
+    ],
     since: "v0",
     updated: "2026-02-01",
     blocks: [
@@ -314,7 +375,15 @@ Accept: application/json`,
       en: "Problem responses, the stable error codes, which ones are safe to retry and how to log them without leaking data.",
       bn: "প্রবলেম রেসপন্স, স্থায়ী এরর কোড, কোনগুলো রিট্রাই করা নিরাপদ এবং ডেটা ফাঁস না করে কীভাবে লগ করবেন।",
     },
-    keywords: ["problem json", "status codes", "retry", "409", "422", "429", "5xx"],
+    keywords: [
+      "problem json",
+      "status codes",
+      "retry",
+      "409",
+      "422",
+      "429",
+      "5xx",
+    ],
     since: "v0",
     updated: "2026-02-01",
     blocks: [
@@ -338,14 +407,44 @@ Accept: application/json`,
         kind: "table",
         head: ["Status", "Code", "Meaning", "Retry?"],
         rows: [
-          ["400", "invalid_request", "Malformed JSON or an unknown field", "No — fix the call"],
-          ["401", "unauthenticated", "Missing, expired or revoked credential", "No — re-auth"],
-          ["403", "insufficient_scope", "Authenticated, but the scope is not granted", "No"],
+          [
+            "400",
+            "invalid_request",
+            "Malformed JSON or an unknown field",
+            "No — fix the call",
+          ],
+          [
+            "401",
+            "unauthenticated",
+            "Missing, expired or revoked credential",
+            "No — re-auth",
+          ],
+          [
+            "403",
+            "insufficient_scope",
+            "Authenticated, but the scope is not granted",
+            "No",
+          ],
           ["404", "not_found", "No such row in *this* tenant", "No"],
-          ["409", "idempotency_conflict", "Key reused with a different body", "No"],
+          [
+            "409",
+            "idempotency_conflict",
+            "Key reused with a different body",
+            "No",
+          ],
           ["422", "validation_failed", "Shape is fine, values are not", "No"],
-          ["429", "rate_limited", "Bucket exhausted", "Yes, after `retry-after`"],
-          ["503", "upstream_unavailable", "A dependency is down or timed out", "Yes, with backoff"],
+          [
+            "429",
+            "rate_limited",
+            "Bucket exhausted",
+            "Yes, after `retry-after`",
+          ],
+          [
+            "503",
+            "upstream_unavailable",
+            "A dependency is down or timed out",
+            "Yes, with backoff",
+          ],
         ],
       },
       { kind: "h", level: 2, text: "Retry policy we expect" },
@@ -441,7 +540,15 @@ x-request-id: req_01JB4…`,
       en: "Subscribe to events, verify the HMAC signature in constant time, survive retries and make your handler idempotent.",
       bn: "ইভেন্ট সাবস্ক্রাইব করুন, HMAC সিগনেচার যাচাই করুন, রিট্রাই সামলান এবং হ্যান্ডলারকে আইডেমপোটেন্ট রাখুন।",
     },
-    keywords: ["hmac", "signature", "replay", "retries", "events", "delivery", "idempotent"],
+    keywords: [
+      "hmac",
+      "signature",
+      "replay",
+      "retries",
+      "events",
+      "delivery",
+      "idempotent",
+    ],
     since: "v0",
     updated: "2026-02-01",
     blocks: [
@@ -519,7 +626,14 @@ export function verify(raw: string, headers: Headers, secret: string): boolean {
       en: "List installed themes, read their assets, browse the marketplace and switch the live storefront theme from code.",
       bn: "ইনস্টল থিম দেখা, অ্যাসেট পড়া, মার্কেটপ্লেস ব্রাউজ করা এবং কোড থেকে লাইভ থিম বদলানো।",
     },
-    keywords: ["theme", "themes", "marketplace", "activate", "assets", "storefront"],
+    keywords: [
+      "theme",
+      "themes",
+      "marketplace",
+      "activate",
+      "assets",
+      "storefront",
+    ],
     since: "v1",
     updated: "2026-09-04",
     blocks: [
@@ -553,7 +667,7 @@ GET    /api/public/v1/marketplace/themes     # published marketplace listings`,
       { kind: "h", level: 2, text: "Assets" },
       {
         kind: "p",
-        text: "An asset with `scope: \"global\"` is injected under every theme; `scope: \"theme\"` is scoped to that theme only. CSS is sanitised on write (no `@import`, no `javascript:`, no `<script>`) and capped at 100 KB per asset.",
+        text: 'An asset with `scope: "global"` is injected under every theme; `scope: "theme"` is scoped to that theme only. CSS is sanitised on write (no `@import`, no `javascript:`, no `<script>`) and capped at 100 KB per asset.',
       },
       {
         kind: "note",
@@ -618,7 +732,14 @@ await fq.orders.addNote(orderId, { body: "Picked", idempotencyKey: jobId });`,
       en: "Build a storefront theme from tokens, sections and templates, then export it as a versioned, installable bundle.",
       bn: "টোকেন, সেকশন ও টেমপ্লেট দিয়ে স্টোরফ্রন্ট থিম বানান এবং ভার্সনড বান্ডল হিসেবে এক্সপোর্ট করুন।",
     },
-    keywords: ["theme", "sections", "tokens", "templates", "storefront", "bundle"],
+    keywords: [
+      "theme",
+      "sections",
+      "tokens",
+      "templates",
+      "storefront",
+      "bundle",
+    ],
     since: "v1",
     updated: "2026-02-01",
     blocks: [
@@ -686,7 +807,14 @@ await fq.orders.addNote(orderId, { body: "Picked", idempotencyKey: jobId });`,
       en: "Ship an app that adds blocks to the page builder, requests scopes honestly and runs sandboxed on the storefront.",
       bn: "পেজ বিল্ডারে ব্লক যোগ করা অ্যাপ বানান — সৎভাবে স্কোপ চেয়ে, স্যান্ডবক্সে চালিয়ে।",
     },
-    keywords: ["apps", "plugins", "marketplace", "blocks", "sandbox", "consent"],
+    keywords: [
+      "apps",
+      "plugins",
+      "marketplace",
+      "blocks",
+      "sandbox",
+      "consent",
+    ],
     since: "v1",
     updated: "2026-02-01",
     blocks: [
@@ -743,7 +871,14 @@ await fq.orders.addNote(orderId, { body: "Picked", idempotencyKey: jobId });`,
       en: "The pre-flight list for a production integration: secrets, timeouts, observability, failure drills and support paths.",
       bn: "প্রোডাকশন ইন্টিগ্রেশনের চেকলিস্ট: সিক্রেট, টাইমআউট, অবজারভেবিলিটি, ব্যর্থতার মহড়া ও সাপোর্ট।",
     },
-    keywords: ["production", "checklist", "monitoring", "timeouts", "support", "incident"],
+    keywords: [
+      "production",
+      "checklist",
+      "monitoring",
+      "timeouts",
+      "support",
+      "incident",
+    ],
     since: "v1",
     updated: "2026-02-01",
     blocks: [
@@ -772,8 +907,16 @@ await fq.orders.addNote(orderId, { body: "Picked", idempotencyKey: jobId });`,
         rows: [
           ["New endpoint or field", "None (additive)", "Changelog"],
           ["Behaviour change", "30 days", "Changelog + email to app owners"],
-          ["Breaking change", "90 days + new version", "Changelog, email, response header"],
-          ["Emergency security fix", "As fast as safety allows", "Status page + email"],
+          [
+            "Breaking change",
+            "90 days + new version",
+            "Changelog, email, response header",
+          ],
+          [
+            "Emergency security fix",
+            "As fast as safety allows",
+            "Status page + email",
+          ],
         ],
       },
       {

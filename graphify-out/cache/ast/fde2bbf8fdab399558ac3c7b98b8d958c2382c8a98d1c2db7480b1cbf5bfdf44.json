@@ -1,1 +1,128 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "label": "OwnerUi.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L1"}, {"id": "root_ownerui_ownerheader", "label": "OwnerHeader()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L3"}, {"id": "root_ownerui_statcard", "label": "StatCard()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L12"}, {"id": "root_ownerui_statgrid", "label": "StatGrid()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L24"}, {"id": "root_ownerui_statepill", "label": "StatePill()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L29"}, {"id": "root_ownerui_flagswitch", "label": "FlagSwitch()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L44"}, {"id": "root_ownerui_ownertable", "label": "OwnerTable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L85"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_ownerheader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_statcard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_statgrid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_statepill", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_flagswitch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "target": "root_ownerui_ownertable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L85", "weight": 1.0}], "raw_calls": [{"caller_nid": "root_ownerui_ownertable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx", "source_location": "L91"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "label": "OwnerUi.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "root_ownerui_ownerheader",
+      "label": "OwnerHeader()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "root_ownerui_statcard",
+      "label": "StatCard()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "root_ownerui_statgrid",
+      "label": "StatGrid()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "root_ownerui_statepill",
+      "label": "StatePill()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L29"
+    },
+    {
+      "id": "root_ownerui_flagswitch",
+      "label": "FlagSwitch()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L44"
+    },
+    {
+      "id": "root_ownerui_ownertable",
+      "label": "OwnerTable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L85"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_ownerheader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_statcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_statgrid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_statepill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_flagswitch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "target": "root_ownerui_ownertable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L85",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "root_ownerui_ownertable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/root/OwnerUi.tsx",
+      "source_location": "L91"
+    }
+  ]
+}

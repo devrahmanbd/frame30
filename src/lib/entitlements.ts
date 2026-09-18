@@ -23,7 +23,12 @@ export type EntitlementResource = (typeof ENTITLEMENT_RESOURCES)[number];
 
 export type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
 
-export const PLAN_LADDER: readonly BillingPlanKey[] = ["launch", "growth", "business", "enterprise"];
+export const PLAN_LADDER: readonly BillingPlanKey[] = [
+  "launch",
+  "growth",
+  "business",
+  "enterprise",
+];
 
 type ResourceMeta = {
   en: string;
@@ -44,8 +49,10 @@ export const RESOURCE_META: Record<EntitlementResource, ResourceMeta> = {
     unit: "count",
     warnAt: 0.8,
     hard: true,
-    upsellEn: "Upgrade to keep publishing — your existing articles stay online.",
-    upsellBn: "প্রকাশ চালিয়ে যেতে আপগ্রেড করুন — আপনার বর্তমান আর্টিকেল অনলাইনেই থাকবে।",
+    upsellEn:
+      "Upgrade to keep publishing — your existing articles stay online.",
+    upsellBn:
+      "প্রকাশ চালিয়ে যেতে আপগ্রেড করুন — আপনার বর্তমান আর্টিকেল অনলাইনেই থাকবে।",
   },
   media_bytes: {
     en: "Media storage",
@@ -53,8 +60,10 @@ export const RESOURCE_META: Record<EntitlementResource, ResourceMeta> = {
     unit: "bytes",
     warnAt: 0.85,
     hard: true,
-    upsellEn: "Upgrade for more storage. Nothing already uploaded is ever deleted on a limit.",
-    upsellBn: "বেশি স্টোরেজের জন্য আপগ্রেড করুন। লিমিটের কারণে আপলোড করা কিছু কখনো মুছে ফেলা হয় না।",
+    upsellEn:
+      "Upgrade for more storage. Nothing already uploaded is ever deleted on a limit.",
+    upsellBn:
+      "বেশি স্টোরেজের জন্য আপগ্রেড করুন। লিমিটের কারণে আপলোড করা কিছু কখনো মুছে ফেলা হয় না।",
   },
   revision_retention: {
     en: "Revision history",
@@ -82,8 +91,10 @@ export const RESOURCE_META: Record<EntitlementResource, ResourceMeta> = {
     unit: "per_day",
     warnAt: 0.75,
     hard: true,
-    upsellEn: "Higher plans scan more often; the scheduled scan still runs on every plan.",
-    upsellBn: "উচ্চতর প্ল্যানে বেশি বার স্ক্যান হয়; নির্ধারিত স্ক্যান সব প্ল্যানেই চলে।",
+    upsellEn:
+      "Higher plans scan more often; the scheduled scan still runs on every plan.",
+    upsellBn:
+      "উচ্চতর প্ল্যানে বেশি বার স্ক্যান হয়; নির্ধারিত স্ক্যান সব প্ল্যানেই চলে।",
   },
   products: {
     en: "Products",
@@ -115,7 +126,12 @@ export type EntitlementSnapshot = {
 };
 
 function num(value: unknown, fallback = 0) {
-  const n = typeof value === "string" ? Number(value) : typeof value === "number" ? value : NaN;
+  const n =
+    typeof value === "string"
+      ? Number(value)
+      : typeof value === "number"
+        ? value
+        : NaN;
   return Number.isFinite(n) ? n : fallback;
 }
 
@@ -134,9 +150,14 @@ export function normalizeSnapshot(raw: unknown): EntitlementSnapshot {
   }
   const plan = String(obj["plan"] ?? "launch");
   return {
-    plan: (PLAN_LADDER as readonly string[]).includes(plan) ? (plan as BillingPlanKey) : "launch",
+    plan: (PLAN_LADDER as readonly string[]).includes(plan)
+      ? (plan as BillingPlanKey)
+      : "launch",
     status: String(obj["status"] ?? "none"),
-    trialEndsAt: typeof obj["trial_ends_at"] === "string" ? (obj["trial_ends_at"] as string) : null,
+    trialEndsAt:
+      typeof obj["trial_ends_at"] === "string"
+        ? (obj["trial_ends_at"] as string)
+        : null,
     resources,
   };
 }
@@ -166,7 +187,8 @@ export function upgradeTarget(plan: BillingPlanKey): BillingPlanKey | null {
 
 export function formatUsage(resource: EntitlementResource, value: number) {
   if (value < 0) return "∞";
-  if (RESOURCE_META[resource].unit !== "bytes") return value.toLocaleString("en-US");
+  if (RESOURCE_META[resource].unit !== "bytes")
+    return value.toLocaleString("en-US");
   const units = ["B", "KB", "MB", "GB", "TB"];
   let n = value;
   let i = 0;
@@ -190,8 +212,15 @@ export function verdictFor(
   const { cap, used } = snapshot.resources[resource] ?? { cap: 0, used: 0 };
   const unlimited = cap < 0;
   const projected = used + Math.max(0, requested);
-  const remaining = unlimited ? Number.POSITIVE_INFINITY : Math.max(0, cap - used);
-  const percent = unlimited || cap === 0 ? (unlimited ? 0 : 100) : Math.min(100, Math.round((used / cap) * 100));
+  const remaining = unlimited
+    ? Number.POSITIVE_INFINITY
+    : Math.max(0, cap - used);
+  const percent =
+    unlimited || cap === 0
+      ? unlimited
+        ? 0
+        : 100
+      : Math.min(100, Math.round((used / cap) * 100));
   const over = !unlimited && projected > cap;
   const level: EntitlementVerdict["level"] = over
     ? meta.hard
@@ -228,7 +257,9 @@ export function verdictFor(
 }
 
 /** Every resource at once, worst first — the shape the usage panel renders. */
-export function usageReport(snapshot: EntitlementSnapshot): EntitlementVerdict[] {
+export function usageReport(
+  snapshot: EntitlementSnapshot,
+): EntitlementVerdict[] {
   const order = { block: 0, warn: 1, ok: 2 } as const;
   return ENTITLEMENT_RESOURCES.map((r) => verdictFor(snapshot, r, 0)).sort(
     (a, b) => order[a.level] - order[b.level] || b.percent - a.percent,

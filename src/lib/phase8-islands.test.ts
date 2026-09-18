@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { hydrationMode, hydrationProfile, isZeroJsWidget } from "./widget-hydration";
+import {
+  hydrationMode,
+  hydrationProfile,
+  isZeroJsWidget,
+} from "./widget-hydration";
 import {
   BUILDER_API_VERSION,
   PRESET_API_RANGE,
@@ -19,7 +23,12 @@ describe("island hydration policy", () => {
   });
 
   it("hydrates chrome and buy-path widgets eagerly", () => {
-    for (const type of ["announcement_bar", "add_to_cart", "buy_box", "search_command"]) {
+    for (const type of [
+      "announcement_bar",
+      "add_to_cart",
+      "buy_box",
+      "search_command",
+    ]) {
       expect(hydrationMode(type)).toBe("eager");
     }
   });
@@ -35,12 +44,19 @@ describe("island hydration policy", () => {
 
   it("assigns exactly one mode to every registered widget", () => {
     for (const type of WIDGET_TYPES) {
-      expect(["static", "eager", "visible", "interaction"]).toContain(hydrationMode(type));
+      expect(["static", "eager", "visible", "interaction"]).toContain(
+        hydrationMode(type),
+      );
     }
   });
 
   it("reports the deferred share of a layout for the perf budget", () => {
-    const profile = hydrationProfile(["rich_text", "image", "product_rail", "add_to_cart"]);
+    const profile = hydrationProfile([
+      "rich_text",
+      "image",
+      "product_rail",
+      "add_to_cart",
+    ]);
     expect(profile.counts.static).toBe(2);
     expect(profile.staticShare).toBe(0.5);
     expect(profile.deferredShare).toBe(0.75);

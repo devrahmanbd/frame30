@@ -1,1 +1,237 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "label": "sync-v3-metrics.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L1"}, {"id": "helpers_sync_v3_metrics_log", "label": "log()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L20"}, {"id": "helpers_sync_v3_metrics_count_modules", "label": "count_modules()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L25"}, {"id": "helpers_sync_v3_metrics_calculate_module_progress", "label": "calculate_module_progress()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L43"}, {"id": "helpers_sync_v3_metrics_check_security_status", "label": "check_security_status()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L74"}, {"id": "helpers_sync_v3_metrics_calculate_ddd_progress", "label": "calculate_ddd_progress()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L100"}, {"id": "helpers_sync_v3_metrics_count_total_lines", "label": "count_total_lines()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L121"}, {"id": "helpers_sync_v3_metrics_count_total_files", "label": "count_total_files()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L126"}, {"id": "helpers_sync_v3_metrics_count_domains", "label": "count_domains()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L131"}, {"id": "helpers_sync_v3_metrics_sync_metrics", "label": "sync_metrics()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L145"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_log", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_count_modules", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_calculate_module_progress", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_check_security_status", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_calculate_ddd_progress", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_count_total_lines", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L121", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_count_total_files", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_count_domains", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L131", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh", "target": "helpers_sync_v3_metrics_sync_metrics", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L145", "weight": 1.0}, {"source": "helpers_sync_v3_metrics_calculate_ddd_progress", "target": "helpers_sync_v3_metrics_calculate_module_progress", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L107", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_log", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L146", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_count_modules", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L148", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_count_domains", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L149", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_calculate_ddd_progress", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L150", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_check_security_status", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L151", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_count_total_files", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L152", "weight": 1.0, "context": "call"}, {"source": "helpers_sync_v3_metrics_sync_metrics", "target": "helpers_sync_v3_metrics_count_total_lines", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh", "source_location": "L153", "weight": 1.0, "context": "call"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "label": "sync-v3-metrics.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L1"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_log",
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L20"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_count_modules",
+      "label": "count_modules()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L25"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_calculate_module_progress",
+      "label": "calculate_module_progress()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L43"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_check_security_status",
+      "label": "check_security_status()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L74"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_calculate_ddd_progress",
+      "label": "calculate_ddd_progress()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L100"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_count_total_lines",
+      "label": "count_total_lines()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L121"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_count_total_files",
+      "label": "count_total_files()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L126"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_count_domains",
+      "label": "count_domains()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L131"
+    },
+    {
+      "id": "helpers_sync_v3_metrics_sync_metrics",
+      "label": "sync_metrics()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L145"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_log",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_count_modules",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_calculate_module_progress",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_check_security_status",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_calculate_ddd_progress",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_count_total_lines",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_count_total_files",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_count_domains",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_sync_v3_metrics_sh",
+      "target": "helpers_sync_v3_metrics_sync_metrics",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "helpers_sync_v3_metrics_calculate_ddd_progress",
+      "target": "helpers_sync_v3_metrics_calculate_module_progress",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L107",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_log",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L146",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_count_modules",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L148",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_count_domains",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L149",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_calculate_ddd_progress",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L150",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_check_security_status",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L151",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_count_total_files",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L152",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_sync_v3_metrics_sync_metrics",
+      "target": "helpers_sync_v3_metrics_count_total_lines",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/sync-v3-metrics.sh",
+      "source_location": "L153",
+      "weight": 1.0,
+      "context": "call"
+    }
+  ]
+}

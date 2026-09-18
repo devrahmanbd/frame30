@@ -82,7 +82,11 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   const copy = COPY[kind];
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const list = useListState({ defaultSort: "date", defaultDir: "desc", pageSize: 20 });
+  const list = useListState({
+    defaultSort: "date",
+    defaultDir: "desc",
+    pageSize: 20,
+  });
 
   const loadDesk = useServerFn(contentDeskFn);
   const quickEdit = useServerFn(contentQuickEditFn);
@@ -99,7 +103,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   });
 
   const setDesk = useCallback(
-    (fn: (d: DeskPayload) => DeskPayload) => qc.setQueryData<DeskPayload>(queryKey, (d) => (d ? fn(d) : d)),
+    (fn: (d: DeskPayload) => DeskPayload) =>
+      qc.setQueryData<DeskPayload>(queryKey, (d) => (d ? fn(d) : d)),
     [qc, queryKey],
   );
 
@@ -116,13 +121,20 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   const [creating, setCreating] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const view = (STATUS_VIEWS as readonly string[]).includes(list.view) ? (list.view as StatusView) : "all";
+  const view = (STATUS_VIEWS as readonly string[]).includes(list.view)
+    ? (list.view as StatusView)
+    : "all";
   const bucket = list.param("m") || undefined;
   const category = list.param("cat") || undefined;
 
   const rows = data?.rows ?? [];
   const filtered = useMemo(
-    () => sortRows(filterRows(rows, { view, q: list.q, bucket, category }), (list.sort as SortKey) || "", list.dir),
+    () =>
+      sortRows(
+        filterRows(rows, { view, q: list.q, bucket, category }),
+        (list.sort as SortKey) || "",
+        list.dir,
+      ),
     [rows, view, list.q, bucket, category, list.sort, list.dir],
   );
   const pageRows = list.paginate(filtered);
@@ -135,30 +147,48 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     setQuickId(null);
   }, [view, kind]);
 
-  const selectedRows = useMemo(() => rows.filter((r) => selected.has(r.id)), [rows, selected]);
+  const selectedRows = useMemo(
+    () => rows.filter((r) => selected.has(r.id)),
+    [rows, selected],
+  );
 
   /* ------------------------------------------------------------ mutations */
-  const patchRows = (ids: readonly string[], patch: Partial<ContentRow>, counts?: (c: DeskPayload["counts"]) => DeskPayload["counts"]) =>
+  const patchRows = (
+    ids: readonly string[],
+    patch: Partial<ContentRow>,
+    counts?: (c: DeskPayload["counts"]) => DeskPayload["counts"],
+  ) =>
     setDesk((d) => ({
       ...d,
       rows: d.rows.map((r) => (ids.includes(r.id) ? { ...r, ...patch } : r)),
       counts: counts ? counts(d.counts) : d.counts,
     }));
 
-  const shiftCounts = (moved: readonly ContentRow[], to: ContentStatus | null) => (c: DeskPayload["counts"]) => {
-    const next = { ...c };
-    for (const r of moved) {
-      next[r.status] = Math.max(0, (next[r.status] ?? 0) - 1);
-      if (to) next[to] = (next[to] ?? 0) + 1;
-    }
-    return next;
-  };
+  const shiftCounts =
+    (moved: readonly ContentRow[], to: ContentStatus | null) =>
+    (c: DeskPayload["counts"]) => {
+      const next = { ...c };
+      for (const r of moved) {
+        next[r.status] = Math.max(0, (next[r.status] ?? 0) - 1);
+        if (to) next[to] = (next[to] ?? 0) + 1;
+      }
+      return next;
+    };
 
-  const runVerb = async (verb: "trash" | "restore" | "publish" | "unpublish", ids: string[]) => {
+  const runVerb = async (
+    verb: "trash" | "restore" | "publish" | "unpublish",
+    ids: string[],
+  ) => {
     const snapshot = qc.getQueryData<DeskPayload>(queryKey);
     const moved = rows.filter((r) => ids.includes(r.id));
     const to: ContentStatus =
-      verb === "trash" ? "trash" : verb === "publish" ? "published" : verb === "unpublish" ? "draft" : "draft";
+      verb === "trash"
+        ? "trash"
+        : verb === "publish"
+          ? "published"
+          : verb === "unpublish"
+            ? "draft"
+            : "draft";
     const label = BULK_ACTION_LABEL[verb][l];
     const now = new Date().toISOString();
     await optimistic({
@@ -170,7 +200,11 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
             ? { status: "trash", trashedAt: now }
             : verb === "restore"
               ? { status: "draft", trashedAt: null }
-              : { status: to, trashedAt: null, publishedAt: verb === "publish" ? now : null },
+              : {
+                  status: to,
+                  trashedAt: null,
+                  publishedAt: verb === "publish" ? now : null,
+                },
           shiftCounts(moved, to),
         ),
       rollback: () => qc.setQueryData(queryKey, snapshot),
@@ -187,7 +221,12 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
         toast.success(
           done[verb],
           verb === "trash"
-            ? { action: { label: t("Undo", "পূর্বাবস্থা"), onClick: () => void runVerb("restore", ids) } }
+            ? {
+                action: {
+                  label: t("Undo", "পূর্বাবস্থা"),
+                  onClick: () => void runVerb("restore", ids),
+                },
+              }
             : undefined,
         );
         void refetch();
@@ -210,7 +249,12 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       run: () => deleteForever({ data: { kind, ids } }),
       onDone: () => {
         setSelected(new Set());
-        toast.success(t(`${ids.length} deleted permanently.`, `${ids.length}টি স্থায়ীভাবে মুছে ফেলা হয়েছে।`));
+        toast.success(
+          t(
+            `${ids.length} deleted permanently.`,
+            `${ids.length}টি স্থায়ীভাবে মুছে ফেলা হয়েছে।`,
+          ),
+        );
       },
     });
   };
@@ -223,7 +267,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     }
     if (action === "trash") return void runVerb("trash", [row.id]);
     if (action === "restore") return void runVerb("restore", [row.id]);
-    if (action === "delete") return setPending({ action: "delete", ids: [row.id] });
+    if (action === "delete")
+      return setPending({ action: "delete", ids: [row.id] });
   };
 
   const submitQuick = async (draft: QuickEditDraft) => {
@@ -252,7 +297,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       toast.success(t("Updated.", "আপডেট হয়েছে।"));
       await refetch();
       requestAnimationFrame(() => {
-        document.querySelector<HTMLElement>(`tr[data-row-id="${quickId}"]`)?.focus();
+        document
+          .querySelector<HTMLElement>(`tr[data-row-id="${quickId}"]`)
+          ?.focus();
       });
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -272,7 +319,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     setBulkSaving(true);
     try {
       const res = await bulkEdit({ data: { kind, ids, patch } });
-      toast.success(t(`${res.updated} updated.`, `${res.updated}টি আপডেট হয়েছে।`));
+      toast.success(
+        t(`${res.updated} updated.`, `${res.updated}টি আপডেট হয়েছে।`),
+      );
       setBulkOpen(false);
       setSelected(new Set());
       await refetch();
@@ -288,7 +337,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     if (!bulkPick || ids.length === 0) return;
     if (bulkPick === "edit") return setBulkOpen(true);
     if (bulkPick === "delete") return setPending({ action: "delete", ids });
-    if (bulkPick === "trash" && ids.length > 5) return setPending({ action: "trash", ids });
+    if (bulkPick === "trash" && ids.length > 5)
+      return setPending({ action: "trash", ids });
     void runVerb(bulkPick, ids);
   };
 
@@ -309,7 +359,12 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      const typing = target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT" || target.isContentEditable);
+      const typing =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
       if (e.key === "?" && !typing) {
         e.preventDefault();
         setHelp((h) => !h);
@@ -327,7 +382,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       const row = id ? rows.find((r) => r.id === id) : undefined;
       if (!row) return;
       const step = (dir: 1 | -1) => {
-        const all = [...tr.parentElement!.querySelectorAll<HTMLElement>("tr[data-row-id]")];
+        const all = [
+          ...tr.parentElement!.querySelectorAll<HTMLElement>("tr[data-row-id]"),
+        ];
         const i = all.indexOf(tr);
         all[Math.min(all.length - 1, Math.max(0, i + dir))]?.focus();
       };
@@ -376,7 +433,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       else n.add(id);
       return n;
     });
-  const toggleAll = (next: boolean) => setSelected(next ? new Set(pageRows.map((r) => r.id)) : new Set());
+  const toggleAll = (next: boolean) =>
+    setSelected(next ? new Set(pageRows.map((r) => r.id)) : new Set());
 
   /* --------------------------------------------------------------- columns */
   const storeSlug = data?.storeSlug ?? "";
@@ -392,19 +450,54 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
         header: t("Title", "শিরোনাম"),
         sortable: true,
         width: "auto",
-        cell: (row) => <TitleCell row={row} storeSlug={storeSlug} onAction={act} />,
+        cell: (row) => (
+          <TitleCell row={row} storeSlug={storeSlug} onAction={act} />
+        ),
       },
-      { key: "author", header: t("Author", "লেখক"), sortable: true, width: "9rem", cell: (row) => <AuthorCell name={row.authorName} /> },
+      {
+        key: "author",
+        header: t("Author", "লেখক"),
+        sortable: true,
+        width: "9rem",
+        cell: (row) => <AuthorCell name={row.authorName} />,
+      },
     ];
     if (kind === "post") {
       cols.push(
-        { key: "categories", header: t("Categories", "ক্যাটাগরি"), width: "11rem", cell: (row) => <TermsCell items={row.categories} emptyLabel={t("Uncategorized", "শ্রেণিহীন")} /> },
-        { key: "tags", header: t("Tags", "ট্যাগ"), width: "11rem", cell: (row) => <TermsCell items={row.tags} emptyLabel="—" /> },
+        {
+          key: "categories",
+          header: t("Categories", "ক্যাটাগরি"),
+          width: "11rem",
+          cell: (row) => (
+            <TermsCell
+              items={row.categories}
+              emptyLabel={t("Uncategorized", "শ্রেণিহীন")}
+            />
+          ),
+        },
+        {
+          key: "tags",
+          header: t("Tags", "ট্যাগ"),
+          width: "11rem",
+          cell: (row) => <TermsCell items={row.tags} emptyLabel="—" />,
+        },
       );
     }
     cols.push(
-      { key: "seo", header: "SEO", sortable: true, width: "11rem", cell: (row) => <SeoCell seo={row.seo} /> },
-      { key: "date", header: t("Date", "তারিখ"), sortable: true, width: "11rem", cell: (row) => <DateCell row={row} /> },
+      {
+        key: "seo",
+        header: "SEO",
+        sortable: true,
+        width: "11rem",
+        cell: (row) => <SeoCell seo={row.seo} />,
+      },
+      {
+        key: "date",
+        header: t("Date", "তারিখ"),
+        sortable: true,
+        width: "11rem",
+        cell: (row) => <DateCell row={row} />,
+      },
     );
     return cols;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -423,22 +516,39 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       )}
       actions={
         <>
-          <button type="button" onClick={() => setHelp(true)} className={btnGhost} aria-label={t("Keyboard shortcuts", "কীবোর্ড শর্টকাট")}>
+          <button
+            type="button"
+            onClick={() => setHelp(true)}
+            className={btnGhost}
+            aria-label={t("Keyboard shortcuts", "কীবোর্ড শর্টকাট")}
+          >
             <Keyboard className="size-4" aria-hidden />
           </button>
-          <button type="button" onClick={onAddNew} disabled={creating} className={btnPrimary}>
+          <button
+            type="button"
+            onClick={onAddNew}
+            disabled={creating}
+            className={btnPrimary}
+          >
             <Plus className="size-4" aria-hidden />
             {creating ? t("Creating…", "তৈরি হচ্ছে…") : copy.add[l]}
           </button>
         </>
       }
     >
-      <StatusStrip counts={data?.counts ?? {}} active={view} onSelect={(v) => list.setView(v)} />
+      <StatusStrip
+        counts={data?.counts ?? {}}
+        active={view}
+        onSelect={(v) => list.setView(v)}
+      />
 
       <Toolbar
         end={
           <label className="relative block">
-            <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 fq-sub" />
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 fq-sub"
+            />
             <input
               ref={searchRef}
               type="search"
@@ -464,7 +574,12 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
             </option>
           ))}
         </select>
-        <button type="button" onClick={applyBulkPick} disabled={!bulkPick || selected.size === 0} className={btnGhost}>
+        <button
+          type="button"
+          onClick={applyBulkPick}
+          disabled={!bulkPick || selected.size === 0}
+          className={btnGhost}
+        >
           {t("Apply", "প্রয়োগ")}
         </button>
         <span aria-hidden className="mx-1 h-5 w-px bg-border" />
@@ -511,7 +626,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
           </button>
         ) : null}
         <span className="ml-1 text-xs fq-sub" aria-live="polite">
-          <span className="fq-num">{filtered.length}</span> {noun(filtered.length)}
+          <span className="fq-num">{filtered.length}</span>{" "}
+          {noun(filtered.length)}
         </span>
       </Toolbar>
 
@@ -529,7 +645,11 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
       ) : null}
 
       {error ? (
-        <ErrorState title={t("Couldn't load", "লোড করা যায়নি")} message={(error as Error).message} onRetry={() => void refetch()} />
+        <ErrorState
+          title={t("Couldn't load", "লোড করা যায়নি")}
+          message={(error as Error).message}
+          onRetry={() => void refetch()}
+        />
       ) : (
         <DataTable
           rows={pageRows}
@@ -540,7 +660,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
           onToggle={toggle}
           onToggleAll={toggleAll}
           onRowClick={(r) => {
-            if (r.status !== "trash") void navigate({ to: editHref(kind, r.id) as never });
+            if (r.status !== "trash")
+              void navigate({ to: editHref(kind, r.id) as never });
           }}
           sort={list.sort}
           dir={list.dir}
@@ -561,7 +682,11 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
               serverError={quickError}
               onCancel={() => {
                 setQuickId(null);
-                requestAnimationFrame(() => document.querySelector<HTMLElement>(`tr[data-row-id="${row.id}"]`)?.focus());
+                requestAnimationFrame(() =>
+                  document
+                    .querySelector<HTMLElement>(`tr[data-row-id="${row.id}"]`)
+                    ?.focus(),
+                );
               }}
               onSubmit={(d) => void submitQuick(d)}
             />
@@ -574,11 +699,18 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
                   ? t("Trash is empty.", "ট্র্যাশ খালি।")
                   : list.q
                     ? t("Try a different search.", "অন্যভাবে খুঁজে দেখুন।")
-                    : t("Create your first one to get started.", "শুরু করতে প্রথমটি তৈরি করুন।")
+                    : t(
+                        "Create your first one to get started.",
+                        "শুরু করতে প্রথমটি তৈরি করুন।",
+                      )
               }
               action={
                 view !== "trash" && !list.q ? (
-                  <button type="button" onClick={onAddNew} className={btnPrimary}>
+                  <button
+                    type="button"
+                    onClick={onAddNew}
+                    className={btnPrimary}
+                  >
                     <Plus className="size-4" aria-hidden />
                     {copy.add[l]}
                   </button>
@@ -601,7 +733,11 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
               else if (a === "delete") setPending({ action: "delete", ids });
               else void runVerb(a, ids);
             }}
-            className={cn(btnGhost, "text-xs", (a === "trash" || a === "delete") && "text-[var(--fq-danger)]")}
+            className={cn(
+              btnGhost,
+              "text-xs",
+              (a === "trash" || a === "delete") && "text-[var(--fq-danger)]",
+            )}
           >
             {BULK_ACTION_LABEL[a][l]}
           </button>
@@ -612,15 +748,31 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
         open={pending !== null}
         title={
           pending?.action === "delete"
-            ? t(`Delete ${pending.ids.length} ${noun(pending.ids.length)} permanently?`, `${pending?.ids.length}টি ${noun(pending?.ids.length ?? 0)} স্থায়ীভাবে মুছবেন?`)
-            : t(`Move ${pending?.ids.length ?? 0} ${noun(pending?.ids.length ?? 0)} to Trash?`, `${pending?.ids.length ?? 0}টি ট্র্যাশে পাঠাবেন?`)
+            ? t(
+                `Delete ${pending.ids.length} ${noun(pending.ids.length)} permanently?`,
+                `${pending?.ids.length}টি ${noun(pending?.ids.length ?? 0)} স্থায়ীভাবে মুছবেন?`,
+              )
+            : t(
+                `Move ${pending?.ids.length ?? 0} ${noun(pending?.ids.length ?? 0)} to Trash?`,
+                `${pending?.ids.length ?? 0}টি ট্র্যাশে পাঠাবেন?`,
+              )
         }
         description={
           pending?.action === "delete"
-            ? t("This cannot be undone. Content, revisions and SEO data are removed.", "এটি ফেরানো যাবে না। কনটেন্ট, রিভিশন ও SEO ডেটা মুছে যাবে।")
-            : t("You can restore from Trash within 30 days.", "৩০ দিনের মধ্যে ট্র্যাশ থেকে ফিরিয়ে আনা যাবে।")
+            ? t(
+                "This cannot be undone. Content, revisions and SEO data are removed.",
+                "এটি ফেরানো যাবে না। কনটেন্ট, রিভিশন ও SEO ডেটা মুছে যাবে।",
+              )
+            : t(
+                "You can restore from Trash within 30 days.",
+                "৩০ দিনের মধ্যে ট্র্যাশ থেকে ফিরিয়ে আনা যাবে।",
+              )
         }
-        confirmLabel={pending?.action === "delete" ? BULK_ACTION_LABEL.delete[l] : BULK_ACTION_LABEL.trash[l]}
+        confirmLabel={
+          pending?.action === "delete"
+            ? BULK_ACTION_LABEL.delete[l]
+            : BULK_ACTION_LABEL.trash[l]
+        }
         cancelLabel={t("Cancel", "বাতিল")}
         onCancel={() => setPending(null)}
         onConfirm={() => {

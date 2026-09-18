@@ -41,8 +41,10 @@ async function main() {
       console.log(`Throughput       : ${progress.rowsPerSecond} rows/sec`);
       console.log(`Started At       : ${progress.startedAt}`);
       console.log(`Updated At       : ${progress.updatedAt}`);
-      if (progress.completedAt) console.log(`Completed At     : ${progress.completedAt}`);
-      if (progress.error) console.log(`Error            : \x1b[31m${progress.error}\x1b[0m`);
+      if (progress.completedAt)
+        console.log(`Completed At     : ${progress.completedAt}`);
+      if (progress.error)
+        console.log(`Error            : \x1b[31m${progress.error}\x1b[0m`);
     }
     console.log("=".repeat(80));
     return;
@@ -58,7 +60,8 @@ async function main() {
   const jobId = jobIdx !== -1 ? args[jobIdx + 1] : "synthetic_demo_migration";
   const tableName = tableIdx !== -1 ? args[tableIdx + 1] : "orders";
   const batchSize = batchIdx !== -1 ? parseInt(args[batchIdx + 1], 10) : 500;
-  const sleepBetweenBatchesMs = sleepIdx !== -1 ? parseInt(args[sleepIdx + 1], 10) : 50;
+  const sleepBetweenBatchesMs =
+    sleepIdx !== -1 ? parseInt(args[sleepIdx + 1], 10) : 50;
   const maxRows = maxRowsIdx !== -1 ? parseInt(args[maxRowsIdx + 1], 10) : 2500;
 
   console.log("=".repeat(80));
@@ -70,7 +73,9 @@ async function main() {
   console.log(`Batch Size        : ${batchSize} rows/chunk`);
   console.log(`Throttle Sleep    : ${sleepBetweenBatchesMs}ms between batches`);
   console.log(`Max Rows Target   : ${maxRows}`);
-  console.log(`Execution Mode    : ${isDryRun ? "\x1b[33mDRY RUN (No Writes)\x1b[0m" : "\x1b[32mLIVE EXECUTION\x1b[0m"}`);
+  console.log(
+    `Execution Mode    : ${isDryRun ? "\x1b[33mDRY RUN (No Writes)\x1b[0m" : "\x1b[32mLIVE EXECUTION\x1b[0m"}`,
+  );
   console.log("=".repeat(80));
 
   // Demonstration backfill runner with synthetic chunking
@@ -112,7 +117,9 @@ async function main() {
   );
 
   console.log("\n" + "-".repeat(80));
-  console.log(`STATUS           : \x1b[32m${result.status.toUpperCase()}\x1b[0m`);
+  console.log(
+    `STATUS           : \x1b[32m${result.status.toUpperCase()}\x1b[0m`,
+  );
   console.log(`TOTAL PROCESSED  : ${result.rowsProcessed} rows`);
   console.log(`TOTAL BATCHES    : ${result.totalBatches} chunks`);
   console.log(`FINAL CURSOR     : ${result.cursor}`);

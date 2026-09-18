@@ -29,7 +29,15 @@ export function SpecValue({ value, unit }: { value: string; unit?: string }) {
   );
 }
 
-export function SpecRow({ label, value, unit }: { label: string; value: string; unit?: string }) {
+export function SpecRow({
+  label,
+  value,
+  unit,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+}) {
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-border px-3 py-2 last:border-b-0">
       <dt className="min-w-0 max-w-[45%] text-sm font-medium">{label}</dt>
@@ -41,7 +49,9 @@ export function SpecRow({ label, value, unit }: { label: string; value: string; 
 }
 
 /** Groups pairs in first-seen order; ungrouped pairs land under `""`. */
-export function groupSpecs(pairs: SpecPair[]): { group: string; rows: SpecPair[] }[] {
+export function groupSpecs(
+  pairs: SpecPair[],
+): { group: string; rows: SpecPair[] }[] {
   const out: { group: string; rows: SpecPair[] }[] = [];
   for (const pair of pairs) {
     const group = (pair.group ?? "").trim();

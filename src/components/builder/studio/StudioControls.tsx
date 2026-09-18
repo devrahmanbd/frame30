@@ -6,7 +6,16 @@
  * the override. The panel never special-cases a widget — it renders schema.
  */
 import { useId, useState } from "react";
-import { Laptop, Monitor, Plus, RotateCcw, Smartphone, Tablet, Trash2, TvMinimal } from "lucide-react";
+import {
+  Laptop,
+  Monitor,
+  Plus,
+  RotateCcw,
+  Smartphone,
+  Tablet,
+  Trash2,
+  TvMinimal,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -19,7 +28,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { MediaPicker } from "@/components/builder/MediaPicker";
 import type { Control } from "@/lib/studio/controls";
 import type { NodeSettings, SettingValue } from "@/lib/studio/model";
@@ -51,7 +65,11 @@ type FieldProps = {
   activeDevices: DeviceKey[];
 };
 
-function readValue(control: Control, settings: NodeSettings, device: DeviceKey): SettingValue {
+function readValue(
+  control: Control,
+  settings: NodeSettings,
+  device: DeviceKey,
+): SettingValue {
   const raw = settings[control.key];
   if (!control.responsive) return raw;
   return resolveResponsive(raw as Maybe<SettingValue>, device) as SettingValue;
@@ -64,7 +82,11 @@ function writeValue(
   next: SettingValue,
 ): SettingValue {
   if (!control.responsive) return next;
-  return setResponsive(settings[control.key] as Maybe<SettingValue>, device, next) as SettingValue;
+  return setResponsive(
+    settings[control.key] as Maybe<SettingValue>,
+    device,
+    next,
+  ) as SettingValue;
 }
 
 function DeviceChip({
@@ -73,10 +95,16 @@ function DeviceChip({
   device,
   onDevice,
   activeDevices,
-}: Pick<FieldProps, "control" | "settings" | "device" | "onDevice" | "activeDevices">) {
+}: Pick<
+  FieldProps,
+  "control" | "settings" | "device" | "onDevice" | "activeDevices"
+>) {
   if (!control.responsive) return null;
-  const overridden = hasOverride(settings[control.key] as Maybe<SettingValue>, device) && device !== "desktop";
-  const order: DeviceKey[] = activeDevices.length > 0 ? activeDevices : ["desktop"];
+  const overridden =
+    hasOverride(settings[control.key] as Maybe<SettingValue>, device) &&
+    device !== "desktop";
+  const order: DeviceKey[] =
+    activeDevices.length > 0 ? activeDevices : ["desktop"];
   const next = order[(order.indexOf(device) + 1) % order.length] ?? "desktop";
   const Icon = DEVICE_ICON[device];
   return (
@@ -99,8 +127,10 @@ export function ControlField(props: FieldProps) {
   const { control, settings, device, onChange } = props;
   const id = useId();
   const value = readValue(control, settings, device);
-  const set = (next: SettingValue) => onChange(control.key, writeValue(control, settings, device, next));
-  const clear = () => onChange(control.key, writeValue(control, settings, device, undefined));
+  const set = (next: SettingValue) =>
+    onChange(control.key, writeValue(control, settings, device, next));
+  const clear = () =>
+    onChange(control.key, writeValue(control, settings, device, undefined));
   const canReset = control.responsive
     ? hasOverride(settings[control.key] as Maybe<SettingValue>, device)
     : settings[control.key] !== undefined;
@@ -162,7 +192,13 @@ export function ControlField(props: FieldProps) {
             min={control.min}
             max={control.max}
             step={control.step}
-            onChange={(event) => set(event.target.value === "" ? undefined : Number(event.target.value))}
+            onChange={(event) =>
+              set(
+                event.target.value === ""
+                  ? undefined
+                  : Number(event.target.value),
+              )
+            }
           />
         );
 
@@ -190,7 +226,13 @@ export function ControlField(props: FieldProps) {
               max={max}
               step={step}
               aria-label={`${control.label} value`}
-              onChange={(event) => set(event.target.value === "" ? undefined : Number(event.target.value))}
+              onChange={(event) =>
+                set(
+                  event.target.value === ""
+                    ? undefined
+                    : Number(event.target.value),
+                )
+              }
               className="h-9 w-20"
             />
           </div>
@@ -200,20 +242,32 @@ export function ControlField(props: FieldProps) {
       case "switch":
         return (
           <div className="flex items-center gap-2">
-            <Switch id={id} checked={value === true} onCheckedChange={(checked) => set(checked)} />
-            <span className="text-xs text-muted-foreground">{value === true ? "On" : "Off"}</span>
+            <Switch
+              id={id}
+              checked={value === true}
+              onCheckedChange={(checked) => set(checked)}
+            />
+            <span className="text-xs text-muted-foreground">
+              {value === true ? "On" : "Off"}
+            </span>
           </div>
         );
 
       case "select":
         return (
-          <Select value={value === undefined || value === null ? "" : String(value)} onValueChange={(next) => set(next)}>
+          <Select
+            value={value === undefined || value === null ? "" : String(value)}
+            onValueChange={(next) => set(next)}
+          >
             <SelectTrigger id={id} aria-label={control.label}>
               <SelectValue placeholder="Default" />
             </SelectTrigger>
             <SelectContent>
               {(control.options ?? []).map((option) => (
-                <SelectItem key={option.value || "__default"} value={option.value || "__default"}>
+                <SelectItem
+                  key={option.value || "__default"}
+                  value={option.value || "__default"}
+                >
                   {option.label}
                 </SelectItem>
               ))}
@@ -223,7 +277,11 @@ export function ControlField(props: FieldProps) {
 
       case "choice":
         return (
-          <div role="group" aria-label={control.label} className="flex flex-wrap gap-1 rounded-fq-md bg-muted p-1">
+          <div
+            role="group"
+            aria-label={control.label}
+            className="flex flex-wrap gap-1 rounded-fq-md bg-muted p-1"
+          >
             {(control.options ?? []).map((option) => {
               const selected = String(value ?? "") === option.value;
               return (
@@ -234,7 +292,9 @@ export function ControlField(props: FieldProps) {
                   onClick={() => set(option.value)}
                   className={cn(
                     "min-h-9 flex-1 rounded-fq-sm px-2 text-xs font-medium transition-colors",
-                    selected ? "bg-card text-foreground shadow-fq-sm" : "text-muted-foreground hover:text-foreground",
+                    selected
+                      ? "bg-card text-foreground shadow-fq-sm"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {option.label}
@@ -250,7 +310,11 @@ export function ControlField(props: FieldProps) {
             <input
               id={id}
               type="color"
-              value={typeof value === "string" && value.startsWith("#") ? value : "#000000"}
+              value={
+                typeof value === "string" && value.startsWith("#")
+                  ? value
+                  : "#000000"
+              }
               onChange={(event) => set(event.target.value)}
               aria-label={`${control.label} picker`}
               className="size-9 shrink-0 cursor-pointer rounded-fq-sm border border-border bg-card"
@@ -267,9 +331,26 @@ export function ControlField(props: FieldProps) {
       case "dimensions": {
         const current =
           value && typeof value === "object" && !Array.isArray(value)
-            ? (value as unknown as { top: number; right: number; bottom: number; left: number; unit: string; linked?: boolean })
-            : { top: 0, right: 0, bottom: 0, left: 0, unit: "px", linked: true };
-        const write = (side: "top" | "right" | "bottom" | "left", next: number) => {
+            ? (value as unknown as {
+                top: number;
+                right: number;
+                bottom: number;
+                left: number;
+                unit: string;
+                linked?: boolean;
+              })
+            : {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+                unit: "px",
+                linked: true,
+              };
+        const write = (
+          side: "top" | "right" | "bottom" | "left",
+          next: number,
+        ) => {
           const patch = current.linked
             ? { ...current, top: next, right: next, bottom: next, left: next }
             : { ...current, [side]: next };
@@ -285,7 +366,9 @@ export function ControlField(props: FieldProps) {
                   className="h-9 px-2 text-xs"
                   aria-label={`${control.label} ${side}`}
                   value={current[side]}
-                  onChange={(event) => write(side, Number(event.target.value || 0))}
+                  onChange={(event) =>
+                    write(side, Number(event.target.value || 0))
+                  }
                 />
               ))}
             </div>
@@ -293,10 +376,17 @@ export function ControlField(props: FieldProps) {
               type="button"
               aria-pressed={current.linked !== false}
               aria-label="Link all four sides"
-              onClick={() => set({ ...current, linked: current.linked === false } as unknown as SettingValue)}
+              onClick={() =>
+                set({
+                  ...current,
+                  linked: current.linked === false,
+                } as unknown as SettingValue)
+              }
               className={cn(
                 "grid size-9 shrink-0 place-items-center rounded-fq-sm border text-xs",
-                current.linked === false ? "border-border text-muted-foreground" : "border-primary text-primary",
+                current.linked === false
+                  ? "border-border text-muted-foreground"
+                  : "border-primary text-primary",
               )}
             >
               ⛓
@@ -317,14 +407,15 @@ export function ControlField(props: FieldProps) {
              * never overwrite an author's words. */
             onInherit={(meta) => {
               const existing = settings["alt"];
-              if (meta.altText && !(typeof existing === "string" && existing.trim())) {
+              if (
+                meta.altText &&
+                !(typeof existing === "string" && existing.trim())
+              ) {
                 onChange("alt", meta.altText as unknown as SettingValue);
               }
             }}
           />
         );
-
-
 
       case "link":
         return (
@@ -347,7 +438,13 @@ export function ControlField(props: FieldProps) {
         );
 
       case "repeater":
-        return <Repeater control={control} value={Array.isArray(value) ? (value as NodeSettings[]) : []} onChange={set} />;
+        return (
+          <Repeater
+            control={control}
+            value={Array.isArray(value) ? (value as NodeSettings[]) : []}
+            onChange={set}
+          />
+        );
 
       case "heading":
         return null;
@@ -368,7 +465,11 @@ export function ControlField(props: FieldProps) {
     <div className="flex flex-col gap-1.5">
       {header}
       {body}
-      {control.help ? <p className="text-[11px] leading-snug text-muted-foreground">{control.help}</p> : null}
+      {control.help ? (
+        <p className="text-[11px] leading-snug text-muted-foreground">
+          {control.help}
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -386,14 +487,21 @@ function Repeater({
   const fields = control.fields ?? [];
 
   const update = (index: number, key: string, next: SettingValue) => {
-    const rows = value.map((row, i) => (i === index ? { ...row, [key]: next } : row));
+    const rows = value.map((row, i) =>
+      i === index ? { ...row, [key]: next } : row,
+    );
     onChange(rows as unknown as SettingValue);
   };
 
   return (
     <div className="flex flex-col gap-2">
       {value.map((row, index) => {
-        const title = typeof row.title === "string" ? row.title : typeof row.text === "string" ? row.text : `Item ${index + 1}`;
+        const title =
+          typeof row.title === "string"
+            ? row.title
+            : typeof row.text === "string"
+              ? row.text
+              : `Item ${index + 1}`;
         const expanded = open === index;
         return (
           <div key={index} className="rounded-fq-md border border-border">
@@ -409,7 +517,13 @@ function Repeater({
               <button
                 type="button"
                 aria-label={`Remove item ${index + 1}`}
-                onClick={() => onChange(value.filter((_, i) => i !== index) as unknown as SettingValue)}
+                onClick={() =>
+                  onChange(
+                    value.filter(
+                      (_, i) => i !== index,
+                    ) as unknown as SettingValue,
+                  )
+                }
                 className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:bg-muted hover:text-danger"
               >
                 <Trash2 className="size-4" aria-hidden />
@@ -459,14 +573,21 @@ function ImageField({
   value: string;
   label: string;
   onChange: (next: string) => void;
-  onInherit?: (meta: { altText?: string | null; width?: number | null; height?: number | null }) => void;
+  onInherit?: (meta: {
+    altText?: string | null;
+    width?: number | null;
+    height?: number | null;
+  }) => void;
 }) {
-
   const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-col gap-2">
       {value ? (
-        <img src={value} alt="" className="h-24 w-full rounded-fq-sm border border-border object-cover" />
+        <img
+          src={value}
+          alt=""
+          className="h-24 w-full rounded-fq-sm border border-border object-cover"
+        />
       ) : (
         <div className="grid h-24 w-full place-items-center rounded-fq-sm border border-dashed border-border text-[11px] text-muted-foreground">
           No image selected

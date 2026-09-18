@@ -12,7 +12,8 @@ export const Route = createFileRoute("/store/$slug/llms.txt")({
   server: {
     handlers: {
       GET: async ({ request, params }) => {
-        const { loadStoreRobotsPolicy, loadStoreLlmsSummary } = await import("@/lib/seo.server");
+        const { loadStoreRobotsPolicy, loadStoreLlmsSummary } =
+          await import("@/lib/seo.server");
         const { renderLlmsTxt } = await import("@/lib/seo-answers");
         const origin = new URL(request.url).origin;
         const policy = await loadStoreRobotsPolicy(params.slug);
@@ -38,7 +39,8 @@ export const Route = createFileRoute("/store/$slug/llms.txt")({
         return new Response(body, {
           headers: {
             "content-type": "text/plain; charset=utf-8",
-            "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+            "cache-control":
+              "public, max-age=3600, stale-while-revalidate=86400",
           },
         });
       },

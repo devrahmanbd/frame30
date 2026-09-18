@@ -16,10 +16,19 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import { seoBulkFn, seoBulkSaveFn } from "@/lib/seo.functions";
-import { StatusPill, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  StatusPill,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import { scoreBand } from "@/lib/seo-analysis";
 
-type Edit = { metaTitle: string; metaDescription: string; robotsIndex: boolean };
+type Edit = {
+  metaTitle: string;
+  metaDescription: string;
+  robotsIndex: boolean;
+};
 
 const STATES = [
   { value: "all", en: "All", bn: "সব" },
@@ -29,7 +38,14 @@ const STATES = [
   { value: "poor", en: "Score under 50", bn: "স্কোর ৫০-এর নিচে" },
 ] as const;
 
-const TYPES = ["all", "store", "product", "collection", "page", "article"] as const;
+const TYPES = [
+  "all",
+  "store",
+  "product",
+  "collection",
+  "page",
+  "article",
+] as const;
 
 export function BulkSeoTable() {
   const { t, lang } = useLang();
@@ -61,7 +77,8 @@ export function BulkSeoTable() {
         const [entityType, rawId] = key.split("::");
         const edit = edits[key]!;
         return {
-          entityType: entityType as "store" | "product" | "collection" | "page" | "article",
+          entityType: entityType as
+            "store" | "product" | "collection" | "page" | "article",
           entityId: rawId === "-" ? null : (rawId ?? null),
           ...edit,
         };
@@ -71,14 +88,18 @@ export function BulkSeoTable() {
     onSuccess: async (result) => {
       setEdits({});
       toast.success(
-        t(`Saved ${result.saved} row(s).`, `${result.saved}টি সারি সংরক্ষিত হয়েছে।`),
+        t(
+          `Saved ${result.saved} row(s).`,
+          `${result.saved}টি সারি সংরক্ষিত হয়েছে।`,
+        ),
       );
       await qc.invalidateQueries({ queryKey: ["seo"] });
     },
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const keyOf = (row: { type: string; id: string | null }) => `${row.type}::${row.id ?? "-"}`;
+  const keyOf = (row: { type: string; id: string | null }) =>
+    `${row.type}::${row.id ?? "-"}`;
 
   const valueOf = (row: (typeof rows)[number], field: keyof Edit) => {
     const edit = edits[keyOf(row)];
@@ -86,7 +107,11 @@ export function BulkSeoTable() {
     return field === "robotsIndex" ? row.robotsIndex : (row[field] as string);
   };
 
-  const patch = (row: (typeof rows)[number], field: keyof Edit, value: string | boolean) =>
+  const patch = (
+    row: (typeof rows)[number],
+    field: keyof Edit,
+    value: string | boolean,
+  ) =>
     setEdits((current) => {
       const key = keyOf(row);
       const base: Edit = current[key] ?? {
@@ -98,10 +123,16 @@ export function BulkSeoTable() {
     });
 
   const summary = query.data?.summary;
-  const totalPages = Math.max(1, Math.ceil((query.data?.total ?? 0) / (query.data?.pageSize ?? 25)));
+  const totalPages = Math.max(
+    1,
+    Math.ceil((query.data?.total ?? 0) / (query.data?.pageSize ?? 25)),
+  );
 
   return (
-    <section className="space-y-3 rounded-lg border border-border p-4" aria-label={t("Bulk SEO", "বাল্ক এসইও")}>
+    <section
+      className="space-y-3 rounded-lg border border-border p-4"
+      aria-label={t("Bulk SEO", "বাল্ক এসইও")}
+    >
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="font-medium">{t("Bulk edit", "বাল্ক এডিট")}</h3>
@@ -122,7 +153,10 @@ export function BulkSeoTable() {
         >
           {mutation.isPending
             ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-            : t(`Save ${dirtyKeys.length} change(s)`, `${dirtyKeys.length}টি পরিবর্তন সংরক্ষণ`)}
+            : t(
+                `Save ${dirtyKeys.length} change(s)`,
+                `${dirtyKeys.length}টি পরিবর্তন সংরক্ষণ`,
+              )}
         </button>
       </header>
 
@@ -176,9 +210,15 @@ export function BulkSeoTable() {
         </button>
       </div>
 
-      {query.isLoading && <p className="text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>}
+      {query.isLoading && (
+        <p className="text-sm text-muted-foreground">
+          {t("Loading…", "লোড হচ্ছে…")}
+        </p>
+      )}
       {query.isError && (
-        <p className="text-sm text-destructive">{(query.error as Error).message}</p>
+        <p className="text-sm text-destructive">
+          {(query.error as Error).message}
+        </p>
       )}
 
       <div className="overflow-x-auto">
@@ -196,10 +236,17 @@ export function BulkSeoTable() {
             {rows.map((row) => {
               const band = scoreBand(row.score ?? 0);
               return (
-                <tr key={keyOf(row)} className="border-t border-border align-top">
+                <tr
+                  key={keyOf(row)}
+                  className="border-t border-border align-top"
+                >
                   <td className="p-2">
-                    <span className="block max-w-48 truncate font-medium">{row.label}</span>
-                    <span className="block max-w-48 truncate text-xs text-muted-foreground">{row.path}</span>
+                    <span className="block max-w-48 truncate font-medium">
+                      {row.label}
+                    </span>
+                    <span className="block max-w-48 truncate text-xs text-muted-foreground">
+                      {row.path}
+                    </span>
                   </td>
                   <td className="p-2">
                     <input
@@ -216,7 +263,9 @@ export function BulkSeoTable() {
                       value={valueOf(row, "metaDescription") as string}
                       placeholder={row.fallbackDescription}
                       maxLength={600}
-                      onChange={(e) => patch(row, "metaDescription", e.target.value)}
+                      onChange={(e) =>
+                        patch(row, "metaDescription", e.target.value)
+                      }
                     />
                   </td>
                   <td className="p-2">
@@ -224,7 +273,9 @@ export function BulkSeoTable() {
                       type="checkbox"
                       aria-label={t("Allow indexing", "ইনডেক্স করার অনুমতি")}
                       checked={valueOf(row, "robotsIndex") as boolean}
-                      onChange={(e) => patch(row, "robotsIndex", e.target.checked)}
+                      onChange={(e) =>
+                        patch(row, "robotsIndex", e.target.checked)
+                      }
                     />
                   </td>
                   <td className="p-2">
@@ -239,8 +290,14 @@ export function BulkSeoTable() {
             })}
             {!query.isLoading && rows.length === 0 && (
               <tr>
-                <td colSpan={5} className="p-4 text-center text-sm text-muted-foreground">
-                  {t("Nothing matches this filter.", "এই ফিল্টারে কিছু মেলেনি।")}
+                <td
+                  colSpan={5}
+                  className="p-4 text-center text-sm text-muted-foreground"
+                >
+                  {t(
+                    "Nothing matches this filter.",
+                    "এই ফিল্টারে কিছু মেলেনি।",
+                  )}
                 </td>
               </tr>
             )}
@@ -256,7 +313,12 @@ export function BulkSeoTable() {
           )}
         </span>
         <span className="flex gap-2">
-          <button type="button" className={btnGhost} disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+          <button
+            type="button"
+            className={btnGhost}
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
             {t("Previous", "আগের")}
           </button>
           <button
@@ -271,7 +333,8 @@ export function BulkSeoTable() {
       </footer>
       {lang === "bn" && (
         <p className="text-[11px] text-muted-foreground">
-          স্কোর পরামর্শমূলক — সেভ কখনো আটকায় না, কিন্তু প্রকাশের গেট বাস্তব ত্রুটি আটকায়।
+          স্কোর পরামর্শমূলক — সেভ কখনো আটকায় না, কিন্তু প্রকাশের গেট বাস্তব
+          ত্রুটি আটকায়।
         </p>
       )}
     </section>

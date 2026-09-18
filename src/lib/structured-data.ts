@@ -17,7 +17,8 @@ export type JsonLdNode = Record<string, unknown>;
 
 const SCHEMA = "https://schema.org";
 
-const str = (value: unknown): string => (typeof value === "string" ? value.trim() : "");
+const str = (value: unknown): string =>
+  typeof value === "string" ? value.trim() : "";
 
 /* --------------------------------- offers --------------------------------- */
 
@@ -43,8 +44,13 @@ export type RatingSummary = { value: number; count: number };
  * Google rejects (and shoppers distrust) a five-star average built from one
  * review.
  */
-export function aggregateRating(reviews: ReviewInput[], min = 1): JsonLdNode | null {
-  const rated = reviews.filter((r) => Number.isFinite(r.rating) && r.rating >= 1 && r.rating <= 5);
+export function aggregateRating(
+  reviews: ReviewInput[],
+  min = 1,
+): JsonLdNode | null {
+  const rated = reviews.filter(
+    (r) => Number.isFinite(r.rating) && r.rating >= 1 && r.rating <= 5,
+  );
   if (rated.length < min || rated.length === 0) return null;
   const sum = rated.reduce((acc, r) => acc + r.rating, 0);
   return {
@@ -64,7 +70,12 @@ export function reviewNodes(reviews: ReviewInput[], limit = 5): JsonLdNode[] {
     .map((r) => ({
       "@type": "Review",
       author: { "@type": "Person", name: str(r.author) },
-      reviewRating: { "@type": "Rating", ratingValue: String(r.rating), bestRating: "5", worstRating: "1" },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: String(r.rating),
+        bestRating: "5",
+        worstRating: "1",
+      },
       ...(str(r.title) ? { name: str(r.title) } : {}),
       ...(str(r.body) ? { reviewBody: str(r.body) } : {}),
       ...(r.published_at ? { datePublished: r.published_at } : {}),
@@ -90,7 +101,9 @@ export function returnPolicyNode(input: ReturnPolicyInput): JsonLdNode | null {
     merchantReturnDays: days,
     returnMethod: `${SCHEMA}/ReturnByMail`,
     returnFees:
-      input.fees === "free" ? `${SCHEMA}/FreeReturn` : `${SCHEMA}/ReturnShippingFees`,
+      input.fees === "free"
+        ? `${SCHEMA}/FreeReturn`
+        : `${SCHEMA}/ReturnShippingFees`,
   };
 }
 
@@ -107,21 +120,40 @@ export type ShippingInput = {
 };
 
 /** `OfferShippingDetails` — courier reality for a Bangladeshi storefront. */
-export function shippingDetailsNode(input: ShippingInput, priceString: (minor: number, currency: string) => string): JsonLdNode {
+export function shippingDetailsNode(
+  input: ShippingInput,
+  priceString: (minor: number, currency: string) => string,
+): JsonLdNode {
   const handling = input.handlingDays ?? [0, 1];
   const transit = input.transitDays ?? [1, 3];
   return {
     "@type": "OfferShippingDetails",
     shippingRate: {
       "@type": "MonetaryAmount",
-      value: priceString(Math.max(0, Math.trunc(input.flatMinor)), input.currency),
+      value: priceString(
+        Math.max(0, Math.trunc(input.flatMinor)),
+        input.currency,
+      ),
       currency: input.currency,
     },
-    shippingDestination: { "@type": "DefinedRegion", addressCountry: input.country ?? "BD" },
+    shippingDestination: {
+      "@type": "DefinedRegion",
+      addressCountry: input.country ?? "BD",
+    },
     deliveryTime: {
       "@type": "ShippingDeliveryTime",
-      handlingTime: { "@type": "QuantitativeValue", minValue: handling[0], maxValue: handling[1], unitCode: "DAY" },
-      transitTime: { "@type": "QuantitativeValue", minValue: transit[0], maxValue: transit[1], unitCode: "DAY" },
+      handlingTime: {
+        "@type": "QuantitativeValue",
+        minValue: handling[0],
+        maxValue: handling[1],
+        unitCode: "DAY",
+      },
+      transitTime: {
+        "@type": "QuantitativeValue",
+        minValue: transit[0],
+        maxValue: transit[1],
+        unitCode: "DAY",
+      },
     },
     ...(input.freeThresholdMinor
       ? {
@@ -170,7 +202,10 @@ export type LdContext = {
  * crawler can use. Incomplete authoring (an empty FAQ, a video with no source)
  * yields null rather than a hollow node.
  */
-export function sectionJsonLd(section: Section, ctx: LdContext): JsonLdNode | null {
+export function sectionJsonLd(
+  section: Section,
+  ctx: LdContext,
+): JsonLdNode | null {
   if (section.invalid) return null;
   const p = section.props;
   switch (section.type) {
@@ -248,9 +283,17 @@ export function sectionJsonLd(section: Section, ctx: LdContext): JsonLdNode | nu
       const nodes = stores.map(([name, address], i) => ({
         "@type": "LocalBusiness",
         name,
-        address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "BD" },
-        ...(str(p[`s${i + 1}Phone`]) ? { telephone: str(p[`s${i + 1}Phone`]) } : {}),
-        ...(str(p[`s${i + 1}Hours`]) ? { openingHours: str(p[`s${i + 1}Hours`]) } : {}),
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: address,
+          addressCountry: "BD",
+        },
+        ...(str(p[`s${i + 1}Phone`])
+          ? { telephone: str(p[`s${i + 1}Phone`]) }
+          : {}),
+        ...(str(p[`s${i + 1}Hours`])
+          ? { openingHours: str(p[`s${i + 1}Hours`]) }
+          : {}),
         ...(ctx.url ? { url: ctx.url } : {}),
       }));
       return nodes.length === 1
@@ -280,7 +323,10 @@ export function sectionJsonLd(section: Section, ctx: LdContext): JsonLdNode | nu
  * page-level types are dropped: two FAQPage graphs on one URL is a validation
  * error, not twice the coverage.
  */
-export function collectJsonLd(sections: Section[], ctx: LdContext): JsonLdNode[] {
+export function collectJsonLd(
+  sections: Section[],
+  ctx: LdContext,
+): JsonLdNode[] {
   const out: JsonLdNode[] = [];
   const singletons = new Set<string>();
   for (const section of sections) {
@@ -349,7 +395,9 @@ export function jsonLdIssues(node: unknown, path = "$"): string[] {
   const obj = node as JsonLdNode;
   const graph = obj["@graph"];
   if (Array.isArray(graph)) {
-    graph.forEach((child, i) => issues.push(...jsonLdIssues(child, `${path}.@graph[${i}]`)));
+    graph.forEach((child, i) =>
+      issues.push(...jsonLdIssues(child, `${path}.@graph[${i}]`)),
+    );
   }
   if (path === "$" && obj["@context"] !== SCHEMA && !Array.isArray(graph)) {
     issues.push(`${path}: @context must be "${SCHEMA}".`);
@@ -366,17 +414,24 @@ export function jsonLdIssues(node: unknown, path = "$"): string[] {
   if (type === "Offer") {
     const price = obj["price"];
     if (typeof price === "number") {
-      issues.push(`${path} (Offer): price must be a string in minor-unit-derived decimal form, not a number.`);
+      issues.push(
+        `${path} (Offer): price must be a string in minor-unit-derived decimal form, not a number.`,
+      );
     }
     const availability = obj["availability"];
-    if (typeof availability === "string" && !availability.startsWith(`${SCHEMA}/`)) {
+    if (
+      typeof availability === "string" &&
+      !availability.startsWith(`${SCHEMA}/`)
+    ) {
       issues.push(`${path} (Offer): availability must be a schema.org URL.`);
     }
   }
   if (type === "AggregateRating") {
     const value = Number(obj["ratingValue"]);
     if (!Number.isFinite(value) || value < 1 || value > 5) {
-      issues.push(`${path} (AggregateRating): ratingValue must be between 1 and 5.`);
+      issues.push(
+        `${path} (AggregateRating): ratingValue must be between 1 and 5.`,
+      );
     }
     if (Number(obj["reviewCount"]) < 1) {
       issues.push(`${path} (AggregateRating): reviewCount must be at least 1.`);
@@ -388,7 +443,11 @@ export function jsonLdIssues(node: unknown, path = "$"): string[] {
     if (key === "@graph") continue;
     const children = Array.isArray(value) ? value : [value];
     children.forEach((child, i) => {
-      if (child && typeof child === "object" && (child as JsonLdNode)["@type"]) {
+      if (
+        child &&
+        typeof child === "object" &&
+        (child as JsonLdNode)["@type"]
+      ) {
         const suffix = Array.isArray(value) ? `${key}[${i}]` : key;
         issues.push(...jsonLdIssues(child, `${path}.${suffix}`));
       }

@@ -45,48 +45,73 @@ export const Route = createFileRoute("/api/public/vitals")({
   server: {
     handlers: {
       GET: async () =>
-        new Response("Method not allowed", { status: 405, headers: { allow: "POST", ...NO_STORE } }),
+        new Response("Method not allowed", {
+          status: 405,
+          headers: { allow: "POST", ...NO_STORE },
+        }),
 
       POST: async ({ request }) => {
         // Cheapest possible rejection first: a declared body over the ceiling
         // never gets parsed.
         const declared = Number(request.headers.get("content-length") ?? "0");
         if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
-          return Response.json({ error: "payload_too_large" }, { status: 413, headers: NO_STORE });
+          return Response.json(
+            { error: "payload_too_large" },
+            { status: 413, headers: NO_STORE },
+          );
         }
 
         let raw: string;
         try {
           raw = await request.text();
         } catch {
-          return Response.json({ error: "unreadable_body" }, { status: 400, headers: NO_STORE });
+          return Response.json(
+            { error: "unreadable_body" },
+            { status: 400, headers: NO_STORE },
+          );
         }
         if (raw.length > MAX_BODY_BYTES) {
-          return Response.json({ error: "payload_too_large" }, { status: 413, headers: NO_STORE });
+          return Response.json(
+            { error: "payload_too_large" },
+            { status: 413, headers: NO_STORE },
+          );
         }
 
         let parsed: z.infer<typeof bodySchema>;
         try {
           parsed = bodySchema.parse(JSON.parse(raw));
         } catch {
-          return Response.json({ error: "invalid_payload" }, { status: 400, headers: NO_STORE });
+          return Response.json(
+            { error: "invalid_payload" },
+            { status: 400, headers: NO_STORE },
+          );
         }
 
-        const { rateLimit, rateLimitHeaders } = await import("@/lib/rate-limit.server");
+        const { rateLimit, rateLimitHeaders } =
+          await import("@/lib/rate-limit.server");
         const store = await rateLimit("vitals.ingest", parsed.merchantId);
         if (!store.allowed) {
           return Response.json(
             { error: "rate_limited" },
-            { status: 429, headers: { ...rateLimitHeaders(store), ...NO_STORE } },
+            {
+              status: 429,
+              headers: { ...rateLimitHeaders(store), ...NO_STORE },
+            },
           );
         }
         const ip = clientIp(request);
         if (ip) {
-          const perIp = await rateLimit("vitals.ingest_ip", `${parsed.merchantId}:${ip}`);
+          const perIp = await rateLimit(
+            "vitals.ingest_ip",
+            `${parsed.merchantId}:${ip}`,
+          );
           if (!perIp.allowed) {
             return Response.json(
               { error: "rate_limited" },
-              { status: 429, headers: { ...rateLimitHeaders(perIp), ...NO_STORE } },
+              {
+                status: 429,
+                headers: { ...rateLimitHeaders(perIp), ...NO_STORE },
+              },
             );
           }
         }
@@ -107,7 +132,10 @@ export const Route = createFileRoute("/api/public/vitals")({
           // must not be able to 500 a storefront even if that changes.
           const { captureError } = await import("@/lib/observability.server");
           void captureError(err, { route: "public.vitals" });
-          return Response.json({ accepted: 0, degraded: true }, { status: 202, headers: NO_STORE });
+          return Response.json(
+            { accepted: 0, degraded: true },
+            { status: 202, headers: NO_STORE },
+          );
         }
       },
     },

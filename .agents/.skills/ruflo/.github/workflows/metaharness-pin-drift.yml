@@ -8,13 +8,13 @@ name: metaharness-pin-drift
 
 on:
   schedule:
-    - cron: '17 5 * * 1'   # Mondays 05:17 UTC (off-peak minute)
+    - cron: "17 5 * * 1" # Mondays 05:17 UTC (off-peak minute)
   workflow_dispatch:
   pull_request:
     paths:
-      - 'v3/@claude-flow/cli/package.json'
-      - 'v3/@claude-flow/cli/src/services/distill-oracle.ts'
-      - 'scripts/check-metaharness-pins.mjs'
+      - "v3/@claude-flow/cli/package.json"
+      - "v3/@claude-flow/cli/src/services/distill-oracle.ts"
+      - "scripts/check-metaharness-pins.mjs"
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Check metaharness pin drift
         id: check

@@ -16,13 +16,25 @@ const searchSchema = z.object({
   editor: z.enum(["classic", "builder"]).optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/_authenticated/dashboard/content/editor")({
-  staticData: consoleRoute({ permission: "marketing.read", navHidden: true, chrome: false }),
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/content/editor",
+)({
+  staticData: consoleRoute({
+    permission: "marketing.read",
+    navHidden: true,
+    chrome: false,
+  }),
   validateSearch: (search) => searchSchema.parse(search),
   head: ({ match }) => ({
     meta: [
-      { title: `${match.search.kind === "page" ? "Edit page" : "Edit post"} — Framique Admin` },
-      { name: "description", content: "Full-screen editor with autosave, revisions and pre-publish checks." },
+      {
+        title: `${match.search.kind === "page" ? "Edit page" : "Edit post"} — Framique Admin`,
+      },
+      {
+        name: "description",
+        content:
+          "Full-screen editor with autosave, revisions and pre-publish checks.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -38,8 +50,18 @@ function EditorRoute() {
       kind={kind}
       id={id ?? null}
       forceEditor={editor ?? null}
-      listHref={kind === "page" ? "/dashboard/content/pages" : "/dashboard/content/posts"}
-      onCreated={(newId) => void navigate({ to: "/dashboard/content/editor", search: { kind, id: newId }, replace: true })}
+      listHref={
+        kind === "page"
+          ? "/dashboard/content/pages"
+          : "/dashboard/content/posts"
+      }
+      onCreated={(newId) =>
+        void navigate({
+          to: "/dashboard/content/editor",
+          search: { kind, id: newId },
+          replace: true,
+        })
+      }
     />
   );
 }

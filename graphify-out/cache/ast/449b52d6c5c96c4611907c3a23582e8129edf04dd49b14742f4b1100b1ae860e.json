@@ -1,1 +1,359 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_load_suite_mjs", "label": "load-suite.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L1"}, {"id": "scripts_load_suite_scenarios", "label": "SCENARIOS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L19"}, {"id": "scripts_load_suite_scenarioverdict", "label": "scenarioVerdict()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L29"}, {"id": "scripts_load_suite_markdowntable", "label": "markdownTable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L35"}, {"id": "scripts_load_suite_parseargs", "label": "parseArgs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L45"}, {"id": "scripts_load_suite_drive", "label": "drive()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L59"}, {"id": "scripts_load_suite_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L79"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "users_rahman_documents_frame30_scripts_load_drive_mjs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_drive_summarize", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_scenarios", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_scenarioverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_markdowntable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_parseargs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_drive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_load_suite_mjs", "target": "scripts_load_suite_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L79", "weight": 1.0}, {"source": "scripts_load_suite_main", "target": "scripts_load_suite_parseargs", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L80", "weight": 1.0}, {"source": "scripts_load_suite_main", "target": "scripts_load_suite_scenarioverdict", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L109", "weight": 1.0}, {"source": "scripts_load_suite_main", "target": "scripts_load_suite_markdowntable", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L114", "weight": 1.0}, {"source": "scripts_load_suite_main", "target": "node_fs", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L116", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_load_suite_markdowntable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L38"}, {"caller_nid": "scripts_load_suite_markdowntable", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L42"}, {"caller_nid": "scripts_load_suite_parseargs", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L51"}, {"caller_nid": "scripts_load_suite_parseargs", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L52"}, {"caller_nid": "scripts_load_suite_parseargs", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L53"}, {"caller_nid": "scripts_load_suite_drive", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L61"}, {"caller_nid": "scripts_load_suite_drive", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L75"}, {"caller_nid": "scripts_load_suite_drive", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L75"}, {"caller_nid": "scripts_load_suite_main", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L80"}, {"caller_nid": "scripts_load_suite_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L82"}, {"caller_nid": "scripts_load_suite_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L83"}, {"caller_nid": "scripts_load_suite_main", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L86"}, {"caller_nid": "scripts_load_suite_main", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L90"}, {"caller_nid": "scripts_load_suite_main", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L90"}, {"caller_nid": "scripts_load_suite_main", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L91"}, {"caller_nid": "scripts_load_suite_main", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L92"}, {"caller_nid": "scripts_load_suite_main", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L94"}, {"caller_nid": "scripts_load_suite_main", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L95"}, {"caller_nid": "scripts_load_suite_main", "callee": "summarize", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L96"}, {"caller_nid": "scripts_load_suite_main", "callee": "path", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L98"}, {"caller_nid": "scripts_load_suite_main", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L105"}, {"caller_nid": "scripts_load_suite_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L111"}, {"caller_nid": "scripts_load_suite_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L114"}, {"caller_nid": "scripts_load_suite_main", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L117"}, {"caller_nid": "scripts_load_suite_main", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L117"}, {"caller_nid": "scripts_load_suite_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L119"}, {"caller_nid": "scripts_load_suite_main", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs", "source_location": "L119"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "label": "load-suite.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_load_suite_scenarios",
+      "label": "SCENARIOS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L19"
+    },
+    {
+      "id": "scripts_load_suite_scenarioverdict",
+      "label": "scenarioVerdict()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L29"
+    },
+    {
+      "id": "scripts_load_suite_markdowntable",
+      "label": "markdownTable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L35"
+    },
+    {
+      "id": "scripts_load_suite_parseargs",
+      "label": "parseArgs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L45"
+    },
+    {
+      "id": "scripts_load_suite_drive",
+      "label": "drive()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L59"
+    },
+    {
+      "id": "scripts_load_suite_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L79"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "users_rahman_documents_frame30_scripts_load_drive_mjs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_drive_summarize",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_scenarios",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_scenarioverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_markdowntable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_parseargs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_drive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_load_suite_mjs",
+      "target": "scripts_load_suite_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_load_suite_main",
+      "target": "scripts_load_suite_parseargs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_load_suite_main",
+      "target": "scripts_load_suite_scenarioverdict",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_load_suite_main",
+      "target": "scripts_load_suite_markdowntable",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_load_suite_main",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L116",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_load_suite_markdowntable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "scripts_load_suite_markdowntable",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "scripts_load_suite_parseargs",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "scripts_load_suite_parseargs",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "scripts_load_suite_parseargs",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "scripts_load_suite_drive",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "scripts_load_suite_drive",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "scripts_load_suite_drive",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "summarize",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "path",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "scripts_load_suite_main",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/load-suite.mjs",
+      "source_location": "L119"
+    }
+  ]
+}

@@ -57,20 +57,19 @@ or Redis is degraded. The table is service-role only with RLS on and no policies
 so no client can read or forge a verdict. Every verdict carries `source`
 (`redis` | `postgres` | `none`). Buckets live in `src/lib/rate-limit.server.ts`:
 
-
-| Bucket | Limit | Window |
-|---|---|---|
-| `auth.signin` | 10 | 5 min |
-| `auth.reset` | 5 | 15 min |
-| `webhook.gateway` | 600 | 1 min |
-| `storefront.form` | 20 | 1 h |
-| `owner.purge` | 5 | 1 h |
-| `api.public` | 120 | 1 min |
+| Bucket            | Limit | Window |
+| ----------------- | ----- | ------ |
+| `auth.signin`     | 10    | 5 min  |
+| `auth.reset`      | 5     | 15 min |
+| `webhook.gateway` | 600   | 1 min  |
+| `storefront.form` | 20    | 1 h    |
+| `owner.purge`     | 5     | 1 h    |
+| `api.public`      | 120   | 1 min  |
 
 Failure policy: a Redis fault **demotes** to tier 2 and emits
 `framique_rate_limit_total{outcome="degraded",source="redis"}` plus a
 `rate_limit.redis_degraded` warn line — the guarantee weakened, so it is a
-series. Only when *both* tiers are unavailable do we fail **open**, with
+series. Only when _both_ tiers are unavailable do we fail **open**, with
 `outcome="unavailable"` and a `rate_limit.unavailable` line, because a silent
 limiter is itself a risk. Blocked callers get `429` with `x-ratelimit-*` and
 `retry-after` headers.
@@ -132,12 +131,12 @@ highest-severity drift class.
 
 ## 9. Residual gaps
 
-| Item | Owner |
-|---|---|
-| Redis-backed limiter (sliding window) | **Done** — `src/lib/redis.server.ts` + tier 1 in `rate-limit.server.ts`; Postgres fixed window remains the fallback |
-| Grafana dashboard JSON + scrape config committed in-repo | **Done** — `ops/observability/` (10 dashboards, `prometheus.yml`, SLO + infra rules) |
-| Cron executor for elapsed purge windows | **Done** — `ops/docker-compose.cron.yml` runs supercronic against the generated `ops/cron/crontab` (`purge` at `55 3 * * *`); `bun run cron:check` fails CI when a registry job has no schedule |
-| Seeded catalogue in remixed backends, so the anonymous-read RLS matrix is non-vacuous | **TBD** — platform eng (`supabase/pending/` unapplied) |
+| Item                                                                                  | Owner                                                                                                                                                                                           |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Redis-backed limiter (sliding window)                                                 | **Done** — `src/lib/redis.server.ts` + tier 1 in `rate-limit.server.ts`; Postgres fixed window remains the fallback                                                                             |
+| Grafana dashboard JSON + scrape config committed in-repo                              | **Done** — `ops/observability/` (10 dashboards, `prometheus.yml`, SLO + infra rules)                                                                                                            |
+| Cron executor for elapsed purge windows                                               | **Done** — `ops/docker-compose.cron.yml` runs supercronic against the generated `ops/cron/crontab` (`purge` at `55 3 * * *`); `bun run cron:check` fails CI when a registry job has no schedule |
+| Seeded catalogue in remixed backends, so the anonymous-read RLS matrix is non-vacuous | **TBD** — platform eng (`supabase/pending/` unapplied)                                                                                                                                          |
 
 ### 9.1 Where the purge actually runs
 
@@ -152,4 +151,3 @@ Two schedulers may run concurrently: the loser of `ops_cron_claim` answers `409`
 and is ledgered as a skip. Overdue detection is in the ledger
 (`framique_cron_overdue_seconds`), not in the scheduler, because a dead
 scheduler cannot alert about itself.
-

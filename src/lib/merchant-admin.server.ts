@@ -87,9 +87,12 @@ export async function loadSetupState(
   opts: { fresh?: boolean } = {},
 ): Promise<SetupState> {
   const read = async () => {
-    const { data, error } = await rpcClient(supabase).rpc("merchant_setup_state", {
-      _merchant_id: merchantId,
-    });
+    const { data, error } = await rpcClient(supabase).rpc(
+      "merchant_setup_state",
+      {
+        _merchant_id: merchantId,
+      },
+    );
     if (error) fail(error.message);
     return (data ?? {}) as Record<string, unknown>;
   };
@@ -142,7 +145,9 @@ export async function loadNotifications(
     const [feed, unread] = await Promise.all([
       supabase
         .from("notifications")
-        .select("id, kind, severity, title_en, title_bn, body_en, body_bn, href, read_at, created_at")
+        .select(
+          "id, kind, severity, title_en, title_bn, body_en, body_bn, href, read_at, created_at",
+        )
         .eq("merchant_id", merchantId)
         .is("archived_at", null)
         .order("created_at", { ascending: false })
@@ -181,10 +186,13 @@ export async function markNotificationsRead(
   ids: string[] | null,
 ): Promise<number> {
   await enforceRateLimit("admin.notifications", userId);
-  const { data, error } = await rpcClient(supabase).rpc("notifications_mark_read", {
-    _merchant_id: merchantId,
-    _ids: ids,
-  });
+  const { data, error } = await rpcClient(supabase).rpc(
+    "notifications_mark_read",
+    {
+      _merchant_id: merchantId,
+      _ids: ids,
+    },
+  );
   if (error) fail(error.message);
   incr("framique_admin_notifications_read_total", {}, Number(data ?? 0));
   return Number(data ?? 0);
@@ -194,8 +202,10 @@ const REDACT = /(secret|token|hash|password|key)/i;
 
 function renderValue(value: unknown): string {
   if (value === null || value === undefined) return "—";
-  if (typeof value === "string") return value.length > 80 ? `${value.slice(0, 77)}…` : value;
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "string")
+    return value.length > 80 ? `${value.slice(0, 77)}…` : value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
   return Array.isArray(value) ? `${value.length} item(s)` : "object";
 }
 
@@ -203,7 +213,12 @@ export async function listActivity(
   supabase: Client,
   merchantId: string,
   userId: string,
-  input: { cursor?: string | null; resourceType?: string | null; action?: string | null; limit?: number },
+  input: {
+    cursor?: string | null;
+    resourceType?: string | null;
+    action?: string | null;
+    limit?: number;
+  },
 ): Promise<{ rows: ActivityRow[]; nextCursor: string | null }> {
   return withSpan("admin.activity", async () => {
     await enforceRateLimit("admin.activity", userId);
@@ -211,7 +226,9 @@ export async function listActivity(
 
     let q = supabase
       .from("activity_log")
-      .select("id, actor, resource_type, resource_id, action, changed, created_at")
+      .select(
+        "id, actor, resource_type, resource_id, action, changed, created_at",
+      )
       .eq("merchant_id", merchantId)
       .order("id", { ascending: false })
       .limit(limit + 1);
@@ -223,10 +240,21 @@ export async function listActivity(
     if (error) fail(error.message);
 
     const page = (data ?? []).slice(0, limit);
-    const actorIds = Array.from(new Set(page.map((r) => r.actor).filter((a): a is string => !!a)));
+    const actorIds = Array.from(
+      new Set(page.map((r) => r.actor).filter((a): a is string => !!a)),
+    );
     const { data: profiles } = actorIds.length
-      ? await supabase.from("profiles").select("id, email, full_name").in("id", actorIds)
-      : { data: [] as { id: string; email: string | null; full_name: string | null }[] };
+      ? await supabase
+          .from("profiles")
+          .select("id, email, full_name")
+          .in("id", actorIds)
+      : {
+          data: [] as {
+            id: string;
+            email: string | null;
+            full_name: string | null;
+          }[],
+        };
 
     const nameOf = (id: string | null) => {
       if (!id) return null;
@@ -235,7 +263,10 @@ export async function listActivity(
     };
 
     const rows: ActivityRow[] = page.map((r) => {
-      const changed = (r.changed ?? {}) as Record<string, { before?: unknown; after?: unknown }>;
+      const changed = (r.changed ?? {}) as Record<
+        string,
+        { before?: unknown; after?: unknown }
+      >;
       return {
         id: String(r.id),
         actor: nameOf(r.actor),
@@ -256,7 +287,10 @@ export async function listActivity(
 
     return {
       rows,
-      nextCursor: (data ?? []).length > limit ? String(page[page.length - 1]?.id ?? "") : null,
+      nextCursor:
+        (data ?? []).length > limit
+          ? String(page[page.length - 1]?.id ?? "")
+          : null,
     };
   });
 }

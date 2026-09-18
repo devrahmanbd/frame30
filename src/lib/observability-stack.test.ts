@@ -23,9 +23,13 @@ const promtail = read("ops/observability/promtail-config.yml");
 const alertmanager = read("ops/observability/alertmanager.yml");
 const infraRules = read("ops/observability/infra.rules.yml");
 const ruleFiles = readdirSync(OPS).filter((f) => f.endsWith(".rules.yml"));
-const allRules = ruleFiles.map((f) => readFileSync(join(OPS, f), "utf8")).join("\n");
+const allRules = ruleFiles
+  .map((f) => readFileSync(join(OPS, f), "utf8"))
+  .join("\n");
 const doc = read("docs/14-operations/observability.md");
-const pkg = JSON.parse(read("package.json")) as { scripts: Record<string, string> };
+const pkg = JSON.parse(read("package.json")) as {
+  scripts: Record<string, string>;
+};
 
 describe("stack composition", () => {
   it("runs every collector and exporter the verifier expects", () => {
@@ -55,19 +59,34 @@ describe("stack composition", () => {
   });
 
   it("binds every UI to loopback so nothing is exposed straight to the internet", () => {
-    const ports = [...compose.matchAll(/ports:\s*\[?"?([\d.]+:\d+:\d+)/g)].map((m) => m[1]);
+    const ports = [...compose.matchAll(/ports:\s*\[?"?([\d.]+:\d+:\d+)/g)].map(
+      (m) => m[1],
+    );
     expect(ports.length).toBeGreaterThan(3);
     for (const port of ports) expect(port.startsWith("127.0.0.1:")).toBe(true);
   });
 
   it("scrapes the database, cache and host, not just the app", () => {
-    for (const job of ["framique-app", "node", "containers", "postgres", "redis", "blackbox-http"]) {
+    for (const job of [
+      "framique-app",
+      "node",
+      "containers",
+      "postgres",
+      "redis",
+      "blackbox-http",
+    ]) {
       expect(prometheus).toContain(`job_name: ${job}`);
     }
   });
 
   it("self-monitors the observability stack", () => {
-    for (const job of ["prometheus", "alertmanager", "loki", "promtail", "grafana"]) {
+    for (const job of [
+      "prometheus",
+      "alertmanager",
+      "loki",
+      "promtail",
+      "grafana",
+    ]) {
       expect(prometheus).toContain(`job_name: ${job}`);
     }
   });
@@ -132,10 +151,16 @@ describe("grafana", () => {
   });
 
   it("provisions datasources and dashboards from git only", () => {
-    const provisioning = read("ops/observability/grafana/provisioning-dashboards.yml");
+    const provisioning = read(
+      "ops/observability/grafana/provisioning-dashboards.yml",
+    );
     expect(provisioning).toMatch(/path:/);
-    expect(read("ops/observability/grafana/provisioning-datasources.yml")).toMatch(/loki/i);
-    const dashboards = readdirSync(join(OPS, "grafana")).filter((f) => f.endsWith(".json"));
+    expect(
+      read("ops/observability/grafana/provisioning-datasources.yml"),
+    ).toMatch(/loki/i);
+    const dashboards = readdirSync(join(OPS, "grafana")).filter((f) =>
+      f.endsWith(".json"),
+    );
     expect(dashboards.length).toBeGreaterThanOrEqual(9);
   });
 });
@@ -159,7 +184,10 @@ describe("tenant labels", () => {
   });
 
   it("emits the tenant label on the exposition endpoint", () => {
-    incr("framique_orders_total", { outcome: "created", tenant: tenantLabel("stack-test-merchant") });
+    incr("framique_orders_total", {
+      outcome: "created",
+      tenant: tenantLabel("stack-test-merchant"),
+    });
     const snapshot = JSON.stringify(metricsSnapshot());
     expect(snapshot).toContain("framique_orders_total");
     expect(snapshot).toMatch(/t_[0-9a-z]+/);

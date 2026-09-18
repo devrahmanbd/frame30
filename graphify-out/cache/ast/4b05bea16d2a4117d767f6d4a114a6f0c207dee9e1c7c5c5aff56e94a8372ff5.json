@@ -1,1 +1,1061 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "label": "motion-policy.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L1"}, {"id": "lib_motion_policy_motion_tokens", "label": "MOTION_TOKENS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L24"}, {"id": "lib_motion_policy_motionintent", "label": "MotionIntent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L53"}, {"id": "lib_motion_policy_motionenvironment", "label": "MotionEnvironment", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L55"}, {"id": "lib_motion_policy_resolveintent", "label": "resolveIntent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L71"}, {"id": "lib_motion_policy_allowstransform", "label": "allowsTransform()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L89"}, {"id": "lib_motion_policy_allowsopacity", "label": "allowsOpacity()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L92"}, {"id": "lib_motion_policy_allowsheavymedia", "label": "allowsHeavyMedia()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L96"}, {"id": "lib_motion_policy_allowsmagnetic", "label": "allowsMagnetic()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L114"}, {"id": "lib_motion_policy_driftdurationms", "label": "driftDurationMs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L133"}, {"id": "lib_motion_policy_entranceduration", "label": "entranceDuration()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L145"}, {"id": "lib_motion_policy_staggeroptions", "label": "StaggerOptions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L153"}, {"id": "lib_motion_policy_staggerschedule", "label": "staggerSchedule()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L165"}, {"id": "lib_motion_policy_marqueedurationms", "label": "marqueeDurationMs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L186"}, {"id": "lib_motion_policy_parallaxoffset", "label": "parallaxOffset()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L203"}, {"id": "lib_motion_policy_magneticoffset", "label": "magneticOffset()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L210"}, {"id": "lib_motion_policy_easeoutexpo", "label": "easeOutExpo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L226"}, {"id": "lib_motion_policy_countervalueat", "label": "counterValueAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L231"}, {"id": "lib_motion_policy_formatcountervalue", "label": "formatCounterValue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L248"}, {"id": "lib_motion_policy_budgetrejection", "label": "BudgetRejection", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L266"}, {"id": "lib_motion_policy_motionbudget", "label": "MotionBudget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L277"}, {"id": "lib_motion_policy_motionbudget_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L283"}, {"id": "lib_motion_policy_motionbudget_acquire", "label": ".acquire()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L287"}, {"id": "lib_motion_policy_motionbudget_release", "label": ".release()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L298"}, {"id": "lib_motion_policy_motionbudget_clear", "label": ".clear()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L302"}, {"id": "lib_motion_policy_motionbudget_size", "label": ".size()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L306"}, {"id": "lib_motion_policy_motionbudget_stats", "label": ".stats()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L310"}, {"id": "lib_motion_policy_engineloadpolicy", "label": "EngineLoadPolicy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L317"}, {"id": "lib_motion_policy_engine_load_policy", "label": "ENGINE_LOAD_POLICY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L327"}, {"id": "lib_motion_policy_backoffdelayms", "label": "backoffDelayMs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L337"}, {"id": "lib_motion_policy_shouldretryload", "label": "shouldRetryLoad()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L344"}, {"id": "lib_motion_policy_motionloglevel", "label": "MotionLogLevel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L350"}, {"id": "lib_motion_policy_motionlogrecord", "label": "MotionLogRecord", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L351"}, {"id": "lib_motion_policy_shouldsamplelog", "label": "shouldSampleLog()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L378"}, {"id": "lib_motion_policy_clamp", "label": "clamp()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L385"}, {"id": "lib_motion_policy_round2", "label": "round2()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L390"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motion_tokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionintent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionenvironment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_resolveintent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_allowstransform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L89", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_allowsopacity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_allowsheavymedia", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_allowsmagnetic", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_driftdurationms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_entranceduration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_staggeroptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_staggerschedule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L165", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_marqueedurationms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_parallaxoffset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L203", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_magneticoffset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_easeoutexpo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L226", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_countervalueat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L231", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_formatcountervalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L248", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_budgetrejection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L266", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionbudget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L277", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L283", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_acquire", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L287", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_release", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L298", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_clear", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L302", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_size", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L306", "weight": 1.0}, {"source": "lib_motion_policy_motionbudget", "target": "lib_motion_policy_motionbudget_stats", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L310", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_engineloadpolicy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L317", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_engine_load_policy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L327", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_backoffdelayms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L337", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_shouldretryload", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L344", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionloglevel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L350", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionlogrecord", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L351", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_motionlogrecord", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L360", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_shouldsamplelog", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L378", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_clamp", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L385", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "target": "lib_motion_policy_round2", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L390", "weight": 1.0}, {"source": "lib_motion_policy_entranceduration", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L148", "weight": 1.0}, {"source": "lib_motion_policy_marqueedurationms", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L196", "weight": 1.0}, {"source": "lib_motion_policy_parallaxoffset", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L204", "weight": 1.0}, {"source": "lib_motion_policy_parallaxoffset", "target": "lib_motion_policy_round2", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L206", "weight": 1.0}, {"source": "lib_motion_policy_magneticoffset", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L218", "weight": 1.0}, {"source": "lib_motion_policy_magneticoffset", "target": "lib_motion_policy_round2", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L220", "weight": 1.0}, {"source": "lib_motion_policy_easeoutexpo", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L227", "weight": 1.0}, {"source": "lib_motion_policy_countervalueat", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L239", "weight": 1.0}, {"source": "lib_motion_policy_countervalueat", "target": "lib_motion_policy_easeoutexpo", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L240", "weight": 1.0}, {"source": "lib_motion_policy_backoffdelayms", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L341", "weight": 1.0}, {"source": "lib_motion_policy_motionlogrecord", "target": "lib_motion_policy_round2", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L370", "weight": 1.0}, {"source": "lib_motion_policy_shouldsamplelog", "target": "lib_motion_policy_clamp", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L380", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_motion_policy_allowsmagnetic", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L122"}, {"caller_nid": "lib_motion_policy_driftdurationms", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L138"}, {"caller_nid": "lib_motion_policy_driftdurationms", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L138"}, {"caller_nid": "lib_motion_policy_driftdurationms", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L138"}, {"caller_nid": "lib_motion_policy_driftdurationms", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L139"}, {"caller_nid": "lib_motion_policy_entranceduration", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L147"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L166"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L166"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L166"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "fill", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L169"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L171"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L172"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L173"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L174"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L174"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L175"}, {"caller_nid": "lib_motion_policy_staggerschedule", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L177"}, {"caller_nid": "lib_motion_policy_marqueedurationms", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L191"}, {"caller_nid": "lib_motion_policy_marqueedurationms", "callee": "abs", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L191"}, {"caller_nid": "lib_motion_policy_marqueedurationms", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L196"}, {"caller_nid": "lib_motion_policy_parallaxoffset", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L204"}, {"caller_nid": "lib_motion_policy_parallaxoffset", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L205"}, {"caller_nid": "lib_motion_policy_magneticoffset", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L218"}, {"caller_nid": "lib_motion_policy_magneticoffset", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L219"}, {"caller_nid": "lib_motion_policy_easeoutexpo", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L227"}, {"caller_nid": "lib_motion_policy_easeoutexpo", "callee": "pow", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L228"}, {"caller_nid": "lib_motion_policy_formatcountervalue", "callee": "format", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L259"}, {"caller_nid": "lib_motion_policy_formatcountervalue", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L259"}, {"caller_nid": "lib_motion_policy_formatcountervalue", "callee": "format", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L260"}, {"caller_nid": "lib_motion_policy_formatcountervalue", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L260"}, {"caller_nid": "lib_motion_policy_formatcountervalue", "callee": "padStart", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L261"}, {"caller_nid": "lib_motion_policy_motionbudget_constructor", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L284"}, {"caller_nid": "lib_motion_policy_motionbudget_constructor", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L284"}, {"caller_nid": "lib_motion_policy_motionbudget_acquire", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L288"}, {"caller_nid": "lib_motion_policy_motionbudget_acquire", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L293"}, {"caller_nid": "lib_motion_policy_motionbudget_acquire", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L294"}, {"caller_nid": "lib_motion_policy_motionbudget_release", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L299"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L338"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L338"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "pow", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L339"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L340"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L341"}, {"caller_nid": "lib_motion_policy_backoffdelayms", "callee": "rand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L341"}, {"caller_nid": "lib_motion_policy_motionlogrecord", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L367"}, {"caller_nid": "lib_motion_policy_motionlogrecord", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L368"}, {"caller_nid": "lib_motion_policy_motionlogrecord", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L370"}, {"caller_nid": "lib_motion_policy_motionlogrecord", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L372"}, {"caller_nid": "lib_motion_policy_motionlogrecord", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L372"}, {"caller_nid": "lib_motion_policy_shouldsamplelog", "callee": "rand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L380"}, {"caller_nid": "lib_motion_policy_clamp", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L386"}, {"caller_nid": "lib_motion_policy_round2", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts", "source_location": "L391"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "label": "motion-policy.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_motion_policy_motion_tokens",
+      "label": "MOTION_TOKENS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_motion_policy_motionintent",
+      "label": "MotionIntent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_motion_policy_motionenvironment",
+      "label": "MotionEnvironment",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_motion_policy_resolveintent",
+      "label": "resolveIntent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "lib_motion_policy_allowstransform",
+      "label": "allowsTransform()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "lib_motion_policy_allowsopacity",
+      "label": "allowsOpacity()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_motion_policy_allowsheavymedia",
+      "label": "allowsHeavyMedia()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_motion_policy_allowsmagnetic",
+      "label": "allowsMagnetic()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_motion_policy_driftdurationms",
+      "label": "driftDurationMs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_motion_policy_entranceduration",
+      "label": "entranceDuration()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "lib_motion_policy_staggeroptions",
+      "label": "StaggerOptions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "lib_motion_policy_staggerschedule",
+      "label": "staggerSchedule()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L165"
+    },
+    {
+      "id": "lib_motion_policy_marqueedurationms",
+      "label": "marqueeDurationMs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L186"
+    },
+    {
+      "id": "lib_motion_policy_parallaxoffset",
+      "label": "parallaxOffset()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "lib_motion_policy_magneticoffset",
+      "label": "magneticOffset()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "lib_motion_policy_easeoutexpo",
+      "label": "easeOutExpo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L226"
+    },
+    {
+      "id": "lib_motion_policy_countervalueat",
+      "label": "counterValueAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L231"
+    },
+    {
+      "id": "lib_motion_policy_formatcountervalue",
+      "label": "formatCounterValue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L248"
+    },
+    {
+      "id": "lib_motion_policy_budgetrejection",
+      "label": "BudgetRejection",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L266"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget",
+      "label": "MotionBudget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L277"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L283"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_acquire",
+      "label": ".acquire()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L287"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_release",
+      "label": ".release()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L298"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_clear",
+      "label": ".clear()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L302"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_size",
+      "label": ".size()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L306"
+    },
+    {
+      "id": "lib_motion_policy_motionbudget_stats",
+      "label": ".stats()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L310"
+    },
+    {
+      "id": "lib_motion_policy_engineloadpolicy",
+      "label": "EngineLoadPolicy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L317"
+    },
+    {
+      "id": "lib_motion_policy_engine_load_policy",
+      "label": "ENGINE_LOAD_POLICY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L327"
+    },
+    {
+      "id": "lib_motion_policy_backoffdelayms",
+      "label": "backoffDelayMs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L337"
+    },
+    {
+      "id": "lib_motion_policy_shouldretryload",
+      "label": "shouldRetryLoad()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L344"
+    },
+    {
+      "id": "lib_motion_policy_motionloglevel",
+      "label": "MotionLogLevel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L350"
+    },
+    {
+      "id": "lib_motion_policy_motionlogrecord",
+      "label": "MotionLogRecord",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L351"
+    },
+    {
+      "id": "lib_motion_policy_shouldsamplelog",
+      "label": "shouldSampleLog()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L378"
+    },
+    {
+      "id": "lib_motion_policy_clamp",
+      "label": "clamp()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L385"
+    },
+    {
+      "id": "lib_motion_policy_round2",
+      "label": "round2()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L390"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motion_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionintent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionenvironment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_resolveintent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_allowstransform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_allowsopacity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_allowsheavymedia",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_allowsmagnetic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_driftdurationms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_entranceduration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_staggeroptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_staggerschedule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_marqueedurationms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_parallaxoffset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_magneticoffset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_easeoutexpo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_countervalueat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_formatcountervalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_budgetrejection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionbudget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L283",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_acquire",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_release",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_clear",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_size",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionbudget",
+      "target": "lib_motion_policy_motionbudget_stats",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_engineloadpolicy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L317",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_engine_load_policy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L327",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_backoffdelayms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_shouldretryload",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L344",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionloglevel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L350",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionlogrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L351",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_motionlogrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L360",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_shouldsamplelog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L378",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_clamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L385",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "target": "lib_motion_policy_round2",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L390",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_entranceduration",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_marqueedurationms",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_parallaxoffset",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_parallaxoffset",
+      "target": "lib_motion_policy_round2",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_magneticoffset",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_magneticoffset",
+      "target": "lib_motion_policy_round2",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_easeoutexpo",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_countervalueat",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L239",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_countervalueat",
+      "target": "lib_motion_policy_easeoutexpo",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_backoffdelayms",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L341",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_motionlogrecord",
+      "target": "lib_motion_policy_round2",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L370",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_motion_policy_shouldsamplelog",
+      "target": "lib_motion_policy_clamp",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L380",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_motion_policy_allowsmagnetic",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_motion_policy_driftdurationms",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_motion_policy_driftdurationms",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_motion_policy_driftdurationms",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_motion_policy_driftdurationms",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_motion_policy_entranceduration",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "fill",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "lib_motion_policy_staggerschedule",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_motion_policy_marqueedurationms",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "lib_motion_policy_marqueedurationms",
+      "callee": "abs",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "lib_motion_policy_marqueedurationms",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L196"
+    },
+    {
+      "caller_nid": "lib_motion_policy_parallaxoffset",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_motion_policy_parallaxoffset",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "lib_motion_policy_magneticoffset",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "lib_motion_policy_magneticoffset",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "lib_motion_policy_easeoutexpo",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "lib_motion_policy_easeoutexpo",
+      "callee": "pow",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "lib_motion_policy_formatcountervalue",
+      "callee": "format",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "lib_motion_policy_formatcountervalue",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "lib_motion_policy_formatcountervalue",
+      "callee": "format",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_motion_policy_formatcountervalue",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "lib_motion_policy_formatcountervalue",
+      "callee": "padStart",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_constructor",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_constructor",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_acquire",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_acquire",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L293"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_acquire",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionbudget_release",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "pow",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L340"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_motion_policy_backoffdelayms",
+      "callee": "rand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionlogrecord",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L367"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionlogrecord",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L368"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionlogrecord",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L370"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionlogrecord",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_motion_policy_motionlogrecord",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_motion_policy_shouldsamplelog",
+      "callee": "rand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "lib_motion_policy_clamp",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "lib_motion_policy_round2",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-policy.ts",
+      "source_location": "L391"
+    }
+  ]
+}

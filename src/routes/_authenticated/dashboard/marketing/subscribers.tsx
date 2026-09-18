@@ -13,18 +13,22 @@ import {
   inputClass,
 } from "@/components/admin/MarketingUi";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/subscribers")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/subscribers",
+)({
   head: () => ({
     meta: [
       { title: "Subscribers — Framique Marketing" },
       {
         name: "description",
-        content: "Manage consented email and SMS subscribers, tags and segments.",
+        content:
+          "Manage consented email and SMS subscribers, tags and segments.",
       },
       { property: "og:title", content: "Subscriber management" },
       {
         property: "og:description",
-        content: "Consent-first subscriber list with tags, segments and opt-out history.",
+        content:
+          "Consent-first subscriber list with tags, segments and opt-out history.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -93,7 +97,8 @@ function SubscribersPage() {
   const add = useMutation({
     mutationFn: async () => {
       const email = form.email.trim().toLowerCase();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error("Enter a valid email");
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+        throw new Error("Enter a valid email");
       if (!form.emailConsent && !form.smsConsent) {
         throw new Error("Consent for at least one channel is required");
       }
@@ -133,12 +138,17 @@ function SubscribersPage() {
         .eq("id", id);
       if (e) throw e;
     },
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ["subscribers", merchantId] }),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: ["subscribers", merchantId] }),
     onError: (e: Error) => setError(e.message),
   });
 
   const addSegment = useMutation({
-    mutationFn: async (input: { name: string; field: string; value: string }) => {
+    mutationFn: async (input: {
+      name: string;
+      field: string;
+      value: string;
+    }) => {
       const { error: e } = await supabase.from("segments").insert({
         merchant_id: merchantId!,
         name: input.name,
@@ -148,7 +158,8 @@ function SubscribersPage() {
       });
       if (e) throw e;
     },
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ["segments", merchantId] }),
+    onSuccess: () =>
+      void qc.invalidateQueries({ queryKey: ["segments", merchantId] }),
     onError: (e: Error) => setError(e.message),
   });
 
@@ -156,14 +167,18 @@ function SubscribersPage() {
     const okStatus = statusFilter === "all" || s.status === statusFilter;
     const q = search.trim().toLowerCase();
     const okSearch =
-      !q || s.email.toLowerCase().includes(q) || (s.tags ?? []).some((t) => t.includes(q));
+      !q ||
+      s.email.toLowerCase().includes(q) ||
+      (s.tags ?? []).some((t) => t.includes(q));
     return okStatus && okSearch;
   });
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Subscribers", "সাবস্ক্রাইবার")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Subscribers", "সাবস্ক্রাইবার")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "No message is sent on any channel without consent — opt-out is honored everywhere.",
@@ -192,9 +207,13 @@ function SubscribersPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
                 <option value="all">{t("All", "সব")}</option>
-                <option value="subscribed">{t("Subscribed", "সাবস্ক্রাইবড")}</option>
+                <option value="subscribed">
+                  {t("Subscribed", "সাবস্ক্রাইবড")}
+                </option>
                 <option value="pending">{t("Pending", "অপেক্ষমাণ")}</option>
-                <option value="unsubscribed">{t("Unsubscribed", "আনসাবস্ক্রাইবড")}</option>
+                <option value="unsubscribed">
+                  {t("Unsubscribed", "আনসাবস্ক্রাইবড")}
+                </option>
               </select>
             </Field>
           </div>
@@ -204,16 +223,27 @@ function SubscribersPage() {
               <caption className="sr-only">Subscriber list</caption>
               <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-3 py-2">{t("Email", "ইমেইল")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Tags", "ট্যাগ")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Consent", "সম্মতি")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Status", "অবস্থা")}</th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Email", "ইমেইল")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Tags", "ট্যাগ")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Consent", "সম্মতি")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Status", "অবস্থা")}
+                  </th>
                   <th scope="col" className="px-3 py-2" />
                 </tr>
               </thead>
               <tbody>
                 {rows.map((s) => (
-                  <tr key={s.id} className="border-b border-border/60 last:border-0">
+                  <tr
+                    key={s.id}
+                    className="border-b border-border/60 last:border-0"
+                  >
                     <td className="px-3 py-2">
                       <span className="font-medium">{s.email}</span>
                       {s.phone && (
@@ -226,20 +256,33 @@ function SubscribersPage() {
                       {(s.tags ?? []).join(", ") || "—"}
                     </td>
                     <td className="px-3 py-2 text-xs">
-                      {s.email_consent ? t("Email", "ইমেইল") : ""} {s.sms_consent ? t("SMS", "এসএমএস") : ""}
+                      {s.email_consent ? t("Email", "ইমেইল") : ""}{" "}
+                      {s.sms_consent ? t("SMS", "এসএমএস") : ""}
                       {!s.email_consent && !s.sms_consent ? "—" : ""}
                     </td>
                     <td className="px-3 py-2">
                       <StatusPill
-                        label={statusLabel[s.status] ? t(statusLabel[s.status].en, statusLabel[s.status].bn) : s.status}
-                        tone={statusTone[s.status as keyof typeof statusTone] ?? "neutral"}
+                        label={
+                          statusLabel[s.status]
+                            ? t(
+                                statusLabel[s.status].en,
+                                statusLabel[s.status].bn,
+                              )
+                            : s.status
+                        }
+                        tone={
+                          statusTone[s.status as keyof typeof statusTone] ??
+                          "neutral"
+                        }
                       />
                     </td>
                     <td className="px-3 py-2 text-right">
                       <button
                         type="button"
                         className={btnGhost}
-                        disabled={s.status === "unsubscribed" || optOut.isPending}
+                        disabled={
+                          s.status === "unsubscribed" || optOut.isPending
+                        }
                         onClick={() => optOut.mutate(s.id)}
                       >
                         {t("Opt out", "অপ্ট-আউট")}
@@ -249,7 +292,10 @@ function SubscribersPage() {
                 ))}
                 {rows.length === 0 && (
                   <tr>
-                    <td className="px-3 py-6 text-center text-muted-foreground" colSpan={5}>
+                    <td
+                      className="px-3 py-6 text-center text-muted-foreground"
+                      colSpan={5}
+                    >
                       {t("No subscribers yet.", "কোনো সাবস্ক্রাইবার নেই।")}
                     </td>
                   </tr>
@@ -267,7 +313,9 @@ function SubscribersPage() {
               add.mutate();
             }}
           >
-            <h2 className="font-bangla-display text-base font-semibold">{t("New subscriber", "নতুন সাবস্ক্রাইবার")}</h2>
+            <h2 className="font-bangla-display text-base font-semibold">
+              {t("New subscriber", "নতুন সাবস্ক্রাইবার")}
+            </h2>
             <Field label={t("Email", "ইমেইল")}>
               <input
                 type="email"
@@ -284,7 +332,10 @@ function SubscribersPage() {
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
               />
             </Field>
-            <Field label={t("Tags", "ট্যাগ")} hint={t("Separate with commas", "কমা দিয়ে আলাদা করুন")}>
+            <Field
+              label={t("Tags", "ট্যাগ")}
+              hint={t("Separate with commas", "কমা দিয়ে আলাদা করুন")}
+            >
               <input
                 className={inputClass}
                 value={form.tags}
@@ -295,7 +346,9 @@ function SubscribersPage() {
               <input
                 type="checkbox"
                 checked={form.emailConsent}
-                onChange={(e) => setForm({ ...form, emailConsent: e.target.checked })}
+                onChange={(e) =>
+                  setForm({ ...form, emailConsent: e.target.checked })
+                }
               />
               {t("Email consent", "ইমেইল সম্মতি")}
             </label>
@@ -303,11 +356,17 @@ function SubscribersPage() {
               <input
                 type="checkbox"
                 checked={form.smsConsent}
-                onChange={(e) => setForm({ ...form, smsConsent: e.target.checked })}
+                onChange={(e) =>
+                  setForm({ ...form, smsConsent: e.target.checked })
+                }
               />
               {t("SMS consent", "এসএমএস সম্মতি")}
             </label>
-            <button type="submit" className={btnPrimary} disabled={add.isPending}>
+            <button
+              type="submit"
+              className={btnPrimary}
+              disabled={add.isPending}
+            >
               {t("Add", "যোগ করুন")}
             </button>
           </form>
@@ -328,7 +387,12 @@ function SegmentPanel({
   onCreate,
   pending,
 }: {
-  segments: { id: string; name: string; rule_field: string; rule_value: string }[];
+  segments: {
+    id: string;
+    name: string;
+    rule_field: string;
+    rule_value: string;
+  }[];
   onCreate: (v: { name: string; field: string; value: string }) => void;
   pending: boolean;
 }) {
@@ -347,7 +411,9 @@ function SegmentPanel({
         setName("");
       }}
     >
-      <h2 className="font-bangla-display text-base font-semibold">{t("Segments", "সেগমেন্ট")}</h2>
+      <h2 className="font-bangla-display text-base font-semibold">
+        {t("Segments", "সেগমেন্ট")}
+      </h2>
       <ul className="space-y-1 text-sm">
         {segments.map((s) => (
           <li key={s.id} className="flex justify-between gap-2">
@@ -357,21 +423,37 @@ function SegmentPanel({
             </span>
           </li>
         ))}
-        {segments.length === 0 && <li className="text-muted-foreground">{t("No segments yet.", "কোনো সেগমেন্ট নেই।")}</li>}
+        {segments.length === 0 && (
+          <li className="text-muted-foreground">
+            {t("No segments yet.", "কোনো সেগমেন্ট নেই।")}
+          </li>
+        )}
       </ul>
       <Field label={t("Name", "নাম")}>
-        <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} />
+        <input
+          className={inputClass}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </Field>
       <div className="grid grid-cols-2 gap-2">
         <Field label={t("Field", "ফিল্ড")}>
-          <select className={inputClass} value={field} onChange={(e) => setField(e.target.value)}>
+          <select
+            className={inputClass}
+            value={field}
+            onChange={(e) => setField(e.target.value)}
+          >
             <option value="status">status</option>
             <option value="email_consent">email_consent</option>
             <option value="tag">tag</option>
           </select>
         </Field>
         <Field label={t("Value", "মান")}>
-          <input className={inputClass} value={value} onChange={(e) => setValue(e.target.value)} />
+          <input
+            className={inputClass}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
         </Field>
       </div>
       <button type="submit" className={btnPrimary} disabled={pending}>

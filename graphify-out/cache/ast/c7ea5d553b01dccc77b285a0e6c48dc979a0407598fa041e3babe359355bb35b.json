@@ -1,1 +1,409 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "label": "ThemeChrome.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L1"}, {"id": "store_themechrome_props", "label": "Props", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L26"}, {"id": "store_themechrome_primarysectionid", "label": "primarySectionId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L62"}, {"id": "store_themechrome_livecartscope", "label": "LiveCartScope()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L75"}, {"id": "store_themechrome_themechrome", "label": "ThemeChrome()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L80"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "builder_sectionrenderer_sectionrenderer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "builder_cartcontext_cartprovider", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "builder_cartcontext_uselivecart", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_store_vitalsreporter_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_vitalsreporter_vitalsreporter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_store_trafficreporter_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_trafficreporter_trafficreporter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_store_sitekittags_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_sitekittags_sitekitsurface", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_sitekittags_storefrontsitekit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_components_builder_themesurface_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "builder_themesurface_themesurface", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_i18n_uselangscope", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_responsive_css_compileresponsivecss", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "lib_builder_ast_themetokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_themechrome_props", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_themechrome_primarysectionid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_themechrome_livecartscope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "target": "store_themechrome_themechrome", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L80", "weight": 1.0}, {"source": "store_themechrome_themechrome", "target": "store_themechrome_primarysectionid", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L103", "weight": 1.0}], "raw_calls": [{"caller_nid": "store_themechrome_primarysectionid", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L64"}, {"caller_nid": "store_themechrome_primarysectionid", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L67"}, {"caller_nid": "store_themechrome_primarysectionid", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L67"}, {"caller_nid": "store_themechrome_livecartscope", "callee": "useLiveCart", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L76"}, {"caller_nid": "store_themechrome_themechrome", "callee": "useLangScope", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L97"}, {"caller_nid": "store_themechrome_themechrome", "callee": "compileResponsiveCss", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L108"}, {"caller_nid": "store_themechrome_themechrome", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L114"}, {"caller_nid": "store_themechrome_themechrome", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L127"}, {"caller_nid": "store_themechrome_themechrome", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L141"}, {"caller_nid": "store_themechrome_themechrome", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx", "source_location": "L160"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "label": "ThemeChrome.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "store_themechrome_props",
+      "label": "Props",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "store_themechrome_primarysectionid",
+      "label": "primarySectionId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "store_themechrome_livecartscope",
+      "label": "LiveCartScope()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L75"
+    },
+    {
+      "id": "store_themechrome_themechrome",
+      "label": "ThemeChrome()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L80"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "builder_sectionrenderer_sectionrenderer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_cartcontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "builder_cartcontext_cartprovider",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "builder_cartcontext_uselivecart",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_vitalsreporter_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_vitalsreporter_vitalsreporter",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_trafficreporter_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_trafficreporter_trafficreporter",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_sitekittags_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_sitekittags_sitekitsurface",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_sitekittags_storefrontsitekit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_themesurface_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "builder_themesurface_themesurface",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_i18n_uselangscope",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_responsive_css_compileresponsivecss",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "lib_builder_ast_themetokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_themechrome_props",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_themechrome_primarysectionid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_themechrome_livecartscope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "target": "store_themechrome_themechrome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "store_themechrome_themechrome",
+      "target": "store_themechrome_primarysectionid",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L103",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "store_themechrome_primarysectionid",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "store_themechrome_primarysectionid",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "store_themechrome_primarysectionid",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "store_themechrome_livecartscope",
+      "callee": "useLiveCart",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "useLangScope",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "compileResponsiveCss",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "store_themechrome_themechrome",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/store/ThemeChrome.tsx",
+      "source_location": "L160"
+    }
+  ]
+}

@@ -31,7 +31,14 @@ export type MarqueeBandProps = {
   className?: string;
 };
 
-export function MarqueeBand({ kicker, marks, note, label, reverse, className }: MarqueeBandProps) {
+export function MarqueeBand({
+  kicker,
+  marks,
+  note,
+  label,
+  reverse,
+  className,
+}: MarqueeBandProps) {
   return (
     <div className={cn("fq-glass rounded-fq-lg px-4 py-6 sm:px-6", className)}>
       {kicker ? (
@@ -57,9 +64,14 @@ export function MarqueeBand({ kicker, marks, note, label, reverse, className }: 
         </div>
       </Marquee>
 
-      {note ? <p data-type-role="caption" className="mt-5 text-center text-xs text-muted-foreground">
+      {note ? (
+        <p
+          data-type-role="caption"
+          className="mt-5 text-center text-xs text-muted-foreground"
+        >
           {note}
-        </p> : null}
+        </p>
+      ) : null}
     </div>
   );
 }

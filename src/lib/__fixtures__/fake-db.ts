@@ -14,7 +14,9 @@ export type Row = Record<string, any>;
 export type RpcHandler = (
   fn: string,
   args: Record<string, unknown>,
-) => { data: unknown; error: unknown } | Promise<{ data: unknown; error: unknown }>;
+) =>
+  | { data: unknown; error: unknown }
+  | Promise<{ data: unknown; error: unknown }>;
 
 export type FakeDbOptions = {
   /** Seed rows keyed by table name. */
@@ -67,7 +69,9 @@ function matches(row: Row, filters: Filter[]) {
     // syntax would make a passing test meaningless.
     if (f.op === "not" || f.op === "or") return true;
     // `is` is used for null checks (`.is("revoked_at", null)`).
-    return f.value === null ? actual === null || actual === undefined : actual === f.value;
+    return f.value === null
+      ? actual === null || actual === undefined
+      : actual === f.value;
   });
 }
 
@@ -88,7 +92,8 @@ export class FakeDb {
       this.tables[name] = rows.map((r) => ({ ...r }));
     }
     this.rpcHandler =
-      options.rpc ?? ((fn) => ({ data: null, error: { message: `rpc_not_stubbed:${fn}` } }));
+      options.rpc ??
+      ((fn) => ({ data: null, error: { message: `rpc_not_stubbed:${fn}` } }));
   }
 
   rows(table: string): Row[] {
@@ -98,7 +103,10 @@ export class FakeDb {
 
   /** Every call of one kind, in order — the audit assertion surface. */
   callsOf<K extends Call["kind"]>(kind: K): Extract<Call, { kind: K }>[] {
-    return this.calls.filter((c) => c.kind === kind) as Extract<Call, { kind: K }>[];
+    return this.calls.filter((c) => c.kind === kind) as Extract<
+      Call,
+      { kind: K }
+    >[];
   }
 
   rpcCalls(fn?: string) {
@@ -246,7 +254,11 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
     const store = this.db.rows(this.table);
 
     if (this.mode === "insert") {
-      this.db.calls.push({ kind: "insert", table: this.table, rows: this.payload });
+      this.db.calls.push({
+        kind: "insert",
+        table: this.table,
+        rows: this.payload,
+      });
       store.push(...this.payload.map((r) => ({ ...r })));
       return { data: this.payload, error: null };
     }
@@ -283,7 +295,11 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
       return { data: hit, error: null };
     }
     if (this.mode === "delete") {
-      this.db.calls.push({ kind: "delete", table: this.table, filters: [...this.filters] });
+      this.db.calls.push({
+        kind: "delete",
+        table: this.table,
+        filters: [...this.filters],
+      });
       const kept = store.filter((r) => !matches(r, this.filters));
       const removed = store.filter((r) => matches(r, this.filters));
       this.db.tables[this.table] = kept;
@@ -302,7 +318,8 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
         return (av > bv ? 1 : -1) * (ascending ? 1 : -1);
       });
     }
-    if (this.rangeWindow) out = out.slice(this.rangeWindow.from, this.rangeWindow.to + 1);
+    if (this.rangeWindow)
+      out = out.slice(this.rangeWindow.from, this.rangeWindow.to + 1);
     if (this.limitN != null) out = out.slice(0, this.limitN);
     // `.single()` / `.maybeSingle()` transfer one row at most, like PostgREST.
     if (this.singleRow) out = out.slice(0, 1);
@@ -341,7 +358,13 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
   }
 
   then<R1 = { data: any; error: any; count?: number }, R2 = never>(
-    onfulfilled?: ((value: { data: any; error: any; count?: number }) => R1 | PromiseLike<R1>) | null,
+    onfulfilled?:
+      | ((value: {
+          data: any;
+          error: any;
+          count?: number;
+        }) => R1 | PromiseLike<R1>)
+      | null,
     onrejected?: ((reason: unknown) => R2 | PromiseLike<R2>) | null,
   ): PromiseLike<R1 | R2> {
     return Promise.resolve(this.run()).then(onfulfilled, onrejected);

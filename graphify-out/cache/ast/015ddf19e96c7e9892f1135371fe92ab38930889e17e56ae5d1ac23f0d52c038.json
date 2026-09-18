@@ -1,1 +1,2236 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "label": "marketing-seo.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1"}, {"id": "lib_marketing_seo_bilingual", "label": "Bilingual", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L55"}, {"id": "lib_marketing_seo_schemakind", "label": "SchemaKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L57"}, {"id": "lib_marketing_seo_marketingrouteid", "label": "MarketingRouteId", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L69"}, {"id": "lib_marketing_seo_marketingroute", "label": "MarketingRoute", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L87"}, {"id": "lib_marketing_seo_marketing_routes", "label": "MARKETING_ROUTES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L113"}, {"id": "lib_marketing_seo_by_id", "label": "BY_ID", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L435"}, {"id": "lib_marketing_seo_by_path", "label": "BY_PATH", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L436"}, {"id": "lib_marketing_seo_marketingroutebypath", "label": "marketingRouteByPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L446"}, {"id": "lib_marketing_seo_isabsoluteurl", "label": "isAbsoluteUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L455"}, {"id": "lib_marketing_seo_normaliseorigin", "label": "normaliseOrigin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L460"}, {"id": "lib_marketing_seo_absoluteurl", "label": "absoluteUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L474"}, {"id": "lib_marketing_seo_resolveorigin", "label": "resolveOrigin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L486"}, {"id": "lib_marketing_seo_localepinned", "label": "localePinned()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L496"}, {"id": "lib_marketing_seo_headtag", "label": "HeadTag", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L510"}, {"id": "lib_marketing_seo_marketinghead", "label": "MarketingHead", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L512"}, {"id": "lib_marketing_seo_buildheadinput", "label": "BuildHeadInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L518"}, {"id": "lib_marketing_seo_clamptext", "label": "clampText()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L537"}, {"id": "lib_marketing_seo_buildmarketinghead", "label": "buildMarketingHead()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L553"}, {"id": "lib_marketing_seo_node", "label": "Node", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L622"}, {"id": "lib_marketing_seo_organizationnode", "label": "organizationNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L625"}, {"id": "lib_marketing_seo_websitenode", "label": "websiteNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L633"}, {"id": "lib_marketing_seo_planoffer", "label": "PlanOffer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L654"}, {"id": "lib_marketing_seo_softwareapplicationnode", "label": "softwareApplicationNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L663"}, {"id": "lib_marketing_seo_localbusinessnode", "label": "localBusinessNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L698"}, {"id": "lib_marketing_seo_faqitem", "label": "FaqItem", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L715"}, {"id": "lib_marketing_seo_faqpagenode", "label": "faqPageNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L723"}, {"id": "lib_marketing_seo_breadcrumbnode", "label": "breadcrumbNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L740"}, {"id": "lib_marketing_seo_articlenodeinput", "label": "ArticleNodeInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L766"}, {"id": "lib_marketing_seo_articlenode", "label": "articleNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L780"}, {"id": "lib_marketing_seo_techarticlenode", "label": "techArticleNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L804"}, {"id": "lib_marketing_seo_contactpagenode", "label": "contactPageNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L809"}, {"id": "lib_marketing_seo_collectionpagenode", "label": "collectionPageNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L818"}, {"id": "lib_marketing_seo_buildgraph", "label": "buildGraph()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L835"}, {"id": "lib_marketing_seo_seoissue", "label": "SeoIssue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L896"}, {"id": "lib_marketing_seo_issue", "label": "issue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L903"}, {"id": "lib_marketing_seo_validateroute", "label": "validateRoute()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L911"}, {"id": "lib_marketing_seo_validateregistry", "label": "validateRegistry()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L956"}, {"id": "lib_marketing_seo_inboundlinkcount", "label": "inboundLinkCount()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L990"}, {"id": "lib_marketing_seo_crawldepths", "label": "crawlDepths()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L995"}, {"id": "lib_marketing_seo_orphanissues", "label": "orphanIssues()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1014"}, {"id": "lib_marketing_seo_validatejsonld", "label": "validateJsonLd()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1037"}, {"id": "lib_marketing_seo_validatejsonldnode", "label": "validateJsonLdNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1055"}, {"id": "lib_marketing_seo_errorsonly", "label": "errorsOnly()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1091"}, {"id": "lib_marketing_seo_sitemapentry", "label": "SitemapEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1099"}, {"id": "lib_marketing_seo_marketingsitemapentries", "label": "marketingSitemapEntries()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1113"}, {"id": "lib_marketing_seo_marketingallowpaths", "label": "marketingAllowPaths()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1136"}, {"id": "lib_marketing_seo_rendermarketingllmstxt", "label": "renderMarketingLlmsTxt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1147"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_seo_technical_hreflang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_seo_technical_locales", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_seo_technical_seolocale", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "users_rahman_documents_frame30_src_lib_legal_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_legal_org_nap", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_legal_nappostaladdress", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_legal_organizationschema", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_legal_legal_docs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_bilingual", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_schemakind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingrouteid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingroute", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketing_routes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_by_id", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L435", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_by_path", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L436", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingroute", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L438", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingroutebypath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L446", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_isabsoluteurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L455", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_normaliseorigin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L460", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_absoluteurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L474", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_resolveorigin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L486", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_localepinned", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L496", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_headtag", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L510", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketinghead", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L512", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_buildheadinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L518", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_clamptext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L537", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_buildmarketinghead", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L553", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L622", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_organizationnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L625", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_websitenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L633", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_planoffer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L654", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_softwareapplicationnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L663", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_localbusinessnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L698", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_faqitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L715", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_faqpagenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L723", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_breadcrumbnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L740", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_articlenodeinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L766", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_articlenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L780", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_techarticlenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L804", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_contactpagenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L809", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_collectionpagenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L818", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_buildgraph", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L835", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_seoissue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L896", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_issue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L903", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_validateroute", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L911", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_validateregistry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L956", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_inboundlinkcount", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L990", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_crawldepths", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L995", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_orphanissues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1014", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_validatejsonld", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1037", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_validatejsonldnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1055", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_errorsonly", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1091", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_sitemapentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1099", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingsitemapentries", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_marketingallowpaths", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts", "target": "lib_marketing_seo_rendermarketingllmstxt", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1147", "weight": 1.0}, {"source": "lib_marketing_seo_absoluteurl", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L475", "weight": 1.0}, {"source": "lib_marketing_seo_resolveorigin", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L487", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_marketingroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L554", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L556", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_clamptext", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L559", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_absoluteurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L564", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_isabsoluteurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L566", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_localepinned", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L604", "weight": 1.0}, {"source": "lib_marketing_seo_buildmarketinghead", "target": "lib_marketing_seo_buildgraph", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L610", "weight": 1.0}, {"source": "lib_marketing_seo_breadcrumbnode", "target": "lib_marketing_seo_marketingroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L748", "weight": 1.0}, {"source": "lib_marketing_seo_articlenode", "target": "lib_marketing_seo_absoluteurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L783", "weight": 1.0}, {"source": "lib_marketing_seo_articlenode", "target": "lib_marketing_seo_clamptext", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L788", "weight": 1.0}, {"source": "lib_marketing_seo_articlenode", "target": "lib_marketing_seo_isabsoluteurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L790", "weight": 1.0}, {"source": "lib_marketing_seo_techarticlenode", "target": "lib_marketing_seo_articlenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L805", "weight": 1.0}, {"source": "lib_marketing_seo_collectionpagenode", "target": "lib_marketing_seo_absoluteurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L819", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_marketingroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L844", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L845", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_organizationnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L853", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_websitenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L856", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_softwareapplicationnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L859", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_localbusinessnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L862", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_contactpagenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L865", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_collectionpagenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L868", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_faqpagenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L871", "weight": 1.0}, {"source": "lib_marketing_seo_buildgraph", "target": "lib_marketing_seo_breadcrumbnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L876", "weight": 1.0}, {"source": "lib_marketing_seo_validateroute", "target": "lib_marketing_seo_issue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L917", "weight": 1.0}, {"source": "lib_marketing_seo_validateregistry", "target": "lib_marketing_seo_validateroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L961", "weight": 1.0}, {"source": "lib_marketing_seo_validateregistry", "target": "lib_marketing_seo_issue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L963", "weight": 1.0}, {"source": "lib_marketing_seo_validateregistry", "target": "lib_marketing_seo_marketingroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L978", "weight": 1.0}, {"source": "lib_marketing_seo_validateregistry", "target": "lib_marketing_seo_orphanissues", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L981", "weight": 1.0}, {"source": "lib_marketing_seo_crawldepths", "target": "lib_marketing_seo_marketingroute", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1001", "weight": 1.0}, {"source": "lib_marketing_seo_orphanissues", "target": "lib_marketing_seo_crawldepths", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1016", "weight": 1.0}, {"source": "lib_marketing_seo_orphanissues", "target": "lib_marketing_seo_inboundlinkcount", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1020", "weight": 1.0}, {"source": "lib_marketing_seo_orphanissues", "target": "lib_marketing_seo_issue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1021", "weight": 1.0}, {"source": "lib_marketing_seo_validatejsonld", "target": "lib_marketing_seo_issue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1040", "weight": 1.0}, {"source": "lib_marketing_seo_validatejsonld", "target": "lib_marketing_seo_validatejsonldnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1049", "weight": 1.0}, {"source": "lib_marketing_seo_validatejsonldnode", "target": "lib_marketing_seo_issue", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1058", "weight": 1.0}, {"source": "lib_marketing_seo_marketingsitemapentries", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1114", "weight": 1.0}, {"source": "lib_marketing_seo_rendermarketingllmstxt", "target": "lib_marketing_seo_normaliseorigin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1153", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_marketing_seo_marketingroute", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L439"}, {"caller_nid": "lib_marketing_seo_marketingroutebypath", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L447"}, {"caller_nid": "lib_marketing_seo_marketingroutebypath", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L447"}, {"caller_nid": "lib_marketing_seo_marketingroutebypath", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L448"}, {"caller_nid": "lib_marketing_seo_isabsoluteurl", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L456"}, {"caller_nid": "lib_marketing_seo_normaliseorigin", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L462"}, {"caller_nid": "lib_marketing_seo_normaliseorigin", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L462"}, {"caller_nid": "lib_marketing_seo_normaliseorigin", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L463"}, {"caller_nid": "lib_marketing_seo_absoluteurl", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L477"}, {"caller_nid": "lib_marketing_seo_absoluteurl", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L478"}, {"caller_nid": "lib_marketing_seo_localepinned", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L499"}, {"caller_nid": "lib_marketing_seo_localepinned", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L500"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L538"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L538"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L540"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "lastIndexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L541"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L542"}, {"caller_nid": "lib_marketing_seo_clamptext", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L542"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L585"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L590"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L591"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L593"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L597"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L601"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L607"}, {"caller_nid": "lib_marketing_seo_buildmarketinghead", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L612"}, {"caller_nid": "lib_marketing_seo_organizationnode", "callee": "organizationSchema", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L626"}, {"caller_nid": "lib_marketing_seo_softwareapplicationnode", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L675"}, {"caller_nid": "lib_marketing_seo_softwareapplicationnode", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L677"}, {"caller_nid": "lib_marketing_seo_localbusinessnode", "callee": "napPostalAddress", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L707"}, {"caller_nid": "lib_marketing_seo_faqpagenode", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L724"}, {"caller_nid": "lib_marketing_seo_faqpagenode", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L724"}, {"caller_nid": "lib_marketing_seo_faqpagenode", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L731"}, {"caller_nid": "lib_marketing_seo_breadcrumbnode", "callee": "unshift", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L750"}, {"caller_nid": "lib_marketing_seo_breadcrumbnode", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L753"}, {"caller_nid": "lib_marketing_seo_breadcrumbnode", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L757"}, {"caller_nid": "lib_marketing_seo_articlenode", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L781"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L853"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L856"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L859"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L862"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L865"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L868"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L872"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L877"}, {"caller_nid": "lib_marketing_seo_buildgraph", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L887"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L917"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L920"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L922"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L925"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L928"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L932"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L939"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L940"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L941"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L942"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L944"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L945"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L946"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L947"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L949"}, {"caller_nid": "lib_marketing_seo_validateroute", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L951"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L961"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L962"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L963"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L964"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L965"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L966"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L967"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L968"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L973"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L974"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L977"}, {"caller_nid": "lib_marketing_seo_validateregistry", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L981"}, {"caller_nid": "lib_marketing_seo_inboundlinkcount", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L991"}, {"caller_nid": "lib_marketing_seo_crawldepths", "callee": "shift", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L999"}, {"caller_nid": "lib_marketing_seo_crawldepths", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1000"}, {"caller_nid": "lib_marketing_seo_crawldepths", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1002"}, {"caller_nid": "lib_marketing_seo_crawldepths", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1003"}, {"caller_nid": "lib_marketing_seo_crawldepths", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1004"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1021"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1022"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1024"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1026"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1029"}, {"caller_nid": "lib_marketing_seo_orphanissues", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1030"}, {"caller_nid": "lib_marketing_seo_validatejsonld", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1046"}, {"caller_nid": "lib_marketing_seo_validatejsonld", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1047"}, {"caller_nid": "lib_marketing_seo_validatejsonld", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1048"}, {"caller_nid": "lib_marketing_seo_validatejsonld", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1049"}, {"caller_nid": "lib_marketing_seo_validatejsonldnode", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1062"}, {"caller_nid": "lib_marketing_seo_validatejsonldnode", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1063"}, {"caller_nid": "lib_marketing_seo_validatejsonldnode", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1064"}, {"caller_nid": "lib_marketing_seo_validatejsonldnode", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1087"}, {"caller_nid": "lib_marketing_seo_validatejsonldnode", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1087"}, {"caller_nid": "lib_marketing_seo_errorsonly", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1092"}, {"caller_nid": "lib_marketing_seo_marketingsitemapentries", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1115"}, {"caller_nid": "lib_marketing_seo_marketingsitemapentries", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1115"}, {"caller_nid": "lib_marketing_seo_marketingallowpaths", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1137"}, {"caller_nid": "lib_marketing_seo_marketingallowpaths", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1137"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1155"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1156"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1157"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1158"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1159"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1160"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1161"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1162"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1163"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1165"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1166"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1169"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1171"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1174"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1175"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1177"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1179"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1180"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1184"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1185"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1186"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1186"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1187"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1191"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1192"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1193"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1194"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1195"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1197"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1200"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1201"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1203"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1205"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1206"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1207"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1208"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1209"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1210"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1211"}, {"caller_nid": "lib_marketing_seo_rendermarketingllmstxt", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts", "source_location": "L1212"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "label": "marketing-seo.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_marketing_seo_bilingual",
+      "label": "Bilingual",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_marketing_seo_schemakind",
+      "label": "SchemaKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_marketing_seo_marketingrouteid",
+      "label": "MarketingRouteId",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_marketing_seo_marketingroute",
+      "label": "MarketingRoute",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "lib_marketing_seo_marketing_routes",
+      "label": "MARKETING_ROUTES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_marketing_seo_by_id",
+      "label": "BY_ID",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L435"
+    },
+    {
+      "id": "lib_marketing_seo_by_path",
+      "label": "BY_PATH",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L436"
+    },
+    {
+      "id": "lib_marketing_seo_marketingroutebypath",
+      "label": "marketingRouteByPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L446"
+    },
+    {
+      "id": "lib_marketing_seo_isabsoluteurl",
+      "label": "isAbsoluteUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L455"
+    },
+    {
+      "id": "lib_marketing_seo_normaliseorigin",
+      "label": "normaliseOrigin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L460"
+    },
+    {
+      "id": "lib_marketing_seo_absoluteurl",
+      "label": "absoluteUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L474"
+    },
+    {
+      "id": "lib_marketing_seo_resolveorigin",
+      "label": "resolveOrigin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L486"
+    },
+    {
+      "id": "lib_marketing_seo_localepinned",
+      "label": "localePinned()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L496"
+    },
+    {
+      "id": "lib_marketing_seo_headtag",
+      "label": "HeadTag",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L510"
+    },
+    {
+      "id": "lib_marketing_seo_marketinghead",
+      "label": "MarketingHead",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L512"
+    },
+    {
+      "id": "lib_marketing_seo_buildheadinput",
+      "label": "BuildHeadInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L518"
+    },
+    {
+      "id": "lib_marketing_seo_clamptext",
+      "label": "clampText()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L537"
+    },
+    {
+      "id": "lib_marketing_seo_buildmarketinghead",
+      "label": "buildMarketingHead()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L553"
+    },
+    {
+      "id": "lib_marketing_seo_node",
+      "label": "Node",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L622"
+    },
+    {
+      "id": "lib_marketing_seo_organizationnode",
+      "label": "organizationNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L625"
+    },
+    {
+      "id": "lib_marketing_seo_websitenode",
+      "label": "websiteNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L633"
+    },
+    {
+      "id": "lib_marketing_seo_planoffer",
+      "label": "PlanOffer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L654"
+    },
+    {
+      "id": "lib_marketing_seo_softwareapplicationnode",
+      "label": "softwareApplicationNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L663"
+    },
+    {
+      "id": "lib_marketing_seo_localbusinessnode",
+      "label": "localBusinessNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L698"
+    },
+    {
+      "id": "lib_marketing_seo_faqitem",
+      "label": "FaqItem",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L715"
+    },
+    {
+      "id": "lib_marketing_seo_faqpagenode",
+      "label": "faqPageNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L723"
+    },
+    {
+      "id": "lib_marketing_seo_breadcrumbnode",
+      "label": "breadcrumbNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L740"
+    },
+    {
+      "id": "lib_marketing_seo_articlenodeinput",
+      "label": "ArticleNodeInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L766"
+    },
+    {
+      "id": "lib_marketing_seo_articlenode",
+      "label": "articleNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L780"
+    },
+    {
+      "id": "lib_marketing_seo_techarticlenode",
+      "label": "techArticleNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L804"
+    },
+    {
+      "id": "lib_marketing_seo_contactpagenode",
+      "label": "contactPageNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L809"
+    },
+    {
+      "id": "lib_marketing_seo_collectionpagenode",
+      "label": "collectionPageNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L818"
+    },
+    {
+      "id": "lib_marketing_seo_buildgraph",
+      "label": "buildGraph()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L835"
+    },
+    {
+      "id": "lib_marketing_seo_seoissue",
+      "label": "SeoIssue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L896"
+    },
+    {
+      "id": "lib_marketing_seo_issue",
+      "label": "issue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L903"
+    },
+    {
+      "id": "lib_marketing_seo_validateroute",
+      "label": "validateRoute()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L911"
+    },
+    {
+      "id": "lib_marketing_seo_validateregistry",
+      "label": "validateRegistry()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L956"
+    },
+    {
+      "id": "lib_marketing_seo_inboundlinkcount",
+      "label": "inboundLinkCount()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L990"
+    },
+    {
+      "id": "lib_marketing_seo_crawldepths",
+      "label": "crawlDepths()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L995"
+    },
+    {
+      "id": "lib_marketing_seo_orphanissues",
+      "label": "orphanIssues()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1014"
+    },
+    {
+      "id": "lib_marketing_seo_validatejsonld",
+      "label": "validateJsonLd()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1037"
+    },
+    {
+      "id": "lib_marketing_seo_validatejsonldnode",
+      "label": "validateJsonLdNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1055"
+    },
+    {
+      "id": "lib_marketing_seo_errorsonly",
+      "label": "errorsOnly()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1091"
+    },
+    {
+      "id": "lib_marketing_seo_sitemapentry",
+      "label": "SitemapEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1099"
+    },
+    {
+      "id": "lib_marketing_seo_marketingsitemapentries",
+      "label": "marketingSitemapEntries()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1113"
+    },
+    {
+      "id": "lib_marketing_seo_marketingallowpaths",
+      "label": "marketingAllowPaths()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1136"
+    },
+    {
+      "id": "lib_marketing_seo_rendermarketingllmstxt",
+      "label": "renderMarketingLlmsTxt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1147"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_seo_technical_hreflang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_seo_technical_locales",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_seo_technical_seolocale",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_legal_org_nap",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_legal_nappostaladdress",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_legal_organizationschema",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_legal_legal_docs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_bilingual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_schemakind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingrouteid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketing_routes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_by_id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L435",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_by_path",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L436",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L438",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingroutebypath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L446",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_isabsoluteurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L455",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L460",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_absoluteurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L474",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_resolveorigin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L486",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_localepinned",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L496",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_headtag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L510",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketinghead",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L512",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_buildheadinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L518",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_clamptext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L537",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_buildmarketinghead",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L553",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L622",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_organizationnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L625",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_websitenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L633",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_planoffer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L654",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_softwareapplicationnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L663",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_localbusinessnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L698",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_faqitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L715",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_faqpagenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L723",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_breadcrumbnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L740",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_articlenodeinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L766",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_articlenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L780",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_techarticlenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L804",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_contactpagenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L809",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_collectionpagenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L818",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_buildgraph",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L835",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_seoissue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L896",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_issue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L903",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_validateroute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L911",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_validateregistry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L956",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_inboundlinkcount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L990",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_crawldepths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L995",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_orphanissues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1014",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_validatejsonld",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1037",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_validatejsonldnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1055",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_errorsonly",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1091",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_sitemapentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1099",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingsitemapentries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_marketingallowpaths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_seo_ts",
+      "target": "lib_marketing_seo_rendermarketingllmstxt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1147",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_absoluteurl",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L475",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_resolveorigin",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L487",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L554",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L556",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_clamptext",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L559",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_absoluteurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L564",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_isabsoluteurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L566",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_localepinned",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L604",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildmarketinghead",
+      "target": "lib_marketing_seo_buildgraph",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L610",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_breadcrumbnode",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L748",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_articlenode",
+      "target": "lib_marketing_seo_absoluteurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L783",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_articlenode",
+      "target": "lib_marketing_seo_clamptext",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L788",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_articlenode",
+      "target": "lib_marketing_seo_isabsoluteurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L790",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_techarticlenode",
+      "target": "lib_marketing_seo_articlenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L805",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_collectionpagenode",
+      "target": "lib_marketing_seo_absoluteurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L819",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L844",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L845",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_organizationnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L853",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_websitenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L856",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_softwareapplicationnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L859",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_localbusinessnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L862",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_contactpagenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L865",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_collectionpagenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L868",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_faqpagenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L871",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_buildgraph",
+      "target": "lib_marketing_seo_breadcrumbnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L876",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validateroute",
+      "target": "lib_marketing_seo_issue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L917",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validateregistry",
+      "target": "lib_marketing_seo_validateroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L961",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validateregistry",
+      "target": "lib_marketing_seo_issue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L963",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validateregistry",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L978",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validateregistry",
+      "target": "lib_marketing_seo_orphanissues",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L981",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_crawldepths",
+      "target": "lib_marketing_seo_marketingroute",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1001",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_orphanissues",
+      "target": "lib_marketing_seo_crawldepths",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1016",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_orphanissues",
+      "target": "lib_marketing_seo_inboundlinkcount",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1020",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_orphanissues",
+      "target": "lib_marketing_seo_issue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1021",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validatejsonld",
+      "target": "lib_marketing_seo_issue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1040",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validatejsonld",
+      "target": "lib_marketing_seo_validatejsonldnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1049",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_validatejsonldnode",
+      "target": "lib_marketing_seo_issue",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1058",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_marketingsitemapentries",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1114",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_marketing_seo_rendermarketingllmstxt",
+      "target": "lib_marketing_seo_normaliseorigin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1153",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_marketing_seo_marketingroute",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L439"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingroutebypath",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L447"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingroutebypath",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L447"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingroutebypath",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L448"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_isabsoluteurl",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L456"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_normaliseorigin",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_normaliseorigin",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_normaliseorigin",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_absoluteurl",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L477"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_absoluteurl",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L478"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_localepinned",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L499"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_localepinned",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L500"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L538"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L538"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L540"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "lastIndexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L541"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L542"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_clamptext",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L542"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L585"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L590"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L591"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L593"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L597"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L601"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L607"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildmarketinghead",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L612"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_organizationnode",
+      "callee": "organizationSchema",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L626"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_softwareapplicationnode",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L675"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_softwareapplicationnode",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L677"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_localbusinessnode",
+      "callee": "napPostalAddress",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L707"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_faqpagenode",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L724"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_faqpagenode",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L724"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_faqpagenode",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L731"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_breadcrumbnode",
+      "callee": "unshift",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L750"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_breadcrumbnode",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L753"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_breadcrumbnode",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L757"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_articlenode",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L781"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L856"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L859"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L862"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L865"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L872"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L877"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_buildgraph",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L887"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L917"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L920"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L922"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L925"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L928"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L932"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L939"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L940"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L941"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L942"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L944"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L945"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L946"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L947"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L949"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateroute",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L951"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L961"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L962"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L963"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L964"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L965"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L966"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L967"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L968"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L973"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L974"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L977"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validateregistry",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L981"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_inboundlinkcount",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L991"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_crawldepths",
+      "callee": "shift",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L999"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_crawldepths",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1000"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_crawldepths",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1002"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_crawldepths",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1003"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_crawldepths",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1004"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1021"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1022"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1024"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1026"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1029"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_orphanissues",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1030"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonld",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1046"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonld",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1047"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonld",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1048"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonld",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1049"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonldnode",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1062"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonldnode",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1063"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonldnode",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1064"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonldnode",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1087"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_validatejsonldnode",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1087"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_errorsonly",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1092"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingsitemapentries",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1115"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingsitemapentries",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1115"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingallowpaths",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1137"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_marketingallowpaths",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1137"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1155"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1156"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1157"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1158"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1159"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1160"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1161"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1162"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1163"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1165"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1166"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1169"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1171"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1174"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1175"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1177"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1179"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1180"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1184"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1185"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1186"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1186"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1187"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1191"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1192"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1193"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1194"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1195"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1197"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1200"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1201"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1203"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1205"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1206"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1207"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1208"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1209"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1210"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1211"
+    },
+    {
+      "caller_nid": "lib_marketing_seo_rendermarketingllmstxt",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing-seo.ts",
+      "source_location": "L1212"
+    }
+  ]
+}

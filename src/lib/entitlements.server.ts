@@ -57,14 +57,20 @@ export async function entitlementSnapshot(
     // so instead we fail loudly: a limits outage is an incident, not a silent
     // "unlimited" grant. Callers translate this into a retryable message.
     incr("framique_entitlement_snapshot_total", { outcome: "error" });
-    log("error", "entitlements.snapshot_failed", { merchantId, message: error.message.slice(0, 160) });
+    log("error", "entitlements.snapshot_failed", {
+      merchantId,
+      message: error.message.slice(0, 160),
+    });
     throw new Error("entitlements_unavailable");
   }
 
   const snapshot = normalizeSnapshot(data);
   if (cache.size >= MAX_CACHE_ENTRIES) cache.clear();
   cache.set(merchantId, { at: Date.now(), snapshot });
-  incr("framique_entitlement_snapshot_total", { outcome: "ok", plan: snapshot.plan });
+  incr("framique_entitlement_snapshot_total", {
+    outcome: "ok",
+    plan: snapshot.plan,
+  });
   return snapshot;
 }
 
@@ -115,7 +121,11 @@ export async function entitlementCheck(
   return verdictFor(snapshot, resource, requested);
 }
 
-export async function entitlementPanel(db: Client, merchantId: string, fresh = false) {
+export async function entitlementPanel(
+  db: Client,
+  merchantId: string,
+  fresh = false,
+) {
   const snapshot = await entitlementSnapshot(db, merchantId, { fresh });
   const report = usageReport(snapshot);
   return {

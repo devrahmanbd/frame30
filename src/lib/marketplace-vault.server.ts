@@ -22,7 +22,12 @@ import { table, type Kind } from "./marketplace.server";
 import { incr, log, withSpan } from "./observability.server";
 
 type Client = SupabaseClient<Database>;
-type Rpc = { rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> };
+type Rpc = {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
+};
 
 export async function sha256Hex(input: string) {
   const bytes = new TextEncoder().encode(input);
@@ -32,7 +37,12 @@ export async function sha256Hex(input: string) {
     .join("");
 }
 
-async function ownedListing(db: Client, merchantId: string, kind: Kind, listingId: string) {
+async function ownedListing(
+  db: Client,
+  merchantId: string,
+  kind: Kind,
+  listingId: string,
+) {
   const { data } = await db
     .from(table(kind))
     .select("id, name, slug, version, seller_merchant_id")
@@ -50,23 +60,37 @@ export type PublishInput = {
   changelog: string | null;
   scopes: string[];
   source: Record<string, unknown>;
-  blocks: { blockKey: string; name: string; target: string; schema: Record<string, unknown>; entry: string | null }[];
+  blocks: {
+    blockKey: string;
+    name: string;
+    target: string;
+    schema: Record<string, unknown>;
+    entry: string | null;
+  }[];
 };
 
 /** Submit a new immutable version for review. Idempotent on identical bytes. */
-export async function publishVersion(db: Client, merchantId: string, input: PublishInput) {
+export async function publishVersion(
+  db: Client,
+  merchantId: string,
+  input: PublishInput,
+) {
   return withSpan("market.publish_version", async () => {
     await ownedListing(db, merchantId, input.kind, input.listingId);
 
     const { scopes, unknown } = normalizeScopes(input.scopes);
-    if (unknown.length) throw new Error(`market_unknown_scopes:${unknown.join(",")}`);
+    if (unknown.length)
+      throw new Error(`market_unknown_scopes:${unknown.join(",")}`);
 
     const verdict = validateBundle(input.source, scopes);
-    if (!verdict.ok) throw new Error(`market_bundle_invalid:${verdict.errors.join(",")}`);
+    if (!verdict.ok)
+      throw new Error(`market_bundle_invalid:${verdict.errors.join(",")}`);
 
     for (const b of input.blocks) {
-      if (!isBlockKey(b.blockKey)) throw new Error(`market_bad_block_key:${b.blockKey}`);
-      if (!isBlockTarget(b.target)) throw new Error(`market_bad_block_target:${b.target}`);
+      if (!isBlockKey(b.blockKey))
+        throw new Error(`market_bad_block_key:${b.blockKey}`);
+      if (!isBlockTarget(b.target))
+        throw new Error(`market_bad_block_target:${b.target}`);
     }
 
     const { data: existing } = await db
@@ -87,7 +111,13 @@ export async function publishVersion(db: Client, merchantId: string, input: Publ
     const replay = (existing ?? []).find((r) => r.content_hash === contentHash);
     if (replay) {
       incr("framique_market_publish_total", { outcome: "replayed" });
-      return { ok: true, versionId: replay.id, replayed: true, contentHash, bytes: verdict.bytes };
+      return {
+        ok: true,
+        versionId: replay.id,
+        replayed: true,
+        contentHash,
+        bytes: verdict.bytes,
+      };
     }
 
     if (!isForwardVersion(input.version, latest ?? null)) {
@@ -116,24 +146,32 @@ export async function publishVersion(db: Client, merchantId: string, input: Publ
     }
 
     if (input.blocks.length) {
-      const { error: blockErr } = await db.from("marketplace_app_blocks").insert(
-        input.blocks.map((b) => ({
-          version_id: row.id,
-          seller_merchant_id: merchantId,
-          kind: input.kind,
-          listing_id: input.listingId,
-          block_key: b.blockKey,
-          name: b.name,
-          target: b.target,
-          schema: b.schema as never,
-          entry: b.entry,
-        })),
-      );
+      const { error: blockErr } = await db
+        .from("marketplace_app_blocks")
+        .insert(
+          input.blocks.map((b) => ({
+            version_id: row.id,
+            seller_merchant_id: merchantId,
+            kind: input.kind,
+            listing_id: input.listingId,
+            block_key: b.blockKey,
+            name: b.name,
+            target: b.target,
+            schema: b.schema as never,
+            entry: b.entry,
+          })),
+        );
       if (blockErr) log("warn", "market.blocks_failed", { versionId: row.id });
     }
 
     incr("framique_market_publish_total", { outcome: "created" });
-    return { ok: true, versionId: row.id, replayed: false, contentHash, bytes: verdict.bytes };
+    return {
+      ok: true,
+      versionId: row.id,
+      replayed: false,
+      contentHash,
+      bytes: verdict.bytes,
+    };
   });
 }
 
@@ -187,7 +225,10 @@ export async function reviewVersion(
       .maybeSingle();
     if (v) {
       // The listing always advertises its newest approved version.
-      await db.from(table(v.kind as Kind)).update({ version: v.version }).eq("id", v.listing_id);
+      await db
+        .from(table(v.kind as Kind))
+        .update({ version: v.version })
+        .eq("id", v.listing_id);
     }
   }
   incr("framique_market_version_review_total", { status });
@@ -195,7 +236,11 @@ export async function reviewVersion(
 }
 
 /** Versions a merchant may install, plus the blocks each one ships. */
-export async function installableVersions(db: Client, kind: Kind, listingId: string) {
+export async function installableVersions(
+  db: Client,
+  kind: Kind,
+  listingId: string,
+) {
   const { data: versions } = await db
     .from("marketplace_versions")
     .select(VERSION_COLUMNS)
@@ -222,7 +267,9 @@ export async function entitledBlocks(db: Client, merchantId: string) {
     .in("status", ["installed", "trial"])
     .not("version_id", "is", null);
 
-  const versionIds = (installs ?? []).map((i) => i.version_id).filter(Boolean) as string[];
+  const versionIds = (installs ?? [])
+    .map((i) => i.version_id)
+    .filter(Boolean) as string[];
   if (!versionIds.length) return { installs: installs ?? [], blocks: [] };
 
   const { data: blocks } = await db
@@ -244,7 +291,9 @@ export async function payoutOverview(db: Client, merchantId: string) {
       .limit(50),
     db
       .from("wallet_ledger_entries")
-      .select("id, seller_minor_int, platform_minor_int, gross_minor_int, currency_code, source, memo, created_at")
+      .select(
+        "id, seller_minor_int, platform_minor_int, gross_minor_int, currency_code, source, memo, created_at",
+      )
       .eq("counterparty_merchant_id", merchantId)
       .is("payout_id", null)
       .gt("seller_minor_int", 0)
@@ -256,18 +305,29 @@ export async function payoutOverview(db: Client, merchantId: string) {
   return {
     payouts: payouts.data ?? [],
     pendingEntries: rows,
-    pendingNetMinor: rows.reduce((sum, r) => sum + (r.seller_minor_int ?? 0), 0),
+    pendingNetMinor: rows.reduce(
+      (sum, r) => sum + (r.seller_minor_int ?? 0),
+      0,
+    ),
     pendingCurrency: rows[0]?.currency_code ?? "BDT",
   };
 }
 
 export async function accruePayout(db: Client, merchantId: string) {
-  const { data, error } = await (db as unknown as Rpc).rpc("market_payout_accrue", {
-    _seller_merchant_id: merchantId,
-  });
+  const { data, error } = await (db as unknown as Rpc).rpc(
+    "market_payout_accrue",
+    {
+      _seller_merchant_id: merchantId,
+    },
+  );
   if (error) throw new Error("market_payout_failed");
   incr("framique_market_payout_total", { action: "accrue" });
-  return data as { ok: boolean; reason?: string; payout_id?: string; net_minor_int?: number };
+  return data as {
+    ok: boolean;
+    reason?: string;
+    payout_id?: string;
+    net_minor_int?: number;
+  };
 }
 
 export async function settlePayout(
@@ -277,12 +337,15 @@ export async function settlePayout(
   reference: string | null,
   reason: string | null,
 ) {
-  const { data, error } = await (db as unknown as Rpc).rpc("market_payout_settle", {
-    _payout_id: payoutId,
-    _outcome: outcome,
-    _reference: reference,
-    _reason: reason,
-  });
+  const { data, error } = await (db as unknown as Rpc).rpc(
+    "market_payout_settle",
+    {
+      _payout_id: payoutId,
+      _outcome: outcome,
+      _reference: reference,
+      _reason: reason,
+    },
+  );
   if (error) throw new Error("market_payout_settle_failed");
   incr("framique_market_payout_total", { action: outcome });
   return data as { ok: boolean; replayed: boolean; status: string };
@@ -290,16 +353,26 @@ export async function settlePayout(
 
 // ------------------------------------------------------------- reviews
 
-export async function submitReview(db: Client, installId: string, rating: number, comment: string | null) {
-  const { data, error } = await (db as unknown as Rpc).rpc("market_review_submit", {
-    _install_id: installId,
-    _rating: rating,
-    _comment: comment,
-  });
+export async function submitReview(
+  db: Client,
+  installId: string,
+  rating: number,
+  comment: string | null,
+) {
+  const { data, error } = await (db as unknown as Rpc).rpc(
+    "market_review_submit",
+    {
+      _install_id: installId,
+      _rating: rating,
+      _comment: comment,
+    },
+  );
   if (error) {
     const message = (error as { message?: string }).message ?? "";
-    if (message.includes("market.review_requires_install")) throw new Error("market_review_requires_install");
-    if (message.includes("market.review_forbidden")) throw new Error("market_review_forbidden");
+    if (message.includes("market.review_requires_install"))
+      throw new Error("market_review_requires_install");
+    if (message.includes("market.review_forbidden"))
+      throw new Error("market_review_forbidden");
     throw new Error("market_review_failed");
   }
   incr("framique_market_review_total", { rating: String(rating) });

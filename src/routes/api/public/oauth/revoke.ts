@@ -18,7 +18,9 @@ export const Route = createFileRoute("/api/public/oauth/revoke")({
         const type = request.headers.get("content-type") ?? "";
         let token = "";
         if (type.includes("application/json")) {
-          const body = (await request.json().catch(() => ({}))) as { token?: unknown };
+          const body = (await request.json().catch(() => ({}))) as {
+            token?: unknown;
+          };
           token = typeof body.token === "string" ? body.token : "";
         } else {
           const form = await request.formData().catch(() => null);
@@ -34,7 +36,10 @@ export const Route = createFileRoute("/api/public/oauth/revoke")({
             void captureError(err, { route: "oauth.revoke" });
           }
         }
-        return new Response(null, { status: 200, headers: { ...CORS, "cache-control": "no-store" } });
+        return new Response(null, {
+          status: 200,
+          headers: { ...CORS, "cache-control": "no-store" },
+        });
       },
     },
   },

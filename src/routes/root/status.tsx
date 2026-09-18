@@ -1,6 +1,11 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
@@ -30,10 +35,14 @@ export const Route = createFileRoute("/root/status")({
         content:
           "Drive the public Framique status page: set component health, open incidents, and post timeline updates that merchants can read.",
       },
-      { property: "og:title", content: "Status & incidents — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Status & incidents — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Component health, incident lifecycle and public communications in one place.",
+        content:
+          "Component health, incident lifecycle and public communications in one place.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -45,7 +54,8 @@ export const Route = createFileRoute("/root/status")({
 
 const btn =
   "rounded-fq-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50";
-const field = "rounded-fq-md border border-border bg-background px-3 py-2 text-sm";
+const field =
+  "rounded-fq-md border border-border bg-background px-3 py-2 text-sm";
 
 const STATE_TONE: Record<ComponentState, "ok" | "warn" | "bad"> = {
   operational: "ok",
@@ -64,13 +74,16 @@ function StatusDesk() {
   const setState = useServerFn(opsComponentStateFn);
 
   const [title, setTitle] = useState("");
-  const [severity, setSeverity] = useState<"minor" | "major" | "critical">("minor");
+  const [severity, setSeverity] = useState<"minor" | "major" | "critical">(
+    "minor",
+  );
   const [affected, setAffected] = useState<string[]>([]);
   const [isPublic, setIsPublic] = useState(true);
   const [body, setBody] = useState("");
   const [active, setActive] = useState<string | null>(null);
   const [updateBody, setUpdateBody] = useState("");
-  const [updateStatus, setUpdateStatus] = useState<IncidentStatus>("identified");
+  const [updateStatus, setUpdateStatus] =
+    useState<IncidentStatus>("identified");
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["owner-status"],
@@ -86,7 +99,8 @@ function StatusDesk() {
     () => overallStatus(components.map((c) => c.state as ComponentState)),
     [components],
   );
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["owner-status"] });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["owner-status"] });
 
   const openMut = useMutation({
     mutationFn: () =>
@@ -98,11 +112,13 @@ function StatusDesk() {
       toast.success(t("Incident opened", "ইনসিডেন্ট খোলা হয়েছে"));
       invalidate();
     },
-    onError: () => toast.error(t("Incident could not be opened", "ইনসিডেন্ট খোলা যায়নি")),
+    onError: () =>
+      toast.error(t("Incident could not be opened", "ইনসিডেন্ট খোলা যায়নি")),
   });
 
   const updateMut = useMutation({
-    mutationFn: (id: string) => update({ data: { id, status: updateStatus, body: updateBody } }),
+    mutationFn: (id: string) =>
+      update({ data: { id, status: updateStatus, body: updateBody } }),
     onSuccess: () => {
       setUpdateBody("");
       toast.success(t("Update posted", "আপডেট পোস্ট হয়েছে"));
@@ -110,17 +126,22 @@ function StatusDesk() {
     },
     onError: () =>
       toast.error(
-        t("Update rejected — check the lifecycle step", "আপডেট বাতিল — লাইফসাইকেল ধাপ দেখুন"),
+        t(
+          "Update rejected — check the lifecycle step",
+          "আপডেট বাতিল — লাইফসাইকেল ধাপ দেখুন",
+        ),
       ),
   });
 
   const stateMut = useMutation({
-    mutationFn: (v: { key: string; state: ComponentState }) => setState({ data: v }),
+    mutationFn: (v: { key: string; state: ComponentState }) =>
+      setState({ data: v }),
     onSuccess: () => {
       toast.success(t("Component state saved", "কম্পোনেন্ট স্টেট সেভ হয়েছে"));
       invalidate();
     },
-    onError: () => toast.error(t("State could not be saved", "স্টেট সেভ হয়নি")),
+    onError: () =>
+      toast.error(t("State could not be saved", "স্টেট সেভ হয়নি")),
   });
 
   const current = incidents.find((i) => i.id === active) ?? null;
@@ -142,10 +163,15 @@ function StatusDesk() {
         </div>
         <ul className="mt-3 space-y-2">
           {components.map((c) => (
-            <li key={c.key} className="flex flex-wrap items-center justify-between gap-3">
+            <li
+              key={c.key}
+              className="flex flex-wrap items-center justify-between gap-3"
+            >
               <span className="text-sm">{c.label}</span>
               <div className="flex items-center gap-2">
-                <StatePill tone={STATE_TONE[c.state as ComponentState]}>{c.state}</StatePill>
+                <StatePill tone={STATE_TONE[c.state as ComponentState]}>
+                  {c.state}
+                </StatePill>
                 <label className="text-xs">
                   <span className="sr-only">{c.label}</span>
                   <select
@@ -153,7 +179,10 @@ function StatusDesk() {
                     value={c.state}
                     disabled={stateMut.isPending}
                     onChange={(e) =>
-                      stateMut.mutate({ key: c.key, state: e.target.value as ComponentState })
+                      stateMut.mutate({
+                        key: c.key,
+                        state: e.target.value as ComponentState,
+                      })
                     }
                   >
                     {COMPONENT_STATES.map((s) => (
@@ -171,7 +200,10 @@ function StatusDesk() {
 
       {error ? (
         <p className="text-sm text-destructive">
-          {t("This desk is owner-only and could not be read.", "এই ডেস্ক শুধু ওনারের, পড়া যায়নি।")}
+          {t(
+            "This desk is owner-only and could not be read.",
+            "এই ডেস্ক শুধু ওনারের, পড়া যায়নি।",
+          )}
         </p>
       ) : null}
 
@@ -182,7 +214,9 @@ function StatusDesk() {
           openMut.mutate();
         }}
       >
-        <h3 className="text-base font-semibold">{t("Open an incident", "ইনসিডেন্ট খুলুন")}</h3>
+        <h3 className="text-base font-semibold">
+          {t("Open an incident", "ইনসিডেন্ট খুলুন")}
+        </h3>
         <label className="block space-y-1 text-xs font-medium">
           {t("Title", "শিরোনাম")}
           <input
@@ -211,13 +245,18 @@ function StatusDesk() {
             <legend>{t("Affected components", "প্রভাবিত কম্পোনেন্ট")}</legend>
             <div className="flex flex-wrap gap-2">
               {components.map((c) => (
-                <label key={c.key} className="flex items-center gap-1 rounded-fq-sm border border-border px-2 py-1">
+                <label
+                  key={c.key}
+                  className="flex items-center gap-1 rounded-fq-sm border border-border px-2 py-1"
+                >
                   <input
                     type="checkbox"
                     checked={affected.includes(c.key)}
                     onChange={(e) =>
                       setAffected((prev) =>
-                        e.target.checked ? [...prev, c.key] : prev.filter((k) => k !== c.key),
+                        e.target.checked
+                          ? [...prev, c.key]
+                          : prev.filter((k) => k !== c.key),
                       )
                     }
                   />
@@ -263,13 +302,19 @@ function StatusDesk() {
       >
         {isLoading ? (
           <tr>
-            <td colSpan={6} className="px-3 py-6 text-center text-sm text-muted-foreground">
+            <td
+              colSpan={6}
+              className="px-3 py-6 text-center text-sm text-muted-foreground"
+            >
               {t("Loading…", "লোড হচ্ছে…")}
             </td>
           </tr>
         ) : incidents.length === 0 ? (
           <tr>
-            <td colSpan={6} className="px-3 py-6 text-center text-sm text-muted-foreground">
+            <td
+              colSpan={6}
+              className="px-3 py-6 text-center text-sm text-muted-foreground"
+            >
               {t("No incidents recorded.", "কোনো ইনসিডেন্ট নেই।")}
             </td>
           </tr>
@@ -282,18 +327,26 @@ function StatusDesk() {
               <td className="px-3 py-2 text-sm">{i.title}</td>
               <td className="px-3 py-2 text-xs">{i.severity}</td>
               <td className="px-3 py-2">
-                <StatePill tone={i.status === "resolved" ? "ok" : "warn"}>{i.status}</StatePill>
+                <StatePill tone={i.status === "resolved" ? "ok" : "warn"}>
+                  {i.status}
+                </StatePill>
               </td>
               <td className="px-3 py-2 text-xs">
-                {i.is_public ? t("Public", "পাবলিক") : t("Internal", "অভ্যন্তরীণ")}
+                {i.is_public
+                  ? t("Public", "পাবলিক")
+                  : t("Internal", "অভ্যন্তরীণ")}
               </td>
               <td className="px-3 py-2 text-right">
                 <button
                   type="button"
                   className={btn}
-                  onClick={() => setActive((prev) => (prev === i.id ? null : i.id))}
+                  onClick={() =>
+                    setActive((prev) => (prev === i.id ? null : i.id))
+                  }
                 >
-                  {active === i.id ? t("Close", "বন্ধ") : t("Timeline", "টাইমলাইন")}
+                  {active === i.id
+                    ? t("Close", "বন্ধ")
+                    : t("Timeline", "টাইমলাইন")}
                 </button>
               </td>
             </tr>
@@ -308,7 +361,10 @@ function StatusDesk() {
             {updates
               .filter((u) => u.incident_id === current.id)
               .map((u) => (
-                <li key={u.id} className="rounded-fq-sm border border-border p-2">
+                <li
+                  key={u.id}
+                  className="rounded-fq-sm border border-border p-2"
+                >
                   <p className="text-xs text-muted-foreground tabular-nums">
                     {new Date(u.created_at).toLocaleString()} · {u.status}
                   </p>
@@ -318,7 +374,10 @@ function StatusDesk() {
           </ol>
           {current.status === "resolved" ? (
             <p className="text-xs text-muted-foreground">
-              {t("Resolved incidents are closed for edits.", "সমাধান হওয়া ইনসিডেন্ট আর সম্পাদনা করা যায় না।")}
+              {t(
+                "Resolved incidents are closed for edits.",
+                "সমাধান হওয়া ইনসিডেন্ট আর সম্পাদনা করা যায় না।",
+              )}
             </p>
           ) : (
             <div className="space-y-2">
@@ -327,10 +386,13 @@ function StatusDesk() {
                 <select
                   className={`${field} block`}
                   value={updateStatus}
-                  onChange={(e) => setUpdateStatus(e.target.value as IncidentStatus)}
+                  onChange={(e) =>
+                    setUpdateStatus(e.target.value as IncidentStatus)
+                  }
                 >
                   {INCIDENT_STATUSES.filter(
-                    (s) => s === current.status || canTransition(current.status, s),
+                    (s) =>
+                      s === current.status || canTransition(current.status, s),
                   ).map((s) => (
                     <option key={s} value={s}>
                       {s}
@@ -342,7 +404,10 @@ function StatusDesk() {
                 className={`${field} block w-full`}
                 rows={3}
                 value={updateBody}
-                placeholder={t("What changed since the last update?", "গত আপডেটের পর কী বদলেছে?")}
+                placeholder={t(
+                  "What changed since the last update?",
+                  "গত আপডেটের পর কী বদলেছে?",
+                )}
                 onChange={(e) => setUpdateBody(e.target.value)}
               />
               <button

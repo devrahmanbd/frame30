@@ -59,7 +59,8 @@ export const TESTIMONIALS = {
       city: "Sylhet",
       quote:
         "We were paying a commission on every order and still did not own the customer. On our own domain the repeat buyer is ours, and the export button means we can leave whenever we want.",
-      attribution: "Profile: brand previously paying 8–20% marketplace commission",
+      attribution:
+        "Profile: brand previously paying 8–20% marketplace commission",
       results: [
         { label: "Per-order commission", value: "BDT 0" },
         { label: "Customer records", value: "Owned and exportable" },

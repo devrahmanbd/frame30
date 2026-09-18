@@ -5,7 +5,14 @@
  * same `biTextState` the publish lint uses, so the meter in the studio and the
  * blocking lint can never disagree.
  */
-import { biTextKeysOf, catalogEntry, TEMPLATE_KEYS, type Section, type TemplateKey, type ThemeTemplates } from "./builder-ast";
+import {
+  biTextKeysOf,
+  catalogEntry,
+  TEMPLATE_KEYS,
+  type Section,
+  type TemplateKey,
+  type ThemeTemplates,
+} from "./builder-ast";
 import { biTextState, readBiText, type BiTextState } from "./bitext";
 
 export type CoverageRef = {
@@ -60,7 +67,8 @@ function walk(
         sectionId: node.id,
         sectionLabel: entry?.label ?? node.type,
         fieldKey: key,
-        fieldLabel: entry?.fields.find((field) => field.key === key)?.label ?? key,
+        fieldLabel:
+          entry?.fields.find((field) => field.key === key)?.label ?? key,
         state,
       });
     }
@@ -68,7 +76,10 @@ function walk(
   }
 }
 
-export function coverageOfTemplate(template: TemplateKey, ast: { header: Section[]; main: Section[]; footer: Section[] }) {
+export function coverageOfTemplate(
+  template: TemplateKey,
+  ast: { header: Section[]; main: Section[]; footer: Section[] },
+) {
   const acc = blank();
   walk([...ast.header, ...ast.main, ...ast.footer], template, acc);
   acc.percent = percentOf(acc);

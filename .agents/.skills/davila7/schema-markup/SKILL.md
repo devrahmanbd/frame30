@@ -17,6 +17,7 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
 ## Common Schema Types
 
 ### Article / BlogPosting
+
 ```json
 {
   "@context": "https://schema.org",
@@ -30,6 +31,7 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
 ```
 
 ### Product
+
 ```json
 {
   "@context": "https://schema.org",
@@ -51,6 +53,7 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
 ```
 
 ### FAQPage
+
 ```json
 {
   "@context": "https://schema.org",
@@ -69,6 +72,7 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
 ```
 
 ### Organization
+
 ```json
 {
   "@context": "https://schema.org",
@@ -76,23 +80,38 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
   "name": "Example Company",
   "url": "https://example.com",
   "logo": "https://example.com/logo.png",
-  "sameAs": ["https://twitter.com/example", "https://linkedin.com/company/example"]
+  "sameAs": [
+    "https://twitter.com/example",
+    "https://linkedin.com/company/example"
+  ]
 }
 ```
 
 ### BreadcrumbList
+
 ```json
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://example.com" },
-    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://example.com/blog" }
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://example.com"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://example.com/blog"
+    }
   ]
 }
 ```
 
 ### SoftwareApplication
+
 ```json
 {
   "@context": "https://schema.org",
@@ -109,11 +128,16 @@ Expert in structured data and schema.org markup. Implement JSON-LD that helps se
 - **Schema.org Validator**: https://validator.schema.org/
 
 ## Implementation (Next.js)
+
 ```jsx
-<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+/>
 ```
 
 ## Common Errors
+
 - Missing required properties
 - Invalid values (dates must be ISO 8601)
 - Schema doesn't match visible page content

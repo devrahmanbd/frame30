@@ -41,7 +41,14 @@ services:
     networks:
       - framique-mesh
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://127.0.0.1:3000/api/healthz?type=liveness"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-s",
+          "http://127.0.0.1:3000/api/healthz?type=liveness",
+        ]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -78,7 +85,14 @@ services:
     networks:
       - framique-mesh
     healthcheck:
-      test: ["CMD", "curl", "-f", "-s", "http://127.0.0.1:3000/api/healthz?type=liveness"]
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "-s",
+          "http://127.0.0.1:3000/api/healthz?type=liveness",
+        ]
       interval: 10s
       timeout: 3s
       retries: 3

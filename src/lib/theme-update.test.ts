@@ -9,7 +9,11 @@ const section = (id: string, title = "a") => ({
 });
 
 const tree = (ids: [string, string][]): ThemeTemplates => ({
-  index: { header: [], main: ids.map(([id, title]) => section(id, title)), footer: [] },
+  index: {
+    header: [],
+    main: ids.map(([id, title]) => section(id, title)),
+    footer: [],
+  },
 });
 
 describe("theme update diff", () => {
@@ -32,13 +36,21 @@ describe("theme update diff", () => {
 
   it("adopt takes upstream order and keeps merchant-only sections", () => {
     const merged = mergeTemplates(mine, upstream, "adopt");
-    expect(merged.index?.main.map((s) => s.id)).toEqual(["hero-1", "promo-1", "custom-1"]);
+    expect(merged.index?.main.map((s) => s.id)).toEqual([
+      "hero-1",
+      "promo-1",
+      "custom-1",
+    ]);
     expect(merged.index?.main[0]?.props.title).toBe("upstream");
   });
 
   it("keep_mine preserves merchant sections and appends only new ones", () => {
     const merged = mergeTemplates(mine, upstream, "keep_mine");
-    expect(merged.index?.main.map((s) => s.id)).toEqual(["hero-1", "custom-1", "promo-1"]);
+    expect(merged.index?.main.map((s) => s.id)).toEqual([
+      "hero-1",
+      "custom-1",
+      "promo-1",
+    ]);
     expect(merged.index?.main[0]?.props.title).toBe("mine");
   });
 

@@ -13,7 +13,10 @@ import { assertCustomer, requireCustomerScope } from "./customer-scope";
 
 const uuid = z.string().uuid();
 
-async function limit(bucket: "storefront.account" | "order.lookup", key: string) {
+async function limit(
+  bucket: "storefront.account" | "order.lookup",
+  key: string,
+) {
   const { enforceRateLimit } = await import("./rate-limit.server");
   await enforceRateLimit(bucket, key);
 }
@@ -22,7 +25,12 @@ async function limit(bucket: "storefront.account" | "order.lookup", key: string)
 
 export const customerAccountFn = createServerFn({ method: "GET" })
   .middleware([requireCustomerScope])
-  .inputValidator((d: unknown) => z.object({ merchantId: uuid.optional() }).optional().parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z
+      .object({ merchantId: uuid.optional() })
+      .optional()
+      .parse(d ?? {}),
+  )
   .handler(async ({ context }) => context.customer);
 
 export const customerAccountsFn = createServerFn({ method: "GET" })
@@ -42,7 +50,11 @@ export const customerHomeFn = createServerFn({ method: "GET" })
 
 export const customerOrdersFn = createServerFn({ method: "GET" })
   .middleware([requireCustomerScope])
-  .inputValidator((d: unknown) => z.object({ page: z.number().int().min(0).max(200).default(0) }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z
+      .object({ page: z.number().int().min(0).max(200).default(0) })
+      .parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const scope = assertCustomer(context.customer);
     const { loadCustomerOrders } = await import("./customer.server");
@@ -132,7 +144,10 @@ export const customerSaveAddressFn = createServerFn({ method: "POST" })
     const scope = assertCustomer(context.customer);
     await limit("storefront.account", scope.id);
     const { saveCustomerAddress } = await import("./customer.server");
-    return saveCustomerAddress(scope, { ...data, addressId: data.addressId ?? null });
+    return saveCustomerAddress(scope, {
+      ...data,
+      addressId: data.addressId ?? null,
+    });
   });
 
 export const customerDeleteAddressFn = createServerFn({ method: "POST" })
@@ -182,7 +197,12 @@ export const customerOpenReturnFn = createServerFn({ method: "POST" })
         reason: z.string().min(2).max(200),
         note: z.string().max(500).default(""),
         items: z
-          .array(z.object({ orderItemId: uuid, quantity: z.number().int().min(1).max(999) }))
+          .array(
+            z.object({
+              orderItemId: uuid,
+              quantity: z.number().int().min(1).max(999),
+            }),
+          )
           .min(1)
           .max(50),
       })

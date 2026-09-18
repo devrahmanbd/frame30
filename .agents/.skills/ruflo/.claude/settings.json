@@ -35,11 +35,7 @@
       "mcp__ruv-swarm__*",
       "mcp__flow-nexus__*"
     ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Bash(rm -rf /)"
-    ]
+    "deny": ["Read(./.env)", "Read(./.env.*)", "Bash(rm -rf /)"]
   },
   "hooks": {
     "PreToolUse": [
@@ -270,15 +266,8 @@
   "mcpServers": {
     "claude-flow": {
       "command": "npx",
-      "args": [
-        "-y",
-        "ruflo@latest",
-        "mcp",
-        "start"
-      ]
+      "args": ["-y", "ruflo@latest", "mcp", "start"]
     }
   },
-  "enabledMcpjsonServers": [
-    "claude-flow"
-  ]
+  "enabledMcpjsonServers": ["claude-flow"]
 }

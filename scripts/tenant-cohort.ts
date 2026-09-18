@@ -49,7 +49,9 @@ async function main() {
     }
 
     await setTenantCohort(tenantId, tier);
-    console.log(`\x1b[32mAssigned '${tenantId}' to ${COHORT_DEFINITIONS[tier].name}\x1b[0m`);
+    console.log(
+      `\x1b[32mAssigned '${tenantId}' to ${COHORT_DEFINITIONS[tier].name}\x1b[0m`,
+    );
     return;
   }
 
@@ -57,7 +59,9 @@ async function main() {
     const tierStr = args[rolloutIdx + 1];
     const tier = parseInt(tierStr, 10) as CohortTier | -1;
     if (tier < -1 || tier > 4) {
-      console.error("Invalid rollout tier! Must be -1 (disabled), 0, 1, 2, 3, or 4.");
+      console.error(
+        "Invalid rollout tier! Must be -1 (disabled), 0, 1, 2, 3, or 4.",
+      );
       process.exit(1);
     }
 
@@ -65,9 +69,13 @@ async function main() {
     console.log("=".repeat(80));
     console.log(`Updated Active Canary Cohort Rollout Tier: ${tier}`);
     if (tier === -1) {
-      console.log("No cohort canary active. All traffic routes to baseline primary.");
+      console.log(
+        "No cohort canary active. All traffic routes to baseline primary.",
+      );
     } else {
-      console.log(`All stores in Cohort 0 up to Cohort ${tier} will route to CANDIDATE (GREEN).`);
+      console.log(
+        `All stores in Cohort 0 up to Cohort ${tier} will route to CANDIDATE (GREEN).`,
+      );
     }
     console.log("=".repeat(80));
     return;
@@ -89,7 +97,9 @@ async function main() {
     console.log(`Assigned Cohort Tier : ${tier} (${def.name})`);
     console.log(`Description          : ${def.description}`);
     console.log(`Active Rollout Tier  : ${activeRollout}`);
-    console.log(`Target Slot Status   : ${activeRollout >= 0 && tier <= activeRollout ? "\x1b[32mGREEN (Candidate Release)\x1b[0m" : "\x1b[34mBLUE (Baseline Stable)\x1b[0m"}`);
+    console.log(
+      `Target Slot Status   : ${activeRollout >= 0 && tier <= activeRollout ? "\x1b[32mGREEN (Candidate Release)\x1b[0m" : "\x1b[34mBLUE (Baseline Stable)\x1b[0m"}`,
+    );
     console.log("=".repeat(80));
     return;
   }
@@ -109,7 +119,9 @@ async function main() {
     console.log(`Edge Route Decision Simulation for: ${tenantId}`);
     console.log("=".repeat(80));
     console.log(`Target Slot        : ${decision.targetSlot.toUpperCase()}`);
-    console.log(`Cohort Tier        : ${decision.cohortTier} (${COHORT_DEFINITIONS[decision.cohortTier].name})`);
+    console.log(
+      `Cohort Tier        : ${decision.cohortTier} (${COHORT_DEFINITIONS[decision.cohortTier].name})`,
+    );
     console.log(`Routing Reason     : ${decision.reason}`);
     console.log("Injected Headers   :");
     for (const [k, v] of Object.entries(decision.headersToInject)) {
@@ -124,15 +136,21 @@ async function main() {
 
     console.log("=".repeat(80));
     console.log("Framique Tenant-Level Canary Cohorts (Phase 7.2)");
-    console.log(`Current Active Rollout Tier: ${activeRollout >= 0 ? `Cohort <= ${activeRollout} receiving releases` : "Inactive (-1)"}`);
+    console.log(
+      `Current Active Rollout Tier: ${activeRollout >= 0 ? `Cohort <= ${activeRollout} receiving releases` : "Inactive (-1)"}`,
+    );
     console.log("=".repeat(80));
 
     for (let t = 0; t <= 4; t++) {
       const def = COHORT_DEFINITIONS[t as CohortTier];
       const isCandidate = activeRollout >= 0 && t <= activeRollout;
-      console.log(`\n[Tier ${t}] ${def.name} ${isCandidate ? "\x1b[32m[ROUTED TO GREEN]\x1b[0m" : "\x1b[34m[ROUTED TO BLUE]\x1b[0m"}`);
+      console.log(
+        `\n[Tier ${t}] ${def.name} ${isCandidate ? "\x1b[32m[ROUTED TO GREEN]\x1b[0m" : "\x1b[34m[ROUTED TO BLUE]\x1b[0m"}`,
+      );
       console.log(`  Description : ${def.description}`);
-      console.log(`  Max Stores  : ${def.maxStores === Number.POSITIVE_INFINITY ? "Unlimited" : def.maxStores}`);
+      console.log(
+        `  Max Stores  : ${def.maxStores === Number.POSITIVE_INFINITY ? "Unlimited" : def.maxStores}`,
+      );
     }
     console.log("\n" + "=".repeat(80));
   }

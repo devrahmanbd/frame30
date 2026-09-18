@@ -24,13 +24,33 @@ const MANIFEST = {
   api: "^3.0.0",
   permissions: ["read_shop", "render_storefront"],
   widgets: [
-    { key: "points_bar", label: "Points bar", slots: ["main"], entry: "framique.mount(document.createTextNode('hi'))" },
+    {
+      key: "points_bar",
+      label: "Points bar",
+      slots: ["main"],
+      entry: "framique.mount(document.createTextNode('hi'))",
+    },
   ],
   hooks: ["order.created"],
   hooksUrl: "https://apps.example.com/hooks",
   settings: [
-    { key: "tier", label: "Tier", kind: "select", options: [{ value: "gold", label: "Gold" }, { value: "silver", label: "Silver" }] },
-    { key: "rate", label: "Points per ৳100", kind: "number", min: 0, max: 50, default: 5 },
+    {
+      key: "tier",
+      label: "Tier",
+      kind: "select",
+      options: [
+        { value: "gold", label: "Gold" },
+        { value: "silver", label: "Silver" },
+      ],
+    },
+    {
+      key: "rate",
+      label: "Points per ৳100",
+      kind: "number",
+      min: 0,
+      max: 50,
+      default: 5,
+    },
     { key: "show_badge", label: "Show badge", kind: "boolean", default: true },
   ],
   i18n: { en: { tier: "Tier" }, bn: { tier: "টিয়ার" } },
@@ -54,7 +74,10 @@ describe("plugin manifest", () => {
     const verdict = parseManifest(MANIFEST);
     expect(verdict.ok).toBe(true);
     if (!verdict.ok) return;
-    expect(verdict.manifest.permissions).toEqual(["read_shop", "render_storefront"]);
+    expect(verdict.manifest.permissions).toEqual([
+      "read_shop",
+      "render_storefront",
+    ]);
     expect(verdict.manifest.hooks).toEqual(["order.created"]);
     expect(verdict.manifest.widgets[0].height).toBe(320);
   });
@@ -76,7 +99,10 @@ describe("plugin manifest", () => {
   it("requires render_storefront for widget contributions and https for hooks", () => {
     const noScope = parseManifest({ ...MANIFEST, permissions: ["read_shop"] });
     expect(noScope.ok).toBe(false);
-    const badUrl = parseManifest({ ...MANIFEST, hooksUrl: "http://apps.example.com/hooks" });
+    const badUrl = parseManifest({
+      ...MANIFEST,
+      hooksUrl: "http://apps.example.com/hooks",
+    });
     expect(badUrl.ok).toBe(false);
   });
 
@@ -89,7 +115,10 @@ describe("plugin manifest", () => {
   });
 
   it("warns on missing বাংলা strings without failing the bundle", () => {
-    const verdict = parseManifest({ ...MANIFEST, i18n: { en: { tier: "Tier" }, bn: {} } });
+    const verdict = parseManifest({
+      ...MANIFEST,
+      i18n: { en: { tier: "Tier" }, bn: {} },
+    });
     expect(verdict.ok).toBe(true);
     if (verdict.ok) expect(verdict.warnings[0]).toContain("i18n.bn_missing");
   });
@@ -108,7 +137,10 @@ describe("compatibility and permission diffs", () => {
     const diff = permissionDiff(["read_shop"], ["read_shop", "read_customers"]);
     expect(diff.added).toEqual(["read_customers"]);
     expect(diff.requiresConsent).toBe(true);
-    expect(permissionDiff(["read_shop", "read_orders"], ["read_shop"]).requiresConsent).toBe(false);
+    expect(
+      permissionDiff(["read_shop", "read_orders"], ["read_shop"])
+        .requiresConsent,
+    ).toBe(false);
   });
 });
 
@@ -116,12 +148,17 @@ describe("widget contribution tier", () => {
   it("round-trips namespaced keys", () => {
     const key = pluginWidgetKey("loyalty-lite", "points_bar");
     expect(key).toBe("plugin:loyalty-lite/points_bar");
-    expect(parsePluginWidgetKey(key)).toEqual({ pluginId: "loyalty-lite", widget: "points_bar" });
+    expect(parsePluginWidgetKey(key)).toEqual({
+      pluginId: "loyalty-lite",
+      widget: "points_bar",
+    });
     expect(parsePluginWidgetKey("points_bar")).toBeNull();
   });
 
   it("resolves an installed, compatible widget", () => {
-    const res = resolvePluginWidget("plugin:loyalty-lite/points_bar", [installed()]);
+    const res = resolvePluginWidget("plugin:loyalty-lite/points_bar", [
+      installed(),
+    ]);
     expect(res.ok).toBe(true);
   });
 
@@ -129,7 +166,11 @@ describe("widget contribution tier", () => {
     const cases: [string, InstalledPlugin[], string][] = [
       ["plugin:loyalty-lite/points_bar", [], "not_installed"],
       ["plugin:loyalty-lite/ghost", [installed()], "unknown_widget"],
-      ["plugin:loyalty-lite/points_bar", [installed({ enabled: false })], "disabled"],
+      [
+        "plugin:loyalty-lite/points_bar",
+        [installed({ enabled: false })],
+        "disabled",
+      ],
       ["nonsense", [installed()], "bad_key"],
     ];
     for (const [key, plugins, reason] of cases) {
@@ -151,12 +192,16 @@ describe("widget contribution tier", () => {
   it("lists tray entries only for enabled, slot-matching widgets", () => {
     expect(pluginTrayEntries([installed()], "main")).toHaveLength(1);
     expect(pluginTrayEntries([installed()], "footer")).toHaveLength(0);
-    expect(pluginTrayEntries([installed({ enabled: false })], "main")).toHaveLength(0);
+    expect(
+      pluginTrayEntries([installed({ enabled: false })], "main"),
+    ).toHaveLength(0);
   });
 
   it("keeps the core registry closed — plugins ride the single app-block widget", () => {
     expect(WIDGET_REGISTRY.plugin_block).toBeDefined();
-    const pluginTypes = SECTION_CATALOG.filter((e) => e.type.startsWith("plugin"));
+    const pluginTypes = SECTION_CATALOG.filter((e) =>
+      e.type.startsWith("plugin"),
+    );
     expect(pluginTypes.map((e) => e.type)).toEqual(["plugin_block"]);
   });
 });
@@ -178,7 +223,9 @@ describe("settings schema", () => {
   it("rejects values outside the declared option set", () => {
     const verdict = parseManifest(MANIFEST);
     if (!verdict.ok) throw new Error("bad fixture");
-    const out = validateSettings(verdict.manifest.settings, { tier: "platinum" });
+    const out = validateSettings(verdict.manifest.settings, {
+      tier: "platinum",
+    });
     expect(out.errors).toContain("tier.not_an_option");
   });
 });
@@ -192,7 +239,9 @@ describe("server hooks", () => {
   it("calls only subscribers and returns their result", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () => new Response(JSON.stringify({ ok: 1 }), { status: 200 })),
+      vi.fn(
+        async () => new Response(JSON.stringify({ ok: 1 }), { status: 200 }),
+      ),
     );
     const out = await runHook([installed()], "order.created", { id: "o1" });
     expect(out).toHaveLength(1);
@@ -201,7 +250,10 @@ describe("server hooks", () => {
   });
 
   it("survives a failing plugin and opens the breaker after repeated failures", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response("nope", { status: 500 })));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("nope", { status: 500 })),
+    );
     const plugins = [installed()];
     for (let i = 0; i < 3; i += 1) {
       const out = await runHook(plugins, "order.created", {});
@@ -214,7 +266,11 @@ describe("server hooks", () => {
   it("skips disabled plugins entirely — the kill switch stops hook traffic", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
-    const out = await runHook([installed({ enabled: false })], "order.created", {});
+    const out = await runHook(
+      [installed({ enabled: false })],
+      "order.created",
+      {},
+    );
     expect(out[0].status).toBe("skipped");
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -227,7 +283,9 @@ describe("server hooks", () => {
         (_url: string, init: RequestInit) =>
           new Promise((_resolve, reject) => {
             init.signal?.addEventListener("abort", () =>
-              reject(Object.assign(new Error("aborted"), { name: "AbortError" })),
+              reject(
+                Object.assign(new Error("aborted"), { name: "AbortError" }),
+              ),
             );
           }),
       ),

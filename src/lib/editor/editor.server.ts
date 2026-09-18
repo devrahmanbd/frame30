@@ -29,7 +29,11 @@ import {
   type EditorDoc,
   type PostFormat,
 } from "./editor-doc";
-import { blocksToMarkdown, markdownToBlocks, markdownToText } from "./page-markdown";
+import {
+  blocksToMarkdown,
+  markdownToBlocks,
+  markdownToText,
+} from "./page-markdown";
 
 type Client = SupabaseClient<Database>;
 type Loose = {
@@ -44,7 +48,8 @@ const PAGE_COLUMNS =
 const ARTICLE_COLUMNS =
   "id, slug, title, title_en, excerpt, body, cover_image_url, meta_title, meta_description, robots, canonical, status, tags, category_id, published_at, scheduled_for, created_at, updated_at, trashed_at, author_id, menu_order, password, visibility, template, editor, allow_comments, format, seo_extended";
 
-const table = (kind: ContentKind) => (kind === "page" ? "storefront_pages" : "articles");
+const table = (kind: ContentKind) =>
+  kind === "page" ? "storefront_pages" : "articles";
 const revisionTable = (kind: ContentKind) =>
   kind === "page" ? "page_revisions" : "article_revisions";
 const fk = (kind: ContentKind) => (kind === "page" ? "page_id" : "article_id");
@@ -69,7 +74,12 @@ export type EditorContext = {
   storeName: string;
   authors: { id: string; name: string }[];
   parents: { id: string; title: string; parentId: string | null }[];
-  terms: { id: string; kind: "category" | "tag"; label: string; slug: string }[];
+  terms: {
+    id: string;
+    kind: "category" | "tag";
+    label: string;
+    slug: string;
+  }[];
   /** Phase 17 — installed themes a page can pin itself to. */
   themes: { id: string; name: string; isActive: boolean }[];
   revisions: RevisionSummary[];
@@ -85,9 +95,17 @@ export type RevisionSummary = {
   authorId: string | null;
 };
 
-function statusOf(raw: string | null | undefined, published: boolean): ContentStatus {
+function statusOf(
+  raw: string | null | undefined,
+  published: boolean,
+): ContentStatus {
   const s = (raw ?? "") as ContentStatus;
-  if (["published", "draft", "pending", "scheduled", "private", "trash"].includes(s)) return s;
+  if (
+    ["published", "draft", "pending", "scheduled", "private", "trash"].includes(
+      s,
+    )
+  )
+    return s;
   return published ? "published" : "draft";
 }
 
@@ -98,13 +116,17 @@ function pageToDoc(row: any): EditorDoc {
     title: row.title ?? "",
     slug: row.slug ?? "",
     body: row.body_markdown ?? "",
-    editor: row.editor === "builder" || isBuilderBody(row.body_markdown) ? "builder" : "classic",
+    editor:
+      row.editor === "builder" || isBuilderBody(row.body_markdown)
+        ? "builder"
+        : "classic",
     excerpt: row.excerpt ?? "",
     status: statusOf(row.status, !!row.is_published),
     publishAt: row.scheduled_for ?? null,
     publishedAt: row.published_at ?? null,
     visibility:
-      (row.visibility as EditorDoc["visibility"]) ?? (row.password ? "password" : "public"),
+      (row.visibility as EditorDoc["visibility"]) ??
+      (row.password ? "password" : "public"),
     password: row.password ?? "",
     authorId: row.author_id ?? null,
     template: row.template ?? "default",
@@ -126,7 +148,11 @@ function pageToDoc(row: any): EditorDoc {
   };
 }
 
-function articleToDoc(row: any, categories: string[], tags: string[]): EditorDoc {
+function articleToDoc(
+  row: any,
+  categories: string[],
+  tags: string[],
+): EditorDoc {
   return {
     ...emptyEditorDoc("post"),
     id: row.id,
@@ -134,13 +160,17 @@ function articleToDoc(row: any, categories: string[], tags: string[]): EditorDoc
     titleEn: row.title_en ?? "",
     slug: row.slug ?? "",
     body: row.body ?? "",
-    editor: row.editor === "builder" || isBuilderBody(row.body) ? "builder" : "classic",
+    editor:
+      row.editor === "builder" || isBuilderBody(row.body)
+        ? "builder"
+        : "classic",
     excerpt: row.excerpt ?? "",
     status: statusOf(row.status, row.status === "published"),
     publishAt: row.scheduled_for ?? null,
     publishedAt: row.published_at ?? null,
     visibility:
-      (row.visibility as EditorDoc["visibility"]) ?? (row.password ? "password" : "public"),
+      (row.visibility as EditorDoc["visibility"]) ??
+      (row.password ? "password" : "public"),
     password: row.password ?? "",
     authorId: row.author_id ?? null,
     template: row.template ?? "default",
@@ -170,37 +200,42 @@ export async function loadEditor(
   kind: ContentKind,
   id: string | null,
 ): Promise<EditorContext> {
-  const [merchant, authorsRes, parentsRes, termsRes, themesRes] = await Promise.all([
-    db.from("merchants").select("slug, name").eq("id", merchantId).maybeSingle(),
-    loose(db).rpc("content_desk_authors", { _merchant_id: merchantId }),
-    kind === "page"
-      ? loose(db)
-          .from("storefront_pages")
-          .select("id, title, parent_id")
-          .eq("merchant_id", merchantId)
-          .is("deleted_at", null)
-          .neq("status", "trash")
-          .order("menu_order")
-          .limit(500)
-      : Promise.resolve({ data: [] }),
-    kind === "post"
-      ? loose(db)
-          .from("blog_terms")
-          .select("id, kind, name, slug, parent_id")
-          .eq("merchant_id", merchantId)
-          .order("sort_order")
-          .limit(400)
-      : Promise.resolve({ data: [] }),
-    // Phase 17 — a page may pin any installed theme; posts always follow the site.
-    kind === "page"
-      ? loose(db)
-          .from("store_themes")
-          .select("id, name, is_active")
-          .eq("merchant_id", merchantId)
-          .order("created_at", { ascending: true })
-          .limit(50)
-      : Promise.resolve({ data: [] }),
-  ]);
+  const [merchant, authorsRes, parentsRes, termsRes, themesRes] =
+    await Promise.all([
+      db
+        .from("merchants")
+        .select("slug, name")
+        .eq("id", merchantId)
+        .maybeSingle(),
+      loose(db).rpc("content_desk_authors", { _merchant_id: merchantId }),
+      kind === "page"
+        ? loose(db)
+            .from("storefront_pages")
+            .select("id, title, parent_id")
+            .eq("merchant_id", merchantId)
+            .is("deleted_at", null)
+            .neq("status", "trash")
+            .order("menu_order")
+            .limit(500)
+        : Promise.resolve({ data: [] }),
+      kind === "post"
+        ? loose(db)
+            .from("blog_terms")
+            .select("id, kind, name, slug, parent_id")
+            .eq("merchant_id", merchantId)
+            .order("sort_order")
+            .limit(400)
+        : Promise.resolve({ data: [] }),
+      // Phase 17 — a page may pin any installed theme; posts always follow the site.
+      kind === "page"
+        ? loose(db)
+            .from("store_themes")
+            .select("id, name, is_active")
+            .eq("merchant_id", merchantId)
+            .order("created_at", { ascending: true })
+            .limit(50)
+        : Promise.resolve({ data: [] }),
+    ]);
 
   let doc = emptyEditorDoc(kind);
   doc.authorId = userId;
@@ -215,7 +250,12 @@ export async function loadEditor(
       .is("deleted_at", null)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!row) throw new EditorError("not_found", "That item no longer exists.", "আইটেমটি আর নেই।");
+    if (!row)
+      throw new EditorError(
+        "not_found",
+        "That item no longer exists.",
+        "আইটেমটি আর নেই।",
+      );
 
     if (kind === "page") doc = pageToDoc(row);
     else {
@@ -230,7 +270,11 @@ export async function loadEditor(
         (a.blog_terms?.kind === "tag" ? tags : categories).push(a.term_id);
       }
       // Tags: taxonomy tags when the term tables exist, else the free-text `tags[]` column.
-      doc = articleToDoc(row, categories, tags.length ? tags : ((row.tags ?? []) as string[]));
+      doc = articleToDoc(
+        row,
+        categories,
+        tags.length ? tags : ((row.tags ?? []) as string[]),
+      );
     }
     revisions = await listRevisions(db, merchantId, kind, id);
   }
@@ -240,9 +284,12 @@ export async function loadEditor(
     doc,
     storeSlug: merchant.data?.slug ?? "",
     storeName: merchant.data?.name ?? "",
-    authors: (((authorsRes as any).data ?? []) as { user_id: string; full_name: string }[]).map(
-      (a) => ({ id: a.user_id, name: a.full_name }),
-    ),
+    authors: (
+      ((authorsRes as any).data ?? []) as {
+        user_id: string;
+        full_name: string;
+      }[]
+    ).map((a) => ({ id: a.user_id, name: a.full_name })),
     parents: (((parentsRes as any).data ?? []) as any[]).map((p) => ({
       id: p.id,
       title: p.title ?? "",
@@ -296,7 +343,9 @@ function plainText(kind: ContentKind, body: string): string {
   if (isBuilderBody(body)) return "";
   if (kind === "page") return markdownToText(body);
   return parseBody(body)
-    .map((b) => ("inline" in b ? b.inline.map((n) => ("v" in n ? n.v : "")).join("") : ""))
+    .map((b) =>
+      "inline" in b ? b.inline.map((n) => ("v" in n ? n.v : "")).join("") : "",
+    )
     .join(" ");
 }
 
@@ -370,7 +419,12 @@ async function snapshot(
 }
 
 /** Keep the 5 newest autosaves and the 40 newest manual revisions. */
-async function pruneRevisions(db: Client, merchantId: string, kind: ContentKind, id: string) {
+async function pruneRevisions(
+  db: Client,
+  merchantId: string,
+  kind: ContentKind,
+  id: string,
+) {
   for (const [auto, keep] of [
     [true, 5],
     [false, 40],
@@ -384,7 +438,8 @@ async function pruneRevisions(db: Client, merchantId: string, kind: ContentKind,
       .order("created_at", { ascending: false })
       .range(keep, keep + 200);
     const ids = ((data ?? []) as { id: string }[]).map((r) => r.id);
-    if (ids.length) await loose(db).from(revisionTable(kind)).delete().in("id", ids);
+    if (ids.length)
+      await loose(db).from(revisionTable(kind)).delete().in("id", ids);
   }
 }
 
@@ -403,7 +458,11 @@ export async function saveEditor(
     throw new EditorError("invalid", first.en, first.bn, String(first.field));
   }
   if (autosave && !doc.title.trim() && !doc.body.trim()) {
-    throw new EditorError("empty", "Nothing to save yet.", "এখনও সংরক্ষণের কিছু নেই।");
+    throw new EditorError(
+      "empty",
+      "Nothing to save yet.",
+      "এখনও সংরক্ষণের কিছু নেই।",
+    );
   }
 
   const body = canonicalBody(doc.kind, doc.body);
@@ -416,10 +475,16 @@ export async function saveEditor(
     mode === "publish"
       ? resolvePublishStatus({
           ...doc,
-          status: doc.status === "draft" || doc.status === "pending" ? "published" : doc.status,
+          status:
+            doc.status === "draft" || doc.status === "pending"
+              ? "published"
+              : doc.status,
         })
       : doc.status;
-  if (!canPublish && (status === "published" || status === "scheduled" || status === "private"))
+  if (
+    !canPublish &&
+    (status === "published" || status === "scheduled" || status === "private")
+  )
     status = "pending";
   if (status === "trash") status = "draft";
 
@@ -445,7 +510,8 @@ export async function saveEditor(
     title: doc.title.trim() || "Untitled",
     excerpt: doc.excerpt.trim() || null,
     meta_title: (extendedSeo.title || doc.seo.metaTitle).trim() || null,
-    meta_description: (extendedSeo.description || doc.seo.metaDescription).trim() || null,
+    meta_description:
+      (extendedSeo.description || doc.seo.metaDescription).trim() || null,
     robots,
     seo_extended: extendedSeo,
     author_id: doc.authorId,
@@ -472,7 +538,8 @@ export async function saveEditor(
           body,
           title_en: doc.titleEn.trim() || null,
           cover_image_url: doc.featuredImage.trim() || null,
-          canonical: (extendedSeo.canonical || doc.seo.canonical).trim() || null,
+          canonical:
+            (extendedSeo.canonical || doc.seo.canonical).trim() || null,
           format: doc.format,
           tags: doc.tags
             .map((tag) => tag.trim())
@@ -489,9 +556,20 @@ export async function saveEditor(
       .maybeSingle();
     if (readError) throw new Error(readError.message);
     if (!before)
-      throw new EditorError("not_found", "That item no longer exists.", "আইটেমটি আর নেই।");
+      throw new EditorError(
+        "not_found",
+        "That item no longer exists.",
+        "আইটেমটি আর নেই।",
+      );
 
-    const revisionId = await snapshot(db, merchantId, doc.kind, doc.id, userId, autosave);
+    const revisionId = await snapshot(
+      db,
+      merchantId,
+      doc.kind,
+      doc.id,
+      userId,
+      autosave,
+    );
 
     if (
       !autosave &&
@@ -507,7 +585,9 @@ export async function saveEditor(
     }
 
     const firstPublish =
-      !autosave && (status === "published" || status === "private") && !before.published_at;
+      !autosave &&
+      (status === "published" || status === "private") &&
+      !before.published_at;
     const update = autosave
       ? { ...row, updated_at: now }
       : {
@@ -520,7 +600,9 @@ export async function saveEditor(
               ? doc.publishAt
               : now
             : before.published_at,
-          ...(doc.kind === "page" ? { is_published: status === "published" } : {}),
+          ...(doc.kind === "page"
+            ? { is_published: status === "published" }
+            : {}),
           updated_at: now,
         };
     const { error } = await loose(db)
@@ -530,16 +612,24 @@ export async function saveEditor(
       .eq("merchant_id", merchantId);
     if (error) throw new Error(error.message);
 
-    if (!autosave && before.slug && before.slug !== slug && before.status === "published") {
+    if (
+      !autosave &&
+      before.slug &&
+      before.slug !== slug &&
+      before.status === "published"
+    ) {
       await recordRedirect(db, merchantId, doc.kind, before.slug, slug);
     }
-    if (!autosave && doc.kind === "post") await syncTerms(db, merchantId, doc.id, doc.categories);
+    if (!autosave && doc.kind === "post")
+      await syncTerms(db, merchantId, doc.id, doc.categories);
 
     incr("framique_editor_save_total", { kind: doc.kind, mode });
     return {
       id: doc.id,
       slug: autosave ? before.slug : slug,
-      status: autosave ? statusOf(before.status, before.status === "published") : status,
+      status: autosave
+        ? statusOf(before.status, before.status === "published")
+        : status,
       publishedAt: (update as any).published_at ?? before.published_at ?? null,
       updatedAt: now,
       autosaved: autosave,
@@ -558,7 +648,8 @@ export async function saveEditor(
     );
   }
   const createStatus: ContentStatus = autosave ? "draft" : status;
-  const publishedAt = createStatus === "published" || createStatus === "private" ? now : null;
+  const publishedAt =
+    createStatus === "published" || createStatus === "private" ? now : null;
   const { data, error } = await loose(db)
     .from(table(doc.kind))
     .insert({
@@ -568,13 +659,16 @@ export async function saveEditor(
       status: createStatus,
       scheduled_for: createStatus === "scheduled" ? doc.publishAt : null,
       published_at: publishedAt,
-      ...(doc.kind === "page" ? { is_published: createStatus === "published" } : {}),
+      ...(doc.kind === "page"
+        ? { is_published: createStatus === "published" }
+        : {}),
     })
     .select("id")
     .single();
   if (error) throw new Error(error.message);
   const id = (data as { id: string }).id;
-  if (!autosave && doc.kind === "post") await syncTerms(db, merchantId, id, doc.categories);
+  if (!autosave && doc.kind === "post")
+    await syncTerms(db, merchantId, id, doc.categories);
   incr("framique_editor_save_total", {
     kind: doc.kind,
     mode: autosave ? "autosave-create" : "create",
@@ -592,7 +686,12 @@ export async function saveEditor(
 }
 
 /** Category links live in `article_terms`; missing taxonomy tables degrade to a warning, never a failed save. */
-async function syncTerms(db: Client, merchantId: string, articleId: string, termIds: string[]) {
+async function syncTerms(
+  db: Client,
+  merchantId: string,
+  articleId: string,
+  termIds: string[],
+) {
   const unique = [...new Set(termIds)].slice(0, 12);
   const { error: clearError } = await loose(db)
     .from("article_terms")
@@ -600,7 +699,10 @@ async function syncTerms(db: Client, merchantId: string, articleId: string, term
     .eq("merchant_id", merchantId)
     .eq("article_id", articleId);
   if (clearError) {
-    log("warn", "editor.terms_unavailable", { article_id: articleId, message: clearError.message });
+    log("warn", "editor.terms_unavailable", {
+      article_id: articleId,
+      message: clearError.message,
+    });
     return;
   }
   if (!unique.length) return;
@@ -611,7 +713,11 @@ async function syncTerms(db: Client, merchantId: string, articleId: string, term
     is_primary: index === 0,
   }));
   const { error } = await loose(db).from("article_terms").insert(rows);
-  if (error) log("warn", "editor.terms_failed", { article_id: articleId, message: error.message });
+  if (error)
+    log("warn", "editor.terms_failed", {
+      article_id: articleId,
+      message: error.message,
+    });
 }
 
 async function recordRedirect(
@@ -626,7 +732,12 @@ async function recordRedirect(
   const { error } = await loose(db)
     .from("url_redirects")
     .upsert(
-      { merchant_id: merchantId, from_path: from, to_path: to, status_code: 301 },
+      {
+        merchant_id: merchantId,
+        from_path: from,
+        to_path: to,
+        status_code: 301,
+      },
       { onConflict: "merchant_id,from_path" },
     );
   if (error)
@@ -682,13 +793,19 @@ export async function readRevision(
     .eq("id", revisionId)
     .maybeSingle();
   if (error || !data)
-    throw new EditorError("not_found", "Revision not found.", "সংস্করণ পাওয়া যায়নি।");
+    throw new EditorError(
+      "not_found",
+      "Revision not found.",
+      "সংস্করণ পাওয়া যায়নি।",
+    );
   return {
     id: data.id as string,
     title: (data.title ?? "") as string,
     titleEn: ((data as any).title_en ?? "") as string,
     excerpt: (data.excerpt ?? "") as string,
-    body: ((kind === "page" ? (data as any).body_markdown : (data as any).body) ?? "") as string,
+    body: ((kind === "page"
+      ? (data as any).body_markdown
+      : (data as any).body) ?? "") as string,
     slug: (data.slug ?? "") as string,
     metaTitle: (data.meta_title ?? "") as string,
     metaDescription: (data.meta_description ?? "") as string,

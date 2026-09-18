@@ -4,7 +4,12 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import { ownerMarketingFn, ownerSetFlagFn } from "@/lib/owner.functions";
-import { FlagSwitch, OwnerHeader, StatCard, StatGrid } from "@/components/root/OwnerUi";
+import {
+  FlagSwitch,
+  OwnerHeader,
+  StatCard,
+  StatGrid,
+} from "@/components/root/OwnerUi";
 
 export const Route = createFileRoute("/root/marketing")({
   head: () => ({
@@ -15,10 +20,14 @@ export const Route = createFileRoute("/root/marketing")({
         content:
           "Platform-wide marketing consent switches for Framique: turn email, SMS or push sending off, with the recorded opt-out ledger beside them.",
       },
-      { property: "og:title", content: "Consent channels — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Consent channels — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Marketing channel switches and the opt-out ledger they must honour.",
+        content:
+          "Marketing channel switches and the opt-out ledger they must honour.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -34,10 +43,14 @@ function ConsentDesk() {
   const load = useServerFn(ownerMarketingFn);
   const setFlag = useServerFn(ownerSetFlagFn);
 
-  const { data, isLoading } = useQuery({ queryKey: ["owner-marketing"], queryFn: () => load() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["owner-marketing"],
+    queryFn: () => load(),
+  });
 
   const toggle = useMutation({
-    mutationFn: (input: { key: string; value: boolean }) => setFlag({ data: input }),
+    mutationFn: (input: { key: string; value: boolean }) =>
+      setFlag({ data: input }),
     onSuccess: () => {
       toast.success(tk("owner.flag_saved"));
       void qc.invalidateQueries({ queryKey: ["owner-marketing"] });
@@ -55,7 +68,9 @@ function ConsentDesk() {
       />
       <p className="text-xs text-muted-foreground">{tk("owner.audited")}</p>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
 
       <div className="space-y-2">
         {(

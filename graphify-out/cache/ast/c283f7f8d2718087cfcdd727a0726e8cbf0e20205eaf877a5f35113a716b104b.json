@@ -1,1 +1,421 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "label": "carts.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L1"}, {"id": "admin_carts_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L15"}, {"id": "admin_carts_key", "label": "KEY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L37"}, {"id": "admin_carts_message", "label": "message()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L39"}, {"id": "admin_carts_cartspage", "label": "CartsPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L43"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_marketingui_statuspill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_marketingui_money", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_marketingui_errorframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_marketingui_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "users_rahman_documents_frame30_src_lib_commerce_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "lib_commerce_functions_cartsloadfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "lib_commerce_functions_cartrecoveryfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_carts_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_carts_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_carts_message", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx", "target": "admin_carts_cartspage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L43", "weight": 1.0}, {"source": "admin_carts_cartspage", "target": "admin_carts_message", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L110", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_carts_cartspage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L44"}, {"caller_nid": "admin_carts_cartspage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L45"}, {"caller_nid": "admin_carts_cartspage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L46"}, {"caller_nid": "admin_carts_cartspage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L47"}, {"caller_nid": "admin_carts_cartspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L48"}, {"caller_nid": "admin_carts_cartspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L49"}, {"caller_nid": "admin_carts_cartspage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L50"}, {"caller_nid": "admin_carts_cartspage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L52"}, {"caller_nid": "admin_carts_cartspage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L57"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L75"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L78"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L87"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L91"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L97"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L104"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L113"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L113"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L125"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L134"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L144"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L146"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L147"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L148"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L149"}, {"caller_nid": "admin_carts_cartspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L153"}, {"caller_nid": "admin_carts_cartspage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx", "source_location": "L194"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "label": "carts.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_carts_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "admin_carts_key",
+      "label": "KEY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L37"
+    },
+    {
+      "id": "admin_carts_message",
+      "label": "message()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L39"
+    },
+    {
+      "id": "admin_carts_cartspage",
+      "label": "CartsPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L43"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_marketingui_statuspill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_marketingui_money",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_marketingui_errorframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_marketingui_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_commerce_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "lib_commerce_functions_cartsloadfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "lib_commerce_functions_cartrecoveryfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_carts_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_carts_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_carts_message",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_carts_tsx",
+      "target": "admin_carts_cartspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "admin_carts_cartspage",
+      "target": "admin_carts_message",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L110",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "admin_carts_cartspage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/carts.tsx",
+      "source_location": "L194"
+    }
+  ]
+}

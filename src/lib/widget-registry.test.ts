@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { SECTION_CATALOG, type FieldKind, type SectionType } from "./builder-ast";
+import {
+  SECTION_CATALOG,
+  type FieldKind,
+  type SectionType,
+} from "./builder-ast";
 import { WIDGET_REGISTRY, WIDGET_TYPES, widgetMeta } from "./widget-registry";
 
 // Phase 2.1 split the chrome renderers into their own module, Phase 2.2 the
@@ -18,7 +22,10 @@ const WIDGETS_SRC =
   readFileSync("src/components/builder/electronics.tsx", "utf8") +
   readFileSync("src/components/builder/basics.tsx", "utf8") +
   readFileSync("src/components/builder/blog.tsx", "utf8");
-const RENDERER_SRC = readFileSync("src/components/builder/SectionRenderer.tsx", "utf8");
+const RENDERER_SRC = readFileSync(
+  "src/components/builder/SectionRenderer.tsx",
+  "utf8",
+);
 
 describe("widget registry — closed enum", () => {
   it("has exactly one entry per catalogue widget, and no extras", () => {
@@ -57,7 +64,10 @@ describe("widget registry — closed enum", () => {
     ]);
     for (const meta of Object.values(WIDGET_REGISTRY)) {
       for (const field of meta.fields) {
-        expect(kinds.has(field.kind as FieldKind), `${meta.type}.${field.key} kind=${field.kind}`).toBe(true);
+        expect(
+          kinds.has(field.kind as FieldKind),
+          `${meta.type}.${field.key} kind=${field.kind}`,
+        ).toBe(true);
       }
     }
   });
@@ -70,7 +80,10 @@ describe("widget registry — closed enum", () => {
 
   it("only lets container widgets own children", () => {
     const containers = WIDGET_TYPES.filter((t) => WIDGET_REGISTRY[t].container);
-    expect(containers.sort()).toEqual(["columns", "container"] satisfies SectionType[]);
+    expect(containers.sort()).toEqual([
+      "columns",
+      "container",
+    ] satisfies SectionType[]);
   });
 });
 
@@ -78,14 +91,24 @@ describe("widget renderers — theme independence", () => {
   it("has a renderer for every registered widget", () => {
     for (const type of WIDGET_TYPES) {
       // The map is a closed Record at type level; assert it at runtime too.
-      expect(RENDERER_SRC.includes("WIDGET_COMPONENTS"), "renderer reads the registry map").toBe(true);
-      expect(WIDGETS_SRC.includes(`${type}:`) || type === "columns", `${type} renderer`).toBe(true);
+      expect(
+        RENDERER_SRC.includes("WIDGET_COMPONENTS"),
+        "renderer reads the registry map",
+      ).toBe(true);
+      expect(
+        WIDGETS_SRC.includes(`${type}:`) || type === "columns",
+        `${type} renderer`,
+      ).toBe(true);
     }
   });
 
   it("imports no theme-specific module", () => {
-    const imports = [...WIDGETS_SRC.matchAll(/from\s+"([^"]+)"/g)].map((m) => m[1]!);
-    const themey = imports.filter((s) => /theme|preset|bazaar|atelier|circuit|rupaboti/i.test(s));
+    const imports = [...WIDGETS_SRC.matchAll(/from\s+"([^"]+)"/g)].map(
+      (m) => m[1]!,
+    );
+    const themey = imports.filter((s) =>
+      /theme|preset|bazaar|atelier|circuit|rupaboti/i.test(s),
+    );
     expect(themey, `widgets.tsx imports ${themey.join(", ")}`).toEqual([]);
   });
 

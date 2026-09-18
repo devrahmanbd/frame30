@@ -1,1 +1,730 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "label": "builder-tree.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1"}, {"id": "lib_builder_tree_nodelocation", "label": "NodeLocation", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L18"}, {"id": "lib_builder_tree_dropposition", "label": "DropPosition", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L28"}, {"id": "lib_builder_tree_iscontainer", "label": "isContainer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L30"}, {"id": "lib_builder_tree_outline", "label": "outline()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L35"}, {"id": "lib_builder_tree_locate", "label": "locate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L47"}, {"id": "lib_builder_tree_countnodes", "label": "countNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L51"}, {"id": "lib_builder_tree_subtreeheight", "label": "subtreeHeight()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L56"}, {"id": "lib_builder_tree_descendantids", "label": "descendantIds()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L61"}, {"id": "lib_builder_tree_maptree", "label": "mapTree()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L74"}, {"id": "lib_builder_tree_removenodes", "label": "removeNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L83"}, {"id": "lib_builder_tree_insertnodes", "label": "insertNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L102"}, {"id": "lib_builder_tree_clampindex", "label": "clampIndex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L129"}, {"id": "lib_builder_tree_parentdepth", "label": "parentDepth()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L135"}, {"id": "lib_builder_tree_dropcheck", "label": "DropCheck", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L140"}, {"id": "lib_builder_tree_candrop", "label": "canDrop()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L146"}, {"id": "lib_builder_tree_moverelative", "label": "moveRelative()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L177"}, {"id": "lib_builder_tree_nudge", "label": "nudge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L210"}, {"id": "lib_builder_tree_clonenodes", "label": "cloneNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L226"}, {"id": "lib_builder_tree_topmost", "label": "topMost()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L248"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_ast_max_nodes_per_template", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_ast_max_tree_depth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_ast_catalogentry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_nodelocation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_dropposition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_iscontainer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_outline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_locate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_countnodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_subtreeheight", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_descendantids", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_maptree", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_removenodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_insertnodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L102", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_clampindex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_parentdepth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_dropcheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_candrop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L146", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_moverelative", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L177", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_nudge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_clonenodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L226", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "target": "lib_builder_tree_topmost", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L248", "weight": 1.0}, {"source": "lib_builder_tree_locate", "target": "lib_builder_tree_outline", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L48", "weight": 1.0}, {"source": "lib_builder_tree_countnodes", "target": "lib_builder_tree_outline", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L52", "weight": 1.0}, {"source": "lib_builder_tree_insertnodes", "target": "lib_builder_tree_clampindex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L110", "weight": 1.0}, {"source": "lib_builder_tree_parentdepth", "target": "lib_builder_tree_locate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L137", "weight": 1.0}, {"source": "lib_builder_tree_candrop", "target": "lib_builder_tree_locate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L153", "weight": 1.0}, {"source": "lib_builder_tree_candrop", "target": "lib_builder_tree_iscontainer", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L155", "weight": 1.0}, {"source": "lib_builder_tree_candrop", "target": "lib_builder_tree_descendantids", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L158", "weight": 1.0}, {"source": "lib_builder_tree_candrop", "target": "lib_builder_tree_parentdepth", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L161", "weight": 1.0}, {"source": "lib_builder_tree_candrop", "target": "lib_builder_tree_countnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L166", "weight": 1.0}, {"source": "lib_builder_tree_moverelative", "target": "lib_builder_tree_locate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L183", "weight": 1.0}, {"source": "lib_builder_tree_moverelative", "target": "lib_builder_tree_candrop", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L186", "weight": 1.0}, {"source": "lib_builder_tree_moverelative", "target": "lib_builder_tree_removenodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L187", "weight": 1.0}, {"source": "lib_builder_tree_moverelative", "target": "lib_builder_tree_insertnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L188", "weight": 1.0}, {"source": "lib_builder_tree_moverelative", "target": "lib_builder_tree_descendantids", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L193", "weight": 1.0}, {"source": "lib_builder_tree_nudge", "target": "lib_builder_tree_locate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L211", "weight": 1.0}, {"source": "lib_builder_tree_nudge", "target": "lib_builder_tree_removenodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L219", "weight": 1.0}, {"source": "lib_builder_tree_nudge", "target": "lib_builder_tree_insertnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L220", "weight": 1.0}, {"source": "lib_builder_tree_topmost", "target": "lib_builder_tree_locate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L252", "weight": 1.0}, {"source": "lib_builder_tree_topmost", "target": "lib_builder_tree_descendantids", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L253", "weight": 1.0}, {"source": "lib_builder_tree_topmost", "target": "lib_builder_tree_outline", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L255", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_builder_tree_iscontainer", "callee": "catalogEntry", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L31"}, {"caller_nid": "lib_builder_tree_outline", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L43"}, {"caller_nid": "lib_builder_tree_locate", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L48"}, {"caller_nid": "lib_builder_tree_subtreeheight", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L58"}, {"caller_nid": "lib_builder_tree_subtreeheight", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L58"}, {"caller_nid": "lib_builder_tree_descendantids", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L69"}, {"caller_nid": "lib_builder_tree_maptree", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L75"}, {"caller_nid": "lib_builder_tree_removenodes", "callee": "strip", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L98"}, {"caller_nid": "lib_builder_tree_insertnodes", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L111"}, {"caller_nid": "lib_builder_tree_insertnodes", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L111"}, {"caller_nid": "lib_builder_tree_insertnodes", "callee": "walk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L125"}, {"caller_nid": "lib_builder_tree_clampindex", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L130"}, {"caller_nid": "lib_builder_tree_clampindex", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L131"}, {"caller_nid": "lib_builder_tree_clampindex", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L131"}, {"caller_nid": "lib_builder_tree_candrop", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L158"}, {"caller_nid": "lib_builder_tree_candrop", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L162"}, {"caller_nid": "lib_builder_tree_candrop", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L162"}, {"caller_nid": "lib_builder_tree_candrop", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L165"}, {"caller_nid": "lib_builder_tree_moverelative", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L193"}, {"caller_nid": "lib_builder_tree_clonenodes", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L241"}, {"caller_nid": "lib_builder_tree_topmost", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L253"}, {"caller_nid": "lib_builder_tree_topmost", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L255"}, {"caller_nid": "lib_builder_tree_topmost", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts", "source_location": "L255"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "label": "builder-tree.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_builder_tree_nodelocation",
+      "label": "NodeLocation",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_builder_tree_dropposition",
+      "label": "DropPosition",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_builder_tree_iscontainer",
+      "label": "isContainer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_builder_tree_outline",
+      "label": "outline()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_builder_tree_locate",
+      "label": "locate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_builder_tree_countnodes",
+      "label": "countNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_builder_tree_subtreeheight",
+      "label": "subtreeHeight()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_builder_tree_descendantids",
+      "label": "descendantIds()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_builder_tree_maptree",
+      "label": "mapTree()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_builder_tree_removenodes",
+      "label": "removeNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_builder_tree_insertnodes",
+      "label": "insertNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "lib_builder_tree_clampindex",
+      "label": "clampIndex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "lib_builder_tree_parentdepth",
+      "label": "parentDepth()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L135"
+    },
+    {
+      "id": "lib_builder_tree_dropcheck",
+      "label": "DropCheck",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_builder_tree_candrop",
+      "label": "canDrop()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L146"
+    },
+    {
+      "id": "lib_builder_tree_moverelative",
+      "label": "moveRelative()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L177"
+    },
+    {
+      "id": "lib_builder_tree_nudge",
+      "label": "nudge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "lib_builder_tree_clonenodes",
+      "label": "cloneNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L226"
+    },
+    {
+      "id": "lib_builder_tree_topmost",
+      "label": "topMost()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L248"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_ast_max_nodes_per_template",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_ast_max_tree_depth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_ast_catalogentry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_nodelocation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_dropposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_iscontainer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_outline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_locate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_countnodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_subtreeheight",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_descendantids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_maptree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_removenodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_insertnodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_clampindex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_parentdepth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_dropcheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_candrop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_moverelative",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_nudge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_clonenodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L226",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "target": "lib_builder_tree_topmost",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L248",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_locate",
+      "target": "lib_builder_tree_outline",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_countnodes",
+      "target": "lib_builder_tree_outline",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_insertnodes",
+      "target": "lib_builder_tree_clampindex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_parentdepth",
+      "target": "lib_builder_tree_locate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_candrop",
+      "target": "lib_builder_tree_locate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_candrop",
+      "target": "lib_builder_tree_iscontainer",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_candrop",
+      "target": "lib_builder_tree_descendantids",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_candrop",
+      "target": "lib_builder_tree_parentdepth",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_candrop",
+      "target": "lib_builder_tree_countnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_moverelative",
+      "target": "lib_builder_tree_locate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_moverelative",
+      "target": "lib_builder_tree_candrop",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_moverelative",
+      "target": "lib_builder_tree_removenodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L187",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_moverelative",
+      "target": "lib_builder_tree_insertnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_moverelative",
+      "target": "lib_builder_tree_descendantids",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L193",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_nudge",
+      "target": "lib_builder_tree_locate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_nudge",
+      "target": "lib_builder_tree_removenodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L219",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_nudge",
+      "target": "lib_builder_tree_insertnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_topmost",
+      "target": "lib_builder_tree_locate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_topmost",
+      "target": "lib_builder_tree_descendantids",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_builder_tree_topmost",
+      "target": "lib_builder_tree_outline",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L255",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_builder_tree_iscontainer",
+      "callee": "catalogEntry",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_builder_tree_outline",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "lib_builder_tree_locate",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "lib_builder_tree_subtreeheight",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_builder_tree_subtreeheight",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_builder_tree_descendantids",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_builder_tree_maptree",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_builder_tree_removenodes",
+      "callee": "strip",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_builder_tree_insertnodes",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_builder_tree_insertnodes",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_builder_tree_insertnodes",
+      "callee": "walk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_builder_tree_clampindex",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_builder_tree_clampindex",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_builder_tree_clampindex",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_builder_tree_candrop",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_builder_tree_candrop",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_builder_tree_candrop",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_builder_tree_candrop",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_builder_tree_moverelative",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "lib_builder_tree_clonenodes",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L241"
+    },
+    {
+      "caller_nid": "lib_builder_tree_topmost",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L253"
+    },
+    {
+      "caller_nid": "lib_builder_tree_topmost",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "lib_builder_tree_topmost",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-tree.ts",
+      "source_location": "L255"
+    }
+  ]
+}

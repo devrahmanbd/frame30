@@ -45,7 +45,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/analytics")({
       { property: "og:title", content: "Store analytics — Framique" },
       {
         property: "og:description",
-        content: "Server-computed BDT revenue trends, COD exposure and best-selling products.",
+        content:
+          "Server-computed BDT revenue trends, COD exposure and best-selling products.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -53,12 +54,16 @@ export const Route = createFileRoute("/_authenticated/dashboard/analytics")({
   }),
   validateSearch: (search: Record<string, unknown>): { tab?: AnalyticsTab } => {
     const tab = search.tab as AnalyticsTab | undefined;
-    return tab && ["overview", "traffic", "insights", "reports", "activity"].includes(tab) ? { tab } : {};
+    return tab &&
+      ["overview", "traffic", "insights", "reports", "activity"].includes(tab)
+      ? { tab }
+      : {};
   },
   component: AnalyticsHub,
 });
 
-type AnalyticsTab = "overview" | "traffic" | "insights" | "reports" | "activity";
+type AnalyticsTab =
+  "overview" | "traffic" | "insights" | "reports" | "activity";
 
 const TABS = [
   { key: "overview", en: "Overview", bn: "সারসংক্ষেপ" },
@@ -130,7 +135,10 @@ function AnalyticsPage() {
   });
 
   const currency = data?.currency ?? "BDT";
-  const maxRevenue = Math.max(1, ...(data?.series.map((p) => p.revenueMinorInt) ?? [1]));
+  const maxRevenue = Math.max(
+    1,
+    ...(data?.series.map((p) => p.revenueMinorInt) ?? [1]),
+  );
   const totalMethodRevenue = Math.max(
     1,
     (data?.byMethod ?? []).reduce((a, m) => a + m.revenueMinorInt, 0),
@@ -140,7 +148,9 @@ function AnalyticsPage() {
     <div className="mx-auto max-w-6xl">
       <header className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-bangla-display text-2xl font-bold tracking-tight">{t("Analytics", "অ্যানালিটিক্স")}</h1>
+          <h1 className="font-bangla-display text-2xl font-bold tracking-tight">
+            {t("Analytics", "অ্যানালিটিক্স")}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Analytics · all money computed server-side in {currency}.
           </p>
@@ -170,13 +180,18 @@ function AnalyticsPage() {
       </header>
 
       {error && (
-        <p role="alert" className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+        <p
+          role="alert"
+          className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
           {(error as Error).message}
         </p>
       )}
 
       {isLoading && !data && (
-        <p className="text-sm text-muted-foreground">{t("Loading analytics…", "লোড হচ্ছে… / Loading analytics…")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("Loading analytics…", "লোড হচ্ছে… / Loading analytics…")}
+        </p>
       )}
 
       {data && (
@@ -191,7 +206,10 @@ function AnalyticsPage() {
               value={fmtMinor(data.totals.revenueMinorInt, currency)}
               icon={BadgeDollarSign}
               delta={{
-                text: deltaText(data.deltas.revenuePct, t("vs previous period", "vs আগের সময়")),
+                text: deltaText(
+                  data.deltas.revenuePct,
+                  t("vs previous period", "vs আগের সময়"),
+                ),
                 tone: deltaTone(data.deltas.revenuePct),
               }}
             />
@@ -201,7 +219,10 @@ function AnalyticsPage() {
               value={String(data.totals.orderCount)}
               icon={ShoppingCart}
               delta={{
-                text: deltaText(data.deltas.ordersPct, t("vs previous period", "vs আগের সময়")),
+                text: deltaText(
+                  data.deltas.ordersPct,
+                  t("vs previous period", "vs আগের সময়"),
+                ),
                 tone: deltaTone(data.deltas.ordersPct),
               }}
             />
@@ -217,7 +238,13 @@ function AnalyticsPage() {
               value={fmtMinor(data.totals.codPendingMinorInt, currency)}
               icon={Truck}
               tone="warning"
-              delta={{ text: t(`${data.totals.codPendingCount} shipments`, `${data.totals.codPendingCount}টি চালান`), tone: "warning" }}
+              delta={{
+                text: t(
+                  `${data.totals.codPendingCount} shipments`,
+                  `${data.totals.codPendingCount}টি চালান`,
+                ),
+                tone: "warning",
+              }}
             />
             <KpiCard
               labelBn={t("Discounts given", "ডিসকাউন্ট")}
@@ -291,7 +318,12 @@ function AnalyticsPage() {
                 {data.byMethod.map((m) => (
                   <li key={m.method}>
                     <div className="flex items-baseline justify-between gap-3 text-sm">
-                      <span className="font-bangla-display">{t(methodLabel[m.method]?.en ?? m.method, methodLabel[m.method]?.bn ?? m.method)}</span>
+                      <span className="font-bangla-display">
+                        {t(
+                          methodLabel[m.method]?.en ?? m.method,
+                          methodLabel[m.method]?.bn ?? m.method,
+                        )}
+                      </span>
                       <span className="money text-muted-foreground">
                         {fmtMinor(m.revenueMinorInt, currency)} · {m.orders}
                       </span>
@@ -299,7 +331,9 @@ function AnalyticsPage() {
                     <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
                       <div
                         className="h-full rounded-full bg-primary"
-                        style={{ width: `${(m.revenueMinorInt / totalMethodRevenue) * 100}%` }}
+                        style={{
+                          width: `${(m.revenueMinorInt / totalMethodRevenue) * 100}%`,
+                        }}
                       />
                     </div>
                   </li>
@@ -337,7 +371,9 @@ function AnalyticsPage() {
                     {data.topProducts.map((p) => (
                       <tr key={p.title} className="border-t border-border">
                         <td className="py-2 pr-2">{p.title}</td>
-                        <td className="py-2 text-right tabular-nums">{p.quantity}</td>
+                        <td className="py-2 text-right tabular-nums">
+                          {p.quantity}
+                        </td>
                         <td className="money py-2 text-right">
                           {fmtMinor(p.revenueMinorInt, currency)}
                         </td>
@@ -350,8 +386,9 @@ function AnalyticsPage() {
           </div>
 
           <p className="mt-4 text-xs text-muted-foreground">
-            VAT collected in period: {fmtMinor(data.totals.vatMinorInt, currency)} · from legal year
-            rate tables.
+            VAT collected in period:{" "}
+            {fmtMinor(data.totals.vatMinorInt, currency)} · from legal year rate
+            tables.
           </p>
         </>
       )}

@@ -11,8 +11,14 @@ import { canDrop, insertNodes, locate, outline } from "./builder-tree";
  * merchant can build a page from an empty template with containers, columns and
  * the widget tray alone.
  */
-const builder = readFileSync("src/routes/_authenticated/admin/builder.tsx", "utf8");
-const renderer = readFileSync("src/components/builder/SectionRenderer.tsx", "utf8");
+const builder = readFileSync(
+  "src/routes/_authenticated/dashboard/builder.tsx",
+  "utf8",
+);
+const renderer = readFileSync(
+  "src/components/builder/SectionRenderer.tsx",
+  "utf8",
+);
 
 describe("left rail", () => {
   it("switches layout slots", () => {
@@ -22,25 +28,30 @@ describe("left rail", () => {
 
   it("exposes Layers / Add / Blocks panels", () => {
     expect(builder).toContain('aria-label={t("Editor panels"');
-    for (const key of ['"layers"', '"add"', '"blocks"']) expect(builder).toContain(key);
+    for (const key of ['"layers"', '"add"', '"blocks"'])
+      expect(builder).toContain(key);
   });
 
   it("scopes the tray to a container when adding inside", () => {
     expect(builder).toContain("onAddInside");
-    expect(builder).toContain("{ parentId: addParent }");
+    expect(builder).toMatch(/parentId:\s*addParent/);
   });
 });
 
 describe("canvas", () => {
   it("tags every node with data-node-id in editing mode", () => {
-    expect(renderer).toContain('{...(editing ? { "data-node-id": section.id } : {})}');
+    expect(renderer).toContain(
+      '{...(editing ? { "data-node-id": section.id } : {})}',
+    );
     // children recurse with the same editing flag, so nested nodes are selectable
     expect(renderer).toMatch(/renderChildren[\s\S]*editing=\{editing\}/);
   });
 
   it("selects the deepest node under the pointer, with modifier multi-select", () => {
-    expect(builder).toContain('closest("[data-node-id]")');
-    expect(builder).toMatch(/event\.metaKey \|\| event\.ctrlKey \|\| event\.shiftKey \? "toggle" : "replace"/);
+    expect(builder).toMatch(/closest\(\s*["']\[data-node-id\]["'],?\s*\)/);
+    expect(builder).toMatch(
+      /event\.metaKey\s*\|\|\s*event\.ctrlKey\s*\|\|\s*event\.shiftKey[\s\S]*?"toggle"[\s\S]*?"replace"/,
+    );
   });
 
   it("renders device and locale frames", () => {
@@ -86,7 +97,9 @@ describe("empty-template build path", () => {
       "columns",
       "heading",
     ]);
-    expect(Math.max(...rows.map((row) => row.depth))).toBeLessThan(MAX_TREE_DEPTH);
+    expect(Math.max(...rows.map((row) => row.depth))).toBeLessThan(
+      MAX_TREE_DEPTH,
+    );
   });
 
   it("refuses to nest inside a non-container widget", () => {

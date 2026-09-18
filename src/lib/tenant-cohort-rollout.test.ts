@@ -23,7 +23,9 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
   });
 
   it("defines the strict 5-ring cohort hierarchy with explicit soak times and error budgets", () => {
-    expect(COHORT_RING_CONFIGS[0].name).toContain("Cohort 0 (Internal / Dogfood)");
+    expect(COHORT_RING_CONFIGS[0].name).toContain(
+      "Cohort 0 (Internal / Dogfood)",
+    );
     expect(COHORT_RING_CONFIGS[0].maxStores).toBe(25);
     expect(COHORT_RING_CONFIGS[0].soakDurationMs).toBe(10 * 60 * 1000);
 
@@ -31,13 +33,19 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
     expect(COHORT_RING_CONFIGS[1].maxStores).toBe(10);
     expect(COHORT_RING_CONFIGS[1].maxSingleTenantErrors).toBe(0); // Zero-tolerance
 
-    expect(COHORT_RING_CONFIGS[2].name).toContain("Cohort 2 (100 Early-Adopters)");
+    expect(COHORT_RING_CONFIGS[2].name).toContain(
+      "Cohort 2 (100 Early-Adopters)",
+    );
     expect(COHORT_RING_CONFIGS[2].maxStores).toBe(100);
 
-    expect(COHORT_RING_CONFIGS[3].name).toContain("Cohort 3 (1,000 Scaled Production Stores)");
+    expect(COHORT_RING_CONFIGS[3].name).toContain(
+      "Cohort 3 (1,000 Scaled Production Stores)",
+    );
     expect(COHORT_RING_CONFIGS[3].maxStores).toBe(1000);
 
-    expect(COHORT_RING_CONFIGS[4].name).toContain("Cohort 4 (Global 10,000+ Stores)");
+    expect(COHORT_RING_CONFIGS[4].name).toContain(
+      "Cohort 4 (Global 10,000+ Stores)",
+    );
     expect(COHORT_RING_CONFIGS[4].maxStores).toBe(Number.POSITIVE_INFINITY);
   });
 
@@ -62,7 +70,9 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
     // Attempting to advance immediately without { force: true } must fail due to active soak timer
     const result = await advanceCohortRollout({ force: false });
     expect(result.success).toBe(false);
-    expect(result.reason).toContain("Soak time for Cohort 0 (Internal / Dogfood) still active");
+    expect(result.reason).toContain(
+      "Soak time for Cohort 0 (Internal / Dogfood) still active",
+    );
 
     const state = await getCohortRolloutState();
     expect(state.currentTier).toBe(0);
@@ -127,7 +137,8 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
       statusCode: 500,
       isFatalTransactionFailure: true,
       transactionType: "courier_booking",
-      errorMessage: "SteadFast courier API 500: Malformed consignment payload for BD district",
+      errorMessage:
+        "SteadFast courier API 500: Malformed consignment payload for BD district",
       latencyMs: 420,
     });
 
@@ -159,7 +170,9 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
     // 5. Subsequent attempts to advance the rollout are strictly blocked
     const advanceAttempt = await advanceCohortRollout({ force: true });
     expect(advanceAttempt.success).toBe(false);
-    expect(advanceAttempt.reason).toContain("Cannot advance: Rollout is halted");
+    expect(advanceAttempt.reason).toContain(
+      "Cannot advance: Rollout is halted",
+    );
   });
 
   it("evaluates cohort health report with violations when error budgets are exceeded", async () => {
@@ -186,7 +199,9 @@ describe("Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Ra
     expect(report.errorCount).toBe(1);
     expect(report.paymentFailures).toBe(1);
     expect(report.isHealthy).toBe(false);
-    expect(report.violations.some((v) => v.includes("Payment health failed"))).toBe(true);
+    expect(
+      report.violations.some((v) => v.includes("Payment health failed")),
+    ).toBe(true);
   });
 
   it("generates production OpenResty dynamic Lua router configuration", () => {

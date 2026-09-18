@@ -38,7 +38,12 @@ export function StepTrail({
       }
     >
       {steps.map((step, index) => {
-        const state = index < activeIndex ? "done" : index === activeIndex ? "current" : "todo";
+        const state =
+          index < activeIndex
+            ? "done"
+            : index === activeIndex
+              ? "current"
+              : "todo";
         const label = (
           <span className="flex items-center gap-2">
             {numbered && (
@@ -54,19 +59,40 @@ export function StepTrail({
               </span>
             )}
             <span className="min-w-0 break-words">
-              <span className={state === "todo" ? "text-muted-foreground" : "font-medium"}>{step.label}</span>
-              {step.detail && <span className="block text-xs text-muted-foreground">{step.detail}</span>}
+              <span
+                className={
+                  state === "todo" ? "text-muted-foreground" : "font-medium"
+                }
+              >
+                {step.label}
+              </span>
+              {step.detail && (
+                <span className="block text-xs text-muted-foreground">
+                  {step.detail}
+                </span>
+              )}
             </span>
             <span className="sr-only">
-              {state === "done" ? done : state === "current" ? current : upcoming}
+              {state === "done"
+                ? done
+                : state === "current"
+                  ? current
+                  : upcoming}
             </span>
           </span>
         );
         return (
-          <li key={step.key} aria-current={state === "current" ? "step" : undefined} className="min-w-0">
+          <li
+            key={step.key}
+            aria-current={state === "current" ? "step" : undefined}
+            className="min-w-0"
+          >
             {/* Only completed steps link backwards; the future is not navigable. */}
             {step.href && state === "done" ? (
-              <a href={step.href} className="inline-flex min-h-11 items-center underline-offset-2 hover:underline">
+              <a
+                href={step.href}
+                className="inline-flex min-h-11 items-center underline-offset-2 hover:underline"
+              >
                 {label}
               </a>
             ) : (

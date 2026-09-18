@@ -14,7 +14,12 @@ import {
   storefrontCacheKey,
   tenantCachePrefix,
 } from "./storefront-cache";
-import { assertTenantId, isTenantId, isTenantUuid, TenantScopeError } from "./tenant-scope";
+import {
+  assertTenantId,
+  isTenantId,
+  isTenantUuid,
+  TenantScopeError,
+} from "./tenant-scope";
 import { resolveWidgetData } from "./widget-data.server";
 import type { WidgetDataBundle } from "./widget-data";
 import type { SourceLoader } from "./widget-data.server";
@@ -23,13 +28,20 @@ const TENANT = "11111111-2222-3333-4444-555555555555";
 const OTHER = "99999999-8888-7777-6666-555555555555";
 
 const bundle = {
-  requests: [{ key: "k1", nodeId: "n1", source: "collection", params: { limit: 4 } }],
+  requests: [
+    { key: "k1", nodeId: "n1", source: "collection", params: { limit: 4 } },
+  ],
   byNode: { n1: "k1" },
 } as unknown as WidgetDataBundle;
 
 describe("8.2 caching — tenant · template · locale · theme_version", () => {
   it("keys every dimension, tenant first", () => {
-    const key = storefrontCacheKey({ merchantId: TENANT, template: "index", locale: "bn", themeVersion: "v9" });
+    const key = storefrontCacheKey({
+      merchantId: TENANT,
+      template: "index",
+      locale: "bn",
+      themeVersion: "v9",
+    });
     expect(key).toBe(`${STOREFRONT_CACHE_PREFIX}${TENANT}:index:bn:v9`);
     expect(key.startsWith(tenantCachePrefix(TENANT))).toBe(true);
     expect(parseCacheKey(key)).toEqual({
@@ -41,8 +53,16 @@ describe("8.2 caching — tenant · template · locale · theme_version", () => 
   });
 
   it("changes key when the published version changes (publish, not purge, wins)", () => {
-    const a = storefrontCacheKey({ merchantId: TENANT, template: "index", themeVersion: "v1" });
-    const b = storefrontCacheKey({ merchantId: TENANT, template: "index", themeVersion: "v2" });
+    const a = storefrontCacheKey({
+      merchantId: TENANT,
+      template: "index",
+      themeVersion: "v1",
+    });
+    const b = storefrontCacheKey({
+      merchantId: TENANT,
+      template: "index",
+      themeVersion: "v2",
+    });
     expect(a).not.toBe(b);
   });
 
@@ -52,8 +72,12 @@ describe("8.2 caching — tenant · template · locale · theme_version", () => 
   });
 
   it("rejects a key without a tenant or with a separator injected", () => {
-    expect(() => storefrontCacheKey({ merchantId: "", template: "index" })).toThrow(/tenant/i);
-    expect(() => storefrontCacheKey({ merchantId: `${TENANT}:evil`, template: "index" })).toThrow();
+    expect(() =>
+      storefrontCacheKey({ merchantId: "", template: "index" }),
+    ).toThrow(/tenant/i);
+    expect(() =>
+      storefrontCacheKey({ merchantId: `${TENANT}:evil`, template: "index" }),
+    ).toThrow();
   });
 
   it("marks only storefront documents shared-cacheable", () => {
@@ -72,7 +96,8 @@ describe("8.2 caching — tenant · template · locale · theme_version", () => 
   it("varies on language and validates on theme version", () => {
     const headers = storefrontCacheHeaders("v7");
     expect(headers["cache-control"]).toContain(`s-maxage=${EDGE_TTL_SECONDS}`);
-    expect(headers["vary"]).toBe("accept-language");
+    expect(headers["vary"]).toContain("accept-language");
+    expect(headers["vary"]).toContain("host");
     expect(headers["etag"]).toBe('W/"tv-v7"');
     expect(storefrontCacheHeaders(null)["etag"]).toBeUndefined();
   });
@@ -90,8 +115,12 @@ describe("8.4 tenant isolation at the resolver", () => {
   });
 
   it("refuses to resolve widget data without a tenant", async () => {
-    await expect(resolveWidgetData("", bundle, {})).rejects.toThrow(TenantScopeError);
-    await expect(resolveWidgetData("all", bundle, {})).rejects.toThrow(/tenant/i);
+    await expect(resolveWidgetData("", bundle, {})).rejects.toThrow(
+      TenantScopeError,
+    );
+    await expect(resolveWidgetData("all", bundle, {})).rejects.toThrow(
+      /tenant/i,
+    );
   });
 
   it("passes the validated tenant to every source loader", async () => {
@@ -114,7 +143,9 @@ describe("8.4 tenant isolation at the resolver", () => {
 describe("8.7 observability", () => {
   it("emits resolver latency and outcome series once a template resolves", async () => {
     const { renderPrometheus } = await import("./observability.server");
-    await resolveWidgetData(TENANT, bundle, { collection: async () => ({ k1: [] }) });
+    await resolveWidgetData(TENANT, bundle, {
+      collection: async () => ({ k1: [] }),
+    });
     const text = renderPrometheus();
     expect(text).toContain("framique_widget_resolver_ms_bucket");
     expect(text).toContain('framique_widget_resolver_total{outcome="ok"');
@@ -123,7 +154,13 @@ describe("8.7 observability", () => {
 
   it("charts render time, resolver latency, widget errors and plugin timeouts", () => {
     const dashboard = readFileSync(
-      join(process.cwd(), "ops", "observability", "grafana", "builder-dashboard.json"),
+      join(
+        process.cwd(),
+        "ops",
+        "observability",
+        "grafana",
+        "builder-dashboard.json",
+      ),
       "utf8",
     );
     for (const metric of [

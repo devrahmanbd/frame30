@@ -36,7 +36,9 @@ function parseJobs(src) {
   for (const block of blocks) {
     const key = block.match(/key:\s*"([^"]+)"/)?.[1];
     const schedule = block.match(/schedule:\s*"([^"]+)"/)?.[1];
-    const timeoutMs = Number(block.match(/timeoutMs:\s*([\d_]+)/)?.[1]?.replace(/_/g, "") ?? 0);
+    const timeoutMs = Number(
+      block.match(/timeoutMs:\s*([\d_]+)/)?.[1]?.replace(/_/g, "") ?? 0,
+    );
     const label = block.match(/label:\s*"([^"]+)"/)?.[1] ?? key;
     if (!key || !schedule) continue;
     jobs.push({ key, schedule, timeoutMs, label });
@@ -46,14 +48,18 @@ function parseJobs(src) {
 
 const jobs = parseJobs(source);
 if (jobs.length === 0) {
-  console.error("gen-crontab: parsed zero jobs from the registry — refusing to write an empty schedule");
+  console.error(
+    "gen-crontab: parsed zero jobs from the registry — refusing to write an empty schedule",
+  );
   process.exit(1);
 }
 
 const fiveFields = /^(\S+\s+){4}\S+$/;
 const bad = jobs.filter((j) => !fiveFields.test(j.schedule));
 if (bad.length) {
-  console.error(`gen-crontab: invalid cron expressions: ${bad.map((j) => `${j.key}="${j.schedule}"`).join(", ")}`);
+  console.error(
+    `gen-crontab: invalid cron expressions: ${bad.map((j) => `${j.key}="${j.schedule}"`).join(", ")}`,
+  );
   process.exit(1);
 }
 
@@ -91,11 +97,15 @@ if (process.argv.includes("--check")) {
   try {
     current = readFileSync(OUT, "utf8");
   } catch {
-    console.error(`gen-crontab: ${OUT} is missing — run \`bun run cron:generate\``);
+    console.error(
+      `gen-crontab: ${OUT} is missing — run \`bun run cron:generate\``,
+    );
     process.exit(1);
   }
   if (current !== output) {
-    console.error(`gen-crontab: ${OUT} is stale (${jobs.length} jobs in the registry) — run \`bun run cron:generate\``);
+    console.error(
+      `gen-crontab: ${OUT} is stale (${jobs.length} jobs in the registry) — run \`bun run cron:generate\``,
+    );
     process.exit(1);
   }
   console.log(`gen-crontab: ok (${jobs.length} jobs scheduled)`);

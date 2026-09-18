@@ -25,7 +25,11 @@ import type { Section, TemplateKey } from "@/lib/builder-ast";
 import { THEME_PRESETS } from "@/lib/theme-presets";
 import { primarySectionId } from "@/components/store/ThemeChrome";
 
-function renderTemplate(sections: Section[], template: TemplateKey, primaryId: string | null) {
+function renderTemplate(
+  sections: Section[],
+  template: TemplateKey,
+  primaryId: string | null,
+) {
   return renderToStaticMarkup(
     <>
       {sections.map((section) => (

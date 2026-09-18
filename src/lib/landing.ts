@@ -52,7 +52,8 @@ export const STAT_FLOOR: Record<StatKey, number> = {
   merchants: 10,
   products: 50,
   articles: 3,
-  paymentRails: 2};
+  paymentRails: 2,
+};
 
 /**
  * Rounding steps. We always round *down* to the step, so the printed number is
@@ -63,7 +64,8 @@ export const STAT_STEP: Record<StatKey, number> = {
   merchants: 10,
   products: 50,
   articles: 1,
-  paymentRails: 1};
+  paymentRails: 1,
+};
 
 export function floorToStep(value: number, step: number) {
   if (!Number.isFinite(value) || value <= 0 || step <= 0) return 0;
@@ -89,7 +91,8 @@ export function publishableStats(raw: RawStats): PublishedStat[] {
       key,
       value: shown,
       approximate: shown < actual,
-      suffix: shown < actual ? "+" : ""});
+      suffix: shown < actual ? "+" : "",
+    });
   }
   return out;
 }
@@ -120,14 +123,20 @@ export type PlanTeaser = {
 
 export function planTeaser(plans: readonly PlanTeaserInput[]): PlanTeaser {
   const priced = plans
-    .filter((p) => typeof p.priceMinorInt === "number" && (p.priceMinorInt as number) > 0)
+    .filter(
+      (p) =>
+        typeof p.priceMinorInt === "number" && (p.priceMinorInt as number) > 0,
+    )
     .sort((a, b) => (a.priceMinorInt as number) - (b.priceMinorInt as number));
-  const trials = plans.map((p) => p.trialDays).filter((d) => Number.isFinite(d) && d > 0);
+  const trials = plans
+    .map((p) => p.trialDays)
+    .filter((d) => Number.isFinite(d) && d > 0);
   return {
     entry: priced[0] ?? null,
     trialDays: trials.length > 0 ? Math.max(...trials) : null,
     planCount: plans.length,
-    priceUnavailable: plans.length > 0 && priced.length === 0};
+    priceUnavailable: plans.length > 0 && priced.length === 0,
+  };
 }
 
 /* --------------------------------------------------------------- proof rail */
@@ -165,32 +174,53 @@ export const TOUR_STOPS: readonly TourStop[] = [
     id: "builder",
     titleKey: "home.tour.builder.title",
     bodyKey: "home.tour.builder.body",
-    bulletKeys: ["home.tour.builder.b1", "home.tour.builder.b2", "home.tour.builder.b3"],
-    href: "/features"},
+    bulletKeys: [
+      "home.tour.builder.b1",
+      "home.tour.builder.b2",
+      "home.tour.builder.b3",
+    ],
+    href: "/features",
+  },
   {
     id: "catalog",
     titleKey: "home.tour.catalog.title",
     bodyKey: "home.tour.catalog.body",
-    bulletKeys: ["home.tour.catalog.b1", "home.tour.catalog.b2", "home.tour.catalog.b3"],
-    href: "/features"},
+    bulletKeys: [
+      "home.tour.catalog.b1",
+      "home.tour.catalog.b2",
+      "home.tour.catalog.b3",
+    ],
+    href: "/features",
+  },
   {
     id: "orders",
     titleKey: "home.tour.orders.title",
     bodyKey: "home.tour.orders.body",
-    bulletKeys: ["home.tour.orders.b1", "home.tour.orders.b2", "home.tour.orders.b3"],
-    href: "/features"},
+    bulletKeys: [
+      "home.tour.orders.b1",
+      "home.tour.orders.b2",
+      "home.tour.orders.b3",
+    ],
+    href: "/features",
+  },
   {
     id: "pos",
     titleKey: "home.tour.pos.title",
     bodyKey: "home.tour.pos.body",
     bulletKeys: ["home.tour.pos.b1", "home.tour.pos.b2", "home.tour.pos.b3"],
-    href: "/features"},
+    href: "/features",
+  },
   {
     id: "payments",
     titleKey: "home.tour.payments.title",
     bodyKey: "home.tour.payments.body",
-    bulletKeys: ["home.tour.payments.b1", "home.tour.payments.b2", "home.tour.payments.b3"],
-    href: "/pricing"},
+    bulletKeys: [
+      "home.tour.payments.b1",
+      "home.tour.payments.b2",
+      "home.tour.payments.b3",
+    ],
+    href: "/pricing",
+  },
 ] as const;
 
 /* ------------------------------------------------------------- comparison */
@@ -205,12 +235,42 @@ export type ComparisonRow = {
 };
 
 export const COMPARISON_ROWS: readonly ComparisonRow[] = [
-  { id: "catalog", labelKey: "home.cmp.catalog", statusQuoKey: "home.cmp.catalog.sq", framiqueKey: "home.cmp.catalog.fq" },
-  { id: "orders", labelKey: "home.cmp.orders", statusQuoKey: "home.cmp.orders.sq", framiqueKey: "home.cmp.orders.fq" },
-  { id: "payments", labelKey: "home.cmp.payments", statusQuoKey: "home.cmp.payments.sq", framiqueKey: "home.cmp.payments.fq" },
-  { id: "seo", labelKey: "home.cmp.seo", statusQuoKey: "home.cmp.seo.sq", framiqueKey: "home.cmp.seo.fq" },
-  { id: "staff", labelKey: "home.cmp.staff", statusQuoKey: "home.cmp.staff.sq", framiqueKey: "home.cmp.staff.fq" },
-  { id: "data", labelKey: "home.cmp.data", statusQuoKey: "home.cmp.data.sq", framiqueKey: "home.cmp.data.fq" },
+  {
+    id: "catalog",
+    labelKey: "home.cmp.catalog",
+    statusQuoKey: "home.cmp.catalog.sq",
+    framiqueKey: "home.cmp.catalog.fq",
+  },
+  {
+    id: "orders",
+    labelKey: "home.cmp.orders",
+    statusQuoKey: "home.cmp.orders.sq",
+    framiqueKey: "home.cmp.orders.fq",
+  },
+  {
+    id: "payments",
+    labelKey: "home.cmp.payments",
+    statusQuoKey: "home.cmp.payments.sq",
+    framiqueKey: "home.cmp.payments.fq",
+  },
+  {
+    id: "seo",
+    labelKey: "home.cmp.seo",
+    statusQuoKey: "home.cmp.seo.sq",
+    framiqueKey: "home.cmp.seo.fq",
+  },
+  {
+    id: "staff",
+    labelKey: "home.cmp.staff",
+    statusQuoKey: "home.cmp.staff.sq",
+    framiqueKey: "home.cmp.staff.fq",
+  },
+  {
+    id: "data",
+    labelKey: "home.cmp.data",
+    statusQuoKey: "home.cmp.data.sq",
+    framiqueKey: "home.cmp.data.fq",
+  },
 ] as const;
 
 /* -------------------------------------------------------------------- FAQ */
@@ -219,12 +279,36 @@ export type FaqRow = { id: string; questionKey: string; answerKey: string };
 
 /** Also the source for the FAQPage JSON-LD in §10.5 — keep answers factual. */
 export const FAQ_ROWS: readonly FaqRow[] = [
-  { id: "trial", questionKey: "home.faq.trial.q", answerKey: "home.faq.trial.a" },
-  { id: "payments", questionKey: "home.faq.payments.q", answerKey: "home.faq.payments.a" },
-  { id: "bangla", questionKey: "home.faq.bangla.q", answerKey: "home.faq.bangla.a" },
-  { id: "domain", questionKey: "home.faq.domain.q", answerKey: "home.faq.domain.a" },
-  { id: "export", questionKey: "home.faq.export.q", answerKey: "home.faq.export.a" },
-  { id: "support", questionKey: "home.faq.support.q", answerKey: "home.faq.support.a" },
+  {
+    id: "trial",
+    questionKey: "home.faq.trial.q",
+    answerKey: "home.faq.trial.a",
+  },
+  {
+    id: "payments",
+    questionKey: "home.faq.payments.q",
+    answerKey: "home.faq.payments.a",
+  },
+  {
+    id: "bangla",
+    questionKey: "home.faq.bangla.q",
+    answerKey: "home.faq.bangla.a",
+  },
+  {
+    id: "domain",
+    questionKey: "home.faq.domain.q",
+    answerKey: "home.faq.domain.a",
+  },
+  {
+    id: "export",
+    questionKey: "home.faq.export.q",
+    answerKey: "home.faq.export.a",
+  },
+  {
+    id: "support",
+    questionKey: "home.faq.support.q",
+    answerKey: "home.faq.support.a",
+  },
 ] as const;
 
 /* ------------------------------------------------------------ landing data */
@@ -255,11 +339,19 @@ export const LANDING_LIMITS = {
   /** Cache freshness for the whole landing payload. */
   ttlSeconds: 300,
   staleSeconds: 900,
-  timeoutMs: 2500} as const;
+  timeoutMs: 2500,
+} as const;
 
 export const EMPTY_LANDING: LandingData = {
   plans: [],
-  stats: { merchants: null, products: null, articles: null, paymentRails: null, measuredAt: "" },
+  stats: {
+    merchants: null,
+    products: null,
+    articles: null,
+    paymentRails: null,
+    measuredAt: "",
+  },
   stories: [],
-  
-  degraded: true};
+
+  degraded: true,
+};

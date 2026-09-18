@@ -471,7 +471,10 @@ function RootCommandCenter() {
             subtext={
               needsAgentCount > 0
                 ? t("Requires human takeover", "হিউম্যান টেকওভার প্রয়োজন")
-                : t("AI handling autonomously", "এআই স্বয়ংক্রিয়ভাবে সামলাচ্ছে")
+                : t(
+                    "AI handling autonomously",
+                    "এআই স্বয়ংক্রিয়ভাবে সামলাচ্ছে",
+                  )
             }
             icon={Bot}
             tone={needsAgentCount > 0 ? "bad" : "default"}
@@ -656,7 +659,9 @@ function RootCommandCenter() {
             to="/root/audit"
             className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-primary transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xs px-2"
           >
-            <span>{t("View full audit trail", "সম্পূর্ণ অডিট ট্রেইল দেখুন")}</span>
+            <span>
+              {t("View full audit trail", "সম্পূর্ণ অডিট ট্রেইল দেখুন")}
+            </span>
             <ArrowRight className="size-3" />
           </Link>
         </div>

@@ -110,7 +110,10 @@
       "gridPos": { "h": 7, "w": 12, "x": 0, "y": 16 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "topk(10, sum by (scope) (rate(framique_errors_total[10m])))", "legendFormat": "{{scope}}" }
+        {
+          "expr": "topk(10, sum by (scope) (rate(framique_errors_total[10m])))",
+          "legendFormat": "{{scope}}"
+        }
       ]
     },
     {
@@ -132,7 +135,10 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
         { "expr": "max(framique_metrics_series)", "legendFormat": "series" },
-        { "expr": "max(framique_metrics_dropped_series)", "legendFormat": "dropped" }
+        {
+          "expr": "max(framique_metrics_dropped_series)",
+          "legendFormat": "dropped"
+        }
       ]
     }
   ]

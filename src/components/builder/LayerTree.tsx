@@ -17,7 +17,11 @@ type Props = {
   selectedIds: string[];
   /** `mode` mirrors the modifier used: plain click replaces the selection. */
   onSelect: (id: string, mode: "replace" | "toggle") => void;
-  onMove: (dragId: string, targetId: string | null, position: DropPosition) => void;
+  onMove: (
+    dragId: string,
+    targetId: string | null,
+    position: DropPosition,
+  ) => void;
   onNudge: (id: string, delta: -1 | 1) => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
@@ -99,9 +103,16 @@ export function LayerTree({
     const keep = new Set<string>();
     const byId = new Map(rows.map((row) => [row.node.id, row]));
     for (const row of rows) {
-      const label = (catalogEntry(row.node.type)?.label ?? row.node.type).toLowerCase();
+      const label = (
+        catalogEntry(row.node.type)?.label ?? row.node.type
+      ).toLowerCase();
       const custom = nodeLabel(row.node, "").toLowerCase();
-      if (!label.includes(needle) && !custom.includes(needle) && !row.node.type.includes(needle)) continue;
+      if (
+        !label.includes(needle) &&
+        !custom.includes(needle) &&
+        !row.node.type.includes(needle)
+      )
+        continue;
       let cursor: string | null = row.node.id;
       while (cursor) {
         keep.add(cursor);
@@ -112,11 +123,17 @@ export function LayerTree({
   }, [needle, rows]);
   const visibleRows = useMemo(() => {
     const hiddenParents = new Set<string>();
-    const scoped = matches ? rows.filter((row) => matches.has(row.node.id)) : rows;
+    const scoped = matches
+      ? rows.filter((row) => matches.has(row.node.id))
+      : rows;
     if (matches) return scoped;
     return scoped.filter((row) => {
-      const parentHidden = row.parentId !== null && hiddenParents.has(row.parentId);
-      if (parentHidden || (row.parentId !== null && collapsed.has(row.parentId))) {
+      const parentHidden =
+        row.parentId !== null && hiddenParents.has(row.parentId);
+      if (
+        parentHidden ||
+        (row.parentId !== null && collapsed.has(row.parentId))
+      ) {
         hiddenParents.add(row.node.id);
         return false;
       }
@@ -138,7 +155,10 @@ export function LayerTree({
     document.getElementById(`layer-${target.node.id}`)?.focus();
   };
 
-  const positionFromEvent = (event: React.DragEvent, container: boolean): DropPosition => {
+  const positionFromEvent = (
+    event: React.DragEvent,
+    container: boolean,
+  ): DropPosition => {
     const box = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientY - box.top) / Math.max(box.height, 1);
     if (container && ratio > 0.3 && ratio < 0.7) return "inside";
@@ -148,7 +168,10 @@ export function LayerTree({
   if (sections.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        {t("No layers yet. Add a widget to start.", "এখনো কোনো লেয়ার নেই। একটি উইজেট যোগ করুন।")}
+        {t(
+          "No layers yet. Add a widget to start.",
+          "এখনো কোনো লেয়ার নেই। একটি উইজেট যোগ করুন।",
+        )}
       </p>
     );
   }
@@ -156,7 +179,10 @@ export function LayerTree({
   if (visibleRows.length === 0) {
     return (
       <p className="text-xs text-muted-foreground">
-        {t("No layer matches that search.", "এই খোঁজের সাথে কোনো লেয়ার মেলেনি।")}
+        {t(
+          "No layer matches that search.",
+          "এই খোঁজের সাথে কোনো লেয়ার মেলেনি।",
+        )}
       </p>
     );
   }
@@ -194,7 +220,10 @@ export function LayerTree({
             onDragOver={(event) => {
               if (!dragId || dragId === node.id) return;
               event.preventDefault();
-              setHint({ id: node.id, position: positionFromEvent(event, container) });
+              setHint({
+                id: node.id,
+                position: positionFromEvent(event, container),
+              });
             }}
             onDrop={(event) => {
               event.preventDefault();
@@ -222,7 +251,9 @@ export function LayerTree({
                 <button
                   type="button"
                   aria-label={
-                    collapsed.has(node.id) ? t("Expand", "খুলুন") : t("Collapse", "গুটান")
+                    collapsed.has(node.id)
+                      ? t("Expand", "খুলুন")
+                      : t("Collapse", "গুটান")
                   }
                   aria-expanded={!collapsed.has(node.id)}
                   onClick={() => toggleCollapse(node.id)}
@@ -250,79 +281,93 @@ export function LayerTree({
                   className="min-w-0 flex-1 rounded-fq-md border border-border bg-card px-1 py-1 text-xs"
                 />
               ) : (
-              <button
-                id={`layer-${node.id}`}
-                type="button"
-                role="treeitem"
-                aria-selected={selected}
-                aria-level={depth + 1}
-                {...(container ? { "aria-expanded": !collapsed.has(node.id) } : {})}
-                draggable
-                onDragStart={(event) => {
-                  setDragId(node.id);
-                  event.dataTransfer.effectAllowed = "move";
-                }}
-                onDragEnd={() => {
-                  setDragId(null);
-                  setHint(null);
-                }}
-                onClick={(event) =>
-                  onSelect(node.id, event.metaKey || event.ctrlKey || event.shiftKey ? "toggle" : "replace")
-                }
-                onDoubleClick={() => onRename && setRenaming(node.id)}
-                onKeyDown={(event) => {
-                  const mod = event.metaKey || event.ctrlKey;
-                  if (event.key === "ArrowDown" && !mod) {
-                    event.preventDefault();
-                    focusRow(index + 1);
-                  } else if (event.key === "ArrowUp" && !mod) {
-                    event.preventDefault();
-                    focusRow(index - 1);
-                  } else if (event.key === "ArrowDown" && mod) {
-                    event.preventDefault();
-                    onNudge(node.id, 1);
-                  } else if (event.key === "ArrowUp" && mod) {
-                    event.preventDefault();
-                    onNudge(node.id, -1);
-                  } else if (event.key === "ArrowRight" && container) {
-                    event.preventDefault();
-                    setCollapsed((c) => {
-                      const next = new Set(c);
-                      next.delete(node.id);
-                      return next;
-                    });
-                  } else if (event.key === "ArrowLeft") {
-                    event.preventDefault();
-                    if (container && !collapsed.has(node.id)) toggleCollapse(node.id);
-                    else if (row.parentId) document.getElementById(`layer-${row.parentId}`)?.focus();
-                  } else if (event.key === "Delete" || event.key === "Backspace") {
-                    event.preventDefault();
-                    onDelete(node.id);
-                  } else if (mod && event.key.toLowerCase() === "d") {
-                    event.preventDefault();
-                    onDuplicate(node.id);
-                  } else if (event.key === "F2" && onRename) {
-                    event.preventDefault();
-                    setRenaming(node.id);
+                <button
+                  id={`layer-${node.id}`}
+                  type="button"
+                  role="treeitem"
+                  aria-selected={selected}
+                  aria-level={depth + 1}
+                  {...(container
+                    ? { "aria-expanded": !collapsed.has(node.id) }
+                    : {})}
+                  draggable
+                  onDragStart={(event) => {
+                    setDragId(node.id);
+                    event.dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragEnd={() => {
+                    setDragId(null);
+                    setHint(null);
+                  }}
+                  onClick={(event) =>
+                    onSelect(
+                      node.id,
+                      event.metaKey || event.ctrlKey || event.shiftKey
+                        ? "toggle"
+                        : "replace",
+                    )
                   }
-                }}
-                className="min-w-0 flex-1 truncate py-1.5 text-left text-xs"
-              >
-                {nodeLabel(node, entry?.label ?? node.type)}
-                {linkedBlockId(node) ? (
-                  <span
-                    className="ms-1 text-[10px] text-primary"
-                    title={t("Linked global block", "লিংক করা গ্লোবাল ব্লক")}
-                  >
-                    ⇄
-                  </span>
-                ) : null}
-                {node.hidden?.length ? (
-                  <span className="ms-1 text-[10px] text-muted-foreground">
-                    ({node.hidden.map((b) => HIDDEN_LABEL[b]).join("")})
-                  </span>
-                ) : null}
-              </button>
+                  onDoubleClick={() => onRename && setRenaming(node.id)}
+                  onKeyDown={(event) => {
+                    const mod = event.metaKey || event.ctrlKey;
+                    if (event.key === "ArrowDown" && !mod) {
+                      event.preventDefault();
+                      focusRow(index + 1);
+                    } else if (event.key === "ArrowUp" && !mod) {
+                      event.preventDefault();
+                      focusRow(index - 1);
+                    } else if (event.key === "ArrowDown" && mod) {
+                      event.preventDefault();
+                      onNudge(node.id, 1);
+                    } else if (event.key === "ArrowUp" && mod) {
+                      event.preventDefault();
+                      onNudge(node.id, -1);
+                    } else if (event.key === "ArrowRight" && container) {
+                      event.preventDefault();
+                      setCollapsed((c) => {
+                        const next = new Set(c);
+                        next.delete(node.id);
+                        return next;
+                      });
+                    } else if (event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      if (container && !collapsed.has(node.id))
+                        toggleCollapse(node.id);
+                      else if (row.parentId)
+                        document
+                          .getElementById(`layer-${row.parentId}`)
+                          ?.focus();
+                    } else if (
+                      event.key === "Delete" ||
+                      event.key === "Backspace"
+                    ) {
+                      event.preventDefault();
+                      onDelete(node.id);
+                    } else if (mod && event.key.toLowerCase() === "d") {
+                      event.preventDefault();
+                      onDuplicate(node.id);
+                    } else if (event.key === "F2" && onRename) {
+                      event.preventDefault();
+                      setRenaming(node.id);
+                    }
+                  }}
+                  className="min-w-0 flex-1 truncate py-1.5 text-left text-xs"
+                >
+                  {nodeLabel(node, entry?.label ?? node.type)}
+                  {linkedBlockId(node) ? (
+                    <span
+                      className="ms-1 text-[10px] text-primary"
+                      title={t("Linked global block", "লিংক করা গ্লোবাল ব্লক")}
+                    >
+                      ⇄
+                    </span>
+                  ) : null}
+                  {node.hidden?.length ? (
+                    <span className="ms-1 text-[10px] text-muted-foreground">
+                      ({node.hidden.map((b) => HIDDEN_LABEL[b]).join("")})
+                    </span>
+                  ) : null}
+                </button>
               )}
 
               {container && onAddInside && (

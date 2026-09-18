@@ -29,21 +29,32 @@ export function Pill({ tone, children }: { tone: Tone; children: ReactNode }) {
 
 export function credentialTone(state: CredentialState): Tone {
   if (state === "live") return "success";
-  if (state === "approved" || state === "in_review" || state === "submitted") return "info";
+  if (state === "approved" || state === "in_review" || state === "submitted")
+    return "info";
   if (state === "changes_requested") return "warning";
-  if (state === "rejected" || state === "suspended" || state === "revoked") return "danger";
+  if (state === "rejected" || state === "suspended" || state === "revoked")
+    return "danger";
   return "neutral";
 }
 
 export function payoutTone(state: PayoutState): Tone {
   if (state === "paid") return "success";
-  if (state === "approved" || state === "processing" || state === "requested") return "info";
+  if (state === "approved" || state === "processing" || state === "requested")
+    return "info";
   if (state === "failed" || state === "reversed") return "danger";
   return "neutral";
 }
 
 /** Evidence checklist progress rail. */
-export function ProgressBar({ done, total, label }: { done: number; total: number; label: string }) {
+export function ProgressBar({
+  done,
+  total,
+  label,
+}: {
+  done: number;
+  total: number;
+  label: string;
+}) {
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
   return (
     <div className="space-y-1">
@@ -83,14 +94,20 @@ export function GateChecks({
           <span
             aria-hidden
             className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] ${
-              c.ok ? "bg-success-soft text-success-strong" : "bg-destructive/10 text-destructive"
+              c.ok
+                ? "bg-success-soft text-success-strong"
+                : "bg-destructive/10 text-destructive"
             }`}
           >
             {c.ok ? "✓" : "!"}
           </span>
           <span>
-            <span className="font-medium capitalize">{c.key.replace(/_/g, " ")}</span>
-            <span className="block text-xs text-muted-foreground">{c.detail}</span>
+            <span className="font-medium capitalize">
+              {c.key.replace(/_/g, " ")}
+            </span>
+            <span className="block text-xs text-muted-foreground">
+              {c.detail}
+            </span>
           </span>
         </li>
       ))}
@@ -98,8 +115,17 @@ export function GateChecks({
   );
 }
 
-export function Money({ minor, currency }: { minor: number; currency: string }) {
-  const value = (minor / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+export function Money({
+  minor,
+  currency,
+}: {
+  minor: number;
+  currency: string;
+}) {
+  const value = (minor / 100).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   return (
     <span className="tabular-nums">
       {currency === "BDT" ? "৳" : "$"}
@@ -113,17 +139,29 @@ export function BalanceCard({
   balance,
 }: {
   labels: { available: string; gross: string; reserved: string; hold: string };
-  balance: { grossMinor: number; reservedMinor: number; holdMinor: number; availableMinor: number };
+  balance: {
+    grossMinor: number;
+    reservedMinor: number;
+    holdMinor: number;
+    availableMinor: number;
+  };
 }) {
   return (
     <div className="grid gap-3 sm:grid-cols-4">
       {[
-        { label: labels.available, minor: balance.availableMinor, strong: true },
+        {
+          label: labels.available,
+          minor: balance.availableMinor,
+          strong: true,
+        },
         { label: labels.gross, minor: balance.grossMinor, strong: false },
         { label: labels.reserved, minor: balance.reservedMinor, strong: false },
         { label: labels.hold, minor: balance.holdMinor, strong: false },
       ].map((cell) => (
-        <div key={cell.label} className="rounded-fq-md border border-border bg-card p-3">
+        <div
+          key={cell.label}
+          className="rounded-fq-md border border-border bg-card p-3"
+        >
           <p className="text-xs text-muted-foreground">{cell.label}</p>
           <p className={cell.strong ? "text-xl font-semibold" : "text-lg"}>
             <Money minor={cell.minor} currency="BDT" />
@@ -134,9 +172,18 @@ export function BalanceCard({
   );
 }
 
-export function InlineAlert({ tone, children }: { tone: Tone; children: ReactNode }) {
+export function InlineAlert({
+  tone,
+  children,
+}: {
+  tone: Tone;
+  children: ReactNode;
+}) {
   return (
-    <p className={`rounded-fq-sm border px-3 py-2 text-sm ${toneClass[tone]}`} role="status">
+    <p
+      className={`rounded-fq-sm border px-3 py-2 text-sm ${toneClass[tone]}`}
+      role="status"
+    >
       {children}
     </p>
   );

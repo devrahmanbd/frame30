@@ -33,34 +33,83 @@ export type BreakpointDef = {
 };
 
 export const BREAKPOINT_DEFS: BreakpointDef[] = [
-  { key: "widescreen", label: "Widescreen", width: 1920, edge: 2400, direction: "min", defaultActive: false },
-  { key: "desktop", label: "Desktop", width: 1200, edge: 0, direction: "min", base: true, defaultActive: true },
-  { key: "laptop", label: "Laptop", width: 1120, edge: 1366, direction: "max", defaultActive: false },
-  { key: "tablet", label: "Tablet", width: 820, edge: 1024, direction: "max", defaultActive: true },
-  { key: "mobileLandscape", label: "Mobile landscape", width: 720, edge: 880, direction: "max", defaultActive: false },
-  { key: "mobile", label: "Mobile", width: 390, edge: 767, direction: "max", defaultActive: true },
+  {
+    key: "widescreen",
+    label: "Widescreen",
+    width: 1920,
+    edge: 2400,
+    direction: "min",
+    defaultActive: false,
+  },
+  {
+    key: "desktop",
+    label: "Desktop",
+    width: 1200,
+    edge: 0,
+    direction: "min",
+    base: true,
+    defaultActive: true,
+  },
+  {
+    key: "laptop",
+    label: "Laptop",
+    width: 1120,
+    edge: 1366,
+    direction: "max",
+    defaultActive: false,
+  },
+  {
+    key: "tablet",
+    label: "Tablet",
+    width: 820,
+    edge: 1024,
+    direction: "max",
+    defaultActive: true,
+  },
+  {
+    key: "mobileLandscape",
+    label: "Mobile landscape",
+    width: 720,
+    edge: 880,
+    direction: "max",
+    defaultActive: false,
+  },
+  {
+    key: "mobile",
+    label: "Mobile",
+    width: 390,
+    edge: 767,
+    direction: "max",
+    defaultActive: true,
+  },
 ];
 
-export const BREAKPOINT_BY_KEY: Record<DeviceKey, BreakpointDef> = BREAKPOINT_DEFS.reduce(
-  (acc, def) => {
-    acc[def.key] = def;
-    return acc;
-  },
-  {} as Record<DeviceKey, BreakpointDef>,
-);
+export const BREAKPOINT_BY_KEY: Record<DeviceKey, BreakpointDef> =
+  BREAKPOINT_DEFS.reduce(
+    (acc, def) => {
+      acc[def.key] = def;
+      return acc;
+    },
+    {} as Record<DeviceKey, BreakpointDef>,
+  );
 
-export const DEFAULT_ACTIVE_DEVICES: DeviceKey[] = BREAKPOINT_DEFS.filter((d) => d.defaultActive).map(
-  (d) => d.key,
-);
+export const DEFAULT_ACTIVE_DEVICES: DeviceKey[] = BREAKPOINT_DEFS.filter(
+  (d) => d.defaultActive,
+).map((d) => d.key);
 
 /** Devices in cascade order, widest first. Desktop is always present. */
-export function deviceOrder(active: DeviceKey[] = DEFAULT_ACTIVE_DEVICES): DeviceKey[] {
+export function deviceOrder(
+  active: DeviceKey[] = DEFAULT_ACTIVE_DEVICES,
+): DeviceKey[] {
   const set = new Set<DeviceKey>([...active, "desktop"]);
   return DEVICE_KEYS.filter((key) => set.has(key));
 }
 
 /** Devices that inherit from `device`, narrowest last, `device` included. */
-export function cascadeFor(device: DeviceKey, active: DeviceKey[] = DEFAULT_ACTIVE_DEVICES): DeviceKey[] {
+export function cascadeFor(
+  device: DeviceKey,
+  active: DeviceKey[] = DEFAULT_ACTIVE_DEVICES,
+): DeviceKey[] {
   const order = deviceOrder(active);
   const index = order.indexOf(device);
   if (index < 0) return ["desktop"];
@@ -72,10 +121,17 @@ export type Responsive<T> = { __r: true } & Partial<Record<DeviceKey, T>>;
 export type Maybe<T> = T | Responsive<T> | undefined;
 
 export function isResponsive<T>(value: unknown): value is Responsive<T> {
-  return Boolean(value) && typeof value === "object" && (value as { __r?: boolean }).__r === true;
+  return (
+    Boolean(value) &&
+    typeof value === "object" &&
+    (value as { __r?: boolean }).__r === true
+  );
 }
 
-export function responsive<T>(desktop: T, rest: Partial<Record<DeviceKey, T>> = {}): Responsive<T> {
+export function responsive<T>(
+  desktop: T,
+  rest: Partial<Record<DeviceKey, T>> = {},
+): Responsive<T> {
   return { __r: true, desktop, ...rest };
 }
 
@@ -91,20 +147,27 @@ export function resolveResponsive<T>(
   for (let i = chain.length - 1; i >= 0; i -= 1) {
     const key = chain[i]!;
     const candidate = value[key];
-    if (candidate !== undefined && candidate !== null && candidate !== "") return candidate;
+    if (candidate !== undefined && candidate !== null && candidate !== "")
+      return candidate;
   }
   return value.desktop;
 }
 
 /** Write a value for one device, promoting the field to responsive on demand. */
-export function setResponsive<T>(value: Maybe<T>, device: DeviceKey, next: T | undefined): Maybe<T> {
+export function setResponsive<T>(
+  value: Maybe<T>,
+  device: DeviceKey,
+  next: T | undefined,
+): Maybe<T> {
   if (device === "desktop" && !isResponsive<T>(value)) return next;
   const base: Responsive<T> = isResponsive<T>(value)
     ? { ...value }
     : ({ __r: true, desktop: value } as Responsive<T>);
   if (next === undefined) delete base[device];
   else base[device] = next;
-  const touched = DEVICE_KEYS.filter((k) => k !== "desktop" && base[k] !== undefined);
+  const touched = DEVICE_KEYS.filter(
+    (k) => k !== "desktop" && base[k] !== undefined,
+  );
   if (touched.length === 0) return base.desktop;
   return base;
 }
@@ -143,14 +206,24 @@ export function isLength(value: unknown): value is Length {
   );
 }
 
-export function lengthToCss(value: Maybe<Length>, device: DeviceKey = "desktop"): string | undefined {
+export function lengthToCss(
+  value: Maybe<Length>,
+  device: DeviceKey = "desktop",
+): string | undefined {
   const resolved = resolveResponsive(value, device);
   if (!isLength(resolved)) return undefined;
   if (!Number.isFinite(resolved.value)) return undefined;
   return `${resolved.value}${resolved.unit}`;
 }
 
-export type Box = { top: number; right: number; bottom: number; left: number; unit: Unit; linked?: boolean };
+export type Box = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+  unit: Unit;
+  linked?: boolean;
+};
 
 export function box(all = 0, unit: Unit = "px", linked = true): Box {
   return { top: all, right: all, bottom: all, left: all, unit, linked };
@@ -167,7 +240,10 @@ export function isBox(value: unknown): value is Box {
   );
 }
 
-export function boxToCss(value: Maybe<Box>, device: DeviceKey = "desktop"): string | undefined {
+export function boxToCss(
+  value: Maybe<Box>,
+  device: DeviceKey = "desktop",
+): string | undefined {
   const resolved = resolveResponsive(value, device);
   if (!isBox(resolved)) return undefined;
   const unit = resolved.unit ?? "px";
@@ -175,7 +251,12 @@ export function boxToCss(value: Maybe<Box>, device: DeviceKey = "desktop"): stri
 }
 
 /** Link-toggle behaviour: editing one side while linked writes all four. */
-export function editBox(current: Box, side: keyof Omit<Box, "unit" | "linked">, next: number): Box {
-  if (current.linked) return { ...current, top: next, right: next, bottom: next, left: next };
+export function editBox(
+  current: Box,
+  side: keyof Omit<Box, "unit" | "linked">,
+  next: number,
+): Box {
+  if (current.linked)
+    return { ...current, top: next, right: next, bottom: next, left: next };
   return { ...current, [side]: next };
 }

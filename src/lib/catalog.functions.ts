@@ -20,7 +20,10 @@ export const catalogDryRunFn = createServerFn({ method: "POST" })
         merchantId,
         fileName: z.string().min(1).max(200),
         sourceHash: z.string().regex(/^[0-9a-f]{64}$/),
-        rows: z.array(z.record(z.string(), z.string().max(4000))).min(1).max(2000),
+        rows: z
+          .array(z.record(z.string(), z.string().max(4000)))
+          .min(1)
+          .max(2000),
       })
       .parse(d),
   )
@@ -35,7 +38,9 @@ export const catalogDryRunFn = createServerFn({ method: "POST" })
 
 export const catalogApplyImportFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId, jobId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId, jobId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { applyImport } = await import("./catalog.server");
     return applyImport(context.supabase, data.merchantId, data.jobId);
@@ -43,7 +48,9 @@ export const catalogApplyImportFn = createServerFn({ method: "POST" })
 
 export const catalogDiscardImportFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId, jobId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId, jobId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { discardImport } = await import("./catalog.server");
     return discardImport(context.supabase, data.merchantId, data.jobId);
@@ -97,7 +104,9 @@ export const catalogSaveKindFn = createServerFn({ method: "POST" })
 
 export const catalogKindConfigFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId, productId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId, productId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadKindConfig } = await import("./catalog.server");
     return loadKindConfig(context.supabase, data.merchantId, data.productId);
@@ -110,14 +119,32 @@ export const catalogSaveDefinitionFn = createServerFn({ method: "POST" })
       .object({
         merchantId,
         id: z.string().uuid().optional(),
-        ownerType: z.enum(["product", "variant", "collection", "order", "customer", "article"]),
-        namespace: z.string().min(1).max(40).regex(/^[a-z0-9_]+$/),
-        key: z.string().min(1).max(40).regex(/^[a-z0-9_]+$/),
+        ownerType: z.enum([
+          "product",
+          "variant",
+          "collection",
+          "order",
+          "customer",
+          "article",
+        ]),
+        namespace: z
+          .string()
+          .min(1)
+          .max(40)
+          .regex(/^[a-z0-9_]+$/),
+        key: z
+          .string()
+          .min(1)
+          .max(40)
+          .regex(/^[a-z0-9_]+$/),
         label: z.string().min(1).max(80),
         valueType: z.enum(["text", "number", "boolean", "json", "url", "date"]),
         isRequired: z.boolean(),
         validation: z
-          .record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))
+          .record(
+            z.string(),
+            z.union([z.string(), z.number(), z.boolean(), z.null()]),
+          )
           .default({}),
       })
       .parse(d),
@@ -129,10 +156,16 @@ export const catalogSaveDefinitionFn = createServerFn({ method: "POST" })
 
 export const catalogDeleteDefinitionFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId, id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId, id: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteMetafieldDefinition } = await import("./catalog.server");
-    return deleteMetafieldDefinition(context.supabase, data.merchantId, data.id);
+    return deleteMetafieldDefinition(
+      context.supabase,
+      data.merchantId,
+      data.id,
+    );
   });
 
 export const catalogSaveRulesFn = createServerFn({ method: "POST" })
@@ -175,16 +208,24 @@ export const catalogSaveRulesFn = createServerFn({ method: "POST" })
 
 export const catalogPreviewCollectionFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId, collectionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId, collectionId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { previewCollection } = await import("./catalog.server");
-    return previewCollection(context.supabase, data.merchantId, data.collectionId);
+    return previewCollection(
+      context.supabase,
+      data.merchantId,
+      data.collectionId,
+    );
   });
 
 /** Round-trip CSV export of the merchant's catalog. */
 export const catalogExportCsvFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { exportCatalogCsv } = await import("./catalog.server");
     return exportCatalogCsv(context.supabase, data.merchantId);

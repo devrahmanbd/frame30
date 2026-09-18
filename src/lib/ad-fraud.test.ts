@@ -16,7 +16,8 @@ function click(overrides: Partial<ClickInput> = {}): ClickInput {
     network: "facebook",
     javascriptRan: true,
     automationHints: 0,
-    userAgent: "Mozilla/5.0 (Linux; Android 13; SM-A536E) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
+    userAgent:
+      "Mozilla/5.0 (Linux; Android 13; SM-A536E) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36",
     dwellMs: 18_000,
     interactions: 6,
     clickId: "fbclid-abc",
@@ -51,11 +52,23 @@ describe("scoreClick", () => {
 
   it("flags a datacenter click farm hammering one campaign", () => {
     const result = scoreClick(
-      click({ ipClass: "datacenter", clicksLastHour: 40, distinctVisitorsPerIp: 60, dwellMs: 300, interactions: 0 }),
+      click({
+        ipClass: "datacenter",
+        clicksLastHour: 40,
+        distinctVisitorsPerIp: 60,
+        dwellMs: 300,
+        interactions: 0,
+      }),
     );
     expect(result.verdict).toBe("invalid");
     expect(result.signals.map((s) => s.code)).toEqual(
-      expect.arrayContaining(["DATACENTER_IP", "CLICK_FLOOD", "IP_FANOUT", "DWELL_TOO_SHORT", "NO_INTERACTION"]),
+      expect.arrayContaining([
+        "DATACENTER_IP",
+        "CLICK_FLOOD",
+        "IP_FANOUT",
+        "DWELL_TOO_SHORT",
+        "NO_INTERACTION",
+      ]),
     );
   });
 
@@ -73,13 +86,17 @@ describe("scoreClick", () => {
   });
 
   it("quarantines rather than refuses a merely odd visit", () => {
-    const result = scoreClick(click({ dwellMs: 900, interactions: 0, referrerHost: null }));
+    const result = scoreClick(
+      click({ dwellMs: 900, interactions: 0, referrerHost: null }),
+    );
     expect(result.score).toBeGreaterThanOrEqual(SUSPICIOUS_THRESHOLD);
     expect(result.verdict).toBe("suspicious");
   });
 
   it("detects a spoofed country via the device clock", () => {
-    const result = scoreClick(click({ visitorCountry: "BD", timezoneOffsetMinutes: -300 }));
+    const result = scoreClick(
+      click({ visitorCountry: "BD", timezoneOffsetMinutes: -300 }),
+    );
     expect(result.signals.map((s) => s.code)).toContain("TIMEZONE_MISMATCH");
   });
 
@@ -89,9 +106,9 @@ describe("scoreClick", () => {
   });
 
   it("does not fire dwell/interaction signals when JavaScript never ran", () => {
-    const codes = scoreClick(click({ javascriptRan: false, dwellMs: 0, interactions: 0 })).signals.map(
-      (s) => s.code,
-    );
+    const codes = scoreClick(
+      click({ javascriptRan: false, dwellMs: 0, interactions: 0 }),
+    ).signals.map((s) => s.code);
     expect(codes).toContain("NO_JAVASCRIPT");
     expect(codes).not.toContain("DWELL_TOO_SHORT");
   });
@@ -226,9 +243,13 @@ describe("summarizeIntegrity", () => {
 
 describe("explainers", () => {
   it("returns Bangla guidance ordered by cost", () => {
-    const scored = scoreClick(click({ ipClass: "datacenter", clicksLastHour: 9 }));
+    const scored = scoreClick(
+      click({ ipClass: "datacenter", clicksLastHour: 9 }),
+    );
     const explained = explainSignals(scored.signals, "bn");
-    expect(explained[0]?.weight).toBeGreaterThanOrEqual(explained[1]?.weight ?? 0);
+    expect(explained[0]?.weight).toBeGreaterThanOrEqual(
+      explained[1]?.weight ?? 0,
+    );
     expect(explained[0]?.title).toMatch(/[\u0980-\u09FF]/);
   });
 

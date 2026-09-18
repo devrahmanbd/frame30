@@ -13,12 +13,20 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { blogArchiveFn } from "@/lib/blog-taxonomy.functions";
-import { archiveCrumbs, archiveHead, breadcrumbJsonLd, listingJsonLd, termArchivePath } from "@/lib/blog-taxonomy";
+import {
+  archiveCrumbs,
+  archiveHead,
+  breadcrumbJsonLd,
+  listingJsonLd,
+  termArchivePath,
+} from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 
 export const Route = createFileRoute("/blog/category/$slug")({
-  validateSearch: z.object({ page: z.coerce.number().int().min(1).max(500).optional() }),
+  validateSearch: z.object({
+    page: z.coerce.number().int().min(1).max(500).optional(),
+  }),
   loaderDeps: ({ search }) => ({ page: search.page ?? 1 }),
   loader: async ({ params, deps }) => {
     const data = await blogArchiveFn({
@@ -29,14 +37,20 @@ export const Route = createFileRoute("/blog/category/$slug")({
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Category not found — Framique" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Category not found — Framique" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const { term, paging } = loaderData;
     const basePath = termArchivePath("category", term.slug);
     const { meta, links } = archiveHead({
       basePath,
       titleEn: term.meta_title ?? term.name_en ?? term.name,
-      description: term.meta_description ?? term.description ?? `${term.name} — articles`,
+      description:
+        term.meta_description ?? term.description ?? `${term.name} — articles`,
       paging,
       indexable: term.robots_index !== false,
       imageUrl: term.cover_image_url ?? null,
@@ -53,7 +67,10 @@ export const Route = createFileRoute("/blog/category/$slug")({
               path: basePath,
               name: term.name,
               description: term.description ?? undefined,
-              articles: loaderData.articles.map((a) => ({ slug: a.slug, title: a.title })),
+              articles: loaderData.articles.map((a) => ({
+                slug: a.slug,
+                title: a.title,
+              })),
               paging,
             }),
           ),
@@ -61,7 +78,10 @@ export const Route = createFileRoute("/blog/category/$slug")({
         {
           type: "application/ld+json",
           children: JSON.stringify(
-            breadcrumbJsonLd(null, archiveCrumbs(loaderData.ancestry, term.id, { blog: "Blog" })),
+            breadcrumbJsonLd(
+              null,
+              archiveCrumbs(loaderData.ancestry, term.id, { blog: "Blog" }),
+            ),
           ),
         },
       ],
@@ -78,7 +98,10 @@ function MissingArchive() {
       <h1 className="font-bangla-display text-2xl font-semibold">
         {t("Category not found", "ক্যাটাগরি পাওয়া যায়নি")}
       </h1>
-      <Link to="/blog" className="mt-4 inline-flex min-h-11 items-center justify-center text-sm text-primary underline">
+      <Link
+        to="/blog"
+        className="mt-4 inline-flex min-h-11 items-center justify-center text-sm text-primary underline"
+      >
         {t("Browse the blog", "ব্লগ দেখুন")}
       </Link>
     </main>
@@ -107,11 +130,15 @@ function CategoryArchive() {
         facets,
         paging: data.paging,
         activeSlug: term.slug,
-        basePath: (page: number) => termArchivePath("category", term.slug, page),
+        basePath: (page: number) =>
+          termArchivePath("category", term.slug, page),
       }}
       header={
         <>
-          <nav aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")} className="mb-4 text-xs text-muted-foreground">
+          <nav
+            aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
+            className="mb-4 text-xs text-muted-foreground"
+          >
             <Link to="/blog" className="underline">
               {t("Blog", "ব্লগ")}
             </Link>
@@ -121,7 +148,11 @@ function CategoryArchive() {
                 {crumb.id === term.id ? (
                   <span aria-current="page">{crumb.name}</span>
                 ) : (
-                  <Link to="/blog/category/$slug" params={{ slug: crumb.slug }} className="underline">
+                  <Link
+                    to="/blog/category/$slug"
+                    params={{ slug: crumb.slug }}
+                    className="underline"
+                  >
                     {crumb.name}
                   </Link>
                 )}
@@ -129,19 +160,29 @@ function CategoryArchive() {
             ))}
           </nav>
           <header className="mb-8 border-b border-border pb-6">
-            <h1 className="font-bangla-display text-3xl font-semibold">{heading}</h1>
+            <h1 className="font-bangla-display text-3xl font-semibold">
+              {heading}
+            </h1>
             {term.description ? (
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{term.description}</p>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {term.description}
+              </p>
             ) : null}
             <p className="mt-1 text-xs text-muted-foreground">
-              {t(`${data.paging.total} articles`, `${data.paging.total}টি লেখা`)}
+              {t(
+                `${data.paging.total} articles`,
+                `${data.paging.total}টি লেখা`,
+              )}
             </p>
           </header>
         </>
       }
       empty={
         <p className="rounded-lg border border-dashed border-border px-4 py-12 text-center text-sm text-muted-foreground">
-          {t("No articles in this category yet.", "এই ক্যাটাগরিতে এখনো কোনো লেখা নেই।")}
+          {t(
+            "No articles in this category yet.",
+            "এই ক্যাটাগরিতে এখনো কোনো লেখা নেই।",
+          )}
         </p>
       }
     />

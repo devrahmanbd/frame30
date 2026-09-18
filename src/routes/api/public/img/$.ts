@@ -13,9 +13,13 @@ export const Route = createFileRoute("/api/public/img/$")({
     handlers: {
       GET: async ({ request, params }) => {
         const { serveTransform } = await import("@/lib/image-transform.server");
-        const { enforceRateLimit, RateLimitError } = await import("@/lib/rate-limit.server");
+        const { enforceRateLimit, RateLimitError } =
+          await import("@/lib/rate-limit.server");
 
-        const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? "anon";
+        const ip =
+          request.headers.get("cf-connecting-ip") ??
+          request.headers.get("x-forwarded-for") ??
+          "anon";
         try {
           await enforceRateLimit("image.transform", ip.split(",")[0]!.trim());
         } catch (error) {
@@ -29,7 +33,10 @@ export const Route = createFileRoute("/api/public/img/$")({
         }
 
         const splat = (params as { _splat?: string })._splat ?? "";
-        const outcome = await serveTransform(splat.split("/").filter(Boolean), request.headers.get("accept"));
+        const outcome = await serveTransform(
+          splat.split("/").filter(Boolean),
+          request.headers.get("accept"),
+        );
         return outcome.response;
       },
     },

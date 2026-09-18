@@ -30,14 +30,16 @@ export const COHORT_DEFINITIONS: Record<CohortTier, CohortDefinition> = {
     tier: 0,
     key: "internal",
     name: "Cohort 0 (Internal / Dogfood)",
-    description: "Platform staff, internal test shops, and corporate dogfood stores",
+    description:
+      "Platform staff, internal test shops, and corporate dogfood stores",
     maxStores: 25,
   },
   1: {
     tier: 1,
     key: "beta",
     name: "Cohort 1 (10 Beta Stores)",
-    description: "Trusted partner merchants who explicitly opted into early access releases",
+    description:
+      "Trusted partner merchants who explicitly opted into early access releases",
     maxStores: 10,
   },
   2: {
@@ -58,7 +60,8 @@ export const COHORT_DEFINITIONS: Record<CohortTier, CohortDefinition> = {
     tier: 4,
     key: "global",
     name: "Cohort 4 (Global)",
-    description: "All remaining production merchants across the entire platform",
+    description:
+      "All remaining production merchants across the entire platform",
     maxStores: Number.POSITIVE_INFINITY,
   },
 };
@@ -83,7 +86,9 @@ const SEEDED_COHORTS: Record<string, CohortTier> = {
 };
 
 // In-memory L1 cache with fast local mutation
-const memoryCohortCache = new Map<string, CohortTier>(Object.entries(SEEDED_COHORTS));
+const memoryCohortCache = new Map<string, CohortTier>(
+  Object.entries(SEEDED_COHORTS),
+);
 let memoryActiveRolloutTier: CohortTier | -1 = 0; // default: dogfood routes to green
 
 /**
@@ -110,40 +115,62 @@ export function hashTenantCohort(identifier: string): CohortTier {
  */
 export async function extractTenantIdentifier(request: Request): Promise<{
   identifier: string | null;
-  source: "header_merchant" | "header_slug" | "header_tenant" | "path" | "query" | "cookie" | "host" | "none";
+  source:
+    | "header_merchant"
+    | "header_slug"
+    | "header_tenant"
+    | "path"
+    | "query"
+    | "cookie"
+    | "host"
+    | "none";
 }> {
   const headers = request.headers;
 
   // 1. Explicit Edge Headers
   const headerMerchant = headers.get("x-merchant-id")?.trim();
-  if (headerMerchant) return { identifier: headerMerchant, source: "header_merchant" };
+  if (headerMerchant)
+    return { identifier: headerMerchant, source: "header_merchant" };
 
   const headerSlug = headers.get("x-store-slug")?.trim();
   if (headerSlug) return { identifier: headerSlug, source: "header_slug" };
 
   const headerTenant = headers.get("x-tenant-id")?.trim();
-  if (headerTenant) return { identifier: headerTenant, source: "header_tenant" };
+  if (headerTenant)
+    return { identifier: headerTenant, source: "header_tenant" };
 
   try {
     const url = new URL(request.url);
 
     // 2. URL Path Matching: `/store/:slug` or `/api/store/:slug`
-    const pathMatch = url.pathname.match(/^\/(?:api\/)?store\/([a-zA-Z0-9-_]+)/);
+    const pathMatch = url.pathname.match(
+      /^\/(?:api\/)?store\/([a-zA-Z0-9-_]+)/,
+    );
     if (pathMatch && pathMatch[1]) {
       return { identifier: pathMatch[1].toLowerCase(), source: "path" };
     }
 
     // 3. Query Param (e.g. preview links)
-    const queryMerchant = url.searchParams.get("merchant_id") || url.searchParams.get("store_slug");
+    const queryMerchant =
+      url.searchParams.get("merchant_id") || url.searchParams.get("store_slug");
     if (queryMerchant?.trim()) {
-      return { identifier: queryMerchant.trim().toLowerCase(), source: "query" };
+      return {
+        identifier: queryMerchant.trim().toLowerCase(),
+        source: "query",
+      };
     }
 
     // 4. Host Header (Custom Domain Edge Resolution)
     const host = headers.get("host")?.split(":")[0]?.trim().toLowerCase();
     // Ignore internal or platform domains
-    if (host && !host.endsWith("framique.app") && !host.includes("localhost") && !host.endsWith("framique.dev")) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (
+      host &&
+      !host.endsWith("framique.app") &&
+      !host.includes("localhost") &&
+      !host.endsWith("framique.dev")
+    ) {
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const { data } = await supabaseAdmin
         .from("merchant_domains")
         .select("merchant_id")
@@ -157,9 +184,14 @@ export async function extractTenantIdentifier(request: Request): Promise<{
 
     // 5. Cookie inspection
     const cookieHeader = headers.get("cookie") || "";
-    const cookieMatch = cookieHeader.match(/(?:framique_tenant_id|framique_store_slug)=([^;]+)/);
+    const cookieMatch = cookieHeader.match(
+      /(?:framique_tenant_id|framique_store_slug)=([^;]+)/,
+    );
     if (cookieMatch && cookieMatch[1]) {
-      return { identifier: decodeURIComponent(cookieMatch[1]).trim().toLowerCase(), source: "cookie" };
+      return {
+        identifier: decodeURIComponent(cookieMatch[1]).trim().toLowerCase(),
+        source: "cookie",
+      };
     }
   } catch {
     // Malformed URL safety
@@ -207,7 +239,10 @@ export async function getTenantCohort(identifier: string): Promise<CohortTier> {
 /**
  * Assign a specific store to a cohort tier.
  */
-export async function setTenantCohort(identifier: string, tier: CohortTier): Promise<boolean> {
+export async function setTenantCohort(
+  identifier: string,
+  tier: CohortTier,
+): Promise<boolean> {
   const normalized = identifier.toLowerCase().trim();
   memoryCohortCache.set(normalized, tier);
 
@@ -234,7 +269,10 @@ export async function setTenantCohort(identifier: string, tier: CohortTier): Pro
 export async function getActiveCohortRolloutTier(): Promise<CohortTier | -1> {
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", redisKey("platform", ACTIVE_ROLLOUT_TIER_KEY)]);
+      const res = await redisCommand([
+        "GET",
+        redisKey("platform", ACTIVE_ROLLOUT_TIER_KEY),
+      ]);
       if (res.ok && typeof res.value === "string") {
         const val = parseInt(res.value, 10);
         if (val >= -1 && val <= 4) {
@@ -252,7 +290,9 @@ export async function getActiveCohortRolloutTier(): Promise<CohortTier | -1> {
 /**
  * Set the maximum cohort tier eligible to receive candidate releases.
  */
-export async function setActiveCohortRolloutTier(tier: CohortTier | -1): Promise<boolean> {
+export async function setActiveCohortRolloutTier(
+  tier: CohortTier | -1,
+): Promise<boolean> {
   memoryActiveRolloutTier = tier;
 
   if (redisConfigured()) {
@@ -295,19 +335,40 @@ export async function resolveTenantCanaryRoute(
   const candidateSlot = options.candidateSlot || "green";
   const primarySlot = options.primarySlot || "blue";
 
-  // 1. Check for manual developer / staff override header or cookie
-  const slotOverride = request.headers.get("x-framique-slot-override")?.toLowerCase().trim();
+  // 1. Check for manual developer / staff override header or cookie (REPORT WF-26)
+  const slotOverride = request.headers
+    .get("x-framique-slot-override")
+    ?.toLowerCase()
+    .trim();
   if (slotOverride === "green" || slotOverride === "blue") {
-    return {
-      targetSlot: slotOverride as TopologySlot,
-      cohortTier: 0,
-      tenantId: "manual-override",
-      reason: `Manual slot override header (X-Framique-Slot-Override: ${slotOverride})`,
-      headersToInject: {
-        "x-framique-target-slot": slotOverride,
-        "x-framique-cohort-tier": "0",
-      },
-    };
+    let allowed = false;
+    try {
+      const url = new URL(request.url);
+      const isTestOrLocal =
+        url.hostname === "localhost" ||
+        url.hostname === "127.0.0.1" ||
+        url.hostname.endsWith(".test") ||
+        url.hostname.endsWith(".local") ||
+        process.env["NODE_ENV"] === "test";
+      const staffSecret = process.env["CANARY_STAFF_TOKEN"];
+      const staffToken = request.headers.get("x-framique-staff-token");
+      allowed = isTestOrLocal || (Boolean(staffSecret) && staffToken === staffSecret);
+    } catch {
+      allowed = false;
+    }
+
+    if (allowed) {
+      return {
+        targetSlot: slotOverride as TopologySlot,
+        cohortTier: 0,
+        tenantId: "manual-override",
+        reason: `Manual slot override header (X-Framique-Slot-Override: ${slotOverride})`,
+        headersToInject: {
+          "x-framique-target-slot": slotOverride,
+          "x-framique-cohort-tier": "0",
+        },
+      };
+    }
   }
 
   // 2. Resolve Tenant Identifier

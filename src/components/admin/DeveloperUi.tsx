@@ -20,7 +20,9 @@ export function SectionCard({
     <section className="space-y-3 rounded-fq-md border border-border bg-card p-4">
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="font-bangla-display text-base font-semibold">{title}</h2>
+          <h2 className="font-bangla-display text-base font-semibold">
+            {title}
+          </h2>
           {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
         </div>
         {actions}
@@ -40,7 +42,10 @@ export function Tabs({
   onChange: (id: string) => void;
 }) {
   return (
-    <div role="tablist" className="flex flex-wrap gap-1 rounded-fq-md border border-border bg-muted/40 p-1">
+    <div
+      role="tablist"
+      className="flex flex-wrap gap-1 rounded-fq-md border border-border bg-muted/40 p-1"
+    >
       {tabs.map((tab) => (
         <button
           key={tab.id}
@@ -49,7 +54,9 @@ export function Tabs({
           aria-selected={active === tab.id}
           onClick={() => onChange(tab.id)}
           className={`min-h-9 rounded-fq-md px-3 text-sm transition ${
-            active === tab.id ? "bg-card font-medium shadow-sm" : "text-muted-foreground hover:text-foreground"
+            active === tab.id
+              ? "bg-card font-medium shadow-sm"
+              : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {tab.label}
@@ -77,7 +84,9 @@ export function SecretReveal({
     <div className="space-y-2 rounded-fq-md border border-success bg-success-soft p-4 text-sm">
       <p className="font-medium">{note}</p>
       <div className="flex flex-wrap items-center gap-2">
-        <code className="break-all rounded-fq-md bg-background px-2 py-1 font-mono text-xs">{secret}</code>
+        <code className="break-all rounded-fq-md bg-background px-2 py-1 font-mono text-xs">
+          {secret}
+        </code>
         <button
           type="button"
           className="min-h-9 rounded-fq-md border border-border bg-background px-3 text-sm"
@@ -85,7 +94,11 @@ export function SecretReveal({
         >
           {copyLabel}
         </button>
-        <button type="button" className="min-h-9 rounded-fq-md px-3 text-sm underline" onClick={onDismiss}>
+        <button
+          type="button"
+          className="min-h-9 rounded-fq-md px-3 text-sm underline"
+          onClick={onDismiss}
+        >
           {closeLabel}
         </button>
       </div>
@@ -111,7 +124,11 @@ export function DeliveryBadge({ status }: { status: string }) {
           ? "border-warning bg-warning-soft"
           : "border-border bg-muted";
   return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${tone}`}>{status}</span>
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs ${tone}`}
+    >
+      {status}
+    </span>
   );
 }
 

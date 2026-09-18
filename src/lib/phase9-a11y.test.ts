@@ -49,7 +49,9 @@ describe("reduced motion", () => {
     const keyframes = CSS.match(/@keyframes[\s\S]*?\n}/g) ?? [];
     expect(keyframes.length).toBeGreaterThan(0);
     for (const frame of keyframes) {
-      expect(frame).not.toMatch(/\n\s*(width|height|top|left|margin|padding)\s*:/);
+      expect(frame).not.toMatch(
+        /\n\s*(width|height|top|left|margin|padding)\s*:/,
+      );
     }
   });
 });
@@ -74,7 +76,8 @@ describe("release gates", () => {
 
   it("covers index, collection and product at the a11y floor", () => {
     const script = read("scripts/vitals-gate.mjs");
-    for (const name of ["index", "collection", "product"]) expect(script).toMatch(`"${name}"`);
+    for (const name of ["index", "collection", "product"])
+      expect(script).toMatch(`"${name}"`);
     expect(script).toMatch(/a11y-min", "95"/);
   });
 
@@ -88,7 +91,9 @@ describe("release gates", () => {
 describe("plugin sandbox", () => {
   it("keeps a sandbox-escape and permission-denial test in the suite", () => {
     const plugins = read("src/lib/phase5-plugins.test.ts");
-    expect(plugins).toMatch(/rejects invented permissions, unknown hooks and dynamic code/);
+    expect(plugins).toMatch(
+      /rejects invented permissions, unknown hooks and dynamic code/,
+    );
     const sandbox = read("src/components/marketplace/WidgetSandbox.tsx");
     expect(sandbox).toMatch(/sandbox=/);
     expect(sandbox).not.toMatch(/allow-same-origin/);

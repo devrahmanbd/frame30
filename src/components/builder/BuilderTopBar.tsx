@@ -110,7 +110,16 @@ export function BuilderTopBar({
             aria-label={t("Finder (⌘K)", "ফাইন্ডার (⌘K)")}
             className="inline-flex h-8 items-center gap-1.5 rounded-fq-md border border-border px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <svg
+              className="size-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
             <span className="hidden md:inline">{t("Find", "খুঁজুন")}</span>
           </button>
         )}
@@ -123,7 +132,18 @@ export function BuilderTopBar({
             aria-pressed={structureVisible}
             className={`inline-flex size-8 items-center justify-center rounded-fq-md hover:bg-muted hover:text-foreground ${structureVisible ? "bg-muted text-foreground" : "text-muted-foreground"}`}
           >
-            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
           </button>
         )}
 
@@ -134,30 +154,112 @@ export function BuilderTopBar({
             aria-label={t("Checklist", "চেকলিস্ট")}
             className={`inline-flex h-8 items-center gap-1.5 rounded-fq-md px-2 text-xs hover:bg-muted ${issueCount > 0 ? "text-destructive" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            {issueCount > 0 && <span className="font-medium">{issueCount}</span>}
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+            </svg>
+            {issueCount > 0 && (
+              <span className="font-medium">{issueCount}</span>
+            )}
           </button>
         )}
 
         <div className="mx-1 h-5 w-px bg-border" role="separator" />
 
-        <button type="button" onClick={onUndo} disabled={!canUndo} aria-label={t("Undo", "আনডু")} className="inline-flex size-8 items-center justify-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40">
-          <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 10h10a5 5 0 0 1 0 10H9"/><path d="m7 6-4 4 4 4"/></svg>
+        <button
+          type="button"
+          onClick={onUndo}
+          disabled={!canUndo}
+          aria-label={t("Undo", "আনডু")}
+          className="inline-flex size-8 items-center justify-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+        >
+          <svg
+            className="size-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M3 10h10a5 5 0 0 1 0 10H9" />
+            <path d="m7 6-4 4 4 4" />
+          </svg>
         </button>
-        <button type="button" onClick={onRedo} disabled={!canRedo} aria-label={t("Redo", "রিডু")} className="inline-flex size-8 items-center justify-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40">
-          <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10H11a5 5 0 0 0 0 10h4"/><path d="m17 6 4 4-4 4"/></svg>
+        <button
+          type="button"
+          onClick={onRedo}
+          disabled={!canRedo}
+          aria-label={t("Redo", "রিডু")}
+          className="inline-flex size-8 items-center justify-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+        >
+          <svg
+            className="size-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M21 10H11a5 5 0 0 0 0 10h4" />
+            <path d="m17 6 4 4-4 4" />
+          </svg>
         </button>
 
         <div className="mx-1 h-5 w-px bg-border" role="separator" />
 
-        <button type="button" onClick={onPreview} aria-label={isPreview ? t("Exit preview", "প্রিভিউ বন্ধ") : t("Preview changes", "পরিবর্তন প্রিভিউ")} className={`inline-flex size-8 items-center justify-center rounded-fq-md hover:bg-muted hover:text-foreground ${isPreview ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}>
-          {isPreview ? <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg> : <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>}
+        <button
+          type="button"
+          onClick={onPreview}
+          aria-label={
+            isPreview
+              ? t("Exit preview", "প্রিভিউ বন্ধ")
+              : t("Preview changes", "পরিবর্তন প্রিভিউ")
+          }
+          className={`inline-flex size-8 items-center justify-center rounded-fq-md hover:bg-muted hover:text-foreground ${isPreview ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+        >
+          {isPreview ? (
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          ) : (
+            <svg
+              className="size-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          )}
         </button>
 
-        <button type="button" onClick={onSave} disabled={saveDisabled} className="hidden rounded-fq-md border border-border px-3 py-1.5 text-xs hover:bg-muted disabled:opacity-50 sm:inline-flex sm:items-center">
+        <button
+          type="button"
+          onClick={onSave}
+          disabled={saveDisabled}
+          className="hidden rounded-fq-md border border-border px-3 py-1.5 text-xs hover:bg-muted disabled:opacity-50 sm:inline-flex sm:items-center"
+        >
           {t("Save", "সেভ")}
         </button>
-        <button type="button" onClick={onPublish} disabled={publishDisabled} className="rounded-fq-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+        <button
+          type="button"
+          onClick={onPublish}
+          disabled={publishDisabled}
+          className="rounded-fq-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        >
           {t("Publish", "পাবলিশ")}
         </button>
       </div>

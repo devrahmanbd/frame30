@@ -5,9 +5,7 @@
     "platform": "darwin-arm64",
     "args": {
       "live": true,
-      "models": [
-        "nvidia/nemotron-3-super-120b-a12b:free"
-      ],
+      "models": ["nvidia/nemotron-3-super-120b-a12b:free"],
       "maxCost": 0.01,
       "repeat": 3,
       "maxTokens": 256,

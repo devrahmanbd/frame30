@@ -34,6 +34,8 @@ export function requirePermission(permission: AnyPermission) {
         const { assertStepUp } = await import("./hardening.server");
         await assertStepUp(context.supabase, permission, actor.merchantId);
       }
-      return next({ context: { actor, permission, stepUp: isDangerous(permission) } });
+      return next({
+        context: { actor, permission, stepUp: isDangerous(permission) },
+      });
     });
 }

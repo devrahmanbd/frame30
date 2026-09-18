@@ -40,7 +40,9 @@ function attrs(record) {
 }
 
 async function main() {
-  const { ICON_NAMES, ICONS, SPRITE_PATH } = await import(`${ROOT}/src/lib/marketing-assets.ts`);
+  const { ICON_NAMES, ICONS, SPRITE_PATH } = await import(
+    `${ROOT}/src/lib/marketing-assets.ts`
+  );
   /**
    * Path data comes from the per-icon ESM modules (`__iconNode`), not from the
    * `lucide-react` barrel. In this version the barrel exports forwardRef
@@ -106,7 +108,9 @@ async function main() {
   if (CHECK) {
     const current = existsSync(target) ? readFileSync(target, "utf8") : null;
     if (current === sprite) {
-      console.log(`icon sprite up to date — ${symbols.length} symbols, ${Math.round(bytes / 1024)}KB.`);
+      console.log(
+        `icon sprite up to date — ${symbols.length} symbols, ${Math.round(bytes / 1024)}KB.`,
+      );
       return;
     }
     log("error", "icons.stale", { target });
@@ -126,7 +130,9 @@ async function main() {
 }
 
 main().catch((error) => {
-  log("error", "icons.harness_failed", { message: String(error?.message ?? error) });
+  log("error", "icons.harness_failed", {
+    message: String(error?.message ?? error),
+  });
   console.error(`icon sprite harness failed: ${error?.stack ?? error}`);
   process.exit(2);
 });

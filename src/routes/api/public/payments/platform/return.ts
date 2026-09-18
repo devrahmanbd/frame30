@@ -28,13 +28,16 @@ async function handle(request: Request) {
   const status = url.searchParams.get("status") ?? "";
   const sig = url.searchParams.get("sig") ?? "";
   const failure = url.searchParams.get("failure");
-  const wantsJson = (request.headers.get("accept") ?? "").includes("application/json");
+  const wantsJson = (request.headers.get("accept") ?? "").includes(
+    "application/json",
+  );
   const ip =
     request.headers.get("cf-connecting-ip") ??
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     "unknown";
 
-  const { applyPlatformReturn, PlatformBillingError } = await import("@/lib/platform-billing.server");
+  const { applyPlatformReturn, PlatformBillingError } =
+    await import("@/lib/platform-billing.server");
   try {
     const result = await applyPlatformReturn(charge, status, sig, ip, failure);
     if (wantsJson) {
@@ -46,22 +49,40 @@ async function handle(request: Request) {
     const target = new URL("/dashboard/billing/invoices", url.origin);
     target.searchParams.set("pay", result.status);
     target.searchParams.set("invoice", result.invoiceId);
-    if (result.receiptNumber) target.searchParams.set("receipt", result.receiptNumber);
+    if (result.receiptNumber)
+      target.searchParams.set("receipt", result.receiptNumber);
     return new Response(null, {
       status: 303,
-      headers: { location: target.pathname + target.search, "cache-control": "no-store" },
+      headers: {
+        location: target.pathname + target.search,
+        "cache-control": "no-store",
+      },
     });
   } catch (error) {
-    const code = error instanceof PlatformBillingError ? error.code : "platform.signature_invalid";
-    const httpStatus = code === "platform.signature_invalid" ? 401 : code === "platform.charge_not_found" ? 404 : 400;
+    const code =
+      error instanceof PlatformBillingError
+        ? error.code
+        : "platform.signature_invalid";
+    const httpStatus =
+      code === "platform.signature_invalid"
+        ? 401
+        : code === "platform.charge_not_found"
+          ? 404
+          : 400;
     if (wantsJson) {
-      return Response.json({ ok: false, code }, { status: httpStatus, headers: { "cache-control": "no-store" } });
+      return Response.json(
+        { ok: false, code },
+        { status: httpStatus, headers: { "cache-control": "no-store" } },
+      );
     }
     const target = new URL("/dashboard/billing/invoices", url.origin);
     target.searchParams.set("pay_error", code);
     return new Response(null, {
       status: 303,
-      headers: { location: target.pathname + target.search, "cache-control": "no-store" },
+      headers: {
+        location: target.pathname + target.search,
+        "cache-control": "no-store",
+      },
     });
   }
 }

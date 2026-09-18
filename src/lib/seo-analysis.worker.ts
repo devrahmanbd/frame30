@@ -13,7 +13,11 @@
  *   out → { v: 1, id: number, ok: true, report, ms } | { v: 1, id, ok: false, error }
  */
 import { analyseSeo } from "./seo-analysis";
-import { SEO_WORKER_PROTOCOL, type SeoWorkerRequest, type SeoWorkerResponse } from "./seo-analysis-worker-contract";
+import {
+  SEO_WORKER_PROTOCOL,
+  type SeoWorkerRequest,
+  type SeoWorkerResponse,
+} from "./seo-analysis-worker-contract";
 
 const scope = self as unknown as DedicatedWorkerGlobalScope;
 

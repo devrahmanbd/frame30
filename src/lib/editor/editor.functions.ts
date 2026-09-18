@@ -64,20 +64,34 @@ export const editorLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { loadEditor } = await import("./editor.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    const ctx = await loadEditor(context.supabase, merchantId, context.userId, data.kind, data.id);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    const ctx = await loadEditor(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.kind,
+      data.id,
+    );
     return { ...ctx, canPublish: can("marketing.publish", context.actor) };
   });
 
 export const editorSaveFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
   .inputValidator((d: unknown) =>
-    z.object({ doc: docSchema, mode: z.enum(["autosave", "save", "publish"]) }).parse(d),
+    z
+      .object({ doc: docSchema, mode: z.enum(["autosave", "save", "publish"]) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { saveEditor } = await import("./editor.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     const canPublish = can("marketing.publish", context.actor);
     return saveEditor(
       context.supabase,
@@ -97,17 +111,30 @@ export const editorRevisionFn = createServerFn({ method: "GET" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { readRevision } = await import("./editor.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return readRevision(context.supabase, merchantId, data.kind, data.revisionId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return readRevision(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.revisionId,
+    );
   });
 
 export const editorTrashFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ kind: kindSchema, id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ kind: kindSchema, id: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { trashFromEditor } = await import("./editor.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return trashFromEditor(context.supabase, merchantId, data.kind, data.id);
   });
 
@@ -115,12 +142,25 @@ export const editorSetKindFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
   .inputValidator((d: unknown) =>
     z
-      .object({ kind: kindSchema, id: z.string().uuid(), editor: z.enum(["classic", "builder"]) })
+      .object({
+        kind: kindSchema,
+        id: z.string().uuid(),
+        editor: z.enum(["classic", "builder"]),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { setEditorKind } = await import("./editor.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return setEditorKind(context.supabase, merchantId, data.kind, data.id, data.editor);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return setEditorKind(
+      context.supabase,
+      merchantId,
+      data.kind,
+      data.id,
+      data.editor,
+    );
   });

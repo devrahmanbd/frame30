@@ -104,7 +104,10 @@ export function HeroBand({
             <p
               lang="bn"
               data-type-role="lead"
-              className={cn("mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed", !centred && "fq-measure")}
+              className={cn(
+                "mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed",
+                !centred && "fq-measure",
+              )}
             >
               {subBn}
             </p>
@@ -124,14 +127,21 @@ export function HeroBand({
           {proof ? (
             <p
               data-type-role="caption"
-              className={cn("mt-5 sm:mt-6 text-xs sm:text-sm text-muted-foreground leading-relaxed", centred && "mx-auto max-w-xl")}
+              className={cn(
+                "mt-5 sm:mt-6 text-xs sm:text-sm text-muted-foreground leading-relaxed",
+                centred && "mx-auto max-w-xl",
+              )}
             >
               {proof}
             </p>
           ) : null}
         </div>
 
-        {visual ? <div className="w-full min-w-0 flex items-center justify-center">{visual}</div> : null}
+        {visual ? (
+          <div className="w-full min-w-0 flex items-center justify-center">
+            {visual}
+          </div>
+        ) : null}
       </div>
     </Band>
   );

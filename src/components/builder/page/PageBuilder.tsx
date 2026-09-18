@@ -95,12 +95,24 @@ export function PageBuilder({
 
   /* ---------------- tree helpers ---------------- */
 
-  const mapSections = (fn: (s: BuilderDoc["sections"][number]) => BuilderDoc["sections"][number] | null) =>
-    ({ ...doc, sections: doc.sections.map(fn).filter(Boolean) as BuilderDoc["sections"] });
+  const mapSections = (
+    fn: (
+      s: BuilderDoc["sections"][number],
+    ) => BuilderDoc["sections"][number] | null,
+  ) => ({
+    ...doc,
+    sections: doc.sections.map(fn).filter(Boolean) as BuilderDoc["sections"],
+  });
 
-  const addSection = (spans: number[]) => commit({ ...doc, sections: [...doc.sections, newSection(spans)] });
+  const addSection = (spans: number[]) =>
+    commit({ ...doc, sections: [...doc.sections, newSection(spans)] });
 
-  const insertWidget = (sectionId: string, columnId: string, index: number, widget: Widget) =>
+  const insertWidget = (
+    sectionId: string,
+    columnId: string,
+    index: number,
+    widget: Widget,
+  ) =>
     commit(
       mapSections((s) =>
         s.id !== sectionId
@@ -110,7 +122,14 @@ export function PageBuilder({
               columns: s.columns.map((c) =>
                 c.id !== columnId
                   ? c
-                  : { ...c, widgets: [...c.widgets.slice(0, index), widget, ...c.widgets.slice(index)] },
+                  : {
+                      ...c,
+                      widgets: [
+                        ...c.widgets.slice(0, index),
+                        widget,
+                        ...c.widgets.slice(index),
+                      ],
+                    },
               ),
             },
       ),
@@ -122,25 +141,38 @@ export function PageBuilder({
         ...s,
         columns: s.columns.map((c) => ({
           ...c,
-          widgets: c.widgets.map((w) => (w.id === widgetId ? { ...w, settings: { ...w.settings, ...patch } } : w)),
+          widgets: c.widgets.map((w) =>
+            w.id === widgetId
+              ? { ...w, settings: { ...w.settings, ...patch } }
+              : w,
+          ),
         })),
       })),
     );
 
   const removeSelected = () => {
     if (!selection) return;
-    if (selection.kind === "section") commit(mapSections((s) => (s.id === selection.sectionId ? null : s)));
+    if (selection.kind === "section")
+      commit(mapSections((s) => (s.id === selection.sectionId ? null : s)));
     if (selection.kind === "column")
       commit(
         mapSections((s) =>
-          s.id !== selection.sectionId ? s : { ...s, columns: s.columns.filter((c) => c.id !== selection.columnId) },
+          s.id !== selection.sectionId
+            ? s
+            : {
+                ...s,
+                columns: s.columns.filter((c) => c.id !== selection.columnId),
+              },
         ),
       );
     if (selection.kind === "widget")
       commit(
         mapSections((s) => ({
           ...s,
-          columns: s.columns.map((c) => ({ ...c, widgets: c.widgets.filter((w) => w.id !== selection.widgetId) })),
+          columns: s.columns.map((c) => ({
+            ...c,
+            widgets: c.widgets.filter((w) => w.id !== selection.widgetId),
+          })),
         })),
       );
     setSelection(null);
@@ -151,11 +183,24 @@ export function PageBuilder({
     if (selection.kind === "section") {
       const src = doc.sections.find((s) => s.id === selection.sectionId);
       if (!src) return;
-      const clone = JSON.parse(JSON.stringify(src)) as BuilderDoc["sections"][number];
+      const clone = JSON.parse(
+        JSON.stringify(src),
+      ) as BuilderDoc["sections"][number];
       clone.id = uid();
-      clone.columns = clone.columns.map((c) => ({ ...c, id: uid(), widgets: c.widgets.map((w) => ({ ...w, id: uid() })) }));
+      clone.columns = clone.columns.map((c) => ({
+        ...c,
+        id: uid(),
+        widgets: c.widgets.map((w) => ({ ...w, id: uid() })),
+      }));
       const i = doc.sections.findIndex((s) => s.id === src.id);
-      commit({ ...doc, sections: [...doc.sections.slice(0, i + 1), clone, ...doc.sections.slice(i + 1)] });
+      commit({
+        ...doc,
+        sections: [
+          ...doc.sections.slice(0, i + 1),
+          clone,
+          ...doc.sections.slice(i + 1),
+        ],
+      });
     }
     if (selection.kind === "widget") {
       commit(
@@ -165,7 +210,14 @@ export function PageBuilder({
             const i = c.widgets.findIndex((w) => w.id === selection.widgetId);
             if (i < 0) return c;
             const clone = { ...c.widgets[i]!, id: uid() };
-            return { ...c, widgets: [...c.widgets.slice(0, i + 1), clone, ...c.widgets.slice(i + 1)] };
+            return {
+              ...c,
+              widgets: [
+                ...c.widgets.slice(0, i + 1),
+                clone,
+                ...c.widgets.slice(i + 1),
+              ],
+            };
           }),
         })),
       );
@@ -191,11 +243,17 @@ export function PageBuilder({
     return null;
   }, [doc, selection]);
 
-  const selectedSection = selection ? doc.sections.find((s) => s.id === selection.sectionId) ?? null : null;
+  const selectedSection = selection
+    ? (doc.sections.find((s) => s.id === selection.sectionId) ?? null)
+    : null;
 
   const patchSection = (patch: Partial<BuilderDoc["sections"][number]>) => {
     if (!selectedSection) return;
-    commit(mapSections((s) => (s.id === selectedSection.id ? { ...s, ...patch } : s)));
+    commit(
+      mapSections((s) =>
+        s.id === selectedSection.id ? { ...s, ...patch } : s,
+      ),
+    );
   };
 
   /* ---------------- render ---------------- */
@@ -206,16 +264,36 @@ export function PageBuilder({
         <span className="mr-auto flex items-center gap-2 text-sm font-semibold">
           <Layers className="size-4" aria-hidden />
           {t("Page builder", "পেজ বিল্ডার")}
-          {title ? <span className="text-xs font-normal text-muted-foreground">· {title}</span> : null}
+          {title ? (
+            <span className="text-xs font-normal text-muted-foreground">
+              · {title}
+            </span>
+          ) : null}
         </span>
-        <button type="button" className={btn} onClick={undo} aria-label={t("Undo", "আগেরটা")}>
+        <button
+          type="button"
+          className={btn}
+          onClick={undo}
+          aria-label={t("Undo", "আগেরটা")}
+        >
           <Undo2 className="size-3.5" aria-hidden /> {t("Undo", "আগেরটা")}
         </button>
-        <button type="button" className={btn} onClick={redo} aria-label={t("Redo", "পরেরটা")}>
+        <button
+          type="button"
+          className={btn}
+          onClick={redo}
+          aria-label={t("Redo", "পরেরটা")}
+        >
           <Redo2 className="size-3.5" aria-hidden /> {t("Redo", "পরেরটা")}
         </button>
         <div className="flex items-center gap-1 rounded-fq-md border border-border p-0.5">
-          {([["desktop", Monitor], ["tablet", Tablet], ["mobile", Smartphone]] as const).map(([d, Icon]) => (
+          {(
+            [
+              ["desktop", Monitor],
+              ["tablet", Tablet],
+              ["mobile", Smartphone],
+            ] as const
+          ).map(([d, Icon]) => (
             <button
               key={d}
               type="button"
@@ -228,7 +306,12 @@ export function PageBuilder({
             </button>
           ))}
         </div>
-        <button type="button" className={btn} onClick={() => setPreviewing((p) => !p)} aria-pressed={previewing}>
+        <button
+          type="button"
+          className={btn}
+          onClick={() => setPreviewing((p) => !p)}
+          aria-pressed={previewing}
+        >
           {previewing ? t("Edit", "সম্পাদনা") : t("Preview", "প্রিভিউ")}
         </button>
       </div>
@@ -236,7 +319,9 @@ export function PageBuilder({
       <div className="grid gap-0 lg:grid-cols-[210px_1fr_260px]">
         {/* Widget tray */}
         <aside className="border-b border-border p-3 lg:border-b-0 lg:border-r">
-          <p className="text-xs font-semibold text-muted-foreground">{t("Widgets", "উইজেট")}</p>
+          <p className="text-xs font-semibold text-muted-foreground">
+            {t("Widgets", "উইজেট")}
+          </p>
           <div className="mt-2 grid grid-cols-2 gap-1.5">
             {WIDGETS.map((type) => (
               <button
@@ -249,13 +334,23 @@ export function PageBuilder({
                 onClick={() => {
                   const target =
                     selection && selection.kind !== "section"
-                      ? { sectionId: selection.sectionId, columnId: selection.columnId }
+                      ? {
+                          sectionId: selection.sectionId,
+                          columnId: selection.columnId,
+                        }
                       : (() => {
                           const s = doc.sections[doc.sections.length - 1];
-                          return s?.columns[0] ? { sectionId: s.id, columnId: s.columns[0].id } : null;
+                          return s?.columns[0]
+                            ? { sectionId: s.id, columnId: s.columns[0].id }
+                            : null;
                         })();
                   if (!target) return;
-                  insertWidget(target.sectionId, target.columnId, Number.MAX_SAFE_INTEGER, newWidget(type));
+                  insertWidget(
+                    target.sectionId,
+                    target.columnId,
+                    Number.MAX_SAFE_INTEGER,
+                    newWidget(type),
+                  );
                 }}
                 className="cursor-grab rounded-fq-md border border-border px-2 py-2 text-[11px] text-foreground hover:border-primary hover:bg-muted"
               >
@@ -264,16 +359,27 @@ export function PageBuilder({
             ))}
           </div>
 
-          <p className="mt-4 text-xs font-semibold text-muted-foreground">{t("Add section", "সেকশন যোগ")}</p>
+          <p className="mt-4 text-xs font-semibold text-muted-foreground">
+            {t("Add section", "সেকশন যোগ")}
+          </p>
           <div className="mt-2 grid gap-1.5">
             {COLUMN_PRESETS.map((p) => (
-              <button key={p.key} type="button" className={`${btn} justify-between`} onClick={() => addSection(p.spans)}>
+              <button
+                key={p.key}
+                type="button"
+                className={`${btn} justify-between`}
+                onClick={() => addSection(p.spans)}
+              >
                 {p.label}
                 <Plus className="size-3.5" aria-hidden />
               </button>
             ))}
             {doc.sections.length === 0 && (
-              <button type="button" className={`${btn} justify-center`} onClick={() => commit(starterDoc(title))}>
+              <button
+                type="button"
+                className={`${btn} justify-center`}
+                onClick={() => commit(starterDoc(title))}
+              >
                 {t("Start from template", "টেমপ্লেট থেকে শুরু")}
               </button>
             )}
@@ -293,7 +399,12 @@ export function PageBuilder({
               onSelect={setSelection}
               onDropWidget={({ sectionId, columnId, index }) => {
                 if (!dragged.current) return;
-                insertWidget(sectionId, columnId, index, newWidget(dragged.current));
+                insertWidget(
+                  sectionId,
+                  columnId,
+                  index,
+                  newWidget(dragged.current),
+                );
                 dragged.current = null;
               }}
             />
@@ -303,13 +414,25 @@ export function PageBuilder({
         {/* Inspector */}
         <aside className="border-t border-border p-3 lg:border-l lg:border-t-0">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold text-muted-foreground">{t("Settings", "সেটিংস")}</p>
+            <p className="text-xs font-semibold text-muted-foreground">
+              {t("Settings", "সেটিংস")}
+            </p>
             {selection && (
               <div className="flex gap-1">
-                <button type="button" className={btn} onClick={duplicateSelected} aria-label={t("Duplicate", "কপি")}>
+                <button
+                  type="button"
+                  className={btn}
+                  onClick={duplicateSelected}
+                  aria-label={t("Duplicate", "কপি")}
+                >
                   <Copy className="size-3.5" aria-hidden />
                 </button>
-                <button type="button" className={btn} onClick={removeSelected} aria-label={t("Delete", "মুছুন")}>
+                <button
+                  type="button"
+                  className={btn}
+                  onClick={removeSelected}
+                  aria-label={t("Delete", "মুছুন")}
+                >
                   <Trash2 className="size-3.5" aria-hidden />
                 </button>
               </div>
@@ -318,11 +441,19 @@ export function PageBuilder({
 
           {!selection && (
             <p className="mt-3 text-xs text-muted-foreground">
-              {t("Select a section, column or widget to edit it.", "সম্পাদনা করতে সেকশন, কলাম বা উইজেট নির্বাচন করুন।")}
+              {t(
+                "Select a section, column or widget to edit it.",
+                "সম্পাদনা করতে সেকশন, কলাম বা উইজেট নির্বাচন করুন।",
+              )}
             </p>
           )}
 
-          {selectedWidget && <WidgetInspector widget={selectedWidget} onPatch={(p) => updateWidget(selectedWidget.id, p)} />}
+          {selectedWidget && (
+            <WidgetInspector
+              widget={selectedWidget}
+              onPatch={(p) => updateWidget(selectedWidget.id, p)}
+            />
+          )}
 
           {selection?.kind === "section" && selectedSection && (
             <div className="mt-3 space-y-2">
@@ -332,7 +463,9 @@ export function PageBuilder({
                   placeholder="#ffffff"
                   className={field}
                   value={selectedSection.background ?? ""}
-                  onChange={(e) => patchSection({ background: e.target.value || undefined })}
+                  onChange={(e) =>
+                    patchSection({ background: e.target.value || undefined })
+                  }
                 />
               </Row>
               <Row label={t("Vertical padding", "উল্লম্ব প্যাডিং")}>
@@ -340,7 +473,9 @@ export function PageBuilder({
                   type="number"
                   className={field}
                   value={selectedSection.paddingY ?? 40}
-                  onChange={(e) => patchSection({ paddingY: Number(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    patchSection({ paddingY: Number(e.target.value) || 0 })
+                  }
                 />
               </Row>
               <Row label={t("Gap", "ফাঁক")}>
@@ -348,24 +483,38 @@ export function PageBuilder({
                   type="number"
                   className={field}
                   value={selectedSection.gap ?? 24}
-                  onChange={(e) => patchSection({ gap: Number(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    patchSection({ gap: Number(e.target.value) || 0 })
+                  }
                 />
               </Row>
               <Row label={t("Width", "প্রস্থ")}>
                 <select
                   className={field}
                   value={selectedSection.width ?? "boxed"}
-                  onChange={(e) => patchSection({ width: e.target.value as "boxed" | "full" })}
+                  onChange={(e) =>
+                    patchSection({ width: e.target.value as "boxed" | "full" })
+                  }
                 >
                   <option value="boxed">{t("Boxed", "বক্সড")}</option>
-                  <option value="full">{t("Full width", "পূর্ণ প্রস্থ")}</option>
+                  <option value="full">
+                    {t("Full width", "পূর্ণ প্রস্থ")}
+                  </option>
                 </select>
               </Row>
               <div className="flex gap-1.5">
-                <button type="button" className={btn} onClick={() => moveSection(selectedSection.id, -1)}>
+                <button
+                  type="button"
+                  className={btn}
+                  onClick={() => moveSection(selectedSection.id, -1)}
+                >
                   {t("Move up", "উপরে")}
                 </button>
-                <button type="button" className={btn} onClick={() => moveSection(selectedSection.id, 1)}>
+                <button
+                  type="button"
+                  className={btn}
+                  onClick={() => moveSection(selectedSection.id, 1)}
+                >
                   {t("Move down", "নিচে")}
                 </button>
               </div>
@@ -375,14 +524,21 @@ export function PageBuilder({
           {selection?.kind === "column" && selectedSection && (
             <div className="mt-3 space-y-2">
               {(() => {
-                const col = selectedSection.columns.find((c) => c.id === selection.columnId);
+                const col = selectedSection.columns.find(
+                  (c) => c.id === selection.columnId,
+                );
                 if (!col) return null;
                 const patchColumn = (patch: Partial<typeof col>) =>
                   commit(
                     mapSections((s) =>
                       s.id !== selectedSection.id
                         ? s
-                        : { ...s, columns: s.columns.map((c) => (c.id === col.id ? { ...c, ...patch } : c)) },
+                        : {
+                            ...s,
+                            columns: s.columns.map((c) =>
+                              c.id === col.id ? { ...c, ...patch } : c,
+                            ),
+                          },
                     ),
                   );
                 return (
@@ -394,7 +550,14 @@ export function PageBuilder({
                         max={12}
                         className={field}
                         value={col.span}
-                        onChange={(e) => patchColumn({ span: Math.min(12, Math.max(1, Number(e.target.value) || 1)) })}
+                        onChange={(e) =>
+                          patchColumn({
+                            span: Math.min(
+                              12,
+                              Math.max(1, Number(e.target.value) || 1),
+                            ),
+                          })
+                        }
                       />
                     </Row>
                     <Row label={t("Padding", "প্যাডিং")}>
@@ -402,7 +565,9 @@ export function PageBuilder({
                         type="number"
                         className={field}
                         value={col.padding ?? 0}
-                        onChange={(e) => patchColumn({ padding: Number(e.target.value) || 0 })}
+                        onChange={(e) =>
+                          patchColumn({ padding: Number(e.target.value) || 0 })
+                        }
                       />
                     </Row>
                     <Row label={t("Background", "ব্যাকগ্রাউন্ড")}>
@@ -410,7 +575,11 @@ export function PageBuilder({
                         type="text"
                         className={field}
                         value={col.background ?? ""}
-                        onChange={(e) => patchColumn({ background: e.target.value || undefined })}
+                        onChange={(e) =>
+                          patchColumn({
+                            background: e.target.value || undefined,
+                          })
+                        }
                       />
                     </Row>
                     <button
@@ -421,12 +590,19 @@ export function PageBuilder({
                           mapSections((s) =>
                             s.id !== selectedSection.id
                               ? s
-                              : { ...s, columns: [...s.columns, { id: uid(), span: 6, widgets: [] }] },
+                              : {
+                                  ...s,
+                                  columns: [
+                                    ...s.columns,
+                                    { id: uid(), span: 6, widgets: [] },
+                                  ],
+                                },
                           ),
                         )
                       }
                     >
-                      <Plus className="size-3.5" aria-hidden /> {t("Add column", "কলাম যোগ")}
+                      <Plus className="size-3.5" aria-hidden />{" "}
+                      {t("Add column", "কলাম যোগ")}
                     </button>
                   </>
                 );
@@ -439,7 +615,13 @@ export function PageBuilder({
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block text-[11px] text-muted-foreground">
       {label}
@@ -448,14 +630,24 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Partial<Widget["settings"]>) => void }) {
+function WidgetInspector({
+  widget,
+  onPatch,
+}: {
+  widget: Widget;
+  onPatch: (p: Partial<Widget["settings"]>) => void;
+}) {
   const { t } = useLang();
   const s = widget.settings;
   return (
     <div className="mt-3 space-y-2">
-      <p className="text-xs font-semibold">{t(WIDGET_LABEL[widget.type].en, WIDGET_LABEL[widget.type].bn)}</p>
+      <p className="text-xs font-semibold">
+        {t(WIDGET_LABEL[widget.type].en, WIDGET_LABEL[widget.type].bn)}
+      </p>
 
-      {(widget.type === "heading" || widget.type === "text" || widget.type === "quote") && (
+      {(widget.type === "heading" ||
+        widget.type === "text" ||
+        widget.type === "quote") && (
         <Row label={t("Content", "বিষয়বস্তু")}>
           <textarea
             rows={3}
@@ -468,7 +660,11 @@ function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Par
 
       {widget.type === "heading" && (
         <Row label={t("Level", "লেভেল")}>
-          <select className={field} value={s.level ?? 2} onChange={(e) => onPatch({ level: Number(e.target.value) as 1 })}>
+          <select
+            className={field}
+            value={s.level ?? 2}
+            onChange={(e) => onPatch({ level: Number(e.target.value) as 1 })}
+          >
             {[1, 2, 3, 4].map((l) => (
               <option key={l} value={l}>{`H${l}`}</option>
             ))}
@@ -478,17 +674,29 @@ function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Par
 
       {widget.type === "quote" && (
         <Row label={t("Author", "লেখক")}>
-          <input className={field} value={s.author ?? ""} onChange={(e) => onPatch({ author: e.target.value })} />
+          <input
+            className={field}
+            value={s.author ?? ""}
+            onChange={(e) => onPatch({ author: e.target.value })}
+          />
         </Row>
       )}
 
       {widget.type === "image" && (
         <>
           <Row label={t("Image URL", "ছবির লিংক")}>
-            <input className={field} value={s.url ?? ""} onChange={(e) => onPatch({ url: e.target.value })} />
+            <input
+              className={field}
+              value={s.url ?? ""}
+              onChange={(e) => onPatch({ url: e.target.value })}
+            />
           </Row>
           <Row label={t("Alt text", "বিকল্প টেক্সট")}>
-            <input className={field} value={s.alt ?? ""} onChange={(e) => onPatch({ alt: e.target.value })} />
+            <input
+              className={field}
+              value={s.alt ?? ""}
+              onChange={(e) => onPatch({ alt: e.target.value })}
+            />
           </Row>
           <Row label={t("Corner radius", "কোণের ব্যাসার্ধ")}>
             <input
@@ -504,16 +712,26 @@ function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Par
       {widget.type === "button" && (
         <>
           <Row label={t("Label", "লেবেল")}>
-            <input className={field} value={s.label ?? ""} onChange={(e) => onPatch({ label: e.target.value })} />
+            <input
+              className={field}
+              value={s.label ?? ""}
+              onChange={(e) => onPatch({ label: e.target.value })}
+            />
           </Row>
           <Row label={t("Link", "লিংক")}>
-            <input className={field} value={s.href ?? ""} onChange={(e) => onPatch({ href: e.target.value })} />
+            <input
+              className={field}
+              value={s.href ?? ""}
+              onChange={(e) => onPatch({ href: e.target.value })}
+            />
           </Row>
           <Row label={t("Style", "স্টাইল")}>
             <select
               className={field}
               value={s.variant ?? "primary"}
-              onChange={(e) => onPatch({ variant: e.target.value as "primary" })}
+              onChange={(e) =>
+                onPatch({ variant: e.target.value as "primary" })
+              }
             >
               <option value="primary">Primary</option>
               <option value="outline">Outline</option>
@@ -596,37 +814,59 @@ function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Par
 
       {widget.type === "video" && (
         <Row label={t("Embed URL", "এমবেড লিংক")}>
-          <input className={field} value={s.url ?? ""} onChange={(e) => onPatch({ url: e.target.value })} />
+          <input
+            className={field}
+            value={s.url ?? ""}
+            onChange={(e) => onPatch({ url: e.target.value })}
+          />
         </Row>
       )}
 
       {widget.type === "html" && (
         <Row label={t("HTML", "এইচটিএমএল")}>
-          <textarea rows={5} className={`${field} py-2`} value={s.html ?? ""} onChange={(e) => onPatch({ html: e.target.value })} />
+          <textarea
+            rows={5}
+            className={`${field} py-2`}
+            value={s.html ?? ""}
+            onChange={(e) => onPatch({ html: e.target.value })}
+          />
         </Row>
       )}
 
       {widget.type !== "spacer" && widget.type !== "divider" && (
         <>
           <Row label={t("Align", "অ্যালাইন")}>
-            <select className={field} value={s.align ?? "left"} onChange={(e) => onPatch({ align: e.target.value as "left" })}>
+            <select
+              className={field}
+              value={s.align ?? "left"}
+              onChange={(e) => onPatch({ align: e.target.value as "left" })}
+            >
               <option value="left">{t("Left", "বাম")}</option>
               <option value="center">{t("Center", "মাঝ")}</option>
               <option value="right">{t("Right", "ডান")}</option>
             </select>
           </Row>
-          {(widget.type === "heading" || widget.type === "text" || widget.type === "list") && (
+          {(widget.type === "heading" ||
+            widget.type === "text" ||
+            widget.type === "list") && (
             <Row label={t("Font size", "ফন্ট সাইজ")}>
               <input
                 type="number"
                 className={field}
                 value={s.size ?? 16}
-                onChange={(e) => onPatch({ size: Number(e.target.value) || 16 })}
+                onChange={(e) =>
+                  onPatch({ size: Number(e.target.value) || 16 })
+                }
               />
             </Row>
           )}
           <Row label={t("Text colour", "টেক্সট রঙ")}>
-            <input className={field} placeholder="#111111" value={s.color ?? ""} onChange={(e) => onPatch({ color: e.target.value || undefined })} />
+            <input
+              className={field}
+              placeholder="#111111"
+              value={s.color ?? ""}
+              onChange={(e) => onPatch({ color: e.target.value || undefined })}
+            />
           </Row>
         </>
       )}
@@ -636,7 +876,9 @@ function WidgetInspector({ widget, onPatch }: { widget: Widget; onPatch: (p: Par
           type="number"
           className={field}
           value={s.marginBottom ?? 12}
-          onChange={(e) => onPatch({ marginBottom: Number(e.target.value) || 0 })}
+          onChange={(e) =>
+            onPatch({ marginBottom: Number(e.target.value) || 0 })
+          }
         />
       </Row>
     </div>

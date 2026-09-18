@@ -27,21 +27,34 @@ describe("Phase 6 — contrast gate, light and dark", () => {
     const rows = contrastReport(DEFAULT_TOKENS);
     expect(rows.filter((r) => r.scheme === "light")).toHaveLength(5);
     expect(rows.filter((r) => r.scheme === "dark")).toHaveLength(5);
-    expect(rows.every((r) => r.floor === CONTRAST_FLOOR.text || r.floor === CONTRAST_FLOOR.ui)).toBe(true);
+    expect(
+      rows.every(
+        (r) => r.floor === CONTRAST_FLOOR.text || r.floor === CONTRAST_FLOOR.ui,
+      ),
+    ).toBe(true);
   });
 
   it("falls back to the platform dark set for a light-only theme", () => {
-    expect(effectiveDark({ ...DEFAULT_TOKENS, dark: null })).toEqual(DEFAULT_DARK_TOKENS);
+    expect(effectiveDark({ ...DEFAULT_TOKENS, dark: null })).toEqual(
+      DEFAULT_DARK_TOKENS,
+    );
   });
 
   it("fails a theme whose body copy is unreadable", () => {
-    const failures = contrastGate({ ...DEFAULT_TOKENS, ink: "#EEEEEE", surface: "#FFFFFF" });
+    const failures = contrastGate({
+      ...DEFAULT_TOKENS,
+      ink: "#EEEEEE",
+      surface: "#FFFFFF",
+    });
     expect(failures.some((f) => f.code === "contrast.light")).toBe(true);
   });
 
   it("ships presets that pass in light and dark", () => {
     for (const preset of THEME_PRESETS) {
-      expect(contrastGate(preset.tokens).map((f) => f.message), preset.key).toEqual([]);
+      expect(
+        contrastGate(preset.tokens).map((f) => f.message),
+        preset.key,
+      ).toEqual([]);
     }
   });
 });

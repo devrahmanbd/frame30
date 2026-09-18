@@ -42,7 +42,7 @@ the freeze in the same transaction as the status change.
 ## Consented impersonation
 
 `impersonation_grants` moves through `pending_consent → active → expired |
-revoked`. The owner can only *request*; a tenant owner or admin must approve
+revoked`. The owner can only _request_; a tenant owner or admin must approve
 from Settings (`ImpersonationConsent`), and either side can end an active window
 early. Every use calls the `use` RPC, which re-checks state and expiry before
 incrementing `use_count` and writing an audit row. Grants expire on their own

@@ -15,14 +15,26 @@ const beaconSchema = z.object({
   events: z
     .array(
       z.object({
-        entity: z.enum(["page", "product", "cart", "checkout", "order", "search"]),
+        entity: z.enum([
+          "page",
+          "product",
+          "cart",
+          "checkout",
+          "order",
+          "search",
+        ]),
         action: z.string().trim().min(1).max(40),
         occurredAt: z.string().datetime().optional(),
         source: z.string().trim().max(60).optional(),
         campaign: z.string().trim().max(60).optional(),
         valueMinorInt: z.number().int().min(0).max(1_000_000_000).optional(),
         currencyCode: z.string().trim().length(3).optional(),
-        payload: z.record(z.string(), z.union([z.string().max(200), z.number(), z.boolean()])).optional(),
+        payload: z
+          .record(
+            z.string(),
+            z.union([z.string().max(200), z.number(), z.boolean()]),
+          )
+          .optional(),
         dedupeKey: z.string().trim().min(4).max(120).optional(),
       }),
     )
@@ -48,18 +60,27 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
           return Response.json({ error: "invalid_payload" }, { status: 400 });
         }
 
-        const { rateLimit, rateLimitHeaders } = await import("@/lib/rate-limit.server");
+        const { rateLimit, rateLimitHeaders } =
+          await import("@/lib/rate-limit.server");
         const verdict = await rateLimit("analytics.beacon", parsed.merchantId);
         if (!verdict.allowed) {
           return Response.json(
             { error: "rate_limited" },
-            { status: 429, headers: { ...rateLimitHeaders(verdict), "cache-control": "no-store" } },
+            {
+              status: 429,
+              headers: {
+                ...rateLimitHeaders(verdict),
+                "cache-control": "no-store",
+              },
+            },
           );
         }
 
         try {
-          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-          const { ingestBeacons } = await import("@/lib/analytics-warehouse.server");
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
+          const { ingestBeacons } =
+            await import("@/lib/analytics-warehouse.server");
           // Location and device are resolved here, from the request itself —
           // never accepted from the browser, which a shopper controls.
           const { requestGeo } = await import("@/lib/geo.server");
@@ -75,7 +96,10 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
             geo,
           );
           return Response.json(result, {
-            headers: { ...rateLimitHeaders(verdict), "cache-control": "no-store" },
+            headers: {
+              ...rateLimitHeaders(verdict),
+              "cache-control": "no-store",
+            },
           });
         } catch (err) {
           const { captureError } = await import("@/lib/observability.server");

@@ -1,1 +1,344 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "label": "phase2-circuit.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L1"}, {"id": "lib_phase2_circuit_test_circuit_types", "label": "CIRCUIT_TYPES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L9"}, {"id": "lib_phase2_circuit_test_src", "label": "SRC", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L23"}, {"id": "lib_phase2_circuit_test_keys", "label": "keys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L41"}, {"id": "lib_phase2_circuit_test_offenders", "label": "offenders", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L48"}, {"id": "lib_phase2_circuit_test_plan", "label": "plan", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L63"}, {"id": "lib_phase2_circuit_test_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L85"}, {"id": "lib_phase2_circuit_test_groups", "label": "groups", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L90"}, {"id": "lib_phase2_circuit_test_values", "label": "values", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L96"}, {"id": "lib_phase2_circuit_test_pairs", "label": "pairs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L104"}, {"id": "lib_phase2_circuit_test_path", "label": "path", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L111"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_builder_ast_section_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_builder_ast_bitext_fields", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_widget_registry_widget_registry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "users_rahman_documents_frame30_src_lib_emi_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_emi_emiplan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_emi_emi_tenures", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_emi_isemitenure", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "users_rahman_documents_frame30_src_components_builder_electronics_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "builder_electronics_sparklinepath", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "builder_electronics_authoredspecs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "builder_electronics_resolvedspecs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "users_rahman_documents_frame30_src_components_builder_primitives_specrow_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "primitives_specrow_groupspecs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_circuit_types", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_src", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_offenders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_plan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_groups", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_values", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_pairs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts", "target": "lib_phase2_circuit_test_path", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts", "source_location": "L111", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "label": "phase2-circuit.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase2_circuit_test_circuit_types",
+      "label": "CIRCUIT_TYPES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_phase2_circuit_test_src",
+      "label": "SRC",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_phase2_circuit_test_keys",
+      "label": "keys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_phase2_circuit_test_offenders",
+      "label": "offenders",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_phase2_circuit_test_plan",
+      "label": "plan",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_phase2_circuit_test_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_phase2_circuit_test_groups",
+      "label": "groups",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "lib_phase2_circuit_test_values",
+      "label": "values",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_phase2_circuit_test_pairs",
+      "label": "pairs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "lib_phase2_circuit_test_path",
+      "label": "path",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L111"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_builder_ast_section_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_builder_ast_bitext_fields",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_widget_registry_widget_registry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_emi_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_emi_emiplan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_emi_emi_tenures",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_emi_isemitenure",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "users_rahman_documents_frame30_src_components_builder_electronics_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "builder_electronics_sparklinepath",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "builder_electronics_authoredspecs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "builder_electronics_resolvedspecs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "users_rahman_documents_frame30_src_components_builder_primitives_specrow_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "primitives_specrow_groupspecs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_circuit_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_src",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_offenders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_plan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_groups",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_values",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_pairs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_circuit_test_ts",
+      "target": "lib_phase2_circuit_test_path",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-circuit.test.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

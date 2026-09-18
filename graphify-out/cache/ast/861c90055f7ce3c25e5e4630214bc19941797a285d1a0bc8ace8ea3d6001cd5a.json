@@ -1,1 +1,478 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_i18n_tsx", "label": "i18n.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L1"}, {"id": "lib_i18n_lang", "label": "Lang", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L13"}, {"id": "lib_i18n_scopedkey", "label": "scopedKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L24"}, {"id": "lib_i18n_readstored", "label": "readStored()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L26"}, {"id": "lib_i18n_vars", "label": "Vars", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L35"}, {"id": "lib_i18n_langcontextvalue", "label": "LangContextValue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L37"}, {"id": "lib_i18n_langcontext", "label": "LangContext", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L51"}, {"id": "lib_i18n_lookup", "label": "lookup()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L53"}, {"id": "lib_i18n_translateerror", "label": "translateError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L59"}, {"id": "lib_i18n_languageprovider", "label": "LanguageProvider()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L74"}, {"id": "lib_i18n_uselang", "label": "useLang()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L154"}, {"id": "lib_i18n_uselangscope", "label": "useLangScope()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L170"}, {"id": "lib_i18n_t", "label": "T()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L179"}, {"id": "lib_i18n_tk", "label": "TK()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L185"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_dict_dict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_dict_interpolate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_dict_parsemessagekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_dict_entry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "users_rahman_documents_frame30_src_lib_lang_boot_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_lang_boot_persistlangcookie", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_lang", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_seo_technical_localefromsearch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_scopedkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_readstored", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_vars", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_langcontextvalue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_langcontext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_lookup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_translateerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_languageprovider", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_uselang", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_uselangscope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_t", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L179", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_i18n_tsx", "target": "lib_i18n_tk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L185", "weight": 1.0}, {"source": "lib_i18n_readstored", "target": "lib_i18n_scopedkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L28", "weight": 1.0}, {"source": "lib_i18n_translateerror", "target": "lib_i18n_lookup", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L62", "weight": 1.0}, {"source": "lib_i18n_uselangscope", "target": "lib_i18n_uselang", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L171", "weight": 1.0}, {"source": "lib_i18n_t", "target": "lib_i18n_uselang", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L180", "weight": 1.0}, {"source": "lib_i18n_tk", "target": "lib_i18n_uselang", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L186", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_i18n_readstored", "callee": "getItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L28"}, {"caller_nid": "lib_i18n_readstored", "callee": "getItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L28"}, {"caller_nid": "lib_i18n_lookup", "callee": "interpolate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L55"}, {"caller_nid": "lib_i18n_lookup", "callee": "interpolate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L56"}, {"caller_nid": "lib_i18n_translateerror", "callee": "parseMessageKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L63"}, {"caller_nid": "lib_i18n_translateerror", "callee": "exec", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L66"}, {"caller_nid": "lib_i18n_translateerror", "callee": "parseMessageKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L68"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L89"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L90"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L92"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L118"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L122"}, {"caller_nid": "lib_i18n_languageprovider", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L138"}, {"caller_nid": "lib_i18n_uselang", "callee": "useContext", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L155"}, {"caller_nid": "lib_i18n_uselangscope", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx", "source_location": "L172"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "label": "i18n.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_i18n_lang",
+      "label": "Lang",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_i18n_scopedkey",
+      "label": "scopedKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_i18n_readstored",
+      "label": "readStored()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_i18n_vars",
+      "label": "Vars",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_i18n_langcontextvalue",
+      "label": "LangContextValue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_i18n_langcontext",
+      "label": "LangContext",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_i18n_lookup",
+      "label": "lookup()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_i18n_translateerror",
+      "label": "translateError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L59"
+    },
+    {
+      "id": "lib_i18n_languageprovider",
+      "label": "LanguageProvider()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_i18n_uselang",
+      "label": "useLang()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_i18n_uselangscope",
+      "label": "useLangScope()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L170"
+    },
+    {
+      "id": "lib_i18n_t",
+      "label": "T()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L179"
+    },
+    {
+      "id": "lib_i18n_tk",
+      "label": "TK()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L185"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_dict_dict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_dict_interpolate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_dict_parsemessagekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_dict_entry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_lang_boot_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_lang_boot_persistlangcookie",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_lang",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_seo_technical_localefromsearch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_scopedkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_readstored",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_vars",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_langcontextvalue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_langcontext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_lookup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_translateerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_languageprovider",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_uselangscope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_t",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "target": "lib_i18n_tk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_readstored",
+      "target": "lib_i18n_scopedkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_translateerror",
+      "target": "lib_i18n_lookup",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_uselangscope",
+      "target": "lib_i18n_uselang",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_t",
+      "target": "lib_i18n_uselang",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_i18n_tk",
+      "target": "lib_i18n_uselang",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L186",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_i18n_readstored",
+      "callee": "getItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "lib_i18n_readstored",
+      "callee": "getItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "lib_i18n_lookup",
+      "callee": "interpolate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_i18n_lookup",
+      "callee": "interpolate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_i18n_translateerror",
+      "callee": "parseMessageKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_i18n_translateerror",
+      "callee": "exec",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_i18n_translateerror",
+      "callee": "parseMessageKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_i18n_languageprovider",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_i18n_uselang",
+      "callee": "useContext",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_i18n_uselangscope",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/i18n.tsx",
+      "source_location": "L172"
+    }
+  ]
+}

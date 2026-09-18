@@ -3,7 +3,7 @@
 > **Sprint Duration:** 12 Weeks (Q4 2026 – Q1 2027)  
 > **Content Velocity:** 2 Deep-Dive Pillar/Spoke Articles + 2 Community Forum Discussions + 1 Technical Tear-Down per week  
 > **Methodology:** Koray Tuğberk Gübür Holistic Topic Authority + FLOW Framework (`~/.agents/skills/seo-flow`)  
-> **Awareness Mapping:** `~/.agents/skills/sickn33-awareness-stage-mapper`  
+> **Awareness Mapping:** `~/.agents/skills/sickn33-awareness-stage-mapper`
 
 ---
 
@@ -31,53 +31,53 @@
 
 ### Sprint 1: The Sovereign Alternative (Shopify Migrations & Fee Elimination)
 
-| Week | Publish Date | Article Title & Slug | Primary Target Keyword | Awareness Stage | Content Type | Core Conversion CTA |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **W1-A** | Oct 06, 2026 | *The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify* (`/blog/shopify-fee-exodus`) | `shopify alternative 2026` | Problem Aware | Long-Form Opinion & Benchmark (2,400w) | Launch Free Store (`/auth?mode=signup`) |
-| **W1-B** | Oct 08, 2026 | *The True Cost of Shopify: Transaction Fees, Apps & Hidden Taxes* (`/blog/true-cost-of-shopify`) | `why is shopify so expensive` | Solution Aware | Financial Tear-Down & Calculator | Try Margin Calculator (`/pricing`) |
-| **W2-A** | Oct 13, 2026 | *How to Migrate Your Catalog from Shopify to Framique in 5 Minutes* (`/guides/shopify-migration-guide`) | `migrate from shopify to local cms` | Product Aware | Step-by-Step Technical Guide (1,800w) | Open CSV Importer (`/admin/import`) |
-| **W2-B** | Oct 15, 2026 | *WooCommerce vs Shopify vs Framique: The 2026 E-Commerce CMS Verdict* (`/compare/woocommerce-shopify-framique`) | `best ecommerce platform for small business` | Solution Aware | Comprehensive 3-Way Matrix (3,000w) | Explore Feature Matrix (`/features`) |
-| **W3-A** | Oct 20, 2026 | *Case Study: How a D2C Apparel Brand Reclaimed $14,200/yr in Lost Fees* (`/case-studies/d2c-fee-savings`) | `zero fee ecommerce platform` | Most Aware | Verified Merchant Case Study | Book Migration Call (`/contact`) |
-| **W3-B** | Oct 22, 2026 | *Why App Bloat Destroys Your Store's Mobile Conversion Rates* (`/blog/shopify-app-bloat-performance`) | `how to speed up shopify store on mobile` | Problem Aware | Performance Audit & Speed Analysis | Test Store Speed with Framique |
+| Week     | Publish Date | Article Title & Slug                                                                                            | Primary Target Keyword                       | Awareness Stage | Content Type                           | Core Conversion CTA                     |
+| :------- | :----------- | :-------------------------------------------------------------------------------------------------------------- | :------------------------------------------- | :-------------- | :------------------------------------- | :-------------------------------------- |
+| **W1-A** | Oct 06, 2026 | _The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify_ (`/blog/shopify-fee-exodus`)                | `shopify alternative 2026`                   | Problem Aware   | Long-Form Opinion & Benchmark (2,400w) | Launch Free Store (`/auth?mode=signup`) |
+| **W1-B** | Oct 08, 2026 | _The True Cost of Shopify: Transaction Fees, Apps & Hidden Taxes_ (`/blog/true-cost-of-shopify`)                | `why is shopify so expensive`                | Solution Aware  | Financial Tear-Down & Calculator       | Try Margin Calculator (`/pricing`)      |
+| **W2-A** | Oct 13, 2026 | _How to Migrate Your Catalog from Shopify to Framique in 5 Minutes_ (`/guides/shopify-migration-guide`)         | `migrate from shopify to local cms`          | Product Aware   | Step-by-Step Technical Guide (1,800w)  | Open CSV Importer (`/admin/import`)     |
+| **W2-B** | Oct 15, 2026 | _WooCommerce vs Shopify vs Framique: The 2026 E-Commerce CMS Verdict_ (`/compare/woocommerce-shopify-framique`) | `best ecommerce platform for small business` | Solution Aware  | Comprehensive 3-Way Matrix (3,000w)    | Explore Feature Matrix (`/features`)    |
+| **W3-A** | Oct 20, 2026 | _Case Study: How a D2C Apparel Brand Reclaimed $14,200/yr in Lost Fees_ (`/case-studies/d2c-fee-savings`)       | `zero fee ecommerce platform`                | Most Aware      | Verified Merchant Case Study           | Book Migration Call (`/contact`)        |
+| **W3-B** | Oct 22, 2026 | _Why App Bloat Destroys Your Store's Mobile Conversion Rates_ (`/blog/shopify-app-bloat-performance`)           | `how to speed up shopify store on mobile`    | Problem Aware   | Performance Audit & Speed Analysis     | Test Store Speed with Framique          |
 
 ---
 
 ### Sprint 2: Design Freedom & Visual Performance (Framer, Webflow & Bento Systems)
 
-| Week | Publish Date | Article Title & Slug | Primary Target Keyword | Awareness Stage | Content Type | Core Conversion CTA |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **W4-A** | Oct 27, 2026 | *Can You Actually Run an E-Commerce Store on Framer? An Honest Review* (`/blog/framer-ecommerce-reality`) | `framer ecommerce` | Problem Aware | Technical Tear-Down (2,200w) | View Framique Builder (`/builder`) |
-| **W4-B** | Oct 29, 2026 | *Webflow E-Commerce Limitations: Item Caps, Checkout & Pricing* (`/blog/webflow-ecommerce-limits`) | `webflow ecommerce limitations` | Solution Aware | Comparative Feature Audit (2,500w) | See Canvas Demo (`/builder`) |
-| **W5-A** | Nov 03, 2026 | *Bento Grids for E-Commerce: Designing High-Conversion Storefronts* (`/blog/bento-grid-ecommerce`) | `bento grid ecommerce layout` | Unaware / Problem | UI/UX Design System Guide (2,000w) | Browse Bento Templates |
-| **W5-B** | Nov 05, 2026 | *The Science of OKLCH Color Contrast: Designing WCAG AAA Storefronts* (`/blog/oklch-color-contrast-ecommerce`) | `ecommerce design system accessibility` | Solution Aware | Design Engineering Deep Dive | Inspect Design Tokens |
-| **W6-A** | Nov 10, 2026 | *Why Multi-Step Checkouts Kill 40% of Mobile Sales* (`/blog/mobile-checkout-ux-optimization`) | `reduce ecommerce cart abandonment mobile` | Problem Aware | Conversion Rate Optimization (CRO) | Try 1-Click Checkout Demo |
-| **W6-B** | Nov 12, 2026 | *Sub-50ms TTFB: Why Server-Side Edge Rendering Outperforms SPAs* (`/blog/edge-ssr-ecommerce-speed`) | `edge rendered ecommerce ssr` | Solution Aware | Performance Benchmark Report | Run Instant Latency Check |
+| Week     | Publish Date | Article Title & Slug                                                                                           | Primary Target Keyword                     | Awareness Stage   | Content Type                       | Core Conversion CTA                |
+| :------- | :----------- | :------------------------------------------------------------------------------------------------------------- | :----------------------------------------- | :---------------- | :--------------------------------- | :--------------------------------- |
+| **W4-A** | Oct 27, 2026 | _Can You Actually Run an E-Commerce Store on Framer? An Honest Review_ (`/blog/framer-ecommerce-reality`)      | `framer ecommerce`                         | Problem Aware     | Technical Tear-Down (2,200w)       | View Framique Builder (`/builder`) |
+| **W4-B** | Oct 29, 2026 | _Webflow E-Commerce Limitations: Item Caps, Checkout & Pricing_ (`/blog/webflow-ecommerce-limits`)             | `webflow ecommerce limitations`            | Solution Aware    | Comparative Feature Audit (2,500w) | See Canvas Demo (`/builder`)       |
+| **W5-A** | Nov 03, 2026 | _Bento Grids for E-Commerce: Designing High-Conversion Storefronts_ (`/blog/bento-grid-ecommerce`)             | `bento grid ecommerce layout`              | Unaware / Problem | UI/UX Design System Guide (2,000w) | Browse Bento Templates             |
+| **W5-B** | Nov 05, 2026 | _The Science of OKLCH Color Contrast: Designing WCAG AAA Storefronts_ (`/blog/oklch-color-contrast-ecommerce`) | `ecommerce design system accessibility`    | Solution Aware    | Design Engineering Deep Dive       | Inspect Design Tokens              |
+| **W6-A** | Nov 10, 2026 | _Why Multi-Step Checkouts Kill 40% of Mobile Sales_ (`/blog/mobile-checkout-ux-optimization`)                  | `reduce ecommerce cart abandonment mobile` | Problem Aware     | Conversion Rate Optimization (CRO) | Try 1-Click Checkout Demo          |
+| **W6-B** | Nov 12, 2026 | _Sub-50ms TTFB: Why Server-Side Edge Rendering Outperforms SPAs_ (`/blog/edge-ssr-ecommerce-speed`)            | `edge rendered ecommerce ssr`              | Solution Aware    | Performance Benchmark Report       | Run Instant Latency Check          |
 
 ---
 
 ### Sprint 3: Regional Commerce Mastery (Bangladesh, MFS & Courier Logistics)
 
-| Week | Publish Date | Article Title & Slug | Primary Target Keyword | Awareness Stage | Content Type | Core Conversion CTA |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **W7-A** | Nov 17, 2026 | *The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store* (`/guides/bangladesh-ecommerce-playbook`) | `how to make ecommerce website in bangladesh` | Unaware / Problem | Complete 4,000w Field Guide | Launch Store in BDT (`/auth`) |
-| **W7-B** | Nov 19, 2026 | *How to Integrate bKash & Nagad Direct Checkout Without Monthly Apps* (`/guides/bkash-nagad-integration`) | `bkash integrated ecommerce website` | Solution Aware | Integration Tutorial & Code Samples | Connect Payment Keys |
-| **W8-A** | Nov 24, 2026 | *Automating Steadfast & Pathao Courier Booking Directly from Dashboard* (`/guides/automate-courier-booking`) | `steadfast courier api ecommerce` | Solution Aware | Logistics Workflow Guide (1,900w) | Setup Courier API |
-| **W8-B** | Nov 26, 2026 | *How to Cut Cash-on-Delivery (COD) Delivery Return Rates by 60%* (`/blog/stopping-cod-return-fraud`) | `cash on delivery return rate reduction` | Problem Aware | Operational Strategy & Fraud Rules | Enable COD Fraud Shield |
-| **W9-A** | Dec 01, 2026 | *Connecting a .com.bd Domain with Automated Edge SSL on Framique* (`/guides/com-bd-custom-domain-setup`) | `custom domain ecommerce bd` | Product Aware | DNS & Domain Setup Tutorial | Connect Custom Domain |
-| **W9-B** | Dec 03, 2026 | *From F-Commerce to Sovereign Brand: Why Facebook Pages Must Graduate to Web* (`/blog/f-commerce-to-website-migration`) | `f-commerce to website migration` | Problem Aware | Growth Strategy & Case Studies | Start Migration Wizard |
+| Week     | Publish Date | Article Title & Slug                                                                                                    | Primary Target Keyword                        | Awareness Stage   | Content Type                        | Core Conversion CTA           |
+| :------- | :----------- | :---------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------- | :---------------- | :---------------------------------- | :---------------------------- |
+| **W7-A** | Nov 17, 2026 | _The 2026 Bangladesh E-Commerce Playbook: Launching a High-Growth Store_ (`/guides/bangladesh-ecommerce-playbook`)      | `how to make ecommerce website in bangladesh` | Unaware / Problem | Complete 4,000w Field Guide         | Launch Store in BDT (`/auth`) |
+| **W7-B** | Nov 19, 2026 | _How to Integrate bKash & Nagad Direct Checkout Without Monthly Apps_ (`/guides/bkash-nagad-integration`)               | `bkash integrated ecommerce website`          | Solution Aware    | Integration Tutorial & Code Samples | Connect Payment Keys          |
+| **W8-A** | Nov 24, 2026 | _Automating Steadfast & Pathao Courier Booking Directly from Dashboard_ (`/guides/automate-courier-booking`)            | `steadfast courier api ecommerce`             | Solution Aware    | Logistics Workflow Guide (1,900w)   | Setup Courier API             |
+| **W8-B** | Nov 26, 2026 | _How to Cut Cash-on-Delivery (COD) Delivery Return Rates by 60%_ (`/blog/stopping-cod-return-fraud`)                    | `cash on delivery return rate reduction`      | Problem Aware     | Operational Strategy & Fraud Rules  | Enable COD Fraud Shield       |
+| **W9-A** | Dec 01, 2026 | _Connecting a .com.bd Domain with Automated Edge SSL on Framique_ (`/guides/com-bd-custom-domain-setup`)                | `custom domain ecommerce bd`                  | Product Aware     | DNS & Domain Setup Tutorial         | Connect Custom Domain         |
+| **W9-B** | Dec 03, 2026 | _From F-Commerce to Sovereign Brand: Why Facebook Pages Must Graduate to Web_ (`/blog/f-commerce-to-website-migration`) | `f-commerce to website migration`             | Problem Aware     | Growth Strategy & Case Studies      | Start Migration Wizard        |
 
 ---
 
 ### Sprint 4: Architecture & Enterprise Scaling (Edge SSR, Security & Headless)
 
-| Week | Publish Date | Article Title & Slug | Primary Target Keyword | Awareness Stage | Content Type | Core Conversion CTA |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **W10-A** | Dec 08, 2026 | *Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS* (`/architecture/framique-stack-deep-dive`) | `cloud ecommerce cms architecture` | Solution Aware | Systems Engineering Whitepaper | Read Github & Tech Specs |
-| **W10-B** | Dec 10, 2026 | *Row-Level Security (RLS) vs Siloed Databases in Multi-Tenant SaaS* (`/architecture/multi-tenant-security-rls`) | `multi tenant ecommerce database` | Technical Aware | Database Architecture Paper | Inspect Security Overview |
-| **W11-A** | Dec 15, 2026 | *Automating ACME SSL Challenges at the Edge for 10,000+ Custom Domains* (`/architecture/automated-acme-ssl-routing`) | `custom domain automated ssl saas` | Technical Aware | DevOps & Networking Guide | Learn About Edge Infrastructure |
-| **W11-B** | Dec 17, 2026 | *Headless Commerce vs Visual CMS: Why Modern Brands Need Both* (`/blog/headless-vs-visual-cms`) | `headless ecommerce visual builder` | Solution Aware | Architectural Evaluation Matrix | Explore Headless APIs |
-| **W12-A** | Dec 22, 2026 | *The 2027 E-Commerce Technology Roadmap: Generative SEO, AI & Edge* (`/blog/ecommerce-technology-2027`) | `future of ecommerce platforms` | Unaware / Visionary | Annual Industry Forecast | Subscribe to Framique Dispatch |
-| **W12-B** | Dec 24, 2026 | *Year in Review: How Framique Saved Merchants Over $1.2M in Platform Fees* (`/blog/year-in-review-2026`) | `framique reviews 2026` | Most Aware | Annual Impact Report & Community | Join Framique Community |
+| Week      | Publish Date | Article Title & Slug                                                                                                 | Primary Target Keyword              | Awareness Stage     | Content Type                     | Core Conversion CTA             |
+| :-------- | :----------- | :------------------------------------------------------------------------------------------------------------------- | :---------------------------------- | :------------------ | :------------------------------- | :------------------------------ |
+| **W10-A** | Dec 08, 2026 | _Inside Framique's Architecture: TanStack Start, Nitro & PostgreSQL RLS_ (`/architecture/framique-stack-deep-dive`)  | `cloud ecommerce cms architecture`  | Solution Aware      | Systems Engineering Whitepaper   | Read Github & Tech Specs        |
+| **W10-B** | Dec 10, 2026 | _Row-Level Security (RLS) vs Siloed Databases in Multi-Tenant SaaS_ (`/architecture/multi-tenant-security-rls`)      | `multi tenant ecommerce database`   | Technical Aware     | Database Architecture Paper      | Inspect Security Overview       |
+| **W11-A** | Dec 15, 2026 | _Automating ACME SSL Challenges at the Edge for 10,000+ Custom Domains_ (`/architecture/automated-acme-ssl-routing`) | `custom domain automated ssl saas`  | Technical Aware     | DevOps & Networking Guide        | Learn About Edge Infrastructure |
+| **W11-B** | Dec 17, 2026 | _Headless Commerce vs Visual CMS: Why Modern Brands Need Both_ (`/blog/headless-vs-visual-cms`)                      | `headless ecommerce visual builder` | Solution Aware      | Architectural Evaluation Matrix  | Explore Headless APIs           |
+| **W12-A** | Dec 22, 2026 | _The 2027 E-Commerce Technology Roadmap: Generative SEO, AI & Edge_ (`/blog/ecommerce-technology-2027`)              | `future of ecommerce platforms`     | Unaware / Visionary | Annual Industry Forecast         | Subscribe to Framique Dispatch  |
+| **W12-B** | Dec 24, 2026 | _Year in Review: How Framique Saved Merchants Over $1.2M in Platform Fees_ (`/blog/year-in-review-2026`)             | `framique reviews 2026`             | Most Aware          | Annual Impact Report & Community | Join Framique Community         |
 
 ---
 

@@ -24,17 +24,20 @@ claude-flow truth [options]
 ## Metrics Displayed
 
 ### Truth Scores
+
 - **Overall Score**: Aggregate truth score (0.0-1.0)
 - **File Scores**: Individual file truth ratings
 - **Agent Scores**: Per-agent reliability metrics
 - **Task Scores**: Task completion quality
 
 ### Trends
+
 - **Improvement Rate**: Quality trend over time
 - **Regression Detection**: Identifies declining scores
 - **Agent Learning**: Shows agent improvement curves
 
 ### Statistics
+
 - **Mean Score**: Average truth score
 - **Median Score**: Middle value of scores
 - **Standard Deviation**: Score consistency
@@ -43,6 +46,7 @@ claude-flow truth [options]
 ## Examples
 
 ### Basic Usage
+
 ```bash
 # View current truth scores
 claude-flow truth
@@ -55,6 +59,7 @@ claude-flow truth --export report.html --format html
 ```
 
 ### Advanced Analysis
+
 ```bash
 # Monitor real-time scores
 claude-flow truth --watch
@@ -96,6 +101,7 @@ Recent Tasks:
 ## Integration
 
 ### With CI/CD
+
 ```yaml
 # GitHub Actions example
 - name: Check Truth Scores
@@ -109,6 +115,7 @@ Recent Tasks:
 ```
 
 ### With Monitoring
+
 ```bash
 # Send to monitoring system
 claude-flow truth --format json | \

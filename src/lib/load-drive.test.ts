@@ -6,7 +6,11 @@
  */
 import { describe, expect, it } from "vitest";
 // Plain .mjs harness, deliberately dependency-free.
-import { percentile, summarize, verdictFor } from "../../scripts/load-drive.mjs";
+import {
+  percentile,
+  summarize,
+  verdictFor,
+} from "../../scripts/load-drive.mjs";
 
 describe("percentile", () => {
   it("is 0 for an empty sample rather than NaN", () => {
@@ -31,20 +35,30 @@ describe("verdictFor", () => {
   });
 
   it("fails on a failure share above 2%", () => {
-    expect(verdictFor({ requests: 1000, failures: 25, p95Ms: 100 })).toBe("fail");
+    expect(verdictFor({ requests: 1000, failures: 25, p95Ms: 100 })).toBe(
+      "fail",
+    );
   });
 
   it("fails on p95 latency above 2s even with no errors", () => {
-    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 2500 })).toBe("fail");
+    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 2500 })).toBe(
+      "fail",
+    );
   });
 
   it("warns before it fails", () => {
-    expect(verdictFor({ requests: 1000, failures: 10, p95Ms: 100 })).toBe("warn");
-    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 900 })).toBe("warn");
+    expect(verdictFor({ requests: 1000, failures: 10, p95Ms: 100 })).toBe(
+      "warn",
+    );
+    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 900 })).toBe(
+      "warn",
+    );
   });
 
   it("passes a clean fast run", () => {
-    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 120 })).toBe("pass");
+    expect(verdictFor({ requests: 1000, failures: 0, p95Ms: 120 })).toBe(
+      "pass",
+    );
   });
 });
 

@@ -53,7 +53,7 @@ Scope: full product surface — storefront/builder, catalogue, checkout/payments
 
 ## 1. Hero
 
-*Lever: specificity beats hype — naming the six pillars up front removes ambiguity about scope before the reader invests time.*
+_Lever: specificity beats hype — naming the six pillars up front removes ambiguity about scope before the reader invests time._
 
 - **Eyebrow**: `Six pillars, one data model`
 - **H1**: **One platform. Every part of the sale.**
@@ -68,16 +68,16 @@ Scope: full product surface — storefront/builder, catalogue, checkout/payments
 
 ## 2. Pillar grid — 6 glass cards, anchored
 
-*Lever: a scannable map before the deep dive respects the reader's time and lets them jump straight to the pillar they came for.*
+_Lever: a scannable map before the deep dive respects the reader's time and lets them jump straight to the pillar they came for._
 
-| Icon | Pillar | Line | Anchor |
-|---|---|---|---|
-| `layout-template` | Storefront & builder | Sections, tokens, versions, instant rollback. | `#storefront` |
-| `package` | Catalogue & inventory | Options, variants, stock and Bangla copy on one product. | `#catalogue` |
-| `credit-card` | Checkout & payments | Four rails, one flow, tuned for COD-heavy baskets. | `#checkout` |
-| `truck` | Fulfilment & couriers | Labels, pickups and delivery status inside the order. | `#fulfilment` |
-| `store` | POS & omnichannel | Same product, same stock, counter and web. | `#pos` |
-| `bar-chart-3` | Analytics & API | Revenue, returns and rail mix — live, and exportable. | `#analytics` |
+| Icon              | Pillar                | Line                                                     | Anchor        |
+| ----------------- | --------------------- | -------------------------------------------------------- | ------------- |
+| `layout-template` | Storefront & builder  | Sections, tokens, versions, instant rollback.            | `#storefront` |
+| `package`         | Catalogue & inventory | Options, variants, stock and Bangla copy on one product. | `#catalogue`  |
+| `credit-card`     | Checkout & payments   | Four rails, one flow, tuned for COD-heavy baskets.       | `#checkout`   |
+| `truck`           | Fulfilment & couriers | Labels, pickups and delivery status inside the order.    | `#fulfilment` |
+| `store`           | POS & omnichannel     | Same product, same stock, counter and web.               | `#pos`        |
+| `bar-chart-3`     | Analytics & API       | Revenue, returns and rail mix — live, and exportable.    | `#analytics`  |
 
 **Design note**: 3-up → 2-up at 900px → 1-up at 640px, per DESIGN.md grid rule. Each card links to its band; keyboard focus ring uses the 0.35-alpha blue focus token.
 
@@ -85,7 +85,7 @@ Scope: full product surface — storefront/builder, catalogue, checkout/payments
 
 ## 3. The unified data model — one product, many surfaces
 
-*Lever: the "single source of truth" mental model is the strongest differentiator claim in this document — it must be taught, not asserted, so the reader can verify it against their own pain.*
+_Lever: the "single source of truth" mental model is the strongest differentiator claim in this document — it must be taught, not asserted, so the reader can verify it against their own pain._
 
 Most Bangladeshi merchants we've spoken with run at least three tools that each think they own the product record: a storefront theme, a spreadsheet for stock, and a courier panel for order status. Framique treats a **product** as one row with fan-out, not three rows kept in sync by hand.
 
@@ -93,13 +93,13 @@ Most Bangladeshi merchants we've spoken with run at least three tools that each 
 
 **What changes together, automatically:**
 
-| You edit | What updates without a second click |
-|---|---|
-| Price in the builder | Storefront price, POS price, API price, cart already open on a customer's phone (on next fetch) |
-| Stock count at checkout | Available-to-sell number on storefront, POS, and low-stock alerts |
-| Bangla product name | Storefront (bn locale), receipt printed at POS, order confirmation SMS |
-| Variant options (size/colour) | SKU generation, per-variant stock, per-variant price, courier weight used for rate lookup |
-| Order status from courier webhook | Order timeline, customer tracking page, analytics fulfilment-time metric |
+| You edit                          | What updates without a second click                                                             |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Price in the builder              | Storefront price, POS price, API price, cart already open on a customer's phone (on next fetch) |
+| Stock count at checkout           | Available-to-sell number on storefront, POS, and low-stock alerts                               |
+| Bangla product name               | Storefront (bn locale), receipt printed at POS, order confirmation SMS                          |
+| Variant options (size/colour)     | SKU generation, per-variant stock, per-variant price, courier weight used for rate lookup       |
+| Order status from courier webhook | Order timeline, customer tracking page, analytics fulfilment-time metric                        |
 
 **Worked example.** Assume a merchant sells a printed panjabi in three sizes and two colours — six SKUs from one product. A customer orders the medium, white variant from the storefront at 9:40pm. At 9:41pm the merchant sells the last medium, white unit in person at a physical counter using POS. Framique decrements the same stock ledger row twice, in order, and the storefront listing shows "out of stock — this size" before a third buyer can add it to cart. No separate stock file, no evening reconciliation.
 
@@ -109,26 +109,26 @@ Most Bangladeshi merchants we've spoken with run at least three tools that each 
 
 ## 4. Storefront & builder
 
-*Lever: loss aversion on control — merchants fear being boxed into a template; showing token-level edit + versioning removes that fear concretely.*
+_Lever: loss aversion on control — merchants fear being boxed into a template; showing token-level edit + versioning removes that fear concretely._
 
 **text-left (Z row)**
 
 **H2**: The builder is where the shop becomes yours.
 Drag sections, edit design tokens, publish a version — with instant rollback if a change hurts conversion. Every publish is a snapshot, not an overwrite.
-*Proof*: `Every publish is a version. Every version can be restored.`
+_Proof_: `Every publish is a version. Every version can be restored.`
 
 **বাংলা proof**: `প্রতিটি প্রকাশ একটি সংস্করণ। প্রতিটি সংস্করণ ফিরিয়ে আনা যায়।`
 
 ### 4.1 Capability table
 
-| Capability | What it does | Who uses it |
-|---|---|---|
-| Section library | Hero, product grid, testimonial-free trust bands, FAQ, footer — drag to reorder | Store owner, no developer |
-| Token editor | Colour, type scale, spacing per store, inherited by every section | Store owner or designer |
-| Version history | Every publish snapshotted; rollback in one click | Store owner |
-| Custom domain | Point your own domain, TLS issued automatically | Store owner |
-| Draft/preview links | Share an unpublished version before go-live | Store owner, agency |
-| Mobile-first canvas | Every section authored mobile-first, desktop is the enhancement | Builder engine |
+| Capability          | What it does                                                                    | Who uses it               |
+| ------------------- | ------------------------------------------------------------------------------- | ------------------------- |
+| Section library     | Hero, product grid, testimonial-free trust bands, FAQ, footer — drag to reorder | Store owner, no developer |
+| Token editor        | Colour, type scale, spacing per store, inherited by every section               | Store owner or designer   |
+| Version history     | Every publish snapshotted; rollback in one click                                | Store owner               |
+| Custom domain       | Point your own domain, TLS issued automatically                                 | Store owner               |
+| Draft/preview links | Share an unpublished version before go-live                                     | Store owner, agency       |
+| Mobile-first canvas | Every section authored mobile-first, desktop is the enhancement                 | Builder engine            |
 
 ### 4.2 How a merchant actually uses this on a Tuesday
 
@@ -140,26 +140,26 @@ It's Eid-collection week. The merchant wants to swap the homepage hero for a fes
 
 ## 5. Catalogue & inventory
 
-*Lever: reducing perceived effort — "one SKU, two languages" reframes bilingual catalogues from double-entry chore to a default state.*
+_Lever: reducing perceived effort — "one SKU, two languages" reframes bilingual catalogues from double-entry chore to a default state._
 
 **text-right (flip row)**
 
 **H2**: Catalogue that speaks Bangla natively.
 Options and variants generate real SKUs, each with its own stock and price. Bangla and English are two copies of one product, so a stock change is never two edits.
-*Proof*: `One SKU, two languages, one stock number.`
+_Proof_: `One SKU, two languages, one stock number.`
 
 **বাংলা proof**: `একটি SKU, দুই ভাষা, একটি স্টক সংখ্যা।`
 
 ### 5.1 Capability table
 
-| Capability | What it does |
-|---|---|
-| Options & variants | Up to 3 option dimensions (e.g. size, colour, material) auto-generate SKUs |
-| Per-variant stock | Each SKU carries its own available-to-sell count, reserved count, and reorder threshold |
-| Bilingual fields | Name, description and search tags stored per-locale on one product record |
-| Bulk import/export | CSV round-trip for merchants migrating an existing catalogue |
-| Low-stock alerts | Threshold per SKU, notification to owner and to any staff role with catalogue access |
-| Category tree | Nested categories with per-category storefront sort order |
+| Capability         | What it does                                                                            |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Options & variants | Up to 3 option dimensions (e.g. size, colour, material) auto-generate SKUs              |
+| Per-variant stock  | Each SKU carries its own available-to-sell count, reserved count, and reorder threshold |
+| Bilingual fields   | Name, description and search tags stored per-locale on one product record               |
+| Bulk import/export | CSV round-trip for merchants migrating an existing catalogue                            |
+| Low-stock alerts   | Threshold per SKU, notification to owner and to any staff role with catalogue access    |
+| Category tree      | Nested categories with per-category storefront sort order                               |
 
 ### 5.2 How a merchant actually uses this on a Tuesday
 
@@ -171,26 +171,26 @@ A saree wholesaler restocks 40 units of a print across four colourways. She uplo
 
 ## 6. Checkout & payments
 
-*Lever: category-specific credibility — treating COD as first-class rather than a fallback signals the product was built for this market, not adapted from one that wasn't.*
+_Lever: category-specific credibility — treating COD as first-class rather than a fallback signals the product was built for this market, not adapted from one that wasn't._
 
 **text-left (Z row)**
 
 **H2**: Checkout built around cash on delivery.
 COD is a first-class method, not a fallback: it carries its own fraud rules, its own return path and its own reconciliation, alongside bKash, Nagad, Rocket, Upay and card.
-*Proof*: `COD returns land back on the order, automatically.`
+_Proof_: `COD returns land back on the order, automatically.`
 
 **বাংলা proof**: `COD রিটার্ন স্বয়ংক্রিয়ভাবে অর্ডারে ফিরে আসে।`
 
 ### 6.1 Capability table
 
-| Rail | Reconciliation | Typical use |
-|---|---|---|
-| Cash on delivery (COD) | Matched against courier remittance report per order | Majority of first-time and rural buyers |
-| bKash | Matched against bKash merchant statement, per transaction ID | Repeat urban buyers, small-ticket |
-| Nagad | Matched against Nagad settlement report | Repeat urban buyers |
-| Rocket | Matched against Rocket statement | Legacy mobile-money customers |
-| Upay | Matched against Upay settlement | Growing segment, telecom-linked wallets |
-| Card (Visa/Mastercard via gateway) | Matched against gateway settlement batch | Higher-ticket, urban, B2B |
+| Rail                               | Reconciliation                                               | Typical use                             |
+| ---------------------------------- | ------------------------------------------------------------ | --------------------------------------- |
+| Cash on delivery (COD)             | Matched against courier remittance report per order          | Majority of first-time and rural buyers |
+| bKash                              | Matched against bKash merchant statement, per transaction ID | Repeat urban buyers, small-ticket       |
+| Nagad                              | Matched against Nagad settlement report                      | Repeat urban buyers                     |
+| Rocket                             | Matched against Rocket statement                             | Legacy mobile-money customers           |
+| Upay                               | Matched against Upay settlement                              | Growing segment, telecom-linked wallets |
+| Card (Visa/Mastercard via gateway) | Matched against gateway settlement batch                     | Higher-ticket, urban, B2B               |
 
 **Worked example — assumed figures for illustration.** A merchant runs 500 orders in a week: 340 COD, 110 bKash, 30 Nagad, 20 card. Without per-rail reconciliation, "cash collected" and "orders shipped" are two separate spreadsheets someone reconciles manually at week's end. With rail-aware checkout, each order carries its payment method as a first-class field, so the weekly close is a filter, not a project: sum COD orders against the courier's cash-remittance report, sum bKash orders against the bKash statement by transaction ID, and any mismatch surfaces as an unmatched row rather than a missing line in a spreadsheet.
 
@@ -204,25 +204,25 @@ A customer in Rangpur adds three items to cart and chooses COD, because they've 
 
 ## 7. Fulfilment & couriers
 
-*Lever: reducing anxiety about the physical handoff — showing the courier status living inside the order (not a separate tracking tab) implies control without extra software.*
+_Lever: reducing anxiety about the physical handoff — showing the courier status living inside the order (not a separate tracking tab) implies control without extra software._
 
 **text-right (flip row)**
 
 **H2**: Labels, pickups and delivery status inside the order.
 Book a courier, print a label and watch delivery status update on the order timeline — no separate courier dashboard open in another tab.
-*Proof*: `One order. One timeline. Every courier update lands on it.`
+_Proof_: `One order. One timeline. Every courier update lands on it.`
 
 **বাংলা proof**: `একটি অর্ডার। একটি টাইমলাইন। প্রতিটি কুরিয়ার আপডেট এখানেই আসে।`
 
 ### 7.1 Capability table
 
-| Courier | Booking | Rate lookup | Status webhook |
-|---|---|---|---|
-| SteadFast | In-order booking | By weight + area | Live |
-| Pathao Courier | In-order booking | By weight + area | Live |
-| RedX | In-order booking | By weight + area | Live |
-| Paperfly | In-order booking | By weight + area | Live |
-| Manual/own rider | Manual status entry | N/A | Manual update |
+| Courier          | Booking             | Rate lookup      | Status webhook |
+| ---------------- | ------------------- | ---------------- | -------------- |
+| SteadFast        | In-order booking    | By weight + area | Live           |
+| Pathao Courier   | In-order booking    | By weight + area | Live           |
+| RedX             | In-order booking    | By weight + area | Live           |
+| Paperfly         | In-order booking    | By weight + area | Live           |
+| Manual/own rider | Manual status entry | N/A              | Manual update  |
 
 ### 7.2 How a merchant actually uses this on a Tuesday
 
@@ -234,25 +234,25 @@ Ten orders came in overnight. The merchant opens the order queue, filters to "re
 
 ## 8. POS & omnichannel
 
-*Lever: consistency — a merchant who trusts the online stock number will only keep trusting it if the counter uses the identical number; this band exists to remove the "which system is right" doubt.*
+_Lever: consistency — a merchant who trusts the online stock number will only keep trusting it if the counter uses the identical number; this band exists to remove the "which system is right" doubt._
 
 **text-left (Z row)**
 
 **H2**: Same product, same stock, counter and web.
 Ring up a sale at a physical counter and the storefront stock count moves in the same instant — because it's the same row, not a synced copy.
-*Proof*: `The counter and the storefront read the same stock ledger.`
+_Proof_: `The counter and the storefront read the same stock ledger.`
 
 **বাংলা proof**: `কাউন্টার এবং স্টোরফ্রন্ট একই স্টক লেজার পড়ে।`
 
 ### 8.1 Capability table
 
-| Capability | What it does |
-|---|---|
-| Counter sale flow | Barcode/search product, take payment (cash, bKash, card), print or SMS receipt |
-| Shared stock ledger | Same availability number online and at counter, decremented at time of sale |
-| Offline queue | Counter can take sales during a connectivity drop; syncs when back online |
-| Staff shift log | Each POS sale is attributed to the logged-in staff account |
-| Returns at counter | Refund or exchange against the original order, whether it was placed online or in person |
+| Capability          | What it does                                                                             |
+| ------------------- | ---------------------------------------------------------------------------------------- |
+| Counter sale flow   | Barcode/search product, take payment (cash, bKash, card), print or SMS receipt           |
+| Shared stock ledger | Same availability number online and at counter, decremented at time of sale              |
+| Offline queue       | Counter can take sales during a connectivity drop; syncs when back online                |
+| Staff shift log     | Each POS sale is attributed to the logged-in staff account                               |
+| Returns at counter  | Refund or exchange against the original order, whether it was placed online or in person |
 
 ### 8.2 How a merchant actually uses this on a Tuesday
 
@@ -264,26 +264,26 @@ A shop has a small storefront and a physical counter in the same neighbourhood. 
 
 ## 9. Analytics & API
 
-*Lever: authority through verifiability — "every metric has a query behind it" pre-empts the skepticism merchants bring after being burned by vanity dashboards elsewhere.*
+_Lever: authority through verifiability — "every metric has a query behind it" pre-empts the skepticism merchants bring after being burned by vanity dashboards elsewhere._
 
 **text-right (flip row)**
 
 **H2**: Analytics you can defend in a meeting.
 Every number traces to rows you can export. No modelled estimates, no rounded vanity metrics — and a REST API when you need the number somewhere else.
-*Proof*: `Every metric has a query behind it.`
+_Proof_: `Every metric has a query behind it.`
 
 **বাংলা proof**: `প্রতিটি মেট্রিকের পেছনে একটি কোয়েরি আছে।`
 
 ### 9.1 Capability table
 
-| Capability | What it does |
-|---|---|
-| Live revenue dashboard | Orders, revenue, average order value, updated per new order |
-| Rail mix report | Share of revenue by payment method (COD/bKash/Nagad/Rocket/Upay/card) |
-| Return-rate report | Returns by product, by rail, by delivery area |
-| CSV export | Any report exports to CSV with the underlying row-level data |
-| REST API | Products, orders, inventory, customers — read and write, token-scoped |
-| Webhook events | Order created, order status changed, payment settled, stock threshold crossed |
+| Capability             | What it does                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| Live revenue dashboard | Orders, revenue, average order value, updated per new order                   |
+| Rail mix report        | Share of revenue by payment method (COD/bKash/Nagad/Rocket/Upay/card)         |
+| Return-rate report     | Returns by product, by rail, by delivery area                                 |
+| CSV export             | Any report exports to CSV with the underlying row-level data                  |
+| REST API               | Products, orders, inventory, customers — read and write, token-scoped         |
+| Webhook events         | Order created, order status changed, payment settled, stock threshold crossed |
 
 ### 9.2 How a merchant actually uses this on a Tuesday
 
@@ -295,17 +295,17 @@ At the end of the month, a merchant's accountant asks for the COD-versus-digital
 
 ## 10. The five official themes — and when each fits
 
-*Lever: reducing decision paralysis — naming exactly five, with a fit-for-purpose table, prevents the reader from either freezing or assuming there are more than there are.*
+_Lever: reducing decision paralysis — naming exactly five, with a fit-for-purpose table, prevents the reader from either freezing or assuming there are more than there are._
 
 Framique ships five official themes today. Each is a starting point you can still edit token-by-token in the builder — choosing a theme is not a lock-in decision.
 
-| Theme | Built for | Typical band count | Notable trait |
-|---|---|---|---|
-| Classic | General retail, apparel, gifting | 6–8 | Balanced grid, neutral type scale, safe default |
-| Modern | Fashion, beauty, higher-margin goods | 5–7 | Larger imagery, tighter type, fewer bands per page |
-| Landing | Single-product or campaign launches | 3–5 | Built to convert one SKU or one collection, minimal navigation |
-| Supershop | Wide catalogues, groceries, multi-category | 8–10 | Dense grid, category rail up front, search-forward |
-| B2B | Wholesale, trade accounts, quote-based selling | 6–9 | Login-gated pricing, quantity breaks, quote-request flow instead of instant checkout |
+| Theme     | Built for                                      | Typical band count | Notable trait                                                                        |
+| --------- | ---------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| Classic   | General retail, apparel, gifting               | 6–8                | Balanced grid, neutral type scale, safe default                                      |
+| Modern    | Fashion, beauty, higher-margin goods           | 5–7                | Larger imagery, tighter type, fewer bands per page                                   |
+| Landing   | Single-product or campaign launches            | 3–5                | Built to convert one SKU or one collection, minimal navigation                       |
+| Supershop | Wide catalogues, groceries, multi-category     | 8–10               | Dense grid, category rail up front, search-forward                                   |
+| B2B       | Wholesale, trade accounts, quote-based selling | 6–9                | Login-gated pricing, quantity breaks, quote-request flow instead of instant checkout |
 
 **Decision framework**: if the catalogue is under 30 SKUs and centred on one collection, start with Landing. If it's a wide multi-category shop with daily repeat buyers, start with Supershop. If pricing depends on the buyer's account (trade, wholesale), start with B2B — its checkout flow assumes a login before price is shown. Everything else starts with Classic or Modern depending on whether the aesthetic priority is breadth (Classic) or image-led minimalism (Modern).
 
@@ -315,20 +315,20 @@ Framique ships five official themes today. Each is a starting point you can stil
 
 ## 11. Multi-language, Bangla-first
 
-*Lever: category ownership — most competitors treat Bangla as a translation layer bolted onto a Latin-first product; naming the structural difference (matra-safe line height, no inherited negative tracking) demonstrates rather than claims it.*
+_Lever: category ownership — most competitors treat Bangla as a translation layer bolted onto a Latin-first product; naming the structural difference (matra-safe line height, no inherited negative tracking) demonstrates rather than claims it._
 
 Bangla is not a translated skin over an English product. Product fields, storefront copy, receipts, SMS notifications and staff-facing labels are stored per-locale from the schema up. Two structural choices follow through the whole product:
 
 - **Type never clips a matra.** Bangla display type keeps a 1.35+ line-height box and drops inherited Latin negative tracking to zero, so conjuncts and matras render at full height even inside a compact hero.
 - **A product page is one record, two reading experiences.** Editing the Bangla name field does not create a second product; it fills a locale slot on the same SKU, so stock, price and variant logic stay singular even when the storefront is bilingual.
 
-| Surface | Bangla support today |
-|---|---|
+| Surface                      | Bangla support today                             |
+| ---------------------------- | ------------------------------------------------ |
 | Storefront (customer-facing) | Full: product, cart, checkout, order-status page |
-| POS (staff-facing) | Full: search, product labels, receipt |
-| Order confirmation SMS | Full, per-store default language setting |
-| Analytics dashboard | English only today (see honesty band) |
-| Admin/builder UI | English only today (see honesty band) |
+| POS (staff-facing)           | Full: search, product labels, receipt            |
+| Order confirmation SMS       | Full, per-store default language setting         |
+| Analytics dashboard          | English only today (see honesty band)            |
+| Admin/builder UI             | English only today (see honesty band)            |
 
 **Design note**: split-screen sample — same product card rendered in `lang="en"` and `lang="bn"`, same height, to visually prove the matra-safe claim rather than describe it.
 
@@ -336,18 +336,18 @@ Bangla is not a translated skin over an English product. Product fields, storefr
 
 ## 12. Roles & permissions
 
-*Lever: risk reduction for the owner — a named, scoped permission model reassures an owner who wants staff to use the system without being able to see revenue or change prices.*
+_Lever: risk reduction for the owner — a named, scoped permission model reassures an owner who wants staff to use the system without being able to see revenue or change prices._
 
 A shop is rarely run by one person. Framique scopes access by role rather than giving every logged-in staff member full owner access.
 
-| Role | Can see | Can do |
-|---|---|---|
-| Owner | Everything | Everything, including billing and staff management |
-| Manager | Orders, catalogue, analytics | Edit catalogue, process orders and returns, cannot change billing |
-| Catalogue staff | Products, stock | Add/edit products and stock, cannot see revenue reports |
-| Counter/POS staff | Products, stock, POS sales | Ring up sales, process counter returns, no storefront/builder access |
-| Fulfilment staff | Orders, courier status | Book couriers, print labels, update manual delivery status |
-| Read-only/accountant | Analytics, exports | View and export reports, no edit access anywhere |
+| Role                 | Can see                      | Can do                                                               |
+| -------------------- | ---------------------------- | -------------------------------------------------------------------- |
+| Owner                | Everything                   | Everything, including billing and staff management                   |
+| Manager              | Orders, catalogue, analytics | Edit catalogue, process orders and returns, cannot change billing    |
+| Catalogue staff      | Products, stock              | Add/edit products and stock, cannot see revenue reports              |
+| Counter/POS staff    | Products, stock, POS sales   | Ring up sales, process counter returns, no storefront/builder access |
+| Fulfilment staff     | Orders, courier status       | Book couriers, print labels, update manual delivery status           |
+| Read-only/accountant | Analytics, exports           | View and export reports, no edit access anywhere                     |
 
 **How a merchant actually uses this on a Tuesday**: a shop owner hires a part-time counter assistant for Eid week. She's given the Counter/POS role — she can ring up sales and see stock, but cannot see the store's overall revenue report or change any product's price. When the temporary hire's contract ends, the owner deactivates the role in one action rather than needing to change a shared password everyone knew.
 
@@ -357,17 +357,17 @@ A shop is rarely run by one person. Framique scopes access by role rather than g
 
 ## 13. Automation & webhooks
 
-*Lever: showing the "escape hatch" for technical buyers — API/webhook depth signals the platform won't become a ceiling once the merchant outgrows point-and-click configuration.*
+_Lever: showing the "escape hatch" for technical buyers — API/webhook depth signals the platform won't become a ceiling once the merchant outgrows point-and-click configuration._
 
 Not every workflow fits inside the dashboard. Webhooks and the REST API let a merchant or their developer react to events the moment they happen.
 
-| Event | Typical automation built on it |
-|---|---|
-| `order.created` | Send a custom WhatsApp confirmation via a third-party messaging tool |
-| `order.status_changed` | Trigger an SMS when a courier marks a parcel out for delivery |
-| `payment.settled` | Push a row into an external accounting spreadsheet or tool |
-| `inventory.threshold_crossed` | Notify a supplier's messaging channel to trigger a reorder |
-| `customer.created` | Add the customer to an email or SMS marketing list |
+| Event                         | Typical automation built on it                                       |
+| ----------------------------- | -------------------------------------------------------------------- |
+| `order.created`               | Send a custom WhatsApp confirmation via a third-party messaging tool |
+| `order.status_changed`        | Trigger an SMS when a courier marks a parcel out for delivery        |
+| `payment.settled`             | Push a row into an external accounting spreadsheet or tool           |
+| `inventory.threshold_crossed` | Notify a supplier's messaging channel to trigger a reorder           |
+| `customer.created`            | Add the customer to an email or SMS marketing list                   |
 
 **Worked example.** A merchant's supplier only accepts reorders by a specific spreadsheet format sent over email. Rather than checking stock manually every few days, the merchant's developer subscribes to `inventory.threshold_crossed`, and a small script formats the affected SKUs into the supplier's expected spreadsheet and emails it automatically the moment stock crosses the reorder line — turning a recurring manual check into a one-time integration.
 
@@ -377,16 +377,16 @@ Not every workflow fits inside the dashboard. Webhooks and the REST API let a me
 
 ## 14. Performance budget
 
-*Lever: trust through measurable commitment — a stated budget, not a vague "fast," gives technical buyers something to hold the product accountable to.*
+_Lever: trust through measurable commitment — a stated budget, not a vague "fast," gives technical buyers something to hold the product accountable to._
 
 Storefronts are judged on load time by both customers on mid-range Android phones over 3G/4G and by search engines. Framique enforces a performance budget at the platform level rather than leaving it to each theme's discretion.
 
-| Metric | Budget | Why it matters here |
-|---|---|---|
-| Largest Contentful Paint | ≤ 2.5s on a simulated mid-tier Android + 4G profile | Majority of storefront traffic in this market is mobile, not desktop |
-| Total JS shipped per storefront page | ≤ 170KB gzipped | Keeps parse/execute time low on lower-end CPUs |
-| Image delivery | Responsive `srcset`, WebP/AVIF with fallback, lazy below the fold | Product photography is heavy; this keeps it from dominating load time |
-| Time to first byte | ≤ 400ms from a Bangladesh-region edge | Checkout abandonment correlates strongly with delay at this exact step |
+| Metric                               | Budget                                                            | Why it matters here                                                    |
+| ------------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Largest Contentful Paint             | ≤ 2.5s on a simulated mid-tier Android + 4G profile               | Majority of storefront traffic in this market is mobile, not desktop   |
+| Total JS shipped per storefront page | ≤ 170KB gzipped                                                   | Keeps parse/execute time low on lower-end CPUs                         |
+| Image delivery                       | Responsive `srcset`, WebP/AVIF with fallback, lazy below the fold | Product photography is heavy; this keeps it from dominating load time  |
+| Time to first byte                   | ≤ 400ms from a Bangladesh-region edge                             | Checkout abandonment correlates strongly with delay at this exact step |
 
 **Design note**: this band uses a plain data table, no gradient card — the tone here is engineering honesty, not celebration.
 
@@ -394,7 +394,7 @@ Storefronts are judged on load time by both customers on mid-range Android phone
 
 ## 15. What we do not do yet
 
-*Lever: honest scope-limiting builds more trust than an unqualified feature list — a buyer who catches one overclaim discounts every other claim on the page.*
+_Lever: honest scope-limiting builds more trust than an unqualified feature list — a buyer who catches one overclaim discounts every other claim on the page._
 
 Framique is not everything. Being direct about the edges of the current product saves an evaluating merchant time and avoids a bad-fit sale.
 
@@ -411,18 +411,18 @@ Framique is not everything. Being direct about the edges of the current product 
 
 ## 16. Comparison — one platform vs. stitching separate tools
 
-*Lever: making the switching cost of the status quo visible — most merchants underestimate the ongoing tax of reconciling separate tools until it's itemised.*
+_Lever: making the switching cost of the status quo visible — most merchants underestimate the ongoing tax of reconciling separate tools until it's itemised._
 
-| Task | Stitched tools (typical setup) | Framique |
-|---|---|---|
-| Storefront | One theme platform (often foreign hosting, foreign payment defaults) | Built in, Bangladesh-first payment defaults |
-| Payments | Separate gateway integration per rail, manual reconciliation spreadsheet | bKash/Nagad/Rocket/Upay/card/COD reconciled against orders natively |
-| Inventory sync between web and counter | Manual recount or a third-party sync plugin, often lagging by hours | Same stock ledger, same instant |
-| Courier booking | Log into each courier's own panel separately, copy tracking numbers back into orders by hand | Booked from the order, status returns automatically |
-| Bilingual catalogue | Duplicate product records in two languages, kept in sync manually | One product, two locale fields |
-| Reporting | Export from each tool, reconcile in a spreadsheet before a meeting | One dashboard, exportable, one query per metric |
-| Staff access | Shared logins or no access control at all | Role-scoped accounts per staff function |
-| Point of integration failure | Each sync job is a place data can silently drift | One data model — nothing to keep "in sync" because there's one record |
+| Task                                   | Stitched tools (typical setup)                                                               | Framique                                                              |
+| -------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Storefront                             | One theme platform (often foreign hosting, foreign payment defaults)                         | Built in, Bangladesh-first payment defaults                           |
+| Payments                               | Separate gateway integration per rail, manual reconciliation spreadsheet                     | bKash/Nagad/Rocket/Upay/card/COD reconciled against orders natively   |
+| Inventory sync between web and counter | Manual recount or a third-party sync plugin, often lagging by hours                          | Same stock ledger, same instant                                       |
+| Courier booking                        | Log into each courier's own panel separately, copy tracking numbers back into orders by hand | Booked from the order, status returns automatically                   |
+| Bilingual catalogue                    | Duplicate product records in two languages, kept in sync manually                            | One product, two locale fields                                        |
+| Reporting                              | Export from each tool, reconcile in a spreadsheet before a meeting                           | One dashboard, exportable, one query per metric                       |
+| Staff access                           | Shared logins or no access control at all                                                    | Role-scoped accounts per staff function                               |
+| Point of integration failure           | Each sync job is a place data can silently drift                                             | One data model — nothing to keep "in sync" because there's one record |
 
 **Design note**: this table can carry the page's second gradient-spotlight treatment behind the "Framique" column header only, per DESIGN.md's one-or-two-gradients-per-page rule; keep the "stitched tools" column flat/neutral to avoid looking like an attack ad — tone stays factual.
 
@@ -430,7 +430,7 @@ Framique is not everything. Being direct about the edges of the current product 
 
 ## 17. FAQ
 
-*Lever: answering the specific objections a Bangladeshi merchant would actually raise, in their own framing, reduces the perceived risk of switching.*
+_Lever: answering the specific objections a Bangladeshi merchant would actually raise, in their own framing, reduces the perceived risk of switching._
 
 1. **Does Framique support bKash, Nagad, Rocket and Upay at checkout, or only card payments?**
    All four local wallets, plus card and cash on delivery, are supported at checkout with per-rail reconciliation against orders.
@@ -468,7 +468,7 @@ Framique is not everything. Being direct about the edges of the current product 
 
 ## 18. Final CTA — aurora spotlight
 
-*Lever: specificity of the next step ("your own catalogue," not a generic demo) lowers the activation energy for a merchant already convinced by the deep dives above.*
+_Lever: specificity of the next step ("your own catalogue," not a generic demo) lowers the activation energy for a merchant already convinced by the deep dives above._
 
 **H2**: See it against your own catalogue.
 **Sub**: Import your products, connect one payment rail and one courier, and judge the whole system on real data — not a demo store.

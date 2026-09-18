@@ -8,7 +8,12 @@
  */
 
 export type FaqQa = { id: string; question: string; answer: string };
-export type FaqSection = { id: string; title: string; blurb: string; rows: readonly FaqQa[] };
+export type FaqSection = {
+  id: string;
+  title: string;
+  blurb: string;
+  rows: readonly FaqQa[];
+};
 
 export const FAQ_HERO = {
   eyebrow: "Answers before the sales call",
@@ -226,7 +231,9 @@ export const FAQ_SECTIONS: readonly FaqSection[] = [
 ] as const;
 
 /** Flat list used for the FAQPage JSON-LD and the on-page search index. */
-export const FAQ_ALL: readonly FaqQa[] = FAQ_SECTIONS.flatMap((section) => section.rows);
+export const FAQ_ALL: readonly FaqQa[] = FAQ_SECTIONS.flatMap(
+  (section) => section.rows,
+);
 
 export const FAQ_CTA = {
   title: "Still deciding?",

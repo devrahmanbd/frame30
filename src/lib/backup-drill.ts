@@ -69,9 +69,21 @@ export function checksumCounts(counts: TableCount[]): string {
   return hash.toString(16).padStart(8, "0");
 }
 
-export function buildSnapshot(scope: string, counts: TableCount[], takenAt: string): Snapshot {
-  const normalized = counts.map((c) => ({ table: c.table, rows: Math.max(0, Math.trunc(c.rows)) }));
-  return { scope, takenAt, counts: normalized, checksum: checksumCounts(normalized), };
+export function buildSnapshot(
+  scope: string,
+  counts: TableCount[],
+  takenAt: string,
+): Snapshot {
+  const normalized = counts.map((c) => ({
+    table: c.table,
+    rows: Math.max(0, Math.trunc(c.rows)),
+  }));
+  return {
+    scope,
+    takenAt,
+    counts: normalized,
+    checksum: checksumCounts(normalized),
+  };
 }
 
 export function totalRows(snapshot: Snapshot): number {
@@ -98,7 +110,9 @@ export function evaluateDrill(
   checks.push({
     name: "manifest_coverage",
     ok: missing.length === 0,
-    detail: missing.length ? `missing: ${missing.join(", ")}` : `${manifest.length} tables captured`,
+    detail: missing.length
+      ? `missing: ${missing.join(", ")}`
+      : `${manifest.length} tables captured`,
   });
 
   const afterByTable = new Map(after.counts.map((c) => [c.table, c.rows]));
@@ -112,8 +126,10 @@ export function evaluateDrill(
     }
     const delta = Math.abs(restored - c.rows);
     const allowed = Math.max(0, Math.floor(c.rows * tolerance));
-    if (restored < c.rows - allowed) lost.push(`${c.table} ${c.rows} → ${restored}`);
-    else if (delta > allowed) drifted.push(`${c.table} ${c.rows} → ${restored}`);
+    if (restored < c.rows - allowed)
+      lost.push(`${c.table} ${c.rows} → ${restored}`);
+    else if (delta > allowed)
+      drifted.push(`${c.table} ${c.rows} → ${restored}`);
   }
   checks.push({
     name: "row_counts",
@@ -123,7 +139,9 @@ export function evaluateDrill(
   checks.push({
     name: "drift_within_tolerance",
     ok: drifted.length === 0,
-    detail: drifted.length ? `drift: ${drifted.join("; ")}` : `tolerance ${tolerance}`,
+    detail: drifted.length
+      ? `drift: ${drifted.join("; ")}`
+      : `tolerance ${tolerance}`,
   });
 
   const rowsVerified = before.counts.reduce(
@@ -140,13 +158,17 @@ export function evaluateDrill(
   checks.push({
     name: "checksum",
     ok: checksumOk,
-    detail: checksumOk ? before.checksum : `${before.checksum} ≠ ${after.checksum}`,
+    detail: checksumOk
+      ? before.checksum
+      : `${before.checksum} ≠ ${after.checksum}`,
   });
 
   // A checksum mismatch inside tolerance is a warning, not a failure: rows can
   // legitimately land mid-drill. Loss, missing coverage or zero rows are fatal.
   const fatal = ["manifest_coverage", "row_counts", "rows_verified"];
-  const failures = checks.filter((c) => !c.ok && fatal.includes(c.name)).map((c) => c.name);
+  const failures = checks
+    .filter((c) => !c.ok && fatal.includes(c.name))
+    .map((c) => c.name);
   return {
     status: failures.length === 0 ? "passed" : "failed",
     rowsVerified,
@@ -156,14 +178,21 @@ export function evaluateDrill(
 }
 
 /** Cadence rule: a drill is due when the last passing one is older than the interval. */
-export function drillDue(lastPassedAt: string | null, now: Date, intervalHours = 24): boolean {
+export function drillDue(
+  lastPassedAt: string | null,
+  now: Date,
+  intervalHours = 24,
+): boolean {
   if (!lastPassedAt) return true;
   const last = new Date(lastPassedAt).getTime();
   if (!Number.isFinite(last)) return true;
   return now.getTime() - last >= intervalHours * 3_600_000;
 }
 
-export function nextDrillAt(lastPassedAt: string | null, intervalHours = 24): string | null {
+export function nextDrillAt(
+  lastPassedAt: string | null,
+  intervalHours = 24,
+): string | null {
   if (!lastPassedAt) return null;
   const last = new Date(lastPassedAt).getTime();
   if (!Number.isFinite(last)) return null;
@@ -172,5 +201,8 @@ export function nextDrillAt(lastPassedAt: string | null, intervalHours = 24): st
 
 /** Human-readable one-liner stored on the run row. Never contains tenant data. */
 export function drillNotes(verdict: DrillVerdict): string {
-  return verdict.checks.map((c) => `${c.ok ? "ok" : "FAIL"} ${c.name}: ${c.detail}`).join(" | ").slice(0, 900);
+  return verdict.checks
+    .map((c) => `${c.ok ? "ok" : "FAIL"} ${c.name}: ${c.detail}`)
+    .join(" | ")
+    .slice(0, 900);
 }

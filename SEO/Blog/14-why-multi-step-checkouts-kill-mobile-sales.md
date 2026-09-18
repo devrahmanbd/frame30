@@ -2,7 +2,7 @@
 
 > **Target Query:** `reduce ecommerce cart abandonment mobile`, `mobile checkout best practices`, `one page checkout vs multi step`  
 > **Reading Time:** 8 minutes  
-> **Published:** November 2026  
+> **Published:** November 2026
 
 ---
 
@@ -30,12 +30,15 @@ When mobile shoppers are forced to navigate through four separate URLs with mult
 ## 2. The 3 Sins of Mobile Checkout Design
 
 ### Sin 1: Full-Page Browser Redirects
+
 Redirecting a user away from your store to an external payment processor URL forces the browser to establish a new SSL handshake, reload heavy CSS assets, and display a blank white screen for 2–4 seconds on mobile networks.
 
 ### Sin 2: Requiring Account Registration Before Checkout
+
 Forcing a guest shopper to create a password and verify an email address before they can buy a simple product increases cart abandonment by **35%**.
 
 ### Sin 3: Clumsy Manual Payment Data Entry
+
 Asking a customer to open their mobile banking app, perform a manual money transfer, copy a 10-digit transaction ID, and paste it into a web form results in high typo rates, delayed fulfillment, and lost sales.
 
 ---
@@ -43,6 +46,7 @@ Asking a customer to open their mobile banking app, perform a manual money trans
 ## 3. The 1-Page High-Conversion Architecture
 
 In **FRAMIQUE**, checkout is engineered as a **streamlined, single-page flow**:
+
 1. **Auto-Detecting Address Fields:** Mobile numbers and city/district zones are auto-validated in real-time.
 2. **Instant Tokenized MFS Overlay:** Customers authorize bKash or Nagad payments in a lightweight modal without leaving your storefront domain.
 3. **Optimistic UI Feedback:** Order completion displays immediately with animated confirmation while webhooks settle in the background.

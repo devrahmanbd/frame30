@@ -9,12 +9,27 @@ import type { CSSProperties } from "react";
 import * as Icons from "lucide-react";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
-import { resolveResponsive, type DeviceKey, type Maybe } from "@/lib/studio/responsive";
+import {
+  resolveResponsive,
+  type DeviceKey,
+  type Maybe,
+} from "@/lib/studio/responsive";
 import { cn } from "@/lib/utils";
 
-export function LucideIcon({ name, className, size }: { name?: unknown; className?: string; size?: number }) {
+export function LucideIcon({
+  name,
+  className,
+  size,
+}: {
+  name?: unknown;
+  className?: string;
+  size?: number;
+}) {
   const key = typeof name === "string" && name ? name : "Star";
-  const registry = Icons as unknown as Record<string, React.ComponentType<{ className?: string; size?: number }>>;
+  const registry = Icons as unknown as Record<
+    string,
+    React.ComponentType<{ className?: string; size?: number }>
+  >;
   const Cmp = registry[key] ?? Icons.Star;
   return <Cmp className={className} size={size} aria-hidden />;
 }
@@ -24,7 +39,12 @@ function str(settings: NodeSettings, key: string, fallback = ""): string {
   return typeof value === "string" && value !== "" ? value : fallback;
 }
 
-function num(settings: NodeSettings, key: string, fallback: number, device: DeviceKey): number {
+function num(
+  settings: NodeSettings,
+  key: string,
+  fallback: number,
+  device: DeviceKey,
+): number {
   const value = resolveResponsive(settings[key] as Maybe<number>, device);
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
@@ -32,12 +52,22 @@ function num(settings: NodeSettings, key: string, fallback: number, device: Devi
 function rows(settings: NodeSettings, key = "items"): NodeSettings[] {
   const value = settings[key];
   if (!Array.isArray(value)) return [];
-  return value.map((item) => (typeof item === "string" ? { text: item } : ((item ?? {}) as NodeSettings)));
+  return value.map((item) =>
+    typeof item === "string" ? { text: item } : ((item ?? {}) as NodeSettings),
+  );
 }
 
-const alignToFlex: Record<string, string> = { left: "flex-start", center: "center", right: "flex-end" };
+const alignToFlex: Record<string, string> = {
+  left: "flex-start",
+  center: "center",
+  right: "flex-end",
+};
 
-export type RenderProps = { node: StudioNode; device: DeviceKey; editing?: boolean };
+export type RenderProps = {
+  node: StudioNode;
+  device: DeviceKey;
+  editing?: boolean;
+};
 
 function Placeholder({ label }: { label: string }) {
   return (
@@ -55,11 +85,19 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "heading": {
       const level = Math.min(6, Math.max(1, num(s, "level", 2, device)));
       const Tag = `h${level}` as "h1";
-      return <Tag className="leading-tight">{str(s, "text", "Add your heading text")}</Tag>;
+      return (
+        <Tag className="leading-tight">
+          {str(s, "text", "Add your heading text")}
+        </Tag>
+      );
     }
 
     case "text":
-      return <p className="leading-relaxed">{str(s, "text", "Write something your customers need to know.")}</p>;
+      return (
+        <p className="leading-relaxed">
+          {str(s, "text", "Write something your customers need to know.")}
+        </p>
+      );
 
     case "text-editor":
       return (
@@ -80,7 +118,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           src={url}
           alt={str(s, "alt")}
           loading="lazy"
-          style={{ borderRadius: num(s, "radius", 12, device), width: `${num(s, "width", 100, device)}%` }}
+          style={{
+            borderRadius: num(s, "radius", 12, device),
+            width: `${num(s, "width", 100, device)}%`,
+          }}
           className="h-auto max-w-full"
         />
       );
@@ -108,7 +149,11 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <span
           className={cn(
             "inline-flex items-center justify-center rounded-fq-md font-semibold transition-colors",
-            size === "sm" ? "min-h-9 px-3 text-sm" : size === "lg" ? "min-h-12 px-6 text-base" : "min-h-11 px-4 text-sm",
+            size === "sm"
+              ? "min-h-9 px-3 text-sm"
+              : size === "lg"
+                ? "min-h-12 px-6 text-base"
+                : "min-h-11 px-4 text-sm",
             variant === "outline"
               ? "border border-primary text-primary"
               : variant === "ghost"
@@ -126,7 +171,11 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <hr
           className="mx-auto border-border"
           style={{
-            borderTopStyle: str(s, "style", "solid") as CSSProperties["borderTopStyle"],
+            borderTopStyle: str(
+              s,
+              "style",
+              "solid",
+            ) as CSSProperties["borderTopStyle"],
             borderTopWidth: num(s, "weight", 1, device),
             width: `${num(s, "width", 100, device)}%`,
           }}
@@ -134,7 +183,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
 
     case "spacer":
-      return <div aria-hidden style={{ height: num(s, "height", 40, device) }} />;
+      return (
+        <div aria-hidden style={{ height: num(s, "height", 40, device) }} />
+      );
 
     case "map": {
       const query = str(s, "query", "Dhaka");
@@ -151,7 +202,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "icon":
       return (
-        <span className="inline-flex" style={{ justifyContent: alignToFlex[align] }}>
+        <span
+          className="inline-flex"
+          style={{ justifyContent: alignToFlex[align] }}
+        >
           <LucideIcon name={s.icon} size={num(s, "size", 40, device)} />
         </span>
       );
@@ -166,14 +220,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 key={index}
                 className={cn(
                   "rounded-fq-sm px-3 py-2 text-sm font-medium",
-                  index === 0 ? "bg-primary/10 text-primary" : "text-muted-foreground",
+                  index === 0
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground",
                 )}
               >
-                {typeof item.title === "string" ? item.title : `Tab ${index + 1}`}
+                {typeof item.title === "string"
+                  ? item.title
+                  : `Tab ${index + 1}`}
               </span>
             ))}
           </div>
-          <div className="p-4 text-sm">{typeof items[0]?.content === "string" ? items[0].content : ""}</div>
+          <div className="p-4 text-sm">
+            {typeof items[0]?.content === "string" ? items[0].content : ""}
+          </div>
         </div>
       );
     }
@@ -187,7 +247,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             <details key={index} open={index === 0} className="group px-4 py-3">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium">
                 {typeof item.title === "string" ? item.title : "Item"}
-                <Icons.ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden />
+                <Icons.ChevronDown
+                  className="size-4 shrink-0 transition-transform group-open:rotate-180"
+                  aria-hidden
+                />
               </summary>
               <p className="pt-2 text-sm text-muted-foreground">
                 {typeof item.content === "string" ? item.content : ""}
@@ -201,11 +264,19 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "image-box":
     case "icon-box":
       return (
-        <div className="flex flex-col gap-2" style={{ alignItems: alignToFlex[align] ?? "flex-start" }}>
+        <div
+          className="flex flex-col gap-2"
+          style={{ alignItems: alignToFlex[align] ?? "flex-start" }}
+        >
           {node.el === "icon-box" ? (
             <LucideIcon name={s.icon} size={36} className="text-primary" />
           ) : str(s, "url") ? (
-            <img src={str(s, "url")} alt={str(s, "alt")} loading="lazy" className="h-auto max-w-full rounded-fq-md" />
+            <img
+              src={str(s, "url")}
+              alt={str(s, "alt")}
+              loading="lazy"
+              className="h-auto max-w-full rounded-fq-md"
+            />
           ) : (
             <Placeholder label="Choose an image" />
           )}
@@ -218,7 +289,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const items = rows(s);
       if (items.length === 0) return <Placeholder label="Add slides" />;
       return (
-        <div className="flex overflow-x-auto" style={{ gap: num(s, "gap", 16, device) }}>
+        <div
+          className="flex overflow-x-auto"
+          style={{ gap: num(s, "gap", 16, device) }}
+        >
           {items.map((item, index) => (
             <img
               key={index}
@@ -261,7 +335,11 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <ul className="flex flex-col gap-2">
           {rows(s).map((item, index) => (
             <li key={index} className="flex items-center gap-2 text-sm">
-              <LucideIcon name={s.icon ?? "Check"} size={16} className="text-primary" />
+              <LucideIcon
+                name={s.icon ?? "Check"}
+                size={16}
+                className="text-primary"
+              />
               <span>{typeof item.text === "string" ? item.text : ""}</span>
             </li>
           ))}
@@ -270,13 +348,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "counter":
       return (
-        <div className="flex flex-col gap-1" style={{ alignItems: alignToFlex[align] ?? "flex-start" }}>
+        <div
+          className="flex flex-col gap-1"
+          style={{ alignItems: alignToFlex[align] ?? "flex-start" }}
+        >
           <span className="text-4xl font-bold tabular-nums">
             {str(s, "prefix")}
             {num(s, "end", 100, device)}
             {str(s, "suffix")}
           </span>
-          <span className="text-sm text-muted-foreground">{str(s, "title")}</span>
+          <span className="text-sm text-muted-foreground">
+            {str(s, "title")}
+          </span>
         </div>
       );
 
@@ -286,7 +369,11 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between text-sm">
             <span>{str(s, "title")}</span>
-            {s.showPercent !== false && <span className="tabular-nums text-muted-foreground">{percent}%</span>}
+            {s.showPercent !== false && (
+              <span className="tabular-nums text-muted-foreground">
+                {percent}%
+              </span>
+            )}
           </div>
           <div
             className="h-2 w-full overflow-hidden rounded-full bg-muted"
@@ -296,7 +383,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             aria-valuemax={100}
             aria-label={str(s, "title", "Progress")}
           >
-            <div className="h-full rounded-full bg-primary" style={{ width: `${percent}%` }} />
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${percent}%` }}
+            />
           </div>
         </div>
       );
@@ -305,13 +395,22 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "testimonial":
       return (
         <figure className="flex flex-col gap-3">
-          <blockquote className="text-lg leading-relaxed">“{str(s, "text")}”</blockquote>
+          <blockquote className="text-lg leading-relaxed">
+            “{str(s, "text")}”
+          </blockquote>
           <figcaption className="flex items-center gap-3 text-sm">
             {str(s, "url") ? (
-              <img src={str(s, "url")} alt="" loading="lazy" className="size-10 rounded-full object-cover" />
+              <img
+                src={str(s, "url")}
+                alt=""
+                loading="lazy"
+                className="size-10 rounded-full object-cover"
+              />
             ) : null}
             <span>
-              <strong className="block font-semibold">{str(s, "author", "Customer")}</strong>
+              <strong className="block font-semibold">
+                {str(s, "author", "Customer")}
+              </strong>
               <span className="text-muted-foreground">{str(s, "role")}</span>
             </span>
           </figcaption>
@@ -320,7 +419,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "social":
       return (
-        <div className="flex gap-2" style={{ justifyContent: alignToFlex[align] ?? "flex-start" }}>
+        <div
+          className="flex gap-2"
+          style={{ justifyContent: alignToFlex[align] ?? "flex-start" }}
+        >
           {rows(s).map((item, index) => (
             <span
               key={index}
@@ -328,9 +430,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             >
               <LucideIcon
                 name={
-                  { facebook: "Facebook", instagram: "Instagram", youtube: "Youtube", linkedin: "Linkedin", x: "Twitter", whatsapp: "MessageCircle" }[
-                    String(item.network ?? "")
-                  ] ?? "Link"
+                  {
+                    facebook: "Facebook",
+                    instagram: "Instagram",
+                    youtube: "Youtube",
+                    linkedin: "Linkedin",
+                    x: "Twitter",
+                    whatsapp: "MessageCircle",
+                  }[String(item.network ?? "")] ?? "Link"
                 }
                 size={18}
               />
@@ -350,8 +457,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
               ? "border-danger/40 bg-danger-soft text-danger-foreground"
               : "border-info/40 bg-info-soft text-foreground";
       return (
-        <div role="note" className={cn("rounded-fq-md border px-4 py-3 text-sm", toneClass)}>
-          <strong className="block font-semibold">{str(s, "title", "Notice")}</strong>
+        <div
+          role="note"
+          className={cn("rounded-fq-md border px-4 py-3 text-sm", toneClass)}
+        >
+          <strong className="block font-semibold">
+            {str(s, "title", "Notice")}
+          </strong>
           <span>{str(s, "text")}</span>
         </div>
       );
@@ -367,10 +479,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
 
     case "app-block":
-      return <Placeholder label={`App block: ${str(s, "block", "choose a block")}`} />;
+      return (
+        <Placeholder
+          label={`App block: ${str(s, "block", "choose a block")}`}
+        />
+      );
 
     case "anchor":
-      return <span id={str(s, "anchorId", "section")} className="block h-0 w-0" aria-hidden />;
+      return (
+        <span
+          id={str(s, "anchorId", "section")}
+          className="block h-0 w-0"
+          aria-hidden
+        />
+      );
 
     case "read-more":
       return (
@@ -383,13 +505,21 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const value = num(s, "value", 4.5, device);
       const max = num(s, "max", 5, device);
       return (
-        <div className="flex gap-1" style={{ justifyContent: alignToFlex[align] ?? "flex-start" }} aria-label={`${value} out of ${max}`}>
+        <div
+          className="flex gap-1"
+          style={{ justifyContent: alignToFlex[align] ?? "flex-start" }}
+          aria-label={`${value} out of ${max}`}
+        >
           {Array.from({ length: max }).map((_, index) => (
             <Icons.Star
               key={index}
               size={18}
               aria-hidden
-              className={index < Math.round(value) ? "fill-warning text-warning" : "text-muted-foreground"}
+              className={
+                index < Math.round(value)
+                  ? "fill-warning text-warning"
+                  : "text-muted-foreground"
+              }
             />
           ))}
         </div>
@@ -409,7 +539,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const columns = num(s, "columns", 4, device);
       const limit = Math.min(num(s, "limit", 8, device), 12);
       return (
-        <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
+        <div
+          className="grid gap-4"
+          style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+        >
           {Array.from({ length: limit }).map((_, index) => (
             <div key={index} className="rounded-fq-md border border-border p-3">
               <div className="mb-2 aspect-square rounded-fq-sm bg-muted" />
@@ -425,7 +558,11 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "cart":
     case "checkout":
     case "menu-cart":
-      return <Placeholder label={`Live ${node.el.replace("-", " ")} — renders on the storefront`} />;
+      return (
+        <Placeholder
+          label={`Live ${node.el.replace("-", " ")} — renders on the storefront`}
+        />
+      );
 
     default:
       return <Placeholder label={node.el} />;

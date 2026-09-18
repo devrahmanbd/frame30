@@ -48,7 +48,9 @@ export {
 const VERSION_ORDER: DocVersionId[] = ["v0", "v1"];
 
 export function isDocVersion(value: unknown): value is DocVersionId {
-  return typeof value === "string" && VERSION_ORDER.includes(value as DocVersionId);
+  return (
+    typeof value === "string" && VERSION_ORDER.includes(value as DocVersionId)
+  );
 }
 
 export function docVersion(id: DocVersionId): DocVersion {
@@ -86,7 +88,11 @@ export function docPage(version: DocVersionId, slug: string): DocPage | null {
 export type DocNavGroup = {
   id: DocGroupId;
   label: { en: string; bn: string };
-  pages: { slug: string; title: { en: string; bn: string }; summary: { en: string; bn: string } }[];
+  pages: {
+    slug: string;
+    title: { en: string; bn: string };
+    summary: { en: string; bn: string };
+  }[];
 };
 
 /** Sidebar model: groups in declared order, pages in declared order. */
@@ -108,14 +114,17 @@ export function docNav(version: DocVersionId = CURRENT_VERSION): DocNavGroup[] {
 /** Flat reading order — drives prev/next and the `llms.txt` map. */
 export function docOrder(version: DocVersionId = CURRENT_VERSION): DocPage[] {
   return docNav(version).flatMap((group) =>
-    group.pages.map((p) => docPage(version, p.slug)).filter((p): p is DocPage => Boolean(p)),
+    group.pages
+      .map((p) => docPage(version, p.slug))
+      .filter((p): p is DocPage => Boolean(p)),
   );
 }
 
 export function docNeighbours(version: DocVersionId, slug: string) {
   const order = docOrder(version);
   const index = order.findIndex((p) => p.slug === slug);
-  if (index < 0) return { prev: null as DocPage | null, next: null as DocPage | null };
+  if (index < 0)
+    return { prev: null as DocPage | null, next: null as DocPage | null };
   return { prev: order[index - 1] ?? null, next: order[index + 1] ?? null };
 }
 
@@ -156,7 +165,11 @@ export function docHeadings(page: DocPage): DocHeading[] {
     const base = slugify(block.text);
     const count = seen.get(base) ?? 0;
     seen.set(base, count + 1);
-    out.push({ level: block.level, text: block.text, anchor: count === 0 ? base : `${base}-${count + 1}` });
+    out.push({
+      level: block.level,
+      text: block.text,
+      anchor: count === 0 ? base : `${base}-${count + 1}`,
+    });
   }
   return out;
 }
@@ -196,7 +209,9 @@ function samplePath(pattern: string): string {
 }
 
 export function curlSample(route: ApiRoute, base = API_BASE): string {
-  const lines = [`curl -s -X ${route.method} "${base}/${samplePath(route.pattern)}"`];
+  const lines = [
+    `curl -s -X ${route.method} "${base}/${samplePath(route.pattern)}"`,
+  ];
   lines.push(`  -H "Authorization: Bearer $FRAMIQUE_API_KEY"`);
   if (route.method !== "GET") {
     lines.push(`  -H "Idempotency-Key: $(uuidgen)"`);
@@ -277,7 +292,9 @@ function blockText(block: DocBlock): string {
     case "note":
       return block.text;
     case "endpoints":
-      return API_ROUTES.map((r) => `${r.method} ${r.pattern} ${r.summary} ${r.scope}`).join(" ");
+      return API_ROUTES.map(
+        (r) => `${r.method} ${r.pattern} ${r.summary} ${r.scope}`,
+      ).join(" ");
     case "tryit":
       return `try it ${block.route}`;
     default:
@@ -290,17 +307,28 @@ function blockText(block: DocBlock): string {
  * "signature verification" lands the reader on the paragraph, not the top of a
  * 2,000-word page.
  */
-export function buildSearchIndex(version: DocVersionId = CURRENT_VERSION): SearchEntry[] {
+export function buildSearchIndex(
+  version: DocVersionId = CURRENT_VERSION,
+): SearchEntry[] {
   const entries: SearchEntry[] = [];
   for (const page of docOrder(version)) {
     const anchors = anchorsByBlock(page);
     let heading: string | null = null;
     let anchor: string | null = null;
-    let buffer: string[] = [`${page.title.en} ${page.title.bn} ${page.summary.en} ${page.keywords.join(" ")}`];
+    let buffer: string[] = [
+      `${page.title.en} ${page.title.bn} ${page.summary.en} ${page.keywords.join(" ")}`,
+    ];
 
     const flush = () => {
       const text = buffer.join(" ").replace(/\s+/g, " ").trim();
-      if (text) entries.push({ slug: page.slug, title: page.title.en, heading, anchor, text });
+      if (text)
+        entries.push({
+          slug: page.slug,
+          title: page.title.en,
+          heading,
+          anchor,
+          text,
+        });
       buffer = [];
     };
 
@@ -342,7 +370,11 @@ function tokenise(query: string): string[] {
  * the body, and an entry missing *any* term is dropped (AND semantics) unless
  * the query is a single term.
  */
-export function searchDocs(query: string, index: SearchEntry[], limit = 8): SearchHit[] {
+export function searchDocs(
+  query: string,
+  index: SearchEntry[],
+  limit = 8,
+): SearchHit[] {
   const terms = tokenise(query);
   if (terms.length === 0) return [];
 
@@ -364,7 +396,12 @@ export function searchDocs(query: string, index: SearchEntry[], limit = 8): Sear
       if (at >= 0) {
         termScore += 2;
         // Exact word beats a substring: "get" should not outrank "getting".
-        if (new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(text)) termScore += 1;
+        if (
+          new RegExp(
+            `\\b${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+          ).test(text)
+        )
+          termScore += 1;
         if (firstAt < 0) firstAt = at;
       }
       if (termScore > 0) matchedTerms += 1;
@@ -401,64 +438,137 @@ function excerptAround(text: string, at: number): string {
 /* Validation                                                                 */
 /* -------------------------------------------------------------------------- */
 
-export type DocIssue = { level: "error" | "warn"; code: string; page: string; message: string };
+export type DocIssue = {
+  level: "error" | "warn";
+  code: string;
+  page: string;
+  message: string;
+};
 
 const BANGLA = /[\u0980-\u09FF]/;
 
 /** Whole-corpus checks. Run in a contract test; an error fails the build. */
 export function validateDocs(): DocIssue[] {
   const out: DocIssue[] = [];
-  const push = (level: DocIssue["level"], code: string, page: string, message: string) =>
-    out.push({ level, code, page, message });
+  const push = (
+    level: DocIssue["level"],
+    code: string,
+    page: string,
+    message: string,
+  ) => out.push({ level, code, page, message });
 
   const slugs = new Set<string>();
   for (const page of DOC_PAGES) {
-    if (slugs.has(page.slug)) push("error", "slug:duplicate", page.slug, "two pages claim this slug");
+    if (slugs.has(page.slug))
+      push("error", "slug:duplicate", page.slug, "two pages claim this slug");
     slugs.add(page.slug);
 
     if (!/^[a-z0-9-]+$/.test(page.slug))
-      push("error", "slug:shape", page.slug, "slug must be lowercase kebab-case");
+      push(
+        "error",
+        "slug:shape",
+        page.slug,
+        "slug must be lowercase kebab-case",
+      );
     if (!DOC_GROUPS.some((g) => g.id === page.group))
-      push("error", "group:unknown", page.slug, `unknown group "${page.group}"`);
+      push(
+        "error",
+        "group:unknown",
+        page.slug,
+        `unknown group "${page.group}"`,
+      );
     if (!BANGLA.test(page.title.bn))
-      push("error", "locale:bn_title", page.slug, "bn title contains no Bangla characters");
+      push(
+        "error",
+        "locale:bn_title",
+        page.slug,
+        "bn title contains no Bangla characters",
+      );
     if (!BANGLA.test(page.summary.bn))
-      push("error", "locale:bn_summary", page.slug, "bn summary contains no Bangla characters");
+      push(
+        "error",
+        "locale:bn_summary",
+        page.slug,
+        "bn summary contains no Bangla characters",
+      );
     if (page.summary.en.length < 60 || page.summary.en.length > 200)
-      push("warn", "summary:length", page.slug, `en summary is ${page.summary.en.length} chars (60–200)`);
+      push(
+        "warn",
+        "summary:length",
+        page.slug,
+        `en summary is ${page.summary.en.length} chars (60–200)`,
+      );
     if (!/^\d{4}-\d{2}-\d{2}$/.test(page.updated))
-      push("error", "updated:invalid", page.slug, `updated "${page.updated}" is not an ISO date`);
+      push(
+        "error",
+        "updated:invalid",
+        page.slug,
+        `updated "${page.updated}" is not an ISO date`,
+      );
     if (page.until && !gte(page.until, page.since))
       push("error", "version:inverted", page.slug, "until precedes since");
 
     // Every page needs at least one H2, or it has no anchors and no TOC.
     const headings = page.blocks.filter((b) => b.kind === "h");
     if (headings.length === 0 && page.blocks.length > 3)
-      push("warn", "heading:missing", page.slug, "long page with no H2 sections");
+      push(
+        "warn",
+        "heading:missing",
+        page.slug,
+        "long page with no H2 sections",
+      );
 
     const anchors = docHeadings(page).map((h) => h.anchor);
     if (new Set(anchors).size !== anchors.length)
-      push("error", "anchor:duplicate", page.slug, "two headings resolve to the same anchor");
+      push(
+        "error",
+        "anchor:duplicate",
+        page.slug,
+        "two headings resolve to the same anchor",
+      );
 
     for (const block of page.blocks) {
       if (block.kind === "tryit") {
         const route = apiRouteByKey(block.route);
         if (!route)
-          push("error", "tryit:unknown_route", page.slug, `"${block.route}" is not a served endpoint`);
+          push(
+            "error",
+            "tryit:unknown_route",
+            page.slug,
+            `"${block.route}" is not a served endpoint`,
+          );
         else if (route.method !== "GET")
-          push("error", "tryit:mutating", page.slug, `"${block.route}" is not read-only`);
+          push(
+            "error",
+            "tryit:mutating",
+            page.slug,
+            `"${block.route}" is not read-only`,
+          );
       }
       if (block.kind === "table") {
         for (const row of block.rows) {
           if (row.length !== block.head.length)
-            push("error", "table:ragged", page.slug, "a row does not match the header width");
+            push(
+              "error",
+              "table:ragged",
+              page.slug,
+              "a row does not match the header width",
+            );
         }
       }
       if (block.kind === "code" && block.code.trim() === "")
         push("error", "code:empty", page.slug, "empty code block");
       // A hardcoded secret in a sample is a secret in every reader's clipboard.
-      if (block.kind === "code" && /(sk_live|service_role|BEGIN [A-Z ]*PRIVATE KEY)/.test(block.code))
-        push("error", "code:secret", page.slug, "code sample looks like it embeds a real secret");
+      if (
+        block.kind === "code" &&
+        /(sk_live|service_role|BEGIN [A-Z ]*PRIVATE KEY)/.test(block.code)
+      )
+        push(
+          "error",
+          "code:secret",
+          page.slug,
+          "code sample looks like it embeds a real secret",
+        );
     }
   }
 
@@ -467,7 +577,12 @@ export function validateDocs(): DocIssue[] {
     if (docPages(version.id).length === 0)
       push("error", "version:empty", version.id, "version serves no pages");
     if (!docPage(version.id, "quickstart"))
-      push("error", "version:no_entry", version.id, "version has no quickstart");
+      push(
+        "error",
+        "version:no_entry",
+        version.id,
+        "version has no quickstart",
+      );
   }
 
   return out;
@@ -481,7 +596,12 @@ export function docErrors(issues = validateDocs()): DocIssue[] {
 /* Sitemap shard + llms map                                                   */
 /* -------------------------------------------------------------------------- */
 
-export type DocsSitemapEntry = { path: string; lastmod: string; priority: string; indexable: boolean };
+export type DocsSitemapEntry = {
+  path: string;
+  lastmod: string;
+  priority: string;
+  indexable: boolean;
+};
 
 /**
  * Docs-only shard. Sunset versions are served (old bookmarks still work) but
@@ -490,7 +610,12 @@ export type DocsSitemapEntry = { path: string; lastmod: string; priority: string
  */
 export function docsSitemapEntries(): DocsSitemapEntry[] {
   const entries: DocsSitemapEntry[] = [
-    { path: "/docs", lastmod: latestUpdate(), priority: "0.7", indexable: true },
+    {
+      path: "/docs",
+      lastmod: latestUpdate(),
+      priority: "0.7",
+      indexable: true,
+    },
   ];
   for (const version of DOC_VERSIONS) {
     const current = version.status === "current";
@@ -507,7 +632,11 @@ export function docsSitemapEntries(): DocsSitemapEntry[] {
 }
 
 export function latestUpdate(): string {
-  return DOC_PAGES.map((p) => p.updated).sort().at(-1) ?? "2026-02-01";
+  return (
+    DOC_PAGES.map((p) => p.updated)
+      .sort()
+      .at(-1) ?? "2026-02-01"
+  );
 }
 
 /** Canonical for a page: always the current version, never a sunset copy. */
@@ -520,7 +649,9 @@ export function renderDocsLlmsSection(origin: string): string {
   for (const group of docNav(CURRENT_VERSION)) {
     lines.push(`### ${group.label.en}`);
     for (const page of group.pages) {
-      lines.push(`- [${page.title.en}](${origin}${docPath(CURRENT_VERSION, page.slug)}): ${page.summary.en}`);
+      lines.push(
+        `- [${page.title.en}](${origin}${docPath(CURRENT_VERSION, page.slug)}): ${page.summary.en}`,
+      );
     }
     lines.push("");
   }

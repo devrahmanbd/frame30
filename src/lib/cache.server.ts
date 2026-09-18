@@ -25,8 +25,17 @@
 import { incr, log, observe, registerMetric } from "./observability.server";
 import { redisCommand, redisConfigured, redisKey } from "./redis.server";
 
-registerMetric("framique_cache_shared_total", "counter", "Shared (Redis) cache operations by op and result");
-registerMetric("framique_cache_shared_ms", "histogram", "Shared cache operation latency in milliseconds", [1, 2, 5, 10, 25, 50, 100, 250]);
+registerMetric(
+  "framique_cache_shared_total",
+  "counter",
+  "Shared (Redis) cache operations by op and result",
+);
+registerMetric(
+  "framique_cache_shared_ms",
+  "histogram",
+  "Shared cache operation latency in milliseconds",
+  [1, 2, 5, 10, 25, 50, 100, 250],
+);
 
 type Entry<T> = { value: T; freshUntil: number; staleUntil: number };
 
@@ -50,15 +59,20 @@ export type CacheOptions = {
 
 function evictIfNeeded() {
   if (store.size <= MAX_ENTRIES) return;
-  const oldest = [...store.entries()].sort((a, b) => a[1].staleUntil - b[1].staleUntil);
-  for (const [key] of oldest.slice(0, Math.ceil(MAX_ENTRIES * 0.2))) store.delete(key);
+  const oldest = [...store.entries()].sort(
+    (a, b) => a[1].staleUntil - b[1].staleUntil,
+  );
+  for (const [key] of oldest.slice(0, Math.ceil(MAX_ENTRIES * 0.2)))
+    store.delete(key);
 }
 
 function sharedKey(key: string): string {
   return redisKey("cache", key);
 }
 
-async function readShared<T>(key: string): Promise<{ hit: true; value: T } | { hit: false }> {
+async function readShared<T>(
+  key: string,
+): Promise<{ hit: true; value: T } | { hit: false }> {
   if (!redisConfigured()) return { hit: false };
   const started = Date.now();
   const result = await redisCommand(["GET", sharedKey(key)]);
@@ -84,17 +98,27 @@ async function readShared<T>(key: string): Promise<{ hit: true; value: T } | { h
   }
 }
 
-async function writeShared<T>(key: string, value: T, ttlSeconds: number): Promise<void> {
+async function writeShared<T>(
+  key: string,
+  value: T,
+  ttlSeconds: number,
+): Promise<void> {
   if (!redisConfigured()) return;
   let payload: string;
   try {
     payload = JSON.stringify({ v: value });
   } catch {
-    incr("framique_cache_shared_total", { op: "set", result: "unserialisable" });
+    incr("framique_cache_shared_total", {
+      op: "set",
+      result: "unserialisable",
+    });
     return;
   }
   if (payload === undefined) {
-    incr("framique_cache_shared_total", { op: "set", result: "unserialisable" });
+    incr("framique_cache_shared_total", {
+      op: "set",
+      result: "unserialisable",
+    });
     return;
   }
   if (payload.length > MAX_SHARED_BYTES) {
@@ -102,9 +126,18 @@ async function writeShared<T>(key: string, value: T, ttlSeconds: number): Promis
     return;
   }
   const started = Date.now();
-  const result = await redisCommand(["SET", sharedKey(key), payload, "PX", Math.max(1_000, ttlSeconds * 1000)]);
+  const result = await redisCommand([
+    "SET",
+    sharedKey(key),
+    payload,
+    "PX",
+    Math.max(1_000, ttlSeconds * 1000),
+  ]);
   observe("framique_cache_shared_ms", Date.now() - started, { op: "set" });
-  incr("framique_cache_shared_total", { op: "set", result: result.ok ? "ok" : result.outcome });
+  incr("framique_cache_shared_total", {
+    op: "set",
+    result: result.ok ? "ok" : result.outcome,
+  });
 }
 
 export async function cached<T>(
@@ -126,7 +159,8 @@ export async function cached<T>(
     store.set(key, {
       value,
       freshUntil: Date.now() + ttlSeconds * 1000,
-      staleUntil: Date.now() + (ttlSeconds + (opts.staleSeconds ?? ttlSeconds)) * 1000,
+      staleUntil:
+        Date.now() + (ttlSeconds + (opts.staleSeconds ?? ttlSeconds)) * 1000,
     });
     evictIfNeeded();
   };
@@ -147,7 +181,8 @@ export async function cached<T>(
       }
       const value = await loader();
       fill(value);
-      if (shared) void writeShared(key, value, sharedTtl).catch(() => undefined);
+      if (shared)
+        void writeShared(key, value, sharedTtl).catch(() => undefined);
       return value;
     })().finally(() => inflight.delete(key));
     inflight.set(key, p);
@@ -173,7 +208,8 @@ export async function cached<T>(
  * hit the page budget we log it so the pattern can be narrowed.
  */
 export function invalidate(prefix: string) {
-  for (const key of [...store.keys()]) if (key.startsWith(prefix)) store.delete(key);
+  for (const key of [...store.keys()])
+    if (key.startsWith(prefix)) store.delete(key);
   if (redisConfigured()) void invalidateShared(prefix);
 }
 
@@ -185,9 +221,19 @@ async function invalidateShared(prefix: string) {
   let cursor = "0";
   let deleted = 0;
   for (let page = 0; page < SCAN_PAGES; page += 1) {
-    const result = await redisCommand(["SCAN", cursor, "MATCH", match, "COUNT", SCAN_COUNT]);
+    const result = await redisCommand([
+      "SCAN",
+      cursor,
+      "MATCH",
+      match,
+      "COUNT",
+      SCAN_COUNT,
+    ]);
     if (!result.ok || !Array.isArray(result.value)) {
-      incr("framique_cache_shared_total", { op: "scan", result: result.outcome });
+      incr("framique_cache_shared_total", {
+        op: "scan",
+        result: result.outcome,
+      });
       return;
     }
     const [next, keys] = result.value as [string, string[]];
@@ -197,12 +243,22 @@ async function invalidateShared(prefix: string) {
     }
     cursor = String(next ?? "0");
     if (cursor === "0") {
-      incr("framique_cache_shared_total", { op: "invalidate", result: "ok" }, 1);
+      incr(
+        "framique_cache_shared_total",
+        { op: "invalidate", result: "ok" },
+        1,
+      );
       return;
     }
   }
-  log("warn", "cache.invalidate_truncated", { prefix: prefix.slice(0, 80), deleted });
-  incr("framique_cache_shared_total", { op: "invalidate", result: "truncated" });
+  log("warn", "cache.invalidate_truncated", {
+    prefix: prefix.slice(0, 80),
+    deleted,
+  });
+  incr("framique_cache_shared_total", {
+    op: "invalidate",
+    result: "truncated",
+  });
 }
 
 export function cacheStats() {

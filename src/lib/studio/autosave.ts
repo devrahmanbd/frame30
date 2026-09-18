@@ -32,19 +32,33 @@ export function draftKey(id: string): string {
 }
 
 function store(storage?: Storage): Storage | undefined {
-  return storage ?? (typeof window === "undefined" ? undefined : window.localStorage);
+  return (
+    storage ?? (typeof window === "undefined" ? undefined : window.localStorage)
+  );
 }
 
 /** Stable structural signature — cheap enough to run on every keystroke. */
 export function docSignature(doc: StudioDoc): string {
-  return JSON.stringify({ root: doc.root, page: doc.page, classes: doc.classes ?? [] });
+  return JSON.stringify({
+    root: doc.root,
+    page: doc.page,
+    classes: doc.classes ?? [],
+  });
 }
 
-export function writeDraft(id: string, doc: StudioDoc, now = Date.now(), storage?: Storage): void {
+export function writeDraft(
+  id: string,
+  doc: StudioDoc,
+  now = Date.now(),
+  storage?: Storage,
+): void {
   const s = store(storage);
   if (!s) return;
   try {
-    s.setItem(draftKey(id), JSON.stringify({ key: id, at: now, doc } satisfies StudioDraft));
+    s.setItem(
+      draftKey(id),
+      JSON.stringify({ key: id, at: now, doc } satisfies StudioDraft),
+    );
   } catch {
     /* quota or private mode — autosave is best effort, never a blocker */
   }
@@ -60,7 +74,11 @@ export function clearDraft(id: string, storage?: Storage): void {
   }
 }
 
-export function readDraft(id: string, now = Date.now(), storage?: Storage): StudioDraft | null {
+export function readDraft(
+  id: string,
+  now = Date.now(),
+  storage?: Storage,
+): StudioDraft | null {
   const s = store(storage);
   if (!s) return null;
   let parsed: unknown;
@@ -72,7 +90,12 @@ export function readDraft(id: string, now = Date.now(), storage?: Storage): Stud
     return null;
   }
   const draft = parsed as Partial<StudioDraft> | null;
-  if (!draft || typeof draft.at !== "number" || !draft.doc || !Array.isArray(draft.doc.root)) {
+  if (
+    !draft ||
+    typeof draft.at !== "number" ||
+    !draft.doc ||
+    !Array.isArray(draft.doc.root)
+  ) {
     clearDraft(id, storage);
     return null;
   }

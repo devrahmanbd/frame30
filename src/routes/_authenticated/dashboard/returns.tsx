@@ -12,7 +12,11 @@ import {
   btnGhost,
 } from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
-import { returnsLoadFn, returnAdvanceFn, disputeAdvanceFn } from "@/lib/commerce.functions";
+import {
+  returnsLoadFn,
+  returnAdvanceFn,
+  disputeAdvanceFn,
+} from "@/lib/commerce.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/returns")({
   head: () => ({
@@ -26,7 +30,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/returns")({
       { property: "og:title", content: "Returns & disputes — Framique admin" },
       {
         property: "og:description",
-        content: "One desk for return requests, restocking and chargeback evidence.",
+        content:
+          "One desk for return requests, restocking and chargeback evidence.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -38,7 +43,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/returns")({
 
 const KEY = ["commerce", "returns"] as const;
 
-const RETURN_NEXT: Record<string, ("approved" | "rejected" | "received" | "refunded" | "cancelled")[]> = {
+const RETURN_NEXT: Record<
+  string,
+  ("approved" | "rejected" | "received" | "refunded" | "cancelled")[]
+> = {
   requested: ["approved", "rejected", "cancelled"],
   approved: ["received", "cancelled"],
   received: ["refunded"],
@@ -47,7 +55,10 @@ const RETURN_NEXT: Record<string, ("approved" | "rejected" | "received" | "refun
   cancelled: [],
 };
 
-const DISPUTE_NEXT: Record<string, ("evidence_submitted" | "won" | "lost" | "withdrawn")[]> = {
+const DISPUTE_NEXT: Record<
+  string,
+  ("evidence_submitted" | "won" | "lost" | "withdrawn")[]
+> = {
   open: ["evidence_submitted", "withdrawn"],
   evidence_submitted: ["won", "lost"],
   won: [],
@@ -55,7 +66,10 @@ const DISPUTE_NEXT: Record<string, ("evidence_submitted" | "won" | "lost" | "wit
   withdrawn: [],
 };
 
-const TONE: Record<string, "neutral" | "success" | "warning" | "danger" | "info"> = {
+const TONE: Record<
+  string,
+  "neutral" | "success" | "warning" | "danger" | "info"
+> = {
   requested: "warning",
   approved: "info",
   received: "info",
@@ -83,7 +97,12 @@ function ReturnsPage() {
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading, isError, error: loadError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error: loadError,
+  } = useQuery({
     queryKey: KEY,
     queryFn: () => load(),
   });
@@ -91,8 +110,10 @@ function ReturnsPage() {
   const invalidate = () => void qc.invalidateQueries({ queryKey: KEY });
 
   const returnMutation = useMutation({
-    mutationFn: (v: { returnId: string; status: "approved" | "rejected" | "received" | "refunded" | "cancelled" }) =>
-      advanceReturn({ data: { ...v, note: note || null } }),
+    mutationFn: (v: {
+      returnId: string;
+      status: "approved" | "rejected" | "received" | "refunded" | "cancelled";
+    }) => advanceReturn({ data: { ...v, note: note || null } }),
     onSuccess: () => {
       setError(null);
       setNote("");
@@ -102,8 +123,10 @@ function ReturnsPage() {
   });
 
   const disputeMutation = useMutation({
-    mutationFn: (v: { disputeId: string; status: "evidence_submitted" | "won" | "lost" | "withdrawn" }) =>
-      advanceDispute({ data: { ...v, note: note || null } }),
+    mutationFn: (v: {
+      disputeId: string;
+      status: "evidence_submitted" | "won" | "lost" | "withdrawn";
+    }) => advanceDispute({ data: { ...v, note: note || null } }),
     onSuccess: () => {
       setError(null);
       setNote("");
@@ -133,15 +156,23 @@ function ReturnsPage() {
 
       <dl className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Awaiting review", "রিভিউ বাকি")}</dt>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Awaiting review", "রিভিউ বাকি")}
+          </dt>
           <dd className="tabular-nums text-2xl font-semibold">{openReturns}</dd>
         </div>
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Open disputes", "খোলা ডিসপিউট")}</dt>
-          <dd className="tabular-nums text-2xl font-semibold">{openDisputes}</dd>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Open disputes", "খোলা ডিসপিউট")}
+          </dt>
+          <dd className="tabular-nums text-2xl font-semibold">
+            {openDisputes}
+          </dd>
         </div>
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Refunded", "রিফান্ড হয়েছে")}</dt>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Refunded", "রিফান্ড হয়েছে")}
+          </dt>
           <dd className="tabular-nums text-2xl font-semibold">
             {returns.filter((r) => r.status === "refunded").length}
           </dd>
@@ -151,10 +182,12 @@ function ReturnsPage() {
       <ErrorFrame message={error ?? (isError ? message(loadError) : null)} />
 
       <div role="tablist" aria-label="Returns views" className="flex gap-2">
-        {([
-          ["returns", t("Returns", "রিটার্ন")],
-          ["disputes", t("Disputes", "ডিসপিউট")],
-        ] as const).map(([id, label]) => (
+        {(
+          [
+            ["returns", t("Returns", "রিটার্ন")],
+            ["disputes", t("Disputes", "ডিসপিউট")],
+          ] as const
+        ).map(([id, label]) => (
           <button
             key={id}
             type="button"
@@ -170,7 +203,10 @@ function ReturnsPage() {
 
       <Field
         label={t("Note for the next action", "পরবর্তী ধাপের নোট")}
-        hint={t("Stored on the audit timeline.", "অডিট টাইমলাইনে সংরক্ষিত হয়।")}
+        hint={t(
+          "Stored on the audit timeline.",
+          "অডিট টাইমলাইনে সংরক্ষিত হয়।",
+        )}
       >
         <input
           value={note}
@@ -180,15 +216,28 @@ function ReturnsPage() {
         />
       </Field>
 
-      {isLoading && <p className="text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>}
+      {isLoading && (
+        <p className="text-sm text-muted-foreground">
+          {t("Loading…", "লোড হচ্ছে…")}
+        </p>
+      )}
 
       {tab === "returns" && !isLoading && (
         <ul className="space-y-3">
           {returns.map((r) => {
-            const order = r.orders as { order_number?: string; customer_name?: string } | null;
-            const items = (r.return_items ?? []) as { id: string; quantity: number }[];
+            const order = r.orders as {
+              order_number?: string;
+              customer_name?: string;
+            } | null;
+            const items = (r.return_items ?? []) as {
+              id: string;
+              quantity: number;
+            }[];
             return (
-              <li key={r.id} className="rounded-fq-lg border border-border bg-card p-4">
+              <li
+                key={r.id}
+                className="rounded-fq-lg border border-border bg-card p-4"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="font-medium">
@@ -200,9 +249,13 @@ function ReturnsPage() {
                     <p className="text-sm text-muted-foreground">{r.reason}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <StatusPill label={r.status} tone={TONE[r.status] ?? "neutral"} />
+                    <StatusPill
+                      label={r.status}
+                      tone={TONE[r.status] ?? "neutral"}
+                    />
                     <span className="text-sm text-muted-foreground tabular-nums">
-                      {items.reduce((s, i) => s + i.quantity, 0)} {t("items", "আইটেম")}
+                      {items.reduce((s, i) => s + i.quantity, 0)}{" "}
+                      {t("items", "আইটেম")}
                     </span>
                   </div>
                 </div>
@@ -213,14 +266,19 @@ function ReturnsPage() {
                       type="button"
                       className={btnGhost}
                       disabled={returnMutation.isPending}
-                      onClick={() => returnMutation.mutate({ returnId: r.id, status: next })}
+                      onClick={() =>
+                        returnMutation.mutate({ returnId: r.id, status: next })
+                      }
                     >
                       {next}
                     </button>
                   ))}
                   {(RETURN_NEXT[r.status] ?? []).length === 0 && (
                     <span className="text-xs text-muted-foreground">
-                      {t("Closed — no further steps.", "সম্পন্ন — আর কোনো ধাপ নেই।")}
+                      {t(
+                        "Closed — no further steps.",
+                        "সম্পন্ন — আর কোনো ধাপ নেই।",
+                      )}
                     </span>
                   )}
                 </div>
@@ -238,15 +296,24 @@ function ReturnsPage() {
       {tab === "disputes" && !isLoading && (
         <ul className="space-y-3">
           {disputes.map((d) => (
-            <li key={d.id} className="rounded-fq-lg border border-border bg-card p-4">
+            <li
+              key={d.id}
+              className="rounded-fq-lg border border-border bg-card p-4"
+            >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="font-medium tabular-nums">{d.reference}</p>
                   <p className="text-sm text-muted-foreground">{d.reason}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Money minor={Number(d.amount_minor_int)} className="font-medium" />
-                  <StatusPill label={d.status} tone={TONE[d.status] ?? "neutral"} />
+                  <Money
+                    minor={Number(d.amount_minor_int)}
+                    className="font-medium"
+                  />
+                  <StatusPill
+                    label={d.status}
+                    tone={TONE[d.status] ?? "neutral"}
+                  />
                 </div>
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -256,7 +323,9 @@ function ReturnsPage() {
                     type="button"
                     className={btnGhost}
                     disabled={disputeMutation.isPending}
-                    onClick={() => disputeMutation.mutate({ disputeId: d.id, status: next })}
+                    onClick={() =>
+                      disputeMutation.mutate({ disputeId: d.id, status: next })
+                    }
                   >
                     {next.replace("_", " ")}
                   </button>

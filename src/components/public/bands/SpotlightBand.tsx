@@ -54,7 +54,11 @@ export function SpotlightBand({
         <Heading id={id} className="fq-display text-3xl sm:text-4xl">
           {title}
         </Heading>
-        {body ? <p data-type-role="lead" className="mt-4 text-base opacity-85">{body}</p> : null}
+        {body ? (
+          <p data-type-role="lead" className="mt-4 text-base opacity-85">
+            {body}
+          </p>
+        ) : null}
         {actions ? (
           <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 [&>*]:w-full [&>*]:sm:w-auto [&>*]:min-h-[44px] [&>*]:flex [&>*]:items-center [&>*]:justify-center">
             {actions}

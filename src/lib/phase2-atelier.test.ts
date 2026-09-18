@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { BITEXT_FIELDS, SECTION_CATALOG, catalogEntry, type SectionType } from "./builder-ast";
+import {
+  BITEXT_FIELDS,
+  SECTION_CATALOG,
+  catalogEntry,
+  type SectionType,
+} from "./builder-ast";
 import { WIDGET_REGISTRY, isDataWidget } from "./widget-registry";
 import { clampPercent } from "@/components/builder/primitives/Hotspot";
 import { convertCm } from "@/components/builder/primitives/UnitToggle";
@@ -37,7 +42,13 @@ describe("phase 2.6 — catalogue wiring", () => {
   });
 
   it("gives each data-bound Atelier widget a source and a skeleton", () => {
-    for (const type of ["shoppable_image", "ugc_gallery", "complete_the_look", "size_selector", "back_in_stock"] as SectionType[]) {
+    for (const type of [
+      "shoppable_image",
+      "ugc_gallery",
+      "complete_the_look",
+      "size_selector",
+      "back_in_stock",
+    ] as SectionType[]) {
       expect(isDataWidget(type), type).toBe(true);
       expect(WIDGET_REGISTRY[type].skeleton, type).toBe(true);
     }
@@ -48,7 +59,8 @@ describe("phase 2.6 — catalogue wiring", () => {
       const keys = BITEXT_FIELDS[type];
       expect(keys, type).toBeDefined();
       const fields = new Set(catalogEntry(type)!.fields.map((f) => f.key));
-      for (const key of keys!) expect(fields.has(key), `${type}.${key}`).toBe(true);
+      for (const key of keys!)
+        expect(fields.has(key), `${type}.${key}`).toBe(true);
     }
   });
 
@@ -56,7 +68,10 @@ describe("phase 2.6 — catalogue wiring", () => {
     for (const type of ATELIER) {
       const entry = SECTION_CATALOG.find((e) => e.type === type)!;
       for (const field of entry.fields) {
-        expect(Object.hasOwn(entry.defaults, field.key), `${type}.${field.key}`).toBe(true);
+        expect(
+          Object.hasOwn(entry.defaults, field.key),
+          `${type}.${field.key}`,
+        ).toBe(true);
       }
     }
   });
@@ -107,7 +122,11 @@ describe("phase 2.6 — size rows", () => {
 describe("phase 2.6 — theme independence and money discipline", () => {
   it("imports no theme module", () => {
     const imports = [...SRC.matchAll(/from\s+"([^"]+)"/g)].map((m) => m[1]!);
-    expect(imports.filter((s) => /theme|preset|bazaar|atelier|circuit|rupaboti/i.test(s))).toEqual([]);
+    expect(
+      imports.filter((s) =>
+        /theme|preset|bazaar|atelier|circuit|rupaboti/i.test(s),
+      ),
+    ).toEqual([]);
   });
 
   it("does no client-side money arithmetic", () => {

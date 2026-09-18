@@ -25,20 +25,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'v3/@claude-flow/plugin-agent-federation/src/**'
-      - 'v3/@claude-flow/plugin-agent-federation/dist/**'
-      - 'v3/docs/adr/ADR-104-federation-wire-transport.md'
-      - 'scripts/smoke-adr104-transport.mjs'
-      - 'verification/witness-fixes.json'
-      - '.github/workflows/no-phantom-agentic-flow-subpath.yml'
+      - "v3/@claude-flow/plugin-agent-federation/src/**"
+      - "v3/@claude-flow/plugin-agent-federation/dist/**"
+      - "v3/docs/adr/ADR-104-federation-wire-transport.md"
+      - "scripts/smoke-adr104-transport.mjs"
+      - "verification/witness-fixes.json"
+      - ".github/workflows/no-phantom-agentic-flow-subpath.yml"
   pull_request:
     paths:
-      - 'v3/@claude-flow/plugin-agent-federation/src/**'
-      - 'v3/@claude-flow/plugin-agent-federation/dist/**'
-      - 'v3/docs/adr/ADR-104-federation-wire-transport.md'
-      - 'scripts/smoke-adr104-transport.mjs'
-      - 'verification/witness-fixes.json'
-      - '.github/workflows/no-phantom-agentic-flow-subpath.yml'
+      - "v3/@claude-flow/plugin-agent-federation/src/**"
+      - "v3/@claude-flow/plugin-agent-federation/dist/**"
+      - "v3/docs/adr/ADR-104-federation-wire-transport.md"
+      - "scripts/smoke-adr104-transport.mjs"
+      - "verification/witness-fixes.json"
+      - ".github/workflows/no-phantom-agentic-flow-subpath.yml"
   workflow_dispatch:
 
 jobs:

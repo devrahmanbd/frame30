@@ -34,14 +34,20 @@ export function isCurrency(code: string): code is CurrencyCode {
 
 /** Constructor — the single door into the money type. */
 export function money(minor: number, currency: string = "BDT"): Money {
-  if (!isCurrency(currency)) throw new MoneyError("money.unsupported_currency", currency);
-  if (!Number.isInteger(minor)) throw new MoneyError("money.not_integer", String(minor));
-  if (!Number.isSafeInteger(minor)) throw new MoneyError("money.not_integer", "out of safe range");
+  if (!isCurrency(currency))
+    throw new MoneyError("money.unsupported_currency", currency);
+  if (!Number.isInteger(minor))
+    throw new MoneyError("money.not_integer", String(minor));
+  if (!Number.isSafeInteger(minor))
+    throw new MoneyError("money.not_integer", "out of safe range");
   return { currency, minor };
 }
 
 /** Reads a bigint-backed column (PostgREST may hand back a string). */
-export function fromColumn(value: number | string | null | undefined, currency = "BDT"): Money {
+export function fromColumn(
+  value: number | string | null | undefined,
+  currency = "BDT",
+): Money {
   const n = typeof value === "string" ? Number(value) : (value ?? 0);
   return money(n, currency);
 }
@@ -52,7 +58,10 @@ export function zero(currency: CurrencyCode = "BDT"): Money {
 
 function same(a: Money, b: Money) {
   if (a.currency !== b.currency) {
-    throw new MoneyError("money.currency_mismatch", `${a.currency} vs ${b.currency}`);
+    throw new MoneyError(
+      "money.currency_mismatch",
+      `${a.currency} vs ${b.currency}`,
+    );
   }
 }
 
@@ -112,7 +121,8 @@ export function percentOff(a: Money, basisPoints: number): Money {
  * fractional parts, ties resolved by original order (deterministic).
  */
 export function allocate(total: Money, weights: number[]): Money[] {
-  if (weights.some((w) => w < 0)) throw new MoneyError("money.negative", "weight");
+  if (weights.some((w) => w < 0))
+    throw new MoneyError("money.negative", "weight");
   const weightSum = weights.reduce((s, w) => s + w, 0);
   if (weightSum === 0) return weights.map(() => zero(total.currency));
 

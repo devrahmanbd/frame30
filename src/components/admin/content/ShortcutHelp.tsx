@@ -21,14 +21,25 @@ export function ShortcutHelp({
       open={open}
       onClose={onClose}
       title={t("Keyboard shortcuts", "কীবোর্ড শর্টকাট")}
-      description={hint ?? t("Works when a row has focus. Press ? again to close.", "একটি সারিতে ফোকাস থাকলে কাজ করে। বন্ধ করতে আবার ? চাপুন।")}
+      description={
+        hint ??
+        t(
+          "Works when a row has focus. Press ? again to close.",
+          "একটি সারিতে ফোকাস থাকলে কাজ করে। বন্ধ করতে আবার ? চাপুন।",
+        )
+      }
     >
       <dl className="divide-y divide-border text-sm">
         {shortcuts.map((s) => (
-          <div key={s.keys} className="flex items-center justify-between gap-4 py-2">
+          <div
+            key={s.keys}
+            className="flex items-center justify-between gap-4 py-2"
+          >
             <dt className="text-foreground">{s[l]}</dt>
             <dd>
-              <kbd className="fq-num rounded-fq-sm border border-border bg-muted px-1.5 py-0.5 text-xs text-foreground">{s.keys}</kbd>
+              <kbd className="fq-num rounded-fq-sm border border-border bg-muted px-1.5 py-0.5 text-xs text-foreground">
+                {s.keys}
+              </kbd>
             </dd>
           </div>
         ))}

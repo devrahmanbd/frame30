@@ -19,12 +19,19 @@ describe("normalizeBackend", () => {
   });
 
   it("keeps a remote engine that is fully configured", () => {
-    const c = normalizeBackend({ engine: "typesense", host: "https://s.example.com" });
+    const c = normalizeBackend({
+      engine: "typesense",
+      host: "https://s.example.com",
+    });
     expect(c.engine).toBe("typesense");
   });
 
   it("clamps absurd timeouts and thresholds", () => {
-    const c = normalizeBackend({ timeoutMs: 999_999, failureThreshold: 0, cooldownSeconds: 1 });
+    const c = normalizeBackend({
+      timeoutMs: 999_999,
+      failureThreshold: 0,
+      cooldownSeconds: 1,
+    });
     expect(c.timeoutMs).toBe(5000);
     expect(c.failureThreshold).toBe(1);
     expect(c.cooldownSeconds).toBe(5);
@@ -32,7 +39,10 @@ describe("normalizeBackend", () => {
 });
 
 describe("circuit breaker", () => {
-  const config = normalizeBackend({ engine: "meilisearch", host: "https://s.example.com" });
+  const config = normalizeBackend({
+    engine: "meilisearch",
+    host: "https://s.example.com",
+  });
 
   it("serves the remote engine while healthy", () => {
     expect(decideEngine(config, FRESH_BREAKER).engine).toBe("meilisearch");
@@ -47,7 +57,8 @@ describe("circuit breaker", () => {
 
   it("falls back to postgres once the threshold trips", () => {
     let b = FRESH_BREAKER;
-    for (let i = 0; i < config.failureThreshold; i += 1) b = recordFailure(config, b, "timeout", 1000);
+    for (let i = 0; i < config.failureThreshold; i += 1)
+      b = recordFailure(config, b, "timeout", 1000);
     const d = decideEngine(config, b, 1000);
     expect(d.action).toBe("open");
     expect(d.engine).toBe("postgres");
@@ -56,7 +67,8 @@ describe("circuit breaker", () => {
 
   it("does not reset the cooldown clock on further failures while open", () => {
     let b = FRESH_BREAKER;
-    for (let i = 0; i < config.failureThreshold; i += 1) b = recordFailure(config, b, "timeout", 1000);
+    for (let i = 0; i < config.failureThreshold; i += 1)
+      b = recordFailure(config, b, "timeout", 1000);
     const openedAt = b.openedAt;
     b = recordFailure(config, b, "timeout", 50_000);
     expect(b.openedAt).toBe(openedAt);
@@ -64,7 +76,8 @@ describe("circuit breaker", () => {
 
   it("allows a single probe after the cooldown elapses", () => {
     let b = FRESH_BREAKER;
-    for (let i = 0; i < config.failureThreshold; i += 1) b = recordFailure(config, b, "timeout", 1000);
+    for (let i = 0; i < config.failureThreshold; i += 1)
+      b = recordFailure(config, b, "timeout", 1000);
     const d = decideEngine(config, b, 1000 + config.cooldownSeconds * 1000);
     expect(d.action).toBe("probe");
   });
@@ -88,7 +101,10 @@ describe("query normalization", () => {
   });
 
   it("clamps pagination", () => {
-    expect(normalizeQuery({ limit: 500, offset: -5 })).toMatchObject({ limit: 60, offset: 0 });
+    expect(normalizeQuery({ limit: 500, offset: -5 })).toMatchObject({
+      limit: 60,
+      offset: 0,
+    });
   });
 });
 
@@ -99,7 +115,9 @@ describe("filter expressions", () => {
   });
 
   it("drops keys with unsafe characters", () => {
-    expect(toFilterExpression("meilisearch", { "bad key!": "x" })).toBe('badkey = "x"');
+    expect(toFilterExpression("meilisearch", { "bad key!": "x" })).toBe(
+      'badkey = "x"',
+    );
   });
 
   it("uses the typesense conjunction", () => {
@@ -112,9 +130,13 @@ describe("filter expressions", () => {
   });
 
   it("sorts by text match for relevance on typesense only", () => {
-    expect(sortExpression("typesense", "relevance")).toEqual(["_text_match:desc"]);
+    expect(sortExpression("typesense", "relevance")).toEqual([
+      "_text_match:desc",
+    ]);
     expect(sortExpression("meilisearch", "relevance")).toEqual([]);
-    expect(sortExpression("meilisearch", "price_asc")).toEqual(["price_minor:asc"]);
+    expect(sortExpression("meilisearch", "price_asc")).toEqual([
+      "price_minor:asc",
+    ]);
   });
 });
 

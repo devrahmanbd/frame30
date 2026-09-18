@@ -8,11 +8,13 @@ tools: mcp__github__create_workflow, mcp__github__update_workflow, mcp__github__
 # Workflow Automation - GitHub Actions Integration
 
 ## Overview
+
 Integrate AI swarms with GitHub Actions to create intelligent, self-organizing CI/CD pipelines that adapt to your codebase through advanced multi-agent coordination and automation.
 
 ## Core Features
 
 ### 1. Swarm-Powered Actions
+
 ```yaml
 # .github/workflows/swarm-ci.yml
 name: Intelligent CI with Swarms
@@ -23,13 +25,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Initialize Swarm
         uses: ruvnet/swarm-action@v1
         with:
           topology: mesh
           max-agents: 6
-          
+
       - name: Analyze Changes
         run: |
           npx ruv-swarm actions analyze \
@@ -39,6 +41,7 @@ jobs:
 ```
 
 ### 2. Dynamic Workflow Generation
+
 ```bash
 # Generate workflows based on code analysis
 npx ruv-swarm actions generate-workflow \
@@ -48,6 +51,7 @@ npx ruv-swarm actions generate-workflow \
 ```
 
 ### 3. Intelligent Test Selection
+
 ```yaml
 # Smart test runner
 - name: Swarm Test Selection
@@ -61,6 +65,7 @@ npx ruv-swarm actions generate-workflow \
 ## Workflow Templates
 
 ### Multi-Language Detection
+
 ```yaml
 # .github/workflows/polyglot-swarm.yml
 name: Polyglot Project Handler
@@ -71,13 +76,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Detect Languages
         id: detect
         run: |
           npx ruv-swarm actions detect-stack \
             --output json > stack.json
-            
+
       - name: Dynamic Build Matrix
         run: |
           npx ruv-swarm actions create-matrix \
@@ -86,12 +91,13 @@ jobs:
 ```
 
 ### Adaptive Security Scanning
+
 ```yaml
 # .github/workflows/security-swarm.yml
 name: Intelligent Security Scan
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
@@ -104,7 +110,7 @@ jobs:
           SECURITY_ISSUES=$(npx ruv-swarm actions security \
             --deep-scan \
             --format json)
-          
+
           # Create issues for complex security problems
           echo "$SECURITY_ISSUES" | jq -r '.issues[]? | @base64' | while read -r issue; do
             _jq() {
@@ -120,6 +126,7 @@ jobs:
 ## Action Commands
 
 ### Pipeline Optimization
+
 ```bash
 # Optimize existing workflows
 npx ruv-swarm actions optimize \
@@ -130,6 +137,7 @@ npx ruv-swarm actions optimize \
 ```
 
 ### Failure Analysis
+
 ```bash
 # Analyze failed runs using gh CLI
 gh run view ${{ github.run_id }} --json jobs,conclusion | \
@@ -147,6 +155,7 @@ fi
 ```
 
 ### Resource Management
+
 ```bash
 # Optimize resource usage
 npx ruv-swarm actions resources \
@@ -158,6 +167,7 @@ npx ruv-swarm actions resources \
 ## Advanced Workflows
 
 ### 1. Self-Healing CI/CD
+
 ```yaml
 # Auto-fix common CI failures
 name: Self-Healing Pipeline
@@ -177,6 +187,7 @@ jobs:
 ```
 
 ### 2. Progressive Deployment
+
 ```yaml
 # Intelligent deployment strategy
 name: Smart Deployment
@@ -194,7 +205,7 @@ jobs:
           npx ruv-swarm actions deploy-risk \
             --changes ${{ github.sha }} \
             --history 30d
-            
+
       - name: Choose Strategy
         run: |
           npx ruv-swarm actions deploy-strategy \
@@ -203,6 +214,7 @@ jobs:
 ```
 
 ### 3. Performance Regression Detection
+
 ```yaml
 # Automatic performance testing
 name: Performance Guard
@@ -223,34 +235,33 @@ jobs:
 ## Custom Actions
 
 ### Swarm Action Development
+
 ```javascript
 // action.yml
-name: 'Swarm Custom Action'
-description: 'Custom swarm-powered action'
-inputs:
-  task:
-    description: 'Task for swarm'
-    required: true
-runs:
-  using: 'node16'
-  main: 'dist/index.js'
+name: "Swarm Custom Action";
+description: "Custom swarm-powered action";
+inputs: task: description: "Task for swarm";
+required: true;
+runs: using: "node16";
+main: "dist/index.js";
 
 // index.js
-const { SwarmAction } = require('ruv-swarm');
+const { SwarmAction } = require("ruv-swarm");
 
 async function run() {
   const swarm = new SwarmAction({
-    topology: 'mesh',
-    agents: ['analyzer', 'optimizer']
+    topology: "mesh",
+    agents: ["analyzer", "optimizer"],
   });
-  
-  await swarm.execute(core.getInput('task'));
+
+  await swarm.execute(core.getInput("task"));
 }
 ```
 
 ## Matrix Strategies
 
 ### Dynamic Test Matrix
+
 ```yaml
 # Generate test matrix from code analysis
 jobs:
@@ -264,7 +275,7 @@ jobs:
             --detect-frameworks \
             --optimize-coverage)
           echo "matrix=${MATRIX}" >> $GITHUB_OUTPUT
-  
+
   test:
     needs: generate-matrix
     strategy:
@@ -272,6 +283,7 @@ jobs:
 ```
 
 ### Intelligent Parallelization
+
 ```bash
 # Determine optimal parallelization
 npx ruv-swarm actions parallel-strategy \
@@ -283,6 +295,7 @@ npx ruv-swarm actions parallel-strategy \
 ## Monitoring & Insights
 
 ### Workflow Analytics
+
 ```bash
 # Analyze workflow performance
 npx ruv-swarm actions analytics \
@@ -293,6 +306,7 @@ npx ruv-swarm actions analytics \
 ```
 
 ### Cost Optimization
+
 ```bash
 # Optimize GitHub Actions costs
 npx ruv-swarm actions cost-optimize \
@@ -302,6 +316,7 @@ npx ruv-swarm actions cost-optimize \
 ```
 
 ### Failure Patterns
+
 ```bash
 # Identify failure patterns
 npx ruv-swarm actions failure-patterns \
@@ -313,6 +328,7 @@ npx ruv-swarm actions failure-patterns \
 ## Integration Examples
 
 ### 1. PR Validation Swarm
+
 ```yaml
 name: PR Validation Swarm
 on: pull_request
@@ -325,24 +341,25 @@ jobs:
         run: |
           # Get PR details using gh CLI
           PR_DATA=$(gh pr view ${{ github.event.pull_request.number }} --json files,labels)
-          
+
           # Run validation with swarm
           RESULTS=$(npx ruv-swarm actions pr-validate \
             --spawn-agents "linter,tester,security,docs" \
             --parallel \
             --pr-data "$PR_DATA")
-          
+
           # Post results as PR comment
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "$RESULTS"
 ```
 
 ### 2. Release Automation
+
 ```yaml
 name: Intelligent Release
 on:
   push:
-    tags: ['v*']
+    tags: ["v*"]
 
 jobs:
   release:
@@ -358,11 +375,12 @@ jobs:
 ```
 
 ### 3. Documentation Updates
+
 ```yaml
 name: Auto Documentation
 on:
   push:
-    paths: ['src/**']
+    paths: ["src/**"]
 
 jobs:
   docs:
@@ -379,18 +397,21 @@ jobs:
 ## Best Practices
 
 ### 1. Workflow Organization
+
 - Use reusable workflows for swarm operations
 - Implement proper caching strategies
 - Set appropriate timeouts
 - Use workflow dependencies wisely
 
 ### 2. Security
+
 - Store swarm configs in secrets
 - Use OIDC for authentication
 - Implement least-privilege principles
 - Audit swarm operations
 
 ### 3. Performance
+
 - Cache swarm dependencies
 - Use appropriate runner sizes
 - Implement early termination
@@ -399,6 +420,7 @@ jobs:
 ## Advanced Features
 
 ### Predictive Failures
+
 ```bash
 # Predict potential failures
 npx ruv-swarm actions predict \
@@ -408,6 +430,7 @@ npx ruv-swarm actions predict \
 ```
 
 ### Workflow Recommendations
+
 ```bash
 # Get workflow recommendations
 npx ruv-swarm actions recommend \
@@ -417,6 +440,7 @@ npx ruv-swarm actions recommend \
 ```
 
 ### Automated Optimization
+
 ```bash
 # Continuously optimize workflows
 npx ruv-swarm actions auto-optimize \
@@ -428,6 +452,7 @@ npx ruv-swarm actions auto-optimize \
 ## Debugging & Troubleshooting
 
 ### Debug Mode
+
 ```yaml
 - name: Debug Swarm
   run: |
@@ -438,6 +463,7 @@ npx ruv-swarm actions auto-optimize \
 ```
 
 ### Performance Profiling
+
 ```bash
 # Profile workflow performance
 npx ruv-swarm actions profile \
@@ -449,6 +475,7 @@ npx ruv-swarm actions profile \
 ## Advanced Swarm Workflow Automation
 
 ### Multi-Agent Pipeline Orchestration
+
 ```bash
 # Initialize comprehensive workflow automation swarm
 mcp__claude-flow__swarm_init { topology: "mesh", maxAgents: 12 }
@@ -486,6 +513,7 @@ mcp__claude-flow__task_orchestrate {
 ```
 
 ### Intelligent Performance Monitoring
+
 ```bash
 # Generate comprehensive workflow performance reports
 mcp__claude-flow__performance_report {
@@ -513,18 +541,34 @@ mcp__claude-flow__memory_usage {
 ```
 
 ### Dynamic Workflow Generation
+
 ```javascript
 // Swarm-powered workflow creation
 const createIntelligentWorkflow = async (repoContext) => {
   // Initialize workflow generation swarm
-  await mcp__claude_flow__swarm_init({ topology: "hierarchical", maxAgents: 8 });
-  
+  await mcp__claude_flow__swarm_init({
+    topology: "hierarchical",
+    maxAgents: 8,
+  });
+
   // Spawn specialized workflow agents
-  await mcp__claude_flow__agent_spawn({ type: "architect", name: "Workflow Architect" });
-  await mcp__claude_flow__agent_spawn({ type: "coder", name: "YAML Generator" });
-  await mcp__claude_flow__agent_spawn({ type: "optimizer", name: "Performance Optimizer" });
-  await mcp__claude_flow__agent_spawn({ type: "tester", name: "Workflow Validator" });
-  
+  await mcp__claude_flow__agent_spawn({
+    type: "architect",
+    name: "Workflow Architect",
+  });
+  await mcp__claude_flow__agent_spawn({
+    type: "coder",
+    name: "YAML Generator",
+  });
+  await mcp__claude_flow__agent_spawn({
+    type: "optimizer",
+    name: "Performance Optimizer",
+  });
+  await mcp__claude_flow__agent_spawn({
+    type: "tester",
+    name: "Workflow Validator",
+  });
+
   // Create adaptive workflow based on repository analysis
   const workflow = await mcp__claude_flow__workflow_create({
     name: "Intelligent CI/CD Pipeline",
@@ -532,26 +576,22 @@ const createIntelligentWorkflow = async (repoContext) => {
       {
         name: "Smart Code Analysis",
         agents: ["analyzer", "security_scanner"],
-        parallel: true
+        parallel: true,
       },
       {
         name: "Adaptive Testing",
         agents: ["unit_tester", "integration_tester", "e2e_tester"],
-        strategy: "based_on_changes"
+        strategy: "based_on_changes",
       },
       {
         name: "Intelligent Deployment",
         agents: ["deployment_manager", "rollback_coordinator"],
-        conditions: ["all_tests_pass", "security_approved"]
-      }
+        conditions: ["all_tests_pass", "security_approved"],
+      },
     ],
-    triggers: [
-      "pull_request",
-      "push_to_main",
-      "scheduled_optimization"
-    ]
+    triggers: ["pull_request", "push_to_main", "scheduled_optimization"],
   });
-  
+
   // Store workflow configuration in memory
   await mcp__claude_flow__memory_usage({
     action: "store",
@@ -561,15 +601,16 @@ const createIntelligentWorkflow = async (repoContext) => {
       generated_at: Date.now(),
       optimization_level: "high",
       estimated_performance_gain: "40%",
-      cost_reduction: "25%"
-    }
+      cost_reduction: "25%",
+    },
   });
-  
+
   return workflow;
 };
 ```
 
 ### Continuous Learning and Optimization
+
 ```bash
 # Implement continuous workflow learning
 mcp__claude-flow__memory_usage {

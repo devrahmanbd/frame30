@@ -1,1 +1,127 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "label": "MarqueeBand.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L1"}, {"id": "bands_marqueeband_marqueemark", "label": "MarqueeMark", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L16"}, {"id": "bands_marqueeband_marqueebandprops", "label": "MarqueeBandProps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L24"}, {"id": "bands_marqueeband_marqueeband", "label": "MarqueeBand()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L34"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "users_rahman_documents_frame30_src_components_public_motion_index_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "motion_index_marquee", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "bands_marqueeband_marqueemark", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "bands_marqueeband_marqueebandprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx", "target": "bands_marqueeband_marqueeband", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L34", "weight": 1.0}], "raw_calls": [{"caller_nid": "bands_marqueeband_marqueeband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L36"}, {"caller_nid": "bands_marqueeband_marqueeband", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx", "source_location": "L48"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "label": "MarqueeBand.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "bands_marqueeband_marqueemark",
+      "label": "MarqueeMark",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "bands_marqueeband_marqueebandprops",
+      "label": "MarqueeBandProps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "bands_marqueeband_marqueeband",
+      "label": "MarqueeBand()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L34"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "users_rahman_documents_frame30_src_components_public_motion_index_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "motion_index_marquee",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "bands_marqueeband_marqueemark",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "bands_marqueeband_marqueebandprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_marqueeband_tsx",
+      "target": "bands_marqueeband_marqueeband",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "bands_marqueeband_marqueeband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "bands_marqueeband_marqueeband",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/MarqueeBand.tsx",
+      "source_location": "L48"
+    }
+  ]
+}

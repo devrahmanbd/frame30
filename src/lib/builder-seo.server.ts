@@ -98,7 +98,13 @@ function toRecord(row: Row): TemplateSeoRecord {
 
 /** A template with no stored row still has an addressable, empty record. */
 export function emptyRecord(template: TemplateKey): TemplateSeoRecord {
-  return { template, seo: { ...EMPTY_PAGE_SEO }, score: 0, revision: 0, updatedAt: null };
+  return {
+    template,
+    seo: { ...EMPTY_PAGE_SEO },
+    score: 0,
+    revision: 0,
+    updatedAt: null,
+  };
 }
 
 /* --------------------------------------------------------------------- read */
@@ -112,9 +118,12 @@ export async function listTemplateSeo(
   return withSpan("builder.template_seo.list", async () => {
     await enforceRateLimit("builder.seo_read", merchant);
     let query = db.from(TABLE).select(SELECT).eq("merchant_id", merchant);
-    query = themeId ? query.or(`theme_id.is.null,theme_id.eq.${themeId}`) : query.is("theme_id", null);
+    query = themeId
+      ? query.or(`theme_id.is.null,theme_id.eq.${themeId}`)
+      : query.is("theme_id", null);
     const { data, error } = await query.limit(TEMPLATE_KEYS.length * 2);
-    if (error) throw new TemplateSeoError("template_seo.read_failed", error.message);
+    if (error)
+      throw new TemplateSeoError("template_seo.read_failed", error.message);
     incr("builder_template_seo_read_total", {}, 1);
     const out: TemplateSeoRecord[] = [];
     for (const row of (data ?? []) as Row[]) {
@@ -200,14 +209,31 @@ export async function saveTemplateSeo(
         .maybeSingle();
       // 23505: another tab created the row first. Report a conflict so the
       // drawer reloads and the merchant sees the value that actually landed.
-      if (error?.code === "23505") throw new TemplateSeoError("template_seo.conflict");
-      if (error?.code === "42501") throw new TemplateSeoError("template_seo.forbidden");
-      if (error || !data) throw new TemplateSeoError("template_seo.write_failed", error?.message ?? "write failed");
+      if (error?.code === "23505")
+        throw new TemplateSeoError("template_seo.conflict");
+      if (error?.code === "42501")
+        throw new TemplateSeoError("template_seo.forbidden");
+      if (error || !data)
+        throw new TemplateSeoError(
+          "template_seo.write_failed",
+          error?.message ?? "write failed",
+        );
       const record = toRecord(data as Row);
       invalidateTemplateSeo(merchant);
       incr("builder_template_seo_write_total", { op: "create" });
-      log("info", "builder.template_seo.created", { merchant_id: merchant, template, score });
-      await auditAction(db, merchant, actor, "builder.template_seo.create", "builder_template_seo", { template, score });
+      log("info", "builder.template_seo.created", {
+        merchant_id: merchant,
+        template,
+        score,
+      });
+      await auditAction(
+        db,
+        merchant,
+        actor,
+        "builder.template_seo.create",
+        "builder_template_seo",
+        { template, score },
+      );
       return record;
     }
 
@@ -219,8 +245,10 @@ export async function saveTemplateSeo(
       .eq("revision", input.expectedRevision)
       .select(SELECT)
       .maybeSingle();
-    if (error?.code === "42501") throw new TemplateSeoError("template_seo.forbidden");
-    if (error) throw new TemplateSeoError("template_seo.write_failed", error.message);
+    if (error?.code === "42501")
+      throw new TemplateSeoError("template_seo.forbidden");
+    if (error)
+      throw new TemplateSeoError("template_seo.write_failed", error.message);
     if (!data) throw new TemplateSeoError("template_seo.conflict");
     const record = toRecord(data as Row);
     invalidateTemplateSeo(merchant);
@@ -231,11 +259,18 @@ export async function saveTemplateSeo(
       score,
       revision: record.revision,
     });
-    await auditAction(db, merchant, actor, "builder.template_seo.update", "builder_template_seo", {
-      template,
-      score,
-      noindex: seo.noindex,
-    });
+    await auditAction(
+      db,
+      merchant,
+      actor,
+      "builder.template_seo.update",
+      "builder_template_seo",
+      {
+        template,
+        score,
+        noindex: seo.noindex,
+      },
+    );
     return record;
   });
 }
@@ -251,13 +286,27 @@ export async function clearTemplateSeo(
   return withSpan("builder.template_seo.clear", async () => {
     await enforceRateLimit("builder.seo_write", merchant);
     const key = assertTemplate(template);
-    let query = db.from(TABLE).delete().eq("merchant_id", merchant).eq("template", key);
-    query = themeId ? query.eq("theme_id", themeId) : query.is("theme_id", null);
+    let query = db
+      .from(TABLE)
+      .delete()
+      .eq("merchant_id", merchant)
+      .eq("template", key);
+    query = themeId
+      ? query.eq("theme_id", themeId)
+      : query.is("theme_id", null);
     const { data, error } = await query.select("id");
-    if (error) throw new TemplateSeoError("template_seo.write_failed", error.message);
+    if (error)
+      throw new TemplateSeoError("template_seo.write_failed", error.message);
     invalidateTemplateSeo(merchant);
     incr("builder_template_seo_write_total", { op: "clear" });
-    await auditAction(db, merchant, actor, "builder.template_seo.clear", "builder_template_seo", { template: key });
+    await auditAction(
+      db,
+      merchant,
+      actor,
+      "builder.template_seo.clear",
+      "builder_template_seo",
+      { template: key },
+    );
     return { cleared: ((data as unknown[] | null) ?? []).length > 0 };
   });
 }

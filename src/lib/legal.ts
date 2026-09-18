@@ -1,5 +1,10 @@
 import { ORG_NAP, napAddressLine } from "./nap";
-export { ORG_NAP, napAddressLine, napPostalAddress, organizationSchema } from "./nap";
+export {
+  ORG_NAP,
+  napAddressLine,
+  napPostalAddress,
+  organizationSchema,
+} from "./nap";
 
 /**
  * Phase 10.3 — legal pages and the single source of NAP.
@@ -43,7 +48,11 @@ const s = (
   headingBn: string,
   bodyEn: string[],
   bodyBn: string[],
-): LegalSection => ({ id, heading: { en: headingEn, bn: headingBn }, body: { en: bodyEn, bn: bodyBn } });
+): LegalSection => ({
+  id,
+  heading: { en: headingEn, bn: headingBn },
+  body: { en: bodyEn, bn: bodyBn },
+});
 
 export const LEGAL_DOCS: LegalDoc[] = [
   {
@@ -374,5 +383,7 @@ export function legalDoc(slug: string): LegalDoc | null {
 
 /** Newest effective date across all documents — shown in the footer. */
 export function legalLastUpdated(): string {
-  return LEGAL_DOCS.map((d) => d.effective).sort().at(-1) as string;
+  return LEGAL_DOCS.map((d) => d.effective)
+    .sort()
+    .at(-1) as string;
 }

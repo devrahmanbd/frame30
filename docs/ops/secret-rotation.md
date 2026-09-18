@@ -19,6 +19,7 @@ Each merchant gateway account holds a `webhook_secret` stored encrypted in `gate
 5. Confirm in the owner audit trail that `secret_rotation:gateway_webhook` has been logged.
 
 ### Failure mode
+
 If the provider update fails before the grace window closes, extend the window by re-triggering the rotation. Do **not** close the window before the provider is updated — this would drop all incoming webhook events.
 
 ---
@@ -65,11 +66,13 @@ Rotating the JWT secret invalidates **all active sessions** — all merchants wi
 Merchant API keys in `api_keys` can be rotated by the merchant via `/dashboard/settings/api` or by a platform admin via `/root/tenancy`.
 
 ### Procedure (merchant self-service)
+
 1. Dashboard → Settings → API Keys → "Rotate key".
 2. A new key is issued with a 24-hour overlap window. Integrations should be updated before the window expires.
 3. The old key is auto-expired by the rotation sweep cron.
 
 ### Procedure (platform admin force-rotation)
+
 1. `/root/tenancy` → Select merchant → Developer → "Force rotate API keys".
 2. This writes an immediate expiry on all active keys for the merchant with audit reason `platform_force_rotation`.
 3. The merchant receives an in-app notification and email to re-issue keys.
@@ -95,6 +98,7 @@ The Redis password (`REDIS_URL`) must be rotated carefully to avoid cache stampe
 Each courier integration (Steadfast, RedX, Pathao, Paperfly, eCourier, Sundarban) has a per-merchant webhook secret stored in `courier_accounts.webhook_secret`.
 
 ### Procedure
+
 Same as gateway webhook rotation (§1): generate new secret, update in courier admin portal, keep old secret alive in the dual-sign grace window, expire old secret after confirmation.
 
 ---
@@ -104,6 +108,7 @@ Same as gateway webhook rotation (§1): generate new secret, update in courier a
 Let's Encrypt certificates auto-renew via the OpenResty `lua-resty-acme` integration. No manual rotation is required unless the ACME account key is compromised.
 
 ### Compromised ACME account key
+
 1. Revoke all issued certificates via ACME: `acme.sh --revoke --domain framique.store --ecc`.
 2. Generate a new ACME account key.
 3. Re-issue certificates for all active custom domains (triggers automatically via the next verification sweep in `/api/public/cron/domains`).
@@ -125,6 +130,7 @@ If you suspect a service role key, JWT secret, or platform key has leaked:
 ## Audit Assertion Checklist
 
 After every rotation, verify:
+
 - [ ] Rotation event logged in `/root/audit` with `actor`, `secret_class`, `timestamp`, `reason`
 - [ ] Prometheus counter `framique_secret_rotation_total{class="..."}` incremented
 - [ ] No spike in `framique_auth_events_total{outcome="error"}` beyond expected post-rotation transient

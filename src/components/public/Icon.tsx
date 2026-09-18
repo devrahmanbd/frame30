@@ -31,12 +31,15 @@ type Base = {
 };
 
 export type IconProps = Base &
-  (
-    | { label: string; decorative?: false }
-    | { decorative: true; label?: never }
-  );
+  ({ label: string; decorative?: false } | { decorative: true; label?: never });
 
-export function Icon({ name, size = 20, className, strokeWidth, ...rest }: IconProps) {
+export function Icon({
+  name,
+  size = 20,
+  className,
+  strokeWidth,
+  ...rest
+}: IconProps) {
   const label = "label" in rest ? rest.label : undefined;
   const decorative = "decorative" in rest ? rest.decorative === true : false;
   const standalone = Boolean(label) && !decorative;
@@ -66,7 +69,9 @@ export function Icon({ name, size = 20, className, strokeWidth, ...rest }: IconP
       className={cn("shrink-0", className)}
       data-icon={name}
       data-icon-standalone={standalone ? "true" : "false"}
-      {...(standalone ? { role: "img", "aria-label": label } : { "aria-hidden": true, focusable: false })}
+      {...(standalone
+        ? { role: "img", "aria-label": label }
+        : { "aria-hidden": true, focusable: false })}
       {...(strokeWidth ? { style: { strokeWidth } } : {})}
     >
       <use href={iconHref(name)} />

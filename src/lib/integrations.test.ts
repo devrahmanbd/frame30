@@ -47,7 +47,8 @@ describe("integration catalogue", () => {
 
   it("never names a credential value, only its env variable", () => {
     for (const spec of Object.values(SERVICE_CATALOG)) {
-      if (spec.credentialEnv) expect(spec.credentialEnv).toMatch(/^[A-Z0-9_]+$/);
+      if (spec.credentialEnv)
+        expect(spec.credentialEnv).toMatch(/^[A-Z0-9_]+$/);
     }
   });
 });
@@ -77,14 +78,25 @@ describe("probe classification", () => {
 
   it("reports uptime from probe history", () => {
     expect(uptimePercent([])).toBeNull();
-    expect(uptimePercent([{ status: "up" }, { status: "up" }, { status: "down" }, { status: "up" }])).toBe(75);
+    expect(
+      uptimePercent([
+        { status: "up" },
+        { status: "up" },
+        { status: "down" },
+        { status: "up" },
+      ]),
+    ).toBe(75);
   });
 });
 
 describe("urls", () => {
   it("builds health and deep links without doubling slashes", () => {
-    expect(healthUrl("http://host:3000/", "grafana")).toBe("http://host:3000/api/health");
-    expect(deepLink("http://host:3000", "grafana")).toBe("http://host:3000/dashboards");
+    expect(healthUrl("http://host:3000/", "grafana")).toBe(
+      "http://host:3000/api/health",
+    );
+    expect(deepLink("http://host:3000", "grafana")).toBe(
+      "http://host:3000/dashboards",
+    );
   });
 
   it("rejects anything that is not an absolute http url", () => {

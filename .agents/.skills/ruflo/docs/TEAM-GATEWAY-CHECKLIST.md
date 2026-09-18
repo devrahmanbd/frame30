@@ -10,14 +10,14 @@ Related: [#2058](https://github.com/ruvnet/ruflo/issues/2058)
 
 Run these checks before every merge to main:
 
-| Gate | Command | Blocks merge if |
-|------|---------|-----------------|
-| Lint | `npm run lint` | Any lint error |
-| Type-check | `npx tsc --noEmit` | Any TypeScript error |
-| Unit tests | `npm test` | Fewer than 1999 passing |
-| Smoke tests | `node scripts/smoke-*.mjs` | Any exit code != 0 |
-| Witness manifest | `npx ruflo@latest verify` | Checksum mismatch |
-| Semver bump | `npm version <patch\|minor\|major>` | No version bump on API change |
+| Gate             | Command                             | Blocks merge if               |
+| ---------------- | ----------------------------------- | ----------------------------- |
+| Lint             | `npm run lint`                      | Any lint error                |
+| Type-check       | `npx tsc --noEmit`                  | Any TypeScript error          |
+| Unit tests       | `npm test`                          | Fewer than 1999 passing       |
+| Smoke tests      | `node scripts/smoke-*.mjs`          | Any exit code != 0            |
+| Witness manifest | `npx ruflo@latest verify`           | Checksum mismatch             |
+| Semver bump      | `npm version <patch\|minor\|major>` | No version bump on API change |
 
 Every merge to main **must** record a new witness manifest entry. Generate it with:
 
@@ -54,14 +54,15 @@ When handing work between Claude Code and OpenAI Codex workers:
 
 All agents in a team workflow share state through named namespaces. Conventions:
 
-| Namespace | Owner | Contents |
-|-----------|-------|----------|
-| `collaboration` | All cross-platform agents | Design decisions, code paths, review findings |
-| `patterns` | All agents | Reusable solution patterns (stored after each successful task) |
-| `tasks` | Coordinator | Task assignments and status |
-| `security` | Security auditor | Vulnerability findings, remediation status |
+| Namespace       | Owner                     | Contents                                                       |
+| --------------- | ------------------------- | -------------------------------------------------------------- |
+| `collaboration` | All cross-platform agents | Design decisions, code paths, review findings                  |
+| `patterns`      | All agents                | Reusable solution patterns (stored after each successful task) |
+| `tasks`         | Coordinator               | Task assignments and status                                    |
+| `security`      | Security auditor          | Vulnerability findings, remediation status                     |
 
 Rules:
+
 - Never write credentials or raw API keys to any namespace — store only key names or rotation identifiers.
 - Namespaces are **not** access-controlled by default; treat all shared namespaces as readable by every agent in the swarm.
 - Use `--ttl` to expire ephemeral coordination messages (e.g., handoff signals):

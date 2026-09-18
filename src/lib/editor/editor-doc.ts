@@ -7,11 +7,20 @@
  * order, visibility, featured image, excerpt, taxonomy). Everything here is
  * pure and unit-tested; the server module maps it to and from table rows.
  */
-import type { ContentKind, ContentStatus, EditorKind, Visibility } from "@/lib/content-desk";
+import type {
+  ContentKind,
+  ContentStatus,
+  EditorKind,
+  Visibility,
+} from "@/lib/content-desk";
 import { BODY_LIMITS, bodyStats, parseBody, type Block } from "@/lib/blog-body";
 import { isBuilderBody } from "@/lib/page-builder";
 import { markdownToBlocks } from "./page-markdown";
-import { EMPTY_ENTITY_SEO, parseEntitySeo, type EntitySeo } from "@/lib/seo/seo-meta";
+import {
+  EMPTY_ENTITY_SEO,
+  parseEntitySeo,
+  type EntitySeo,
+} from "@/lib/seo/seo-meta";
 
 export type { ContentKind, ContentStatus, EditorKind, Visibility };
 
@@ -95,7 +104,12 @@ export type EditorDoc = {
   /** Posts: term ids. */
   categories: string[];
   tags: string[];
-  seo: { metaTitle: string; metaDescription: string; canonical: string; robots: string };
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    canonical: string;
+    robots: string;
+  };
   /** Phase 13 — the extended Rank Math-style record behind the SEO meta box. */
   seoExtended: EntitySeo;
   updatedAt: string | null;
@@ -128,7 +142,12 @@ export function emptyEditorDoc(kind: ContentKind): EditorDoc {
     showInNav: false,
     categories: [],
     tags: [],
-    seo: { metaTitle: "", metaDescription: "", canonical: "", robots: "index,follow" },
+    seo: {
+      metaTitle: "",
+      metaDescription: "",
+      canonical: "",
+      robots: "index,follow",
+    },
     seoExtended: EMPTY_ENTITY_SEO,
     updatedAt: null,
     createdAt: null,
@@ -148,7 +167,9 @@ export function slugify(input: string): string {
 }
 
 /** The slug shown in the sidebar: explicit, or derived from the title. */
-export function effectiveSlug(doc: Pick<EditorDoc, "slug" | "title" | "titleEn">): string {
+export function effectiveSlug(
+  doc: Pick<EditorDoc, "slug" | "title" | "titleEn">,
+): string {
   return doc.slug || slugify(doc.titleEn || doc.title) || "";
 }
 
@@ -173,7 +194,9 @@ export function docStats(doc: Pick<EditorDoc, "kind" | "body">): DocStats {
   return {
     words: stats.words,
     minutes:
-      stats.words === 0 ? 0 : Math.max(1, Math.round(stats.words / BODY_LIMITS.wordsPerMinute)),
+      stats.words === 0
+        ? 0
+        : Math.max(1, Math.round(stats.words / BODY_LIMITS.wordsPerMinute)),
     characters: stats.characters,
     headings: stats.headings,
     images: stats.images,
@@ -209,7 +232,8 @@ export function resolvePublishStatus(
   now = Date.now(),
 ): ContentStatus {
   if (doc.status === "trash") return "trash";
-  if (doc.visibility === "private" || doc.status === "private") return "private";
+  if (doc.visibility === "private" || doc.status === "private")
+    return "private";
   if (
     doc.status === "published" &&
     doc.publishAt &&
@@ -218,7 +242,9 @@ export function resolvePublishStatus(
     return "scheduled";
   }
   if (doc.status === "scheduled") {
-    return doc.publishAt && new Date(doc.publishAt).getTime() > now ? "scheduled" : "published";
+    return doc.publishAt && new Date(doc.publishAt).getTime() > now
+      ? "scheduled"
+      : "published";
   }
   return doc.status;
 }
@@ -234,16 +260,18 @@ export function primaryAction(
   if (!canPublish) return "submit";
   const target = resolvePublishStatus(doc, now);
   if (target === "scheduled") return "schedule";
-  if (target === "published" || target === "private") return doc.publishedAt ? "update" : "publish";
+  if (target === "published" || target === "private")
+    return doc.publishedAt ? "update" : "publish";
   return doc.publishedAt ? "update" : "publish";
 }
 
-export const PRIMARY_LABEL: Record<PrimaryAction, { en: string; bn: string }> = {
-  publish: { en: "Publish", bn: "প্রকাশ" },
-  update: { en: "Update", bn: "আপডেট" },
-  schedule: { en: "Schedule", bn: "নির্ধারণ" },
-  submit: { en: "Submit for review", bn: "পর্যালোচনায় পাঠান" },
-};
+export const PRIMARY_LABEL: Record<PrimaryAction, { en: string; bn: string }> =
+  {
+    publish: { en: "Publish", bn: "প্রকাশ" },
+    update: { en: "Update", bn: "আপডেট" },
+    schedule: { en: "Schedule", bn: "নির্ধারণ" },
+    submit: { en: "Submit for review", bn: "পর্যালোচনায় পাঠান" },
+  };
 
 export type PrePublishCheck = {
   id: string;
@@ -318,7 +346,10 @@ export function prePublishChecks(
       status === "scheduled"
         ? `Scheduled for ${formatPublishDate(doc.publishAt)}`
         : "Publish: immediately",
-    bn: status === "scheduled" ? `নির্ধারিত: ${formatPublishDate(doc.publishAt)}` : "প্রকাশ: এখনই",
+    bn:
+      status === "scheduled"
+        ? `নির্ধারিত: ${formatPublishDate(doc.publishAt)}`
+        : "প্রকাশ: এখনই",
   });
   checks.push({
     id: "body",
@@ -336,7 +367,8 @@ export function prePublishChecks(
         : "লেখা খালি",
   });
   if (extras.seoScore !== null) {
-    const band = extras.seoScore >= 81 ? "pass" : extras.seoScore >= 51 ? "warn" : "warn";
+    const band =
+      extras.seoScore >= 81 ? "pass" : extras.seoScore >= 51 ? "warn" : "warn";
     checks.push({
       id: "seo",
       ok: extras.seoScore >= 51,
@@ -378,7 +410,20 @@ export function canProceed(checks: PrePublishCheck[]): boolean {
 
 /* ------------------------------------------------------------------ dates */
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 /** "Immediately" or `Sep 4, 2026 8:53 am`. */
 export function formatPublishDate(iso: string | null): string {
@@ -437,12 +482,20 @@ export function isDirty(a: EditorDoc, b: EditorDoc): boolean {
 
 /* ------------------------------------------------------------- validation */
 
-export type DocIssue = { field: keyof EditorDoc | "body"; en: string; bn: string };
+export type DocIssue = {
+  field: keyof EditorDoc | "body";
+  en: string;
+  bn: string;
+};
 
 export function validateDoc(doc: EditorDoc): DocIssue[] {
   const issues: DocIssue[] = [];
   if (doc.title.trim().length === 0)
-    issues.push({ field: "title", en: "Title is required.", bn: "শিরোনাম আবশ্যক।" });
+    issues.push({
+      field: "title",
+      en: "Title is required.",
+      bn: "শিরোনাম আবশ্যক।",
+    });
   if (doc.title.length > 200)
     issues.push({
       field: "title",
@@ -463,7 +516,11 @@ export function validateDoc(doc: EditorDoc): DocIssue[] {
       bn: "সারসংক্ষেপ ১০০০ অক্ষরের বেশি।",
     });
   if (doc.body.length > BODY_LIMITS.maxChars)
-    issues.push({ field: "body", en: "Body is too long.", bn: "লেখা খুব বড়।" });
+    issues.push({
+      field: "body",
+      en: "Body is too long.",
+      bn: "লেখা খুব বড়।",
+    });
   if (doc.visibility === "password" && doc.password.length === 0) {
     issues.push({
       field: "password",
@@ -477,7 +534,11 @@ export function validateDoc(doc: EditorDoc): DocIssue[] {
       en: "Password is longer than 64 characters.",
       bn: "পাসওয়ার্ড ৬৪ অক্ষরের বেশি।",
     });
-  if (!Number.isInteger(doc.menuOrder) || doc.menuOrder < -9999 || doc.menuOrder > 9999) {
+  if (
+    !Number.isInteger(doc.menuOrder) ||
+    doc.menuOrder < -9999 ||
+    doc.menuOrder > 9999
+  ) {
     issues.push({
       field: "menuOrder",
       en: "Order must be a whole number between -9999 and 9999.",
@@ -485,9 +546,17 @@ export function validateDoc(doc: EditorDoc): DocIssue[] {
     });
   }
   if (doc.seo.metaTitle.length > 200)
-    issues.push({ field: "seo", en: "SEO title is too long.", bn: "এসইও শিরোনাম খুব বড়।" });
+    issues.push({
+      field: "seo",
+      en: "SEO title is too long.",
+      bn: "এসইও শিরোনাম খুব বড়।",
+    });
   if (doc.seo.metaDescription.length > 600)
-    issues.push({ field: "seo", en: "SEO description is too long.", bn: "এসইও বিবরণ খুব বড়।" });
+    issues.push({
+      field: "seo",
+      en: "SEO description is too long.",
+      bn: "এসইও বিবরণ খুব বড়।",
+    });
   return issues;
 }
 
@@ -499,10 +568,18 @@ export const EDITOR_SHORTCUTS: { keys: string; en: string; bn: string }[] = [
   { keys: "⌘\\", en: "Toggle settings sidebar", bn: "সেটিংস সাইডবার" },
   { keys: "⌘Z / ⇧⌘Z", en: "Undo / redo", bn: "পূর্বাবস্থা / পুনরায়" },
   { keys: "⌘K", en: "Command palette", bn: "কমান্ড প্যালেট" },
-  { keys: "⌘B / ⌘I / ⌘U", en: "Bold / italic / underline", bn: "বোল্ড / ইটালিক / আন্ডারলাইন" },
+  {
+    keys: "⌘B / ⌘I / ⌘U",
+    en: "Bold / italic / underline",
+    bn: "বোল্ড / ইটালিক / আন্ডারলাইন",
+  },
   { keys: "⌘⇧K", en: "Insert link", bn: "লিঙ্ক যোগ" },
   { keys: "⌘⇧O", en: "Toggle outline", bn: "আউটলাইন" },
-  { keys: "Esc", en: "Close panel / back to list", bn: "প্যানেল বন্ধ / তালিকায় ফিরুন" },
+  {
+    keys: "Esc",
+    en: "Close panel / back to list",
+    bn: "প্যানেল বন্ধ / তালিকায় ফিরুন",
+  },
   { keys: "?", en: "This help", bn: "এই সাহায্য" },
 ];
 
@@ -513,7 +590,13 @@ export function titlePill(
 ): { title: string; kind: string } {
   const title = doc.title.trim() || (lang === "bn" ? "শিরোনামহীন" : "Untitled");
   const kind =
-    doc.kind === "page" ? (lang === "bn" ? "পেজ" : "Page") : lang === "bn" ? "পোস্ট" : "Post";
+    doc.kind === "page"
+      ? lang === "bn"
+        ? "পেজ"
+        : "Page"
+      : lang === "bn"
+        ? "পোস্ট"
+        : "Post";
   return { title, kind };
 }
 

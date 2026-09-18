@@ -47,10 +47,17 @@ export async function runStorefrontSearch(
 
   const started = Date.now();
   try {
-    const result = await cached(searchCacheKey(slug, params), 20, () => searchStore(slug, params), {
-      staleSeconds: 40,
+    const result = await cached(
+      searchCacheKey(slug, params),
+      20,
+      () => searchStore(slug, params),
+      {
+        staleSeconds: 40,
+      },
+    );
+    observe("framique_storefront_search_ms", Date.now() - started, {
+      sort: params.sort,
     });
-    observe("framique_storefront_search_ms", Date.now() - started, { sort: params.sort });
     if (!result.found) {
       incr("framique_storefront_search_total", { outcome: "not_found" });
       return { status: "not_found" };
@@ -63,7 +70,10 @@ export async function runStorefrontSearch(
     if (params.q && result.total === 0) {
       // Zero-result terms are the merchandising signal worth keeping; the term
       // is shopper-typed text, never linked to a person.
-      log("info", "storefront.search.zero_results", { slug, term: params.q.slice(0, 40) });
+      log("info", "storefront.search.zero_results", {
+        slug,
+        term: params.q.slice(0, 40),
+      });
     }
     return { status: "ok", result };
   } catch (err) {
@@ -95,7 +105,10 @@ async function resolveStore(slug: string) {
  *  - the *result contract* is identical either way, so the page renders the
  *    same regardless of which engine served it.
  */
-async function searchStore(slug: string, p: SearchParams): Promise<SearchResult> {
+async function searchStore(
+  slug: string,
+  p: SearchParams,
+): Promise<SearchResult> {
   const store = await resolveStore(slug);
   if (!store) return { ...EMPTY_RESULT, found: false };
 
@@ -123,7 +136,10 @@ async function searchStore(slug: string, p: SearchParams): Promise<SearchResult>
     },
     async () => {
       native = await querySearch(slug, p);
-      return { hits: native.items as unknown as { id: string }[], total: native.total };
+      return {
+        hits: native.items as unknown as { id: string }[],
+        total: native.total,
+      };
     },
   );
 
@@ -144,24 +160,37 @@ async function searchStore(slug: string, p: SearchParams): Promise<SearchResult>
           facets: (await facetsOnly(slug, p)).facets,
         };
 
-  return withImages({ ...base, engine: outcome.engine, degraded: outcome.fellBack });
+  return withImages({
+    ...base,
+    engine: outcome.engine,
+    degraded: outcome.fellBack,
+  });
 }
 
 /** Maps an indexed document back onto the storefront hit contract. */
 function toHit(doc: Record<string, unknown>): SearchHit {
-  const num = (v: unknown, fallback = 0) => (typeof v === "number" && Number.isFinite(v) ? v : fallback);
-  const str = (v: unknown, fallback = "") => (typeof v === "string" ? v : fallback);
+  const num = (v: unknown, fallback = 0) =>
+    typeof v === "number" && Number.isFinite(v) ? v : fallback;
+  const str = (v: unknown, fallback = "") =>
+    typeof v === "string" ? v : fallback;
   return {
     id: str(doc["id"]),
     title: str(doc["title"]),
     slug: str(doc["slug"]),
     description: str(doc["description"]),
-    image_url: typeof doc["image_url"] === "string" ? (doc["image_url"] as string) : null,
+    image_url:
+      typeof doc["image_url"] === "string"
+        ? (doc["image_url"] as string)
+        : null,
     kind: str(doc["kind"], "physical"),
     price_minor: num(doc["price_minor"]),
-    compare_at_minor: typeof doc["compare_at_minor"] === "number" ? (doc["compare_at_minor"] as number) : null,
+    compare_at_minor:
+      typeof doc["compare_at_minor"] === "number"
+        ? (doc["compare_at_minor"] as number)
+        : null,
     stock: num(doc["stock"]),
-    category: typeof doc["category"] === "string" ? (doc["category"] as string) : null,
+    category:
+      typeof doc["category"] === "string" ? (doc["category"] as string) : null,
   };
 }
 
@@ -170,23 +199,36 @@ async function withImages(result: SearchResult): Promise<SearchResult> {
   try {
     const { responsiveImage } = await import("./image-cdn.server");
     const items = await Promise.all(
-      result.items.map(async (item) => ({ ...item, image: await responsiveImage(item.image_url, "card") })),
+      result.items.map(async (item) => ({
+        ...item,
+        image: await responsiveImage(item.image_url, "card"),
+      })),
     );
     return { ...result, items };
   } catch (err) {
-    log("warn", "storefront.search.image_sign_failed", { reason: (err as Error).message });
+    log("warn", "storefront.search.image_sign_failed", {
+      reason: (err as Error).message,
+    });
     return result;
   }
 }
 
 /** Facet-only probe: one row, same filters, cached longer than the page itself. */
-async function facetsOnly(slug: string, p: SearchParams): Promise<SearchResult> {
-  return cached(`sf-facets|${slug}|${searchCacheKey(slug, { ...p, page: 1 })}`, 60, () =>
-    querySearch(slug, { ...p, page: 1 }),
+async function facetsOnly(
+  slug: string,
+  p: SearchParams,
+): Promise<SearchResult> {
+  return cached(
+    `sf-facets|${slug}|${searchCacheKey(slug, { ...p, page: 1 })}`,
+    60,
+    () => querySearch(slug, { ...p, page: 1 }),
   );
 }
 
-async function querySearch(slug: string, p: SearchParams): Promise<SearchResult> {
+async function querySearch(
+  slug: string,
+  p: SearchParams,
+): Promise<SearchResult> {
   const db = publicClient();
   const { data, error } = await db.rpc("storefront_search", {
     _slug: slug,
@@ -202,7 +244,9 @@ async function querySearch(slug: string, p: SearchParams): Promise<SearchResult>
     _offset: offsetOf(p),
   });
   if (error) throw error;
-  const payload = (data ?? {}) as unknown as Partial<SearchResult> & { found?: boolean };
+  const payload = (data ?? {}) as unknown as Partial<SearchResult> & {
+    found?: boolean;
+  };
   if (payload.found === false) return { ...EMPTY_RESULT, found: false };
   return { ...EMPTY_RESULT, ...payload, found: true };
 }
@@ -261,7 +305,9 @@ export async function loadStorePage(storeSlug: string, pageSlug: string) {
   });
 }
 
-export async function listStorePageNav(merchantId: string): Promise<StorePageNavItem[]> {
+export async function listStorePageNav(
+  merchantId: string,
+): Promise<StorePageNavItem[]> {
   return cached(`sf-page-nav|${merchantId}`, 120, async () => {
     const db = publicClient();
     const { data } = await db
@@ -279,10 +325,17 @@ export async function listStorePageNav(merchantId: string): Promise<StorePageNav
 
 /* -------------------------------- tenant sitemap -------------------------- */
 
-export type SitemapUrl = { path: string; lastmod?: string; changefreq: string; priority: string };
+export type SitemapUrl = {
+  path: string;
+  lastmod?: string;
+  changefreq: string;
+  priority: string;
+};
 
 /** One sitemap per tenant: a store never advertises another store's URLs. */
-export async function loadStoreSitemap(slug: string): Promise<SitemapUrl[] | null> {
+export async function loadStoreSitemap(
+  slug: string,
+): Promise<SitemapUrl[] | null> {
   return cached(`sf-sitemap|${slug}`, 300, async () => {
     const db = publicClient();
     const { data: merchant } = await db
@@ -383,7 +436,8 @@ export async function loadPagesDesk(db: Client, merchantId: string) {
     stats: {
       total: pages.length,
       published: pages.filter((p) => p.is_published).length,
-      missingMeta: pages.filter((p) => !p.meta_description && !p.excerpt).length,
+      missingMeta: pages.filter((p) => !p.meta_description && !p.excerpt)
+        .length,
       noindex: pages.filter((p) => p.robots.startsWith("noindex")).length,
     },
   };
@@ -404,12 +458,23 @@ export type PageInput = {
 };
 
 /** The store slug a page's public URLs are built from. */
-async function storeSlugOf(db: Client, merchantId: string): Promise<string | undefined> {
-  const { data } = await (db as any).from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+async function storeSlugOf(
+  db: Client,
+  merchantId: string,
+): Promise<string | undefined> {
+  const { data } = await (db as any)
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   return data?.slug ?? undefined;
 }
 
-export async function savePage(db: Client, merchantId: string, input: PageInput) {
+export async function savePage(
+  db: Client,
+  merchantId: string,
+  input: PageInput,
+) {
   const row = {
     merchant_id: merchantId,
     slug: input.slug,
@@ -435,7 +500,11 @@ export async function savePage(db: Client, merchantId: string, input: PageInput)
     previousSlug = before?.slug ?? null;
   }
   const query = input.id
-    ? db.from("storefront_pages").update(row).eq("id", input.id).eq("merchant_id", merchantId)
+    ? db
+        .from("storefront_pages")
+        .update(row)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
     : db.from("storefront_pages").insert(row);
   const { error } = await query;
   if (error) throw error;
@@ -458,16 +527,28 @@ export async function savePage(db: Client, merchantId: string, input: PageInput)
     } catch (redirectError) {
       log("warn", "storefront.page.redirect_failed", {
         merchant_id: merchantId,
-        message: redirectError instanceof Error ? redirectError.message : String(redirectError),
+        message:
+          redirectError instanceof Error
+            ? redirectError.message
+            : String(redirectError),
       });
     }
   }
-  incr("framique_storefront_page_saved_total", { published: String(input.isPublished) });
-  log("info", "storefront.page.saved", { merchant_id: merchantId, slug: input.slug });
+  incr("framique_storefront_page_saved_total", {
+    published: String(input.isPublished),
+  });
+  log("info", "storefront.page.saved", {
+    merchant_id: merchantId,
+    slug: input.slug,
+  });
 }
 
 /** Soft delete keeps the URL auditable and restorable instead of vanishing. */
-export async function archivePage(db: Client, merchantId: string, pageId: string) {
+export async function archivePage(
+  db: Client,
+  merchantId: string,
+  pageId: string,
+) {
   const { data: before } = await (db as any)
     .from("storefront_pages")
     .select("slug")
@@ -499,4 +580,3 @@ export async function archivePage(db: Client, merchantId: string, pageId: string
   }
   incr("framique_storefront_page_archived_total");
 }
-

@@ -62,7 +62,8 @@ export async function listCarriers(supabase: Client, merchantId: string) {
     return data.map((c) => ({ ...c, breaker: breakerState(c.code) }));
   }
 
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data: seeded, error: seedError } = await supabaseAdmin
     .from("carriers")
     .insert(
@@ -169,10 +170,16 @@ async function logEvent(
   eventType: string,
   payload: Record<string, string | number | boolean | null> = {},
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   await supabaseAdmin
     .from("delivery_events")
-    .insert({ merchant_id: merchantId, shipment_id: shipmentId, event_type: eventType, payload });
+    .insert({
+      merchant_id: merchantId,
+      shipment_id: shipmentId,
+      event_type: eventType,
+      payload,
+    });
 }
 
 /** Every status change — manual or carrier-driven — funnels through here. */
@@ -184,7 +191,8 @@ async function applyEvent(args: {
   occurredAt?: string;
   payload?: Record<string, unknown>;
 }) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin.rpc("courier_apply_event", {
     _shipment_id: args.shipmentId,
     _status: args.status,
@@ -194,7 +202,11 @@ async function applyEvent(args: {
     _payload: (args.payload ?? {}) as never,
   });
   if (error) throw error;
-  const result = (data ?? {}) as { applied?: boolean; reason?: string; status?: ShipmentStatus };
+  const result = (data ?? {}) as {
+    applied?: boolean;
+    reason?: string;
+    status?: ShipmentStatus;
+  };
   incr("framique_courier_event_total", {
     source: args.source,
     outcome: result.applied ? "applied" : (result.reason ?? "skipped"),
@@ -215,14 +227,20 @@ export type ShipmentInput = {
   city?: string | null;
 };
 
-export async function createShipment(supabase: Client, merchantId: string, input: ShipmentInput) {
+export async function createShipment(
+  supabase: Client,
+  merchantId: string,
+  input: ShipmentInput,
+) {
   return withSpan("courier.create_shipment", async () => {
     const verdict = await rateLimit("shipping.create", merchantId);
-    if (!verdict.allowed) throw new RateLimitError("shipping.create", verdict.reset_at);
+    if (!verdict.allowed)
+      throw new RateLimitError("shipping.create", verdict.reset_at);
 
     const key = input.orderId ? "order_id" : "pos_order_id";
     const value = input.orderId ?? input.posOrderId;
-    if (!value) throw new CourierError("shipment_no_order", "Please select an order");
+    if (!value)
+      throw new CourierError("shipment_no_order", "Please select an order");
 
     // Idempotent: one shipment per order, retries return the existing row.
     const { data: existing } = await supabase
@@ -231,34 +249,48 @@ export async function createShipment(supabase: Client, merchantId: string, input
       .eq("merchant_id", merchantId)
       .eq(key, value)
       .maybeSingle();
-    if (existing) return { shipment: existing, adapterDown: false, quoted: null };
+    if (existing)
+      return { shipment: existing, adapterDown: false, quoted: null };
 
     const carriers = await listCarriers(supabase, merchantId);
-    const carrier = carriers.find((c) => c.code === input.carrierCode && c.enabled !== false);
-    if (!carrier) throw new CourierError("carrier_unknown", "Courier not found or disabled");
+    const carrier = carriers.find(
+      (c) => c.code === input.carrierCode && c.enabled !== false,
+    );
+    if (!carrier)
+      throw new CourierError(
+        "carrier_unknown",
+        "Courier not found or disabled",
+      );
 
-    const { quoteId, breakdown } = await persistQuote(supabase, merchantId, input.orderId ?? null, {
-      carrierCode: carrier.code,
-      city: input.city ?? null,
-      weightGrams: input.weightGrams,
-      isCod: input.isCod,
-      codAmountMinorInt: input.isCod ? input.codAmountMinorInt : 0,
-      orderTotalMinorInt: input.codAmountMinorInt,
-    });
+    const { quoteId, breakdown } = await persistQuote(
+      supabase,
+      merchantId,
+      input.orderId ?? null,
+      {
+        carrierCode: carrier.code,
+        city: input.city ?? null,
+        weightGrams: input.weightGrams,
+        isCod: input.isCod,
+        codAmountMinorInt: input.isCod ? input.codAmountMinorInt : 0,
+        orderTotalMinorInt: input.codAmountMinorInt,
+      },
+    );
 
     let awb: string | null = null;
     let trackingUrl: string | null = null;
     let adapterDown = false;
     try {
       const credentials = await loadCarrierCredentials(carrier.config);
-      const booked = await adapterFor(carrier.code, credentials).createShipment({
-        reference: value,
-        addressLine: input.addressLine ?? null,
-        city: input.city ?? null,
-        weightGrams: input.weightGrams,
-        isCod: input.isCod,
-        codAmountMinorInt: input.codAmountMinorInt,
-      });
+      const booked = await adapterFor(carrier.code, credentials).createShipment(
+        {
+          reference: value,
+          addressLine: input.addressLine ?? null,
+          city: input.city ?? null,
+          weightGrams: input.weightGrams,
+          isCod: input.isCod,
+          codAmountMinorInt: input.codAmountMinorInt,
+        },
+      );
       awb = booked.awb;
       trackingUrl = booked.trackingUrl;
     } catch (err) {
@@ -302,7 +334,11 @@ export async function createShipment(supabase: Client, merchantId: string, input
   });
 }
 
-async function requireShipment(supabase: Client, merchantId: string, shipmentId: string) {
+async function requireShipment(
+  supabase: Client,
+  merchantId: string,
+  shipmentId: string,
+) {
   const { data, error } = await supabase
     .from("carrier_shipments")
     .select("*")
@@ -315,7 +351,11 @@ async function requireShipment(supabase: Client, merchantId: string, shipmentId:
 }
 
 /** Re-books an AWB after a carrier outage. Safe to press repeatedly. */
-export async function retryRate(supabase: Client, merchantId: string, shipmentId: string) {
+export async function retryRate(
+  supabase: Client,
+  merchantId: string,
+  shipmentId: string,
+) {
   const shipment = await requireShipment(supabase, merchantId, shipmentId);
   if (shipment.awb) return shipment;
   const booked = await adapterFor(shipment.carrier_code).createShipment({
@@ -334,7 +374,9 @@ export async function retryRate(supabase: Client, merchantId: string, shipmentId
     .select("*")
     .single();
   if (error) throw error;
-  await logEvent(merchantId, shipmentId, "shipment.rate_retried", { carrier: shipment.carrier_code });
+  await logEvent(merchantId, shipmentId, "shipment.rate_retried", {
+    carrier: shipment.carrier_code,
+  });
   return data;
 }
 
@@ -345,18 +387,29 @@ export async function schedulePickup(
   slotStartIso: string,
 ) {
   const verdict = await rateLimit("shipping.pickup", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.pickup", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.pickup", verdict.reset_at);
   const shipment = await requireShipment(supabase, merchantId, shipmentId);
-  if (!shipment.awb) throw new CourierError("pickup_no_awb", "Book the AWB before requesting pickup");
+  if (!shipment.awb)
+    throw new CourierError(
+      "pickup_no_awb",
+      "Book the AWB before requesting pickup",
+    );
   const start = new Date(slotStartIso);
   if (Number.isNaN(start.getTime())) {
     throw new CourierError("pickup_slot_invalid", "Choose a valid pickup time");
   }
-  await adapterFor(shipment.carrier_code).schedulePickup(shipment.awb, start.toISOString());
+  await adapterFor(shipment.carrier_code).schedulePickup(
+    shipment.awb,
+    start.toISOString(),
+  );
   const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
   const { error } = await supabase
     .from("carrier_shipments")
-    .update({ pickup_slot_start: start.toISOString(), pickup_slot_end: end.toISOString() })
+    .update({
+      pickup_slot_start: start.toISOString(),
+      pickup_slot_end: end.toISOString(),
+    })
     .eq("id", shipmentId)
     .eq("merchant_id", merchantId);
   if (error) throw error;
@@ -377,13 +430,20 @@ export async function advanceShipment(
   signatureText?: string | null,
 ) {
   const verdict = await rateLimit("shipping.advance", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.advance", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.advance", verdict.reset_at);
   const shipment = await requireShipment(supabase, merchantId, shipmentId);
   if (!FLOW[shipment.status]?.includes(target)) {
-    throw new CourierError("shipment_bad_transition", "Cannot transition to this status");
+    throw new CourierError(
+      "shipment_bad_transition",
+      "Cannot transition to this status",
+    );
   }
   if (target === "delivered" && shipment.is_cod && !signatureText?.trim()) {
-    throw new CourierError("signature_required", "Signature required for COD delivery");
+    throw new CourierError(
+      "signature_required",
+      "Signature required for COD delivery",
+    );
   }
   if (signatureText?.trim()) {
     await supabase
@@ -399,7 +459,10 @@ export async function advanceShipment(
     eventId: `manual:${shipmentId}:${target}:${shipment.status}`,
   });
   if (result.applied === false && result.reason === "regression") {
-    throw new CourierError("shipment_bad_transition", "The courier already moved this parcel on");
+    throw new CourierError(
+      "shipment_bad_transition",
+      "The courier already moved this parcel on",
+    );
   }
   if (target === "delivered" && shipment.is_cod) {
     await logEvent(merchantId, shipmentId, "cod.signature_captured", {});
@@ -407,7 +470,11 @@ export async function advanceShipment(
   return requireShipment(supabase, merchantId, shipmentId);
 }
 
-export async function cancelShipment(supabase: Client, merchantId: string, shipmentId: string) {
+export async function cancelShipment(
+  supabase: Client,
+  merchantId: string,
+  shipmentId: string,
+) {
   const shipment = await requireShipment(supabase, merchantId, shipmentId);
   if (["delivered", "returned"].includes(shipment.status)) {
     throw new CourierError("shipment_final", "This parcel is already closed");
@@ -424,16 +491,30 @@ export async function cancelShipment(supabase: Client, merchantId: string, shipm
   return data;
 }
 
-export async function generateLabel(supabase: Client, merchantId: string, shipmentId: string) {
+export async function generateLabel(
+  supabase: Client,
+  merchantId: string,
+  shipmentId: string,
+) {
   const verdict = await rateLimit("shipping.label", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.label", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.label", verdict.reset_at);
   const shipment = await requireShipment(supabase, merchantId, shipmentId);
-  if (!shipment.awb) throw new CourierError("label_no_awb", "Cannot generate label without an AWB");
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  if (!shipment.awb)
+    throw new CourierError(
+      "label_no_awb",
+      "Cannot generate label without an AWB",
+    );
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const labelUrl = adapterFor(shipment.carrier_code).labelUrl(shipment.awb);
   const { data, error } = await supabaseAdmin
     .from("courier_labels")
-    .insert({ merchant_id: merchantId, shipment_id: shipmentId, label_url: labelUrl })
+    .insert({
+      merchant_id: merchantId,
+      shipment_id: shipmentId,
+      label_url: labelUrl,
+    })
     .select("*")
     .single();
   if (error) throw error;
@@ -474,19 +555,27 @@ export async function reconcileCod(
   reference: string | null,
 ) {
   const verdict = await rateLimit("shipping.cod", merchantId);
-  if (!verdict.allowed) throw new RateLimitError("shipping.cod", verdict.reset_at);
+  if (!verdict.allowed)
+    throw new RateLimitError("shipping.cod", verdict.reset_at);
   if (!Number.isInteger(reportedMinorInt) || reportedMinorInt < 0) {
-    throw new CourierError("cod_amount_invalid", "Remitted amount must be a whole number");
+    throw new CourierError(
+      "cod_amount_invalid",
+      "Remitted amount must be a whole number",
+    );
   }
   await requireShipment(supabase, merchantId, shipmentId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin.rpc("cod_reconcile", {
     _shipment_id: shipmentId,
     _reported_minor_int: reportedMinorInt,
     _reference: reference ?? undefined,
   });
   if (error) throw error;
-  const result = (data ?? {}) as { state?: string; variance_minor_int?: number };
+  const result = (data ?? {}) as {
+    state?: string;
+    variance_minor_int?: number;
+  };
   incr("framique_cod_reconcile_total", { state: result.state ?? "unknown" });
   return result;
 }
@@ -504,7 +593,11 @@ export async function listWebhookEvents(supabase: Client, merchantId: string) {
   return data ?? [];
 }
 
-export type IngestResult = { accepted: boolean; reason: string; status?: number };
+export type IngestResult = {
+  accepted: boolean;
+  reason: string;
+  status?: number;
+};
 
 /** Stable id for a rejected body so a carrier retry dedupes instead of piling up. */
 function rejectId(carrierCode: string, rawBody: string): string {
@@ -526,15 +619,23 @@ async function deadLetter(
   reason: string,
   payload: Record<string, unknown>,
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin.rpc("courier_dead_letter", {
     _carrier_code: carrierCode,
     _event_id: rejectId(carrierCode, rawBody),
     _reason: reason,
     _payload: payload as never,
   });
-  if (error) log("error", "courier.dead_letter_failed", { carrier: carrierCode, reason });
-  incr("framique_courier_webhook_total", { carrier: carrierCode, outcome: reason });
+  if (error)
+    log("error", "courier.dead_letter_failed", {
+      carrier: carrierCode,
+      reason,
+    });
+  incr("framique_courier_webhook_total", {
+    carrier: carrierCode,
+    outcome: reason,
+  });
 }
 
 /**
@@ -547,10 +648,15 @@ export async function ingestWebhook(
   signature: string | null,
 ): Promise<IngestResult> {
   return withSpan("courier.webhook", async () => {
-    const verdict = await rateLimit("courier.webhook", `courier:${carrierCode}`);
-    if (!verdict.allowed) return { accepted: false, reason: "rate_limited", status: 429 };
+    const verdict = await rateLimit(
+      "courier.webhook",
+      `courier:${carrierCode}`,
+    );
+    if (!verdict.allowed)
+      return { accepted: false, reason: "rate_limited", status: 429 };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data: carriers } = await supabaseAdmin
       .from("carriers")
       .select("id, merchant_id, code, webhook_secret")
@@ -563,7 +669,8 @@ export async function ingestWebhook(
 
     const match = await (async () => {
       for (const c of carriers) {
-        if (await verifySignature(c.webhook_secret, rawBody, signature)) return c;
+        if (await verifySignature(c.webhook_secret, rawBody, signature))
+          return c;
       }
       return null;
     })();
@@ -581,7 +688,12 @@ export async function ingestWebhook(
     }
     const event = adapterFor(carrierCode).parseEvent(payload);
     if (!event) {
-      await deadLetter(carrierCode, rawBody, "unparsed", payload as Record<string, unknown>);
+      await deadLetter(
+        carrierCode,
+        rawBody,
+        "unparsed",
+        payload as Record<string, unknown>,
+      );
       return { accepted: false, reason: "unsupported_event", status: 202 };
     }
 
@@ -594,8 +706,16 @@ export async function ingestWebhook(
       _payload: event.raw as never,
     });
     if (error) {
-      log("error", "courier.ingest_failed", { carrier: carrierCode, code: error.code });
-      await deadLetter(carrierCode, rawBody, "ingest_failed", event.raw as Record<string, unknown>);
+      log("error", "courier.ingest_failed", {
+        carrier: carrierCode,
+        code: error.code,
+      });
+      await deadLetter(
+        carrierCode,
+        rawBody,
+        "ingest_failed",
+        event.raw as Record<string, unknown>,
+      );
       return { accepted: false, reason: "ingest_failed", status: 500 };
     }
     const result = (data ?? {}) as { status?: string };
@@ -619,7 +739,8 @@ export async function replayWebhookEvent(
 ): Promise<{ outcome: string; reason: string | null }> {
   return withSpan("courier.webhook_replay", async () => {
     const verdict = await rateLimit("courier.replay", merchantId);
-    if (!verdict.allowed) throw new RateLimitError("courier.replay", verdict.reset_at);
+    if (!verdict.allowed)
+      throw new RateLimitError("courier.replay", verdict.reset_at);
 
     const { data: row } = await supabase
       .from("courier_webhook_events")
@@ -627,22 +748,28 @@ export async function replayWebhookEvent(
       .eq("id", eventId)
       .eq("merchant_id", merchantId)
       .maybeSingle();
-    if (!row) throw new CourierError("event_not_found", "Webhook event not found");
+    if (!row)
+      throw new CourierError("event_not_found", "Webhook event not found");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.rpc("courier_replay_event", {
       _id: eventId,
       _merchant_id: merchantId,
     });
     if (error) throw error;
     const result = (data ?? {}) as { outcome?: string; reason?: string };
-    incr("framique_courier_replay_total", { outcome: result.outcome ?? "unknown" });
+    incr("framique_courier_replay_total", {
+      outcome: result.outcome ?? "unknown",
+    });
     log("info", "courier.webhook_replayed", {
       merchantId,
       eventId,
       outcome: result.outcome ?? "unknown",
     });
-    return { outcome: result.outcome ?? "unknown", reason: result.reason ?? null };
+    return {
+      outcome: result.outcome ?? "unknown",
+      reason: result.reason ?? null,
+    };
   });
 }
-

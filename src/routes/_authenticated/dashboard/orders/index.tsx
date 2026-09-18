@@ -60,7 +60,10 @@ export const statusTone: Record<string, string> = {
   refunded: "bg-warning-soft text-warning-foreground",
 };
 
-const BADGE_TONE: Record<string, "neutral" | "success" | "warning" | "danger" | "info"> = {
+const BADGE_TONE: Record<
+  string,
+  "neutral" | "success" | "warning" | "danger" | "info"
+> = {
   pending: "neutral",
   payment_pending: "warning",
   confirmed: "info",
@@ -78,9 +81,16 @@ export const Route = createFileRoute("/_authenticated/dashboard/orders/")({
   head: () => ({
     meta: [
       { title: "Orders — Framique Admin" },
-      { name: "description", content: "Review incoming orders, payment methods and fulfilment status." },
+      {
+        name: "description",
+        content:
+          "Review incoming orders, payment methods and fulfilment status.",
+      },
       { property: "og:title", content: "Order management" },
-      { property: "og:description", content: "Track COD and mobile-payment orders in one queue." },
+      {
+        property: "og:description",
+        content: "Track COD and mobile-payment orders in one queue.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -119,9 +129,14 @@ const VIEWS = {
     en: "COD to confirm",
     bn: "সিওডি নিশ্চিত",
     match: (o: OrderRow) =>
-      o.payment_method === "cod" && ["pending", "payment_pending", "confirmed"].includes(o.status),
+      o.payment_method === "cod" &&
+      ["pending", "payment_pending", "confirmed"].includes(o.status),
   },
-  shipped: { en: "In transit", bn: "পথে", match: (o: OrderRow) => o.status === "shipped" },
+  shipped: {
+    en: "In transit",
+    bn: "পথে",
+    match: (o: OrderRow) => o.status === "shipped",
+  },
   returns: {
     en: "Returns",
     bn: "রিটার্ন",
@@ -130,7 +145,8 @@ const VIEWS = {
   today: {
     en: "Today",
     bn: "আজ",
-    match: (o: OrderRow) => new Date(o.created_at).toDateString() === new Date().toDateString(),
+    match: (o: OrderRow) =>
+      new Date(o.created_at).toDateString() === new Date().toDateString(),
   },
 } as const;
 type ViewKey = keyof typeof VIEWS;
@@ -144,7 +160,11 @@ function OrdersPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const bulkAdvance = useServerFn(bulkAdvanceOrders);
-  const list = useListState({ defaultSort: "created", defaultDir: "desc", pageSize: 25 });
+  const list = useListState({
+    defaultSort: "created",
+    defaultDir: "desc",
+    pageSize: 25,
+  });
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
 
@@ -169,7 +189,9 @@ function OrdersPage() {
   const view = (list.view in VIEWS ? list.view : "all") as ViewKey;
   const status = list.param("status") ?? "all";
   const payment = list.param("payment") ?? "all";
-  const paymentMethods = Array.from(new Set(rows.map((o) => o.payment_method))).sort();
+  const paymentMethods = Array.from(
+    new Set(rows.map((o) => o.payment_method)),
+  ).sort();
   const q = list.q.trim().toLowerCase();
 
   const filtered = rows.filter(
@@ -216,14 +238,27 @@ function OrdersPage() {
       const res = await bulkAdvance({ data: { orderIds: chosen, target } });
       if (res.failed)
         toast.warning(
-          t(`${res.moved} moved, ${res.failed} skipped`, `${res.moved}টি সরানো, ${res.failed}টি বাদ`),
+          t(
+            `${res.moved} moved, ${res.failed} skipped`,
+            `${res.moved}টি সরানো, ${res.failed}টি বাদ`,
+          ),
         );
-      else toast.success(t(`${res.moved} orders updated`, `${res.moved}টি অর্ডার আপডেট হয়েছে`));
+      else
+        toast.success(
+          t(
+            `${res.moved} orders updated`,
+            `${res.moved}টি অর্ডার আপডেট হয়েছে`,
+          ),
+        );
       setSelected(new Set());
-      await queryClient.invalidateQueries({ queryKey: ["orders", merchant?.id] });
+      await queryClient.invalidateQueries({
+        queryKey: ["orders", merchant?.id],
+      });
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : t("Bulk action failed", "বাল্ক অ্যাকশন ব্যর্থ"),
+        error instanceof Error
+          ? error.message
+          : t("Bulk action failed", "বাল্ক অ্যাকশন ব্যর্থ"),
       );
     } finally {
       setBusy(false);
@@ -237,7 +272,9 @@ function OrdersPage() {
       sortable: true,
       cell: (o) => (
         <>
-          <span className="fq-num font-medium text-foreground">{o.order_number}</span>
+          <span className="fq-num font-medium text-foreground">
+            {o.order_number}
+          </span>
           <span className="block text-xs fq-sub">
             {new Date(o.created_at).toLocaleDateString("en-BD")}
           </span>
@@ -255,7 +292,13 @@ function OrdersPage() {
         </>
       ),
     },
-    { key: "items", header: t("Items", "আইটেম"), numeric: true, sortable: true, cell: itemCount },
+    {
+      key: "items",
+      header: t("Items", "আইটেম"),
+      numeric: true,
+      sortable: true,
+      cell: itemCount,
+    },
     {
       key: "payment",
       header: t("Payment", "পেমেন্ট"),
@@ -266,13 +309,17 @@ function OrdersPage() {
       header: t("Total", "মোট"),
       numeric: true,
       sortable: true,
-      cell: (o) => <Money minor={Number(o.total_minor_int)} currency={o.currency_code} />,
+      cell: (o) => (
+        <Money minor={Number(o.total_minor_int)} currency={o.currency_code} />
+      ),
     },
     {
       key: "status",
       header: t("Status", "অবস্থা"),
       cell: (o) => (
-        <Badge tone={BADGE_TONE[o.status] ?? "neutral"}>{statusLabel[o.status] ?? o.status}</Badge>
+        <Badge tone={BADGE_TONE[o.status] ?? "neutral"}>
+          {statusLabel[o.status] ?? o.status}
+        </Badge>
       ),
     },
     {
@@ -280,7 +327,11 @@ function OrdersPage() {
       header: t("Shipment", "শিপমেন্ট"),
       cell: (o) => {
         const s = o.carrier_shipments?.[0];
-        return s?.awb ? <span className="fq-num text-xs">{s.awb}</span> : <span className="fq-sub">—</span>;
+        return s?.awb ? (
+          <span className="fq-num text-xs">{s.awb}</span>
+        ) : (
+          <span className="fq-sub">—</span>
+        );
       },
     },
   ];
@@ -288,7 +339,10 @@ function OrdersPage() {
   return (
     <Page
       title={t("Orders", "অর্ডার")}
-      description={t("Orders placed on your storefront.", "আপনার দোকানে দেওয়া অর্ডার।")}
+      description={t(
+        "Orders placed on your storefront.",
+        "আপনার দোকানে দেওয়া অর্ডার।",
+      )}
       actions={
         <Link to="/dashboard/draft-orders" className={btnGhost}>
           {t("Draft order", "ড্রাফট অর্ডার")}
@@ -300,7 +354,12 @@ function OrdersPage() {
           <>
             <select
               value={payment}
-              onChange={(e) => list.setParam("payment", e.target.value === "all" ? undefined : e.target.value)}
+              onChange={(e) =>
+                list.setParam(
+                  "payment",
+                  e.target.value === "all" ? undefined : e.target.value,
+                )
+              }
               aria-label={t("Payment method", "পেমেন্ট মাধ্যম")}
               className={`${inputClass} h-9 w-auto py-0 uppercase`}
             >
@@ -313,7 +372,12 @@ function OrdersPage() {
             </select>
             <select
               value={status}
-              onChange={(e) => list.setParam("status", e.target.value === "all" ? undefined : e.target.value)}
+              onChange={(e) =>
+                list.setParam(
+                  "status",
+                  e.target.value === "all" ? undefined : e.target.value,
+                )
+              }
               aria-label={t("Filter by status", "স্ট্যাটাস অনুযায়ী")}
               className={`${inputClass} h-9 w-auto py-0`}
             >
@@ -340,7 +404,10 @@ function OrdersPage() {
           type="search"
           value={list.q}
           onChange={(e) => list.setQ(e.target.value)}
-          placeholder={t("Search order, customer, city", "অর্ডার, ক্রেতা, শহর খুঁজুন")}
+          placeholder={t(
+            "Search order, customer, city",
+            "অর্ডার, ক্রেতা, শহর খুঁজুন",
+          )}
           aria-label={t("Search orders", "অর্ডার খুঁজুন")}
           className={`${inputClass} h-9 w-56 py-0`}
         />
@@ -353,8 +420,15 @@ function OrdersPage() {
         loading={isLoading}
         selected={selected}
         onToggle={toggle}
-        onToggleAll={(next) => setSelected(next ? new Set(paged.map((o) => o.id)) : new Set())}
-        onRowClick={(o) => navigate({ to: "/dashboard/orders/$orderId", params: { orderId: o.id } })}
+        onToggleAll={(next) =>
+          setSelected(next ? new Set(paged.map((o) => o.id)) : new Set())
+        }
+        onRowClick={(o) =>
+          navigate({
+            to: "/dashboard/orders/$orderId",
+            params: { orderId: o.id },
+          })
+        }
         rowActions={(o) => (
           <Link
             to="/dashboard/orders/$orderId"
@@ -379,7 +453,11 @@ function OrdersPage() {
               "সেভ করা ভিউ বদলান বা সার্চ মুছুন।",
             )}
             action={
-              <button type="button" className={btnGhost} onClick={() => list.setView("all")}>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => list.setView("all")}
+              >
                 {t("Show all orders", "সব অর্ডার দেখুন")}
               </button>
             }
@@ -388,13 +466,27 @@ function OrdersPage() {
       />
 
       <BulkBar count={selected.size} onClear={() => setSelected(new Set())}>
-        <button type="button" disabled={busy} onClick={() => runBulk("next")} className={btnPrimary}>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => runBulk("next")}
+          className={btnPrimary}
+        >
           {t("Advance to next step", "পরের ধাপে নিন")}
         </button>
-        <button type="button" disabled={busy} onClick={() => runBulk("shipped")} className={btnGhost}>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => runBulk("shipped")}
+          className={btnGhost}
+        >
           {t("Mark shipped", "শিপড করুন")}
         </button>
-        <button type="button" onClick={() => window.print()} className={btnGhost}>
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className={btnGhost}
+        >
           {t("Print", "প্রিন্ট")}
         </button>
       </BulkBar>

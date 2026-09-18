@@ -9,7 +9,13 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
   return currentMerchantId(db, userId);
 }
 
-const objectType = z.enum(["orders", "products", "customers", "product_events", "analytics_raw"]);
+const objectType = z.enum([
+  "orders",
+  "products",
+  "customers",
+  "product_events",
+  "analytics_raw",
+]);
 
 export const exportListFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -47,7 +53,9 @@ export const exportCreateFn = createServerFn({ method: "POST" })
 
 export const exportRetryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ jobId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ jobId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { runJob } = await import("./exports.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -56,7 +64,9 @@ export const exportRetryFn = createServerFn({ method: "POST" })
 
 export const exportDownloadFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ jobId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ jobId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { downloadJob } = await import("./exports.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -77,7 +87,9 @@ export const apiKeyCreateFn = createServerFn({ method: "POST" })
     z
       .object({
         name: z.string().trim().min(2).max(60),
-        scopes: z.array(z.enum(["orders.read", "products.write", "analytics.read"])).min(1),
+        scopes: z
+          .array(z.enum(["orders.read", "products.write", "analytics.read"]))
+          .min(1),
         env: z.enum(["test", "live"]),
       })
       .parse(d),
@@ -90,7 +102,9 @@ export const apiKeyCreateFn = createServerFn({ method: "POST" })
 
 export const apiKeyRevokeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ keyId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ keyId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { revokeKey } = await import("./api-keys.server");
     const merchantId = await scope(context.supabase, context.userId);

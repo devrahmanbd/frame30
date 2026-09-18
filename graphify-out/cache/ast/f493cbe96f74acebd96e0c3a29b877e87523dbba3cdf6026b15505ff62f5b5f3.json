@@ -1,1 +1,867 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "label": "owner-ops.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L1"}, {"id": "lib_owner_ops_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L18"}, {"id": "lib_owner_ops_server_ownererror", "label": "OwnerError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L20"}, {"id": "lib_owner_ops_server_ownererror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L21"}, {"id": "lib_owner_ops_server_gateoptions", "label": "GateOptions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L30"}, {"id": "lib_owner_ops_server_ownergate", "label": "ownerGate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L44"}, {"id": "lib_owner_ops_server_auditfilter", "label": "AuditFilter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L80"}, {"id": "lib_owner_ops_server_loadowneraudit", "label": "loadOwnerAudit()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L88"}, {"id": "lib_owner_ops_server_loadrevenue", "label": "loadRevenue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L132"}, {"id": "lib_owner_ops_server_suspensionrow", "label": "SuspensionRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L200"}, {"id": "lib_owner_ops_server_loadsuspensions", "label": "loadSuspensions()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L202"}, {"id": "lib_owner_ops_server_suspendmerchant", "label": "suspendMerchant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L229"}, {"id": "lib_owner_ops_server_reinstatemerchant", "label": "reinstateMerchant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L262"}, {"id": "lib_owner_ops_server_assertpaymentsnotfrozen", "label": "assertPaymentsNotFrozen()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L297"}, {"id": "lib_owner_ops_server_grantrow", "label": "GrantRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L318"}, {"id": "lib_owner_ops_server_grantstate", "label": "GrantState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L320"}, {"id": "lib_owner_ops_server_loadimpersonation", "label": "loadImpersonation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L328"}, {"id": "lib_owner_ops_server_requestimpersonation", "label": "requestImpersonation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L355"}, {"id": "lib_owner_ops_server_revokeimpersonation", "label": "revokeImpersonation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L385"}, {"id": "lib_owner_ops_server_useimpersonation", "label": "useImpersonation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L409"}, {"id": "lib_owner_ops_server_merchantconsentqueue", "label": "merchantConsentQueue()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L432"}, {"id": "lib_owner_ops_server_respondtoimpersonation", "label": "respondToImpersonation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L444"}, {"id": "lib_owner_ops_server_maprpcerror", "label": "mapRpcError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L454"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "supabase_types_loose_json", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_platform_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_platform_server_requireplatformadmin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_rate_limit_server_bucketname", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_cache_server_invalidate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "users_rahman_documents_frame30_src_lib_revenue_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_revenue_churnwindow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_revenue_revenuesnapshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_revenue_subscriptionrow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_ownererror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L20", "weight": 1.0}, {"source": "lib_owner_ops_server_ownererror", "target": "lib_owner_ops_server_ownererror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_gateoptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_ownergate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_auditfilter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_loadowneraudit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L88", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_loadrevenue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_suspensionrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_loadsuspensions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L202", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_suspendmerchant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L229", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_reinstatemerchant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L262", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_assertpaymentsnotfrozen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L297", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_grantrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L318", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_grantstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L320", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_grantstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L322", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_loadimpersonation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L328", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_requestimpersonation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L355", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_revokeimpersonation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L385", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_useimpersonation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L409", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_merchantconsentqueue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L432", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_respondtoimpersonation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L444", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "target": "lib_owner_ops_server_maprpcerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L454", "weight": 1.0}, {"source": "lib_owner_ops_server_loadowneraudit", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L93", "weight": 1.0}, {"source": "lib_owner_ops_server_loadrevenue", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L133", "weight": 1.0}, {"source": "lib_owner_ops_server_loadsuspensions", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L203", "weight": 1.0}, {"source": "lib_owner_ops_server_suspendmerchant", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L236", "weight": 1.0}, {"source": "lib_owner_ops_server_reinstatemerchant", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L268", "weight": 1.0}, {"source": "lib_owner_ops_server_assertpaymentsnotfrozen", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L298", "weight": 1.0}, {"source": "lib_owner_ops_server_loadimpersonation", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L329", "weight": 1.0}, {"source": "lib_owner_ops_server_requestimpersonation", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L360", "weight": 1.0}, {"source": "lib_owner_ops_server_revokeimpersonation", "target": "lib_owner_ops_server_ownergate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L386", "weight": 1.0}, {"source": "lib_owner_ops_server_useimpersonation", "target": "lib_owner_ops_server_maprpcerror", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L423", "weight": 1.0}, {"source": "lib_owner_ops_server_respondtoimpersonation", "target": "lib_owner_ops_server_maprpcerror", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L449", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_owner_ops_server_ownererror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L25"}, {"caller_nid": "lib_owner_ops_server_ownergate", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L50"}, {"caller_nid": "lib_owner_ops_server_ownergate", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L51"}, {"caller_nid": "lib_owner_ops_server_ownergate", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L53"}, {"caller_nid": "lib_owner_ops_server_loadowneraudit", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L89"}, {"caller_nid": "lib_owner_ops_server_loadowneraudit", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L89"}, {"caller_nid": "lib_owner_ops_server_loadowneraudit", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L90"}, {"caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L299"}, {"caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L310"}, {"caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L311"}, {"caller_nid": "lib_owner_ops_server_grantstate", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L324"}, {"caller_nid": "lib_owner_ops_server_grantstate", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L324"}, {"caller_nid": "lib_owner_ops_server_useimpersonation", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L415"}, {"caller_nid": "lib_owner_ops_server_useimpersonation", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L416"}, {"caller_nid": "lib_owner_ops_server_useimpersonation", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L417"}, {"caller_nid": "lib_owner_ops_server_useimpersonation", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L422"}, {"caller_nid": "lib_owner_ops_server_useimpersonation", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L425"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L433"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L433"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L433"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L433"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L433"}, {"caller_nid": "lib_owner_ops_server_merchantconsentqueue", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L440"}, {"caller_nid": "lib_owner_ops_server_respondtoimpersonation", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L445"}, {"caller_nid": "lib_owner_ops_server_respondtoimpersonation", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L450"}, {"caller_nid": "lib_owner_ops_server_maprpcerror", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts", "source_location": "L468"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "label": "owner-ops.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_owner_ops_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_owner_ops_server_ownererror",
+      "label": "OwnerError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_owner_ops_server_ownererror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_owner_ops_server_gateoptions",
+      "label": "GateOptions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_owner_ops_server_ownergate",
+      "label": "ownerGate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_owner_ops_server_auditfilter",
+      "label": "AuditFilter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "lib_owner_ops_server_loadowneraudit",
+      "label": "loadOwnerAudit()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "id": "lib_owner_ops_server_loadrevenue",
+      "label": "loadRevenue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_owner_ops_server_suspensionrow",
+      "label": "SuspensionRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L200"
+    },
+    {
+      "id": "lib_owner_ops_server_loadsuspensions",
+      "label": "loadSuspensions()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L202"
+    },
+    {
+      "id": "lib_owner_ops_server_suspendmerchant",
+      "label": "suspendMerchant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L229"
+    },
+    {
+      "id": "lib_owner_ops_server_reinstatemerchant",
+      "label": "reinstateMerchant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L262"
+    },
+    {
+      "id": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "label": "assertPaymentsNotFrozen()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L297"
+    },
+    {
+      "id": "lib_owner_ops_server_grantrow",
+      "label": "GrantRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L318"
+    },
+    {
+      "id": "lib_owner_ops_server_grantstate",
+      "label": "GrantState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L320"
+    },
+    {
+      "id": "lib_owner_ops_server_loadimpersonation",
+      "label": "loadImpersonation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "id": "lib_owner_ops_server_requestimpersonation",
+      "label": "requestImpersonation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L355"
+    },
+    {
+      "id": "lib_owner_ops_server_revokeimpersonation",
+      "label": "revokeImpersonation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L385"
+    },
+    {
+      "id": "lib_owner_ops_server_useimpersonation",
+      "label": "useImpersonation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L409"
+    },
+    {
+      "id": "lib_owner_ops_server_merchantconsentqueue",
+      "label": "merchantConsentQueue()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L432"
+    },
+    {
+      "id": "lib_owner_ops_server_respondtoimpersonation",
+      "label": "respondToImpersonation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L444"
+    },
+    {
+      "id": "lib_owner_ops_server_maprpcerror",
+      "label": "mapRpcError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L454"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "supabase_types_loose_json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_platform_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_platform_server_requireplatformadmin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_rate_limit_server_bucketname",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_cache_server_invalidate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_revenue_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_revenue_churnwindow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_revenue_revenuesnapshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_revenue_subscriptionrow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_ownererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_ownererror",
+      "target": "lib_owner_ops_server_ownererror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_gateoptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_auditfilter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_loadowneraudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_loadrevenue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_suspensionrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_loadsuspensions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_suspendmerchant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L229",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_reinstatemerchant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L297",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_grantrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L318",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_grantstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L320",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_grantstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L322",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_loadimpersonation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_requestimpersonation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_revokeimpersonation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L385",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_useimpersonation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L409",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_merchantconsentqueue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L432",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_respondtoimpersonation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L444",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "target": "lib_owner_ops_server_maprpcerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L454",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_loadowneraudit",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_loadrevenue",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_loadsuspensions",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_suspendmerchant",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L236",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_reinstatemerchant",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_loadimpersonation",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L329",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_requestimpersonation",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L360",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_revokeimpersonation",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_useimpersonation",
+      "target": "lib_owner_ops_server_maprpcerror",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L423",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_owner_ops_server_respondtoimpersonation",
+      "target": "lib_owner_ops_server_maprpcerror",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L449",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_owner_ops_server_ownererror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_ownergate",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_ownergate",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_ownergate",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_loadowneraudit",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_loadowneraudit",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_loadowneraudit",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_assertpaymentsnotfrozen",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_grantstate",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_grantstate",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_useimpersonation",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L415"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_useimpersonation",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L416"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_useimpersonation",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_useimpersonation",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L422"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_useimpersonation",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L425"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_merchantconsentqueue",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_respondtoimpersonation",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L445"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_respondtoimpersonation",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "lib_owner_ops_server_maprpcerror",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/owner-ops.server.ts",
+      "source_location": "L468"
+    }
+  ]
+}

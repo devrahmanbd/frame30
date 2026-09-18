@@ -42,12 +42,18 @@ export function normalizePath(input: string): string {
 }
 
 /** Indexes rules by normalised source; later rules win, so a re-rename is live. */
-export function buildRedirectMap(rules: RedirectRule[]): Map<string, RedirectRule> {
+export function buildRedirectMap(
+  rules: RedirectRule[],
+): Map<string, RedirectRule> {
   const map = new Map<string, RedirectRule>();
   for (const rule of rules) {
     const from = normalizePath(rule.from);
     if (rule.status === 301 && !rule.to) continue;
-    map.set(from, { ...rule, from, to: rule.to ? normalizePath(rule.to) : null });
+    map.set(from, {
+      ...rule,
+      from,
+      to: rule.to ? normalizePath(rule.to) : null,
+    });
   }
   return map;
 }
@@ -60,12 +66,18 @@ export const MAX_HOPS = 5;
  * so a merchant who renames twice never serves a redirect to a redirect, and a
  * cycle degrades to a plain 404 rather than an infinite loop.
  */
-export function resolveUrl(map: Map<string, RedirectRule>, path: string): UrlVerdict {
+export function resolveUrl(
+  map: Map<string, RedirectRule>,
+  path: string,
+): UrlVerdict {
   let current = normalizePath(path);
   const seen = new Set<string>([current]);
   for (let hop = 0; hop < MAX_HOPS; hop += 1) {
     const rule = map.get(current);
-    if (!rule) return hop === 0 ? { kind: "miss", status: 404 } : { kind: "redirect", status: 301, location: current };
+    if (!rule)
+      return hop === 0
+        ? { kind: "miss", status: 404 }
+        : { kind: "redirect", status: 301, location: current };
     if (rule.status === 410) return { kind: "gone", status: 410 };
     const next = rule.to!;
     if (seen.has(next)) return { kind: "miss", status: 404 };
@@ -80,7 +92,11 @@ export function resolveUrl(map: Map<string, RedirectRule>, path: string): UrlVer
  * stale hop rather than creating a cycle, which is why the caller is handed
  * both the new rule and the source it should delete.
  */
-export function slugChangeRule(basePath: string, oldSlug: string, newSlug: string): RedirectRule | null {
+export function slugChangeRule(
+  basePath: string,
+  oldSlug: string,
+  newSlug: string,
+): RedirectRule | null {
   const from = normalizePath(`${basePath}/${oldSlug}`);
   const to = normalizePath(`${basePath}/${newSlug}`);
   if (!oldSlug || !newSlug || from === to) return null;
@@ -88,7 +104,10 @@ export function slugChangeRule(basePath: string, oldSlug: string, newSlug: strin
 }
 
 /** The tombstone a permanent deletion creates. */
-export function tombstoneRule(basePath: string, slug: string): RedirectRule | null {
+export function tombstoneRule(
+  basePath: string,
+  slug: string,
+): RedirectRule | null {
   if (!slug) return null;
   return { from: normalizePath(`${basePath}/${slug}`), to: null, status: 410 };
 }
@@ -106,7 +125,11 @@ export type ListingState = {
   filtered?: boolean;
 };
 
-export type ListingVerdict = { status: 200 | 404; robots: string; reason: string };
+export type ListingVerdict = {
+  status: 200 | 404;
+  robots: string;
+  reason: string;
+};
 
 /**
  * Whether an empty listing is a missing page or simply an empty one.

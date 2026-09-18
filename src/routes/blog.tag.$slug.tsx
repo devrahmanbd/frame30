@@ -9,28 +9,45 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { z } from "zod";
 import { blogArchiveFn } from "@/lib/blog-taxonomy.functions";
-import { archiveHead, breadcrumbJsonLd, listingJsonLd, termArchivePath } from "@/lib/blog-taxonomy";
+import {
+  archiveHead,
+  breadcrumbJsonLd,
+  listingJsonLd,
+  termArchivePath,
+} from "@/lib/blog-taxonomy";
 import { useLang } from "@/lib/i18n";
 import { BlogArchiveTheme } from "@/components/store/BlogArchiveTheme";
 
 export const Route = createFileRoute("/blog/tag/$slug")({
-  validateSearch: z.object({ page: z.coerce.number().int().min(1).max(500).optional() }),
+  validateSearch: z.object({
+    page: z.coerce.number().int().min(1).max(500).optional(),
+  }),
   loaderDeps: ({ search }) => ({ page: search.page ?? 1 }),
   loader: async ({ params, deps }) => {
-    const data = await blogArchiveFn({ data: { kind: "tag", slug: params.slug, page: deps.page } });
+    const data = await blogArchiveFn({
+      data: { kind: "tag", slug: params.slug, page: deps.page },
+    });
     if (!data) throw notFound();
     return data;
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Tag not found — Framique" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Tag not found — Framique" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const { term, paging } = loaderData;
     const basePath = termArchivePath("tag", term.slug);
     const { meta, links } = archiveHead({
       basePath,
       titleEn: term.meta_title ?? `${term.name_en ?? term.name} articles`,
-      description: term.meta_description ?? term.description ?? `Articles tagged ${term.name}.`,
+      description:
+        term.meta_description ??
+        term.description ??
+        `Articles tagged ${term.name}.`,
       paging,
       indexable: term.robots_index !== false,
       imageUrl: term.cover_image_url ?? null,
@@ -46,7 +63,10 @@ export const Route = createFileRoute("/blog/tag/$slug")({
             listingJsonLd({
               path: basePath,
               name: term.name,
-              articles: loaderData.articles.map((a) => ({ slug: a.slug, title: a.title })),
+              articles: loaderData.articles.map((a) => ({
+                slug: a.slug,
+                title: a.title,
+              })),
               paging,
             }),
           ),
@@ -71,8 +91,13 @@ function MissingTag() {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-2xl px-4 py-16 text-center">
-      <h1 className="font-bangla-display text-2xl font-semibold">{t("Tag not found", "ট্যাগ পাওয়া যায়নি")}</h1>
-      <Link to="/blog" className="mt-4 inline-flex min-h-11 items-center justify-center text-sm text-primary underline">
+      <h1 className="font-bangla-display text-2xl font-semibold">
+        {t("Tag not found", "ট্যাগ পাওয়া যায়নি")}
+      </h1>
+      <Link
+        to="/blog"
+        className="mt-4 inline-flex min-h-11 items-center justify-center text-sm text-primary underline"
+      >
         {t("Browse the blog", "ব্লগ দেখুন")}
       </Link>
     </main>
@@ -95,7 +120,10 @@ function TagArchive() {
       }}
       header={
         <>
-          <nav aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")} className="mb-4 text-xs text-muted-foreground">
+          <nav
+            aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
+            className="mb-4 text-xs text-muted-foreground"
+          >
             <Link to="/blog" className="underline">
               {t("Blog", "ব্লগ")}
             </Link>
@@ -103,12 +131,19 @@ function TagArchive() {
             <span aria-current="page">#{term.name}</span>
           </nav>
           <header className="mb-8 border-b border-border pb-6">
-            <h1 className="font-bangla-display text-3xl font-semibold">#{term.name}</h1>
+            <h1 className="font-bangla-display text-3xl font-semibold">
+              #{term.name}
+            </h1>
             {term.description ? (
-              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{term.description}</p>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                {term.description}
+              </p>
             ) : null}
             <p className="mt-1 text-xs text-muted-foreground">
-              {t(`${data.paging.total} articles`, `${data.paging.total}টি লেখা`)}
+              {t(
+                `${data.paging.total} articles`,
+                `${data.paging.total}টি লেখা`,
+              )}
             </p>
           </header>
         </>

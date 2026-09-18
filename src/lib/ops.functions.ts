@@ -9,7 +9,12 @@ const COMPONENT_STATES = [
   "major_outage",
   "maintenance",
 ] as const;
-const INCIDENT_STATUSES = ["investigating", "identified", "monitoring", "resolved"] as const;
+const INCIDENT_STATUSES = [
+  "investigating",
+  "identified",
+  "monitoring",
+  "resolved",
+] as const;
 
 export const opsDeskFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -25,7 +30,12 @@ export const opsDeskFn = createServerFn({ method: "GET" })
 export const opsReplayFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), source: z.enum(["payments", "courier"]) }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        source: z.enum(["payments", "courier"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { replayDeadLetter } = await import("./ops.server");
@@ -102,7 +112,12 @@ export const opsIncidentUpdateFn = createServerFn({ method: "POST" })
 export const opsComponentStateFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ key: z.string().trim().min(1).max(40), state: z.enum(COMPONENT_STATES) }).parse(d),
+    z
+      .object({
+        key: z.string().trim().min(1).max(40),
+        state: z.enum(COMPONENT_STATES),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setComponentState } = await import("./ops.server");
@@ -110,7 +125,9 @@ export const opsComponentStateFn = createServerFn({ method: "POST" })
   });
 
 /** Public status snapshot: unauthenticated, cached, public incidents only. */
-export const opsPublicStatusFn = createServerFn({ method: "GET" }).handler(async () => {
-  const { publicStatus } = await import("./ops.server");
-  return publicStatus();
-});
+export const opsPublicStatusFn = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { publicStatus } = await import("./ops.server");
+    return publicStatus();
+  },
+);

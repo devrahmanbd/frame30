@@ -18,7 +18,9 @@ async function main() {
   const dryRun = args.includes("--dry-run");
 
   const merchantsArg = args.find((a) => a.startsWith("--merchants="));
-  const merchantLimit = merchantsArg ? parseInt(merchantsArg.split("=")[1], 10) : 50;
+  const merchantLimit = merchantsArg
+    ? parseInt(merchantsArg.split("=")[1], 10)
+    : 50;
 
   const ttlArg = args.find((a) => a.startsWith("--ttl="));
   const ttlSeconds = ttlArg ? parseInt(ttlArg.split("=")[1], 10) : 3600;
@@ -26,7 +28,9 @@ async function main() {
   if (!isJson) {
     console.log("=".repeat(80));
     console.log("Framique Redis Cache Pre-Warming Worker (Phase 6.3)");
-    console.log(`Merchant Limit: ${merchantLimit} stores | TTL: ${ttlSeconds}s`);
+    console.log(
+      `Merchant Limit: ${merchantLimit} stores | TTL: ${ttlSeconds}s`,
+    );
     console.log("=".repeat(80));
   }
 

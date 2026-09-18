@@ -1,1 +1,249 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "label": "Reveal.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L1"}, {"id": "motion_reveal_revealprops", "label": "RevealProps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L28"}, {"id": "motion_reveal_translate", "label": "translate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L42"}, {"id": "motion_reveal_reveal", "label": "Reveal()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L57"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_policy_motion_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_policy_allowstransform", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_policy_entranceduration", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_policy_motionintent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "users_rahman_documents_frame30_src_lib_motion_runtime_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_runtime_releasemotionbudget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_runtime_useinview", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_runtime_usemotionid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_runtime_usemotionintent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "lib_motion_runtime_withmotionbudget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "motion_reveal_revealprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "motion_reveal_translate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx", "target": "motion_reveal_reveal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L57", "weight": 1.0}, {"source": "motion_reveal_reveal", "target": "motion_reveal_translate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L130", "weight": 1.0}], "raw_calls": [{"caller_nid": "motion_reveal_reveal", "callee": "useMotionIntent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L68"}, {"caller_nid": "motion_reveal_reveal", "callee": "useMotionId", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L70"}, {"caller_nid": "motion_reveal_reveal", "callee": "useInView", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L71"}, {"caller_nid": "motion_reveal_reveal", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L72"}, {"caller_nid": "motion_reveal_reveal", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L73"}, {"caller_nid": "motion_reveal_reveal", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L75"}, {"caller_nid": "motion_reveal_reveal", "callee": "entranceDuration", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L103"}, {"caller_nid": "motion_reveal_reveal", "callee": "allowsTransform", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx", "source_location": "L104"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "label": "Reveal.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "motion_reveal_revealprops",
+      "label": "RevealProps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "motion_reveal_translate",
+      "label": "translate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "motion_reveal_reveal",
+      "label": "Reveal()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L57"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_policy_motion_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_policy_allowstransform",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_policy_entranceduration",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_policy_motionintent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_motion_runtime_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_runtime_releasemotionbudget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_runtime_useinview",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_runtime_usemotionid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_runtime_usemotionintent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "lib_motion_runtime_withmotionbudget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "motion_reveal_revealprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "motion_reveal_translate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_motion_reveal_tsx",
+      "target": "motion_reveal_reveal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "motion_reveal_reveal",
+      "target": "motion_reveal_translate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L130",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useMotionIntent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useMotionId",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useInView",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "entranceDuration",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "motion_reveal_reveal",
+      "callee": "allowsTransform",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/motion/Reveal.tsx",
+      "source_location": "L104"
+    }
+  ]
+}

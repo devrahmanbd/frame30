@@ -32,7 +32,11 @@ export const providersListFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listCredentials } = await import("./provider-gate.server");
-    return listCredentials(context.supabase, await scope(context.supabase, context.userId), context.userId);
+    return listCredentials(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+    );
   });
 
 export const providerSaveEvidenceFn = createServerFn({ method: "POST" })
@@ -48,11 +52,16 @@ export const providerSaveEvidenceFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { saveEvidence } = await import("./provider-gate.server");
-    return saveEvidence(context.supabase, await scope(context.supabase, context.userId), context.userId, {
-      provider: data.provider,
-      checklist: data.checklist,
-      providerRef: data.providerRef ?? null,
-    });
+    return saveEvidence(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+      {
+        provider: data.provider,
+        checklist: data.checklist,
+        providerRef: data.providerRef ?? null,
+      },
+    );
   });
 
 export const providerSaveSecretsFn = createServerFn({ method: "POST" })
@@ -67,7 +76,12 @@ export const providerSaveSecretsFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { saveSecrets } = await import("./provider-gate.server");
-    return saveSecrets(context.supabase, await scope(context.supabase, context.userId), context.userId, data);
+    return saveSecrets(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+      data,
+    );
   });
 
 export const providerSubmitFn = createServerFn({ method: "POST" })
@@ -85,7 +99,9 @@ export const providerSubmitFn = createServerFn({ method: "POST" })
 
 export const providerHistoryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ credentialId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ credentialId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { credentialHistory } = await import("./provider-gate.server");
     return credentialHistory(
@@ -102,7 +118,15 @@ export const providerDecideFn = createServerFn({ method: "POST" })
     z
       .object({
         credentialId: z.string().uuid(),
-        decision: z.enum(["in_review", "approved", "changes_requested", "rejected", "live", "suspended", "revoked"]),
+        decision: z.enum([
+          "in_review",
+          "approved",
+          "changes_requested",
+          "rejected",
+          "live",
+          "suspended",
+          "revoked",
+        ]),
         note: z.string().trim().max(500).nullable().optional(),
       })
       .parse(d),
@@ -129,7 +153,11 @@ export const payoutsListFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listPayouts } = await import("./payouts.server");
-    return listPayouts(context.supabase, await scope(context.supabase, context.userId), context.userId);
+    return listPayouts(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+    );
   });
 
 export const payoutAccountAddFn = createServerFn({ method: "POST" })
@@ -152,7 +180,12 @@ export const payoutAccountAddFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { addAccount } = await import("./payouts.server");
-    return addAccount(context.supabase, await scope(context.supabase, context.userId), context.userId, data);
+    return addAccount(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+      data,
+    );
   });
 
 export const payoutRequestFn = createServerFn({ method: "POST" })
@@ -194,11 +227,18 @@ export const payoutDecideFn = createServerFn({ method: "POST" })
 
 export const payoutCancelFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ payoutId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ payoutId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     const { cancelPayout, listPayouts } = await import("./payouts.server");
-    await cancelPayout(context.supabase, merchantId, context.userId, data.payoutId);
+    await cancelPayout(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.payoutId,
+    );
     return listPayouts(context.supabase, merchantId, context.userId);
   });
 
@@ -208,20 +248,32 @@ export const currencyStateFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { currencyState } = await import("./currency-gate.server");
-    return currencyState(context.supabase, await scope(context.supabase, context.userId), context.userId);
+    return currencyState(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+    );
   });
 
 export const currencyConsentFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { recordConsent } = await import("./currency-gate.server");
-    return recordConsent(context.supabase, await scope(context.supabase, context.userId), context.userId);
+    return recordConsent(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      context.userId,
+    );
   });
 
 export const currencyModeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ mode: z.enum(["bdt_locked", "pilot_assessing", "usd_enabled"]) }).parse(d),
+    z
+      .object({
+        mode: z.enum(["bdt_locked", "pilot_assessing", "usd_enabled"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setCurrencyMode } = await import("./currency-gate.server");

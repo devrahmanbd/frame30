@@ -7,13 +7,13 @@ on:
     branches: [main, develop]
   schedule:
     # Run integration tests daily at 3 AM UTC
-    - cron: '0 3 * * *'
+    - cron: "0 3 * * *"
   workflow_dispatch:
     inputs:
       integration_scope:
-        description: 'Integration test scope'
+        description: "Integration test scope"
         required: false
-        default: 'full'
+        default: "full"
         type: choice
         options:
           - smoke
@@ -21,19 +21,19 @@ on:
           - full
           - stress
       agent_count:
-        description: 'Maximum agent count for testing'
+        description: "Maximum agent count for testing"
         required: false
-        default: '8'
+        default: "8"
       test_duration:
-        description: 'Test duration in minutes'
+        description: "Test duration in minutes"
         required: false
-        default: '10'
+        default: "10"
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: "20"
   MAX_PARALLEL_AGENTS: 8
   DEFAULT_TIMEOUT: 300000
-  INTEGRATION_DB_PATH: './integration-test.db'
+  INTEGRATION_DB_PATH: "./integration-test.db"
 
 jobs:
   # Setup integration test environment
@@ -52,7 +52,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -68,10 +68,10 @@ jobs:
         run: |
           TEST_SESSION="integration-$(date +%Y%m%d-%H%M%S)-${{ github.sha }}"
           echo "test-session-id=$TEST_SESSION" >> $GITHUB_OUTPUT
-          
+
           # Define agent test matrix based on input scope
           SCOPE="${{ github.event.inputs.integration_scope || 'full' }}"
-          
+
           if [ "$SCOPE" = "smoke" ]; then
             AGENT_MATRIX='{"include":[{"type":"coder","count":2},{"type":"tester","count":1}]}'
           elif [ "$SCOPE" = "core" ]; then
@@ -82,9 +82,9 @@ jobs:
             # Full scope
             AGENT_MATRIX='{"include":[{"type":"coder","count":4},{"type":"tester","count":3},{"type":"reviewer","count":2},{"type":"planner","count":2},{"type":"researcher","count":1},{"type":"backend-dev","count":1},{"type":"performance-benchmarker","count":1}]}'
           fi
-          
+
           echo "agent-matrix=$AGENT_MATRIX" >> $GITHUB_OUTPUT
-          
+
           # Define test scenarios
           TEST_SCENARIOS='["coordination","memory-sharing","task-orchestration","fault-tolerance","performance"]'
           echo "test-scenarios=$TEST_SCENARIOS" >> $GITHUB_OUTPUT
@@ -92,9 +92,9 @@ jobs:
       - name: Create integration test database
         run: |
           echo "🗄️ Creating integration test database..."
-          
+
           mkdir -p integration-test-data
-          
+
           # Initialize SQLite database for integration tests
           sqlite3 ${{ env.INTEGRATION_DB_PATH }} << 'EOF'
           CREATE TABLE IF NOT EXISTS test_sessions (
@@ -103,7 +103,7 @@ jobs:
             status TEXT DEFAULT 'pending',
             metadata TEXT
           );
-          
+
           CREATE TABLE IF NOT EXISTS agent_tests (
             id TEXT PRIMARY KEY,
             session_id TEXT,
@@ -115,7 +115,7 @@ jobs:
             results TEXT,
             FOREIGN KEY (session_id) REFERENCES test_sessions (id)
           );
-          
+
           CREATE TABLE IF NOT EXISTS integration_scenarios (
             id TEXT PRIMARY KEY,
             session_id TEXT,
@@ -127,11 +127,11 @@ jobs:
             error_details TEXT,
             FOREIGN KEY (session_id) REFERENCES test_sessions (id)
           );
-          
+
           INSERT INTO test_sessions (id, metadata) VALUES 
           ('${{ steps.setup.outputs.test-session-id }}', '{"scope": "${{ github.event.inputs.integration_scope || 'full' }}", "agent_count": "${{ github.event.inputs.agent_count || '8' }}"}');
           EOF
-          
+
           cp ${{ env.INTEGRATION_DB_PATH }} integration-test-data/
 
       - name: Upload integration test setup
@@ -157,7 +157,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -171,11 +171,11 @@ jobs:
       - name: Initialize swarm for agent testing
         run: |
           echo "🚀 Initializing swarm for ${{ matrix.type }} agents (count: ${{ matrix.count }})"
-          
+
           # Start background swarm process
           timeout 300s node -e "
           const { spawn } = require('child_process');
-          
+
           async function testAgentCoordination() {
             console.log('Starting agent coordination test...');
             
@@ -195,14 +195,14 @@ jobs:
             console.log('Coordination test completed successfully');
             return true;
           }
-          
+
           testAgentCoordination().catch(console.error);
           " > coordination-test-${{ matrix.type }}.log 2>&1 || true
 
       - name: Test inter-agent communication
         run: |
           echo "📡 Testing inter-agent communication for ${{ matrix.type }}"
-          
+
           node -e "
           async function testCommunication() {
             const results = {
@@ -227,14 +227,14 @@ jobs:
             console.log('Communication test results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('communication-results-${{ matrix.type }}.json', JSON.stringify(results, null, 2));
           }
-          
+
           testCommunication().catch(console.error);
           "
 
       - name: Test task distribution
         run: |
           echo "📋 Testing task distribution for ${{ matrix.type }}"
-          
+
           node -e "
           async function testTaskDistribution() {
             const results = {
@@ -279,7 +279,7 @@ jobs:
             console.log('Task distribution results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('task-distribution-${{ matrix.type }}.json', JSON.stringify(results, null, 2));
           }
-          
+
           testTaskDistribution().catch(console.error);
           "
 
@@ -306,7 +306,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -320,7 +320,7 @@ jobs:
       - name: Test shared memory operations
         run: |
           echo "🧠 Testing shared memory operations..."
-          
+
           node -e "
           async function testSharedMemory() {
             const results = {
@@ -363,14 +363,14 @@ jobs:
             console.log('Memory integration results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('memory-integration-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testSharedMemory().catch(console.error);
           "
 
       - name: Test cross-agent memory synchronization
         run: |
           echo "🔄 Testing cross-agent memory synchronization..."
-          
+
           node -e "
           async function testMemorySync() {
             const results = {
@@ -402,7 +402,7 @@ jobs:
             console.log('Memory synchronization results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('memory-sync-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testMemorySync().catch(console.error);
           "
 
@@ -428,7 +428,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -436,7 +436,7 @@ jobs:
       - name: Test agent failure recovery
         run: |
           echo "🔧 Testing agent failure recovery..."
-          
+
           node -e "
           async function testFailureRecovery() {
             const results = {
@@ -487,14 +487,14 @@ jobs:
             console.log('Fault tolerance results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('fault-tolerance-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testFailureRecovery().catch(console.error);
           "
 
       - name: Test system resilience
         run: |
           echo "🏋️ Testing system resilience under load..."
-          
+
           node -e "
           async function testResilience() {
             const results = {
@@ -530,7 +530,7 @@ jobs:
             console.log('Resilience test results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('resilience-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testResilience().catch(console.error);
           "
 
@@ -556,7 +556,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
@@ -564,7 +564,7 @@ jobs:
       - name: Test multi-agent performance
         run: |
           echo "⚡ Testing multi-agent performance..."
-          
+
           node -e "
           async function testPerformance() {
             const results = {
@@ -613,14 +613,14 @@ jobs:
             console.log('Performance integration results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('performance-integration-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testPerformance().catch(console.error);
           "
 
       - name: Test scalability limits
         run: |
           echo "📈 Testing scalability limits..."
-          
+
           node -e "
           async function testScalability() {
             const results = {
@@ -671,7 +671,7 @@ jobs:
             console.log('Scalability test results:', JSON.stringify(results, null, 2));
             require('fs').writeFileSync('scalability-results.json', JSON.stringify(results, null, 2));
           }
-          
+
           testScalability().catch(console.error);
           "
 
@@ -707,13 +707,13 @@ jobs:
       - name: Generate comprehensive report
         run: |
           echo "📊 Generating integration test report..."
-          
+
           mkdir -p final-report
-          
+
           node -e "
           const fs = require('fs');
           const path = require('path');
-          
+
           async function generateReport() {
             const report = {
               sessionId: '${{ needs.integration-setup.outputs.test-session-id }}',
@@ -793,37 +793,37 @@ jobs:
             // Generate markdown report
             const markdown = \`
           # 🔗 Cross-Agent Integration Test Report
-          
+
           **Session ID:** \${report.sessionId}
           **Timestamp:** \${report.timestamp}
           **Overall Status:** \${report.summary.overallSuccess ? '✅ PASSED' : '❌ FAILED'}
-          
+
           ## Summary
-          
+
           - **Total Tests:** \${report.summary.totalTests}
           - **Passed:** \${report.summary.passedTests}
           - **Failed:** \${report.summary.failedTests}
           - **Success Rate:** \${((report.summary.passedTests / report.summary.totalTests) * 100).toFixed(1)}%
-          
+
           ## Test Results
-          
+
           | Component | Status | Details |
           |-----------|--------|---------|
           | Agent Coordination | \${report.testResults.coordination.status === 'passed' ? '✅' : '❌'} | Multi-agent communication and task distribution |
           | Memory Integration | \${report.testResults.memory.status === 'passed' ? '✅' : '❌'} | Shared memory operations and synchronization |
           | Fault Tolerance | \${report.testResults.faultTolerance.status === 'passed' ? '✅' : '❌'} | Failure recovery and system resilience |
           | Performance | \${report.testResults.performance.status === 'passed' ? '✅' : '❌'} | Multi-agent performance and scalability |
-          
+
           ## Recommendations
-          
+
           \${report.recommendations.length > 0 ? report.recommendations.map(r => \`- \${r}\`).join('\\n') : '- All integration tests passed successfully!'}
-          
+
           ## Next Steps
-          
+
           1. Review detailed test artifacts
           2. Address any failed test scenarios
           3. Monitor integration performance in production
-          
+
           ---
           *Generated by Cross-Agent Integration Test Pipeline*
           \`;
@@ -834,7 +834,7 @@ jobs:
             console.log(\`Overall status: \${report.summary.overallSuccess ? 'SUCCESS' : 'FAILURE'}\`);
             console.log(\`Tests passed: \${report.summary.passedTests}/\${report.summary.totalTests}\`);
           }
-          
+
           generateReport().catch(console.error);
           "
 
@@ -869,7 +869,7 @@ jobs:
       - name: Set integration test status
         run: |
           echo "🎯 Integration test pipeline completed"
-          
+
           # Check if critical tests passed
           if [ -f "final-report/integration-test-report.json" ]; then
             OVERALL_SUCCESS=$(node -e "console.log(JSON.parse(require('fs').readFileSync('final-report/integration-test-report.json', 'utf8')).summary.overallSuccess)")

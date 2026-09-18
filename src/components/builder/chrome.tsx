@@ -53,7 +53,10 @@ function AnnouncementBar({ str, bool, int }: WidgetCtx) {
 
   useEffect(() => {
     if (rotateMs < 1000 || messages.length < 2) return;
-    const id = window.setInterval(() => setIndex((i) => (i + 1) % messages.length), rotateMs);
+    const id = window.setInterval(
+      () => setIndex((i) => (i + 1) % messages.length),
+      rotateMs,
+    );
     return () => window.clearInterval(id);
   }, [rotateMs, messages.length]);
 
@@ -96,7 +99,11 @@ function UtilityBar({ str, bool }: WidgetCtx) {
       <p className="min-w-0 truncate">{str("note")}</p>
       <nav aria-label="Utility" className="flex items-center gap-3">
         {links.map((link) => (
-          <a key={link.label} href={link.href || "#"} className="hover:text-foreground">
+          <a
+            key={link.label}
+            href={link.href || "#"}
+            className="hover:text-foreground"
+          >
             {link.label}
           </a>
         ))}
@@ -124,7 +131,11 @@ function TrustBar({ str }: WidgetCtx) {
           </span>
           <span className="min-w-0">
             <span className="block text-sm font-medium">{item.title}</span>
-            {item.body && <span className="block text-xs text-muted-foreground">{item.body}</span>}
+            {item.body && (
+              <span className="block text-xs text-muted-foreground">
+                {item.body}
+              </span>
+            )}
           </span>
         </li>
       ))}
@@ -141,7 +152,11 @@ function PaymentIcons({ str, Heading }: WidgetCtx) {
   if (marks.length === 0) return null;
   return (
     <section className="space-y-2">
-      {str("heading") && <Heading className="text-xs fq-caps text-muted-foreground">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="text-xs fq-caps text-muted-foreground">
+          {str("heading")}
+        </Heading>
+      )}
       <ul className="flex flex-wrap items-center gap-2">
         {marks.map((mark) => (
           <li
@@ -161,10 +176,18 @@ function Notice({ str, bool }: WidgetCtx) {
   if (dismissed || !str("text")) return null;
   const tone = TONE_CLASS[str("tone")] ?? TONE_CLASS.info;
   return (
-    <div role="status" className={`flex items-start gap-3 rounded-fq-md px-4 py-3 text-sm ${tone}`}>
+    <div
+      role="status"
+      className={`flex items-start gap-3 rounded-fq-md px-4 py-3 text-sm ${tone}`}
+    >
       <p className="min-w-0 flex-1">{str("text")}</p>
       {bool("dismissible") && (
-        <button type="button" onClick={() => setDismissed(true)} aria-label="Dismiss notice" className="shrink-0">
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss notice"
+          className="shrink-0"
+        >
           ×
         </button>
       )}
@@ -178,10 +201,21 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
   const columns = int("columns", 4, 1, 4);
   const label = str("label") || "Shop";
   const gridClass =
-    columns === 1 ? "grid-cols-1" : columns === 2 ? "sm:grid-cols-2" : columns === 3 ? "sm:grid-cols-3" : "sm:grid-cols-4";
+    columns === 1
+      ? "grid-cols-1"
+      : columns === 2
+        ? "sm:grid-cols-2"
+        : columns === 3
+          ? "sm:grid-cols-3"
+          : "sm:grid-cols-4";
 
   if (data?.pending) {
-    return <div className="h-9 w-24 animate-pulse rounded-fq-md bg-muted" aria-hidden="true" />;
+    return (
+      <div
+        className="h-9 w-24 animate-pulse rounded-fq-md bg-muted"
+        aria-hidden="true"
+      />
+    );
   }
   return (
     <div className="relative" onMouseLeave={() => setOpen(false)}>
@@ -197,15 +231,27 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
       </button>
       {open && (
         <div className="absolute left-0 top-full z-30 mt-1 w-[min(90vw,48rem)] rounded-fq-lg border border-border bg-card p-4 shadow-md">
-          <nav aria-label={label} className={`grid grid-cols-1 gap-4 ${gridClass}`}>
+          <nav
+            aria-label={label}
+            className={`grid grid-cols-1 gap-4 ${gridClass}`}
+          >
             {rows.slice(0, int("limit", 8, 1, 24)).map((row) => (
               <div key={row.id}>
-                <a href={row.href ?? "#"} className="block text-sm font-semibold hover:underline">
+                <a
+                  href={row.href ?? "#"}
+                  className="block text-sm font-semibold hover:underline"
+                >
                   {row.title}
                 </a>
-                {row.subtitle && <p className="mt-1 text-xs text-muted-foreground">{row.subtitle}</p>}
+                {row.subtitle && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {row.subtitle}
+                  </p>
+                )}
                 {typeof row.count === "number" && (
-                  <p className="mt-1 text-xs text-muted-foreground">{row.count}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {row.count}
+                  </p>
                 )}
               </div>
             ))}
@@ -221,11 +267,16 @@ function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {
   const limit = int("limit", 12, 1, 24);
   return (
     <section className="space-y-2">
-      {str("heading") && <Heading className="text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="text-lg font-semibold">{str("heading")}</Heading>
+      )}
       {data?.pending || rows === undefined ? (
         <ul className="flex gap-3 overflow-hidden" aria-hidden="true">
           {Array.from({ length: 6 }, (_, i) => (
-            <li key={i} className="h-9 w-28 shrink-0 animate-pulse rounded-fq-md bg-muted" />
+            <li
+              key={i}
+              className="h-9 w-28 shrink-0 animate-pulse rounded-fq-md bg-muted"
+            />
           ))}
         </ul>
       ) : (
@@ -248,14 +299,19 @@ function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {
 
 function FooterSitemap({ str }: WidgetCtx) {
   const columns = [1, 2, 3, 4]
-    .map((n) => ({ title: str(`c${n}Title`), links: parseLinkList(str(`c${n}Links`)) }))
+    .map((n) => ({
+      title: str(`c${n}Title`),
+      links: parseLinkList(str(`c${n}Links`)),
+    }))
     .filter((col) => col.title || col.links.length > 0);
   if (columns.length === 0) return null;
   return (
     <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
       {columns.map((col) => (
         <div key={col.title}>
-          <p className="text-xs font-semibold fq-caps text-muted-foreground">{col.title}</p>
+          <p className="text-xs font-semibold fq-caps text-muted-foreground">
+            {col.title}
+          </p>
           <ul className="mt-2 space-y-1">
             {col.links.map((link) => (
               <li key={`${col.title}-${link.label}`}>
@@ -271,7 +327,12 @@ function FooterSitemap({ str }: WidgetCtx) {
   );
 }
 
-type Suggestion = { id: string; title: string; slug: string; imageUrl: string | null };
+type Suggestion = {
+  id: string;
+  title: string;
+  slug: string;
+  imageUrl: string | null;
+};
 
 function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
   const [open, setOpen] = useState(false);
@@ -291,7 +352,9 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
     const ticket = ++seq.current;
     setPending(true);
     const id = window.setTimeout(() => {
-      void searchStorefrontFn({ data: { slug: storeSlug, q, page: 1, sort: "relevance", stock: false } })
+      void searchStorefrontFn({
+        data: { slug: storeSlug, q, page: 1, sort: "relevance", stock: false },
+      })
         .then((result) => {
           if (ticket !== seq.current) return;
           const list = result?.status === "ok" ? result.result.items : [];
@@ -324,10 +387,17 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
         <span aria-hidden="true">⌕</span>
         {str("placeholder") || "Search"}
       </button>
-      <OverlayHost open={open} onClose={() => setOpen(false)} title={str("buttonLabel") || "Search"} side="center">
+      <OverlayHost
+        open={open}
+        onClose={() => setOpen(false)}
+        title={str("buttonLabel") || "Search"}
+        side="center"
+      >
         <div className="space-y-3">
           <label className="block">
-            <span className="sr-only">{str("placeholder") || "Search products"}</span>
+            <span className="sr-only">
+              {str("placeholder") || "Search products"}
+            </span>
             <input
               type="search"
               value={term}
@@ -338,7 +408,9 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
             />
           </label>
           <div aria-live="polite" className="min-h-24">
-            {pending && <p className="text-sm text-muted-foreground">Searching…</p>}
+            {pending && (
+              <p className="text-sm text-muted-foreground">Searching…</p>
+            )}
             {!pending && hits !== null && hits.length === 0 && (
               <p className="text-sm text-muted-foreground">No matches.</p>
             )}
@@ -347,10 +419,17 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
                 {hits.map((hit) => (
                   <li key={hit.id}>
                     <a
-                      href={storeSlug ? `/store/${storeSlug}/p/${hit.slug}` : "#"}
+                      href={
+                        storeSlug ? `/store/${storeSlug}/p/${hit.slug}` : "#"
+                      }
                       className="flex items-center gap-3 py-2 text-sm hover:underline"
                     >
-                      <MediaFrame src={hit.imageUrl} alt={hit.title} ratio="square" className="w-10 shrink-0" />
+                      <MediaFrame
+                        src={hit.imageUrl}
+                        alt={hit.title}
+                        ratio="square"
+                        className="w-10 shrink-0"
+                      />
                       <span className="min-w-0 truncate">{hit.title}</span>
                     </a>
                   </li>
@@ -370,7 +449,10 @@ function AccountCart({ str, bool, storeSlug }: WidgetCtx) {
   const base = storeSlug ? `/store/${storeSlug}` : "";
   return (
     <nav aria-label="Account and cart" className="flex items-center gap-2">
-      <a href={`${base}/account`} className="min-h-9 rounded-fq-md px-3 text-sm leading-9">
+      <a
+        href={`${base}/account`}
+        className="min-h-9 rounded-fq-md px-3 text-sm leading-9"
+      >
         {str("accountLabel") || "Account"}
       </a>
       {/* Stays a real link: the drawer only intercepts when one is mounted. */}

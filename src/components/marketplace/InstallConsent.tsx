@@ -39,7 +39,10 @@ export function InstallConsent({
   const { t } = useLang();
   const required = version?.scopes ?? [];
   const [granted, setGranted] = useState<string[]>([]);
-  const missing = useMemo(() => required.filter((s) => !granted.includes(s)), [required, granted]);
+  const missing = useMemo(
+    () => required.filter((s) => !granted.includes(s)),
+    [required, granted],
+  );
   const risk = highestRisk(required);
 
   return (
@@ -56,20 +59,30 @@ export function InstallConsent({
         <p className="mt-1 text-sm text-muted-foreground">
           {version
             ? `v${version.version} · ${(version.size_bytes / 1024).toFixed(1)} KB · ${version.content_hash.slice(0, 12)}…`
-            : t("No published version pinned — legacy install.", "কোনো প্রকাশিত সংস্করণ নেই — লিগ্যাসি ইনস্টল।")}
+            : t(
+                "No published version pinned — legacy install.",
+                "কোনো প্রকাশিত সংস্করণ নেই — লিগ্যাসি ইনস্টল।",
+              )}
         </p>
 
         {version?.changelog && (
-          <p className="mt-3 rounded-fq-md border border-border bg-muted p-3 text-sm">{version.changelog}</p>
+          <p className="mt-3 rounded-fq-md border border-border bg-muted p-3 text-sm">
+            {version.changelog}
+          </p>
         )}
 
         {required.length === 0 ? (
           <p className="mt-4 text-sm">
-            {t("This extension requests no permissions.", "এই এক্সটেনশন কোনো অনুমতি চায় না।")}
+            {t(
+              "This extension requests no permissions.",
+              "এই এক্সটেনশন কোনো অনুমতি চায় না।",
+            )}
           </p>
         ) : (
           <>
-            <p className={`mt-4 rounded-fq-md border p-2 text-xs ${RISK_STYLE[risk]}`}>
+            <p
+              className={`mt-4 rounded-fq-md border p-2 text-xs ${RISK_STYLE[risk]}`}
+            >
               {t("Highest risk requested:", "সর্বোচ্চ ঝুঁকি:")} {risk}
             </p>
             <ul className="mt-3 space-y-2">
@@ -77,19 +90,26 @@ export function InstallConsent({
                 const def = scopeDef(id) ?? SCOPES[0];
                 const on = granted.includes(id);
                 return (
-                  <li key={id} className={`rounded-fq-md border p-3 text-sm ${RISK_STYLE[def.risk]}`}>
+                  <li
+                    key={id}
+                    className={`rounded-fq-md border p-3 text-sm ${RISK_STYLE[def.risk]}`}
+                  >
                     <label className="flex items-start gap-3">
                       <input
                         type="checkbox"
                         checked={on}
                         onChange={() =>
-                          setGranted((g) => (on ? g.filter((s) => s !== id) : [...g, id]))
+                          setGranted((g) =>
+                            on ? g.filter((s) => s !== id) : [...g, id],
+                          )
                         }
                         className="mt-1 size-4"
                       />
                       <span>
                         <span className="font-medium">{t(def.en, def.bn)}</span>
-                        <span className="block text-xs opacity-80">{t(def.effectEn, def.effectBn)}</span>
+                        <span className="block text-xs opacity-80">
+                          {t(def.effectEn, def.effectBn)}
+                        </span>
                       </span>
                     </label>
                   </li>
@@ -113,14 +133,23 @@ export function InstallConsent({
             onClick={() => onApprove(version?.id ?? null, granted)}
             className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
           >
-            {trial ? t("Approve & start trial", "অনুমতি দিয়ে ট্রায়াল") : t("Approve & install", "অনুমতি দিয়ে ইনস্টল")}
+            {trial
+              ? t("Approve & start trial", "অনুমতি দিয়ে ট্রায়াল")
+              : t("Approve & install", "অনুমতি দিয়ে ইনস্টল")}
           </button>
-          <button type="button" onClick={onCancel} className="min-h-11 rounded-fq-md border border-border px-4 text-sm">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="min-h-11 rounded-fq-md border border-border px-4 text-sm"
+          >
             {t("Cancel", "বাতিল")}
           </button>
           {missing.length > 0 && (
             <span className="self-center text-xs text-muted-foreground">
-              {t("Grant every permission to continue.", "চালিয়ে যেতে সব অনুমতি দিন।")}
+              {t(
+                "Grant every permission to continue.",
+                "চালিয়ে যেতে সব অনুমতি দিন।",
+              )}
             </span>
           )}
         </div>

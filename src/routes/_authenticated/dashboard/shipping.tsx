@@ -4,7 +4,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
-import { advanceShipmentFn, generateLabelFn, retryRateFn } from "@/lib/pos.functions";
+import {
+  advanceShipmentFn,
+  generateLabelFn,
+  retryRateFn,
+} from "@/lib/pos.functions";
 import {
   cancelShipmentFn,
   deleteRuleFn,
@@ -31,7 +35,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/shipping")({
       { property: "og:title", content: "Shipping desk" },
       {
         property: "og:description",
-        content: "Zones, rates, pickups, COD reconciliation and courier webhook health.",
+        content:
+          "Zones, rates, pickups, COD reconciliation and courier webhook health.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -74,7 +79,8 @@ const TABS: { id: TabId; en: string; bn: string }[] = [
 
 const cardClass = "rounded-fq-lg border border-border bg-card p-4";
 const btnClass = "min-h-11 rounded-fq-md border border-border px-3 text-sm";
-const inputClass = "min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm";
+const inputClass =
+  "min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm";
 
 function ShippingPage() {
   const { t } = useLang();
@@ -86,15 +92,21 @@ function ShippingPage() {
     queryFn: () => shippingDeskFn(),
     refetchInterval: 60_000,
   });
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["shipping-desk"] });
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["shipping-desk"] });
 
   const stalled = (data?.shipments ?? []).filter(
     (s) =>
       !["delivered", "returned"].includes(s.status) &&
-      Date.now() - new Date(s.last_event_at ?? s.created_at).getTime() > 72 * 3600 * 1000,
+      Date.now() - new Date(s.last_event_at ?? s.created_at).getTime() >
+        72 * 3600 * 1000,
   ).length;
-  const mismatches = (data?.cod ?? []).filter((c) => c.state === "mismatch").length;
-  const dlqOpen = (data?.dlq ?? []).filter((e) => e.status === "dead_letter" || e.status === "rejected").length;
+  const mismatches = (data?.cod ?? []).filter(
+    (c) => c.state === "mismatch",
+  ).length;
+  const dlqOpen = (data?.dlq ?? []).filter(
+    (e) => e.status === "dead_letter" || e.status === "rejected",
+  ).length;
 
   return (
     <section className="space-y-4">
@@ -112,20 +124,30 @@ function ShippingPage() {
 
       <dl className="grid gap-3 sm:grid-cols-3">
         <div className={cardClass}>
-          <dt className="text-xs text-muted-foreground">{t("Stalled parcels", "আটকে থাকা পার্সেল")}</dt>
+          <dt className="text-xs text-muted-foreground">
+            {t("Stalled parcels", "আটকে থাকা পার্সেল")}
+          </dt>
           <dd className="money text-2xl font-semibold">{stalled}</dd>
         </div>
         <div className={cardClass}>
-          <dt className="text-xs text-muted-foreground">{t("COD mismatches", "সিওডি গরমিল")}</dt>
+          <dt className="text-xs text-muted-foreground">
+            {t("COD mismatches", "সিওডি গরমিল")}
+          </dt>
           <dd className="money text-2xl font-semibold">{mismatches}</dd>
         </div>
         <div className={cardClass}>
-          <dt className="text-xs text-muted-foreground">{t("Webhooks awaiting replay", "রিপ্লে অপেক্ষমাণ")}</dt>
+          <dt className="text-xs text-muted-foreground">
+            {t("Webhooks awaiting replay", "রিপ্লে অপেক্ষমাণ")}
+          </dt>
           <dd className="money text-2xl font-semibold">{dlqOpen}</dd>
         </div>
       </dl>
 
-      <div role="tablist" aria-label={t("Shipping sections", "শিপিং বিভাগ")} className="flex flex-wrap gap-2">
+      <div
+        role="tablist"
+        aria-label={t("Shipping sections", "শিপিং বিভাগ")}
+        className="flex flex-wrap gap-2"
+      >
         {TABS.map((item) => (
           <button
             key={item.id}
@@ -136,7 +158,9 @@ function ShippingPage() {
             aria-controls={`panel-${item.id}`}
             onClick={() => setTab(item.id)}
             className={`${btnClass} ${
-              tab === item.id ? "border-primary bg-primary text-primary-foreground" : ""
+              tab === item.id
+                ? "border-primary bg-primary text-primary-foreground"
+                : ""
             }`}
           >
             {t(item.en, item.bn)}
@@ -144,9 +168,18 @@ function ShippingPage() {
         ))}
       </div>
 
-      {isLoading && <p className="text-sm text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>}
+      {isLoading && (
+        <p className="text-sm text-muted-foreground">
+          {t("Loading…", "লোড হচ্ছে…")}
+        </p>
+      )}
 
-      <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`} className="space-y-3">
+      <div
+        role="tabpanel"
+        id={`panel-${tab}`}
+        aria-labelledby={`tab-${tab}`}
+        className="space-y-3"
+      >
         {tab === "parcels" && <ParcelsPanel data={data} refresh={refresh} />}
         {tab === "rates" && <RatesPanel data={data} refresh={refresh} />}
         {tab === "cod" && <CodPanel data={data} refresh={refresh} />}
@@ -168,7 +201,11 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
 
   const fail = (e: Error) => toast.error(e.message);
   const advance = useMutation({
-    mutationFn: (v: { shipmentId: string; target: string; signatureText?: string }) =>
+    mutationFn: (v: {
+      shipmentId: string;
+      target: string;
+      signatureText?: string;
+    }) =>
       advanceShipmentFn({
         data: {
           shipmentId: v.shipmentId,
@@ -177,7 +214,9 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
         },
       }),
     onSuccess: (res) => {
-      toast.success(`${t("Status", "স্ট্যাটাস")}: ${STEPS[res.status]?.en ?? res.status}`);
+      toast.success(
+        `${t("Status", "স্ট্যাটাস")}: ${STEPS[res.status]?.en ?? res.status}`,
+      );
       refresh();
     },
     onError: fail,
@@ -196,7 +235,8 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
     onError: fail,
   });
   const schedule = useMutation({
-    mutationFn: (v: { shipmentId: string; slotStart: string }) => schedulePickupFn({ data: v }),
+    mutationFn: (v: { shipmentId: string; slotStart: string }) =>
+      schedulePickupFn({ data: v }),
     onSuccess: () => {
       toast.success(t("Pickup requested", "পিকআপ চাওয়া হয়েছে"));
       refresh();
@@ -234,7 +274,9 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
             aria-pressed={filter === c.code}
             onClick={() => setFilter(c.code)}
             className={`${btnClass} ${
-              filter === c.code ? "border-primary bg-primary text-primary-foreground" : ""
+              filter === c.code
+                ? "border-primary bg-primary text-primary-foreground"
+                : ""
             }`}
           >
             {c.name}
@@ -243,7 +285,9 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
       </div>
 
       {rows.length === 0 && (
-        <p className="text-sm text-muted-foreground">{t("No parcels yet.", "এখনও কোনো পার্সেল নেই।")}</p>
+        <p className="text-sm text-muted-foreground">
+          {t("No parcels yet.", "এখনও কোনো পার্সেল নেই।")}
+        </p>
       )}
 
       <ul className="space-y-3">
@@ -253,29 +297,49 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
               <div>
                 <p className="text-sm font-medium">
                   {s.carrier_code.toUpperCase()} ·{" "}
-                  <span className="money">{s.awb ?? t("AWB pending", "এডব্লিউবি বাকি")}</span>
+                  <span className="money">
+                    {s.awb ?? t("AWB pending", "এডব্লিউবি বাকি")}
+                  </span>
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {t(STEPS[s.status]?.en ?? s.status, STEPS[s.status]?.bn ?? s.status)} ·{" "}
-                  {t("Rate", "রেট")} <span className="money">{fmtMinor(Number(s.rate_minor_int))}</span>
+                  {t(
+                    STEPS[s.status]?.en ?? s.status,
+                    STEPS[s.status]?.bn ?? s.status,
+                  )}{" "}
+                  · {t("Rate", "রেট")}{" "}
+                  <span className="money">
+                    {fmtMinor(Number(s.rate_minor_int))}
+                  </span>
                   {s.quote_stale && ` · ${t("fallback rate", "ফলব্যাক রেট")}`}
                   {s.is_cod && (
                     <>
                       {" "}
-                      · COD <span className="money">{fmtMinor(Number(s.cod_amount_minor_int))}</span>
+                      · COD{" "}
+                      <span className="money">
+                        {fmtMinor(Number(s.cod_amount_minor_int))}
+                      </span>
                     </>
                   )}
-                  {s.attempt_count > 0 && ` · ${t("attempts", "চেষ্টা")} ${s.attempt_count}`}
+                  {s.attempt_count > 0 &&
+                    ` · ${t("attempts", "চেষ্টা")} ${s.attempt_count}`}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {!s.awb && (
-                  <button type="button" onClick={() => retry.mutate(s.id)} className={btnClass}>
+                  <button
+                    type="button"
+                    onClick={() => retry.mutate(s.id)}
+                    className={btnClass}
+                  >
                     {t("Book AWB", "এডব্লিউবি নিন")}
                   </button>
                 )}
                 {s.awb && (
-                  <button type="button" onClick={() => label.mutate(s.id)} className={btnClass}>
+                  <button
+                    type="button"
+                    onClick={() => label.mutate(s.id)}
+                    className={btnClass}
+                  >
                     {t("Label", "লেবেল")}
                   </button>
                 )}
@@ -289,11 +353,16 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
                     {t("Track", "ট্র্যাক")}
                   </a>
                 )}
-                {!["delivered", "returned"].includes(s.status) && !s.cancelled_at && (
-                  <button type="button" onClick={() => cancel.mutate(s.id)} className={btnClass}>
-                    {t("Cancel", "বাতিল")}
-                  </button>
-                )}
+                {!["delivered", "returned"].includes(s.status) &&
+                  !s.cancelled_at && (
+                    <button
+                      type="button"
+                      onClick={() => cancel.mutate(s.id)}
+                      className={btnClass}
+                    >
+                      {t("Cancel", "বাতিল")}
+                    </button>
+                  )}
               </div>
             </div>
 
@@ -304,7 +373,9 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
                   <input
                     type="datetime-local"
                     value={pickup[s.id] ?? ""}
-                    onChange={(e) => setPickup((p) => ({ ...p, [s.id]: e.target.value }))}
+                    onChange={(e) =>
+                      setPickup((p) => ({ ...p, [s.id]: e.target.value }))
+                    }
                     className={`${inputClass} mt-1`}
                   />
                 </label>
@@ -330,7 +401,9 @@ function ParcelsPanel({ data, refresh }: PanelProps) {
                   {t("Signature (COD)", "স্বাক্ষর (COD)")}
                   <input
                     value={signature[s.id] ?? ""}
-                    onChange={(e) => setSignature((p) => ({ ...p, [s.id]: e.target.value }))}
+                    onChange={(e) =>
+                      setSignature((p) => ({ ...p, [s.id]: e.target.value }))
+                    }
                     className={`${inputClass} mt-1`}
                   />
                 </label>
@@ -370,8 +443,15 @@ function RatesPanel({ data, refresh }: PanelProps) {
     codBp: "100",
     freeOver: "",
   });
-  const [preview, setPreview] = useState<{ total: number; zone: string | null } | null>(null);
-  const [probe, setProbe] = useState({ city: "Dhaka", weight: "1200", cod: "150000" });
+  const [preview, setPreview] = useState<{
+    total: number;
+    zone: string | null;
+  } | null>(null);
+  const [probe, setProbe] = useState({
+    city: "Dhaka",
+    weight: "1200",
+    cod: "150000",
+  });
 
   const saveRule = useMutation({
     mutationFn: () =>
@@ -384,7 +464,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
           baseMinorInt: Math.round(Number(draft.base) * 100),
           perKgMinorInt: Math.round(Number(draft.perKg) * 100),
           codFeeBp: Number(draft.codBp),
-          freeOverMinorInt: draft.freeOver ? Math.round(Number(draft.freeOver) * 100) : null,
+          freeOverMinorInt: draft.freeOver
+            ? Math.round(Number(draft.freeOver) * 100)
+            : null,
           enabled: true,
           priority: 50,
         },
@@ -435,7 +517,8 @@ function RatesPanel({ data, refresh }: PanelProps) {
           orderTotalMinorInt: Number(probe.cod),
         },
       }),
-    onSuccess: (res) => setPreview({ total: res.totalMinorInt, zone: res.zoneCode }),
+    onSuccess: (res) =>
+      setPreview({ total: res.totalMinorInt, zone: res.zoneCode }),
     onError: (e: Error) => toast.error(e.message),
   });
 
@@ -447,13 +530,17 @@ function RatesPanel({ data, refresh }: PanelProps) {
   return (
     <>
       <div className={cardClass}>
-        <h2 className="text-sm font-semibold">{t("Rate calculator", "রেট ক্যালকুলেটর")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Rate calculator", "রেট ক্যালকুলেটর")}
+        </h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-4">
           <label className="text-xs text-muted-foreground">
             {t("District", "জেলা")}
             <input
               value={probe.city}
-              onChange={(e) => setProbe((p) => ({ ...p, city: e.target.value }))}
+              onChange={(e) =>
+                setProbe((p) => ({ ...p, city: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -462,7 +549,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <input
               inputMode="numeric"
               value={probe.weight}
-              onChange={(e) => setProbe((p) => ({ ...p, weight: e.target.value }))}
+              onChange={(e) =>
+                setProbe((p) => ({ ...p, weight: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -475,14 +564,21 @@ function RatesPanel({ data, refresh }: PanelProps) {
               className={`${inputClass} mt-1`}
             />
           </label>
-          <button type="button" className={`${btnClass} self-end`} onClick={() => runQuote.mutate()}>
+          <button
+            type="button"
+            className={`${btnClass} self-end`}
+            onClick={() => runQuote.mutate()}
+          >
             {t("Preview", "প্রিভিউ")}
           </button>
         </div>
         <p aria-live="polite" className="mt-2 text-sm">
           {preview
             ? `${preview.zone ?? "—"} · ${fmtMinor(preview.total)}`
-            : t("Run a preview to see the buyer price.", "ক্রেতার মূল্য দেখতে প্রিভিউ চালান।")}
+            : t(
+                "Run a preview to see the buyer price.",
+                "ক্রেতার মূল্য দেখতে প্রিভিউ চালান।",
+              )}
         </p>
       </div>
 
@@ -490,12 +586,16 @@ function RatesPanel({ data, refresh }: PanelProps) {
         <h2 className="text-sm font-semibold">{t("Zones", "জোন")}</h2>
         <ul className="mt-2 space-y-2">
           {zones.map((z) => (
-            <li key={z.id} className="flex flex-wrap items-center justify-between gap-2 text-sm">
+            <li
+              key={z.id}
+              className="flex flex-wrap items-center justify-between gap-2 text-sm"
+            >
               <span>
                 {z.name_en}
                 {z.is_default && ` · ${t("default", "ডিফল্ট")}`}
                 <span className="block text-xs text-muted-foreground">
-                  {(z.districts ?? []).join(", ") || t("Everywhere else", "বাকি সব")}
+                  {(z.districts ?? []).join(", ") ||
+                    t("Everywhere else", "বাকি সব")}
                 </span>
               </span>
               <button
@@ -512,20 +612,36 @@ function RatesPanel({ data, refresh }: PanelProps) {
       </div>
 
       <div className={cardClass}>
-        <h2 className="text-sm font-semibold">{t("Weight rules", "ওজন নিয়ম")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Weight rules", "ওজন নিয়ম")}
+        </h2>
         <ul className="mt-2 space-y-2 text-sm">
           {rules.map((r) => (
-            <li key={r.id} className="flex flex-wrap items-center justify-between gap-2">
+            <li
+              key={r.id}
+              className="flex flex-wrap items-center justify-between gap-2"
+            >
               <span>
-                {zoneName[r.zone_id] ?? r.zone_id} · {r.min_weight_grams}–{r.max_weight_grams}g ·{" "}
+                {zoneName[r.zone_id] ?? r.zone_id} · {r.min_weight_grams}–
+                {r.max_weight_grams}g ·{" "}
                 <span className="money">{fmtMinor(r.base_minor_int)}</span> +{" "}
-                <span className="money">{fmtMinor(r.per_kg_minor_int)}</span>/kg · COD{" "}
-                {(r.cod_fee_bp / 100).toFixed(2)}%
+                <span className="money">{fmtMinor(r.per_kg_minor_int)}</span>/kg
+                · COD {(r.cod_fee_bp / 100).toFixed(2)}%
                 {r.free_over_minor_int !== null && (
-                  <> · {t("free over", "ফ্রি")} <span className="money">{fmtMinor(r.free_over_minor_int)}</span></>
+                  <>
+                    {" "}
+                    · {t("free over", "ফ্রি")}{" "}
+                    <span className="money">
+                      {fmtMinor(r.free_over_minor_int)}
+                    </span>
+                  </>
                 )}
               </span>
-              <button type="button" className={btnClass} onClick={() => remove.mutate(r.id)}>
+              <button
+                type="button"
+                className={btnClass}
+                onClick={() => remove.mutate(r.id)}
+              >
                 {t("Remove", "মুছুন")}
               </button>
             </li>
@@ -544,7 +660,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <select
               required
               value={draft.zoneId}
-              onChange={(e) => setDraft((d) => ({ ...d, zoneId: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, zoneId: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             >
               <option value="">{t("Select", "নির্বাচন")}</option>
@@ -560,7 +678,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <input
               inputMode="decimal"
               value={draft.base}
-              onChange={(e) => setDraft((d) => ({ ...d, base: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, base: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -569,7 +689,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <input
               inputMode="decimal"
               value={draft.perKg}
-              onChange={(e) => setDraft((d) => ({ ...d, perKg: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, perKg: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -578,7 +700,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <input
               inputMode="numeric"
               value={draft.codBp}
-              onChange={(e) => setDraft((d) => ({ ...d, codBp: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, codBp: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -587,7 +711,9 @@ function RatesPanel({ data, refresh }: PanelProps) {
             <input
               inputMode="decimal"
               value={draft.freeOver}
-              onChange={(e) => setDraft((d) => ({ ...d, freeOver: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, freeOver: e.target.value }))
+              }
               className={`${inputClass} mt-1`}
             />
           </label>
@@ -606,11 +732,15 @@ function CodPanel({ data, refresh }: PanelProps) {
   const [reference, setReference] = useState<Record<string, string>>({});
 
   const reconcile = useMutation({
-    mutationFn: (v: { shipmentId: string; reportedMinorInt: number; reference: string | null }) =>
-      reconcileCodFn({ data: v }),
+    mutationFn: (v: {
+      shipmentId: string;
+      reportedMinorInt: number;
+      reference: string | null;
+    }) => reconcileCodFn({ data: v }),
     onSuccess: (res) => {
       const state = (res as { state?: string }).state ?? "updated";
-      if (state === "mismatch") toast.warning(t("Mismatch — needs review", "গরমিল — পর্যালোচনা দরকার"));
+      if (state === "mismatch")
+        toast.warning(t("Mismatch — needs review", "গরমিল — পর্যালোচনা দরকার"));
       else toast.success(t("COD settled", "সিওডি নিষ্পত্তি"));
       refresh();
     },
@@ -619,7 +749,14 @@ function CodPanel({ data, refresh }: PanelProps) {
 
   const rows = data?.cod ?? [];
   if (rows.length === 0) {
-    return <p className="text-sm text-muted-foreground">{t("No COD parcels awaiting remittance.", "কোনো সিওডি পার্সেল বাকি নেই।")}</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        {t(
+          "No COD parcels awaiting remittance.",
+          "কোনো সিওডি পার্সেল বাকি নেই।",
+        )}
+      </p>
+    );
   }
 
   return (
@@ -635,7 +772,8 @@ function CodPanel({ data, refresh }: PanelProps) {
             {c.reported_minor_int !== null && (
               <>
                 {" "}
-                · {t("Reported", "জমা")} <span className="money">{fmtMinor(c.reported_minor_int)}</span>
+                · {t("Reported", "জমা")}{" "}
+                <span className="money">{fmtMinor(c.reported_minor_int)}</span>
               </>
             )}
           </p>
@@ -646,7 +784,9 @@ function CodPanel({ data, refresh }: PanelProps) {
                 e.preventDefault();
                 reconcile.mutate({
                   shipmentId: c.shipment_id,
-                  reportedMinorInt: Math.round(Number(amount[c.id] ?? "0") * 100),
+                  reportedMinorInt: Math.round(
+                    Number(amount[c.id] ?? "0") * 100,
+                  ),
                   reference: reference[c.id] ?? null,
                 });
               }}
@@ -657,7 +797,9 @@ function CodPanel({ data, refresh }: PanelProps) {
                   required
                   inputMode="decimal"
                   value={amount[c.id] ?? ""}
-                  onChange={(e) => setAmount((p) => ({ ...p, [c.id]: e.target.value }))}
+                  onChange={(e) =>
+                    setAmount((p) => ({ ...p, [c.id]: e.target.value }))
+                  }
                   className={`${inputClass} mt-1`}
                 />
               </label>
@@ -665,7 +807,9 @@ function CodPanel({ data, refresh }: PanelProps) {
                 {t("Reference", "রেফারেন্স")}
                 <input
                   value={reference[c.id] ?? ""}
-                  onChange={(e) => setReference((p) => ({ ...p, [c.id]: e.target.value }))}
+                  onChange={(e) =>
+                    setReference((p) => ({ ...p, [c.id]: e.target.value }))
+                  }
                   className={`${inputClass} mt-1`}
                 />
               </label>
@@ -680,7 +824,10 @@ function CodPanel({ data, refresh }: PanelProps) {
   );
 }
 
-const CARRIER_FIELDS: Record<string, { key: string; label: string; type?: string }[]> = {
+const CARRIER_FIELDS: Record<
+  string,
+  { key: string; label: string; type?: string }[]
+> = {
   steadfast: [
     { key: "apiKey", label: "API Key" },
     { key: "secretKey", label: "Secret Key", type: "password" },
@@ -691,9 +838,7 @@ const CARRIER_FIELDS: Record<string, { key: string; label: string; type?: string
     { key: "username", label: "Username / Email" },
     { key: "password", label: "Password", type: "password" },
   ],
-  redx: [
-    { key: "apiToken", label: "API Access Token", type: "password" },
-  ],
+  redx: [{ key: "apiToken", label: "API Access Token", type: "password" }],
   paperfly: [
     { key: "username", label: "Username" },
     { key: "password", label: "Password", type: "password" },
@@ -704,21 +849,34 @@ const CARRIER_FIELDS: Record<string, { key: string; label: string; type?: string
 function CarriersPanel({ data, refresh }: PanelProps) {
   const { t } = useLang();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [credentialsDraft, setCredentialsDraft] = useState<Record<string, Record<string, string>>>({});
+  const [credentialsDraft, setCredentialsDraft] = useState<
+    Record<string, Record<string, string>>
+  >({});
   const [baseUrlDraft, setBaseUrlDraft] = useState<Record<string, string>>({});
 
   const mode = useMutation({
-    mutationFn: (v: { carrierId: string; enabled?: boolean; apiMode?: "mock" | "sandbox" | "live" }) =>
-      setCarrierModeFn({ data: v }),
+    mutationFn: (v: {
+      carrierId: string;
+      enabled?: boolean;
+      apiMode?: "mock" | "sandbox" | "live";
+    }) => setCarrierModeFn({ data: v }),
     onSuccess: () => refresh(),
     onError: (e: Error) => toast.error(e.message),
   });
 
   const saveCreds = useMutation({
-    mutationFn: (v: { carrierId: string; credentials: Record<string, unknown>; baseUrl?: string | null }) =>
-      saveCarrierCredentialsFn({ data: v }),
+    mutationFn: (v: {
+      carrierId: string;
+      credentials: Record<string, unknown>;
+      baseUrl?: string | null;
+    }) => saveCarrierCredentialsFn({ data: v }),
     onSuccess: () => {
-      toast.success(t("Courier credentials saved and sealed at rest.", "কুরিয়ার ক্রেডেনশিয়াল নিরাপদে সংরক্ষিত হয়েছে।"));
+      toast.success(
+        t(
+          "Courier credentials saved and sealed at rest.",
+          "কুরিয়ার ক্রেডেনশিয়াল নিরাপদে সংরক্ষিত হয়েছে।",
+        ),
+      );
       refresh();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -727,8 +885,13 @@ function CarriersPanel({ data, refresh }: PanelProps) {
   return (
     <ul className="space-y-3">
       {(data?.carriers ?? []).map((c) => {
-        const config = (c.config && typeof c.config === "object" ? c.config : {}) as Record<string, unknown>;
-        const hints = (config["credentialHints"] ?? {}) as Record<string, string>;
+        const config = (
+          c.config && typeof c.config === "object" ? c.config : {}
+        ) as Record<string, unknown>;
+        const hints = (config["credentialHints"] ?? {}) as Record<
+          string,
+          string
+        >;
         const fields = CARRIER_FIELDS[c.code] ?? [
           { key: "apiKey", label: "API Key" },
           { key: "secretKey", label: "Secret Key", type: "password" },
@@ -741,8 +904,11 @@ function CarriersPanel({ data, refresh }: PanelProps) {
               <div>
                 <p className="text-sm font-medium">{c.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t("Mode", "মোড")}: {c.api_mode} · {t("Circuit", "সার্কিট")}: {c.breaker} ·{" "}
-                  {c.supports_pickup ? t("pickup", "পিকআপ") : t("drop-off", "ড্রপ-অফ")}
+                  {t("Mode", "মোড")}: {c.api_mode} · {t("Circuit", "সার্কিট")}:{" "}
+                  {c.breaker} ·{" "}
+                  {c.supports_pickup
+                    ? t("pickup", "পিকআপ")
+                    : t("drop-off", "ড্রপ-অফ")}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-2">
@@ -767,7 +933,9 @@ function CarriersPanel({ data, refresh }: PanelProps) {
                   type="button"
                   aria-pressed={c.enabled}
                   className={btnClass}
-                  onClick={() => mode.mutate({ carrierId: c.id, enabled: !c.enabled })}
+                  onClick={() =>
+                    mode.mutate({ carrierId: c.id, enabled: !c.enabled })
+                  }
                 >
                   {c.enabled ? t("Enabled", "চালু") : t("Disabled", "বন্ধ")}
                 </button>
@@ -776,7 +944,9 @@ function CarriersPanel({ data, refresh }: PanelProps) {
                   className={`${btnClass} ${isExpanded ? "bg-muted font-medium" : ""}`}
                   onClick={() => setExpandedId(isExpanded ? null : c.id)}
                 >
-                  {isExpanded ? t("Close", "বন্ধ") : t("Configure keys", "কী কনফিগার")}
+                  {isExpanded
+                    ? t("Close", "বন্ধ")
+                    : t("Configure keys", "কী কনফিগার")}
                 </button>
               </div>
             </div>
@@ -785,10 +955,16 @@ function CarriersPanel({ data, refresh }: PanelProps) {
               <div className="mt-3 border-t border-border pt-3 space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    {t("Carrier Live API Credentials", "কুরিয়ার লাইভ এপিআই ক্রেডেনশিয়াল")}
+                    {t(
+                      "Carrier Live API Credentials",
+                      "কুরিয়ার লাইভ এপিআই ক্রেডেনশিয়াল",
+                    )}
                   </h3>
                   <span className="text-[11px] text-muted-foreground">
-                    {t("Encrypted at rest with AES-GCM", "AES-GCM এনক্রিপশনে সুরক্ষিত")}
+                    {t(
+                      "Encrypted at rest with AES-GCM",
+                      "AES-GCM এনক্রিপশনে সুরক্ষিত",
+                    )}
                   </span>
                 </div>
 
@@ -806,7 +982,11 @@ function CarriersPanel({ data, refresh }: PanelProps) {
                       <input
                         type={f.type ?? "text"}
                         autoComplete="off"
-                        placeholder={hints[f.key] ? t("Enter new to replace", "নতুন মান দিন") : `Enter ${f.label}`}
+                        placeholder={
+                          hints[f.key]
+                            ? t("Enter new to replace", "নতুন মান দিন")
+                            : `Enter ${f.label}`
+                        }
                         value={credentialsDraft[c.id]?.[f.key] ?? ""}
                         onChange={(e) =>
                           setCredentialsDraft((prev) => ({
@@ -823,11 +1003,16 @@ function CarriersPanel({ data, refresh }: PanelProps) {
                   ))}
                   <label className="space-y-1 text-xs">
                     <span className="block font-medium">
-                      {t("Custom Base URL (optional)", "কাস্টম বেস ইউআরএল (ঐচ্ছিক)")}
+                      {t(
+                        "Custom Base URL (optional)",
+                        "কাস্টম বেস ইউআরএল (ঐচ্ছিক)",
+                      )}
                     </span>
                     <input
                       type="url"
-                      placeholder={(config["baseUrl"] as string) || "https://..."}
+                      placeholder={
+                        (config["baseUrl"] as string) || "https://..."
+                      }
                       value={baseUrlDraft[c.id] ?? ""}
                       onChange={(e) =>
                         setBaseUrlDraft((prev) => ({
@@ -846,16 +1031,30 @@ function CarriersPanel({ data, refresh }: PanelProps) {
                     disabled={saveCreds.isPending}
                     onClick={() => {
                       const creds = credentialsDraft[c.id] ?? {};
-                      const baseUrl = baseUrlDraft[c.id] || (config["baseUrl"] as string) || null;
+                      const baseUrl =
+                        baseUrlDraft[c.id] ||
+                        (config["baseUrl"] as string) ||
+                        null;
                       if (Object.keys(creds).length === 0) {
-                        toast.error(t("Enter at least one credential to update.", "অন্তত একটি ক্রেডেনশিয়াল দিন।"));
+                        toast.error(
+                          t(
+                            "Enter at least one credential to update.",
+                            "অন্তত একটি ক্রেডেনশিয়াল দিন।",
+                          ),
+                        );
                         return;
                       }
-                      saveCreds.mutate({ carrierId: c.id, credentials: creds, baseUrl });
+                      saveCreds.mutate({
+                        carrierId: c.id,
+                        credentials: creds,
+                        baseUrl,
+                      });
                     }}
                     className={`${btnClass} bg-primary text-primary-foreground hover:bg-primary/90`}
                   >
-                    {saveCreds.isPending ? t("Saving…", "সেভ হচ্ছে…") : t("Save credentials", "ক্রেডেনশিয়াল সেভ")}
+                    {saveCreds.isPending
+                      ? t("Saving…", "সেভ হচ্ছে…")
+                      : t("Save credentials", "ক্রেডেনশিয়াল সেভ")}
                   </button>
                 </div>
               </div>
@@ -872,7 +1071,8 @@ function HealthPanel({ data, refresh }: PanelProps) {
   const rows = data?.dlq ?? [];
 
   const replay = useMutation({
-    mutationFn: (eventId: string) => replayCourierEventFn({ data: { eventId } }),
+    mutationFn: (eventId: string) =>
+      replayCourierEventFn({ data: { eventId } }),
     onSuccess: (res) => {
       const outcome = (res as { outcome?: string }).outcome ?? "unknown";
       if (outcome === "processed" || outcome === "replayed") {
@@ -888,16 +1088,23 @@ function HealthPanel({ data, refresh }: PanelProps) {
   if (rows.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        {t("No webhook failures in the last window.", "সাম্প্রতিক সময়ে কোনো ওয়েবহুক ব্যর্থতা নেই।")}
+        {t(
+          "No webhook failures in the last window.",
+          "সাম্প্রতিক সময়ে কোনো ওয়েবহুক ব্যর্থতা নেই।",
+        )}
       </p>
     );
   }
   return (
     <table className="w-full text-left text-sm">
-      <caption className="sr-only">{t("Courier webhook events", "কুরিয়ার ওয়েবহুক ইভেন্ট")}</caption>
+      <caption className="sr-only">
+        {t("Courier webhook events", "কুরিয়ার ওয়েবহুক ইভেন্ট")}
+      </caption>
       <thead>
         <tr className="text-xs text-muted-foreground">
-          <th scope="col" className="py-2">{t("Courier", "কুরিয়ার")}</th>
+          <th scope="col" className="py-2">
+            {t("Courier", "কুরিয়ার")}
+          </th>
           <th scope="col">{t("Status", "স্ট্যাটাস")}</th>
           <th scope="col">{t("Attempts", "চেষ্টা")}</th>
           <th scope="col">{t("Reason", "কারণ")}</th>
@@ -906,13 +1113,16 @@ function HealthPanel({ data, refresh }: PanelProps) {
       </thead>
       <tbody>
         {rows.map((e) => {
-          const replayable = e.status === "dead_letter" || e.status === "rejected";
+          const replayable =
+            e.status === "dead_letter" || e.status === "rejected";
           return (
             <tr key={e.id} className="border-t border-border">
               <td className="py-2">{e.carrier_code}</td>
               <td>{e.status}</td>
               <td className="money">{e.attempts}</td>
-              <td className="text-xs text-muted-foreground">{e.reason ?? "—"}</td>
+              <td className="text-xs text-muted-foreground">
+                {e.reason ?? "—"}
+              </td>
               <td>
                 {replayable ? (
                   <button
@@ -934,4 +1144,3 @@ function HealthPanel({ data, refresh }: PanelProps) {
     </table>
   );
 }
-

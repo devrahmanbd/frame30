@@ -28,7 +28,9 @@ const siteKitSchema = z.object({
     .object({
       tokens: z.record(z.string(), z.string().max(200)).optional(),
       custom: z
-        .array(z.object({ name: z.string().max(80), content: z.string().max(200) }))
+        .array(
+          z.object({ name: z.string().max(80), content: z.string().max(200) }),
+        )
         .max(20)
         .optional(),
     })
@@ -40,19 +42,25 @@ const siteKitSchema = z.object({
     })
     .optional(),
   searchConsoleSiteUrl: z.string().max(300).nullable().optional(),
+  /** Merchant-controlled Cloudflare Turnstile bot protection for the storefront. */
+  botProtection: z.boolean().optional(),
 });
 
 /** Everything the desk needs for its first paint. Snapshot rows only. */
 export const siteKitStateFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])
-  .inputValidator((d: unknown) => z.object({ merchantId: z.string().uuid().optional() }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: z.string().uuid().optional() }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { loadSiteKit, readConnection, jobHistory, siteKitConfigured } = await import(
-      "./search-console.server"
-    );
-    const { analyticsBudgetKb, humaniseFailure, tagPlan } = await import("./search-console");
-    const merchantId = data.merchantId ?? (await currentMerchantId(context.supabase, context.userId));
+    const { loadSiteKit, readConnection, jobHistory, siteKitConfigured } =
+      await import("./search-console.server");
+    const { analyticsBudgetKb, humaniseFailure, tagPlan } =
+      await import("./search-console");
+    const merchantId =
+      data.merchantId ??
+      (await currentMerchantId(context.supabase, context.userId));
 
     const [settings, connection, jobs] = await Promise.all([
       loadSiteKit(context.supabase, merchantId),
@@ -70,7 +78,9 @@ export const siteKitStateFn = createServerFn({ method: "POST" })
       budgetKb: analyticsBudgetKb(settings.analytics),
       // A banner is derived from the stored code, never from a live call, so an
       // outage cannot turn into "reconnect Google" advice.
-      banner: connection?.last_error_code ? humaniseFailure(connection.last_error_code) : null,
+      banner: connection?.last_error_code
+        ? humaniseFailure(connection.last_error_code)
+        : null,
     };
   });
 
@@ -81,48 +91,78 @@ export const siteKitStateFn = createServerFn({ method: "POST" })
 export const siteKitPropertiesFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("settings.update")])
   .inputValidator((d: unknown) =>
-    z.object({ origin: originSchema, refresh: z.boolean().optional() }).parse(d),
+    z
+      .object({ origin: originSchema, refresh: z.boolean().optional() })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { listVerifiedProperties, resolvePropertyForStore } = await import("./search-console.server");
+    const { listVerifiedProperties, resolvePropertyForStore } =
+      await import("./search-console.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("gsc.properties", merchantId);
     const properties = await listVerifiedProperties(data.refresh === true);
-    return { merchantId, properties, resolution: await resolvePropertyForStore(data.origin) };
+    return {
+      merchantId,
+      properties,
+      resolution: await resolvePropertyForStore(data.origin),
+    };
   });
 
 /** Saves verification tags, analytics ids and the chosen property. */
 export const siteKitSaveFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("settings.update")])
-  .inputValidator((d: unknown) => z.object({ settings: siteKitSchema }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ settings: siteKitSchema }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { saveSiteKit } = await import("./search-console.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return saveSiteKit(context.supabase, merchantId, context.userId, data.settings);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return saveSiteKit(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.settings,
+    );
   });
 
 /** Performance cards for the selected window, read from the snapshot table. */
 export const siteKitSnapshotFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])
-  .inputValidator((d: unknown) => z.object({ days: windowSchema }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ days: windowSchema }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { snapshotCards } = await import("./search-console.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return snapshotCards(context.supabase, merchantId, data.days);
   });
 
 /** Per-article search performance, matched by URL path suffix. */
 export const siteKitArticlesFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("marketing.read")])
-  .inputValidator((d: unknown) => z.object({ days: windowSchema }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ days: windowSchema }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { articlePerformance } = await import("./search-console.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return articlePerformance(context.supabase, merchantId, data.days);
   });
 
@@ -132,12 +172,17 @@ export const siteKitArticlesFn = createServerFn({ method: "POST" })
  */
 export const siteKitRefreshFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("settings.update")])
-  .inputValidator((d: unknown) => z.object({ days: windowSchema }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ days: windowSchema }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { refreshMerchant } = await import("./search-console.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("gsc.refresh", merchantId);
     return refreshMerchant({
       merchantId,
@@ -153,10 +198,19 @@ export const siteKitRefreshFn = createServerFn({ method: "POST" })
  */
 export const siteKitInspectFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requirePermission("settings.update")])
-  .inputValidator((d: unknown) => z.object({ url: z.string().url().max(500) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ url: z.string().url().max(500) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { inspectUrl } = await import("./search-console.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return inspectUrl({ merchantId, url: data.url, requestedBy: context.userId });
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return inspectUrl({
+      merchantId,
+      url: data.url,
+      requestedBy: context.userId,
+    });
   });

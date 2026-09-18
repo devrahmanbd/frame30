@@ -4,7 +4,13 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { requirePermission } from "./authz-middleware";
 
-const entityType = z.enum(["store", "product", "collection", "page", "article"]);
+const entityType = z.enum([
+  "store",
+  "product",
+  "collection",
+  "page",
+  "article",
+]);
 
 const faqSchema = z
   .array(z.object({ q: z.string().max(400), a: z.string().max(2000) }))
@@ -36,7 +42,10 @@ export const seoIndexFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { listSeoEntities, listSeoAudit } = await import("./seo.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.read", `${merchantId}:${context.userId}`);
     const [entities, audit] = await Promise.all([
       listSeoEntities(context.supabase, merchantId),
@@ -53,8 +62,16 @@ export const seoLoadFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadSeoMeta } = await import("./seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return loadSeoMeta(context.supabase, merchantId, data.entityType, data.entityId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return loadSeoMeta(
+      context.supabase,
+      merchantId,
+      data.entityType,
+      data.entityId,
+    );
   });
 
 export const seoSaveFn = createServerFn({ method: "POST" })
@@ -63,7 +80,10 @@ export const seoSaveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { saveSeoMeta } = await import("./seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return saveSeoMeta(context.supabase, merchantId, context.userId, data);
   });
 
@@ -72,7 +92,10 @@ export const consentLedgerFn = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { consentLedger } = await import("./consent.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return consentLedger(context.supabase, merchantId);
   });
 
@@ -94,7 +117,10 @@ export const consentRecordFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { recordConsent } = await import("./consent.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("consent.record", `${merchantId}:${context.userId}`);
 
     const { data: subscriber } = await (context.supabase as any)
@@ -127,7 +153,10 @@ export const seoTemplatesFn = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { listSeoTemplates, listRedirects } = await import("./seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     const [templates, redirects] = await Promise.all([
       listSeoTemplates(context.supabase, merchantId),
       listRedirects(context.supabase, merchantId),
@@ -150,7 +179,10 @@ export const seoTemplateSaveFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { saveSeoTemplate } = await import("./seo.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.write", `${merchantId}:${context.userId}`);
     return saveSeoTemplate(context.supabase, merchantId, context.userId, data);
   });
@@ -170,7 +202,10 @@ export const seoRedirectSaveFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { createRedirect } = await import("./seo.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.write", `${merchantId}:${context.userId}`);
     return createRedirect(context.supabase, merchantId, data);
   });
@@ -181,11 +216,13 @@ export const seoRedirectDeleteFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { deleteRedirect } = await import("./seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await deleteRedirect(context.supabase, merchantId, data.id);
     return { ok: true };
   });
-
 
 /* --------------------- Phase 2 — bulk editing & the gate ------------------- */
 
@@ -194,7 +231,9 @@ const bulkQuery = z.object({
   pageSize: z.number().int().min(5).max(100).default(25),
   search: z.string().max(120).default(""),
   type: z.union([entityType, z.literal("all")]).default("all"),
-  state: z.enum(["all", "missing_title", "missing_description", "noindex", "poor"]).default("all"),
+  state: z
+    .enum(["all", "missing_title", "missing_description", "noindex", "poor"])
+    .default("all"),
   sort: z.enum(["label", "score", "type"]).default("label"),
   direction: z.enum(["asc", "desc"]).default("asc"),
 });
@@ -207,7 +246,10 @@ export const seoBulkFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { listSeoBulk } = await import("./seo.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.read", `${merchantId}:${context.userId}`);
     return listSeoBulk(context.supabase, merchantId, data);
   });
@@ -236,8 +278,16 @@ export const seoBulkSaveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { saveSeoBulk } = await import("./seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return saveSeoBulk(context.supabase, merchantId, context.userId, data.edits);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return saveSeoBulk(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.edits,
+    );
   });
 
 /**
@@ -263,7 +313,10 @@ export const seoGateFn = createServerFn({ method: "POST" })
     const { evaluateSeoPublishGate } = await import("./seo.server");
     const { requestOrigin } = await import("./site-origin.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.read", `${merchantId}:${context.userId}`);
     return evaluateSeoPublishGate(context.supabase, merchantId, {
       ...data,

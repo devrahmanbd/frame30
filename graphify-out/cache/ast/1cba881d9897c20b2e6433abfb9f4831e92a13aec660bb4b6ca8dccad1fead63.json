@@ -1,1 +1,819 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "label": "courier-adapters.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L1"}, {"id": "lib_courier_adapters_server_normalizedstatus", "label": "NormalizedStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L14"}, {"id": "lib_courier_adapters_server_quoterequest", "label": "QuoteRequest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L23"}, {"id": "lib_courier_adapters_server_shipmentrequest", "label": "ShipmentRequest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L30"}, {"id": "lib_courier_adapters_server_shipmentresult", "label": "ShipmentResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L35"}, {"id": "lib_courier_adapters_server_normalizedevent", "label": "NormalizedEvent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L37"}, {"id": "lib_courier_adapters_server_carrierprofile", "label": "CarrierProfile", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L45"}, {"id": "lib_courier_adapters_server_carrier_profiles", "label": "CARRIER_PROFILES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L55"}, {"id": "lib_courier_adapters_server_status_words", "label": "STATUS_WORDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L113"}, {"id": "lib_courier_adapters_server_normalizestatusword", "label": "normalizeStatusWord()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L138"}, {"id": "lib_courier_adapters_server_adaptererror", "label": "AdapterError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L144"}, {"id": "lib_courier_adapters_server_adaptererror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L145"}, {"id": "lib_courier_adapters_server_breaker", "label": "Breaker", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L156"}, {"id": "lib_courier_adapters_server_breakers", "label": "breakers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L157"}, {"id": "lib_courier_adapters_server_breakerstate", "label": "breakerState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L162"}, {"id": "lib_courier_adapters_server_recordfailure", "label": "recordFailure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L170"}, {"id": "lib_courier_adapters_server_recordsuccess", "label": "recordSuccess()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L181"}, {"id": "lib_courier_adapters_server_resetbreakers", "label": "resetBreakers()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L186"}, {"id": "lib_courier_adapters_server_withtimeout", "label": "withTimeout()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L190"}, {"id": "lib_courier_adapters_server_callcarrier", "label": "callCarrier()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L204"}, {"id": "lib_courier_adapters_server_tohex", "label": "toHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L238"}, {"id": "lib_courier_adapters_server_hmachex", "label": "hmacHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L242"}, {"id": "lib_courier_adapters_server_constanttimeequal", "label": "constantTimeEqual()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L253"}, {"id": "lib_courier_adapters_server_verifysignature", "label": "verifySignature()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L260"}, {"id": "lib_courier_adapters_server_courieradapter", "label": "CourierAdapter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L272"}, {"id": "lib_courier_adapters_server_makeadapter", "label": "makeAdapter()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L285"}, {"id": "lib_courier_adapters_server_adapters", "label": "ADAPTERS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L328"}, {"id": "lib_courier_adapters_server_adapterfor", "label": "adapterFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L333"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_normalizedstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_quoterequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_shipmentrequest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_shipmentresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_normalizedevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_carrierprofile", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_carrier_profiles", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_status_words", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_normalizestatusword", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L138", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_adaptererror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L144", "weight": 1.0}, {"source": "lib_courier_adapters_server_adaptererror", "target": "lib_courier_adapters_server_adaptererror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L145", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_breaker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L156", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_breakers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_breakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_recordfailure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_recordsuccess", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L181", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_resetbreakers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_withtimeout", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L190", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_callcarrier", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L204", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_tohex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L238", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_hmachex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L242", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_constanttimeequal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L253", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_verifysignature", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L260", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_courieradapter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L272", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_makeadapter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L285", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_adapters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L328", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts", "target": "lib_courier_adapters_server_adapterfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L333", "weight": 1.0}, {"source": "lib_courier_adapters_server_recordfailure", "target": "lib_courier_adapters_server_breakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L178", "weight": 1.0}, {"source": "lib_courier_adapters_server_callcarrier", "target": "lib_courier_adapters_server_breakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L210", "weight": 1.0}, {"source": "lib_courier_adapters_server_callcarrier", "target": "lib_courier_adapters_server_withtimeout", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L218", "weight": 1.0}, {"source": "lib_courier_adapters_server_callcarrier", "target": "lib_courier_adapters_server_recordsuccess", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L219", "weight": 1.0}, {"source": "lib_courier_adapters_server_callcarrier", "target": "lib_courier_adapters_server_recordfailure", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L224", "weight": 1.0}, {"source": "lib_courier_adapters_server_hmachex", "target": "lib_courier_adapters_server_tohex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L250", "weight": 1.0}, {"source": "lib_courier_adapters_server_verifysignature", "target": "lib_courier_adapters_server_constanttimeequal", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L267", "weight": 1.0}, {"source": "lib_courier_adapters_server_verifysignature", "target": "lib_courier_adapters_server_hmachex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L267", "weight": 1.0}, {"source": "lib_courier_adapters_server_adapterfor", "target": "lib_courier_adapters_server_makeadapter", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L344", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_courier_adapters_server_normalizestatusword", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L140"}, {"caller_nid": "lib_courier_adapters_server_normalizestatusword", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L140"}, {"caller_nid": "lib_courier_adapters_server_normalizestatusword", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L140"}, {"caller_nid": "lib_courier_adapters_server_adaptererror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L149"}, {"caller_nid": "lib_courier_adapters_server_breakerstate", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L163"}, {"caller_nid": "lib_courier_adapters_server_breakerstate", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L165"}, {"caller_nid": "lib_courier_adapters_server_recordfailure", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L171"}, {"caller_nid": "lib_courier_adapters_server_recordfailure", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L172"}, {"caller_nid": "lib_courier_adapters_server_recordfailure", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L177"}, {"caller_nid": "lib_courier_adapters_server_recordfailure", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L178"}, {"caller_nid": "lib_courier_adapters_server_recordsuccess", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L182"}, {"caller_nid": "lib_courier_adapters_server_resetbreakers", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L187"}, {"caller_nid": "lib_courier_adapters_server_withtimeout", "callee": "race", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L193"}, {"caller_nid": "lib_courier_adapters_server_withtimeout", "callee": "work", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L194"}, {"caller_nid": "lib_courier_adapters_server_withtimeout", "callee": "clearTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L200"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L211"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L220"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L225"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L227"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L227"}, {"caller_nid": "lib_courier_adapters_server_callcarrier", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L231"}, {"caller_nid": "lib_courier_adapters_server_tohex", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L239"}, {"caller_nid": "lib_courier_adapters_server_tohex", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L239"}, {"caller_nid": "lib_courier_adapters_server_hmachex", "callee": "importKey", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L243"}, {"caller_nid": "lib_courier_adapters_server_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L245"}, {"caller_nid": "lib_courier_adapters_server_hmachex", "callee": "sign", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L250"}, {"caller_nid": "lib_courier_adapters_server_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L250"}, {"caller_nid": "lib_courier_adapters_server_constanttimeequal", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L256"}, {"caller_nid": "lib_courier_adapters_server_constanttimeequal", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L256"}, {"caller_nid": "lib_courier_adapters_server_verifysignature", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L266"}, {"caller_nid": "lib_courier_adapters_server_verifysignature", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L266"}, {"caller_nid": "lib_courier_adapters_server_verifysignature", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L266"}, {"caller_nid": "lib_courier_adapters_server_adapterfor", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L334"}, {"caller_nid": "lib_courier_adapters_server_adapterfor", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L335"}, {"caller_nid": "lib_courier_adapters_server_adapterfor", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L347"}, {"caller_nid": "lib_courier_adapters_server_adapterfor", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts", "source_location": "L359"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "label": "courier-adapters.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_courier_adapters_server_normalizedstatus",
+      "label": "NormalizedStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_courier_adapters_server_quoterequest",
+      "label": "QuoteRequest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_courier_adapters_server_shipmentrequest",
+      "label": "ShipmentRequest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_courier_adapters_server_shipmentresult",
+      "label": "ShipmentResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_courier_adapters_server_normalizedevent",
+      "label": "NormalizedEvent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_courier_adapters_server_carrierprofile",
+      "label": "CarrierProfile",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_courier_adapters_server_carrier_profiles",
+      "label": "CARRIER_PROFILES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L55"
+    },
+    {
+      "id": "lib_courier_adapters_server_status_words",
+      "label": "STATUS_WORDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_courier_adapters_server_normalizestatusword",
+      "label": "normalizeStatusWord()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L138"
+    },
+    {
+      "id": "lib_courier_adapters_server_adaptererror",
+      "label": "AdapterError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "lib_courier_adapters_server_adaptererror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "id": "lib_courier_adapters_server_breaker",
+      "label": "Breaker",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "id": "lib_courier_adapters_server_breakers",
+      "label": "breakers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "id": "lib_courier_adapters_server_breakerstate",
+      "label": "breakerState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "lib_courier_adapters_server_recordfailure",
+      "label": "recordFailure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "lib_courier_adapters_server_recordsuccess",
+      "label": "recordSuccess()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L181"
+    },
+    {
+      "id": "lib_courier_adapters_server_resetbreakers",
+      "label": "resetBreakers()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L186"
+    },
+    {
+      "id": "lib_courier_adapters_server_withtimeout",
+      "label": "withTimeout()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L190"
+    },
+    {
+      "id": "lib_courier_adapters_server_callcarrier",
+      "label": "callCarrier()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "id": "lib_courier_adapters_server_tohex",
+      "label": "toHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L238"
+    },
+    {
+      "id": "lib_courier_adapters_server_hmachex",
+      "label": "hmacHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L242"
+    },
+    {
+      "id": "lib_courier_adapters_server_constanttimeequal",
+      "label": "constantTimeEqual()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L253"
+    },
+    {
+      "id": "lib_courier_adapters_server_verifysignature",
+      "label": "verifySignature()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L260"
+    },
+    {
+      "id": "lib_courier_adapters_server_courieradapter",
+      "label": "CourierAdapter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L272"
+    },
+    {
+      "id": "lib_courier_adapters_server_makeadapter",
+      "label": "makeAdapter()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L285"
+    },
+    {
+      "id": "lib_courier_adapters_server_adapters",
+      "label": "ADAPTERS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "id": "lib_courier_adapters_server_adapterfor",
+      "label": "adapterFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L333"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_normalizedstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_quoterequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_shipmentrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_shipmentresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_normalizedevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_carrierprofile",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_carrier_profiles",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_status_words",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_normalizestatusword",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_adaptererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_adaptererror",
+      "target": "lib_courier_adapters_server_adaptererror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_breaker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_breakers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_breakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_recordfailure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_recordsuccess",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_resetbreakers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_withtimeout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L190",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_callcarrier",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_tohex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_hmachex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_constanttimeequal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_verifysignature",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_courieradapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L272",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_makeadapter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L285",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_adapters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_courier_adapters_server_ts",
+      "target": "lib_courier_adapters_server_adapterfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_recordfailure",
+      "target": "lib_courier_adapters_server_breakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_callcarrier",
+      "target": "lib_courier_adapters_server_breakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_callcarrier",
+      "target": "lib_courier_adapters_server_withtimeout",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_callcarrier",
+      "target": "lib_courier_adapters_server_recordsuccess",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L219",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_callcarrier",
+      "target": "lib_courier_adapters_server_recordfailure",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_hmachex",
+      "target": "lib_courier_adapters_server_tohex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_verifysignature",
+      "target": "lib_courier_adapters_server_constanttimeequal",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_verifysignature",
+      "target": "lib_courier_adapters_server_hmachex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L267",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_courier_adapters_server_adapterfor",
+      "target": "lib_courier_adapters_server_makeadapter",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L344",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_courier_adapters_server_normalizestatusword",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_normalizestatusword",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_normalizestatusword",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_adaptererror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_breakerstate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_breakerstate",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_recordfailure",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_recordfailure",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_recordfailure",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_recordfailure",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_recordsuccess",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_resetbreakers",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_withtimeout",
+      "callee": "race",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_withtimeout",
+      "callee": "work",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_withtimeout",
+      "callee": "clearTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L200"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L211"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_callcarrier",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L231"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_tohex",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_tohex",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_hmachex",
+      "callee": "importKey",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_hmachex",
+      "callee": "sign",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_constanttimeequal",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_constanttimeequal",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_verifysignature",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L266"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_verifysignature",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L266"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_verifysignature",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L266"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_adapterfor",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_adapterfor",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L335"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_adapterfor",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_courier_adapters_server_adapterfor",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/courier-adapters.server.ts",
+      "source_location": "L359"
+    }
+  ]
+}

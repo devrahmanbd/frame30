@@ -614,7 +614,12 @@
       "type": "cross_cutting",
       "label": "Security Enforcement Stack",
       "description": "RBAC + RLS + identity + multi-tenancy work together as a layered security enforcement mechanism across the platform.",
-      "member_nodes": ["rbac_system", "rls", "identity_system", "multi_tenancy"],
+      "member_nodes": [
+        "rbac_system",
+        "rls",
+        "identity_system",
+        "multi_tenancy"
+      ],
       "confidence_score": 1.0,
       "attributes": {
         "source_type": "EXTRACTED",
@@ -626,7 +631,11 @@
       "type": "workflow",
       "label": "Theme Lifecycle",
       "description": "Theme registry + Bazaar composition + marketplace loop form the end-to-end theme lifecycle: design, install, publish, serve, rollback, distribute.",
-      "member_nodes": ["theme_registry", "theme_plan_bazaar", "marketplace_loop"],
+      "member_nodes": [
+        "theme_registry",
+        "theme_plan_bazaar",
+        "marketplace_loop"
+      ],
       "confidence_score": 0.85,
       "attributes": {
         "source_type": "INFERRED",

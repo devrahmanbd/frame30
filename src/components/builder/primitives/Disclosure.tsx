@@ -21,7 +21,11 @@ export function Disclosure({
   const id = useId();
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className={tone === "card" ? "rounded-fq-md border border-border bg-card" : ""}>
+    <div
+      className={
+        tone === "card" ? "rounded-fq-md border border-border bg-card" : ""
+      }
+    >
       <h3 className="m-0">
         <button
           type="button"
@@ -65,10 +69,14 @@ export function Tabs({
   const id = useId();
   const [active, setActive] = useState(0);
   if (items.length === 0) return null;
-  const move = (delta: number) => setActive((i) => (i + delta + items.length) % items.length);
+  const move = (delta: number) =>
+    setActive((i) => (i + delta + items.length) % items.length);
   return (
     <div>
-      <div role="tablist" className="flex flex-wrap gap-1 border-b border-border">
+      <div
+        role="tablist"
+        className="flex flex-wrap gap-1 border-b border-border"
+      >
         {items.map((item, index) => (
           <button
             key={item.key}
@@ -84,7 +92,9 @@ export function Tabs({
               if (event.key === "ArrowLeft") move(-1);
             }}
             className={`rounded-t-fq-md px-3 py-2 text-sm ${
-              active === index ? "border-b-2 border-primary font-medium" : "text-muted-foreground"
+              active === index
+                ? "border-b-2 border-primary font-medium"
+                : "text-muted-foreground"
             }`}
           >
             {item.label}

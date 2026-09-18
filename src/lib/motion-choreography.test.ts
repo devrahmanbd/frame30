@@ -12,7 +12,11 @@
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { MOTION_TOKENS, allowsMagnetic, driftDurationMs } from "./motion-policy";
+import {
+  MOTION_TOKENS,
+  allowsMagnetic,
+  driftDurationMs,
+} from "./motion-policy";
 import {
   DRIFT,
   FOLD,
@@ -61,44 +65,73 @@ const codes = (findings: { code: string }[]) => findings.map((f) => f.code);
 
 describe("reveal contract", () => {
   it("accepts a correct 16px / 480ms entrance", () => {
-    expect(auditReveal({ ...base, reveals: [reveal(), reveal({ state: "pending", translatePx: 16 })] })).toEqual([]);
+    expect(
+      auditReveal({
+        ...base,
+        reveals: [reveal(), reveal({ state: "pending", translatePx: 16 })],
+      }),
+    ).toEqual([]);
   });
 
   it("flags a duration outside tolerance but tolerates rounding", () => {
-    expect(codes(auditReveal({ ...base, reveals: [reveal({ durationMs: 320 })] }))).toContain(
-      "motion.reveal.duration",
-    );
-    expect(auditReveal({ ...base, reveals: [reveal({ durationMs: 480 + REVEAL.durationToleranceMs })] })).toEqual([]);
+    expect(
+      codes(auditReveal({ ...base, reveals: [reveal({ durationMs: 320 })] })),
+    ).toContain("motion.reveal.duration");
+    expect(
+      auditReveal({
+        ...base,
+        reveals: [reveal({ durationMs: 480 + REVEAL.durationToleranceMs })],
+      }),
+    ).toEqual([]);
   });
 
   it("blocks layout-affecting transitions", () => {
-    const f = auditReveal({ ...base, reveals: [reveal({ properties: ["opacity", "height"] })] });
+    const f = auditReveal({
+      ...base,
+      reveals: [reveal({ properties: ["opacity", "height"] })],
+    });
     expect(codes(f)).toContain("motion.reveal.property");
     expect(f[0].severity).toBe("error");
   });
 
   it("never audits travel on a settled node", () => {
     // A settled node reports translatePx 0; that must not read as "0px rise".
-    expect(auditReveal({ ...base, reveals: [reveal({ state: "settled", translatePx: 0 })] })).toEqual([]);
+    expect(
+      auditReveal({
+        ...base,
+        reveals: [reveal({ state: "settled", translatePx: 0 })],
+      }),
+    ).toEqual([]);
   });
 
   it("flags over-long travel and over-long stagger delays", () => {
     expect(
-      codes(auditReveal({ ...base, reveals: [reveal({ state: "pending", translatePx: 48 })] })),
+      codes(
+        auditReveal({
+          ...base,
+          reveals: [reveal({ state: "pending", translatePx: 48 })],
+        }),
+      ),
     ).toContain("motion.reveal.rise");
-    expect(codes(auditReveal({ ...base, reveals: [reveal({ delayMs: 1_400 })] }))).toContain(
-      "motion.reveal.delay",
-    );
+    expect(
+      codes(auditReveal({ ...base, reveals: [reveal({ delayMs: 1_400 })] })),
+    ).toContain("motion.reveal.delay");
   });
 
   it("flags a reveal that re-hides on scroll-back", () => {
-    expect(codes(auditReveal({ ...base, reveals: [reveal({ reHidden: true })] }))).toContain(
-      "motion.reveal.repeat",
-    );
+    expect(
+      codes(auditReveal({ ...base, reveals: [reveal({ reHidden: true })] })),
+    ).toContain("motion.reveal.repeat");
   });
 
   it("is silent under reduced intent (the reduced auditor owns that pass)", () => {
-    expect(auditReveal({ ...base, intent: "reduced", reveals: [reveal({ durationMs: 90 })] })).toEqual([]);
+    expect(
+      auditReveal({
+        ...base,
+        intent: "reduced",
+        reveals: [reveal({ durationMs: 90 })],
+      }),
+    ).toEqual([]);
   });
 });
 
@@ -117,30 +150,39 @@ describe("drift contract", () => {
   });
 
   it("flags both ends of the 24–38s window", () => {
-    expect(codes(auditDrift({ ...base, drifts: [drift({ durationMs: 8_000 })] }))).toContain(
-      "motion.drift.duration",
-    );
-    expect(codes(auditDrift({ ...base, drifts: [drift({ durationMs: 60_000 })] }))).toContain(
-      "motion.drift.duration",
-    );
+    expect(
+      codes(auditDrift({ ...base, drifts: [drift({ durationMs: 8_000 })] })),
+    ).toContain("motion.drift.duration");
+    expect(
+      codes(auditDrift({ ...base, drifts: [drift({ durationMs: 60_000 })] })),
+    ).toContain("motion.drift.duration");
   });
 
   it("requires an infinite, composited loop", () => {
-    expect(codes(auditDrift({ ...base, drifts: [drift({ iterationCount: 1 })] }))).toContain(
-      "motion.drift.loop",
-    );
-    expect(codes(auditDrift({ ...base, drifts: [drift({ properties: ["filter"] })] }))).toContain(
-      "motion.drift.property",
-    );
+    expect(
+      codes(auditDrift({ ...base, drifts: [drift({ iterationCount: 1 })] })),
+    ).toContain("motion.drift.loop");
+    expect(
+      codes(
+        auditDrift({ ...base, drifts: [drift({ properties: ["filter"] })] }),
+      ),
+    ).toContain("motion.drift.property");
   });
 
   it("keeps chroma scarce: one drifting field per viewport", () => {
-    expect(codes(auditDrift({ ...base, drifts: [drift(), drift({ label: "second" })] }))).toContain(
-      "motion.drift.crowded",
-    );
+    expect(
+      codes(
+        auditDrift({ ...base, drifts: [drift(), drift({ label: "second" })] }),
+      ),
+    ).toContain("motion.drift.crowded");
     // Below the fold a second field shares no viewport with the first.
     expect(
-      codes(auditDrift({ ...base, drifts: [drift(), drift({ label: "second", aboveFold: false })] })),
+      codes(
+        auditDrift({
+          ...base,
+          drifts: [drift(), drift({ label: "second", aboveFold: false })],
+        }),
+      ),
     ).not.toContain("motion.drift.crowded");
   });
 
@@ -151,42 +193,67 @@ describe("drift contract", () => {
   });
 
   it("ignores layers with no animation attached", () => {
-    expect(auditDrift({ ...base, drifts: [drift({ durationMs: 0, iterationCount: 1 })] })).toEqual([]);
+    expect(
+      auditDrift({
+        ...base,
+        drifts: [drift({ durationMs: 0, iterationCount: 1 })],
+      }),
+    ).toEqual([]);
   });
 });
 
 describe("magnetic contract", () => {
-  const magnet = (over = {}) => ({ label: "hero CTA", enabled: true, offsetPx: 6, ...over });
+  const magnet = (over = {}) => ({
+    label: "hero CTA",
+    enabled: true,
+    offsetPx: 6,
+    ...over,
+  });
 
   it("allows the magnet on a wide viewport and blocks it below 1024px", () => {
     expect(auditMagnetic({ ...base, magnetics: [magnet()] })).toEqual([]);
-    const f = auditMagnetic({ ...base, viewportPx: 768, magnetics: [magnet()] });
+    const f = auditMagnetic({
+      ...base,
+      viewportPx: 768,
+      magnetics: [magnet()],
+    });
     expect(codes(f)).toContain("motion.magnetic.viewport");
     expect(f[0].severity).toBe("error");
   });
 
   it("accepts a disabled magnet on a phone", () => {
-    expect(auditMagnetic({ ...base, viewportPx: 375, magnetics: [magnet({ enabled: false })] })).toEqual([]);
+    expect(
+      auditMagnetic({
+        ...base,
+        viewportPx: 375,
+        magnetics: [magnet({ enabled: false })],
+      }),
+    ).toEqual([]);
   });
 
   it("caps the pull and the count per band", () => {
-    expect(codes(auditMagnetic({ ...base, magnetics: [magnet({ offsetPx: 40 })] }))).toContain(
-      "motion.magnetic.offset",
-    );
+    expect(
+      codes(auditMagnetic({ ...base, magnetics: [magnet({ offsetPx: 40 })] })),
+    ).toContain("motion.magnetic.offset");
     expect(
       codes(
         auditMagnetic({
           ...base,
-          magnetics: [magnet({ bandLabel: "hero" }), magnet({ label: "second", bandLabel: "hero" })],
+          magnetics: [
+            magnet({ bandLabel: "hero" }),
+            magnet({ label: "second", bandLabel: "hero" }),
+          ],
         }),
       ),
     ).toContain("motion.magnetic.crowded");
   });
 
   it("blocks a magnet under reduced motion", () => {
-    expect(codes(auditMagnetic({ ...base, intent: "reduced", magnetics: [magnet()] }))).toContain(
-      "motion.reduced.property",
-    );
+    expect(
+      codes(
+        auditMagnetic({ ...base, intent: "reduced", magnetics: [magnet()] }),
+      ),
+    ).toContain("motion.reduced.property");
   });
 });
 
@@ -196,7 +263,9 @@ describe("reduced-motion pass", () => {
       auditReducedMotion({
         ...base,
         intent: "reduced",
-        reveals: [reveal({ durationMs: 180, properties: ["opacity"], translatePx: 0 })],
+        reveals: [
+          reveal({ durationMs: 180, properties: ["opacity"], translatePx: 0 }),
+        ],
       }),
     ).toEqual([]);
   });
@@ -205,10 +274,21 @@ describe("reduced-motion pass", () => {
     const f = auditReducedMotion({
       ...base,
       intent: "reduced",
-      reveals: [reveal({ durationMs: 480, properties: ["opacity", "transform"], translatePx: 16, state: "pending" })],
+      reveals: [
+        reveal({
+          durationMs: 480,
+          properties: ["opacity", "transform"],
+          translatePx: 16,
+          state: "pending",
+        }),
+      ],
     });
     expect(codes(f)).toEqual(
-      expect.arrayContaining(["motion.reduced.duration", "motion.reduced.property", "motion.fold.pending"]),
+      expect.arrayContaining([
+        "motion.reduced.duration",
+        "motion.reduced.property",
+        "motion.fold.pending",
+      ]),
     );
     expect(f.every((x) => x.severity === "error")).toBe(true);
   });
@@ -219,7 +299,9 @@ describe("reduced-motion pass", () => {
         auditReducedMotion({
           ...base,
           intent: "reduced",
-          counters: [{ label: "orders", rendered: "12,004", settled: "128,400" }],
+          counters: [
+            { label: "orders", rendered: "12,004", settled: "128,400" },
+          ],
         }),
       ),
     ).toContain("motion.reduced.counter");
@@ -227,7 +309,9 @@ describe("reduced-motion pass", () => {
       auditReducedMotion({
         ...base,
         intent: "reduced",
-        counters: [{ label: "orders", rendered: " 128,400 ", settled: "128,400" }],
+        counters: [
+          { label: "orders", rendered: " 128,400 ", settled: "128,400" },
+        ],
       }),
     ).toEqual([]);
   });
@@ -235,28 +319,57 @@ describe("reduced-motion pass", () => {
 
 describe("fold and LCP contract", () => {
   it("blocks a pending node above the fold before hydration", () => {
-    const f = auditFold({ ...base, hydrated: false, reveals: [reveal({ state: "pending", topPx: 120 })] });
+    const f = auditFold({
+      ...base,
+      hydrated: false,
+      reveals: [reveal({ state: "pending", topPx: 120 })],
+    });
     expect(f[0].code).toBe("motion.fold.pending");
     expect(f[0].severity).toBe("error");
   });
 
   it("downgrades the same finding to advisory once hydrated", () => {
-    const f = auditFold({ ...base, hydrated: true, reveals: [reveal({ state: "pending", topPx: 120 })] });
+    const f = auditFold({
+      ...base,
+      hydrated: true,
+      reveals: [reveal({ state: "pending", topPx: 120 })],
+    });
     expect(f[0].severity).toBe("warn");
   });
 
   it("ignores pending nodes below the fold", () => {
-    expect(auditFold({ ...base, hydrated: false, reveals: [reveal({ state: "pending", topPx: 1_400 })] })).toEqual([]);
+    expect(
+      auditFold({
+        ...base,
+        hydrated: false,
+        reveals: [reveal({ state: "pending", topPx: 1_400 })],
+      }),
+    ).toEqual([]);
   });
 
   it("blocks any motion on the LCP text node", () => {
-    expect(codes(auditFold({ ...base, lcp: { label: "h1", durationMs: 480, animationName: "none" } }))).toEqual([
-      "motion.fold.lcp",
-    ]);
-    expect(codes(auditFold({ ...base, lcp: { label: "h1", durationMs: 0, animationName: "fq-reveal-rise" } }))).toEqual(
-      ["motion.fold.lcp"],
-    );
-    expect(auditFold({ ...base, lcp: { label: "h1", durationMs: 0, animationName: "none" } })).toEqual([]);
+    expect(
+      codes(
+        auditFold({
+          ...base,
+          lcp: { label: "h1", durationMs: 480, animationName: "none" },
+        }),
+      ),
+    ).toEqual(["motion.fold.lcp"]);
+    expect(
+      codes(
+        auditFold({
+          ...base,
+          lcp: { label: "h1", durationMs: 0, animationName: "fq-reveal-rise" },
+        }),
+      ),
+    ).toEqual(["motion.fold.lcp"]);
+    expect(
+      auditFold({
+        ...base,
+        lcp: { label: "h1", durationMs: 0, animationName: "none" },
+      }),
+    ).toEqual([]);
   });
 });
 
@@ -269,28 +382,60 @@ describe("aggregation", () => {
     expect(report.findings).toHaveLength(1);
     expect(report.counts.warn).toBe(1);
     expect(report.ok).toBe(true);
-    expect(formatMotionFinding(report.findings[0])).toMatch(/^WARN \[motion\.reveal\.duration]/);
+    expect(formatMotionFinding(report.findings[0])).toMatch(
+      /^WARN \[motion\.reveal\.duration]/,
+    );
   });
 
   it("reports ok: false only for blocking findings", () => {
-    const report = auditMotionPage({ ...base, viewportPx: 390, magnetics: [{ label: "cta", enabled: true, offsetPx: 4 }] });
+    const report = auditMotionPage({
+      ...base,
+      viewportPx: 390,
+      magnetics: [{ label: "cta", enabled: true, offsetPx: 4 }],
+    });
     expect(report.ok).toBe(false);
   });
 
   it("flags a budget overrun", () => {
-    const report = auditMotionPage({ ...base, peakConcurrentAnimations: 30, budgetMax: 12 });
+    const report = auditMotionPage({
+      ...base,
+      peakConcurrentAnimations: 30,
+      budgetMax: 12,
+    });
     expect(codes(report.findings)).toContain("motion.budget.exceeded");
   });
 
   it("dedupe and counting are independent of order", () => {
     const findings = [
-      { code: "motion.reveal.duration", severity: "warn", rule: "r", where: "a", message: "m" },
-      { code: "motion.reveal.duration", severity: "warn", rule: "r", where: "a", message: "m" },
-      { code: "motion.fold.lcp", severity: "error", rule: "r", where: "b", message: "m" },
+      {
+        code: "motion.reveal.duration",
+        severity: "warn",
+        rule: "r",
+        where: "a",
+        message: "m",
+      },
+      {
+        code: "motion.reveal.duration",
+        severity: "warn",
+        rule: "r",
+        where: "a",
+        message: "m",
+      },
+      {
+        code: "motion.fold.lcp",
+        severity: "error",
+        rule: "r",
+        where: "b",
+        message: "m",
+      },
     ] as const;
     const unique = dedupeMotionFindings([...findings]);
     expect(unique).toHaveLength(2);
-    expect(countMotionBySeverity(unique)).toEqual({ error: 1, warn: 1, info: 0 });
+    expect(countMotionBySeverity(unique)).toEqual({
+      error: 1,
+      warn: 1,
+      info: 0,
+    });
   });
 });
 
@@ -316,19 +461,26 @@ describe("spec, tokens and stylesheet agree", () => {
   });
 
   it("declares an aurora drift animation inside the window, transform only", () => {
-    const rule = css.match(/\.fq-aurora\[data-band-drift="true"\]::before\s*{[^}]+}/)?.[0] ?? "";
+    const rule =
+      css.match(
+        /\.fq-aurora\[data-band-drift="true"\]::before\s*{[^}]+}/,
+      )?.[0] ?? "";
     expect(rule).toMatch(/animation:\s*fq-aurora-drift\s+(\d+)s/);
     const seconds = Number(rule.match(/fq-aurora-drift\s+(\d+)s/)?.[1]);
     expect(seconds * 1000).toBeGreaterThanOrEqual(DRIFT.minMs);
     expect(seconds * 1000).toBeLessThanOrEqual(DRIFT.maxMs);
     expect(rule).toContain("infinite");
 
-    const keyframes = css.match(/@keyframes fq-aurora-drift\s*{[\s\S]*?\n}/)?.[0] ?? "";
+    const keyframes =
+      css.match(/@keyframes fq-aurora-drift\s*{[\s\S]*?\n}/)?.[0] ?? "";
     expect(keyframes).not.toBe("");
     // Only transform may appear in the keyframes; a filter or width here would
     // repaint a blurred layer on every frame.
-    const props = [...keyframes.matchAll(/^\s*([a-z-]+)\s*:/gm)].map((m) => m[1]);
-    for (const prop of props) expect(DRIFT.allowedProperties).toContain(prop as "transform");
+    const props = [...keyframes.matchAll(/^\s*([a-z-]+)\s*:/gm)].map(
+      (m) => m[1],
+    );
+    for (const prop of props)
+      expect(DRIFT.allowedProperties).toContain(prop as "transform");
   });
 
   it("parks the drift and every mesh blob under reduced motion", () => {
@@ -339,12 +491,17 @@ describe("spec, tokens and stylesheet agree", () => {
   });
 
   it("caps reduced-motion transitions at the spec ceiling", () => {
-    const clamp = Number(css.match(/transition-duration:\s*(\d+)ms\s*!important/)?.[1]);
+    const clamp = Number(
+      css.match(/transition-duration:\s*(\d+)ms\s*!important/)?.[1],
+    );
     expect(clamp).toBeLessThanOrEqual(REDUCED.maxDurationMs);
   });
 
   it("keeps mesh blob loops inside the drift window too", () => {
-    const durations = [...css.matchAll(/fq-mesh-drift\s+(\d+)s/g), ...css.matchAll(/animation-duration:\s*(\d+)s/g)]
+    const durations = [
+      ...css.matchAll(/fq-mesh-drift\s+(\d+)s/g),
+      ...css.matchAll(/animation-duration:\s*(\d+)s/g),
+    ]
       .map((m) => Number(m[1]) * 1000)
       .filter((ms) => ms > 1_000);
     expect(durations.length).toBeGreaterThan(0);

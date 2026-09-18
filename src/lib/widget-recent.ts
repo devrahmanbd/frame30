@@ -19,11 +19,15 @@ export type RecentStore = {
   push(type: SectionType): SectionType[];
 };
 
-export function createRecentStore(options: { storage?: Storage | null; logger?: Logger } = {}): RecentStore {
+export function createRecentStore(
+  options: { storage?: Storage | null; logger?: Logger } = {},
+): RecentStore {
   const logger = options.logger ?? (() => {});
   let storage: Storage | null;
   try {
-    storage = options.storage ?? (typeof localStorage === "undefined" ? null : localStorage);
+    storage =
+      options.storage ??
+      (typeof localStorage === "undefined" ? null : localStorage);
   } catch {
     storage = null;
   }

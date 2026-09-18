@@ -17,16 +17,16 @@ Federation lets two or more Ruflo installations — your mac, a server, a teamma
 
 ## When to use federation
 
-| Use case | Fit |
-|---|---|
-| Two laptops collaborating on a project, want bounded cost sharing + audit | ✅ |
-| Personal home server agent ↔ travel laptop | ✅ |
-| Team of 5 engineers sharing memory/skills across machines | ✅ |
-| Mobile / Windows / sub-50 peers with NAT issues | ✅ over Tailscale + federation |
-| Public-internet exposed agent endpoints | ✅ with TLS cert pinning (ADR-107) |
-| Internal HR/finance multi-agent workflow with strict access tiers | ✅ with PRIVILEGED gating + audit |
-| Replacing Slack/Discord — no | ❌ federation is for agent-to-agent, not human chat |
-| Untrusted-internet messaging without identity vetting | ❌ — trust ladder must be bootstrapped out-of-band |
+| Use case                                                                  | Fit                                                 |
+| ------------------------------------------------------------------------- | --------------------------------------------------- |
+| Two laptops collaborating on a project, want bounded cost sharing + audit | ✅                                                  |
+| Personal home server agent ↔ travel laptop                                | ✅                                                  |
+| Team of 5 engineers sharing memory/skills across machines                 | ✅                                                  |
+| Mobile / Windows / sub-50 peers with NAT issues                           | ✅ over Tailscale + federation                      |
+| Public-internet exposed agent endpoints                                   | ✅ with TLS cert pinning (ADR-107)                  |
+| Internal HR/finance multi-agent workflow with strict access tiers         | ✅ with PRIVILEGED gating + audit                   |
+| Replacing Slack/Discord — no                                              | ❌ federation is for agent-to-agent, not human chat |
+| Untrusted-internet messaging without identity vetting                     | ❌ — trust ladder must be bootstrapped out-of-band  |
 
 ## Quick start
 
@@ -94,34 +94,34 @@ Budget and trust gates apply: if the peer is below `ATTESTED`, only `discovery`/
 
 ## MCP tools at a glance
 
-| Tool | What it does | Trust gate |
-|---|---|---|
-| `federation_init` | Initialize this node | — |
-| `federation_join` | Join a peer by endpoint | — |
-| `federation_peers` | List discovered peers | — |
-| `federation_send` | Send a typed message to a peer | per-peer (varies) |
-| `federation_query` | Synchronous query → response | `ATTESTED+` |
-| `federation_status` | Current node + peer trust summary | — |
-| `federation_trust` | View / adjust trust levels | operator |
-| `federation_audit` | Read audit log | operator |
-| `federation_breaker_status` | Per-peer state, when changed, why | — |
-| `federation_evict` | Operator manual evict | operator |
-| `federation_reactivate` | Operator manual reactivate | operator |
-| `federation_report_spend` | Report cost of a completed call | integrator |
-| `federation_consensus` | Federated proposal across peers | varies |
-| **`federation_wg_status`** | (ADR-111) Per-peer mesh state | — |
-| **`federation_wg_attest`** | (ADR-111) Operator-signed witness entry | operator |
-| **`federation_wg_keyrotate`** | (ADR-111) Rotate WG keypair | operator + `confirm:true` |
+| Tool                          | What it does                            | Trust gate                |
+| ----------------------------- | --------------------------------------- | ------------------------- |
+| `federation_init`             | Initialize this node                    | —                         |
+| `federation_join`             | Join a peer by endpoint                 | —                         |
+| `federation_peers`            | List discovered peers                   | —                         |
+| `federation_send`             | Send a typed message to a peer          | per-peer (varies)         |
+| `federation_query`            | Synchronous query → response            | `ATTESTED+`               |
+| `federation_status`           | Current node + peer trust summary       | —                         |
+| `federation_trust`            | View / adjust trust levels              | operator                  |
+| `federation_audit`            | Read audit log                          | operator                  |
+| `federation_breaker_status`   | Per-peer state, when changed, why       | —                         |
+| `federation_evict`            | Operator manual evict                   | operator                  |
+| `federation_reactivate`       | Operator manual reactivate              | operator                  |
+| `federation_report_spend`     | Report cost of a completed call         | integrator                |
+| `federation_consensus`        | Federated proposal across peers         | varies                    |
+| **`federation_wg_status`**    | (ADR-111) Per-peer mesh state           | —                         |
+| **`federation_wg_attest`**    | (ADR-111) Operator-signed witness entry | operator                  |
+| **`federation_wg_keyrotate`** | (ADR-111) Rotate WG keypair             | operator + `confirm:true` |
 
 ## Trust levels — what each unlocks
 
-| Level | Capabilities (federation) | WG reachability (if ADR-111 active) |
-|---|---|---|
-| `UNTRUSTED` | `discovery` | Excluded from mesh — drop all |
-| `VERIFIED` | `+ status, ping` | Discovery port (9100) only |
-| `ATTESTED` | `+ send, receive, query-redacted` | + federation messaging (9101-9199) |
-| `TRUSTED` | `+ share-context, collaborative-task` | + ssh (22), services (80/443) |
-| `PRIVILEGED` | `+ full-memory, remote-spawn` | Full mesh |
+| Level        | Capabilities (federation)             | WG reachability (if ADR-111 active) |
+| ------------ | ------------------------------------- | ----------------------------------- |
+| `UNTRUSTED`  | `discovery`                           | Excluded from mesh — drop all       |
+| `VERIFIED`   | `+ status, ping`                      | Discovery port (9100) only          |
+| `ATTESTED`   | `+ send, receive, query-redacted`     | + federation messaging (9101-9199)  |
+| `TRUSTED`    | `+ share-context, collaborative-task` | + ssh (22), services (80/443)       |
+| `PRIVILEGED` | `+ full-memory, remote-spawn`         | Full mesh                           |
 
 Trust is earned via repeated successful interactions (the `TrustEvaluator` tracks score + interaction count). Promotion thresholds are documented in `domain/entities/trust-level.ts`.
 
@@ -156,6 +156,7 @@ ADR-111 closes that gap with an optional in-tree WG mesh:
 - Each mutation entered into an append-only Ed25519-signed witness chain
 
 **Phases shipped in alpha.14:**
+
 - Phase 1 — Manifest extension + key generation
 - Phase 2 — `WgMeshService` (no shell — emits configs + commands)
 - Phase 3 — Coordinator/breaker wiring
@@ -176,6 +177,7 @@ node v3/@claude-flow/plugin-agent-federation/scripts/phase7-stage.mjs \
 ```
 
 The script generates `/tmp/adr-111-stage/`:
+
 - `wg-key-<nodeId>.json` (mode 0600 — your private WG key)
 - `ruflo-fed.conf` (the wg-quick interface config)
 - `ruflo-fed.nft` or `ruflo-fed.pf` (firewall projection)
@@ -238,24 +240,24 @@ The federation plugin handles signing, PII gating, breaker, and audit on every s
 
 ## Where things live
 
-| What | Path |
-|---|---|
-| Plugin source | `v3/@claude-flow/plugin-agent-federation/src/` |
-| Tests | `v3/@claude-flow/plugin-agent-federation/__tests__/` |
-| ADRs | `v3/docs/adr/ADR-{097,104,105,106,107,109,110,111}-*.md` |
+| What                   | Path                                                               |
+| ---------------------- | ------------------------------------------------------------------ |
+| Plugin source          | `v3/@claude-flow/plugin-agent-federation/src/`                     |
+| Tests                  | `v3/@claude-flow/plugin-agent-federation/__tests__/`               |
+| ADRs                   | `v3/docs/adr/ADR-{097,104,105,106,107,109,110,111}-*.md`           |
 | Phase 7 staging script | `v3/@claude-flow/plugin-agent-federation/scripts/phase7-stage.mjs` |
-| Witness signing | `plugins/ruflo-core/scripts/witness/` |
+| Witness signing        | `plugins/ruflo-core/scripts/witness/`                              |
 
 ## Releases
 
-| Version | What landed |
-|---|---|
-| `1.0.0-alpha.9` | First user-visible release — see [announcement gist](https://gist.github.com/ruvnet/3b5111a2ea7e450ff262ce96e88560bf) |
-| `1.0.0-alpha.10` | ADR-097 Phases 2.a-4 + ADR-104 transport + ADR-109 inbound dispatcher |
-| `1.0.0-alpha.11-12` | ADR-109 sig verify, ADR-104 compression, ADR-107 TLS cert pinning |
-| `1.0.0-alpha.13` | ADR-104 stream multiplexing + ADR-110 MemorySpendReporter |
-| **`1.0.0-alpha.14`** | **ADR-111 Phases 1-3 (WG mesh foundation)** |
-| `1.0.0-alpha.15` (in flight) | ADR-111 Phases 4-6 (firewall + witness + MCP tools) — PR #1895 |
+| Version                      | What landed                                                                                                           |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `1.0.0-alpha.9`              | First user-visible release — see [announcement gist](https://gist.github.com/ruvnet/3b5111a2ea7e450ff262ce96e88560bf) |
+| `1.0.0-alpha.10`             | ADR-097 Phases 2.a-4 + ADR-104 transport + ADR-109 inbound dispatcher                                                 |
+| `1.0.0-alpha.11-12`          | ADR-109 sig verify, ADR-104 compression, ADR-107 TLS cert pinning                                                     |
+| `1.0.0-alpha.13`             | ADR-104 stream multiplexing + ADR-110 MemorySpendReporter                                                             |
+| **`1.0.0-alpha.14`**         | **ADR-111 Phases 1-3 (WG mesh foundation)**                                                                           |
+| `1.0.0-alpha.15` (in flight) | ADR-111 Phases 4-6 (firewall + witness + MCP tools) — PR #1895                                                        |
 
 ## Related ADRs
 

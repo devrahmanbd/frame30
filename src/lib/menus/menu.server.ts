@@ -27,7 +27,12 @@ export class MenuError extends Error {
   }
 }
 
-type MenuRow = { id: string; name: string; handle: string; locations: string[] };
+type MenuRow = {
+  id: string;
+  name: string;
+  handle: string;
+  locations: string[];
+};
 type ItemRow = {
   id: string;
   menu_id: string;
@@ -43,14 +48,22 @@ type ItemRow = {
 };
 
 const LOCATIONS: MenuLocation[] = ["header", "footer", "mobile"];
-const KINDS: MenuItemKind[] = ["page", "post", "collection", "product", "custom"];
+const KINDS: MenuItemKind[] = [
+  "page",
+  "post",
+  "collection",
+  "product",
+  "custom",
+];
 
 function toItem(row: ItemRow): MenuItem {
   return {
     id: row.id,
     parentId: row.parent_id,
     position: row.position,
-    kind: (KINDS as string[]).includes(row.kind) ? (row.kind as MenuItemKind) : "custom",
+    kind: (KINDS as string[]).includes(row.kind)
+      ? (row.kind as MenuItemKind)
+      : "custom",
     label: row.label,
     url: row.url,
     refId: row.ref_id,
@@ -60,7 +73,10 @@ function toItem(row: ItemRow): MenuItem {
   };
 }
 
-export async function listMenus(db: Db, merchantId: string): Promise<NavMenu[]> {
+export async function listMenus(
+  db: Db,
+  merchantId: string,
+): Promise<NavMenu[]> {
   const { data, error } = await db
     .from("nav_menus")
     .select("id, name, handle, locations")
@@ -72,7 +88,9 @@ export async function listMenus(db: Db, merchantId: string): Promise<NavMenu[]> 
 
   const items = await db
     .from("nav_menu_items")
-    .select("id, menu_id, parent_id, position, kind, label, url, ref_id, title_attr, new_tab, css_class")
+    .select(
+      "id, menu_id, parent_id, position, kind, label, url, ref_id, title_attr, new_tab, css_class",
+    )
     .in(
       "menu_id",
       menus.map((menu) => menu.id),
@@ -92,23 +110,48 @@ export async function listMenus(db: Db, merchantId: string): Promise<NavMenu[]> 
   }));
 }
 
-export async function createMenu(db: Db, merchantId: string, name: string): Promise<NavMenu> {
+export async function createMenu(
+  db: Db,
+  merchantId: string,
+  name: string,
+): Promise<NavMenu> {
   const clean = name.trim();
   if (!clean) throw new MenuError("no_name", "Give the menu a name");
-  const existing = await db.from("nav_menus").select("handle").eq("merchant_id", merchantId);
-  const handle = uniqueHandle(clean, ((existing.data ?? []) as { handle: string }[]).map((r) => r.handle));
+  const existing = await db
+    .from("nav_menus")
+    .select("handle")
+    .eq("merchant_id", merchantId);
+  const handle = uniqueHandle(
+    clean,
+    ((existing.data ?? []) as { handle: string }[]).map((r) => r.handle),
+  );
 
   const { data, error } = await db
     .from("nav_menus")
-    .insert({ merchant_id: merchantId, name: clean, handle, locations: [] } as never)
+    .insert({
+      merchant_id: merchantId,
+      name: clean,
+      handle,
+      locations: [],
+    } as never)
     .select("id, name, handle, locations")
     .single();
   if (error) throw new MenuError("create_failed", error.message);
   const row = data as unknown as MenuRow;
-  return { id: row.id, name: row.name, handle: row.handle, locations: [], items: [] };
+  return {
+    id: row.id,
+    name: row.name,
+    handle: row.handle,
+    locations: [],
+    items: [],
+  };
 }
 
-async function requireMenu(db: Db, merchantId: string, menuId: string): Promise<MenuRow> {
+async function requireMenu(
+  db: Db,
+  merchantId: string,
+  menuId: string,
+): Promise<MenuRow> {
   const { data, error } = await db
     .from("nav_menus")
     .select("id, name, handle, locations")
@@ -132,12 +175,17 @@ export type SaveMenuInput = {
  * trusted: rows are re-created, and parent links are re-mapped onto the ids the
  * database hands back.
  */
-export async function saveMenu(db: Db, merchantId: string, input: SaveMenuInput): Promise<NavMenu> {
+export async function saveMenu(
+  db: Db,
+  merchantId: string,
+  input: SaveMenuInput,
+): Promise<NavMenu> {
   await requireMenu(db, merchantId, input.menuId);
 
   if (input.name !== undefined || input.locations !== undefined) {
     const patch: Record<string, unknown> = {};
-    if (input.name !== undefined && input.name.trim()) patch.name = input.name.trim();
+    if (input.name !== undefined && input.name.trim())
+      patch.name = input.name.trim();
     if (input.locations !== undefined) patch.locations = input.locations;
     if (Object.keys(patch).length > 0) {
       const { error } = await db
@@ -150,7 +198,10 @@ export async function saveMenu(db: Db, merchantId: string, input: SaveMenuInput)
   }
 
   if (input.items) {
-    const wipe = await db.from("nav_menu_items").delete().eq("menu_id", input.menuId);
+    const wipe = await db
+      .from("nav_menu_items")
+      .delete()
+      .eq("menu_id", input.menuId);
     if (wipe.error) throw new MenuError("save_failed", wipe.error.message);
 
     const ordered = normalise(input.items);
@@ -181,16 +232,27 @@ export async function saveMenu(db: Db, merchantId: string, input: SaveMenuInput)
   return saved;
 }
 
-export async function deleteMenu(db: Db, merchantId: string, menuId: string): Promise<void> {
+export async function deleteMenu(
+  db: Db,
+  merchantId: string,
+  menuId: string,
+): Promise<void> {
   await requireMenu(db, merchantId, menuId);
-  const { error } = await db.from("nav_menus").delete().eq("id", menuId).eq("merchant_id", merchantId);
+  const { error } = await db
+    .from("nav_menus")
+    .delete()
+    .eq("id", menuId)
+    .eq("merchant_id", merchantId);
   if (error) throw new MenuError("delete_failed", error.message);
 }
 
 /* --------------------------------------------------------- add-item panel */
 
 /** Pages, posts, collections and products a merchant can link to. */
-export async function menuSources(db: Db, merchantId: string): Promise<MenuSource[]> {
+export async function menuSources(
+  db: Db,
+  merchantId: string,
+): Promise<MenuSource[]> {
   const out: MenuSource[] = [];
 
   // The live schema is a superset of the generated snapshot; content tables are
@@ -204,8 +266,17 @@ export async function menuSources(db: Db, merchantId: string): Promise<MenuSourc
     .is("deleted_at", null)
     .order("title", { ascending: true })
     .limit(200);
-  for (const row of (pages.data ?? []) as { id: string; title: string; slug: string }[]) {
-    out.push({ id: row.id, kind: "page", label: row.title || row.slug, url: `/pages/${row.slug}` });
+  for (const row of (pages.data ?? []) as {
+    id: string;
+    title: string;
+    slug: string;
+  }[]) {
+    out.push({
+      id: row.id,
+      kind: "page",
+      label: row.title || row.slug,
+      url: `/pages/${row.slug}`,
+    });
   }
 
   const posts = await any
@@ -215,8 +286,17 @@ export async function menuSources(db: Db, merchantId: string): Promise<MenuSourc
     .is("deleted_at", null)
     .order("updated_at", { ascending: false })
     .limit(200);
-  for (const row of (posts.data ?? []) as { id: string; title: string; slug: string }[]) {
-    out.push({ id: row.id, kind: "post", label: row.title || row.slug, url: `/blog/${row.slug}` });
+  for (const row of (posts.data ?? []) as {
+    id: string;
+    title: string;
+    slug: string;
+  }[]) {
+    out.push({
+      id: row.id,
+      kind: "post",
+      label: row.title || row.slug,
+      url: `/blog/${row.slug}`,
+    });
   }
 
   const collections = await any
@@ -226,8 +306,17 @@ export async function menuSources(db: Db, merchantId: string): Promise<MenuSourc
     .is("deleted_at", null)
     .order("name", { ascending: true })
     .limit(200);
-  for (const row of (collections.data ?? []) as { id: string; name: string; slug: string }[]) {
-    out.push({ id: row.id, kind: "collection", label: row.name || row.slug, url: `/c/${row.slug}` });
+  for (const row of (collections.data ?? []) as {
+    id: string;
+    name: string;
+    slug: string;
+  }[]) {
+    out.push({
+      id: row.id,
+      kind: "collection",
+      label: row.name || row.slug,
+      url: `/c/${row.slug}`,
+    });
   }
 
   const products = await any
@@ -237,8 +326,17 @@ export async function menuSources(db: Db, merchantId: string): Promise<MenuSourc
     .is("deleted_at", null)
     .order("updated_at", { ascending: false })
     .limit(200);
-  for (const row of (products.data ?? []) as { id: string; title: string; slug: string }[]) {
-    out.push({ id: row.id, kind: "product", label: row.title || row.slug, url: `/p/${row.slug}` });
+  for (const row of (products.data ?? []) as {
+    id: string;
+    title: string;
+    slug: string;
+  }[]) {
+    out.push({
+      id: row.id,
+      kind: "product",
+      label: row.title || row.slug,
+      url: `/p/${row.slug}`,
+    });
   }
 
   return out;

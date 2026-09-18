@@ -28,8 +28,12 @@ export function TestimonialList() {
     if (isAnimating.current || newIndex === activeIndex) return;
     isAnimating.current = true;
 
-    const currentSlide = containerRef.current?.querySelector(`[data-index="${activeIndex}"]`);
-    const nextSlide = containerRef.current?.querySelector(`[data-index="${newIndex}"]`);
+    const currentSlide = containerRef.current?.querySelector(
+      `[data-index="${activeIndex}"]`,
+    );
+    const nextSlide = containerRef.current?.querySelector(
+      `[data-index="${newIndex}"]`,
+    );
 
     if (!currentSlide || !nextSlide) {
       isAnimating.current = false;
@@ -60,8 +64,15 @@ export function TestimonialList() {
             },
           });
 
-          tl.to(currentSlide, { autoAlpha: 0, x: -xOffset, duration: 0.5, ease: "power2.inOut" }, 0)
-            .to(nextSlide, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power2.inOut" }, 0.1);
+          tl.to(
+            currentSlide,
+            { autoAlpha: 0, x: -xOffset, duration: 0.5, ease: "power2.inOut" },
+            0,
+          ).to(
+            nextSlide,
+            { autoAlpha: 1, x: 0, duration: 0.5, ease: "power2.inOut" },
+            0.1,
+          );
         }, containerRef);
       })
       .catch(() => {
@@ -87,10 +98,9 @@ export function TestimonialList() {
 
   return (
     <div className="mt-12 md:mt-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
       {/* Responsive Grid Stacking Layout - Naturally sizes to tallest slide */}
-      <div 
-        ref={containerRef} 
+      <div
+        ref={containerRef}
         className="grid grid-cols-1 grid-rows-1 w-full relative"
       >
         {cases.map((current, i) => {
@@ -104,12 +114,12 @@ export function TestimonialList() {
               aria-hidden={!isActive}
               className={cn(
                 "col-start-1 row-start-1 flex flex-col md:flex-row items-stretch gap-6 lg:gap-10 p-3 sm:p-4 lg:p-6 rounded-[2rem] md:rounded-[3rem] w-full",
-                bgColor
+                bgColor,
               )}
               style={{
                 opacity: isActive ? 1 : 0,
                 visibility: isActive ? "visible" : "hidden",
-                zIndex: isActive ? 10 : 0
+                zIndex: isActive ? 10 : 0,
               }}
             >
               {/* Photo Side */}
@@ -124,9 +134,15 @@ export function TestimonialList() {
 
               {/* Content Side */}
               <div className="flex flex-col justify-center w-full md:w-[58%] lg:w-[55%] py-4 md:py-8 lg:py-12 pr-4 md:pr-10 lg:pr-16">
-                
                 {/* Big Blue Quote Icon */}
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="#4b40ff" xmlns="http://www.w3.org/2000/svg" className="mb-6 lg:mb-8 shrink-0">
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="#4b40ff"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="mb-6 lg:mb-8 shrink-0"
+                >
                   <path d="M9 13.9996V20.9996H2V13.9996C2 10.1336 5.134 6.99963 9 6.99963V9.99963C7.343 9.99963 6 11.3426 6 12.9996V13.9996H9ZM22 13.9996V20.9996H15V13.9996C15 10.1336 18.134 6.99963 22 6.99963V9.99963C20.343 9.99963 19 11.3426 19 12.9996V13.9996H22Z" />
                 </svg>
 
@@ -146,7 +162,6 @@ export function TestimonialList() {
                     </p>
                   </div>
                 </div>
-
               </div>
             </div>
           );
@@ -166,21 +181,23 @@ export function TestimonialList() {
               }}
               className={cn(
                 "h-1.5 rounded-full transition-all duration-500",
-                activeIndex === i ? "w-6 bg-foreground/40" : "w-1.5 bg-foreground/10 hover:bg-foreground/20"
+                activeIndex === i
+                  ? "w-6 bg-foreground/40"
+                  : "w-1.5 bg-foreground/10 hover:bg-foreground/20",
               )}
             />
           ))}
         </div>
-        
+
         {/* Arrows */}
         <div className="flex gap-3 absolute right-2 md:right-6">
-          <button 
+          <button
             onClick={handlePrev}
             className="flex size-11 md:size-12 items-center justify-center rounded-full border border-border bg-background hover:bg-muted text-foreground transition-all active:scale-95 text-lg font-medium"
           >
             ←
           </button>
-          <button 
+          <button
             onClick={handleNext}
             className="flex size-11 md:size-12 items-center justify-center rounded-full border border-border bg-background hover:bg-muted text-foreground transition-all active:scale-95 text-lg font-medium"
           >
@@ -188,7 +205,6 @@ export function TestimonialList() {
           </button>
         </div>
       </div>
-      
     </div>
   );
 }

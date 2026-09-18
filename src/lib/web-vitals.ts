@@ -99,7 +99,12 @@ export type BudgetReport = {
   failures: BudgetFailure[];
 };
 
-function fail(code: string, message: string, actual: number, budget: number): BudgetFailure {
+function fail(
+  code: string,
+  message: string,
+  actual: number,
+  budget: number,
+): BudgetFailure {
   return { code, message, actual, budget };
 }
 
@@ -145,11 +150,15 @@ export type ThirdPartyScript = {
   deferred: boolean;
 };
 
-export function checkThirdPartyBudget(scripts: ThirdPartyScript[]): BudgetReport {
+export function checkThirdPartyBudget(
+  scripts: ThirdPartyScript[],
+): BudgetReport {
   const failures: BudgetFailure[] = [];
   for (const script of scripts) {
     if (!script.deferred) {
-      failures.push(fail("third_party:blocking", `${script.name} is not deferred.`, 1, 0));
+      failures.push(
+        fail("third_party:blocking", `${script.name} is not deferred.`, 1, 0),
+      );
     }
   }
   if (scripts.length > THIRD_PARTY_BUDGET.maxScripts) {
@@ -190,4 +199,3 @@ export const FONT_PRELOAD = fontPreload({
   fontDisplay: "Noto Sans Bengali",
   fontBody: "Inter",
 });
-

@@ -23,18 +23,28 @@ describe("Phase 9.2 — Framique Knowledge Base Grounding & Hybrid Semantic Sear
     expect(FRAMIQUE_CANONICAL_KB_DOCS).toHaveLength(5);
     const titles = FRAMIQUE_CANONICAL_KB_DOCS.map((d) => d.title);
 
-    expect(titles.some((t) => t.includes("SteadFast Courier Webhook"))).toBe(true);
-    expect(titles.some((t) => t.includes("bKash Tokenized Checkout"))).toBe(true);
+    expect(titles.some((t) => t.includes("SteadFast Courier Webhook"))).toBe(
+      true,
+    );
+    expect(titles.some((t) => t.includes("bKash Tokenized Checkout"))).toBe(
+      true,
+    );
     expect(titles.some((t) => t.includes("Page Builder AST"))).toBe(true);
-    expect(titles.some((t) => t.includes("Multi-Tenant Merchant Isolation"))).toBe(true);
-    expect(titles.some((t) => t.includes("Pathao & RedX Logistics"))).toBe(true);
+    expect(
+      titles.some((t) => t.includes("Multi-Tenant Merchant Isolation")),
+    ).toBe(true);
+    expect(titles.some((t) => t.includes("Pathao & RedX Logistics"))).toBe(
+      true,
+    );
   });
 
   it("queries 'How do I configure SteadFast courier webhook?' asserting top-ranked hit is SteadFast docs with cosine similarity > 0.82", async () => {
     const query = "How do I configure SteadFast courier webhook?";
     const queryEmbedding = generateDeterministicEmbedding(query, 1024);
 
-    const steadfastDoc = FRAMIQUE_CANONICAL_KB_DOCS.find((d) => d.id === "kb-doc-steadfast-courier")!;
+    const steadfastDoc = FRAMIQUE_CANONICAL_KB_DOCS.find(
+      (d) => d.id === "kb-doc-steadfast-courier",
+    )!;
     const steadfastEmbedding = generateDeterministicEmbedding(
       `${steadfastDoc.title}\n${steadfastDoc.body}`,
       1024,
@@ -69,7 +79,8 @@ describe("Phase 9.2 — Framique Knowledge Base Grounding & Hybrid Semantic Sear
   });
 
   it("queries Page Builder AST layout customization asserting builder doc is top-ranked", async () => {
-    const query = "How do I customize homepage layout sections with Page Builder AST?";
+    const query =
+      "How do I customize homepage layout sections with Page Builder AST?";
     const results = await searchKbHybrid(TEST_MERCHANT, query, 3);
 
     expect(results.length).toBeGreaterThan(0);
@@ -79,7 +90,8 @@ describe("Phase 9.2 — Framique Knowledge Base Grounding & Hybrid Semantic Sear
   });
 
   it("queries tenant isolation and custom domain security", async () => {
-    const query = "Are customer orders isolated between different stores on Framique?";
+    const query =
+      "Are customer orders isolated between different stores on Framique?";
     const results = await searchKbHybrid(TEST_MERCHANT, query, 3);
 
     expect(results.length).toBeGreaterThan(0);

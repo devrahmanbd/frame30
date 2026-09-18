@@ -51,12 +51,15 @@ export class PayoutError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
 async function assertMerchantAdmin(db: Client, merchantId: string) {
-  const { data, error } = await db.rpc("is_merchant_admin", { _merchant_id: merchantId });
+  const { data, error } = await db.rpc("is_merchant_admin", {
+    _merchant_id: merchantId,
+  });
   if (error || data !== true) throw new PayoutError("payout.forbidden", 403);
 }
 
@@ -130,26 +133,32 @@ export async function merchantBalance(merchantId: string): Promise<Balance> {
       .eq("merchant_id", merchantId)
       .is("released_at", null),
   ]);
-  const entries = ((ledger.data ?? []) as { direction: string; seller_minor_int: number | string }[]).map(
-    (r) => ({
-      direction: r.direction === "debit" ? ("debit" as const) : ("credit" as const),
-      sellerMinor: Number(r.seller_minor_int ?? 0),
-    }),
-  );
-  const reservedMinor = ((inflight.data ?? []) as { amount_minor_int: number }[]).reduce(
-    (s, r) => s + Number(r.amount_minor_int ?? 0),
-    0,
-  );
-  const holdMinor = ((holds.data ?? []) as { amount_minor_int: number }[]).reduce(
-    (s, r) => s + Number(r.amount_minor_int ?? 0),
-    0,
-  );
+  const entries = (
+    (ledger.data ?? []) as {
+      direction: string;
+      seller_minor_int: number | string;
+    }[]
+  ).map((r) => ({
+    direction:
+      r.direction === "debit" ? ("debit" as const) : ("credit" as const),
+    sellerMinor: Number(r.seller_minor_int ?? 0),
+  }));
+  const reservedMinor = (
+    (inflight.data ?? []) as { amount_minor_int: number }[]
+  ).reduce((s, r) => s + Number(r.amount_minor_int ?? 0), 0);
+  const holdMinor = (
+    (holds.data ?? []) as { amount_minor_int: number }[]
+  ).reduce((s, r) => s + Number(r.amount_minor_int ?? 0), 0);
   return computeBalance({ entries, reservedMinor, holdMinor });
 }
 
 /* -------------------------------- accounts -------------------------------- */
 
-export async function listAccounts(db: Client, merchantId: string, userId: string) {
+export async function listAccounts(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   await enforceRateLimit("payout.read", `${merchantId}:${userId}`);
   const { data } = await db
     .from("payout_accounts")
@@ -170,7 +179,11 @@ export async function listAccounts(db: Client, merchantId: string, userId: strin
     verifiedAt: a.verified_at,
     rejectionReason: a.rejection_reason,
     // Never return a full destination; the masked form is enough to choose one.
-    destination: maskDestination({ method: a.method as PayoutMethod, msisdn: a.msisdn, accountNumber: a.account_number }),
+    destination: maskDestination({
+      method: a.method as PayoutMethod,
+      msisdn: a.msisdn,
+      accountNumber: a.account_number,
+    }),
   }));
 }
 
@@ -204,9 +217,11 @@ export async function addAccount(
     accountNumber: input.accountNumber ?? null,
     bankName: input.bankName ?? null,
   });
-  if (!verdict.ok) throw new PayoutError(verdict.code ?? "payout.bad_account", 400);
+  if (!verdict.ok)
+    throw new PayoutError(verdict.code ?? "payout.bad_account", 400);
 
-  const tail = input.method === "mfs" ? (msisdn ?? "") : (input.accountNumber ?? "");
+  const tail =
+    input.method === "mfs" ? (msisdn ?? "") : (input.accountNumber ?? "");
   const service = await admin();
   const { data, error } = await service
     .from("payout_accounts")
@@ -227,7 +242,8 @@ export async function addAccount(
     })
     .select("id")
     .single();
-  if (error || !data) throw new PayoutError("payout.account_create_failed", 500);
+  if (error || !data)
+    throw new PayoutError("payout.account_create_failed", 500);
   if (input.makeDefault) {
     await service
       .from("payout_accounts")
@@ -235,7 +251,10 @@ export async function addAccount(
       .eq("merchant_id", merchantId)
       .neq("id", data.id);
   }
-  incr("framique_payout_account_total", { method: input.method, outcome: "created" });
+  incr("framique_payout_account_total", {
+    method: input.method,
+    outcome: "created",
+  });
   return listAccounts(db, merchantId, userId);
 }
 
@@ -287,7 +306,11 @@ function toView(row: PayoutRow, approvals: Approval[]): PayoutView {
   };
 }
 
-export async function listPayouts(db: Client, merchantId: string, userId: string) {
+export async function listPayouts(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   await enforceRateLimit("payout.read", `${merchantId}:${userId}`);
   return withSpan("payout.list", async () => {
     const { data } = await db
@@ -301,7 +324,12 @@ export async function listPayouts(db: Client, merchantId: string, userId: string
       .from("payout_approvals")
       .select("payout_id, actor, decision, created_at")
       .eq("merchant_id", merchantId)
-      .in("payout_id", rows.length ? rows.map((r) => r.id) : ["00000000-0000-0000-0000-000000000000"]);
+      .in(
+        "payout_id",
+        rows.length
+          ? rows.map((r) => r.id)
+          : ["00000000-0000-0000-0000-000000000000"],
+      );
     const byPayout = new Map<string, Approval[]>();
     for (const a of (approvalRows ?? []) as {
       payout_id: string;
@@ -333,7 +361,12 @@ export async function requestPayout(
   db: Client,
   merchantId: string,
   userId: string,
-  input: { accountId: string; amountMinor: number; note?: string | null; idempotencyKey: string },
+  input: {
+    accountId: string;
+    amountMinor: number;
+    note?: string | null;
+    idempotencyKey: string;
+  },
 ) {
   await assertMerchantAdmin(db, merchantId);
   await enforceRateLimit("payout.request", `${merchantId}:${userId}`);
@@ -342,7 +375,8 @@ export async function requestPayout(
 
   const service = await admin();
   const key = input.idempotencyKey.trim();
-  if (key.length < 8) throw new PayoutError("payout.missing_idempotency_key", 400);
+  if (key.length < 8)
+    throw new PayoutError("payout.missing_idempotency_key", 400);
 
   // Replay protection: an identical key returns the original instruction rather
   // than paying twice when the browser retries.
@@ -362,12 +396,18 @@ export async function requestPayout(
     .maybeSingle();
   if (!account) throw new PayoutError("payout.account_not_found", 404);
   const acct = account as AccountRow;
-  if (acct.state !== "verified") throw new PayoutError("payout.account_not_verified", 409);
+  if (acct.state !== "verified")
+    throw new PayoutError("payout.account_not_verified", 409);
 
   const balance = await merchantBalance(merchantId);
-  const amountVerdict = validateAmount(input.amountMinor, balance.availableMinor);
+  const amountVerdict = validateAmount(
+    input.amountMinor,
+    balance.availableMinor,
+  );
   if (!amountVerdict.ok) {
-    incr("framique_payout_request_total", { outcome: amountVerdict.code ?? "invalid" });
+    incr("framique_payout_request_total", {
+      outcome: amountVerdict.code ?? "invalid",
+    });
     throw new PayoutError(amountVerdict.code ?? "payout.invalid_amount", 400);
   }
 
@@ -393,10 +433,18 @@ export async function requestPayout(
     .single();
   if (error || !data) throw new PayoutError("payout.create_failed", 500);
   const row = data as PayoutRow;
-  await audit(row.id, merchantId, "payout.requested", userId, null, "requested", {
-    amountMinor: input.amountMinor,
-    feeMinor: fee,
-  });
+  await audit(
+    row.id,
+    merchantId,
+    "payout.requested",
+    userId,
+    null,
+    "requested",
+    {
+      amountMinor: input.amountMinor,
+      feeMinor: fee,
+    },
+  );
   incr("framique_payout_request_total", { outcome: "ok" });
   observe("framique_payout_amount_minor", input.amountMinor, { method });
   return toView(row, []);
@@ -406,7 +454,11 @@ export async function decidePayout(
   db: Client,
   merchantId: string,
   actorId: string,
-  input: { payoutId: string; decision: "approve" | "reject"; note?: string | null },
+  input: {
+    payoutId: string;
+    decision: "approve" | "reject";
+    note?: string | null;
+  },
 ) {
   await assertMerchantAdmin(db, merchantId);
   await enforceRateLimit("payout.approve", `${merchantId}:${actorId}`);
@@ -419,8 +471,10 @@ export async function decidePayout(
     .maybeSingle();
   if (!data) throw new PayoutError("payout.not_found", 404);
   const row = data as PayoutRow;
-  if (row.state !== "requested") throw new PayoutError("payout.not_pending", 409);
-  if (row.requested_by === actorId) throw new PayoutError("payout.self_approval", 403);
+  if (row.state !== "requested")
+    throw new PayoutError("payout.not_pending", 409);
+  if (row.requested_by === actorId)
+    throw new PayoutError("payout.self_approval", 403);
 
   await service.from("payout_approvals").insert({
     payout_id: row.id,
@@ -434,11 +488,13 @@ export async function decidePayout(
     .from("payout_approvals")
     .select("actor, decision, created_at")
     .eq("payout_id", row.id);
-  const approvals: Approval[] = ((approvalRows ?? []) as {
-    actor: string;
-    decision: string;
-    created_at: string;
-  }[]).map((a) => ({
+  const approvals: Approval[] = (
+    (approvalRows ?? []) as {
+      actor: string;
+      decision: string;
+      created_at: string;
+    }[]
+  ).map((a) => ({
     actorId: a.actor,
     decision: a.decision === "reject" ? "reject" : "approve",
     at: a.created_at,
@@ -450,7 +506,14 @@ export async function decidePayout(
   });
 
   if (verdict.rejected) {
-    const updated = await transition(row, "cancelled", actorId, "payout.rejected", {}, { note: input.note ?? null });
+    const updated = await transition(
+      row,
+      "cancelled",
+      actorId,
+      "payout.rejected",
+      {},
+      { note: input.note ?? null },
+    );
     incr("framique_payout_decision_total", { decision: "reject" });
     return toView(updated, approvals);
   }
@@ -460,21 +523,38 @@ export async function decidePayout(
       "approved",
       actorId,
       "payout.approved",
-      { released_by: actorId, released_at: new Date().toISOString(), next_attempt_at: new Date().toISOString() },
+      {
+        released_by: actorId,
+        released_at: new Date().toISOString(),
+        next_attempt_at: new Date().toISOString(),
+      },
       { approvals: verdict.approvals },
     );
     incr("framique_payout_decision_total", { decision: "approve_final" });
     return toView(updated, approvals);
   }
-  await audit(row.id, merchantId, "payout.approval_recorded", actorId, "requested", "requested", {
-    approvals: verdict.approvals,
-    required: verdict.required,
-  });
+  await audit(
+    row.id,
+    merchantId,
+    "payout.approval_recorded",
+    actorId,
+    "requested",
+    "requested",
+    {
+      approvals: verdict.approvals,
+      required: verdict.required,
+    },
+  );
   incr("framique_payout_decision_total", { decision: "approve_partial" });
   return toView(row, approvals);
 }
 
-export async function cancelPayout(db: Client, merchantId: string, userId: string, payoutId: string) {
+export async function cancelPayout(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  payoutId: string,
+) {
   await assertMerchantAdmin(db, merchantId);
   await enforceRateLimit("payout.approve", `${merchantId}:${userId}`);
   const service = await admin();
@@ -485,7 +565,12 @@ export async function cancelPayout(db: Client, merchantId: string, userId: strin
     .eq("merchant_id", merchantId)
     .maybeSingle();
   if (!data) throw new PayoutError("payout.not_found", 404);
-  const updated = await transition(data as PayoutRow, "cancelled", userId, "payout.canceled");
+  const updated = await transition(
+    data as PayoutRow,
+    "cancelled",
+    userId,
+    "payout.canceled",
+  );
   return toView(updated, []);
 }
 
@@ -520,7 +605,9 @@ export async function processPayoutQueue(limit = 20) {
     try {
       const claimed =
         row.state === "approved"
-          ? await transition(row, "processing", null, "payout.processing", { attempts })
+          ? await transition(row, "processing", null, "payout.processing", {
+              attempts,
+            })
           : ((
               await service
                 .from("payouts")
@@ -538,15 +625,25 @@ export async function processPayoutQueue(limit = 20) {
         await service
           .from("payouts")
           .update({
-            next_attempt_at: new Date(now.getTime() + delay * 1000).toISOString(),
+            next_attempt_at: new Date(
+              now.getTime() + delay * 1000,
+            ).toISOString(),
             failure_code: "payout.no_live_rail",
             failure_detail: "Awaiting approved provider credentials",
           })
           .eq("id", claimed.id);
-        await audit(claimed.id, claimed.merchant_id, "payout.deferred", null, "processing", "processing", {
-          attempts,
-          retryInSeconds: delay,
-        });
+        await audit(
+          claimed.id,
+          claimed.merchant_id,
+          "payout.deferred",
+          null,
+          "processing",
+          "processing",
+          {
+            attempts,
+            retryInSeconds: delay,
+          },
+        );
         retried += 1;
         incr("framique_payout_worker_total", { outcome: "deferred" });
         continue;
@@ -557,7 +654,10 @@ export async function processPayoutQueue(limit = 20) {
         merchantId: claimed.merchant_id,
         source: "payout",
         direction: "debit",
-        gross: { minor: Number(claimed.amount_minor_int), currency: claimed.currency_code },
+        gross: {
+          minor: Number(claimed.amount_minor_int),
+          currency: claimed.currency_code,
+        },
         idempotencyKey: `payout:${claimed.id}`,
         memo: `Payout ${claimed.id}`,
       } as never);
@@ -581,10 +681,18 @@ export async function processPayoutQueue(limit = 20) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", row.id);
-        await audit(row.id, row.merchant_id, "payout.failed", null, row.state as PayoutState, "failed", {
-          attempts,
-          message,
-        });
+        await audit(
+          row.id,
+          row.merchant_id,
+          "payout.failed",
+          null,
+          row.state as PayoutState,
+          "failed",
+          {
+            attempts,
+            message,
+          },
+        );
         failed += 1;
         incr("framique_payout_worker_total", { outcome: "failed" });
       } else {
@@ -592,7 +700,9 @@ export async function processPayoutQueue(limit = 20) {
         await service
           .from("payouts")
           .update({
-            next_attempt_at: new Date(now.getTime() + delay * 1000).toISOString(),
+            next_attempt_at: new Date(
+              now.getTime() + delay * 1000,
+            ).toISOString(),
             failure_code: "payout.retry",
             failure_detail: message.slice(0, 300),
           })

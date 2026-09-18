@@ -20,7 +20,15 @@ const originSchema = z
 
 const kindConfigSchema = z.object({
   include: z.boolean(),
-  changefreq: z.enum(["always", "hourly", "daily", "weekly", "monthly", "yearly", "never"]),
+  changefreq: z.enum([
+    "always",
+    "hourly",
+    "daily",
+    "weekly",
+    "monthly",
+    "yearly",
+    "never",
+  ]),
   priority: z.string().max(4),
 });
 
@@ -55,12 +63,21 @@ export const crawlStateFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ origin: originSchema }).parse(d))
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { loadCrawlSettings, previewCrawlDocuments } = await import("./sitemap-config.server");
+    const { loadCrawlSettings, previewCrawlDocuments } =
+      await import("./sitemap-config.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("seo.read", `crawl:${merchantId}:${context.userId}`);
     const settings = await loadCrawlSettings(context.supabase, merchantId);
-    const preview = await previewCrawlDocuments(context.supabase, merchantId, data.origin, {});
+    const preview = await previewCrawlDocuments(
+      context.supabase,
+      merchantId,
+      data.origin,
+      {},
+    );
     return { settings, ...preview };
   });
 
@@ -73,9 +90,20 @@ export const crawlPreviewFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { previewCrawlDocuments } = await import("./sitemap-config.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("seo.read", `crawl-preview:${merchantId}:${context.userId}`);
-    return previewCrawlDocuments(context.supabase, merchantId, data.origin, data.candidate);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "seo.read",
+      `crawl-preview:${merchantId}:${context.userId}`,
+    );
+    return previewCrawlDocuments(
+      context.supabase,
+      merchantId,
+      data.origin,
+      data.candidate,
+    );
   });
 
 export const crawlSaveFn = createServerFn({ method: "POST" })
@@ -85,10 +113,24 @@ export const crawlSaveFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { saveCrawlSettings, previewCrawlDocuments } = await import("./sitemap-config.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    const settings = await saveCrawlSettings(context.supabase, merchantId, context.userId, data.settings);
-    const preview = await previewCrawlDocuments(context.supabase, merchantId, data.origin, {});
+    const { saveCrawlSettings, previewCrawlDocuments } =
+      await import("./sitemap-config.server");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    const settings = await saveCrawlSettings(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.settings,
+    );
+    const preview = await previewCrawlDocuments(
+      context.supabase,
+      merchantId,
+      data.origin,
+      {},
+    );
     return { settings, ...preview };
   });
 
@@ -108,11 +150,25 @@ export const crawlTestPathFn = createServerFn({ method: "POST" })
     const { previewCrawlDocuments } = await import("./sitemap-config.server");
     const { testRobotsPath } = await import("./sitemap-config");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit("seo.read", `crawl-test:${merchantId}:${context.userId}`);
-    const preview = await previewCrawlDocuments(context.supabase, merchantId, data.origin, {});
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      "seo.read",
+      `crawl-test:${merchantId}:${context.userId}`,
+    );
+    const preview = await previewCrawlDocuments(
+      context.supabase,
+      merchantId,
+      data.origin,
+      {},
+    );
     const path = data.path.startsWith("/") ? data.path : `/${data.path}`;
-    return { ...testRobotsPath(preview.currentRobots, path, data.agent || "*"), path };
+    return {
+      ...testRobotsPath(preview.currentRobots, path, data.agent || "*"),
+      path,
+    };
   });
 
 export const sitemapExcludeFn = createServerFn({ method: "POST" })
@@ -128,8 +184,17 @@ export const sitemapExcludeFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { setEntitySitemapExclusion } = await import("./sitemap-config.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await setEntitySitemapExclusion(context.supabase, merchantId, context.userId, data);
+    const { setEntitySitemapExclusion } =
+      await import("./sitemap-config.server");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await setEntitySitemapExclusion(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data,
+    );
     return { ok: true as const };
   });

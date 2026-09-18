@@ -19,12 +19,7 @@
 export type NewsletterLocale = "en" | "bn";
 
 export type NewsletterStatus =
-  | "pending"
-  | "active"
-  | "unsubscribed"
-  | "bounced"
-  | "complained"
-  | "blocked";
+  "pending" | "active" | "unsubscribed" | "bounced" | "complained" | "blocked";
 
 /** Where the signup happened. Kept closed so reporting cannot drift. */
 export const NEWSLETTER_SOURCES = [
@@ -39,8 +34,12 @@ export const NEWSLETTER_SOURCES = [
 export type NewsletterSource = (typeof NEWSLETTER_SOURCES)[number];
 
 export function normaliseSource(value: unknown): NewsletterSource {
-  const v = String(value ?? "").trim().toLowerCase();
-  return (NEWSLETTER_SOURCES as readonly string[]).includes(v) ? (v as NewsletterSource) : "unknown";
+  const v = String(value ?? "")
+    .trim()
+    .toLowerCase();
+  return (NEWSLETTER_SOURCES as readonly string[]).includes(v)
+    ? (v as NewsletterSource)
+    : "unknown";
 }
 
 /**
@@ -186,34 +185,43 @@ export type EmailVerdict =
  * to) and looser than a hand-rolled `\w+@\w+` — the goal is "an address a mail
  * server will accept", not "a grammar a parser will accept".
  */
-const LOCAL_RE = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/;
+const LOCAL_RE =
+  /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/;
 const LABEL_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$/;
 
 export function validateEmail(raw: unknown): EmailVerdict {
   const value = String(raw ?? "").trim();
   if (!value) return { ok: false, reason: "email_required" };
-  if (value.length > NEWSLETTER_LIMITS.emailMaxChars) return { ok: false, reason: "email_too_long" };
+  if (value.length > NEWSLETTER_LIMITS.emailMaxChars)
+    return { ok: false, reason: "email_too_long" };
   if (/\s/.test(value)) return { ok: false, reason: "email_invalid" };
 
   const at = value.lastIndexOf("@");
-  if (at <= 0 || at === value.length - 1) return { ok: false, reason: "email_invalid" };
+  if (at <= 0 || at === value.length - 1)
+    return { ok: false, reason: "email_invalid" };
 
   const localPart = value.slice(0, at);
   const domain = value.slice(at + 1).toLowerCase();
-  if (localPart.length > NEWSLETTER_LIMITS.localPartMaxChars) return { ok: false, reason: "email_invalid" };
+  if (localPart.length > NEWSLETTER_LIMITS.localPartMaxChars)
+    return { ok: false, reason: "email_invalid" };
   if (!LOCAL_RE.test(localPart)) return { ok: false, reason: "email_invalid" };
 
   // Address literals (`user@[10.0.0.1]`) and bare hostnames are never a real
   // newsletter recipient, and both are common in scripted signups.
-  if (domain.startsWith("[") || !domain.includes(".")) return { ok: false, reason: "email_invalid" };
+  if (domain.startsWith("[") || !domain.includes("."))
+    return { ok: false, reason: "email_invalid" };
   const labels = domain.split(".");
-  if (labels.some((label) => !LABEL_RE.test(label))) return { ok: false, reason: "email_invalid" };
+  if (labels.some((label) => !LABEL_RE.test(label)))
+    return { ok: false, reason: "email_invalid" };
   const tld = labels[labels.length - 1]!;
-  if (tld.length < 2 || /\d/.test(tld)) return { ok: false, reason: "email_invalid" };
+  if (tld.length < 2 || /\d/.test(tld))
+    return { ok: false, reason: "email_invalid" };
 
   const email = `${localPart.toLowerCase()}@${domain}`;
-  if (isDisposableDomain(domain)) return { ok: false, reason: "email_disposable" };
-  if (ROLE_LOCAL_PARTS.has(localPart.toLowerCase())) return { ok: false, reason: "email_role_address" };
+  if (isDisposableDomain(domain))
+    return { ok: false, reason: "email_disposable" };
+  if (ROLE_LOCAL_PARTS.has(localPart.toLowerCase()))
+    return { ok: false, reason: "email_role_address" };
 
   return { ok: true, email, localPart: localPart.toLowerCase(), domain };
 }
@@ -235,8 +243,7 @@ export type SubmissionSignals = {
 };
 
 export type SubmissionVerdict =
-  | { ok: true; fillMs: number | null }
-  | { ok: false; reason: RejectReason };
+  { ok: true; fillMs: number | null } | { ok: false; reason: RejectReason };
 
 /**
  * Cheap, local bot filtering. None of these are proof of a bot on their own,
@@ -244,16 +251,22 @@ export type SubmissionVerdict =
  * rule is actually earning its place, and which is only rejecting humans.
  */
 export function scoreSubmission(signals: SubmissionSignals): SubmissionVerdict {
-  if (signals.honeypot && signals.honeypot.trim() !== "") return { ok: false, reason: "bot_honeypot" };
+  if (signals.honeypot && signals.honeypot.trim() !== "")
+    return { ok: false, reason: "bot_honeypot" };
   if (!signals.consent) return { ok: false, reason: "consent_required" };
 
-  if (typeof signals.renderedAt === "number" && Number.isFinite(signals.renderedAt)) {
+  if (
+    typeof signals.renderedAt === "number" &&
+    Number.isFinite(signals.renderedAt)
+  ) {
     const fillMs = signals.submittedAt - signals.renderedAt;
     // A negative delta means a forged or clock-skewed timestamp: treat it as
     // "no signal" rather than as evidence, and let the rate limiter decide.
     if (fillMs >= 0) {
-      if (fillMs < NEWSLETTER_LIMITS.minFillMs) return { ok: false, reason: "bot_timing" };
-      if (fillMs > NEWSLETTER_LIMITS.maxFormAgeMs) return { ok: false, reason: "form_expired" };
+      if (fillMs < NEWSLETTER_LIMITS.minFillMs)
+        return { ok: false, reason: "bot_timing" };
+      if (fillMs > NEWSLETTER_LIMITS.maxFormAgeMs)
+        return { ok: false, reason: "form_expired" };
       return { ok: true, fillMs };
     }
   }
@@ -279,20 +292,28 @@ export type ResendState = {
 
 export type ResendVerdict =
   | { ok: true }
-  | { ok: false; reason: "not_pending" | "cooldown" | "resend_limit"; retryAfterSeconds: number };
+  | {
+      ok: false;
+      reason: "not_pending" | "cooldown" | "resend_limit";
+      retryAfterSeconds: number;
+    };
 
 export function canResend(state: ResendState, now: Date): ResendVerdict {
-  if (state.status !== "pending") return { ok: false, reason: "not_pending", retryAfterSeconds: 0 };
+  if (state.status !== "pending")
+    return { ok: false, reason: "not_pending", retryAfterSeconds: 0 };
   if (state.resendCount >= NEWSLETTER_LIMITS.maxResends) {
     return { ok: false, reason: "resend_limit", retryAfterSeconds: 0 };
   }
   if (state.lastResendAt) {
-    const elapsed = (now.getTime() - new Date(state.lastResendAt).getTime()) / 1000;
+    const elapsed =
+      (now.getTime() - new Date(state.lastResendAt).getTime()) / 1000;
     if (elapsed < NEWSLETTER_LIMITS.resendCooldownSeconds) {
       return {
         ok: false,
         reason: "cooldown",
-        retryAfterSeconds: Math.ceil(NEWSLETTER_LIMITS.resendCooldownSeconds - elapsed),
+        retryAfterSeconds: Math.ceil(
+          NEWSLETTER_LIMITS.resendCooldownSeconds - elapsed,
+        ),
       };
     }
   }
@@ -328,7 +349,11 @@ export function statusAfterBounce(
   bounceCount: number,
   kind: "hard" | "soft",
 ): { status: NewsletterStatus; suppressed: boolean } {
-  if (current === "unsubscribed" || current === "complained" || current === "blocked") {
+  if (
+    current === "unsubscribed" ||
+    current === "complained" ||
+    current === "blocked"
+  ) {
     return { status: current, suppressed: true };
   }
   if (kind === "hard" || bounceCount + 1 >= NEWSLETTER_LIMITS.maxHardBounces) {
@@ -355,7 +380,10 @@ function escapeHtml(value: string): string {
 
 const EMAIL_COPY: Record<
   EmailKind,
-  Record<NewsletterLocale, { subject: string; lines: (ctx: EmailContext) => string[]; cta?: string }>
+  Record<
+    NewsletterLocale,
+    { subject: string; lines: (ctx: EmailContext) => string[]; cta?: string }
+  >
 > = {
   double_opt_in: {
     en: {
@@ -435,7 +463,10 @@ export function renderEmail(kind: EmailKind, ctx: EmailContext): RenderedEmail {
   const text = [...lines, "", footer, ctx.origin].join("\n\n");
 
   const body = lines
-    .map((line) => `<p style="margin:0 0 16px;line-height:1.6">${escapeHtml(line)}</p>`)
+    .map(
+      (line) =>
+        `<p style="margin:0 0 16px;line-height:1.6">${escapeHtml(line)}</p>`,
+    )
     .join("");
   const button =
     kind === "double_opt_in" && copy.cta

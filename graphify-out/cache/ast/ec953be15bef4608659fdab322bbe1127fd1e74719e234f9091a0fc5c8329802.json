@@ -1,1 +1,574 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "label": "circuit-breaker.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L1"}, {"id": "lib_circuit_breaker_server_circuitbreakerstatus", "label": "CircuitBreakerStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L17"}, {"id": "lib_circuit_breaker_server_canarymetricssample", "label": "CanaryMetricsSample", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L19"}, {"id": "lib_circuit_breaker_server_circuitbreakerstate", "label": "CircuitBreakerState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L28"}, {"id": "lib_circuit_breaker_server_circuit_breaker_thresholds", "label": "CIRCUIT_BREAKER_THRESHOLDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L38"}, {"id": "lib_circuit_breaker_server_localcircuitstate", "label": "localCircuitState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L49"}, {"id": "lib_circuit_breaker_server_getcircuitbreakerstate", "label": "getCircuitBreakerState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L62"}, {"id": "lib_circuit_breaker_server_savecircuitbreakerstate", "label": "saveCircuitBreakerState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L79"}, {"id": "lib_circuit_breaker_server_resetcircuitbreaker", "label": "resetCircuitBreaker()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L101"}, {"id": "lib_circuit_breaker_server_tripcircuitbreaker", "label": "tripCircuitBreaker()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L124"}, {"id": "lib_circuit_breaker_server_evaluatecanarymetrics", "label": "evaluateCanaryMetrics()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L196"}, {"id": "lib_circuit_breaker_server_processprometheusalertwebhook", "label": "processPrometheusAlertWebhook()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L282"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_canary_weights_server_abortcanary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_canary_weights_server_getcanarystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "users_rahman_documents_frame30_src_lib_ops_alerts_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_ops_alerts_server_emitalert", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "users_rahman_documents_frame30_src_lib_redis_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_redis_server_rediscommand", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_redis_server_redisconfigured", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_redis_server_rediskey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_circuitbreakerstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_canarymetricssample", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_circuitbreakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_circuit_breaker_thresholds", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_localcircuitstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_getcircuitbreakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_savecircuitbreakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_resetcircuitbreaker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L101", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_tripcircuitbreaker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_evaluatecanarymetrics", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L196", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "target": "lib_circuit_breaker_server_processprometheusalertwebhook", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L282", "weight": 1.0}, {"source": "lib_circuit_breaker_server_resetcircuitbreaker", "target": "lib_circuit_breaker_server_savecircuitbreakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L112", "weight": 1.0}, {"source": "lib_circuit_breaker_server_tripcircuitbreaker", "target": "lib_circuit_breaker_server_savecircuitbreakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L156", "weight": 1.0}, {"source": "lib_circuit_breaker_server_evaluatecanarymetrics", "target": "lib_circuit_breaker_server_getcircuitbreakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L206", "weight": 1.0}, {"source": "lib_circuit_breaker_server_evaluatecanarymetrics", "target": "lib_circuit_breaker_server_tripcircuitbreaker", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L218", "weight": 1.0}, {"source": "lib_circuit_breaker_server_evaluatecanarymetrics", "target": "lib_circuit_breaker_server_savecircuitbreakerstate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L243", "weight": 1.0}, {"source": "lib_circuit_breaker_server_processprometheusalertwebhook", "target": "lib_circuit_breaker_server_tripcircuitbreaker", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L304", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate", "callee": "redisConfigured", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L63"}, {"caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate", "callee": "redisCommand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L65"}, {"caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate", "callee": "redisKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L65"}, {"caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L67"}, {"caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L80"}, {"caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate", "callee": "redisConfigured", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L83"}, {"caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate", "callee": "redisCommand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L85"}, {"caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate", "callee": "redisKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L87"}, {"caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L88"}, {"caller_nid": "lib_circuit_breaker_server_resetcircuitbreaker", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L109"}, {"caller_nid": "lib_circuit_breaker_server_resetcircuitbreaker", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L114"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L128"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "getCanaryState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L129"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "abortCanary", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L132"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L134"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L135"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L159"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "emitAlert", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L159"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L162"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L162"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L164"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L174"}, {"caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L178"}, {"caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L217"}, {"caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L222"}, {"caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L234"}, {"caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L251"}, {"caller_nid": "lib_circuit_breaker_server_processprometheusalertwebhook", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L290"}, {"caller_nid": "lib_circuit_breaker_server_processprometheusalertwebhook", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts", "source_location": "L294"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "label": "circuit-breaker.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_circuit_breaker_server_circuitbreakerstatus",
+      "label": "CircuitBreakerStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_circuit_breaker_server_canarymetricssample",
+      "label": "CanaryMetricsSample",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_circuit_breaker_server_circuitbreakerstate",
+      "label": "CircuitBreakerState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_circuit_breaker_server_circuit_breaker_thresholds",
+      "label": "CIRCUIT_BREAKER_THRESHOLDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_circuit_breaker_server_localcircuitstate",
+      "label": "localCircuitState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "label": "getCircuitBreakerState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "label": "saveCircuitBreakerState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "label": "resetCircuitBreaker()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "id": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "label": "tripCircuitBreaker()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "label": "evaluateCanaryMetrics()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L196"
+    },
+    {
+      "id": "lib_circuit_breaker_server_processprometheusalertwebhook",
+      "label": "processPrometheusAlertWebhook()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L282"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_canary_weights_server_abortcanary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_canary_weights_server_getcanarystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ops_alerts_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_ops_alerts_server_emitalert",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_redis_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_redis_server_rediscommand",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_redis_server_redisconfigured",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_redis_server_rediskey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_circuitbreakerstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_canarymetricssample",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_circuitbreakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_circuit_breaker_thresholds",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_localcircuitstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "target": "lib_circuit_breaker_server_processprometheusalertwebhook",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L282",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "target": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "target": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "target": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "target": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "target": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_circuit_breaker_server_processprometheusalertwebhook",
+      "target": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L304",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "callee": "redisConfigured",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "callee": "redisCommand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "callee": "redisKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "callee": "redisConfigured",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "callee": "redisCommand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "callee": "redisKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_savecircuitbreakerstate",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "getCanaryState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "abortCanary",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "emitAlert",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L234"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_processprometheusalertwebhook",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_circuit_breaker_server_processprometheusalertwebhook",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/circuit-breaker.server.ts",
+      "source_location": "L294"
+    }
+  ]
+}

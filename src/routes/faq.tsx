@@ -13,7 +13,10 @@ export const Route = createFileRoute("/faq")({
     return { origin: site?.origin ?? null };
   },
   head: ({ loaderData }) => {
-    const head = buildMarketingHead({ route: "home", origin: loaderData?.origin ?? null });
+    const head = buildMarketingHead({
+      route: "home",
+      origin: loaderData?.origin ?? null,
+    });
     return { meta: head.meta, links: head.links };
   },
   component: FaqPage,
@@ -30,11 +33,12 @@ function FaqPage() {
               Frequently Asked <span className="text-primary">Questions</span>
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl">
-              Everything you need to know about setting up your store, integrating couriers, and receiving payments in Bangladesh.
+              Everything you need to know about setting up your store,
+              integrating couriers, and receiving payments in Bangladesh.
             </p>
           </div>
           <div className="fq-span-4 hidden lg:flex justify-end items-start opacity-20 fq-reveal fq-anim-fade">
-             <HelpCircle className="size-48 text-primary" />
+            <HelpCircle className="size-48 text-primary" />
           </div>
         </div>
       </section>

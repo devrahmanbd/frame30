@@ -134,7 +134,10 @@ describe("isTrustedCsrfOrigin", () => {
         pathname: "/dashboard/products",
         lookupCustomDomain: noCustomDomain,
       });
-      expect(trusted, `${gatewayHost} should NOT be trusted on non-payment path`).toBe(false);
+      expect(
+        trusted,
+        `${gatewayHost} should NOT be trusted on non-payment path`,
+      ).toBe(false);
     }
   });
 

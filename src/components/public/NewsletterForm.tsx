@@ -111,7 +111,13 @@ export function NewsletterForm({
       className={`${className} ${inline ? "" : "space-y-3"}`}
       aria-describedby={statusId}
     >
-      <div className={inline ? "flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-2" : "space-y-2"}>
+      <div
+        className={
+          inline
+            ? "flex flex-col sm:flex-row flex-wrap items-stretch sm:items-end gap-2"
+            : "space-y-2"
+        }
+      >
         <div className="min-w-0 flex-1">
           <label htmlFor={inputId} className="block text-sm font-medium">
             {tk("news.email_label")}
@@ -134,7 +140,10 @@ export function NewsletterForm({
         </div>
 
         {/* Honeypot: off-screen, never focusable, never announced. */}
-        <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
+        >
           <label htmlFor={`${inputId}-company`}>Company</label>
           <input
             id={`${inputId}-company`}
@@ -166,14 +175,21 @@ export function NewsletterForm({
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-2.5 h-6 w-6 shrink-0 accent-primary"
         />
-        <label htmlFor={consentId} className="flex min-h-11 items-center text-xs text-muted-foreground">
+        <label
+          htmlFor={consentId}
+          className="flex min-h-11 items-center text-xs text-muted-foreground"
+        >
           {tk("news.consent")}
         </label>
       </div>
 
       <p className="text-xs text-muted-foreground">
         {tk("news.privacy_note")}{" "}
-        <Link to="/legal/$doc" params={{ doc: "privacy" }} className="underline underline-offset-2">
+        <Link
+          to="/legal/$doc"
+          params={{ doc: "privacy" }}
+          className="underline underline-offset-2"
+        >
           {lang === "bn" ? "প্রাইভেসি নীতি" : "Privacy policy"}
         </Link>
       </p>
@@ -203,11 +219,19 @@ export function NewsletterBlock({
 }) {
   const { tk } = useLang();
   return (
-    <section className={`rounded-fq-lg border border-border bg-card p-6 ${className}`} aria-labelledby={`nl-${source}`}>
-      <h2 id={`nl-${source}`} className="font-bangla-display text-lg font-semibold">
+    <section
+      className={`rounded-fq-lg border border-border bg-card p-6 ${className}`}
+      aria-labelledby={`nl-${source}`}
+    >
+      <h2
+        id={`nl-${source}`}
+        className="font-bangla-display text-lg font-semibold"
+      >
         {tk("news.title")}
       </h2>
-      <p className="mt-2 text-sm text-muted-foreground">{tk("news.subtitle")}</p>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {tk("news.subtitle")}
+      </p>
       <NewsletterForm source={source} className="mt-4" />
     </section>
   );

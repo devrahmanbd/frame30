@@ -20,7 +20,10 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
   return currentMerchantId(db, userId);
 }
 
-async function guard(bucket: Parameters<typeof import("./rate-limit.server").enforceRateLimit>[0], key: string) {
+async function guard(
+  bucket: Parameters<typeof import("./rate-limit.server").enforceRateLimit>[0],
+  key: string,
+) {
   const { enforceRateLimit } = await import("./rate-limit.server");
   await enforceRateLimit(bucket, key);
 }
@@ -42,7 +45,10 @@ export const draftOrdersLoadFn = createServerFn({ method: "GET" })
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.drafts", `${merchantId}:${context.userId}`);
     const { listDraftOrders } = await import("./commerce-desk.server");
-    return { merchantId, drafts: await listDraftOrders(context.supabase, merchantId) };
+    return {
+      merchantId,
+      drafts: await listDraftOrders(context.supabase, merchantId),
+    };
   });
 
 export const draftOrderSaveFn = createServerFn({ method: "POST" })
@@ -82,41 +88,69 @@ export const draftOrderSaveFn = createServerFn({ method: "POST" })
 export const draftOrderActionFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ id: uuid, action: z.enum(["send", "convert", "cancel"]) }).parse(d),
+    z
+      .object({ id: uuid, action: z.enum(["send", "convert", "cancel"]) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.drafts", `${merchantId}:${context.userId}`);
-    const { sendDraftOrder, convertDraftOrder, cancelDraftOrder } = await import("./commerce-desk.server");
-    if (data.action === "send") return { action: "send", ...(await sendDraftOrder(context.supabase, merchantId, data.id)) };
-    if (data.action === "convert") return { action: "convert", ...(await convertDraftOrder(context.supabase, data.id)) };
-    return { action: "cancel", ...(await cancelDraftOrder(context.supabase, merchantId, data.id)) };
+    const { sendDraftOrder, convertDraftOrder, cancelDraftOrder } =
+      await import("./commerce-desk.server");
+    if (data.action === "send")
+      return {
+        action: "send",
+        ...(await sendDraftOrder(context.supabase, merchantId, data.id)),
+      };
+    if (data.action === "convert")
+      return {
+        action: "convert",
+        ...(await convertDraftOrder(context.supabase, data.id)),
+      };
+    return {
+      action: "cancel",
+      ...(await cancelDraftOrder(context.supabase, merchantId, data.id)),
+    };
   });
 
 /** Public invoice link. Token-scoped, throttled, and never exposes the buyer's details back. */
 export const draftOrderPublicFn = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().regex(/^[a-f0-9]{32,64}$/) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ token: z.string().regex(/^[a-f0-9]{32,64}$/) }).parse(d),
+  )
   .handler(async ({ data }) => {
     const { rateLimit } = await import("./rate-limit.server");
     const verdict = await rateLimit("order.lookup", `draft:${data.token}`);
     if (!verdict.allowed) return { found: false as const, throttled: true };
     const { publicClient } = await import("./pricing.server");
     const db = publicClient() as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: unknown }>;
     };
-    const { data: result } = await db.rpc("draft_order_public", { _token: data.token });
+    const { data: result } = await db.rpc("draft_order_public", {
+      _token: data.token,
+    });
     return { ...(result as Record<string, unknown>), throttled: false };
   });
 
 export const draftOrderAcceptFn = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().regex(/^[a-f0-9]{32,64}$/) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ token: z.string().regex(/^[a-f0-9]{32,64}$/) }).parse(d),
+  )
   .handler(async ({ data }) => {
     await guard("checkout.place", `draft-accept:${data.token}`);
     const { publicClient } = await import("./pricing.server");
     const db = publicClient() as unknown as {
-      rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+      rpc: (
+        fn: string,
+        args: Record<string, unknown>,
+      ) => Promise<{ data: unknown; error: unknown }>;
     };
-    const { data: result, error } = await db.rpc("draft_order_accept", { _token: data.token });
+    const { data: result, error } = await db.rpc("draft_order_accept", {
+      _token: data.token,
+    });
     if (error) return { outcome: "error" as const };
     return result as { outcome: string };
   });
@@ -214,7 +248,10 @@ export const purchasingLoadFn = createServerFn({ method: "GET" })
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.purchasing", `${merchantId}:${context.userId}`);
     const { loadPurchasing } = await import("./commerce-desk.server");
-    return { merchantId, ...(await loadPurchasing(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await loadPurchasing(context.supabase, merchantId)),
+    };
   });
 
 export const supplierSaveFn = createServerFn({ method: "POST" })
@@ -280,7 +317,12 @@ export const purchaseOrderActionFn = createServerFn({ method: "POST" })
         id: uuid,
         action: z.enum(["submit", "cancel", "receive"]),
         lines: z
-          .array(z.object({ itemId: uuid, quantity: z.number().int().min(0).max(100000) }))
+          .array(
+            z.object({
+              itemId: uuid,
+              quantity: z.number().int().min(0).max(100000),
+            }),
+          )
           .max(300)
           .default([]),
       })
@@ -289,11 +331,12 @@ export const purchaseOrderActionFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.purchasing", `${merchantId}:${context.userId}`);
-    const { submitPurchaseOrder, cancelPurchaseOrder, receivePurchaseOrder } = await import(
-      "./commerce-desk.server"
-    );
-    if (data.action === "submit") return submitPurchaseOrder(context.supabase, merchantId, data.id);
-    if (data.action === "cancel") return cancelPurchaseOrder(context.supabase, merchantId, data.id);
+    const { submitPurchaseOrder, cancelPurchaseOrder, receivePurchaseOrder } =
+      await import("./commerce-desk.server");
+    if (data.action === "submit")
+      return submitPurchaseOrder(context.supabase, merchantId, data.id);
+    if (data.action === "cancel")
+      return cancelPurchaseOrder(context.supabase, merchantId, data.id);
     return receivePurchaseOrder(context.supabase, data.id, data.lines);
   });
 
@@ -301,12 +344,17 @@ export const purchaseOrderActionFn = createServerFn({ method: "POST" })
 
 export const variantGridFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ search: z.string().max(80).default("") }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ search: z.string().max(80).default("") }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.bulk_edit", `${merchantId}:${context.userId}`);
     const { loadVariantGrid } = await import("./commerce-desk.server");
-    return { merchantId, rows: await loadVariantGrid(context.supabase, merchantId, data.search) };
+    return {
+      merchantId,
+      rows: await loadVariantGrid(context.supabase, merchantId, data.search),
+    };
   });
 
 export const bulkUpdateVariantsFn = createServerFn({ method: "POST" })
@@ -320,7 +368,12 @@ export const bulkUpdateVariantsFn = createServerFn({ method: "POST" })
               variant_id: uuid,
               price_minor_int: minor.optional(),
               compare_at_minor_int: minor.optional(),
-              stock_quantity: z.number().int().min(0).max(10_000_000).optional(),
+              stock_quantity: z
+                .number()
+                .int()
+                .min(0)
+                .max(10_000_000)
+                .optional(),
               sku: z.string().max(80).optional(),
               barcode: z.string().max(40).optional(),
             }),
@@ -359,14 +412,19 @@ export const variantPreorderSaveFn = createServerFn({ method: "POST" })
 
 export const skuNextFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ prefix: z.string().max(24).default("SKU") }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ prefix: z.string().max(24).default("SKU") }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.codegen", `${merchantId}:${context.userId}`);
     const { nextSku } = await import("./commerce-desk.server");
     const sku = await nextSku(context.supabase, merchantId, data.prefix);
     const { ean13 } = await import("./commerce-desk");
-    return { sku, barcode: ean13(sku.replace(/\D/g, "") || Date.now().toString().slice(-8)) };
+    return {
+      sku,
+      barcode: ean13(sku.replace(/\D/g, "") || Date.now().toString().slice(-8)),
+    };
   });
 
 /* ========================= order tags + saved views ======================= */
@@ -374,7 +432,9 @@ export const skuNextFn = createServerFn({ method: "POST" })
 export const orderTagsSaveFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ orderId: uuid, tags: z.array(z.string().max(40)).max(20) }).parse(d),
+    z
+      .object({ orderId: uuid, tags: z.array(z.string().max(40)).max(20) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
@@ -388,7 +448,10 @@ export const savedViewsLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     const { listSavedViews } = await import("./commerce-desk.server");
-    return { merchantId, views: await listSavedViews(context.supabase, merchantId, context.userId) };
+    return {
+      merchantId,
+      views: await listSavedViews(context.supabase, merchantId, context.userId),
+    };
   });
 
 export const savedViewSaveFn = createServerFn({ method: "POST" })
@@ -417,7 +480,12 @@ export const savedViewDeleteFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const merchantId = await scope(context.supabase, context.userId);
     const { deleteSavedView } = await import("./commerce-desk.server");
-    return deleteSavedView(context.supabase, merchantId, context.userId, data.id);
+    return deleteSavedView(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+    );
   });
 
 /* ============================== subscriptions ============================= */
@@ -428,7 +496,10 @@ export const subscriptionsLoadFn = createServerFn({ method: "GET" })
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.subscriptions", `${merchantId}:${context.userId}`);
     const { listSubscriptions } = await import("./commerce-desk.server");
-    return { merchantId, ...(await listSubscriptions(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await listSubscriptions(context.supabase, merchantId)),
+    };
   });
 
 export const subscriptionActionFn = createServerFn({ method: "POST" })
@@ -445,7 +516,12 @@ export const subscriptionActionFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.subscriptions", `${merchantId}:${context.userId}`);
     const { setSubscriptionState } = await import("./commerce-desk.server");
-    return setSubscriptionState(context.supabase, merchantId, data.id, data.action);
+    return setSubscriptionState(
+      context.supabase,
+      merchantId,
+      data.id,
+      data.action,
+    );
   });
 
 /**
@@ -459,8 +535,12 @@ export const subscriptionBillingRunFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     await guard("commerce.subscription_run", `${merchantId}:${context.userId}`);
     const { runSubscriptionBilling } = await import("./commerce-desk.server");
-    return runSubscriptionBilling(context.supabase, merchantId, async (claim) => ({
-      paid: claim.amount_minor === 0,
-      reason: claim.amount_minor === 0 ? undefined : "awaiting_payment",
-    }));
+    return runSubscriptionBilling(
+      context.supabase,
+      merchantId,
+      async (claim) => ({
+        paid: claim.amount_minor === 0,
+        reason: claim.amount_minor === 0 ? undefined : "awaiting_payment",
+      }),
+    );
   });

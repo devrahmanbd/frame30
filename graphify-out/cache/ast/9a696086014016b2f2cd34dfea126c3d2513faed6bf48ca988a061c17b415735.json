@@ -1,1 +1,192 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "label": "immutable-artifact.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L1"}, {"id": "lib_immutable_artifact_test_dockerfilepath", "label": "dockerfilePath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L10"}, {"id": "lib_immutable_artifact_test_content", "label": "content", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L17"}, {"id": "lib_immutable_artifact_test_manifest", "label": "manifest", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L58"}, {"id": "lib_immutable_artifact_test_cmd", "label": "cmd", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L68"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "users_rahman_documents_frame30_scripts_build_immutable_artifact_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "scripts_build_immutable_artifact_generatebuildmanifest", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "scripts_build_immutable_artifact_constructdockerbuildcommand", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_dockerfilepath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_manifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_manifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts", "target": "lib_immutable_artifact_test_cmd", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts", "source_location": "L68", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "label": "immutable-artifact.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_immutable_artifact_test_dockerfilepath",
+      "label": "dockerfilePath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_immutable_artifact_test_content",
+      "label": "content",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_immutable_artifact_test_manifest",
+      "label": "manifest",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_immutable_artifact_test_cmd",
+      "label": "cmd",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L68"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "users_rahman_documents_frame30_scripts_build_immutable_artifact_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "scripts_build_immutable_artifact_generatebuildmanifest",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "scripts_build_immutable_artifact_constructdockerbuildcommand",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_dockerfilepath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_manifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_manifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_immutable_artifact_test_ts",
+      "target": "lib_immutable_artifact_test_cmd",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/immutable-artifact.test.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -15,7 +15,10 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { analyseSeo, type SeoDraft, type SeoReport } from "@/lib/seo-analysis";
-import { SEO_WORKER_PROTOCOL, type SeoWorkerResponse } from "@/lib/seo-analysis-worker-contract";
+import {
+  SEO_WORKER_PROTOCOL,
+  type SeoWorkerResponse,
+} from "@/lib/seo-analysis-worker-contract";
 
 export type SeoAnalysisState = {
   report: SeoReport;
@@ -32,18 +35,25 @@ const TIMEOUT_MS = 2_000;
 const MAX_WORKER_FAILURES = 2;
 
 function createWorker(): Worker | null {
-  if (typeof window === "undefined" || typeof Worker === "undefined") return null;
+  if (typeof window === "undefined" || typeof Worker === "undefined")
+    return null;
   try {
-    return new Worker(new URL("../lib/seo-analysis.worker.ts", import.meta.url), {
-      type: "module",
-      name: "seo-analysis",
-    });
+    return new Worker(
+      new URL("../lib/seo-analysis.worker.ts", import.meta.url),
+      {
+        type: "module",
+        name: "seo-analysis",
+      },
+    );
   } catch {
     return null;
   }
 }
 
-export function useSeoAnalysis(draft: SeoDraft, options: { debounceMs?: number } = {}): SeoAnalysisState {
+export function useSeoAnalysis(
+  draft: SeoDraft,
+  options: { debounceMs?: number } = {},
+): SeoAnalysisState {
   const debounceMs = options.debounceMs ?? DEBOUNCE_MS;
 
   // The first report is computed inline so the panel never flashes empty.
@@ -84,7 +94,12 @@ export function useSeoAnalysis(draft: SeoDraft, options: { debounceMs?: number }
       if (cancelled) return;
       const started = Date.now();
       const report = analyseSeo(draftRef.current);
-      setState({ report, analysing: false, source: "inline", lastMs: Date.now() - started });
+      setState({
+        report,
+        analysing: false,
+        source: "inline",
+        lastMs: Date.now() - started,
+      });
     };
 
     const schedule = () => {
@@ -109,7 +124,12 @@ export function useSeoAnalysis(draft: SeoDraft, options: { debounceMs?: number }
         if (cancelled) return;
         if (data.ok) {
           failuresRef.current = 0;
-          setState({ report: data.report, analysing: false, source: "worker", lastMs: data.ms });
+          setState({
+            report: data.report,
+            analysing: false,
+            source: "worker",
+            lastMs: data.ms,
+          });
         } else {
           failuresRef.current += 1;
           runInline();
@@ -142,7 +162,11 @@ export function useSeoAnalysis(draft: SeoDraft, options: { debounceMs?: number }
         runInline();
       }, TIMEOUT_MS);
 
-      worker.postMessage({ v: SEO_WORKER_PROTOCOL, id, draft: draftRef.current });
+      worker.postMessage({
+        v: SEO_WORKER_PROTOCOL,
+        id,
+        draft: draftRef.current,
+      });
     };
 
     if (timerRef.current) clearTimeout(timerRef.current);

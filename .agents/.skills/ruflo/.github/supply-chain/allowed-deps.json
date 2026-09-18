@@ -18,34 +18,15 @@
   "packages": {
     "ruflo-graph-intelligence": {
       "comment": "ADR-123 plugin",
-      "dependencies": [
-        "sublinear-time-solver",
-        "zod"
-      ],
-      "peerDependencies": [
-        "@claude-flow/cli"
-      ],
-      "devDependencies": [
-        "@types/node",
-        "typescript",
-        "vitest"
-      ]
+      "dependencies": ["sublinear-time-solver", "zod"],
+      "peerDependencies": ["@claude-flow/cli"],
+      "devDependencies": ["@types/node", "typescript", "vitest"]
     },
     "@claude-flow/browser": {
       "comment": "ADR-122 substrate",
-      "dependencies": [
-        "agent-browser",
-        "agentic-flow",
-        "zod"
-      ],
-      "peerDependencies": [
-        "@claude-flow/cli"
-      ],
-      "devDependencies": [
-        "@types/node",
-        "typescript",
-        "vitest"
-      ]
+      "dependencies": ["agent-browser", "agentic-flow", "zod"],
+      "peerDependencies": ["@claude-flow/cli"],
+      "devDependencies": ["@types/node", "typescript", "vitest"]
     }
   },
   "actions": {

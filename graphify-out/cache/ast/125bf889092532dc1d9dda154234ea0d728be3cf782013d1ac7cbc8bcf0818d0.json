@@ -1,1 +1,595 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "label": "storefront-search.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L1"}, {"id": "lib_storefront_search_sorts", "label": "SORTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L12"}, {"id": "lib_storefront_search_sortkey", "label": "SortKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L13"}, {"id": "lib_storefront_search_product_kinds_filter", "label": "PRODUCT_KINDS_FILTER", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L15"}, {"id": "lib_storefront_search_kindfilter", "label": "KindFilter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L16"}, {"id": "lib_storefront_search_searchparams", "label": "SearchParams", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L23"}, {"id": "lib_storefront_search_searchenginelabel", "label": "SearchEngineLabel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L35"}, {"id": "lib_storefront_search_facetcategory", "label": "FacetCategory", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L37"}, {"id": "lib_storefront_search_facetkind", "label": "FacetKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L38"}, {"id": "lib_storefront_search_searchfacets", "label": "SearchFacets", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L40"}, {"id": "lib_storefront_search_searchhit", "label": "SearchHit", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L48"}, {"id": "lib_storefront_search_searchresult", "label": "SearchResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L63"}, {"id": "lib_storefront_search_empty_facets", "label": "EMPTY_FACETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L77"}, {"id": "lib_storefront_search_empty_result", "label": "EMPTY_RESULT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L85"}, {"id": "lib_storefront_search_slugornull", "label": "slugOrNull()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L97"}, {"id": "lib_storefront_search_minorornull", "label": "minorOrNull()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L103"}, {"id": "lib_storefront_search_normalizesearchparams", "label": "normalizeSearchParams()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L110"}, {"id": "lib_storefront_search_tosearchquery", "label": "toSearchQuery()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L136"}, {"id": "lib_storefront_search_offsetof", "label": "offsetOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L150"}, {"id": "lib_storefront_search_pagecount", "label": "pageCount()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L154"}, {"id": "lib_storefront_search_activefiltercount", "label": "activeFilterCount()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L158"}, {"id": "lib_storefront_search_searchcachekey", "label": "searchCacheKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L170"}, {"id": "lib_storefront_search_renderpagemarkdown", "label": "renderPageMarkdown()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L192"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "users_rahman_documents_frame30_src_lib_image_transform_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_image_transform_responsiveimage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "editor_page_markdown_rendermarkdownblocks", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_sorts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_sortkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_product_kinds_filter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_kindfilter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchparams", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchenginelabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_facetcategory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_facetkind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchfacets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchhit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_empty_facets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_empty_result", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_slugornull", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_minorornull", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_normalizesearchparams", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_tosearchquery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_offsetof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L150", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_pagecount", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_activefiltercount", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L158", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_searchcachekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "target": "lib_storefront_search_renderpagemarkdown", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L192", "weight": 1.0}, {"source": "lib_storefront_search_normalizesearchparams", "target": "lib_storefront_search_minorornull", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L116", "weight": 1.0}, {"source": "lib_storefront_search_normalizesearchparams", "target": "lib_storefront_search_slugornull", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L124", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_storefront_search_slugornull", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L98"}, {"caller_nid": "lib_storefront_search_slugornull", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L98"}, {"caller_nid": "lib_storefront_search_slugornull", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L99"}, {"caller_nid": "lib_storefront_search_minorornull", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L105"}, {"caller_nid": "lib_storefront_search_minorornull", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L105"}, {"caller_nid": "lib_storefront_search_minorornull", "callee": "isInteger", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L106"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L113"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "isInteger", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L114"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L114"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L123"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L123"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L123"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L126"}, {"caller_nid": "lib_storefront_search_normalizesearchparams", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L130"}, {"caller_nid": "lib_storefront_search_tosearchquery", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L142"}, {"caller_nid": "lib_storefront_search_tosearchquery", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L143"}, {"caller_nid": "lib_storefront_search_tosearchquery", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L146"}, {"caller_nid": "lib_storefront_search_offsetof", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L151"}, {"caller_nid": "lib_storefront_search_pagecount", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L155"}, {"caller_nid": "lib_storefront_search_pagecount", "callee": "ceil", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L155"}, {"caller_nid": "lib_storefront_search_pagecount", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L155"}, {"caller_nid": "lib_storefront_search_searchcachekey", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L171"}, {"caller_nid": "lib_storefront_search_searchcachekey", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L174"}, {"caller_nid": "lib_storefront_search_renderpagemarkdown", "callee": "renderMarkdownBlocks", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts", "source_location": "L193"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "label": "storefront-search.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_storefront_search_sorts",
+      "label": "SORTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "lib_storefront_search_sortkey",
+      "label": "SortKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_storefront_search_product_kinds_filter",
+      "label": "PRODUCT_KINDS_FILTER",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_storefront_search_kindfilter",
+      "label": "KindFilter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_storefront_search_searchparams",
+      "label": "SearchParams",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_storefront_search_searchenginelabel",
+      "label": "SearchEngineLabel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_storefront_search_facetcategory",
+      "label": "FacetCategory",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_storefront_search_facetkind",
+      "label": "FacetKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_storefront_search_searchfacets",
+      "label": "SearchFacets",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_storefront_search_searchhit",
+      "label": "SearchHit",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_storefront_search_searchresult",
+      "label": "SearchResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_storefront_search_empty_facets",
+      "label": "EMPTY_FACETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_storefront_search_empty_result",
+      "label": "EMPTY_RESULT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_storefront_search_slugornull",
+      "label": "slugOrNull()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "lib_storefront_search_minorornull",
+      "label": "minorOrNull()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_storefront_search_normalizesearchparams",
+      "label": "normalizeSearchParams()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_storefront_search_tosearchquery",
+      "label": "toSearchQuery()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L136"
+    },
+    {
+      "id": "lib_storefront_search_offsetof",
+      "label": "offsetOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L150"
+    },
+    {
+      "id": "lib_storefront_search_pagecount",
+      "label": "pageCount()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_storefront_search_activefiltercount",
+      "label": "activeFilterCount()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L158"
+    },
+    {
+      "id": "lib_storefront_search_searchcachekey",
+      "label": "searchCacheKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "lib_storefront_search_renderpagemarkdown",
+      "label": "renderPageMarkdown()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L192"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "users_rahman_documents_frame30_src_lib_image_transform_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_image_transform_responsiveimage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "users_rahman_documents_frame30_src_lib_editor_page_markdown_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "editor_page_markdown_rendermarkdownblocks",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_sorts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_sortkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_product_kinds_filter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_kindfilter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchparams",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchenginelabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_facetcategory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_facetkind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchfacets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchhit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_empty_facets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_empty_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_slugornull",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_minorornull",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_normalizesearchparams",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_tosearchquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_offsetof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_pagecount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_activefiltercount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_searchcachekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "target": "lib_storefront_search_renderpagemarkdown",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L192",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_search_normalizesearchparams",
+      "target": "lib_storefront_search_minorornull",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_storefront_search_normalizesearchparams",
+      "target": "lib_storefront_search_slugornull",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_storefront_search_slugornull",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_storefront_search_slugornull",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_storefront_search_slugornull",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_storefront_search_minorornull",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_storefront_search_minorornull",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_storefront_search_minorornull",
+      "callee": "isInteger",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "isInteger",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_storefront_search_normalizesearchparams",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_storefront_search_tosearchquery",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_storefront_search_tosearchquery",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_storefront_search_tosearchquery",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_storefront_search_offsetof",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "lib_storefront_search_pagecount",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_storefront_search_pagecount",
+      "callee": "ceil",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_storefront_search_pagecount",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_storefront_search_searchcachekey",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "lib_storefront_search_searchcachekey",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_storefront_search_renderpagemarkdown",
+      "callee": "renderMarkdownBlocks",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/storefront-search.ts",
+      "source_location": "L193"
+    }
+  ]
+}

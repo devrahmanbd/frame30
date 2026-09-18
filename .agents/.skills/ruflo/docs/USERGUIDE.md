@@ -180,18 +180,18 @@ flowchart TB
 
 **RuVector Components** (included with Ruflo):
 
-| Component | Purpose | Performance |
-|-----------|---------|-------------|
-| **SONA** | Self-Optimizing Pattern Learning - learns optimal routing | Fast adaptation |
-| **EWC++** | Elastic Weight Consolidation - prevents catastrophic forgetting | Preserves learned patterns |
-| **Flash Attention** | Optimized attention computation | 2-7x speedup (benchmarked) |
-| **HNSW** | Hierarchical Navigable Small World vector search | Sub-millisecond retrieval |
-| **ReasoningBank** | Pattern storage with trajectory learning | RETRIEVE→JUDGE→DISTILL |
-| **Hyperbolic** | Poincare ball embeddings for hierarchical data | Better code relationships |
-| **LoRA/MicroLoRA** | Low-Rank Adaptation for efficient fine-tuning | Lightweight adaptation |
-| **Int8 Quantization** | Memory-efficient weight storage | ~4x memory reduction |
-| **SemanticRouter** | Semantic task routing with cosine similarity | Fast intent routing |
-| **9 RL Algorithms** | Q-Learning, SARSA, A2C, PPO, DQN, Decision Transformer, etc. | Task-specific learning |
+| Component             | Purpose                                                         | Performance                |
+| --------------------- | --------------------------------------------------------------- | -------------------------- |
+| **SONA**              | Self-Optimizing Pattern Learning - learns optimal routing       | Fast adaptation            |
+| **EWC++**             | Elastic Weight Consolidation - prevents catastrophic forgetting | Preserves learned patterns |
+| **Flash Attention**   | Optimized attention computation                                 | 2-7x speedup (benchmarked) |
+| **HNSW**              | Hierarchical Navigable Small World vector search                | Sub-millisecond retrieval  |
+| **ReasoningBank**     | Pattern storage with trajectory learning                        | RETRIEVE→JUDGE→DISTILL     |
+| **Hyperbolic**        | Poincare ball embeddings for hierarchical data                  | Better code relationships  |
+| **LoRA/MicroLoRA**    | Low-Rank Adaptation for efficient fine-tuning                   | Lightweight adaptation     |
+| **Int8 Quantization** | Memory-efficient weight storage                                 | ~4x memory reduction       |
+| **SemanticRouter**    | Semantic task routing with cosine similarity                    | Fast intent routing        |
+| **9 RL Algorithms**   | Q-Learning, SARSA, A2C, PPO, DQN, Decision Transformer, etc.    | Task-specific learning     |
 
 ```bash
 # Use RuVector via Ruflo
@@ -216,6 +216,7 @@ npx ruflo@latest init wizard
 > **New to Ruflo?** You don't need to learn 310+ MCP tools or 26 CLI commands. After running `init`, just use Claude Code normally — the hooks system automatically routes tasks to the right agents, learns from successful patterns, and coordinates multi-agent work in the background. The advanced tools exist for fine-grained control when you need it.
 
 ---
+
 ### Key Capabilities
 
 🤖 **100+ Specialized Agents** - Ready-to-use AI agents for coding, code review, testing, security audits, documentation, and DevOps. Each agent is optimized for its specific role.
@@ -234,19 +235,19 @@ npx ruflo@latest init wizard
 
 ---
 
-### A multi-purpose Agent Tool Kit 
+### A multi-purpose Agent Tool Kit
 
 <details>
 <summary>🔄 <strong>Core Flow</strong> — How requests move through the system</summary>
 
 Every request flows through four layers: from your CLI or Claude Code interface, through intelligent routing, to specialized agents, and finally to LLM providers for reasoning.
 
-| Layer | Components | What It Does |
-|-------|------------|--------------|
-| User | Claude Code, CLI | Your interface to control and run commands |
-| Orchestration | MCP Server, Router, Hooks | Routes requests to the right agents |
-| Agents | 100+ types | Specialized workers (coder, tester, reviewer...) |
-| Providers | Anthropic, OpenAI, Google, Ollama | AI models that power reasoning |
+| Layer         | Components                        | What It Does                                     |
+| ------------- | --------------------------------- | ------------------------------------------------ |
+| User          | Claude Code, CLI                  | Your interface to control and run commands       |
+| Orchestration | MCP Server, Router, Hooks         | Routes requests to the right agents              |
+| Agents        | 100+ types                        | Specialized workers (coder, tester, reviewer...) |
+| Providers     | Anthropic, OpenAI, Google, Ollama | AI models that power reasoning                   |
 
 </details>
 
@@ -255,14 +256,15 @@ Every request flows through four layers: from your CLI or Claude Code interface,
 
 Agents organize into swarms led by queens that coordinate work, prevent drift, and reach consensus on decisions—even when some agents fail.
 
-| Layer | Components | What It Does |
-|-------|------------|--------------|
-| Coordination | Queen, Swarm, Consensus | Manages agent teams (Raft, Byzantine, Gossip) |
-| Drift Control | Hierarchical topology, Checkpoints | Prevents agents from going off-task |
-| Hive Mind | Queen-led hierarchy, Collective memory | Strategic/tactical/adaptive queens coordinate workers |
-| Consensus | Byzantine, Raft, Gossip, CRDT, Quorum | Fault-tolerant decisions (2/3 majority for BFT) |
+| Layer         | Components                             | What It Does                                          |
+| ------------- | -------------------------------------- | ----------------------------------------------------- |
+| Coordination  | Queen, Swarm, Consensus                | Manages agent teams (Raft, Byzantine, Gossip)         |
+| Drift Control | Hierarchical topology, Checkpoints     | Prevents agents from going off-task                   |
+| Hive Mind     | Queen-led hierarchy, Collective memory | Strategic/tactical/adaptive queens coordinate workers |
+| Consensus     | Byzantine, Raft, Gossip, CRDT, Quorum  | Fault-tolerant decisions (2/3 majority for BFT)       |
 
 **Hive Mind Capabilities:**
+
 - 🐝 **Queen Types**: Strategic (planning), Tactical (execution), Adaptive (optimization)
 - 👷 **8 Worker Types**: Researcher, Coder, Analyst, Tester, Architect, Reviewer, Optimizer, Documenter
 - 🗳️ **5 Consensus Algorithms**: Byzantine (f < n/3), Raft (leader-elected), Gossip (eventually consistent), CRDT (conflict-free), Quorum (configurable threshold)
@@ -276,15 +278,15 @@ Agents organize into swarms led by queens that coordinate work, prevent drift, a
 
 The system stores successful patterns in vector memory, builds a knowledge graph for structural understanding, learns from outcomes via neural networks, and adapts routing based on what works best.
 
-| Layer | Components | What It Does |
-|-------|------------|--------------|
-| Memory | HNSW, AgentDB, Cache | Stores and retrieves patterns with fast HNSW search |
-| Knowledge Graph | MemoryGraph, PageRank, Communities | Identifies influential insights, detects clusters (ADR-049) |
-| Self-Learning | LearningBridge, SONA, ReasoningBank | Triggers learning from insights, confidence lifecycle (ADR-049) |
-| Agent Scopes | AgentMemoryScope, 3-scope dirs | Per-agent isolation + cross-agent knowledge transfer (ADR-049) |
-| Embeddings | ONNX Runtime, MiniLM | Local vectors without API calls (faster with ONNX runtime) |
-| Learning | SONA, MoE, ReasoningBank | Self-improves from results (sub-millisecond pattern matching) |
-| Fine-tuning | MicroLoRA, EWC++ | Lightweight adaptation without full retraining |
+| Layer           | Components                          | What It Does                                                    |
+| --------------- | ----------------------------------- | --------------------------------------------------------------- |
+| Memory          | HNSW, AgentDB, Cache                | Stores and retrieves patterns with fast HNSW search             |
+| Knowledge Graph | MemoryGraph, PageRank, Communities  | Identifies influential insights, detects clusters (ADR-049)     |
+| Self-Learning   | LearningBridge, SONA, ReasoningBank | Triggers learning from insights, confidence lifecycle (ADR-049) |
+| Agent Scopes    | AgentMemoryScope, 3-scope dirs      | Per-agent isolation + cross-agent knowledge transfer (ADR-049)  |
+| Embeddings      | ONNX Runtime, MiniLM                | Local vectors without API calls (faster with ONNX runtime)      |
+| Learning        | SONA, MoE, ReasoningBank            | Self-improves from results (sub-millisecond pattern matching)   |
+| Fine-tuning     | MicroLoRA, EWC++                    | Lightweight adaptation without full retraining                  |
 
 </details>
 
@@ -293,10 +295,10 @@ The system stores successful patterns in vector memory, builds a knowledge graph
 
 Skip expensive LLM calls for simple tasks using WebAssembly transforms, and compress tokens to reduce API costs by 30-50%.
 
-| Layer | Components | What It Does |
-|-------|------------|--------------|
-| Agent Booster | WASM, AST analysis | Skips LLM for simple edits (<1ms) |
-| Token Optimizer | Compression, Caching | Reduces token usage 30-50% |
+| Layer           | Components           | What It Does                      |
+| --------------- | -------------------- | --------------------------------- |
+| Agent Booster   | WASM, AST analysis   | Skips LLM for simple edits (<1ms) |
+| Token Optimizer | Compression, Caching | Reduces token usage 30-50%        |
 
 </details>
 
@@ -305,13 +307,13 @@ Skip expensive LLM calls for simple tasks using WebAssembly transforms, and comp
 
 Background daemons handle security audits, performance optimization, and session persistence automatically while you work.
 
-| Layer | Components | What It Does |
-|-------|------------|--------------|
-| Background | Daemon, 12 Workers | Auto-runs audits, optimization, learning |
-| Security | AIDefence, Validation | Blocks injection, detects threats |
-| Sessions | Persist, Restore, Export | Saves context across conversations |
-| GitHub | PR, Issues, Workflows | Manages repos and code reviews |
-| Analytics | Metrics, Benchmarks | Monitors performance, finds bottlenecks |
+| Layer      | Components               | What It Does                             |
+| ---------- | ------------------------ | ---------------------------------------- |
+| Background | Daemon, 12 Workers       | Auto-runs audits, optimization, learning |
+| Security   | AIDefence, Validation    | Blocks injection, detects threats        |
+| Sessions   | Persist, Restore, Export | Saves context across conversations       |
+| GitHub     | PR, Issues, Workflows    | Manages repos and code reviews           |
+| Analytics  | Metrics, Benchmarks      | Monitors performance, finds bottlenecks  |
 
 </details>
 
@@ -320,11 +322,11 @@ Background daemons handle security audits, performance optimization, and session
 
 Smart routing skips expensive LLM calls when possible. Simple edits use WASM (free), medium tasks use cheaper models. This can extend your Claude Code usage by 250% or save significantly on direct API costs.
 
-| Complexity | Handler | Speed |
-|------------|---------|-------|
-| Simple | Agent Booster (WASM) | <1ms |
-| Medium | Haiku/Sonnet | ~500ms |
-| Complex | Opus + Swarm | 2-5s |
+| Complexity | Handler              | Speed  |
+| ---------- | -------------------- | ------ |
+| Simple     | Agent Booster (WASM) | <1ms   |
+| Medium     | Haiku/Sonnet         | ~500ms |
+| Complex    | Opus + Swarm         | 2-5s   |
 
 </details>
 
@@ -335,14 +337,14 @@ Agent Booster uses WebAssembly to handle simple code transformations without cal
 
 **Supported Transform Intents:**
 
-| Intent | What It Does | Example |
-|--------|--------------|---------|
-| `var-to-const` | Convert var/let to const | `var x = 1` → `const x = 1` |
-| `add-types` | Add TypeScript type annotations | `function foo(x)` → `function foo(x: string)` |
-| `add-error-handling` | Wrap in try/catch | Adds proper error handling |
-| `async-await` | Convert promises to async/await | `.then()` chains → `await` |
-| `add-logging` | Add console.log statements | Adds debug logging |
-| `remove-console` | Strip console.* calls | Removes all console statements |
+| Intent               | What It Does                    | Example                                       |
+| -------------------- | ------------------------------- | --------------------------------------------- |
+| `var-to-const`       | Convert var/let to const        | `var x = 1` → `const x = 1`                   |
+| `add-types`          | Add TypeScript type annotations | `function foo(x)` → `function foo(x: string)` |
+| `add-error-handling` | Wrap in try/catch               | Adds proper error handling                    |
+| `async-await`        | Convert promises to async/await | `.then()` chains → `await`                    |
+| `add-logging`        | Add console.log statements      | Adds debug logging                            |
+| `remove-console`     | Strip console.* calls           | Removes all console statements                |
 
 **Hook Signals:**
 
@@ -360,11 +362,11 @@ When you see these in hook output, the system is telling you how to optimize:
 
 **Performance:**
 
-| Metric | Agent Booster | LLM Call |
-|--------|---------------|----------|
-| Latency | <1ms | 2-5s |
-| Cost | $0 | $0.0002-$0.015 |
-| Speedup | **instant (regex-based, no LLM call)** | baseline |
+| Metric  | Agent Booster                          | LLM Call       |
+| ------- | -------------------------------------- | -------------- |
+| Latency | <1ms                                   | 2-5s           |
+| Cost    | $0                                     | $0.0002-$0.015 |
+| Speedup | **instant (regex-based, no LLM call)** | baseline       |
 
 </details>
 
@@ -375,18 +377,18 @@ The Token Optimizer integrates agentic-flow optimizations to reduce API costs by
 
 **Savings Breakdown:**
 
-| Optimization | Token Savings | How It Works |
-|--------------|---------------|--------------|
-| ReasoningBank retrieval | -32% | Fetches relevant patterns instead of full context |
-| Agent Booster edits | -15% | Simple edits skip LLM entirely |
-| Cache (95% hit rate) | -10% | Reuses embeddings and patterns |
-| Optimal batch size | -20% | Groups related operations |
-| **Combined** | **30-50%** | Stacks multiplicatively |
+| Optimization            | Token Savings | How It Works                                      |
+| ----------------------- | ------------- | ------------------------------------------------- |
+| ReasoningBank retrieval | -32%          | Fetches relevant patterns instead of full context |
+| Agent Booster edits     | -15%          | Simple edits skip LLM entirely                    |
+| Cache (95% hit rate)    | -10%          | Reuses embeddings and patterns                    |
+| Optimal batch size      | -20%          | Groups related operations                         |
+| **Combined**            | **30-50%**    | Stacks multiplicatively                           |
 
 **Usage:**
 
 ```typescript
-import { getTokenOptimizer } from '@claude-flow/integration';
+import { getTokenOptimizer } from "@claude-flow/integration";
 const optimizer = await getTokenOptimizer();
 
 // Get compact context (32% fewer tokens)
@@ -411,20 +413,20 @@ Complex swarms can drift from their original goals. Ruflo V3 includes anti-drift
 ```javascript
 // Anti-drift defaults (ALWAYS use for coding tasks)
 swarm_init({
-  topology: "hierarchical",  // Single coordinator enforces alignment
-  maxAgents: 8,              // Smaller team = less drift surface
-  strategy: "specialized"    // Clear roles reduce ambiguity
-})
+  topology: "hierarchical", // Single coordinator enforces alignment
+  maxAgents: 8, // Smaller team = less drift surface
+  strategy: "specialized", // Clear roles reduce ambiguity
+});
 ```
 
 **Why This Prevents Drift:**
 
-| Setting | Anti-Drift Benefit |
-|---------|-------------------|
-| `hierarchical` | Coordinator validates each output against goal, catches divergence early |
-| `maxAgents: 6-8` | Fewer agents = less coordination overhead, easier alignment |
-| `specialized` | Clear boundaries - each agent knows exactly what to do, no overlap |
-| `raft` consensus | Leader maintains authoritative state, no conflicting decisions |
+| Setting          | Anti-Drift Benefit                                                       |
+| ---------------- | ------------------------------------------------------------------------ |
+| `hierarchical`   | Coordinator validates each output against goal, catches divergence early |
+| `maxAgents: 6-8` | Fewer agents = less coordination overhead, easier alignment              |
+| `specialized`    | Clear boundaries - each agent knows exactly what to do, no overlap       |
+| `raft` consensus | Leader maintains authoritative state, no conflicting decisions           |
 
 **Additional Anti-Drift Measures:**
 
@@ -435,37 +437,37 @@ swarm_init({
 
 **Task → Agent Routing (Anti-Drift):**
 
-| Code | Task Type | Recommended Agents |
-|------|-----------|-------------------|
-| 1 | Bug Fix | coordinator, researcher, coder, tester |
-| 3 | Feature | coordinator, architect, coder, tester, reviewer |
-| 5 | Refactor | coordinator, architect, coder, reviewer |
-| 7 | Performance | coordinator, perf-engineer, coder |
-| 9 | Security | coordinator, security-architect, auditor |
-| 11 | Memory | coordinator, memory-specialist, perf-engineer |
+| Code | Task Type   | Recommended Agents                              |
+| ---- | ----------- | ----------------------------------------------- |
+| 1    | Bug Fix     | coordinator, researcher, coder, tester          |
+| 3    | Feature     | coordinator, architect, coder, tester, reviewer |
+| 5    | Refactor    | coordinator, architect, coder, reviewer         |
+| 7    | Performance | coordinator, perf-engineer, coder               |
+| 9    | Security    | coordinator, security-architect, auditor        |
+| 11   | Memory      | coordinator, memory-specialist, perf-engineer   |
 
 </details>
 
 ### Claude Code: With vs Without Ruflo
 
-| Capability | Claude Code Alone | Claude Code + Ruflo |
-|------------|-------------------|---------------------------|
-| **Agent Collaboration** | Agents work in isolation, no shared context | Agents collaborate via swarms with shared memory and consensus |
-| **Coordination** | Manual orchestration between tasks | Queen-led hierarchy with 3 consensus algorithms (Raft, Byzantine, Gossip) |
-| **Hive Mind** | ⛔ Not available | 🐝 Queen-led swarms with collective intelligence, 3 queen types, 8 worker types |
-| **Consensus** | ⛔ No multi-agent decisions | Byzantine fault-tolerant voting (f < n/3), weighted, majority |
-| **Memory** | Session-only, no persistence | HNSW vector memory with sub-ms retrieval + knowledge graph |
-| **Vector Database** | ⛔ No native support | 🐘 RuVector PostgreSQL with 77+ SQL functions, ~61µs search, 16,400 QPS |
-| **Knowledge Graph** | ⛔ Flat insight lists | PageRank + community detection identifies influential insights (ADR-049) |
-| **Collective Memory** | ⛔ No shared knowledge | Shared knowledge base with LRU cache, SQLite persistence, 8 memory types |
-| **Learning** | Static behavior, no adaptation | SONA self-learning with sub-millisecond pattern matching, LearningBridge for insights |
-| **Agent Scoping** | Single project scope | 3-scope agent memory (project/local/user) with cross-agent transfer |
-| **Task Routing** | You decide which agent to use | Intelligent routing based on learned patterns (89% accuracy) |
-| **Complex Tasks** | Manual breakdown required | Automatic decomposition across 5 domains (Security, Core, Integration, Support) |
-| **Background Workers** | Nothing runs automatically | 12 context-triggered workers auto-dispatch on file changes, patterns, sessions |
-| **LLM Provider** | Anthropic only | 5 providers (Anthropic, OpenAI, Google, Cohere, Ollama) with automatic failover and cost-based routing (cost-optimized routing) |
-| **Security** | Standard protections | CVE-hardened with bcrypt, input validation, path traversal prevention |
-| **Performance** | Baseline | Faster tasks via parallel swarm spawning and intelligent routing |
+| Capability              | Claude Code Alone                           | Claude Code + Ruflo                                                                                                             |
+| ----------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Agent Collaboration** | Agents work in isolation, no shared context | Agents collaborate via swarms with shared memory and consensus                                                                  |
+| **Coordination**        | Manual orchestration between tasks          | Queen-led hierarchy with 3 consensus algorithms (Raft, Byzantine, Gossip)                                                       |
+| **Hive Mind**           | ⛔ Not available                            | 🐝 Queen-led swarms with collective intelligence, 3 queen types, 8 worker types                                                 |
+| **Consensus**           | ⛔ No multi-agent decisions                 | Byzantine fault-tolerant voting (f < n/3), weighted, majority                                                                   |
+| **Memory**              | Session-only, no persistence                | HNSW vector memory with sub-ms retrieval + knowledge graph                                                                      |
+| **Vector Database**     | ⛔ No native support                        | 🐘 RuVector PostgreSQL with 77+ SQL functions, ~61µs search, 16,400 QPS                                                         |
+| **Knowledge Graph**     | ⛔ Flat insight lists                       | PageRank + community detection identifies influential insights (ADR-049)                                                        |
+| **Collective Memory**   | ⛔ No shared knowledge                      | Shared knowledge base with LRU cache, SQLite persistence, 8 memory types                                                        |
+| **Learning**            | Static behavior, no adaptation              | SONA self-learning with sub-millisecond pattern matching, LearningBridge for insights                                           |
+| **Agent Scoping**       | Single project scope                        | 3-scope agent memory (project/local/user) with cross-agent transfer                                                             |
+| **Task Routing**        | You decide which agent to use               | Intelligent routing based on learned patterns (89% accuracy)                                                                    |
+| **Complex Tasks**       | Manual breakdown required                   | Automatic decomposition across 5 domains (Security, Core, Integration, Support)                                                 |
+| **Background Workers**  | Nothing runs automatically                  | 12 context-triggered workers auto-dispatch on file changes, patterns, sessions                                                  |
+| **LLM Provider**        | Anthropic only                              | 5 providers (Anthropic, OpenAI, Google, Cohere, Ollama) with automatic failover and cost-based routing (cost-optimized routing) |
+| **Security**            | Standard protections                        | CVE-hardened with bcrypt, input validation, path traversal prevention                                                           |
+| **Performance**         | Baseline                                    | Faster tasks via parallel swarm spawning and intelligent routing                                                                |
 
 ## Quick Start
 
@@ -499,17 +501,18 @@ curl -fsSL https://cdn.jsdelivr.net/gh/ruvnet/ruflo@main/scripts/install.sh | ba
 <details>
 <summary><b>Install Options</b></summary>
 
-| Option | Description |
-|--------|-------------|
-| `--global`, `-g` | Install globally (`npm install -g`) |
-| `--minimal`, `-m` | Skip optional deps (faster, ~15s) |
-| `--setup-mcp` | Auto-configure MCP server for Claude Code |
-| `--doctor`, `-d` | Run diagnostics after install |
-| `--no-init` | Skip project initialization (init runs by default) |
-| `--full`, `-f` | Full setup: global + MCP + doctor |
-| `--version=X.X.X` | Install specific version |
+| Option            | Description                                        |
+| ----------------- | -------------------------------------------------- |
+| `--global`, `-g`  | Install globally (`npm install -g`)                |
+| `--minimal`, `-m` | Skip optional deps (faster, ~15s)                  |
+| `--setup-mcp`     | Auto-configure MCP server for Claude Code          |
+| `--doctor`, `-d`  | Run diagnostics after install                      |
+| `--no-init`       | Skip project initialization (init runs by default) |
+| `--full`, `-f`    | Full setup: global + MCP + doctor                  |
+| `--version=X.X.X` | Install specific version                           |
 
 **Examples:**
+
 ```bash
 # Minimal global install (fastest)
 curl ... | bash -s -- --global --minimal
@@ -522,12 +525,13 @@ curl ... | bash -s -- --full
 ```
 
 **Speed:**
-| Mode | Time |
-|------|------|
-| npx (cached) | ~3s |
-| npx (fresh) | ~20s |
-| global | ~35s |
-| --minimal | ~15s |
+
+| Mode         | Time |
+| ------------ | ---- |
+| npx (cached) | ~3s  |
+| npx (fresh)  | ~20s |
+| global       | ~35s |
+| --minimal    | ~15s |
 
 </details>
 
@@ -547,10 +551,10 @@ bunx ruflo@latest init
 
 #### Install Profiles
 
-| Profile | Size | Use Case |
-|---------|------|----------|
-| `--omit=optional` | ~45MB | Core CLI only (fastest) |
-| Default | ~340MB | Full install with ML/embeddings |
+| Profile           | Size   | Use Case                        |
+| ----------------- | ------ | ------------------------------- |
+| `--omit=optional` | ~45MB  | Core CLI only (fastest)         |
+| Default           | ~340MB | Full install with ML/embeddings |
 
 ```bash
 # Minimal install (skip ML/embeddings)
@@ -598,14 +602,14 @@ npx ruflo@latest init --dual
 
 ### Platform Comparison
 
-| Feature | Claude Code | OpenAI Codex |
-|---------|-------------|--------------|
-| Config File | `CLAUDE.md` | `AGENTS.md` |
-| Skills Dir | `.claude/skills/` | `.agents/skills/` |
-| Skill Syntax | `/skill-name` | `$skill-name` |
-| Settings | `settings.json` | `config.toml` |
-| MCP | Native | Via `codex mcp add` |
-| Default Model | claude-sonnet | gpt-5.3 |
+| Feature       | Claude Code       | OpenAI Codex        |
+| ------------- | ----------------- | ------------------- |
+| Config File   | `CLAUDE.md`       | `AGENTS.md`         |
+| Skills Dir    | `.claude/skills/` | `.agents/skills/`   |
+| Skill Syntax  | `/skill-name`     | `$skill-name`       |
+| Settings      | `settings.json`   | `config.toml`       |
+| MCP           | Native            | Via `codex mcp add` |
+| Default Model | claude-sonnet     | gpt-5.3             |
 
 ### Key Concept: Execution Model
 
@@ -640,12 +644,12 @@ claude -p "Optimize database queries in src/db/" --session-id "task-3" &
 wait  # Wait for all to complete
 ```
 
-| Dual-Mode Feature | Benefit |
-|-------------------|---------|
-| Parallel Execution | 4-8x faster for bulk tasks |
-| Cost Optimization | Route simple tasks to cheaper workers |
-| Context Preservation | Shared memory across platforms |
-| Best of Both | Interactive + batch processing |
+| Dual-Mode Feature    | Benefit                               |
+| -------------------- | ------------------------------------- |
+| Parallel Execution   | 4-8x faster for bulk tasks            |
+| Cost Optimization    | Route simple tasks to cheaper workers |
+| Context Preservation | Shared memory across platforms        |
+| Best of Both         | Interactive + batch processing        |
 
 ### Dual-Mode CLI Commands (NEW)
 
@@ -665,10 +669,10 @@ npx @claude-flow/codex dual run --template refactor --task "src/legacy/"
 
 ### Pre-Built Collaboration Templates
 
-| Template | Pipeline | Platforms |
-|----------|----------|-----------|
-| **feature** | architect → coder → tester → reviewer | Claude + Codex |
-| **security** | scanner → analyzer → fixer | Codex + Claude |
+| Template     | Pipeline                                    | Platforms      |
+| ------------ | ------------------------------------------- | -------------- |
+| **feature**  | architect → coder → tester → reviewer       | Claude + Codex |
+| **security** | scanner → analyzer → fixer                  | Codex + Claude |
 | **refactor** | analyzer → planner → refactorer → validator | Claude + Codex |
 
 ### MCP Integration for Codex
@@ -693,6 +697,7 @@ codex mcp add ruflo -- npx ruflo mcp start
 ```
 
 The **Intelligence Loop** (ADR-050) automates this cycle through hooks. Each session automatically:
+
 - Builds a knowledge graph from memory entries (PageRank + Jaccard similarity)
 - Injects ranked context into every route decision
 - Tracks edit patterns and generates new insights
@@ -701,25 +706,25 @@ The **Intelligence Loop** (ADR-050) automates this cycle through hooks. Each ses
 
 ### MCP Tools for Learning
 
-| Tool | Purpose | When to Use |
-|------|---------|-------------|
-| `memory_search` | Semantic vector search | BEFORE starting any task |
-| `memory_store` | Save patterns with embeddings | AFTER completing successfully |
-| `swarm_init` | Initialize coordination | Start of complex tasks |
-| `agent_spawn` | Register agent roles | Multi-agent workflows |
-| `neural_train` | Train on patterns | Periodic improvement |
+| Tool            | Purpose                       | When to Use                   |
+| --------------- | ----------------------------- | ----------------------------- |
+| `memory_search` | Semantic vector search        | BEFORE starting any task      |
+| `memory_store`  | Save patterns with embeddings | AFTER completing successfully |
+| `swarm_init`    | Initialize coordination       | Start of complex tasks        |
+| `agent_spawn`   | Register agent roles          | Multi-agent workflows         |
+| `neural_train`  | Train on patterns             | Periodic improvement          |
 
 ### 137+ Skills Available
 
-| Category | Examples |
-|----------|----------|
-| **V3 Core** | `$v3-security-overhaul`, `$v3-memory-unification`, `$v3-performance-optimization` |
-| **AgentDB** | `$agentdb-vector-search`, `$agentdb-optimization`, `$agentdb-learning` |
-| **Swarm** | `$swarm-orchestration`, `$swarm-advanced`, `$hive-mind-advanced` |
-| **GitHub** | `$github-code-review`, `$github-workflow-automation`, `$github-multi-repo` |
-| **SPARC** | `$sparc-methodology`, `$sparc:architect`, `$sparc:coder`, `$sparc:tester` |
-| **Flow Nexus** | `$flow-nexus-neural`, `$flow-nexus-swarm`, `$flow-nexus:workflow` |
-| **Dual-Mode** | `$dual-spawn`, `$dual-coordinate`, `$dual-collect` |
+| Category       | Examples                                                                          |
+| -------------- | --------------------------------------------------------------------------------- |
+| **V3 Core**    | `$v3-security-overhaul`, `$v3-memory-unification`, `$v3-performance-optimization` |
+| **AgentDB**    | `$agentdb-vector-search`, `$agentdb-optimization`, `$agentdb-learning`            |
+| **Swarm**      | `$swarm-orchestration`, `$swarm-advanced`, `$hive-mind-advanced`                  |
+| **GitHub**     | `$github-code-review`, `$github-workflow-automation`, `$github-multi-repo`        |
+| **SPARC**      | `$sparc-methodology`, `$sparc:architect`, `$sparc:coder`, `$sparc:tester`         |
+| **Flow Nexus** | `$flow-nexus-neural`, `$flow-nexus-swarm`, `$flow-nexus:workflow`                 |
+| **Dual-Mode**  | `$dual-spawn`, `$dual-coordinate`, `$dual-collect`                                |
 
 ### Vector Search Details
 
@@ -776,6 +781,7 @@ claude mcp list
 ```
 
 Once added, Claude Code can use all 313 ruflo MCP tools directly:
+
 - `swarm_init` - Initialize agent swarms
 - `agent_spawn` - Spawn specialized agents
 - `memory_search` - Search patterns with HNSW vector search
@@ -783,7 +789,8 @@ Once added, Claude Code can use all 313 ruflo MCP tools directly:
 - And 255+ more tools...
 
 ---
-## What is it exactly? Agents that learn, build and work perpetually. 
+
+## What is it exactly? Agents that learn, build and work perpetually.
 
 <details>
 <summary>🆚 <strong>Why Ruflo v3?</strong></summary>
@@ -792,60 +799,60 @@ Ruflo v3 introduces **self-learning neural capabilities** that no other agent or
 
 #### 🧠 Neural & Learning
 
-| Feature | Ruflo v3 | CrewAI | LangGraph | AutoGen | Manus |
-|---------|----------------|--------|-----------|---------|-------|
-| **Self-Learning** | ✅ SONA + EWC++ | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Prevents Forgetting** | ✅ EWC++ consolidation | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Pattern Learning** | ✅ From trajectories | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Expert Routing** | ✅ MoE (8 experts) | Manual | Graph edges | ⛔ | Fixed |
-| **Attention Optimization** | ✅ Flash Attention | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Low-Rank Adaptation** | ✅ LoRA (low-rank adaptation) | ⛔ | ⛔ | ⛔ | ⛔ |
+| Feature                    | Ruflo v3                      | CrewAI | LangGraph   | AutoGen | Manus |
+| -------------------------- | ----------------------------- | ------ | ----------- | ------- | ----- |
+| **Self-Learning**          | ✅ SONA + EWC++               | ⛔     | ⛔          | ⛔      | ⛔    |
+| **Prevents Forgetting**    | ✅ EWC++ consolidation        | ⛔     | ⛔          | ⛔      | ⛔    |
+| **Pattern Learning**       | ✅ From trajectories          | ⛔     | ⛔          | ⛔      | ⛔    |
+| **Expert Routing**         | ✅ MoE (8 experts)            | Manual | Graph edges | ⛔      | Fixed |
+| **Attention Optimization** | ✅ Flash Attention            | ⛔     | ⛔          | ⛔      | ⛔    |
+| **Low-Rank Adaptation**    | ✅ LoRA (low-rank adaptation) | ⛔     | ⛔          | ⛔      | ⛔    |
 
 #### 💾 Memory & Embeddings
 
-| Feature | Ruflo v3 | CrewAI | LangGraph | AutoGen | Manus |
-|---------|----------------|--------|-----------|---------|-------|
-| **Vector Memory** | ✅ HNSW (sub-ms search) | ⛔ | Via plugins | ⛔ | ⛔ |
-| **Knowledge Graph** | ✅ PageRank + communities | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Self-Learning Memory** | ✅ LearningBridge (SONA) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Agent-Scoped Memory** | ✅ 3-scope (project/local/user) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **PostgreSQL Vector DB** | ✅ RuVector (77+ SQL functions) | ⛔ | pgvector only | ⛔ | ⛔ |
-| **Hyperbolic Embeddings** | ✅ Poincaré ball (native + SQL) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Quantization** | ✅ Int8 (~4x savings) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Persistent Memory** | ✅ SQLite + AgentDB + PostgreSQL | ⛔ | ⛔ | ⛔ | Limited |
-| **Cross-Session Context** | ✅ Full restoration | ⛔ | ⛔ | ⛔ | ⛔ |
-| **GNN/Attention in SQL** | ✅ 39 attention mechanisms | ⛔ | ⛔ | ⛔ | ⛔ |
+| Feature                   | Ruflo v3                         | CrewAI | LangGraph     | AutoGen | Manus   |
+| ------------------------- | -------------------------------- | ------ | ------------- | ------- | ------- |
+| **Vector Memory**         | ✅ HNSW (sub-ms search)          | ⛔     | Via plugins   | ⛔      | ⛔      |
+| **Knowledge Graph**       | ✅ PageRank + communities        | ⛔     | ⛔            | ⛔      | ⛔      |
+| **Self-Learning Memory**  | ✅ LearningBridge (SONA)         | ⛔     | ⛔            | ⛔      | ⛔      |
+| **Agent-Scoped Memory**   | ✅ 3-scope (project/local/user)  | ⛔     | ⛔            | ⛔      | ⛔      |
+| **PostgreSQL Vector DB**  | ✅ RuVector (77+ SQL functions)  | ⛔     | pgvector only | ⛔      | ⛔      |
+| **Hyperbolic Embeddings** | ✅ Poincaré ball (native + SQL)  | ⛔     | ⛔            | ⛔      | ⛔      |
+| **Quantization**          | ✅ Int8 (~4x savings)            | ⛔     | ⛔            | ⛔      | ⛔      |
+| **Persistent Memory**     | ✅ SQLite + AgentDB + PostgreSQL | ⛔     | ⛔            | ⛔      | Limited |
+| **Cross-Session Context** | ✅ Full restoration              | ⛔     | ⛔            | ⛔      | ⛔      |
+| **GNN/Attention in SQL**  | ✅ 39 attention mechanisms       | ⛔     | ⛔            | ⛔      | ⛔      |
 
 #### 🐝 Swarm & Coordination
 
-| Feature | Ruflo v3 | CrewAI | LangGraph | AutoGen | Manus |
-|---------|----------------|--------|-----------|---------|-------|
-| **Swarm Topologies** | ✅ 4 types | 1 | 1 | 1 | 1 |
-| **Consensus Protocols** | ✅ 5 (Raft, BFT, etc.) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Work Ownership** | ✅ Claims system | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Background Workers** | ✅ 12 auto-triggered | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Multi-Provider LLM** | ✅ 6 with failover | 2 | 3 | 2 | 1 |
+| Feature                 | Ruflo v3               | CrewAI | LangGraph | AutoGen | Manus |
+| ----------------------- | ---------------------- | ------ | --------- | ------- | ----- |
+| **Swarm Topologies**    | ✅ 4 types             | 1      | 1         | 1       | 1     |
+| **Consensus Protocols** | ✅ 5 (Raft, BFT, etc.) | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Work Ownership**      | ✅ Claims system       | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Background Workers**  | ✅ 12 auto-triggered   | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Multi-Provider LLM**  | ✅ 6 with failover     | 2      | 3         | 2       | 1     |
 
 #### 🔧 Developer Experience
 
-| Feature | Ruflo v3 | CrewAI | LangGraph | AutoGen | Manus |
-|---------|----------------|--------|-----------|---------|-------|
-| **MCP Integration** | ✅ Native (313 tools) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Skills System** | ✅ 42+ pre-built | ⛔ | ⛔ | ⛔ | Limited |
-| **Stream Pipelines** | ✅ JSON chains | ⛔ | Via code | ⛔ | ⛔ |
-| **Pair Programming** | ✅ Driver/Navigator | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Auto-Updates** | ✅ With rollback | ⛔ | ⛔ | ⛔ | ⛔ |
+| Feature              | Ruflo v3              | CrewAI | LangGraph | AutoGen | Manus   |
+| -------------------- | --------------------- | ------ | --------- | ------- | ------- |
+| **MCP Integration**  | ✅ Native (313 tools) | ⛔     | ⛔        | ⛔      | ⛔      |
+| **Skills System**    | ✅ 42+ pre-built      | ⛔     | ⛔        | ⛔      | Limited |
+| **Stream Pipelines** | ✅ JSON chains        | ⛔     | Via code  | ⛔      | ⛔      |
+| **Pair Programming** | ✅ Driver/Navigator   | ⛔     | ⛔        | ⛔      | ⛔      |
+| **Auto-Updates**     | ✅ With rollback      | ⛔     | ⛔        | ⛔      | ⛔      |
 
 #### 🛡️ Security & Platform
 
-| Feature | Ruflo v3 | CrewAI | LangGraph | AutoGen | Manus |
-|---------|----------------|--------|-----------|---------|-------|
-| **Threat Detection** | ✅ AIDefence (<10ms) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Cloud Platform** | ✅ Flow Nexus | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Code Transforms** | ✅ Agent Booster (WASM) | ⛔ | ⛔ | ⛔ | ⛔ |
-| **Input Validation** | ✅ Zod + Path security | ⛔ | ⛔ | ⛔ | ⛔ |
+| Feature              | Ruflo v3                | CrewAI | LangGraph | AutoGen | Manus |
+| -------------------- | ----------------------- | ------ | --------- | ------- | ----- |
+| **Threat Detection** | ✅ AIDefence (<10ms)    | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Cloud Platform**   | ✅ Flow Nexus           | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Code Transforms**  | ✅ Agent Booster (WASM) | ⛔     | ⛔        | ⛔      | ⛔    |
+| **Input Validation** | ✅ Zod + Path security  | ⛔     | ⛔        | ⛔      | ⛔    |
 
-<sub>*Comparison updated February 2026. Feature availability based on public documentation.*</sub>
+<sub>_Comparison updated February 2026. Feature availability based on public documentation._</sub>
 
 </details>
 
@@ -854,18 +861,18 @@ Ruflo v3 introduces **self-learning neural capabilities** that no other agent or
 
 What makes Ruflo different from other agent frameworks? These 10 capabilities work together to create a system that learns from experience, runs efficiently on any hardware, and keeps working even when things go wrong.
 
-| | Feature | What It Does | Technical Details |
-|---|---------|--------------|-------------------|
-| 🧠 | **SONA** | Learns which agents perform best for each task type and routes work accordingly | Self-Optimizing Pattern Learning |
-| 🔒 | **EWC++** | Preserves learned patterns when training on new ones — no forgetting | Elastic Weight Consolidation prevents catastrophic forgetting |
-| 🎯 | **MoE** | Routes tasks through 8 specialized expert networks based on task type | Mixture of 8 Experts with dynamic gating |
-| ⚡ | **Flash Attention** | Accelerates attention computation for faster agent responses | Optimized attention via @ruvector/attention |
-| 🌐 | **Hyperbolic Embeddings** | Represents hierarchical code relationships in compact vector space | Poincare ball model for hierarchical data |
-| 📦 | **LoRA** | Lightweight model adaptation so agents fit in limited memory | Low-Rank Adaptation via @ruvector/sona |
-| 🗜️ | **Int8 Quantization** | Converts 32-bit weights to 8-bit with minimal accuracy loss | ~4x memory reduction with calibrated integers |
-| 🤝 | **Claims System** | Manages task ownership between humans and agents with handoff support | Work ownership with claim/release/handoff protocols |
-| 🛡️ | **Byzantine Consensus** | Coordinates agents even when some fail or return bad results | Fault-tolerant, handles up to 1/3 failing agents |
-| 🐘 | **RuVector PostgreSQL** | Enterprise-grade vector database with 77+ SQL functions for AI operations | Fast vector search with GNN/attention in SQL |
+|     | Feature                   | What It Does                                                                    | Technical Details                                             |
+| --- | ------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 🧠  | **SONA**                  | Learns which agents perform best for each task type and routes work accordingly | Self-Optimizing Pattern Learning                              |
+| 🔒  | **EWC++**                 | Preserves learned patterns when training on new ones — no forgetting            | Elastic Weight Consolidation prevents catastrophic forgetting |
+| 🎯  | **MoE**                   | Routes tasks through 8 specialized expert networks based on task type           | Mixture of 8 Experts with dynamic gating                      |
+| ⚡  | **Flash Attention**       | Accelerates attention computation for faster agent responses                    | Optimized attention via @ruvector/attention                   |
+| 🌐  | **Hyperbolic Embeddings** | Represents hierarchical code relationships in compact vector space              | Poincare ball model for hierarchical data                     |
+| 📦  | **LoRA**                  | Lightweight model adaptation so agents fit in limited memory                    | Low-Rank Adaptation via @ruvector/sona                        |
+| 🗜️  | **Int8 Quantization**     | Converts 32-bit weights to 8-bit with minimal accuracy loss                     | ~4x memory reduction with calibrated integers                 |
+| 🤝  | **Claims System**         | Manages task ownership between humans and agents with handoff support           | Work ownership with claim/release/handoff protocols           |
+| 🛡️  | **Byzantine Consensus**   | Coordinates agents even when some fail or return bad results                    | Fault-tolerant, handles up to 1/3 failing agents              |
+| 🐘  | **RuVector PostgreSQL**   | Enterprise-grade vector database with 77+ SQL functions for AI operations       | Fast vector search with GNN/attention in SQL                  |
 
 </details>
 
@@ -876,20 +883,20 @@ Not every task needs the most powerful (and expensive) model. Ruflo analyzes eac
 
 **Cost & Usage Benefits:**
 
-| Benefit | Impact |
-|---------|--------|
-| 💵 **API Cost Reduction** | 75% lower costs by using right-sized models |
+| Benefit                     | Impact                                            |
+| --------------------------- | ------------------------------------------------- |
+| 💵 **API Cost Reduction**   | 75% lower costs by using right-sized models       |
 | ⏱️ **Claude Max Extension** | More tasks within quota via smart model selection |
-| 🚀 **Faster Simple Tasks** | <1ms for transforms vs 2-5s with LLM |
-| 🎯 **Zero Wasted Tokens** | Simple edits use 0 tokens (WASM handles them) |
+| 🚀 **Faster Simple Tasks**  | <1ms for transforms vs 2-5s with LLM              |
+| 🎯 **Zero Wasted Tokens**   | Simple edits use 0 tokens (WASM handles them)     |
 
 **Routing Tiers:**
 
-| Tier | Handler | Latency | Cost | Use Cases |
-|------|---------|---------|------|-----------|
-| **1** | Agent Booster (WASM) | <1ms | $0 | Simple transforms: var→const, add-types, remove-console |
-| **2** | Haiku/Sonnet | 500ms-2s | $0.0002-$0.003 | Bug fixes, refactoring, feature implementation |
-| **3** | Opus | 2-5s | $0.015 | Architecture, security design, distributed systems |
+| Tier  | Handler              | Latency  | Cost           | Use Cases                                               |
+| ----- | -------------------- | -------- | -------------- | ------------------------------------------------------- |
+| **1** | Agent Booster (WASM) | <1ms     | $0             | Simple transforms: var→const, add-types, remove-console |
+| **2** | Haiku/Sonnet         | 500ms-2s | $0.0002-$0.003 | Bug fixes, refactoring, feature implementation          |
+| **3** | Opus                 | 2-5s     | $0.015         | Architecture, security design, distributed systems      |
 
 **Routing:** Q-learning with epsilon-greedy exploration, sub-millisecond decision latency
 
@@ -902,25 +909,26 @@ Complex projects fail when implementation drifts from the original plan. Ruflo s
 
 **How It Prevents Drift:**
 
-| Capability | What It Does |
-|------------|--------------|
-| 🎯 **Spec-First Planning** | Agents generate ADRs before writing code, capturing requirements and decisions |
-| 🔍 **Real-Time Compliance** | Statusline shows ADR compliance %, catches deviations immediately |
-| 🚧 **Bounded Contexts** | Each domain (Security, Memory, etc.) has clear boundaries agents can't cross |
-| ✅ **Validation Gates** | `hooks progress` blocks merges that violate specifications |
-| 🔄 **Living Documentation** | ADRs update automatically as requirements evolve |
+| Capability                  | What It Does                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------ |
+| 🎯 **Spec-First Planning**  | Agents generate ADRs before writing code, capturing requirements and decisions |
+| 🔍 **Real-Time Compliance** | Statusline shows ADR compliance %, catches deviations immediately              |
+| 🚧 **Bounded Contexts**     | Each domain (Security, Memory, etc.) has clear boundaries agents can't cross   |
+| ✅ **Validation Gates**     | `hooks progress` blocks merges that violate specifications                     |
+| 🔄 **Living Documentation** | ADRs update automatically as requirements evolve                               |
 
 **Specification Features:**
 
-| Feature | Description |
-|---------|-------------|
+| Feature                           | Description                                                                        |
+| --------------------------------- | ---------------------------------------------------------------------------------- |
 | **Architecture Decision Records** | 70+ ADRs defining system behavior, integration patterns, and security requirements |
-| **Domain-Driven Design** | 5 bounded contexts with clean interfaces preventing cross-domain pollution |
-| **Automated Spec Generation** | Agents create specs from requirements using SPARC methodology |
-| **Drift Detection** | Continuous monitoring flags when code diverges from spec |
-| **Hierarchical Coordination** | Queen agent enforces spec compliance across all worker agents |
+| **Domain-Driven Design**          | 5 bounded contexts with clean interfaces preventing cross-domain pollution         |
+| **Automated Spec Generation**     | Agents create specs from requirements using SPARC methodology                      |
+| **Drift Detection**               | Continuous monitoring flags when code diverges from spec                           |
+| **Hierarchical Coordination**     | Queen agent enforces spec compliance across all worker agents                      |
 
 **DDD Bounded Contexts:**
+
 ```
 ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
 │    Core     │  │   Memory    │  │  Security   │
@@ -936,6 +944,7 @@ Complex projects fail when implementation drifts from the original plan. Ruflo s
 ```
 
 **Key ADRs:**
+
 - **ADR-001**: agentic-flow@alpha as foundation (eliminates 10,000+ duplicate lines)
 - **ADR-006**: Unified Memory Service with AgentDB
 - **ADR-008**: Vitest testing framework (10x faster than Jest)
@@ -1085,12 +1094,13 @@ flowchart LR
 ```
 
 **Self-Learning Memory (ADR-049):**
-| Component | Purpose | Performance |
-|-----------|---------|-------------|
-| **LearningBridge** | Connects insights to SONA/ReasoningBank neural pipeline | 0.12 ms/insight |
-| **MemoryGraph** | PageRank + label propagation knowledge graph | 2.78 ms build (1k nodes) |
-| **AgentMemoryScope** | 3-scope agent memory (project/local/user) with cross-agent transfer | 1.25 ms transfer |
-| **AutoMemoryBridge** | Bidirectional sync: Claude Code auto memory files ↔ AgentDB | ADR-048 |
+
+| Component            | Purpose                                                             | Performance              |
+| -------------------- | ------------------------------------------------------------------- | ------------------------ |
+| **LearningBridge**   | Connects insights to SONA/ReasoningBank neural pipeline             | 0.12 ms/insight          |
+| **MemoryGraph**      | PageRank + label propagation knowledge graph                        | 2.78 ms build (1k nodes) |
+| **AgentMemoryScope** | 3-scope agent memory (project/local/user) with cross-agent transfer | 1.25 ms transfer         |
+| **AutoMemoryBridge** | Bidirectional sync: Claude Code auto memory files ↔ AgentDB         | ADR-048                  |
 
 </details>
 
@@ -1101,47 +1111,48 @@ Ruflo V3 integrates AgentDB v3 (3.0.0-alpha.13) providing 20+ memory controllers
 
 **Core Memory:**
 
-| Controller | MCP Tool | Description |
-|-----------|----------|-------------|
-| HierarchicalMemory | `agentdb_hierarchical-store/recall` | Working → episodic → semantic memory tiers with Ebbinghaus forgetting curves and spaced repetition |
-| MemoryConsolidation | `agentdb_consolidate` | Automatic clustering and merging of related memories into semantic summaries |
-| BatchOperations | `agentdb_batch` | Bulk insert/update/delete operations for high-throughput memory management |
-| ReasoningBank | `agentdb_pattern-store/search` | Pattern storage with BM25+semantic hybrid search |
+| Controller          | MCP Tool                            | Description                                                                                        |
+| ------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| HierarchicalMemory  | `agentdb_hierarchical-store/recall` | Working → episodic → semantic memory tiers with Ebbinghaus forgetting curves and spaced repetition |
+| MemoryConsolidation | `agentdb_consolidate`               | Automatic clustering and merging of related memories into semantic summaries                       |
+| BatchOperations     | `agentdb_batch`                     | Bulk insert/update/delete operations for high-throughput memory management                         |
+| ReasoningBank       | `agentdb_pattern-store/search`      | Pattern storage with BM25+semantic hybrid search                                                   |
 
 **Intelligence:**
 
-| Controller | MCP Tool | Description |
-|-----------|----------|-------------|
-| SemanticRouter | `agentdb_semantic-route` | Route tasks to agents using vector similarity instead of manual rules |
-| ContextSynthesizer | `agentdb_context-synthesize` | Auto-generate context summaries from memory entries |
-| GNNService | — | Graph neural network for intent classification and skill recommendation |
-| SonaTrajectoryService | — | Record and predict learning trajectories for agents |
-| GraphTransformerService | — | Sublinear attention, causal attention, Granger causality extraction |
+| Controller              | MCP Tool                     | Description                                                             |
+| ----------------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| SemanticRouter          | `agentdb_semantic-route`     | Route tasks to agents using vector similarity instead of manual rules   |
+| ContextSynthesizer      | `agentdb_context-synthesize` | Auto-generate context summaries from memory entries                     |
+| GNNService              | —                            | Graph neural network for intent classification and skill recommendation |
+| SonaTrajectoryService   | —                            | Record and predict learning trajectories for agents                     |
+| GraphTransformerService | —                            | Sublinear attention, causal attention, Granger causality extraction     |
 
 **Causal & Explainable:**
 
-| Controller | MCP Tool | Description |
-|-----------|----------|-------------|
-| CausalRecall | `agentdb_causal-edge` | Recall with causal re-ranking and utility scoring |
-| ExplainableRecall | — | Certificates proving *why* a memory was recalled |
-| CausalMemoryGraph | — | Directed causal relationships between memory entries |
-| MMRDiversityRanker | — | Maximal Marginal Relevance for diverse search results |
+| Controller         | MCP Tool              | Description                                           |
+| ------------------ | --------------------- | ----------------------------------------------------- |
+| CausalRecall       | `agentdb_causal-edge` | Recall with causal re-ranking and utility scoring     |
+| ExplainableRecall  | —                     | Certificates proving _why_ a memory was recalled      |
+| CausalMemoryGraph  | —                     | Directed causal relationships between memory entries  |
+| MMRDiversityRanker | —                     | Maximal Marginal Relevance for diverse search results |
 
 **Security & Integrity:**
 
-| Controller | MCP Tool | Description |
-|-----------|----------|-------------|
-| GuardedVectorBackend | — | Cryptographic proof-of-work before vector insert/search |
-| MutationGuard | — | Token-validated mutations with cryptographic proofs |
-| AttestationLog | — | Immutable audit trail of all memory operations |
+| Controller           | MCP Tool | Description                                             |
+| -------------------- | -------- | ------------------------------------------------------- |
+| GuardedVectorBackend | —        | Cryptographic proof-of-work before vector insert/search |
+| MutationGuard        | —        | Token-validated mutations with cryptographic proofs     |
+| AttestationLog       | —        | Immutable audit trail of all memory operations          |
 
 **Optimization:**
 
-| Controller | MCP Tool | Description |
-|-----------|----------|-------------|
-| RVFOptimizer | — | 4-bit adaptive quantization and progressive compression |
+| Controller   | MCP Tool | Description                                             |
+| ------------ | -------- | ------------------------------------------------------- |
+| RVFOptimizer | —        | 4-bit adaptive quantization and progressive compression |
 
 **MCP Tool Examples:**
+
 ```bash
 # Store to hierarchical memory
 agentdb_hierarchical-store --key "auth-pattern" --value "JWT refresh" --tier "semantic"
@@ -1163,6 +1174,7 @@ agentdb_semantic-route --input "fix auth bug in login"
 ```
 
 **Hierarchical Memory Tiers:**
+
 ```
 ┌─────────────────────────────────────────────┐
 │  Working Memory                             │  ← Active context, fast access
@@ -1266,6 +1278,7 @@ npx ruflo@latest mcp start
 <summary>🖥️ <strong>Claude Desktop</strong></summary>
 
 **Config Location:**
+
 - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
@@ -1287,7 +1300,7 @@ npx ruflo@latest mcp start
 
 Restart Claude Desktop after saving. Look for the MCP indicator (hammer icon) in the input box.
 
-*Sources: [Claude Help Center](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), [Anthropic Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions)*
+_Sources: [Claude Help Center](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), [Anthropic Desktop Extensions](https://www.anthropic.com/engineering/desktop-extensions)_
 
 </details>
 
@@ -1307,7 +1320,7 @@ claude mcp add ruflo \
 claude mcp list
 ```
 
-*Sources: [Claude Code MCP Docs](https://code.claude.com/docs/en/mcp)*
+_Sources: [Claude Code MCP Docs](https://code.claude.com/docs/en/mcp)_
 
 </details>
 
@@ -1317,6 +1330,7 @@ claude mcp list
 **Requires:** VS Code 1.102+ (MCP support is GA)
 
 **Method 1: Command Palette**
+
 1. Press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows)
 2. Run `MCP: Add Server`
 3. Enter server details
@@ -1339,7 +1353,7 @@ Create `.vscode/mcp.json` in your project:
 }
 ```
 
-*Sources: [VS Code MCP Docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers), [MCP Integration Guides](https://mcpez.com/integrations)*
+_Sources: [VS Code MCP Docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers), [MCP Integration Guides](https://mcpez.com/integrations)_
 
 </details>
 
@@ -1368,7 +1382,7 @@ Create `.cursor/mcp.json` in your project (or global config):
 
 **Important:** Cursor must be in **Agent Mode** (not Ask Mode) to access MCP tools. Cursor supports up to 40 MCP tools.
 
-*Sources: [Cursor MCP Docs](https://docs.cursor.com/context/model-context-protocol), [Cursor Directory](https://cursor.directory/mcp)*
+_Sources: [Cursor MCP Docs](https://docs.cursor.com/context/model-context-protocol), [Cursor Directory](https://cursor.directory/mcp)_
 
 </details>
 
@@ -1395,7 +1409,7 @@ Create `.cursor/mcp.json` in your project (or global config):
 
 Click **Refresh** in the MCP settings to connect. Windsurf supports up to 100 MCP tools.
 
-*Sources: [Windsurf MCP Tutorial](https://windsurf.com/university/tutorials/configuring-first-mcp-server), [Windsurf Cascade Docs](https://docs.windsurf.com/windsurf/cascade/mcp)*
+_Sources: [Windsurf MCP Tutorial](https://windsurf.com/university/tutorials/configuring-first-mcp-server), [Windsurf Cascade Docs](https://docs.windsurf.com/windsurf/cascade/mcp)_
 
 </details>
 
@@ -1405,6 +1419,7 @@ Click **Refresh** in the MCP settings to connect. Windsurf supports up to 100 MC
 **Requires:** ChatGPT Pro or Plus subscription with Developer Mode enabled
 
 **Setup:**
+
 1. Go to **Settings → Connectors → Advanced**
 2. Enable **Developer Mode** (beta)
 3. Add your MCP Server in the **Connectors** tab
@@ -1420,7 +1435,7 @@ npx ruflo@latest mcp start --transport http --port 3000
 
 Then add the server URL in ChatGPT Connectors settings.
 
-*Sources: [OpenAI MCP Docs](https://platform.openai.com/docs/mcp), [Docker MCP for ChatGPT](https://www.docker.com/blog/add-mcp-server-to-chatgpt/)*
+_Sources: [OpenAI MCP Docs](https://platform.openai.com/docs/mcp), [Docker MCP for ChatGPT](https://www.docker.com/blog/add-mcp-server-to-chatgpt/)_
 
 </details>
 
@@ -1430,6 +1445,7 @@ Then add the server URL in ChatGPT Connectors settings.
 Google AI Studio supports MCP natively since May 2025, with managed MCP servers for Google services (Maps, BigQuery, etc.) launched December 2025.
 
 **Using MCP SuperAssistant Extension:**
+
 1. Install [MCP SuperAssistant](https://chrome.google.com/webstore) Chrome extension
 2. Configure your ruflo MCP server
 3. Use with Google AI Studio, Gemini, and other AI platforms
@@ -1437,21 +1453,23 @@ Google AI Studio supports MCP natively since May 2025, with managed MCP servers 
 **Native SDK Integration:**
 
 ```javascript
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: 'YOUR_API_KEY' });
+const ai = new GoogleGenAI({ apiKey: "YOUR_API_KEY" });
 
 // MCP definitions are natively supported in the Gen AI SDK
 const mcpConfig = {
-  servers: [{
-    name: 'ruflo',
-    command: 'npx',
-    args: ['ruflo@latest', 'mcp', 'start']
-  }]
+  servers: [
+    {
+      name: "ruflo",
+      command: "npx",
+      args: ["ruflo@latest", "mcp", "start"],
+    },
+  ],
 };
 ```
 
-*Sources: [Google AI Studio MCP](https://developers.googleblog.com/en/google-ai-studio-native-code-generation-agentic-tools-upgrade/), [Google Cloud MCP Announcement](https://cloud.google.com/blog/products/ai-machine-learning/announcing-official-mcp-support-for-google-services)*
+_Sources: [Google AI Studio MCP](https://developers.googleblog.com/en/google-ai-studio-native-code-generation-agentic-tools-upgrade/), [Google Cloud MCP Announcement](https://cloud.google.com/blog/products/ai-machine-learning/announcing-official-mcp-support-for-google-services)_
 
 </details>
 
@@ -1461,6 +1479,7 @@ const mcpConfig = {
 JetBrains AI Assistant supports MCP for IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs.
 
 **Setup:**
+
 1. Open **Settings → Tools → AI Assistant → MCP**
 2. Click **Add Server**
 3. Configure:
@@ -1473,7 +1492,7 @@ JetBrains AI Assistant supports MCP for IntelliJ IDEA, PyCharm, WebStorm, and ot
 }
 ```
 
-*Sources: [JetBrains AI Assistant MCP](https://www.jetbrains.com/help/ai-assistant/mcp.html)*
+_Sources: [JetBrains AI Assistant MCP](https://www.jetbrains.com/help/ai-assistant/mcp.html)_
 
 </details>
 
@@ -1481,14 +1500,14 @@ JetBrains AI Assistant supports MCP for IntelliJ IDEA, PyCharm, WebStorm, and ot
 
 All configurations support these environment variables:
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Your Anthropic API key | Yes (for Claude models) |
-| `OPENAI_API_KEY` | OpenAI API key | Optional (for GPT models) |
-| `GOOGLE_API_KEY` | Google AI API key | Optional (for Gemini) |
-| `CLAUDE_FLOW_LOG_LEVEL` | Logging level (debug, info, warn, error) | Optional |
-| `CLAUDE_FLOW_TOOL_GROUPS` | MCP tool groups to enable (comma-separated) | Optional |
-| `CLAUDE_FLOW_TOOL_MODE` | Preset tool mode (develop, pr-review, devops, etc.) | Optional |
+| Variable                  | Description                                         | Required                  |
+| ------------------------- | --------------------------------------------------- | ------------------------- |
+| `ANTHROPIC_API_KEY`       | Your Anthropic API key                              | Yes (for Claude models)   |
+| `OPENAI_API_KEY`          | OpenAI API key                                      | Optional (for GPT models) |
+| `GOOGLE_API_KEY`          | Google AI API key                                   | Optional (for Gemini)     |
+| `CLAUDE_FLOW_LOG_LEVEL`   | Logging level (debug, info, warn, error)            | Optional                  |
+| `CLAUDE_FLOW_TOOL_GROUPS` | MCP tool groups to enable (comma-separated)         | Optional                  |
+| `CLAUDE_FLOW_TOOL_MODE`   | Preset tool mode (develop, pr-review, devops, etc.) | Optional                  |
 
 #### MCP Tool Groups
 
@@ -1505,12 +1524,13 @@ export CLAUDE_FLOW_TOOL_MODE=develop
 **Available Groups:** `create`, `issue`, `branch`, `implement`, `test`, `fix`, `optimize`, `monitor`, `security`, `memory`, `all`, `minimal`
 
 **Preset Modes:**
-| Mode | Groups | Use Case |
-|------|--------|----------|
-| `develop` | create, implement, test, fix, memory | Active development |
-| `pr-review` | branch, fix, monitor, security | Code review |
-| `devops` | create, monitor, optimize, security | Infrastructure |
-| `triage` | issue, monitor, fix | Bug triage |
+
+| Mode        | Groups                               | Use Case           |
+| ----------- | ------------------------------------ | ------------------ |
+| `develop`   | create, implement, test, fix, memory | Active development |
+| `pr-review` | branch, fix, monitor, security       | Code review        |
+| `devops`    | create, monitor, optimize, security  | Infrastructure     |
+| `triage`    | issue, monitor, fix                  | Bug triage         |
 
 **Precedence:** CLI args (`--tools=X`) > Environment vars > Config file > Default (all)
 
@@ -1539,15 +1559,15 @@ echo "ANTHROPIC_API_KEY=sk-ant-..." >> .env
 
 **7-phase pipeline:** Compile → Retrieve → Enforce → Trust → Prove → Defend → Evolve
 
-| Capability | Description |
-|-----------|-------------|
-| **Compile** | Parses `CLAUDE.md` into typed policy bundles (constitution + task-scoped shards) |
-| **Retrieve** | Intent-classified shard retrieval with semantic similarity and risk filters |
-| **Enforce** | 4 gates the model cannot bypass (destructive ops, tool allowlist, diff size, secrets) |
-| **Trust** | Per-agent trust accumulation with privilege tiers and coherence-driven throttling |
-| **Prove** | HMAC-SHA256 hash-chained proof envelopes for cryptographic run auditing |
-| **Defend** | Prompt injection, memory poisoning, and inter-agent collusion detection |
-| **Evolve** | Optimizer loop that ranks violations, simulates rule changes, and promotes winners |
+| Capability   | Description                                                                           |
+| ------------ | ------------------------------------------------------------------------------------- |
+| **Compile**  | Parses `CLAUDE.md` into typed policy bundles (constitution + task-scoped shards)      |
+| **Retrieve** | Intent-classified shard retrieval with semantic similarity and risk filters           |
+| **Enforce**  | 4 gates the model cannot bypass (destructive ops, tool allowlist, diff size, secrets) |
+| **Trust**    | Per-agent trust accumulation with privilege tiers and coherence-driven throttling     |
+| **Prove**    | HMAC-SHA256 hash-chained proof envelopes for cryptographic run auditing               |
+| **Defend**   | Prompt injection, memory poisoning, and inter-agent collusion detection               |
+| **Evolve**   | Optimizer loop that ranks violations, simulates rule changes, and promotes winners    |
 
 ### Install
 
@@ -1564,7 +1584,7 @@ import {
   createGates,
   createLedger,
   createProofChain,
-} from '@claude-flow/guidance';
+} from "@claude-flow/guidance";
 
 // Compile CLAUDE.md into a policy bundle
 const compiler = createCompiler();
@@ -1574,12 +1594,12 @@ const bundle = await compiler.compile(claudeMdText);
 const retriever = createRetriever();
 await retriever.loadBundle(bundle);
 const { shards, policyText } = await retriever.retrieve({
-  taskDescription: 'Fix authentication bug in login flow',
+  taskDescription: "Fix authentication bug in login flow",
 });
 
 // Enforce gates on tool calls
 const gates = createGates(bundle);
-const result = gates.evaluate({ tool: 'bash', args: { command: 'rm -rf /' } });
+const result = gates.evaluate({ tool: "bash", args: { command: "rm -rf /" } });
 // result.blocked === true
 
 // Audit with proof chain
@@ -1590,20 +1610,20 @@ chain.verify(envelope); // true — tamper-evident
 
 ### Key Modules
 
-| Import Path | Purpose |
-|-------------|---------|
-| `@claude-flow/guidance` | Main entry — GuidanceControlPlane |
-| `@claude-flow/guidance/compiler` | CLAUDE.md → PolicyBundle compiler |
-| `@claude-flow/guidance/retriever` | Intent classification + shard retrieval |
-| `@claude-flow/guidance/gates` | 4 enforcement gates |
-| `@claude-flow/guidance/ledger` | Run event logging + evaluators |
-| `@claude-flow/guidance/proof` | HMAC-SHA256 proof chain |
-| `@claude-flow/guidance/adversarial` | Threat, collusion, memory quorum |
-| `@claude-flow/guidance/trust` | Trust accumulation + privilege tiers |
-| `@claude-flow/guidance/authority` | Human authority + irreversibility classification |
-| `@claude-flow/guidance/wasm-kernel` | WASM-accelerated security-critical paths |
-| `@claude-flow/guidance/analyzer` | CLAUDE.md quality analysis + A/B benchmarking |
-| `@claude-flow/guidance/conformance-kit` | Headless conformance test runner |
+| Import Path                             | Purpose                                          |
+| --------------------------------------- | ------------------------------------------------ |
+| `@claude-flow/guidance`                 | Main entry — GuidanceControlPlane                |
+| `@claude-flow/guidance/compiler`        | CLAUDE.md → PolicyBundle compiler                |
+| `@claude-flow/guidance/retriever`       | Intent classification + shard retrieval          |
+| `@claude-flow/guidance/gates`           | 4 enforcement gates                              |
+| `@claude-flow/guidance/ledger`          | Run event logging + evaluators                   |
+| `@claude-flow/guidance/proof`           | HMAC-SHA256 proof chain                          |
+| `@claude-flow/guidance/adversarial`     | Threat, collusion, memory quorum                 |
+| `@claude-flow/guidance/trust`           | Trust accumulation + privilege tiers             |
+| `@claude-flow/guidance/authority`       | Human authority + irreversibility classification |
+| `@claude-flow/guidance/wasm-kernel`     | WASM-accelerated security-critical paths         |
+| `@claude-flow/guidance/analyzer`        | CLAUDE.md quality analysis + A/B benchmarking    |
+| `@claude-flow/guidance/conformance-kit` | Headless conformance test runner                 |
 
 ### Stats
 
@@ -1640,16 +1660,16 @@ Comprehensive feature set for enterprise-grade AI agent orchestration.
 
 Pre-built agents for every development task, from coding to security audits.
 
-| Category | Agent Count | Key Agents | Purpose |
-|----------|-------------|------------|---------|
-| **Core Development** | 5 | coder, reviewer, tester, planner, researcher | Daily development tasks |
-| **V3 Specialized** | 10 | queen-coordinator, security-architect, memory-specialist | Enterprise orchestration |
-| **Swarm Coordination** | 5 | hierarchical-coordinator, mesh-coordinator, adaptive-coordinator | Multi-agent patterns |
-| **Consensus & Distributed** | 7 | byzantine-coordinator, raft-manager, gossip-coordinator | Fault-tolerant coordination |
-| **Performance** | 5 | perf-analyzer, performance-benchmarker, task-orchestrator | Optimization & monitoring |
-| **GitHub & Repository** | 9 | pr-manager, code-review-swarm, issue-tracker, release-manager | Repository automation |
-| **SPARC Methodology** | 6 | sparc-coord, specification, pseudocode, architecture | Structured development |
-| **Specialized Dev** | 8 | backend-dev, mobile-dev, ml-developer, cicd-engineer | Domain expertise |
+| Category                    | Agent Count | Key Agents                                                       | Purpose                     |
+| --------------------------- | ----------- | ---------------------------------------------------------------- | --------------------------- |
+| **Core Development**        | 5           | coder, reviewer, tester, planner, researcher                     | Daily development tasks     |
+| **V3 Specialized**          | 10          | queen-coordinator, security-architect, memory-specialist         | Enterprise orchestration    |
+| **Swarm Coordination**      | 5           | hierarchical-coordinator, mesh-coordinator, adaptive-coordinator | Multi-agent patterns        |
+| **Consensus & Distributed** | 7           | byzantine-coordinator, raft-manager, gossip-coordinator          | Fault-tolerant coordination |
+| **Performance**             | 5           | perf-analyzer, performance-benchmarker, task-orchestrator        | Optimization & monitoring   |
+| **GitHub & Repository**     | 9           | pr-manager, code-review-swarm, issue-tracker, release-manager    | Repository automation       |
+| **SPARC Methodology**       | 6           | sparc-coord, specification, pseudocode, architecture             | Structured development      |
+| **Specialized Dev**         | 8           | backend-dev, mobile-dev, ml-developer, cicd-engineer             | Domain expertise            |
 
 </details>
 
@@ -1658,14 +1678,14 @@ Pre-built agents for every development task, from coding to security audits.
 
 Choose the right topology for your task complexity and team size.
 
-| Topology | Recommended Agents | Best For | Execution Time | Memory/Agent |
-|----------|-------------------|----------|----------------|--------------|
-| **Hierarchical** | 6+ | Structured tasks, clear authority chains | 0.20s | 256 MB |
-| **Mesh** | 4+ | Collaborative work, high redundancy | 0.15s | 192 MB |
-| **Ring** | 3+ | Sequential processing pipelines | 0.12s | 128 MB |
-| **Star** | 5+ | Centralized control, spoke workers | 0.14s | 180 MB |
-| **Hybrid (Hierarchical-Mesh)** | 7+ | Complex multi-domain tasks | 0.18s | 320 MB |
-| **Adaptive** | 2+ | Dynamic workloads, auto-scaling | Variable | Dynamic |
+| Topology                       | Recommended Agents | Best For                                 | Execution Time | Memory/Agent |
+| ------------------------------ | ------------------ | ---------------------------------------- | -------------- | ------------ |
+| **Hierarchical**               | 6+                 | Structured tasks, clear authority chains | 0.20s          | 256 MB       |
+| **Mesh**                       | 4+                 | Collaborative work, high redundancy      | 0.15s          | 192 MB       |
+| **Ring**                       | 3+                 | Sequential processing pipelines          | 0.12s          | 128 MB       |
+| **Star**                       | 5+                 | Centralized control, spoke workers       | 0.14s          | 180 MB       |
+| **Hybrid (Hierarchical-Mesh)** | 7+                 | Complex multi-domain tasks               | 0.18s          | 320 MB       |
+| **Adaptive**                   | 2+                 | Dynamic workloads, auto-scaling          | Variable       | Dynamic      |
 
 </details>
 
@@ -1676,30 +1696,32 @@ The Hive Mind system implements queen-led hierarchical coordination where strate
 
 **Queen Types:**
 
-| Queen Type | Best For | Strategy |
-|------------|----------|----------|
+| Queen Type    | Best For                     | Strategy                          |
+| ------------- | ---------------------------- | --------------------------------- |
 | **Strategic** | Research, planning, analysis | High-level objective coordination |
-| **Tactical** | Implementation, execution | Direct task management |
-| **Adaptive** | Optimization, dynamic tasks | Real-time strategy adjustment |
+| **Tactical**  | Implementation, execution    | Direct task management            |
+| **Adaptive**  | Optimization, dynamic tasks  | Real-time strategy adjustment     |
 
 **Worker Specializations (8 types):**
 `researcher`, `coder`, `analyst`, `tester`, `architect`, `reviewer`, `optimizer`, `documenter`
 
 **Consensus Mechanisms:**
 
-| Algorithm | Voting | Fault Tolerance | Best For |
-|-----------|--------|-----------------|----------|
-| **Byzantine** | 2/3 supermajority | f < n/3 faulty | Critical decisions |
-| **Raft** | Leader-elected | f < n/2 faulty | Strongly-consistent state |
-| **Quorum** | Configurable (majority / supermajority / unanimous) | Threshold-dependent | Tunable agreement |
-| **Gossip** | Epidemic | Eventually consistent | Large peer networks |
-| **CRDT** | Conflict-free merge | Partition-tolerant | Distributed shared state |
+| Algorithm     | Voting                                              | Fault Tolerance       | Best For                  |
+| ------------- | --------------------------------------------------- | --------------------- | ------------------------- |
+| **Byzantine** | 2/3 supermajority                                   | f < n/3 faulty        | Critical decisions        |
+| **Raft**      | Leader-elected                                      | f < n/2 faulty        | Strongly-consistent state |
+| **Quorum**    | Configurable (majority / supermajority / unanimous) | Threshold-dependent   | Tunable agreement         |
+| **Gossip**    | Epidemic                                            | Eventually consistent | Large peer networks       |
+| **CRDT**      | Conflict-free merge                                 | Partition-tolerant    | Distributed shared state  |
 
 **Collective Memory Types:**
+
 - `knowledge` (permanent), `context` (1h TTL), `task` (30min TTL), `result` (permanent)
 - `error` (24h TTL), `metric` (1h TTL), `consensus` (permanent), `system` (permanent)
 
 **CLI Commands:**
+
 ```bash
 npx ruflo hive-mind init                    # Initialize hive mind
 npx ruflo hive-mind spawn "Build API"       # Spawn with objective
@@ -1720,6 +1742,7 @@ npx ruflo hive-mind sessions                # List active sessions
 Native integration with Claude Code's experimental Agent Teams feature for spawning and coordinating multiple Claude instances.
 
 **Enable Agent Teams:**
+
 ```bash
 # Automatically enabled with ruflo init
 npx ruflo@latest init
@@ -1734,43 +1757,58 @@ npx ruflo@latest init
 
 **Agent Teams Components:**
 
-| Component | Tool | Purpose |
-|-----------|------|---------|
-| **Team Lead** | Main Claude | Coordinates teammates, assigns tasks, reviews results |
-| **Teammates** | `Task` tool | Sub-agents spawned to work on specific tasks |
-| **Task List** | `TaskCreate/TaskList/TaskUpdate` | Shared todos visible to all team members |
-| **Mailbox** | `SendMessage` | Inter-agent messaging for coordination |
+| Component     | Tool                             | Purpose                                               |
+| ------------- | -------------------------------- | ----------------------------------------------------- |
+| **Team Lead** | Main Claude                      | Coordinates teammates, assigns tasks, reviews results |
+| **Teammates** | `Task` tool                      | Sub-agents spawned to work on specific tasks          |
+| **Task List** | `TaskCreate/TaskList/TaskUpdate` | Shared todos visible to all team members              |
+| **Mailbox**   | `SendMessage`                    | Inter-agent messaging for coordination                |
 
 **Quick Start:**
+
 ```javascript
 // Create a team
-TeamCreate({ team_name: "feature-dev", description: "Building feature" })
+TeamCreate({ team_name: "feature-dev", description: "Building feature" });
 
 // Create shared tasks
-TaskCreate({ subject: "Design API", description: "..." })
-TaskCreate({ subject: "Implement endpoints", description: "..." })
+TaskCreate({ subject: "Design API", description: "..." });
+TaskCreate({ subject: "Implement endpoints", description: "..." });
 
 // Spawn teammates (parallel background work)
-Task({ prompt: "Work on task #1...", subagent_type: "architect",
-       team_name: "feature-dev", name: "architect", run_in_background: true })
-Task({ prompt: "Work on task #2...", subagent_type: "coder",
-       team_name: "feature-dev", name: "developer", run_in_background: true })
+Task({
+  prompt: "Work on task #1...",
+  subagent_type: "architect",
+  team_name: "feature-dev",
+  name: "architect",
+  run_in_background: true,
+});
+Task({
+  prompt: "Work on task #2...",
+  subagent_type: "coder",
+  team_name: "feature-dev",
+  name: "developer",
+  run_in_background: true,
+});
 
 // Message teammates
-SendMessage({ type: "message", recipient: "developer",
-              content: "Prioritize auth", summary: "Priority update" })
+SendMessage({
+  type: "message",
+  recipient: "developer",
+  content: "Prioritize auth",
+  summary: "Priority update",
+});
 
 // Cleanup when done
-SendMessage({ type: "shutdown_request", recipient: "developer" })
-TeamDelete()
+SendMessage({ type: "shutdown_request", recipient: "developer" });
+TeamDelete();
 ```
 
 **Agent Teams Hooks:**
 
-| Hook | Trigger | Purpose |
-|------|---------|---------|
-| `teammate-idle` | Teammate finishes turn | Auto-assign pending tasks |
-| `task-completed` | Task marked complete | Train patterns, notify lead |
+| Hook             | Trigger                | Purpose                     |
+| ---------------- | ---------------------- | --------------------------- |
+| `teammate-idle`  | Teammate finishes turn | Auto-assign pending tasks   |
+| `task-completed` | Task marked complete   | Train patterns, notify lead |
 
 ```bash
 # Handle idle teammate
@@ -1789,15 +1827,15 @@ npx ruflo@latest hooks task-completed --task-id <id> --train-patterns
 
 Full MCP server with tools for coordination, monitoring, memory, and GitHub integration.
 
-| Category | Tools | Description |
-|----------|-------|-------------|
-| **Coordination** | `swarm_init`, `agent_spawn`, `task_orchestrate` | Swarm and agent lifecycle management |
-| **Monitoring** | `swarm_status`, `agent_list`, `agent_metrics`, `task_status` | Real-time status and metrics |
-| **Memory & Neural** | `memory_usage`, `neural_status`, `neural_train`, `neural_patterns` | Memory operations and learning |
-| **GitHub** | `github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review` | Repository integration |
-| **Workers** | `worker/run`, `worker/status`, `worker/alerts`, `worker/history` | Background task management |
-| **Hooks** | `hooks/pre-*`, `hooks/post-*`, `hooks/route`, `hooks/session-*`, `hooks/teammate-*`, `hooks/task-*` | 33 lifecycle hooks |
-| **Progress** | `progress/check`, `progress/sync`, `progress/summary`, `progress/watch` | V3 implementation tracking |
+| Category            | Tools                                                                                               | Description                          |
+| ------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **Coordination**    | `swarm_init`, `agent_spawn`, `task_orchestrate`                                                     | Swarm and agent lifecycle management |
+| **Monitoring**      | `swarm_status`, `agent_list`, `agent_metrics`, `task_status`                                        | Real-time status and metrics         |
+| **Memory & Neural** | `memory_usage`, `neural_status`, `neural_train`, `neural_patterns`                                  | Memory operations and learning       |
+| **GitHub**          | `github_swarm`, `repo_analyze`, `pr_enhance`, `issue_triage`, `code_review`                         | Repository integration               |
+| **Workers**         | `worker/run`, `worker/status`, `worker/alerts`, `worker/history`                                    | Background task management           |
+| **Hooks**           | `hooks/pre-*`, `hooks/post-*`, `hooks/route`, `hooks/session-*`, `hooks/teammate-*`, `hooks/task-*` | 33 lifecycle hooks                   |
+| **Progress**        | `progress/check`, `progress/sync`, `progress/summary`, `progress/watch`                             | V3 implementation tracking           |
 
 </details>
 
@@ -1806,15 +1844,15 @@ Full MCP server with tools for coordination, monitoring, memory, and GitHub inte
 
 Enterprise-grade security with input validation, sandboxing, and active CVE monitoring.
 
-| Feature | Protection | Implementation |
-|---------|------------|----------------|
-| **Input Validation** | Injection attacks | Boundary validation on all inputs |
-| **Path Traversal Prevention** | Directory escape | Blocked patterns (`../`, `~/.`, `/etc/`) |
-| **Command Sandboxing** | Shell injection | Allowlisted commands, metacharacter blocking |
-| **Prototype Pollution** | Object manipulation | Safe JSON parsing with validation |
-| **TOCTOU Protection** | Race conditions | Symlink skipping and atomic operations |
-| **Information Disclosure** | Data leakage | Error message sanitization |
-| **CVE Monitoring** | Known vulnerabilities | Active scanning and patching |
+| Feature                       | Protection            | Implementation                               |
+| ----------------------------- | --------------------- | -------------------------------------------- |
+| **Input Validation**          | Injection attacks     | Boundary validation on all inputs            |
+| **Path Traversal Prevention** | Directory escape      | Blocked patterns (`../`, `~/.`, `/etc/`)     |
+| **Command Sandboxing**        | Shell injection       | Allowlisted commands, metacharacter blocking |
+| **Prototype Pollution**       | Object manipulation   | Safe JSON parsing with validation            |
+| **TOCTOU Protection**         | Race conditions       | Symlink skipping and atomic operations       |
+| **Information Disclosure**    | Data leakage          | Error message sanitization                   |
+| **CVE Monitoring**            | Known vulnerabilities | Active scanning and patching                 |
 
 </details>
 
@@ -1823,16 +1861,16 @@ Enterprise-grade security with input validation, sandboxing, and active CVE moni
 
 Production-ready features for high availability and continuous learning.
 
-| Feature | Description | Benefit |
-|---------|-------------|---------|
+| Feature                          | Description                                        | Benefit                      |
+| -------------------------------- | -------------------------------------------------- | ---------------------------- |
 | **Automatic Topology Selection** | AI-driven topology choice based on task complexity | Optimal resource utilization |
-| **Parallel Execution** | Concurrent agent operation with load balancing | 2.8-4.4x speed improvement |
-| **Neural Training** | 27+ model support with continuous learning | Adaptive intelligence |
-| **Bottleneck Analysis** | Real-time performance monitoring and optimization | Proactive issue detection |
-| **Smart Auto-Spawning** | Dynamic agent creation based on workload | Elastic scaling |
-| **Self-Healing Workflows** | Automatic error recovery and task retry | High availability |
-| **Cross-Session Memory** | Persistent pattern storage across sessions | Continuous learning |
-| **Event Sourcing** | Complete audit trail with replay capability | Debugging and compliance |
+| **Parallel Execution**           | Concurrent agent operation with load balancing     | 2.8-4.4x speed improvement   |
+| **Neural Training**              | 27+ model support with continuous learning         | Adaptive intelligence        |
+| **Bottleneck Analysis**          | Real-time performance monitoring and optimization  | Proactive issue detection    |
+| **Smart Auto-Spawning**          | Dynamic agent creation based on workload           | Elastic scaling              |
+| **Self-Healing Workflows**       | Automatic error recovery and task retry            | High availability            |
+| **Cross-Session Memory**         | Persistent pattern storage across sessions         | Continuous learning          |
+| **Event Sourcing**               | Complete audit trail with replay capability        | Debugging and compliance     |
 
 </details>
 
@@ -1841,14 +1879,14 @@ Production-ready features for high availability and continuous learning.
 
 Build custom plugins with the fluent builder API. Create MCP tools, hooks, workers, and providers.
 
-| Component | Description | Key Features |
-|-----------|-------------|--------------|
-| **PluginBuilder** | Fluent builder for creating plugins | MCP tools, hooks, workers, providers |
-| **MCPToolBuilder** | Build MCP tools with typed parameters | String, number, boolean, enum params |
-| **HookBuilder** | Build hooks with conditions and transformers | Priorities, conditional execution |
-| **WorkerPool** | Managed worker pool with auto-scaling | Min/max workers, task queuing |
-| **ProviderRegistry** | LLM provider management with fallback | Cost optimization, automatic failover |
-| **AgentDBBridge** | Vector storage with HNSW indexing | 150x faster search, batch operations |
+| Component            | Description                                  | Key Features                          |
+| -------------------- | -------------------------------------------- | ------------------------------------- |
+| **PluginBuilder**    | Fluent builder for creating plugins          | MCP tools, hooks, workers, providers  |
+| **MCPToolBuilder**   | Build MCP tools with typed parameters        | String, number, boolean, enum params  |
+| **HookBuilder**      | Build hooks with conditions and transformers | Priorities, conditional execution     |
+| **WorkerPool**       | Managed worker pool with auto-scaling        | Min/max workers, task queuing         |
+| **ProviderRegistry** | LLM provider management with fallback        | Cost optimization, automatic failover |
+| **AgentDBBridge**    | Vector storage with HNSW indexing            | 150x faster search, batch operations  |
 
 **Plugin Performance:** Load <20ms, Hook execution <0.5ms, Worker spawn <50ms
 
@@ -1856,39 +1894,40 @@ Build custom plugins with the fluent builder API. Create MCP tools, hooks, worke
 
 Install these optional plugins to extend Ruflo capabilities:
 
-| Plugin | Version | Description | Install Command |
-|--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-agentic-qe** | 3.0.0-alpha.2 | Quality Engineering with 58 AI agents across 12 DDD contexts. TDD, coverage analysis, security scanning, chaos engineering, accessibility testing. | `npm install @claude-flow/plugin-agentic-qe` |
-| **@claude-flow/plugin-prime-radiant** | 0.1.4 | Mathematical AI interpretability with 6 engines: sheaf cohomology, spectral analysis, causal inference, quantum topology, category theory, HoTT proofs. | `npm install @claude-flow/plugin-prime-radiant` |
-| **@claude-flow/plugin-gastown-bridge** | 0.1.0 | Gas Town orchestrator integration with WASM-accelerated formula parsing (instant (regex-based, no LLM call)), Beads sync, convoy management, and graph analysis. 20 MCP tools. | `npx ruflo@latest plugins install -n @claude-flow/plugin-gastown-bridge` |
-| **@claude-flow/teammate-plugin** | 1.0.0-alpha.1 | Native TeammateTool integration for Claude Code v2.1.19+. BMSSP WASM acceleration, rate limiting, circuit breaker, semantic routing. 21 MCP tools. | `npx ruflo@latest plugins install -n @claude-flow/teammate-plugin` |
+| Plugin                                 | Version       | Description                                                                                                                                                                    | Install Command                                                          |
+| -------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| **@claude-flow/plugin-agentic-qe**     | 3.0.0-alpha.2 | Quality Engineering with 58 AI agents across 12 DDD contexts. TDD, coverage analysis, security scanning, chaos engineering, accessibility testing.                             | `npm install @claude-flow/plugin-agentic-qe`                             |
+| **@claude-flow/plugin-prime-radiant**  | 0.1.4         | Mathematical AI interpretability with 6 engines: sheaf cohomology, spectral analysis, causal inference, quantum topology, category theory, HoTT proofs.                        | `npm install @claude-flow/plugin-prime-radiant`                          |
+| **@claude-flow/plugin-gastown-bridge** | 0.1.0         | Gas Town orchestrator integration with WASM-accelerated formula parsing (instant (regex-based, no LLM call)), Beads sync, convoy management, and graph analysis. 20 MCP tools. | `npx ruflo@latest plugins install -n @claude-flow/plugin-gastown-bridge` |
+| **@claude-flow/teammate-plugin**       | 1.0.0-alpha.1 | Native TeammateTool integration for Claude Code v2.1.19+. BMSSP WASM acceleration, rate limiting, circuit breaker, semantic routing. 21 MCP tools.                             | `npx ruflo@latest plugins install -n @claude-flow/teammate-plugin`       |
 
 #### 🏥 Domain-Specific Plugins
 
-| Plugin | Version | Description | Install Command |
-|--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-healthcare-clinical** | 0.1.0 | HIPAA-compliant clinical decision support with FHIR/HL7 integration. Symptom analysis, drug interactions, treatment recommendations. | `npm install @claude-flow/plugin-healthcare-clinical` |
-| **@claude-flow/plugin-financial-risk** | 0.1.0 | PCI-DSS/SOX compliant financial risk analysis. Portfolio optimization, fraud detection, regulatory compliance, market simulation. | `npm install @claude-flow/plugin-financial-risk` |
-| **@claude-flow/plugin-legal-contracts** | 0.1.0 | Attorney-client privilege protected contract analysis. Risk identification, clause extraction, compliance verification. | `npm install @claude-flow/plugin-legal-contracts` |
+| Plugin                                      | Version | Description                                                                                                                          | Install Command                                       |
+| ------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| **@claude-flow/plugin-healthcare-clinical** | 0.1.0   | HIPAA-compliant clinical decision support with FHIR/HL7 integration. Symptom analysis, drug interactions, treatment recommendations. | `npm install @claude-flow/plugin-healthcare-clinical` |
+| **@claude-flow/plugin-financial-risk**      | 0.1.0   | PCI-DSS/SOX compliant financial risk analysis. Portfolio optimization, fraud detection, regulatory compliance, market simulation.    | `npm install @claude-flow/plugin-financial-risk`      |
+| **@claude-flow/plugin-legal-contracts**     | 0.1.0   | Attorney-client privilege protected contract analysis. Risk identification, clause extraction, compliance verification.              | `npm install @claude-flow/plugin-legal-contracts`     |
 
 #### 💻 Development Intelligence Plugins
 
-| Plugin | Version | Description | Install Command |
-|--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-code-intelligence** | 0.1.0 | Advanced code analysis with GNN-based pattern recognition. Security vulnerability detection, refactoring suggestions, architecture analysis. | `npm install @claude-flow/plugin-code-intelligence` |
-| **@claude-flow/plugin-test-intelligence** | 0.1.0 | AI-powered test generation and optimization. Coverage analysis, mutation testing, test prioritization, flaky test detection. | `npm install @claude-flow/plugin-test-intelligence` |
-| **@claude-flow/plugin-perf-optimizer** | 0.1.0 | Performance profiling and optimization. Memory leak detection, CPU bottleneck analysis, I/O optimization, caching strategies. | `npm install @claude-flow/plugin-perf-optimizer` |
+| Plugin                                    | Version | Description                                                                                                                                  | Install Command                                     |
+| ----------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **@claude-flow/plugin-code-intelligence** | 0.1.0   | Advanced code analysis with GNN-based pattern recognition. Security vulnerability detection, refactoring suggestions, architecture analysis. | `npm install @claude-flow/plugin-code-intelligence` |
+| **@claude-flow/plugin-test-intelligence** | 0.1.0   | AI-powered test generation and optimization. Coverage analysis, mutation testing, test prioritization, flaky test detection.                 | `npm install @claude-flow/plugin-test-intelligence` |
+| **@claude-flow/plugin-perf-optimizer**    | 0.1.0   | Performance profiling and optimization. Memory leak detection, CPU bottleneck analysis, I/O optimization, caching strategies.                | `npm install @claude-flow/plugin-perf-optimizer`    |
 
 #### 🧠 Advanced AI/Reasoning Plugins
 
-| Plugin | Version | Description | Install Command |
-|--------|---------|-------------|-----------------|
-| **@claude-flow/plugin-neural-coordination** | 0.1.0 | Multi-agent neural coordination with SONA learning. Agent specialization, knowledge transfer, collective decision making. | `npm install @claude-flow/plugin-neural-coordination` |
-| **@claude-flow/plugin-cognitive-kernel** | 0.1.0 | Cognitive computing kernel for working memory, attention control, meta-cognition, and task scaffolding. Miller's Law (7±2) compliance. | `npm install @claude-flow/plugin-cognitive-kernel` |
-| **@claude-flow/plugin-quantum-optimizer** | 0.1.0 | Quantum-inspired optimization (QAOA, VQE, quantum annealing). Combinatorial optimization, Grover search, tensor networks. | `npm install @claude-flow/plugin-quantum-optimizer` |
-| **@claude-flow/plugin-hyperbolic-reasoning** | 0.1.0 | Hyperbolic geometry for hierarchical reasoning. Poincaré embeddings, tree-like structure analysis, taxonomic inference. | `npm install @claude-flow/plugin-hyperbolic-reasoning` |
+| Plugin                                       | Version | Description                                                                                                                            | Install Command                                        |
+| -------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **@claude-flow/plugin-neural-coordination**  | 0.1.0   | Multi-agent neural coordination with SONA learning. Agent specialization, knowledge transfer, collective decision making.              | `npm install @claude-flow/plugin-neural-coordination`  |
+| **@claude-flow/plugin-cognitive-kernel**     | 0.1.0   | Cognitive computing kernel for working memory, attention control, meta-cognition, and task scaffolding. Miller's Law (7±2) compliance. | `npm install @claude-flow/plugin-cognitive-kernel`     |
+| **@claude-flow/plugin-quantum-optimizer**    | 0.1.0   | Quantum-inspired optimization (QAOA, VQE, quantum annealing). Combinatorial optimization, Grover search, tensor networks.              | `npm install @claude-flow/plugin-quantum-optimizer`    |
+| **@claude-flow/plugin-hyperbolic-reasoning** | 0.1.0   | Hyperbolic geometry for hierarchical reasoning. Poincaré embeddings, tree-like structure analysis, taxonomic inference.                | `npm install @claude-flow/plugin-hyperbolic-reasoning` |
 
 **Agentic-QE Plugin Features:**
+
 - 58 specialized QE agents across 13 bounded contexts
 - 16 MCP tools: `aqe/generate-tests`, `aqe/tdd-cycle`, `aqe/analyze-coverage`, `aqe/security-scan`, `aqe/chaos-inject`, etc.
 - London-style TDD with red-green-refactor cycles
@@ -1896,6 +1935,7 @@ Install these optional plugins to extend Ruflo capabilities:
 - OWASP/SANS compliance auditing
 
 **Prime-Radiant Plugin Features:**
+
 - 6 mathematical engines for AI interpretability
 - 6 MCP tools: `pr_coherence_check`, `pr_spectral_analyze`, `pr_causal_infer`, `pr_consensus_verify`, `pr_quantum_topology`, `pr_memory_gate`
 - Sheaf Laplacian coherence detection (<5ms)
@@ -1903,6 +1943,7 @@ Install these optional plugins to extend Ruflo capabilities:
 - Hallucination prevention via consensus verification
 
 **Teammate Plugin Features:**
+
 - Native TeammateTool integration for Claude Code v2.1.19+
 - 21 MCP tools: `teammate/spawn`, `teammate/coordinate`, `teammate/broadcast`, `teammate/discover-teams`, `teammate/route-task`, etc.
 - BMSSP WASM acceleration for topology optimization (instant (regex-based, no LLM call))
@@ -1912,6 +1953,7 @@ Install these optional plugins to extend Ruflo capabilities:
 - Health monitoring with configurable thresholds
 
 **New RuVector WASM Plugins (50 MCP tools total):**
+
 - **Healthcare**: 5 tools for clinical decision support, drug interactions, treatment recommendations
 - **Financial**: 5 tools for risk assessment, fraud detection, portfolio optimization
 - **Legal**: 5 tools for contract analysis, clause extraction, compliance verification
@@ -1960,16 +2002,16 @@ npx ruflo plugins list --installed
 
 Intercept and extend any operation with pre/post hooks.
 
-| Category | Events | Description |
-|----------|--------|-------------|
-| **Session** | `session:start`, `session:end` | Session lifecycle management |
-| **Agent** | `agent:pre-spawn`, `agent:post-spawn`, `agent:pre-terminate` | Agent lifecycle hooks |
-| **Task** | `task:pre-execute`, `task:post-complete`, `task:error` | Task execution hooks |
-| **Tool** | `tool:pre-call`, `tool:post-call` | MCP tool invocation hooks |
-| **Memory** | `memory:pre-store`, `memory:post-store`, `memory:pre-retrieve` | Memory operation hooks |
-| **Swarm** | `swarm:initialized`, `swarm:shutdown`, `swarm:consensus-reached` | Swarm coordination hooks |
-| **File** | `file:pre-read`, `file:post-read`, `file:pre-write` | File operation hooks |
-| **Learning** | `learning:pattern-learned`, `learning:pattern-applied` | Pattern learning hooks |
+| Category     | Events                                                           | Description                  |
+| ------------ | ---------------------------------------------------------------- | ---------------------------- |
+| **Session**  | `session:start`, `session:end`                                   | Session lifecycle management |
+| **Agent**    | `agent:pre-spawn`, `agent:post-spawn`, `agent:pre-terminate`     | Agent lifecycle hooks        |
+| **Task**     | `task:pre-execute`, `task:post-complete`, `task:error`           | Task execution hooks         |
+| **Tool**     | `tool:pre-call`, `tool:post-call`                                | MCP tool invocation hooks    |
+| **Memory**   | `memory:pre-store`, `memory:post-store`, `memory:pre-retrieve`   | Memory operation hooks       |
+| **Swarm**    | `swarm:initialized`, `swarm:shutdown`, `swarm:consensus-reached` | Swarm coordination hooks     |
+| **File**     | `file:pre-read`, `file:post-read`, `file:pre-write`              | File operation hooks         |
+| **Learning** | `learning:pattern-learned`, `learning:pattern-applied`           | Pattern learning hooks       |
 
 </details>
 
@@ -1978,14 +2020,14 @@ Intercept and extend any operation with pre/post hooks.
 
 Pre-built WASM plugins for semantic search, intent routing, and pattern storage.
 
-| Plugin | Description | Performance |
-|--------|-------------|-------------|
-| **SemanticCodeSearchPlugin** | Semantic code search with vector embeddings | Real-time indexing |
-| **IntentRouterPlugin** | Routes user intents to optimal handlers | 95%+ accuracy |
-| **HookPatternLibraryPlugin** | Pre-built patterns for common tasks | Security, testing, performance |
-| **MCPToolOptimizerPlugin** | Optimizes MCP tool selection | Context-aware suggestions |
-| **ReasoningBankPlugin** | Vector-backed pattern storage with HNSW | 150x faster search |
-| **AgentConfigGeneratorPlugin** | Generates optimized agent configurations | From pretrain data |
+| Plugin                         | Description                                 | Performance                    |
+| ------------------------------ | ------------------------------------------- | ------------------------------ |
+| **SemanticCodeSearchPlugin**   | Semantic code search with vector embeddings | Real-time indexing             |
+| **IntentRouterPlugin**         | Routes user intents to optimal handlers     | 95%+ accuracy                  |
+| **HookPatternLibraryPlugin**   | Pre-built patterns for common tasks         | Security, testing, performance |
+| **MCPToolOptimizerPlugin**     | Optimizes MCP tool selection                | Context-aware suggestions      |
+| **ReasoningBankPlugin**        | Vector-backed pattern storage with HNSW     | 150x faster search             |
+| **AgentConfigGeneratorPlugin** | Generates optimized agent configurations    | From pretrain data             |
 
 </details>
 
@@ -1994,40 +2036,40 @@ Pre-built WASM plugins for semantic search, intent routing, and pattern storage.
 
 Full PostgreSQL integration with advanced vector operations, attention mechanisms, GNN layers, and self-learning optimization.
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **Vector Search** | HNSW/IVF indexing with 12+ distance metrics | 52,000+ inserts/sec, sub-ms queries |
-| **39 Attention Mechanisms** | Multi-head, Flash, Sparse, Linear, Graph, Temporal | GPU-accelerated SQL functions |
-| **15 GNN Layer Types** | GCN, GAT, GraphSAGE, MPNN, Transformer, PNA | Graph-aware vector queries |
-| **Hyperbolic Embeddings** | Poincare, Lorentz, Klein models for hierarchical data | Native manifold operations |
-| **Self-Learning** | Query optimizer, index tuner with EWC++ | Continuous improvement |
+| Feature                     | Description                                           | Performance                         |
+| --------------------------- | ----------------------------------------------------- | ----------------------------------- |
+| **Vector Search**           | HNSW/IVF indexing with 12+ distance metrics           | 52,000+ inserts/sec, sub-ms queries |
+| **39 Attention Mechanisms** | Multi-head, Flash, Sparse, Linear, Graph, Temporal    | GPU-accelerated SQL functions       |
+| **15 GNN Layer Types**      | GCN, GAT, GraphSAGE, MPNN, Transformer, PNA           | Graph-aware vector queries          |
+| **Hyperbolic Embeddings**   | Poincare, Lorentz, Klein models for hierarchical data | Native manifold operations          |
+| **Self-Learning**           | Query optimizer, index tuner with EWC++               | Continuous improvement              |
 
 **MCP Tools (8 tools):**
 
-| Tool | Description |
-|------|-------------|
-| `ruvector_search` | Vector similarity search (cosine, euclidean, dot, etc.) |
-| `ruvector_insert` | Insert vectors with batch support and upsert |
-| `ruvector_update` | Update existing vectors and metadata |
-| `ruvector_delete` | Delete vectors by ID or batch |
-| `ruvector_create_index` | Create HNSW/IVF indices with tuning |
-| `ruvector_index_stats` | Get index statistics and health |
-| `ruvector_batch_search` | Batch vector searches with parallelism |
-| `ruvector_health` | Connection pool health check |
+| Tool                    | Description                                             |
+| ----------------------- | ------------------------------------------------------- |
+| `ruvector_search`       | Vector similarity search (cosine, euclidean, dot, etc.) |
+| `ruvector_insert`       | Insert vectors with batch support and upsert            |
+| `ruvector_update`       | Update existing vectors and metadata                    |
+| `ruvector_delete`       | Delete vectors by ID or batch                           |
+| `ruvector_create_index` | Create HNSW/IVF indices with tuning                     |
+| `ruvector_index_stats`  | Get index statistics and health                         |
+| `ruvector_batch_search` | Batch vector searches with parallelism                  |
+| `ruvector_health`       | Connection pool health check                            |
 
 **Configuration:**
 
 ```typescript
-import { createRuVectorBridge } from '@claude-flow/plugins';
+import { createRuVectorBridge } from "@claude-flow/plugins";
 
 const bridge = createRuVectorBridge({
-  host: 'localhost',
+  host: "localhost",
   port: 5432,
-  database: 'vectors',
-  user: 'postgres',
-  password: 'secret',
+  database: "vectors",
+  user: "postgres",
+  password: "secret",
   pool: { min: 2, max: 10 },
-  ssl: true
+  ssl: true,
 });
 
 // Enable the plugin
@@ -2037,66 +2079,66 @@ await registry.loadAll();
 
 **Attention Mechanisms (39 types):**
 
-| Category | Mechanisms |
-|----------|------------|
-| **Core** | `multi_head`, `self_attention`, `cross_attention`, `causal`, `bidirectional` |
-| **Efficient** | `flash_attention`, `flash_attention_v2`, `memory_efficient`, `chunk_attention` |
-| **Sparse** | `sparse_attention`, `block_sparse`, `bigbird`, `longformer`, `local`, `global` |
-| **Linear** | `linear_attention`, `performer`, `linformer`, `nystrom`, `reformer` |
-| **Positional** | `relative_position`, `rotary_position`, `alibi`, `axial` |
-| **Graph** | `graph_attention`, `hyperbolic_attention`, `spherical_attention` |
-| **Temporal** | `temporal_attention`, `recurrent_attention`, `state_space` |
-| **Multimodal** | `cross_modal`, `perceiver`, `flamingo` |
-| **Retrieval** | `retrieval_attention`, `knn_attention`, `memory_augmented` |
+| Category       | Mechanisms                                                                     |
+| -------------- | ------------------------------------------------------------------------------ |
+| **Core**       | `multi_head`, `self_attention`, `cross_attention`, `causal`, `bidirectional`   |
+| **Efficient**  | `flash_attention`, `flash_attention_v2`, `memory_efficient`, `chunk_attention` |
+| **Sparse**     | `sparse_attention`, `block_sparse`, `bigbird`, `longformer`, `local`, `global` |
+| **Linear**     | `linear_attention`, `performer`, `linformer`, `nystrom`, `reformer`            |
+| **Positional** | `relative_position`, `rotary_position`, `alibi`, `axial`                       |
+| **Graph**      | `graph_attention`, `hyperbolic_attention`, `spherical_attention`               |
+| **Temporal**   | `temporal_attention`, `recurrent_attention`, `state_space`                     |
+| **Multimodal** | `cross_modal`, `perceiver`, `flamingo`                                         |
+| **Retrieval**  | `retrieval_attention`, `knn_attention`, `memory_augmented`                     |
 
 **GNN Layers (15 types):**
 
-| Layer | Use Case |
-|-------|----------|
-| `gcn` | General graph convolution |
-| `gat` / `gatv2` | Attention-weighted aggregation |
-| `sage` | Inductive learning on large graphs |
-| `gin` | Maximally expressive GNN |
-| `mpnn` | Message passing with edge features |
-| `edge_conv` | Point cloud processing |
-| `transformer` | Full attention on graphs |
-| `pna` | Principal neighborhood aggregation |
-| `rgcn` / `hgt` / `han` | Heterogeneous graphs |
+| Layer                  | Use Case                           |
+| ---------------------- | ---------------------------------- |
+| `gcn`                  | General graph convolution          |
+| `gat` / `gatv2`        | Attention-weighted aggregation     |
+| `sage`                 | Inductive learning on large graphs |
+| `gin`                  | Maximally expressive GNN           |
+| `mpnn`                 | Message passing with edge features |
+| `edge_conv`            | Point cloud processing             |
+| `transformer`          | Full attention on graphs           |
+| `pna`                  | Principal neighborhood aggregation |
+| `rgcn` / `hgt` / `han` | Heterogeneous graphs               |
 
 **Hyperbolic Operations:**
 
 ```typescript
-import { createHyperbolicSpace } from '@claude-flow/plugins';
+import { createHyperbolicSpace } from "@claude-flow/plugins";
 
-const space = createHyperbolicSpace('poincare', { curvature: -1.0 });
+const space = createHyperbolicSpace("poincare", { curvature: -1.0 });
 
 // Embed hierarchical data (trees, taxonomies)
 const embedding = await space.embed(vector);
-const distance = await space.distance(v1, v2);  // Geodesic distance
+const distance = await space.distance(v1, v2); // Geodesic distance
 const midpoint = await space.geodesicMidpoint(v1, v2);
 ```
 
 **Self-Learning System:**
 
 ```typescript
-import { createSelfLearningSystem } from '@claude-flow/plugins';
+import { createSelfLearningSystem } from "@claude-flow/plugins";
 
 const learning = createSelfLearningSystem(bridge);
 
 // Automatic optimization
-await learning.startLearningLoop();  // Runs in background
+await learning.startLearningLoop(); // Runs in background
 
 // Manual optimization
 const suggestions = await learning.queryOptimizer.analyze(query);
-await learning.indexTuner.tune('my_index');
+await learning.indexTuner.tune("my_index");
 ```
 
 **Hooks (auto-triggered):**
 
-| Hook | Event | Purpose |
-|------|-------|---------|
+| Hook                     | Event             | Purpose                      |
+| ------------------------ | ----------------- | ---------------------------- |
 | `ruvector-learn-pattern` | `PostMemoryStore` | Learn from memory operations |
-| `ruvector-collect-stats` | `PostToolUse` | Collect query statistics |
+| `ruvector-collect-stats` | `PostToolUse`     | Collect query statistics     |
 
 </details>
 
@@ -2105,18 +2147,18 @@ await learning.indexTuner.tune('my_index');
 
 Workers run automatically based on context, or dispatch manually via MCP tools.
 
-| Worker | Trigger | Purpose | Auto-Triggers On |
-|--------|---------|---------|------------------|
-| **UltraLearn** | `ultralearn` | Deep knowledge acquisition | New project, major refactors |
-| **Optimize** | `optimize` | Performance suggestions | Slow operations detected |
-| **Consolidate** | `consolidate` | Memory consolidation | Session end, memory threshold |
-| **Audit** | `audit` | Security vulnerability analysis | Security-related file changes |
-| **Map** | `map` | Codebase structure mapping | New directories, large changes |
-| **DeepDive** | `deepdive` | Deep code analysis | Complex file edits |
-| **Document** | `document` | Auto-documentation | New functions/classes created |
-| **Refactor** | `refactor` | Refactoring detection | Code smell patterns |
-| **Benchmark** | `benchmark` | Performance benchmarking | Performance-critical changes |
-| **TestGaps** | `testgaps` | Test coverage analysis | Code changes without tests |
+| Worker          | Trigger       | Purpose                         | Auto-Triggers On               |
+| --------------- | ------------- | ------------------------------- | ------------------------------ |
+| **UltraLearn**  | `ultralearn`  | Deep knowledge acquisition      | New project, major refactors   |
+| **Optimize**    | `optimize`    | Performance suggestions         | Slow operations detected       |
+| **Consolidate** | `consolidate` | Memory consolidation            | Session end, memory threshold  |
+| **Audit**       | `audit`       | Security vulnerability analysis | Security-related file changes  |
+| **Map**         | `map`         | Codebase structure mapping      | New directories, large changes |
+| **DeepDive**    | `deepdive`    | Deep code analysis              | Complex file edits             |
+| **Document**    | `document`    | Auto-documentation              | New functions/classes created  |
+| **Refactor**    | `refactor`    | Refactoring detection           | Code smell patterns            |
+| **Benchmark**   | `benchmark`   | Performance benchmarking        | Performance-critical changes   |
+| **TestGaps**    | `testgaps`    | Test coverage analysis          | Code changes without tests     |
 
 ```bash
 npx ruflo@latest worker dispatch --trigger audit --context "./src"
@@ -2128,45 +2170,45 @@ npx ruflo@latest worker status
 <details>
 <summary>☁️ <strong>LLM Providers</strong> — 5 providers (Anthropic, OpenAI, Google, Cohere, Ollama) with automatic failover</summary>
 
-| Provider | Models | Features | Cost |
-|----------|--------|----------|------|
-| **Anthropic** | Claude Opus 4, Claude Sonnet 4, Claude Haiku 3.5 | Native, streaming, tool calling, extended thinking | $1-15/1M tokens |
-| **OpenAI** | GPT-4o, o3-mini, o1 | 128K context, reasoning chains, function calling | $0.15-60/1M tokens |
-| **Google** | Gemini 2.0 Flash, Gemini 1.5 Pro | 1M+ context, multimodal, grounding | $0.075-7/1M tokens |
-| **xAI** | Grok 3, Grok 3 Mini | Real-time data, reasoning, large context | $2-10/1M tokens |
-| **Mistral** | Mistral Large 2, Codestral | Open-weight, efficient MoE architecture | $0.50-8/1M tokens |
-| **Meta/Ollama** | Llama 3.3, DeepSeek V3, Qwen 2.5 | Local, free, open-weight | Free |
+| Provider        | Models                                           | Features                                           | Cost               |
+| --------------- | ------------------------------------------------ | -------------------------------------------------- | ------------------ |
+| **Anthropic**   | Claude Opus 4, Claude Sonnet 4, Claude Haiku 3.5 | Native, streaming, tool calling, extended thinking | $1-15/1M tokens    |
+| **OpenAI**      | GPT-4o, o3-mini, o1                              | 128K context, reasoning chains, function calling   | $0.15-60/1M tokens |
+| **Google**      | Gemini 2.0 Flash, Gemini 1.5 Pro                 | 1M+ context, multimodal, grounding                 | $0.075-7/1M tokens |
+| **xAI**         | Grok 3, Grok 3 Mini                              | Real-time data, reasoning, large context           | $2-10/1M tokens    |
+| **Mistral**     | Mistral Large 2, Codestral                       | Open-weight, efficient MoE architecture            | $0.50-8/1M tokens  |
+| **Meta/Ollama** | Llama 3.3, DeepSeek V3, Qwen 2.5                 | Local, free, open-weight                           | Free               |
 
 <details>
 <summary>⚖️ <strong>Provider Load Balancing</strong> — 4 strategies for optimal cost and performance</summary>
 
-| Strategy | Description | Best For |
-|----------|-------------|----------|
-| `round-robin` | Rotate through providers sequentially | Even distribution |
-| `least-loaded` | Use provider with lowest current load | High throughput |
-| `latency-based` | Use fastest responding provider | Low latency |
-| `cost-based` | Use cheapest provider that meets requirements | Cost optimization (85%+ savings) |
+| Strategy        | Description                                   | Best For                         |
+| --------------- | --------------------------------------------- | -------------------------------- |
+| `round-robin`   | Rotate through providers sequentially         | Even distribution                |
+| `least-loaded`  | Use provider with lowest current load         | High throughput                  |
+| `latency-based` | Use fastest responding provider               | Low latency                      |
+| `cost-based`    | Use cheapest provider that meets requirements | Cost optimization (85%+ savings) |
 
 </details>
 
 <details>
 <summary>🔢 <strong>Embedding Providers</strong> — 4 providers from 3ms local to cloud APIs</summary>
 
-| Provider | Models | Dimensions | Latency | Cost |
-|----------|--------|------------|---------|------|
-| **Agentic-Flow** | ONNX SIMD optimized | 384 | ~3ms | Free (local) |
-| **OpenAI** | text-embedding-3-small/large, ada-002 | 1536-3072 | ~50-100ms | $0.02-0.13/1M tokens |
-| **Transformers.js** | all-MiniLM-L6-v2, all-mpnet-base-v2, bge-small | 384-768 | ~230ms | Free (local) |
-| **Mock** | Deterministic hash-based | Configurable | <1ms | Free |
+| Provider            | Models                                         | Dimensions   | Latency   | Cost                 |
+| ------------------- | ---------------------------------------------- | ------------ | --------- | -------------------- |
+| **Agentic-Flow**    | ONNX SIMD optimized                            | 384          | ~3ms      | Free (local)         |
+| **OpenAI**          | text-embedding-3-small/large, ada-002          | 1536-3072    | ~50-100ms | $0.02-0.13/1M tokens |
+| **Transformers.js** | all-MiniLM-L6-v2, all-mpnet-base-v2, bge-small | 384-768      | ~230ms    | Free (local)         |
+| **Mock**            | Deterministic hash-based                       | Configurable | <1ms      | Free                 |
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **Auto-Install** | `provider: 'auto'` installs agentic-flow automatically | Zero config |
-| **Smart Fallback** | agentic-flow → transformers → mock chain | Always works |
-| **75x Faster** | Agentic-flow ONNX vs Transformers.js | 3ms vs 230ms |
-| **LRU Caching** | Intelligent cache with hit rate tracking | <1ms cache hits |
-| **Batch Processing** | Efficient batch embedding with partial cache | 10 items <100ms |
-| **Similarity Functions** | Cosine, Euclidean, Dot product | Optimized math |
+| Feature                  | Description                                            | Performance     |
+| ------------------------ | ------------------------------------------------------ | --------------- |
+| **Auto-Install**         | `provider: 'auto'` installs agentic-flow automatically | Zero config     |
+| **Smart Fallback**       | agentic-flow → transformers → mock chain               | Always works    |
+| **75x Faster**           | Agentic-flow ONNX vs Transformers.js                   | 3ms vs 230ms    |
+| **LRU Caching**          | Intelligent cache with hit rate tracking               | <1ms cache hits |
+| **Batch Processing**     | Efficient batch embedding with partial cache           | 10 items <100ms |
+| **Similarity Functions** | Cosine, Euclidean, Dot product                         | Optimized math  |
 
 </details>
 
@@ -2175,182 +2217,182 @@ npx ruflo@latest worker status
 <details>
 <summary>🤝 <strong>Consensus Strategies</strong> — 5 distributed agreement protocols</summary>
 
-| Strategy | Algorithm | Fault Tolerance | Latency | Best For |
-|----------|-----------|-----------------|---------|----------|
-| **Byzantine (PBFT)** | Practical Byzantine Fault Tolerance | f < n/3 faulty nodes | ~100ms | Adversarial environments |
-| **Raft** | Leader-based log replication | f < n/2 failures | ~50ms | Strong consistency |
-| **Gossip** | Epidemic protocol dissemination | High partition tolerance | ~200ms | Eventually consistent |
-| **CRDT** | Conflict-free Replicated Data Types (planned) | Strong eventual consistency | ~10ms | Concurrent updates |
-| **Quorum** | Configurable read/write quorums | Flexible | ~75ms | Tunable consistency |
+| Strategy             | Algorithm                                     | Fault Tolerance             | Latency | Best For                 |
+| -------------------- | --------------------------------------------- | --------------------------- | ------- | ------------------------ |
+| **Byzantine (PBFT)** | Practical Byzantine Fault Tolerance           | f < n/3 faulty nodes        | ~100ms  | Adversarial environments |
+| **Raft**             | Leader-based log replication                  | f < n/2 failures            | ~50ms   | Strong consistency       |
+| **Gossip**           | Epidemic protocol dissemination               | High partition tolerance    | ~200ms  | Eventually consistent    |
+| **CRDT**             | Conflict-free Replicated Data Types (planned) | Strong eventual consistency | ~10ms   | Concurrent updates       |
+| **Quorum**           | Configurable read/write quorums               | Flexible                    | ~75ms   | Tunable consistency      |
 
 </details>
 
 <details>
 <summary>💻 <strong>CLI Commands</strong> — 26 commands with 140+ subcommands</summary>
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `init` | 4 | Project initialization (wizard, check, skills, hooks) |
-| `agent` | 8 | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
-| `swarm` | 6 | Swarm coordination (init, start, status, stop, scale, coordinate) |
-| `memory` | 12 | Memory operations (init, store, retrieve, search --build-hnsw, list, delete, stats, configure, cleanup, compress, export, import) |
-| `mcp` | 9 | MCP server (start, stop, status, health, restart, tools, toggle, exec, logs) |
-| `task` | 6 | Task management (create, list, status, cancel, assign, retry) |
-| `session` | 7 | Session management (list, save, restore, delete, export, import, current) |
-| `config` | 7 | Configuration (init, get, set, providers, reset, export, import) |
-| `status` | 3 | System status with watch mode (agents, tasks, memory) |
-| `workflow` | 6 | Workflow execution (run, validate, list, status, stop, template) |
-| `hooks` | 32 | Self-learning hooks (pre/post-edit, pre/post-command, route, explain, pretrain, session-*, intelligence/*, worker/*, progress) |
-| `hive-mind` | 6 | Queen-led coordination (init, spawn, status, task, optimize-memory, shutdown) |
-| `migrate` | 5 | V2→V3 migration (status, run, verify, rollback, breaking) |
-| `neural` | 5 | Neural pattern training (train, status, patterns, predict, optimize) |
-| `security` | 6 | Security scanning (scan, audit, cve, threats, validate, report) |
-| `performance` | 5 | Performance profiling (benchmark, profile, metrics, optimize, report) |
-| `providers` | 5 | AI providers (list, add, remove, test, configure) |
-| `plugins` | 5 | Plugin management (list, install, uninstall, enable, disable) |
-| `deployment` | 5 | Deployment management (deploy, rollback, status, environments, release) |
-| `embeddings` | 13 | Vector embeddings with ONNX, hyperbolic space, neural substrate |
-| `daemon` | 5 | Background workers (start, stop, status, trigger, enable) |
-| `progress` | 4 | V3 implementation progress (check, sync, summary, watch) |
-| `claims` | 4 | Authorization (check, grant, revoke, list) |
-| `analyze` | 6 | Code analysis (diff, risk, classify, reviewers, file-risk, stats) |
-| `issues` | 10 | Human-agent claims (list, claim, release, handoff, status, stealable, steal, load, rebalance, board) |
-| `transfer-store` | 4 | Pattern marketplace via IPFS (list, search, download, publish) |
-| `update` | 2 | Auto-update system (check, apply) |
-| `route` | 3 | Intelligent routing (task, explain, coverage) |
+| Command          | Subcommands | Description                                                                                                                       |
+| ---------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `init`           | 4           | Project initialization (wizard, check, skills, hooks)                                                                             |
+| `agent`          | 8           | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs)                                                          |
+| `swarm`          | 6           | Swarm coordination (init, start, status, stop, scale, coordinate)                                                                 |
+| `memory`         | 12          | Memory operations (init, store, retrieve, search --build-hnsw, list, delete, stats, configure, cleanup, compress, export, import) |
+| `mcp`            | 9           | MCP server (start, stop, status, health, restart, tools, toggle, exec, logs)                                                      |
+| `task`           | 6           | Task management (create, list, status, cancel, assign, retry)                                                                     |
+| `session`        | 7           | Session management (list, save, restore, delete, export, import, current)                                                         |
+| `config`         | 7           | Configuration (init, get, set, providers, reset, export, import)                                                                  |
+| `status`         | 3           | System status with watch mode (agents, tasks, memory)                                                                             |
+| `workflow`       | 6           | Workflow execution (run, validate, list, status, stop, template)                                                                  |
+| `hooks`          | 32          | Self-learning hooks (pre/post-edit, pre/post-command, route, explain, pretrain, session-_, intelligence/_, worker/*, progress)    |
+| `hive-mind`      | 6           | Queen-led coordination (init, spawn, status, task, optimize-memory, shutdown)                                                     |
+| `migrate`        | 5           | V2→V3 migration (status, run, verify, rollback, breaking)                                                                         |
+| `neural`         | 5           | Neural pattern training (train, status, patterns, predict, optimize)                                                              |
+| `security`       | 6           | Security scanning (scan, audit, cve, threats, validate, report)                                                                   |
+| `performance`    | 5           | Performance profiling (benchmark, profile, metrics, optimize, report)                                                             |
+| `providers`      | 5           | AI providers (list, add, remove, test, configure)                                                                                 |
+| `plugins`        | 5           | Plugin management (list, install, uninstall, enable, disable)                                                                     |
+| `deployment`     | 5           | Deployment management (deploy, rollback, status, environments, release)                                                           |
+| `embeddings`     | 13          | Vector embeddings with ONNX, hyperbolic space, neural substrate                                                                   |
+| `daemon`         | 5           | Background workers (start, stop, status, trigger, enable)                                                                         |
+| `progress`       | 4           | V3 implementation progress (check, sync, summary, watch)                                                                          |
+| `claims`         | 4           | Authorization (check, grant, revoke, list)                                                                                        |
+| `analyze`        | 6           | Code analysis (diff, risk, classify, reviewers, file-risk, stats)                                                                 |
+| `issues`         | 10          | Human-agent claims (list, claim, release, handoff, status, stealable, steal, load, rebalance, board)                              |
+| `transfer-store` | 4           | Pattern marketplace via IPFS (list, search, download, publish)                                                                    |
+| `update`         | 2           | Auto-update system (check, apply)                                                                                                 |
+| `route`          | 3           | Intelligent routing (task, explain, coverage)                                                                                     |
 
 </details>
 
 <details>
 <summary>🧪 <strong>Testing Framework</strong> — London School TDD with Vitest integration</summary>
 
-| Component | Description | Features |
-|-----------|-------------|----------|
-| **London School TDD** | Behavior verification with mocks | Mock-first, interaction testing |
-| **Vitest Integration** | ADR-008 compliant test runner | 10x faster than Jest |
-| **Fixture Library** | Pre-defined test data | Agents, memory, swarm, MCP |
-| **Mock Factory** | Application and service mocks | Auto-reset, state tracking |
-| **Async Utilities** | waitFor, retry, withTimeout | Reliable async testing |
-| **Performance Assertions** | V3 target validation | Speedup, memory, latency checks |
+| Component                  | Description                      | Features                        |
+| -------------------------- | -------------------------------- | ------------------------------- |
+| **London School TDD**      | Behavior verification with mocks | Mock-first, interaction testing |
+| **Vitest Integration**     | ADR-008 compliant test runner    | 10x faster than Jest            |
+| **Fixture Library**        | Pre-defined test data            | Agents, memory, swarm, MCP      |
+| **Mock Factory**           | Application and service mocks    | Auto-reset, state tracking      |
+| **Async Utilities**        | waitFor, retry, withTimeout      | Reliable async testing          |
+| **Performance Assertions** | V3 target validation             | Speedup, memory, latency checks |
 
-| Fixture Type | Contents | Use Case |
-|--------------|----------|----------|
-| `agentConfigs` | 15 V3 agent configurations | Agent testing |
-| `memoryEntries` | Patterns, rules, embeddings | Memory testing |
-| `swarmConfigs` | V3 default, minimal, mesh, hierarchical | Swarm testing |
-| `mcpTools` | 313 tool definitions | MCP testing |
+| Fixture Type    | Contents                                | Use Case       |
+| --------------- | --------------------------------------- | -------------- |
+| `agentConfigs`  | 15 V3 agent configurations              | Agent testing  |
+| `memoryEntries` | Patterns, rules, embeddings             | Memory testing |
+| `swarmConfigs`  | V3 default, minimal, mesh, hierarchical | Swarm testing  |
+| `mcpTools`      | 313 tool definitions                    | MCP testing    |
 
 </details>
 
 <details>
 <summary>🚀 <strong>Deployment & CI/CD</strong> — Automated versioning and release management</summary>
 
-| Feature | Description | Automation |
-|---------|-------------|------------|
-| **Version Bumping** | major, minor, patch, prerelease | Automatic semver |
-| **Changelog Generation** | Conventional commits parsing | Auto-generated |
-| **Git Integration** | Tagging, committing | Automatic |
-| **NPM Publishing** | alpha, beta, rc, latest tags | Tag-based |
-| **Validation** | Lint, test, build, dependency checks | Pre-release |
-| **Dry Run Mode** | Test releases without changes | Safe testing |
+| Feature                  | Description                          | Automation       |
+| ------------------------ | ------------------------------------ | ---------------- |
+| **Version Bumping**      | major, minor, patch, prerelease      | Automatic semver |
+| **Changelog Generation** | Conventional commits parsing         | Auto-generated   |
+| **Git Integration**      | Tagging, committing                  | Automatic        |
+| **NPM Publishing**       | alpha, beta, rc, latest tags         | Tag-based        |
+| **Validation**           | Lint, test, build, dependency checks | Pre-release      |
+| **Dry Run Mode**         | Test releases without changes        | Safe testing     |
 
 ### Release Channels
 
-| Channel | Version Format | Purpose |
-|---------|---------------|---------|
-| `alpha` | 1.0.0-alpha.1 | Early development |
-| `beta` | 1.0.0-beta.1 | Feature complete, testing |
-| `rc` | 1.0.0-rc.1 | Release candidate |
-| `latest` | 1.0.0 | Stable production |
+| Channel  | Version Format | Purpose                   |
+| -------- | -------------- | ------------------------- |
+| `alpha`  | 1.0.0-alpha.1  | Early development         |
+| `beta`   | 1.0.0-beta.1   | Feature complete, testing |
+| `rc`     | 1.0.0-rc.1     | Release candidate         |
+| `latest` | 1.0.0          | Stable production         |
 
 </details>
 
 <details>
 <summary>🔗 <strong>Integration</strong> — agentic-flow bridge with runtime auto-detection</summary>
 
-| Component | Description | Performance |
-|-----------|-------------|-------------|
-| **AgenticFlowBridge** | agentic-flow@alpha integration | ADR-001 compliant |
-| **SONA Adapter** | Learning system integration | sub-millisecond pattern matching |
-| **Flash Attention** | Attention mechanism coordinator | optimized attention (WASM-accelerated when available) |
-| **SDK Bridge** | Version negotiation, API compatibility | Auto-detection |
-| **Feature Flags** | Dynamic feature management | 9 configurable flags |
-| **Runtime Detection** | NAPI, WASM, JS auto-selection | Optimal performance |
+| Component             | Description                            | Performance                                           |
+| --------------------- | -------------------------------------- | ----------------------------------------------------- |
+| **AgenticFlowBridge** | agentic-flow@alpha integration         | ADR-001 compliant                                     |
+| **SONA Adapter**      | Learning system integration            | sub-millisecond pattern matching                      |
+| **Flash Attention**   | Attention mechanism coordinator        | optimized attention (WASM-accelerated when available) |
+| **SDK Bridge**        | Version negotiation, API compatibility | Auto-detection                                        |
+| **Feature Flags**     | Dynamic feature management             | 9 configurable flags                                  |
+| **Runtime Detection** | NAPI, WASM, JS auto-selection          | Optimal performance                                   |
 
 ### Integration Runtimes
 
-| Runtime | Performance | Requirements |
-|---------|-------------|--------------|
-| **NAPI** | Optimal | Native bindings, x64 |
-| **WASM** | Good | WebAssembly support |
-| **JS** | Fallback | Always available |
+| Runtime  | Performance | Requirements         |
+| -------- | ----------- | -------------------- |
+| **NAPI** | Optimal     | Native bindings, x64 |
+| **WASM** | Good        | WebAssembly support  |
+| **JS**   | Fallback    | Always available     |
 
 </details>
 
 <details>
 <summary>📊 <strong>Performance Benchmarking</strong> — Statistical analysis with V3 target validation</summary>
 
-| Capability | Description | Output |
-|------------|-------------|--------|
-| **Statistical Analysis** | Mean, median, P95, P99, stddev | Comprehensive metrics |
-| **Memory Tracking** | Heap, RSS, external, array buffers | Resource monitoring |
-| **Auto-Calibration** | Automatic iteration adjustment | Statistical significance |
-| **Regression Detection** | Baseline comparison | Change detection |
-| **V3 Target Validation** | Built-in performance targets | Pass/fail checking |
+| Capability               | Description                        | Output                   |
+| ------------------------ | ---------------------------------- | ------------------------ |
+| **Statistical Analysis** | Mean, median, P95, P99, stddev     | Comprehensive metrics    |
+| **Memory Tracking**      | Heap, RSS, external, array buffers | Resource monitoring      |
+| **Auto-Calibration**     | Automatic iteration adjustment     | Statistical significance |
+| **Regression Detection** | Baseline comparison                | Change detection         |
+| **V3 Target Validation** | Built-in performance targets       | Pass/fail checking       |
 
 ### V3 Benchmark Targets
 
-| Category | Benchmark | Target |
-|----------|-----------|--------|
-| **Startup** | CLI cold start | <500ms |
-| **Startup** | MCP server init | <400ms |
-| **Startup** | Agent spawn | <200ms |
-| **Memory** | Vector search | <1ms |
-| **Memory** | HNSW indexing | <10ms |
-| **Memory** | Memory write | <5ms |
-| **Swarm** | Agent coordination | <50ms |
-| **Swarm** | Consensus latency | <100ms |
-| **Neural** | SONA adaptation | <0.05ms |
+| Category    | Benchmark          | Target  |
+| ----------- | ------------------ | ------- |
+| **Startup** | CLI cold start     | <500ms  |
+| **Startup** | MCP server init    | <400ms  |
+| **Startup** | Agent spawn        | <200ms  |
+| **Memory**  | Vector search      | <1ms    |
+| **Memory**  | HNSW indexing      | <10ms   |
+| **Memory**  | Memory write       | <5ms    |
+| **Swarm**   | Agent coordination | <50ms   |
+| **Swarm**   | Consensus latency  | <100ms  |
+| **Neural**  | SONA adaptation    | <0.05ms |
 
 </details>
 
 <details>
 <summary>🧠 <strong>Neural & SONA</strong> — Self-optimizing learning with 9 RL algorithms</summary>
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **SONA Learning** | Self-Optimizing Pattern Learning | sub-millisecond pattern matching |
-| **5 Learning Modes** | real-time, balanced, research, edge, batch | Mode-specific optimization |
-| **9 RL Algorithms** | PPO, A2C, DQN, Q-Learning, SARSA, Decision Transformer, etc. | Comprehensive RL |
-| **LoRA Integration** | Low-Rank Adaptation for efficient fine-tuning | Minimal memory overhead |
-| **MicroLoRA** | Ultra-lightweight LoRA for edge/real-time modes | <5MB memory footprint |
-| **EWC++ Memory** | Elastic Weight Consolidation prevents catastrophic forgetting | Zero knowledge loss |
-| **Trajectory Tracking** | Execution path recording for pattern extraction | Continuous learning |
+| Feature                 | Description                                                   | Performance                      |
+| ----------------------- | ------------------------------------------------------------- | -------------------------------- |
+| **SONA Learning**       | Self-Optimizing Pattern Learning                              | sub-millisecond pattern matching |
+| **5 Learning Modes**    | real-time, balanced, research, edge, batch                    | Mode-specific optimization       |
+| **9 RL Algorithms**     | PPO, A2C, DQN, Q-Learning, SARSA, Decision Transformer, etc.  | Comprehensive RL                 |
+| **LoRA Integration**    | Low-Rank Adaptation for efficient fine-tuning                 | Minimal memory overhead          |
+| **MicroLoRA**           | Ultra-lightweight LoRA for edge/real-time modes               | <5MB memory footprint            |
+| **EWC++ Memory**        | Elastic Weight Consolidation prevents catastrophic forgetting | Zero knowledge loss              |
+| **Trajectory Tracking** | Execution path recording for pattern extraction               | Continuous learning              |
 
-| Feature | Description | Improvement |
-|---------|-------------|-------------|
-| **Scalar Quantization** | Reduce vector precision for memory savings | 4x memory reduction |
-| **Product Quantization** | Compress vectors into codebooks | 8-32x memory reduction |
-| **HNSW Indexing** | Hierarchical Navigable Small World graphs | HNSW-indexed search |
-| **LRU Caching** | Intelligent embedding cache with TTL | <1ms cache hits |
-| **Batch Processing** | Process multiple embeddings in single call | 10x throughput |
-| **Memory Compression** | Pattern distillation and pruning | 50-75% reduction |
+| Feature                  | Description                                | Improvement            |
+| ------------------------ | ------------------------------------------ | ---------------------- |
+| **Scalar Quantization**  | Reduce vector precision for memory savings | 4x memory reduction    |
+| **Product Quantization** | Compress vectors into codebooks            | 8-32x memory reduction |
+| **HNSW Indexing**        | Hierarchical Navigable Small World graphs  | HNSW-indexed search    |
+| **LRU Caching**          | Intelligent embedding cache with TTL       | <1ms cache hits        |
+| **Batch Processing**     | Process multiple embeddings in single call | 10x throughput         |
+| **Memory Compression**   | Pattern distillation and pruning           | 50-75% reduction       |
 
 </details>
 
 <details>
 <summary>🔢 <strong>Embedding System</strong> — Multi-provider ONNX embeddings with hyperbolic space</summary>
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **Multi-Provider** | Agentic-Flow (ONNX), OpenAI, Transformers.js, Mock | 4 providers |
-| **Auto-Install** | `ruflo embeddings init` or `createEmbeddingServiceAsync()` | Zero config |
-| **75x Faster** | Agentic-flow ONNX SIMD vs Transformers.js | 3ms vs 230ms |
-| **Hyperbolic Space** | Poincaré ball model for hierarchical data | Exponential capacity |
-| **Dimensions** | 384 to 3072 configurable | Quality vs speed tradeoff |
-| **Similarity Metrics** | Cosine, Euclidean, Dot product, Hyperbolic distance | Task-specific matching |
-| **Neural Substrate** | Drift detection, memory physics, swarm coordination | agentic-flow integration |
-| **LRU + SQLite Cache** | Persistent cross-session caching | <1ms cache hits |
+| Feature                | Description                                                | Performance               |
+| ---------------------- | ---------------------------------------------------------- | ------------------------- |
+| **Multi-Provider**     | Agentic-Flow (ONNX), OpenAI, Transformers.js, Mock         | 4 providers               |
+| **Auto-Install**       | `ruflo embeddings init` or `createEmbeddingServiceAsync()` | Zero config               |
+| **75x Faster**         | Agentic-flow ONNX SIMD vs Transformers.js                  | 3ms vs 230ms              |
+| **Hyperbolic Space**   | Poincaré ball model for hierarchical data                  | Exponential capacity      |
+| **Dimensions**         | 384 to 3072 configurable                                   | Quality vs speed tradeoff |
+| **Similarity Metrics** | Cosine, Euclidean, Dot product, Hyperbolic distance        | Task-specific matching    |
+| **Neural Substrate**   | Drift detection, memory physics, swarm coordination        | agentic-flow integration  |
+| **LRU + SQLite Cache** | Persistent cross-session caching                           | <1ms cache hits           |
 
 ```bash
 # Initialize ONNX embeddings with hyperbolic config
@@ -2363,37 +2405,37 @@ ruflo embeddings init --model all-mpnet-base-v2
 ruflo embeddings search -q "authentication patterns"
 ```
 
-| Mode | Adaptation | Quality | Memory | Use Case |
-|------|------------|---------|--------|----------|
-| `real-time` | <0.5ms | 70%+ | 25MB | Production, low-latency |
-| `balanced` | <18ms | 75%+ | 50MB | General purpose |
-| `research` | <100ms | 95%+ | 100MB | Deep exploration |
-| `edge` | <1ms | 80%+ | 5MB | Resource-constrained |
-| `batch` | <50ms | 85%+ | 75MB | High-throughput |
+| Mode        | Adaptation | Quality | Memory | Use Case                |
+| ----------- | ---------- | ------- | ------ | ----------------------- |
+| `real-time` | <0.5ms     | 70%+    | 25MB   | Production, low-latency |
+| `balanced`  | <18ms      | 75%+    | 50MB   | General purpose         |
+| `research`  | <100ms     | 95%+    | 100MB  | Deep exploration        |
+| `edge`      | <1ms       | 80%+    | 5MB    | Resource-constrained    |
+| `batch`     | <50ms      | 85%+    | 75MB   | High-throughput         |
 
-| Algorithm | Type | Best For |
-|-----------|------|----------|
-| **PPO** | Policy Gradient | Stable continuous learning |
-| **A2C** | Actor-Critic | Balanced exploration/exploitation |
-| **DQN** | Value-based | Discrete action spaces |
-| **Q-Learning** | Tabular | Simple state spaces |
-| **SARSA** | On-policy | Online learning |
-| **Decision Transformer** | Sequence modeling | Long-horizon planning |
+| Algorithm                | Type              | Best For                          |
+| ------------------------ | ----------------- | --------------------------------- |
+| **PPO**                  | Policy Gradient   | Stable continuous learning        |
+| **A2C**                  | Actor-Critic      | Balanced exploration/exploitation |
+| **DQN**                  | Value-based       | Discrete action spaces            |
+| **Q-Learning**           | Tabular           | Simple state spaces               |
+| **SARSA**                | On-policy         | Online learning                   |
+| **Decision Transformer** | Sequence modeling | Long-horizon planning             |
 
 </details>
 
 <details>
 <summary>🐘 <strong>RuVector PostgreSQL Bridge</strong> — Enterprise vector operations with pgvector</summary>
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **pgvector Integration** | Native PostgreSQL vector operations | 150x faster than in-memory |
-| **Attention Mechanisms** | Self, multi-head, cross-attention in SQL | GPU-accelerated |
-| **Graph Neural Networks** | GNN operations via SQL functions | Message passing, aggregation |
-| **Hyperbolic Embeddings** | Poincaré ball model in PostgreSQL | Better hierarchy representation |
-| **Quantization** | Int8/Float16 compression | 3.92x memory reduction |
-| **Streaming** | Large dataset processing | Batch + async support |
-| **Migrations** | Version-controlled schema | 7 migration scripts |
+| Feature                   | Description                              | Performance                     |
+| ------------------------- | ---------------------------------------- | ------------------------------- |
+| **pgvector Integration**  | Native PostgreSQL vector operations      | 150x faster than in-memory      |
+| **Attention Mechanisms**  | Self, multi-head, cross-attention in SQL | GPU-accelerated                 |
+| **Graph Neural Networks** | GNN operations via SQL functions         | Message passing, aggregation    |
+| **Hyperbolic Embeddings** | Poincaré ball model in PostgreSQL        | Better hierarchy representation |
+| **Quantization**          | Int8/Float16 compression                 | 3.92x memory reduction          |
+| **Streaming**             | Large dataset processing                 | Batch + async support           |
+| **Migrations**            | Version-controlled schema                | 7 migration scripts             |
 
 ```bash
 # Initialize RuVector in PostgreSQL
@@ -2415,35 +2457,36 @@ ruflo ruvector optimize --analyze
 ruflo ruvector backup --output ./backup.sql
 ```
 
-| Migration | Purpose | Features |
-|-----------|---------|----------|
-| `001_create_extension` | Enable pgvector | Vector type, operators |
-| `002_create_vector_tables` | Core tables | embeddings, patterns, agents |
-| `003_create_indices` | HNSW indices | 150x faster search |
-| `004_create_functions` | Vector functions | Similarity, clustering |
-| `005_create_attention_functions` | Attention ops | Self/multi-head attention |
-| `006_create_gnn_functions` | GNN operations | Message passing, aggregation |
-| `007_create_hyperbolic_functions` | Hyperbolic geometry | Poincaré operations |
+| Migration                         | Purpose             | Features                     |
+| --------------------------------- | ------------------- | ---------------------------- |
+| `001_create_extension`            | Enable pgvector     | Vector type, operators       |
+| `002_create_vector_tables`        | Core tables         | embeddings, patterns, agents |
+| `003_create_indices`              | HNSW indices        | 150x faster search           |
+| `004_create_functions`            | Vector functions    | Similarity, clustering       |
+| `005_create_attention_functions`  | Attention ops       | Self/multi-head attention    |
+| `006_create_gnn_functions`        | GNN operations      | Message passing, aggregation |
+| `007_create_hyperbolic_functions` | Hyperbolic geometry | Poincaré operations          |
 
 </details>
 
 <details>
 <summary>👑 <strong>Hive-Mind Coordination</strong> — Queen-led topology with Byzantine consensus</summary>
 
-| Feature | Description | Capability |
-|---------|-------------|------------|
-| **Queen-Led Topology** | Hierarchical command structure | Unlimited agents + sub-workers |
-| **Queen Types** | Strategic, Tactical, Adaptive | Research/planning, execution, optimization |
-| **Worker Types** | 8 specialized agents | researcher, coder, analyst, tester, architect, reviewer, optimizer, documenter |
-| **Byzantine Consensus** | Fault-tolerant agreement | f < n/3 tolerance (2/3 supermajority) |
-| **Raft Consensus** | Leader-elected agreement | f < n/2 tolerance, strongly-consistent state |
-| **Quorum Consensus** | Configurable voting threshold | Majority / supermajority / unanimous |
-| **Collective Memory** | Shared pattern storage | 8 memory types with TTL, LRU cache, SQLite WAL |
-| **Specialist Spawning** | Domain-specific agents | Security, performance, etc. |
-| **Adaptive Topology** | Dynamic structure changes | Load-based optimization, auto-scaling |
-| **Session Management** | Checkpoint/resume | Export/import, progress tracking |
+| Feature                 | Description                    | Capability                                                                     |
+| ----------------------- | ------------------------------ | ------------------------------------------------------------------------------ |
+| **Queen-Led Topology**  | Hierarchical command structure | Unlimited agents + sub-workers                                                 |
+| **Queen Types**         | Strategic, Tactical, Adaptive  | Research/planning, execution, optimization                                     |
+| **Worker Types**        | 8 specialized agents           | researcher, coder, analyst, tester, architect, reviewer, optimizer, documenter |
+| **Byzantine Consensus** | Fault-tolerant agreement       | f < n/3 tolerance (2/3 supermajority)                                          |
+| **Raft Consensus**      | Leader-elected agreement       | f < n/2 tolerance, strongly-consistent state                                   |
+| **Quorum Consensus**    | Configurable voting threshold  | Majority / supermajority / unanimous                                           |
+| **Collective Memory**   | Shared pattern storage         | 8 memory types with TTL, LRU cache, SQLite WAL                                 |
+| **Specialist Spawning** | Domain-specific agents         | Security, performance, etc.                                                    |
+| **Adaptive Topology**   | Dynamic structure changes      | Load-based optimization, auto-scaling                                          |
+| **Session Management**  | Checkpoint/resume              | Export/import, progress tracking                                               |
 
 **Quick Commands:**
+
 ```bash
 npx ruflo hive-mind init                                    # Initialize
 npx ruflo hive-mind spawn "Build API" --queen-type tactical # Spawn swarm
@@ -2460,99 +2503,99 @@ npx ruflo hive-mind status                                  # Check status
 <details>
 <summary>🔌 <strong>agentic-flow Integration</strong> — ADR-001 compliant core foundation</summary>
 
-| Feature | Description | Benefit |
-|---------|-------------|---------|
-| **ADR-001 Compliance** | Build on agentic-flow, don't duplicate | Eliminates 10,000+ duplicate lines |
-| **Core Foundation** | Use agentic-flow as the base layer | Unified architecture |
-| **SONA Integration** | Seamless learning system connection | sub-millisecond pattern matching |
-| **Flash Attention** | Optimized attention mechanisms | optimized attention (WASM-accelerated when available) |
-| **AgentDB Bridge** | Vector storage integration | HNSW-indexed search |
-| **Feature Flags** | Dynamic capability management | 9 configurable features |
-| **Runtime Detection** | NAPI/WASM/JS auto-selection | Optimal performance per platform |
-| **Graceful Fallback** | Works with or without agentic-flow | Always functional |
+| Feature                | Description                            | Benefit                                               |
+| ---------------------- | -------------------------------------- | ----------------------------------------------------- |
+| **ADR-001 Compliance** | Build on agentic-flow, don't duplicate | Eliminates 10,000+ duplicate lines                    |
+| **Core Foundation**    | Use agentic-flow as the base layer     | Unified architecture                                  |
+| **SONA Integration**   | Seamless learning system connection    | sub-millisecond pattern matching                      |
+| **Flash Attention**    | Optimized attention mechanisms         | optimized attention (WASM-accelerated when available) |
+| **AgentDB Bridge**     | Vector storage integration             | HNSW-indexed search                                   |
+| **Feature Flags**      | Dynamic capability management          | 9 configurable features                               |
+| **Runtime Detection**  | NAPI/WASM/JS auto-selection            | Optimal performance per platform                      |
+| **Graceful Fallback**  | Works with or without agentic-flow     | Always functional                                     |
 
 </details>
 
 <details>
 <summary>🖥️ <strong>MCP Server</strong> — Full MCP 2025-11-25 spec with multiple transports</summary>
 
-| Feature | Description | Spec |
-|---------|-------------|------|
-| **MCP 2025-11-25** | Full specification compliance | Latest MCP standard |
-| **Multiple Transports** | stdio, HTTP, WebSocket, in-process | Flexible connectivity |
-| **Resources** | list, read, subscribe with caching | Dynamic content |
-| **Prompts** | Templates with arguments and embedding | Reusable prompts |
-| **Tasks** | Async operations with progress/cancel | Long-running ops |
-| **Tool Registry** | O(1) lookup, <10ms registration | Fast tool access |
-| **Connection Pooling** | Max 10 connections, configurable | Resource management |
-| **Session Management** | Timeout handling, authentication | Secure sessions |
+| Feature                 | Description                            | Spec                  |
+| ----------------------- | -------------------------------------- | --------------------- |
+| **MCP 2025-11-25**      | Full specification compliance          | Latest MCP standard   |
+| **Multiple Transports** | stdio, HTTP, WebSocket, in-process     | Flexible connectivity |
+| **Resources**           | list, read, subscribe with caching     | Dynamic content       |
+| **Prompts**             | Templates with arguments and embedding | Reusable prompts      |
+| **Tasks**               | Async operations with progress/cancel  | Long-running ops      |
+| **Tool Registry**       | O(1) lookup, <10ms registration        | Fast tool access      |
+| **Connection Pooling**  | Max 10 connections, configurable       | Resource management   |
+| **Session Management**  | Timeout handling, authentication       | Secure sessions       |
 
-| Method | Description |
-|--------|-------------|
-| `initialize` | Initialize connection |
-| `tools/list` | List available tools |
-| `tools/call` | Execute a tool |
-| `resources/list` | List resources with pagination |
-| `resources/read` | Read resource content |
-| `resources/subscribe` | Subscribe to updates |
-| `prompts/list` | List prompts with pagination |
-| `prompts/get` | Get prompt with arguments |
-| `tasks/status` | Get task status |
-| `tasks/cancel` | Cancel running task |
-| `completion/complete` | Auto-complete arguments |
+| Method                | Description                    |
+| --------------------- | ------------------------------ |
+| `initialize`          | Initialize connection          |
+| `tools/list`          | List available tools           |
+| `tools/call`          | Execute a tool                 |
+| `resources/list`      | List resources with pagination |
+| `resources/read`      | Read resource content          |
+| `resources/subscribe` | Subscribe to updates           |
+| `prompts/list`        | List prompts with pagination   |
+| `prompts/get`         | Get prompt with arguments      |
+| `tasks/status`        | Get task status                |
+| `tasks/cancel`        | Cancel running task            |
+| `completion/complete` | Auto-complete arguments        |
 
 </details>
 
 <details>
 <summary>🔐 <strong>Security Module</strong> — CVE-hardened with AIDefence threat detection</summary>
 
-| Feature | CVE/Issue | Description |
-|---------|-----------|-------------|
-| **Password Hashing** | CVE-2 | Secure bcrypt with 12+ rounds |
-| **Credential Generation** | CVE-3 | Cryptographically secure API keys |
-| **Safe Command Execution** | HIGH-1 | Allowlist-based command execution |
-| **Path Validation** | HIGH-2 | Path traversal and symlink protection |
-| **Input Validation** | General | Zod-based schema validation |
-| **Token Generation** | General | HMAC-signed secure tokens |
-| **HTML Sanitization** | XSS | Script and injection prevention |
-| **AIDefence** | Threats | Prompt injection, jailbreak detection, PII scanning (<10ms) |
+| Feature                    | CVE/Issue | Description                                                 |
+| -------------------------- | --------- | ----------------------------------------------------------- |
+| **Password Hashing**       | CVE-2     | Secure bcrypt with 12+ rounds                               |
+| **Credential Generation**  | CVE-3     | Cryptographically secure API keys                           |
+| **Safe Command Execution** | HIGH-1    | Allowlist-based command execution                           |
+| **Path Validation**        | HIGH-2    | Path traversal and symlink protection                       |
+| **Input Validation**       | General   | Zod-based schema validation                                 |
+| **Token Generation**       | General   | HMAC-signed secure tokens                                   |
+| **HTML Sanitization**      | XSS       | Script and injection prevention                             |
+| **AIDefence**              | Threats   | Prompt injection, jailbreak detection, PII scanning (<10ms) |
 
-| Schema | Purpose |
-|--------|---------|
+| Schema             | Purpose                              |
+| ------------------ | ------------------------------------ |
 | `SafeStringSchema` | Basic safe string with length limits |
-| `IdentifierSchema` | Alphanumeric identifiers |
-| `FilenameSchema` | Safe filenames |
-| `EmailSchema` | Email addresses |
-| `PasswordSchema` | Secure passwords (8-72 chars) |
-| `UUIDSchema` | UUID v4 format |
-| `HttpsUrlSchema` | HTTPS URLs only |
-| `SpawnAgentSchema` | Agent spawn requests |
-| `TaskInputSchema` | Task definitions |
+| `IdentifierSchema` | Alphanumeric identifiers             |
+| `FilenameSchema`   | Safe filenames                       |
+| `EmailSchema`      | Email addresses                      |
+| `PasswordSchema`   | Secure passwords (8-72 chars)        |
+| `UUIDSchema`       | UUID v4 format                       |
+| `HttpsUrlSchema`   | HTTPS URLs only                      |
+| `SpawnAgentSchema` | Agent spawn requests                 |
+| `TaskInputSchema`  | Task definitions                     |
 
 </details>
 
 <details>
 <summary>🪝 <strong>Hooks System</strong> — Pattern learning with ReasoningBank and HNSW indexing</summary>
 
-| Component | Description | Performance |
-|-----------|-------------|-------------|
-| **ReasoningBank** | Pattern storage with HNSW indexing | 150x faster retrieval |
-| **GuidanceProvider** | Context-aware development guidance | Real-time suggestions |
-| **PatternLearning** | Automatic strategy extraction | Continuous improvement |
-| **QualityTracking** | Success/failure rate per pattern | Performance metrics |
-| **DomainDetection** | Auto-categorization of patterns | Security, testing, etc. |
-| **AgentRouting** | Task-to-agent optimization | Historical performance |
-| **Consolidation** | Prune low-quality, promote high-quality | Memory optimization |
+| Component            | Description                             | Performance             |
+| -------------------- | --------------------------------------- | ----------------------- |
+| **ReasoningBank**    | Pattern storage with HNSW indexing      | 150x faster retrieval   |
+| **GuidanceProvider** | Context-aware development guidance      | Real-time suggestions   |
+| **PatternLearning**  | Automatic strategy extraction           | Continuous improvement  |
+| **QualityTracking**  | Success/failure rate per pattern        | Performance metrics     |
+| **DomainDetection**  | Auto-categorization of patterns         | Security, testing, etc. |
+| **AgentRouting**     | Task-to-agent optimization              | Historical performance  |
+| **Consolidation**    | Prune low-quality, promote high-quality | Memory optimization     |
 
-| Phase | Hooks | Purpose |
-|-------|-------|---------|
-| **Pre-Edit** | `pre-edit` | Context gathering, security checks |
-| **Post-Edit** | `post-edit` | Outcome recording, pattern learning |
-| **Pre-Command** | `pre-command` | Risk assessment, validation |
-| **Post-Command** | `post-command` | Success/failure tracking |
-| **Pre-Task** | `pre-task` | Setup, resource allocation |
-| **Post-Task** | `post-task` | Cleanup, learning |
-| **Session** | `session-end`, `session-restore` | State management |
+| Phase            | Hooks                            | Purpose                             |
+| ---------------- | -------------------------------- | ----------------------------------- |
+| **Pre-Edit**     | `pre-edit`                       | Context gathering, security checks  |
+| **Post-Edit**    | `post-edit`                      | Outcome recording, pattern learning |
+| **Pre-Command**  | `pre-command`                    | Risk assessment, validation         |
+| **Post-Command** | `post-command`                   | Success/failure tracking            |
+| **Pre-Task**     | `pre-task`                       | Setup, resource allocation          |
+| **Post-Task**    | `post-task`                      | Cleanup, learning                   |
+| **Session**      | `session-end`, `session-restore` | State management                    |
 
 </details>
 
@@ -2566,43 +2609,47 @@ Real-time development status display integrated directly into Claude Code's stat
 Claude Code pipes JSON session data via **stdin** to the statusline script after each assistant message (debounced ~300ms). The script reads this data and combines it with local project metrics to produce a single-line status output.
 
 **Output Format:**
+
 ```
 ▊ Ruflo V3 ● ruvnet  │  ⎇ main  │  Opus 4.6  | ●42% ctx  | $0.15
 🏗️ DDD [●●●●○] 4/5  ⚡ HNSW 150x  🤖 ◉ [12/8]  👥 3  🟢 CVE 3/3  💾 512MB  🧠 15%  📦 AgentDB ●1.2K vectors
 ```
 
-| Indicator | Description | Source |
-|-----------|-------------|--------|
-| `▊ Ruflo V3` | Project header | Always shown |
-| `● ruvnet` | GitHub user | `gh api user` CLI |
-| `⎇ main` | Current git branch | `git branch --show-current` |
-| `Opus 4.6` | Claude model name | Stdin JSON `model.display_name` |
-| `●42% ctx` | Context window usage | Stdin JSON `context_window.used_percentage` |
-| `$0.15` | Session cost | Stdin JSON `cost.total_cost_usd` |
-| `[●●●●○]` | DDD domain progress bar | `.claude-flow/metrics/v3-progress.json` |
-| `⚡ HNSW 150x` | HNSW search speedup | AgentDB file stats |
-| `◉/○` | Swarm coordination status | Process detection |
-| `[12/8]` | Active agents / max agents | `ps aux` process count |
-| `👥 3` | Sub-agents spawned | Task tool agent count |
-| `🟢 CVE 3/3` | Security CVE remediation | `.claude-flow/security/audit-status.json` |
-| `💾 512MB` | Memory usage | Node.js process RSS |
-| `🧠 15%` | Intelligence score | Pattern count from AgentDB |
-| `📦 AgentDB ●1.2K` | AgentDB vector count | File size estimate (`size / 2KB`) |
+| Indicator          | Description                | Source                                      |
+| ------------------ | -------------------------- | ------------------------------------------- |
+| `▊ Ruflo V3`       | Project header             | Always shown                                |
+| `● ruvnet`         | GitHub user                | `gh api user` CLI                           |
+| `⎇ main`           | Current git branch         | `git branch --show-current`                 |
+| `Opus 4.6`         | Claude model name          | Stdin JSON `model.display_name`             |
+| `●42% ctx`         | Context window usage       | Stdin JSON `context_window.used_percentage` |
+| `$0.15`            | Session cost               | Stdin JSON `cost.total_cost_usd`            |
+| `[●●●●○]`          | DDD domain progress bar    | `.claude-flow/metrics/v3-progress.json`     |
+| `⚡ HNSW 150x`     | HNSW search speedup        | AgentDB file stats                          |
+| `◉/○`              | Swarm coordination status  | Process detection                           |
+| `[12/8]`           | Active agents / max agents | `ps aux` process count                      |
+| `👥 3`             | Sub-agents spawned         | Task tool agent count                       |
+| `🟢 CVE 3/3`       | Security CVE remediation   | `.claude-flow/security/audit-status.json`   |
+| `💾 512MB`         | Memory usage               | Node.js process RSS                         |
+| `🧠 15%`           | Intelligence score         | Pattern count from AgentDB                  |
+| `📦 AgentDB ●1.2K` | AgentDB vector count       | File size estimate (`size / 2KB`)           |
 
 **Customizing the cost segment:**
 
-`cost.total_cost_usd` is a client-side estimate from Claude Code that *may differ from your actual bill* and, on subscription plans, does not reflect out-of-pocket spend. Two environment variables let you relabel or remove the segment (the default is unchanged):
+`cost.total_cost_usd` is a client-side estimate from Claude Code that _may differ from your actual bill_ and, on subscription plans, does not reflect out-of-pocket spend. Two environment variables let you relabel or remove the segment (the default is unchanged):
 
-| Variable | Effect | Example |
-|----------|--------|---------|
+| Variable                       | Effect                                                                      | Example                                      |
+| ------------------------------ | --------------------------------------------------------------------------- | -------------------------------------------- |
 | `RUFLO_STATUSLINE_COST_SYMBOL` | Overrides the leading `$`. Set to an empty string to show the number alone. | `RUFLO_STATUSLINE_COST_SYMBOL=⚡` → `⚡1.30` |
-| `RUFLO_STATUSLINE_HIDE_COST` | `1`/`true`/`yes`/`on` removes the segment entirely. | `RUFLO_STATUSLINE_HIDE_COST=1` |
+| `RUFLO_STATUSLINE_HIDE_COST`   | `1`/`true`/`yes`/`on` removes the segment entirely.                         | `RUFLO_STATUSLINE_HIDE_COST=1`               |
 
 Set them in the `env` block of `.claude/settings.json` — Claude Code applies it to every session and to the statusline subprocess, and unlike hand-editing the helper it survives `npx ruflo@latest init --update`:
 
 ```json
 {
-  "statusLine": { "type": "command", "command": "node .claude/helpers/statusline.cjs" },
+  "statusLine": {
+    "type": "command",
+    "command": "node .claude/helpers/statusline.cjs"
+  },
   "env": { "RUFLO_STATUSLINE_COST_SYMBOL": "⚡" }
 }
 ```
@@ -2618,6 +2665,7 @@ export RUFLO_STATUSLINE_COST_SYMBOL=⚡   # or: export RUFLO_STATUSLINE_HIDE_COS
 Run `npx ruflo@latest init` — this generates `.claude/settings.json` with the correct statusline config and creates the helper script at `.claude/helpers/statusline.cjs`.
 
 The generated config uses a **fast local script** (no `npx` cold-start):
+
 ```json
 {
   "statusLine": {
@@ -2632,6 +2680,7 @@ The generated config uses a **fast local script** (no `npx` cold-start):
 **For Existing Users:**
 
 If your statusline is not updating, run the upgrade command to regenerate helpers and fix the config:
+
 ```bash
 npx ruflo@latest init --update --settings
 ```
@@ -2641,6 +2690,7 @@ This removes invalid config fields and regenerates the statusline helper with st
 **Stdin JSON Protocol:**
 
 Claude Code provides session data via stdin in this format:
+
 ```json
 {
   "model": { "display_name": "Opus 4.6" },
@@ -2654,6 +2704,7 @@ Claude Code provides session data via stdin in this format:
 The statusline script reads stdin synchronously, falls back to local detection when run manually (TTY mode).
 
 **Data Sources:**
+
 - **Stdin JSON** — Model name, context %, cost, duration (from Claude Code)
 - `.claude-flow/metrics/v3-progress.json` — DDD domain progress
 - `.claude-flow/metrics/swarm-activity.json` — Active agent counts
@@ -2672,15 +2723,16 @@ The statusline script reads stdin synchronously, falls back to local detection w
 
 Cross-platform TypeScript-based daemon service with auto-scheduling:
 
-| Worker | Interval | Priority | Description |
-|--------|----------|----------|-------------|
-| `map` | 5min | normal | Codebase structure mapping |
-| `audit` | 10min | critical | Security vulnerability scanning |
-| `optimize` | 15min | high | Performance optimization |
-| `consolidate` | 30min | low | Memory consolidation |
-| `testgaps` | 20min | normal | Test coverage analysis |
+| Worker        | Interval | Priority | Description                     |
+| ------------- | -------- | -------- | ------------------------------- |
+| `map`         | 5min     | normal   | Codebase structure mapping      |
+| `audit`       | 10min    | critical | Security vulnerability scanning |
+| `optimize`    | 15min    | high     | Performance optimization        |
+| `consolidate` | 30min    | low      | Memory consolidation            |
+| `testgaps`    | 20min    | normal   | Test coverage analysis          |
 
 **Commands:**
+
 ```bash
 # Start daemon (auto-runs on SessionStart hooks)
 npx ruflo@latest daemon start
@@ -2699,6 +2751,7 @@ npx ruflo@latest daemon stop
 ```
 
 **Daemon Status Output:**
+
 ```
 +-- Worker Daemon ---+
 | Status: ● RUNNING  |
@@ -2723,12 +2776,13 @@ Worker Status
 
 Shell-based daemons for monitoring (Linux/macOS only):
 
-| Daemon | Interval | Purpose | Output |
-|--------|----------|---------|--------|
-| **Swarm Monitor** | 3s | Process detection, agent counting | `swarm-activity.json` |
-| **Metrics Daemon** | 30s | V3 progress sync, SQLite metrics | `metrics.db` |
+| Daemon             | Interval | Purpose                           | Output                |
+| ------------------ | -------- | --------------------------------- | --------------------- |
+| **Swarm Monitor**  | 3s       | Process detection, agent counting | `swarm-activity.json` |
+| **Metrics Daemon** | 30s      | V3 progress sync, SQLite metrics  | `metrics.db`          |
 
 **Commands:**
+
 ```bash
 # Start all daemons
 .claude/helpers/daemon-manager.sh start 3 5
@@ -2742,17 +2796,18 @@ Shell-based daemons for monitoring (Linux/macOS only):
 
 ### Worker Manager (7 Scheduled Workers)
 
-| Worker | Interval | Purpose |
-|--------|----------|---------|
-| `perf` | 5 min | Performance benchmarks |
-| `health` | 5 min | Disk, memory, CPU monitoring |
-| `patterns` | 15 min | Pattern dedup & pruning |
-| `ddd` | 10 min | DDD progress tracking |
-| `adr` | 15 min | ADR compliance checking |
-| `security` | 30 min | Security vulnerability scans |
-| `learning` | 30 min | Learning pattern optimization |
+| Worker     | Interval | Purpose                       |
+| ---------- | -------- | ----------------------------- |
+| `perf`     | 5 min    | Performance benchmarks        |
+| `health`   | 5 min    | Disk, memory, CPU monitoring  |
+| `patterns` | 15 min   | Pattern dedup & pruning       |
+| `ddd`      | 10 min   | DDD progress tracking         |
+| `adr`      | 15 min   | ADR compliance checking       |
+| `security` | 30 min   | Security vulnerability scans  |
+| `learning` | 30 min   | Learning pattern optimization |
 
 **Commands:**
+
 ```bash
 # Start worker manager
 .claude/helpers/worker-manager.sh start 60
@@ -2773,39 +2828,39 @@ Complete command-line interface for all Ruflo operations.
 
 **Core Commands:**
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `init` | 4 | Project initialization with wizard, presets, skills, hooks |
-| `agent` | 8 | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
-| `swarm` | 6 | Multi-agent swarm coordination and orchestration |
-| `memory` | 11 | AgentDB memory with vector search (HNSW-indexed) |
-| `mcp` | 9 | MCP server management and tool execution |
-| `task` | 6 | Task creation, assignment, and lifecycle |
-| `session` | 7 | Session state management and persistence |
-| `config` | 7 | Configuration management and provider setup |
-| `status` | 3 | System status monitoring with watch mode |
-| `start` | 3 | Service startup and quick launch |
-| `workflow` | 6 | Workflow execution and template management |
-| `hooks` | 17 | Self-learning hooks + 12 background workers |
-| `hive-mind` | 6 | Queen-led Byzantine fault-tolerant consensus |
+| Command     | Subcommands | Description                                                              |
+| ----------- | ----------- | ------------------------------------------------------------------------ |
+| `init`      | 4           | Project initialization with wizard, presets, skills, hooks               |
+| `agent`     | 8           | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
+| `swarm`     | 6           | Multi-agent swarm coordination and orchestration                         |
+| `memory`    | 11          | AgentDB memory with vector search (HNSW-indexed)                         |
+| `mcp`       | 9           | MCP server management and tool execution                                 |
+| `task`      | 6           | Task creation, assignment, and lifecycle                                 |
+| `session`   | 7           | Session state management and persistence                                 |
+| `config`    | 7           | Configuration management and provider setup                              |
+| `status`    | 3           | System status monitoring with watch mode                                 |
+| `start`     | 3           | Service startup and quick launch                                         |
+| `workflow`  | 6           | Workflow execution and template management                               |
+| `hooks`     | 17          | Self-learning hooks + 12 background workers                              |
+| `hive-mind` | 6           | Queen-led Byzantine fault-tolerant consensus                             |
 
 **Advanced Commands:**
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `daemon` | 5 | Background worker daemon (start, stop, status, trigger, enable) |
-| `neural` | 5 | Neural pattern training (train, status, patterns, predict, optimize) |
-| `security` | 6 | Security scanning (scan, audit, cve, threats, validate, report) |
-| `performance` | 5 | Performance profiling (benchmark, profile, metrics, optimize, report) |
-| `providers` | 5 | AI providers (list, add, remove, test, configure) |
-| `plugins` | 5 | Plugin management (list, install, uninstall, enable, disable) |
-| `deployment` | 5 | Deployment management (deploy, rollback, status, environments, release) |
-| `embeddings` | 4 | Vector embeddings (embed, batch, search, init) - faster with ONNX runtime with agentic-flow |
-| `claims` | 4 | Claims-based authorization (check, grant, revoke, list) |
-| `migrate` | 5 | V2 to V3 migration with rollback support |
-| `process` | 4 | Background process management |
-| `doctor` | 1 | System diagnostics with health checks |
-| `completions` | 4 | Shell completions (bash, zsh, fish, powershell) |
+| Command       | Subcommands | Description                                                                                 |
+| ------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| `daemon`      | 5           | Background worker daemon (start, stop, status, trigger, enable)                             |
+| `neural`      | 5           | Neural pattern training (train, status, patterns, predict, optimize)                        |
+| `security`    | 6           | Security scanning (scan, audit, cve, threats, validate, report)                             |
+| `performance` | 5           | Performance profiling (benchmark, profile, metrics, optimize, report)                       |
+| `providers`   | 5           | AI providers (list, add, remove, test, configure)                                           |
+| `plugins`     | 5           | Plugin management (list, install, uninstall, enable, disable)                               |
+| `deployment`  | 5           | Deployment management (deploy, rollback, status, environments, release)                     |
+| `embeddings`  | 4           | Vector embeddings (embed, batch, search, init) - faster with ONNX runtime with agentic-flow |
+| `claims`      | 4           | Claims-based authorization (check, grant, revoke, list)                                     |
+| `migrate`     | 5           | V2 to V3 migration with rollback support                                                    |
+| `process`     | 4           | Background process management                                                               |
+| `doctor`      | 1           | System diagnostics with health checks                                                       |
+| `completions` | 4           | Shell completions (bash, zsh, fish, powershell)                                             |
 
 **Quick Examples:**
 
@@ -2841,18 +2896,18 @@ Run `npx ruflo@latest doctor` to diagnose and fix common issues.
 
 **Health Checks Performed:**
 
-| Check | Requirement | Auto-Fix |
-|-------|-------------|----------|
-| **Node.js version** | 20+ | ❌ Manual upgrade required |
-| **npm version** | 9+ | ❌ Manual upgrade required |
-| **Git installation** | Any version | ❌ Manual install required |
-| **Config file validity** | Valid JSON/YAML | ✅ Regenerates defaults |
-| **Daemon status** | Running | ✅ Restarts daemons |
-| **Memory database** | SQLite writable | ✅ Recreates if corrupt |
-| **API keys** | Valid format | ❌ Manual configuration |
-| **MCP servers** | Responsive | ✅ Restarts unresponsive servers |
-| **Disk space** | >100MB free | ❌ Manual cleanup required |
-| **TypeScript** | Installed | ✅ Installs if missing |
+| Check                    | Requirement     | Auto-Fix                         |
+| ------------------------ | --------------- | -------------------------------- |
+| **Node.js version**      | 20+             | ❌ Manual upgrade required       |
+| **npm version**          | 9+              | ❌ Manual upgrade required       |
+| **Git installation**     | Any version     | ❌ Manual install required       |
+| **Config file validity** | Valid JSON/YAML | ✅ Regenerates defaults          |
+| **Daemon status**        | Running         | ✅ Restarts daemons              |
+| **Memory database**      | SQLite writable | ✅ Recreates if corrupt          |
+| **API keys**             | Valid format    | ❌ Manual configuration          |
+| **MCP servers**          | Responsive      | ✅ Restarts unresponsive servers |
+| **Disk space**           | >100MB free     | ❌ Manual cleanup required       |
+| **TypeScript**           | Installed       | ✅ Installs if missing           |
 
 **Commands:**
 
@@ -2897,21 +2952,21 @@ The embeddings package (v3.0.0-alpha.12) provides high-performance vector embedd
 
 **Key Features:**
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **sql.js backend** | Cross-platform SQLite (WASM) | No native compilation needed |
-| **Document chunking** | Configurable overlap and size | Handles large documents |
-| **Normalization** | L2, L1, min-max, z-score | 4 normalization methods |
-| **Hyperbolic embeddings** | Poincaré ball model | Better hierarchical representation |
-| **agentic-flow ONNX** | Integrated ONNX runtime | faster with ONNX runtime than API calls |
-| **Neural substrate** | RuVector integration | Full learning pipeline |
+| Feature                   | Description                   | Performance                             |
+| ------------------------- | ----------------------------- | --------------------------------------- |
+| **sql.js backend**        | Cross-platform SQLite (WASM)  | No native compilation needed            |
+| **Document chunking**     | Configurable overlap and size | Handles large documents                 |
+| **Normalization**         | L2, L1, min-max, z-score      | 4 normalization methods                 |
+| **Hyperbolic embeddings** | Poincaré ball model           | Better hierarchical representation      |
+| **agentic-flow ONNX**     | Integrated ONNX runtime       | faster with ONNX runtime than API calls |
+| **Neural substrate**      | RuVector integration          | Full learning pipeline                  |
 
 **Models Available:**
 
-| Model | Dimensions | Speed | Quality |
-|-------|------------|-------|---------|
-| `all-MiniLM-L6-v2` | 384 | Fast | Good |
-| `all-mpnet-base-v2` | 768 | Medium | Better |
+| Model               | Dimensions | Speed  | Quality |
+| ------------------- | ---------- | ------ | ------- |
+| `all-MiniLM-L6-v2`  | 384        | Fast   | Good    |
+| `all-mpnet-base-v2` | 768        | Medium | Better  |
 
 **Usage:**
 
@@ -2932,12 +2987,12 @@ npx ruflo@latest embeddings search "login flow" --top-k 5
 **Programmatic:**
 
 ```typescript
-import { createEmbeddingServiceAsync } from '@claude-flow/embeddings';
+import { createEmbeddingServiceAsync } from "@claude-flow/embeddings";
 
 const service = await createEmbeddingServiceAsync({
-  model: 'all-MiniLM-L6-v2',
-  hyperbolic: true,  // Enable Poincaré ball embeddings
-  cacheSize: 256
+  model: "all-MiniLM-L6-v2",
+  hyperbolic: true, // Enable Poincaré ball embeddings
+  cacheSize: 256,
 });
 
 // Generate embedding
@@ -2961,61 +3016,61 @@ Real-world scenarios and pre-built workflows for common tasks.
 
 ### 👨‍💻 Development & Code Quality
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **Code Review** | Get thorough reviews with security, performance, and style checks | `npx ruflo@latest agent spawn -t reviewer --name pr-review` |
-| **Test Generation** | Auto-generate unit, integration, and e2e tests for existing code | `npx ruflo@latest agent spawn -t tester --name test-gen` |
-| **Refactoring** | Safely restructure code while maintaining behavior | `npx ruflo@latest hive-mind spawn "Refactor user service to repository pattern"` |
-| **Bug Fixing** | Diagnose and fix bugs with full context analysis | `npx ruflo@latest hive-mind spawn "Fix race condition in checkout flow"` |
+| Scenario            | What It Solves                                                    | How To Do It                                                                     |
+| ------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Code Review**     | Get thorough reviews with security, performance, and style checks | `npx ruflo@latest agent spawn -t reviewer --name pr-review`                      |
+| **Test Generation** | Auto-generate unit, integration, and e2e tests for existing code  | `npx ruflo@latest agent spawn -t tester --name test-gen`                         |
+| **Refactoring**     | Safely restructure code while maintaining behavior                | `npx ruflo@latest hive-mind spawn "Refactor user service to repository pattern"` |
+| **Bug Fixing**      | Diagnose and fix bugs with full context analysis                  | `npx ruflo@latest hive-mind spawn "Fix race condition in checkout flow"`         |
 
 ### 🔒 Security & Compliance
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **Security Audit** | Find vulnerabilities before attackers do | `npx ruflo@latest security scan --depth full` |
-| **Dependency Scan** | Identify vulnerable packages and suggest upgrades | `npx ruflo@latest security cve --check` |
-| **Compliance Check** | Ensure code meets security standards | `npx ruflo@latest security audit` |
+| Scenario             | What It Solves                                    | How To Do It                                  |
+| -------------------- | ------------------------------------------------- | --------------------------------------------- |
+| **Security Audit**   | Find vulnerabilities before attackers do          | `npx ruflo@latest security scan --depth full` |
+| **Dependency Scan**  | Identify vulnerable packages and suggest upgrades | `npx ruflo@latest security cve --check`       |
+| **Compliance Check** | Ensure code meets security standards              | `npx ruflo@latest security audit`             |
 
 ### 🐝 Multi-Agent Swarms
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **Feature Development** | Coordinate multiple agents on complex features | `npx ruflo@latest swarm init --topology hierarchical && npx ruflo@latest task orchestrate "Build user dashboard"` |
-| **Large Refactors** | Parallel refactoring across many files without conflicts | `npx ruflo@latest swarm init --topology mesh --max-agents 8` |
-| **Codebase Migration** | Migrate frameworks, languages, or patterns systematically | `npx ruflo@latest task orchestrate "Migrate from Express to Fastify" --strategy adaptive` |
+| Scenario                | What It Solves                                            | How To Do It                                                                                                      |
+| ----------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Feature Development** | Coordinate multiple agents on complex features            | `npx ruflo@latest swarm init --topology hierarchical && npx ruflo@latest task orchestrate "Build user dashboard"` |
+| **Large Refactors**     | Parallel refactoring across many files without conflicts  | `npx ruflo@latest swarm init --topology mesh --max-agents 8`                                                      |
+| **Codebase Migration**  | Migrate frameworks, languages, or patterns systematically | `npx ruflo@latest task orchestrate "Migrate from Express to Fastify" --strategy adaptive`                         |
 
 ### 📊 Performance & Optimization
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
+| Scenario                  | What It Solves                               | How To Do It                                         |
+| ------------------------- | -------------------------------------------- | ---------------------------------------------------- |
 | **Performance Profiling** | Find and fix bottlenecks in your application | `npx ruflo@latest performance profile --target src/` |
-| **Query Optimization** | Speed up slow database queries | `npx ruflo@latest performance benchmark --suite all` |
-| **Memory Analysis** | Reduce memory usage and fix leaks | `npx ruflo@latest performance metrics` |
+| **Query Optimization**    | Speed up slow database queries               | `npx ruflo@latest performance benchmark --suite all` |
+| **Memory Analysis**       | Reduce memory usage and fix leaks            | `npx ruflo@latest performance metrics`               |
 
 ### 🔄 GitHub & DevOps
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **PR Management** | Review, approve, and merge PRs efficiently | `npx ruflo@latest hive-mind spawn "Review open PRs"` |
-| **Issue Triage** | Categorize, prioritize, and assign issues automatically | `npx ruflo@latest hive-mind spawn "Triage new issues"` |
-| **Release Management** | Coordinate releases with changelogs and versioning | `npx ruflo@latest hive-mind spawn "Prepare v2.0 release"` |
-| **CI/CD Optimization** | Speed up pipelines and reduce flaky tests | `npx ruflo@latest hive-mind spawn "Optimize GitHub Actions workflow"` |
+| Scenario               | What It Solves                                          | How To Do It                                                          |
+| ---------------------- | ------------------------------------------------------- | --------------------------------------------------------------------- |
+| **PR Management**      | Review, approve, and merge PRs efficiently              | `npx ruflo@latest hive-mind spawn "Review open PRs"`                  |
+| **Issue Triage**       | Categorize, prioritize, and assign issues automatically | `npx ruflo@latest hive-mind spawn "Triage new issues"`                |
+| **Release Management** | Coordinate releases with changelogs and versioning      | `npx ruflo@latest hive-mind spawn "Prepare v2.0 release"`             |
+| **CI/CD Optimization** | Speed up pipelines and reduce flaky tests               | `npx ruflo@latest hive-mind spawn "Optimize GitHub Actions workflow"` |
 
 ### 📋 Spec-Driven Development
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **Generate Specs** | Create complete specifications before coding | `npx ruflo@latest hive-mind spawn "Create ADR for authentication system"` |
-| **Validate Implementation** | Ensure code matches specifications | `npx ruflo@latest hooks progress --detailed` |
-| **Track Compliance** | Monitor spec adherence across the team | `npx ruflo@latest progress sync` |
+| Scenario                    | What It Solves                               | How To Do It                                                              |
+| --------------------------- | -------------------------------------------- | ------------------------------------------------------------------------- |
+| **Generate Specs**          | Create complete specifications before coding | `npx ruflo@latest hive-mind spawn "Create ADR for authentication system"` |
+| **Validate Implementation** | Ensure code matches specifications           | `npx ruflo@latest hooks progress --detailed`                              |
+| **Track Compliance**        | Monitor spec adherence across the team       | `npx ruflo@latest progress sync`                                          |
 
 ### 🧠 Learning & Intelligence
 
-| Scenario | What It Solves | How To Do It |
-|----------|----------------|--------------|
-| **Bootstrap Intelligence** | Train the system on your codebase patterns | `npx ruflo@latest hooks pretrain --depth deep` |
-| **Optimize Routing** | Improve task-to-agent matching over time | `npx ruflo@latest hooks route "<task>" --include-explanation` |
-| **Transfer Learning** | Apply patterns learned from other projects | `npx ruflo@latest hooks transfer <sourceProject>` |
+| Scenario                   | What It Solves                             | How To Do It                                                  |
+| -------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| **Bootstrap Intelligence** | Train the system on your codebase patterns | `npx ruflo@latest hooks pretrain --depth deep`                |
+| **Optimize Routing**       | Improve task-to-agent matching over time   | `npx ruflo@latest hooks route "<task>" --include-explanation` |
+| **Transfer Learning**      | Apply patterns learned from other projects | `npx ruflo@latest hooks transfer <sourceProject>`             |
 
 </details>
 
@@ -3053,25 +3108,25 @@ UserPromptSubmit              PreCompact                     SessionStart
 
 ### How Memory is Optimized
 
-| Layer | What It Does | When |
-|-------|-------------|------|
-| **Proactive Archiving** | Every user prompt archives new turns to SQLite with SHA-256 dedup | Every prompt |
-| **Token Tracking** | Reads actual API `usage` data (input + cache tokens) for accurate % | Every prompt |
-| **Compaction Blocking** | PreCompact hook returns exit code 2 to cancel auto-compaction | When context fills |
-| **Manual Compact** | `/compact` is allowed — archives first, resets autopilot, then compresses | On user request |
-| **Importance Ranking** | Entries scored by `recency × frequency × richness` for smart retrieval | On restore |
-| **Access Tracking** | Restored entries get access_count++ creating a relevance feedback loop | On restore |
-| **Auto-Pruning** | Never-accessed entries older than 30 days are automatically removed | On PreCompact |
-| **Content Compaction** | Old session entries trimmed to summaries, reducing archive storage | Manual or scheduled |
-| **RuVector Sync** | SQLite entries auto-replicated to PostgreSQL when configured | On PreCompact |
+| Layer                   | What It Does                                                              | When                |
+| ----------------------- | ------------------------------------------------------------------------- | ------------------- |
+| **Proactive Archiving** | Every user prompt archives new turns to SQLite with SHA-256 dedup         | Every prompt        |
+| **Token Tracking**      | Reads actual API `usage` data (input + cache tokens) for accurate %       | Every prompt        |
+| **Compaction Blocking** | PreCompact hook returns exit code 2 to cancel auto-compaction             | When context fills  |
+| **Manual Compact**      | `/compact` is allowed — archives first, resets autopilot, then compresses | On user request     |
+| **Importance Ranking**  | Entries scored by `recency × frequency × richness` for smart retrieval    | On restore          |
+| **Access Tracking**     | Restored entries get access_count++ creating a relevance feedback loop    | On restore          |
+| **Auto-Pruning**        | Never-accessed entries older than 30 days are automatically removed       | On PreCompact       |
+| **Content Compaction**  | Old session entries trimmed to summaries, reducing archive storage        | Manual or scheduled |
+| **RuVector Sync**       | SQLite entries auto-replicated to PostgreSQL when configured              | On PreCompact       |
 
 ### Optimization Thresholds
 
-| Zone | Threshold | Statusline | Action |
-|------|-----------|-----------|--------|
-| OK | <70% | `🛡️ 43% 86.7K ⊘` (green) | Normal operation, track growth trend |
-| Warning | 70-85% | `🛡️ 72% 144K ⊘` (yellow) | Flag approaching limit, archive aggressively |
-| Optimize | 85%+ | `🛡️ 88% 176K ⟳2` (red) | Prune stale entries, keep responses concise |
+| Zone     | Threshold | Statusline               | Action                                       |
+| -------- | --------- | ------------------------ | -------------------------------------------- |
+| OK       | <70%      | `🛡️ 43% 86.7K ⊘` (green) | Normal operation, track growth trend         |
+| Warning  | 70-85%    | `🛡️ 72% 144K ⊘` (yellow) | Flag approaching limit, archive aggressively |
+| Optimize | 85%+      | `🛡️ 88% 176K ⟳2` (red)   | Prune stale entries, keep responses concise  |
 
 ### Real-Time Statusline
 
@@ -3090,12 +3145,12 @@ The statusline shows live context metrics read from `autopilot-state.json`:
 
 ### Storage Tiers
 
-| Tier | Backend | Storage | Features |
-|------|---------|---------|----------|
-| 1 | **SQLite** (default) | `.claude-flow/data/transcript-archive.db` | WAL mode, indexed queries, ACID, importance ranking |
-| 2 | **RuVector PostgreSQL** | Configurable remote | TB-scale, pgvector embeddings, GNN search |
-| 3 | **AgentDB + HNSW** | In-memory + persist | HNSW-indexed semantic search |
-| 4 | **JSON** (fallback) | `.claude-flow/data/transcript-archive.json` | Zero dependencies, always works |
+| Tier | Backend                 | Storage                                     | Features                                            |
+| ---- | ----------------------- | ------------------------------------------- | --------------------------------------------------- |
+| 1    | **SQLite** (default)    | `.claude-flow/data/transcript-archive.db`   | WAL mode, indexed queries, ACID, importance ranking |
+| 2    | **RuVector PostgreSQL** | Configurable remote                         | TB-scale, pgvector embeddings, GNN search           |
+| 3    | **AgentDB + HNSW**      | In-memory + persist                         | HNSW-indexed semantic search                        |
+| 4    | **JSON** (fallback)     | `.claude-flow/data/transcript-archive.json` | Zero dependencies, always works                     |
 
 ### Configuration
 
@@ -3146,23 +3201,23 @@ Ruflo uses RVF — a compact binary storage format that replaces the 18MB sql.js
 
 Previous versions shipped sql.js (18MB WASM blob) for persistent storage. This caused slow cold starts, large installs, and compatibility issues on ARM/Alpine. RVF eliminates all of that:
 
-| | Before (sql.js) | After (RVF) |
-|---|---|---|
-| **Install size** | +18MB WASM | 0 extra deps |
-| **Cold start** | ~2s (WASM compile) | <50ms |
-| **Platform support** | x86/ARM issues | Runs everywhere |
-| **Native deps** | Optional hnswlib-node | Pure TypeScript fallback |
+|                      | Before (sql.js)       | After (RVF)              |
+| -------------------- | --------------------- | ------------------------ |
+| **Install size**     | +18MB WASM            | 0 extra deps             |
+| **Cold start**       | ~2s (WASM compile)    | <50ms                    |
+| **Platform support** | x86/ARM issues        | Runs everywhere          |
+| **Native deps**      | Optional hnswlib-node | Pure TypeScript fallback |
 
 ### How it works
 
 RVF files use a simple binary layout: a 4-byte magic header (`RVF\0`), a JSON metadata section, then packed entries. Each module has its own format variant:
 
-| Format | Magic Bytes | Used By | Purpose |
-|--------|-------------|---------|---------|
-| `RVF\0` | `0x52564600` | Memory backend | Entries + HNSW index |
-| `RVEC` | `0x52564543` | Embedding cache | Cached vectors with LRU eviction |
-| `RVFL` | `0x5256464C` | Event log | Append-only domain events |
-| `RVLS` | — | Learning store | SONA patterns + trajectories |
+| Format  | Magic Bytes  | Used By         | Purpose                          |
+| ------- | ------------ | --------------- | -------------------------------- |
+| `RVF\0` | `0x52564600` | Memory backend  | Entries + HNSW index             |
+| `RVEC`  | `0x52564543` | Embedding cache | Cached vectors with LRU eviction |
+| `RVFL`  | `0x5256464C` | Event log       | Append-only domain events        |
+| `RVLS`  | —            | Learning store  | SONA patterns + trajectories     |
 
 ### Storage auto-selection
 
@@ -3179,13 +3234,18 @@ RVF is always available since it has zero dependencies, so it wins by default. I
 RVF includes `HnswLite` — a pure TypeScript implementation of the HNSW (Hierarchical Navigable Small World) algorithm for fast nearest-neighbor search. It's used automatically when storing entries with embeddings.
 
 ```typescript
-import { RvfBackend } from '@claude-flow/memory';
+import { RvfBackend } from "@claude-flow/memory";
 
-const backend = new RvfBackend({ databasePath: './memory.rvf' });
+const backend = new RvfBackend({ databasePath: "./memory.rvf" });
 await backend.initialize();
 
 // Store entries — embeddings are indexed automatically
-await backend.store({ id: '1', key: 'auth-pattern', content: '...', embedding: vector });
+await backend.store({
+  id: "1",
+  key: "auth-pattern",
+  content: "...",
+  embedding: vector,
+});
 
 // Search by similarity
 const results = await backend.search({ embedding: queryVector, limit: 10 });
@@ -3198,17 +3258,17 @@ Supports cosine, dot product, and Euclidean distance metrics. For large datasets
 The `RvfMigrator` converts between JSON files, SQLite databases, and RVF:
 
 ```typescript
-import { RvfMigrator } from '@claude-flow/memory';
+import { RvfMigrator } from "@claude-flow/memory";
 
 // Auto-detect format and migrate
-await RvfMigrator.autoMigrate('./old-memory.db', './memory.rvf');
+await RvfMigrator.autoMigrate("./old-memory.db", "./memory.rvf");
 
 // Or be explicit
-await RvfMigrator.fromJsonFile('./backup.json', './memory.rvf');
-await RvfMigrator.fromSqlite('./legacy.db', './memory.rvf');
+await RvfMigrator.fromJsonFile("./backup.json", "./memory.rvf");
+await RvfMigrator.fromSqlite("./legacy.db", "./memory.rvf");
 
 // Export back to JSON for inspection
-await RvfMigrator.toJsonFile('./memory.rvf', './export.json');
+await RvfMigrator.toJsonFile("./memory.rvf", "./export.json");
 ```
 
 Format detection works by reading the first few bytes of the file — no file extension guessing.
@@ -3226,16 +3286,16 @@ All write operations use atomic writes: data goes to a temporary file first, the
 The `PersistentSonaCoordinator` stores learning patterns and trajectories in RVF format, so agents retain knowledge across sessions:
 
 ```typescript
-import { PersistentSonaCoordinator } from '@claude-flow/memory';
+import { PersistentSonaCoordinator } from "@claude-flow/memory";
 
 const sona = new PersistentSonaCoordinator({
-  storePath: './data/sona-learning.rvls',
+  storePath: "./data/sona-learning.rvls",
 });
 await sona.initialize();
 
 // Patterns survive restarts
 const similar = sona.findSimilarPatterns(embedding, 5);
-sona.storePattern('routing', embedding);
+sona.storePattern("routing", embedding);
 await sona.shutdown(); // persists to disk
 ```
 
@@ -3276,12 +3336,12 @@ Self-learning hooks, pattern recognition, and intelligent task routing.
 
 Hooks intercept operations (file edits, commands, tasks) and learn from outcomes. Unlike static automation, hooks **improve over time** by tracking what works and applying those patterns to future tasks.
 
-| Concept | Plain English | Technical Details |
-|---------|---------------|-------------------|
-| **Hook** | Code that runs before/after an action | Event listener with pre/post lifecycle |
-| **Pattern** | A learned strategy that worked | Vector embedding stored in ReasoningBank |
-| **Trajectory** | Recording of actions → outcomes | RL episode for SONA training |
-| **Routing** | Picking the best agent for a task | MoE-based classifier with learned weights |
+| Concept        | Plain English                         | Technical Details                         |
+| -------------- | ------------------------------------- | ----------------------------------------- |
+| **Hook**       | Code that runs before/after an action | Event listener with pre/post lifecycle    |
+| **Pattern**    | A learned strategy that worked        | Vector embedding stored in ReasoningBank  |
+| **Trajectory** | Recording of actions → outcomes       | RL episode for SONA training              |
+| **Routing**    | Picking the best agent for a task     | MoE-based classifier with learned weights |
 
 ### How Hooks Learn (4-Step Pipeline)
 
@@ -3300,14 +3360,15 @@ Hooks intercept operations (file edits, commands, tasks) and learn from outcomes
 
 When hooks run, they emit signals that guide routing decisions. Watch for these in hook output:
 
-| Signal | Meaning | Action |
-|--------|---------|--------|
-| `[AGENT_BOOSTER_AVAILABLE]` | Simple transform detected, skip LLM | Use Edit tool directly (instant (regex-based, no LLM call), $0) |
-| `[TASK_MODEL_RECOMMENDATION] Use model="haiku"` | Low complexity task | Pass `model: "haiku"` to Task tool |
-| `[TASK_MODEL_RECOMMENDATION] Use model="sonnet"` | Medium complexity task | Pass `model: "sonnet"` to Task tool |
-| `[TASK_MODEL_RECOMMENDATION] Use model="opus"` | High complexity task | Pass `model: "opus"` to Task tool |
+| Signal                                           | Meaning                             | Action                                                          |
+| ------------------------------------------------ | ----------------------------------- | --------------------------------------------------------------- |
+| `[AGENT_BOOSTER_AVAILABLE]`                      | Simple transform detected, skip LLM | Use Edit tool directly (instant (regex-based, no LLM call), $0) |
+| `[TASK_MODEL_RECOMMENDATION] Use model="haiku"`  | Low complexity task                 | Pass `model: "haiku"` to Task tool                              |
+| `[TASK_MODEL_RECOMMENDATION] Use model="sonnet"` | Medium complexity task              | Pass `model: "sonnet"` to Task tool                             |
+| `[TASK_MODEL_RECOMMENDATION] Use model="opus"`   | High complexity task                | Pass `model: "opus"` to Task tool                               |
 
 **Agent Booster Intents** (handled without LLM):
+
 - `var-to-const` - Convert var/let to const
 - `add-types` - Add TypeScript type annotations
 - `add-error-handling` - Wrap in try/catch
@@ -3316,6 +3377,7 @@ When hooks run, they emit signals that guide routing decisions. Watch for these 
 - `remove-console` - Strip console.* calls
 
 **Example Hook Output:**
+
 ```bash
 $ npx ruflo@latest hooks pre-task --description "convert var to const in utils.ts"
 
@@ -3374,17 +3436,18 @@ node .claude/helpers/intelligence.cjs stats
 
 The stats command shows:
 
-| Section | What It Tells You |
-|---------|-------------------|
-| **Graph** | Node/edge count, density % |
-| **Confidence** | Min/max/mean/median across all patterns |
-| **Access** | Total accesses, patterns used vs never accessed |
-| **PageRank** | Sum (~1.0), highest-ranked node |
-| **Top Patterns** | Top 10 by composite score with access counts |
-| **Last Delta** | Changes since previous session (confidence shift, access delta) |
-| **Trend** | Over all sessions: IMPROVING / DECLINING / STABLE |
+| Section          | What It Tells You                                               |
+| ---------------- | --------------------------------------------------------------- |
+| **Graph**        | Node/edge count, density %                                      |
+| **Confidence**   | Min/max/mean/median across all patterns                         |
+| **Access**       | Total accesses, patterns used vs never accessed                 |
+| **PageRank**     | Sum (~1.0), highest-ranked node                                 |
+| **Top Patterns** | Top 10 by composite score with access counts                    |
+| **Last Delta**   | Changes since previous session (confidence shift, access delta) |
+| **Trend**        | Over all sessions: IMPROVING / DECLINING / STABLE               |
 
 **Example output:**
+
 ```
 +--------------------------------------------------------------+
 |  Intelligence Diagnostics (ADR-050)                          |
@@ -3424,14 +3487,14 @@ The stats command shows:
 
 #### 🔧 Tool Lifecycle Hooks (6 hooks)
 
-| Hook | When It Fires | What It Does | Learning Benefit |
-|------|---------------|--------------|------------------|
-| `pre-edit` | Before file edit | Gathers context, checks security | Learns which files need extra validation |
-| `post-edit` | After file edit | Records outcome, extracts patterns | Learns successful edit strategies |
-| `pre-command` | Before shell command | Assesses risk, validates input | Learns which commands are safe |
-| `post-command` | After shell command | Tracks success/failure | Learns command reliability patterns |
-| `pre-task` | Before task starts | Routes to optimal agent | Learns task→agent mappings |
-| `post-task` | After task completes | Records quality score | Learns what makes tasks succeed |
+| Hook           | When It Fires        | What It Does                       | Learning Benefit                         |
+| -------------- | -------------------- | ---------------------------------- | ---------------------------------------- |
+| `pre-edit`     | Before file edit     | Gathers context, checks security   | Learns which files need extra validation |
+| `post-edit`    | After file edit      | Records outcome, extracts patterns | Learns successful edit strategies        |
+| `pre-command`  | Before shell command | Assesses risk, validates input     | Learns which commands are safe           |
+| `post-command` | After shell command  | Tracks success/failure             | Learns command reliability patterns      |
+| `pre-task`     | Before task starts   | Routes to optimal agent            | Learns task→agent mappings               |
+| `post-task`    | After task completes | Records quality score              | Learns what makes tasks succeed          |
 
 ```bash
 # Example: Edit with pattern learning
@@ -3441,16 +3504,16 @@ npx ruflo@latest hooks post-edit ./src/auth.ts --success true --train-patterns
 
 #### 🧠 Intelligence & Routing Hooks (8 hooks)
 
-| Hook | Purpose | What You Get |
-|------|---------|--------------|
-| `route` | Pick best agent for task | Agent recommendation with confidence score |
-| `explain` | Understand routing decision | Full transparency on why agent was chosen |
-| `pretrain` | Bootstrap from codebase | Learns your project's patterns before you start |
-| `build-agents` | Generate optimized configs | Agent YAML files tuned for your codebase |
-| `transfer` | Import patterns from another project | Cross-project learning |
-| `init` | Initialize hooks system | Sets up .claude/settings.json |
-| `metrics` | View learning dashboard | Success rates, pattern counts, routing accuracy |
-| `list` | List all registered hooks | See what's active |
+| Hook           | Purpose                              | What You Get                                    |
+| -------------- | ------------------------------------ | ----------------------------------------------- |
+| `route`        | Pick best agent for task             | Agent recommendation with confidence score      |
+| `explain`      | Understand routing decision          | Full transparency on why agent was chosen       |
+| `pretrain`     | Bootstrap from codebase              | Learns your project's patterns before you start |
+| `build-agents` | Generate optimized configs           | Agent YAML files tuned for your codebase        |
+| `transfer`     | Import patterns from another project | Cross-project learning                          |
+| `init`         | Initialize hooks system              | Sets up .claude/settings.json                   |
+| `metrics`      | View learning dashboard              | Success rates, pattern counts, routing accuracy |
+| `list`         | List all registered hooks            | See what's active                               |
 
 ```bash
 # Route a task with explanation
@@ -3462,12 +3525,12 @@ npx ruflo@latest hooks pretrain --depth deep --model-type moe
 
 #### 📅 Session Management Hooks (4 hooks)
 
-| Hook | Purpose | Key Options |
-|------|---------|-------------|
-| `session-start` | Begin session, load context | `--session-id`, `--load-context`, `--start-daemon` |
-| `session-end` | End session, persist state | `--export-metrics`, `--persist-patterns`, `--stop-daemon` |
-| `session-restore` | Resume previous session | `--session-id` or `latest` |
-| `notify` | Send cross-agent notification | `--message`, `--priority`, `--target` |
+| Hook              | Purpose                       | Key Options                                               |
+| ----------------- | ----------------------------- | --------------------------------------------------------- |
+| `session-start`   | Begin session, load context   | `--session-id`, `--load-context`, `--start-daemon`        |
+| `session-end`     | End session, persist state    | `--export-metrics`, `--persist-patterns`, `--stop-daemon` |
+| `session-restore` | Resume previous session       | `--session-id` or `latest`                                |
+| `notify`          | Send cross-agent notification | `--message`, `--priority`, `--target`                     |
 
 ```bash
 # Start session with auto-daemon
@@ -3479,17 +3542,17 @@ npx ruflo@latest hooks session-end --export-metrics --persist-patterns
 
 #### 🤖 Intelligence System Hooks (9 hooks)
 
-| Hook | Category | What It Does |
-|------|----------|--------------|
-| `intelligence` | Status | Shows SONA, MoE, HNSW, EWC++ status |
-| `intelligence-reset` | Admin | Clears learned patterns (use carefully!) |
-| `trajectory-start` | RL | Begin recording actions for learning |
-| `trajectory-step` | RL | Record an action with reward signal |
-| `trajectory-end` | RL | Finish recording, trigger learning |
-| `pattern-store` | Memory | Store a pattern with HNSW indexing |
-| `pattern-search` | Memory | Find similar patterns (150x faster) |
-| `stats` | Analytics | Intelligence diagnostics, confidence trends, improvement tracking |
-| `attention` | Focus | Compute attention-weighted similarity |
+| Hook                 | Category  | What It Does                                                      |
+| -------------------- | --------- | ----------------------------------------------------------------- |
+| `intelligence`       | Status    | Shows SONA, MoE, HNSW, EWC++ status                               |
+| `intelligence-reset` | Admin     | Clears learned patterns (use carefully!)                          |
+| `trajectory-start`   | RL        | Begin recording actions for learning                              |
+| `trajectory-step`    | RL        | Record an action with reward signal                               |
+| `trajectory-end`     | RL        | Finish recording, trigger learning                                |
+| `pattern-store`      | Memory    | Store a pattern with HNSW indexing                                |
+| `pattern-search`     | Memory    | Find similar patterns (150x faster)                               |
+| `stats`              | Analytics | Intelligence diagnostics, confidence trends, improvement tracking |
+| `attention`          | Focus     | Compute attention-weighted similarity                             |
 
 ```bash
 # Start trajectory for complex task
@@ -3510,20 +3573,20 @@ node .claude/helpers/intelligence.cjs stats --json
 
 Workers run automatically based on context, or dispatch manually.
 
-| Worker | Trigger | Auto-Fires When | What It Does |
-|--------|---------|-----------------|--------------|
-| `ultralearn` | New project | First session in new codebase | Deep knowledge acquisition |
-| `optimize` | Slow ops | Operation takes >2s | Performance suggestions |
-| `consolidate` | Session end | Every 30 min or session-end | Memory consolidation |
-| `predict` | Pattern match | Similar task seen before | Preloads likely resources |
-| `audit` | Security file | Changes to auth/crypto files | Security vulnerability scan |
-| `map` | New dirs | New directories created | Codebase structure mapping |
-| `preload` | Cache miss | Frequently accessed patterns | Resource preloading |
-| `deepdive` | Complex edit | File >500 lines edited | Deep code analysis |
-| `document` | New code | New functions/classes | Auto-documentation |
-| `refactor` | Code smell | Duplicate code detected | Refactoring suggestions |
-| `benchmark` | Perf code | Performance-critical changes | Performance benchmarking |
-| `testgaps` | No tests | Code changes without tests | Test coverage analysis |
+| Worker        | Trigger       | Auto-Fires When               | What It Does                |
+| ------------- | ------------- | ----------------------------- | --------------------------- |
+| `ultralearn`  | New project   | First session in new codebase | Deep knowledge acquisition  |
+| `optimize`    | Slow ops      | Operation takes >2s           | Performance suggestions     |
+| `consolidate` | Session end   | Every 30 min or session-end   | Memory consolidation        |
+| `predict`     | Pattern match | Similar task seen before      | Preloads likely resources   |
+| `audit`       | Security file | Changes to auth/crypto files  | Security vulnerability scan |
+| `map`         | New dirs      | New directories created       | Codebase structure mapping  |
+| `preload`     | Cache miss    | Frequently accessed patterns  | Resource preloading         |
+| `deepdive`    | Complex edit  | File >500 lines edited        | Deep code analysis          |
+| `document`    | New code      | New functions/classes         | Auto-documentation          |
+| `refactor`    | Code smell    | Duplicate code detected       | Refactoring suggestions     |
+| `benchmark`   | Perf code     | Performance-critical changes  | Performance benchmarking    |
+| `testgaps`    | No tests      | Code changes without tests    | Test coverage analysis      |
 
 ```bash
 # List all workers
@@ -3540,11 +3603,11 @@ npx ruflo@latest hooks worker status
 
 Automatically selects haiku/sonnet/opus based on task complexity.
 
-| Hook | Purpose | Saves Money By |
-|------|---------|----------------|
-| `model-route` | Route to optimal model | Using haiku for simple tasks |
-| `model-outcome` | Record result | Learning which model works for what |
-| `model-stats` | View routing stats | Showing cost savings |
+| Hook            | Purpose                | Saves Money By                      |
+| --------------- | ---------------------- | ----------------------------------- |
+| `model-route`   | Route to optimal model | Using haiku for simple tasks        |
+| `model-outcome` | Record result          | Learning which model works for what |
+| `model-stats`   | View routing stats     | Showing cost savings                |
 
 ```bash
 # Get model recommendation
@@ -3557,12 +3620,12 @@ npx ruflo@latest hooks model-route --task "design distributed consensus system"
 
 ### Progress Tracking
 
-| Command | Output |
-|---------|--------|
-| `hooks progress` | Current V3 implementation % |
-| `hooks progress --detailed` | Breakdown by category |
-| `hooks progress --sync` | Sync and persist to file |
-| `hooks progress --json` | JSON for scripting |
+| Command                     | Output                      |
+| --------------------------- | --------------------------- |
+| `hooks progress`            | Current V3 implementation % |
+| `hooks progress --detailed` | Breakdown by category       |
+| `hooks progress --sync`     | Sync and persist to file    |
+| `hooks progress --json`     | JSON for scripting          |
 
 ### Quick Reference
 
@@ -3605,13 +3668,13 @@ Share learned patterns across projects, teams, and the community via the decentr
 
 ### What You Can Share
 
-| Asset Type | Description | Use Case |
-|------------|-------------|----------|
-| **Patterns** | Learned strategies from ReasoningBank | Share what works across projects |
-| **Agent Configs** | Optimized YAML configurations | Pre-tuned agents for specific domains |
-| **Workflows** | Multi-step task templates | Reusable automation sequences |
-| **Embeddings** | Pre-computed vector indexes | Skip bootstrap time on new projects |
-| **Hooks** | Custom hook implementations | Extend system behavior |
+| Asset Type        | Description                           | Use Case                              |
+| ----------------- | ------------------------------------- | ------------------------------------- |
+| **Patterns**      | Learned strategies from ReasoningBank | Share what works across projects      |
+| **Agent Configs** | Optimized YAML configurations         | Pre-tuned agents for specific domains |
+| **Workflows**     | Multi-step task templates             | Reusable automation sequences         |
+| **Embeddings**    | Pre-computed vector indexes           | Skip bootstrap time on new projects   |
+| **Hooks**         | Custom hook implementations           | Extend system behavior                |
 
 ### Export Commands
 
@@ -3655,14 +3718,14 @@ npx ruflo@latest session restore --session-id "my-session"
 
 Decentralized pattern marketplace for sharing and discovering community patterns.
 
-| Command | Description |
-|---------|-------------|
-| `transfer-store search` | Search patterns by keyword, category, or rating |
-| `transfer-store info` | Get detailed info about a pattern |
-| `transfer-store download` | Download pattern with integrity verification |
-| `transfer-store publish` | Publish your patterns to the store |
-| `transfer-store featured` | Browse featured/curated patterns |
-| `transfer-store trending` | See what's popular |
+| Command                   | Description                                     |
+| ------------------------- | ----------------------------------------------- |
+| `transfer-store search`   | Search patterns by keyword, category, or rating |
+| `transfer-store info`     | Get detailed info about a pattern               |
+| `transfer-store download` | Download pattern with integrity verification    |
+| `transfer-store publish`  | Publish your patterns to the store              |
+| `transfer-store featured` | Browse featured/curated patterns                |
+| `transfer-store trending` | See what's popular                              |
 
 ```bash
 # Search for authentication patterns
@@ -3679,14 +3742,14 @@ npx ruflo@latest transfer-store publish --input ./my-patterns.json --category "s
 
 Discover and install community plugins from the **live IPFS registry** with 19 official plugins and **live ratings** via Cloud Function.
 
-| Command | Description |
-|---------|-------------|
-| `plugins list` | List available plugins with live ratings |
-| `plugins rate` | Rate a plugin (1-5 stars) |
-| `transfer plugin-search` | Search plugins by type or category |
-| `transfer plugin-info` | Get plugin details and dependencies |
-| `transfer plugin-featured` | Browse featured plugins |
-| `transfer plugin-official` | List official/verified plugins |
+| Command                    | Description                              |
+| -------------------------- | ---------------------------------------- |
+| `plugins list`             | List available plugins with live ratings |
+| `plugins rate`             | Rate a plugin (1-5 stars)                |
+| `transfer plugin-search`   | Search plugins by type or category       |
+| `transfer plugin-info`     | Get plugin details and dependencies      |
+| `transfer plugin-featured` | Browse featured plugins                  |
+| `transfer plugin-official` | List official/verified plugins           |
 
 ```bash
 # List plugins with live ratings from Cloud Function
@@ -3712,12 +3775,12 @@ npx ruflo@latest transfer plugin-official
 
 The official plugin registry is hosted on IPFS with Ed25519 signature verification:
 
-| Property | Value |
-|----------|-------|
-| **Live CID** | `bafkreiahw4ufxwycbwwswt7rgbx6hkgnvg3rophhocatgec4bu5e7tzk2a` |
-| **Plugins** | 19 official plugins |
-| **Verification** | Ed25519 signed registry |
-| **Gateways** | Pinata, ipfs.io, dweb.link, Cloudflare |
+| Property         | Value                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| **Live CID**     | `bafkreiahw4ufxwycbwwswt7rgbx6hkgnvg3rophhocatgec4bu5e7tzk2a` |
+| **Plugins**      | 19 official plugins                                           |
+| **Verification** | Ed25519 signed registry                                       |
+| **Gateways**     | Pinata, ipfs.io, dweb.link, Cloudflare                        |
 
 ```bash
 # Fetch live registry directly
@@ -3728,13 +3791,13 @@ curl -s "https://gateway.pinata.cloud/ipfs/bafkreiahw4ufxwycbwwswt7rgbx6hkgnvg3r
 
 Patterns and models are distributed via IPFS for decentralization and integrity.
 
-| Feature | Benefit |
-|---------|---------|
-| **Content Addressing** | Patterns identified by hash, tamper-proof |
-| **Decentralized** | No single point of failure |
-| **Ed25519 Signatures** | Cryptographic registry verification |
-| **Multi-Gateway** | Automatic failover (Pinata, ipfs.io, dweb.link) |
-| **PII Detection** | Automatic scanning before publish |
+| Feature                | Benefit                                         |
+| ---------------------- | ----------------------------------------------- |
+| **Content Addressing** | Patterns identified by hash, tamper-proof       |
+| **Decentralized**      | No single point of failure                      |
+| **Ed25519 Signatures** | Cryptographic registry verification             |
+| **Multi-Gateway**      | Automatic failover (Pinata, ipfs.io, dweb.link) |
+| **PII Detection**      | Automatic scanning before publish               |
 
 ```bash
 # Resolve IPNS name to CID
@@ -3748,11 +3811,11 @@ npx ruflo@latest transfer detect-pii --content "$(cat ./patterns.json)"
 
 Share trained neural patterns and learning models via IPFS.
 
-| Operation | Description |
-|-----------|-------------|
-| **Export** | Pin learning patterns to IPFS, get shareable CID |
-| **Import** | Fetch patterns from any IPFS CID |
-| **Analytics** | Track downloads and sharing metrics |
+| Operation     | Description                                      |
+| ------------- | ------------------------------------------------ |
+| **Export**    | Pin learning patterns to IPFS, get shareable CID |
+| **Import**    | Fetch patterns from any IPFS CID                 |
+| **Analytics** | Track downloads and sharing metrics              |
 
 ```bash
 # Export a learning pattern to IPFS
@@ -3777,27 +3840,27 @@ curl "https://publish-registry-xxx.cloudfunctions.net?action=import-model&cid=Qm
 
 #### Supported Model Types
 
-| Type | Description | Use Case |
-|------|-------------|----------|
+| Type               | Description             | Use Case                       |
+| ------------------ | ----------------------- | ------------------------------ |
 | `learning-pattern` | Agent learning patterns | Code review, security analysis |
-| `neural-weights` | Trained neural weights | SONA, MoE routing |
-| `reasoning-bank` | Reasoning trajectories | Few-shot learning |
-| `agent-config` | Agent configurations | Swarm templates |
+| `neural-weights`   | Trained neural weights  | SONA, MoE routing              |
+| `reasoning-bank`   | Reasoning trajectories  | Few-shot learning              |
+| `agent-config`     | Agent configurations    | Swarm templates                |
 
 ### Pre-trained Model Registry
 
 Import pre-defined rule-based patterns for common tasks. 40 patterns across 8 categories (trigger-action rules, not ML-trained models).
 
-| Model | Category | Patterns | Accuracy | Use Case |
-|-------|----------|----------|----------|----------|
-| `security-review-patterns` | security | 5 | 94% | SQL injection, XSS, path traversal |
-| `code-review-patterns` | quality | 5 | 90% | SRP, error handling, type safety |
-| `performance-optimization-patterns` | performance | 5 | 89% | N+1 queries, memory leaks, caching |
-| `testing-patterns` | testing | 5 | 91% | Edge cases, mocking, contracts |
-| `api-development-patterns` | api | 5 | 92% | REST conventions, validation, pagination |
-| `bug-fixing-patterns` | debugging | 5 | 89% | Null tracing, race conditions, regressions |
-| `refactoring-patterns` | refactoring | 5 | 89% | Extract methods, DRY, value objects |
-| `documentation-patterns` | documentation | 5 | 90% | JSDoc, OpenAPI, ADRs |
+| Model                               | Category      | Patterns | Accuracy | Use Case                                   |
+| ----------------------------------- | ------------- | -------- | -------- | ------------------------------------------ |
+| `security-review-patterns`          | security      | 5        | 94%      | SQL injection, XSS, path traversal         |
+| `code-review-patterns`              | quality       | 5        | 90%      | SRP, error handling, type safety           |
+| `performance-optimization-patterns` | performance   | 5        | 89%      | N+1 queries, memory leaks, caching         |
+| `testing-patterns`                  | testing       | 5        | 91%      | Edge cases, mocking, contracts             |
+| `api-development-patterns`          | api           | 5        | 92%      | REST conventions, validation, pagination   |
+| `bug-fixing-patterns`               | debugging     | 5        | 89%      | Null tracing, race conditions, regressions |
+| `refactoring-patterns`              | refactoring   | 5        | 89%      | Extract methods, DRY, value objects        |
+| `documentation-patterns`            | documentation | 5        | 90%      | JSDoc, OpenAPI, ADRs                       |
 
 **Registry CID**: `QmNr1yYMKi7YBaL8JSztQyuB5ZUaTdRMLxJC1pBpGbjsTc`
 
@@ -3817,23 +3880,23 @@ npx ruflo@latest hooks route --task "review authentication code" --use-patterns
 
 #### Benefits vs Fresh Install
 
-| Metric | Fresh Install | With Pre-trained |
-|--------|---------------|------------------|
-| Patterns Available | 0 | 40 |
-| Detection Patterns | ~50-60% | 40 rule-based patterns |
-| Pattern Categories | 0 | 8 categories |
-| Issue Detection Rate | ~60-70% | ~90-95% |
-| Time to First Insight | Discovery needed | Immediate |
+| Metric                | Fresh Install    | With Pre-trained       |
+| --------------------- | ---------------- | ---------------------- |
+| Patterns Available    | 0                | 40                     |
+| Detection Patterns    | ~50-60%          | 40 rule-based patterns |
+| Pattern Categories    | 0                | 8 categories           |
+| Issue Detection Rate  | ~60-70%          | ~90-95%                |
+| Time to First Insight | Discovery needed | Immediate              |
 
 ### Pre-Built Pattern Packs
 
-| Pack | Patterns | Best For |
-|------|----------|----------|
-| **security-essentials** | 45 | Auth, validation, CVE patterns |
-| **testing-patterns** | 32 | TDD, mocking, fixture strategies |
-| **performance-optimization** | 28 | Caching, query optimization |
-| **api-development** | 38 | REST, GraphQL, error handling |
-| **devops-automation** | 25 | CI/CD, deployment, monitoring |
+| Pack                         | Patterns | Best For                         |
+| ---------------------------- | -------- | -------------------------------- |
+| **security-essentials**      | 45       | Auth, validation, CVE patterns   |
+| **testing-patterns**         | 32       | TDD, mocking, fixture strategies |
+| **performance-optimization** | 28       | Caching, query optimization      |
+| **api-development**          | 38       | REST, GraphQL, error handling    |
+| **devops-automation**        | 25       | CI/CD, deployment, monitoring    |
 
 ```bash
 # Install a pattern pack
@@ -3844,14 +3907,14 @@ npx ruflo@latest transfer-store download --id "security-essentials" --apply
 
 Real WASM-accelerated neural training using `@ruvector/learning-wasm` and `@ruvector/attention` packages for state-of-the-art performance.
 
-| Component | Performance | Description |
-|-----------|-------------|-------------|
-| **MicroLoRA** | **<3μs adaptation** | Rank-2 LoRA with 105x faster than 100μs target |
-| **ScopedLoRA** | 17 operators | Per-task-type learning (coordination, security, testing) |
-| **FlashAttention** | 9,127 ops/sec | Memory-efficient attention mechanism |
-| **TrajectoryBuffer** | 10k capacity | Success/failure learning from patterns |
-| **InfoNCE Loss** | Contrastive | Temperature-scaled contrastive learning |
-| **AdamW Optimizer** | β1=0.9, β2=0.999 | Weight decay training optimization |
+| Component            | Performance         | Description                                              |
+| -------------------- | ------------------- | -------------------------------------------------------- |
+| **MicroLoRA**        | **<3μs adaptation** | Rank-2 LoRA with 105x faster than 100μs target           |
+| **ScopedLoRA**       | 17 operators        | Per-task-type learning (coordination, security, testing) |
+| **FlashAttention**   | 9,127 ops/sec       | Memory-efficient attention mechanism                     |
+| **TrajectoryBuffer** | 10k capacity        | Success/failure learning from patterns                   |
+| **InfoNCE Loss**     | Contrastive         | Temperature-scaled contrastive learning                  |
+| **AdamW Optimizer**  | β1=0.9, β2=0.999    | Weight decay training optimization                       |
 
 ```bash
 # List available pre-trained models from IPFS registry
@@ -3892,17 +3955,17 @@ MicroLoRA Target (<100μs): ✓ PASS (2.60μs actual)
 
 #### Training Options
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `--wasm` | Enable RuVector WASM acceleration | `true` |
-| `--flash` | Use Flash Attention | `true` |
-| `--moe` | Enable Mixture of Experts routing | `false` |
-| `--hyperbolic` | Hyperbolic attention for hierarchical patterns | `false` |
-| `--contrastive` | InfoNCE contrastive learning | `true` |
-| `--curriculum` | Progressive difficulty curriculum | `false` |
-| `-e, --epochs` | Number of training epochs | `50` |
-| `-d, --dim` | Embedding dimension (max 256) | `256` |
-| `-l, --learning-rate` | Learning rate | `0.01` |
+| Flag                  | Description                                    | Default |
+| --------------------- | ---------------------------------------------- | ------- |
+| `--wasm`              | Enable RuVector WASM acceleration              | `true`  |
+| `--flash`             | Use Flash Attention                            | `true`  |
+| `--moe`               | Enable Mixture of Experts routing              | `false` |
+| `--hyperbolic`        | Hyperbolic attention for hierarchical patterns | `false` |
+| `--contrastive`       | InfoNCE contrastive learning                   | `true`  |
+| `--curriculum`        | Progressive difficulty curriculum              | `false` |
+| `-e, --epochs`        | Number of training epochs                      | `50`    |
+| `-d, --dim`           | Embedding dimension (max 256)                  | `256`   |
+| `-l, --learning-rate` | Learning rate                                  | `0.01`  |
 
 </details>
 
@@ -3934,70 +3997,71 @@ The `.claude/helpers/` directory contains **30+ automation scripts** for develop
 
 #### 📊 Progress & Metrics
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `v3.sh` | Master CLI for all V3 operations | `.claude/helpers/v3.sh status` |
-| `update-v3-progress.sh` | Update development metrics | `.claude/helpers/update-v3-progress.sh domain 3` |
-| `v3-quick-status.sh` | Compact progress overview | `.claude/helpers/v3-quick-status.sh` |
-| `sync-v3-metrics.sh` | Sync metrics across systems | `.claude/helpers/sync-v3-metrics.sh` |
-| `validate-v3-config.sh` | Validate configuration | `.claude/helpers/validate-v3-config.sh` |
+| Script                  | Purpose                          | Usage                                            |
+| ----------------------- | -------------------------------- | ------------------------------------------------ |
+| `v3.sh`                 | Master CLI for all V3 operations | `.claude/helpers/v3.sh status`                   |
+| `update-v3-progress.sh` | Update development metrics       | `.claude/helpers/update-v3-progress.sh domain 3` |
+| `v3-quick-status.sh`    | Compact progress overview        | `.claude/helpers/v3-quick-status.sh`             |
+| `sync-v3-metrics.sh`    | Sync metrics across systems      | `.claude/helpers/sync-v3-metrics.sh`             |
+| `validate-v3-config.sh` | Validate configuration           | `.claude/helpers/validate-v3-config.sh`          |
 
 #### 🤖 Daemon & Worker Management
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
+| Script              | Purpose                              | Usage                                         |
+| ------------------- | ------------------------------------ | --------------------------------------------- |
 | `daemon-manager.sh` | Start/stop/status background daemons | `.claude/helpers/daemon-manager.sh start 3 5` |
-| `worker-manager.sh` | Manage background workers | `.claude/helpers/worker-manager.sh start 60` |
-| `swarm-monitor.sh` | Monitor swarm activity | `.claude/helpers/swarm-monitor.sh` |
-| `health-monitor.sh` | System health checks | `.claude/helpers/health-monitor.sh` |
-| `perf-worker.sh` | Performance monitoring worker | `.claude/helpers/perf-worker.sh` |
+| `worker-manager.sh` | Manage background workers            | `.claude/helpers/worker-manager.sh start 60`  |
+| `swarm-monitor.sh`  | Monitor swarm activity               | `.claude/helpers/swarm-monitor.sh`            |
+| `health-monitor.sh` | System health checks                 | `.claude/helpers/health-monitor.sh`           |
+| `perf-worker.sh`    | Performance monitoring worker        | `.claude/helpers/perf-worker.sh`              |
 
 #### 🧠 Learning & Intelligence
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `learning-service.mjs` | Neural learning service (Node.js) | `node .claude/helpers/learning-service.mjs` |
-| `learning-hooks.sh` | Hook-based pattern learning | `.claude/helpers/learning-hooks.sh` |
-| `learning-optimizer.sh` | Optimize learned patterns | `.claude/helpers/learning-optimizer.sh` |
-| `pattern-consolidator.sh` | Consolidate patterns (EWC++) | `.claude/helpers/pattern-consolidator.sh` |
-| `metrics-db.mjs` | Metrics database service | `node .claude/helpers/metrics-db.mjs` |
+| Script                    | Purpose                           | Usage                                       |
+| ------------------------- | --------------------------------- | ------------------------------------------- |
+| `learning-service.mjs`    | Neural learning service (Node.js) | `node .claude/helpers/learning-service.mjs` |
+| `learning-hooks.sh`       | Hook-based pattern learning       | `.claude/helpers/learning-hooks.sh`         |
+| `learning-optimizer.sh`   | Optimize learned patterns         | `.claude/helpers/learning-optimizer.sh`     |
+| `pattern-consolidator.sh` | Consolidate patterns (EWC++)      | `.claude/helpers/pattern-consolidator.sh`   |
+| `metrics-db.mjs`          | Metrics database service          | `node .claude/helpers/metrics-db.mjs`       |
 
 #### 🐝 Swarm Coordination
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `swarm-hooks.sh` | Swarm lifecycle hooks | `.claude/helpers/swarm-hooks.sh init` |
-| `swarm-comms.sh` | Inter-agent communication | `.claude/helpers/swarm-comms.sh broadcast "msg"` |
-| `swarm-monitor.sh` | Real-time swarm monitoring | `.claude/helpers/swarm-monitor.sh --watch` |
+| Script             | Purpose                    | Usage                                            |
+| ------------------ | -------------------------- | ------------------------------------------------ |
+| `swarm-hooks.sh`   | Swarm lifecycle hooks      | `.claude/helpers/swarm-hooks.sh init`            |
+| `swarm-comms.sh`   | Inter-agent communication  | `.claude/helpers/swarm-comms.sh broadcast "msg"` |
+| `swarm-monitor.sh` | Real-time swarm monitoring | `.claude/helpers/swarm-monitor.sh --watch`       |
 
 #### 🔒 Security & Compliance
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `security-scanner.sh` | Scan for vulnerabilities | `.claude/helpers/security-scanner.sh` |
-| `adr-compliance.sh` | Check ADR compliance | `.claude/helpers/adr-compliance.sh` |
-| `ddd-tracker.sh` | Track DDD domain progress | `.claude/helpers/ddd-tracker.sh` |
+| Script                | Purpose                   | Usage                                 |
+| --------------------- | ------------------------- | ------------------------------------- |
+| `security-scanner.sh` | Scan for vulnerabilities  | `.claude/helpers/security-scanner.sh` |
+| `adr-compliance.sh`   | Check ADR compliance      | `.claude/helpers/adr-compliance.sh`   |
+| `ddd-tracker.sh`      | Track DDD domain progress | `.claude/helpers/ddd-tracker.sh`      |
 
 #### 💾 Checkpoints & Git
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `checkpoint-manager.sh` | Save/restore checkpoints | `.claude/helpers/checkpoint-manager.sh save "desc"` |
-| `auto-commit.sh` | Automated git commits | `.claude/helpers/auto-commit.sh` |
-| `standard-checkpoint-hooks.sh` | Checkpoint hook integration | `.claude/helpers/standard-checkpoint-hooks.sh` |
-| `github-safe.js` | Safe GitHub operations | `node .claude/helpers/github-safe.js` |
-| `github-setup.sh` | Configure GitHub integration | `.claude/helpers/github-setup.sh` |
+| Script                         | Purpose                      | Usage                                               |
+| ------------------------------ | ---------------------------- | --------------------------------------------------- |
+| `checkpoint-manager.sh`        | Save/restore checkpoints     | `.claude/helpers/checkpoint-manager.sh save "desc"` |
+| `auto-commit.sh`               | Automated git commits        | `.claude/helpers/auto-commit.sh`                    |
+| `standard-checkpoint-hooks.sh` | Checkpoint hook integration  | `.claude/helpers/standard-checkpoint-hooks.sh`      |
+| `github-safe.js`               | Safe GitHub operations       | `node .claude/helpers/github-safe.js`               |
+| `github-setup.sh`              | Configure GitHub integration | `.claude/helpers/github-setup.sh`                   |
 
 #### 🎯 Guidance & Hooks
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
+| Script              | Purpose                        | Usage                               |
+| ------------------- | ------------------------------ | ----------------------------------- |
 | `guidance-hooks.sh` | Development guidance via hooks | `.claude/helpers/guidance-hooks.sh` |
-| `guidance-hook.sh` | Single guidance hook | `.claude/helpers/guidance-hook.sh` |
+| `guidance-hook.sh`  | Single guidance hook           | `.claude/helpers/guidance-hook.sh`  |
 
 ### Example Workflows
 
 **Start Development Session:**
+
 ```bash
 # Initialize everything
 .claude/helpers/v3.sh init
@@ -4009,6 +4073,7 @@ The `.claude/helpers/` directory contains **30+ automation scripts** for develop
 ```
 
 **Swarm Development:**
+
 ```bash
 # Start swarm monitoring
 .claude/helpers/swarm-monitor.sh --watch &
@@ -4021,6 +4086,7 @@ The `.claude/helpers/` directory contains **30+ automation scripts** for develop
 ```
 
 **Learning & Pattern Management:**
+
 ```bash
 # Start learning service
 node .claude/helpers/learning-service.mjs &
@@ -4078,13 +4144,13 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details open>
 <summary>🧠 <strong>AgentDB & Memory Skills</strong> — Vector search, learning, optimization</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `agentdb-vector-search` | Semantic search with 150x faster retrieval | Building RAG systems, knowledge bases |
-| `agentdb-memory-patterns` | Session memory, persistent storage, context management | Stateful agents, chat systems |
-| `agentdb-learning` | 9 RL algorithms (PPO, DQN, SARSA, etc.) | Self-learning agents, behavior optimization |
-| `agentdb-optimization` | Quantization (4-32x memory reduction), HNSW indexing | Scaling to millions of vectors |
-| `agentdb-advanced` | QUIC sync, multi-database, custom distance metrics | Distributed AI systems |
+| Skill                     | What It Does                                           | When To Use                                 |
+| ------------------------- | ------------------------------------------------------ | ------------------------------------------- |
+| `agentdb-vector-search`   | Semantic search with 150x faster retrieval             | Building RAG systems, knowledge bases       |
+| `agentdb-memory-patterns` | Session memory, persistent storage, context management | Stateful agents, chat systems               |
+| `agentdb-learning`        | 9 RL algorithms (PPO, DQN, SARSA, etc.)                | Self-learning agents, behavior optimization |
+| `agentdb-optimization`    | Quantization (4-32x memory reduction), HNSW indexing   | Scaling to millions of vectors              |
+| `agentdb-advanced`        | QUIC sync, multi-database, custom distance metrics     | Distributed AI systems                      |
 
 ```bash
 # Example: Initialize vector search
@@ -4096,13 +4162,13 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>🐙 <strong>GitHub & DevOps Skills</strong> — PRs, issues, releases, workflows</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `github-code-review` | Multi-agent code review with swarm coordination | Thorough PR reviews |
-| `github-project-management` | Issue tracking, project boards, sprint planning | Team coordination |
-| `github-multi-repo` | Cross-repository coordination and synchronization | Monorepo management |
-| `github-release-management` | Automated versioning, testing, deployment, rollback | Release cycles |
-| `github-workflow-automation` | GitHub Actions CI/CD with intelligent pipelines | Pipeline optimization |
+| Skill                        | What It Does                                        | When To Use           |
+| ---------------------------- | --------------------------------------------------- | --------------------- |
+| `github-code-review`         | Multi-agent code review with swarm coordination     | Thorough PR reviews   |
+| `github-project-management`  | Issue tracking, project boards, sprint planning     | Team coordination     |
+| `github-multi-repo`          | Cross-repository coordination and synchronization   | Monorepo management   |
+| `github-release-management`  | Automated versioning, testing, deployment, rollback | Release cycles        |
+| `github-workflow-automation` | GitHub Actions CI/CD with intelligent pipelines     | Pipeline optimization |
 
 ```bash
 # Example: Review current PR
@@ -4114,11 +4180,11 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>☁️ <strong>Flow Nexus Skills</strong> — Cloud deployment, neural training</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `flow-nexus-platform` | Authentication, sandboxes, apps, payments, challenges | Full platform management |
-| `flow-nexus-swarm` | Cloud-based swarm deployment, event-driven workflows | Scale beyond local resources |
-| `flow-nexus-neural` | Train/deploy neural networks in distributed sandboxes | ML model training |
+| Skill                 | What It Does                                          | When To Use                  |
+| --------------------- | ----------------------------------------------------- | ---------------------------- |
+| `flow-nexus-platform` | Authentication, sandboxes, apps, payments, challenges | Full platform management     |
+| `flow-nexus-swarm`    | Cloud-based swarm deployment, event-driven workflows  | Scale beyond local resources |
+| `flow-nexus-neural`   | Train/deploy neural networks in distributed sandboxes | ML model training            |
 
 ```bash
 # Example: Deploy swarm to cloud
@@ -4130,11 +4196,11 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>🧠 <strong>Intelligence & Learning Skills</strong> — Reasoning, patterns, adaptation</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `reasoningbank-agentdb` | Trajectory tracking, verdict judgment, memory distillation | Experience replay systems |
-| `reasoningbank-intelligence` | Adaptive learning, pattern optimization, meta-cognition | Self-improving agents |
-| `hive-mind-advanced` | Queen-led collective intelligence with consensus | Complex multi-agent coordination |
+| Skill                        | What It Does                                               | When To Use                      |
+| ---------------------------- | ---------------------------------------------------------- | -------------------------------- |
+| `reasoningbank-agentdb`      | Trajectory tracking, verdict judgment, memory distillation | Experience replay systems        |
+| `reasoningbank-intelligence` | Adaptive learning, pattern optimization, meta-cognition    | Self-improving agents            |
+| `hive-mind-advanced`         | Queen-led collective intelligence with consensus           | Complex multi-agent coordination |
 
 ```bash
 # Example: Enable adaptive learning
@@ -4146,17 +4212,17 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>🔧 <strong>V3 Implementation Skills</strong> — Architecture, security, performance</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `v3-ddd-architecture` | Bounded contexts, modular design, clean architecture | Large-scale refactoring |
-| `v3-security-overhaul` | CVE fixes, secure-by-default patterns | Security hardening |
-| `v3-memory-unification` | AgentDB unification, HNSW search improvements | Memory optimization |
-| `v3-performance-optimization` | optimized attention (WASM-accelerated when available), memory reduction | Performance tuning |
-| `v3-swarm-coordination` | 15-agent hierarchical mesh, 10 ADRs implementation | Swarm architecture |
-| `v3-mcp-optimization` | Connection pooling, load balancing, <100ms response | MCP performance |
-| `v3-core-implementation` | DDD domains, dependency injection, TypeScript | Core development |
-| `v3-integration-deep` | agentic-flow@alpha deep integration | Framework integration |
-| `v3-cli-modernization` | Interactive prompts, enhanced hooks | CLI enhancement |
+| Skill                         | What It Does                                                            | When To Use             |
+| ----------------------------- | ----------------------------------------------------------------------- | ----------------------- |
+| `v3-ddd-architecture`         | Bounded contexts, modular design, clean architecture                    | Large-scale refactoring |
+| `v3-security-overhaul`        | CVE fixes, secure-by-default patterns                                   | Security hardening      |
+| `v3-memory-unification`       | AgentDB unification, HNSW search improvements                           | Memory optimization     |
+| `v3-performance-optimization` | optimized attention (WASM-accelerated when available), memory reduction | Performance tuning      |
+| `v3-swarm-coordination`       | 15-agent hierarchical mesh, 10 ADRs implementation                      | Swarm architecture      |
+| `v3-mcp-optimization`         | Connection pooling, load balancing, <100ms response                     | MCP performance         |
+| `v3-core-implementation`      | DDD domains, dependency injection, TypeScript                           | Core development        |
+| `v3-integration-deep`         | agentic-flow@alpha deep integration                                     | Framework integration   |
+| `v3-cli-modernization`        | Interactive prompts, enhanced hooks                                     | CLI enhancement         |
 
 ```bash
 # Example: Apply security hardening
@@ -4168,17 +4234,17 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>🛠️ <strong>Development Workflow Skills</strong> — Pair programming, verification, streaming</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `pair-programming` | Driver/navigator modes, TDD, real-time verification | Collaborative coding |
-| `verification-quality` | Truth scoring, automatic rollback (0.95 threshold) | Quality assurance |
-| `stream-chain` | JSON pipeline chaining for multi-agent workflows | Data transformation |
-| `skill-builder` | Create new skills with YAML frontmatter | Extending the system |
-| `hooks-automation` | Pre/post hooks, Git integration, memory coordination | Workflow automation |
-| `sparc-methodology` | Specification, Pseudocode, Architecture, Refinement, Completion | Structured development |
-| `swarm-orchestration` | Multi-agent orchestration with agentic-flow | Complex task coordination |
-| `swarm-advanced` | Research, development, testing workflows | Specialized swarms |
-| `performance-analysis` | Bottleneck detection, optimization recommendations | Performance debugging |
+| Skill                  | What It Does                                                    | When To Use               |
+| ---------------------- | --------------------------------------------------------------- | ------------------------- |
+| `pair-programming`     | Driver/navigator modes, TDD, real-time verification             | Collaborative coding      |
+| `verification-quality` | Truth scoring, automatic rollback (0.95 threshold)              | Quality assurance         |
+| `stream-chain`         | JSON pipeline chaining for multi-agent workflows                | Data transformation       |
+| `skill-builder`        | Create new skills with YAML frontmatter                         | Extending the system      |
+| `hooks-automation`     | Pre/post hooks, Git integration, memory coordination            | Workflow automation       |
+| `sparc-methodology`    | Specification, Pseudocode, Architecture, Refinement, Completion | Structured development    |
+| `swarm-orchestration`  | Multi-agent orchestration with agentic-flow                     | Complex task coordination |
+| `swarm-advanced`       | Research, development, testing workflows                        | Specialized swarms        |
+| `performance-analysis` | Bottleneck detection, optimization recommendations              | Performance debugging     |
 
 ```bash
 # Example: Start pair programming session
@@ -4190,11 +4256,11 @@ Skills are **reusable workflows** that combine agents, hooks, and patterns into 
 <details>
 <summary>🔬 <strong>Specialized Skills</strong> — Version control, benchmarks, workers</summary>
 
-| Skill | What It Does | When To Use |
-|-------|--------------|-------------|
-| `agentic-jujutsu` | Self-learning version control for AI agents | Multi-agent coordination |
-| `worker-benchmarks` | Performance benchmarking framework | Measuring improvements |
-| `worker-integration` | Worker-agent coordination patterns | Background processing |
+| Skill                | What It Does                                | When To Use              |
+| -------------------- | ------------------------------------------- | ------------------------ |
+| `agentic-jujutsu`    | Self-learning version control for AI agents | Multi-agent coordination |
+| `worker-benchmarks`  | Performance benchmarking framework          | Measuring improvements   |
+| `worker-integration` | Worker-agent coordination patterns          | Background processing    |
 
 ```bash
 # Example: Run benchmarks
@@ -4226,6 +4292,7 @@ Use the `skill-builder` skill to create your own:
 ```
 
 Skills are defined in YAML with:
+
 - **Frontmatter**: Name, description, agents needed
 - **Workflow**: Steps to execute
 - **Learning**: How to improve from outcomes
@@ -4241,12 +4308,12 @@ The Claims system manages **who is working on what** — whether human or agent.
 
 ### Why Use Claims?
 
-| Problem | Solution |
-|---------|----------|
-| Two agents working on the same file | Claims prevent duplicate work |
-| Agent stuck on a task | Mark as stealable, another agent takes over |
-| Need to hand off work | Structured handoff with context |
-| Unbalanced workload | Automatic rebalancing across agents |
+| Problem                             | Solution                                    |
+| ----------------------------------- | ------------------------------------------- |
+| Two agents working on the same file | Claims prevent duplicate work               |
+| Agent stuck on a task               | Mark as stealable, another agent takes over |
+| Need to hand off work               | Structured handoff with context             |
+| Unbalanced workload                 | Automatic rebalancing across agents         |
 
 ### How Claims Work
 
@@ -4269,18 +4336,18 @@ The Claims system manages **who is working on what** — whether human or agent.
 
 ### Claims Commands
 
-| Command | What It Does | Example |
-|---------|--------------|---------|
-| `issues list` | See all issues and their status | `npx ruflo@latest issues list` |
-| `issues claim` | Claim an issue for yourself/agent | `npx ruflo@latest issues claim #123 --as coder-1` |
-| `issues release` | Release your claim | `npx ruflo@latest issues release #123` |
-| `issues handoff` | Hand off to another worker | `npx ruflo@latest issues handoff #123 --to reviewer` |
-| `issues status` | Update progress on claimed work | `npx ruflo@latest issues status #123 --progress 75` |
-| `issues stealable` | List abandoned/stuck issues | `npx ruflo@latest issues stealable` |
-| `issues steal` | Take over stealable issue | `npx ruflo@latest issues steal #123` |
-| `issues load` | View agent workloads | `npx ruflo@latest issues load` |
-| `issues rebalance` | Redistribute work evenly | `npx ruflo@latest issues rebalance --dry-run` |
-| `issues board` | Visual board view | `npx ruflo@latest issues board` |
+| Command            | What It Does                      | Example                                              |
+| ------------------ | --------------------------------- | ---------------------------------------------------- |
+| `issues list`      | See all issues and their status   | `npx ruflo@latest issues list`                       |
+| `issues claim`     | Claim an issue for yourself/agent | `npx ruflo@latest issues claim #123 --as coder-1`    |
+| `issues release`   | Release your claim                | `npx ruflo@latest issues release #123`               |
+| `issues handoff`   | Hand off to another worker        | `npx ruflo@latest issues handoff #123 --to reviewer` |
+| `issues status`    | Update progress on claimed work   | `npx ruflo@latest issues status #123 --progress 75`  |
+| `issues stealable` | List abandoned/stuck issues       | `npx ruflo@latest issues stealable`                  |
+| `issues steal`     | Take over stealable issue         | `npx ruflo@latest issues steal #123`                 |
+| `issues load`      | View agent workloads              | `npx ruflo@latest issues load`                       |
+| `issues rebalance` | Redistribute work evenly          | `npx ruflo@latest issues rebalance --dry-run`        |
+| `issues board`     | Visual board view                 | `npx ruflo@latest issues board`                      |
 
 ### Visual Board View
 
@@ -4338,19 +4405,19 @@ npx ruflo@latest issues rebalance
 
 ### MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `claims_claim` | Claim an issue |
-| `claims_release` | Release a claim |
-| `claims_handoff` | Request handoff |
-| `claims_accept-handoff` | Accept handoff |
-| `claims_status` | Update status |
-| `claims_list` | List claims |
-| `claims_stealable` | List stealable |
-| `claims_steal` | Steal issue |
-| `claims_load` | Get load info |
-| `claims_board` | Visual board |
-| `claims_rebalance` | Rebalance work |
+| Tool                    | Description     |
+| ----------------------- | --------------- |
+| `claims_claim`          | Claim an issue  |
+| `claims_release`        | Release a claim |
+| `claims_handoff`        | Request handoff |
+| `claims_accept-handoff` | Accept handoff  |
+| `claims_status`         | Update status   |
+| `claims_list`           | List claims     |
+| `claims_stealable`      | List stealable  |
+| `claims_steal`          | Steal issue     |
+| `claims_load`           | Get load info   |
+| `claims_board`          | Visual board    |
+| `claims_rebalance`      | Rebalance work  |
 
 </details>
 
@@ -4392,11 +4459,11 @@ The Route system uses **Q-Learning** to automatically assign tasks to the best a
 
 ### Route Commands
 
-| Command | What It Does | Example |
-|---------|--------------|---------|
-| `route task` | Get agent recommendation | `npx ruflo@latest route task "implement OAuth2"` |
-| `route explain` | Understand routing decision | `npx ruflo@latest route explain "task"` |
-| `route coverage` | Route based on test coverage | `npx ruflo@latest route coverage` |
+| Command          | What It Does                 | Example                                          |
+| ---------------- | ---------------------------- | ------------------------------------------------ |
+| `route task`     | Get agent recommendation     | `npx ruflo@latest route task "implement OAuth2"` |
+| `route explain`  | Understand routing decision  | `npx ruflo@latest route explain "task"`          |
+| `route coverage` | Route based on test coverage | `npx ruflo@latest route coverage`                |
 
 ### Example: Route a Task
 
@@ -4448,12 +4515,12 @@ npx ruflo@latest hooks post-task --task-id "task-123" --success true --agent cod
 
 ### How Q-Learning Improves Over Time
 
-| Iteration | Action | Result |
-|-----------|--------|--------|
-| 1 | Route "auth task" → coder | ❌ Failed (missing security context) |
-| 2 | Route "auth task" → security-architect | ✅ Success |
-| 3 | Route "auth task" → security-architect | ✅ Success |
-| N | Route "auth task" → security-architect | 94% confidence (learned) |
+| Iteration | Action                                 | Result                               |
+| --------- | -------------------------------------- | ------------------------------------ |
+| 1         | Route "auth task" → coder              | ❌ Failed (missing security context) |
+| 2         | Route "auth task" → security-architect | ✅ Success                           |
+| 3         | Route "auth task" → security-architect | ✅ Success                           |
+| N         | Route "auth task" → security-architect | 94% confidence (learned)             |
 
 The system **remembers** what works and applies it to future similar tasks.
 
@@ -4486,25 +4553,25 @@ npm install ruflo@latest
 <summary>🧠 <strong>Memory & Vector Search</strong></summary>
 
 ```typescript
-import { AgentDB } from '@claude-flow/memory';
+import { AgentDB } from "@claude-flow/memory";
 
 // Initialize with HNSW indexing (150x faster)
 const db = new AgentDB({
-  path: './data/memory',
-  hnsw: { m: 16, efConstruction: 200 }
+  path: "./data/memory",
+  hnsw: { m: 16, efConstruction: 200 },
 });
 
 // Store patterns with embeddings
-await db.store('auth-pattern', {
-  content: 'JWT authentication flow',
-  domain: 'security',
-  embedding: await db.embed('JWT authentication flow')
+await db.store("auth-pattern", {
+  content: "JWT authentication flow",
+  domain: "security",
+  embedding: await db.embed("JWT authentication flow"),
 });
 
 // Semantic search
-const results = await db.search('how to authenticate users', {
+const results = await db.search("how to authenticate users", {
   topK: 5,
-  minSimilarity: 0.7
+  minSimilarity: 0.7,
 });
 
 console.log(results);
@@ -4512,6 +4579,7 @@ console.log(results);
 ```
 
 **CLI Commands:**
+
 ```bash
 # Initialize memory database
 npx ruflo@latest memory init --force
@@ -4537,24 +4605,24 @@ npx ruflo@latest memory stats
 <summary>🐝 <strong>Swarm Coordination</strong></summary>
 
 ```typescript
-import { createSwarm } from '@claude-flow/swarm';
+import { createSwarm } from "@claude-flow/swarm";
 
 // Create a hierarchical swarm
 const swarm = await createSwarm({
-  topology: 'hierarchical',
+  topology: "hierarchical",
   maxAgents: 8,
-  strategy: 'specialized'
+  strategy: "specialized",
 });
 
 // Spawn agents
-await swarm.spawn('coder', { name: 'coder-1' });
-await swarm.spawn('tester', { name: 'tester-1' });
-await swarm.spawn('reviewer', { name: 'reviewer-1' });
+await swarm.spawn("coder", { name: "coder-1" });
+await swarm.spawn("tester", { name: "tester-1" });
+await swarm.spawn("reviewer", { name: "reviewer-1" });
 
 // Coordinate a task
 const result = await swarm.orchestrate({
-  task: 'Implement user authentication',
-  strategy: 'adaptive'
+  task: "Implement user authentication",
+  strategy: "adaptive",
 });
 
 // Shutdown
@@ -4567,18 +4635,18 @@ await swarm.shutdown({ graceful: true });
 <summary>🛡️ <strong>Security & AIDefence</strong></summary>
 
 ```typescript
-import { isSafe, checkThreats, createAIDefence } from '@claude-flow/aidefence';
+import { isSafe, checkThreats, createAIDefence } from "@claude-flow/aidefence";
 
 // Quick safety check
 if (!isSafe(userInput)) {
-  throw new Error('Potentially malicious input detected');
+  throw new Error("Potentially malicious input detected");
 }
 
 // Detailed threat analysis
 const result = checkThreats(userInput);
 if (!result.safe) {
-  console.log('Threats:', result.threats);
-  console.log('PII found:', result.piiFound);
+  console.log("Threats:", result.threats);
+  console.log("PII found:", result.piiFound);
 }
 
 // With learning enabled
@@ -4588,7 +4656,7 @@ const analysis = await aidefence.detect(userInput);
 // Provide feedback for learning
 await aidefence.learnFromDetection(userInput, analysis, {
   wasAccurate: true,
-  userVerdict: 'Confirmed threat'
+  userVerdict: "Confirmed threat",
 });
 ```
 
@@ -4599,35 +4667,38 @@ await aidefence.learnFromDetection(userInput, analysis, {
 
 ### Provider Comparison
 
-| Provider | Latency | Quality | Cost | Offline | Best For |
-|----------|---------|---------|------|---------|----------|
-| **Agentic-Flow (ONNX)** | ~3ms | Good | Free | ✅ | Production (faster with ONNX runtime) |
-| **OpenAI** | ~50-100ms | Excellent | $0.02-0.13/1M | ❌ | Highest quality |
-| **Transformers.js** | ~230ms | Good | Free | ✅ | Local development |
-| **Mock** | <1ms | N/A | Free | ✅ | Testing |
+| Provider                | Latency   | Quality   | Cost          | Offline | Best For                              |
+| ----------------------- | --------- | --------- | ------------- | ------- | ------------------------------------- |
+| **Agentic-Flow (ONNX)** | ~3ms      | Good      | Free          | ✅      | Production (faster with ONNX runtime) |
+| **OpenAI**              | ~50-100ms | Excellent | $0.02-0.13/1M | ❌      | Highest quality                       |
+| **Transformers.js**     | ~230ms    | Good      | Free          | ✅      | Local development                     |
+| **Mock**                | <1ms      | N/A       | Free          | ✅      | Testing                               |
 
 ### Basic Usage
 
 ```typescript
-import { createEmbeddingService, cosineSimilarity } from '@claude-flow/embeddings';
+import {
+  createEmbeddingService,
+  cosineSimilarity,
+} from "@claude-flow/embeddings";
 
 // Auto-selects best provider (agentic-flow ONNX preferred)
 const embeddings = await createEmbeddingService({
-  provider: 'auto',        // agentic-flow → transformers → mock
-  autoInstall: true,       // Auto-install agentic-flow if missing
+  provider: "auto", // agentic-flow → transformers → mock
+  autoInstall: true, // Auto-install agentic-flow if missing
   dimensions: 384,
-  cache: { enabled: true, maxSize: 10000 }
+  cache: { enabled: true, maxSize: 10000 },
 });
 
 // Generate embeddings
-const result = await embeddings.embed('authentication patterns');
+const result = await embeddings.embed("authentication patterns");
 console.log(`Generated in ${result.latencyMs}ms`);
 
 // Batch processing with cache stats
 const batch = await embeddings.embedBatch([
-  'user login flow',
-  'password reset',
-  'session management'
+  "user login flow",
+  "password reset",
+  "session management",
 ]);
 console.log(`Cache hits: ${batch.cacheStats?.hits}`);
 
@@ -4641,12 +4712,12 @@ const similarity = cosineSimilarity(batch.embeddings[0], batch.embeddings[1]);
 Split long documents into overlapping chunks:
 
 ```typescript
-import { chunkText, estimateTokens } from '@claude-flow/embeddings';
+import { chunkText, estimateTokens } from "@claude-flow/embeddings";
 
 const result = chunkText(longDocument, {
   maxChunkSize: 512,
   overlap: 50,
-  strategy: 'sentence',  // 'character' | 'sentence' | 'paragraph' | 'token'
+  strategy: "sentence", // 'character' | 'sentence' | 'paragraph' | 'token'
   minChunkSize: 100,
 });
 
@@ -4661,13 +4732,18 @@ result.chunks.forEach((chunk, i) => {
 Normalize embeddings for consistent similarity:
 
 ```typescript
-import { l2Normalize, l1Normalize, minMaxNormalize, zScoreNormalize } from '@claude-flow/embeddings';
+import {
+  l2Normalize,
+  l1Normalize,
+  minMaxNormalize,
+  zScoreNormalize,
+} from "@claude-flow/embeddings";
 
 // L2 normalize (unit vector - most common for cosine similarity)
-const l2 = l2Normalize(embedding);  // [0.6, 0.8, 0]
+const l2 = l2Normalize(embedding); // [0.6, 0.8, 0]
 
 // Other normalizations
-const l1 = l1Normalize(embedding);       // Manhattan norm = 1
+const l1 = l1Normalize(embedding); // Manhattan norm = 1
 const minMax = minMaxNormalize(embedding); // Values in [0, 1]
 const zScore = zScoreNormalize(embedding); // Mean 0, std 1
 ```
@@ -4682,7 +4758,7 @@ import {
   hyperbolicDistance,
   hyperbolicCentroid,
   mobiusAdd,
-} from '@claude-flow/embeddings';
+} from "@claude-flow/embeddings";
 
 // Convert to hyperbolic space (better for tree-like structures)
 const poincare = euclideanToPoincare(embedding);
@@ -4705,7 +4781,10 @@ const centroid = hyperbolicCentroid([embed1, embed2, embed3]);
 Access neural features for embedding adaptation:
 
 ```typescript
-import { createNeuralService, isNeuralAvailable } from '@claude-flow/embeddings';
+import {
+  createNeuralService,
+  isNeuralAvailable,
+} from "@claude-flow/embeddings";
 
 // Check availability
 const available = await isNeuralAvailable();
@@ -4716,24 +4795,24 @@ await neural.init();
 
 if (neural.isAvailable()) {
   // Semantic drift detection (catches context drift)
-  await neural.setDriftBaseline('Initial context');
-  const drift = await neural.detectDrift('New input to check');
-  console.log('Drift:', drift?.trend);  // 'stable' | 'drifting' | 'accelerating'
+  await neural.setDriftBaseline("Initial context");
+  const drift = await neural.detectDrift("New input to check");
+  console.log("Drift:", drift?.trend); // 'stable' | 'drifting' | 'accelerating'
 
   // Memory with interference detection
-  const stored = await neural.storeMemory('mem-1', 'Important pattern');
-  console.log('Interference:', stored?.interference);
+  const stored = await neural.storeMemory("mem-1", "Important pattern");
+  console.log("Interference:", stored?.interference);
 
   // Recall by similarity
-  const memories = await neural.recallMemories('query', 5);
+  const memories = await neural.recallMemories("query", 5);
 
   // Coherence calibration (fine-tune quality detection)
-  await neural.calibrateCoherence(['good output 1', 'good output 2']);
-  const coherence = await neural.checkCoherence('Output to verify');
+  await neural.calibrateCoherence(["good output 1", "good output 2"]);
+  const coherence = await neural.checkCoherence("Output to verify");
 
   // Swarm coordination via embeddings
-  await neural.addSwarmAgent('agent-1', 'researcher');
-  const coordination = await neural.coordinateSwarm('Complex task');
+  await neural.addSwarmAgent("agent-1", "researcher");
+  const coordination = await neural.coordinateSwarm("Complex task");
 }
 ```
 
@@ -4742,17 +4821,17 @@ if (neural.isAvailable()) {
 Long-term embedding storage with LRU eviction:
 
 ```typescript
-import { PersistentEmbeddingCache } from '@claude-flow/embeddings';
+import { PersistentEmbeddingCache } from "@claude-flow/embeddings";
 
 const cache = new PersistentEmbeddingCache({
-  dbPath: './embeddings.db',
+  dbPath: "./embeddings.db",
   maxSize: 10000,
-  ttlMs: 7 * 24 * 60 * 60 * 1000,  // 7 days
+  ttlMs: 7 * 24 * 60 * 60 * 1000, // 7 days
 });
 
 await cache.init();
-await cache.set('my text', new Float32Array([0.1, 0.2, 0.3]));
-const embedding = await cache.get('my text');
+await cache.set("my text", new Float32Array([0.1, 0.2, 0.3]));
+const embedding = await cache.get("my text");
 
 const stats = await cache.getStats();
 console.log(`Hit rate: ${(stats.hitRate * 100).toFixed(1)}%`);
@@ -4795,14 +4874,14 @@ ruflo embeddings cache clear --older-than 7d
 
 ### Available Models
 
-| Provider | Model | Dimensions | Best For |
-|----------|-------|------------|----------|
-| **Agentic-Flow** | default | 384 | General purpose (fastest) |
-| **OpenAI** | text-embedding-3-small | 1536 | Cost-effective, high quality |
-| **OpenAI** | text-embedding-3-large | 3072 | Highest quality |
-| **Transformers.js** | Xenova/all-MiniLM-L6-v2 | 384 | Fast, offline |
-| **Transformers.js** | Xenova/all-mpnet-base-v2 | 768 | Higher quality offline |
-| **Transformers.js** | Xenova/bge-small-en-v1.5 | 384 | Retrieval optimized |
+| Provider            | Model                    | Dimensions | Best For                     |
+| ------------------- | ------------------------ | ---------- | ---------------------------- |
+| **Agentic-Flow**    | default                  | 384        | General purpose (fastest)    |
+| **OpenAI**          | text-embedding-3-small   | 1536       | Cost-effective, high quality |
+| **OpenAI**          | text-embedding-3-large   | 3072       | Highest quality              |
+| **Transformers.js** | Xenova/all-MiniLM-L6-v2  | 384        | Fast, offline                |
+| **Transformers.js** | Xenova/all-mpnet-base-v2 | 768        | Higher quality offline       |
+| **Transformers.js** | Xenova/bge-small-en-v1.5 | 384        | Retrieval optimized          |
 
 </details>
 
@@ -4810,28 +4889,28 @@ ruflo embeddings cache clear --older-than 7d
 <summary>🪝 <strong>Hooks & Learning</strong></summary>
 
 ```typescript
-import { HooksService } from '@claude-flow/hooks';
+import { HooksService } from "@claude-flow/hooks";
 
 const hooks = new HooksService({
   enableLearning: true,
-  reasoningBank: true
+  reasoningBank: true,
 });
 
 // Route task to optimal agent
-const routing = await hooks.route('implement caching layer');
+const routing = await hooks.route("implement caching layer");
 console.log(`Recommended: ${routing.agent} (${routing.confidence}%)`);
 
 // Record task outcome
 await hooks.postTask({
-  taskId: 'task-123',
+  taskId: "task-123",
   success: true,
   quality: 0.95,
-  agent: routing.agent
+  agent: routing.agent,
 });
 
 // Start trajectory for RL learning
-const trajectory = await hooks.startTrajectory('complex-feature');
-await hooks.recordStep(trajectory, { action: 'created service', reward: 0.8 });
+const trajectory = await hooks.startTrajectory("complex-feature");
+await hooks.recordStep(trajectory, { action: "created service", reward: 0.8 });
 await hooks.endTrajectory(trajectory, { success: true });
 ```
 
@@ -4839,17 +4918,17 @@ await hooks.endTrajectory(trajectory, { success: true });
 
 ### Package Reference
 
-| Package | Purpose | Main Exports |
-|---------|---------|--------------|
-| `@claude-flow/memory` | Vector storage, HNSW, self-learning graph | `AgentDB`, `AutoMemoryBridge`, `LearningBridge`, `MemoryGraph` |
-| `@claude-flow/swarm` | Agent coordination | `createSwarm`, `Swarm` |
-| `@claude-flow/aidefence` | Threat detection | `isSafe`, `checkThreats`, `createAIDefence` |
-| `@claude-flow/embeddings` | Vector embeddings | `createEmbeddingService` |
-| `@claude-flow/hooks` | Event hooks, learning | `HooksService`, `ReasoningBank` |
-| `@claude-flow/security` | Input validation | `InputValidator`, `PathValidator` |
-| `@claude-flow/neural` | SONA learning | `SONAAdapter`, `MoERouter` |
-| `@claude-flow/providers` | LLM providers | `ProviderRegistry`, `createProvider` |
-| `@claude-flow/plugins` | Plugin SDK | `PluginBuilder`, `createPlugin` |
+| Package                   | Purpose                                   | Main Exports                                                   |
+| ------------------------- | ----------------------------------------- | -------------------------------------------------------------- |
+| `@claude-flow/memory`     | Vector storage, HNSW, self-learning graph | `AgentDB`, `AutoMemoryBridge`, `LearningBridge`, `MemoryGraph` |
+| `@claude-flow/swarm`      | Agent coordination                        | `createSwarm`, `Swarm`                                         |
+| `@claude-flow/aidefence`  | Threat detection                          | `isSafe`, `checkThreats`, `createAIDefence`                    |
+| `@claude-flow/embeddings` | Vector embeddings                         | `createEmbeddingService`                                       |
+| `@claude-flow/hooks`      | Event hooks, learning                     | `HooksService`, `ReasoningBank`                                |
+| `@claude-flow/security`   | Input validation                          | `InputValidator`, `PathValidator`                              |
+| `@claude-flow/neural`     | SONA learning                             | `SONAAdapter`, `MoERouter`                                     |
+| `@claude-flow/providers`  | LLM providers                             | `ProviderRegistry`, `createProvider`                           |
+| `@claude-flow/plugins`    | Plugin SDK                                | `PluginBuilder`, `createPlugin`                                |
 
 </details>
 
@@ -4886,27 +4965,27 @@ claude mcp add agentic-flow -- npx agentic-flow mcp start
 
 ### Core Components
 
-| Component | Description | Performance |
-|-----------|-------------|-------------|
-| **Agent Booster** | Rust/WASM code transformations | instant (regex-based, no LLM call), $0 cost |
-| **ReasoningBank** | Learning memory with HNSW | HNSW-indexed search |
-| **ONNX Embeddings** | Local vector generation | faster with ONNX runtime than Transformers.js |
-| **Embedding Geometry** | Geometric intelligence layer | <3ms latency |
-| **Multi-Model Router** | Intelligent model selection | 30-50% cost savings |
-| **QUIC Transport** | High-performance transport | Ultra-low latency |
+| Component              | Description                    | Performance                                   |
+| ---------------------- | ------------------------------ | --------------------------------------------- |
+| **Agent Booster**      | Rust/WASM code transformations | instant (regex-based, no LLM call), $0 cost   |
+| **ReasoningBank**      | Learning memory with HNSW      | HNSW-indexed search                           |
+| **ONNX Embeddings**    | Local vector generation        | faster with ONNX runtime than Transformers.js |
+| **Embedding Geometry** | Geometric intelligence layer   | <3ms latency                                  |
+| **Multi-Model Router** | Intelligent model selection    | 30-50% cost savings                           |
+| **QUIC Transport**     | High-performance transport     | Ultra-low latency                             |
 
 <details>
 <summary>⚡ <strong>Agent Booster</strong> — 352x Faster Code Transformations</summary>
 
 Agent Booster performs mechanical code edits without calling LLM APIs:
 
-| Operation | LLM API | Agent Booster | Speedup |
-|-----------|---------|---------------|---------|
-| Variable rename | 352ms | 1ms | **352x** |
-| Add import | 420ms | 1ms | **420x** |
-| Function signature | 380ms | 1ms | **380x** |
-| Code formatting | 290ms | 1ms | **290x** |
-| **1000 files** | 5.87 min | 1 second | **352x** |
+| Operation          | LLM API  | Agent Booster | Speedup  |
+| ------------------ | -------- | ------------- | -------- |
+| Variable rename    | 352ms    | 1ms           | **352x** |
+| Add import         | 420ms    | 1ms           | **420x** |
+| Function signature | 380ms    | 1ms           | **380x** |
+| Code formatting    | 290ms    | 1ms           | **290x** |
+| **1000 files**     | 5.87 min | 1 second      | **352x** |
 
 ```bash
 # Single file edit
@@ -4926,6 +5005,7 @@ npx agentic-flow agent-booster parse-md response.md
 ```
 
 **Use Cases:**
+
 - ✅ Variable/function renaming across files
 - ✅ Adding imports, type annotations
 - ✅ Code formatting, signature updates
@@ -4942,29 +5022,30 @@ npx agentic-flow agent-booster parse-md response.md
 ReasoningBank stores successful patterns for future retrieval:
 
 ```typescript
-import { ReasoningBank } from 'agentic-flow/reasoningbank';
+import { ReasoningBank } from "agentic-flow/reasoningbank";
 
 const bank = new ReasoningBank();
 
 // Record successful outcome
 await bank.recordOutcome({
-  task: 'implement authentication',
-  outcome: 'JWT with refresh tokens',
+  task: "implement authentication",
+  outcome: "JWT with refresh tokens",
   success: true,
-  context: { framework: 'express' }
+  context: { framework: "express" },
 });
 
 // Retrieve similar patterns for new task
-const patterns = await bank.retrieveSimilar('add user login', { k: 5 });
+const patterns = await bank.retrieveSimilar("add user login", { k: 5 });
 // Returns past successful auth implementations
 
 // Judge and distill learnings
-await bank.judge(trajectoryId, 'success');
-await bank.distill();  // Extract key patterns
-await bank.consolidate();  // Prevent forgetting (EWC++)
+await bank.judge(trajectoryId, "success");
+await bank.distill(); // Extract key patterns
+await bank.consolidate(); // Prevent forgetting (EWC++)
 ```
 
 **4-Step Pipeline:**
+
 1. **RETRIEVE** — Fetch relevant patterns via HNSW (150x faster)
 2. **JUDGE** — Evaluate outcomes with verdicts
 3. **DISTILL** — Extract key learnings via LoRA
@@ -4978,30 +5059,33 @@ await bank.consolidate();  // Prevent forgetting (EWC++)
 Generate embeddings locally without API calls:
 
 ```typescript
-import { getOptimizedEmbedder, cosineSimilarity } from 'agentic-flow/embeddings';
+import {
+  getOptimizedEmbedder,
+  cosineSimilarity,
+} from "agentic-flow/embeddings";
 
 const embedder = getOptimizedEmbedder();
 await embedder.init();
 
 // Generate embedding (3ms local vs 230ms Transformers.js)
-const vector = await embedder.embed('authentication patterns');
+const vector = await embedder.embed("authentication patterns");
 
 // Batch processing
 const vectors = await embedder.embedBatch([
-  'user login flow',
-  'password reset',
-  'session management'
+  "user login flow",
+  "password reset",
+  "session management",
 ]);
 
 // Calculate similarity
 const similarity = cosineSimilarity(vectors[0], vectors[1]);
 ```
 
-| Provider | Latency | Cost | Offline |
-|----------|---------|------|---------|
-| **Agentic-Flow ONNX** | ~3ms | Free | ✅ |
-| Transformers.js | ~230ms | Free | ✅ |
-| OpenAI | ~50-100ms | $0.02-0.13/1M | ❌ |
+| Provider              | Latency   | Cost          | Offline |
+| --------------------- | --------- | ------------- | ------- |
+| **Agentic-Flow ONNX** | ~3ms      | Free          | ✅      |
+| Transformers.js       | ~230ms    | Free          | ✅      |
+| OpenAI                | ~50-100ms | $0.02-0.13/1M | ❌      |
 
 </details>
 
@@ -5011,30 +5095,36 @@ const similarity = cosineSimilarity(vectors[0], vectors[1]);
 Advanced patterns treating embeddings as geometric control surfaces:
 
 **Semantic Drift Detection:**
+
 ```typescript
-import { getOptimizedEmbedder, cosineSimilarity } from 'agentic-flow/embeddings';
+import {
+  getOptimizedEmbedder,
+  cosineSimilarity,
+} from "agentic-flow/embeddings";
 
 const embedder = getOptimizedEmbedder();
 let baseline: Float32Array;
 
 // Set baseline context
-baseline = await embedder.embed('User asking about API authentication');
+baseline = await embedder.embed("User asking about API authentication");
 
 // Check for drift
 const current = await embedder.embed(userMessage);
 const drift = 1 - cosineSimilarity(baseline, current);
 
 if (drift > 0.15) {
-  console.log('Semantic drift detected - escalate');
+  console.log("Semantic drift detected - escalate");
 }
 ```
 
 **Memory Physics:**
+
 - Temporal decay (forgetting)
 - Interference detection (nearby memories weaken)
 - Memory consolidation (merge similar patterns)
 
 **Swarm Coordination:**
+
 ```typescript
 // Agents coordinate via embedding positions, not messages
 const agentPosition = await embedder.embed(agentRole);
@@ -5045,12 +5135,13 @@ const alignment = cosineSimilarity(agentPosition, taskPosition);
 ```
 
 **Coherence Monitoring:**
+
 ```typescript
 // Detect model degradation/poisoning via embedding drift
 await monitor.calibrate(knownGoodOutputs);
 const result = await monitor.check(newOutput);
 if (result.anomalyScore > 1.5) {
-  console.log('WARNING: Output drifting from baseline');
+  console.log("WARNING: Output drifting from baseline");
 }
 ```
 
@@ -5062,29 +5153,29 @@ if (result.anomalyScore > 1.5) {
 Route tasks to optimal models based on complexity:
 
 ```typescript
-import { ModelRouter } from 'agentic-flow/router';
+import { ModelRouter } from "agentic-flow/router";
 
 const router = new ModelRouter();
 
 // Automatic routing based on task complexity
 const result = await router.route({
-  task: 'Add console.log to function',
-  preferCost: true
+  task: "Add console.log to function",
+  preferCost: true,
 });
 // Returns: { model: 'haiku', reason: 'simple task, low complexity' }
 
 const result2 = await router.route({
-  task: 'Design distributed caching architecture'
+  task: "Design distributed caching architecture",
 });
 // Returns: { model: 'opus', reason: 'complex architecture, high reasoning' }
 ```
 
-| Complexity | Model | Cost | Use Case |
-|------------|-------|------|----------|
-| Agent Booster intent | **Skip LLM** | $0 | var→const, add-types |
-| Low (<30%) | **Haiku** | $0.0002 | Simple fixes, docs |
-| Medium (30-70%) | **Sonnet** | $0.003 | Features, debugging |
-| High (>70%) | **Opus** | $0.015 | Architecture, security |
+| Complexity           | Model        | Cost    | Use Case               |
+| -------------------- | ------------ | ------- | ---------------------- |
+| Agent Booster intent | **Skip LLM** | $0      | var→const, add-types   |
+| Low (<30%)           | **Haiku**    | $0.0002 | Simple fixes, docs     |
+| Medium (30-70%)      | **Sonnet**   | $0.003  | Features, debugging    |
+| High (>70%)          | **Opus**     | $0.015  | Architecture, security |
 
 **Savings: 30-50% on LLM costs through intelligent routing**
 
@@ -5127,15 +5218,15 @@ npx agentic-flow mcp stdio
 
 The agentic-flow ecosystem exposes MCP tools across packages (ruflo CLI provides 314 tools):
 
-| Category | Tools | Examples |
-|----------|-------|----------|
-| **Agent Booster** | 5 | `agent_booster_edit_file`, `agent_booster_batch` |
-| **ReasoningBank** | 8 | `reasoningbank_retrieve`, `reasoningbank_judge` |
-| **Embeddings** | 6 | `embedding_generate`, `embedding_search` |
-| **Model Router** | 4 | `router_route`, `router_stats` |
-| **Memory** | 10 | `memory_store`, `memory_search`, `memory_consolidate` |
-| **Swarm** | 12 | `swarm_init`, `agent_spawn`, `task_orchestrate` |
-| **Neural** | 8 | `neural_train`, `neural_patterns`, `neural_predict` |
+| Category          | Tools | Examples                                              |
+| ----------------- | ----- | ----------------------------------------------------- |
+| **Agent Booster** | 5     | `agent_booster_edit_file`, `agent_booster_batch`      |
+| **ReasoningBank** | 8     | `reasoningbank_retrieve`, `reasoningbank_judge`       |
+| **Embeddings**    | 6     | `embedding_generate`, `embedding_search`              |
+| **Model Router**  | 4     | `router_route`, `router_stats`                        |
+| **Memory**        | 10    | `memory_store`, `memory_search`, `memory_consolidate` |
+| **Swarm**         | 12    | `swarm_init`, `agent_spawn`, `task_orchestrate`       |
+| **Neural**        | 8     | `neural_train`, `neural_patterns`, `neural_predict`   |
 
 ```bash
 # Start MCP server
@@ -5151,13 +5242,13 @@ claude mcp add agentic-flow -- npx agentic-flow mcp start
 
 Ruflo automatically leverages agentic-flow for:
 
-| Feature | How It's Used |
-|---------|---------------|
-| **Token Optimization** | ReasoningBank retrieval (-32% tokens) |
-| **Fast Edits** | Agent Booster for mechanical transforms |
+| Feature                 | How It's Used                                |
+| ----------------------- | -------------------------------------------- |
+| **Token Optimization**  | ReasoningBank retrieval (-32% tokens)        |
+| **Fast Edits**          | Agent Booster for mechanical transforms      |
 | **Intelligent Routing** | Model router for haiku/sonnet/opus selection |
-| **Pattern Learning** | ReasoningBank stores successful patterns |
-| **Embedding Search** | HNSW-indexed vector search (150x faster) |
+| **Pattern Learning**    | ReasoningBank stores successful patterns     |
+| **Embedding Search**    | HNSW-indexed vector search (150x faster)     |
 
 ```typescript
 // Ruflo automatically uses agentic-flow optimizations
@@ -5209,15 +5300,15 @@ npx agentic-jujutsu compare-git
 
 ### Why Agentic-Jujutsu?
 
-| What | Git | Agentic-Jujutsu |
-|------|-----|-----------------|
-| **Multiple AIs working together** | ❌ Locks & conflicts | ✅ Works smoothly |
-| **Speed with 3+ agents** | Slow (waits) | **23x faster** |
-| **Installation** | Need to install git | One npm command |
-| **AI integration** | Manual work | Built-in (MCP protocol) |
-| **Self-learning capabilities** | ❌ None | ✅ ReasoningBank |
-| **Automatic conflict resolution** | 30-40% auto | **87% auto** |
-| **Cryptographic security** | Basic | SHA3-512 fingerprints |
+| What                              | Git                  | Agentic-Jujutsu         |
+| --------------------------------- | -------------------- | ----------------------- |
+| **Multiple AIs working together** | ❌ Locks & conflicts | ✅ Works smoothly       |
+| **Speed with 3+ agents**          | Slow (waits)         | **23x faster**          |
+| **Installation**                  | Need to install git  | One npm command         |
+| **AI integration**                | Manual work          | Built-in (MCP protocol) |
+| **Self-learning capabilities**    | ❌ None              | ✅ ReasoningBank        |
+| **Automatic conflict resolution** | 30-40% auto          | **87% auto**            |
+| **Cryptographic security**        | Basic                | SHA3-512 fingerprints   |
 
 ### Core Capabilities
 
@@ -5225,40 +5316,40 @@ npx agentic-jujutsu compare-git
 <summary>🧠 <strong>Self-Learning with ReasoningBank</strong> — Track operations, learn patterns, get AI suggestions</summary>
 
 ```javascript
-const { JjWrapper } = require('agentic-jujutsu');
+const { JjWrapper } = require("agentic-jujutsu");
 
 const jj = new JjWrapper();
 
 // Start learning trajectory
-const trajectoryId = jj.startTrajectory('Deploy to production');
+const trajectoryId = jj.startTrajectory("Deploy to production");
 
 // Perform operations (automatically tracked)
-await jj.branchCreate('release/v1.0');
-await jj.newCommit('Release v1.0');
+await jj.branchCreate("release/v1.0");
+await jj.newCommit("Release v1.0");
 
 // Record operations to trajectory
 jj.addToTrajectory();
 
 // Finalize with success score (0.0-1.0) and critique
-jj.finalizeTrajectory(0.95, 'Deployment successful, no issues');
+jj.finalizeTrajectory(0.95, "Deployment successful, no issues");
 
 // Later: Get AI-powered suggestions for similar tasks
-const suggestion = JSON.parse(jj.getSuggestion('Deploy to staging'));
-console.log('AI Recommendation:', suggestion.reasoning);
-console.log('Confidence:', (suggestion.confidence * 100).toFixed(1) + '%');
+const suggestion = JSON.parse(jj.getSuggestion("Deploy to staging"));
+console.log("AI Recommendation:", suggestion.reasoning);
+console.log("Confidence:", (suggestion.confidence * 100).toFixed(1) + "%");
 ```
 
 **ReasoningBank Methods:**
 
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `startTrajectory(task)` | Begin learning trajectory | string (trajectory ID) |
-| `addToTrajectory()` | Add recent operations | void |
-| `finalizeTrajectory(score, critique?)` | Complete trajectory (0.0-1.0) | void |
-| `getSuggestion(task)` | Get AI recommendation | JSON: DecisionSuggestion |
-| `getLearningStats()` | Get learning metrics | JSON: LearningStats |
-| `getPatterns()` | Get discovered patterns | JSON: Pattern[] |
-| `queryTrajectories(task, limit)` | Find similar trajectories | JSON: Trajectory[] |
+| Method                                 | Description                   | Returns                  |
+| -------------------------------------- | ----------------------------- | ------------------------ |
+| `startTrajectory(task)`                | Begin learning trajectory     | string (trajectory ID)   |
+| `addToTrajectory()`                    | Add recent operations         | void                     |
+| `finalizeTrajectory(score, critique?)` | Complete trajectory (0.0-1.0) | void                     |
+| `getSuggestion(task)`                  | Get AI recommendation         | JSON: DecisionSuggestion |
+| `getLearningStats()`                   | Get learning metrics          | JSON: LearningStats      |
+| `getPatterns()`                        | Get discovered patterns       | JSON: Pattern[]          |
+| `queryTrajectories(task, limit)`       | Find similar trajectories     | JSON: Trajectory[]       |
 
 </details>
 
@@ -5267,9 +5358,10 @@ console.log('Confidence:', (suggestion.confidence * 100).toFixed(1) + '%');
 
 ```javascript
 // All agents work concurrently (no conflicts!)
-const agents = ['researcher', 'coder', 'tester'];
+const agents = ["researcher", "coder", "tester"];
 
-const results = await Promise.all(agents.map(async (agentName) => {
+const results = await Promise.all(
+  agents.map(async (agentName) => {
     const jj = new JjWrapper();
 
     // Start tracking
@@ -5286,20 +5378,21 @@ const results = await Promise.all(agents.map(async (agentName) => {
     jj.finalizeTrajectory(0.9);
 
     return { agent: agentName, success: true };
-}));
+  }),
+);
 
-console.log('All agents completed:', results);
+console.log("All agents completed:", results);
 ```
 
 **Performance Comparison:**
 
-| Metric | Git | Agentic Jujutsu |
-|--------|-----|-----------------|
-| Concurrent commits | 15 ops/s | **350 ops/s (23x)** |
-| Context switching | 500-1000ms | **50-100ms (10x)** |
-| Conflict resolution | 30-40% auto | **AI-assisted (via agentic-jujutsu)** |
-| Lock waiting | 50 min/day | **0 min (∞)** |
-| SHA3-512 fingerprints | N/A | **<1ms** |
+| Metric                | Git         | Agentic Jujutsu                       |
+| --------------------- | ----------- | ------------------------------------- |
+| Concurrent commits    | 15 ops/s    | **350 ops/s (23x)**                   |
+| Context switching     | 500-1000ms  | **50-100ms (10x)**                    |
+| Conflict resolution   | 30-40% auto | **AI-assisted (via agentic-jujutsu)** |
+| Lock waiting          | 50 min/day  | **0 min (∞)**                         |
+| SHA3-512 fingerprints | N/A         | **<1ms**                              |
 
 </details>
 
@@ -5307,32 +5400,35 @@ console.log('All agents completed:', results);
 <summary>🔐 <strong>Cryptographic Security</strong> — SHA3-512 fingerprints and AES-256 encryption</summary>
 
 ```javascript
-const { generateQuantumFingerprint, verifyQuantumFingerprint } = require('agentic-jujutsu');
+const {
+  generateQuantumFingerprint,
+  verifyQuantumFingerprint,
+} = require("agentic-jujutsu");
 
 // Generate SHA3-512 fingerprint (NIST FIPS 202)
-const data = Buffer.from('commit-data');
+const data = Buffer.from("commit-data");
 const fingerprint = generateQuantumFingerprint(data);
-console.log('Fingerprint:', fingerprint.toString('hex'));
+console.log("Fingerprint:", fingerprint.toString("hex"));
 
 // Verify integrity (<1ms)
 const isValid = verifyQuantumFingerprint(data, fingerprint);
-console.log('Valid:', isValid);
+console.log("Valid:", isValid);
 
 // HQC-128 encryption for trajectories
-const crypto = require('crypto');
+const crypto = require("crypto");
 const jj = new JjWrapper();
-const key = crypto.randomBytes(32).toString('base64');
+const key = crypto.randomBytes(32).toString("base64");
 jj.enableEncryption(key);
 ```
 
 **Security Methods:**
 
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `generateQuantumFingerprint(data)` | Generate SHA3-512 fingerprint | Buffer (64 bytes) |
-| `verifyQuantumFingerprint(data, fp)` | Verify fingerprint | boolean |
-| `enableEncryption(key, pubKey?)` | Enable HQC-128 encryption | void |
-| `disableEncryption()` | Disable encryption | void |
+| Method                               | Description                   | Returns           |
+| ------------------------------------ | ----------------------------- | ----------------- |
+| `generateQuantumFingerprint(data)`   | Generate SHA3-512 fingerprint | Buffer (64 bytes) |
+| `verifyQuantumFingerprint(data, fp)` | Verify fingerprint            | boolean           |
+| `enableEncryption(key, pubKey?)`     | Enable HQC-128 encryption     | void              |
+| `disableEncryption()`                | Disable encryption            | void              |
 
 </details>
 
@@ -5346,6 +5442,7 @@ Ruflo includes a dedicated `/agentic-jujutsu` skill for AI-powered version contr
 ```
 
 **Use this skill when you need:**
+
 - ✅ Multiple AI agents modifying code simultaneously
 - ✅ Lock-free version control (faster than Git for concurrent agents)
 - ✅ Self-learning AI that improves from experience
@@ -5368,11 +5465,11 @@ npx agentic-jujutsu mcp-call jj_status
 
 **Available MCP Tools:**
 
-| Tool | Description | Use When |
-|------|-------------|----------|
-| `jj_status` | Check repository status | Checking for changes |
-| `jj_log` | Show commit history | Understanding commits |
-| `jj_diff` | Show changes | Reviewing modifications |
+| Tool        | Description             | Use When                |
+| ----------- | ----------------------- | ----------------------- |
+| `jj_status` | Check repository status | Checking for changes    |
+| `jj_log`    | Show commit history     | Understanding commits   |
+| `jj_diff`   | Show changes            | Reviewing modifications |
 
 ### CLI Commands Reference
 
@@ -5401,13 +5498,13 @@ npx agentic-jujutsu examples        # Show usage examples
 
 ### Version Evolution
 
-| Version | Features |
-|---------|----------|
-| **v1.x** | Required separate jj install |
-| **v2.0** | Zero-dependency (jj binary embedded) |
-| **v2.1** | Self-learning AI with ReasoningBank |
+| Version  | Features                                          |
+| -------- | ------------------------------------------------- |
+| **v1.x** | Required separate jj install                      |
+| **v2.0** | Zero-dependency (jj binary embedded)              |
+| **v2.1** | Self-learning AI with ReasoningBank               |
 | **v2.2** | Multi-agent coordination + cryptographic security |
-| **v2.3** | Kubernetes GitOps + production stability |
+| **v2.3** | Kubernetes GitOps + production stability          |
 
 </details>
 
@@ -5425,25 +5522,25 @@ npx agentic-jujutsu examples        # Show usage examples
 
 ### Key Capabilities
 
-| Capability | Description | Performance |
-|------------|-------------|-------------|
-| **Vector Search** | HNSW indexing with SIMD acceleration | **~61µs latency, 16,400 QPS** |
-| **Graph Queries** | Full Cypher syntax (MATCH, WHERE, CREATE) | Native graph traversal |
-| **Self-Learning** | GNN layers that improve search over time | Automatic optimization |
-| **Distributed** | Raft consensus, multi-master replication | Auto-sharding |
-| **Compression** | Adaptive tiered (hot/warm/cool/cold) | **2-32x memory reduction** |
-| **39 Attention Types** | Flash, linear, sparse, graph, hyperbolic | GPU-accelerated SQL |
+| Capability             | Description                               | Performance                   |
+| ---------------------- | ----------------------------------------- | ----------------------------- |
+| **Vector Search**      | HNSW indexing with SIMD acceleration      | **~61µs latency, 16,400 QPS** |
+| **Graph Queries**      | Full Cypher syntax (MATCH, WHERE, CREATE) | Native graph traversal        |
+| **Self-Learning**      | GNN layers that improve search over time  | Automatic optimization        |
+| **Distributed**        | Raft consensus, multi-master replication  | Auto-sharding                 |
+| **Compression**        | Adaptive tiered (hot/warm/cool/cold)      | **2-32x memory reduction**    |
+| **39 Attention Types** | Flash, linear, sparse, graph, hyperbolic  | GPU-accelerated SQL           |
 
 ### Performance Benchmarks
 
-| Operation | Latency | Throughput |
-|-----------|---------|------------|
-| HNSW Search (k=10, 384-dim) | **61µs** | 16,400 QPS |
-| HNSW Search (k=100) | 164µs | 6,100 QPS |
-| Cosine Distance (1536-dim) | 143ns | 7M ops/sec |
-| Dot Product (384-dim) | 33ns | 30M ops/sec |
-| Batch Distance (1000 vectors) | 237µs | 4.2M/sec |
-| Memory (1M vectors with PQ8) | - | **200MB** |
+| Operation                     | Latency  | Throughput  |
+| ----------------------------- | -------- | ----------- |
+| HNSW Search (k=10, 384-dim)   | **61µs** | 16,400 QPS  |
+| HNSW Search (k=100)           | 164µs    | 6,100 QPS   |
+| Cosine Distance (1536-dim)    | 143ns    | 7M ops/sec  |
+| Dot Product (384-dim)         | 33ns     | 30M ops/sec |
+| Batch Distance (1000 vectors) | 237µs    | 4.2M/sec    |
+| Memory (1M vectors with PQ8)  | -        | **200MB**   |
 
 ### Quick Start
 
@@ -5461,21 +5558,25 @@ docker run -d -p 5432:5432 ruvnet/ruvector-postgres
 ### Basic Usage
 
 ```javascript
-import ruvector from 'ruvector';
+import ruvector from "ruvector";
 
 // Initialize vector database
 const db = new ruvector.VectorDB(384); // 384 dimensions
 
 // Insert vectors
-await db.insert('doc1', embedding1);
-await db.insert('doc2', embedding2);
+await db.insert("doc1", embedding1);
+await db.insert("doc2", embedding2);
 
 // Search (returns top-k similar)
 const results = await db.search(queryEmbedding, 10);
 
 // Graph queries with Cypher
-await db.execute("CREATE (a:Person {name: 'Alice'})-[:KNOWS]->(b:Person {name: 'Bob'})");
-const friends = await db.execute("MATCH (p:Person)-[:KNOWS]->(friend) RETURN friend.name");
+await db.execute(
+  "CREATE (a:Person {name: 'Alice'})-[:KNOWS]->(b:Person {name: 'Bob'})",
+);
+const friends = await db.execute(
+  "MATCH (p:Person)-[:KNOWS]->(friend) RETURN friend.name",
+);
 
 // GNN-enhanced search (self-learning)
 const layer = new ruvector.GNNLayer(384, 256, 4);
@@ -5487,15 +5588,15 @@ const compressed = ruvector.compress(embedding, 0.3); // 30% quality threshold
 
 ### Package Ecosystem
 
-| Package | Description | Performance |
-|---------|-------------|-------------|
-| **[ruvector](https://www.npmjs.com/package/ruvector)** | Core vector database with HNSW | Fast vector search |
-| **[@ruvector/attention](https://www.npmjs.com/package/@ruvector/attention)** | Flash Attention mechanisms | 2-7x speedup |
-| **[@ruvector/sona](https://www.npmjs.com/package/@ruvector/sona)** | SONA adaptive learning (LoRA, EWC++) | Fast adaptation |
-| **[@ruvector/gnn](https://www.npmjs.com/package/@ruvector/gnn)** | Graph Neural Networks (15 layer types) | Native NAPI bindings |
-| **[@ruvector/graph-node](https://www.npmjs.com/package/@ruvector/graph-node)** | Graph DB with Cypher queries | Native NAPI |
-| **[@ruvector/rvlite](https://www.npmjs.com/package/@ruvector/rvlite)** | Standalone DB (SQL, SPARQL, Cypher) | All-in-one solution |
-| **[@ruvector/router](https://www.npmjs.com/package/@ruvector/router)** | Semantic intent routing | Fast routing |
+| Package                                                                        | Description                            | Performance          |
+| ------------------------------------------------------------------------------ | -------------------------------------- | -------------------- |
+| **[ruvector](https://www.npmjs.com/package/ruvector)**                         | Core vector database with HNSW         | Fast vector search   |
+| **[@ruvector/attention](https://www.npmjs.com/package/@ruvector/attention)**   | Flash Attention mechanisms             | 2-7x speedup         |
+| **[@ruvector/sona](https://www.npmjs.com/package/@ruvector/sona)**             | SONA adaptive learning (LoRA, EWC++)   | Fast adaptation      |
+| **[@ruvector/gnn](https://www.npmjs.com/package/@ruvector/gnn)**               | Graph Neural Networks (15 layer types) | Native NAPI bindings |
+| **[@ruvector/graph-node](https://www.npmjs.com/package/@ruvector/graph-node)** | Graph DB with Cypher queries           | Native NAPI          |
+| **[@ruvector/rvlite](https://www.npmjs.com/package/@ruvector/rvlite)**         | Standalone DB (SQL, SPARQL, Cypher)    | All-in-one solution  |
+| **[@ruvector/router](https://www.npmjs.com/package/@ruvector/router)**         | Semantic intent routing                | Fast routing         |
 
 ### 🐘 RuVector PostgreSQL — Enterprise Vector Database
 
@@ -5521,18 +5622,18 @@ npx ruflo ruvector import --input memory-export.json
 
 **RuVector PostgreSQL vs pgvector:**
 
-| Feature | pgvector | RuVector PostgreSQL |
-|---------|----------|---------------------|
-| **SQL Functions** | ~10 basic | **77+ comprehensive** |
-| **Search Latency** | ~1ms | **~61µs** |
-| **Throughput** | ~5K QPS | **16,400 QPS** |
-| **Attention Mechanisms** | ❌ None | **✅ 39 types (self, multi-head, cross)** |
-| **GNN Operations** | ❌ None | **✅ GAT, message passing** |
-| **Hyperbolic Embeddings** | ❌ None | **✅ Poincaré/Lorentz space** |
-| **Hybrid Search** | ❌ Manual | **✅ BM25/TF-IDF built-in** |
-| **Local Embeddings** | ❌ None | **✅ 6 fastembed models** |
-| **Self-Learning** | ❌ None | **✅ GNN-based optimization** |
-| **SIMD Optimization** | Basic | **AVX-512/AVX2/NEON (~2x faster)** |
+| Feature                   | pgvector  | RuVector PostgreSQL                       |
+| ------------------------- | --------- | ----------------------------------------- |
+| **SQL Functions**         | ~10 basic | **77+ comprehensive**                     |
+| **Search Latency**        | ~1ms      | **~61µs**                                 |
+| **Throughput**            | ~5K QPS   | **16,400 QPS**                            |
+| **Attention Mechanisms**  | ❌ None   | **✅ 39 types (self, multi-head, cross)** |
+| **GNN Operations**        | ❌ None   | **✅ GAT, message passing**               |
+| **Hyperbolic Embeddings** | ❌ None   | **✅ Poincaré/Lorentz space**             |
+| **Hybrid Search**         | ❌ Manual | **✅ BM25/TF-IDF built-in**               |
+| **Local Embeddings**      | ❌ None   | **✅ 6 fastembed models**                 |
+| **Self-Learning**         | ❌ None   | **✅ GNN-based optimization**             |
+| **SIMD Optimization**     | Basic     | **AVX-512/AVX2/NEON (~2x faster)**        |
 
 **Key SQL Functions:**
 
@@ -5550,14 +5651,14 @@ SELECT cosine_similarity_arr(a, b) AS similarity;
 
 **Benefits over Local SQLite:**
 
-| Feature | Local SQLite | RuVector PostgreSQL |
-|---------|--------------|---------------------|
-| **Multi-Agent Coordination** | Single machine | Distributed across hosts |
-| **Pattern Sharing** | File-based | Real-time synchronized |
-| **Learning Persistence** | Local only | Centralized, backed up |
-| **Swarm Scale** | 15 agents | 100+ agents |
-| **Query Language** | Basic KV | Full SQL + 77 functions |
-| **AI Operations** | External only | **In-database (attention, GNN)** |
+| Feature                      | Local SQLite   | RuVector PostgreSQL              |
+| ---------------------------- | -------------- | -------------------------------- |
+| **Multi-Agent Coordination** | Single machine | Distributed across hosts         |
+| **Pattern Sharing**          | File-based     | Real-time synchronized           |
+| **Learning Persistence**     | Local only     | Centralized, backed up           |
+| **Swarm Scale**              | 15 agents      | 100+ agents                      |
+| **Query Language**           | Basic KV       | Full SQL + 77 functions          |
+| **AI Operations**            | External only  | **In-database (attention, GNN)** |
 
 <details>
 <summary>⚡ <strong>@ruvector/attention</strong> — Flash Attention (2.49x-7.47x Speedup)</summary>
@@ -5565,13 +5666,13 @@ SELECT cosine_similarity_arr(a, b) AS similarity;
 Native Rust implementation of Flash Attention for transformer computations:
 
 ```typescript
-import { FlashAttention } from '@ruvector/attention';
+import { FlashAttention } from "@ruvector/attention";
 
 const attention = new FlashAttention({
-  blockSize: 32,      // L1 cache optimized
+  blockSize: 32, // L1 cache optimized
   dimensions: 384,
   temperature: 1.0,
-  useCPUOptimizations: true
+  useCPUOptimizations: true,
 });
 
 // Compute attention with O(N) memory instead of O(N²)
@@ -5585,6 +5686,7 @@ console.log(`Memory reduction: ${bench.memoryReduction}x`);
 ```
 
 **Key Optimizations:**
+
 - Block-wise computation (fits L1 cache)
 - 8x loop unrolling for dot products
 - Top-K sparse attention (12% of keys)
@@ -5599,35 +5701,36 @@ console.log(`Memory reduction: ${bench.memoryReduction}x`);
 SONA provides runtime-adaptive learning with minimal overhead:
 
 ```typescript
-import { SONA } from '@ruvector/sona';
+import { SONA } from "@ruvector/sona";
 
 const sona = new SONA({
-  enableLoRA: true,       // Low-rank adaptation
-  enableEWC: true,        // Elastic Weight Consolidation
-  learningRate: 0.001
+  enableLoRA: true, // Low-rank adaptation
+  enableEWC: true, // Elastic Weight Consolidation
+  learningRate: 0.001,
 });
 
 // Start learning trajectory
-const trajectory = sona.startTrajectory('task-123');
+const trajectory = sona.startTrajectory("task-123");
 
 // Record steps during execution
 trajectory.recordStep({
-  type: 'observation',
-  content: 'Found authentication bug'
+  type: "observation",
+  content: "Found authentication bug",
 });
 trajectory.recordStep({
-  type: 'action',
-  content: 'Applied JWT validation fix'
+  type: "action",
+  content: "Applied JWT validation fix",
 });
 
 // Complete trajectory with verdict
-await trajectory.complete('success');
+await trajectory.complete("success");
 
 // EWC++ consolidation (prevents forgetting)
 await sona.consolidate();
 ```
 
 **Features:**
+
 - **LoRA**: Low-rank adaptation for efficient fine-tuning
 - **EWC++**: Prevents catastrophic forgetting
 - **ReasoningBank**: Pattern storage with similarity search
@@ -5641,9 +5744,9 @@ await sona.consolidate();
 High-performance graph database with Cypher query support:
 
 ```typescript
-import { GraphDB } from '@ruvector/graph-node';
+import { GraphDB } from "@ruvector/graph-node";
 
-const db = new GraphDB({ path: './data/graph' });
+const db = new GraphDB({ path: "./data/graph" });
 
 // Create nodes and relationships
 await db.query(`
@@ -5660,13 +5763,14 @@ const result = await db.query(`
 `);
 
 // Hypergraph support for multi-agent coordination
-await db.createHyperedge(['agent-1', 'agent-2', 'agent-3'], {
-  type: 'consensus',
-  topic: 'architecture-decision'
+await db.createHyperedge(["agent-1", "agent-2", "agent-3"], {
+  type: "consensus",
+  topic: "architecture-decision",
 });
 ```
 
 **Performance vs WASM:**
+
 - 10x faster query execution
 - Native memory management
 - Zero-copy data transfer
@@ -5679,7 +5783,7 @@ Ruflo automatically uses RuVector when available:
 
 ```typescript
 // Ruflo detects and uses native ruvector
-import { getVectorStore } from '@claude-flow/memory';
+import { getVectorStore } from "@claude-flow/memory";
 
 const store = await getVectorStore();
 // Uses ruvector if installed, falls back to sql.js
@@ -5716,6 +5820,7 @@ npx ruvector benchmark --vectors 10000 --dimensions 384
 ```
 
 **Generated Setup Files:**
+
 ```
 ruvector-postgres/
 ├── docker-compose.yml    # Docker services (PostgreSQL + pgAdmin)
@@ -5739,13 +5844,13 @@ Flow Nexus is a **cloud platform** for deploying and scaling Ruflo beyond your l
 
 ### What Flow Nexus Provides
 
-| Feature | Local Ruflo | + Flow Nexus |
-|---------|-------------------|--------------|
-| **Swarm Scale** | 15 agents (local resources) | 100+ agents (cloud resources) |
-| **Neural Training** | Limited by local GPU/CPU | Distributed GPU clusters |
-| **Persistence** | Local SQLite | Cloud-replicated databases |
-| **Collaboration** | Single user | Team workspaces |
-| **Sandboxes** | Local Docker | E2B cloud sandboxes |
+| Feature             | Local Ruflo                 | + Flow Nexus                  |
+| ------------------- | --------------------------- | ----------------------------- |
+| **Swarm Scale**     | 15 agents (local resources) | 100+ agents (cloud resources) |
+| **Neural Training** | Limited by local GPU/CPU    | Distributed GPU clusters      |
+| **Persistence**     | Local SQLite                | Cloud-replicated databases    |
+| **Collaboration**   | Single user                 | Team workspaces               |
+| **Sandboxes**       | Local Docker                | E2B cloud sandboxes           |
 
 ### Core Capabilities
 
@@ -5775,11 +5880,11 @@ Flow Nexus is a **cloud platform** for deploying and scaling Ruflo beyond your l
 
 ### Skills for Flow Nexus
 
-| Skill | What It Does |
-|-------|--------------|
-| `/flow-nexus-platform` | Full platform management (auth, storage, users) |
-| `/flow-nexus-swarm` | Deploy swarms to cloud with event-driven workflows |
-| `/flow-nexus-neural` | Train neural networks on distributed infrastructure |
+| Skill                  | What It Does                                        |
+| ---------------------- | --------------------------------------------------- |
+| `/flow-nexus-platform` | Full platform management (auth, storage, users)     |
+| `/flow-nexus-swarm`    | Deploy swarms to cloud with event-driven workflows  |
+| `/flow-nexus-neural`   | Train neural networks on distributed infrastructure |
 
 ### Cloud Swarm Deployment
 
@@ -5920,12 +6025,12 @@ npx ruflo@latest stream-chain status feature-pipeline
 
 ### Use Cases
 
-| Pipeline | Stages | Output |
-|----------|--------|--------|
-| **Feature Development** | research → design → implement → test → review | Reviewed code |
-| **Security Audit** | scan → analyze → remediate → verify | Security report |
-| **Documentation** | research → outline → write → review | Documentation |
-| **Migration** | analyze → plan → migrate → validate | Migrated code |
+| Pipeline                | Stages                                        | Output          |
+| ----------------------- | --------------------------------------------- | --------------- |
+| **Feature Development** | research → design → implement → test → review | Reviewed code   |
+| **Security Audit**      | scan → analyze → remediate → verify           | Security report |
+| **Documentation**       | research → outline → write → review           | Documentation   |
+| **Migration**           | analyze → plan → migrate → validate           | Migrated code   |
 
 </details>
 
@@ -5938,12 +6043,12 @@ The Pair Programming skill provides **human-AI collaborative coding** with role 
 
 ### Modes
 
-| Mode | Human Role | AI Role | Best For |
-|------|------------|---------|----------|
-| **Driver** | Writing code | Reviewing, suggesting | Learning, exploration |
-| **Navigator** | Directing, reviewing | Writing code | High productivity |
-| **Switch** | Alternating | Alternating | Balanced collaboration |
-| **TDD** | Writing tests | Implementing | Test-first development |
+| Mode          | Human Role           | AI Role               | Best For               |
+| ------------- | -------------------- | --------------------- | ---------------------- |
+| **Driver**    | Writing code         | Reviewing, suggesting | Learning, exploration  |
+| **Navigator** | Directing, reviewing | Writing code          | High productivity      |
+| **Switch**    | Alternating          | Alternating           | Balanced collaboration |
+| **TDD**       | Writing tests        | Implementing          | Test-first development |
 
 ### Starting a Session
 
@@ -5982,14 +6087,14 @@ npx ruflo@latest pair start --mode navigator
 
 ### Features
 
-| Feature | Description |
-|---------|-------------|
+| Feature                    | Description                                |
+| -------------------------- | ------------------------------------------ |
 | **Real-time Verification** | Code is continuously verified as you write |
-| **Quality Monitoring** | Track code quality metrics during session |
-| **Automatic Role Switch** | Switches roles based on context |
-| **Security Scanning** | Built-in security checks |
-| **Performance Hints** | Suggestions for optimization |
-| **Learning Mode** | AI explains decisions and teaches patterns |
+| **Quality Monitoring**     | Track code quality metrics during session  |
+| **Automatic Role Switch**  | Switches roles based on context            |
+| **Security Scanning**      | Built-in security checks                   |
+| **Performance Hints**      | Suggestions for optimization               |
+| **Learning Mode**          | AI explains decisions and teaches patterns |
 
 ### Session Commands
 
@@ -6026,36 +6131,36 @@ Detection Time: 0.04ms | 50+ Patterns | Self-Learning | HNSW Vector Search
 
 ### Why AIDefence?
 
-| Challenge | Solution | Result |
-|-----------|----------|--------|
-| Prompt injection attacks | 50+ detection patterns with contextual analysis | Block malicious inputs |
-| Jailbreak attempts (DAN, etc.) | Real-time blocking with adaptive learning | Prevent safety bypasses |
-| PII/credential exposure | Multi-pattern scanning for sensitive data | Stop data leaks |
-| Zero-day attack variants | Self-learning from new patterns | Adapt to new threats |
-| Performance overhead | Sub-millisecond detection | No user impact |
+| Challenge                      | Solution                                        | Result                  |
+| ------------------------------ | ----------------------------------------------- | ----------------------- |
+| Prompt injection attacks       | 50+ detection patterns with contextual analysis | Block malicious inputs  |
+| Jailbreak attempts (DAN, etc.) | Real-time blocking with adaptive learning       | Prevent safety bypasses |
+| PII/credential exposure        | Multi-pattern scanning for sensitive data       | Stop data leaks         |
+| Zero-day attack variants       | Self-learning from new patterns                 | Adapt to new threats    |
+| Performance overhead           | Sub-millisecond detection                       | No user impact          |
 
 ### Threat Categories
 
-| Category | Severity | Patterns | Detection Method | Examples |
-|----------|----------|----------|------------------|----------|
-| **Instruction Override** | 🔴 Critical | 4+ | Keyword + context | "Ignore previous instructions" |
-| **Jailbreak** | 🔴 Critical | 6+ | Multi-pattern | "Enable DAN mode", "bypass restrictions" |
-| **Role Switching** | 🟠 High | 3+ | Identity analysis | "You are now", "Act as" |
-| **Context Manipulation** | 🔴 Critical | 6+ | Delimiter detection | Fake `[system]` tags, code blocks |
-| **Encoding Attacks** | 🟡 Medium | 2+ | Obfuscation scan | Base64, ROT13, hex payloads |
-| **Social Engineering** | 🟢 Low-Med | 2+ | Framing analysis | Hypothetical scenarios |
-| **Prompt Injection** | 🔴 Critical | 10+ | Combined analysis | Mixed attack vectors |
+| Category                 | Severity    | Patterns | Detection Method    | Examples                                 |
+| ------------------------ | ----------- | -------- | ------------------- | ---------------------------------------- |
+| **Instruction Override** | 🔴 Critical | 4+       | Keyword + context   | "Ignore previous instructions"           |
+| **Jailbreak**            | 🔴 Critical | 6+       | Multi-pattern       | "Enable DAN mode", "bypass restrictions" |
+| **Role Switching**       | 🟠 High     | 3+       | Identity analysis   | "You are now", "Act as"                  |
+| **Context Manipulation** | 🔴 Critical | 6+       | Delimiter detection | Fake `[system]` tags, code blocks        |
+| **Encoding Attacks**     | 🟡 Medium   | 2+       | Obfuscation scan    | Base64, ROT13, hex payloads              |
+| **Social Engineering**   | 🟢 Low-Med  | 2+       | Framing analysis    | Hypothetical scenarios                   |
+| **Prompt Injection**     | 🔴 Critical | 10+      | Combined analysis   | Mixed attack vectors                     |
 
 ### Performance
 
-| Operation | Target | Actual | Throughput |
-|-----------|--------|--------|------------|
-| **Threat Detection** | <10ms | **0.04ms** | 250x faster |
-| **Quick Scan** | <5ms | **0.02ms** | Pattern-only |
-| **PII Detection** | <3ms | **0.01ms** | Regex-based |
-| **HNSW Search** | <1ms | **0.1ms** | With AgentDB |
-| **Single-threaded** | - | - | >12,000 req/s |
-| **With Learning** | - | - | >8,000 req/s |
+| Operation            | Target | Actual     | Throughput    |
+| -------------------- | ------ | ---------- | ------------- |
+| **Threat Detection** | <10ms  | **0.04ms** | 250x faster   |
+| **Quick Scan**       | <5ms   | **0.02ms** | Pattern-only  |
+| **PII Detection**    | <3ms   | **0.01ms** | Regex-based   |
+| **HNSW Search**      | <1ms   | **0.1ms**  | With AgentDB  |
+| **Single-threaded**  | -      | -          | >12,000 req/s |
+| **With Learning**    | -      | -          | >8,000 req/s  |
 
 ### CLI Commands
 
@@ -6081,24 +6186,24 @@ npx ruflo@latest security scan --depth full
 
 ### MCP Tools
 
-| Tool | Description | Parameters |
-|------|-------------|------------|
-| `aidefence_scan` | Full threat scan with details | `input`, `quick?` |
-| `aidefence_analyze` | Deep analysis + similar threats | `input`, `searchSimilar?`, `k?` |
-| `aidefence_is_safe` | Quick boolean check | `input` |
-| `aidefence_has_pii` | PII detection only | `input` |
-| `aidefence_learn` | Record feedback for learning | `input`, `wasAccurate`, `verdict?` |
-| `aidefence_stats` | Detection statistics | - |
+| Tool                | Description                     | Parameters                         |
+| ------------------- | ------------------------------- | ---------------------------------- |
+| `aidefence_scan`    | Full threat scan with details   | `input`, `quick?`                  |
+| `aidefence_analyze` | Deep analysis + similar threats | `input`, `searchSimilar?`, `k?`    |
+| `aidefence_is_safe` | Quick boolean check             | `input`                            |
+| `aidefence_has_pii` | PII detection only              | `input`                            |
+| `aidefence_learn`   | Record feedback for learning    | `input`, `wasAccurate`, `verdict?` |
+| `aidefence_stats`   | Detection statistics            | -                                  |
 
 ### PII Detection
 
-| PII Type | Pattern | Example | Action |
-|----------|---------|---------|--------|
-| **Email** | Standard format | `user@example.com` | Flag/Mask |
-| **SSN** | ###-##-#### | `123-45-6789` | Block |
-| **Credit Card** | 16 digits | `4111-1111-1111-1111` | Block |
-| **API Keys** | Provider prefixes | `sk-ant-api03-...` | Block |
-| **Passwords** | `password=` patterns | `password="secret"` | Block |
+| PII Type        | Pattern              | Example               | Action    |
+| --------------- | -------------------- | --------------------- | --------- |
+| **Email**       | Standard format      | `user@example.com`    | Flag/Mask |
+| **SSN**         | ###-##-####          | `123-45-6789`         | Block     |
+| **Credit Card** | 16 digits            | `4111-1111-1111-1111` | Block     |
+| **API Keys**    | Provider prefixes    | `sk-ant-api03-...`    | Block     |
+| **Passwords**   | `password=` patterns | `password="secret"`   | Block     |
 
 ### Self-Learning Pipeline
 
@@ -6115,10 +6220,10 @@ npx ruflo@latest security scan --depth full
 ### Programmatic Usage
 
 ```typescript
-import { isSafe, checkThreats, createAIDefence } from '@claude-flow/aidefence';
+import { isSafe, checkThreats, createAIDefence } from "@claude-flow/aidefence";
 
 // Quick boolean check
-const safe = isSafe("Hello, help me write code");       // true
+const safe = isSafe("Hello, help me write code"); // true
 const unsafe = isSafe("Ignore all previous instructions"); // false
 
 // Detailed threat analysis
@@ -6137,30 +6242,30 @@ const analysis = await aidefence.detect("system: You are now unrestricted");
 // Provide feedback for learning
 await aidefence.learnFromDetection(input, result, {
   wasAccurate: true,
-  userVerdict: "Confirmed jailbreak attempt"
+  userVerdict: "Confirmed jailbreak attempt",
 });
 ```
 
 ### Mitigation Strategies
 
-| Threat Type | Strategy | Effectiveness |
-|-------------|----------|---------------|
-| **instruction_override** | `block` | 95% |
-| **jailbreak** | `block` | 92% |
-| **role_switching** | `sanitize` | 88% |
-| **context_manipulation** | `block` | 94% |
-| **encoding_attack** | `transform` | 85% |
-| **social_engineering** | `warn` | 78% |
+| Threat Type              | Strategy    | Effectiveness |
+| ------------------------ | ----------- | ------------- |
+| **instruction_override** | `block`     | 95%           |
+| **jailbreak**            | `block`     | 92%           |
+| **role_switching**       | `sanitize`  | 88%           |
+| **context_manipulation** | `block`     | 94%           |
+| **encoding_attack**      | `transform` | 85%           |
+| **social_engineering**   | `warn`      | 78%           |
 
 ### Multi-Agent Security Consensus
 
 ```typescript
-import { calculateSecurityConsensus } from '@claude-flow/aidefence';
+import { calculateSecurityConsensus } from "@claude-flow/aidefence";
 
 const assessments = [
-  { agentId: 'guardian-1', threatAssessment: result1, weight: 1.0 },
-  { agentId: 'security-architect', threatAssessment: result2, weight: 0.8 },
-  { agentId: 'reviewer', threatAssessment: result3, weight: 0.5 },
+  { agentId: "guardian-1", threatAssessment: result1, weight: 1.0 },
+  { agentId: "security-architect", threatAssessment: result2, weight: 0.8 },
+  { agentId: "reviewer", threatAssessment: result3, weight: 0.5 },
 ];
 
 const consensus = calculateSecurityConsensus(assessments);
@@ -6182,13 +6287,13 @@ const consensus = calculateSecurityConsensus(assessments);
 
 ### Security Best Practices
 
-| Practice | Implementation | Command |
-|----------|----------------|---------|
-| Scan all user inputs | Pre-task hook | `hooks pre-task --scan-threats` |
-| Block PII in outputs | Post-task validation | `aidefence_has_pii` |
-| Learn from detections | Feedback loop | `aidefence_learn` |
-| Audit security events | Regular review | `security defend --stats` |
-| Update patterns | Pull from store | `transfer store-download --id security-essentials` |
+| Practice              | Implementation       | Command                                            |
+| --------------------- | -------------------- | -------------------------------------------------- |
+| Scan all user inputs  | Pre-task hook        | `hooks pre-task --scan-threats`                    |
+| Block PII in outputs  | Post-task validation | `aidefence_has_pii`                                |
+| Learn from detections | Feedback loop        | `aidefence_learn`                                  |
+| Audit security events | Regular review       | `security defend --stats`                          |
+| Update patterns       | Pull from store      | `transfer store-download --id security-essentials` |
 
 </details>
 
@@ -6205,59 +6310,59 @@ Domain-Driven Design with bounded contexts, clean architecture, and measured per
 
 ### V3 Module Structure
 
-| Module | Purpose | Key Features |
-|--------|---------|--------------|
-| `@claude-flow/hooks` | Event-driven lifecycle | ReasoningBank, 27 hooks, pattern learning |
-| `@claude-flow/memory` | Unified vector storage | AgentDB, RVF binary format, HnswLite, RvfMigrator, SONA persistence, LearningBridge, MemoryGraph |
-| `@claude-flow/security` | CVE remediation | Input validation, path security, AIDefence |
-| `@claude-flow/swarm` | Multi-agent coordination | 6 topologies, Byzantine consensus, auto-scaling |
-| `@claude-flow/plugins` | WASM extensions | RuVector plugins, semantic search, intent routing |
-| `@claude-flow/cli` | Command interface | 26 commands, 140+ subcommands, shell completions |
-| `@claude-flow/neural` | Self-learning | SONA, 9 RL algorithms, EWC++ memory preservation |
-| `@claude-flow/testing` | Quality assurance | London School TDD, Vitest, fixtures, mocks |
-| `@claude-flow/deployment` | Release automation | Versioning, changelogs, NPM publishing |
-| `@claude-flow/shared` | Common utilities | Types, validation schemas, RvfEventLog, constants |
-| `@claude-flow/browser` | Browser automation | 59 MCP tools, element refs, trajectory learning |
+| Module                    | Purpose                  | Key Features                                                                                     |
+| ------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------ |
+| `@claude-flow/hooks`      | Event-driven lifecycle   | ReasoningBank, 27 hooks, pattern learning                                                        |
+| `@claude-flow/memory`     | Unified vector storage   | AgentDB, RVF binary format, HnswLite, RvfMigrator, SONA persistence, LearningBridge, MemoryGraph |
+| `@claude-flow/security`   | CVE remediation          | Input validation, path security, AIDefence                                                       |
+| `@claude-flow/swarm`      | Multi-agent coordination | 6 topologies, Byzantine consensus, auto-scaling                                                  |
+| `@claude-flow/plugins`    | WASM extensions          | RuVector plugins, semantic search, intent routing                                                |
+| `@claude-flow/cli`        | Command interface        | 26 commands, 140+ subcommands, shell completions                                                 |
+| `@claude-flow/neural`     | Self-learning            | SONA, 9 RL algorithms, EWC++ memory preservation                                                 |
+| `@claude-flow/testing`    | Quality assurance        | London School TDD, Vitest, fixtures, mocks                                                       |
+| `@claude-flow/deployment` | Release automation       | Versioning, changelogs, NPM publishing                                                           |
+| `@claude-flow/shared`     | Common utilities         | Types, validation schemas, RvfEventLog, constants                                                |
+| `@claude-flow/browser`    | Browser automation       | 59 MCP tools, element refs, trajectory learning                                                  |
 
 ### Architecture Principles
 
-| Principle | Implementation | Benefit |
-|-----------|----------------|---------|
-| **Bounded Contexts** | Each module owns its domain | No cross-module coupling |
-| **Dependency Injection** | Constructor-based DI | Testable, mockable components |
-| **Event Sourcing** | All state changes as events | Full audit trail, replay capability |
-| **CQRS** | Separate read/write paths | Optimized queries, scalable writes |
-| **Clean Architecture** | Domain → Application → Infrastructure | Business logic isolation |
+| Principle                | Implementation                        | Benefit                             |
+| ------------------------ | ------------------------------------- | ----------------------------------- |
+| **Bounded Contexts**     | Each module owns its domain           | No cross-module coupling            |
+| **Dependency Injection** | Constructor-based DI                  | Testable, mockable components       |
+| **Event Sourcing**       | All state changes as events           | Full audit trail, replay capability |
+| **CQRS**                 | Separate read/write paths             | Optimized queries, scalable writes  |
+| **Clean Architecture**   | Domain → Application → Infrastructure | Business logic isolation            |
 
 ### Performance Benchmarks
 
-*Benchmarks measured on Node.js 20+ with local SQLite. Results vary by hardware and workload.*
+_Benchmarks measured on Node.js 20+ with local SQLite. Results vary by hardware and workload._
 
-| Category | Metric | Target | Status |
-|----------|--------|--------|--------|
-| **Startup** | CLI cold start | <500ms | ✅ Met |
-| **Startup** | MCP server init | <400ms | ✅ Met |
-| **Memory** | HNSW search | <1ms | ✅ Sub-ms |
-| **Memory** | Pattern retrieval | <10ms | ✅ Met |
-| **Swarm** | Agent spawn | <200ms | ✅ Met |
-| **Swarm** | Consensus latency | <100ms | ✅ Met |
-| **Neural** | SONA adaptation | <0.05ms | ⚡ Benchmarked |
-| **Graph** | Build (1k nodes) | <200ms | ✅ Met |
-| **Graph** | PageRank (1k nodes) | <100ms | ✅ Met |
-| **Learning** | Insight recording | <5ms | ✅ Met |
-| **Learning** | Consolidation | <500ms | ✅ Met |
-| **Task** | Success rate | 95%+ | ✅ Met |
+| Category     | Metric              | Target  | Status         |
+| ------------ | ------------------- | ------- | -------------- |
+| **Startup**  | CLI cold start      | <500ms  | ✅ Met         |
+| **Startup**  | MCP server init     | <400ms  | ✅ Met         |
+| **Memory**   | HNSW search         | <1ms    | ✅ Sub-ms      |
+| **Memory**   | Pattern retrieval   | <10ms   | ✅ Met         |
+| **Swarm**    | Agent spawn         | <200ms  | ✅ Met         |
+| **Swarm**    | Consensus latency   | <100ms  | ✅ Met         |
+| **Neural**   | SONA adaptation     | <0.05ms | ⚡ Benchmarked |
+| **Graph**    | Build (1k nodes)    | <200ms  | ✅ Met         |
+| **Graph**    | PageRank (1k nodes) | <100ms  | ✅ Met         |
+| **Learning** | Insight recording   | <5ms    | ✅ Met         |
+| **Learning** | Consolidation       | <500ms  | ✅ Met         |
+| **Task**     | Success rate        | 95%+    | ✅ Met         |
 
 ### Topology Performance
 
-| Topology | Agents | Execution | Memory | Best For |
-|----------|--------|-----------|--------|----------|
-| **Centralized** | 2-3 | 0.14-0.20s | 180-256 MB | Simple tasks, single coordinator |
-| **Distributed** | 4-5 | 0.10-0.12s | 128-160 MB | Parallel processing, speed |
-| **Hierarchical** | 6+ | 0.20s | 256 MB | Complex tasks, clear authority |
-| **Mesh** | 4+ | 0.15s | 192 MB | Collaborative, fault-tolerant |
-| **Hybrid** | 7+ | 0.18s | 320 MB | Multi-domain, mixed workloads |
-| **Adaptive** | 2+ | Variable | Dynamic | Auto-scaling, unpredictable load |
+| Topology         | Agents | Execution  | Memory     | Best For                         |
+| ---------------- | ------ | ---------- | ---------- | -------------------------------- |
+| **Centralized**  | 2-3    | 0.14-0.20s | 180-256 MB | Simple tasks, single coordinator |
+| **Distributed**  | 4-5    | 0.10-0.12s | 128-160 MB | Parallel processing, speed       |
+| **Hierarchical** | 6+     | 0.20s      | 256 MB     | Complex tasks, clear authority   |
+| **Mesh**         | 4+     | 0.15s      | 192 MB     | Collaborative, fault-tolerant    |
+| **Hybrid**       | 7+     | 0.18s      | 320 MB     | Multi-domain, mixed workloads    |
+| **Adaptive**     | 2+     | Variable   | Dynamic    | Auto-scaling, unpredictable load |
 
 </details>
 
@@ -6282,65 +6387,69 @@ npm install -g agent-browser@latest
 ### Quick Start
 
 ```typescript
-import { createBrowserService } from '@claude-flow/browser';
+import { createBrowserService } from "@claude-flow/browser";
 
 const browser = createBrowserService({
-  sessionId: 'my-session',
-  enableSecurity: true,  // URL/PII scanning
-  enableMemory: true,    // Trajectory learning
+  sessionId: "my-session",
+  enableSecurity: true, // URL/PII scanning
+  enableMemory: true, // Trajectory learning
 });
 
 // Track actions for ReasoningBank/SONA learning
-browser.startTrajectory('Login to dashboard');
+browser.startTrajectory("Login to dashboard");
 
-await browser.open('https://example.com/login');
+await browser.open("https://example.com/login");
 
 // Use element refs (shorter tokens vs full CSS selectors)
 const snapshot = await browser.snapshot({ interactive: true });
-await browser.fill('@e1', 'user@example.com');
-await browser.fill('@e2', 'password');
-await browser.click('@e3');
+await browser.fill("@e1", "user@example.com");
+await browser.fill("@e2", "password");
+await browser.click("@e3");
 
-await browser.endTrajectory(true, 'Login successful');
+await browser.endTrajectory(true, "Login successful");
 await browser.close();
 ```
 
 ### Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **59 MCP Tools** | Complete browser automation via MCP protocol |
-| **Element Refs** | Compact `@e1`, `@e2` refs instead of verbose CSS selectors |
-| **Trajectory Learning** | Records actions for ReasoningBank/SONA |
-| **Security Scanning** | URL validation, PII detection, XSS/SQL injection prevention |
-| **9 Workflow Templates** | Login, OAuth, scraping, testing, monitoring |
-| **Swarm Coordination** | Multi-session parallel browser automation |
+| Feature                  | Description                                                 |
+| ------------------------ | ----------------------------------------------------------- |
+| **59 MCP Tools**         | Complete browser automation via MCP protocol                |
+| **Element Refs**         | Compact `@e1`, `@e2` refs instead of verbose CSS selectors  |
+| **Trajectory Learning**  | Records actions for ReasoningBank/SONA                      |
+| **Security Scanning**    | URL validation, PII detection, XSS/SQL injection prevention |
+| **9 Workflow Templates** | Login, OAuth, scraping, testing, monitoring                 |
+| **Swarm Coordination**   | Multi-session parallel browser automation                   |
 
 ### Security Integration
 
 ```typescript
-import { getSecurityScanner, isUrlSafe, containsPII } from '@claude-flow/browser';
+import {
+  getSecurityScanner,
+  isUrlSafe,
+  containsPII,
+} from "@claude-flow/browser";
 
 // URL threat detection
 const scanner = getSecurityScanner({ requireHttps: true });
-const result = await scanner.scanUrl('https://example.com');
+const result = await scanner.scanUrl("https://example.com");
 // { safe: true, threats: [], score: 1.0 }
 
 // PII detection
-containsPII('SSN: 123-45-6789'); // true
+containsPII("SSN: 123-45-6789"); // true
 
 // Input validation (XSS, SQL injection)
-scanner.validateInput('<script>alert(1)</script>', 'comment');
+scanner.validateInput("<script>alert(1)</script>", "comment");
 // { safe: false, threats: [{type: 'xss', ...}] }
 ```
 
 ### Workflow Templates
 
 ```typescript
-import { listWorkflows, getWorkflow } from '@claude-flow/browser';
+import { listWorkflows, getWorkflow } from "@claude-flow/browser";
 
 listWorkflows(); // ['login-basic', 'login-oauth', 'scrape-table', ...]
-const template = getWorkflow('login-basic');
+const template = getWorkflow("login-basic");
 // { steps: [{action: 'open'}, {action: 'fill'}, ...], variables: [...] }
 ```
 
@@ -6357,55 +6466,59 @@ Automated release management, versioning, and CI/CD for Ruflo packages.
 
 ### Features
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **Version Bumping** | Automatic major/minor/patch/prerelease | Instant |
-| **Changelog Generation** | From conventional commits | <2s |
-| **Git Integration** | Auto-tagging and committing | <1s |
-| **NPM Publishing** | Multi-tag support (alpha, beta, latest) | <5s |
-| **Pre-Release Validation** | Lint, test, build, dependency checks | Configurable |
-| **Dry Run Mode** | Test releases without changes | Safe testing |
+| Feature                    | Description                             | Performance  |
+| -------------------------- | --------------------------------------- | ------------ |
+| **Version Bumping**        | Automatic major/minor/patch/prerelease  | Instant      |
+| **Changelog Generation**   | From conventional commits               | <2s          |
+| **Git Integration**        | Auto-tagging and committing             | <1s          |
+| **NPM Publishing**         | Multi-tag support (alpha, beta, latest) | <5s          |
+| **Pre-Release Validation** | Lint, test, build, dependency checks    | Configurable |
+| **Dry Run Mode**           | Test releases without changes           | Safe testing |
 
 ### Quick Start
 
 ```typescript
-import { prepareRelease, publishToNpm, validate } from '@claude-flow/deployment';
+import {
+  prepareRelease,
+  publishToNpm,
+  validate,
+} from "@claude-flow/deployment";
 
 // Bump version and generate changelog
 const result = await prepareRelease({
-  bumpType: 'patch',       // major | minor | patch | prerelease
+  bumpType: "patch", // major | minor | patch | prerelease
   generateChangelog: true,
   createTag: true,
-  commit: true
+  commit: true,
 });
 
 console.log(`Released ${result.newVersion}`);
 
 // Publish to NPM
 await publishToNpm({
-  tag: 'latest',
-  access: 'public'
+  tag: "latest",
+  access: "public",
 });
 ```
 
 ### Version Bumping Examples
 
 ```typescript
-import { ReleaseManager } from '@claude-flow/deployment';
+import { ReleaseManager } from "@claude-flow/deployment";
 
 const manager = new ReleaseManager();
 
 // Bump patch: 1.0.0 → 1.0.1
-await manager.prepareRelease({ bumpType: 'patch' });
+await manager.prepareRelease({ bumpType: "patch" });
 
 // Bump minor: 1.0.0 → 1.1.0
-await manager.prepareRelease({ bumpType: 'minor' });
+await manager.prepareRelease({ bumpType: "minor" });
 
 // Bump major: 1.0.0 → 2.0.0
-await manager.prepareRelease({ bumpType: 'major' });
+await manager.prepareRelease({ bumpType: "major" });
 
 // Prerelease: 1.0.0 → 1.0.0-alpha.1
-await manager.prepareRelease({ bumpType: 'prerelease', channel: 'alpha' });
+await manager.prepareRelease({ bumpType: "prerelease", channel: "alpha" });
 ```
 
 ### Changelog from Conventional Commits
@@ -6418,32 +6531,39 @@ git commit -m "feat(ui): update design BREAKING CHANGE: new layout"
 ```
 
 Generated:
+
 ```markdown
 ## [2.0.0] - 2026-01-15
 
 ### BREAKING CHANGES
+
 - **ui**: update design BREAKING CHANGE: new layout
 
 ### Features
+
 - **api**: add new endpoint
 - **ui**: update design
 
 ### Bug Fixes
+
 - **auth**: resolve login issue
 ```
 
 ### Complete Release Workflow
 
 ```typescript
-import { Validator, ReleaseManager, Publisher } from '@claude-flow/deployment';
+import { Validator, ReleaseManager, Publisher } from "@claude-flow/deployment";
 
 async function release(version: string, tag: string) {
   // 1. Validate
   const validator = new Validator();
   const validation = await validator.validate({
-    lint: true, test: true, build: true, checkDependencies: true
+    lint: true,
+    test: true,
+    build: true,
+    checkDependencies: true,
   });
-  if (!validation.valid) throw new Error(validation.errors.join(', '));
+  if (!validation.valid) throw new Error(validation.errors.join(", "));
 
   // 2. Prepare release
   const manager = new ReleaseManager();
@@ -6451,23 +6571,23 @@ async function release(version: string, tag: string) {
     version,
     generateChangelog: true,
     createTag: true,
-    commit: true
+    commit: true,
   });
 
   // 3. Publish
   const publisher = new Publisher();
-  await publisher.publishToNpm({ tag, access: 'public' });
+  await publisher.publishToNpm({ tag, access: "public" });
 }
 ```
 
 ### Channel/Tag Strategy
 
-| Channel | Version Format | Use Case |
-|---------|----------------|----------|
-| `alpha` | `1.0.0-alpha.1` | Early development |
-| `beta` | `1.0.0-beta.1` | Feature complete, testing |
-| `rc` | `1.0.0-rc.1` | Release candidate |
-| `latest` | `1.0.0` | Stable production |
+| Channel  | Version Format  | Use Case                  |
+| -------- | --------------- | ------------------------- |
+| `alpha`  | `1.0.0-alpha.1` | Early development         |
+| `beta`   | `1.0.0-beta.1`  | Feature complete, testing |
+| `rc`     | `1.0.0-rc.1`    | Release candidate         |
+| `latest` | `1.0.0`         | Stable production         |
 
 ### CLI Commands
 
@@ -6496,88 +6616,96 @@ Statistical benchmarking, memory tracking, regression detection, and V3 performa
 
 ### Features
 
-| Feature | Description | Performance |
-|---------|-------------|-------------|
-| **Statistical Analysis** | Mean, median, P95, P99, stddev, outlier removal | Real-time |
-| **Memory Tracking** | Heap, RSS, external, array buffers | Per-iteration |
-| **Auto-Calibration** | Adjusts iterations for statistical significance | Automatic |
-| **Regression Detection** | Compare against baselines with significance testing | <10ms |
-| **V3 Targets** | Built-in targets for all performance metrics | Preconfigured |
-| **Flash Attention** | Validate optimized attention (WASM-accelerated when available) targets | Integrated |
+| Feature                  | Description                                                            | Performance   |
+| ------------------------ | ---------------------------------------------------------------------- | ------------- |
+| **Statistical Analysis** | Mean, median, P95, P99, stddev, outlier removal                        | Real-time     |
+| **Memory Tracking**      | Heap, RSS, external, array buffers                                     | Per-iteration |
+| **Auto-Calibration**     | Adjusts iterations for statistical significance                        | Automatic     |
+| **Regression Detection** | Compare against baselines with significance testing                    | <10ms         |
+| **V3 Targets**           | Built-in targets for all performance metrics                           | Preconfigured |
+| **Flash Attention**      | Validate optimized attention (WASM-accelerated when available) targets | Integrated    |
 
 ### Quick Start
 
 ```typescript
-import { benchmark, BenchmarkRunner, V3_PERFORMANCE_TARGETS } from '@claude-flow/performance';
+import {
+  benchmark,
+  BenchmarkRunner,
+  V3_PERFORMANCE_TARGETS,
+} from "@claude-flow/performance";
 
 // Single benchmark
-const result = await benchmark('vector-search', async () => {
-  await index.search(queryVector, 10);
-}, { iterations: 100, warmup: 10 });
+const result = await benchmark(
+  "vector-search",
+  async () => {
+    await index.search(queryVector, 10);
+  },
+  { iterations: 100, warmup: 10 },
+);
 
 console.log(`Mean: ${result.mean}ms, P99: ${result.p99}ms`);
 
 // Check against V3 target
-if (result.mean <= V3_PERFORMANCE_TARGETS['vector-search']) {
-  console.log('✅ Target met!');
+if (result.mean <= V3_PERFORMANCE_TARGETS["vector-search"]) {
+  console.log("✅ Target met!");
 }
 ```
 
 ### V3 Performance Targets
 
 ```typescript
-import { V3_PERFORMANCE_TARGETS, meetsTarget } from '@claude-flow/performance';
+import { V3_PERFORMANCE_TARGETS, meetsTarget } from "@claude-flow/performance";
 
 // Built-in targets
 V3_PERFORMANCE_TARGETS = {
   // Startup Performance
-  'cli-cold-start': 500,        // <500ms (5x faster)
-  'cli-warm-start': 100,        // <100ms
-  'mcp-server-init': 400,       // <400ms (4.5x faster)
-  'agent-spawn': 200,           // <200ms (4x faster)
+  "cli-cold-start": 500, // <500ms (5x faster)
+  "cli-warm-start": 100, // <100ms
+  "mcp-server-init": 400, // <400ms (4.5x faster)
+  "agent-spawn": 200, // <200ms (4x faster)
 
   // Memory Operations
-  'vector-search': 1,           // <1ms (150x faster)
-  'hnsw-indexing': 10,          // <10ms
-  'memory-write': 5,            // <5ms (10x faster)
-  'cache-hit': 0.1,             // <0.1ms
+  "vector-search": 1, // <1ms (150x faster)
+  "hnsw-indexing": 10, // <10ms
+  "memory-write": 5, // <5ms (10x faster)
+  "cache-hit": 0.1, // <0.1ms
 
   // Swarm Coordination
-  'agent-coordination': 50,     // <50ms
-  'task-decomposition': 20,     // <20ms
-  'consensus-latency': 100,     // <100ms (5x faster)
-  'message-throughput': 0.1,    // <0.1ms per message
+  "agent-coordination": 50, // <50ms
+  "task-decomposition": 20, // <20ms
+  "consensus-latency": 100, // <100ms (5x faster)
+  "message-throughput": 0.1, // <0.1ms per message
 
   // SONA Learning
-  'sona-adaptation': 0.05       // <0.05ms
+  "sona-adaptation": 0.05, // <0.05ms
 };
 
 // Check if target is met
-const { met, target, ratio } = meetsTarget('vector-search', 0.8);
+const { met, target, ratio } = meetsTarget("vector-search", 0.8);
 // { met: true, target: 1, ratio: 0.8 }
 ```
 
 ### Benchmark Suite
 
 ```typescript
-import { BenchmarkRunner } from '@claude-flow/performance';
+import { BenchmarkRunner } from "@claude-flow/performance";
 
-const runner = new BenchmarkRunner('Memory Operations');
+const runner = new BenchmarkRunner("Memory Operations");
 
 // Run individual benchmarks
-await runner.run('vector-search', async () => {
+await runner.run("vector-search", async () => {
   await index.search(query, 10);
 });
 
-await runner.run('memory-write', async () => {
+await runner.run("memory-write", async () => {
   await store.write(entry);
 });
 
 // Run all at once
 const suite = await runner.runAll([
-  { name: 'search', fn: () => search() },
-  { name: 'write', fn: () => write() },
-  { name: 'index', fn: () => index() }
+  { name: "search", fn: () => search() },
+  { name: "write", fn: () => write() },
+  { name: "index", fn: () => index() },
 ]);
 
 // Print formatted results
@@ -6590,13 +6718,16 @@ const json = runner.toJSON();
 ### Comparison & Regression Detection
 
 ```typescript
-import { compareResults, printComparisonReport } from '@claude-flow/performance';
+import {
+  compareResults,
+  printComparisonReport,
+} from "@claude-flow/performance";
 
 // Compare current vs baseline
 const comparisons = compareResults(baselineResults, currentResults, {
-  'vector-search': 1,      // Target: <1ms
-  'memory-write': 5,       // Target: <5ms
-  'cli-startup': 500       // Target: <500ms
+  "vector-search": 1, // Target: <1ms
+  "memory-write": 5, // Target: <5ms
+  "cli-startup": 500, // Target: <500ms
 });
 
 // Print formatted report
@@ -6619,14 +6750,14 @@ for (const comp of comparisons) {
 interface BenchmarkResult {
   name: string;
   iterations: number;
-  mean: number;           // Average time (ms)
-  median: number;         // Median time (ms)
-  p95: number;            // 95th percentile
-  p99: number;            // 99th percentile
+  mean: number; // Average time (ms)
+  median: number; // Median time (ms)
+  p95: number; // 95th percentile
+  p99: number; // 99th percentile
   min: number;
   max: number;
-  stdDev: number;         // Standard deviation
-  opsPerSecond: number;   // Operations/second
+  stdDev: number; // Standard deviation
+  opsPerSecond: number; // Operations/second
   memoryUsage: {
     heapUsed: number;
     heapTotal: number;
@@ -6634,7 +6765,7 @@ interface BenchmarkResult {
     arrayBuffers: number;
     rss: number;
   };
-  memoryDelta: number;    // Memory change during benchmark
+  memoryDelta: number; // Memory change during benchmark
   timestamp: number;
 }
 ```
@@ -6642,16 +6773,16 @@ interface BenchmarkResult {
 ### Formatting Utilities
 
 ```typescript
-import { formatBytes, formatTime } from '@claude-flow/performance';
+import { formatBytes, formatTime } from "@claude-flow/performance";
 
-formatTime(0.00005);  // '50.00 ns'
-formatTime(0.5);      // '500.00 µs'
-formatTime(5);        // '5.00 ms'
-formatTime(5000);     // '5.00 s'
+formatTime(0.00005); // '50.00 ns'
+formatTime(0.5); // '500.00 µs'
+formatTime(5); // '5.00 ms'
+formatTime(5000); // '5.00 s'
 
-formatBytes(1024);          // '1.00 KB'
-formatBytes(1048576);       // '1.00 MB'
-formatBytes(1073741824);    // '1.00 GB'
+formatBytes(1024); // '1.00 KB'
+formatBytes(1048576); // '1.00 MB'
+formatBytes(1073741824); // '1.00 GB'
 ```
 
 ### CLI Commands
@@ -6706,23 +6837,25 @@ import {
   agentConfigs,
   swarmConfigs,
   waitFor,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Configure test environment
 setupV3Tests();
 
-describe('MyModule', () => {
+describe("MyModule", () => {
   const app = createMockApplication();
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should spawn an agent', async () => {
-    const result = await app.agentLifecycle.spawn(agentConfigs.queenCoordinator);
+  it("should spawn an agent", async () => {
+    const result = await app.agentLifecycle.spawn(
+      agentConfigs.queenCoordinator,
+    );
 
     expect(result.success).toBe(true);
-    expect(result.agent.type).toBe('queen-coordinator');
+    expect(result.agent.type).toBe("queen-coordinator");
   });
 });
 ```
@@ -6737,15 +6870,15 @@ import {
   createAgentConfig,
   createV3SwarmAgentConfigs,
   createMockAgent,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Pre-defined configs
 const queen = agentConfigs.queenCoordinator;
 const coder = agentConfigs.coder;
 
 // Create with overrides
-const customAgent = createAgentConfig('coder', {
-  name: 'Custom Coder',
+const customAgent = createAgentConfig("coder", {
+  name: "Custom Coder",
   priority: 90,
 });
 
@@ -6753,7 +6886,7 @@ const customAgent = createAgentConfig('coder', {
 const swarmAgents = createV3SwarmAgentConfigs();
 
 // Mock agents with vitest mocks
-const mockAgent = createMockAgent('security-architect');
+const mockAgent = createMockAgent("security-architect");
 mockAgent.execute.mockResolvedValue({ success: true });
 ```
 
@@ -6765,17 +6898,17 @@ import {
   createMemoryEntry,
   generateMockEmbedding,
   createMemoryBatch,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Pre-defined entries
 const pattern = memoryEntries.agentPattern;
 const securityRule = memoryEntries.securityRule;
 
 // Generate embeddings
-const embedding = generateMockEmbedding(384, 'my-seed');
+const embedding = generateMockEmbedding(384, "my-seed");
 
 // Create batch for performance testing
-const batch = createMemoryBatch(10000, 'semantic');
+const batch = createMemoryBatch(10000, "semantic");
 ```
 
 #### Swarm Fixtures
@@ -6786,17 +6919,17 @@ import {
   createSwarmConfig,
   createSwarmTask,
   createMockSwarmCoordinator,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Pre-defined configs
 const v3Config = swarmConfigs.v3Default;
 const minimalConfig = swarmConfigs.minimal;
 
 // Create with overrides
-const customConfig = createSwarmConfig('v3Default', {
+const customConfig = createSwarmConfig("v3Default", {
   maxAgents: 20,
   coordination: {
-    consensusProtocol: 'pbft',
+    consensusProtocol: "pbft",
     heartbeatInterval: 500,
   },
 });
@@ -6813,7 +6946,7 @@ import {
   mcpTools,
   createMCPTool,
   createMockMCPClient,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Pre-defined tools
 const swarmInit = mcpTools.swarmInit;
@@ -6822,7 +6955,7 @@ const agentSpawn = mcpTools.agentSpawn;
 // Mock client
 const client = createMockMCPClient();
 await client.connect();
-const result = await client.callTool('swarm_init', { topology: 'mesh' });
+const result = await client.callTool("swarm_init", { topology: "mesh" });
 ```
 
 ### Mock Factory
@@ -6834,13 +6967,13 @@ import {
   createMockTaskManager,
   createMockSecurityService,
   createMockSwarmCoordinator,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Full application with all mocks
 const app = createMockApplication();
 
 // Use in tests
-await app.taskManager.create({ name: 'Test', type: 'coding', payload: {} });
+await app.taskManager.create({ name: "Test", type: "coding", payload: {} });
 expect(app.taskManager.create).toHaveBeenCalled();
 
 // Access tracked state
@@ -6857,7 +6990,7 @@ import {
   retry,
   withTimeout,
   parallelLimit,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Wait for condition
 await waitFor(() => element.isVisible(), { timeout: 5000 });
@@ -6866,18 +6999,18 @@ await waitFor(() => element.isVisible(), { timeout: 5000 });
 await waitUntilChanged(() => counter.value, { from: 0 });
 
 // Retry with exponential backoff
-const result = await retry(
-  async () => await fetchData(),
-  { maxAttempts: 3, backoff: 100 }
-);
+const result = await retry(async () => await fetchData(), {
+  maxAttempts: 3,
+  backoff: 100,
+});
 
 // Timeout wrapper
 await withTimeout(async () => await longOp(), 5000);
 
 // Parallel with concurrency limit
 const results = await parallelLimit(
-  items.map(item => () => processItem(item)),
-  5 // max 5 concurrent
+  items.map((item) => () => processItem(item)),
+  5, // max 5 concurrent
 );
 ```
 
@@ -6890,11 +7023,11 @@ import {
   assertMocksCalledInOrder,
   assertV3PerformanceTargets,
   assertNoSensitiveData,
-} from '@claude-flow/testing';
+} from "@claude-flow/testing";
 
 // Event assertions
-assertEventPublished(mockEventBus, 'UserCreated', { userId: '123' });
-assertEventOrder(mockEventBus.publish, ['UserCreated', 'EmailSent']);
+assertEventPublished(mockEventBus, "UserCreated", { userId: "123" });
+assertEventOrder(mockEventBus.publish, ["UserCreated", "EmailSent"]);
 
 // Mock order
 assertMocksCalledInOrder([mockValidate, mockSave, mockNotify]);
@@ -6907,22 +7040,22 @@ assertV3PerformanceTargets({
 });
 
 // Security
-assertNoSensitiveData(mockLogger.logs, ['password', 'token', 'secret']);
+assertNoSensitiveData(mockLogger.logs, ["password", "token", "secret"]);
 ```
 
 ### Performance Testing
 
 ```typescript
-import { createPerformanceTestHelper, TEST_CONFIG } from '@claude-flow/testing';
+import { createPerformanceTestHelper, TEST_CONFIG } from "@claude-flow/testing";
 
 const perf = createPerformanceTestHelper();
 
-perf.startMeasurement('search');
+perf.startMeasurement("search");
 await search(query);
-const duration = perf.endMeasurement('search');
+const duration = perf.endMeasurement("search");
 
 // Get statistics
-const stats = perf.getStats('search');
+const stats = perf.getStats("search");
 console.log(`Avg: ${stats.avg}ms, P95: ${stats.p95}ms`);
 
 // V3 targets
@@ -6932,13 +7065,13 @@ console.log(TEST_CONFIG.AGENTDB_SEARCH_IMPROVEMENT_MAX); // 12500
 
 ### Best Practices
 
-| Practice | Do | Don't |
-|----------|-----|-------|
-| **Mock Dependencies** | `mockRepo.findById.mockResolvedValue(user)` | Call real database |
-| **Use Fixtures** | `agentConfigs.queenCoordinator` | Inline object literals |
-| **Test Behavior** | `expect(mockNotifier.notify).toHaveBeenCalled()` | `expect(service._queue.length).toBe(1)` |
-| **Isolate Tests** | `vi.clearAllMocks()` in `beforeEach` | Share state between tests |
-| **Verify Interactions** | `expect(save).toHaveBeenCalledBefore(notify)` | Assert implementation details |
+| Practice                | Do                                               | Don't                                   |
+| ----------------------- | ------------------------------------------------ | --------------------------------------- |
+| **Mock Dependencies**   | `mockRepo.findById.mockResolvedValue(user)`      | Call real database                      |
+| **Use Fixtures**        | `agentConfigs.queenCoordinator`                  | Inline object literals                  |
+| **Test Behavior**       | `expect(mockNotifier.notify).toHaveBeenCalled()` | `expect(service._queue.length).toBe(1)` |
+| **Isolate Tests**       | `vi.clearAllMocks()` in `beforeEach`             | Share state between tests               |
+| **Verify Interactions** | `expect(save).toHaveBeenCalledBefore(notify)`    | Assert implementation details           |
 
 </details>
 
@@ -6950,7 +7083,6 @@ Environment setup, configuration options, and platform support.
 
 <details>
 <summary>💻 <strong>Cross-Platform Support</strong></summary>
-
 
 ### Windows (PowerShell)
 
@@ -6982,103 +7114,103 @@ export CLAUDE_FLOW_MEMORY_PATH="./data"
 
 ### Core Configuration
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_FLOW_MODE` | Operation mode (`development`, `production`, `integration`) | `development` |
-| `CLAUDE_FLOW_ENV` | Environment name for test/dev isolation | - |
-| `CLAUDE_FLOW_DATA_DIR` | Root data directory | `./data` |
-| `CLAUDE_FLOW_MEMORY_PATH` | Directory for persistent memory storage | `./data` |
-| `CLAUDE_FLOW_MEMORY_TYPE` | Memory backend type (`json`, `sqlite`, `agentdb`, `hybrid`) | `hybrid` |
-| `CLAUDE_FLOW_SECURITY_MODE` | Security level (`strict`, `standard`, `permissive`) | `standard` |
-| `CLAUDE_FLOW_LOG_LEVEL` | Logging verbosity (`debug`, `info`, `warn`, `error`) | `info` |
-| `CLAUDE_FLOW_CONFIG` | Path to configuration file | `./claude-flow.config.json` |
-| `NODE_ENV` | Node.js environment (`development`, `production`, `test`) | `development` |
+| Variable                    | Description                                                 | Default                     |
+| --------------------------- | ----------------------------------------------------------- | --------------------------- |
+| `CLAUDE_FLOW_MODE`          | Operation mode (`development`, `production`, `integration`) | `development`               |
+| `CLAUDE_FLOW_ENV`           | Environment name for test/dev isolation                     | -                           |
+| `CLAUDE_FLOW_DATA_DIR`      | Root data directory                                         | `./data`                    |
+| `CLAUDE_FLOW_MEMORY_PATH`   | Directory for persistent memory storage                     | `./data`                    |
+| `CLAUDE_FLOW_MEMORY_TYPE`   | Memory backend type (`json`, `sqlite`, `agentdb`, `hybrid`) | `hybrid`                    |
+| `CLAUDE_FLOW_SECURITY_MODE` | Security level (`strict`, `standard`, `permissive`)         | `standard`                  |
+| `CLAUDE_FLOW_LOG_LEVEL`     | Logging verbosity (`debug`, `info`, `warn`, `error`)        | `info`                      |
+| `CLAUDE_FLOW_CONFIG`        | Path to configuration file                                  | `./claude-flow.config.json` |
+| `NODE_ENV`                  | Node.js environment (`development`, `production`, `test`)   | `development`               |
 
 ### Swarm & Agents
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_FLOW_MAX_AGENTS` | Default concurrent agent limit | `15` |
-| `CLAUDE_FLOW_TOPOLOGY` | Default swarm topology (`hierarchical`, `mesh`, `ring`, `star`) | `hierarchical` |
-| `CLAUDE_FLOW_HEADLESS` | Run in headless mode (no interactive prompts) | `false` |
-| `CLAUDE_CODE_HEADLESS` | Claude Code headless mode compatibility | `false` |
+| Variable                 | Description                                                     | Default        |
+| ------------------------ | --------------------------------------------------------------- | -------------- |
+| `CLAUDE_FLOW_MAX_AGENTS` | Default concurrent agent limit                                  | `15`           |
+| `CLAUDE_FLOW_TOPOLOGY`   | Default swarm topology (`hierarchical`, `mesh`, `ring`, `star`) | `hierarchical` |
+| `CLAUDE_FLOW_HEADLESS`   | Run in headless mode (no interactive prompts)                   | `false`        |
+| `CLAUDE_CODE_HEADLESS`   | Claude Code headless mode compatibility                         | `false`        |
 
 ### MCP Server
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_FLOW_MCP_PORT` | MCP server port | `3000` |
-| `CLAUDE_FLOW_MCP_HOST` | MCP server host | `localhost` |
-| `CLAUDE_FLOW_MCP_TRANSPORT` | Transport type (`stdio`, `http`, `websocket`) | `stdio` |
+| Variable                    | Description                                   | Default     |
+| --------------------------- | --------------------------------------------- | ----------- |
+| `CLAUDE_FLOW_MCP_PORT`      | MCP server port                               | `3000`      |
+| `CLAUDE_FLOW_MCP_HOST`      | MCP server host                               | `localhost` |
+| `CLAUDE_FLOW_MCP_TRANSPORT` | Transport type (`stdio`, `http`, `websocket`) | `stdio`     |
 
 ### Vector Search (HNSW)
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_FLOW_HNSW_M` | HNSW index M parameter (connectivity, higher = more accurate) | `16` |
-| `CLAUDE_FLOW_HNSW_EF` | HNSW search ef parameter (accuracy, higher = slower) | `200` |
-| `CLAUDE_FLOW_EMBEDDING_DIM` | Vector embedding dimensions | `384` |
-| `SQLJS_WASM_PATH` | Custom path to sql.js WASM binary | - |
+| Variable                    | Description                                                   | Default |
+| --------------------------- | ------------------------------------------------------------- | ------- |
+| `CLAUDE_FLOW_HNSW_M`        | HNSW index M parameter (connectivity, higher = more accurate) | `16`    |
+| `CLAUDE_FLOW_HNSW_EF`       | HNSW search ef parameter (accuracy, higher = slower)          | `200`   |
+| `CLAUDE_FLOW_EMBEDDING_DIM` | Vector embedding dimensions                                   | `384`   |
+| `SQLJS_WASM_PATH`           | Custom path to sql.js WASM binary                             | -       |
 
 ### AI Provider API Keys
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `ANTHROPIC_API_KEY` | Anthropic API key for Claude models | Yes (Claude) |
-| `OPENAI_API_KEY` | OpenAI API key for GPT models | Optional |
-| `GOOGLE_GEMINI_API_KEY` | Google Gemini API key | Optional |
-| `OPENROUTER_API_KEY` | OpenRouter API key (multi-provider) | Optional |
-| `OLLAMA_URL` | Ollama server URL for local models | `http://localhost:11434` |
+| Variable                | Description                         | Required                 |
+| ----------------------- | ----------------------------------- | ------------------------ |
+| `ANTHROPIC_API_KEY`     | Anthropic API key for Claude models | Yes (Claude)             |
+| `OPENAI_API_KEY`        | OpenAI API key for GPT models       | Optional                 |
+| `GOOGLE_GEMINI_API_KEY` | Google Gemini API key               | Optional                 |
+| `OPENROUTER_API_KEY`    | OpenRouter API key (multi-provider) | Optional                 |
+| `OLLAMA_URL`            | Ollama server URL for local models  | `http://localhost:11434` |
 
 ### IPFS/Decentralized Storage
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `WEB3_STORAGE_TOKEN` | Web3.Storage API token | Optional |
-| `W3_TOKEN` | Alternative Web3.Storage token | Optional |
-| `IPFS_TOKEN` | Generic IPFS API token | Optional |
-| `PINATA_API_KEY` | Pinata IPFS API key | Optional |
-| `PINATA_API_SECRET` | Pinata IPFS API secret | Optional |
-| `IPFS_API_URL` | Local IPFS node API URL | `http://localhost:5001` |
-| `IPFS_GATEWAY_URL` | IPFS gateway URL | `https://ipfs.io` |
+| Variable             | Description                    | Required                |
+| -------------------- | ------------------------------ | ----------------------- |
+| `WEB3_STORAGE_TOKEN` | Web3.Storage API token         | Optional                |
+| `W3_TOKEN`           | Alternative Web3.Storage token | Optional                |
+| `IPFS_TOKEN`         | Generic IPFS API token         | Optional                |
+| `PINATA_API_KEY`     | Pinata IPFS API key            | Optional                |
+| `PINATA_API_SECRET`  | Pinata IPFS API secret         | Optional                |
+| `IPFS_API_URL`       | Local IPFS node API URL        | `http://localhost:5001` |
+| `IPFS_GATEWAY_URL`   | IPFS gateway URL               | `https://ipfs.io`       |
 
 ### Google Cloud Storage
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GCS_BUCKET` | Google Cloud Storage bucket name | Optional |
-| `GOOGLE_CLOUD_BUCKET` | Alternative GCS bucket variable | Optional |
-| `GCS_PROJECT_ID` | GCS project ID | Optional |
-| `GOOGLE_CLOUD_PROJECT` | Alternative project ID variable | Optional |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Path to GCS service account JSON | Optional |
-| `GCS_PREFIX` | Prefix for stored files | `ruflo-patterns` |
+| Variable                         | Description                      | Required         |
+| -------------------------------- | -------------------------------- | ---------------- |
+| `GCS_BUCKET`                     | Google Cloud Storage bucket name | Optional         |
+| `GOOGLE_CLOUD_BUCKET`            | Alternative GCS bucket variable  | Optional         |
+| `GCS_PROJECT_ID`                 | GCS project ID                   | Optional         |
+| `GOOGLE_CLOUD_PROJECT`           | Alternative project ID variable  | Optional         |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Path to GCS service account JSON | Optional         |
+| `GCS_PREFIX`                     | Prefix for stored files          | `ruflo-patterns` |
 
 ### Auto-Update System
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `CLAUDE_FLOW_AUTO_UPDATE` | Enable/disable auto-updates | `true` |
-| `CLAUDE_FLOW_FORCE_UPDATE` | Force update check | `false` |
-| `CI` | CI environment detection (disables updates) | - |
-| `CONTINUOUS_INTEGRATION` | Alternative CI detection | - |
+| Variable                   | Description                                 | Default |
+| -------------------------- | ------------------------------------------- | ------- |
+| `CLAUDE_FLOW_AUTO_UPDATE`  | Enable/disable auto-updates                 | `true`  |
+| `CLAUDE_FLOW_FORCE_UPDATE` | Force update check                          | `false` |
+| `CI`                       | CI environment detection (disables updates) | -       |
+| `CONTINUOUS_INTEGRATION`   | Alternative CI detection                    | -       |
 
 ### Security
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GITHUB_TOKEN` | GitHub API token for repository operations | Optional |
-| `JWT_SECRET` | JWT secret for authentication | Production |
-| `HMAC_SECRET` | HMAC secret for request signing | Production |
-| `CLAUDE_FLOW_TOKEN` | Internal authentication token | Optional |
+| Variable            | Description                                | Required   |
+| ------------------- | ------------------------------------------ | ---------- |
+| `GITHUB_TOKEN`      | GitHub API token for repository operations | Optional   |
+| `JWT_SECRET`        | JWT secret for authentication              | Production |
+| `HMAC_SECRET`       | HMAC secret for request signing            | Production |
+| `CLAUDE_FLOW_TOKEN` | Internal authentication token              | Optional   |
 
 ### Output Formatting
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NO_COLOR` | Disable colored output | - |
-| `FORCE_COLOR` | Force colored output | - |
-| `DEBUG` | Enable debug output | `false` |
-| `TMPDIR` | Temporary directory path | `/tmp` |
+| Variable      | Description              | Default |
+| ------------- | ------------------------ | ------- |
+| `NO_COLOR`    | Disable colored output   | -       |
+| `FORCE_COLOR` | Force colored output     | -       |
+| `DEBUG`       | Enable debug output      | `false` |
+| `TMPDIR`      | Temporary directory path | `/tmp`  |
 
 ### Example `.env` File
 
@@ -7123,6 +7255,7 @@ CLAUDE_FLOW_HNSW_EF=200
 ### Configuration File Location
 
 Ruflo looks for configuration in this order:
+
 1. `./claude-flow.config.json` (project root)
 2. `~/.config/ruflo/config.json` (user config)
 3. Environment variables (override any file config)
@@ -7281,6 +7414,7 @@ Ruflo looks for configuration in this order:
   "hooks": { "enabled": true, "learning": true }
 }
 ```
+
 </details>
 
 <details>
@@ -7308,6 +7442,7 @@ Ruflo looks for configuration in this order:
   "monitoring": { "enabled": true, "metricsInterval": 30000 }
 }
 ```
+
 </details>
 
 <details>
@@ -7324,6 +7459,7 @@ Ruflo looks for configuration in this order:
   "hooks": { "enabled": false }
 }
 ```
+
 </details>
 
 <details>
@@ -7341,6 +7477,7 @@ Ruflo looks for configuration in this order:
   "neural": { "enabled": false }
 }
 ```
+
 </details>
 
 ### CLI Configuration Commands
@@ -7379,10 +7516,10 @@ Troubleshooting, migration guides, and documentation links.
 <details>
 <summary>🔧 <strong>Troubleshooting</strong></summary>
 
-
 ### Common Issues
 
 **MCP server won't start**
+
 ```bash
 # Check if port is in use
 lsof -i :3000
@@ -7393,6 +7530,7 @@ npx ruflo@latest mcp start
 ```
 
 **Agent spawn failures**
+
 ```bash
 # Check available memory
 free -m
@@ -7401,6 +7539,7 @@ export CLAUDE_FLOW_MAX_AGENTS=5
 ```
 
 **Pattern search returning no results**
+
 ```bash
 # Verify patterns are stored
 npx ruflo@latest hooks metrics
@@ -7409,6 +7548,7 @@ npx ruflo@latest hooks pretrain
 ```
 
 **Windows path issues**
+
 ```powershell
 # Use forward slashes or escape backslashes
 $env:CLAUDE_FLOW_MEMORY_PATH = "./data"
@@ -7417,6 +7557,7 @@ $env:CLAUDE_FLOW_MEMORY_PATH = "C:/Users/name/ruflo/data"
 ```
 
 **Permission denied errors**
+
 ```bash
 # Fix npm permissions (Linux/macOS)
 sudo chown -R $(whoami) ~/.npm
@@ -7424,6 +7565,7 @@ sudo chown -R $(whoami) ~/.npm
 ```
 
 **High memory usage**
+
 ```bash
 # Enable garbage collection
 node --expose-gc node_modules/.bin/ruflo
@@ -7456,14 +7598,14 @@ export CLAUDE_FLOW_HNSW_EF=100
 
 ### Breaking Changes
 
-| Change | V2 | V3 | Impact |
-|--------|----|----|--------|
-| **Package Structure** | `ruflo` | `@claude-flow/*` (scoped) | Update imports |
-| **Memory Backend** | JSON files | AgentDB + HNSW | Faster search |
-| **Hooks System** | Basic patterns | ReasoningBank + SONA | Self-learning |
-| **Security** | Manual validation | Automatic strict mode | More secure |
-| **CLI Commands** | Flat structure | Nested subcommands | New syntax |
-| **Config Format** | `.ruflo/config.json` | `claude-flow.config.json` | Update path |
+| Change                | V2                   | V3                        | Impact         |
+| --------------------- | -------------------- | ------------------------- | -------------- |
+| **Package Structure** | `ruflo`              | `@claude-flow/*` (scoped) | Update imports |
+| **Memory Backend**    | JSON files           | AgentDB + HNSW            | Faster search  |
+| **Hooks System**      | Basic patterns       | ReasoningBank + SONA      | Self-learning  |
+| **Security**          | Manual validation    | Automatic strict mode     | More secure    |
+| **CLI Commands**      | Flat structure       | Nested subcommands        | New syntax     |
+| **Config Format**     | `.ruflo/config.json` | `claude-flow.config.json` | Update path    |
 
 ### Step-by-Step Migration
 
@@ -7491,22 +7633,23 @@ npx ruflo@latest doctor --fix
 
 ### Command Changes Reference
 
-| V2 Command | V3 Command | Notes |
-|------------|------------|-------|
-| `ruflo start` | `ruflo mcp start` | MCP is explicit |
-| `ruflo init` | `ruflo init wizard` | Interactive setup (subcommand, not a flag) |
-| `ruflo spawn <type>` | `ruflo agent spawn -t <type>` | Nested under `agent` |
-| `ruflo swarm create` | `ruflo swarm init --topology mesh` | Explicit topology |
-| `--pattern-store path` | `--memory-backend agentdb` | Backend selection |
-| `hooks record` | `hooks post-edit --success true` | Explicit success flag |
-| `memory get <key>` | `memory retrieve --key <key>` | Explicit flag |
-| `memory set <key> <value>` | `memory store --key <key> --value <value>` | Explicit flags |
-| `neural learn` | `hooks intelligence --mode learn` | Under hooks |
-| `config set key value` | `config set --key key --value value` | Explicit flags |
+| V2 Command                 | V3 Command                                 | Notes                                      |
+| -------------------------- | ------------------------------------------ | ------------------------------------------ |
+| `ruflo start`              | `ruflo mcp start`                          | MCP is explicit                            |
+| `ruflo init`               | `ruflo init wizard`                        | Interactive setup (subcommand, not a flag) |
+| `ruflo spawn <type>`       | `ruflo agent spawn -t <type>`              | Nested under `agent`                       |
+| `ruflo swarm create`       | `ruflo swarm init --topology mesh`         | Explicit topology                          |
+| `--pattern-store path`     | `--memory-backend agentdb`                 | Backend selection                          |
+| `hooks record`             | `hooks post-edit --success true`           | Explicit success flag                      |
+| `memory get <key>`         | `memory retrieve --key <key>`              | Explicit flag                              |
+| `memory set <key> <value>` | `memory store --key <key> --value <value>` | Explicit flags                             |
+| `neural learn`             | `hooks intelligence --mode learn`          | Under hooks                                |
+| `config set key value`     | `config set --key key --value value`       | Explicit flags                             |
 
 ### Configuration Migration
 
 **V2 Config (`.ruflo/config.json`)**:
+
 ```json
 {
   "mode": "basic",
@@ -7516,6 +7659,7 @@ npx ruflo@latest doctor --fix
 ```
 
 **V3 Config (`claude-flow.config.json`)**:
+
 ```json
 {
   "version": "3.0.0",
@@ -7538,13 +7682,13 @@ npx ruflo@latest doctor --fix
 
 ```typescript
 // V2 (deprecated)
-import { ClaudeFlow, Agent, Memory } from 'ruflo';
+import { ClaudeFlow, Agent, Memory } from "ruflo";
 
 // V3 (new)
-import { ClaudeFlowClient } from '@claude-flow/cli';
-import { AgentDB } from '@claude-flow/memory';
-import { ThreatDetector } from '@claude-flow/security';
-import { HNSWIndex } from '@claude-flow/embeddings';
+import { ClaudeFlowClient } from "@claude-flow/cli";
+import { AgentDB } from "@claude-flow/memory";
+import { ThreatDetector } from "@claude-flow/security";
+import { HNSWIndex } from "@claude-flow/embeddings";
 ```
 
 ### Rollback Procedure
@@ -7574,13 +7718,13 @@ cp -r ./data-backup-v2 ./data
 
 ### Common Migration Issues
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `MODULE_NOT_FOUND` | Old package references | Update imports to `@claude-flow/*` |
-| `Config not found` | Path change | Rename to `claude-flow.config.json` |
-| `Memory backend error` | Schema change | Run `migrate run` to convert |
-| `Hooks not working` | New hook names | Use new hook commands |
-| `Agent spawn fails` | Type name changes | Check `agent list` for new types |
+| Issue                  | Cause                  | Solution                            |
+| ---------------------- | ---------------------- | ----------------------------------- |
+| `MODULE_NOT_FOUND`     | Old package references | Update imports to `@claude-flow/*`  |
+| `Config not found`     | Path change            | Rename to `claude-flow.config.json` |
+| `Memory backend error` | Schema change          | Run `migrate run` to convert        |
+| `Hooks not working`    | New hook names         | Use new hook commands               |
+| `Agent spawn fails`    | Type name changes      | Check `agent list` for new types    |
 
 </details>
 
@@ -7589,27 +7733,26 @@ cp -r ./data-backup-v2 ./data
 <details>
 <summary>📚 <strong>Documentation</strong></summary>
 
-
 ### V3 Module Documentation
 
-| Module | Description | Docs |
-|--------|-------------|------|
-| `@claude-flow/plugins` | Plugin SDK with workers, hooks, providers, security | [README](./v3/@claude-flow/plugins/README.md) |
-| `@claude-flow/hooks` | Event-driven lifecycle hooks + ReasoningBank | [Source](./v3/@claude-flow/hooks/) |
-| `@claude-flow/memory` | AgentDB unification with HNSW indexing | [Source](./v3/@claude-flow/memory/) |
-| `@claude-flow/security` | CVE remediation & security patterns | [Source](./v3/@claude-flow/security/) |
-| `@claude-flow/swarm` | 15-agent coordination engine | [Source](./v3/@claude-flow/swarm/) |
-| `@claude-flow/cli` | CLI modernization | [Source](./v3/@claude-flow/cli/) |
-| `@claude-flow/neural` | SONA learning integration | [Source](./v3/@claude-flow/neural/) |
-| `@claude-flow/testing` | TDD London School framework | [Source](./v3/@claude-flow/testing/) |
-| `@claude-flow/mcp` | MCP server & tools | [Source](./v3/@claude-flow/mcp/) |
-| `@claude-flow/embeddings` | Vector embedding providers | [Source](./v3/@claude-flow/embeddings/) |
-| `@claude-flow/providers` | LLM provider integrations | [Source](./v3/@claude-flow/providers/) |
-| `@claude-flow/integration` | agentic-flow@alpha integration | [Source](./v3/@claude-flow/integration/) |
-| `@claude-flow/performance` | Benchmarking & optimization | [Source](./v3/@claude-flow/performance/) |
-| `@claude-flow/deployment` | Release & CI/CD | [Source](./v3/@claude-flow/deployment/) |
-| `@claude-flow/shared` | Shared utilities, types & V3ProgressService | [Source](./v3/@claude-flow/shared/) |
-| `@claude-flow/browser` | AI-optimized browser automation with agent-browser | [README](./v3/@claude-flow/browser/README.md) |
+| Module                     | Description                                         | Docs                                          |
+| -------------------------- | --------------------------------------------------- | --------------------------------------------- |
+| `@claude-flow/plugins`     | Plugin SDK with workers, hooks, providers, security | [README](./v3/@claude-flow/plugins/README.md) |
+| `@claude-flow/hooks`       | Event-driven lifecycle hooks + ReasoningBank        | [Source](./v3/@claude-flow/hooks/)            |
+| `@claude-flow/memory`      | AgentDB unification with HNSW indexing              | [Source](./v3/@claude-flow/memory/)           |
+| `@claude-flow/security`    | CVE remediation & security patterns                 | [Source](./v3/@claude-flow/security/)         |
+| `@claude-flow/swarm`       | 15-agent coordination engine                        | [Source](./v3/@claude-flow/swarm/)            |
+| `@claude-flow/cli`         | CLI modernization                                   | [Source](./v3/@claude-flow/cli/)              |
+| `@claude-flow/neural`      | SONA learning integration                           | [Source](./v3/@claude-flow/neural/)           |
+| `@claude-flow/testing`     | TDD London School framework                         | [Source](./v3/@claude-flow/testing/)          |
+| `@claude-flow/mcp`         | MCP server & tools                                  | [Source](./v3/@claude-flow/mcp/)              |
+| `@claude-flow/embeddings`  | Vector embedding providers                          | [Source](./v3/@claude-flow/embeddings/)       |
+| `@claude-flow/providers`   | LLM provider integrations                           | [Source](./v3/@claude-flow/providers/)        |
+| `@claude-flow/integration` | agentic-flow@alpha integration                      | [Source](./v3/@claude-flow/integration/)      |
+| `@claude-flow/performance` | Benchmarking & optimization                         | [Source](./v3/@claude-flow/performance/)      |
+| `@claude-flow/deployment`  | Release & CI/CD                                     | [Source](./v3/@claude-flow/deployment/)       |
+| `@claude-flow/shared`      | Shared utilities, types & V3ProgressService         | [Source](./v3/@claude-flow/shared/)           |
+| `@claude-flow/browser`     | AI-optimized browser automation with agent-browser  | [README](./v3/@claude-flow/browser/README.md) |
 
 ### Additional Resources
 
@@ -7622,17 +7765,16 @@ cp -r ./data-backup-v2 ./data
 
 ## Support
 
-| Resource | Link |
-|----------|------|
-| 📚 Documentation | [github.com/ruvnet/claude-flow](https://github.com/ruvnet/claude-flow) |
-| 🐛 Issues & Bugs | [github.com/ruvnet/claude-flow/issues](https://github.com/ruvnet/claude-flow/issues) |
+| Resource                       | Link                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------------------ |
+| 📚 Documentation               | [github.com/ruvnet/claude-flow](https://github.com/ruvnet/claude-flow)                           |
+| 🐛 Issues & Bugs               | [github.com/ruvnet/claude-flow/issues](https://github.com/ruvnet/claude-flow/issues)             |
 | 💼 Professional Implementation | [ruv.io](https://ruv.io) — Enterprise consulting, custom integrations, and production deployment |
-| 💬 Discord Community | [Agentics Foundation](https://discord.com/invite/dfxmpwkG2D) |
+| 💬 Discord Community           | [Agentics Foundation](https://discord.com/invite/dfxmpwkG2D)                                     |
 
 ## License
 
 MIT - [RuvNet](https://github.com/ruvnet)
-
 
 [![RuVector](https://img.shields.io/npm/v/ruvector?style=for-the-badge&logo=rust&color=orange&label=RuVector)](https://www.npmjs.com/package/ruvector)
 [![Agentic-Flow](https://img.shields.io/npm/v/agentic-flow?style=for-the-badge&logo=typescript&color=3178c6&label=Agentic-Flow)](https://www.npmjs.com/package/agentic-flow)

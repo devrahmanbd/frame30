@@ -29,19 +29,35 @@ describe("resolveIntent", () => {
   });
 
   it("honours prefers-reduced-motion", () => {
-    expect(resolveIntent({ hydrated: true, prefersReduced: true })).toBe("reduced");
+    expect(resolveIntent({ hydrated: true, prefersReduced: true })).toBe(
+      "reduced",
+    );
   });
 
   it("never lets a product override beat the OS accessibility setting", () => {
-    expect(resolveIntent({ override: "full", prefersReduced: true })).toBe("reduced");
-    expect(resolveIntent({ override: "off", prefersReduced: false })).toBe("off");
+    expect(resolveIntent({ override: "full", prefersReduced: true })).toBe(
+      "reduced",
+    );
+    expect(resolveIntent({ override: "off", prefersReduced: false })).toBe(
+      "off",
+    );
   });
 
   it("downgrades on Save-Data, low memory and low core counts", () => {
     expect(resolveIntent({ hydrated: true, saveData: true })).toBe("reduced");
-    expect(resolveIntent({ hydrated: true, deviceMemoryGb: 1 })).toBe("reduced");
-    expect(resolveIntent({ hydrated: true, hardwareConcurrency: 2 })).toBe("reduced");
-    expect(resolveIntent({ hydrated: true, deviceMemoryGb: 8, hardwareConcurrency: 8 })).toBe("full");
+    expect(resolveIntent({ hydrated: true, deviceMemoryGb: 1 })).toBe(
+      "reduced",
+    );
+    expect(resolveIntent({ hydrated: true, hardwareConcurrency: 2 })).toBe(
+      "reduced",
+    );
+    expect(
+      resolveIntent({
+        hydrated: true,
+        deviceMemoryGb: 8,
+        hardwareConcurrency: 8,
+      }),
+    ).toBe("full");
   });
 
   it("gates transforms, opacity and heavy media by intent", () => {
@@ -54,7 +70,9 @@ describe("resolveIntent", () => {
 
   it("clamps entrance duration and collapses it at off intent", () => {
     expect(entranceDuration("off")).toBe(0);
-    expect(entranceDuration("reduced")).toBeLessThanOrEqual(MOTION_TOKENS.duration.fast);
+    expect(entranceDuration("reduced")).toBeLessThanOrEqual(
+      MOTION_TOKENS.duration.fast,
+    );
     expect(entranceDuration("full", 5_000)).toBe(MOTION_TOKENS.duration.slow);
   });
 });
@@ -72,7 +90,11 @@ describe("staggerSchedule", () => {
   });
 
   it("caps how many children get distinct delays", () => {
-    const delays = staggerSchedule(60, { stepMs: 40, maxChildren: 10, maxTotalMs: 900 });
+    const delays = staggerSchedule(60, {
+      stepMs: 40,
+      maxChildren: 10,
+      maxTotalMs: 900,
+    });
     expect(new Set(delays).size).toBeLessThanOrEqual(10);
     expect(delays[59]).toBe(delays[10]);
   });
@@ -126,7 +148,10 @@ describe("counters", () => {
     expect(easeOutExpo(0)).toBe(0);
     expect(easeOutExpo(1)).toBe(1);
     expect(easeOutExpo(0.5)).toBeGreaterThan(0.5);
-    expect(counterValueAt(1_400, 1_400, 0, 1_240, "full")).toBeCloseTo(1_240, 0);
+    expect(counterValueAt(1_400, 1_400, 0, 1_240, "full")).toBeCloseTo(
+      1_240,
+      0,
+    );
     expect(counterValueAt(0, 1_400, 0, 1_240, "full")).toBe(0);
   });
 
@@ -150,7 +175,12 @@ describe("MotionBudget", () => {
     expect(budget.acquire("a")).toBe(true);
     expect(budget.acquire("b")).toBe(true);
     expect(budget.acquire("c")).toBe(false);
-    expect(budget.stats()).toMatchObject({ active: 2, rejected: 1, max: 2, peak: 2 });
+    expect(budget.stats()).toMatchObject({
+      active: 2,
+      rejected: 1,
+      max: 2,
+      peak: 2,
+    });
     budget.release("a");
     expect(budget.acquire("c")).toBe(true);
   });
@@ -174,7 +204,9 @@ describe("engine load policy", () => {
   it("grows exponentially, jitters, and never exceeds the cap", () => {
     expect(backoffDelayMs(0, ENGINE_LOAD_POLICY, () => 1)).toBe(300);
     expect(backoffDelayMs(1, ENGINE_LOAD_POLICY, () => 1)).toBe(600);
-    expect(backoffDelayMs(9, ENGINE_LOAD_POLICY, () => 1)).toBe(ENGINE_LOAD_POLICY.maxBackoffMs);
+    expect(backoffDelayMs(9, ENGINE_LOAD_POLICY, () => 1)).toBe(
+      ENGINE_LOAD_POLICY.maxBackoffMs,
+    );
     expect(backoffDelayMs(0, ENGINE_LOAD_POLICY, () => 0)).toBe(150);
   });
 

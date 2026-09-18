@@ -61,22 +61,22 @@ scripts/                # schema drift check, seeders, release gates
 > **current, swappable** implementation of a requirement, replaceable without
 > changing contracts, interfaces, or docs.
 
-| Area | Choice | Why / swap path |
-|---|---|---|
-| Frontend | TanStack Start / Query / Router / Table / Form / Virtual | SSR + typed file routes; server functions remove a whole API tier |
-| Styling | Tailwind v4 tokens in `src/styles.css` + shadcn variants | Tokens only; see §7 |
-| Backend data | **Self-hosted Supabase** (Postgres, RLS, PostgREST, GoTrue, Realtime, Storage) | Plain Postgres underneath — portable to bare Postgres + our own auth |
-| Server logic | `createServerFn` + `src/routes/api/public/*` route handlers | No edge-function vendor coupling |
-| Cache / idempotency / rate limit / queue | **Self-hosted Redis** (AOF, `noeviction`) + DB-backed fallbacks | Valkey/KeyDB drop-in; DB fallback keeps correctness if Redis is down |
-| Payments | In-house Go aggregator (MFS sandbox first) | Provider adapters behind one idempotent `charge`/`refund`/`payout` contract |
-| Search | Meilisearch (Bangla-normalized) | Postgres FTS fallback path retained |
-| Edge | OpenResty + lua-resty-acme (mTLS/ACME), CDN | |
-| Metrics | **Prometheus** + exporters (node, cAdvisor, redis, postgres, blackbox) | |
-| Dashboards | **Grafana**, provisioned from git | |
-| Logs | **Promtail → Loki** | |
-| Errors / traces | **Self-hosted Sentry** (getsentry/self-hosted) | Envelope transport is ours (`src/lib/telemetry.ts`) — swappable |
-| Alerting | **Alertmanager** → PagerDuty / Slack | |
-| Perf gate | Lighthouse a11y ≥ 90 on release; perf bots | |
+| Area                                     | Choice                                                                         | Why / swap path                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| Frontend                                 | TanStack Start / Query / Router / Table / Form / Virtual                       | SSR + typed file routes; server functions remove a whole API tier           |
+| Styling                                  | Tailwind v4 tokens in `src/styles.css` + shadcn variants                       | Tokens only; see §7                                                         |
+| Backend data                             | **Self-hosted Supabase** (Postgres, RLS, PostgREST, GoTrue, Realtime, Storage) | Plain Postgres underneath — portable to bare Postgres + our own auth        |
+| Server logic                             | `createServerFn` + `src/routes/api/public/*` route handlers                    | No edge-function vendor coupling                                            |
+| Cache / idempotency / rate limit / queue | **Self-hosted Redis** (AOF, `noeviction`) + DB-backed fallbacks                | Valkey/KeyDB drop-in; DB fallback keeps correctness if Redis is down        |
+| Payments                                 | In-house Go aggregator (MFS sandbox first)                                     | Provider adapters behind one idempotent `charge`/`refund`/`payout` contract |
+| Search                                   | Meilisearch (Bangla-normalized)                                                | Postgres FTS fallback path retained                                         |
+| Edge                                     | OpenResty + lua-resty-acme (mTLS/ACME), CDN                                    |                                                                             |
+| Metrics                                  | **Prometheus** + exporters (node, cAdvisor, redis, postgres, blackbox)         |                                                                             |
+| Dashboards                               | **Grafana**, provisioned from git                                              |                                                                             |
+| Logs                                     | **Promtail → Loki**                                                            |                                                                             |
+| Errors / traces                          | **Self-hosted Sentry** (getsentry/self-hosted)                                 | Envelope transport is ours (`src/lib/telemetry.ts`) — swappable             |
+| Alerting                                 | **Alertmanager** → PagerDuty / Slack                                           |                                                                             |
+| Perf gate                                | Lighthouse a11y ≥ 90 on release; perf bots                                     |                                                                             |
 
 The platform runs against our self-hosted Supabase and Redis infrastructure
 in all environments (development, staging, and production). The application
@@ -162,12 +162,12 @@ verdict and never a second effect.
 
 Configuration and bring-up: `ops/README.md`. Contract:
 
-| Signal | Produced | Transported | Retention |
-|---|---|---|---|
-| Metrics | `incr`/`setGauge`/`observe`, exposed at `/api/public/metrics` behind `METRICS_TOKEN` | Prometheus scrape, 30s | 30d / 20GB |
-| Logs | `log()` — PII-scrubbed JSON on stdout with `trace_id`/`span_id` | Promtail (docker SD) → Loki | 30d |
-| Errors & traces | `withSpan` / `withRequestTrace` → envelopes | direct to self-hosted Sentry | per Sentry quota |
-| Alerts | `alerts.rules.yml`, `slo.rules.yml`, `infra.rules.yml` | Alertmanager → PagerDuty / Slack | — |
+| Signal          | Produced                                                                             | Transported                      | Retention        |
+| --------------- | ------------------------------------------------------------------------------------ | -------------------------------- | ---------------- |
+| Metrics         | `incr`/`setGauge`/`observe`, exposed at `/api/public/metrics` behind `METRICS_TOKEN` | Prometheus scrape, 30s           | 30d / 20GB       |
+| Logs            | `log()` — PII-scrubbed JSON on stdout with `trace_id`/`span_id`                      | Promtail (docker SD) → Loki      | 30d              |
+| Errors & traces | `withSpan` / `withRequestTrace` → envelopes                                          | direct to self-hosted Sentry     | per Sentry quota |
+| Alerts          | `alerts.rules.yml`, `slo.rules.yml`, `infra.rules.yml`                               | Alertmanager → PagerDuty / Slack | —                |
 
 Correlation is the design goal: Grafana panel → Loki lines → `trace_id`
 derived field → Sentry trace, in three clicks and no context switch.
@@ -233,23 +233,23 @@ invariants:
 
 ## 8. Decision record (why it is like this)
 
-| # | Decision | Rationale | Cost accepted |
-|---|---|---|---|
-| D1 | Self-host everything | BD data residency, predictable cost in BDT, no provider can revoke our platform | We carry patching, capacity and on-call |
-| D2 | Supabase self-hosted rather than bare Postgres | RLS + Auth + Storage + Realtime in one pinned distribution; still plain Postgres underneath | Upgrade cadence must be managed by us |
-| D3 | RLS as the isolation mechanism | Isolation enforced by the database, not by remembering a `WHERE` clause | Policies must be tested (98 negative assertions) |
-| D4 | Integer minor units for money | Floats lose paisa and lose trust | Every boundary must convert explicitly |
-| D5 | Redis `noeviction` | A dropped idempotency key is a double charge | Memory pressure pages instead of degrading silently |
-| D6 | `createServerFn` over edge functions | Same language, same types, same repo, no vendor runtime | Must keep function files thin so bundle splitting stays correct |
-| D7 | Prometheus/Loki/Sentry self-hosted | Full-fidelity retention with no per-seat or per-event billing pressure on debugging | We run the stack and its own alerts |
-| D8 | Logs as JSON with trace ids | Correlation across three signals without a vendor APM | Log lines must be produced through `log()`, never `console.log` |
-| D9 | Bounded label cardinality | A cardinality explosion takes out monitoring exactly when it is needed | Some queries need `| json` at read time instead of a label |
-| D10 | Docs-first, gate-per-module | Ambiguity is caught before code, and `[A]` work ships with failure suites | Slower first commit, far fewer regressions |
-| D11 | Immutable Docker artifacts with Blue/Green standby | Zero runtime drift, instant rollback to previous known-good image | Double compute overhead during deployment |
-| D12 | Expand-and-Contract database migrations | Backward-compatible schema evolution; zero downtime during DB changes | Requires 3 to 4 sequential releases per structural change |
-| D13 | Tenant-cohort canary deployment | Blast radius containment; prevents bad release from impacting thousands of stores | Traffic router must inspect tenant context or cookie headers |
-| D14 | Time-Machine backup snapshots & continuous PITR | Instant rewind if disk corrupts or deployment fails; RPO = 0, RTO < 15m | Storage overhead for WAL archiving and base backups |
-| D15 | ML training data immunity & decoupling shield | User/merchant deletion never cascades to ML training data; PII-redacted AI assets stay permanent | Relational FKs set to null; surrogate cohort hashes maintained |
+| #   | Decision                                           | Rationale                                                                                        | Cost accepted                                                   |
+| --- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| D1  | Self-host everything                               | BD data residency, predictable cost in BDT, no provider can revoke our platform                  | We carry patching, capacity and on-call                         |
+| D2  | Supabase self-hosted rather than bare Postgres     | RLS + Auth + Storage + Realtime in one pinned distribution; still plain Postgres underneath      | Upgrade cadence must be managed by us                           |
+| D3  | RLS as the isolation mechanism                     | Isolation enforced by the database, not by remembering a `WHERE` clause                          | Policies must be tested (98 negative assertions)                |
+| D4  | Integer minor units for money                      | Floats lose paisa and lose trust                                                                 | Every boundary must convert explicitly                          |
+| D5  | Redis `noeviction`                                 | A dropped idempotency key is a double charge                                                     | Memory pressure pages instead of degrading silently             |
+| D6  | `createServerFn` over edge functions               | Same language, same types, same repo, no vendor runtime                                          | Must keep function files thin so bundle splitting stays correct |
+| D7  | Prometheus/Loki/Sentry self-hosted                 | Full-fidelity retention with no per-seat or per-event billing pressure on debugging              | We run the stack and its own alerts                             |
+| D8  | Logs as JSON with trace ids                        | Correlation across three signals without a vendor APM                                            | Log lines must be produced through `log()`, never `console.log` |
+| D9  | Bounded label cardinality                          | A cardinality explosion takes out monitoring exactly when it is needed                           | Some queries need `                                             | json` at read time instead of a label |
+| D10 | Docs-first, gate-per-module                        | Ambiguity is caught before code, and `[A]` work ships with failure suites                        | Slower first commit, far fewer regressions                      |
+| D11 | Immutable Docker artifacts with Blue/Green standby | Zero runtime drift, instant rollback to previous known-good image                                | Double compute overhead during deployment                       |
+| D12 | Expand-and-Contract database migrations            | Backward-compatible schema evolution; zero downtime during DB changes                            | Requires 3 to 4 sequential releases per structural change       |
+| D13 | Tenant-cohort canary deployment                    | Blast radius containment; prevents bad release from impacting thousands of stores                | Traffic router must inspect tenant context or cookie headers    |
+| D14 | Time-Machine backup snapshots & continuous PITR    | Instant rewind if disk corrupts or deployment fails; RPO = 0, RTO < 15m                          | Storage overhead for WAL archiving and base backups             |
+| D15 | ML training data immunity & decoupling shield      | User/merchant deletion never cascades to ML training data; PII-redacted AI assets stay permanent | Relational FKs set to null; surrogate cohort hashes maintained  |
 
 ---
 
@@ -317,6 +317,7 @@ Keep BLUE Alive on Standby (Zero-Downtime Instant Rollback Gate)
 ### 10.1 Why Canary Blue/Green Beats Plain Blue/Green
 
 Plain Blue/Green switching provides:
+
 - Zero downtime during standard cutover
 - Instant rollback to the previous cluster
 - Conceptual simplicity
@@ -326,6 +327,7 @@ Imagine a subtle defect or database lock issue that only manifests under real, c
 
 **The Large-SaaS Release Combination (Shopify / WordPress VIP Standard)**:
 Large-scale SaaS platforms avoid catastrophic releases by combining:
+
 1. **Blue/Green infrastructure** (two warm, identical production clusters).
 2. **Canary traffic shifting** (gradual percentage-based traffic routing).
 3. **Tenant-aware cohort controls** (deploying to internal and pilot stores first).
@@ -401,19 +403,19 @@ Release 1: Expand       Release 2: Dual-Write       Release 3: Read New       Re
 
 ### 10.4 Core Production Infrastructure Stack
 
-| Component | Technology | Role & Specification |
-| :--- | :--- | :--- |
-| **Container Orchestration** | **Kubernetes** (or **HashiCorp Nomad**) | Schedules, auto-heals, and scales isolated container pods with declarative health probes. |
-| **Environments** | **Blue & Green Pod Clusters** | Dual active/standby clusters ensuring zero cold starts and instant rollback capability. |
-| **Load Balancer & Edge** | **OpenResty / Envoy / Cloudflare** | Weighted canary traffic shifting, SNI SSL termination, automated ACME certificates, and tenant cohort routing. |
-| **Immutable Artifacts** | **Docker Container Images** | Built in CI, pinned by immutable git commit SHA (`framique:sha-${GIT_SHA}`), zero runtime file mutation. |
-| **Data Tier** | **PostgreSQL (Supabase self-hosted)** | Row Level Security (RLS) enforcement, multi-tenant isolation, ACID transaction guarantees. |
-| **Cache & Realtime** | **Redis (`noeviction`)** | Dynamic configuration cache, distributed pub/sub invalidation, idempotency token store. |
-| **Feature Flags** | **Tenant-Scoped Flag Engine** | Decouples code deployment from user-facing feature exposure per merchant. |
-| **Background Migration Workers** | **Chunked Asynchronous Workers** | Non-blocking historical row backfills respecting database load and lock timeouts. |
-| **Automatic Health Checks** | **HTTP `/api/healthz` Probes** | Pre-promotion validation of DB connection pool, Redis cache, and memory thresholds. |
-| **Automatic Rollback** | **Circuit Breaker Monitor** | Instant reversion to BLUE (< 500ms) if 5xx error rate > 0.5% or p99 latency > 800ms. |
-| **Tenant-Aware Controls** | **Cohort Routing Middleware** | Directs requests by tenant ID or slug (`internal → 10 → 100 → 1,000 → all`). |
+| Component                        | Technology                              | Role & Specification                                                                                           |
+| :------------------------------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------- |
+| **Container Orchestration**      | **Kubernetes** (or **HashiCorp Nomad**) | Schedules, auto-heals, and scales isolated container pods with declarative health probes.                      |
+| **Environments**                 | **Blue & Green Pod Clusters**           | Dual active/standby clusters ensuring zero cold starts and instant rollback capability.                        |
+| **Load Balancer & Edge**         | **OpenResty / Envoy / Cloudflare**      | Weighted canary traffic shifting, SNI SSL termination, automated ACME certificates, and tenant cohort routing. |
+| **Immutable Artifacts**          | **Docker Container Images**             | Built in CI, pinned by immutable git commit SHA (`framique:sha-${GIT_SHA}`), zero runtime file mutation.       |
+| **Data Tier**                    | **PostgreSQL (Supabase self-hosted)**   | Row Level Security (RLS) enforcement, multi-tenant isolation, ACID transaction guarantees.                     |
+| **Cache & Realtime**             | **Redis (`noeviction`)**                | Dynamic configuration cache, distributed pub/sub invalidation, idempotency token store.                        |
+| **Feature Flags**                | **Tenant-Scoped Flag Engine**           | Decouples code deployment from user-facing feature exposure per merchant.                                      |
+| **Background Migration Workers** | **Chunked Asynchronous Workers**        | Non-blocking historical row backfills respecting database load and lock timeouts.                              |
+| **Automatic Health Checks**      | **HTTP `/api/healthz` Probes**          | Pre-promotion validation of DB connection pool, Redis cache, and memory thresholds.                            |
+| **Automatic Rollback**           | **Circuit Breaker Monitor**             | Instant reversion to BLUE (< 500ms) if 5xx error rate > 0.5% or p99 latency > 800ms.                           |
+| **Tenant-Aware Controls**        | **Cohort Routing Middleware**           | Directs requests by tenant ID or slug (`internal → 10 → 100 → 1,000 → all`).                                   |
 
 ---
 
@@ -538,19 +540,20 @@ Transactional Database (Volatile)                ML Training Flywheel (Immutable
 
 The agent utilizes OpenRouter free tier models to maintain zero marginal inference cost while delivering state-of-the-art enterprise reasoning:
 
-| Layer | Model / Endpoint | Role & Specifications |
-| :--- | :--- | :--- |
-| **Primary Chat Reasoning** | `nvidia/nemotron-3-ultra-550b-a55b:free` | 550B ultra-scale reasoning model for deep multi-turn support, intent parsing, and tool argument extraction. |
-| **Provider Fallback Tier** | `nvidia/nemotron-3.5-lightning:free` / `openrouter/free` | Automated fallback circuit in case upstream Nvidia provider instances encounter transient 404/502 outages. |
-| **Vector Embeddings** | `nvidia/llama-nemotron-embed-vl-1b-v2:free` | High-accuracy dense semantic vector embeddings for Framique CMS knowledge base indexing and retrieval. |
-| **Gateway URL** | `https://openrouter.ai/api/v1` | OpenAI-compatible unified REST interface with streaming support. |
-| **API Key Management** | Dynamic Admin Vault (`platform_dynamic_config`) | Dynamic hot-swappable key configuration from the Admin Dashboard; zero static `.env` dependencies; sealed at rest. |
+| Layer                      | Model / Endpoint                                         | Role & Specifications                                                                                              |
+| :------------------------- | :------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| **Primary Chat Reasoning** | `nvidia/nemotron-3-ultra-550b-a55b:free`                 | 550B ultra-scale reasoning model for deep multi-turn support, intent parsing, and tool argument extraction.        |
+| **Provider Fallback Tier** | `nvidia/nemotron-3.5-lightning:free` / `openrouter/free` | Automated fallback circuit in case upstream Nvidia provider instances encounter transient 404/502 outages.         |
+| **Vector Embeddings**      | `nvidia/llama-nemotron-embed-vl-1b-v2:free`              | High-accuracy dense semantic vector embeddings for Framique CMS knowledge base indexing and retrieval.             |
+| **Gateway URL**            | `https://openrouter.ai/api/v1`                           | OpenAI-compatible unified REST interface with streaming support.                                                   |
+| **API Key Management**     | Dynamic Admin Vault (`platform_dynamic_config`)          | Dynamic hot-swappable key configuration from the Admin Dashboard; zero static `.env` dependencies; sealed at rest. |
 
 ---
 
 ### 11.2 Brand Identity & Product Scope (Framique)
 
 The agent operates strictly as the **Official Framique Support Agent** with deep domain grounding in:
+
 1. **Framique CMS Core**: Multi-tenant merchant architecture, visual page builder (AST-based), themes, sections, and global blocks.
 2. **Catalog & Inventory Management**: Products, variants, SKU tracking, low-stock alerts, and category hierarchies.
 3. **Bangladeshi Commerce & Payments**: Native checkout flows, bKash (merchant checkout + direct tokenized payment), Nagad, SSLCommerz, Shurjopay, and Cash on Delivery (COD).
@@ -569,47 +572,52 @@ The Framique Support Agent is an active ReAct agent that evaluates customer inte
 export const SUPPORT_TOOLS = {
   // 1. Order and Tracking Lookup (Pinned Read-Only)
   lookup_order: {
-    description: "Look up order status, items, payment state, and courier tracking details",
-    parameters: { orderNumber: "string", phone: "string" }
+    description:
+      "Look up order status, items, payment state, and courier tracking details",
+    parameters: { orderNumber: "string", phone: "string" },
   },
 
   // 2. Support Ticket Creation (Automated & Customer-Triggered)
   create_support_ticket: {
-    description: "Open an official support ticket in Framique Support Desk with SLA assignment",
+    description:
+      "Open an official support ticket in Framique Support Desk with SLA assignment",
     parameters: {
       subject: "string",
       description: "string",
       priority: "low" | "normal" | "high" | "urgent",
-      category: "billing" | "courier" | "payment" | "technical" | "general"
-    }
+      category: "billing" | "courier" | "payment" | "technical" | "general",
+    },
   },
 
   // 3. Callback Request Form
   request_callback: {
-    description: "Schedule a high-touch telephone callback with a Framique human specialist",
+    description:
+      "Schedule a high-touch telephone callback with a Framique human specialist",
     parameters: {
       customerName: "string",
       contactPhone: "string", // BD format +8801...
       preferredWindow: "morning" | "afternoon" | "evening",
-      issueSummary: "string"
-    }
+      issueSummary: "string",
+    },
   },
 
   // 4. Chat Satisfaction Rating & Review
   rate_chat_satisfaction: {
-    description: "Record customer satisfaction (CSAT) rating and qualitative feedback",
+    description:
+      "Record customer satisfaction (CSAT) rating and qualitative feedback",
     parameters: {
       conversationId: "uuid",
       rating: 1 | 2 | 3 | 4 | 5,
-      reviewText: "string?"
-    }
+      reviewText: "string?",
+    },
   },
 
   // 5. Semantic Knowledge Base Retrieval
   retrieve_kb_articles: {
-    description: "Semantic vector search against Framique documentation and merchant FAQs",
-    parameters: { query: "string", limit: 4 }
-  }
+    description:
+      "Semantic vector search against Framique documentation and merchant FAQs",
+    parameters: { query: "string", limit: 4 },
+  },
 };
 ```
 
@@ -618,6 +626,7 @@ export const SUPPORT_TOOLS = {
 ### 11.4 In-Chat Interactive UX & Components
 
 The chat widget features rich, dynamic interactive forms rendered directly within the message stream:
+
 1. **Interactive Ticket Confirmation Card**:
    - Displays Ticket ID (e.g. `#TKT-89421A`), assigned priority, estimated first response SLA time, and a tracking button.
 2. **In-Chat Callback Request Form**:
@@ -698,6 +707,7 @@ The Framique Platform Owner console features an omnichannel support moderation a
 ```
 
 #### 1. Real-Time Human Takeover Protocol (`takeover_mode`)
+
 - **Dual Operating Modes**:
   - `ai` (Default): Inbound customer messages trigger the automated ReAct loop, knowledge retrieval, and tool execution.
   - `human_takeover`: The autonomous AI response loop is strictly paused. Inbound messages queue silently for the human operator. No automatic bot turns are dispatched.
@@ -707,6 +717,7 @@ The Framique Platform Owner console features an omnichannel support moderation a
   - **Handback to AI**: When the operator resolves the critical query, they can toggle takeover back to `'ai'`. The ReAct agent automatically incorporates the operator's messages into its conversational memory window and resumes autonomous handling seamlessly.
 
 #### 2. Human Real-Time Notifications & Audible Chimes
+
 - **Instant Event Dispatch**:
   - Platform owners receive real-time notifications on:
     1. Escalated chats (`status = 'needs_agent'`).
@@ -718,14 +729,18 @@ The Framique Platform Owner console features an omnichannel support moderation a
   - **Visual Badges & Unread Counters**: Dynamic red pill counter in the `/root` navigation bar and conversation drawer list showing unread/unassigned escalated messages.
 
 #### 3. Priority Matrix & SLA Management
+
 Every conversation is tagged with an SLA priority level:
+
 - `urgent`: Payment/charge failures, security reports, orders stuck in transit during courier cutoff. Target first response: **< 15 minutes**.
 - `high`: Escalated bot failures, angry customer sentiment, bulk B2B inquiries. Target first response: **< 1 hour**.
 - `normal`: Routine store questions, shipping inquiry, product variant availability. Target first response: **< 4 hours**.
 - `low`: General feedback, resolved check-ins. Target first response: **< 24 hours**.
 
 #### 4. Conversation Status Lifecycle
+
 State transitions follow a strict state machine:
+
 ```
   [Customer Initiates] ──▶ 'open' (AI Handling)
                              │
@@ -741,8 +756,9 @@ State transitions follow a strict state machine:
 ```
 
 #### 5. Private Operator Notes (`operator_notes`)
+
 - Each conversation contains an internal `operator_notes` field stored directly in `ai_conversations`.
-- Platform owners and staff use this field for internal collaboration (e.g. *"Customer called regarding order #5821 - courier returned due to incorrect phone, updated Steadfast tracking manually"*).
+- Platform owners and staff use this field for internal collaboration (e.g. _"Customer called regarding order #5821 - courier returned due to incorrect phone, updated Steadfast tracking manually"_).
 - Operator notes are strictly excluded from public and customer storefront queries via Postgres RLS and typed server functions.
 
 ---
@@ -752,28 +768,34 @@ State transitions follow a strict state machine:
 A core safety and brand integrity requirement of the Framique Support Agent is **epistemic humility**: the agent must never hallucinate, invent facts, or pretend to know an answer when grounded knowledge base data is unavailable.
 
 #### 1. Hallucination Circuit Breaker & Uncertainty Detection
+
 The agent assesses its own confidence before every turn:
+
 - **Vector Retrieval Miss**: If semantic KB retrieval returns 0 results or top passage similarity is below threshold ($\text{cosine similarity} < 0.65$ / distance $> 0.35$).
 - **Tool Resolution Ambiguity**: If order lookup or tracking ID cannot be verified in the database.
 - **Scope Boundary**: If the user's inquiry relates to unsupported custom code, legal advice, banking passwords, or personal opinions.
 - **Consecutive Unsure Turns**: If `unsureStreak >= 1`, the agent is prohibited from attempting further conversational guessing.
 
 #### 2. Polite Bilingual Humility Admission
+
 When the circuit breaker fires, the agent immediately outputs a polite, transparent admission of limitation:
 
 - **Bangla (বাংলা)**:
-  > *"আমি এই বিষয়ে নিশ্চিত নই এবং ভুল তথ্য এড়াতে কোনো অনুমান করতে চাই না। আপনি চাইলে আমি এখনই আপনাকে আমাদের কাস্টমার সাপোর্ট টিমের সাথে যুক্ত করে দিচ্ছি, অথবা একটি কলব্যাক শিডিউল করে দিতে পারি।"*
+
+  > _"আমি এই বিষয়ে নিশ্চিত নই এবং ভুল তথ্য এড়াতে কোনো অনুমান করতে চাই না। আপনি চাইলে আমি এখনই আপনাকে আমাদের কাস্টমার সাপোর্ট টিমের সাথে যুক্ত করে দিচ্ছি, অথবা একটি কলব্যাক শিডিউল করে দিতে পারি।"_
 
 - **English**:
-  > *"I don't have verified information to answer this question accurately. To ensure you receive the correct details, I can connect you directly with a human specialist, schedule a callback, or open an official support ticket."*
+  > _"I don't have verified information to answer this question accurately. To ensure you receive the correct details, I can connect you directly with a human specialist, schedule a callback, or open an official support ticket."_
 
 #### 3. Actionable In-Chat Escalation Pathways
+
 Instead of dead-ending the user, the agent immediately renders interactive action options in the chat stream:
+
 1. **Transfer to Human Agent (`action: "transfer_to_human"`)**:
    - Updates conversation status to `'needs_agent'`.
    - Sets priority to `'high'` (or `'urgent'`).
    - Dispatches real-time notification with chime to all active `/root` platform owner consoles.
-   - Renders a queue status indicator in the shopper's chat: *"You are connected. A human specialist has been notified."*
+   - Renders a queue status indicator in the shopper's chat: _"You are connected. A human specialist has been notified."_
 2. **Request a Callback (`action: "request_callback"`)**:
    - Renders the interactive in-chat callback form with pre-filled customer name and Bangladeshi phone number.
 3. **Open Support Ticket (`action: "create_support_ticket"`)**:
@@ -786,6 +808,7 @@ Instead of dead-ending the user, the agent immediately renders interactive actio
 ## 12. Platform Owner Control Plane & Sovereign Governance Architecture (`/root`)
 
 The Platform Owner Control Plane (`/root`) is the topmost administrative shell in Framique's three-tier SaaS topology:
+
 1. **Shopper / Storefront**: Edge-served public storefronts at `<slug>.framique.store` and verified custom domains.
 2. **Merchant Admin (`/admin`, `/dashboard`)**: Tenant-scoped merchant console for products, orders, inventory, POS, settings, and theme customization.
 3. **Platform Owner (`/root`)**: Sovereign root console granting platform administrators complete control over multi-tenant isolation, money engine conformance, 4-eyes payouts, AI customer support supervision, gateway rails, ad-fraud defense, and zero-downtime infrastructure operations.
@@ -809,12 +832,14 @@ The Platform Owner Control Plane (`/root`) is the topmost administrative shell i
 ```
 
 ### 12.1 Perimeter, RBAC & Isolation Boundary
+
 - **Standalone Route & Shell Isolation**: `/root` sits completely outside `_authenticated` and `dashboard`. It runs its own layout (`RootShell`), its own dedicated session gate, and its own authentication route (`/root/login`).
 - **Security-Definer Authorization**: Access is strictly governed by `platform_admins` table membership and `public.is_platform_admin()` security-definer database functions. Role columns on user profiles are strictly forbidden. Non-admin users are rejected with `owner.forbidden` and never confirmed the existence of internal endpoints.
 - **`merchant_id = 'platform'` RLS Scoping**: When platform administrators read or write platform-level metadata, queries explicitly use `merchant_id = 'platform'` to preserve RLS integrity across the entire schema.
 - **Append-Only Owner Action Audit Ledger**: Every privileged operation (limit override, suspension, payout approval, kill-switch toggle, impersonation session) writes an immutable, append-only row to `owner_action_logs` with actor ID, IP hash, target entity, timestamp, before/after states, and mandatory justification reason.
 
 ### 12.2 The 16 Sovereign Control Desks
+
 The platform owner panel provides 16 dedicated operational desks ensuring total mastery over the ecosystem:
 
 1. **Executive Command Center (`/root/`)**:
@@ -869,20 +894,26 @@ The platform owner panel provides 16 dedicated operational desks ensuring total 
     - Continuous WAL point-in-time recovery (PITR) ledger and single-tenant disaster restore rehearsals.
 
 ### 12.3 Emergency Platform Posture & Kill Switches
+
 The platform owner console provides physical circuit breakers capable of halting or degrading specific subsystems without taking the commerce core down:
+
 - **`ai_kill_switch`**: Instantly pauses autonomous AI support execution across all storefronts; escalates all inquiries to human ticketing.
 - **`fraud_engine_enabled`**: Disables edge heuristic scoring and fails open to manual risk review to prevent false-positive checkout blockage during flash sales.
 - **`consent_channel_switches`**: Global toggles for Email, SMS, and Push notification dispatches honoring recorded opt-outs.
 - **`gateway_live_gate`**: Immediate rollback of live payment provider credentials to sandbox or mock rails during external gateway API disruptions.
 
 ### 12.4 Four-Eyes Principle (Dual-Operator Authorization)
+
 For high-exposure actions that could cause irrecoverable data loss or unauthorized money movement:
+
 - **Merchant Payouts**: The operator initiating a payout cannot approve the disbursement; a second distinct platform administrator must verify bank/MFS settlement before funds release.
 - **Tenant Purge**: Irrevocable deletion of a tenant's database rows following the cooling window requires two independent keys.
 - **Pricing Plan Publishing**: Modifying published subscription prices or tier limits requires draft review by a second administrator.
 
 ### 12.5 Universal Command Palette (`⌘K`)
+
 The root console embeds a dedicated keyboard-first command engine (`RootCommandPalette`):
+
 - **Destinations**: Instant fuzzy jump to any of the 16 desks.
 - **Tenant Lookup**: Live cross-tenant search by merchant name, slug, or subscription status with direct deep-linking to tenant quota management (`/root/tenants?q=:slug`).
 - **Keyboard Traversal**: Arrow-key navigation, `Enter` to open, `Esc` to dismiss, preserving operator flow without mouse reliance.
@@ -890,5 +921,3 @@ The root console embeds a dedicated keyboard-first command engine (`RootCommandP
 ---
 
 _See `docs/00-meta/PLAN.md` for build sequencing, `ops/README.md` for operational runbooks, `docs/17-owner-console/` for console specifications, and `TODO.md` for development tasks._
-
-

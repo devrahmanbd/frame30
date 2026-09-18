@@ -1,1 +1,411 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "label": "theme-workflows.test.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L1"}, {"id": "lib_theme_workflows_test_required", "label": "REQUIRED", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L42"}, {"id": "lib_theme_workflows_test_types", "label": "types()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L58"}, {"id": "lib_theme_workflows_test_slots", "label": "slots()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L62"}, {"id": "lib_theme_workflows_test_rendersection", "label": "renderSection()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L66"}, {"id": "lib_theme_workflows_test_stored", "label": "stored", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L78"}, {"id": "lib_theme_workflows_test_parsed", "label": "parsed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L79"}, {"id": "lib_theme_workflows_test_tokens", "label": "tokens", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L86"}, {"id": "lib_theme_workflows_test_present", "label": "present", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L97"}, {"id": "lib_theme_workflows_test_satisfied", "label": "satisfied", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L99"}, {"id": "lib_theme_workflows_test_html", "label": "html", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L114"}, {"id": "lib_theme_workflows_test_mismatched", "label": "mismatched", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L138"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "server", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_template_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_flattenast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_iscontextmismatch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_newsection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_parsetemplates", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_parsetokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "users_rahman_documents_frame30_src_lib_publish_gates_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_publish_gates_contrastgate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_presets_theme_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "builder_sectionrenderer_sectionrenderer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_required", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_types", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_slots", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_rendersection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_stored", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_parsed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_tokens", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L86", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_present", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_satisfied", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_html", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_html", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx", "target": "lib_theme_workflows_test_mismatched", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L138", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_theme_workflows_test_types", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L59"}, {"caller_nid": "lib_theme_workflows_test_types", "callee": "flattenAst", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L59"}, {"caller_nid": "lib_theme_workflows_test_rendersection", "callee": "renderToStaticMarkup", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx", "source_location": "L67"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "label": "theme-workflows.test.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_theme_workflows_test_required",
+      "label": "REQUIRED",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_theme_workflows_test_types",
+      "label": "types()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_theme_workflows_test_slots",
+      "label": "slots()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_theme_workflows_test_rendersection",
+      "label": "renderSection()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L66"
+    },
+    {
+      "id": "lib_theme_workflows_test_stored",
+      "label": "stored",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L78"
+    },
+    {
+      "id": "lib_theme_workflows_test_parsed",
+      "label": "parsed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_theme_workflows_test_tokens",
+      "label": "tokens",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L86"
+    },
+    {
+      "id": "lib_theme_workflows_test_present",
+      "label": "present",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L97"
+    },
+    {
+      "id": "lib_theme_workflows_test_satisfied",
+      "label": "satisfied",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L99"
+    },
+    {
+      "id": "lib_theme_workflows_test_html",
+      "label": "html",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_theme_workflows_test_mismatched",
+      "label": "mismatched",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L138"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_template_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_flattenast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_iscontextmismatch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_newsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_parsetemplates",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_parsetokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_publish_gates_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_publish_gates_contrastgate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_presets_theme_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "builder_sectionrenderer_sectionrenderer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_required",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_slots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_rendersection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_stored",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_parsed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_tokens",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_present",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_satisfied",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_theme_workflows_test_tsx",
+      "target": "lib_theme_workflows_test_mismatched",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L138",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_theme_workflows_test_types",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_theme_workflows_test_types",
+      "callee": "flattenAst",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_theme_workflows_test_rendersection",
+      "callee": "renderToStaticMarkup",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/theme-workflows.test.tsx",
+      "source_location": "L67"
+    }
+  ]
+}

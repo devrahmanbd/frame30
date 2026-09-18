@@ -7,7 +7,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -16,9 +19,8 @@ rec.holder = recorder;
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
-const { openReturn, advanceReturn, openDispute, advanceDispute, loadReturns } = await import(
-  "./returns.server"
-);
+const { openReturn, advanceReturn, openDispute, advanceDispute, loadReturns } =
+  await import("./returns.server");
 
 const MERCHANT = "11111111-1111-1111-1111-111111111111";
 const OTHER = "22222222-2222-2222-2222-222222222222";
@@ -31,7 +33,12 @@ describe("openReturn", () => {
   it("denies a return with no items and never reaches the database", async () => {
     const db = fakeDb();
     await expect(
-      openReturn(db.asClient(), { orderId: "o-1", reason: "damaged", items: [], subject: "s" }),
+      openReturn(db.asClient(), {
+        orderId: "o-1",
+        reason: "damaged",
+        items: [],
+        subject: "s",
+      }),
     ).rejects.toMatchObject({ code: "return_items_required" });
     expect(db.rpcCalls()).toHaveLength(0);
   });
@@ -41,7 +48,10 @@ describe("openReturn", () => {
     await openReturn(db.asClient(), {
       orderId: "o-1",
       reason: "damaged",
-      items: [{ orderItemId: "oi-1", quantity: 0 }, { orderItemId: "oi-2", quantity: -3 }],
+      items: [
+        { orderItemId: "oi-1", quantity: 0 },
+        { orderItemId: "oi-2", quantity: -3 },
+      ],
       subject: "s",
     });
     const args = db.rpcCalls("return_open")[0]!.args as any;
@@ -51,7 +61,12 @@ describe("openReturn", () => {
   it("denies a return without a reason", async () => {
     const db = fakeDb();
     await expect(
-      openReturn(db.asClient(), { orderId: "o-1", reason: "   ", items, subject: "s" }),
+      openReturn(db.asClient(), {
+        orderId: "o-1",
+        reason: "   ",
+        items,
+        subject: "s",
+      }),
     ).rejects.toMatchObject({ code: "reason_required" });
   });
 
@@ -60,10 +75,19 @@ describe("openReturn", () => {
       rpc: () => ({ data: null, error: { message: "return_window_closed" } }),
     });
     await expect(
-      openReturn(db.asClient(), { orderId: "o-1", reason: "damaged", items, subject: "s" }),
+      openReturn(db.asClient(), {
+        orderId: "o-1",
+        reason: "damaged",
+        items,
+        subject: "s",
+      }),
     ).rejects.toBeTruthy();
-    expect(recorder.of("framique_return_total", ["outcome", "rejected"])).toHaveLength(1);
-    expect(recorder.of("framique_return_total", ["outcome", "opened"])).toHaveLength(0);
+    expect(
+      recorder.of("framique_return_total", ["outcome", "rejected"]),
+    ).toHaveLength(1);
+    expect(
+      recorder.of("framique_return_total", ["outcome", "opened"]),
+    ).toHaveLength(0);
   });
 
   it("normalises the payload it sends and counts the opening (audit)", async () => {
@@ -76,8 +100,12 @@ describe("openReturn", () => {
     });
     const args = db.rpcCalls("return_open")[0]!.args as any;
     expect(args._reason).toHaveLength(200);
-    expect(args._items).toEqual([{ order_item_id: "oi-1", quantity: 2, restock: true }]);
-    expect(recorder.of("framique_return_total", ["outcome", "opened"])).toHaveLength(1);
+    expect(args._items).toEqual([
+      { order_item_id: "oi-1", quantity: 2, restock: true },
+    ]);
+    expect(
+      recorder.of("framique_return_total", ["outcome", "opened"]),
+    ).toHaveLength(1);
   });
 });
 
@@ -88,15 +116,23 @@ describe("advanceReturn", () => {
       returnId: "ret-1",
       status: "approved",
     });
-    expect(recorder.of("framique_return_state_total", ["status", "approved"])).toHaveLength(1);
+    expect(
+      recorder.of("framique_return_state_total", ["status", "approved"]),
+    ).toHaveLength(1);
   });
 
   it("denies an illegal transition refused by the state machine (deny)", async () => {
     const db = fakeDb({
-      rpc: () => ({ data: null, error: { message: "return_transition_invalid" } }),
+      rpc: () => ({
+        data: null,
+        error: { message: "return_transition_invalid" },
+      }),
     });
     await expect(
-      advanceReturn(db.asClient(), MERCHANT, "staff-1", { returnId: "ret-1", status: "refunded" }),
+      advanceReturn(db.asClient(), MERCHANT, "staff-1", {
+        returnId: "ret-1",
+        status: "refunded",
+      }),
     ).rejects.toBeTruthy();
     expect(recorder.of("framique_return_state_total")).toHaveLength(0);
   });
@@ -104,7 +140,9 @@ describe("advanceReturn", () => {
   it("replaying the same advance keeps the state machine as the single authority", async () => {
     // Both calls hit the DB FSM with identical arguments; the FSM — not this
     // layer — decides whether the second one is a no-op.
-    const db = fakeDb({ rpc: () => ({ data: { id: "ret-1", status: "approved" }, error: null }) });
+    const db = fakeDb({
+      rpc: () => ({ data: { id: "ret-1", status: "approved" }, error: null }),
+    });
     const input = { returnId: "ret-1", status: "approved" as const };
     const a = await advanceReturn(db.asClient(), MERCHANT, "staff-1", input);
     const b = await advanceReturn(db.asClient(), MERCHANT, "staff-1", input);
@@ -127,7 +165,9 @@ describe("disputes", () => {
   });
 
   it("denies a dispute the database refuses", async () => {
-    const db = fakeDb({ rpc: () => ({ data: null, error: { message: "dispute_exists" } }) });
+    const db = fakeDb({
+      rpc: () => ({ data: null, error: { message: "dispute_exists" } }),
+    });
     await expect(
       advanceDispute(db.asClient(), MERCHANT, "staff-1", {
         disputeId: "d-1",

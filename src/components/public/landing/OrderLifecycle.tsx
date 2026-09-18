@@ -71,7 +71,13 @@ function Row({
   );
 }
 
-export function OrderLifecycle({ step, className }: { step: LifecycleStep; className?: string }) {
+export function OrderLifecycle({
+  step,
+  className,
+}: {
+  step: LifecycleStep;
+  className?: string;
+}) {
   return (
     <div
       className={cn(
@@ -85,7 +91,9 @@ export function OrderLifecycle({ step, className }: { step: LifecycleStep; class
         <span
           className={cn(
             "rounded-fq-sm px-2 py-1 text-[11px] font-medium tracking-wide",
-            step === 3 ? "bg-foreground text-background" : "bg-muted text-muted-foreground",
+            step === 3
+              ? "bg-foreground text-background"
+              : "bg-muted text-muted-foreground",
           )}
         >
           {LIFECYCLE_STEPS[step].label}
@@ -96,9 +104,14 @@ export function OrderLifecycle({ step, className }: { step: LifecycleStep; class
         <div className="flex items-end justify-between gap-4">
           <div className="min-w-0">
             <p className="fq-index">CUSTOMER</p>
-            <p className="truncate text-base">Farhana R. · Mirpur DOHS, Dhaka</p>
+            <p className="truncate text-base">
+              Farhana R. · Mirpur DOHS, Dhaka
+            </p>
           </div>
- <p className="fq-display shrink-0 text-3xl tabular-nums"> BDT 2,450</p>
+          <p className="fq-display shrink-0 text-3xl tabular-nums">
+            {" "}
+            BDT 2,450
+          </p>
         </div>
 
         <div className="mt-5 grid grid-cols-4 gap-1.5" aria-hidden="true">
@@ -118,13 +131,22 @@ export function OrderLifecycle({ step, className }: { step: LifecycleStep; class
         </div>
 
         <div className="mt-5">
-          <Row k="Payment" v={step >= 1 ? "bKash · captured" : "Awaiting rail"} active={step >= 1} />
+          <Row
+            k="Payment"
+            v={step >= 1 ? "bKash · captured" : "Awaiting rail"}
+            active={step >= 1}
+          />
           <Row
             k="Courier"
             v={step >= 2 ? "SteadFast · pickup booked" : "Not booked"}
             active={step >= 2}
           />
-          <Row k="Label" v={step >= 2 ? "Printed" : "—"} active={step >= 2} mono />
+          <Row
+            k="Label"
+            v={step >= 2 ? "Printed" : "—"}
+            active={step >= 2}
+            mono
+          />
           <Row
             k="Ledger"
             v={step >= 3 ? "Closed · inventory + revenue" : "Open"}

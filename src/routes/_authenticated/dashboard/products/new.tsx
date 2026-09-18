@@ -11,12 +11,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/products/new")({
       { title: "New product — Framique Admin" },
       {
         name: "description",
-        content: "Create a catalog product with variants, SKUs, BDT price and stock.",
+        content:
+          "Create a catalog product with variants, SKUs, BDT price and stock.",
       },
       { property: "og:title", content: "Create a product" },
       {
         property: "og:description",
-        content: "Add a new product with variants and stock to your Framique catalog.",
+        content:
+          "Add a new product with variants and stock to your Framique catalog.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -55,11 +57,14 @@ function NewProduct() {
     },
   });
 
-  if (!merchant) return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (!merchant)
+    return <p className="text-sm text-muted-foreground">Loading…</p>;
 
   return (
     <div className="space-y-5">
-      <h1 className="font-bangla-display text-lg font-semibold">{t("New product", "নতুন পণ্য")}</h1>
+      <h1 className="font-bangla-display text-lg font-semibold">
+        {t("New product", "নতুন পণ্য")}
+      </h1>
       <ProductForm
         merchantId={merchant.id}
         initialProduct={emptyProduct}

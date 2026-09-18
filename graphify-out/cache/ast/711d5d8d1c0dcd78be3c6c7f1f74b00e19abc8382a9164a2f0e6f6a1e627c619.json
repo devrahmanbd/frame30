@@ -1,1 +1,576 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "label": "useEditorDoc.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L1"}, {"id": "editor_useeditordoc_savemode", "label": "SaveMode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L18"}, {"id": "editor_useeditordoc_editorerror", "label": "EditorError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L20"}, {"id": "editor_useeditordoc_parseeditorerror", "label": "parseEditorError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L22"}, {"id": "editor_useeditordoc_useeditordoc", "label": "useEditorDoc()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L29"}, {"id": "editor_useeditordoc_editorstate", "label": "EditorState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L212"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "users_rahman_documents_frame30_src_components_console_kit_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "console_kit_savestate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "users_rahman_documents_frame30_src_lib_editor_editor_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_functions_editorloadfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_functions_editorrevisionfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_functions_editorsavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_functions_editorsetkindfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_functions_editortrashfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "users_rahman_documents_frame30_src_lib_editor_editor_doc_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_doc_docsignature", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_doc_emptyeditordoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_doc_contentkind", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_doc_editordoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "users_rahman_documents_frame30_src_lib_editor_editor_history_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_canredo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_canundo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_createhistory", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_pushhistory", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_redo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_replacepresent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_undo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_editor_history_history", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_useeditordoc_savemode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_useeditordoc_editorerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_useeditordoc_parseeditorerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_useeditordoc_useeditordoc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts", "target": "editor_useeditordoc_editorstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L212", "weight": 1.0}], "raw_calls": [{"caller_nid": "editor_useeditordoc_parseeditorerror", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L23"}, {"caller_nid": "editor_useeditordoc_parseeditorerror", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L24"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L30"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L31"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L32"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L33"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L34"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L35"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L37"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L44"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L45"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L46"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L47"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L48"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L49"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L50"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L53"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L67"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L69"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L74"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L82"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L83"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L85"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L86"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L88"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L91"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L139"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L147"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L157"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L174"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L182"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "canUndo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L201"}, {"caller_nid": "editor_useeditordoc_useeditordoc", "callee": "canRedo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts", "source_location": "L202"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "label": "useEditorDoc.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "editor_useeditordoc_savemode",
+      "label": "SaveMode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "editor_useeditordoc_editorerror",
+      "label": "EditorError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "editor_useeditordoc_parseeditorerror",
+      "label": "parseEditorError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "editor_useeditordoc_useeditordoc",
+      "label": "useEditorDoc()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "editor_useeditordoc_editorstate",
+      "label": "EditorState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L212"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "users_rahman_documents_frame30_src_components_console_kit_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "console_kit_savestate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "users_rahman_documents_frame30_src_lib_editor_editor_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_functions_editorloadfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_functions_editorrevisionfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_functions_editorsavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_functions_editorsetkindfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_functions_editortrashfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "users_rahman_documents_frame30_src_lib_editor_editor_doc_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_doc_docsignature",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_doc_emptyeditordoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_doc_contentkind",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_doc_editordoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "users_rahman_documents_frame30_src_lib_editor_editor_history_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_canredo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_canundo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_createhistory",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_pushhistory",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_redo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_replacepresent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_undo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_editor_history_history",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_useeditordoc_savemode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_useeditordoc_editorerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_useeditordoc_parseeditorerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_useeditordoc_useeditordoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_editor_useeditordoc_ts",
+      "target": "editor_useeditordoc_editorstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L212",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "editor_useeditordoc_parseeditorerror",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_parseeditorerror",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L147"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "canUndo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "editor_useeditordoc_useeditordoc",
+      "callee": "canRedo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/editor/useEditorDoc.ts",
+      "source_location": "L202"
+    }
+  ]
+}

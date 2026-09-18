@@ -1,1 +1,1436 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "label": "motion-gate.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L1"}, {"id": "scripts_motion_gate_argv", "label": "argv", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L45"}, {"id": "scripts_motion_gate_flag", "label": "flag()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L46"}, {"id": "scripts_motion_gate_base", "label": "BASE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L53"}, {"id": "scripts_motion_gate_only", "label": "ONLY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L57"}, {"id": "scripts_motion_gate_widths", "label": "WIDTHS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L58"}, {"id": "scripts_motion_gate_passes", "label": "PASSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L62"}, {"id": "scripts_motion_gate_locales", "label": "LOCALES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L66"}, {"id": "scripts_motion_gate_concurrency", "label": "CONCURRENCY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L67"}, {"id": "scripts_motion_gate_attempts", "label": "ATTEMPTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L68"}, {"id": "scripts_motion_gate_fail_on", "label": "FAIL_ON", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L69"}, {"id": "scripts_motion_gate_json_out", "label": "JSON_OUT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L70"}, {"id": "scripts_motion_gate_log_level", "label": "LOG_LEVEL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L71"}, {"id": "scripts_motion_gate_allow", "label": "ALLOW", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L72"}, {"id": "scripts_motion_gate_levels", "label": "LEVELS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L79"}, {"id": "scripts_motion_gate_log", "label": "log()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L80"}, {"id": "scripts_motion_gate_surfaces", "label": "SURFACES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L92"}, {"id": "scripts_motion_gate_loadspec", "label": "loadSpec()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L107"}, {"id": "scripts_motion_gate_measure", "label": "MEASURE()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L128"}, {"id": "scripts_motion_gate_sleep", "label": "sleep()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L303"}, {"id": "scripts_motion_gate_jitter", "label": "jitter()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L304"}, {"id": "scripts_motion_gate_waitforserver", "label": "waitForServer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L306"}, {"id": "scripts_motion_gate_planjobs", "label": "planJobs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L323"}, {"id": "scripts_motion_gate_settlereveals", "label": "settleReveals()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L346"}, {"id": "scripts_motion_gate_waitformotionresolved", "label": "waitForMotionResolved()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L370"}, {"id": "scripts_motion_gate_pokemagnets", "label": "pokeMagnets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L388"}, {"id": "scripts_motion_gate_runjob", "label": "runJob()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L401"}, {"id": "scripts_motion_gate_drain", "label": "drain()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L547"}, {"id": "scripts_motion_gate_printreport", "label": "printReport()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L564"}, {"id": "scripts_motion_gate_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L625"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "node_url", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "playwright", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_argv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_flag", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_only", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_widths", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_passes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_locales", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_concurrency", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_attempts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_fail_on", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_json_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_log_level", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_allow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_levels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_log", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_surfaces", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_loadspec", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_measure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_sleep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L303", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_jitter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L304", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_waitforserver", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L306", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_planjobs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L323", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_settlereveals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L346", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_waitformotionresolved", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L370", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_pokemagnets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L388", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_runjob", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L401", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_drain", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L547", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_printreport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L564", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_motion_gate_mjs", "target": "scripts_motion_gate_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L625", "weight": 1.0}, {"source": "scripts_motion_gate_waitforserver", "target": "scripts_motion_gate_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L311", "weight": 1.0}, {"source": "scripts_motion_gate_waitforserver", "target": "scripts_motion_gate_sleep", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L318", "weight": 1.0}, {"source": "scripts_motion_gate_pokemagnets", "target": "scripts_motion_gate_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L397", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_waitformotionresolved", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L434", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_settlereveals", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L435", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_pokemagnets", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L436", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L494", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_sleep", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L526", "weight": 1.0}, {"source": "scripts_motion_gate_runjob", "target": "scripts_motion_gate_jitter", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L526", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_loadspec", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L630", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_waitforserver", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L631", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_planjobs", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L637", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_log", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L638", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_drain", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L639", "weight": 1.0}, {"source": "scripts_motion_gate_main", "target": "scripts_motion_gate_printreport", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L644", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_motion_gate_flag", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L47"}, {"caller_nid": "scripts_motion_gate_flag", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L50"}, {"caller_nid": "scripts_motion_gate_log", "callee": "write", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L82"}, {"caller_nid": "scripts_motion_gate_log", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L83"}, {"caller_nid": "scripts_motion_gate_log", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L83"}, {"caller_nid": "scripts_motion_gate_loadspec", "callee": "pathToFileURL", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L108"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L191"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L191"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "querySelectorAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L191"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L226"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "querySelectorAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L227"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L230"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "getComputedStyle", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L234"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "ms", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L235"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "getBoundingClientRect", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L237"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L238"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L238"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L239"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "contains", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L240"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "parseFloat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L242"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "keyframeProperties", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L243"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L243"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L243"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L250"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "querySelectorAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L250"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L263"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "querySelectorAll", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L263"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "querySelector", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L273"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "(() => {\n        const cs = getComputedStyle(h1);\n        const name = cs.animationName.split(\",\")[0].trim();\n        return {\n          label: `h1:${(h1.textContent ?? \"\").trim().slice(0, 32)}`,\n          durationMs: Math.max(ms(cs.transitionDuration), ms(cs.animationDuration)),\n          animationName: name === \"none\" ? null : name,\n        };\n      })", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L275"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L294"}, {"caller_nid": "scripts_motion_gate_measure", "callee": "getAnimations", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L294"}, {"caller_nid": "scripts_motion_gate_jitter", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L304"}, {"caller_nid": "scripts_motion_gate_waitforserver", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L309"}, {"caller_nid": "scripts_motion_gate_waitforserver", "callee": "timeout", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L309"}, {"caller_nid": "scripts_motion_gate_waitforserver", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L316"}, {"caller_nid": "scripts_motion_gate_waitforserver", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L318"}, {"caller_nid": "scripts_motion_gate_planjobs", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L332"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L347"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L348"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L349"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L350"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "waitForTimeout", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L351"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L353"}, {"caller_nid": "scripts_motion_gate_settlereveals", "callee": "waitForTimeout", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L356"}, {"caller_nid": "scripts_motion_gate_waitformotionresolved", "callee": "waitForFunction", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L372"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "first", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L389"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "locator", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L389"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "count", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L390"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "boundingBox", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L392"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "move", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L394"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "waitForTimeout", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L395"}, {"caller_nid": "scripts_motion_gate_pokemagnets", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L397"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L403"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "newContext", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L407"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "newPage", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L417"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "on", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L418"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "on", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L421"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "goto", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L425"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "waitForLoadState", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L428"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L433"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L433"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "evaluate", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L439"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "auditMotionPage", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L440"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L459"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L469"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L484"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "close", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L506"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L517"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "close", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L517"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L524"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L524"}, {"caller_nid": "scripts_motion_gate_runjob", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L540"}, {"caller_nid": "scripts_motion_gate_drain", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L550"}, {"caller_nid": "scripts_motion_gate_drain", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L550"}, {"caller_nid": "scripts_motion_gate_drain", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L556"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L565"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L566"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "dedupeMotionFindings", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L567"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L571"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L572"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L572"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L576"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L577"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L580"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L582"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L585"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L585"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L586"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L588"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L589"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "formatMotionFinding", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L589"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "dedupeMotionFindings", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L593"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L594"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L605"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L606"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "formatMotionFinding", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L606"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "countMotionBySeverity", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L609"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L610"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L611"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L615"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "write", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L616"}, {"caller_nid": "scripts_motion_gate_printreport", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L616"}, {"caller_nid": "scripts_motion_gate_main", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L633"}, {"caller_nid": "scripts_motion_gate_main", "callee": "launch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L634"}, {"caller_nid": "scripts_motion_gate_main", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L641"}, {"caller_nid": "scripts_motion_gate_main", "callee": "close", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L641"}, {"caller_nid": "scripts_motion_gate_main", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L645"}, {"caller_nid": "scripts_motion_gate_main", "callee": "writeFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L654"}, {"caller_nid": "scripts_motion_gate_main", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L656"}, {"caller_nid": "scripts_motion_gate_main", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L659"}, {"caller_nid": "scripts_motion_gate_main", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs", "source_location": "L669"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "label": "motion-gate.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_motion_gate_argv",
+      "label": "argv",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L45"
+    },
+    {
+      "id": "scripts_motion_gate_flag",
+      "label": "flag()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L46"
+    },
+    {
+      "id": "scripts_motion_gate_base",
+      "label": "BASE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L53"
+    },
+    {
+      "id": "scripts_motion_gate_only",
+      "label": "ONLY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L57"
+    },
+    {
+      "id": "scripts_motion_gate_widths",
+      "label": "WIDTHS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L58"
+    },
+    {
+      "id": "scripts_motion_gate_passes",
+      "label": "PASSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L62"
+    },
+    {
+      "id": "scripts_motion_gate_locales",
+      "label": "LOCALES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L66"
+    },
+    {
+      "id": "scripts_motion_gate_concurrency",
+      "label": "CONCURRENCY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L67"
+    },
+    {
+      "id": "scripts_motion_gate_attempts",
+      "label": "ATTEMPTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L68"
+    },
+    {
+      "id": "scripts_motion_gate_fail_on",
+      "label": "FAIL_ON",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L69"
+    },
+    {
+      "id": "scripts_motion_gate_json_out",
+      "label": "JSON_OUT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L70"
+    },
+    {
+      "id": "scripts_motion_gate_log_level",
+      "label": "LOG_LEVEL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L71"
+    },
+    {
+      "id": "scripts_motion_gate_allow",
+      "label": "ALLOW",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L72"
+    },
+    {
+      "id": "scripts_motion_gate_levels",
+      "label": "LEVELS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L79"
+    },
+    {
+      "id": "scripts_motion_gate_log",
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L80"
+    },
+    {
+      "id": "scripts_motion_gate_surfaces",
+      "label": "SURFACES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L92"
+    },
+    {
+      "id": "scripts_motion_gate_loadspec",
+      "label": "loadSpec()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L107"
+    },
+    {
+      "id": "scripts_motion_gate_measure",
+      "label": "MEASURE()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L128"
+    },
+    {
+      "id": "scripts_motion_gate_sleep",
+      "label": "sleep()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L303"
+    },
+    {
+      "id": "scripts_motion_gate_jitter",
+      "label": "jitter()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L304"
+    },
+    {
+      "id": "scripts_motion_gate_waitforserver",
+      "label": "waitForServer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L306"
+    },
+    {
+      "id": "scripts_motion_gate_planjobs",
+      "label": "planJobs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L323"
+    },
+    {
+      "id": "scripts_motion_gate_settlereveals",
+      "label": "settleReveals()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L346"
+    },
+    {
+      "id": "scripts_motion_gate_waitformotionresolved",
+      "label": "waitForMotionResolved()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L370"
+    },
+    {
+      "id": "scripts_motion_gate_pokemagnets",
+      "label": "pokeMagnets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L388"
+    },
+    {
+      "id": "scripts_motion_gate_runjob",
+      "label": "runJob()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L401"
+    },
+    {
+      "id": "scripts_motion_gate_drain",
+      "label": "drain()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L547"
+    },
+    {
+      "id": "scripts_motion_gate_printreport",
+      "label": "printReport()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L564"
+    },
+    {
+      "id": "scripts_motion_gate_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L625"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "node_url",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "playwright",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_argv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_flag",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_only",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_widths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_passes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_locales",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_concurrency",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_attempts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_fail_on",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_json_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_log_level",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_allow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_levels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_log",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_surfaces",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_loadspec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_measure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_sleep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L303",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_jitter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L304",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_waitforserver",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L306",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_planjobs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L323",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_settlereveals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L346",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_waitformotionresolved",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L370",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_pokemagnets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L388",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_runjob",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L401",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_drain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L547",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_printreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L564",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_motion_gate_mjs",
+      "target": "scripts_motion_gate_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L625",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_waitforserver",
+      "target": "scripts_motion_gate_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L311",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_waitforserver",
+      "target": "scripts_motion_gate_sleep",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L318",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_pokemagnets",
+      "target": "scripts_motion_gate_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L397",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_waitformotionresolved",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L434",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_settlereveals",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L435",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_pokemagnets",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L436",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L494",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_sleep",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L526",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_runjob",
+      "target": "scripts_motion_gate_jitter",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L526",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_loadspec",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L630",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_waitforserver",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L631",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_planjobs",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L637",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_log",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L638",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_drain",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L639",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_motion_gate_main",
+      "target": "scripts_motion_gate_printreport",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L644",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_motion_gate_flag",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_flag",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_log",
+      "callee": "write",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_log",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_log",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_loadspec",
+      "callee": "pathToFileURL",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "querySelectorAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L191"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "querySelectorAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "getComputedStyle",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L234"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "ms",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L235"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "getBoundingClientRect",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L237"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L238"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L238"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "contains",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "parseFloat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L242"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "keyframeProperties",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "querySelectorAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L263"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "querySelectorAll",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L263"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "querySelector",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "(() => {\n        const cs = getComputedStyle(h1);\n        const name = cs.animationName.split(\",\")[0].trim();\n        return {\n          label: `h1:${(h1.textContent ?? \"\").trim().slice(0, 32)}`,\n          durationMs: Math.max(ms(cs.transitionDuration), ms(cs.animationDuration)),\n          animationName: name === \"none\" ? null : name,\n        };\n      })",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_measure",
+      "callee": "getAnimations",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_jitter",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_waitforserver",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_waitforserver",
+      "callee": "timeout",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_waitforserver",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_waitforserver",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_planjobs",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "waitForTimeout",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L351"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L353"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_settlereveals",
+      "callee": "waitForTimeout",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L356"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_waitformotionresolved",
+      "callee": "waitForFunction",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "first",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "locator",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L389"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "count",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L390"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "boundingBox",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L392"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "move",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "waitForTimeout",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L395"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_pokemagnets",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L397"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L403"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "newContext",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L407"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "newPage",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "on",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L418"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "on",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "goto",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L425"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "waitForLoadState",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L428"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L433"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "evaluate",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L439"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "auditMotionPage",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L459"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L469"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L484"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "close",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L506"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L517"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "close",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L517"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L524"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L524"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_runjob",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L540"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_drain",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_drain",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_drain",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L556"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L565"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L566"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "dedupeMotionFindings",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L567"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L571"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L572"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L572"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L576"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L577"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L580"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L582"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L585"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L585"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L586"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L588"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L589"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "formatMotionFinding",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L589"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "dedupeMotionFindings",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L593"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L594"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L605"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L606"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "formatMotionFinding",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L606"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "countMotionBySeverity",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L609"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L610"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L611"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L615"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "write",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L616"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_printreport",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L616"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L633"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "launch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L634"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L641"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "close",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L641"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L645"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "writeFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L654"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L656"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L659"
+    },
+    {
+      "caller_nid": "scripts_motion_gate_main",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/motion-gate.mjs",
+      "source_location": "L669"
+    }
+  ]
+}

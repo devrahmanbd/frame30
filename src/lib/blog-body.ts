@@ -67,12 +67,24 @@ export type TextAlign = "left" | "center" | "right";
 
 export type Block =
   | { type: "paragraph"; inline: Inline[]; align?: TextAlign }
-  | { type: "heading"; level: HeadingLevel; inline: Inline[]; align?: TextAlign }
+  | {
+      type: "heading";
+      level: HeadingLevel;
+      inline: Inline[];
+      align?: TextAlign;
+    }
   | { type: "list"; ordered: boolean; items: Inline[][] }
   | { type: "quote"; inline: Inline[] }
   | { type: "code"; lang: string; code: string }
   | { type: "hr" }
-  | { type: "image"; src: string; alt: string; width: number; height: number; caption: string }
+  | {
+      type: "image";
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+      caption: string;
+    }
   | { type: "table"; head: Inline[][]; rows: Inline[][][] }
   | { type: "more" };
 
@@ -105,19 +117,26 @@ const NAMED_ENTITY: Record<string, string> = {
 
 /** Decode only the entities we emit, plus numeric ones; unknown names stay literal. */
 export function decodeEntities(value: string): string {
-  return value.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (whole, name: string) => {
-    const known = NAMED_ENTITY[name.toLowerCase()];
-    if (known) return known;
-    if (name.startsWith("#x") || name.startsWith("#X")) {
-      const code = Number.parseInt(name.slice(2), 16);
-      return Number.isFinite(code) && code > 0 && code < 0x110000 ? safeCodePoint(code) : whole;
-    }
-    if (name.startsWith("#")) {
-      const code = Number.parseInt(name.slice(1), 10);
-      return Number.isFinite(code) && code > 0 && code < 0x110000 ? safeCodePoint(code) : whole;
-    }
-    return whole;
-  });
+  return value.replace(
+    /&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g,
+    (whole, name: string) => {
+      const known = NAMED_ENTITY[name.toLowerCase()];
+      if (known) return known;
+      if (name.startsWith("#x") || name.startsWith("#X")) {
+        const code = Number.parseInt(name.slice(2), 16);
+        return Number.isFinite(code) && code > 0 && code < 0x110000
+          ? safeCodePoint(code)
+          : whole;
+      }
+      if (name.startsWith("#")) {
+        const code = Number.parseInt(name.slice(1), 10);
+        return Number.isFinite(code) && code > 0 && code < 0x110000
+          ? safeCodePoint(code)
+          : whole;
+      }
+      return whole;
+    },
+  );
 }
 
 function safeCodePoint(code: number): string {
@@ -147,10 +166,13 @@ export function escapeHtml(value: string): string {
  * degrade a poisoned link to plain text instead of losing the sentence.
  */
 export function safeUrl(raw: string): string | null {
-  const value = decodeEntities(raw).trim().replace(/[\u0000-\u001f\u007f]/g, "");
+  const value = decodeEntities(raw)
+    .trim()
+    .replace(/[\u0000-\u001f\u007f]/g, "");
   if (!value || value.length > BODY_LIMITS.maxHrefChars) return null;
   if (/^(https?:|mailto:|tel:)/i.test(value)) return value;
-  if (value.startsWith("/") || value.startsWith("#") || value.startsWith("?")) return value;
+  if (value.startsWith("/") || value.startsWith("#") || value.startsWith("?"))
+    return value;
   // A bare "example.com/post" is a merchant typo, not an attack: make it https.
   if (/^[a-z0-9.-]+\.[a-z]{2,}(\/|$)/i.test(value)) return `https://${value}`;
   return null;
@@ -162,12 +184,20 @@ function collapse(value: string): string {
 
 /* ------------------------------------------------------------ inline parse */
 
-type Tag = { name: string; attrs: Record<string, string>; selfClosing: boolean; closing: boolean };
+type Tag = {
+  name: string;
+  attrs: Record<string, string>;
+  selfClosing: boolean;
+  closing: boolean;
+};
 
-const ATTR_RE = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*(?:=\s*("[^"]*"|'[^']*'|[^\s"'>]+))?/g;
+const ATTR_RE =
+  /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*(?:=\s*("[^"]*"|'[^']*'|[^\s"'>]+))?/g;
 
 function parseTag(source: string): Tag | null {
-  const match = /^<\s*(\/?)\s*([a-zA-Z][a-zA-Z0-9]*)([\s\S]*?)(\/?)>$/.exec(source);
+  const match = /^<\s*(\/?)\s*([a-zA-Z][a-zA-Z0-9]*)([\s\S]*?)(\/?)>$/.exec(
+    source,
+  );
   if (!match) return null;
   const attrs: Record<string, string> = {};
   const rest = match[3] ?? "";
@@ -188,8 +218,11 @@ function parseTag(source: string): Tag | null {
 }
 
 /** Splits a markup string into tags and text runs without building a DOM. */
-function lex(source: string): ({ kind: "text"; value: string } | { kind: "tag"; tag: Tag })[] {
-  const out: ({ kind: "text"; value: string } | { kind: "tag"; tag: Tag })[] = [];
+function lex(
+  source: string,
+): ({ kind: "text"; value: string } | { kind: "tag"; tag: Tag })[] {
+  const out: ({ kind: "text"; value: string } | { kind: "tag"; tag: Tag })[] =
+    [];
   let index = 0;
   let guard = 0;
   while (index < source.length && guard++ < 100_000) {
@@ -198,7 +231,8 @@ function lex(source: string): ({ kind: "text"; value: string } | { kind: "tag"; 
       out.push({ kind: "text", value: source.slice(index) });
       break;
     }
-    if (next > index) out.push({ kind: "text", value: source.slice(index, next) });
+    if (next > index)
+      out.push({ kind: "text", value: source.slice(index, next) });
     const close = source.indexOf(">", next);
     if (close < 0) {
       out.push({ kind: "text", value: source.slice(next) });
@@ -228,7 +262,8 @@ const INLINE_ALIAS: Record<string, "strong" | "em" | "code" | "u" | "s"> = {
 
 /** Reads a block's alignment from either the WordPress class or an inline style. */
 function alignOf(openTag: string): TextAlign | undefined {
-  const match = /(?:has-text-align-|text-align\s*:\s*)(left|center|right)/i.exec(openTag);
+  const match =
+    /(?:has-text-align-|text-align\s*:\s*)(left|center|right)/i.exec(openTag);
   const value = match?.[1]?.toLowerCase() as TextAlign | undefined;
   return value && value !== "left" ? value : undefined;
 }
@@ -244,7 +279,8 @@ function alignAttr(align: TextAlign | undefined): string {
  * pasting from Word or Google Docs keeps the sentence and loses the noise.
  */
 export function parseInline(source: string, depth = 0): Inline[] {
-  if (depth > BODY_LIMITS.maxInlineDepth) return [{ t: "text", v: stripTags(source) }];
+  if (depth > BODY_LIMITS.maxInlineDepth)
+    return [{ t: "text", v: stripTags(source) }];
   const tokens = lex(source);
   const out: Inline[] = [];
   let index = 0;
@@ -415,14 +451,19 @@ function toDimension(raw: string | undefined): number {
 }
 
 function innerOf(source: string, name: string): string {
-  const match = new RegExp(`^<${name}\\b[^>]*>([\\s\\S]*)</${name}\\s*>$`, "i").exec(source.trim());
+  const match = new RegExp(
+    `^<${name}\\b[^>]*>([\\s\\S]*)</${name}\\s*>$`,
+    "i",
+  ).exec(source.trim());
   return match?.[1] ?? "";
 }
 
 function imageBlockFrom(source: string, caption: string): Block | null {
   const imgMatch = /<img\b[^>]*>/i.exec(source);
   if (!imgMatch) return null;
-  const tag = parseTag(imgMatch[0].endsWith("/>") ? imgMatch[0] : imgMatch[0].replace(/>$/, "/>"));
+  const tag = parseTag(
+    imgMatch[0].endsWith("/>") ? imgMatch[0] : imgMatch[0].replace(/>$/, "/>"),
+  );
   if (!tag) return null;
   const src = safeUrl(tag.attrs["src"] ?? "");
   if (!src) return null;
@@ -441,7 +482,10 @@ function listBlock(source: string, ordered: boolean): Block | null {
   const items: Inline[][] = [];
   const itemRe = /<li\b[^>]*>([\s\S]*?)<\/li\s*>/gi;
   let match: RegExpExecArray | null;
-  while ((match = itemRe.exec(inner)) && items.length < BODY_LIMITS.maxListItems) {
+  while (
+    (match = itemRe.exec(inner)) &&
+    items.length < BODY_LIMITS.maxListItems
+  ) {
     const inline = parseInline(match[1] ?? "");
     if (inline.length) items.push(inline);
   }
@@ -453,13 +497,19 @@ function tableBlock(source: string): Block | null {
   const rowRe = /<tr\b[^>]*>([\s\S]*?)<\/tr\s*>/gi;
   const rows: { header: boolean; cells: Inline[][] }[] = [];
   let match: RegExpExecArray | null;
-  while ((match = rowRe.exec(source)) && rows.length < BODY_LIMITS.maxTableRows) {
+  while (
+    (match = rowRe.exec(source)) &&
+    rows.length < BODY_LIMITS.maxTableRows
+  ) {
     const rowSource = match[1] ?? "";
     const cellRe = /<(th|td)\b[^>]*>([\s\S]*?)<\/\1\s*>/gi;
     const cells: Inline[][] = [];
     let header = false;
     let cell: RegExpExecArray | null;
-    while ((cell = cellRe.exec(rowSource)) && cells.length < BODY_LIMITS.maxTableCells) {
+    while (
+      (cell = cellRe.exec(rowSource)) &&
+      cells.length < BODY_LIMITS.maxTableCells
+    ) {
       if ((cell[1] ?? "").toLowerCase() === "th") header = true;
       cells.push(parseInline(cell[2] ?? ""));
     }
@@ -495,11 +545,18 @@ export function parseBody(raw: string): Block[] {
 
   BLOCK_RE.lastIndex = 0;
   let match: RegExpExecArray | null;
-  while ((match = BLOCK_RE.exec(source)) && blocks.length < BODY_LIMITS.maxBlocks) {
+  while (
+    (match = BLOCK_RE.exec(source)) &&
+    blocks.length < BODY_LIMITS.maxBlocks
+  ) {
     if (match.index > cursor) flushPlain(source.slice(cursor, match.index));
     cursor = match.index + match[0].length;
     const chunk = match[0];
-    const name = (match[1] ?? /^<\s*([a-z0-9]+)/i.exec(chunk)?.[1] ?? "").toLowerCase();
+    const name = (
+      match[1] ??
+      /^<\s*([a-z0-9]+)/i.exec(chunk)?.[1] ??
+      ""
+    ).toLowerCase();
 
     if (/^<!--/.test(chunk)) {
       blocks.push({ type: "more" });
@@ -512,7 +569,12 @@ export function parseBody(raw: string): Block[] {
         const inline = parseInline(innerOf(chunk, name));
         if (inline.length) {
           const align = alignOf(chunk.slice(0, chunk.indexOf(">") + 1));
-          blocks.push({ type: "heading", level: Number(name.slice(1)) as HeadingLevel, inline, ...(align ? { align } : {}) });
+          blocks.push({
+            type: "heading",
+            level: Number(name.slice(1)) as HeadingLevel,
+            inline,
+            ...(align ? { align } : {}),
+          });
         }
         break;
       }
@@ -520,7 +582,11 @@ export function parseBody(raw: string): Block[] {
         const inline = parseInline(innerOf(chunk, "p"));
         if (inline.length) {
           const align = alignOf(chunk.slice(0, chunk.indexOf(">") + 1));
-          blocks.push({ type: "paragraph", inline, ...(align ? { align } : {}) });
+          blocks.push({
+            type: "paragraph",
+            inline,
+            ...(align ? { align } : {}),
+          });
         }
         break;
       }
@@ -531,16 +597,27 @@ export function parseBody(raw: string): Block[] {
         break;
       }
       case "blockquote": {
-        const inline = parseInline(innerOf(chunk, "blockquote").replace(/<\/?p\b[^>]*>/gi, " "));
+        const inline = parseInline(
+          innerOf(chunk, "blockquote").replace(/<\/?p\b[^>]*>/gi, " "),
+        );
         if (inline.length) blocks.push({ type: "quote", inline });
         break;
       }
       case "pre": {
         const inner = innerOf(chunk, "pre");
         const codeMatch = /<code\b([^>]*)>([\s\S]*?)<\/code\s*>/i.exec(inner);
-        const langMatch = /class\s*=\s*["']?language-([a-z0-9+#-]{1,20})/i.exec(codeMatch?.[1] ?? "");
-        const code = decodeEntities((codeMatch?.[2] ?? inner).replace(/<[^>]*>/g, ""));
-        if (code.trim()) blocks.push({ type: "code", lang: langMatch?.[1]?.toLowerCase() ?? "", code });
+        const langMatch = /class\s*=\s*["']?language-([a-z0-9+#-]{1,20})/i.exec(
+          codeMatch?.[1] ?? "",
+        );
+        const code = decodeEntities(
+          (codeMatch?.[2] ?? inner).replace(/<[^>]*>/g, ""),
+        );
+        if (code.trim())
+          blocks.push({
+            type: "code",
+            lang: langMatch?.[1]?.toLowerCase() ?? "",
+            code,
+          });
         break;
       }
       case "hr":
@@ -552,7 +629,10 @@ export function parseBody(raw: string): Block[] {
         break;
       }
       case "figure": {
-        const caption = stripTags(/<figcaption\b[^>]*>([\s\S]*?)<\/figcaption\s*>/i.exec(chunk)?.[1] ?? "");
+        const caption = stripTags(
+          /<figcaption\b[^>]*>([\s\S]*?)<\/figcaption\s*>/i.exec(chunk)?.[1] ??
+            "",
+        );
         const block = imageBlockFrom(chunk, caption);
         if (block) blocks.push(block);
         break;
@@ -588,13 +668,17 @@ export function blockToHtml(block: Block): string {
       return `<h${block.level}${alignAttr(block.align)}>${inlineToHtml(block.inline)}</h${block.level}>`;
     case "list": {
       const tag = block.ordered ? "ol" : "ul";
-      const items = block.items.map((item) => `<li>${inlineToHtml(item)}</li>`).join("");
+      const items = block.items
+        .map((item) => `<li>${inlineToHtml(item)}</li>`)
+        .join("");
       return `<${tag}>${items}</${tag}>`;
     }
     case "quote":
       return `<blockquote><p>${inlineToHtml(block.inline)}</p></blockquote>`;
     case "code": {
-      const cls = block.lang ? ` class="language-${escapeHtml(block.lang)}"` : "";
+      const cls = block.lang
+        ? ` class="language-${escapeHtml(block.lang)}"`
+        : "";
       return `<pre><code${cls}>${escapeHtml(block.code)}</code></pre>`;
     }
     case "hr":
@@ -603,7 +687,9 @@ export function blockToHtml(block: Block): string {
       const img =
         `<img src="${escapeHtml(block.src)}" alt="${escapeHtml(block.alt)}"` +
         ` width="${block.width}" height="${block.height}" loading="lazy" decoding="async" />`;
-      const caption = block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : "";
+      const caption = block.caption
+        ? `<figcaption>${escapeHtml(block.caption)}</figcaption>`
+        : "";
       return `<figure>${img}${caption}</figure>`;
     }
     case "table": {
@@ -611,7 +697,10 @@ export function blockToHtml(block: Block): string {
         ? `<thead><tr>${block.head.map((cell) => `<th>${inlineToHtml(cell)}</th>`).join("")}</tr></thead>`
         : "";
       const body = block.rows
-        .map((row) => `<tr>${row.map((cell) => `<td>${inlineToHtml(cell)}</td>`).join("")}</tr>`)
+        .map(
+          (row) =>
+            `<tr>${row.map((cell) => `<td>${inlineToHtml(cell)}</td>`).join("")}</tr>`,
+        )
         .join("");
       return `<table>${head}<tbody>${body}</tbody></table>`;
     }
@@ -631,7 +720,12 @@ export function normalizeBody(raw: string): string {
 
 /* ------------------------------------------------------------- validation */
 
-export type BodyIssue = { code: string; en: string; bn: string; blockIndex: number };
+export type BodyIssue = {
+  code: string;
+  en: string;
+  bn: string;
+  blockIndex: number;
+};
 
 /**
  * Hard rules. Anything returned here blocks the save — these are the defects a
@@ -677,10 +771,18 @@ export function validateBody(blocks: Block[]): BodyIssue[] {
 /* ------------------------------------------------------- excerpt + stats */
 
 /** `<!--more-->` semantics: everything above the marker is the teaser. */
-export function splitAtMore(blocks: Block[]): { teaser: Block[]; rest: Block[]; explicit: boolean } {
+export function splitAtMore(blocks: Block[]): {
+  teaser: Block[];
+  rest: Block[];
+  explicit: boolean;
+} {
   const index = blocks.findIndex((block) => block.type === "more");
   if (index < 0) return { teaser: blocks, rest: [], explicit: false };
-  return { teaser: blocks.slice(0, index), rest: blocks.slice(index + 1), explicit: true };
+  return {
+    teaser: blocks.slice(0, index),
+    rest: blocks.slice(index + 1),
+    explicit: true,
+  };
 }
 
 export function blocksToText(blocks: Block[]): string {
@@ -698,7 +800,9 @@ export function blocksToText(blocks: Block[]): string {
         case "image":
           return block.caption;
         case "table":
-          return [...block.head, ...block.rows.flat()].map(inlineToText).join(" ");
+          return [...block.head, ...block.rows.flat()]
+            .map(inlineToText)
+            .join(" ");
         default:
           return "";
       }
@@ -712,9 +816,14 @@ export function blocksToText(blocks: Block[]): string {
  * first paragraphs are trimmed on a word boundary so the card never ends
  * mid-word (the thing that makes auto-excerpts look broken).
  */
-export function deriveExcerpt(blocks: Block[], limit = BODY_LIMITS.excerptChars): string {
+export function deriveExcerpt(
+  blocks: Block[],
+  limit = BODY_LIMITS.excerptChars,
+): string {
   const { teaser, explicit } = splitAtMore(blocks);
-  const source = explicit ? teaser : blocks.filter((block) => block.type === "paragraph");
+  const source = explicit
+    ? teaser
+    : blocks.filter((block) => block.type === "paragraph");
   const text = collapse(blocksToText(source)).replace(/\n+/g, " ").trim();
   if (text.length <= limit) return text;
   const cut = text.slice(0, limit);
@@ -745,9 +854,15 @@ export function bodyStats(blocks: Block[]): BodyStats {
     }
   };
   for (const block of blocks) {
-    if (block.type === "paragraph" || block.type === "heading" || block.type === "quote") countLinks(block.inline);
+    if (
+      block.type === "paragraph" ||
+      block.type === "heading" ||
+      block.type === "quote"
+    )
+      countLinks(block.inline);
     if (block.type === "list") block.items.forEach(countLinks);
-    if (block.type === "table") [...block.head, ...block.rows.flat()].forEach(countLinks);
+    if (block.type === "table")
+      [...block.head, ...block.rows.flat()].forEach(countLinks);
   }
   return {
     words,
@@ -775,7 +890,14 @@ export function emptyBlock(type: BlockType): Block {
     case "hr":
       return { type: "hr" };
     case "image":
-      return { type: "image", src: "", alt: "", width: 0, height: 0, caption: "" };
+      return {
+        type: "image",
+        src: "",
+        alt: "",
+        width: 0,
+        height: 0,
+        caption: "",
+      };
     case "table":
       return { type: "table", head: [[], []], rows: [[[], []]] };
     case "more":
@@ -787,7 +909,11 @@ export function emptyBlock(type: BlockType): Block {
 
 /** Editable HTML for one block's contenteditable surface (inline marks only). */
 export function blockEditableHtml(block: Block): string {
-  if (block.type === "paragraph" || block.type === "heading" || block.type === "quote") {
+  if (
+    block.type === "paragraph" ||
+    block.type === "heading" ||
+    block.type === "quote"
+  ) {
     return inlineToHtml(block.inline);
   }
   return "";
@@ -796,7 +922,11 @@ export function blockEditableHtml(block: Block): string {
 /** Read a contenteditable back into the model, sanitising on the way in. */
 export function blockFromEditableHtml(block: Block, html: string): Block {
   const inline = parseInline(html);
-  if (block.type === "paragraph" || block.type === "heading" || block.type === "quote") {
+  if (
+    block.type === "paragraph" ||
+    block.type === "heading" ||
+    block.type === "quote"
+  ) {
     return { ...block, inline };
   }
   return block;

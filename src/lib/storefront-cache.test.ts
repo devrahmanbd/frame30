@@ -21,7 +21,13 @@ describe("personalized storefront guard (REPORT WF-09)", () => {
   });
 
   it("flags shopper-specific pages in custom-domain shape", () => {
-    for (const path of ["/cart", "/checkout", "/account", "/order/ord_123", "/track"]) {
+    for (const path of [
+      "/cart",
+      "/checkout",
+      "/account",
+      "/order/ord_123",
+      "/track",
+    ]) {
       expect(isPersonalizedStorefrontPath(path)).toBe(true);
     }
   });
@@ -44,12 +50,20 @@ describe("personalized storefront guard (REPORT WF-09)", () => {
   });
 
   it("never marks console/api/auth paths personalized", () => {
-    for (const path of ["/dashboard", "/root/ai", "/api/public/media/x", "/auth", "/_authenticated"]) {
+    for (const path of [
+      "/dashboard",
+      "/root/ai",
+      "/api/public/media/x",
+      "/auth",
+      "/_authenticated",
+    ]) {
       expect(isPersonalizedStorefrontPath(path)).toBe(false);
     }
   });
 
   it("emits private no-store headers", () => {
-    expect(personalizedNoStoreHeaders()["cache-control"]).toBe("private, no-store");
+    expect(personalizedNoStoreHeaders()["cache-control"]).toBe(
+      "private, no-store",
+    );
   });
 });

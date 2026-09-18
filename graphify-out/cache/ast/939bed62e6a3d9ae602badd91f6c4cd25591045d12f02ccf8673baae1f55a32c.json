@@ -1,1 +1,114 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "label": "WidgetIsland.test.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L1"}, {"id": "builder_widgetisland_test_markup", "label": "markup()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L8"}, {"id": "builder_widgetisland_test_html", "label": "html", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L18"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "server", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "users_rahman_documents_frame30_src_components_builder_widgetisland_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "builder_widgetisland_widgetisland", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "lib_widget_hydration_hydrationmode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "builder_widgetisland_test_markup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx", "target": "builder_widgetisland_test_html", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L18", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_widgetisland_test_markup", "callee": "renderToStaticMarkup", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx", "source_location": "L9"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "label": "WidgetIsland.test.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_widgetisland_test_markup",
+      "label": "markup()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L8"
+    },
+    {
+      "id": "builder_widgetisland_test_html",
+      "label": "html",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L18"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_widgetisland_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "builder_widgetisland_widgetisland",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_widget_hydration_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "lib_widget_hydration_hydrationmode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "builder_widgetisland_test_markup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_widgetisland_test_tsx",
+      "target": "builder_widgetisland_test_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_widgetisland_test_markup",
+      "callee": "renderToStaticMarkup",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/WidgetIsland.test.tsx",
+      "source_location": "L9"
+    }
+  ]
+}

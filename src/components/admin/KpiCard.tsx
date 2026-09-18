@@ -42,13 +42,19 @@ export function KpiCard({
         <h3 className="font-bangla-display min-w-0 truncate text-[13px] font-medium text-muted-foreground">
           {labelBn}
         </h3>
-        <span className={`grid size-7 shrink-0 place-items-center rounded-fq-md ${toneClass[tone]}`}>
+        <span
+          className={`grid size-7 shrink-0 place-items-center rounded-fq-md ${toneClass[tone]}`}
+        >
           <Icon className="size-3.5" aria-hidden />
         </span>
       </div>
-      <p className="money mt-2 text-[26px] font-semibold leading-tight tracking-tight">{value}</p>
+      <p className="money mt-2 text-[26px] font-semibold leading-tight tracking-tight">
+        {value}
+      </p>
       {delta && (
-        <p className={`mt-1.5 text-xs font-medium ${deltaText[delta.tone]}`}>{delta.text}</p>
+        <p className={`mt-1.5 text-xs font-medium ${deltaText[delta.tone]}`}>
+          {delta.text}
+        </p>
       )}
       <span className="sr-only">{label}</span>
     </article>

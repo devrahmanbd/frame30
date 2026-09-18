@@ -14,9 +14,12 @@ async function merchantOf(context: { supabase: never; userId: string }) {
 export const shippingDeskFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { listShipments, listCarriers, listCodSettlements, listWebhookEvents } = await import(
-      "./courier.server"
-    );
+    const {
+      listShipments,
+      listCarriers,
+      listCodSettlements,
+      listWebhookEvents,
+    } = await import("./courier.server");
     const { loadRateTable } = await import("./shipping-rates.server");
     const merchantId = await merchantOf(context as never);
     const [shipments, carriers, table, cod, dlq] = await Promise.all([
@@ -26,7 +29,14 @@ export const shippingDeskFn = createServerFn({ method: "GET" })
       listCodSettlements(context.supabase, merchantId),
       listWebhookEvents(context.supabase, merchantId),
     ]);
-    return { shipments, carriers, zones: table.zones, rules: table.rules, cod, dlq };
+    return {
+      shipments,
+      carriers,
+      zones: table.zones,
+      rules: table.rules,
+      cod,
+      dlq,
+    };
   });
 
 export const quoteShippingFn = createServerFn({ method: "POST" })
@@ -48,7 +58,8 @@ export const quoteShippingFn = createServerFn({ method: "POST" })
     const { rateLimit, RateLimitError } = await import("./rate-limit.server");
     const merchantId = await merchantOf(context as never);
     const verdict = await rateLimit("shipping.quote", merchantId);
-    if (!verdict.allowed) throw new RateLimitError("shipping.quote", verdict.reset_at);
+    if (!verdict.allowed)
+      throw new RateLimitError("shipping.quote", verdict.reset_at);
     return quote(context.supabase, merchantId, data);
   });
 
@@ -99,16 +110,27 @@ export const saveRuleFn = createServerFn({ method: "POST" })
 
 export const deleteRuleFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ ruleId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ ruleId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteRule } = await import("./shipping-rates.server");
-    return deleteRule(context.supabase, await merchantOf(context as never), data.ruleId);
+    return deleteRule(
+      context.supabase,
+      await merchantOf(context as never),
+      data.ruleId,
+    );
   });
 
 export const schedulePickupFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ shipmentId: z.string().uuid(), slotStart: z.string().min(4).max(40) }).parse(d),
+    z
+      .object({
+        shipmentId: z.string().uuid(),
+        slotStart: z.string().min(4).max(40),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { schedulePickup } = await import("./courier.server");
@@ -122,10 +144,16 @@ export const schedulePickupFn = createServerFn({ method: "POST" })
 
 export const cancelShipmentFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ shipmentId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ shipmentId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { cancelShipment } = await import("./courier.server");
-    return cancelShipment(context.supabase, await merchantOf(context as never), data.shipmentId);
+    return cancelShipment(
+      context.supabase,
+      await merchantOf(context as never),
+      data.shipmentId,
+    );
   });
 
 export const reconcileCodFn = createServerFn({ method: "POST" })
@@ -163,10 +191,15 @@ export const setCarrierModeFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { setCarrierMode } = await import("./courier.server");
-    return setCarrierMode(context.supabase, await merchantOf(context as never), data.carrierId, {
-      enabled: data.enabled,
-      apiMode: data.apiMode,
-    });
+    return setCarrierMode(
+      context.supabase,
+      await merchantOf(context as never),
+      data.carrierId,
+      {
+        enabled: data.enabled,
+        apiMode: data.apiMode,
+      },
+    );
   });
 
 export const saveCarrierCredentialsFn = createServerFn({ method: "POST" })
@@ -193,15 +226,25 @@ export const saveCarrierCredentialsFn = createServerFn({ method: "POST" })
 
 /** Anonymous parcel tracking by opaque token. PII-minimal by construction. */
 export const trackParcelFn = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ token: z.string().min(8).max(80) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ token: z.string().min(8).max(80) }).parse(d),
+  )
   .handler(async ({ data }) => {
     const { rateLimit } = await import("./rate-limit.server");
-    const verdict = await rateLimit("shipping.track", `track:${data.token.slice(0, 12)}`);
-    if (!verdict.allowed) return { found: false as const, rateLimited: true as const };
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: row, error } = await supabaseAdmin.rpc("shipment_tracking_public", {
-      _token: data.token,
-    });
+    const verdict = await rateLimit(
+      "shipping.track",
+      `track:${data.token.slice(0, 12)}`,
+    );
+    if (!verdict.allowed)
+      return { found: false as const, rateLimited: true as const };
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin.rpc(
+      "shipment_tracking_public",
+      {
+        _token: data.token,
+      },
+    );
     if (error) return { found: false as const, rateLimited: false as const };
     const parsed = (row ?? null) as {
       status?: string;
@@ -210,14 +253,21 @@ export const trackParcelFn = createServerFn({ method: "POST" })
       last_event_at?: string | null;
       city?: string | null;
     } | null;
-    if (!parsed || !parsed.status) return { found: false as const, rateLimited: false as const };
-    return { found: true as const, rateLimited: false as const, parcel: parsed };
+    if (!parsed || !parsed.status)
+      return { found: false as const, rateLimited: false as const };
+    return {
+      found: true as const,
+      rateLimited: false as const,
+      parcel: parsed,
+    };
   });
 
 /** Manual replay of a parked courier callback — tenant-scoped and rate-limited. */
 export const replayCourierEventFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ eventId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ eventId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { replayWebhookEvent } = await import("./courier.server");
     return replayWebhookEvent(

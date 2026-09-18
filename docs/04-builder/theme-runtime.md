@@ -8,8 +8,8 @@ Reference: `/plan.md` §3.3–3.4 (storefront, builder), 7 (themes) · `03-store
 
 ## Purpose
 
-Define the **artifact boundary** between Builder (04) and Storefront (03): what a theme *is* (package format), how the
-storefront runtime *consumes* it (render pipeline, sandbox, data surface), and how it *moves* through states
+Define the **artifact boundary** between Builder (04) and Storefront (03): what a theme _is_ (package format), how the
+storefront runtime _consumes_ it (render pipeline, sandbox, data surface), and how it _moves_ through states
 (draft → preview → published, version pin, rollback, CDN purge). Theme = templates + layout AST + design tokens
 (`plan.md` §3.4); the theme owns look & feel, the runtime owns data, auth, cart, checkout, and safety.
 The same package format is the unit of the S7 marketplace catalog (`12-marketplace`).
@@ -79,10 +79,10 @@ theme/
 ### theme.yaml manifest
 
 ```yaml
-name: char                  # slug, unique per install
-version: 1.4.0              # semver; required for any mutation (12 pipeline)
+name: char # slug, unique per install
+version: 1.4.0 # semver; required for any mutation (12 pipeline)
 requires:
-  framique-runtime: ^1      # runtime API compatibility — drives the S7 "Requires" check
+  framique-runtime: ^1 # runtime API compatibility — drives the S7 "Requires" check
 pages:
   home: ast/page_home.json
   collection: ast/page_collection.json
@@ -90,7 +90,7 @@ pages:
   # optional: cart, checkout, account, order, tracking, search, not_found
 tokens: tokens/theme_tokens.json
 assets: assets/manifest.json # path -> sha256 (SRI for CDN content)
-widgets:                     # widget deps, each versioned
+widgets: # widget deps, each versioned
   - id: fq.product_grid
     version: 2.1.0
 meta:
@@ -112,7 +112,10 @@ meta:
       "id": "h1",
       "props": { "text": "Welcome" },
       "styles": {
-        "desktop": { "spaceTop": "fq-space-6", "color": "semantic.text.primary" },
+        "desktop": {
+          "spaceTop": "fq-space-6",
+          "color": "semantic.text.primary"
+        },
         "tablet": { "spaceTop": "fq-space-4" },
         "mobile": { "spaceTop": "fq-space-3" }
       }
@@ -152,10 +155,12 @@ window.__FRAMIQUE_DATA__ = {
   runtimeVersion: "1.x",
   merchant: { name, currency: "BDT", locale: "bn" },
   page: { type, slug, title, seo: { meta, og, schema } },
-  data: { /* catalog/collection/product/cart-count — fetched via anon RPCs server-side */ },
-  cdnBase: "https://cdn.framique.com/…",      // for theme assets
-  csrfToken: "…",                              // anon-scoped, used only by the client bridge
-  navigation: { home, collection, product, cart, account, checkout } // page-type → URL map
+  data: {
+    /* catalog/collection/product/cart-count — fetched via anon RPCs server-side */
+  },
+  cdnBase: "https://cdn.framique.com/…", // for theme assets
+  csrfToken: "…", // anon-scoped, used only by the client bridge
+  navigation: { home, collection, product, cart, account, checkout }, // page-type → URL map
 };
 ```
 
@@ -206,14 +211,14 @@ PII into responses (PII-minimal logging rule).
 
 ### 3.1 Shipped runtime contract (TODO Phase 8, half 1)
 
-| Concern | Where it lives | Contract |
-| --- | --- | --- |
-| Cache key | `src/lib/storefront-cache.ts` | `sf:<tenant>:<template>:<locale>:<theme_version>` — tenant always first, so a purge can only ever be tenant-scoped. Missing tenant or a separator inside any part throws. |
-| Response headers | `storefrontCacheHeaders()`, applied in `src/server.ts` for storefront documents only | `s-maxage` + `stale-while-revalidate`, `vary: accept-language`, weak ETag pinned to the published theme version. A publish changes the version, so it invalidates by key rather than by broadcast. |
-| Published read | `publishedTheme()` in `src/lib/themes.server.ts` | Two hops: a short-TTL tenant pointer (`published_version_id`) plus a version-keyed snapshot. The `theme_versions` read is filtered by `merchant_id` **and** `status = published`, so a tampered pointer cannot cross tenants. |
-| Tenant isolation | `src/lib/tenant-scope.ts` | `assertTenantId` runs at every resolver entry point (`resolveWidgetData`, `publishedTheme`) before a query is built; wildcard-ish ids (`*`, `all`, blank) are rejected. The renderer never sees a tenant id. |
-| Failure containment | `src/components/builder/WidgetBoundary.tsx` (wired in `SectionRenderer`) | A throwing widget renders a space-reserving placeholder on the storefront and a labelled reason in the studio; siblings and the document still render. |
-| Metrics | `src/lib/observability.server.ts` → `ops/observability/grafana/builder-dashboard.json` | `framique_template_render_ms`, `framique_widget_resolver_ms` / `_total`, `framique_widget_errors_total`, `framique_plugin_hook_ms` / `_total`. |
+| Concern             | Where it lives                                                                         | Contract                                                                                                                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cache key           | `src/lib/storefront-cache.ts`                                                          | `sf:<tenant>:<template>:<locale>:<theme_version>` — tenant always first, so a purge can only ever be tenant-scoped. Missing tenant or a separator inside any part throws.                                                     |
+| Response headers    | `storefrontCacheHeaders()`, applied in `src/server.ts` for storefront documents only   | `s-maxage` + `stale-while-revalidate`, `vary: accept-language`, weak ETag pinned to the published theme version. A publish changes the version, so it invalidates by key rather than by broadcast.                            |
+| Published read      | `publishedTheme()` in `src/lib/themes.server.ts`                                       | Two hops: a short-TTL tenant pointer (`published_version_id`) plus a version-keyed snapshot. The `theme_versions` read is filtered by `merchant_id` **and** `status = published`, so a tampered pointer cannot cross tenants. |
+| Tenant isolation    | `src/lib/tenant-scope.ts`                                                              | `assertTenantId` runs at every resolver entry point (`resolveWidgetData`, `publishedTheme`) before a query is built; wildcard-ish ids (`*`, `all`, blank) are rejected. The renderer never sees a tenant id.                  |
+| Failure containment | `src/components/builder/WidgetBoundary.tsx` (wired in `SectionRenderer`)               | A throwing widget renders a space-reserving placeholder on the storefront and a labelled reason in the studio; siblings and the document still render.                                                                        |
+| Metrics             | `src/lib/observability.server.ts` → `ops/observability/grafana/builder-dashboard.json` | `framique_template_render_ms`, `framique_widget_resolver_ms` / `_total`, `framique_widget_errors_total`, `framique_plugin_hook_ms` / `_total`.                                                                                |
 
 Still open in Phase 8: island hydration, the `theme_import_demo` RPC, and registry
 version compatibility.
@@ -247,16 +252,16 @@ serving (`revision_required` if no prior revision exists).
 
 ## 6. Failure/recovery
 
-| Failure | Behavior |
-| --- | --- |
+| Failure                               | Behavior                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------- |
 | Theme crash / render timeout (>800ms) | Fallback template, 200, maintenance notice (`theme_render_failed` logged, OTel alert) |
-| Invalid/unknown widget in AST | Skip + placeholder; rest of page intact (`widget_invalid` / `widget_unknown`) |
-| Primitive token override at publish | Publish blocked (`token_override_invalid`); draft keeps serving in preview |
-| Publish fails mid-sequence | Previous revision keeps serving; no partial flip |
-| Edge down | Cached HTML serves; cache miss → fallback template |
-| Sandbox violation attempt | `sandbox_denied` logged; page unaffected |
-| Theme not found / not published | 404 for anon (`theme_not_found`); preview token required otherwise |
-| Budget overshoot at publish | Publish blocked (`budget_exceeded`); optimizer suggestions returned |
+| Invalid/unknown widget in AST         | Skip + placeholder; rest of page intact (`widget_invalid` / `widget_unknown`)         |
+| Primitive token override at publish   | Publish blocked (`token_override_invalid`); draft keeps serving in preview            |
+| Publish fails mid-sequence            | Previous revision keeps serving; no partial flip                                      |
+| Edge down                             | Cached HTML serves; cache miss → fallback template                                    |
+| Sandbox violation attempt             | `sandbox_denied` logged; page unaffected                                              |
+| Theme not found / not published       | 404 for anon (`theme_not_found`); preview token required otherwise                    |
+| Budget overshoot at publish           | Publish blocked (`budget_exceeded`); optimizer suggestions returned                   |
 
 Error literals: `theme_not_found`, `theme_not_published`, `theme_render_failed`, `widget_invalid`,
 `widget_unknown`, `token_override_invalid`, `ast_invalid`, `revision_required`, `preview_only`,
@@ -269,6 +274,7 @@ Error literals: `theme_not_found`, `theme_not_published`, `theme_render_failed`,
 Additions to the canonical suites (AGENTS.md loop inventory unchanged); `store_loop` remains the critical gate.
 
 **store_loop — runtime render (8 scenarios)**
+
 1. `theme_serves_rendered_html` — published theme serves HTML at `<merchant>.store.framique.com/` with
    `__FRAMIQUE_DATA__` present and zero widget JS executed during SSR (assert no bundle load before hydration).
 2. `edge_cache_and_purge` — second hit served from cache (60s); publish purges immediately (fresh render on
@@ -284,6 +290,7 @@ Additions to the canonical suites (AGENTS.md loop inventory unchanged); `store_l
 8. `sandbox_denied_fetch` — widget attempts raw fetch/parent access → `sandbox_denied`, page unaffected.
 
 **builder_loop — publish & versioning (5 scenarios)**
+
 1. `publish_atomic` — draft → preview → published flips `published_at`, creates revision, purges CDN, emits
    `page.published`.
 2. `rollback_restores` — rollback serves previous revision render after purge.
@@ -371,12 +378,12 @@ there rather than by convention.
 `src/lib/widget-hydration.ts` maps every widget type to one hydration mode, and
 `WidgetIsland` is the only place that acts on it:
 
-| Mode | Widgets | Client cost |
-| --- | --- | --- |
-| `static` | markup-only widgets (`rich_text`, `image`, `spec_table`, `hero`, …) | zero JS: the island never mounts |
-| `eager` | chrome and buy path (`announcement_bar`, `add_to_cart`, `buy_box`, `variant_picker`, `html`, `plugin_block`) | hydrates with the page |
-| `visible` | default, incl. data widgets and rails | hydrates on scroll into view (200px margin) |
-| `interaction` | closed-by-default disclosures (`accordion`, `faq`, `tabs`, `quiz`, `quick_view`) | hydrates on first pointer/focus/touch |
+| Mode          | Widgets                                                                                                      | Client cost                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `static`      | markup-only widgets (`rich_text`, `image`, `spec_table`, `hero`, …)                                          | zero JS: the island never mounts            |
+| `eager`       | chrome and buy path (`announcement_bar`, `add_to_cart`, `buy_box`, `variant_picker`, `html`, `plugin_block`) | hydrates with the page                      |
+| `visible`     | default, incl. data widgets and rails                                                                        | hydrates on scroll into view (200px margin) |
+| `interaction` | closed-by-default disclosures (`accordion`, `faq`, `tabs`, `quiz`, `quick_view`)                             | hydrates on first pointer/focus/touch       |
 
 The server always renders complete markup, so a dormant island is a fully
 rendered section — the client simply declines to adopt it until the trigger

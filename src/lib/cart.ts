@@ -10,7 +10,9 @@ function read(slug: string): CartLine[] {
   try {
     const raw = window.localStorage.getItem(key(slug));
     const parsed = raw ? (JSON.parse(raw) as CartLine[]) : [];
-    return Array.isArray(parsed) ? parsed.filter((l) => l?.variantId && l.quantity > 0) : [];
+    return Array.isArray(parsed)
+      ? parsed.filter((l) => l?.variantId && l.quantity > 0)
+      : [];
   } catch {
     return [];
   }
@@ -45,11 +47,19 @@ export function useCart(slug: string) {
       const current = read(slug);
       const existing = current.find((l) => l.variantId === variantId);
       const next = existing
-        ? current.map((l) => (l.variantId === variantId ? { ...l, quantity: l.quantity + quantity } : l))
+        ? current.map((l) =>
+            l.variantId === variantId
+              ? { ...l, quantity: l.quantity + quantity }
+              : l,
+          )
         : [...current, { variantId, quantity }];
       persist(next);
       // Funnel step: the cart stage of every merchant's report comes from here.
-      trackEvent({ entity: "cart", action: "add", payload: { variantId, quantity } });
+      trackEvent({
+        entity: "cart",
+        action: "add",
+        payload: { variantId, quantity },
+      });
     },
     [persist, slug],
   );

@@ -42,24 +42,41 @@ export const Route = createFileRoute("/api/public/media/$")({
           .join("/");
 
         if (!isMediaObjectPath(path)) {
-          return new Response("not_found", { status: 404, headers: { "cache-control": "no-store" } });
+          return new Response("not_found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
         }
 
         const blob = await readMedia(path);
         if (!blob) {
-          return new Response("not_found", { status: 404, headers: { "cache-control": "no-store" } });
+          return new Response("not_found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
         }
 
         const ext = path.slice(path.lastIndexOf(".") + 1).toLowerCase();
         const type = TYPES[ext] ?? "application/octet-stream";
-        return new Response(blob, {
-          headers: {
-            "content-type": type,
-            "content-disposition": type === "application/octet-stream" ? "attachment" : "inline",
-            "x-content-type-options": "nosniff",
-            "cache-control": "public, max-age=31536000, immutable",
-          },
-        });
+        const isSvg = ext === "svg" || type === "image/svg+xml";
+
+        const headers: Record<string, string> = {
+          "content-type": type,
+          "content-disposition":
+            type === "application/octet-stream" || isSvg
+              ? "attachment"
+              : "inline",
+          "x-content-type-options": "nosniff",
+          "cache-control": "public, max-age=31536000, immutable",
+        };
+
+        if (isSvg) {
+          // Prevent any inline script execution in platform origin (REPORT WF-13)
+          headers["content-security-policy"] =
+            "default-src 'none'; style-src 'unsafe-inline'";
+        }
+
+        return new Response(blob, { headers });
       },
     },
   },

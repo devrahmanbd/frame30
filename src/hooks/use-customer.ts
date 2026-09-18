@@ -32,7 +32,8 @@ export function useCustomerAccount(merchantId?: string) {
   const fn = useServerFn(customerAccountFn);
   return useQuery({
     queryKey: ["customer-account", merchantId],
-    queryFn: () => fn({ data: { merchantId } }) as Promise<CustomerAccount | null>,
+    queryFn: () =>
+      fn({ data: { merchantId } }) as Promise<CustomerAccount | null>,
     staleTime: 60_000,
   });
 }
@@ -49,7 +50,11 @@ export function useCustomerAccounts() {
 
 export function useCustomerHome(enabled: boolean) {
   const fn = useServerFn(customerHomeFn);
-  return useQuery({ queryKey: ["customer", "home"], queryFn: () => fn(), enabled });
+  return useQuery({
+    queryKey: ["customer", "home"],
+    queryFn: () => fn(),
+    enabled,
+  });
 }
 
 export function useCustomerOrders(page: number, enabled: boolean) {
@@ -72,17 +77,29 @@ export function useCustomerOrder(orderId: string | null) {
 
 export function useCustomerTracking(enabled: boolean) {
   const fn = useServerFn(customerTrackingFn);
-  return useQuery({ queryKey: ["customer", "tracking"], queryFn: () => fn(), enabled });
+  return useQuery({
+    queryKey: ["customer", "tracking"],
+    queryFn: () => fn(),
+    enabled,
+  });
 }
 
 export function useCustomerWishlist(enabled: boolean) {
   const fn = useServerFn(customerWishlistFn);
-  return useQuery({ queryKey: ["customer", "wishlist"], queryFn: () => fn(), enabled });
+  return useQuery({
+    queryKey: ["customer", "wishlist"],
+    queryFn: () => fn(),
+    enabled,
+  });
 }
 
 export function useCustomerProfile(enabled: boolean) {
   const fn = useServerFn(customerProfileFn);
-  return useQuery({ queryKey: ["customer", "profile"], queryFn: () => fn(), enabled });
+  return useQuery({
+    queryKey: ["customer", "profile"],
+    queryFn: () => fn(),
+    enabled,
+  });
 }
 
 /** Wraps a shopper mutation and refreshes the affected dashboard queries. */
@@ -94,7 +111,8 @@ export function useCustomerMutation<TInput, TOutput>(
   return useMutation({
     mutationFn: (data: TInput) => serverFn({ data }),
     onSuccess: () => {
-      for (const key of invalidate) void queryClient.invalidateQueries({ queryKey: key });
+      for (const key of invalidate)
+        void queryClient.invalidateQueries({ queryKey: key });
     },
   });
 }

@@ -1,1 +1,1224 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "label": "articles.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L1"}, {"id": "marketing_articles_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L52"}, {"id": "marketing_articles_statustone", "label": "statusTone", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L72"}, {"id": "marketing_articles_statuslabel", "label": "statusLabel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L78"}, {"id": "marketing_articles_emptyform", "label": "emptyForm", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L85"}, {"id": "marketing_articles_form", "label": "Form", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L103"}, {"id": "marketing_articles_readservererror", "label": "readServerError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L110"}, {"id": "marketing_articles_articlespage", "label": "ArticlesPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L116"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "supabase_client_loose_supabase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "hooks_use_merchant_usemerchant", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "hooks_use_merchant_slugify", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_marketing_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_marketing_functions_deletearticlefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_cms_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_cms_functions_savearticlefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_cms_functions_articlerevisionsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_cms_functions_restorerevisionfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_cms_lint_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_cms_lint_lintarticle", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_blog_body_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_body_bodystats", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_body_deriveexcerpt", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_body_parsebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_body_validatebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_blog_draft_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_draft_createdraftstore", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_draft_drafthash", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_draft_draftpayloadof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_draft_recoveryoffer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_blog_draft_storeddraft", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_components_admin_blog_classiceditor_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "blog_classiceditor_classiceditor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_components_builder_page_pagebuilder_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "page_pagebuilder_pagebuilder", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_page_builder_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_emptydoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_isbuilderbody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_parsebuilderbody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_serializebuilderbody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_starterdoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_page_builder_builderdoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_components_admin_blog_revisioncompare_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "blog_revisioncompare_revisioncompare", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketing_taxonomydesk_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_taxonomydesk_articletermpicker", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_taxonomydesk_taxonomydesk", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_errorframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_field", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_statuspill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "admin_marketingui_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_statustone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_statuslabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_emptyform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_form", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_readservererror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx", "target": "marketing_articles_articlespage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L116", "weight": 1.0}], "raw_calls": [{"caller_nid": "marketing_articles_readservererror", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L111"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L117"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMerchant", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L118"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L120"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L121"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L122"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L123"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L124"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L125"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L127"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L129"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L145"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L177"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L178"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L179"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L183"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L185"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L197"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L198"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L204"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L214"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L216"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L255"}, {"caller_nid": "marketing_articles_articlespage", "callee": "draftHash", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L255"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L258"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L275"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L285"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L318"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L319"}, {"caller_nid": "marketing_articles_articlespage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L337"}, {"caller_nid": "marketing_articles_articlespage", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L346"}, {"caller_nid": "marketing_articles_articlespage", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L346"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L351"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L353"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L370"}, {"caller_nid": "marketing_articles_articlespage", "callee": "toLocaleTimeString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L371"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L381"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L391"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L407"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L417"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L417"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L424"}, {"caller_nid": "marketing_articles_articlespage", "callee": "slugify", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L424"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L436"}, {"caller_nid": "marketing_articles_articlespage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L438"}, {"caller_nid": "marketing_articles_articlespage", "callee": "isBuilderBody", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L466"}, {"caller_nid": "marketing_articles_articlespage", "callee": "parseBuilderBody", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L468"}, {"caller_nid": "marketing_articles_articlespage", "callee": "emptyDoc", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L468"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L478"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L479"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L495"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L496"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L497"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L498"}, {"caller_nid": "marketing_articles_articlespage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L503"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L534"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L547"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L547"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L550"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L551"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L553"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L554"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L554"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L554"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L556"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L562"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L563"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L564"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L565"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L569"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L578"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L578"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L581"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L590"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L594"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L600"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L606"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L607"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L614"}, {"caller_nid": "marketing_articles_articlespage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L621"}, {"caller_nid": "marketing_articles_articlespage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx", "source_location": "L641"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "label": "articles.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketing_articles_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L52"
+    },
+    {
+      "id": "marketing_articles_statustone",
+      "label": "statusTone",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L72"
+    },
+    {
+      "id": "marketing_articles_statuslabel",
+      "label": "statusLabel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L78"
+    },
+    {
+      "id": "marketing_articles_emptyform",
+      "label": "emptyForm",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L85"
+    },
+    {
+      "id": "marketing_articles_form",
+      "label": "Form",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L103"
+    },
+    {
+      "id": "marketing_articles_readservererror",
+      "label": "readServerError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L110"
+    },
+    {
+      "id": "marketing_articles_articlespage",
+      "label": "ArticlesPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L116"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "supabase_client_loose_supabase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "hooks_use_merchant_usemerchant",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "hooks_use_merchant_slugify",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_marketing_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_marketing_functions_deletearticlefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_cms_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_cms_functions_savearticlefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_cms_functions_articlerevisionsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_cms_functions_restorerevisionfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_cms_lint_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_cms_lint_lintarticle",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_blog_body_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_body_bodystats",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_body_deriveexcerpt",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_body_parsebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_body_validatebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_blog_draft_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_draft_createdraftstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_draft_drafthash",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_draft_draftpayloadof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_draft_recoveryoffer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_blog_draft_storeddraft",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_blog_classiceditor_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "blog_classiceditor_classiceditor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_page_pagebuilder_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "page_pagebuilder_pagebuilder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_page_builder_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_emptydoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_isbuilderbody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_parsebuilderbody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_serializebuilderbody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_starterdoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_page_builder_builderdoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_blog_revisioncompare_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "blog_revisioncompare_revisioncompare",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketing_taxonomydesk_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_taxonomydesk_articletermpicker",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_taxonomydesk_taxonomydesk",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_errorframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_statuspill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "admin_marketingui_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_statustone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_statuslabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_emptyform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_form",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_readservererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_marketing_articles_tsx",
+      "target": "marketing_articles_articlespage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L116",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "marketing_articles_readservererror",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMerchant",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L197"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "draftHash",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L255"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L319"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L337"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L351"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L353"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L370"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "toLocaleTimeString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L381"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L391"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L407"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L417"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L424"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "slugify",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L424"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L436"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L438"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "isBuilderBody",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "parseBuilderBody",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L468"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "emptyDoc",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L468"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L478"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L479"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L496"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L497"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L498"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L503"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L534"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L547"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L547"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L551"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L553"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L554"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L554"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L554"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L556"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L562"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L563"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L564"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L565"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L569"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L578"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L578"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L581"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L590"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L594"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L600"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L606"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L607"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L614"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L621"
+    },
+    {
+      "caller_nid": "marketing_articles_articlespage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/marketing/articles.tsx",
+      "source_location": "L641"
+    }
+  ]
+}

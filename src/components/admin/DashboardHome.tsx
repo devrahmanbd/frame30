@@ -54,7 +54,10 @@ export function TodayStrip({ data }: { data: HomeData }) {
     },
   ];
   return (
-    <section aria-label="Today" className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+    <section
+      aria-label="Today"
+      className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]"
+    >
       <div className="fq-plate-signal fq-gridlines fq-halo fq-shine p-5 sm:p-6">
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-primary-foreground/70">
           {t("Revenue today", "আজকের বিক্রি")}
@@ -69,9 +72,14 @@ export function TodayStrip({ data }: { data: HomeData }) {
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
         {side.map((k) => (
-          <div key={k.label} className="fq-card fq-card-interactive fq-beam fq-dots fq-hover-spotlight fq-edge-inner p-4">
+          <div
+            key={k.label}
+            className="fq-card fq-card-interactive fq-beam fq-dots fq-hover-spotlight fq-edge-inner p-4"
+          >
             <p className="text-xs fq-sub">{k.label}</p>
-            <p className="fq-num mt-1 text-2xl font-semibold tracking-tight">{k.value}</p>
+            <p className="fq-num mt-1 text-2xl font-semibold tracking-tight">
+              {k.value}
+            </p>
             <p className="mt-2 flex items-center gap-2">
               <Delta pct={k.pct} />
               <span className="text-xs fq-sub">{vs}</span>
@@ -88,17 +96,25 @@ export function NeedsQueue({ data }: { data: HomeData }) {
   const { t } = useLang();
   const c = data.currency;
   return (
-    <section aria-label="Needs you" className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4">
+    <section
+      aria-label="Needs you"
+      className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4"
+    >
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <span className="size-1.5 rounded-full bg-primary" aria-hidden />
         {t("Needs you", "আপনার দরকার")}
         {data.needs.length > 0 ? (
-          <span className="fq-chip fq-num ml-auto text-muted-foreground">{data.needs.length}</span>
+          <span className="fq-chip fq-num ml-auto text-muted-foreground">
+            {data.needs.length}
+          </span>
         ) : null}
       </h2>
       {data.needs.length === 0 ? (
         <p className="mt-3 text-sm fq-sub">
-          {t("Nothing waiting. Add a product to keep momentum.", "কিছুই অপেক্ষা করছে না। নতুন পণ্য যোগ করুন।")}
+          {t(
+            "Nothing waiting. Add a product to keep momentum.",
+            "কিছুই অপেক্ষা করছে না। নতুন পণ্য যোগ করুন।",
+          )}
         </p>
       ) : (
         <ul className="fq-divide-soft mt-2 text-sm">
@@ -108,10 +124,14 @@ export function NeedsQueue({ data }: { data: HomeData }) {
               className="fq-row-accent -mx-2 flex items-center justify-between gap-3 rounded-fq-md px-3 py-2.5 transition-colors hover:bg-accent/60"
             >
               <div className="min-w-0">
-                <p className="truncate font-medium">{t(n.titleEn, n.titleBn)}</p>
+                <p className="truncate font-medium">
+                  {t(n.titleEn, n.titleBn)}
+                </p>
                 <p className="truncate text-xs fq-sub">
                   {t(n.detailEn, n.detailBn)}
-                  {n.amountMinorInt !== undefined ? ` · ${fmtMinor(n.amountMinorInt, c)}` : ""}
+                  {n.amountMinorInt !== undefined
+                    ? ` · ${fmtMinor(n.amountMinorInt, c)}`
+                    : ""}
                 </p>
               </div>
               <Link
@@ -133,7 +153,10 @@ export function LiveActivity({ data }: { data: HomeData }) {
   const { t } = useLang();
   const c = data.currency;
   return (
-    <section aria-label="Live activity" className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4">
+    <section
+      aria-label="Live activity"
+      className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4"
+    >
       <h2 className="flex items-center gap-2 text-sm font-semibold">
         <span className="relative flex size-1.5" aria-hidden>
           <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60" />
@@ -142,17 +165,27 @@ export function LiveActivity({ data }: { data: HomeData }) {
         {t("Live activity", "লাইভ কার্যক্রম")}
       </h2>
       {data.feed.length === 0 ? (
-        <p className="mt-3 text-sm fq-sub">{t("No activity yet.", "এখনো কিছু হয়নি।")}</p>
+        <p className="mt-3 text-sm fq-sub">
+          {t("No activity yet.", "এখনো কিছু হয়নি।")}
+        </p>
       ) : (
         <ul className="fq-divide-soft mt-2 text-sm">
           {data.feed.slice(0, 8).map((f) => (
-            <li key={f.id} className="flex items-baseline justify-between gap-3 py-2">
-              <Link to={f.to} className="flex min-h-8 min-w-0 items-center truncate hover:text-primary hover:underline">
+            <li
+              key={f.id}
+              className="flex items-baseline justify-between gap-3 py-2"
+            >
+              <Link
+                to={f.to}
+                className="flex min-h-8 min-w-0 items-center truncate hover:text-primary hover:underline"
+              >
                 {t(f.titleEn, f.titleBn)}
               </Link>
               <span className="fq-num shrink-0 text-xs fq-sub">
                 {new Date(f.at).toLocaleTimeString()}
-                {f.amountMinorInt !== undefined ? ` · ${fmtMinor(f.amountMinorInt, c)}` : ""}
+                {f.amountMinorInt !== undefined
+                  ? ` · ${fmtMinor(f.amountMinorInt, c)}`
+                  : ""}
               </span>
             </li>
           ))}
@@ -164,11 +197,17 @@ export function LiveActivity({ data }: { data: HomeData }) {
 
 export function DashboardSkeleton() {
   return (
-    <div className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]" aria-busy>
+    <div
+      className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]"
+      aria-busy
+    >
       <div className="h-[152px] animate-pulse rounded-fq-lg border border-border bg-muted/50" />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
         {[0, 1].map((i) => (
-          <div key={i} className="h-[70px] animate-pulse rounded-fq-lg border border-border bg-muted/40" />
+          <div
+            key={i}
+            className="h-[70px] animate-pulse rounded-fq-lg border border-border bg-muted/40"
+          />
         ))}
       </div>
     </div>
@@ -186,9 +225,21 @@ export function useHomeRealtime() {
     // second subscriber) attach listeners to an already-subscribed channel.
     const channel = supabase
       .channel(`admin-home-feed:${Math.random().toString(36).slice(2)}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, invalidate)
-      .on("postgres_changes", { event: "*", schema: "public", table: "payments" }, invalidate)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "subscribers" }, invalidate)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders" },
+        invalidate,
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "payments" },
+        invalidate,
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "subscribers" },
+        invalidate,
+      )
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
@@ -207,7 +258,10 @@ export function DashboardHome() {
 
   if (error) {
     return (
-      <p role="alert" className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+      <p
+        role="alert"
+        className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+      >
         {(error as Error).message}
       </p>
     );

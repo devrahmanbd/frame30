@@ -1,1 +1,12 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_statusline_sh", "label": "statusline.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/statusline.sh", "source_location": "L1"}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_statusline_sh",
+      "label": "statusline.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/statusline.sh",
+      "source_location": "L1"
+    }
+  ],
+  "edges": []
+}

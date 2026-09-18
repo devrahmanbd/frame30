@@ -4,7 +4,7 @@
 > **Central Entity:** Cloud E-Commerce CMS (`SoftwareApplication`)  
 > **Authoritative Framework:** Koray Tuğberk Gübür Semantic SEO & Holistic Architecture  
 > **Target Query Clusters:** `cloud ecommerce cms`, `headless ecommerce visual builder`, `saas ecommerce builder`, `ecommerce cms architecture`  
-> **Reading Time:** 15 minutes  
+> **Reading Time:** 15 minutes
 
 ---
 
@@ -45,6 +45,7 @@ For an e-commerce platform to compete at the highest tier in 2026, it must fulfi
 ### 2.1 Server-Side Rendering (SSR) at the Network Edge
 
 Traditional single-page applications (SPAs) built with client-side React frameworks suffer from severe SEO and conversion bottlenecks:
+
 - **Search Engine Crawl Latency:** Googlebot must execute a two-wave indexing process, deferring JavaScript execution and risking stale catalog indexing.
 - **Client-Side Hydration Lag:** Mobile devices on 4G connections freeze as the CPU parses megabytes of JavaScript bundles before buttons become interactive.
 
@@ -53,6 +54,7 @@ Traditional single-page applications (SPAs) built with client-side React framewo
 ### 2.2 Relational Data Integrity with Row-Level Security (RLS)
 
 E-commerce data models are inherently relational:
+
 - One Store has many Categories and Products.
 - One Product has multiple Option Sets (Size, Color, Material) and Variant Combinations.
 - Each Variant maintains an independent SKU, barcode, price, cost price, and stock ledger.
@@ -64,10 +66,12 @@ A true cloud CMS uses a **PostgreSQL relational backbone** fortified with **Row-
 ### 2.3 Visual Design Freedom Without Code Bloat
 
 The biggest historical conflict in e-commerce web development has been **Design Freedom vs. Code Cleanliness**:
+
 - Website builders like Webflow and Framer provide design freedom but lack a deep e-commerce transaction engine.
 - E-commerce engines like Shopify provide transaction safety but trap designers in rigid, boxy templates.
 
 A modern cloud CMS reconciles this by decoupling the **Visual Representation (AST)** from the **Data Model**:
+
 1. Designers visually compose layouts using flexbox, CSS grid, typography clamps, and padding scales.
 2. Design tokens enforce accessible contrast ratios automatically (such as WCAG AAA OKLCH palettes).
 3. The visual builder binds directly to dynamic catalog props without injecting redundant runtime dependencies or third-party tracking bloat.
@@ -78,12 +82,12 @@ A modern cloud CMS reconciles this by decoupling the **Visual Representation (AS
 
 The foundational promise of the internet was direct commerce between creators and consumers. However, legacy e-commerce platforms have gradually instituted predatory rent-seeking models:
 
-| Monetization Model | Legacy E-Commerce (e.g. Shopify) | Sovereign Cloud CMS (e.g. FRAMIQUE) |
-| :--- | :--- | :--- |
-| **Monthly Subscription** | $39 to $399 USD / month | Predictable, affordable local pricing |
-| **External Payment Penalty** | **+2.0% fee** on 3rd-party gateways | **0.0% fee** (Connect your own keys) |
-| **Essential Feature Apps** | Paid monthly subscriptions ($10–$50/app) | Built natively into the platform core |
-| **Data Ownership** | Platform-controlled database | Direct CSV/API export & full data custody |
+| Monetization Model           | Legacy E-Commerce (e.g. Shopify)         | Sovereign Cloud CMS (e.g. FRAMIQUE)       |
+| :--------------------------- | :--------------------------------------- | :---------------------------------------- |
+| **Monthly Subscription**     | $39 to $399 USD / month                  | Predictable, affordable local pricing     |
+| **External Payment Penalty** | **+2.0% fee** on 3rd-party gateways      | **0.0% fee** (Connect your own keys)      |
+| **Essential Feature Apps**   | Paid monthly subscriptions ($10–$50/app) | Built natively into the platform core     |
+| **Data Ownership**           | Platform-controlled database             | Direct CSV/API export & full data custody |
 
 When an e-commerce business generates $100,000 in monthly sales, a 2% platform transaction fee drains **$24,000 per year** straight out of the merchant's profit margin.  
 A sovereign cloud CMS maintains a strict zero-take-rate policy: **the software provides the infrastructure, while the merchant retains 100% of their gross processing value.**
@@ -113,7 +117,9 @@ Global software platforms frequently fail when deployed in emerging markets beca
 ```
 
 ### The Friction of Third-Party "App Glue"
+
 In legacy CMS platforms, connecting a local payment gateway (like bKash) or a local courier (like Steadfast) requires purchasing unverified third-party plugins from informal marketplaces. These plugins regularly:
+
 - Break during core platform software updates.
 - Store sensitive customer data on unmonitored external servers.
 - Fail to synchronize order statuses when webhooks drop.
@@ -127,13 +133,16 @@ In **FRAMIQUE**, these capabilities are **first-class system primitives**. The p
 To ensure stores built on a cloud CMS achieve dominant visibility in modern search engines and AI generative engines (Google AI Overviews, Perplexity, ChatGPT), the platform must implement rigorous technical standards:
 
 ### 5.1 JSON-LD Structured Data Schema Automation
+
 Every storefront page automatically renders structured data matching Google Search Central specifications:
+
 - `Product` and `Offer` schema with real-time price, currency (`BDT`, `USD`), and availability status.
 - `BreadcrumbList` reflecting logical category hierarchies.
 - `Organization` and `WebSite` schema establishing clear entity relationships.
 - `MerchantReturnPolicy` and `ShippingDetails` schema ensuring eligibility for Google Merchant Center rich snippets.
 
 ### 5.2 Core Web Vitals Optimization
+
 - **Largest Contentful Paint (LCP):** Preloaded hero images, SVG sprite icon rendering, and responsive picture sources.
 - **Interaction to Next Paint (INP):** Zero client-side hydration blocking; event listeners bind asynchronously.
 - **Cumulative Layout Shift (CLS):** Explicit aspect-ratio reservations on all media components, preventing layout shifts as images load.

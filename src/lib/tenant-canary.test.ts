@@ -39,21 +39,27 @@ describe("Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts
     });
 
     // 3. URL Pathname: /store/:slug
-    const req3 = new Request("https://framique.test/store/velvet-threads/category/coats");
+    const req3 = new Request(
+      "https://framique.test/store/velvet-threads/category/coats",
+    );
     expect(await extractTenantIdentifier(req3)).toEqual({
       identifier: "velvet-threads",
       source: "path",
     });
 
     // 4. URL Pathname: /api/store/:slug
-    const req4 = new Request("https://framique.test/api/store/dhaka-crafts/products");
+    const req4 = new Request(
+      "https://framique.test/api/store/dhaka-crafts/products",
+    );
     expect(await extractTenantIdentifier(req4)).toEqual({
       identifier: "dhaka-crafts",
       source: "path",
     });
 
     // 5. Query parameter: ?store_slug=
-    const req5 = new Request("https://framique.test/preview?store_slug=boutique-sylhet");
+    const req5 = new Request(
+      "https://framique.test/preview?store_slug=boutique-sylhet",
+    );
     expect(await extractTenantIdentifier(req5)).toEqual({
       identifier: "boutique-sylhet",
       source: "query",
@@ -61,7 +67,9 @@ describe("Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts
 
     // 6. Cookie: framique_tenant_id=
     const req6 = new Request("https://framique.test/cart", {
-      headers: { cookie: "session=xyz; framique_tenant_id=leather-atelier; theme=dark" },
+      headers: {
+        cookie: "session=xyz; framique_tenant_id=leather-atelier; theme=dark",
+      },
     });
     expect(await extractTenantIdentifier(req6)).toEqual({
       identifier: "leather-atelier",
@@ -79,7 +87,7 @@ describe("Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts
   it("extracts tenant identifier from Host header via Custom Domain Resolution", async () => {
     // Mock the host header request
     const req8 = new Request("https://example.com.bd/", {
-      headers: { "host": "example.com.bd" },
+      headers: { host: "example.com.bd" },
     });
 
     // Mocking the database call is tricky here because extractTenantIdentifier
@@ -87,10 +95,10 @@ describe("Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts
     // environment with seeded database, this would pass. For now, since we know
     // 'example.com.bd' does not exist in the DB, it should fall through to none
     // or fail to connect. We will test the fallback behavior to ensure it doesn't crash.
-    
+
     expect(await extractTenantIdentifier(req8)).toEqual({
       identifier: null,
-      source: "none"
+      source: "none",
     });
   });
 
@@ -135,15 +143,22 @@ describe("Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts
     const decisionBeta = await resolveTenantCanaryRoute(reqBeta);
     expect(decisionBeta.targetSlot).toBe("green");
     expect(decisionBeta.cohortTier).toBe(1);
-    expect(decisionBeta.headersToInject["x-framique-target-slot"]).toBe("green");
+    expect(decisionBeta.headersToInject["x-framique-target-slot"]).toBe(
+      "green",
+    );
 
-    const reqStandard = new Request("https://framique.test/store/standard-global-shop", {
-      headers: { "x-store-slug": standardStore },
-    });
+    const reqStandard = new Request(
+      "https://framique.test/store/standard-global-shop",
+      {
+        headers: { "x-store-slug": standardStore },
+      },
+    );
     const decisionStandard = await resolveTenantCanaryRoute(reqStandard);
     expect(decisionStandard.targetSlot).toBe("blue");
     expect(decisionStandard.cohortTier).toBe(4);
-    expect(decisionStandard.headersToInject["x-framique-target-slot"]).toBe("blue");
+    expect(decisionStandard.headersToInject["x-framique-target-slot"]).toBe(
+      "blue",
+    );
   });
 
   it("routes internal dogfood store to GREEN while beta store remains on BLUE in Rollout Tier 0", async () => {

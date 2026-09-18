@@ -8,10 +8,24 @@
 import { useRef, useState, type DragEvent } from "react";
 import { Copy, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { isContainerNode, type StudioDoc, type StudioNode } from "@/lib/studio/model";
+import {
+  isContainerNode,
+  type StudioDoc,
+  type StudioNode,
+} from "@/lib/studio/model";
 import { widgetLabel } from "@/lib/studio/catalog";
-import { dropPositionFor, type DropPosition, type DropTarget } from "@/lib/studio/tree";
-import { animationProps, containerInnerCss, isHiddenOn, nodeCss, selfCss } from "@/lib/studio/styles";
+import {
+  dropPositionFor,
+  type DropPosition,
+  type DropTarget,
+} from "@/lib/studio/tree";
+import {
+  animationProps,
+  containerInnerCss,
+  isHiddenOn,
+  nodeCss,
+  selfCss,
+} from "@/lib/studio/styles";
 import type { DeviceKey } from "@/lib/studio/responsive";
 import { StudioWidget } from "./renderers";
 
@@ -35,7 +49,10 @@ const INLINE_EDITABLE = new Set(["heading", "text", "button"]);
 
 export function StudioCanvas(props: CanvasProps) {
   const { doc, device, onAddRoot } = props;
-  const [indicator, setIndicator] = useState<{ id: string; position: DropPosition } | null>(null);
+  const [indicator, setIndicator] = useState<{
+    id: string;
+    position: DropPosition;
+  } | null>(null);
 
   return (
     <div
@@ -105,7 +122,8 @@ type NodeViewProps = CanvasProps & {
 };
 
 function NodeView(props: NodeViewProps) {
-  const { node, device, selectedId, hideHandles, indicator, setIndicator } = props;
+  const { node, device, selectedId, hideHandles, indicator, setIndicator } =
+    props;
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const container = isContainerNode(node);
@@ -114,21 +132,34 @@ function NodeView(props: NodeViewProps) {
   if (isHiddenOn(node, device)) return null;
 
   const anim = animationProps(node);
-  const style = { ...nodeCss(node, device), ...selfCss(node, device), ...(anim.style ?? {}) };
+  const style = {
+    ...nodeCss(node, device),
+    ...selfCss(node, device),
+    ...(anim.style ?? {}),
+  };
 
   const onDragOver = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
-    const position = dropPositionFor(event.clientY, { top: rect.top, height: rect.height }, container);
+    const position = dropPositionFor(
+      event.clientY,
+      { top: rect.top, height: rect.height },
+      container,
+    );
     setIndicator({ id: node.id, position });
   };
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    const position = indicator?.id === node.id ? indicator.position : container ? "inside" : "after";
+    const position =
+      indicator?.id === node.id
+        ? indicator.position
+        : container
+          ? "inside"
+          : "after";
     setIndicator(null);
     props.onDrop({ id: node.id, position });
   };
@@ -167,7 +198,10 @@ function NodeView(props: NodeViewProps) {
       }}
       className={cn(
         "fq-studio-node relative",
-        !hideHandles && hovered && !selected && "outline outline-1 outline-dashed outline-primary/60",
+        !hideHandles &&
+          hovered &&
+          !selected &&
+          "outline outline-1 outline-dashed outline-primary/60",
         !hideHandles && selected && "outline outline-2 outline-primary",
         anim.className,
       )}
@@ -176,7 +210,10 @@ function NodeView(props: NodeViewProps) {
       {showIndicator === "before" && <DropLine placement="top" />}
       {showIndicator === "after" && <DropLine placement="bottom" />}
       {showIndicator === "inside" && (
-        <span aria-hidden className="pointer-events-none absolute inset-0 rounded-fq-sm outline outline-2 outline-primary" />
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 rounded-fq-sm outline outline-2 outline-primary"
+        />
       )}
 
       {!hideHandles && (hovered || selected) && (
@@ -189,7 +226,12 @@ function NodeView(props: NodeViewProps) {
             <EmptyContainer onAdd={() => props.onAddInside(node.id)} />
           ) : (
             (node.children ?? []).map((child) => (
-              <NodeView key={child.id} {...props} node={child} depth={props.depth + 1} />
+              <NodeView
+                key={child.id}
+                {...props}
+                node={child}
+                depth={props.depth + 1}
+              />
             ))
           )}
         </div>
@@ -209,10 +251,16 @@ function InlineWidget(props: NodeViewProps) {
     <div
       suppressContentEditableWarning
       contentEditable={props.selectedId === node.id}
-      onBlur={(event) => props.onInlineEdit(node.id, event.currentTarget.textContent ?? "")}
+      onBlur={(event) =>
+        props.onInlineEdit(node.id, event.currentTarget.textContent ?? "")
+      }
       className="outline-none"
       role={props.selectedId === node.id ? "textbox" : undefined}
-      aria-label={props.selectedId === node.id ? `Edit ${widgetLabel(node.el)} text` : undefined}
+      aria-label={
+        props.selectedId === node.id
+          ? `Edit ${widgetLabel(node.el)} text`
+          : undefined
+      }
       tabIndex={props.selectedId === node.id ? 0 : undefined}
       data-inline-key={key}
     >
@@ -241,7 +289,9 @@ function Handles({
   onAddInside,
   onSelect,
 }: NodeViewProps & { container: boolean }) {
-  const label = container ? (node.name ?? "Container") : (node.name ?? widgetLabel(node.el));
+  const label = container
+    ? (node.name ?? "Container")
+    : (node.name ?? widgetLabel(node.el));
   return (
     <div
       className={cn(
@@ -253,9 +303,14 @@ function Handles({
       <span className="grid size-6 place-items-center" aria-hidden>
         <GripVertical className="size-3.5" />
       </span>
-      <span className="max-w-28 truncate px-1 text-[11px] font-semibold">{label}</span>
+      <span className="max-w-28 truncate px-1 text-[11px] font-semibold">
+        {label}
+      </span>
       {container ? (
-        <HandleButton label={`Add element inside ${label}`} onClick={() => onAddInside(node.id)}>
+        <HandleButton
+          label={`Add element inside ${label}`}
+          onClick={() => onAddInside(node.id)}
+        >
           <Plus className="size-3.5" aria-hidden />
         </HandleButton>
       ) : (
@@ -263,7 +318,10 @@ function Handles({
           <Pencil className="size-3.5" aria-hidden />
         </HandleButton>
       )}
-      <HandleButton label={`Duplicate ${label}`} onClick={() => onDuplicate(node.id)}>
+      <HandleButton
+        label={`Duplicate ${label}`}
+        onClick={() => onDuplicate(node.id)}
+      >
         <Copy className="size-3.5" aria-hidden />
       </HandleButton>
       <HandleButton label={`Delete ${label}`} onClick={() => onDelete(node.id)}>

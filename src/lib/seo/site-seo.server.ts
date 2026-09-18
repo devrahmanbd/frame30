@@ -28,6 +28,8 @@ export type SiteSeoBundle = {
   storeName: string;
   redirects: RedirectRow[];
   notFound: NotFoundRow[];
+  hasActiveCustomDomain: boolean;
+  primaryCustomDomain: string | null;
 };
 
 function toRedirect(row: any): RedirectRow {
@@ -54,9 +56,16 @@ function toNotFound(row: any): NotFoundRow {
   };
 }
 
-export async function loadSiteSeo(db: Client, merchantId: string): Promise<SiteSeoBundle> {
-  const [merchant, settings, redirects, notFound] = await Promise.all([
-    db.from("merchants").select("slug, name").eq("id", merchantId).maybeSingle(),
+export async function loadSiteSeo(
+  db: Client,
+  merchantId: string,
+): Promise<SiteSeoBundle> {
+  const [merchant, settings, redirects, notFound, domains] = await Promise.all([
+    db
+      .from("merchants")
+      .select("slug, name")
+      .eq("id", merchantId)
+      .maybeSingle(),
     loose(db)
       .from("merchant_settings")
       .select("seo_settings")
@@ -74,14 +83,29 @@ export async function loadSiteSeo(db: Client, merchantId: string): Promise<SiteS
       .eq("merchant_id", merchantId)
       .order("last_seen_at", { ascending: false })
       .limit(100),
+    loose(db)
+      .from("merchant_domains")
+      .select("id, hostname, status, is_primary")
+      .eq("merchant_id", merchantId)
+      .eq("status", "active"),
   ]);
 
+  const activeDomains = ((domains as any)?.data ?? []) as any[];
+  const primaryDomain =
+    activeDomains.find((d) => d.is_primary)?.hostname ??
+    activeDomains[0]?.hostname ??
+    null;
+
   return {
-    settings: parseSiteSeo((settings as any)?.data?.seo_settings ?? DEFAULT_SITE_SEO),
+    settings: parseSiteSeo(
+      (settings as any)?.data?.seo_settings ?? DEFAULT_SITE_SEO,
+    ),
     storeSlug: merchant.data?.slug ?? "",
     storeName: merchant.data?.name ?? "",
     redirects: (((redirects as any).data ?? []) as any[]).map(toRedirect),
     notFound: (((notFound as any).data ?? []) as any[]).map(toNotFound),
+    hasActiveCustomDomain: activeDomains.length > 0,
+    primaryCustomDomain: primaryDomain,
   };
 }
 
@@ -93,7 +117,10 @@ export async function saveSiteSeo(
   const settings = parseSiteSeo(input);
   const { error } = await loose(db)
     .from("merchant_settings")
-    .upsert({ merchant_id: merchantId, seo_settings: settings }, { onConflict: "merchant_id" });
+    .upsert(
+      { merchant_id: merchantId, seo_settings: settings },
+      { onConflict: "merchant_id" },
+    );
   if (error) throw new Error(error.message);
   return settings;
 }
@@ -140,7 +167,11 @@ export async function upsertRedirect(
   return toRedirect(data);
 }
 
-export async function deleteRedirect(db: Client, merchantId: string, id: string): Promise<void> {
+export async function deleteRedirect(
+  db: Client,
+  merchantId: string,
+  id: string,
+): Promise<void> {
   const { error } = await loose(db)
     .from("url_redirects")
     .delete()
@@ -182,7 +213,10 @@ export async function clearNotFound(
   merchantId: string,
   id: string | null,
 ): Promise<void> {
-  let q = loose(db).from("seo_not_found_log").delete().eq("merchant_id", merchantId);
+  let q = loose(db)
+    .from("seo_not_found_log")
+    .delete()
+    .eq("merchant_id", merchantId);
   if (id) q = q.eq("id", id);
   const { error } = await q;
   if (error) throw new Error(error.message);

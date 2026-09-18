@@ -7,7 +7,8 @@
 import { BEAUTY_TAXONOMY } from "./beauty-taxonomy";
 import type { Locale } from "./bitext";
 
-export type TaxonomySource = "skinType" | "concern" | "undertone" | "finish" | "brand" | "category";
+export type TaxonomySource =
+  "skinType" | "concern" | "undertone" | "finish" | "brand" | "category";
 
 export type TaxonomyOption = { value: string; en: string; bn: string };
 
@@ -65,12 +66,19 @@ export function taxonomyOptions(source: TaxonomySource): TaxonomyOption[] {
 }
 
 /** Bilingual label for a stored slug; unknown slugs echo back untouched. */
-export function taxonomyLabel(source: TaxonomySource, value: string, locale: Locale): string {
+export function taxonomyLabel(
+  source: TaxonomySource,
+  value: string,
+  locale: Locale,
+): string {
   const option = taxonomyOptions(source).find((entry) => entry.value === value);
   if (!option) return value;
   return locale === "bn" ? option.bn : option.en;
 }
 
-export function isTaxonomyValue(source: TaxonomySource, value: string): boolean {
+export function isTaxonomyValue(
+  source: TaxonomySource,
+  value: string,
+): boolean {
   return taxonomyOptions(source).some((option) => option.value === value);
 }

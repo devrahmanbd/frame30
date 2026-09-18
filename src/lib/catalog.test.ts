@@ -19,7 +19,8 @@ describe("catalog kinds", () => {
 
 describe("csv parsing", () => {
   it("reads quoted fields, escaped quotes and CRLF", () => {
-    const csv = 'title,slug,price_minor\r\n"Shari, red","shari-red",485000\r\n"He said ""hi""",x,100\r\n';
+    const csv =
+      'title,slug,price_minor\r\n"Shari, red","shari-red",485000\r\n"He said ""hi""",x,100\r\n';
     const { rows, errors } = parseCsv(csv);
     expect(errors).toEqual([]);
     expect(rows).toHaveLength(2);
@@ -29,12 +30,16 @@ describe("csv parsing", () => {
   });
 
   it("flags missing required columns", () => {
-    expect(parseCsv("title,slug\nA,a\n").errors).toContain("missing_column:price_minor");
+    expect(parseCsv("title,slug\nA,a\n").errors).toContain(
+      "missing_column:price_minor",
+    );
     expect(parseCsv("").errors).toContain("empty_file");
   });
 
   it("ignores blank lines", () => {
-    expect(parseCsv("title,slug,price_minor\n\nA,a,1\n\n").rows).toHaveLength(1);
+    expect(parseCsv("title,slug,price_minor\n\nA,a,1\n\n").rows).toHaveLength(
+      1,
+    );
   });
 });
 
@@ -55,16 +60,26 @@ describe("smart collection rules", () => {
   });
 
   it("defaults to match-all and caps condition count", () => {
-    const many = Array.from({ length: 30 }, () => ({ field: "tag", op: "contains", value: "a" }));
+    const many = Array.from({ length: 30 }, () => ({
+      field: "tag",
+      op: "contains",
+      value: "a",
+    }));
     const rules = normalizeRules({ conditions: many });
     expect(rules.match).toBe("all");
     expect(rules.conditions).toHaveLength(20);
   });
 
   it("describes rules for the audit line", () => {
-    expect(describeRules({ match: "all", conditions: [] })).toBe("no conditions");
-    expect(describeRules(normalizeRules({ conditions: [{ field: "kind", op: "equals", value: "digital" }] }))).toContain(
-      "kind equals digital",
+    expect(describeRules({ match: "all", conditions: [] })).toBe(
+      "no conditions",
     );
+    expect(
+      describeRules(
+        normalizeRules({
+          conditions: [{ field: "kind", op: "equals", value: "digital" }],
+        }),
+      ),
+    ).toContain("kind equals digital");
   });
 });

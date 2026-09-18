@@ -31,7 +31,11 @@ export function FeatureFilterDrawer({
       onClose={onClose}
       footer={
         <>
-          <button type="button" className={btnGhost} onClick={() => onChange(EMPTY_SELECTION)}>
+          <button
+            type="button"
+            className={btnGhost}
+            onClick={() => onChange(EMPTY_SELECTION)}
+          >
             Clear ({selectionCount(selection)})
           </button>
           <button type="button" className={btnPrimary} onClick={onClose}>
@@ -43,7 +47,9 @@ export function FeatureFilterDrawer({
       <div className="space-y-6">
         {FEATURE_FILTERS.map((group) => (
           <fieldset key={group.id}>
-            <legend className="mb-2 text-sm font-semibold text-foreground">{group.label}</legend>
+            <legend className="mb-2 text-sm font-semibold text-foreground">
+              {group.label}
+            </legend>
             <ul className="grid gap-1 sm:grid-cols-2">
               {group.options.map((option) => {
                 const checked = selection[group.id].includes(option);
@@ -53,7 +59,9 @@ export function FeatureFilterDrawer({
                       <input
                         type="checkbox"
                         checked={checked}
-                        onChange={() => onChange(toggleFeature(selection, group.id, option))}
+                        onChange={() =>
+                          onChange(toggleFeature(selection, group.id, option))
+                        }
                         className="size-5 accent-[var(--fq-signal)]"
                       />
                       <span className="text-foreground/90">{option}</span>

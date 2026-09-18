@@ -20,7 +20,11 @@ type DocsAiSource = {
   excerpt: string;
 };
 
-type Turn = { role: "user" | "assistant"; content: string; sources?: DocsAiSource[] };
+type Turn = {
+  role: "user" | "assistant";
+  content: string;
+  sources?: DocsAiSource[];
+};
 
 const SUGGESTIONS = [
   "How do I authenticate with the API?",
@@ -28,7 +32,11 @@ const SUGGESTIONS = [
   "What are the rate limits?",
 ];
 
-export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersionId }) {
+export function DocsAiWidget({
+  version = CURRENT_VERSION,
+}: {
+  version?: DocVersionId;
+}) {
   const ask = useServerFn(askDocsAi);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
@@ -43,7 +51,10 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
   }, [open]);
 
   useEffect(() => {
-    logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
+    logRef.current?.scrollTo({
+      top: logRef.current.scrollHeight,
+      behavior: "smooth",
+    });
   }, [turns, busy]);
 
   useEffect(() => {
@@ -59,7 +70,10 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
     if (!text || busy) return;
     setError(null);
     setInput("");
-    const history = turns.map((turn) => ({ role: turn.role, content: turn.content }));
+    const history = turns.map((turn) => ({
+      role: turn.role,
+      content: turn.content,
+    }));
     setTurns((prev) => [...prev, { role: "user", content: text }]);
     setBusy(true);
     try {
@@ -69,7 +83,11 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
         { role: "assistant", content: result.answer, sources: result.sources },
       ]);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Something went wrong. Try again.");
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : "Something went wrong. Try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -99,11 +117,15 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
             </button>
           </header>
 
-          <div ref={logRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+          <div
+            ref={logRef}
+            className="flex-1 space-y-4 overflow-y-auto px-4 py-4"
+          >
             {turns.length === 0 ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  Ask anything about setup, the API, webhooks, payments or themes.
+                  Ask anything about setup, the API, webhooks, payments or
+                  themes.
                 </p>
                 <ul className="space-y-2">
                   {SUGGESTIONS.map((suggestion) => (
@@ -124,7 +146,11 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
             {turns.map((turn, index) => (
               <div
                 key={index}
-                className={turn.role === "user" ? "flex justify-end" : "flex justify-start"}
+                className={
+                  turn.role === "user"
+                    ? "flex justify-end"
+                    : "flex justify-start"
+                }
               >
                 <div
                   className={
@@ -133,7 +159,9 @@ export function DocsAiWidget({ version = CURRENT_VERSION }: { version?: DocVersi
                       : "max-w-[92%] space-y-3"
                   }
                 >
-                  <p className="whitespace-pre-wrap text-sm leading-relaxed">{turn.content}</p>
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {turn.content}
+                  </p>
                   {turn.sources && turn.sources.length > 0 ? (
                     <ul className="space-y-1 border-t border-border pt-2">
                       {turn.sources.slice(0, 4).map((source) => (

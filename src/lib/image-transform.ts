@@ -40,7 +40,9 @@ export const DEFAULT_SPEC: TransformSpec = {
 };
 
 /** Discrete ladder: unbounded widths would make the CDN cache useless. */
-export const WIDTH_LADDER = [64, 128, 256, 384, 512, 640, 768, 1024, 1280, 1600, 1920] as const;
+export const WIDTH_LADDER = [
+  64, 128, 256, 384, 512, 640, 768, 1024, 1280, 1600, 1920,
+] as const;
 
 export function snapWidth(requested: number) {
   const w = Math.max(1, Math.trunc(requested));
@@ -53,10 +55,19 @@ export function normalizeSpec(input: Partial<TransformSpec>): TransformSpec {
   return {
     width: snapWidth(input.width ?? DEFAULT_SPEC.width),
     height: Math.min(1920, Math.max(0, Math.trunc(input.height ?? 0))),
-    resize: input.resize === "fit" || input.resize === "cover" ? input.resize : "inside",
-    quality: Math.min(95, Math.max(30, Math.trunc(input.quality ?? DEFAULT_SPEC.quality))),
+    resize:
+      input.resize === "fit" || input.resize === "cover"
+        ? input.resize
+        : "inside",
+    quality: Math.min(
+      95,
+      Math.max(30, Math.trunc(input.quality ?? DEFAULT_SPEC.quality)),
+    ),
     format:
-      format === "avif" || format === "webp" || format === "jpeg" || format === "png"
+      format === "avif" ||
+      format === "webp" ||
+      format === "jpeg" ||
+      format === "png"
         ? format
         : "auto",
   };
@@ -68,7 +79,10 @@ export function normalizeSpec(input: Partial<TransformSpec>): TransformSpec {
  * every browser understands. PNG is only ever served when explicitly asked for,
  * because auto-selecting it on photos triples the bytes.
  */
-export function negotiateFormat(accept: string | null, requested: ImageFormat | "auto"): ImageFormat {
+export function negotiateFormat(
+  accept: string | null,
+  requested: ImageFormat | "auto",
+): ImageFormat {
   if (requested !== "auto") return requested;
   const a = (accept ?? "").toLowerCase();
   if (a.includes("image/avif")) return "avif";
@@ -88,7 +102,10 @@ export function encodeSpec(spec: TransformSpec) {
 }
 
 export function decodeSpec(segment: string): TransformSpec | null {
-  const m = /^w(\d+)_h(\d+)_(fit|cover|inside)_q(\d+)_(avif|webp|jpeg|png|auto)$/.exec(segment);
+  const m =
+    /^w(\d+)_h(\d+)_(fit|cover|inside)_q(\d+)_(avif|webp|jpeg|png|auto)$/.exec(
+      segment,
+    );
   if (!m) return null;
   return normalizeSpec({
     width: Number(m[1]),
@@ -125,15 +142,20 @@ export function decodeSource(encoded: string): string | null {
  * made, and the literal-IP check blocks the metadata endpoint, loopback and
  * private ranges even if an allow-listed hostname were ever pointed at them.
  */
-export function isAllowedSource(rawUrl: string, allowedHosts: readonly string[]) {
+export function isAllowedSource(
+  rawUrl: string,
+  allowedHosts: readonly string[],
+) {
   let url: URL;
   try {
     url = new URL(rawUrl);
   } catch {
     return { ok: false as const, reason: "bad_url" };
   }
-  if (url.protocol !== "https:") return { ok: false as const, reason: "not_https" };
-  if (url.username || url.password) return { ok: false as const, reason: "credentials_in_url" };
+  if (url.protocol !== "https:")
+    return { ok: false as const, reason: "not_https" };
+  if (url.username || url.password)
+    return { ok: false as const, reason: "credentials_in_url" };
 
   const host = url.hostname.toLowerCase();
   if (/^\[?[0-9a-f:.]+\]?$/i.test(host) && !/^[a-z]/i.test(host)) {
@@ -157,7 +179,8 @@ export function signaturePayload(specSegment: string, sourceSegment: string) {
 export function safeEqualHex(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 

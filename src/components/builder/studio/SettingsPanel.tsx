@@ -7,9 +7,20 @@
  * control schema. Advanced controls live in accordions at the bottom of Style.
  */
 import { useMemo, useState } from "react";
-import { ArrowLeft, ChevronDown, FileText, MousePointerClick, Paintbrush, X } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  FileText,
+  MousePointerClick,
+  Paintbrush,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { isControlVisible, sectionsForPanelTab, type PanelTab } from "@/lib/studio/controls";
+import {
+  isControlVisible,
+  sectionsForPanelTab,
+  type PanelTab,
+} from "@/lib/studio/controls";
 import { widgetLabel } from "@/lib/studio/catalog";
 import type { SettingValue, StudioClass, StudioNode } from "@/lib/studio/model";
 import type { DeviceKey } from "@/lib/studio/responsive";
@@ -35,7 +46,10 @@ export type SettingsPanelProps = {
 };
 
 function classList(node: StudioNode): string[] {
-  const raw = typeof node.settings.cssClasses === "string" ? node.settings.cssClasses : "";
+  const raw =
+    typeof node.settings.cssClasses === "string"
+      ? node.settings.cssClasses
+      : "";
   return raw.split(/\s+/).filter(Boolean);
 }
 
@@ -149,7 +163,11 @@ export function SettingsPanel({
         <h2 className="flex-1 truncate text-sm font-semibold">Edit {title}</h2>
       </div>
 
-      <div role="tablist" aria-label="Element settings" className="flex border-b border-border">
+      <div
+        role="tablist"
+        aria-label="Element settings"
+        className="flex border-b border-border"
+      >
         {TABS.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
@@ -171,7 +189,11 @@ export function SettingsPanel({
         ))}
       </div>
 
-      <div id="studio-settings-panel" role="tabpanel" className="min-h-0 flex-1 overflow-y-auto">
+      <div
+        id="studio-settings-panel"
+        role="tabpanel"
+        className="min-h-0 flex-1 overflow-y-auto"
+      >
         {tab === "style" && (
           <ClassesRow
             node={node}
@@ -183,15 +205,21 @@ export function SettingsPanel({
 
         {tab === "interactions" && !hasInteraction && (
           <div className="border-b border-border p-4 text-center">
-            <p className="text-xs font-semibold">Animate elements with Interactions</p>
+            <p className="text-xs font-semibold">
+              Animate elements with Interactions
+            </p>
             <p className="mt-1 text-[11px] text-muted-foreground">
-              Add entrance animations and effects triggered by user interactions such as page load or scroll.
+              Add entrance animations and effects triggered by user interactions
+              such as page load or scroll.
             </p>
             <button
               type="button"
               onClick={() => {
                 onChange("animation", "fade-up");
-                setOpen((prev) => ({ ...prev, "interactions:Entrance animation": true }));
+                setOpen((prev) => ({
+                  ...prev,
+                  "interactions:Entrance animation": true,
+                }));
               }}
               className="mt-3 min-h-9 rounded-fq-md bg-primary px-3 text-xs font-semibold text-primary-foreground"
             >
@@ -201,7 +229,9 @@ export function SettingsPanel({
         )}
 
         {sections.map((section) => {
-          const controls = section.controls.filter((control) => isControlVisible(control, node.settings));
+          const controls = section.controls.filter((control) =>
+            isControlVisible(control, node.settings),
+          );
           if (controls.length === 0) return null;
           const id = `${tab}:${section.title}`;
           // Sections start closed on Style/Interactions, open on General.
@@ -211,7 +241,9 @@ export function SettingsPanel({
               <button
                 type="button"
                 aria-expanded={expanded}
-                onClick={() => setOpen((prev) => ({ ...prev, [id]: !expanded }))}
+                onClick={() =>
+                  setOpen((prev) => ({ ...prev, [id]: !expanded }))
+                }
                 className="flex min-h-11 w-full items-center justify-between px-3 text-left text-xs font-semibold"
               >
                 <span className="flex items-center gap-2">
@@ -222,7 +254,13 @@ export function SettingsPanel({
                     </span>
                   )}
                 </span>
-                <ChevronDown className={cn("size-4 transition-transform", expanded ? "" : "-rotate-90")} aria-hidden />
+                <ChevronDown
+                  className={cn(
+                    "size-4 transition-transform",
+                    expanded ? "" : "-rotate-90",
+                  )}
+                  aria-hidden
+                />
               </button>
               {expanded && (
                 <div className="flex flex-col gap-4 px-3 pb-4">

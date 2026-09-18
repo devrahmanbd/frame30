@@ -74,7 +74,10 @@ export function SemrushDesk() {
           <div>
             <div className="flex items-center gap-2">
               <h3 className="font-semibold text-foreground text-sm sm:text-base">
-                {t("Semrush Intelligence & Keyword Tracker", "Semrush ইন্টেলিজেন্স ও কিওয়ার্ড ট্র্যাকার")}
+                {t(
+                  "Semrush Intelligence & Keyword Tracker",
+                  "Semrush ইন্টেলিজেন্স ও কিওয়ার্ড ট্র্যাকার",
+                )}
               </h3>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-success/15 text-success">
                 <CheckCircle2 className="size-3" />
@@ -83,7 +86,9 @@ export function SemrushDesk() {
             </div>
             <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground font-mono">
               <KeyRound className="size-3 shrink-0" />
-              <span>{data?.apiKeyMask ?? "semrtkn-pat-HS2X••••••••qKFlYd"}</span>
+              <span>
+                {data?.apiKeyMask ?? "semrtkn-pat-HS2X••••••••qKFlYd"}
+              </span>
             </div>
           </div>
         </div>
@@ -94,7 +99,9 @@ export function SemrushDesk() {
               type="button"
               onClick={() => setDatabase("bd")}
               className={`px-2.5 py-1 rounded-[4px] transition-colors ${
-                database === "bd" ? "bg-primary text-primary-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                database === "bd"
+                  ? "bg-primary text-primary-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               BD (বাংলাদেশ)
@@ -103,7 +110,9 @@ export function SemrushDesk() {
               type="button"
               onClick={() => setDatabase("global")}
               className={`px-2.5 py-1 rounded-[4px] transition-colors ${
-                database === "global" ? "bg-primary text-primary-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                database === "global"
+                  ? "bg-primary text-primary-foreground font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Global
@@ -116,7 +125,9 @@ export function SemrushDesk() {
             onClick={() => auditMutation.mutate()}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-fq-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-all cursor-pointer"
           >
-            <RefreshCw className={`size-3.5 ${auditMutation.isPending || overviewQuery.isFetching ? "animate-spin" : ""}`} />
+            <RefreshCw
+              className={`size-3.5 ${auditMutation.isPending || overviewQuery.isFetching ? "animate-spin" : ""}`}
+            />
             <span>{t("Run Audit", "অডিট চালান")}</span>
           </button>
         </div>
@@ -133,12 +144,13 @@ export function SemrushDesk() {
             <span className="text-2xl font-bold font-display text-foreground">
               {rank?.organicTraffic.toLocaleString() ?? "14,250"}
             </span>
-            <span className="text-xs font-semibold text-success">
-              +18.4%
-            </span>
+            <span className="text-xs font-semibold text-success">+18.4%</span>
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            {t("Est. monthly visits from Google BD", "গুগল বিডি থেকে সম্ভাব্য মাসিক ভিজিটর")}
+            {t(
+              "Est. monthly visits from Google BD",
+              "গুগল বিডি থেকে সম্ভাব্য মাসিক ভিজিটর",
+            )}
           </p>
         </div>
 
@@ -156,7 +168,10 @@ export function SemrushDesk() {
             </span>
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            {t("Targeting e-commerce & COD search queries", "ই-কমার্স ও সিওডি সার্চ কোয়েরি লক্ষ্য")}
+            {t(
+              "Targeting e-commerce & COD search queries",
+              "ই-কমার্স ও সিওডি সার্চ কোয়েরি লক্ষ্য",
+            )}
           </p>
         </div>
 
@@ -192,7 +207,8 @@ export function SemrushDesk() {
             </span>
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            {backlinks?.totalBacklinks.toLocaleString() ?? "4,820"} {t("total verified backlinks", "যাচাইকৃত ব্যাকলিংক")}
+            {backlinks?.totalBacklinks.toLocaleString() ?? "4,820"}{" "}
+            {t("total verified backlinks", "যাচাইকৃত ব্যাকলিংক")}
           </p>
         </div>
       </div>
@@ -205,7 +221,10 @@ export function SemrushDesk() {
             <div className="flex items-center gap-2">
               <Activity className="size-4 text-primary" />
               <h4 className="font-semibold text-sm text-foreground">
-                {t("Live Keyword Tracking (Bangladesh SERP)", "লাইভ কিওয়ার্ড ট্র্যাকিং (বাংলাদেশ এসইআরপি)")}
+                {t(
+                  "Live Keyword Tracking (Bangladesh SERP)",
+                  "লাইভ কিওয়ার্ড ট্র্যাকিং (বাংলাদেশ এসইআরপি)",
+                )}
               </h4>
             </div>
             <span className="text-xs text-muted-foreground font-mono">
@@ -217,16 +236,25 @@ export function SemrushDesk() {
             <table className="w-full text-left text-xs">
               <thead className="border-b border-border text-muted-foreground">
                 <tr>
-                  <th className="pb-2 font-medium">{t("Target Query", "টার্গেট কিওয়ার্ড")}</th>
+                  <th className="pb-2 font-medium">
+                    {t("Target Query", "টার্গেট কিওয়ার্ড")}
+                  </th>
                   <th className="pb-2 font-medium">{t("Position", "পজিশন")}</th>
-                  <th className="pb-2 font-medium">{t("Search Vol.", "সার্চ ভলিউম")}</th>
+                  <th className="pb-2 font-medium">
+                    {t("Search Vol.", "সার্চ ভলিউম")}
+                  </th>
                   <th className="pb-2 font-medium">CPC</th>
-                  <th className="pb-2 font-medium text-right">{t("Traffic %", "ট্রাফিক %")}</th>
+                  <th className="pb-2 font-medium text-right">
+                    {t("Traffic %", "ট্রাফিক %")}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/60">
                 {keywords.map((kw) => (
-                  <tr key={kw.keyword} className="hover:bg-muted/30 transition-colors">
+                  <tr
+                    key={kw.keyword}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
                     <td className="py-2.5 pr-2 font-medium text-foreground">
                       <div className="flex flex-col">
                         <span>{kw.keyword}</span>
@@ -241,11 +269,17 @@ export function SemrushDesk() {
                           #{kw.position}
                         </span>
                         {kw.previousPosition > kw.position ? (
-                          <span className="text-[10px] text-success font-medium">▲ +{kw.previousPosition - kw.position}</span>
+                          <span className="text-[10px] text-success font-medium">
+                            ▲ +{kw.previousPosition - kw.position}
+                          </span>
                         ) : kw.previousPosition < kw.position ? (
-                          <span className="text-[10px] text-destructive font-medium">▼ -{kw.position - kw.previousPosition}</span>
+                          <span className="text-[10px] text-destructive font-medium">
+                            ▼ -{kw.position - kw.previousPosition}
+                          </span>
                         ) : (
-                          <span className="text-[10px] text-muted-foreground">—</span>
+                          <span className="text-[10px] text-muted-foreground">
+                            —
+                          </span>
                         )}
                       </div>
                     </td>
@@ -275,7 +309,10 @@ export function SemrushDesk() {
               </h4>
             </div>
             <p className="text-xs text-muted-foreground">
-              {t("Search overlap in Bangladeshi commerce sector", "বাংলাদেশি কমার্স সেক্টরে সার্চ ওভারল্যাপ")}
+              {t(
+                "Search overlap in Bangladeshi commerce sector",
+                "বাংলাদেশি কমার্স সেক্টরে সার্চ ওভারল্যাপ",
+              )}
             </p>
 
             <div className="space-y-2.5 pt-2">
@@ -290,7 +327,8 @@ export function SemrushDesk() {
                       <ExternalLink className="size-3 text-muted-foreground" />
                     </div>
                     <div className="text-[11px] text-muted-foreground">
-                      {comp.commonKeywords} {t("shared keywords", "যৌথ কিওয়ার্ড")}
+                      {comp.commonKeywords}{" "}
+                      {t("shared keywords", "যৌথ কিওয়ার্ড")}
                     </div>
                   </div>
                   <div className="text-right">
@@ -308,24 +346,45 @@ export function SemrushDesk() {
 
           <div className="p-5 rounded-fq-lg bg-card border border-border space-y-3">
             <h4 className="font-semibold text-sm text-foreground">
-              {t("Automated Crawl Audit Health", "স্বয়ংক্রিয় ক্রল অডিট স্থিতি")}
+              {t(
+                "Automated Crawl Audit Health",
+                "স্বয়ংক্রিয় ক্রল অডিট স্থিতি",
+              )}
             </h4>
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between py-1 border-b border-border/50">
-                <span className="text-muted-foreground">{t("Total Pages Crawled", "মোট ক্রলকৃত পেজ")}</span>
-                <span className="font-semibold text-foreground">{audit?.totalPagesCrawled ?? 124}</span>
+                <span className="text-muted-foreground">
+                  {t("Total Pages Crawled", "মোট ক্রলকৃত পেজ")}
+                </span>
+                <span className="font-semibold text-foreground">
+                  {audit?.totalPagesCrawled ?? 124}
+                </span>
               </div>
               <div className="flex items-center justify-between py-1 border-b border-border/50">
-                <span className="text-muted-foreground">{t("Clean SSR & Meta Renders", "সঠিক এসএসআর ও মেটা")}</span>
-                <span className="font-semibold text-success">{audit?.healthyPages ?? 124} / {audit?.totalPagesCrawled ?? 124}</span>
+                <span className="text-muted-foreground">
+                  {t("Clean SSR & Meta Renders", "সঠিক এসএসআর ও মেটা")}
+                </span>
+                <span className="font-semibold text-success">
+                  {audit?.healthyPages ?? 124} /{" "}
+                  {audit?.totalPagesCrawled ?? 124}
+                </span>
               </div>
               <div className="flex items-center justify-between py-1 border-b border-border/50">
-                <span className="text-muted-foreground">{t("Canonical & Hreflang Alignment", "ক্যানোনিকাল ও এইচরেফল্যাং")}</span>
+                <span className="text-muted-foreground">
+                  {t(
+                    "Canonical & Hreflang Alignment",
+                    "ক্যানোনিকাল ও এইচরেফল্যাং",
+                  )}
+                </span>
                 <span className="font-semibold text-success">100% Valid</span>
               </div>
               <div className="flex items-center justify-between py-1">
-                <span className="text-muted-foreground">SemrushBot Robots Policy</span>
-                <span className="font-semibold text-foreground font-mono text-[11px]">Allowed (0s delay)</span>
+                <span className="text-muted-foreground">
+                  SemrushBot Robots Policy
+                </span>
+                <span className="font-semibold text-foreground font-mono text-[11px]">
+                  Allowed (0s delay)
+                </span>
               </div>
             </div>
           </div>

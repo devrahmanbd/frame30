@@ -19,7 +19,10 @@ export const adFraudDeskFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { loadAdFraudDesk } = await import("./ad-fraud.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { merchantId, ...(await loadAdFraudDesk(context.supabase, merchantId)) };
+    return {
+      merchantId,
+      ...(await loadAdFraudDesk(context.supabase, merchantId)),
+    };
   });
 
 export const adFraudSaveSpendFn = createServerFn({ method: "POST" })
@@ -66,14 +69,27 @@ export const adFraudToggleBlockFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setBlockActive } = await import("./ad-fraud.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setBlockActive(context.supabase, merchantId, context.userId, data.id, data.active);
+    return setBlockActive(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+      data.active,
+    );
   });
 
 export const adFraudRecomputeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ days: z.number().int().min(1).max(30) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ days: z.number().int().min(1).max(30) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { recomputeWindow } = await import("./ad-fraud.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return recomputeWindow(context.supabase, merchantId, context.userId, data.days);
+    return recomputeWindow(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.days,
+    );
   });

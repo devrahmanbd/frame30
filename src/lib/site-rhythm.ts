@@ -186,9 +186,18 @@ const finding = (
   message: string,
   actual?: number | string,
   expected?: number | string,
-): RhythmFinding => ({ code, severity, rule, where, message, actual, expected });
+): RhythmFinding => ({
+  code,
+  severity,
+  rule,
+  where,
+  message,
+  actual,
+  expected,
+});
 
-const near = (a: number, b: number, tolerance: number) => Math.abs(a - b) <= tolerance;
+const near = (a: number, b: number, tolerance: number) =>
+  Math.abs(a - b) <= tolerance;
 const px = (n: number) => `${Math.round(n * 10) / 10}px`;
 
 /* -------------------------------------------------------------------------- */
@@ -218,18 +227,31 @@ export type BandMeasurement = {
 };
 
 /** Expected inner container width for a preset at a given viewport width. */
-export function expectedContainerPx(width: RhythmWidth, viewportPx: number): number {
+export function expectedContainerPx(
+  width: RhythmWidth,
+  viewportPx: number,
+): number {
   const gutter =
-    viewportPx >= RHYTHM.desktopMinWidthPx ? RHYTHM.gutterDesktopPx : RHYTHM.gutterMobilePx;
+    viewportPx >= RHYTHM.desktopMinWidthPx
+      ? RHYTHM.gutterDesktopPx
+      : RHYTHM.gutterMobilePx;
   const cap =
-    width === "narrow" ? RHYTHM.narrowPx : width === "wide" ? RHYTHM.widePx : RHYTHM.containerPx;
+    width === "narrow"
+      ? RHYTHM.narrowPx
+      : width === "wide"
+        ? RHYTHM.widePx
+        : RHYTHM.containerPx;
   return Math.min(cap, Math.max(0, viewportPx - gutter * 2));
 }
 
 /** Expected vertical padding for a density at a given viewport width. */
-export function expectedSectionPaddingPx(density: RhythmDensity, viewportPx: number): number {
+export function expectedSectionPaddingPx(
+  density: RhythmDensity,
+  viewportPx: number,
+): number {
   const desktop = viewportPx >= RHYTHM.desktopMinWidthPx;
-  if (density === "tight") return desktop ? RHYTHM.tightDesktopPx : RHYTHM.tightMobilePx;
+  if (density === "tight")
+    return desktop ? RHYTHM.tightDesktopPx : RHYTHM.tightMobilePx;
   return desktop ? RHYTHM.sectionDesktopPx : RHYTHM.sectionMobilePx;
 }
 
@@ -442,13 +464,20 @@ export function auditChroma(
 export type TypeRole = "display" | "lead" | "body" | "caption" | "numeral";
 
 /** Per-role size and line-box rules. `null` size means "no size rule". */
-export const TYPE_ROLES: Record<TypeRole, { minPx: number | null; maxPx: number | null; minRatio: number }> = {
+export const TYPE_ROLES: Record<
+  TypeRole,
+  { minPx: number | null; maxPx: number | null; minRatio: number }
+> = {
   // Display is governed by the tracking rule; clamps make a size rule useless.
   display: { minPx: null, maxPx: null, minRatio: 0.95 },
   // The hero sub-headline: bigger than body, still prose.
   lead: { minPx: 16, maxPx: 30, minRatio: 1.35 },
   // TODO §10.3: "Manrope body at 17/1.6".
-  body: { minPx: TYPE.bodyPx - TYPE.bodyPxTolerance, maxPx: TYPE.bodyPx + TYPE.bodyPxTolerance, minRatio: TYPE.bodyLineHeight - TYPE.lineHeightTolerance },
+  body: {
+    minPx: TYPE.bodyPx - TYPE.bodyPxTolerance,
+    maxPx: TYPE.bodyPx + TYPE.bodyPxTolerance,
+    minRatio: TYPE.bodyLineHeight - TYPE.lineHeightTolerance,
+  },
   // Micro copy: labels, notes, table footnotes. Floor is legibility, not scale.
   caption: { minPx: 12, maxPx: 15, minRatio: 1.3 },
   // Stat values are display-scale numerals with a tight, deliberate line box.
@@ -516,7 +545,9 @@ export function auditTypography(
 
     if (s.kind === "display") {
       if (bn) {
-        if (Math.abs(trackingEm - TYPE.bnTrackingEm) > TYPE.bnTrackingToleranceEm) {
+        if (
+          Math.abs(trackingEm - TYPE.bnTrackingEm) > TYPE.bnTrackingToleranceEm
+        ) {
           out.push(
             finding(
               "type.bn_tracking_not_reset",
@@ -545,7 +576,8 @@ export function auditTypography(
       } else if (
         s.fontSizePx < TYPE.displayTrackingMinPx
           ? trackingEm > TYPE.displayTrackingMaxEmSmall
-          : Math.abs(trackingEm - TYPE.displayTrackingEm) > TYPE.displayTrackingToleranceEm
+          : Math.abs(trackingEm - TYPE.displayTrackingEm) >
+            TYPE.displayTrackingToleranceEm
       ) {
         // The classic regression: a clamp() font-size with a px tracking value,
         // so the poster tracking evaporates at large sizes.
@@ -565,8 +597,11 @@ export function auditTypography(
       }
     }
 
-    const wantFamily =
-      bn ? TYPE.bnFamily : s.kind === "display" ? TYPE.displayFamily : TYPE.bodyFamily;
+    const wantFamily = bn
+      ? TYPE.bnFamily
+      : s.kind === "display"
+        ? TYPE.displayFamily
+        : TYPE.bodyFamily;
     if (!s.fontFamily.toLowerCase().includes(wantFamily.toLowerCase())) {
       out.push(
         finding(
@@ -617,7 +652,9 @@ export function auditElevation(
           ELEVATION.edgeWidthPx,
         ),
       );
-    } else if (Math.abs(s.edgeAlpha - ELEVATION.edgeAlpha) > ELEVATION.edgeAlphaTolerance) {
+    } else if (
+      Math.abs(s.edgeAlpha - ELEVATION.edgeAlpha) > ELEVATION.edgeAlphaTolerance
+    ) {
       out.push(
         finding(
           "elevation.edge_alpha",
@@ -690,7 +727,9 @@ export function auditPage(page: PageMeasurement): RhythmReport {
   };
 }
 
-export function countBySeverity(findings: readonly RhythmFinding[]): Record<RhythmSeverity, number> {
+export function countBySeverity(
+  findings: readonly RhythmFinding[],
+): Record<RhythmSeverity, number> {
   return findings.reduce(
     (acc, f) => ({ ...acc, [f.severity]: acc[f.severity] + 1 }),
     { error: 0, warn: 0, info: 0 } as Record<RhythmSeverity, number>,
@@ -702,7 +741,9 @@ export function countBySeverity(findings: readonly RhythmFinding[]): Record<Rhyt
  * at six widths is one problem, and a report that says so is a report someone
  * actually reads.
  */
-export function dedupeFindings(findings: readonly RhythmFinding[]): RhythmFinding[] {
+export function dedupeFindings(
+  findings: readonly RhythmFinding[],
+): RhythmFinding[] {
   const seen = new Map<string, RhythmFinding>();
   for (const f of findings) {
     const key = `${f.code}|${f.where.replace(/@\d+\/[a-z-]+/i, "@*")}`;
@@ -712,6 +753,7 @@ export function dedupeFindings(findings: readonly RhythmFinding[]): RhythmFindin
 }
 
 export function formatFinding(f: RhythmFinding): string {
-  const tag = f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
+  const tag =
+    f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
   return `${tag} [${f.code}] ${f.where}\n      ${f.message}`;
 }

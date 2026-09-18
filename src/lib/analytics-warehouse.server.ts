@@ -33,10 +33,20 @@ import { incr, log, observe, withSpan } from "./observability.server";
 
 type Client = SupabaseClient<Database>;
 type Rpc = {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
-const REVENUE_STATUSES = ["paid", "confirmed", "packed", "shipped", "delivered", "fulfilled"];
+const REVENUE_STATUSES = [
+  "paid",
+  "confirmed",
+  "packed",
+  "shipped",
+  "delivered",
+  "fulfilled",
+];
 
 function isoDaysAgo(days: number) {
   const d = new Date();
@@ -54,7 +64,11 @@ function dayString(d: Date) {
  * reaches the warehouse; only this digest does, and it rotates with the daily
  * salt so cross-day re-identification is impossible.
  */
-export async function pseudonymize(merchantId: string, raw: string, day = dayString(new Date())) {
+export async function pseudonymize(
+  merchantId: string,
+  raw: string,
+  day = dayString(new Date()),
+) {
   const salt = process.env["ANALYTICS_SALT"] ?? "framique-analytics";
   const bytes = new TextEncoder().encode(`${salt}:${merchantId}:${day}:${raw}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
@@ -111,56 +125,78 @@ export async function ingestBeacons(
   beacons: BeaconInput[],
   geo: BeaconGeo = {},
 ) {
-  return withSpan("analytics.ingest", async () => {
-    const prepared: Record<string, unknown>[] = [];
-    for (const beacon of beacons.slice(0, 100)) {
-      const day = dayString(beacon.occurredAt ? new Date(beacon.occurredAt) : new Date());
-      prepared.push({
-        entity: beacon.entity,
-        action: beacon.action,
-        occurred_at: beacon.occurredAt ?? new Date().toISOString(),
-        visitor_hash: beacon.visitorRaw
-          ? await pseudonymize(merchantId, beacon.visitorRaw, day)
-          : "",
-        session_key: beacon.sessionRaw ? await pseudonymize(merchantId, beacon.sessionRaw, day) : "",
-        source: beacon.source ?? "",
-        campaign: beacon.campaign ?? "",
-        value_minor_int: Math.max(0, Math.round(beacon.valueMinorInt ?? 0)),
-        currency_code: beacon.currencyCode ?? "BDT",
-        payload: scrubBeaconPayload(beacon.payload),
-        country_code: (geo.countryCode ?? "").slice(0, 2).toUpperCase(),
-        region: (geo.region ?? "").slice(0, 60),
-        city: (geo.city ?? "").slice(0, 80),
-        asn: geo.asn ?? null,
-        network: (geo.network ?? "").slice(0, 80),
-        device_class: geo.deviceClass ?? "unknown",
-        dedupe_key:
-          beacon.dedupeKey ??
-          `${beacon.entity}:${beacon.action}:${beacon.occurredAt ?? Date.now()}:${Math.random()
-            .toString(36)
-            .slice(2)}`,
-      });
-    }
+  return withSpan(
+    "analytics.ingest",
+    async () => {
+      const prepared: Record<string, unknown>[] = [];
+      for (const beacon of beacons.slice(0, 100)) {
+        const day = dayString(
+          beacon.occurredAt ? new Date(beacon.occurredAt) : new Date(),
+        );
+        prepared.push({
+          entity: beacon.entity,
+          action: beacon.action,
+          occurred_at: beacon.occurredAt ?? new Date().toISOString(),
+          visitor_hash: beacon.visitorRaw
+            ? await pseudonymize(merchantId, beacon.visitorRaw, day)
+            : "",
+          session_key: beacon.sessionRaw
+            ? await pseudonymize(merchantId, beacon.sessionRaw, day)
+            : "",
+          source: beacon.source ?? "",
+          campaign: beacon.campaign ?? "",
+          value_minor_int: Math.max(0, Math.round(beacon.valueMinorInt ?? 0)),
+          currency_code: beacon.currencyCode ?? "BDT",
+          payload: scrubBeaconPayload(beacon.payload),
+          country_code: (geo.countryCode ?? "").slice(0, 2).toUpperCase(),
+          region: (geo.region ?? "").slice(0, 60),
+          city: (geo.city ?? "").slice(0, 80),
+          asn: geo.asn ?? null,
+          network: (geo.network ?? "").slice(0, 80),
+          device_class: geo.deviceClass ?? "unknown",
+          dedupe_key:
+            beacon.dedupeKey ??
+            `${beacon.entity}:${beacon.action}:${beacon.occurredAt ?? Date.now()}:${Math.random()
+              .toString(36)
+              .slice(2)}`,
+        });
+      }
 
-    const { data, error } = await (admin as unknown as Rpc).rpc("analytics_ingest", {
-      _merchant_id: merchantId,
-      _events: prepared,
-    });
-    if (error) throw error;
+      const { data, error } = await (admin as unknown as Rpc).rpc(
+        "analytics_ingest",
+        {
+          _merchant_id: merchantId,
+          _events: prepared,
+        },
+      );
+      if (error) throw error;
 
-    const result = data as { accepted: number; rejected: number };
-    incr("framique_analytics_events_total", { outcome: "accepted" }, result.accepted ?? 0);
-    incr("framique_analytics_events_total", { outcome: "rejected" }, result.rejected ?? 0);
-    return result;
-  }, { merchant: merchantId });
+      const result = data as { accepted: number; rejected: number };
+      incr(
+        "framique_analytics_events_total",
+        { outcome: "accepted" },
+        result.accepted ?? 0,
+      );
+      incr(
+        "framique_analytics_events_total",
+        { outcome: "rejected" },
+        result.rejected ?? 0,
+      );
+      return result;
+    },
+    { merchant: merchantId },
+  );
 }
 
 /** Batch ETL run: folds the raw window into `(merchant, entity, day)` rollups. */
 export async function flushBatch(admin: Client, merchantId: string) {
   const started = Date.now();
-  const { data, error } = await (admin as unknown as Rpc).rpc("analytics_flush", {
-    _merchant_id: merchantId,
-  });
+  const { data, error } = await (admin as unknown as Rpc).rpc(
+    "analytics_flush",
+    {
+      _merchant_id: merchantId,
+    },
+  );
   if (error) {
     incr("framique_analytics_etl_total", { outcome: "error" });
     throw error;
@@ -172,9 +208,14 @@ export async function flushBatch(admin: Client, merchantId: string) {
     gap_detected: boolean;
   };
   observe("framique_analytics_etl_ms", Date.now() - started, {});
-  incr("framique_analytics_etl_total", { outcome: result.gap_detected ? "gap" : "committed" });
+  incr("framique_analytics_etl_total", {
+    outcome: result.gap_detected ? "gap" : "committed",
+  });
   if (result.gap_detected) {
-    log("warn", "analytics.batch_gap", { merchantId, batchId: result.batch_id });
+    log("warn", "analytics.batch_gap", {
+      merchantId,
+      batchId: result.batch_id,
+    });
   } else {
     log("info", "analytics.batch_committed", {
       merchantId,
@@ -185,11 +226,18 @@ export async function flushBatch(admin: Client, merchantId: string) {
   return result;
 }
 
-export async function rebuildCohorts(db: Client, merchantId: string, weeks = 12) {
-  const { data, error } = await (db as unknown as Rpc).rpc("analytics_rebuild_cohorts", {
-    _merchant_id: merchantId,
-    _weeks: weeks,
-  });
+export async function rebuildCohorts(
+  db: Client,
+  merchantId: string,
+  weeks = 12,
+) {
+  const { data, error } = await (db as unknown as Rpc).rpc(
+    "analytics_rebuild_cohorts",
+    {
+      _merchant_id: merchantId,
+      _weeks: weeks,
+    },
+  );
   if (error) throw error;
   return data as { ok: boolean; buckets: number };
 }
@@ -234,7 +282,9 @@ export async function loadFunnel(db: Client, merchantId: string, days: number) {
 export async function loadCohorts(db: Client, merchantId: string) {
   const { data, error } = await db
     .from("analytics_cohorts")
-    .select("cohort_week, week_offset, customers, active_customers, orders, revenue_minor_int")
+    .select(
+      "cohort_week, week_offset, customers, active_customers, orders, revenue_minor_int",
+    )
     .eq("merchant_id", merchantId)
     .order("cohort_week", { ascending: true })
     .limit(500);
@@ -261,22 +311,36 @@ export async function loadPersonas(db: Client, merchantId: string, days = 365) {
     .limit(10000);
   if (error) throw error;
 
-  const rows = (data ?? []).filter((o) => REVENUE_STATUSES.includes(o.status as string));
+  const rows = (data ?? []).filter((o) =>
+    REVENUE_STATUSES.includes(o.status as string),
+  );
   const now = Date.now();
-  const perCustomer = new Map<string, { orders: number; spend: number; last: number }>();
+  const perCustomer = new Map<
+    string,
+    { orders: number; spend: number; last: number }
+  >();
   for (const order of rows) {
     const id = String(order.customer_id);
     const entry = perCustomer.get(id) ?? { orders: 0, spend: 0, last: 0 };
     entry.orders += 1;
     entry.spend += Number(order.total_minor_int ?? 0);
-    entry.last = Math.max(entry.last, new Date(order.created_at as string).getTime());
+    entry.last = Math.max(
+      entry.last,
+      new Date(order.created_at as string).getTime(),
+    );
     perCustomer.set(id, entry);
   }
 
   const threshold = vipThreshold([...perCustomer.values()].map((v) => v.spend));
   const buckets = new Map<Persona, PersonaBreakdown>();
   for (const persona of PERSONAS) {
-    buckets.set(persona, { persona, customers: 0, orders: 0, revenueMinorInt: 0, aovMinorInt: 0 });
+    buckets.set(persona, {
+      persona,
+      customers: 0,
+      orders: 0,
+      revenueMinorInt: 0,
+      aovMinorInt: 0,
+    });
   }
 
   for (const stats of perCustomer.values()) {
@@ -307,7 +371,11 @@ export async function loadPersonas(db: Client, merchantId: string, days = 365) {
   };
 }
 
-export async function loadProductPerformance(db: Client, merchantId: string, days = 90) {
+export async function loadProductPerformance(
+  db: Client,
+  merchantId: string,
+  days = 90,
+) {
   const since = isoDaysAgo(days).toISOString();
   const { data: orders, error } = await db
     .from("orders")
@@ -323,13 +391,21 @@ export async function loadProductPerformance(db: Client, merchantId: string, day
 
   const perVariant = new Map<
     string,
-    { title: string; sku: string | null; units: number; revenue: number; lastSold: number }
+    {
+      title: string;
+      sku: string | null;
+      units: number;
+      revenue: number;
+      lastSold: number;
+    }
   >();
 
   if (paidIds.length > 0) {
     const { data: items } = await db
       .from("order_items")
-      .select("variant_id, product_title, sku, quantity, line_total_minor_int, created_at")
+      .select(
+        "variant_id, product_title, sku, quantity, line_total_minor_int, created_at",
+      )
       .eq("merchant_id", merchantId)
       .in("order_id", paidIds.slice(0, 1000))
       .limit(10000);
@@ -344,7 +420,10 @@ export async function loadProductPerformance(db: Client, merchantId: string, day
       };
       row.units += Number(item.quantity ?? 0);
       row.revenue += Number(item.line_total_minor_int ?? 0);
-      row.lastSold = Math.max(row.lastSold, new Date(item.created_at as string).getTime());
+      row.lastSold = Math.max(
+        row.lastSold,
+        new Date(item.created_at as string).getTime(),
+      );
       perVariant.set(key, row);
     }
   }
@@ -389,7 +468,9 @@ export async function loadProductPerformance(db: Client, merchantId: string, day
     aging: summarizeAging(aging),
     deadVariants: aging
       .filter((a) => a.daysSinceLastSale > 90 && a.stock > 0)
-      .sort((a, b) => b.stock * b.unitCostMinorInt - a.stock * a.unitCostMinorInt)
+      .sort(
+        (a, b) => b.stock * b.unitCostMinorInt - a.stock * a.unitCostMinorInt,
+      )
       .slice(0, 20)
       .map((a) => ({
         title: a.title,
@@ -404,13 +485,17 @@ export async function loadProductPerformance(db: Client, merchantId: string, day
 export async function loadPipelineHealth(db: Client, merchantId: string) {
   const { data, error } = await db
     .from("analytics_batches")
-    .select("id, previous_batch_id, status, committed_at, event_count, gap_detected, created_at")
+    .select(
+      "id, previous_batch_id, status, committed_at, event_count, gap_detected, created_at",
+    )
     .eq("merchant_id", merchantId)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
 
-  const audit = auditBatchChain(((data ?? []) as unknown as BatchRow[]).slice().reverse());
+  const audit = auditBatchChain(
+    ((data ?? []) as unknown as BatchRow[]).slice().reverse(),
+  );
   const { count: rawCount } = await db
     .from("analytics_events")
     .select("id", { count: "exact", head: true })
@@ -451,7 +536,8 @@ export async function saveReport(
   input: ReportDefinition & { id?: string | null; name: string },
 ) {
   const verdict = validateReport(input);
-  if (!verdict.ok) throw new Error(`analytics.report_invalid: ${verdict.errors.join("; ")}`);
+  if (!verdict.ok)
+    throw new Error(`analytics.report_invalid: ${verdict.errors.join("; ")}`);
 
   const row = {
     merchant_id: merchantId,
@@ -479,12 +565,20 @@ export async function saveReport(
     return data;
   }
 
-  const { data, error } = await db.from("analytics_reports").insert(row).select().maybeSingle();
+  const { data, error } = await db
+    .from("analytics_reports")
+    .insert(row)
+    .select()
+    .maybeSingle();
   if (error) throw error;
   return data;
 }
 
-export async function deleteReport(db: Client, merchantId: string, reportId: string) {
+export async function deleteReport(
+  db: Client,
+  merchantId: string,
+  reportId: string,
+) {
   const { error } = await db
     .from("analytics_reports")
     .delete()
@@ -495,7 +589,11 @@ export async function deleteReport(db: Client, merchantId: string, reportId: str
 }
 
 /** Materializes a report definition into rows + CSV, from rollups only. */
-export async function runReport(db: Client, merchantId: string, reportId: string) {
+export async function runReport(
+  db: Client,
+  merchantId: string,
+  reportId: string,
+) {
   const { data: report, error } = await db
     .from("analytics_reports")
     .select("*")
@@ -522,7 +620,11 @@ export async function runReport(db: Client, merchantId: string, reportId: string
     if (run) {
       await db
         .from("analytics_report_runs")
-        .update({ status: "succeeded", row_count: rows.length, finished_at: new Date().toISOString() })
+        .update({
+          status: "succeeded",
+          row_count: rows.length,
+          finished_at: new Date().toISOString(),
+        })
         .eq("id", (run as { id: string }).id);
     }
     incr("framique_analytics_report_total", { outcome: "succeeded" });
@@ -579,7 +681,8 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
       if (dims.includes("persona")) out["persona"] = row.persona;
       if (metrics.includes("customers")) out["customers"] = row.customers;
       if (metrics.includes("orders")) out["orders"] = row.orders;
-      if (metrics.includes("revenue_minor_int")) out["revenue_minor_int"] = row.revenueMinorInt;
+      if (metrics.includes("revenue_minor_int"))
+        out["revenue_minor_int"] = row.revenueMinorInt;
       return out;
     });
   }
@@ -590,7 +693,8 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
       const out: Record<string, unknown> = {};
       if (dims.includes("product_title")) out["product_title"] = row.title;
       if (metrics.includes("units")) out["units"] = row.units;
-      if (metrics.includes("revenue_minor_int")) out["revenue_minor_int"] = row.revenueMinorInt;
+      if (metrics.includes("revenue_minor_int"))
+        out["revenue_minor_int"] = row.revenueMinorInt;
       if (metrics.includes("orders")) out["orders"] = row.units;
       return out;
     });
@@ -599,7 +703,9 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
   // orders
   const { data } = await db
     .from("orders")
-    .select("status, payment_method, total_minor_int, discount_minor_int, created_at")
+    .select(
+      "status, payment_method, total_minor_int, discount_minor_int, created_at",
+    )
     .eq("merchant_id", merchantId)
     .gte("created_at", isoDaysAgo(days).toISOString())
     .limit(10000);
@@ -613,14 +719,19 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
           : String((order as Record<string, unknown>)[dim] ?? ""),
       )
       .join("|");
-    const bucket = grouped.get(key) ?? { orders: 0, revenue_minor_int: 0, discount_minor_int: 0 };
+    const bucket = grouped.get(key) ?? {
+      orders: 0,
+      revenue_minor_int: 0,
+      discount_minor_int: 0,
+    };
     bucket["orders"] = (bucket["orders"] ?? 0) + 1;
     if (REVENUE_STATUSES.includes(order.status as string)) {
       bucket["revenue_minor_int"] =
         (bucket["revenue_minor_int"] ?? 0) + Number(order.total_minor_int ?? 0);
     }
     bucket["discount_minor_int"] =
-      (bucket["discount_minor_int"] ?? 0) + Number(order.discount_minor_int ?? 0);
+      (bucket["discount_minor_int"] ?? 0) +
+      Number(order.discount_minor_int ?? 0);
     grouped.set(key, bucket);
   }
 
@@ -631,7 +742,10 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
     for (const metric of metrics) {
       out[metric] =
         metric === "aov_minor_int"
-          ? Math.round((values["revenue_minor_int"] ?? 0) / Math.max(1, values["orders"] ?? 0))
+          ? Math.round(
+              (values["revenue_minor_int"] ?? 0) /
+                Math.max(1, values["orders"] ?? 0),
+            )
           : (values[metric] ?? 0);
     }
     return out;
@@ -665,20 +779,27 @@ export async function queueConversion(
 ) {
   const hashed: Record<string, string> = {};
   if (input.email) hashed["em"] = await hashIdentifier(input.email);
-  if (input.phone) hashed["ph"] = await hashIdentifier(input.phone.replace(/\D/g, ""));
+  if (input.phone)
+    hashed["ph"] = await hashIdentifier(input.phone.replace(/\D/g, ""));
 
-  const { data, error } = await (admin as unknown as Rpc).rpc("analytics_queue_conversion", {
-    _merchant_id: input.merchantId,
-    _provider: input.provider,
-    _event_name: input.eventName,
-    _event_id: input.eventId,
-    _order_id: input.orderId,
-    _value_minor_int: input.valueMinorInt,
-    _currency_code: input.currencyCode,
-    _hashed_payload: hashed,
-  });
+  const { data, error } = await (admin as unknown as Rpc).rpc(
+    "analytics_queue_conversion",
+    {
+      _merchant_id: input.merchantId,
+      _provider: input.provider,
+      _event_name: input.eventName,
+      _event_id: input.eventId,
+      _order_id: input.orderId,
+      _value_minor_int: input.valueMinorInt,
+      _currency_code: input.currencyCode,
+      _hashed_payload: hashed,
+    },
+  );
   if (error) throw error;
-  incr("framique_analytics_conversion_total", { provider: input.provider, outcome: "queued" });
+  incr("framique_analytics_conversion_total", {
+    provider: input.provider,
+    outcome: "queued",
+  });
   return data as { ok: boolean; queued: boolean; id: string | null };
 }
 
@@ -700,7 +821,10 @@ const merchantAnalyticsCache = new Map<
 >();
 
 /** Load per-merchant analytics credentials, unsealing encrypted tokens if needed. */
-export async function loadMerchantAnalyticsConfig(admin: Client, merchantId: string) {
+export async function loadMerchantAnalyticsConfig(
+  admin: Client,
+  merchantId: string,
+) {
   const now = Date.now();
   const cached = merchantAnalyticsCache.get(merchantId);
   if (cached && cached.expiresAt > now) return cached;
@@ -718,10 +842,16 @@ export async function loadMerchantAnalyticsConfig(admin: Client, merchantId: str
 
     if (data?.seo_settings && typeof data.seo_settings === "object") {
       const seo = data.seo_settings as Record<string, unknown>;
-      if (typeof seo["facebook_pixel_id"] === "string" && seo["facebook_pixel_id"].trim()) {
+      if (
+        typeof seo["facebook_pixel_id"] === "string" &&
+        seo["facebook_pixel_id"].trim()
+      ) {
         fbPixel = seo["facebook_pixel_id"].trim();
       }
-      if (typeof seo["facebook_capi_token"] === "string" && seo["facebook_capi_token"].trim()) {
+      if (
+        typeof seo["facebook_capi_token"] === "string" &&
+        seo["facebook_capi_token"].trim()
+      ) {
         const rawToken = seo["facebook_capi_token"].trim();
         if (rawToken.startsWith("v1.")) {
           const { unsealSecret } = await import("./webhook-secret.server");
@@ -730,7 +860,10 @@ export async function loadMerchantAnalyticsConfig(admin: Client, merchantId: str
           fbToken = rawToken;
         }
       }
-      if (typeof seo["google_conversion_url"] === "string" && seo["google_conversion_url"].trim()) {
+      if (
+        typeof seo["google_conversion_url"] === "string" &&
+        seo["google_conversion_url"].trim()
+      ) {
         googleUrl = seo["google_conversion_url"].trim();
       }
     }
@@ -756,7 +889,8 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
   }
 
   if (row.provider === "facebook") {
-    if (!fbToken || !fbPixel) return { ok: false, error: "facebook_not_configured" };
+    if (!fbToken || !fbPixel)
+      return { ok: false, error: "facebook_not_configured" };
     const res = await fetch(
       `https://graph.facebook.com/v19.0/${fbPixel}/events?access_token=${fbToken}`,
       {
@@ -779,7 +913,9 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
         }),
       },
     );
-    return res.ok ? { ok: true } : { ok: false, error: `facebook_${res.status}` };
+    return res.ok
+      ? { ok: true }
+      : { ok: false, error: `facebook_${res.status}` };
   }
 
   if (!googleUrl) return { ok: false, error: "google_not_configured" };
@@ -799,9 +935,12 @@ async function deliver(row: ClaimedConversion, admin?: Client) {
 
 /** Outbox drain: claims due conversions, delivers, settles with backoff. */
 export async function dispatchConversions(admin: Client, limit = 25) {
-  const { data, error } = await (admin as unknown as Rpc).rpc("analytics_claim_conversions", {
-    _limit: limit,
-  });
+  const { data, error } = await (admin as unknown as Rpc).rpc(
+    "analytics_claim_conversions",
+    {
+      _limit: limit,
+    },
+  );
   if (error) throw error;
 
   const claimed = (data ?? []) as ClaimedConversion[];
@@ -833,7 +972,8 @@ export async function dispatchConversions(admin: Client, limit = 25) {
 
 /** Cron entry point: flush + cohorts + conversions + due scheduled reports. */
 export async function runAnalyticsSweep(limit = 20) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
 
   const { data: merchants } = await admin
@@ -850,22 +990,31 @@ export async function runAnalyticsSweep(limit = 20) {
       if (result.gap_detected) gaps += 1;
       await rebuildCohorts(admin, merchant.id as string);
     } catch (err) {
-      log("error", "analytics.sweep_failed", { merchantId: merchant.id, error: String(err) });
+      log("error", "analytics.sweep_failed", {
+        merchantId: merchant.id,
+        error: String(err),
+      });
     }
   }
 
   const conversions = await dispatchConversions(admin, 50);
 
-  const { data: due } = await (admin as unknown as Rpc).rpc("analytics_claim_reports", {
-    _limit: 20,
-  });
+  const { data: due } = await (admin as unknown as Rpc).rpc(
+    "analytics_claim_reports",
+    {
+      _limit: 20,
+    },
+  );
   let reports = 0;
   for (const report of (due ?? []) as { id: string; merchant_id: string }[]) {
     try {
       await runReport(admin, report.merchant_id, report.id);
       reports += 1;
     } catch (err) {
-      log("error", "analytics.report_failed", { reportId: report.id, error: String(err) });
+      log("error", "analytics.report_failed", {
+        reportId: report.id,
+        error: String(err),
+      });
     }
   }
 
@@ -882,11 +1031,25 @@ export type TrafficDay = {
   clicks: number;
 };
 
-export type TrafficBreakdown = { key: string; label: string; visitors: number; events: number; orders: number; revenueMinorInt: number };
+export type TrafficBreakdown = {
+  key: string;
+  label: string;
+  visitors: number;
+  events: number;
+  orders: number;
+  revenueMinorInt: number;
+};
 
 export type TrafficSummary = {
   days: number;
-  totals: { events: number; visitors: number; sessions: number; clicks: number; orders: number; revenueMinorInt: number };
+  totals: {
+    events: number;
+    visitors: number;
+    sessions: number;
+    clicks: number;
+    orders: number;
+    revenueMinorInt: number;
+  };
   series: TrafficDay[];
   countries: TrafficBreakdown[];
   regions: TrafficBreakdown[];
@@ -894,7 +1057,12 @@ export type TrafficSummary = {
   sources: { key: string; events: number }[];
   clickTargets: { key: string; events: number }[];
   /** Shopping funnel over the same window, counted from the raw events. */
-  funnel: { productViews: number; cartAdds: number; checkouts: number; orders: number };
+  funnel: {
+    productViews: number;
+    cartAdds: number;
+    checkouts: number;
+    orders: number;
+  };
   lastEventAt: string | null;
 };
 
@@ -917,13 +1085,19 @@ type GeoRow = {
  * store never scans the raw store; device, source and click-target splits come
  * from a bounded raw window because they are diagnostic, not billing figures.
  */
-export async function loadTraffic(db: Client, merchantId: string, days: number): Promise<TrafficSummary> {
+export async function loadTraffic(
+  db: Client,
+  merchantId: string,
+  days: number,
+): Promise<TrafficSummary> {
   const since = dayString(isoDaysAgo(days));
 
   const [{ data: geo, error: geoError }, { data: raw }] = await Promise.all([
     db
       .from("analytics_geo_daily")
-      .select("day, country_code, region, visitors, sessions, events, clicks, orders, revenue_minor_int")
+      .select(
+        "day, country_code, region, visitors, sessions, events, clicks, orders, revenue_minor_int",
+      )
       .eq("merchant_id", merchantId)
       .gte("day", since)
       .limit(5000),
@@ -941,10 +1115,23 @@ export async function loadTraffic(db: Client, merchantId: string, days: number):
   const byDay = new Map<string, TrafficDay>();
   const byCountry = new Map<string, TrafficBreakdown>();
   const byRegion = new Map<string, TrafficBreakdown>();
-  const totals = { events: 0, visitors: 0, sessions: 0, clicks: 0, orders: 0, revenueMinorInt: 0 };
+  const totals = {
+    events: 0,
+    visitors: 0,
+    sessions: 0,
+    clicks: 0,
+    orders: 0,
+    revenueMinorInt: 0,
+  };
 
   for (const row of rows) {
-    const day = byDay.get(row.day) ?? { day: row.day, events: 0, visitors: 0, sessions: 0, clicks: 0 };
+    const day = byDay.get(row.day) ?? {
+      day: row.day,
+      events: 0,
+      visitors: 0,
+      sessions: 0,
+      clicks: 0,
+    };
     day.events += Number(row.events ?? 0);
     day.visitors += Number(row.visitors ?? 0);
     day.sessions += Number(row.sessions ?? 0);
@@ -952,7 +1139,14 @@ export async function loadTraffic(db: Client, merchantId: string, days: number):
     byDay.set(row.day, day);
 
     const code = row.country_code || "ZZ";
-    const country = byCountry.get(code) ?? { key: code, label: code, visitors: 0, events: 0, orders: 0, revenueMinorInt: 0 };
+    const country = byCountry.get(code) ?? {
+      key: code,
+      label: code,
+      visitors: 0,
+      events: 0,
+      orders: 0,
+      revenueMinorInt: 0,
+    };
     country.visitors += Number(row.visitors ?? 0);
     country.events += Number(row.events ?? 0);
     country.orders += Number(row.orders ?? 0);
@@ -961,7 +1155,14 @@ export async function loadTraffic(db: Client, merchantId: string, days: number):
 
     if (row.region) {
       const rkey = `${code}·${row.region}`;
-      const region = byRegion.get(rkey) ?? { key: rkey, label: `${row.region} (${code})`, visitors: 0, events: 0, orders: 0, revenueMinorInt: 0 };
+      const region = byRegion.get(rkey) ?? {
+        key: rkey,
+        label: `${row.region} (${code})`,
+        visitors: 0,
+        events: 0,
+        orders: 0,
+        revenueMinorInt: 0,
+      };
       region.visitors += Number(row.visitors ?? 0);
       region.events += Number(row.events ?? 0);
       region.orders += Number(row.orders ?? 0);
@@ -1003,17 +1204,30 @@ export async function loadTraffic(db: Client, merchantId: string, days: number):
     days,
     totals,
     series: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
-    countries: [...byCountry.values()].sort((a, b) => b.visitors - a.visitors || b.events - a.events).slice(0, 15),
-    regions: [...byRegion.values()].sort((a, b) => b.visitors - a.visitors).slice(0, 15),
+    countries: [...byCountry.values()]
+      .sort((a, b) => b.visitors - a.visitors || b.events - a.events)
+      .slice(0, 15),
+    regions: [...byRegion.values()]
+      .sort((a, b) => b.visitors - a.visitors)
+      .slice(0, 15),
     devices: tally((r) => r.device_class || "unknown"),
     sources: tally((r) => r.source || "direct"),
     clickTargets: tally((r) =>
-      r.action === "click" ? String((r.payload?.["label"] ?? r.payload?.["target"] ?? "unlabelled")).slice(0, 60) : null,
+      r.action === "click"
+        ? String(
+            r.payload?.["label"] ?? r.payload?.["target"] ?? "unlabelled",
+          ).slice(0, 60)
+        : null,
     ),
     funnel: {
-      productViews: rawRows.filter((r) => r.entity === "product" && r.action === "view").length,
-      cartAdds: rawRows.filter((r) => r.entity === "cart" && r.action === "add").length,
-      checkouts: rawRows.filter((r) => r.entity === "checkout" && r.action === "start").length,
+      productViews: rawRows.filter(
+        (r) => r.entity === "product" && r.action === "view",
+      ).length,
+      cartAdds: rawRows.filter((r) => r.entity === "cart" && r.action === "add")
+        .length,
+      checkouts: rawRows.filter(
+        (r) => r.entity === "checkout" && r.action === "start",
+      ).length,
       orders: rawRows.filter((r) => r.entity === "order").length,
     },
     lastEventAt: rawRows[0]?.occurred_at ?? null,
@@ -1022,19 +1236,29 @@ export async function loadTraffic(db: Client, merchantId: string, days: number):
 
 /** Platform view: the same traffic shape, aggregated across every store. */
 export async function loadPlatformTraffic(days = 30) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   const since = dayString(isoDaysAgo(days));
 
   const { data, error } = await admin
     .from("analytics_geo_daily")
-    .select("merchant_id, day, country_code, visitors, sessions, events, clicks, orders, revenue_minor_int")
+    .select(
+      "merchant_id, day, country_code, visitors, sessions, events, clicks, orders, revenue_minor_int",
+    )
     .gte("day", since)
     .limit(20000);
   if (error) throw error;
 
   const rows = (data ?? []) as unknown as (GeoRow & { merchant_id: string })[];
-  const totals = { events: 0, visitors: 0, sessions: 0, clicks: 0, orders: 0, revenueMinorInt: 0 };
+  const totals = {
+    events: 0,
+    visitors: 0,
+    sessions: 0,
+    clicks: 0,
+    orders: 0,
+    revenueMinorInt: 0,
+  };
   const byCountry = new Map<string, number>();
   const byStore = new Map<string, number>();
   for (const row of rows) {
@@ -1046,15 +1270,26 @@ export async function loadPlatformTraffic(days = 30) {
     totals.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
     const code = row.country_code || "ZZ";
     byCountry.set(code, (byCountry.get(code) ?? 0) + Number(row.visitors ?? 0));
-    byStore.set(row.merchant_id, (byStore.get(row.merchant_id) ?? 0) + Number(row.visitors ?? 0));
+    byStore.set(
+      row.merchant_id,
+      (byStore.get(row.merchant_id) ?? 0) + Number(row.visitors ?? 0),
+    );
   }
 
   const names = new Map<string, string>();
   const storeIds = [...byStore.keys()].slice(0, 200);
   if (storeIds.length) {
-    const { data: merchants } = await admin.from("merchants").select("id, name, slug").in("id", storeIds);
+    const { data: merchants } = await admin
+      .from("merchants")
+      .select("id, name, slug")
+      .in("id", storeIds);
     for (const m of merchants ?? []) {
-      names.set(m.id as string, ((m as { name?: string; slug?: string }).name ?? (m as { slug?: string }).slug ?? "") as string);
+      names.set(
+        m.id as string,
+        ((m as { name?: string; slug?: string }).name ??
+          (m as { slug?: string }).slug ??
+          "") as string,
+      );
     }
   }
 
@@ -1067,7 +1302,11 @@ export async function loadPlatformTraffic(days = 30) {
       .sort((a, b) => b.visitors - a.visitors)
       .slice(0, 12),
     stores: [...byStore.entries()]
-      .map(([id, visitors]) => ({ id, name: names.get(id) || id.slice(0, 8), visitors }))
+      .map(([id, visitors]) => ({
+        id,
+        name: names.get(id) || id.slice(0, 8),
+        visitors,
+      }))
       .sort((a, b) => b.visitors - a.visitors)
       .slice(0, 12),
   };

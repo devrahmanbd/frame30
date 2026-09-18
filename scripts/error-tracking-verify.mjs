@@ -16,7 +16,9 @@ const SEND = process.argv.includes("--send");
 const checks = [];
 const record = (name, ok, detail = "") => {
   checks.push({ name, ok, detail });
-  process.stdout.write(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? ` — ${detail}` : ""}\n`);
+  process.stdout.write(
+    `${ok ? "PASS" : "FAIL"}  ${name}${detail ? ` — ${detail}` : ""}\n`,
+  );
 };
 
 function parseDsn(raw) {
@@ -76,7 +78,10 @@ for (const { name, dsn } of targets) {
     platform: "javascript",
     logger: "framique-verify",
     level: "error",
-    environment: process.env.ERROR_ENVIRONMENT ?? process.env.SENTRY_ENVIRONMENT ?? "preview",
+    environment:
+      process.env.ERROR_ENVIRONMENT ??
+      process.env.SENTRY_ENVIRONMENT ??
+      "preview",
     release: process.env.ERROR_RELEASE ?? "verify",
     message: "Framique phase-12 verification error (no personal data)",
     fingerprint: ["verify", "phase-12"],
@@ -88,7 +93,12 @@ for (const { name, dsn } of targets) {
           value: "Framique phase-12 verification error (no personal data)",
           stacktrace: {
             frames: [
-              { filename: "scripts/error-tracking-verify.mjs", function: "main", lineno: 1, in_app: true },
+              {
+                filename: "scripts/error-tracking-verify.mjs",
+                function: "main",
+                lineno: 1,
+                in_app: true,
+              },
             ],
           },
           mechanism: { handled: true },
@@ -104,10 +114,17 @@ for (const { name, dsn } of targets) {
   try {
     const res = await timed(dsn.envelope, {
       method: "POST",
-      headers: { "content-type": "application/x-sentry-envelope", "x-sentry-auth": dsn.auth },
+      headers: {
+        "content-type": "application/x-sentry-envelope",
+        "x-sentry-auth": dsn.auth,
+      },
       body: envelope,
     });
-    record(`${name}: accepted test event`, res.ok, `HTTP ${res.status} event_id=${eventId}`);
+    record(
+      `${name}: accepted test event`,
+      res.ok,
+      `HTTP ${res.status} event_id=${eventId}`,
+    );
   } catch (err) {
     record(`${name}: accepted test event`, false, String(err?.message ?? err));
   }
@@ -117,28 +134,41 @@ for (const { name, dsn } of targets) {
 const appUrl = process.env.APP_INTERNAL_URL;
 if (SEND && appUrl && process.env.ERROR_ALERT_SECRET) {
   try {
-    const res = await timed(`${appUrl.replace(/\/$/, "")}/api/public/error-alert`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-error-alert-secret": process.env.ERROR_ALERT_SECRET,
+    const res = await timed(
+      `${appUrl.replace(/\/$/, "")}/api/public/error-alert`,
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-error-alert-secret": process.env.ERROR_ALERT_SECRET,
+        },
+        body: JSON.stringify({
+          title: "Framique phase-12 verification issue",
+          level: "error",
+          project: "framique",
+          source: "glitchtip",
+          url: `${process.env.GLITCHTIP_DOMAIN ?? "http://localhost:8000"}/issues`,
+        }),
       },
-      body: JSON.stringify({
-        title: "Framique phase-12 verification issue",
-        level: "error",
-        project: "framique",
-        source: "glitchtip",
-        url: `${process.env.GLITCHTIP_DOMAIN ?? "http://localhost:8000"}/issues`,
-      }),
-    });
-    record("alert bridge: forwards to Alertmanager", res.status === 202, `HTTP ${res.status}`);
+    );
+    record(
+      "alert bridge: forwards to Alertmanager",
+      res.status === 202,
+      `HTTP ${res.status}`,
+    );
   } catch (err) {
-    record("alert bridge: forwards to Alertmanager", false, String(err?.message ?? err));
+    record(
+      "alert bridge: forwards to Alertmanager",
+      false,
+      String(err?.message ?? err),
+    );
   }
 }
 
 const failed = checks.filter((c) => !c.ok);
-process.stdout.write(`\n${checks.length - failed.length}/${checks.length} checks passed.\n`);
+process.stdout.write(
+  `\n${checks.length - failed.length}/${checks.length} checks passed.\n`,
+);
 if (SEND) {
   process.stdout.write(
     "Now open each backend UI and confirm the issue shows a readable stack trace and no personal data.\n",

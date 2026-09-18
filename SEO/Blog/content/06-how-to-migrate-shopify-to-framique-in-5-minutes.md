@@ -2,7 +2,7 @@
 
 > **Target Query:** `migrate from shopify to local cms`, `shopify csv import ecommerce`, `switch from shopify`  
 > **Reading Time:** 8 minutes  
-> **Published:** October 2026  
+> **Published:** October 2026
 
 ---
 
@@ -56,6 +56,7 @@ However, moving from Shopify to **FRAMIQUE** is straightforward because both sys
 ## 4. Step 3: Preserving SEO Equity (301 Redirects)
 
 Preserving your hard-earned Google search rankings is essential. Framique automatically retains your Shopify URL structure:
+
 - If a product on Shopify was located at `/products/black-hoodie`, Framique maps it cleanly or sets an automatic server-side 301 redirect.
 - Framique pre-renders the exact same canonical meta tags and JSON-LD `Product` schema so Googlebot transitions indexing seamlessly.
 
@@ -64,6 +65,7 @@ Preserving your hard-earned Google search rankings is essential. Framique automa
 ## 5. Step 4: DNS Cutover & Automated SSL
 
 Once you have verified your products:
+
 1. In your domain registrar (Namecheap, GoDaddy, Cloudflare, or BTCL for `.com.bd`), update your `CNAME` record to point to Framique's edge gateway.
 2. Inside Framique, add your custom domain under **Settings > Custom Domains**.
 3. Framique’s automated ACME edge handler validates the handshake and issues an SSL certificate automatically.

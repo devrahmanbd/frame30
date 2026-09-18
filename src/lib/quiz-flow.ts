@@ -39,7 +39,11 @@ export function answersFor(state: QuizState, key: string): string[] {
 }
 
 /** Toggles a value on the given step, honouring single vs multi select. */
-export function answerStep(state: QuizState, step: QuizStep, value: string): QuizState {
+export function answerStep(
+  state: QuizState,
+  step: QuizStep,
+  value: string,
+): QuizState {
   const current = answersFor(state, step.key);
   const next = step.multi
     ? current.includes(value)

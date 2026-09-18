@@ -40,13 +40,20 @@ describe("Omnichannel Support Transcript Export Engine", () => {
   ];
 
   it("exports formatted Markdown transcript with metadata header", () => {
-    const res = exportConversationTranscript(mockConv, mockMessages, "markdown", {
-      redactPii: false,
-      includeInternalNotes: true,
-    });
+    const res = exportConversationTranscript(
+      mockConv,
+      mockMessages,
+      "markdown",
+      {
+        redactPii: false,
+        includeInternalNotes: true,
+      },
+    );
 
     expect(res.contentType).toBe("text/markdown; charset=utf-8");
-    expect(res.filename).toContain("transcript-991e4e20-3b2d-42bc-9d0b-980b1e428df1.md");
+    expect(res.filename).toContain(
+      "transcript-991e4e20-3b2d-42bc-9d0b-980b1e428df1.md",
+    );
     expect(res.content).toContain("# Support Conversation Transcript");
     expect(res.content).toContain("**Channel:** whatsapp");
     expect(res.content).toContain("**Priority:** high");
@@ -86,15 +93,22 @@ describe("Omnichannel Support Transcript Export Engine", () => {
 
     const lines = res.content.trim().split("\n");
     expect(lines.length).toBe(4); // 1 header + 3 rows
-    expect(lines[0]).toBe("message_id,timestamp,role,is_internal_note,sender_id,body");
+    expect(lines[0]).toBe(
+      "message_id,timestamp,role,is_internal_note,sender_id,body",
+    );
     expect(lines[1]).toContain("msg-101");
   });
 
   it("redacts sensitive PII (emails and phone numbers) when requested", () => {
-    const res = exportConversationTranscript(mockConv, mockMessages, "markdown", {
-      redactPii: true,
-      includeInternalNotes: true,
-    });
+    const res = exportConversationTranscript(
+      mockConv,
+      mockMessages,
+      "markdown",
+      {
+        redactPii: true,
+        includeInternalNotes: true,
+      },
+    );
 
     expect(res.content).not.toContain("test@customer.com");
     expect(res.content).toContain("[email redacted]");
@@ -102,11 +116,18 @@ describe("Omnichannel Support Transcript Export Engine", () => {
   });
 
   it("filters out internal notes when includeInternalNotes is false", () => {
-    const res = exportConversationTranscript(mockConv, mockMessages, "markdown", {
-      includeInternalNotes: false,
-    });
+    const res = exportConversationTranscript(
+      mockConv,
+      mockMessages,
+      "markdown",
+      {
+        includeInternalNotes: false,
+      },
+    );
 
     expect(res.content).not.toContain("Flagged for manual fraud inspection");
-    expect(res.content).toContain("We have processed your cancellation request");
+    expect(res.content).toContain(
+      "We have processed your cancellation request",
+    );
   });
 });

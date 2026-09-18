@@ -1,1 +1,619 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "label": "rate-limit.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L1"}, {"id": "lib_rate_limit_server_ratelimiterror", "label": "RateLimitError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L33"}, {"id": "lib_rate_limit_server_ratelimiterror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L34"}, {"id": "lib_rate_limit_server_ratelimitsource", "label": "RateLimitSource", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L43"}, {"id": "lib_rate_limit_server_rateverdict", "label": "RateVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L45"}, {"id": "lib_rate_limit_server_buckets", "label": "BUCKETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L57"}, {"id": "lib_rate_limit_server_bucketname", "label": "BucketName", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L351"}, {"id": "lib_rate_limit_server_subjectkey", "label": "subjectKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L386"}, {"id": "lib_rate_limit_server_redisverdict", "label": "redisVerdict()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L393"}, {"id": "lib_rate_limit_server_postgresverdict", "label": "postgresVerdict()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L427"}, {"id": "lib_rate_limit_server_ratelimit", "label": "rateLimit()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L457"}, {"id": "lib_rate_limit_server_enforceratelimit", "label": "enforceRateLimit()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L501"}, {"id": "lib_rate_limit_server_ratelimitheaders", "label": "rateLimitHeaders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L507"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_observability_server_registermetric", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "users_rahman_documents_frame30_src_lib_redis_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_redis_server_redisconfigured", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_redis_server_rediseval", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_redis_server_rediskey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_ratelimiterror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "lib_rate_limit_server_ratelimiterror", "target": "lib_rate_limit_server_ratelimiterror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_ratelimitsource", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_rateverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_buckets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_bucketname", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L351", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_subjectkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L386", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_redisverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L393", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_postgresverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L427", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_ratelimit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L457", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L501", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "target": "lib_rate_limit_server_ratelimitheaders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L507", "weight": 1.0}, {"source": "lib_rate_limit_server_redisverdict", "target": "lib_rate_limit_server_subjectkey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L406", "weight": 1.0}, {"source": "lib_rate_limit_server_postgresverdict", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L434", "weight": 1.0}, {"source": "lib_rate_limit_server_ratelimit", "target": "lib_rate_limit_server_redisverdict", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L460", "weight": 1.0}, {"source": "lib_rate_limit_server_ratelimit", "target": "lib_rate_limit_server_postgresverdict", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L476", "weight": 1.0}, {"source": "lib_rate_limit_server_enforceratelimit", "target": "lib_rate_limit_server_ratelimit", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L502", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_rate_limit_server_ratelimiterror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L38"}, {"caller_nid": "lib_rate_limit_server_subjectkey", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L387"}, {"caller_nid": "lib_rate_limit_server_subjectkey", "callee": "redisKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L388"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "redisConfigured", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L398"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L399"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "redisEval", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L404"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L409"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L412"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L413"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L414"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L414"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L416"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L416"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L418"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L421"}, {"caller_nid": "lib_rate_limit_server_redisverdict", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L422"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L432"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L435"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L446"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L446"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L449"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L451"}, {"caller_nid": "lib_rate_limit_server_postgresverdict", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L451"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L462"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "redisConfigured", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L469"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L472"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L473"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L478"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L488"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L489"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L495"}, {"caller_nid": "lib_rate_limit_server_ratelimit", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L495"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L508"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "ceil", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L508"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L508"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L508"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L510"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L511"}, {"caller_nid": "lib_rate_limit_server_ratelimitheaders", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts", "source_location": "L514"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "label": "rate-limit.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_rate_limit_server_ratelimiterror",
+      "label": "RateLimitError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_rate_limit_server_ratelimiterror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_rate_limit_server_ratelimitsource",
+      "label": "RateLimitSource",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "lib_rate_limit_server_rateverdict",
+      "label": "RateVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_rate_limit_server_buckets",
+      "label": "BUCKETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_rate_limit_server_bucketname",
+      "label": "BucketName",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L351"
+    },
+    {
+      "id": "lib_rate_limit_server_subjectkey",
+      "label": "subjectKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L386"
+    },
+    {
+      "id": "lib_rate_limit_server_redisverdict",
+      "label": "redisVerdict()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L393"
+    },
+    {
+      "id": "lib_rate_limit_server_postgresverdict",
+      "label": "postgresVerdict()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L427"
+    },
+    {
+      "id": "lib_rate_limit_server_ratelimit",
+      "label": "rateLimit()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L457"
+    },
+    {
+      "id": "lib_rate_limit_server_enforceratelimit",
+      "label": "enforceRateLimit()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L501"
+    },
+    {
+      "id": "lib_rate_limit_server_ratelimitheaders",
+      "label": "rateLimitHeaders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L507"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_observability_server_registermetric",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_redis_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_redis_server_redisconfigured",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_redis_server_rediseval",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_redis_server_rediskey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_ratelimiterror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_ratelimiterror",
+      "target": "lib_rate_limit_server_ratelimiterror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_ratelimitsource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_rateverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_buckets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_bucketname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L351",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_subjectkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L386",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_redisverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L393",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_postgresverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L427",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_ratelimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L457",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L501",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "target": "lib_rate_limit_server_ratelimitheaders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L507",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_redisverdict",
+      "target": "lib_rate_limit_server_subjectkey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L406",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_postgresverdict",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L434",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_ratelimit",
+      "target": "lib_rate_limit_server_redisverdict",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L460",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_ratelimit",
+      "target": "lib_rate_limit_server_postgresverdict",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L476",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit_server_enforceratelimit",
+      "target": "lib_rate_limit_server_ratelimit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L502",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimiterror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_subjectkey",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L387"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_subjectkey",
+      "callee": "redisKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "redisConfigured",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L398"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L399"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "redisEval",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L404"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L412"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L414"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L414"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L416"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L416"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L418"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_redisverdict",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L422"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L432"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L435"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L446"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L446"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_postgresverdict",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "redisConfigured",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L469"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L472"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L473"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L478"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L488"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L489"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimit",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "ceil",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L510"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L511"
+    },
+    {
+      "caller_nid": "lib_rate_limit_server_ratelimitheaders",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rate-limit.server.ts",
+      "source_location": "L514"
+    }
+  ]
+}

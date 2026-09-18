@@ -54,7 +54,10 @@ export function OwnerHeader({
   return (
     <header className={cn("space-y-3 pb-2", className)}>
       {breadcrumbs && breadcrumbs.length > 0 && (
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1 text-xs text-muted-foreground"
+        >
           <Link
             to="/root"
             className="transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-xs"
@@ -63,7 +66,10 @@ export function OwnerHeader({
           </Link>
           {breadcrumbs.map((crumb, idx) => (
             <React.Fragment key={idx}>
-              <ChevronRight className="size-3.5 opacity-50 shrink-0" aria-hidden="true" />
+              <ChevronRight
+                className="size-3.5 opacity-50 shrink-0"
+                aria-hidden="true"
+              />
               {crumb.to ? (
                 <Link
                   to={crumb.to}
@@ -72,7 +78,9 @@ export function OwnerHeader({
                   {crumb.label}
                 </Link>
               ) : (
-                <span className="font-medium text-foreground">{crumb.label}</span>
+                <span className="font-medium text-foreground">
+                  {crumb.label}
+                </span>
               )}
             </React.Fragment>
           ))}
@@ -93,7 +101,9 @@ export function OwnerHeader({
             </p>
           )}
         </div>
-        {actions && <div className="flex items-center gap-2.5 shrink-0">{actions}</div>}
+        {actions && (
+          <div className="flex items-center gap-2.5 shrink-0">{actions}</div>
+        )}
       </div>
     </header>
   );
@@ -139,7 +149,8 @@ export function StatCard({
       className={cn(
         "group relative overflow-hidden transition-all duration-200 hover:shadow-md bg-card/95 backdrop-blur-xs",
         toneBorder,
-        to && "cursor-pointer focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
+        to &&
+          "cursor-pointer focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2",
         className,
       )}
     >
@@ -165,9 +176,15 @@ export function StatCard({
                   )}
                 >
                   {trend.positive ? (
-                    <TrendingUp className="size-3 shrink-0" aria-hidden="true" />
+                    <TrendingUp
+                      className="size-3 shrink-0"
+                      aria-hidden="true"
+                    />
                   ) : trend.neutral ? null : (
-                    <TrendingDown className="size-3 shrink-0" aria-hidden="true" />
+                    <TrendingDown
+                      className="size-3 shrink-0"
+                      aria-hidden="true"
+                    />
                   )}
                   <span>{trend.value}</span>
                 </span>
@@ -231,7 +248,9 @@ export function StatGrid({
           ? "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
           : "sm:grid-cols-2 lg:grid-cols-4";
 
-  return <div className={cn("grid gap-4", colClass, className)}>{children}</div>;
+  return (
+    <div className={cn("grid gap-4", colClass, className)}>{children}</div>
+  );
 }
 
 /**
@@ -420,7 +439,12 @@ export function OwnerCard({
   className?: string;
 }) {
   return (
-    <Card className={cn("border-border/80 bg-card/95 shadow-xs backdrop-blur-xs", className)}>
+    <Card
+      className={cn(
+        "border-border/80 bg-card/95 shadow-xs backdrop-blur-xs",
+        className,
+      )}
+    >
       {(title || description || badge || actions) && (
         <CardHeader className="flex flex-row items-start justify-between gap-4 border-b border-border/60 pb-4">
           <div className="space-y-1">
@@ -438,7 +462,9 @@ export function OwnerCard({
               </CardDescription>
             )}
           </div>
-          {actions && <div className="flex items-center gap-2 shrink-0">{actions}</div>}
+          {actions && (
+            <div className="flex items-center gap-2 shrink-0">{actions}</div>
+          )}
         </CardHeader>
       )}
       <CardContent className="p-5">{children}</CardContent>
@@ -470,22 +496,26 @@ export function OwnerAlert({
 }) {
   const styles = {
     info: {
-      container: "border-blue-500/30 bg-blue-500/5 text-blue-900 dark:text-blue-100",
+      container:
+        "border-blue-500/30 bg-blue-500/5 text-blue-900 dark:text-blue-100",
       icon: Info,
       iconClass: "text-blue-600 dark:text-blue-400",
     },
     warn: {
-      container: "border-amber-500/30 bg-amber-500/5 text-amber-900 dark:text-amber-100",
+      container:
+        "border-amber-500/30 bg-amber-500/5 text-amber-900 dark:text-amber-100",
       icon: AlertTriangle,
       iconClass: "text-amber-600 dark:text-amber-400",
     },
     bad: {
-      container: "border-rose-500/30 bg-rose-500/5 text-rose-900 dark:text-rose-100",
+      container:
+        "border-rose-500/30 bg-rose-500/5 text-rose-900 dark:text-rose-100",
       icon: AlertOctagon,
       iconClass: "text-rose-600 dark:text-rose-400",
     },
     ok: {
-      container: "border-emerald-500/30 bg-emerald-500/5 text-emerald-900 dark:text-emerald-100",
+      container:
+        "border-emerald-500/30 bg-emerald-500/5 text-emerald-900 dark:text-emerald-100",
       icon: CheckCircle2,
       iconClass: "text-emerald-600 dark:text-emerald-400",
     },
@@ -503,7 +533,10 @@ export function OwnerAlert({
       )}
     >
       <div className="flex items-start gap-3">
-        <Icon className={cn("size-5 shrink-0 mt-0.5", styles.iconClass)} aria-hidden="true" />
+        <Icon
+          className={cn("size-5 shrink-0 mt-0.5", styles.iconClass)}
+          aria-hidden="true"
+        />
         <div className="space-y-0.5">
           {title && <p className="font-semibold">{title}</p>}
           <div className="text-xs sm:text-sm opacity-90 font-bangla-body leading-relaxed">

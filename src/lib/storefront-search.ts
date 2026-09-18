@@ -9,10 +9,21 @@
 import type { ResponsiveImage } from "./image-transform";
 import { renderMarkdownBlocks } from "./editor/page-markdown";
 
-export const SORTS = ["relevance", "price_asc", "price_desc", "newest", "title"] as const;
+export const SORTS = [
+  "relevance",
+  "price_asc",
+  "price_desc",
+  "newest",
+  "title",
+] as const;
 export type SortKey = (typeof SORTS)[number];
 
-export const PRODUCT_KINDS_FILTER = ["physical", "digital", "service", "subscription"] as const;
+export const PRODUCT_KINDS_FILTER = [
+  "physical",
+  "digital",
+  "service",
+  "subscription",
+] as const;
 export type KindFilter = (typeof PRODUCT_KINDS_FILTER)[number];
 
 export const PAGE_SIZE = 24;
@@ -107,11 +118,16 @@ function minorOrNull(v: unknown): number | null {
   return n;
 }
 
-export function normalizeSearchParams(raw: Record<string, unknown>): SearchParams {
+export function normalizeSearchParams(
+  raw: Record<string, unknown>,
+): SearchParams {
   const sortRaw = typeof raw["sort"] === "string" ? raw["sort"] : "";
   const kindRaw = typeof raw["kind"] === "string" ? raw["kind"] : "";
   const pageRaw = Number(raw["page"] ?? 1);
-  const page = Number.isInteger(pageRaw) && pageRaw > 0 ? Math.min(pageRaw, MAX_OFFSET / PAGE_SIZE + 1) : 1;
+  const page =
+    Number.isInteger(pageRaw) && pageRaw > 0
+      ? Math.min(pageRaw, MAX_OFFSET / PAGE_SIZE + 1)
+      : 1;
 
   let minMinor = minorOrNull(raw["min"]);
   let maxMinor = minorOrNull(raw["max"]);
@@ -120,14 +136,21 @@ export function normalizeSearchParams(raw: Record<string, unknown>): SearchParam
   }
 
   return {
-    q: String(raw["q"] ?? "").trim().slice(0, MAX_TERM_LENGTH),
+    q: String(raw["q"] ?? "")
+      .trim()
+      .slice(0, MAX_TERM_LENGTH),
     category: slugOrNull(raw["category"]),
     collection: slugOrNull(raw["collection"]),
-    kind: (PRODUCT_KINDS_FILTER as readonly string[]).includes(kindRaw) ? (kindRaw as KindFilter) : null,
+    kind: (PRODUCT_KINDS_FILTER as readonly string[]).includes(kindRaw)
+      ? (kindRaw as KindFilter)
+      : null,
     minMinor,
     maxMinor,
-    inStock: raw["stock"] === true || raw["stock"] === "1" || raw["stock"] === "true",
-    sort: (SORTS as readonly string[]).includes(sortRaw) ? (sortRaw as SortKey) : "relevance",
+    inStock:
+      raw["stock"] === true || raw["stock"] === "1" || raw["stock"] === "true",
+    sort: (SORTS as readonly string[]).includes(sortRaw)
+      ? (sortRaw as SortKey)
+      : "relevance",
     page,
   };
 }

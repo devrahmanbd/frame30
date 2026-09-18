@@ -24,21 +24,26 @@ export const subscribeNewsletterFn = createServerFn({ method: "POST" })
       .parse(data),
   )
   .handler(async ({ data }) => {
-    const { subscribeNewsletter, flushOutbox } = await import("./newsletter.server");
+    const { subscribeNewsletter, flushOutbox } =
+      await import("./newsletter.server");
     // Opportunistic drain of anything a previous provider blip left behind.
     await flushOutbox().catch(() => ({ processed: 0 }));
     return subscribeNewsletter(data);
   });
 
 export const verifyNewsletterFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ token: z.string().trim().min(16).max(128) }).parse(data))
+  .inputValidator((data: unknown) =>
+    z.object({ token: z.string().trim().min(16).max(128) }).parse(data),
+  )
   .handler(async ({ data }) => {
     const { verifyNewsletter } = await import("./newsletter.server");
     return verifyNewsletter(data.token);
   });
 
 export const unsubscribeNewsletterFn = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => z.object({ token: z.string().trim().min(16).max(128) }).parse(data))
+  .inputValidator((data: unknown) =>
+    z.object({ token: z.string().trim().min(16).max(128) }).parse(data),
+  )
   .handler(async ({ data }) => {
     const { unsubscribeNewsletter } = await import("./newsletter.server");
     return unsubscribeNewsletter(data.token);

@@ -7,7 +7,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 
@@ -17,7 +20,8 @@ rec.holder = recorder;
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
-const { redeemGiftCard, issueGiftCard, generateCode, loadGiftCards } = await import("./gift-cards.server");
+const { redeemGiftCard, issueGiftCard, generateCode, loadGiftCards } =
+  await import("./gift-cards.server");
 const { CommerceError } = await import("./inventory.server");
 
 const MERCHANT = "11111111-1111-1111-1111-111111111111";
@@ -52,7 +56,9 @@ describe("issueGiftCard", () => {
   it("rejects a fractional amount rather than silently rounding money", async () => {
     const db = fakeDb();
     await expect(
-      issueGiftCard(db.asClient(), MERCHANT, "staff-1", { amountMinorInt: 0.4 }),
+      issueGiftCard(db.asClient(), MERCHANT, "staff-1", {
+        amountMinorInt: 0.4,
+      }),
     ).rejects.toBeInstanceOf(CommerceError);
   });
 
@@ -82,14 +88,21 @@ describe("redeemGiftCard", () => {
   it("applies once and counts the application", async () => {
     const db = fakeDb({
       rpc: () => ({
-        data: { replayed: false, applied_minor_int: 2500, balance_minor_int: 7500, currency_code: "BDT" },
+        data: {
+          replayed: false,
+          applied_minor_int: 2500,
+          balance_minor_int: 7500,
+          currency_code: "BDT",
+        },
         error: null,
       }),
     });
     const result = await redeemGiftCard(db.asClient(), MERCHANT, base);
     expect(result.replayed).toBe(false);
     expect(result.applied_minor_int).toBe(2500);
-    expect(recorder.of("framique_gift_card_redeem_total", ["outcome", "applied"])).toHaveLength(1);
+    expect(
+      recorder.of("framique_gift_card_redeem_total", ["outcome", "applied"]),
+    ).toHaveLength(1);
   });
 
   it("replays the original verdict without deducting twice (replay)", async () => {
@@ -117,25 +130,40 @@ describe("redeemGiftCard", () => {
     expect(second.replayed).toBe(true);
     expect(second.applied_minor_int).toBe(first.applied_minor_int);
     expect(second.balance_minor_int).toBe(first.balance_minor_int);
-    expect(recorder.of("framique_gift_card_redeem_total", ["outcome", "replayed"])).toHaveLength(1);
+    expect(
+      recorder.of("framique_gift_card_redeem_total", ["outcome", "replayed"]),
+    ).toHaveLength(1);
     // Both attempts carried the same idempotency key to the ledger.
-    const keys = db.rpcCalls("gift_card_redeem").map((c) => c.args["_idempotency_key"]);
+    const keys = db
+      .rpcCalls("gift_card_redeem")
+      .map((c) => c.args["_idempotency_key"]);
     expect(keys).toEqual(["key-1", "key-1"]);
   });
 
   it("denies redemption of an inactive card and counts the error (deny + audit)", async () => {
     const db = fakeDb({
-      rpc: () => ({ data: null, error: { message: "gift_card_inactive: card was voided" } }),
+      rpc: () => ({
+        data: null,
+        error: { message: "gift_card_inactive: card was voided" },
+      }),
     });
-    await expect(redeemGiftCard(db.asClient(), MERCHANT, base)).rejects.toMatchObject({
+    await expect(
+      redeemGiftCard(db.asClient(), MERCHANT, base),
+    ).rejects.toMatchObject({
       code: "gift_card_inactive",
     });
-    expect(recorder.of("framique_gift_card_redeem_total", ["outcome", "error"])).toHaveLength(1);
+    expect(
+      recorder.of("framique_gift_card_redeem_total", ["outcome", "error"]),
+    ).toHaveLength(1);
   });
 
   it("denies an expired card", async () => {
-    const db = fakeDb({ rpc: () => ({ data: null, error: { message: "gift_card_expired" } }) });
-    await expect(redeemGiftCard(db.asClient(), MERCHANT, base)).rejects.toMatchObject({
+    const db = fakeDb({
+      rpc: () => ({ data: null, error: { message: "gift_card_expired" } }),
+    });
+    await expect(
+      redeemGiftCard(db.asClient(), MERCHANT, base),
+    ).rejects.toMatchObject({
       code: "gift_card_expired",
     });
   });
@@ -144,10 +172,15 @@ describe("redeemGiftCard", () => {
     const db = fakeDb({
       rpc: () => ({
         data: null,
-        error: { message: 'relation "gift_card_entries" violates constraint pg_xyz at 10.0.0.4' },
+        error: {
+          message:
+            'relation "gift_card_entries" violates constraint pg_xyz at 10.0.0.4',
+        },
       }),
     });
-    const err = await redeemGiftCard(db.asClient(), MERCHANT, base).catch((e) => e);
+    const err = await redeemGiftCard(db.asClient(), MERCHANT, base).catch(
+      (e) => e,
+    );
     expect(err).toBeInstanceOf(CommerceError);
     expect(err.code).toBe("giftcard_unavailable");
     expect(err.message).not.toMatch(/relation|10\.0\.0\.4/);
@@ -156,11 +189,19 @@ describe("redeemGiftCard", () => {
   it("floors the requested amount so no float reaches the ledger", async () => {
     const db = fakeDb({
       rpc: () => ({
-        data: { replayed: false, applied_minor_int: 1, balance_minor_int: 0, currency_code: "BDT" },
+        data: {
+          replayed: false,
+          applied_minor_int: 1,
+          balance_minor_int: 0,
+          currency_code: "BDT",
+        },
         error: null,
       }),
     });
-    await redeemGiftCard(db.asClient(), MERCHANT, { ...base, amountMinorInt: 10.99 });
+    await redeemGiftCard(db.asClient(), MERCHANT, {
+      ...base,
+      amountMinorInt: 10.99,
+    });
     expect(db.rpcCalls("gift_card_redeem")[0]!.args["_amount_minor"]).toBe(10);
   });
 });
@@ -171,7 +212,11 @@ describe("tenant scoping", () => {
       tables: {
         gift_cards: [
           { id: "a", merchant_id: MERCHANT, code: "GC-1" },
-          { id: "b", merchant_id: "22222222-2222-2222-2222-222222222222", code: "GC-2" },
+          {
+            id: "b",
+            merchant_id: "22222222-2222-2222-2222-222222222222",
+            code: "GC-2",
+          },
         ],
       },
     });

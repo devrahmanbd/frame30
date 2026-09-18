@@ -268,7 +268,12 @@
     {
       "id": "framique_icon_set",
       "label": "Framique Icon Sprite Symbol Set",
-      "nodes": ["sprite_svg", "sprite_arrow_right", "sprite_banknote", "sprite_boxes"],
+      "nodes": [
+        "sprite_svg",
+        "sprite_arrow_right",
+        "sprite_banknote",
+        "sprite_boxes"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -277,7 +282,12 @@
     {
       "id": "framique_platform_capabilities",
       "label": "Framique Core Platform Capabilities",
-      "nodes": ["og_fulfilment_couriers", "og_features_capabilities", "og_pricing_bdt", "og_builder_sections_tokens"],
+      "nodes": [
+        "og_fulfilment_couriers",
+        "og_features_capabilities",
+        "og_pricing_bdt",
+        "og_builder_sections_tokens"
+      ],
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.85,

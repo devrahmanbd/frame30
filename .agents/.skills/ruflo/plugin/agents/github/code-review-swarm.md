@@ -8,11 +8,13 @@ tools: mcp__claude-flow__swarm_init, mcp__claude-flow__agent_spawn, mcp__claude-
 # Code Review Swarm - Automated Code Review with AI Agents
 
 ## Overview
+
 Deploy specialized AI agents to perform comprehensive, intelligent code reviews that go beyond traditional static analysis.
 
 ## Core Features
 
 ### 1. Multi-Agent Review System
+
 ```bash
 # Initialize code review swarm with gh CLI
 # Get PR details
@@ -34,6 +36,7 @@ gh pr comment 123 --body "🔍 Multi-agent code review initiated"
 ### 2. Specialized Review Agents
 
 #### Security Agent
+
 ```bash
 # Security-focused review with gh CLI
 # Get changed files
@@ -59,6 +62,7 @@ fi
 ```
 
 #### Performance Agent
+
 ```bash
 # Performance analysis
 npx ruv-swarm github review-performance \
@@ -69,6 +73,7 @@ npx ruv-swarm github review-performance \
 ```
 
 #### Architecture Agent
+
 ```bash
 # Architecture review
 npx ruv-swarm github review-architecture \
@@ -79,6 +84,7 @@ npx ruv-swarm github review-architecture \
 ```
 
 ### 3. Review Configuration
+
 ```yaml
 # .github/review-swarm.yml
 version: 1
@@ -92,12 +98,12 @@ review:
     - architecture
     - accessibility
     - i18n
-  
+
   thresholds:
     security: block
     performance: warn
     style: suggest
-    
+
   rules:
     security:
       - no-eval
@@ -116,6 +122,7 @@ review:
 ## Review Agents
 
 ### Security Review Agent
+
 ```javascript
 // Security checks performed
 {
@@ -139,6 +146,7 @@ review:
 ```
 
 ### Performance Review Agent
+
 ```javascript
 // Performance analysis
 {
@@ -161,6 +169,7 @@ review:
 ```
 
 ### Style & Convention Agent
+
 ```javascript
 // Style enforcement
 {
@@ -183,6 +192,7 @@ review:
 ```
 
 ### Architecture Review Agent
+
 ```javascript
 // Architecture analysis
 {
@@ -207,6 +217,7 @@ review:
 ## Advanced Review Features
 
 ### 1. Context-Aware Reviews
+
 ```bash
 # Review with full context
 npx ruv-swarm github review-context \
@@ -217,6 +228,7 @@ npx ruv-swarm github review-context \
 ```
 
 ### 2. Learning from History
+
 ```bash
 # Learn from past reviews
 npx ruv-swarm github review-learn \
@@ -227,6 +239,7 @@ npx ruv-swarm github review-learn \
 ```
 
 ### 3. Cross-PR Analysis
+
 ```bash
 # Analyze related PRs together
 npx ruv-swarm github review-batch \
@@ -239,6 +252,7 @@ npx ruv-swarm github review-batch \
 ## Review Automation
 
 ### Auto-Review on Push
+
 ```yaml
 # .github/workflows/auto-review.yml
 name: Automated Code Review
@@ -253,25 +267,25 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Setup GitHub CLI
         run: echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
-          
+
       - name: Run Review Swarm
         run: |
           # Get PR context with gh CLI
           PR_NUM=${{ github.event.pull_request.number }}
           PR_DATA=$(gh pr view $PR_NUM --json files,title,body,labels)
-          
+
           # Run swarm review
           REVIEW_OUTPUT=$(npx ruv-swarm github review-all \
             --pr $PR_NUM \
             --pr-data "$PR_DATA" \
             --agents "security,performance,style,architecture")
-          
+
           # Post review results
           echo "$REVIEW_OUTPUT" | gh pr review $PR_NUM --comment -F -
-          
+
           # Update PR status
           if echo "$REVIEW_OUTPUT" | grep -q "approved"; then
             gh pr review $PR_NUM --approve
@@ -281,6 +295,7 @@ jobs:
 ```
 
 ### Review Triggers
+
 ```javascript
 // Custom review triggers
 {
@@ -307,6 +322,7 @@ jobs:
 ## Review Comments
 
 ### Intelligent Comment Generation
+
 ```bash
 # Generate contextual review comments with gh CLI
 # Get PR diff with context
@@ -327,7 +343,7 @@ echo "$COMMENTS" | jq -c '.[]' | while read -r comment; do
   FILE=$(echo "$comment" | jq -r '.path')
   LINE=$(echo "$comment" | jq -r '.line')
   BODY=$(echo "$comment" | jq -r '.body')
-  
+
   # Create review with inline comments
   gh api \
     --method POST \
@@ -340,27 +356,33 @@ done
 ```
 
 ### Comment Templates
-```markdown
+
+````markdown
 <!-- Security Issue Template -->
+
 🔒 **Security Issue: [Type]**
 
 **Severity**: 🔴 Critical / 🟡 High / 🟢 Low
 
-**Description**: 
+**Description**:
 [Clear explanation of the security issue]
 
 **Impact**:
 [Potential consequences if not addressed]
 
 **Suggested Fix**:
+
 ```language
 [Code example of the fix]
 ```
+````
 
 **References**:
+
 - [OWASP Guide](link)
 - [Security Best Practices](link)
-```
+
+````
 
 ### Batch Comment Management
 ```bash
@@ -370,11 +392,12 @@ npx ruv-swarm github review-comments \
   --group-by "agent,severity" \
   --summarize \
   --resolve-outdated
-```
+````
 
 ## Integration with CI/CD
 
 ### Status Checks
+
 ```yaml
 # Required status checks
 protection_rules:
@@ -386,6 +409,7 @@ protection_rules:
 ```
 
 ### Quality Gates
+
 ```bash
 # Define quality gates
 npx ruv-swarm github quality-gates \
@@ -398,6 +422,7 @@ npx ruv-swarm github quality-gates \
 ```
 
 ### Review Metrics
+
 ```bash
 # Track review effectiveness
 npx ruv-swarm github review-metrics \
@@ -409,18 +434,21 @@ npx ruv-swarm github review-metrics \
 ## Best Practices
 
 ### 1. Review Configuration
+
 - Define clear review criteria
 - Set appropriate thresholds
 - Configure agent specializations
 - Establish override procedures
 
 ### 2. Comment Quality
+
 - Provide actionable feedback
 - Include code examples
 - Reference documentation
 - Maintain respectful tone
 
 ### 3. Performance
+
 - Cache analysis results
 - Incremental reviews for large PRs
 - Parallel agent execution
@@ -429,6 +457,7 @@ npx ruv-swarm github review-metrics \
 ## Advanced Features
 
 ### 1. AI Learning
+
 ```bash
 # Train on your codebase
 npx ruv-swarm github review-train \
@@ -438,27 +467,29 @@ npx ruv-swarm github review-train \
 ```
 
 ### 2. Custom Review Agents
+
 ```javascript
 // Create custom review agent
 class CustomReviewAgent {
   async review(pr) {
     const issues = [];
-    
+
     // Custom logic here
     if (await this.checkCustomRule(pr)) {
       issues.push({
-        severity: 'warning',
-        message: 'Custom rule violation',
-        suggestion: 'Fix suggestion'
+        severity: "warning",
+        message: "Custom rule violation",
+        suggestion: "Fix suggestion",
       });
     }
-    
+
     return issues;
   }
 }
 ```
 
 ### 3. Review Orchestration
+
 ```bash
 # Orchestrate complex reviews
 npx ruv-swarm github review-orchestrate \
@@ -470,6 +501,7 @@ npx ruv-swarm github review-orchestrate \
 ## Examples
 
 ### Security-Critical PR
+
 ```bash
 # Auth system changes
 npx ruv-swarm github review-init \
@@ -480,6 +512,7 @@ npx ruv-swarm github review-init \
 ```
 
 ### Performance-Sensitive PR
+
 ```bash
 # Database optimization
 npx ruv-swarm github review-init \
@@ -490,6 +523,7 @@ npx ruv-swarm github review-init \
 ```
 
 ### UI Component PR
+
 ```bash
 # New component library
 npx ruv-swarm github review-init \
@@ -502,6 +536,7 @@ npx ruv-swarm github review-init \
 ## Monitoring & Analytics
 
 ### Review Dashboard
+
 ```bash
 # Launch review dashboard
 npx ruv-swarm github review-dashboard \
@@ -510,6 +545,7 @@ npx ruv-swarm github review-dashboard \
 ```
 
 ### Review Reports
+
 ```bash
 # Generate review reports
 npx ruv-swarm github review-report \

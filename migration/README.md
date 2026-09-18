@@ -17,6 +17,7 @@ psql "$TARGET_DB_URL" -f migration/0001_baseline.sql
 ```
 
 Notes:
+
 - Source SQL used to build this lives in `supabase/baseline_parts/` and `supabase/migrations/`.
 - RPC/business functions defined outside the baseline are not part of this dump; the
   `supabase/migrations/*.sql` grant files reference some of them and will error until

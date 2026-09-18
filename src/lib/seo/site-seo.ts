@@ -7,7 +7,13 @@
  */
 import { SEPARATORS, applyTokens, type TokenVars } from "./seo-meta";
 
-export const SEO_ENTITY_KINDS = ["home", "product", "collection", "page", "post"] as const;
+export const SEO_ENTITY_KINDS = [
+  "home",
+  "product",
+  "collection",
+  "page",
+  "post",
+] as const;
 export type SeoEntityKind = (typeof SEO_ENTITY_KINDS)[number];
 
 export type TitleTemplate = {
@@ -30,6 +36,7 @@ export type SiteSeoSettings = {
     facebookCapiToken: string;
     googleConversionUrl: string;
     googleTagManagerId: string;
+    googleAnalyticsId?: string;
   };
 };
 
@@ -52,8 +59,18 @@ const DEFAULT_TEMPLATES: Record<SeoEntityKind, TitleTemplate> = {
     index: true,
     sitemap: true,
   },
-  page: { title: "%title% %sep% %sitename%", description: "%excerpt%", index: true, sitemap: true },
-  post: { title: "%title% %sep% %sitename%", description: "%excerpt%", index: true, sitemap: true },
+  page: {
+    title: "%title% %sep% %sitename%",
+    description: "%excerpt%",
+    index: true,
+    sitemap: true,
+  },
+  post: {
+    title: "%title% %sep% %sitename%",
+    description: "%excerpt%",
+    index: true,
+    sitemap: true,
+  },
 };
 
 export const DEFAULT_SITE_SEO: SiteSeoSettings = {
@@ -68,13 +85,18 @@ export const DEFAULT_SITE_SEO: SiteSeoSettings = {
     facebookCapiToken: "",
     googleConversionUrl: "",
     googleTagManagerId: "",
+    googleAnalyticsId: "",
   },
 };
 
 const str = (v: unknown, max: number) =>
   typeof v === "string" ? v.replace(/\s+/g, " ").trim().slice(0, max) : "";
 const bool = (v: unknown, fallback: boolean) =>
-  v === true || v === "true" ? true : v === false || v === "false" ? false : fallback;
+  v === true || v === "true"
+    ? true
+    : v === false || v === "false"
+      ? false
+      : fallback;
 
 export function parseSiteSeo(input: unknown): SiteSeoSettings {
   const raw = (input ?? {}) as Record<string, unknown>;
@@ -89,7 +111,8 @@ export function parseSiteSeo(input: unknown): SiteSeoSettings {
     const t = (templatesRaw[kind] ?? {}) as Record<string, unknown>;
     templates[kind] = {
       title: str(t["title"], 200) || DEFAULT_TEMPLATES[kind].title,
-      description: str(t["description"], 400) || DEFAULT_TEMPLATES[kind].description,
+      description:
+        str(t["description"], 400) || DEFAULT_TEMPLATES[kind].description,
       index: bool(t["index"], true),
       sitemap: bool(t["sitemap"], true),
     };
@@ -97,7 +120,9 @@ export function parseSiteSeo(input: unknown): SiteSeoSettings {
 
   const perPage = Number(sitemap["perPage"]);
   return {
-    separator: (SEPARATORS as readonly string[]).includes(separator) ? separator : "-",
+    separator: (SEPARATORS as readonly string[]).includes(separator)
+      ? separator
+      : "-",
     templates,
     verification: {
       google: str(verification["google"], 200),
@@ -106,16 +131,34 @@ export function parseSiteSeo(input: unknown): SiteSeoSettings {
     },
     sitemap: {
       enabled: bool(sitemap["enabled"], true),
-      perPage: Number.isFinite(perPage) ? Math.min(1000, Math.max(20, Math.round(perPage))) : 200,
+      perPage: Number.isFinite(perPage)
+        ? Math.min(1000, Math.max(20, Math.round(perPage)))
+        : 200,
       includeImages: bool(sitemap["includeImages"], true),
     },
     aiCrawlers: bool(raw["aiCrawlers"], true),
     instantIndexing: bool(raw["instantIndexing"], false),
     analytics: {
-      facebookPixelId: str(analytics["facebookPixelId"] ?? raw["facebook_pixel_id"], 200),
-      facebookCapiToken: str(analytics["facebookCapiToken"] ?? raw["facebook_capi_token"], 1000),
-      googleConversionUrl: str(analytics["googleConversionUrl"] ?? raw["google_conversion_url"], 500),
-      googleTagManagerId: str(analytics["googleTagManagerId"] ?? raw["google_gtm_id"], 200),
+      facebookPixelId: str(
+        analytics["facebookPixelId"] ?? raw["facebook_pixel_id"],
+        200,
+      ),
+      facebookCapiToken: str(
+        analytics["facebookCapiToken"] ?? raw["facebook_capi_token"],
+        1000,
+      ),
+      googleConversionUrl: str(
+        analytics["googleConversionUrl"] ?? raw["google_conversion_url"],
+        500,
+      ),
+      googleTagManagerId: str(
+        analytics["googleTagManagerId"] ?? raw["google_gtm_id"],
+        200,
+      ),
+      googleAnalyticsId: str(
+        analytics["googleAnalyticsId"] ?? raw["google_ga4_id"],
+        200,
+      ),
     },
   };
 }
@@ -172,10 +215,15 @@ export function normalisePath(value: string): string {
 
 export type RedirectIssue = "source" | "target" | "loop";
 
-export function validateRedirect(source: string, target: string): RedirectIssue | null {
+export function validateRedirect(
+  source: string,
+  target: string,
+): RedirectIssue | null {
   const s = normalisePath(source);
   if (!s || s === "/") return "source";
-  const t = /^https?:\/\//i.test(target.trim()) ? target.trim() : normalisePath(target);
+  const t = /^https?:\/\//i.test(target.trim())
+    ? target.trim()
+    : normalisePath(target);
   if (!t) return "target";
   if (t === s) return "loop";
   return null;

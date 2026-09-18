@@ -11,7 +11,8 @@ const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 // Bangladeshi mobiles (+8801XXXXXXXXX / 01XXXXXXXXX) plus generic long digit runs.
 const PHONE_RE = /(?:\+?88)?0?1[3-9]\d{8}\b/g;
 const CARD_RE = /\b(?:\d[ -]?){13,19}\b/g;
-const TOKEN_RE = /\b(?:sb_[A-Za-z0-9_-]{8,}|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_.-]{8,})/g;
+const TOKEN_RE =
+  /\b(?:sb_[A-Za-z0-9_-]{8,}|eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_.-]{8,})/g;
 
 const SENSITIVE_KEYS =
   /^(email|phone|msisdn|mobile|name|full_name|address|address_line|street|customer_name|token|access_token|refresh_token|secret|password|authorization|apikey|api_key|card|pan|cvv)$/i;
@@ -35,10 +36,14 @@ export function scrubPayload(value: unknown, depth = 0): unknown {
   if (value === null || value === undefined) return value;
   if (typeof value === "string") return scrubText(value);
   if (typeof value === "number" || typeof value === "boolean") return value;
-  if (Array.isArray(value)) return value.slice(0, 50).map((v) => scrubPayload(v, depth + 1));
+  if (Array.isArray(value))
+    return value.slice(0, 50).map((v) => scrubPayload(v, depth + 1));
   if (typeof value === "object") {
     const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>).slice(0, 60)) {
+    for (const [k, v] of Object.entries(value as Record<string, unknown>).slice(
+      0,
+      60,
+    )) {
       out[k] = SENSITIVE_KEYS.test(k) ? PII_MASK : scrubPayload(v, depth + 1);
     }
     return out;
@@ -65,8 +70,15 @@ export type DeadLetter = {
 export type DlqSeverity = "fresh" | "aging" | "stale" | "critical";
 
 /** Age-based triage: responders act on the oldest, most retried items first. */
-export function dlqSeverity(receivedAt: string, attempts: number, now = Date.now()): DlqSeverity {
-  const ageMinutes = Math.max(0, (now - new Date(receivedAt).getTime()) / 60000);
+export function dlqSeverity(
+  receivedAt: string,
+  attempts: number,
+  now = Date.now(),
+): DlqSeverity {
+  const ageMinutes = Math.max(
+    0,
+    (now - new Date(receivedAt).getTime()) / 60000,
+  );
   if (ageMinutes > 24 * 60 || attempts >= 5) return "critical";
   if (ageMinutes > 4 * 60) return "stale";
   if (ageMinutes > 30) return "aging";
@@ -74,7 +86,12 @@ export function dlqSeverity(receivedAt: string, attempts: number, now = Date.now
 }
 
 export function dlqSummary(items: DeadLetter[], now = Date.now()) {
-  const bySeverity: Record<DlqSeverity, number> = { fresh: 0, aging: 0, stale: 0, critical: 0 };
+  const bySeverity: Record<DlqSeverity, number> = {
+    fresh: 0,
+    aging: 0,
+    stale: 0,
+    critical: 0,
+  };
   const bySource: Record<string, number> = {};
   let oldest: string | null = null;
   for (const item of items) {
@@ -87,7 +104,12 @@ export function dlqSummary(items: DeadLetter[], now = Date.now()) {
 
 // ------------------------------------------------------------ incidents
 
-export const INCIDENT_STATUSES = ["investigating", "identified", "monitoring", "resolved"] as const;
+export const INCIDENT_STATUSES = [
+  "investigating",
+  "identified",
+  "monitoring",
+  "resolved",
+] as const;
 export type IncidentStatus = (typeof INCIDENT_STATUSES)[number];
 
 const TRANSITIONS: Record<IncidentStatus, IncidentStatus[]> = {
@@ -98,7 +120,10 @@ const TRANSITIONS: Record<IncidentStatus, IncidentStatus[]> = {
 };
 
 /** Forward-only lifecycle; a resolved incident is closed for good. */
-export function canTransition(from: IncidentStatus, to: IncidentStatus): boolean {
+export function canTransition(
+  from: IncidentStatus,
+  to: IncidentStatus,
+): boolean {
   return (TRANSITIONS[from] ?? []).includes(to);
 }
 
@@ -150,7 +175,11 @@ export type RetentionRule = { table: string; days: number; note: string };
 export const RETENTION_POLICY: RetentionRule[] = [
   { table: "auth_events", days: 90, note: "Raw sign-in telemetry" },
   { table: "api_key_events", days: 180, note: "API key usage trail" },
-  { table: "courier_webhook_events", days: 90, note: "Processed courier callbacks" },
+  {
+    table: "courier_webhook_events",
+    days: 90,
+    note: "Processed courier callbacks",
+  },
   { table: "webhook_events", days: 90, note: "Processed gateway callbacks" },
   { table: "activity_log", days: 365, note: "Merchant activity feed" },
 ];
@@ -170,7 +199,9 @@ export type BackupRun = {
  */
 export function backupHealth(runs: BackupRun[], now = Date.now()) {
   const latest = (kind: BackupRun["kind"]) =>
-    runs.filter((r) => r.kind === kind && r.status === "passed").sort((a, b) => (a.startedAt > b.startedAt ? -1 : 1))[0] ?? null;
+    runs
+      .filter((r) => r.kind === kind && r.status === "passed")
+      .sort((a, b) => (a.startedAt > b.startedAt ? -1 : 1))[0] ?? null;
   const backup = latest("backup");
   const drill = latest("restore_drill");
   const hours = (iso: string | undefined) =>

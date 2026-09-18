@@ -25,11 +25,21 @@ export function StatusPill({
   );
 }
 
-export function Money({ minor, className = "" }: { minor: number; className?: string }) {
+export function Money({
+  minor,
+  className = "",
+}: {
+  minor: number;
+  className?: string;
+}) {
   const major = Math.trunc(minor) / 100;
   return (
     <span className={`tabular-nums ${className}`}>
-      ৳ {major.toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      ৳{" "}
+      {major.toLocaleString("en-BD", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
     </span>
   );
 }
@@ -47,7 +57,9 @@ export function Field({
     <label className="block space-y-1 text-sm">
       <span className="font-medium text-foreground">{label}</span>
       {children}
-      {hint && <span className="block text-xs text-muted-foreground">{hint}</span>}
+      {hint && (
+        <span className="block text-xs text-muted-foreground">{hint}</span>
+      )}
     </label>
   );
 }

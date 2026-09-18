@@ -1,18 +1,22 @@
 # Neural Pattern Training
 
 ## Purpose
+
 Continuously improve coordination through neural network learning.
 
 ## How Training Works
 
 ### 1. Automatic Learning
+
 Every successful operation trains the neural networks:
+
 - Edit patterns for different file types
 - Search strategies that find results faster
 - Task decomposition approaches
 - Agent coordination patterns
 
 ### 2. Manual Training
+
 ```
 Tool: mcp__claude-flow__neural_train
 Parameters: {
@@ -25,6 +29,7 @@ Parameters: {
 ### 3. Pattern Types
 
 **Cognitive Patterns:**
+
 - Convergent: Focused problem-solving
 - Divergent: Creative exploration
 - Lateral: Alternative approaches
@@ -33,6 +38,7 @@ Parameters: {
 - Abstract: High-level design
 
 ### 4. Improvement Tracking
+
 ```
 Tool: mcp__claude-flow__neural_status
 Result: {
@@ -47,6 +53,7 @@ Result: {
 ```
 
 ## Pattern Analysis
+
 ```
 Tool: mcp__claude-flow__neural_patterns
 Parameters: {
@@ -56,12 +63,14 @@ Parameters: {
 ```
 
 ## Benefits
+
 - 🧠 Learns your coding style
 - 📈 Improves with each use
 - 🎯 Better task predictions
 - ⚡ Faster coordination
 
 ## CLI Usage
+
 ```bash
 # Train neural patterns via CLI
 npx claude-flow neural train --type coordination --epochs 50

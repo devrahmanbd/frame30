@@ -43,7 +43,9 @@ export const accountOverviewFn = createServerFn({ method: "GET" })
 
 export const accountOrderFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => slugInput.extend({ orderId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    slugInput.extend({ orderId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const store = await guard(data.slug, context.userId);
     const { ownOrderDetail } = await import("./accounts.server");
@@ -80,13 +82,18 @@ export const accountSaveAddressFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const store = await guard(data.slug, context.userId);
     const { saveAddress } = await import("./accounts.server");
-    await saveAddress(context.supabase, store.id, { ...data, addressId: data.addressId ?? null });
+    await saveAddress(context.supabase, store.id, {
+      ...data,
+      addressId: data.addressId ?? null,
+    });
     return { ok: true };
   });
 
 export const accountDeleteAddressFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => slugInput.extend({ addressId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    slugInput.extend({ addressId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const store = await guard(data.slug, context.userId);
     const { deleteAddress } = await import("./accounts.server");
@@ -98,13 +105,23 @@ export const accountToggleWishlistFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     slugInput
-      .extend({ variantId: z.string().uuid(), stockAlert: z.boolean().default(false) })
+      .extend({
+        variantId: z.string().uuid(),
+        stockAlert: z.boolean().default(false),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const store = await guard(data.slug, context.userId);
     const { toggleWishlist } = await import("./accounts.server");
-    return { saved: await toggleWishlist(context.supabase, store.id, data.variantId, data.stockAlert) };
+    return {
+      saved: await toggleWishlist(
+        context.supabase,
+        store.id,
+        data.variantId,
+        data.stockAlert,
+      ),
+    };
   });
 
 export const accountSetConsentFn = createServerFn({ method: "POST" })
@@ -121,6 +138,12 @@ export const accountSetConsentFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const store = await guard(data.slug, context.userId);
     const { setConsent } = await import("./accounts.server");
-    await setConsent(context.supabase, store.id, data.channel, data.purpose, data.granted);
+    await setConsent(
+      context.supabase,
+      store.id,
+      data.channel,
+      data.purpose,
+      data.granted,
+    );
     return { ok: true };
   });

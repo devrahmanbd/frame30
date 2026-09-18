@@ -7,10 +7,21 @@
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
-import { defaultVariant, variantAxes, reviewStats } from "@/components/builder/pdp";
-import { clampRating, histogramPercents } from "@/components/builder/primitives/Stars";
+import {
+  defaultVariant,
+  variantAxes,
+  reviewStats,
+} from "@/components/builder/pdp";
+import {
+  clampRating,
+  histogramPercents,
+} from "@/components/builder/primitives/Stars";
 import { swatchStyle } from "@/components/builder/primitives/SwatchDot";
-import { SECTION_CATALOG, BITEXT_FIELDS, type SectionType } from "./builder-ast";
+import {
+  SECTION_CATALOG,
+  BITEXT_FIELDS,
+  type SectionType,
+} from "./builder-ast";
 import { widgetMeta } from "./widget-registry";
 
 const PDP_TYPES: SectionType[] = [
@@ -69,7 +80,11 @@ describe("option axes", () => {
 
 describe("review aggregation", () => {
   it("averages and buckets ratings", () => {
-    const rows = [row("1", { rating: 5 }), row("2", { rating: 4 }), row("3", { rating: 5 })];
+    const rows = [
+      row("1", { rating: 5 }),
+      row("2", { rating: 4 }),
+      row("3", { rating: 5 }),
+    ];
     const stats = reviewStats(rows);
     expect(stats.total).toBe(3);
     expect(Math.round(stats.average * 100) / 100).toBe(4.67);
@@ -89,9 +104,16 @@ describe("review aggregation", () => {
 describe("swatch safety", () => {
   it("only accepts hex, linear-gradient and image values", () => {
     expect(swatchStyle({ hex: "#ff0000" }).backgroundColor).toBe("#ff0000");
-    expect(swatchStyle({ hex: "red; background:url(x)" }).backgroundColor).toBe("hsl(var(--muted))");
-    expect(swatchStyle({ gradient: "linear-gradient(90deg,#000,#fff)" }).backgroundImage).toContain("linear-gradient");
-    expect(swatchStyle({ gradient: "url(evil)" }).backgroundColor).toBe("hsl(var(--muted))");
+    expect(swatchStyle({ hex: "red; background:url(x)" }).backgroundColor).toBe(
+      "hsl(var(--muted))",
+    );
+    expect(
+      swatchStyle({ gradient: "linear-gradient(90deg,#000,#fff)" })
+        .backgroundImage,
+    ).toContain("linear-gradient");
+    expect(swatchStyle({ gradient: "url(evil)" }).backgroundColor).toBe(
+      "hsl(var(--muted))",
+    );
   });
 });
 
@@ -114,7 +136,10 @@ describe("PDP catalogue wiring", () => {
       review_list: "reviews",
       product_qna: "qna",
     };
-    for (const [type, source] of Object.entries(sources) as [SectionType, string][]) {
+    for (const [type, source] of Object.entries(sources) as [
+      SectionType,
+      string,
+    ][]) {
       expect(widgetMeta(type)!.data?.source, `${type} source`).toBe(source);
     }
   });

@@ -52,14 +52,14 @@ benchmark → optimize → receipt → handoff → separately authorized publish
 
 ### Key Packages
 
-| Package | Path | Purpose |
-|---------|------|---------|
-| `@claude-flow/cli` | `v3/@claude-flow/cli/` | CLI entry point (26 commands) |
-| `@claude-flow/codex` | `v3/@claude-flow/codex/` | Dual-mode Claude + Codex collaboration |
-| `@claude-flow/guidance` | `v3/@claude-flow/guidance/` | Governance control plane |
-| `@claude-flow/hooks` | `v3/@claude-flow/hooks/` | 17 hooks + 12 workers |
-| `@claude-flow/memory` | `v3/@claude-flow/memory/` | AgentDB + HNSW search |
-| `@claude-flow/security` | `v3/@claude-flow/security/` | Input validation, CVE remediation |
+| Package                 | Path                        | Purpose                                |
+| ----------------------- | --------------------------- | -------------------------------------- |
+| `@claude-flow/cli`      | `v3/@claude-flow/cli/`      | CLI entry point (26 commands)          |
+| `@claude-flow/codex`    | `v3/@claude-flow/codex/`    | Dual-mode Claude + Codex collaboration |
+| `@claude-flow/guidance` | `v3/@claude-flow/guidance/` | Governance control plane               |
+| `@claude-flow/hooks`    | `v3/@claude-flow/hooks/`    | 17 hooks + 12 workers                  |
+| `@claude-flow/memory`   | `v3/@claude-flow/memory/`   | AgentDB + HNSW search                  |
+| `@claude-flow/security` | `v3/@claude-flow/security/` | Input validation, CVE remediation      |
 
 ## Concurrent Automated Development
 
@@ -94,11 +94,11 @@ benchmark → optimize → receipt → handoff → separately authorized publish
 
 ### 3-Tier Model Routing (ADR-026, ADR-143)
 
-| Tier | Handler | Latency | Cost | Use Cases |
-|------|---------|---------|------|-----------|
-| **1** | Deterministic codemod | ~1ms | $0 | Structural transforms with **no LLM**: `var-to-const`, `remove-console`, `add-logging` |
-| **2** | Haiku | ~500ms | $0.0002 | Simple tasks, low complexity (<30%) |
-| **3** | Sonnet/Opus | 2-5s | $0.003-0.015 | Complex reasoning, architecture, security (>30%) |
+| Tier  | Handler               | Latency | Cost         | Use Cases                                                                              |
+| ----- | --------------------- | ------- | ------------ | -------------------------------------------------------------------------------------- |
+| **1** | Deterministic codemod | ~1ms    | $0           | Structural transforms with **no LLM**: `var-to-const`, `remove-console`, `add-logging` |
+| **2** | Haiku                 | ~500ms  | $0.0002      | Simple tasks, low complexity (<30%)                                                    |
+| **3** | Sonnet/Opus           | 2-5s    | $0.003-0.015 | Complex reasoning, architecture, security (>30%)                                       |
 
 - Always check for `[CODEMOD_AVAILABLE]` or `[TASK_MODEL_RECOMMENDATION]` before spawning agents
 - When you see `[CODEMOD_AVAILABLE]`, call the `hooks_codemod` MCP tool (intent + file) — it applies the transform deterministically via the TypeScript compiler at $0, no LLM. Deterministic intents only: `var-to-const`, `remove-console`, `add-logging`
@@ -118,11 +118,12 @@ benchmark → optimize → receipt → handoff → separately authorized publish
 - Keep task cycles short with verification gates
 
 ```javascript
-mcp__ruv-swarm__swarm_init({
-  topology: "hierarchical",
-  maxAgents: 8,
-  strategy: "specialized"
-})
+mcp__ruv -
+  swarm__swarm_init({
+    topology: "hierarchical",
+    maxAgents: 8,
+    strategy: "specialized",
+  });
 ```
 
 ## Dual-Mode Collaboration (Claude Code + Codex)
@@ -131,12 +132,12 @@ This repository uses **dual-mode orchestration** to run Claude Code (🔵) and O
 
 ### Why Dual-Mode?
 
-| Single Platform | Dual-Mode Collaboration |
-|----------------|------------------------|
-| One model's perspective | Two AI platforms cross-validating |
-| Limited reasoning styles | Complementary strengths |
-| No external verification | Built-in code review |
-| Sequential workflows | Parallel execution |
+| Single Platform          | Dual-Mode Collaboration           |
+| ------------------------ | --------------------------------- |
+| One model's perspective  | Two AI platforms cross-validating |
+| Limited reasoning styles | Complementary strengths           |
+| No external verification | Built-in code review              |
+| Sequential workflows     | Parallel execution                |
 
 ### Dual-Mode Swarm Protocol
 
@@ -144,35 +145,54 @@ For complex tasks, spawn both Claude and Codex workers in parallel:
 
 ```javascript
 // STEP 1: Initialize dual-mode swarm
-mcp__ruv-swarm__swarm_init({
-  topology: "hierarchical",
-  maxAgents: 8,
-  strategy: "specialized"
-})
+mcp__ruv -
+  swarm__swarm_init({
+    topology: "hierarchical",
+    maxAgents: 8,
+    strategy: "specialized",
+  });
 
 // STEP 2: Spawn BOTH platforms in parallel via Task tool
 // 🔵 Claude Code workers (architecture, security, testing)
-Task("Architect", "Design the implementation. Store design in memory namespace 'collaboration'.", "system-architect")
-Task("Tester", "Write tests based on architect's design. Read from 'collaboration' namespace.", "tester")
-Task("Reviewer", "Review code quality and security. Store findings in 'collaboration'.", "reviewer")
+Task(
+  "Architect",
+  "Design the implementation. Store design in memory namespace 'collaboration'.",
+  "system-architect",
+);
+Task(
+  "Tester",
+  "Write tests based on architect's design. Read from 'collaboration' namespace.",
+  "tester",
+);
+Task(
+  "Reviewer",
+  "Review code quality and security. Store findings in 'collaboration'.",
+  "reviewer",
+);
 
 // 🟢 Codex workers (implementation, optimization)
 // Spawn via CLI for Codex platform
-Bash("npx claude-flow-codex dual run --worker 'codex:coder:Implement the solution based on architect design' --namespace collaboration")
-Bash("npx claude-flow-codex dual run --worker 'codex:optimizer:Optimize performance based on implementation' --namespace collaboration")
+Bash(
+  "npx claude-flow-codex dual run --worker 'codex:coder:Implement the solution based on architect design' --namespace collaboration",
+);
+Bash(
+  "npx claude-flow-codex dual run --worker 'codex:optimizer:Optimize performance based on implementation' --namespace collaboration",
+);
 
 // STEP 3: Coordinate via shared memory
-Bash("npx claude-flow@v3alpha memory store --namespace collaboration --key 'task-context' --value '[task description]'")
+Bash(
+  "npx claude-flow@v3alpha memory store --namespace collaboration --key 'task-context' --value '[task description]'",
+);
 ```
 
 ### Collaboration Templates (Pre-Built Pipelines)
 
-| Template | Workers | Pipeline |
-|----------|---------|----------|
-| `feature` | 🔵 Architect → 🟢 Coder → 🔵 Tester → 🟢 Reviewer | Full feature development |
-| `security` | 🔵 Analyst → 🟢 Scanner → 🔵 Reporter | Security audit workflow |
-| `refactor` | 🔵 Architect → 🟢 Refactorer → 🔵 Tester | Code modernization |
-| `bugfix` | 🔵 Researcher → 🟢 Coder → 🔵 Tester | Bug investigation & fix |
+| Template   | Workers                                           | Pipeline                 |
+| ---------- | ------------------------------------------------- | ------------------------ |
+| `feature`  | 🔵 Architect → 🟢 Coder → 🔵 Tester → 🟢 Reviewer | Full feature development |
+| `security` | 🔵 Analyst → 🟢 Scanner → 🔵 Reporter             | Security audit workflow  |
+| `refactor` | 🔵 Architect → 🟢 Refactorer → 🔵 Tester          | Code modernization       |
+| `bugfix`   | 🔵 Researcher → 🟢 Coder → 🔵 Tester              | Bug investigation & fix  |
 
 ### Dual-Mode CLI Commands
 
@@ -240,33 +260,39 @@ Level 3: [🟢 Optimizer]           # Depends on Reviewer approval
 
 ### Platform Strengths
 
-| Task Type | Preferred Platform | Reason |
-|-----------|-------------------|--------|
-| Architecture & Design | 🔵 Claude | Strong reasoning, system thinking |
-| Implementation | 🟢 Codex | Fast code generation |
-| Security Review | 🔵 Claude | Careful analysis, threat modeling |
-| Performance Optimization | 🟢 Codex | Code-level optimizations |
-| Testing Strategy | 🔵 Claude | Coverage analysis, edge cases |
-| Refactoring | 🟢 Codex | Bulk code transformations |
+| Task Type                | Preferred Platform | Reason                            |
+| ------------------------ | ------------------ | --------------------------------- |
+| Architecture & Design    | 🔵 Claude          | Strong reasoning, system thinking |
+| Implementation           | 🟢 Codex           | Fast code generation              |
+| Security Review          | 🔵 Claude          | Careful analysis, threat modeling |
+| Performance Optimization | 🟢 Codex           | Code-level optimizations          |
+| Testing Strategy         | 🔵 Claude          | Coverage analysis, edge cases     |
+| Refactoring              | 🟢 Codex           | Bulk code transformations         |
 
 ### Programmatic API
 
 ```typescript
-import { DualModeOrchestrator, CollaborationTemplates } from '@claude-flow/codex';
+import {
+  DualModeOrchestrator,
+  CollaborationTemplates,
+} from "@claude-flow/codex";
 
 const orchestrator = new DualModeOrchestrator({
-  namespace: 'my-feature',
-  memoryBackend: 'hybrid'
+  namespace: "my-feature",
+  memoryBackend: "hybrid",
 });
 
 // Use pre-built template
-const workers = CollaborationTemplates.featureDevelopment('Add OAuth login');
+const workers = CollaborationTemplates.featureDevelopment("Add OAuth login");
 
 // Run collaboration
-const results = await orchestrator.runCollaboration(workers, 'Implement OAuth feature');
+const results = await orchestrator.runCollaboration(
+  workers,
+  "Implement OAuth feature",
+);
 
 // Access shared memory
-const designDocs = await orchestrator.getMemory('design-decisions');
+const designDocs = await orchestrator.getMemory("design-decisions");
 ```
 
 ---
@@ -279,46 +305,84 @@ When the user requests a complex task (multi-file changes, feature implementatio
 
 ```javascript
 // STEP 1: Initialize swarm coordination via MCP
-mcp__ruv-swarm__swarm_init({
-  topology: "hierarchical",
-  maxAgents: 8,
-  strategy: "specialized"
-})
+mcp__ruv -
+  swarm__swarm_init({
+    topology: "hierarchical",
+    maxAgents: 8,
+    strategy: "specialized",
+  });
 
 // STEP 2: Spawn NAMED agents concurrently — all in ONE message
 // Each agent knows WHO to message next in the pipeline
 Task({
-  prompt: "Research requirements and codebase. SendMessage findings to 'architect' when done.",
-  subagent_type: "researcher", name: "researcher", run_in_background: true
-})
+  prompt:
+    "Research requirements and codebase. SendMessage findings to 'architect' when done.",
+  subagent_type: "researcher",
+  name: "researcher",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for research from 'researcher'. Design implementation. SendMessage design to 'coder'.",
-  subagent_type: "system-architect", name: "architect", run_in_background: true
-})
+  prompt:
+    "Wait for research from 'researcher'. Design implementation. SendMessage design to 'coder'.",
+  subagent_type: "system-architect",
+  name: "architect",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for design from 'architect'. Implement the solution. SendMessage code paths to 'tester'.",
-  subagent_type: "coder", name: "coder", run_in_background: true
-})
+  prompt:
+    "Wait for design from 'architect'. Implement the solution. SendMessage code paths to 'tester'.",
+  subagent_type: "coder",
+  name: "coder",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for implementation from 'coder'. Write tests. SendMessage results to 'reviewer'.",
-  subagent_type: "tester", name: "tester", run_in_background: true
-})
+  prompt:
+    "Wait for implementation from 'coder'. Write tests. SendMessage results to 'reviewer'.",
+  subagent_type: "tester",
+  name: "tester",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for test results from 'tester'. Review code quality and security. Report findings.",
-  subagent_type: "reviewer", name: "reviewer", run_in_background: true
-})
+  prompt:
+    "Wait for test results from 'tester'. Review code quality and security. Report findings.",
+  subagent_type: "reviewer",
+  name: "reviewer",
+  run_in_background: true,
+});
 
 // STEP 3: Kick off the pipeline
-SendMessage({ to: "researcher", summary: "Start research", message: "[task description and context]" })
+SendMessage({
+  to: "researcher",
+  summary: "Start research",
+  message: "[task description and context]",
+});
 
 // STEP 4: Batch todos
-TodoWrite({ todos: [
-  {content: "Research and analyze requirements", status: "in_progress", activeForm: "Researching"},
-  {content: "Design architecture", status: "pending", activeForm: "Designing"},
-  {content: "Implement solution", status: "pending", activeForm: "Implementing"},
-  {content: "Write tests", status: "pending", activeForm: "Testing"},
-  {content: "Review and finalize", status: "pending", activeForm: "Reviewing"}
-]})
+TodoWrite({
+  todos: [
+    {
+      content: "Research and analyze requirements",
+      status: "in_progress",
+      activeForm: "Researching",
+    },
+    {
+      content: "Design architecture",
+      status: "pending",
+      activeForm: "Designing",
+    },
+    {
+      content: "Implement solution",
+      status: "pending",
+      activeForm: "Implementing",
+    },
+    { content: "Write tests", status: "pending", activeForm: "Testing" },
+    {
+      content: "Review and finalize",
+      status: "pending",
+      activeForm: "Reviewing",
+    },
+  ],
+});
 
 // Pipeline flow via SendMessage:
 // researcher ──→ architect ──→ coder ──→ tester ──→ reviewer
@@ -326,21 +390,22 @@ TodoWrite({ todos: [
 
 ### Agent Routing (Anti-Drift)
 
-| Code | Task | Agents |
-|------|------|--------|
-| 1 | Bug Fix | coordinator, researcher, coder, tester |
-| 3 | Feature | coordinator, architect, coder, tester, reviewer |
-| 5 | Refactor | coordinator, architect, coder, reviewer |
-| 7 | Performance | coordinator, perf-engineer, coder |
-| 9 | Security | coordinator, security-architect, auditor |
-| 11 | Memory | coordinator, memory-specialist, perf-engineer |
-| 13 | Docs | researcher, api-docs |
+| Code | Task        | Agents                                          |
+| ---- | ----------- | ----------------------------------------------- |
+| 1    | Bug Fix     | coordinator, researcher, coder, tester          |
+| 3    | Feature     | coordinator, architect, coder, tester, reviewer |
+| 5    | Refactor    | coordinator, architect, coder, reviewer         |
+| 7    | Performance | coordinator, perf-engineer, coder               |
+| 9    | Security    | coordinator, security-architect, auditor        |
+| 11   | Memory      | coordinator, memory-specialist, perf-engineer   |
+| 13   | Docs        | researcher, api-docs                            |
 
 **Codes 1-11: hierarchical/specialized (anti-drift). Code 13: mesh/balanced**
 
 ### Task Complexity Detection
 
 **AUTO-INVOKE SWARM when task involves:**
+
 - Multiple files (3+)
 - New feature implementation
 - Refactoring across modules
@@ -350,6 +415,7 @@ TodoWrite({ todos: [
 - Database schema changes
 
 **SKIP SWARM for:**
+
 - Single file edits
 - Simple bug fixes (1-2 lines)
 - Documentation updates
@@ -359,6 +425,7 @@ TodoWrite({ todos: [
 ## Project Configuration
 
 This project is configured with Claude Flow V3 (Anti-Drift Defaults):
+
 - **Topology**: hierarchical (prevents drift via central coordination)
 - **Max Agents**: 8 (smaller team = less drift)
 - **Strategy**: specialized (clear roles, no overlap)
@@ -371,39 +438,39 @@ This project is configured with Claude Flow V3 (Anti-Drift Defaults):
 
 ### Core Commands
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `init` | 4 | Project initialization with wizard, presets, skills, hooks |
-| `agent` | 8 | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs) |
-| `swarm` | 6 | Multi-agent swarm coordination and orchestration |
-| `memory` | 11 | AgentDB memory with HNSW vector search (measured ~1.9x–4.7x vs brute force above crossover) |
-| `mcp` | 9 | MCP server management and tool execution |
-| `task` | 6 | Task creation, assignment, and lifecycle |
-| `session` | 7 | Session state management and persistence |
-| `config` | 7 | Configuration management and provider setup |
-| `status` | 3 | System status monitoring with watch mode |
-| `start` | 3 | Service startup and quick launch |
-| `workflow` | 6 | Workflow execution and template management |
-| `hooks` | 17 | Self-learning hooks + 12 background workers |
-| `hive-mind` | 6 | Queen-led Byzantine fault-tolerant consensus |
+| Command     | Subcommands | Description                                                                                 |
+| ----------- | ----------- | ------------------------------------------------------------------------------------------- |
+| `init`      | 4           | Project initialization with wizard, presets, skills, hooks                                  |
+| `agent`     | 8           | Agent lifecycle (spawn, list, status, stop, metrics, pool, health, logs)                    |
+| `swarm`     | 6           | Multi-agent swarm coordination and orchestration                                            |
+| `memory`    | 11          | AgentDB memory with HNSW vector search (measured ~1.9x–4.7x vs brute force above crossover) |
+| `mcp`       | 9           | MCP server management and tool execution                                                    |
+| `task`      | 6           | Task creation, assignment, and lifecycle                                                    |
+| `session`   | 7           | Session state management and persistence                                                    |
+| `config`    | 7           | Configuration management and provider setup                                                 |
+| `status`    | 3           | System status monitoring with watch mode                                                    |
+| `start`     | 3           | Service startup and quick launch                                                            |
+| `workflow`  | 6           | Workflow execution and template management                                                  |
+| `hooks`     | 17          | Self-learning hooks + 12 background workers                                                 |
+| `hive-mind` | 6           | Queen-led Byzantine fault-tolerant consensus                                                |
 
 ### Advanced Commands
 
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `daemon` | 5 | Background worker daemon (start, stop, status, trigger, enable) |
-| `neural` | 5 | Neural pattern training (train, status, patterns, predict, optimize) |
-| `security` | 6 | Security scanning (scan, audit, cve, threats, validate, report) |
-| `performance` | 5 | Performance profiling (benchmark, profile, metrics, optimize, report) |
-| `providers` | 5 | AI providers (list, add, remove, test, configure) |
-| `plugins` | 5 | Plugin management (list, install, uninstall, enable, disable) |
-| `deployment` | 5 | Deployment management (deploy, rollback, status, environments, release) |
-| `embeddings` | 4 | Vector embeddings (embed, batch, search, init) — agentic-flow ONNX backend (speedup unverified, no benchmark) |
-| `claims` | 4 | Claims-based authorization (check, grant, revoke, list) |
-| `migrate` | 5 | V2 to V3 migration with rollback support |
-| `process` | 4 | Background process management |
-| `doctor` | 1 | System diagnostics with health checks |
-| `completions` | 4 | Shell completions (bash, zsh, fish, powershell) |
+| Command       | Subcommands | Description                                                                                                   |
+| ------------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `daemon`      | 5           | Background worker daemon (start, stop, status, trigger, enable)                                               |
+| `neural`      | 5           | Neural pattern training (train, status, patterns, predict, optimize)                                          |
+| `security`    | 6           | Security scanning (scan, audit, cve, threats, validate, report)                                               |
+| `performance` | 5           | Performance profiling (benchmark, profile, metrics, optimize, report)                                         |
+| `providers`   | 5           | AI providers (list, add, remove, test, configure)                                                             |
+| `plugins`     | 5           | Plugin management (list, install, uninstall, enable, disable)                                                 |
+| `deployment`  | 5           | Deployment management (deploy, rollback, status, environments, release)                                       |
+| `embeddings`  | 4           | Vector embeddings (embed, batch, search, init) — agentic-flow ONNX backend (speedup unverified, no benchmark) |
+| `claims`      | 4           | Claims-based authorization (check, grant, revoke, list)                                                       |
+| `migrate`     | 5           | V2 to V3 migration with rollback support                                                                      |
+| `process`     | 4           | Background process management                                                                                 |
+| `doctor`      | 1           | System diagnostics with health checks                                                                         |
+| `completions` | 4           | Shell completions (bash, zsh, fish, powershell)                                                               |
 
 ### Quick CLI Examples
 
@@ -492,30 +559,34 @@ claude -p --resume "abc-123" --fork-session "Try approach B: CQRS pattern"
 
 ### Key Flags
 
-| Flag | Purpose |
-|------|---------|
-| `-p, --print` | Non-interactive mode, print and exit |
-| `--model <model>` | Select model (haiku, sonnet, opus) |
-| `--output-format <fmt>` | Output: text, json, stream-json |
-| `--max-budget-usd <amt>` | Spending cap per invocation |
-| `--allowedTools <tools>` | Restrict available tools |
-| `--append-system-prompt` | Add custom instructions |
-| `--resume <id>` | Continue a previous session |
-| `--fork-session` | Branch from resumed session |
-| `--fallback-model <model>` | Auto-fallback if primary overloaded |
+| Flag                       | Purpose                                    |
+| -------------------------- | ------------------------------------------ |
+| `-p, --print`              | Non-interactive mode, print and exit       |
+| `--model <model>`          | Select model (haiku, sonnet, opus)         |
+| `--output-format <fmt>`    | Output: text, json, stream-json            |
+| `--max-budget-usd <amt>`   | Spending cap per invocation                |
+| `--allowedTools <tools>`   | Restrict available tools                   |
+| `--append-system-prompt`   | Add custom instructions                    |
+| `--resume <id>`            | Continue a previous session                |
+| `--fork-session`           | Branch from resumed session                |
+| `--fallback-model <model>` | Auto-fallback if primary overloaded        |
 | `--permission-mode <mode>` | acceptEdits, bypassPermissions, plan, etc. |
-| `--mcp-config <json>` | Load MCP servers from JSON |
+| `--mcp-config <json>`      | Load MCP servers from JSON                 |
 
 ## Available Agents (60+ Types)
 
 ### Core Development
+
 `coder`, `reviewer`, `tester`, `planner`, `researcher`
 
 ### V3 Specialized Agents
+
 `security-architect`, `security-auditor`, `memory-specialist`, `performance-engineer`
 
 ### @claude-flow/security Module
+
 CVE remediation, input validation, path security:
+
 - `InputValidator` — Zod-based validation at boundaries
 - `PathValidator` — Path traversal prevention
 - `SafeExecutor` — Command injection protection
@@ -523,7 +594,9 @@ CVE remediation, input validation, path security:
 - `TokenGenerator` — Secure token generation
 
 ### Token Optimizer (Agent Booster)
+
 Integrates agentic-flow optimizations for 30-50% token reduction:
+
 ```typescript
 import { getTokenOptimizer } from '@claude-flow/integration';
 const optimizer = await getTokenOptimizer();
@@ -537,32 +610,40 @@ await optimizer.optimizedEdit(file, old, new, "typescript");
 // Optimal config (100% success rate)
 const config = optimizer.getOptimalConfig(agentCount);
 ```
-| Feature | Token Savings |
-|---------|---------------|
-| ReasoningBank retrieval | -32% |
-| Agent Booster edits | -15% |
-| Cache (95% hit rate) | -10% |
-| Optimal batch size | -20% |
+
+| Feature                 | Token Savings |
+| ----------------------- | ------------- |
+| ReasoningBank retrieval | -32%          |
+| Agent Booster edits     | -15%          |
+| Cache (95% hit rate)    | -10%          |
+| Optimal batch size      | -20%          |
 
 ### Swarm Coordination
+
 `hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
 
 ### Consensus & Distributed
+
 `byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
 
 ### Performance & Optimization
+
 `perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
 
 ### GitHub & Repository
+
 `github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
 
 ### SPARC Methodology
+
 `sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
 
 ### Specialized Development
+
 `backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
 
 ### Testing & Validation
+
 `tdd-london-swarm`, `production-validator`
 
 ## Agent Teams & Comms System
@@ -587,70 +668,93 @@ Every agent MUST have a `name` so it's addressable. Communication happens via `S
 ```javascript
 // STEP 1: Spawn named agents (all in ONE message, background)
 Task({
-  prompt: "Design the API. When done, send your design to 'developer' via SendMessage.",
+  prompt:
+    "Design the API. When done, send your design to 'developer' via SendMessage.",
   subagent_type: "system-architect",
   name: "architect",
-  run_in_background: true
-})
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for architect's design via SendMessage. Then implement it. Send code to 'tester'.",
+  prompt:
+    "Wait for architect's design via SendMessage. Then implement it. Send code to 'tester'.",
   subagent_type: "coder",
   name: "developer",
-  run_in_background: true
-})
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for developer's code via SendMessage. Write tests. Send results to 'reviewer'.",
+  prompt:
+    "Wait for developer's code via SendMessage. Write tests. Send results to 'reviewer'.",
   subagent_type: "tester",
   name: "tester",
-  run_in_background: true
-})
+  run_in_background: true,
+});
 
 // STEP 2: Kick off the pipeline by messaging the first agent
 SendMessage({
   to: "architect",
   summary: "Start API design",
-  message: "Design a REST API for user management with CRUD endpoints. Send the design to 'developer' when done."
-})
+  message:
+    "Design a REST API for user management with CRUD endpoints. Send the design to 'developer' when done.",
+});
 ```
 
 ### SendMessage Protocol
 
 ```javascript
 // Lead → Teammate: assign work
-SendMessage({ to: "developer", summary: "Implement auth", message: "Build OAuth2 flow..." })
+SendMessage({
+  to: "developer",
+  summary: "Implement auth",
+  message: "Build OAuth2 flow...",
+});
 
 // Lead → Teammate: redirect priorities
-SendMessage({ to: "developer", summary: "Prioritize auth", message: "Auth endpoint is blocking tester, do it first." })
+SendMessage({
+  to: "developer",
+  summary: "Prioritize auth",
+  message: "Auth endpoint is blocking tester, do it first.",
+});
 
 // Lead → Teammate: provide context from another agent's results
-SendMessage({ to: "tester", summary: "Architect output", message: "The architect designed these endpoints: [details]. Write tests for them." })
+SendMessage({
+  to: "tester",
+  summary: "Architect output",
+  message:
+    "The architect designed these endpoints: [details]. Write tests for them.",
+});
 
 // Lead → Teammate: graceful shutdown
-SendMessage({ to: "developer", message: { type: "shutdown_request" } })
+SendMessage({ to: "developer", message: { type: "shutdown_request" } });
 ```
 
 ### Coordination Patterns
 
 **Pipeline (A → B → C)** — each agent messages the next when done:
+
 ```
 architect ──SendMessage──→ developer ──SendMessage──→ tester ──SendMessage──→ reviewer
 ```
+
 Tell each agent WHO to message next in their prompt.
 
 **Fan-out / Fan-in** — lead spawns parallel agents, collects results:
+
 ```
          ┌→ researcher-1 ──→┐
 lead ────┼→ researcher-2 ──→├──→ lead synthesizes
          └→ researcher-3 ──→┘
 ```
+
 Spawn with `run_in_background: true`. Results arrive as task completions.
 
 **Supervisor / Worker** — lead assigns, workers report back:
+
 ```
 lead ←──SendMessage──→ worker-1
 lead ←──SendMessage──→ worker-2
 lead ←──SendMessage──→ worker-3
 ```
+
 Lead sends tasks via SendMessage, workers respond with results.
 
 ### Agent Prompt Template (Comms-Aware)
@@ -671,44 +775,72 @@ COMMS PROTOCOL:
 DELIVERABLE: Schema design with entity relationships, indexes, and migration plan.`,
   subagent_type: "system-architect",
   name: "architect",
-  run_in_background: true
-})
+  run_in_background: true,
+});
 ```
 
 ### Full Team Spawn Example
 
 ```javascript
 // Create shared task list first
-TaskCreate({ subject: "Design schema", description: "...", activeForm: "Designing" })
-TaskCreate({ subject: "Implement models", description: "...", activeForm: "Implementing" })
-TaskCreate({ subject: "Write tests", description: "...", activeForm: "Testing" })
-TaskCreate({ subject: "Security review", description: "...", activeForm: "Reviewing" })
+TaskCreate({
+  subject: "Design schema",
+  description: "...",
+  activeForm: "Designing",
+});
+TaskCreate({
+  subject: "Implement models",
+  description: "...",
+  activeForm: "Implementing",
+});
+TaskCreate({
+  subject: "Write tests",
+  description: "...",
+  activeForm: "Testing",
+});
+TaskCreate({
+  subject: "Security review",
+  description: "...",
+  activeForm: "Reviewing",
+});
 
 // Spawn ALL named agents in ONE message
 Task({
-  prompt: "Design the schema. SendMessage to 'developer' with your design when done. Update task #1.",
-  subagent_type: "system-architect", name: "architect", run_in_background: true
-})
+  prompt:
+    "Design the schema. SendMessage to 'developer' with your design when done. Update task #1.",
+  subagent_type: "system-architect",
+  name: "architect",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for schema from 'architect'. Implement models + endpoints. SendMessage to 'tester'. Update task #2.",
-  subagent_type: "coder", name: "developer", run_in_background: true
-})
+  prompt:
+    "Wait for schema from 'architect'. Implement models + endpoints. SendMessage to 'tester'. Update task #2.",
+  subagent_type: "coder",
+  name: "developer",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for code from 'developer'. Write integration tests. SendMessage results to 'security'. Update task #3.",
-  subagent_type: "tester", name: "tester", run_in_background: true
-})
+  prompt:
+    "Wait for code from 'developer'. Write integration tests. SendMessage results to 'security'. Update task #3.",
+  subagent_type: "tester",
+  name: "tester",
+  run_in_background: true,
+});
 Task({
-  prompt: "Wait for test results from 'tester'. Review for vulnerabilities. Update task #4.",
-  subagent_type: "security-auditor", name: "security", run_in_background: true
-})
+  prompt:
+    "Wait for test results from 'tester'. Review for vulnerabilities. Update task #4.",
+  subagent_type: "security-auditor",
+  name: "security",
+  run_in_background: true,
+});
 ```
 
 ### Agent Teams Hooks
 
-| Hook | Trigger | Purpose |
-|------|---------|---------|
-| `TeammateIdle` | Teammate finishes turn | Auto-assign pending tasks via SendMessage |
-| `TaskCompleted` | Task marked complete | Train patterns, notify lead via SendMessage |
+| Hook            | Trigger                | Purpose                                     |
+| --------------- | ---------------------- | ------------------------------------------- |
+| `TeammateIdle`  | Teammate finishes turn | Auto-assign pending tasks via SendMessage   |
+| `TaskCompleted` | Task marked complete   | Train patterns, notify lead via SendMessage |
 
 ```bash
 npx claude-flow@v3alpha hooks teammate-idle --auto-assign true
@@ -729,30 +861,30 @@ npx claude-flow@v3alpha hooks task-completed -i task-123 --train-patterns true
 
 ### Hook Categories
 
-| Category | Hooks | Purpose |
-|----------|-------|---------|
-| **Core** | `pre-edit`, `post-edit`, `pre-command`, `post-command`, `pre-task`, `post-task` | Tool lifecycle |
-| **Session** | `session-start`, `session-end`, `session-restore`, `notify` | Context management |
-| **Intelligence** | `route`, `explain`, `pretrain`, `build-agents`, `transfer` | Neural learning |
-| **Learning** | `intelligence` (trajectory-start/step/end, pattern-store/search, stats, attention) | Reinforcement |
-| **Agent Teams** | `teammate-idle`, `task-completed` | Multi-agent coordination |
+| Category         | Hooks                                                                              | Purpose                  |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------------------ |
+| **Core**         | `pre-edit`, `post-edit`, `pre-command`, `post-command`, `pre-task`, `post-task`    | Tool lifecycle           |
+| **Session**      | `session-start`, `session-end`, `session-restore`, `notify`                        | Context management       |
+| **Intelligence** | `route`, `explain`, `pretrain`, `build-agents`, `transfer`                         | Neural learning          |
+| **Learning**     | `intelligence` (trajectory-start/step/end, pattern-store/search, stats, attention) | Reinforcement            |
+| **Agent Teams**  | `teammate-idle`, `task-completed`                                                  | Multi-agent coordination |
 
 ### 12 Background Workers
 
-| Worker | Priority | Description |
-|--------|----------|-------------|
-| `ultralearn` | normal | Deep knowledge acquisition |
-| `optimize` | high | Performance optimization |
-| `consolidate` | low | Memory consolidation |
-| `predict` | normal | Predictive preloading |
-| `audit` | critical | Security analysis |
-| `map` | normal | Codebase mapping |
-| `preload` | low | Resource preloading |
-| `deepdive` | normal | Deep code analysis |
-| `document` | normal | Auto-documentation |
-| `refactor` | normal | Refactoring suggestions |
-| `benchmark` | normal | Performance benchmarking |
-| `testgaps` | normal | Test coverage analysis |
+| Worker        | Priority | Description                |
+| ------------- | -------- | -------------------------- |
+| `ultralearn`  | normal   | Deep knowledge acquisition |
+| `optimize`    | high     | Performance optimization   |
+| `consolidate` | low      | Memory consolidation       |
+| `predict`     | normal   | Predictive preloading      |
+| `audit`       | critical | Security analysis          |
+| `map`         | normal   | Codebase mapping           |
+| `preload`     | low      | Resource preloading        |
+| `deepdive`    | normal   | Deep code analysis         |
+| `document`    | normal   | Auto-documentation         |
+| `refactor`    | normal   | Refactoring suggestions    |
+| `benchmark`   | normal   | Performance benchmarking   |
+| `testgaps`    | normal   | Test coverage analysis     |
 
 ### Essential Hook Commands
 
@@ -784,6 +916,7 @@ npx claude-flow@v3alpha hooks worker status
 ## Intelligence System (RuVector)
 
 V3 includes the RuVector Intelligence System (measured numbers: see [audit](docs/reviews/intelligence-system-audit-2026-05-29.md) + [`scripts/benchmark-intelligence.mjs`](scripts/benchmark-intelligence.mjs)):
+
 - **SONA**: Self-Optimizing Neural Architecture (measured 0.0043ms/adapt, target <0.05ms met)
 - **MoE**: Mixture of Experts for specialized routing (gate converges — confidence 0.13→0.88 after rewards)
 - **HNSW**: measured ~1.9x at N=20k, ~3.2x–4.7x at N=5k vs brute force (recall@10 ~0.99); ANN wins above the crossover, ruvector NAPI backend (WASM not active on test host)
@@ -791,6 +924,7 @@ V3 includes the RuVector Intelligence System (measured numbers: see [audit](docs
 - **Flash Attention**: integration available; speedup dropped from docs pending an in-tree benchmark (was: 2.49x–7.47x, inherited unverified from upstream — removed to avoid a credibility claim we can't reproduce)
 
 The 4-step intelligence pipeline:
+
 1. **RETRIEVE** — Fetch relevant patterns via HNSW
 2. **JUDGE** — Evaluate with verdicts (success/failure)
 3. **DISTILL** — Extract key learnings via LoRA
@@ -799,6 +933,7 @@ The 4-step intelligence pipeline:
 ## Embeddings Package (v3.0.0-alpha.12)
 
 Features:
+
 - **sql.js**: Cross-platform SQLite persistent cache (WASM, no native compilation)
 - **Document chunking**: Configurable overlap and size
 - **Normalization**: L2, L1, min-max, z-score
@@ -809,12 +944,14 @@ Features:
 ## Hive-Mind Consensus
 
 ### Topologies
+
 - `hierarchical` — Queen controls workers directly
 - `mesh` — Fully connected peer network
 - `hierarchical-mesh` — Hybrid (recommended)
 - `adaptive` — Dynamic based on load
 
 ### Consensus Strategies
+
 - `byzantine` — BFT (tolerates f < n/3 faulty)
 - `raft` — Leader-based (tolerates f < n/2)
 - `gossip` — Epidemic for eventual consistency
@@ -825,16 +962,16 @@ Features:
 
 > Source of truth: [`docs/reviews/intelligence-system-audit-2026-05-29.md`](docs/reviews/intelligence-system-audit-2026-05-29.md) + [`scripts/benchmark-intelligence.mjs`](scripts/benchmark-intelligence.mjs). Numbers below are measured unless marked "target/unverified".
 
-| Metric | Measured / Target | Status |
-|--------|-------------------|--------|
-| HNSW Search | ~1.9x at N=20k, ~3.2x–4.7x at N=5k vs brute force (recall@10 ~0.99); ties/loses below crossover | **Measured** (ruvector NAPI; 150x-12,500x NOT reproduced — was brute-force fallback) |
-| Int8 Quantization | 3.84x compression, reconstruction cosine 0.99999 | **Measured** |
-| RaBitQ Quantization | 32x compression, 0.60ms/query (14,760-vec index) | **Measured** |
-| SONA Adaptation | 0.0043ms/adapt (target <0.05ms met) | **Measured** |
-| MoE Gate | converges — confidence 0.13→0.88, Q 0→99.8 after rewards | **Measured** |
-| Flash Attention | integration available; measured speedup pending benchmark | **Not measured** — prior "2.49x–7.47x" figure was inherited from upstream marketing, never reproduced in-tree; dropped to avoid a credibility claim we can't verify |
-| MCP Response | <100ms | target |
-| CLI Startup | <500ms | target |
+| Metric              | Measured / Target                                                                               | Status                                                                                                                                                              |
+| ------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HNSW Search         | ~1.9x at N=20k, ~3.2x–4.7x at N=5k vs brute force (recall@10 ~0.99); ties/loses below crossover | **Measured** (ruvector NAPI; 150x-12,500x NOT reproduced — was brute-force fallback)                                                                                |
+| Int8 Quantization   | 3.84x compression, reconstruction cosine 0.99999                                                | **Measured**                                                                                                                                                        |
+| RaBitQ Quantization | 32x compression, 0.60ms/query (14,760-vec index)                                                | **Measured**                                                                                                                                                        |
+| SONA Adaptation     | 0.0043ms/adapt (target <0.05ms met)                                                             | **Measured**                                                                                                                                                        |
+| MoE Gate            | converges — confidence 0.13→0.88, Q 0→99.8 after rewards                                        | **Measured**                                                                                                                                                        |
+| Flash Attention     | integration available; measured speedup pending benchmark                                       | **Not measured** — prior "2.49x–7.47x" figure was inherited from upstream marketing, never reproduced in-tree; dropped to avoid a credibility claim we can't verify |
+| MCP Response        | <100ms                                                                                          | target                                                                                                                                                              |
+| CLI Startup         | <500ms                                                                                          | target                                                                                                                                                              |
 
 ## Environment Variables
 
@@ -861,6 +998,7 @@ CLAUDE_FLOW_MEMORY_PATH=./data/memory
 ## Doctor Health Checks
 
 Run `npx claude-flow@v3alpha doctor` to check:
+
 - Node.js version (20+)
 - npm version (9+)
 - Git installation
@@ -890,6 +1028,7 @@ npx claude-flow@v3alpha doctor --fix
 ## Claude Code vs MCP Tools
 
 ### Claude Code Handles ALL EXECUTION:
+
 - **Task tool**: Spawn and run agents concurrently
 - File operations (Read, Write, Edit, MultiEdit, Glob, Grep)
 - Code generation and programming
@@ -898,6 +1037,7 @@ npx claude-flow@v3alpha doctor --fix
 - Git operations
 
 ### MCP Tools ONLY COORDINATE:
+
 - Swarm initialization (topology setup)
 - Agent type definitions
 - Task orchestration
@@ -913,11 +1053,11 @@ Claude Code's auto-memory (`~/.claude/projects/*/memory/*.md`) is bridged to Age
 
 ### MCP Tools
 
-| Tool | Description |
-|------|-------------|
-| `memory_import_claude` | Import Claude Code memories into AgentDB with 384-dim ONNX embeddings. Use `allProjects: true` to import from ALL projects. |
-| `memory_bridge_status` | Show bridge health — Claude files, AgentDB entries, SONA state, connection status |
-| `memory_search_unified` | Semantic search across ALL namespaces (claude-memories, auto-memory, patterns, tasks, feedback) |
+| Tool                    | Description                                                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `memory_import_claude`  | Import Claude Code memories into AgentDB with 384-dim ONNX embeddings. Use `allProjects: true` to import from ALL projects. |
+| `memory_bridge_status`  | Show bridge health — Claude files, AgentDB entries, SONA state, connection status                                           |
+| `memory_search_unified` | Semantic search across ALL namespaces (claude-memories, auto-memory, patterns, tasks, feedback)                             |
 
 ### Auto-Import on Session Start
 
@@ -944,12 +1084,12 @@ memory_search_unified({ query: "authentication security", limit: 5 })
 
 ### Intelligence Pipeline
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| ONNX Embeddings | Active | all-MiniLM-L6-v2, 384 dimensions |
-| SONA Learning | Active | Pattern matching + trajectory recording |
-| ReasoningBank | Active | Pattern storage with file persistence |
-| AgentDB sql.js | Active | SQLite with vector_indexes table |
+| Component       | Status | Details                                 |
+| --------------- | ------ | --------------------------------------- |
+| ONNX Embeddings | Active | all-MiniLM-L6-v2, 384 dimensions        |
+| SONA Learning   | Active | Pattern matching + trajectory recording |
+| ReasoningBank   | Active | Pattern storage with file persistence   |
+| AgentDB sql.js  | Active | SQLite with vector_indexes table        |
 
 ## Publishing to npm
 
@@ -1022,6 +1162,7 @@ shred -u /tmp/.npmrc-publish 2>/dev/null || rm -f /tmp/.npmrc-publish   # ALWAYS
 account's 2FA method is a WebAuthn security key, not TOTP (no numeric
 `--otp=<code>` exists). This must be driven by the human (an agent cannot
 approve a WebAuthn browser prompt):
+
 1. Human goes to npmjs.com → account 2FA settings → turns OFF "Require
    two-factor authentication for write actions" (narrows to auth-only, not a
    full 2FA disable), then runs `npm login` in their own terminal to refresh
@@ -1030,6 +1171,7 @@ approve a WebAuthn browser prompt):
 3. **`npm dist-tag add` still requires a fresh WebAuthn approval PER CALL**
    regardless of the write-2FA setting — 6 individual browser approvals for a
    3-package release (alpha + v3alpha × 3), not 1. Tell the human up front.
+
 - After every dist-tag call (or if unsure), verify with
   `npm view <pkg> dist-tags --json` — don't trust the CLI's own stdout alone, since
   a WebAuthn prompt that's still pending in the browser produces no terminal
@@ -1059,6 +1201,7 @@ fallback command printed the PEM into captured tool output and a session transcr
 GCP secret v1 was destroyed and a fresh v2 was rotated in (commit 0052b1b06 /
 PR #2673). `sign-helpers.mjs` now selects `gcloud.cmd` on Windows and supports a
 stdin-only fallback. **Rules:**
+
 - NEVER invoke `gcloud secrets versions access` in a way that lets the payload reach
   tool output. Use the built-in `RUFLO_HELPERS_SIGNING_SECRET` path above, or pipe
   directly into the signer:
@@ -1076,11 +1219,12 @@ chain (`cp ../../../README.md ./README.md && rm -rf plugins && mkdir -p plugins 
 is POSIX-shell-only. On Windows, npm runs it via `cmd.exe /d /s /c` which chokes on
 `mkdir -p` (interprets `-p` as a directory name) and `cp -r` (no such command). Two
 workarounds until the script is rewritten in cross-platform Node:
+
 1. Run the prep steps manually in Git Bash, then `npm publish --ignore-scripts`.
 2. Or use a POSIX shell for the whole publish: `SHELL=bash npm publish` — but this
    doesn't always take effect on Windows depending on npm version.
-Option 1 is what worked for v3.29.0. Track proper fix in ruvnet/ruflo issue for
-cross-platform prepublish.
+   Option 1 is what worked for v3.29.0. Track proper fix in ruvnet/ruflo issue for
+   cross-platform prepublish.
 
 **Concurrent-session helper corruption (real, observed, be paranoid):** multiple Claude Code
 sessions can have their own `npm exec @claude-flow/cli@latest mcp start` MCP server running
@@ -1090,14 +1234,14 @@ cached `@latest` (predating the `semver.gte` downgrade-guard in
 `helper-refresh.ts:autoRefreshHelpersIfStale`), it will silently overwrite this repo's
 hand-maintained `.claude/helpers/hook-handler.cjs` / `intelligence.cjs` (root AND package
 copies) — and `helpers.manifest.json` + `.helpers-version` — with its own older bundled
-content, mid-session, with no warning. Observed live 2026-07-13: this happened *twice* in
+content, mid-session, with no warning. Observed live 2026-07-13: this happened _twice_ in
 one publish flow, once right after a manual revert and once right after signing (silently
 invalidating a freshly-signed manifest). **Mitigation:** never trust the on-disk state of
 those files between tool calls — `git diff --stat` them immediately before any `git add`/
 `sign-helpers.mjs`/`npm publish` step, `git checkout HEAD --` revert if dirty, and chain
 revert → sign → verify → add → commit as ONE bash invocation (`&&`-joined) to minimize the
 race window. `npm publish`'s own `prepublishOnly` re-signs fresh at pack time regardless, so
-what matters is the on-disk state at the *exact moment* `npm publish` runs, not before.
+what matters is the on-disk state at the _exact moment_ `npm publish` runs, not before.
 
 ```bash
 # Replace 3.7.1 below with your chosen stable version (patch/minor/major per the rules above)
@@ -1137,17 +1281,17 @@ done
 
 ### All Tags That Must Be Updated
 
-| Package | Tag | Command Users Run |
-|---------|-----|-------------------|
-| `@claude-flow/cli` | `latest` | `npx @claude-flow/cli@latest` |
-| `@claude-flow/cli` | `alpha` | `npx @claude-flow/cli@alpha` (legacy compat) |
+| Package            | Tag       | Command Users Run                              |
+| ------------------ | --------- | ---------------------------------------------- |
+| `@claude-flow/cli` | `latest`  | `npx @claude-flow/cli@latest`                  |
+| `@claude-flow/cli` | `alpha`   | `npx @claude-flow/cli@alpha` (legacy compat)   |
 | `@claude-flow/cli` | `v3alpha` | `npx @claude-flow/cli@v3alpha` (legacy compat) |
-| `claude-flow` | `latest` | `npx claude-flow@latest` |
-| `claude-flow` | `alpha` | `npx claude-flow@alpha` (legacy compat) |
-| `claude-flow` | `v3alpha` | `npx claude-flow@v3alpha` (legacy compat) |
-| `ruflo` | `latest` | `npx ruflo@latest` |
-| `ruflo` | `alpha` | `npx ruflo@alpha` (legacy compat) |
-| `ruflo` | `v3alpha` | `npx ruflo@v3alpha` (legacy compat) |
+| `claude-flow`      | `latest`  | `npx claude-flow@latest`                       |
+| `claude-flow`      | `alpha`   | `npx claude-flow@alpha` (legacy compat)        |
+| `claude-flow`      | `v3alpha` | `npx claude-flow@v3alpha` (legacy compat)      |
+| `ruflo`            | `latest`  | `npx ruflo@latest`                             |
+| `ruflo`            | `alpha`   | `npx ruflo@alpha` (legacy compat)              |
+| `ruflo`            | `v3alpha` | `npx ruflo@v3alpha` (legacy compat)            |
 
 - Never forget the `ruflo` package — it's the thin wrapper users actually run via `npx ruflo`
 - The legacy `alpha` and `v3alpha` tags MUST stay pointed at the latest stable so old install commands keep working
@@ -1170,12 +1314,15 @@ gh release create v3.7.1 --title "v3.7.1 — <one-line headline>" \
 The plugin registry is stored on IPFS via Pinata for decentralized, immutable distribution.
 
 ### Registry Location
+
 - **Current CID**: Stored in `v3/@claude-flow/cli/src/plugins/store/discovery.ts`
 - **Gateway**: `https://gateway.pinata.cloud/ipfs/{CID}`
 - **Format**: JSON with plugin metadata, categories, featured/trending lists
 
 ### Required Environment Variables
+
 Add to `.env` (NEVER commit actual values):
+
 ```bash
 PINATA_API_KEY=your-api-key
 PINATA_API_SECRET=your-api-secret
@@ -1187,11 +1334,13 @@ PINATA_API_JWT=your-jwt-token
 ### Adding a New Plugin to Registry
 
 1. **Fetch current registry**:
+
 ```bash
 curl -s "https://gateway.pinata.cloud/ipfs/$(grep LIVE_REGISTRY_CID v3/@claude-flow/cli/src/plugins/store/discovery.ts | cut -d"'" -f2)" > /tmp/registry.json
 ```
 
 2. **Add plugin entry** to the `plugins` array:
+
 ```json
 {
   "id": "@claude-flow/your-plugin",
@@ -1201,7 +1350,11 @@ curl -s "https://gateway.pinata.cloud/ipfs/$(grep LIVE_REGISTRY_CID v3/@claude-f
   "version": "1.0.0-alpha.1",
   "size": 100000,
   "checksum": "sha256:abc123",
-  "author": {"id": "claude-flow-team", "displayName": "Claude Flow Team", "verified": true},
+  "author": {
+    "id": "claude-flow-team",
+    "displayName": "Claude Flow Team",
+    "verified": true
+  },
   "license": "MIT",
   "categories": ["official"],
   "tags": ["your", "tags"],
@@ -1226,6 +1379,7 @@ curl -s "https://gateway.pinata.cloud/ipfs/$(grep LIVE_REGISTRY_CID v3/@claude-f
    - Update category `pluginCount`
 
 4. **Upload to Pinata** (read credentials from .env):
+
 ```bash
 # Source credentials from .env
 PINATA_JWT=$(grep "^PINATA_API_JWT=" .env | cut -d'=' -f2-)
@@ -1238,19 +1392,22 @@ curl -X POST "https://api.pinata.cloud/pinning/pinJSONToIPFS" \
 ```
 
 5. **Update discovery.ts** with new CID:
+
 ```typescript
-export const LIVE_REGISTRY_CID = 'NEW_CID_FROM_PINATA';
+export const LIVE_REGISTRY_CID = "NEW_CID_FROM_PINATA";
 ```
 
 6. **Also update demo registry** in discovery.ts `demoPluginRegistry` for offline fallback
 
 ### Security Rules
+
 - NEVER hardcode API keys in scripts or source files
 - NEVER commit .env (already in .gitignore)
 - Always source credentials from environment at runtime
 - Always delete temporary scripts after one-time uploads
 
 ### Verification
+
 ```bash
 # Verify new registry is accessible
 curl -s "https://gateway.pinata.cloud/ipfs/{NEW_CID}" | jq '.totalPlugins'
@@ -1263,6 +1420,7 @@ Ruflo integrates with the upstream `metaharness` / `@metaharness/*` ecosystem as
 ### Architectural constraint (load-bearing)
 
 **Ruflo remains operational if every MetaHarness package is removed.** Four rules:
+
 1. **Removable**: `npm ls --without @metaharness/*` must still produce a working CLI
 2. **Optional in package.json**: `@metaharness/*` packages MUST be optional peers, never normal dependencies
 3. **Graceful degradation**: every code path that touches MetaHarness catches `MODULE_NOT_FOUND` and falls back
@@ -1395,38 +1553,38 @@ npx claude-flow@v3alpha plugins disable @claude-flow/plugin-name
 
 ### Core Plugins
 
-| Plugin | Version | Description |
-|--------|---------|-------------|
-| `@claude-flow/embeddings` | 3.0.0-alpha.1 | Vector embeddings with sql.js, HNSW, hyperbolic support |
-| `@claude-flow/security` | 3.0.0-alpha.1 | Input validation, path security, CVE remediation |
-| `@claude-flow/claims` | 3.0.0-alpha.8 | Claims-based authorization (check, grant, revoke, list) |
-| `@claude-flow/neural` | 3.0.0-alpha.7 | Neural pattern training (SONA, MoE, EWC++) |
-| `@claude-flow/plugins` | 3.0.0-alpha.1 | Plugin system core (manager, discovery, store) |
-| `@claude-flow/performance` | 3.0.0-alpha.1 | Performance profiling and benchmarking |
+| Plugin                     | Version       | Description                                             |
+| -------------------------- | ------------- | ------------------------------------------------------- |
+| `@claude-flow/embeddings`  | 3.0.0-alpha.1 | Vector embeddings with sql.js, HNSW, hyperbolic support |
+| `@claude-flow/security`    | 3.0.0-alpha.1 | Input validation, path security, CVE remediation        |
+| `@claude-flow/claims`      | 3.0.0-alpha.8 | Claims-based authorization (check, grant, revoke, list) |
+| `@claude-flow/neural`      | 3.0.0-alpha.7 | Neural pattern training (SONA, MoE, EWC++)              |
+| `@claude-flow/plugins`     | 3.0.0-alpha.1 | Plugin system core (manager, discovery, store)          |
+| `@claude-flow/performance` | 3.0.0-alpha.1 | Performance profiling and benchmarking                  |
 
 ### Integration Plugins
 
-| Plugin | Version | Description |
-|--------|---------|-------------|
-| `@claude-flow/plugin-agentic-qe` | 3.0.0-alpha.4 | Agentic quality engineering integration |
-| `@claude-flow/plugin-prime-radiant` | 0.1.5 | Prime Radiant intelligence integration |
-| `@claude-flow/plugin-gastown-bridge` | 3.0.0-alpha.1 | Gastown bridge protocol integration |
-| `@claude-flow/teammate-plugin` | 1.0.0-alpha.1 | Multi-agent teammate coordination |
-| `@claude-flow/plugin-code-intelligence` | 0.1.0 | Advanced code analysis and intelligence |
-| `@claude-flow/plugin-test-intelligence` | 0.1.0 | Intelligent test generation and gap analysis |
-| `@claude-flow/plugin-perf-optimizer` | 0.1.0 | Performance optimization automation |
-| `@claude-flow/plugin-neural-coordinator` | 0.1.0 | Neural network coordination across agents |
-| `@claude-flow/plugin-cognitive-kernel` | 0.1.0 | Core cognitive processing kernel |
-| `@claude-flow/plugin-quantum-optimizer` | 0.1.0 | Quantum-inspired optimization algorithms |
-| `@claude-flow/plugin-hyperbolic-reasoning` | 0.1.0 | Hyperbolic space reasoning for hierarchical data |
+| Plugin                                     | Version       | Description                                      |
+| ------------------------------------------ | ------------- | ------------------------------------------------ |
+| `@claude-flow/plugin-agentic-qe`           | 3.0.0-alpha.4 | Agentic quality engineering integration          |
+| `@claude-flow/plugin-prime-radiant`        | 0.1.5         | Prime Radiant intelligence integration           |
+| `@claude-flow/plugin-gastown-bridge`       | 3.0.0-alpha.1 | Gastown bridge protocol integration              |
+| `@claude-flow/teammate-plugin`             | 1.0.0-alpha.1 | Multi-agent teammate coordination                |
+| `@claude-flow/plugin-code-intelligence`    | 0.1.0         | Advanced code analysis and intelligence          |
+| `@claude-flow/plugin-test-intelligence`    | 0.1.0         | Intelligent test generation and gap analysis     |
+| `@claude-flow/plugin-perf-optimizer`       | 0.1.0         | Performance optimization automation              |
+| `@claude-flow/plugin-neural-coordinator`   | 0.1.0         | Neural network coordination across agents        |
+| `@claude-flow/plugin-cognitive-kernel`     | 0.1.0         | Core cognitive processing kernel                 |
+| `@claude-flow/plugin-quantum-optimizer`    | 0.1.0         | Quantum-inspired optimization algorithms         |
+| `@claude-flow/plugin-hyperbolic-reasoning` | 0.1.0         | Hyperbolic space reasoning for hierarchical data |
 
 ### Domain-Specific Plugins
 
-| Plugin | Version | Description |
-|--------|---------|-------------|
-| `@claude-flow/plugin-healthcare-clinical` | 0.1.0 | Healthcare clinical workflow automation |
-| `@claude-flow/plugin-financial-risk` | 0.1.0 | Financial risk assessment and modeling |
-| `@claude-flow/plugin-legal-contracts` | 0.1.0 | Legal contract analysis and generation |
+| Plugin                                    | Version | Description                             |
+| ----------------------------------------- | ------- | --------------------------------------- |
+| `@claude-flow/plugin-healthcare-clinical` | 0.1.0   | Healthcare clinical workflow automation |
+| `@claude-flow/plugin-financial-risk`      | 0.1.0   | Financial risk assessment and modeling  |
+| `@claude-flow/plugin-legal-contracts`     | 0.1.0   | Legal contract analysis and generation  |
 
 ### Plugin Development
 

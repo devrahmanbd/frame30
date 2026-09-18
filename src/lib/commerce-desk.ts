@@ -12,7 +12,11 @@ export function checkDigit(body: string): number {
   const digits = body.replace(/\D/g, "");
   let sum = 0;
   // Weights alternate 3/1 from the right-hand side of the body.
-  for (let i = digits.length - 1, weight = 3; i >= 0; i -= 1, weight = weight === 3 ? 1 : 3) {
+  for (
+    let i = digits.length - 1, weight = 3;
+    i >= 0;
+    i -= 1, weight = weight === 3 ? 1 : 3
+  ) {
     sum += Number(digits[i]) * weight;
   }
   return (10 - (sum % 10)) % 10;
@@ -21,7 +25,9 @@ export function checkDigit(body: string): number {
 /** Builds a valid EAN-13 from any numeric seed, padding or trimming as needed. */
 export function ean13(seed: string | number, prefix = "200"): string {
   const digits = String(seed).replace(/\D/g, "");
-  const body = (prefix.replace(/\D/g, "") + digits).slice(0, 12).padEnd(12, "0");
+  const body = (prefix.replace(/\D/g, "") + digits)
+    .slice(0, 12)
+    .padEnd(12, "0");
   return body + String(checkDigit(body));
 }
 
@@ -80,12 +86,22 @@ export function availabilityView(input: {
     };
   }
   if (input.policy === "deny") {
-    return { allowed: false, label: "Out of stock", tone: "blocked", deferred: false };
+    return {
+      allowed: false,
+      label: "Out of stock",
+      tone: "blocked",
+      deferred: false,
+    };
   }
   const shortfall = quantity - Math.max(stock, 0);
   const limit = Math.max(0, Math.floor(input.limit ?? 0));
   if (limit > 0 && shortfall > limit) {
-    return { allowed: false, label: "Limit reached", tone: "blocked", deferred: false };
+    return {
+      allowed: false,
+      label: "Limit reached",
+      tone: "blocked",
+      deferred: false,
+    };
   }
   if (input.policy === "preorder") {
     const when = input.releaseAt ? new Date(input.releaseAt) : null;
@@ -100,7 +116,12 @@ export function availabilityView(input: {
       deferred: true,
     };
   }
-  return { allowed: true, label: "Backorder — ships when restocked", tone: "warn", deferred: true };
+  return {
+    allowed: true,
+    label: "Backorder — ships when restocked",
+    tone: "warn",
+    deferred: true,
+  };
 }
 
 /* ------------------------------ B2B pricing ------------------------------- */
@@ -124,8 +145,14 @@ export function resolvePrice(input: {
     .sort((a, b) => b.minQuantity - a.minQuantity)[0];
   if (match) return Math.max(0, Math.floor(match.priceMinor));
   if (input.kind === "percent_off") {
-    const bp = Math.min(10000, Math.max(0, Math.floor(input.adjustmentBp ?? 0)));
-    return Math.max(0, input.baseMinor - Math.floor((input.baseMinor * bp) / 10000));
+    const bp = Math.min(
+      10000,
+      Math.max(0, Math.floor(input.adjustmentBp ?? 0)),
+    );
+    return Math.max(
+      0,
+      input.baseMinor - Math.floor((input.baseMinor * bp) / 10000),
+    );
   }
   return Math.max(0, input.baseMinor);
 }
@@ -143,16 +170,32 @@ export type DraftLine = { quantity: number; unitPriceMinor: number };
 
 export function draftTotals(
   lines: DraftLine[],
-  extras: { discountMinor?: number; shippingMinor?: number; vatMinor?: number } = {},
+  extras: {
+    discountMinor?: number;
+    shippingMinor?: number;
+    vatMinor?: number;
+  } = {},
 ) {
   const subtotal = lines.reduce(
-    (sum, l) => sum + Math.max(0, Math.floor(l.quantity)) * Math.max(0, Math.floor(l.unitPriceMinor)),
+    (sum, l) =>
+      sum +
+      Math.max(0, Math.floor(l.quantity)) *
+        Math.max(0, Math.floor(l.unitPriceMinor)),
     0,
   );
-  const discount = Math.min(Math.max(0, Math.floor(extras.discountMinor ?? 0)), subtotal);
+  const discount = Math.min(
+    Math.max(0, Math.floor(extras.discountMinor ?? 0)),
+    subtotal,
+  );
   const shipping = Math.max(0, Math.floor(extras.shippingMinor ?? 0));
   const vat = Math.max(0, Math.floor(extras.vatMinor ?? 0));
-  return { subtotal, discount, shipping, vat, total: subtotal - discount + shipping + vat };
+  return {
+    subtotal,
+    discount,
+    shipping,
+    vat,
+    total: subtotal - discount + shipping + vat,
+  };
 }
 
 /** A draft can only be shared once it has lines and a way to reach the buyer. */
@@ -162,7 +205,8 @@ export function canSendDraft(input: {
   status: string;
 }): { ok: boolean; reason?: string } {
   if (input.status !== "draft") return { ok: false, reason: "Already sent" };
-  if (input.lineCount === 0) return { ok: false, reason: "Add at least one item" };
+  if (input.lineCount === 0)
+    return { ok: false, reason: "Add at least one item" };
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(input.customerEmail.trim())) {
     return { ok: false, reason: "A valid customer email is required" };
   }
@@ -213,8 +257,14 @@ export function validateBulkRows(rows: BulkRow[], max = 500) {
       invalid.push({ row, reason: "Unknown product variant" });
       continue;
     }
-    const numbers = [row.price_minor_int, row.compare_at_minor_int, row.stock_quantity];
-    if (numbers.some((n) => n !== undefined && (!Number.isFinite(n) || n < 0))) {
+    const numbers = [
+      row.price_minor_int,
+      row.compare_at_minor_int,
+      row.stock_quantity,
+    ];
+    if (
+      numbers.some((n) => n !== undefined && (!Number.isFinite(n) || n < 0))
+    ) {
       invalid.push({ row, reason: "Values cannot be negative" });
       continue;
     }
@@ -234,7 +284,8 @@ export function adjustPrice(
   op: { mode: "percent" | "amount" | "set"; value: number },
 ): number {
   if (op.mode === "set") return Math.max(0, Math.round(op.value));
-  if (op.mode === "amount") return Math.max(0, Math.round(baseMinor + op.value));
+  if (op.mode === "amount")
+    return Math.max(0, Math.round(baseMinor + op.value));
   return Math.max(0, Math.round(baseMinor + (baseMinor * op.value) / 100));
 }
 
@@ -247,7 +298,11 @@ export function chargeKey(subscriptionId: string, cycle: number): string {
   return `sub:${subscriptionId}:cycle:${cycle}`;
 }
 
-export function nextPeriodEnd(from: Date, unit: IntervalUnit, count: number): Date {
+export function nextPeriodEnd(
+  from: Date,
+  unit: IntervalUnit,
+  count: number,
+): Date {
   const n = Math.max(1, Math.floor(count));
   const d = new Date(from.getTime());
   if (unit === "day") d.setDate(d.getDate() + n);
@@ -258,13 +313,19 @@ export function nextPeriodEnd(from: Date, unit: IntervalUnit, count: number): Da
 }
 
 /** Dunning: retry after 1, 2 then 3 days, then stop and mark past due. */
-export function dunningPlan(failureCount: number): { retryInDays: number | null; pastDue: boolean } {
+export function dunningPlan(failureCount: number): {
+  retryInDays: number | null;
+  pastDue: boolean;
+} {
   const n = Math.max(0, Math.floor(failureCount));
   if (n >= 3) return { retryInDays: null, pastDue: true };
   return { retryInDays: n + 1, pastDue: false };
 }
 
-export function subscriptionStatusLabel(status: string): { label: string; tone: string } {
+export function subscriptionStatusLabel(status: string): {
+  label: string;
+  tone: string;
+} {
   switch (status) {
     case "trialing":
       return { label: "Trial", tone: "text-primary" };
@@ -281,9 +342,14 @@ export function subscriptionStatusLabel(status: string): { label: string; tone: 
 
 /* -------------------------------- purchasing ------------------------------ */
 
-export function receivingProgress(items: { ordered: number; received: number }[]) {
+export function receivingProgress(
+  items: { ordered: number; received: number }[],
+) {
   const ordered = items.reduce((s, i) => s + Math.max(0, i.ordered), 0);
-  const received = items.reduce((s, i) => s + Math.max(0, Math.min(i.received, i.ordered)), 0);
+  const received = items.reduce(
+    (s, i) => s + Math.max(0, Math.min(i.received, i.ordered)),
+    0,
+  );
   return {
     ordered,
     received,

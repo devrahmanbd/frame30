@@ -54,7 +54,10 @@ const list = (name, fallback) =>
     .map((v) => v.trim())
     .filter(Boolean);
 
-const BASE = (arg("base", process.env.E2E_BASE_URL ?? "http://localhost:8080")).replace(/\/$/, "");
+const BASE = arg(
+  "base",
+  process.env.E2E_BASE_URL ?? "http://localhost:8080",
+).replace(/\/$/, "");
 const ONLY = arg("only", null);
 const WIDTHS = list("widths", "320,768,1440,1920")
   .map(Number)
@@ -63,7 +66,10 @@ const LOCALES = list("locales", "en,bn");
 const JSON_OUT = arg("json", null);
 const FAIL_ON = arg("fail-on", "error") === "warn" ? "warn" : "error";
 const ALLOW = new Set(list("allow", ""));
-const CONCURRENCY = Math.max(1, Math.min(6, Number(arg("concurrency", "3")) || 3));
+const CONCURRENCY = Math.max(
+  1,
+  Math.min(6, Number(arg("concurrency", "3")) || 3),
+);
 const NAV_TIMEOUT_MS = Number(arg("timeout", "20000")) || 20000;
 const ATTEMPTS = 3;
 const LOG_LEVELS = { error: 0, warn: 1, info: 2, debug: 3 };
@@ -104,7 +110,9 @@ const SURFACES = [
  * plainly instead of failing with a cryptic syntax error.
  */
 async function loadSpec() {
-  const url = pathToFileURL(new URL("../src/lib/site-rhythm.ts", import.meta.url).pathname).href;
+  const url = pathToFileURL(
+    new URL("../src/lib/site-rhythm.ts", import.meta.url).pathname,
+  ).href;
   try {
     return await import(url);
   } catch (cause) {
@@ -144,11 +152,18 @@ const MEASURE = () => {
   const isSignal = (cs) => {
     // The signal is a saturated blue around hue 203. Read the painted values
     // rather than class names, so an inline style cannot dodge the budget.
-    const candidates = [cs.color, cs.backgroundColor, cs.borderTopColor, cs.fill];
+    const candidates = [
+      cs.color,
+      cs.backgroundColor,
+      cs.borderTopColor,
+      cs.fill,
+    ];
     return candidates.some((c) => {
       const m = String(c ?? "").match(/rgba?\(([^)]+)\)/);
       if (!m) return false;
-      const [r, g, b] = m[1].split(/[,/]/).map((p) => Number.parseFloat(p.trim()));
+      const [r, g, b] = m[1]
+        .split(/[,/]/)
+        .map((p) => Number.parseFloat(p.trim()));
       if (![r, g, b].every(Number.isFinite)) return false;
       const max = Math.max(r, g, b);
       const min = Math.min(r, g, b);
@@ -178,15 +193,21 @@ const MEASURE = () => {
         `${el.tagName.toLowerCase()}#${index}`,
       surface: el.getAttribute("data-band-surface") ?? "unknown",
       width: el.getAttribute("data-band-width") ?? "custom",
-      density: el.getAttribute("data-band-density") === "tight" ? "tight" : "section",
-      containerWidthPx: inner.getBoundingClientRect().width - num(cs.paddingLeft) - num(cs.paddingRight),
+      density:
+        el.getAttribute("data-band-density") === "tight" ? "tight" : "section",
+      containerWidthPx:
+        inner.getBoundingClientRect().width -
+        num(cs.paddingLeft) -
+        num(cs.paddingRight),
       paddingTopPx: num(cs.paddingTop),
       paddingBottomPx: num(cs.paddingBottom),
       scrollWidthPx: clipsX ? el.clientWidth : el.scrollWidth,
       overflowX: bandCs.overflowX,
       clientWidthPx: el.clientWidth,
       auroraCount: [el, ...descendants].filter(
-        (n) => n.classList?.contains("fq-aurora") || n.classList?.contains("fq-spotlight"),
+        (n) =>
+          n.classList?.contains("fq-aurora") ||
+          n.classList?.contains("fq-spotlight"),
       ).length,
       signalCount: descendants.filter((n) => {
         const r = n.getBoundingClientRect();
@@ -215,8 +236,10 @@ const MEASURE = () => {
       lang: langOf(el),
       fontFamily: cs.fontFamily,
       fontSizePx: size,
-      lineHeightPx: cs.lineHeight === "normal" ? size * 1.2 : num(cs.lineHeight),
-      letterSpacingPx: cs.letterSpacing === "normal" ? 0 : num(cs.letterSpacing),
+      lineHeightPx:
+        cs.lineHeight === "normal" ? size * 1.2 : num(cs.lineHeight),
+      letterSpacingPx:
+        cs.letterSpacing === "normal" ? 0 : num(cs.letterSpacing),
       // Set when the band declared no role and the gate had to guess: the
       // sample is reported, never size-audited, because a guessed role would
       // manufacture failures on correct markup.
@@ -238,18 +261,25 @@ const MEASURE = () => {
   }
 
   /* Glass surfaces: the edge is the elevation, so read border + box-shadow. */
-  const glass = [...document.querySelectorAll(".fq-glass")].slice(0, 40).map((el, i) => {
-    const cs = getComputedStyle(el);
-    const shadow = cs.boxShadow || "";
-    const blurs = [...shadow.matchAll(/(-?\d+(?:\.\d+)?)px/g)].map((m) => Number(m[1]));
-    return {
-      label: `glass#${i}:${(el.textContent ?? "").trim().slice(0, 24)}`,
-      edgeAlpha: alphaOf(cs.borderTopColor),
-      edgeWidthPx: num(cs.borderTopWidth),
-      ambientBlurPx: shadow.includes("inset") && blurs.length === 0 ? 0 : Math.max(0, ...blurs, 0),
-      hasInsetHighlight: shadow.includes("inset"),
-    };
-  });
+  const glass = [...document.querySelectorAll(".fq-glass")]
+    .slice(0, 40)
+    .map((el, i) => {
+      const cs = getComputedStyle(el);
+      const shadow = cs.boxShadow || "";
+      const blurs = [...shadow.matchAll(/(-?\d+(?:\.\d+)?)px/g)].map((m) =>
+        Number(m[1]),
+      );
+      return {
+        label: `glass#${i}:${(el.textContent ?? "").trim().slice(0, 24)}`,
+        edgeAlpha: alphaOf(cs.borderTopColor),
+        edgeWidthPx: num(cs.borderTopWidth),
+        ambientBlurPx:
+          shadow.includes("inset") && blurs.length === 0
+            ? 0
+            : Math.max(0, ...blurs, 0),
+        hasInsetHighlight: shadow.includes("inset"),
+      };
+    });
 
   return {
     bands,
@@ -276,11 +306,17 @@ async function waitForServer(base, attempts = 15) {
       }
       log("warn", "server.unhealthy", { base, status: res.status, attempt: i });
     } catch (e) {
-      log("debug", "server.probe_failed", { base, attempt: i, error: String(e?.message ?? e) });
+      log("debug", "server.probe_failed", {
+        base,
+        attempt: i,
+        error: String(e?.message ?? e),
+      });
     }
     await sleep(Math.min(4000, 400 * i));
   }
-  throw new Error(`Dev server at ${base} did not answer after ${attempts} probes.`);
+  throw new Error(
+    `Dev server at ${base} did not answer after ${attempts} probes.`,
+  );
 }
 
 /** One job = one surface at one width in one locale. */
@@ -312,9 +348,14 @@ async function runJob(browser, job, spec) {
       page.on("console", (m) => {
         if (m.type() === "error") consoleErrors.push(m.text().slice(0, 200));
       });
-      page.on("pageerror", (e) => consoleErrors.push(`pageerror: ${String(e.message).slice(0, 200)}`));
+      page.on("pageerror", (e) =>
+        consoleErrors.push(`pageerror: ${String(e.message).slice(0, 200)}`),
+      );
 
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: NAV_TIMEOUT_MS });
+      await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: NAV_TIMEOUT_MS,
+      });
       // Bands are server-rendered; fonts and the aurora layer are not. Wait for
       // fonts so tracking and line boxes are measured against the real face.
       await page.evaluate(() => document.fonts?.ready).catch(() => {});
@@ -413,12 +454,15 @@ async function runJob(browser, job, spec) {
 async function drain(jobs, worker, concurrency) {
   const results = [];
   let cursor = 0;
-  const runners = Array.from({ length: Math.min(concurrency, jobs.length) }, async () => {
-    while (cursor < jobs.length) {
-      const job = jobs[cursor++];
-      results.push(await worker(job));
-    }
-  });
+  const runners = Array.from(
+    { length: Math.min(concurrency, jobs.length) },
+    async () => {
+      while (cursor < jobs.length) {
+        const job = jobs[cursor++];
+        results.push(await worker(job));
+      }
+    },
+  );
   await Promise.all(runners);
   return results;
 }
@@ -446,7 +490,9 @@ function printReport(results, spec) {
 
   const harnessFailures = results.filter((r) => r.harnessError);
   for (const r of harnessFailures) {
-    lines.push(`  HARNESS ${r.route} @${r.viewportPx}/${r.locale}: ${r.harnessError}`);
+    lines.push(
+      `  HARNESS ${r.route} @${r.viewportPx}/${r.locale}: ${r.harnessError}`,
+    );
   }
 
   const consoleErrors = spec.dedupeFindings(
@@ -464,7 +510,9 @@ function printReport(results, spec) {
   for (const [route, findings] of [...byRoute.entries()].sort()) {
     lines.push("");
     lines.push(`  ${route}`);
-    for (const f of findings.sort((a, b) => a.severity.localeCompare(b.severity))) {
+    for (const f of findings.sort((a, b) =>
+      a.severity.localeCompare(b.severity),
+    )) {
       lines.push(`    ${spec.formatFinding(f)}`);
     }
   }
@@ -483,9 +531,12 @@ function printReport(results, spec) {
     `  ${counts.error} blocking · ${counts.warn} advisory · ${counts.info} informational` +
       (ALLOW.size ? ` · ${all.length - kept.length} allowed by --allow` : ""),
   );
-  if (noBands.length) lines.push(`  not on the band kit: ${[...new Set(noBands)].join(", ")}`);
+  if (noBands.length)
+    lines.push(`  not on the band kit: ${[...new Set(noBands)].join(", ")}`);
   for (const r of multiH1) {
-    lines.push(`  FAIL [heading] ${r.route} @${r.viewportPx}/${r.locale}: ${r.h1Count} h1 elements`);
+    lines.push(
+      `  FAIL [heading] ${r.route} @${r.viewportPx}/${r.locale}: ${r.h1Count} h1 elements`,
+    );
   }
   lines.push("");
   process.stdout.write(lines.join("\n"));
@@ -498,17 +549,28 @@ function printReport(results, spec) {
 /* -------------------------------------------------------------------------- */
 
 async function main() {
-  if (SURFACES.length === 0) throw new Error(`--only ${ONLY} matched no known surface.`);
+  if (SURFACES.length === 0)
+    throw new Error(`--only ${ONLY} matched no known surface.`);
   const spec = await loadSpec();
   await waitForServer(BASE);
 
   const started = Date.now();
-  const browser = await chromium.launch({ args: ["--font-render-hinting=none"] });
+  const browser = await chromium.launch({
+    args: ["--font-render-hinting=none"],
+  });
   let results;
   try {
     const jobs = planJobs();
-    log("info", "run.start", { jobs: jobs.length, concurrency: CONCURRENCY, base: BASE });
-    results = await drain(jobs, (job) => runJob(browser, job, spec), CONCURRENCY);
+    log("info", "run.start", {
+      jobs: jobs.length,
+      concurrency: CONCURRENCY,
+      base: BASE,
+    });
+    results = await drain(
+      jobs,
+      (job) => runJob(browser, job, spec),
+      CONCURRENCY,
+    );
   } finally {
     await browser.close().catch(() => {});
   }

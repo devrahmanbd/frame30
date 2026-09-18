@@ -1,1 +1,611 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "label": "canary-monitor.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L1"}, {"id": "scripts_canary_monitor_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L28"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_circuit_breaker_server_circuit_breaker_thresholds", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_circuit_breaker_server_evaluatecanarymetrics", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_circuit_breaker_server_getcircuitbreakerstate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_circuit_breaker_server_resetcircuitbreaker", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_circuit_breaker_server_tripcircuitbreaker", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_canary_weights_server_getcanarystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "lib_canary_weights_server_setcanarystage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_monitor_ts", "target": "scripts_canary_monitor_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L28", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_canary_monitor_main", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L29"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L31"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L32"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L33"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L34"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "resetCircuitBreaker", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L37"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L38"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L38"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L39"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L40"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L40"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L45"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L48"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L48"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L49"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L50"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L50"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "setCanaryStage", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L53"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L54"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L57"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L60"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "evaluateCanaryMetrics", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L61"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L67"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "evaluateCanaryMetrics", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L68"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L69"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "evaluateCanaryMetrics", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L70"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L72"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "evaluateCanaryMetrics", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L73"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L80"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L81"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L84"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L86"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L86"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L87"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L88"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L89"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L90"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "getCanaryState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L92"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L93"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L93"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L94"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L94"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L99"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L99"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L100"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L101"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L102"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L102"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "setInterval", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L105"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "getCircuitBreakerState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L126"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "getCanaryState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L127"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L129"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L129"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L130"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L131"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L131"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L132"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L133"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L133"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L135"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L136"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L137"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L139"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L140"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L141"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L142"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L143"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L144"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L145"}, {"caller_nid": "scripts_canary_monitor_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts", "source_location": "L145"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "label": "canary-monitor.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_canary_monitor_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L28"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "users_rahman_documents_frame30_src_lib_circuit_breaker_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_circuit_breaker_server_circuit_breaker_thresholds",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_circuit_breaker_server_evaluatecanarymetrics",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_circuit_breaker_server_getcircuitbreakerstate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_circuit_breaker_server_resetcircuitbreaker",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_circuit_breaker_server_tripcircuitbreaker",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_canary_weights_server_getcanarystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "lib_canary_weights_server_setcanarystage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_monitor_ts",
+      "target": "scripts_canary_monitor_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L34"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "resetCircuitBreaker",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "setCanaryStage",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "evaluateCanaryMetrics",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "evaluateCanaryMetrics",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "evaluateCanaryMetrics",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "evaluateCanaryMetrics",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "getCanaryState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "setInterval",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "getCircuitBreakerState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "getCanaryState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "scripts_canary_monitor_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-monitor.ts",
+      "source_location": "L145"
+    }
+  ]
+}

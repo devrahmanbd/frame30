@@ -10,12 +10,7 @@ import type { NodeSettings, StudioNode } from "./model";
 import { uid } from "./model";
 
 export type WidgetCategory =
-  | "layout"
-  | "basic"
-  | "general"
-  | "media"
-  | "commerce"
-  | "advanced";
+  "layout" | "basic" | "general" | "media" | "commerce" | "advanced";
 
 export const CATEGORY_ORDER: WidgetCategory[] = [
   "layout",
@@ -58,7 +53,14 @@ export const WIDGETS: WidgetDef[] = [
     icon: "Square",
     keywords: ["flex", "section", "div", "wrapper"],
     container: true,
-    defaults: { layout: "flex", direction: "column", gap: 20, contentWidth: "boxed", paddingY: 40, paddingX: 16 },
+    defaults: {
+      layout: "flex",
+      direction: "column",
+      gap: 20,
+      contentWidth: "boxed",
+      paddingY: 40,
+      paddingX: 16,
+    },
   },
   {
     key: "grid",
@@ -67,7 +69,14 @@ export const WIDGETS: WidgetDef[] = [
     icon: "LayoutGrid",
     keywords: ["columns", "rows", "layout"],
     container: true,
-    defaults: { layout: "grid", columns: 3, gap: 20, contentWidth: "boxed", paddingY: 40, paddingX: 16 },
+    defaults: {
+      layout: "grid",
+      columns: 3,
+      gap: 20,
+      contentWidth: "boxed",
+      paddingY: 40,
+      paddingX: 16,
+    },
   },
   {
     key: "heading",
@@ -75,7 +84,13 @@ export const WIDGETS: WidgetDef[] = [
     category: "basic",
     icon: "Heading",
     keywords: ["title", "h1", "h2", "headline"],
-    defaults: { text: "Add your heading text", level: 2, fontSize: 32, fontWeight: 700, textAlign: "left" },
+    defaults: {
+      text: "Add your heading text",
+      level: 2,
+      fontSize: 32,
+      fontWeight: 700,
+      textAlign: "left",
+    },
   },
   {
     key: "text",
@@ -83,7 +98,11 @@ export const WIDGETS: WidgetDef[] = [
     category: "basic",
     icon: "Type",
     keywords: ["paragraph", "copy", "body"],
-    defaults: { text: "Write something your customers need to know.", fontSize: 16, textAlign: "left" },
+    defaults: {
+      text: "Write something your customers need to know.",
+      fontSize: 16,
+      textAlign: "left",
+    },
   },
   {
     key: "text-editor",
@@ -91,7 +110,10 @@ export const WIDGETS: WidgetDef[] = [
     category: "basic",
     icon: "AlignLeft",
     keywords: ["rich", "wysiwyg", "paragraph"],
-    defaults: { text: "Rich text block. Use the toolbar to format.", fontSize: 16 },
+    defaults: {
+      text: "Rich text block. Use the toolbar to format.",
+      fontSize: 16,
+    },
   },
   {
     key: "image",
@@ -115,7 +137,13 @@ export const WIDGETS: WidgetDef[] = [
     category: "basic",
     icon: "MousePointerClick",
     keywords: ["cta", "link", "action"],
-    defaults: { label: "Shop now", href: "/products", variant: "primary", size: "md", textAlign: "left" },
+    defaults: {
+      label: "Shop now",
+      href: "/products",
+      variant: "primary",
+      size: "md",
+      textAlign: "left",
+    },
   },
   {
     key: "divider",
@@ -170,7 +198,10 @@ export const WIDGETS: WidgetDef[] = [
     keywords: ["faq", "collapse", "expand"],
     defaults: {
       items: [
-        { title: "How long is delivery?", content: "Inside Dhaka 24–48 hours." },
+        {
+          title: "How long is delivery?",
+          content: "Inside Dhaka 24–48 hours.",
+        },
         { title: "Can I return an item?", content: "Yes, within 7 days." },
       ],
     },
@@ -181,7 +212,9 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "ChevronsUpDown",
     keywords: ["collapse", "show", "hide"],
-    defaults: { items: [{ title: "Read more", content: "Extra detail lives here." }] },
+    defaults: {
+      items: [{ title: "Read more", content: "Extra detail lives here." }],
+    },
   },
   {
     key: "image-box",
@@ -189,7 +222,12 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "GalleryVerticalEnd",
     keywords: ["card", "feature", "picture"],
-    defaults: { url: "", title: "Feature title", text: "One line about this feature.", textAlign: "center" },
+    defaults: {
+      url: "",
+      title: "Feature title",
+      text: "One line about this feature.",
+      textAlign: "center",
+    },
   },
   {
     key: "icon-box",
@@ -197,7 +235,12 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "BadgeCheck",
     keywords: ["feature", "benefit", "usp"],
-    defaults: { icon: "BadgeCheck", title: "Free delivery", text: "On every order over ৳2,000.", textAlign: "center" },
+    defaults: {
+      icon: "BadgeCheck",
+      title: "Free delivery",
+      text: "On every order over ৳2,000.",
+      textAlign: "center",
+    },
   },
   {
     key: "carousel",
@@ -223,7 +266,11 @@ export const WIDGETS: WidgetDef[] = [
     keywords: ["bullets", "checklist", "features"],
     defaults: {
       icon: "Check",
-      items: [{ text: "Cash on delivery" }, { text: "Free returns" }, { text: "48h dispatch" }],
+      items: [
+        { text: "Cash on delivery" },
+        { text: "Free returns" },
+        { text: "48h dispatch" },
+      ],
     },
   },
   {
@@ -232,7 +279,14 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Hash",
     keywords: ["number", "stat", "metric"],
-    defaults: { start: 0, end: 1200, prefix: "", suffix: "+", title: "Happy customers", textAlign: "center" },
+    defaults: {
+      start: 0,
+      end: 1200,
+      prefix: "",
+      suffix: "+",
+      title: "Happy customers",
+      textAlign: "center",
+    },
   },
   {
     key: "progress",
@@ -248,7 +302,12 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Quote",
     keywords: ["review", "quote", "customer"],
-    defaults: { text: "This store made ordering effortless.", author: "Nusrat A.", role: "Verified buyer", textAlign: "left" },
+    defaults: {
+      text: "This store made ordering effortless.",
+      author: "Nusrat A.",
+      role: "Verified buyer",
+      textAlign: "left",
+    },
   },
   {
     key: "social",
@@ -270,7 +329,11 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "TriangleAlert",
     keywords: ["notice", "warning", "info"],
-    defaults: { tone: "info", title: "Heads up", text: "Delivery may take an extra day during Eid." },
+    defaults: {
+      tone: "info",
+      title: "Heads up",
+      text: "Delivery may take an extra day during Eid.",
+    },
   },
   {
     key: "html",
@@ -323,7 +386,12 @@ export const WIDGETS: WidgetDef[] = [
   ...(
     [
       ["products", "Products", "ShoppingBag", ["catalogue", "grid", "shop"]],
-      ["product-categories", "Product categories", "Tags", ["collections", "taxonomy"]],
+      [
+        "product-categories",
+        "Product categories",
+        "Tags",
+        ["collections", "taxonomy"],
+      ],
       ["add-to-cart", "Add to cart", "ShoppingCart", ["buy", "purchase"]],
       ["cart", "Cart", "ShoppingCart", ["basket", "bag"]],
       ["checkout", "Checkout", "CreditCard", ["pay", "order"]],
@@ -341,13 +409,12 @@ export const WIDGETS: WidgetDef[] = [
   })),
 ];
 
-export const WIDGET_BY_KEY: Record<string, WidgetDef> = WIDGETS.reduce<Record<string, WidgetDef>>(
-  (acc, widget) => {
-    acc[widget.key] = widget;
-    return acc;
-  },
-  {},
-);
+export const WIDGET_BY_KEY: Record<string, WidgetDef> = WIDGETS.reduce<
+  Record<string, WidgetDef>
+>((acc, widget) => {
+  acc[widget.key] = widget;
+  return acc;
+}, {});
 
 export function widgetLabel(key: string): string {
   return WIDGET_BY_KEY[key]?.label ?? key;
@@ -358,7 +425,10 @@ export function widgetIcon(key: string): string {
 }
 
 /** Search across label and keywords; empty query returns everything. */
-export function searchWidgets(query: string, widgets: WidgetDef[] = WIDGETS): WidgetDef[] {
+export function searchWidgets(
+  query: string,
+  widgets: WidgetDef[] = WIDGETS,
+): WidgetDef[] {
   const q = query.trim().toLowerCase();
   if (!q) return widgets;
   return widgets.filter(
@@ -369,7 +439,9 @@ export function searchWidgets(query: string, widgets: WidgetDef[] = WIDGETS): Wi
   );
 }
 
-export function groupWidgets(widgets: WidgetDef[]): { category: WidgetCategory; items: WidgetDef[] }[] {
+export function groupWidgets(
+  widgets: WidgetDef[],
+): { category: WidgetCategory; items: WidgetDef[] }[] {
   return CATEGORY_ORDER.map((category) => ({
     category,
     items: widgets.filter((widget) => widget.category === category),

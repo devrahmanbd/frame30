@@ -89,8 +89,18 @@ export function isZeroJsWidget(type: SectionType | string): boolean {
 
 /** Share of a layout's widgets that stay markup-only, for the perf budget. */
 export function hydrationProfile(types: readonly (SectionType | string)[]) {
-  const counts: Record<HydrationMode, number> = { static: 0, eager: 0, visible: 0, interaction: 0 };
+  const counts: Record<HydrationMode, number> = {
+    static: 0,
+    eager: 0,
+    visible: 0,
+    interaction: 0,
+  };
   for (const type of types) counts[hydrationMode(type)] += 1;
   const total = types.length || 1;
-  return { counts, staticShare: counts.static / total, deferredShare: (counts.static + counts.visible + counts.interaction) / total };
+  return {
+    counts,
+    staticShare: counts.static / total,
+    deferredShare:
+      (counts.static + counts.visible + counts.interaction) / total,
+  };
 }

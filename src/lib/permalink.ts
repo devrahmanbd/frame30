@@ -27,11 +27,22 @@
 
 /* ------------------------------- vocabulary ------------------------------- */
 
-export const PERMALINK_KINDS = ["article", "product", "collection", "page"] as const;
+export const PERMALINK_KINDS = [
+  "article",
+  "product",
+  "collection",
+  "page",
+] as const;
 export type PermalinkKind = (typeof PERMALINK_KINDS)[number];
 
 /** Tokens a merchant may use in an article pattern. */
-export const PATTERN_TOKENS = ["%slug%", "%year%", "%month%", "%day%", "%category%"] as const;
+export const PATTERN_TOKENS = [
+  "%slug%",
+  "%year%",
+  "%month%",
+  "%day%",
+  "%category%",
+] as const;
 export type PatternToken = (typeof PATTERN_TOKENS)[number];
 
 /**
@@ -132,7 +143,11 @@ export function isReservedBase(base: string): boolean {
  * both rooted at "/" would make `/x` ambiguous, and that check lives in
  * `validateSettings` where all four bases are visible at once.
  */
-export function validateBase(field: string, input: string, { allowEmpty }: { allowEmpty: boolean }): string {
+export function validateBase(
+  field: string,
+  input: string,
+  { allowEmpty }: { allowEmpty: boolean },
+): string {
   const base = normaliseBase(input);
   if (!base) {
     if (allowEmpty) return "";
@@ -166,7 +181,9 @@ export function validateBase(field: string, input: string, { allowEmpty }: { all
 
 export function parsePattern(input: string): ArticlePattern {
   const candidate = (input ?? "").trim().toLowerCase();
-  const match = (ARTICLE_PATTERNS as readonly string[]).find((p) => p === candidate);
+  const match = (ARTICLE_PATTERNS as readonly string[]).find(
+    (p) => p === candidate,
+  );
   if (!match) {
     throw new PermalinkError(
       "pattern_unsupported",
@@ -182,23 +199,39 @@ export function parsePattern(input: string): ArticlePattern {
  * Full settings validation. Returns a normalised copy; throws the first
  * problem with a bilingual message the form can show inline.
  */
-export function validateSettings(input: Partial<PermalinkSettings>): PermalinkSettings {
+export function validateSettings(
+  input: Partial<PermalinkSettings>,
+): PermalinkSettings {
   const settings: PermalinkSettings = {
-    articleBase: validateBase("articleBase", input.articleBase ?? DEFAULT_PERMALINKS.articleBase, {
-      allowEmpty: true,
-    }),
-    articlePattern: parsePattern(input.articlePattern ?? DEFAULT_PERMALINKS.articlePattern),
-    productBase: validateBase("productBase", input.productBase ?? DEFAULT_PERMALINKS.productBase, {
-      allowEmpty: false,
-    }),
+    articleBase: validateBase(
+      "articleBase",
+      input.articleBase ?? DEFAULT_PERMALINKS.articleBase,
+      {
+        allowEmpty: true,
+      },
+    ),
+    articlePattern: parsePattern(
+      input.articlePattern ?? DEFAULT_PERMALINKS.articlePattern,
+    ),
+    productBase: validateBase(
+      "productBase",
+      input.productBase ?? DEFAULT_PERMALINKS.productBase,
+      {
+        allowEmpty: false,
+      },
+    ),
     collectionBase: validateBase(
       "collectionBase",
       input.collectionBase ?? DEFAULT_PERMALINKS.collectionBase,
       { allowEmpty: false },
     ),
-    pageBase: validateBase("pageBase", input.pageBase ?? DEFAULT_PERMALINKS.pageBase, {
-      allowEmpty: false,
-    }),
+    pageBase: validateBase(
+      "pageBase",
+      input.pageBase ?? DEFAULT_PERMALINKS.pageBase,
+      {
+        allowEmpty: false,
+      },
+    ),
   };
 
   // Two kinds sharing a base makes every URL under it ambiguous, and the
@@ -241,7 +274,9 @@ export function shadowsRoot(settings: PermalinkSettings): boolean {
 }
 
 export function isReservedSlug(slug: string): boolean {
-  return (RESERVED_PREFIXES as readonly string[]).includes(slug.trim().toLowerCase());
+  return (RESERVED_PREFIXES as readonly string[]).includes(
+    slug.trim().toLowerCase(),
+  );
 }
 
 /** Slug hygiene shared by the editor's inline slug field and every importer. */
@@ -279,12 +314,17 @@ export type PermalinkEntity = {
 
 const FALLBACK_CATEGORY = "uncategorised";
 
-function datePartsOf(iso: string | null | undefined): { year: string; month: string; day: string } {
+function datePartsOf(iso: string | null | undefined): {
+  year: string;
+  month: string;
+  day: string;
+} {
   // Deliberately no `new Date()` default: an entity with no date gets zeros,
   // which is visible and wrong-looking, rather than silently "today".
   if (!iso) return { year: "0000", month: "00", day: "00" };
   const parsed = new Date(iso);
-  if (Number.isNaN(parsed.getTime())) return { year: "0000", month: "00", day: "00" };
+  if (Number.isNaN(parsed.getTime()))
+    return { year: "0000", month: "00", day: "00" };
   return {
     year: String(parsed.getUTCFullYear()).padStart(4, "0"),
     month: String(parsed.getUTCMonth() + 1).padStart(2, "0"),
@@ -306,13 +346,18 @@ function baseFor(settings: PermalinkSettings, kind: PermalinkKind): string {
 }
 
 /** Store-relative path for an entity, e.g. `/blog/2026/08/jute-bags`. */
-export function buildPermalink(settings: PermalinkSettings, entity: PermalinkEntity): string {
+export function buildPermalink(
+  settings: PermalinkSettings,
+  entity: PermalinkEntity,
+): string {
   const slug = (entity.slug ?? "").trim().toLowerCase();
   const base = baseFor(settings, entity.kind);
-  if (entity.kind !== "article") return `${base}/${slug}`.replace(/\/{2,}/g, "/");
+  if (entity.kind !== "article")
+    return `${base}/${slug}`.replace(/\/{2,}/g, "/");
 
   const { year, month, day } = datePartsOf(entity.date);
-  const category = (entity.category ?? "").trim().toLowerCase() || FALLBACK_CATEGORY;
+  const category =
+    (entity.category ?? "").trim().toLowerCase() || FALLBACK_CATEGORY;
   const tail = settings.articlePattern
     .replace("%year%", year)
     .replace("%month%", month)
@@ -358,7 +403,10 @@ function stripBase(path: string, base: string): string | null {
  * configured base, which is exactly the signal the router needs to fall
  * through to the 404 → redirect-map path.
  */
-export function parsePath(settings: PermalinkSettings, rawPath: string): ParsedPermalink | null {
+export function parsePath(
+  settings: PermalinkSettings,
+  rawPath: string,
+): ParsedPermalink | null {
   const path = normaliseBase(rawPath.split(/[?#]/)[0] ?? "");
   if (!path) return null;
 
@@ -416,7 +464,12 @@ export function parsePath(settings: PermalinkSettings, rawPath: string): ParsedP
 
 /* ----------------------------- pattern change ----------------------------- */
 
-export type PermalinkMove = { from: string; to: string; kind: PermalinkKind; slug: string };
+export type PermalinkMove = {
+  from: string;
+  to: string;
+  kind: PermalinkKind;
+  slug: string;
+};
 
 /**
  * The diff a settings change produces: one move per entity whose URL actually
@@ -456,10 +509,15 @@ export function planPermalinkChange(
 export function collapseRedirects(
   existing: readonly { from: string; to: string }[],
   moves: readonly PermalinkMove[],
-): { rules: { from: string; to: string }[]; dropped: { from: string; reason: "loop" | "self" }[] } {
+): {
+  rules: { from: string; to: string }[];
+  dropped: { from: string; reason: "loop" | "self" }[];
+} {
   const target = new Map<string, string>();
-  for (const rule of existing) target.set(normaliseBase(rule.from), normaliseBase(rule.to));
-  for (const move of moves) target.set(normaliseBase(move.from), normaliseBase(move.to));
+  for (const rule of existing)
+    target.set(normaliseBase(rule.from), normaliseBase(rule.to));
+  for (const move of moves)
+    target.set(normaliseBase(move.from), normaliseBase(move.to));
 
   const resolve = (start: string): string | null => {
     let current = start;
@@ -495,8 +553,15 @@ export function collapseRedirects(
 
 /* ------------------------------- CSV import ------------------------------- */
 
-export type RedirectCsvRow = { from: string; to: string; status: 301 | 302 | 410 };
-export type CsvParseResult = { rows: RedirectCsvRow[]; errors: { line: number; message: string }[] };
+export type RedirectCsvRow = {
+  from: string;
+  to: string;
+  status: 301 | 302 | 410;
+};
+export type CsvParseResult = {
+  rows: RedirectCsvRow[];
+  errors: { line: number; message: string }[];
+};
 
 export const CSV_MAX_ROWS = 5000;
 
@@ -519,22 +584,35 @@ export function parseRedirectCsv(text: string): CsvParseResult {
     if (!line) return;
     if (rows.length >= CSV_MAX_ROWS) {
       if (rows.length === CSV_MAX_ROWS) {
-        errors.push({ line: index + 1, message: `Import capped at ${CSV_MAX_ROWS} rows.` });
+        errors.push({
+          line: index + 1,
+          message: `Import capped at ${CSV_MAX_ROWS} rows.`,
+        });
       }
       return;
     }
     const separator = line.includes(";") && !line.includes(",") ? ";" : ",";
-    const cells = line
-      .split(separator)
-      .map((cell) => cell.trim().replace(/^"(.*)"$/, "$1").trim());
+    const cells = line.split(separator).map((cell) =>
+      cell
+        .trim()
+        .replace(/^"(.*)"$/, "$1")
+        .trim(),
+    );
     const [from, to, statusCell] = cells;
     if (!from) return;
-    if (index === 0 && /^(from|source|from_path|old|redirect from)$/i.test(from)) return; // header
+    if (
+      index === 0 &&
+      /^(from|source|from_path|old|redirect from)$/i.test(from)
+    )
+      return; // header
 
     const status = Number(statusCell ?? "301");
     const code = status === 302 ? 302 : status === 410 ? 410 : 301;
     if (statusCell && ![301, 302, 410].includes(status)) {
-      errors.push({ line: index + 1, message: `Unsupported status “${statusCell}” — using 301.` });
+      errors.push({
+        line: index + 1,
+        message: `Unsupported status “${statusCell}” — using 301.`,
+      });
     }
     const source = normaliseBase(from);
     const destination = code === 410 ? "" : normaliseBase(to ?? "");
@@ -543,15 +621,24 @@ export function parseRedirectCsv(text: string): CsvParseResult {
       return;
     }
     if (code !== 410 && !destination) {
-      errors.push({ line: index + 1, message: "A 301/302 needs a destination." });
+      errors.push({
+        line: index + 1,
+        message: "A 301/302 needs a destination.",
+      });
       return;
     }
     if (code !== 410 && destination === source) {
-      errors.push({ line: index + 1, message: "A redirect cannot point at itself." });
+      errors.push({
+        line: index + 1,
+        message: "A redirect cannot point at itself.",
+      });
       return;
     }
     if (seen.has(source)) {
-      errors.push({ line: index + 1, message: `Duplicate source “${source}” — later row ignored.` });
+      errors.push({
+        line: index + 1,
+        message: `Duplicate source “${source}” — later row ignored.`,
+      });
       return;
     }
     seen.add(source);
@@ -562,10 +649,15 @@ export function parseRedirectCsv(text: string): CsvParseResult {
 }
 
 /** Round-trips through `parseRedirectCsv`; quoting keeps commas in paths safe. */
-export function toRedirectCsv(rows: readonly { from: string; to: string; status: number }[]): string {
-  const escape = (value: string) => (value.includes(",") ? `"${value}"` : value);
+export function toRedirectCsv(
+  rows: readonly { from: string; to: string; status: number }[],
+): string {
+  const escape = (value: string) =>
+    value.includes(",") ? `"${value}"` : value;
   return [
     "from,to,status",
-    ...rows.map((row) => `${escape(row.from)},${escape(row.to ?? "")},${row.status}`),
+    ...rows.map(
+      (row) => `${escape(row.from)},${escape(row.to ?? "")},${row.status}`,
+    ),
   ].join("\n");
 }

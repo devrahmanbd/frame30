@@ -89,6 +89,7 @@ cat /tmp/adr-111-stage/ruflo-fed.pf      # macos only
 ```
 
 Checklist:
+
 - [ ] `ruflo-fed.conf` has exactly one `[Peer]` block (per peer expected)
 - [ ] The `[Peer]` block's `PublicKey` matches the OTHER host's emitted pubkey
 - [ ] `AllowedIPs` lists ONLY the peer's mesh IP — no broader CIDR
@@ -197,9 +198,9 @@ The configs in `/tmp/adr-111-stage/` and `/etc/wireguard/ruflo-fed.conf` stay on
 
 ## When NOT to use ADR-111
 
-| If you... | Use this instead |
-|---|---|
-| Need NAT traversal | Tailscale or Headscale |
-| Have >50 peers | Tailscale (their infra handles your scale) |
-| Don't need trust↔L3 coupling | Plain tailnet + federation breaker is simpler |
-| Don't need cryptographic provenance of mesh changes | Tailscale's audit log suffices |
+| If you...                                           | Use this instead                              |
+| --------------------------------------------------- | --------------------------------------------- |
+| Need NAT traversal                                  | Tailscale or Headscale                        |
+| Have >50 peers                                      | Tailscale (their infra handles your scale)    |
+| Don't need trust↔L3 coupling                        | Plain tailnet + federation breaker is simpler |
+| Don't need cryptographic provenance of mesh changes | Tailscale's audit log suffices                |

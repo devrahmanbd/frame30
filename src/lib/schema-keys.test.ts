@@ -39,7 +39,9 @@ const QUERY = `
 
 d("public schema primary keys", () => {
   it("no table in the public schema is without a primary key", () => {
-    const out = execFileSync("psql", [dbUrl, "-tAc", QUERY], { encoding: "utf8" });
+    const out = execFileSync("psql", [dbUrl, "-tAc", QUERY], {
+      encoding: "utf8",
+    });
     const missing = out
       .split("\n")
       .map((line) => line.trim())

@@ -1,6 +1,16 @@
 import { useMemo } from "react";
-import type { Breakpoint, Section, SectionType, TemplateKey } from "@/lib/builder-ast";
-import { catalogEntry, isContextMismatch, resolveProps, sectionStyle } from "@/lib/builder-ast";
+import type {
+  Breakpoint,
+  Section,
+  SectionType,
+  TemplateKey,
+} from "@/lib/builder-ast";
+import {
+  catalogEntry,
+  isContextMismatch,
+  resolveProps,
+  sectionStyle,
+} from "@/lib/builder-ast";
 import { advancedAttrs } from "@/lib/builder-advanced";
 import { resolveDynamicProps } from "@/lib/dynamic-tags";
 import { useDynamicContext } from "./DynamicContext";
@@ -138,7 +148,8 @@ export function SectionRenderer({
         role="note"
         className="rounded-fq-md border border-dashed border-danger bg-danger-soft p-4 text-sm"
       >
-        Unsupported widget — remove it or reinstall the theme. ({section.invalid})
+        Unsupported widget — remove it or reinstall the theme. (
+        {section.invalid})
       </div>
     );
   }
@@ -171,17 +182,23 @@ export function SectionRenderer({
     hideClasses,
     chrome.className,
     advanced.className,
-    advanced.animation !== "none" ? `fq-anim fq-anim-${advanced.animation}` : "",
+    advanced.animation !== "none"
+      ? `fq-anim fq-anim-${advanced.animation}`
+      : "",
     revealMode !== "none" && !reveal.shown ? "fq-reveal-pending" : "",
     editing ? "relative" : "",
     selected ? "outline outline-2 outline-primary" : "",
     // Studio only: a conditional section that would be hidden right now is
     // outlined instead of removed, so the merchant can still select it.
-    editing && gatedOut ? "outline outline-1 outline-dashed outline-warning opacity-70" : "",
+    editing && gatedOut
+      ? "outline outline-1 outline-dashed outline-warning opacity-70"
+      : "",
   ]
     .filter(Boolean)
     .join(" ");
-  const hasStyle = Object.keys(chrome.style).length > 0 || Object.keys(advanced.style).length > 0;
+  const hasStyle =
+    Object.keys(chrome.style).length > 0 ||
+    Object.keys(advanced.style).length > 0;
   const wrap = (node: React.ReactNode) =>
     editing || wrapperClass || hasStyle ? (
       <div
@@ -216,7 +233,8 @@ export function SectionRenderer({
       if (!editing) return null;
       return (
         <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
-          {entry.label} — available on {entry.templates.join(", ")} templates only.
+          {entry.label} — available on {entry.templates.join(", ")} templates
+          only.
         </div>
       );
     }
@@ -252,7 +270,9 @@ export function SectionRenderer({
   // Phase 8: containers and context widgets always hydrate — their children's
   // own islands live inside them. Leaves follow the registry policy.
   const island: "eager" | ReturnType<typeof hydrationMode> =
-    editing || (section.children?.length ?? 0) > 0 || entry.templates ? "eager" : hydrationMode(section.type);
+    editing || (section.children?.length ?? 0) > 0 || entry.templates
+      ? "eager"
+      : hydrationMode(section.type);
 
   const widget = (
     <WidgetBoundary type={section.type} editing={editing}>
@@ -276,11 +296,22 @@ export function SectionRenderer({
 
         renderChildren={renderChildren}
         {...(onInlineEdit
-          ? { inlineEdit: (key: string, value: string) => onInlineEdit(section.id, key, value) }
+          ? {
+              inlineEdit: (key: string, value: string) =>
+                onInlineEdit(section.id, key, value),
+            }
           : {})}
       />
     </WidgetBoundary>
   );
 
-  return wrap(island === "eager" ? widget : <WidgetIsland mode={island} type={section.type}>{widget}</WidgetIsland>);
+  return wrap(
+    island === "eager" ? (
+      widget
+    ) : (
+      <WidgetIsland mode={island} type={section.type}>
+        {widget}
+      </WidgetIsland>
+    ),
+  );
 }

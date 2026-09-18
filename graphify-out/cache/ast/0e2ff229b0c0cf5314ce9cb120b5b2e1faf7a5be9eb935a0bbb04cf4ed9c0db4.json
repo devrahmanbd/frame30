@@ -1,1 +1,700 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "label": "tree.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L1"}, {"id": "studio_tree_path", "label": "Path", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L9"}, {"id": "studio_tree_findnode", "label": "findNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L11"}, {"id": "studio_tree_findpath", "label": "findPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L20"}, {"id": "studio_tree_parentof", "label": "parentOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L33"}, {"id": "studio_tree_siblingsof", "label": "siblingsOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L42"}, {"id": "studio_tree_mapnodes", "label": "mapNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L47"}, {"id": "studio_tree_updatenode", "label": "updateNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L57"}, {"id": "studio_tree_removenode", "label": "removeNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L65"}, {"id": "studio_tree_clonenode", "label": "cloneNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L69"}, {"id": "studio_tree_insertnode", "label": "insertNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L78"}, {"id": "studio_tree_clampindex", "label": "clampIndex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L97"}, {"id": "studio_tree_duplicatenode", "label": "duplicateNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L102"}, {"id": "studio_tree_containsnode", "label": "containsNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L112"}, {"id": "studio_tree_dropposition", "label": "DropPosition", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L119"}, {"id": "studio_tree_droptarget", "label": "DropTarget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L121"}, {"id": "studio_tree_canmove", "label": "canMove()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L124"}, {"id": "studio_tree_movenode", "label": "moveNode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L135"}, {"id": "studio_tree_dropinto", "label": "dropInto()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L143"}, {"id": "studio_tree_droppositionfor", "label": "dropPositionFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L160"}, {"id": "studio_tree_flatten", "label": "flatten()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L172"}, {"id": "studio_tree_neighbourid", "label": "neighbourId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L180"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "users_rahman_documents_frame30_src_lib_studio_model_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_model_iscontainernode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_model_uid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_model_studionode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_path", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_findnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_findpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_parentof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_siblingsof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_mapnodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_updatenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_removenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_clonenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_insertnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_clampindex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L97", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_duplicatenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L102", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_containsnode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_dropposition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L119", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_droptarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L121", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_canmove", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_movenode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_dropinto", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_droppositionfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_flatten", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_tree_ts", "target": "studio_tree_neighbourid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L180", "weight": 1.0}, {"source": "studio_tree_siblingsof", "target": "studio_tree_parentof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L43", "weight": 1.0}, {"source": "studio_tree_updatenode", "target": "studio_tree_mapnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L62", "weight": 1.0}, {"source": "studio_tree_removenode", "target": "studio_tree_mapnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L66", "weight": 1.0}, {"source": "studio_tree_insertnode", "target": "studio_tree_clampindex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L86", "weight": 1.0}, {"source": "studio_tree_insertnode", "target": "studio_tree_mapnodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L89", "weight": 1.0}, {"source": "studio_tree_duplicatenode", "target": "studio_tree_parentof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L103", "weight": 1.0}, {"source": "studio_tree_duplicatenode", "target": "studio_tree_clonenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L107", "weight": 1.0}, {"source": "studio_tree_duplicatenode", "target": "studio_tree_insertnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L108", "weight": 1.0}, {"source": "studio_tree_containsnode", "target": "studio_tree_findnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L114", "weight": 1.0}, {"source": "studio_tree_canmove", "target": "studio_tree_containsnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L127", "weight": 1.0}, {"source": "studio_tree_canmove", "target": "studio_tree_findnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L129", "weight": 1.0}, {"source": "studio_tree_movenode", "target": "studio_tree_canmove", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L136", "weight": 1.0}, {"source": "studio_tree_movenode", "target": "studio_tree_findnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L137", "weight": 1.0}, {"source": "studio_tree_movenode", "target": "studio_tree_removenode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L139", "weight": 1.0}, {"source": "studio_tree_movenode", "target": "studio_tree_dropinto", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L140", "weight": 1.0}, {"source": "studio_tree_dropinto", "target": "studio_tree_insertnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L144", "weight": 1.0}, {"source": "studio_tree_dropinto", "target": "studio_tree_findnode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L146", "weight": 1.0}, {"source": "studio_tree_dropinto", "target": "studio_tree_parentof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L149", "weight": 1.0}, {"source": "studio_tree_neighbourid", "target": "studio_tree_flatten", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L181", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_tree_parentof", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L35"}, {"caller_nid": "studio_tree_mapnodes", "callee": "fn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L50"}, {"caller_nid": "studio_tree_mapnodes", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L52"}, {"caller_nid": "studio_tree_clonenode", "callee": "structuredClone", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L71"}, {"caller_nid": "studio_tree_clonenode", "callee": "uid", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L72"}, {"caller_nid": "studio_tree_clonenode", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L73"}, {"caller_nid": "studio_tree_insertnode", "callee": "splice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L86"}, {"caller_nid": "studio_tree_clampindex", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L98"}, {"caller_nid": "studio_tree_clampindex", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L99"}, {"caller_nid": "studio_tree_clampindex", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L99"}, {"caller_nid": "studio_tree_duplicatenode", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L105"}, {"caller_nid": "studio_tree_containsnode", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L116"}, {"caller_nid": "studio_tree_canmove", "callee": "isContainerNode", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L130"}, {"caller_nid": "studio_tree_dropinto", "callee": "findIndex", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L151"}, {"caller_nid": "studio_tree_flatten", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L173"}, {"caller_nid": "studio_tree_neighbourid", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L181"}, {"caller_nid": "studio_tree_neighbourid", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts", "source_location": "L182"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "label": "tree.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_tree_path",
+      "label": "Path",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "studio_tree_findnode",
+      "label": "findNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "studio_tree_findpath",
+      "label": "findPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "studio_tree_parentof",
+      "label": "parentOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "studio_tree_siblingsof",
+      "label": "siblingsOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "studio_tree_mapnodes",
+      "label": "mapNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "studio_tree_updatenode",
+      "label": "updateNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "studio_tree_removenode",
+      "label": "removeNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "studio_tree_clonenode",
+      "label": "cloneNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "studio_tree_insertnode",
+      "label": "insertNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "studio_tree_clampindex",
+      "label": "clampIndex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L97"
+    },
+    {
+      "id": "studio_tree_duplicatenode",
+      "label": "duplicateNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L102"
+    },
+    {
+      "id": "studio_tree_containsnode",
+      "label": "containsNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "studio_tree_dropposition",
+      "label": "DropPosition",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L119"
+    },
+    {
+      "id": "studio_tree_droptarget",
+      "label": "DropTarget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L121"
+    },
+    {
+      "id": "studio_tree_canmove",
+      "label": "canMove()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "studio_tree_movenode",
+      "label": "moveNode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L135"
+    },
+    {
+      "id": "studio_tree_dropinto",
+      "label": "dropInto()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "studio_tree_droppositionfor",
+      "label": "dropPositionFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L160"
+    },
+    {
+      "id": "studio_tree_flatten",
+      "label": "flatten()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L172"
+    },
+    {
+      "id": "studio_tree_neighbourid",
+      "label": "neighbourId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L180"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "users_rahman_documents_frame30_src_lib_studio_model_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_model_iscontainernode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_model_uid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_model_studionode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_path",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_findnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_findpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_parentof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_siblingsof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_mapnodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_updatenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_removenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_clonenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_insertnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_clampindex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_duplicatenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_containsnode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_dropposition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_droptarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_canmove",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_movenode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_dropinto",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_droppositionfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_flatten",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_tree_ts",
+      "target": "studio_tree_neighbourid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L180",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_siblingsof",
+      "target": "studio_tree_parentof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_updatenode",
+      "target": "studio_tree_mapnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_removenode",
+      "target": "studio_tree_mapnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_insertnode",
+      "target": "studio_tree_clampindex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_insertnode",
+      "target": "studio_tree_mapnodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_duplicatenode",
+      "target": "studio_tree_parentof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_duplicatenode",
+      "target": "studio_tree_clonenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_duplicatenode",
+      "target": "studio_tree_insertnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_containsnode",
+      "target": "studio_tree_findnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_canmove",
+      "target": "studio_tree_containsnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_canmove",
+      "target": "studio_tree_findnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_movenode",
+      "target": "studio_tree_canmove",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_movenode",
+      "target": "studio_tree_findnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_movenode",
+      "target": "studio_tree_removenode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_movenode",
+      "target": "studio_tree_dropinto",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_dropinto",
+      "target": "studio_tree_insertnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_dropinto",
+      "target": "studio_tree_findnode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_dropinto",
+      "target": "studio_tree_parentof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_tree_neighbourid",
+      "target": "studio_tree_flatten",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_tree_parentof",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "studio_tree_mapnodes",
+      "callee": "fn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "studio_tree_mapnodes",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "studio_tree_clonenode",
+      "callee": "structuredClone",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "studio_tree_clonenode",
+      "callee": "uid",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "studio_tree_clonenode",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "studio_tree_insertnode",
+      "callee": "splice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "studio_tree_clampindex",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "studio_tree_clampindex",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "studio_tree_clampindex",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "studio_tree_duplicatenode",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "studio_tree_containsnode",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "studio_tree_canmove",
+      "callee": "isContainerNode",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "studio_tree_dropinto",
+      "callee": "findIndex",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "studio_tree_flatten",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "studio_tree_neighbourid",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L181"
+    },
+    {
+      "caller_nid": "studio_tree_neighbourid",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/tree.ts",
+      "source_location": "L182"
+    }
+  ]
+}

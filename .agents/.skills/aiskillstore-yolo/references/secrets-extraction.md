@@ -5,6 +5,7 @@ Reference for extracting existing secrets from Lovable Cloud's settings page usi
 ## Overview
 
 Navigate to Lovable Cloud settings and extract existing secret names. This helps:
+
 - Show which secrets are already configured
 - Avoid duplicate configuration attempts
 - Merge Lovable Cloud secrets with codebase-detected secrets
@@ -22,16 +23,19 @@ Navigate to Lovable Cloud settings and extract existing secret names. This helps
 ### Step 1: Construct Cloud Settings URL
 
 **Input:** Lovable project URL
+
 ```
 https://lovable.dev/projects/PROJECT_ID
 ```
 
 **Output:** Cloud settings URL
+
 ```
 https://lovable.dev/projects/PROJECT_ID?view=cloud
 ```
 
 **Example:**
+
 - Input: `https://lovable.dev/projects/c0be81e7-dc30-4214-825a-9322c311c8df`
 - Output: `https://lovable.dev/projects/c0be81e7-dc30-4214-825a-9322c311c8df?view=cloud`
 
@@ -40,6 +44,7 @@ https://lovable.dev/projects/PROJECT_ID?view=cloud
 **Sequence:**
 
 1. Navigate to cloud URL
+
    ```
    URL: https://lovable.dev/projects/PROJECT_ID?view=cloud
    Action: Navigate
@@ -47,12 +52,14 @@ https://lovable.dev/projects/PROJECT_ID?view=cloud
    ```
 
 2. Wait for page load
+
    ```
    Wait for: DOM content loaded
    Check for loading indicators: disappear
    ```
 
 3. Check for login redirect
+
    ```
    If current URL contains: /login, /signin, /auth
    Then: Wait for user to login (30 second timeout)
@@ -67,6 +74,7 @@ https://lovable.dev/projects/PROJECT_ID?view=cloud
    ```
 
 **Debug output (if enabled):**
+
 ```
 🐛 DEBUG: Navigation Step
 
@@ -85,6 +93,7 @@ Result: ✅ Loaded successfully
 **Element selectors (try in order):**
 
 1. **Data-testid attribute** (most reliable)
+
    ```
    [data-testid="secrets-section"]
    [data-testid="cloud-secrets"]
@@ -92,12 +101,14 @@ Result: ✅ Loaded successfully
    ```
 
 2. **ARIA labels** (accessibility attributes)
+
    ```
    section[aria-label*="Secret"]
    div[aria-label*="Secret"]
    ```
 
 3. **Class-based selectors** (fallback)
+
    ```
    div[class*="secrets"]
    div[class*="secret-list"]
@@ -111,10 +122,12 @@ Result: ✅ Loaded successfully
    ```
 
 **Timeouts:**
+
 - Max wait for section: 5 seconds
 - If not found: Return empty array, continue
 
 **Debug output:**
+
 ```
 🐛 DEBUG: Locate Secrets Section
 
@@ -131,46 +144,57 @@ Result: ✅ Located
 **Element patterns to extract (try in order):**
 
 #### Pattern A: Data-testid Attributes
+
 ```
 [data-testid="secret-key"]
 [data-testid="secret-name"]
 [data-testid="secret-item"]
 ```
+
 **Action:** Get text content of element
 
 #### Pattern B: Input Fields
+
 ```
 input[name*="secret"][readonly]
 input[name*="secret"][disabled]
 input[name*="key"]
 ```
+
 **Action:** Get `value` attribute
 
 #### Pattern C: Code/Pre Elements
+
 ```
 code
 pre
 span[class*="key"]
 span[class*="secret"]
 ```
+
 **Action:** Get text content
 
 #### Pattern D: List Items
+
 ```
 li[class*="secret"]
 li[class*="key"]
 tr[class*="secret"] td:first-child
 ```
+
 **Action:** Get text content of first cell/child
 
 #### Pattern E: Container Elements
+
 ```
 div[class*="secret-item"] span
 div[class*="secret-row"] [class*="name"]
 ```
+
 **Action:** Get text content of name element
 
 **Extraction logic:**
+
 ```typescript
 function extractSecretNames(secretsSection: Element): string[] {
   const secrets = new Set<string>();
@@ -179,7 +203,7 @@ function extractSecretNames(secretsSection: Element): string[] {
   const patterns = [
     '[data-testid="secret-key"]',
     'input[name*="secret"][readonly]',
-    'code',
+    "code",
     'li[class*="secret"] span:first-child',
     // ... more patterns
   ];
@@ -208,10 +232,10 @@ function extractKeyName(rawValue: string): string {
   // "KEY (xxxxx)" → "KEY"
 
   const cleanValue = rawValue
-    .split('=')[0]
-    .split(':')[0]
-    .replace(/^[•\-\*]+\s*/, '')
-    .replace(/\s*\([^)]*\).*$/, '')
+    .split("=")[0]
+    .split(":")[0]
+    .replace(/^[•\-\*]+\s*/, "")
+    .replace(/\s*\([^)]*\).*$/, "")
     .trim();
 
   return cleanValue.toUpperCase();
@@ -225,6 +249,7 @@ function isValidSecretName(value: string): boolean {
 ```
 
 **Common secret name formats in Lovable:**
+
 - `KEY=*****` → Extract "KEY"
 - `KEY: [hidden]` → Extract "KEY"
 - `• KEY_NAME` → Extract "KEY_NAME"
@@ -232,6 +257,7 @@ function isValidSecretName(value: string): boolean {
 - Plain text: `RESEND_API_KEY` → Extract "RESEND_API_KEY"
 
 **Expected output:**
+
 ```json
 [
   "RESEND_API_KEY",
@@ -242,6 +268,7 @@ function isValidSecretName(value: string): boolean {
 ```
 
 **Debug output:**
+
 ```
 🐛 DEBUG: Extract Secret Names
 
@@ -263,14 +290,11 @@ Result: ✅ Success (extracted 4 secrets)
 ### Step 5: Return Results
 
 **Return format:**
+
 ```json
 {
   "success": true,
-  "secrets": [
-    "RESEND_API_KEY",
-    "SUPABASE_SERVICE_ROLE_KEY",
-    "OPENAI_API_KEY"
-  ],
+  "secrets": ["RESEND_API_KEY", "SUPABASE_SERVICE_ROLE_KEY", "OPENAI_API_KEY"],
   "count": 3,
   "source": "lovable_cloud",
   "timestamp": "2024-01-15T10:30:00Z"
@@ -279,10 +303,10 @@ Result: ✅ Success (extracted 4 secrets)
 
 **Return values:**
 
-| Status | Secrets Array | Meaning |
-|--------|---------------|---------|
-| `success: true` | Array of names | Extraction succeeded, use secrets |
-| `success: true` | Empty array `[]` | No secrets configured yet |
+| Status           | Secrets Array    | Meaning                               |
+| ---------------- | ---------------- | ------------------------------------- |
+| `success: true`  | Array of names   | Extraction succeeded, use secrets     |
+| `success: true`  | Empty array `[]` | No secrets configured yet             |
 | `success: false` | Empty array `[]` | Extraction failed, fallback to manual |
 
 ## Error Handling
@@ -290,6 +314,7 @@ Result: ✅ Success (extracted 4 secrets)
 ### Scenario 1: Page Not Found (404)
 
 **Detection:**
+
 ```
 URL returns 404 status
 OR "Page not found" message visible
@@ -297,6 +322,7 @@ OR Redirect to homepage detected
 ```
 
 **Handling:**
+
 ```
 Log: "Lovable project URL not found"
 Return: { success: true, secrets: [] }
@@ -309,6 +335,7 @@ Fallback: Continue with codebase-only detection
 ### Scenario 2: Login Required
 
 **Detection:**
+
 ```
 Current URL contains: /login, /signin, /auth
 OR Login form visible
@@ -316,6 +343,7 @@ OR "Sign in" button present
 ```
 
 **Handling:**
+
 ```
 Log: "User login required"
 Message: "Please log in to Lovable"
@@ -332,12 +360,14 @@ Timeout: If login not completed in 30s
 ### Scenario 3: Secrets Section Not Found
 
 **Detection:**
+
 ```
 None of the selectors return elements
 Timeout: Section not visible after 5 seconds
 ```
 
 **Handling:**
+
 ```
 Log: "Secrets section not found - Lovable UI may have changed"
 Return: { success: true, secrets: [] }
@@ -350,6 +380,7 @@ Fallback: Continue with codebase-only detection
 ### Scenario 4: No Secrets Configured
 
 **Detection:**
+
 ```
 Secrets section is visible and loaded
 No secret items found
@@ -357,6 +388,7 @@ OR Empty state message visible: "No secrets yet", "Add your first secret"
 ```
 
 **Handling:**
+
 ```
 Log: "Secrets section found but empty"
 Return: { success: true, secrets: [] }
@@ -369,11 +401,13 @@ Fallback: Continue - codebase detection will find what's needed
 ### Scenario 5: Extraction Timeout (Total)
 
 **Detection:**
+
 ```
 Navigation + extraction takes > 30 seconds total
 ```
 
 **Timeout breakdown:**
+
 - Navigation: 10 seconds
 - Wait for section: 5 seconds
 - Wait for login: 30 seconds (optional, only if needed)
@@ -381,6 +415,7 @@ Navigation + extraction takes > 30 seconds total
 - **Total max:** 30 seconds of actual time
 
 **Handling:**
+
 ```
 If any step exceeds timeout:
   Log: "Secrets extraction timed out"
@@ -393,6 +428,7 @@ If any step exceeds timeout:
 ### Scenario 6: Extraction Partial Failure
 
 **Detection:**
+
 ```
 Some secrets extracted, some failed
 HTML structure partially changed
@@ -400,6 +436,7 @@ Only 2/5 expected secrets found
 ```
 
 **Handling:**
+
 ```
 Return successfully with partial results:
   { success: true, secrets: ["SECRET1", "SECRET2"] }
@@ -416,6 +453,7 @@ User will add any missing manually
 **Example:** `API-KEY-v2`, `API.KEY`, `API KEY`
 
 **Handling:**
+
 ```
 Normalize to uppercase + underscore: API_KEY_V2
 Ask user to confirm: "Found 'API_KEY_V2', is this correct?"
@@ -427,6 +465,7 @@ Store as provided if user confirms
 **Example:** `VERY_VERY_VERY_LONG_SECRET_NAME_WITH_MANY_PARTS`
 
 **Handling:**
+
 ```
 Extract fully (no length limit)
 Display with truncation if needed: "VERY_VERY_...NAME_WITH_MANY_PARTS"
@@ -438,6 +477,7 @@ Store complete name
 **Example:** UI shows same secret twice (bug or UI duplication)
 
 **Handling:**
+
 ```
 Use Set to deduplicate
 Return unique secrets only
@@ -449,6 +489,7 @@ Log: "Removed 1 duplicate: SECRET_NAME"
 **Example:** Input shows `RESEND_API_KEY: ••••••••••••••••`
 
 **Handling:**
+
 ```
 Extract "RESEND_API_KEY"
 Ignore the masked value portion (•••••)
@@ -501,12 +542,14 @@ If browser automation fails:
 ## Performance Metrics
 
 **Typical timings:**
+
 - Navigation: 1-2 seconds
 - Wait for section: 1-2 seconds
 - Extraction: 0.5-1 seconds
 - **Total: 3-5 seconds** (most cases)
 
 **Worst case:**
+
 - Navigation: 10 seconds
 - Wait for section: 5 seconds
 - **Total: 15 seconds** (rare)

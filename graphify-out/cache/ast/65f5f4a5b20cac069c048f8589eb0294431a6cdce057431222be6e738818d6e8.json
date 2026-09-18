@@ -1,1 +1,1114 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "label": "SiteKitDesk.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L1"}, {"id": "seo_sitekitdesk_windows", "label": "WINDOWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L45"}, {"id": "seo_sitekitdesk_errtext", "label": "errText()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L47"}, {"id": "seo_sitekitdesk_pct", "label": "pct()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L51"}, {"id": "seo_sitekitdesk_sitekitdesk", "label": "SiteKitDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L55"}, {"id": "seo_sitekitdesk_metric", "label": "Metric()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L530"}, {"id": "seo_sitekitdesk_line", "label": "Line()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L539"}, {"id": "seo_sitekitdesk_rowtable", "label": "RowTable()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L548"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_errorframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_field", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_statuspill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "admin_marketingui_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_search_console_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitarticlesfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitinspectfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitpropertiesfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitrefreshfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitsavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitsnapshotfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_functions_sitekitstatefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "users_rahman_documents_frame30_src_lib_search_console_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_analytics_budget_warn_kb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_analytics_spec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_analytics_vendors", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_custom_verification_max", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_verification_providers", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_verification_spec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_analyticsbudgetkb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_analyticsvendor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_customverification", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_sitekitsettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "lib_search_console_verificationprovider", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_windows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_errtext", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_pct", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_sitekitdesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_metric", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L530", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_line", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L539", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx", "target": "seo_sitekitdesk_rowtable", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L548", "weight": 1.0}, {"source": "seo_sitekitdesk_sitekitdesk", "target": "seo_sitekitdesk_errtext", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L140", "weight": 1.0}, {"source": "seo_sitekitdesk_sitekitdesk", "target": "seo_sitekitdesk_pct", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L442", "weight": 1.0}], "raw_calls": [{"caller_nid": "seo_sitekitdesk_errtext", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L48"}, {"caller_nid": "seo_sitekitdesk_pct", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L52"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L56"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L58"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L61"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L62"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L63"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L64"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L65"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L66"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L67"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L69"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L70"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L71"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L73"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L82"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L85"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L88"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L91"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L94"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L99"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L110"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L124"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L130"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L136"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L161"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L164"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L175"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L176"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L185"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L185"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L192"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L208"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L213"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L214"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L216"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L225"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L233"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L234"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L239"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L240"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L247"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L254"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L276"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L288"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L290"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L303"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L336"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L345"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L347"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L348"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L352"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L376"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L380"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L380"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L380"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L393"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L393"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L396"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L403"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L405"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L421"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L424"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L431"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L436"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L440"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L440"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L441"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L441"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L444"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L445"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L451"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L452"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L454"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L454"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L462"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L465"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L465"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L480"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L484"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L492"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L495"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L495"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L500"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L501"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L502"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L504"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L514"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L516"}, {"caller_nid": "seo_sitekitdesk_sitekitdesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L517"}, {"caller_nid": "seo_sitekitdesk_rowtable", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx", "source_location": "L562"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "label": "SiteKitDesk.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "seo_sitekitdesk_windows",
+      "label": "WINDOWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L45"
+    },
+    {
+      "id": "seo_sitekitdesk_errtext",
+      "label": "errText()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L47"
+    },
+    {
+      "id": "seo_sitekitdesk_pct",
+      "label": "pct()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L51"
+    },
+    {
+      "id": "seo_sitekitdesk_sitekitdesk",
+      "label": "SiteKitDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L55"
+    },
+    {
+      "id": "seo_sitekitdesk_metric",
+      "label": "Metric()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L530"
+    },
+    {
+      "id": "seo_sitekitdesk_line",
+      "label": "Line()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L539"
+    },
+    {
+      "id": "seo_sitekitdesk_rowtable",
+      "label": "RowTable()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L548"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_errorframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_field",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_statuspill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "admin_marketingui_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_search_console_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitarticlesfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitinspectfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitpropertiesfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitrefreshfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitsavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitsnapshotfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_functions_sitekitstatefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_search_console_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_analytics_budget_warn_kb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_analytics_spec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_analytics_vendors",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_custom_verification_max",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_verification_providers",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_verification_spec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_analyticsbudgetkb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_analyticsvendor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_customverification",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_sitekitsettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "lib_search_console_verificationprovider",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_windows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_errtext",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_pct",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_sitekitdesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_metric",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L530",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_line",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L539",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_sitekitdesk_tsx",
+      "target": "seo_sitekitdesk_rowtable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L548",
+      "weight": 1.0
+    },
+    {
+      "source": "seo_sitekitdesk_sitekitdesk",
+      "target": "seo_sitekitdesk_errtext",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "seo_sitekitdesk_sitekitdesk",
+      "target": "seo_sitekitdesk_pct",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L442",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "seo_sitekitdesk_errtext",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_pct",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L216"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L233"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L234"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L240"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L254"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L376"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L380"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L393"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L393"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L396"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L403"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L405"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L421"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L424"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L431"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L436"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L441"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L441"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L444"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L445"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L451"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L452"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L462"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L465"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L465"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L480"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L484"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L492"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L495"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L500"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L501"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L502"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L504"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L514"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L516"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_sitekitdesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L517"
+    },
+    {
+      "caller_nid": "seo_sitekitdesk_rowtable",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/SiteKitDesk.tsx",
+      "source_location": "L562"
+    }
+  ]
+}

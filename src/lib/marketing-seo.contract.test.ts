@@ -48,7 +48,8 @@ import {
 import { ORG_NAP } from "./legal";
 
 const ORIGIN = "https://framique.com";
-const read = (path: string) => (existsSync(path) ? readFileSync(path, "utf8") : "");
+const read = (path: string) =>
+  existsSync(path) ? readFileSync(path, "utf8") : "";
 
 /* ------------------------------------------------------------------ registry */
 
@@ -61,26 +62,41 @@ describe("registry", () => {
   it("keeps every title inside the SERP width (<60 chars) and every description <155 chars", () => {
     for (const route of MARKETING_ROUTES) {
       for (const locale of ["en", "bn"] as const) {
-        expect(route.title[locale].length, `${route.path} ${locale} title`).toBeLessThan(TITLE_MAX);
-        expect(route.description[locale].length, `${route.path} ${locale} desc`).toBeLessThan(155);
-        expect(route.description[locale].length, `${route.path} ${locale} desc`).toBeLessThanOrEqual(
-          DESCRIPTION_MAX,
-        );
+        expect(
+          route.title[locale].length,
+          `${route.path} ${locale} title`,
+        ).toBeLessThan(TITLE_MAX);
+        expect(
+          route.description[locale].length,
+          `${route.path} ${locale} desc`,
+        ).toBeLessThan(155);
+        expect(
+          route.description[locale].length,
+          `${route.path} ${locale} desc`,
+        ).toBeLessThanOrEqual(DESCRIPTION_MAX);
       }
     }
   });
 
   it("has no duplicate titles or descriptions across routes (cannibalisation)", () => {
     const titles = MARKETING_ROUTES.map((r) => r.title.en.toLowerCase());
-    const descriptions = MARKETING_ROUTES.map((r) => r.description.en.toLowerCase());
+    const descriptions = MARKETING_ROUTES.map((r) =>
+      r.description.en.toLowerCase(),
+    );
     expect(new Set(titles).size).toBe(titles.length);
     expect(new Set(descriptions).size).toBe(descriptions.length);
   });
 
   it("carries real Bangla for every bn string", () => {
     for (const route of MARKETING_ROUTES) {
-      expect(/[\u0980-\u09FF]/.test(route.title.bn), `${route.path} bn title`).toBe(true);
-      expect(/[\u0980-\u09FF]/.test(route.description.bn), `${route.path} bn desc`).toBe(true);
+      expect(
+        /[\u0980-\u09FF]/.test(route.title.bn),
+        `${route.path} bn title`,
+      ).toBe(true);
+      expect(
+        /[\u0980-\u09FF]/.test(route.description.bn),
+        `${route.path} bn desc`,
+      ).toBe(true);
     }
   });
 
@@ -128,7 +144,9 @@ describe("absolute URLs", () => {
   });
 
   it("pins a locale without destroying existing query params", () => {
-    expect(localePinned(`${ORIGIN}/blog?page=2`, "bn")).toBe(`${ORIGIN}/blog?page=2&lang=bn`);
+    expect(localePinned(`${ORIGIN}/blog?page=2`, "bn")).toBe(
+      `${ORIGIN}/blog?page=2&lang=bn`,
+    );
   });
 
   it("clamps on a word boundary rather than mid-word", () => {
@@ -146,17 +164,29 @@ describe("buildMarketingHead", () => {
 
   it("emits title, description, canonical and og:url", () => {
     expect(head.meta[0]?.title).toBe(marketingRoute("pricing").title.en);
-    expect(metaOf(head, "name", "description")).toBe(marketingRoute("pricing").description.en);
-    expect(head.links.find((l) => l.rel === "canonical")?.href).toBe(`${ORIGIN}/pricing`);
+    expect(metaOf(head, "name", "description")).toBe(
+      marketingRoute("pricing").description.en,
+    );
+    expect(head.links.find((l) => l.rel === "canonical")?.href).toBe(
+      `${ORIGIN}/pricing`,
+    );
     expect(metaOf(head, "property", "og:url")).toBe(`${ORIGIN}/pricing`);
   });
 
   it("emits bn, en and x-default alternates that are distinct and reciprocal", () => {
     const alts = head.links.filter((l) => l.rel === "alternate") as any[];
-    expect(alts.map((a) => a.hreflang ?? a.hrefLang).sort()).toEqual(["bn-BD", "en", "x-default"]);
+    expect(alts.map((a) => a.hreflang ?? a.hrefLang).sort()).toEqual([
+      "bn-BD",
+      "en",
+      "x-default",
+    ]);
     expect(new Set(alts.map((a) => a.href)).size).toBe(3);
-    expect(alts.find((a) => (a.hreflang ?? a.hrefLang) === "bn-BD")?.href).toContain("lang=bn");
-    expect(alts.find((a) => (a.hreflang ?? a.hrefLang) === "x-default")?.href).toBe(`${ORIGIN}/pricing`);
+    expect(
+      alts.find((a) => (a.hreflang ?? a.hrefLang) === "bn-BD")?.href,
+    ).toContain("lang=bn");
+    expect(
+      alts.find((a) => (a.hreflang ?? a.hrefLang) === "x-default")?.href,
+    ).toBe(`${ORIGIN}/pricing`);
   });
 
   it("omits every absolute tag when the origin is unknown, instead of going relative", () => {
@@ -168,26 +198,40 @@ describe("buildMarketingHead", () => {
   });
 
   it("renders the bn head when the document is Bangla", () => {
-    const bn = buildMarketingHead({ route: "pricing", origin: ORIGIN, lang: "bn" });
+    const bn = buildMarketingHead({
+      route: "pricing",
+      origin: ORIGIN,
+      lang: "bn",
+    });
     expect(bn.meta[0]?.title).toBe(marketingRoute("pricing").title.bn);
-    expect(bn.meta.find((t) => t["property"] === "og:locale")?.content).toBe("bn_BD");
+    expect(bn.meta.find((t) => t["property"] === "og:locale")?.content).toBe(
+      "bn_BD",
+    );
   });
 
   it("drops a relative or missing og:image and downgrades the twitter card", () => {
-    const relative = buildMarketingHead({ route: "home", origin: ORIGIN, ogImage: "/og.png" });
-    expect(relative.meta.find((t) => t["property"] === "og:image")).toBeUndefined();
-    expect(relative.meta.find((t) => t["name"] === "twitter:card")?.content).toBe("summary");
+    const relative = buildMarketingHead({
+      route: "home",
+      origin: ORIGIN,
+      ogImage: "/og.png",
+    });
+    expect(
+      relative.meta.find((t) => t["property"] === "og:image"),
+    ).toBeUndefined();
+    expect(
+      relative.meta.find((t) => t["name"] === "twitter:card")?.content,
+    ).toBe("summary");
     const absolute = buildMarketingHead({
       route: "home",
       origin: ORIGIN,
       ogImage: "https://cdn.example/og.png",
     });
-    expect(absolute.meta.find((t) => t["property"] === "og:image")?.content).toBe(
-      "https://cdn.example/og.png",
-    );
-    expect(absolute.meta.find((t) => t["name"] === "twitter:card")?.content).toBe(
-      "summary_large_image",
-    );
+    expect(
+      absolute.meta.find((t) => t["property"] === "og:image")?.content,
+    ).toBe("https://cdn.example/og.png");
+    expect(
+      absolute.meta.find((t) => t["name"] === "twitter:card")?.content,
+    ).toBe("summary_large_image");
   });
 
   it("clamps an over-long override rather than shipping a truncated snippet", () => {
@@ -198,13 +242,16 @@ describe("buildMarketingHead", () => {
       description: "B ".repeat(200),
     });
     expect((long.meta[0]?.title ?? "").length).toBeLessThanOrEqual(TITLE_MAX);
-    const description = long.meta.find((t) => t["name"] === "description")?.content ?? "";
+    const description =
+      long.meta.find((t) => t["name"] === "description")?.content ?? "";
     expect(description.length).toBeLessThanOrEqual(DESCRIPTION_MAX);
   });
 
   it("marks non-indexable routes noindex,follow and keeps them self-canonical", () => {
     const status = buildMarketingHead({ route: "status", origin: ORIGIN });
-    expect(status.meta.find((t) => t["name"] === "robots")?.content).toBe("noindex,follow");
+    expect(status.meta.find((t) => t["name"] === "robots")?.content).toBe(
+      "noindex,follow",
+    );
     const home = buildMarketingHead({ route: "home", origin: ORIGIN });
     expect(home.meta.find((t) => t["name"] === "robots")).toBeUndefined();
   });
@@ -215,7 +262,11 @@ describe("buildMarketingHead", () => {
 describe("structured data", () => {
   it("emits a valid graph for every registered route", () => {
     for (const route of MARKETING_ROUTES) {
-      const graph = buildGraph({ route: route.id, origin: ORIGIN, faq: [{ question: "q", answer: "a" }] });
+      const graph = buildGraph({
+        route: route.id,
+        origin: ORIGIN,
+        faq: [{ question: "q", answer: "a" }],
+      });
       if (!graph) continue;
       expect(errorsOnly(validateJsonLd(graph, route.path))).toEqual([]);
     }
@@ -232,8 +283,28 @@ describe("structured data", () => {
       }) as { "@graph": { "@type": string }[] } | null;
       for (const node of graph?.["@graph"] ?? []) kinds.add(node["@type"]);
     }
-    kinds.add(String((articleNode({ origin: ORIGIN, path: "/blog/x", headline: "t" }) as never as { "@type": string })["@type"]));
-    kinds.add(String((techArticleNode({ origin: ORIGIN, path: "/docs/x", headline: "t" }) as never as { "@type": string })["@type"]));
+    kinds.add(
+      String(
+        (
+          articleNode({
+            origin: ORIGIN,
+            path: "/blog/x",
+            headline: "t",
+          }) as never as { "@type": string }
+        )["@type"],
+      ),
+    );
+    kinds.add(
+      String(
+        (
+          techArticleNode({
+            origin: ORIGIN,
+            path: "/docs/x",
+            headline: "t",
+          }) as never as { "@type": string }
+        )["@type"],
+      ),
+    );
     for (const required of [
       "Organization",
       "WebSite",
@@ -249,18 +320,26 @@ describe("structured data", () => {
   });
 
   it("cross-references nodes by @id so publisher resolves", () => {
-    const graph = buildGraph({ route: "home", origin: ORIGIN, faq: [{ question: "q", answer: "a" }] }) as {
+    const graph = buildGraph({
+      route: "home",
+      origin: ORIGIN,
+      faq: [{ question: "q", answer: "a" }],
+    }) as {
       "@graph": Record<string, unknown>[];
     };
     const ids = new Set(graph["@graph"].map((n) => n["@id"]).filter(Boolean));
     expect(ids).toContain(`${ORIGIN}/#organization`);
-    const website = graph["@graph"].find((n) => n["@type"] === "WebSite") as Record<string, any>;
+    const website = graph["@graph"].find(
+      (n) => n["@type"] === "WebSite",
+    ) as Record<string, any>;
     expect(website["publisher"]["@id"]).toBe(`${ORIGIN}/#organization`);
   });
 
   it("points SearchAction at a URL the site actually serves", () => {
     const site = websiteNode(ORIGIN) as Record<string, any>;
-    expect(site["potentialAction"].target.urlTemplate).toBe(`${ORIGIN}/blog?q={search_term_string}`);
+    expect(site["potentialAction"].target.urlTemplate).toBe(
+      `${ORIGIN}/blog?q={search_term_string}`,
+    );
     expect(websiteNode(null)["potentialAction"]).toBeUndefined();
   });
 
@@ -277,7 +356,13 @@ describe("structured data", () => {
   it("drops empty FAQ entries instead of emitting blank questions", () => {
     expect(faqPageNode([], ORIGIN)).toBeNull();
     expect(faqPageNode([{ question: " ", answer: "a" }], ORIGIN)).toBeNull();
-    const node = faqPageNode([{ question: "q", answer: "a" }, { question: "x", answer: "" }], ORIGIN) as any;
+    const node = faqPageNode(
+      [
+        { question: "q", answer: "a" },
+        { question: "x", answer: "" },
+      ],
+      ORIGIN,
+    ) as any;
     expect(node.mainEntity).toHaveLength(1);
   });
 
@@ -292,9 +377,18 @@ describe("structured data", () => {
   });
 
   it("builds a breadcrumb trail that starts at home and ends at the leaf", () => {
-    const crumbs = breadcrumbNode("legal", ORIGIN, "en", { name: "Terms", path: "/legal/terms" }) as any;
-    expect(crumbs.itemListElement.map((c: any) => c.name)).toEqual(["Home", "Legal", "Terms"]);
-    expect(crumbs.itemListElement.map((c: any) => c.position)).toEqual([1, 2, 3]);
+    const crumbs = breadcrumbNode("legal", ORIGIN, "en", {
+      name: "Terms",
+      path: "/legal/terms",
+    }) as any;
+    expect(crumbs.itemListElement.map((c: any) => c.name)).toEqual([
+      "Home",
+      "Legal",
+      "Terms",
+    ]);
+    expect(crumbs.itemListElement.map((c: any) => c.position)).toEqual([
+      1, 2, 3,
+    ]);
     expect(crumbs.itemListElement.at(-1).item).toBe(`${ORIGIN}/legal/terms`);
     expect(breadcrumbNode("home", ORIGIN)).toBeNull();
     expect(breadcrumbNode("legal", null)).toBeNull();
@@ -310,22 +404,34 @@ describe("structured data", () => {
     expect(node["headline"].length).toBeLessThanOrEqual(110);
     expect(node["image"]).toBeUndefined();
     expect(node["author"]["name"]).toBe(ORG_NAP.brand);
-    expect(articleNode({ origin: ORIGIN, path: "/blog/x", headline: "  " })).toBeNull();
+    expect(
+      articleNode({ origin: ORIGIN, path: "/blog/x", headline: "  " }),
+    ).toBeNull();
   });
 
   it("flags relative URLs, missing @type and an empty graph", () => {
-    expect(errorsOnly(validateJsonLd({ "@context": "https://schema.org", "@graph": [] })).map((i) => i.code)).toContain(
-      "jsonld:empty_graph",
-    );
     expect(
-      errorsOnly(validateJsonLd({ "@context": "https://schema.org", "@type": "Thing", url: "/relative" })).map(
-        (i) => i.code,
-      ),
+      errorsOnly(
+        validateJsonLd({ "@context": "https://schema.org", "@graph": [] }),
+      ).map((i) => i.code),
+    ).toContain("jsonld:empty_graph");
+    expect(
+      errorsOnly(
+        validateJsonLd({
+          "@context": "https://schema.org",
+          "@type": "Thing",
+          url: "/relative",
+        }),
+      ).map((i) => i.code),
     ).toContain("jsonld:relative_url");
-    expect(errorsOnly(validateJsonLd({ "@context": "https://schema.org", name: "x" })).map((i) => i.code)).toContain(
-      "jsonld:type",
+    expect(
+      errorsOnly(
+        validateJsonLd({ "@context": "https://schema.org", name: "x" }),
+      ).map((i) => i.code),
+    ).toContain("jsonld:type");
+    expect(errorsOnly(validateJsonLd("nope")).map((i) => i.code)).toContain(
+      "jsonld:not_object",
     );
-    expect(errorsOnly(validateJsonLd("nope")).map((i) => i.code)).toContain("jsonld:not_object");
   });
 });
 
@@ -338,7 +444,9 @@ describe("sitemap and robots", () => {
     expect(entries).toHaveLength(indexable.length);
     for (const entry of entries) {
       expect(entry.lastmod).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-      expect(entry.alternates?.map((a: any) => a.hreflang ?? a.hrefLang).sort()).toEqual(["bn-BD", "en", "x-default"]);
+      expect(
+        entry.alternates?.map((a: any) => a.hreflang ?? a.hrefLang).sort(),
+      ).toEqual(["bn-BD", "en", "x-default"]);
     }
   });
 
@@ -370,7 +478,13 @@ describe("llms.txt", () => {
   const body = renderMarketingLlmsTxt({
     origin: ORIGIN,
     plans: [{ name: "Growth", price: "2900" }],
-    articles: [{ slug: "cod-guide", title: "COD guide", updatedAt: "2026-07-01T00:00:00Z" }],
+    articles: [
+      {
+        slug: "cod-guide",
+        title: "COD guide",
+        updatedAt: "2026-07-01T00:00:00Z",
+      },
+    ],
     paymentMethods: ["bKash", "Nagad"],
   });
 
@@ -417,7 +531,10 @@ describe("internal link map", () => {
   it("leaves no indexable page orphaned", () => {
     for (const route of MARKETING_ROUTES) {
       if (route.id === "home" || !route.indexable) continue;
-      expect(inboundLinkCount(route.id), `${route.path} has no inbound internal link`).toBeGreaterThan(0);
+      expect(
+        inboundLinkCount(route.id),
+        `${route.path} has no inbound internal link`,
+      ).toBeGreaterThan(0);
     }
   });
 
@@ -429,16 +546,22 @@ describe("internal link map", () => {
       if (!route.indexable) continue;
       const depth = depths.get(route.id);
       expect(depth, `${route.path} unreachable from /`).toBeDefined();
-      expect(depth ?? 99, `${route.path} too deep`).toBeLessThanOrEqual(MAX_CRAWL_DEPTH);
+      expect(depth ?? 99, `${route.path} too deep`).toBeLessThanOrEqual(
+        MAX_CRAWL_DEPTH,
+      );
     }
   });
 
   it("links every registry path from the shared public chrome or a sibling page", () => {
     const shell = read("src/components/public/PublicShell.tsx");
-    const linked = MARKETING_ROUTES.filter((r) => r.indexable && r.path !== "/").filter(
+    const linked = MARKETING_ROUTES.filter(
+      (r) => r.indexable && r.path !== "/",
+    ).filter(
       (r) => shell.includes(`"${r.path}"`) || inboundLinkCount(r.id) > 0,
     );
-    expect(linked).toHaveLength(MARKETING_ROUTES.filter((r) => r.indexable && r.path !== "/").length);
+    expect(linked).toHaveLength(
+      MARKETING_ROUTES.filter((r) => r.indexable && r.path !== "/").length,
+    );
   });
 });
 
@@ -458,13 +581,17 @@ describe("route files", () => {
     for (const [path, file] of Object.entries(FILES)) {
       const src = read(file);
       expect(src, `${file} missing`).not.toBe("");
-      expect(src, `${path} does not use buildMarketingHead`).toContain("buildMarketingHead");
+      expect(src, `${path} does not use buildMarketingHead`).toContain(
+        "buildMarketingHead",
+      );
     }
   });
 
   it("never hand-writes a schema.org block in a marketing route", () => {
     for (const file of Object.values(FILES)) {
-      expect(read(file), `${file} inlines JSON-LD`).not.toContain('"@context": "https://schema.org"');
+      expect(read(file), `${file} inlines JSON-LD`).not.toContain(
+        '"@context": "https://schema.org"',
+      );
     }
   });
 
@@ -489,18 +616,21 @@ describe("route files", () => {
       const componentName = src.match(/component:\s*(\w+)\s*,/)?.[1];
       expect(componentName, `${file} must declare a component`).toBeTruthy();
       const start = src.indexOf(`function ${componentName}(`);
-      expect(start, `${file}: cannot locate function ${componentName}`).toBeGreaterThan(-1);
+      expect(
+        start,
+        `${file}: cannot locate function ${componentName}`,
+      ).toBeGreaterThan(-1);
       const body = src.slice(start);
 
       const inline = (body.match(/<h1[\s>]/g) ?? []).length;
       const viaBand =
         (/<HeroBand[\s/>]/.test(body) ? 1 : 0) +
         (path === "/" && homeUsesHero && heroUsesHeroBand ? 1 : 0);
-      expect(inline + viaBand, `${path} should render exactly one <h1>`).toBe(1);
+      expect(inline + viaBand, `${path} should render exactly one <h1>`).toBe(
+        1,
+      );
     }
-
   });
-
 
   it("gives every rendered image an alt attribute", () => {
     for (const file of Object.values(FILES)) {

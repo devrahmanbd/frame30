@@ -9,11 +9,7 @@
     "from": "now-24h",
     "to": "now"
   },
-  "tags": [
-    "framique",
-    "ad-fraud",
-    "growth"
-  ],
+  "tags": ["framique", "ad-fraud", "growth"],
   "templating": {
     "list": [
       {

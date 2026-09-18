@@ -9,13 +9,24 @@ import { handleMissingStoreUrl } from "@/lib/missing-url";
 
 export const Route = createFileRoute("/store/$slug/pages/$pageSlug")({
   loader: async ({ params }) => {
-    const found = await getStorePageFn({ data: { slug: params.slug, pageSlug: params.pageSlug } });
-    if (!found) throw await handleMissingStoreUrl(params.slug, `/store/${params.slug}/pages/${params.pageSlug}`);
+    const found = await getStorePageFn({
+      data: { slug: params.slug, pageSlug: params.pageSlug },
+    });
+    if (!found)
+      throw await handleMissingStoreUrl(
+        params.slug,
+        `/store/${params.slug}/pages/${params.pageSlug}`,
+      );
     return found;
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Page unavailable" }, { name: "robots", content: "noindex" }] };
+      return {
+        meta: [
+          { title: "Page unavailable" },
+          { name: "robots", content: "noindex" },
+        ],
+      };
     }
     const base = buildPageHead({
       origin: loaderData.origin,
@@ -30,7 +41,10 @@ export const Route = createFileRoute("/store/$slug/pages/$pageSlug")({
     });
     return {
       ...base,
-      meta: [...(base.meta ?? []), ...verificationTags(loaderData.siteKit.verification)],
+      meta: [
+        ...(base.meta ?? []),
+        ...verificationTags(loaderData.siteKit.verification),
+      ],
     };
   },
   component: StorePageView,
@@ -39,12 +53,29 @@ export const Route = createFileRoute("/store/$slug/pages/$pageSlug")({
 function StorePageView() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, page, html, nav, ast, tokens, siteKit, customCss, isBuilder } =
-    Route.useLoaderData();
+  const {
+    merchant,
+    page,
+    html,
+    nav,
+    ast,
+    tokens,
+    siteKit,
+    customCss,
+    isBuilder,
+  } = Route.useLoaderData();
 
   const breadcrumb = (
-    <nav aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")} className="text-xs text-muted-foreground">
-      <Link to="/store/$slug" search={{ preview_token: undefined }} params={{ slug }} className="underline">
+    <nav
+      aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
+      className="text-xs text-muted-foreground"
+    >
+      <Link
+        to="/store/$slug"
+        search={{ preview_token: undefined }}
+        params={{ slug }}
+        className="underline"
+      >
         {merchant.name}
       </Link>
       <span aria-hidden> / </span>
@@ -55,7 +86,9 @@ function StorePageView() {
   const content = (
     <article>
       <h1 className="font-bangla-display text-3xl font-bold">{page.title}</h1>
-      {page.excerpt && <p className="mt-2 text-muted-foreground">{page.excerpt}</p>}
+      {page.excerpt && (
+        <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
+      )}
       <div
         className={
           isBuilder
@@ -88,7 +121,9 @@ function StorePageView() {
               params={{ slug, pageSlug: item.slug }}
               aria-current={item.slug === page.slug ? "page" : undefined}
               className={`block rounded-fq-md px-3 py-2 text-sm ${
-                item.slug === page.slug ? "bg-muted font-medium" : "text-muted-foreground hover:bg-muted"
+                item.slug === page.slug
+                  ? "bg-muted font-medium"
+                  : "text-muted-foreground hover:bg-muted"
               }`}
             >
               {item.title}
@@ -124,4 +159,3 @@ function StorePageView() {
     />
   );
 }
-

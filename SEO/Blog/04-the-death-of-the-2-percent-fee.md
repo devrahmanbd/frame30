@@ -3,7 +3,7 @@
 > **Target Query:** `shopify alternative 2026`, `shopify transaction fee penalty`, `zero fee ecommerce platform`  
 > **Reading Time:** 9 minutes  
 > **Methodology:** Koray Tuğberk Gübür Semantic SEO & Information-Gain Standard  
-> **Published:** October 2026  
+> **Published:** October 2026
 
 ---
 
@@ -24,12 +24,14 @@ In the early days of e-commerce SaaS, platforms charged a transparent, flat mont
 ```
 
 When an online brand operates in a country or region where **Shopify Payments** is unavailable—or when a merchant chooses to maintain direct legal custody of their customer relationships by using their own merchant bank account—Shopify levies an additional surcharge:
+
 - **Basic Plan:** **2.0%** extra on every transaction.
 - **Shopify Plan:** **1.0%** extra on every transaction.
 - **Advanced Plan ($399/mo):** **0.5%** extra on every transaction.
 
 ### Why This is Destructive to Margin
-Retail e-commerce typically operates on net profit margins between **8% and 15%**. When a software platform skims 2.0% off the *top line* (gross merchandise value), it is not taking 2% of your profit—**it is confiscating between 13% and 25% of your net bottom-line earnings**.
+
+Retail e-commerce typically operates on net profit margins between **8% and 15%**. When a software platform skims 2.0% off the _top line_ (gross merchandise value), it is not taking 2% of your profit—**it is confiscating between 13% and 25% of your net bottom-line earnings**.
 
 ---
 
@@ -52,6 +54,7 @@ To understand the financial reality, consider an independent fashion or electron
 ```
 
 Reclaiming **$13,020 in pure cash flow** over 3 years allows an emerging brand to:
+
 1. Fund 3 months of customer acquisition ads on Meta/Google.
 2. Hire a dedicated customer support or operations specialist.
 3. Expand product inventory lines without taking external debt.
@@ -63,6 +66,7 @@ Reclaiming **$13,020 in pure cash flow** over 3 years allows an emerging brand t
 The architectural alternative is **Sovereign Commerce**. Under this model, the software provider is strictly a technology platform, never an intermediary financial toll-booth.
 
 In **FRAMIQUE**:
+
 - Merchants enter their own direct API keys (bKash Merchant credentials, Nagad gateway keys, SSLCommerz credentials, or Stripe API secrets).
 - When a customer purchases a product, the transaction clears directly into the merchant’s corporate bank account or business wallet.
 - FRAMIQUE never sits in the middle of funds, never holds payouts for 7 days, and charges **0.0% transaction commission**.
@@ -72,6 +76,7 @@ In **FRAMIQUE**:
 ## 4. How to Migrate from Shopify in Under 10 Minutes
 
 Switching to a sovereign platform does not require rebuilding your product catalog from scratch:
+
 1. In your Shopify Admin, navigate to **Products > Export > Export as CSV**.
 2. Log into your [FRAMIQUE Admin Dashboard](/auth?mode=signup).
 3. Navigate to **Catalog > Import** and select your Shopify CSV file.
@@ -83,9 +88,11 @@ Switching to a sovereign platform does not require rebuilding your product catal
 ## 5. Frequently Asked Questions (PAA)
 
 ### Why does Shopify charge 2% on external gateways?
+
 Shopify uses this fee as a coercive mechanism to force merchants onto "Shopify Payments," where Shopify earns interchange profit. If Shopify Payments is unsupported in your country or you prefer direct merchant rails, you are penalized with the 2% fee.
 
 ### Does Framique charge any fees on credit cards or mobile wallets?
+
 No. Framique has a permanent 0% platform fee guarantee. You only pay the direct transaction processing rate charged by the bank or MFS processor itself (e.g. standard 1.5% bKash merchant rate), with zero platform markups.
 
 ---

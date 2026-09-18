@@ -23,7 +23,9 @@ import { setMotionLogSink, type recentMotionLogs } from "./motion-runtime";
 import { ENGINE_LOAD_POLICY } from "./motion-policy";
 
 const PRIMITIVE_DIR = join(process.cwd(), "src/components/public/motion");
-const primitiveFiles = readdirSync(PRIMITIVE_DIR).filter((f) => f.endsWith(".tsx"));
+const primitiveFiles = readdirSync(PRIMITIVE_DIR).filter((f) =>
+  f.endsWith(".tsx"),
+);
 const read = (path: string) => readFileSync(join(process.cwd(), path), "utf8");
 
 const fakeEngine = () =>
@@ -38,8 +40,13 @@ describe("motion engine loader", () => {
   beforeEach(() => {
     __resetMotionEngine();
     logs.length = 0;
-    setMotionLogSink((record) => logs.push({ event: record.event, level: record.level }));
-    vi.stubGlobal("window", globalThis.window ?? ({} as Window & typeof globalThis));
+    setMotionLogSink((record) =>
+      logs.push({ event: record.event, level: record.level }),
+    );
+    vi.stubGlobal(
+      "window",
+      globalThis.window ?? ({} as Window & typeof globalThis),
+    );
   });
 
   afterEach(() => {
@@ -90,7 +97,9 @@ describe("motion engine loader", () => {
     });
     expect(engine).toBeNull();
     expect(motionEngineState()).toBe("degraded");
-    expect(logs.some((l) => l.event === "engine.degraded" && l.level === "error")).toBe(true);
+    expect(
+      logs.some((l) => l.event === "engine.degraded" && l.level === "error"),
+    ).toBe(true);
   });
 
   it("keeps the breaker open — a broken deploy costs one round of retries per session", async () => {
@@ -108,7 +117,12 @@ describe("motion engine loader", () => {
     const loader = vi.fn(() => new Promise<MotionEngine>(() => {}));
     const engine = await loadMotionEngine({
       loader,
-      policy: { ...ENGINE_LOAD_POLICY, timeoutMs: 20, retries: 0, baseBackoffMs: 1 },
+      policy: {
+        ...ENGINE_LOAD_POLICY,
+        timeoutMs: 20,
+        retries: 0,
+        baseBackoffMs: 1,
+      },
     });
     expect(engine).toBeNull();
     expect(motionEngineState()).toBe("degraded");
@@ -126,7 +140,8 @@ describe("motion engine loader", () => {
     __resetMotionEngine();
     const late = vi.fn();
     const early = withEngine(late, {
-      loader: () => new Promise((resolve) => setTimeout(() => resolve(fakeEngine()), 10)),
+      loader: () =>
+        new Promise((resolve) => setTimeout(() => resolve(fakeEngine()), 10)),
     });
     early.dispose();
     await new Promise((r) => setTimeout(r, 25));
@@ -150,10 +165,16 @@ describe("weight discipline", () => {
   it("no module outside the engine loader imports gsap", () => {
     const offenders: string[] = [];
     const walk = (dir: string) => {
-      for (const entry of readdirSync(join(process.cwd(), dir), { withFileTypes: true })) {
+      for (const entry of readdirSync(join(process.cwd(), dir), {
+        withFileTypes: true,
+      })) {
         const rel = `${dir}/${entry.name}`;
         if (entry.isDirectory()) walk(rel);
-        else if (/\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) && rel !== "src/lib/motion-engine.ts") {
+        else if (
+          /\.tsx?$/.test(entry.name) &&
+          !/\.test\.tsx?$/.test(entry.name) &&
+          rel !== "src/lib/motion-engine.ts"
+        ) {
           if (/from\s+["']gsap/.test(read(rel))) offenders.push(rel);
         }
       }
@@ -169,10 +190,14 @@ describe("weight discipline", () => {
   });
 
   it("keeps exactly one animation engine in the dependency list", () => {
-    const pkg = JSON.parse(read("package.json")) as { dependencies?: Record<string, string> };
+    const pkg = JSON.parse(read("package.json")) as {
+      dependencies?: Record<string, string>;
+    };
     const deps = Object.keys(pkg.dependencies ?? {});
     const engines = deps.filter((d) =>
-      /^(gsap|framer-motion|motion|animejs|popmotion|react-spring|@react-spring\/|lottie-web|@lottiefiles\/|rive-react|@rive-app\/)/.test(d),
+      /^(gsap|framer-motion|motion|animejs|popmotion|react-spring|@react-spring\/|lottie-web|@lottiefiles\/|rive-react|@rive-app\/)/.test(
+        d,
+      ),
     );
     expect(engines).toEqual(["gsap"]);
   });
@@ -189,17 +214,27 @@ describe("weight discipline", () => {
 describe("primitive invariants", () => {
   it("ships the full documented set", () => {
     expect(primitiveFiles.sort()).toEqual(
-      ["Counter.tsx", "GradientMesh.tsx", "MagneticButton.tsx", "Marquee.tsx", "Parallax.tsx", "Reveal.tsx", "Stagger.tsx"].sort(),
+      [
+        "Counter.tsx",
+        "GradientMesh.tsx",
+        "MagneticButton.tsx",
+        "Marquee.tsx",
+        "Parallax.tsx",
+        "Reveal.tsx",
+        "Stagger.tsx",
+      ].sort(),
     );
     const barrel = read("src/components/public/motion/index.ts");
-    for (const file of primitiveFiles) expect(barrel).toContain(file.replace(".tsx", ""));
+    for (const file of primitiveFiles)
+      expect(barrel).toContain(file.replace(".tsx", ""));
   });
 
   it("every primitive resolves the motion intent rather than animating unconditionally", () => {
     for (const file of primitiveFiles) {
       const source = read(`src/components/public/motion/${file}`);
       const consults =
-        source.includes("useMotionIntent") || source.includes("from \"./Reveal\"");
+        source.includes("useMotionIntent") ||
+        source.includes('from "./Reveal"');
       expect(consults, `${file} must consult useMotionIntent`).toBe(true);
     }
   });
@@ -208,13 +243,19 @@ describe("primitive invariants", () => {
     for (const file of primitiveFiles) {
       const source = read(`src/components/public/motion/${file}`);
       if (!source.includes("opacity: 0")) continue;
-      expect(source, `${file} must be able to settle`).toMatch(/opacity: hidden \? 0 : 1/);
+      expect(source, `${file} must be able to settle`).toMatch(
+        /opacity: hidden \? 0 : 1/,
+      );
     }
   });
 
   it("off-screen and background work is stopped, not merely hidden", () => {
-    expect(read("src/components/public/motion/Marquee.tsx")).toContain("onTabVisibility");
-    expect(read("src/lib/motion-runtime.ts")).toMatch(/tickerPausedByVisibility/);
+    expect(read("src/components/public/motion/Marquee.tsx")).toContain(
+      "onTabVisibility",
+    );
+    expect(read("src/lib/motion-runtime.ts")).toMatch(
+      /tickerPausedByVisibility/,
+    );
     expect(read("src/lib/motion-runtime.ts")).toMatch(/cancelAnimationFrame/);
   });
 
@@ -222,7 +263,9 @@ describe("primitive invariants", () => {
     const runtime = read("src/lib/motion-runtime.ts");
     expect(runtime).toMatch(/pageMotionBudget = new MotionBudget\(\d+\)/);
     for (const file of ["Reveal.tsx", "Counter.tsx"]) {
-      expect(read(`src/components/public/motion/${file}`)).toContain("withMotionBudget");
+      expect(read(`src/components/public/motion/${file}`)).toContain(
+        "withMotionBudget",
+      );
     }
   });
 
@@ -241,7 +284,9 @@ describe("primitive invariants", () => {
   });
 
   it("the gradient mesh stays decorative", () => {
-    expect(read("src/components/public/motion/GradientMesh.tsx")).toContain('aria-hidden="true"');
+    expect(read("src/components/public/motion/GradientMesh.tsx")).toContain(
+      'aria-hidden="true"',
+    );
   });
 });
 
@@ -249,7 +294,13 @@ describe("stylesheet contract", () => {
   const css = read("src/styles.css");
 
   it("defines the marketing tokens the primitives rely on", () => {
-    for (const token of ["--fq-gradient-hero", "--shadow-lift", "--ring-focus", "--fq-rhythm-lg", "--fq-measure"]) {
+    for (const token of [
+      "--fq-gradient-hero",
+      "--shadow-lift",
+      "--ring-focus",
+      "--fq-rhythm-lg",
+      "--fq-measure",
+    ]) {
       expect(css, `missing ${token}`).toContain(token);
     }
   });
@@ -257,11 +308,15 @@ describe("stylesheet contract", () => {
   it("never removes focus outlines without replacing them", () => {
     const blocks = css.match(/outline:\s*none/g) ?? [];
     expect(blocks.length).toBeGreaterThan(0);
-    expect(css).toMatch(/focus-visible[\s\S]{0,200}box-shadow: var\(--ring-focus\)/);
+    expect(css).toMatch(
+      /focus-visible[\s\S]{0,200}box-shadow: var\(--ring-focus\)/,
+    );
   });
 
   it("kills decorative motion under prefers-reduced-motion", () => {
-    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.fq-mesh-blob \{ animation: none/);
+    expect(css).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.fq-mesh-blob\s*\{\s*animation:\s*none/,
+    );
   });
 });
 

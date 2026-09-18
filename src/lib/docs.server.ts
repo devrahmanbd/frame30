@@ -23,7 +23,11 @@ import { getRequest } from "@tanstack/react-start/server";
 
 import { apiRouteByKey, endpointRows, routeKey } from "./docs";
 import { incr, log, observe, withSpan } from "./observability.server";
-import { enforceRateLimit, RateLimitError, rateLimit } from "./rate-limit.server";
+import {
+  enforceRateLimit,
+  RateLimitError,
+  rateLimit,
+} from "./rate-limit.server";
 
 export const TRYIT_TIMEOUT_MS = 6_000;
 export const TRYIT_MAX_BYTES = 24_000;
@@ -51,7 +55,8 @@ export type TryItResult = {
 
 export class TryItError extends Error {
   constructor(
-    readonly code: "unknown_route" | "not_tryable" | "rate_limited" | "unavailable",
+    readonly code:
+      "unknown_route" | "not_tryable" | "rate_limited" | "unavailable",
     message: string,
     readonly resetAt?: string,
   ) {
@@ -66,7 +71,11 @@ const RECORDED: Record<string, unknown> = {
     merchant_id: "sandbox_7f1c",
     name: "Framique Sandbox Store",
     scopes: ["orders.read", "products.read", "customers.read"],
-    rate_limit: { limit: 600, remaining: 599, reset_at: "2026-02-01T09:00:00Z" },
+    rate_limit: {
+      limit: 600,
+      remaining: 599,
+      reset_at: "2026-02-01T09:00:00Z",
+    },
   },
   "GET products": {
     data: [
@@ -109,7 +118,10 @@ const RECORDED: Record<string, unknown> = {
 
 async function hashSubject(value: string): Promise<string> {
   const salt = process.env["AUTH_HASH_SALT"] ?? "framique-docs";
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${salt}:${value}`));
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${salt}:${value}`),
+  );
   return [...new Uint8Array(digest)]
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("")
@@ -133,7 +145,9 @@ function callerIp(): string {
 }
 
 /** Read a bounded amount of the response; a docs panel never needs 5 MB. */
-async function readBounded(res: Response): Promise<{ body: string; truncated: boolean }> {
+async function readBounded(
+  res: Response,
+): Promise<{ body: string; truncated: boolean }> {
   const text = await res.text();
   const truncated = text.length > TRYIT_MAX_BYTES;
   const slice = truncated ? text.slice(0, TRYIT_MAX_BYTES) : text;
@@ -146,17 +160,29 @@ async function readBounded(res: Response): Promise<{ body: string; truncated: bo
   }
 }
 
-export async function runTryIt(input: TryItInput, origin: string | null): Promise<TryItResult> {
+export async function runTryIt(
+  input: TryItInput,
+  origin: string | null,
+): Promise<TryItResult> {
   return withSpan("docs.tryit", async () => {
     const route = apiRouteByKey(input.route);
     if (!route) {
-      incr("framique_docs_tryit_total", { route: "unknown", outcome: "rejected" });
-      throw new TryItError("unknown_route", "That endpoint is not part of the public API.");
+      incr("framique_docs_tryit_total", {
+        route: "unknown",
+        outcome: "rejected",
+      });
+      throw new TryItError(
+        "unknown_route",
+        "That endpoint is not part of the public API.",
+      );
     }
 
     const row = endpointRows().find((r) => r.key === routeKey(route));
     if (!row?.tryable) {
-      incr("framique_docs_tryit_total", { route: row?.key ?? "unknown", outcome: "rejected" });
+      incr("framique_docs_tryit_total", {
+        route: row?.key ?? "unknown",
+        outcome: "rejected",
+      });
       throw new TryItError(
         "not_tryable",
         "Only read-only endpoints without path parameters can be run from the docs.",
@@ -172,34 +198,55 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
       await enforceRateLimit("docs.tryit_global", "all");
     } catch (error) {
       if (error instanceof RateLimitError) {
-        incr("framique_docs_tryit_total", { route: row.key, outcome: "rate_limited" });
-        throw new TryItError("rate_limited", "Too many sandbox calls. Try again shortly.", error.resetAt);
+        incr("framique_docs_tryit_total", {
+          route: row.key,
+          outcome: "rate_limited",
+        });
+        throw new TryItError(
+          "rate_limited",
+          "Too many sandbox calls. Try again shortly.",
+          error.resetAt,
+        );
       }
       throw error;
     }
 
     const limit = Math.min(Math.max(Number(input.limit ?? 3) || 3, 1), 10);
-    const base = process.env["DOCS_SANDBOX_API_BASE"] ?? (origin ? `${origin}/api/public/v1` : null);
+    const base =
+      process.env["DOCS_SANDBOX_API_BASE"] ??
+      (origin ? `${origin}/api/public/v1` : null);
     const key = process.env["DOCS_SANDBOX_API_KEY"];
     const path = route.pattern;
     const query = route.pattern === "me" ? "" : `?limit=${limit}`;
-    const url = base ? `${base}/${path}${query}` : `/api/public/v1/${path}${query}`;
+    const url = base
+      ? `${base}/${path}${query}`
+      : `/api/public/v1/${path}${query}`;
     const request = {
       method: route.method,
       url,
-      headers: { Authorization: "Bearer fq_sandbox_…", Accept: "application/json" },
+      headers: {
+        Authorization: "Bearer fq_sandbox_…",
+        Accept: "application/json",
+      },
     };
 
     // No credential configured: be explicit rather than fake a live call.
     if (!base || !key) {
-      incr("framique_docs_tryit_total", { route: row.key, outcome: "simulated" });
+      incr("framique_docs_tryit_total", {
+        route: row.key,
+        outcome: "simulated",
+      });
       return {
         ok: true,
         status: 200,
         durationMs: 0,
         simulated: true,
         request,
-        body: JSON.stringify(RECORDED[row.key] ?? { data: [], next_cursor: null }, null, 2),
+        body: JSON.stringify(
+          RECORDED[row.key] ?? { data: [], next_cursor: null },
+          null,
+          2,
+        ),
         remaining: verdict.remaining,
         resetAt: verdict.reset_at,
       };
@@ -222,7 +269,10 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
         outcome: res.ok ? "ok" : `http_${res.status}`,
       });
       if (!res.ok) {
-        log("warn", "docs.tryit.upstream_error", { route: row.key, status: res.status });
+        log("warn", "docs.tryit.upstream_error", {
+          route: row.key,
+          status: res.status,
+        });
       }
       return {
         ok: res.ok,
@@ -230,7 +280,9 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
         durationMs,
         simulated: false,
         request,
-        body: truncated ? `${body}\n\n… response truncated at ${TRYIT_MAX_BYTES} bytes` : body,
+        body: truncated
+          ? `${body}\n\n… response truncated at ${TRYIT_MAX_BYTES} bytes`
+          : body,
         remaining: verdict.remaining,
         resetAt: verdict.reset_at,
       };
@@ -238,10 +290,15 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
       const aborted = (error as Error)?.name === "AbortError";
       const durationMs = Date.now() - started;
       observe("framique_docs_tryit_ms", durationMs, { route: row.key });
-      incr("framique_docs_tryit_total", { route: row.key, outcome: aborted ? "timeout" : "error" });
+      incr("framique_docs_tryit_total", {
+        route: row.key,
+        outcome: aborted ? "timeout" : "error",
+      });
       log("warn", "docs.tryit.failed", {
         route: row.key,
-        reason: aborted ? "timeout" : String((error as Error)?.message ?? error).slice(0, 160),
+        reason: aborted
+          ? "timeout"
+          : String((error as Error)?.message ?? error).slice(0, 160),
       });
       // Fail soft: the docs page keeps working, the panel says what happened.
       return {
@@ -253,7 +310,9 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
         body: null,
         remaining: verdict.remaining,
         resetAt: verdict.reset_at,
-        error: aborted ? "The sandbox did not answer in time." : "The sandbox call failed.",
+        error: aborted
+          ? "The sandbox did not answer in time."
+          : "The sandbox call failed.",
       };
     } finally {
       clearTimeout(timer);
@@ -262,7 +321,10 @@ export async function runTryIt(input: TryItInput, origin: string | null): Promis
 }
 
 /** Bucket state without spending a hit — powers the "n left" hint on render. */
-export async function tryItBudget(): Promise<{ remaining: number; limit: number }> {
+export async function tryItBudget(): Promise<{
+  remaining: number;
+  limit: number;
+}> {
   try {
     const subject = await hashSubject(callerIp());
     const verdict = await rateLimit("docs.tryit", `peek:${subject}`);

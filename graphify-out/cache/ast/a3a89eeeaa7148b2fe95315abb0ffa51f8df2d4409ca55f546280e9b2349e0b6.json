@@ -1,1 +1,433 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_landing_ts", "label": "landing.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L1"}, {"id": "lib_landing_rawstats", "label": "RawStats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L22"}, {"id": "lib_landing_statkey", "label": "StatKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L35"}, {"id": "lib_landing_publishedstat", "label": "PublishedStat", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L37"}, {"id": "lib_landing_stat_floor", "label": "STAT_FLOOR", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L51"}, {"id": "lib_landing_stat_step", "label": "STAT_STEP", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L62"}, {"id": "lib_landing_floortostep", "label": "floorToStep()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L68"}, {"id": "lib_landing_publishablestats", "label": "publishableStats()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L78"}, {"id": "lib_landing_planteaserinput", "label": "PlanTeaserInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L99"}, {"id": "lib_landing_planteaser", "label": "PlanTeaser", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L110"}, {"id": "lib_landing_proof_rails", "label": "PROOF_RAILS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L140"}, {"id": "lib_landing_proofrail", "label": "ProofRail", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L149"}, {"id": "lib_landing_tourstop", "label": "TourStop", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L153"}, {"id": "lib_landing_tour_stops", "label": "TOUR_STOPS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L163"}, {"id": "lib_landing_comparisonrow", "label": "ComparisonRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L198"}, {"id": "lib_landing_comparison_rows", "label": "COMPARISON_ROWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L207"}, {"id": "lib_landing_faqrow", "label": "FaqRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L218"}, {"id": "lib_landing_faq_rows", "label": "FAQ_ROWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L221"}, {"id": "lib_landing_storycard", "label": "StoryCard", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L232"}, {"id": "lib_landing_landingdata", "label": "LandingData", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L241"}, {"id": "lib_landing_landing_limits", "label": "LANDING_LIMITS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L250"}, {"id": "lib_landing_empty_landing", "label": "EMPTY_LANDING", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L260"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_rawstats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_statkey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_publishedstat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_stat_floor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_stat_step", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_floortostep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_publishablestats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_planteaserinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_planteaser", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_planteaser", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L121", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_proof_rails", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_proofrail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L149", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_tourstop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_tour_stops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L163", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_comparisonrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L198", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_comparison_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L207", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_faqrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L218", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_faq_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_storycard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L232", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_landingdata", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L241", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_landing_limits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L250", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_landing_ts", "target": "lib_landing_empty_landing", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L260", "weight": 1.0}, {"source": "lib_landing_publishablestats", "target": "lib_landing_floortostep", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L86", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_landing_floortostep", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L69"}, {"caller_nid": "lib_landing_floortostep", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L70"}, {"caller_nid": "lib_landing_publishablestats", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L83"}, {"caller_nid": "lib_landing_publishablestats", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L88"}, {"caller_nid": "lib_landing_planteaser", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L122"}, {"caller_nid": "lib_landing_planteaser", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L122"}, {"caller_nid": "lib_landing_planteaser", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L125"}, {"caller_nid": "lib_landing_planteaser", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L125"}, {"caller_nid": "lib_landing_planteaser", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts", "source_location": "L128"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "label": "landing.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_landing_rawstats",
+      "label": "RawStats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_landing_statkey",
+      "label": "StatKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_landing_publishedstat",
+      "label": "PublishedStat",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_landing_stat_floor",
+      "label": "STAT_FLOOR",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_landing_stat_step",
+      "label": "STAT_STEP",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_landing_floortostep",
+      "label": "floorToStep()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_landing_publishablestats",
+      "label": "publishableStats()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "lib_landing_planteaserinput",
+      "label": "PlanTeaserInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "lib_landing_planteaser",
+      "label": "PlanTeaser",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_landing_proof_rails",
+      "label": "PROOF_RAILS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_landing_proofrail",
+      "label": "ProofRail",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L149"
+    },
+    {
+      "id": "lib_landing_tourstop",
+      "label": "TourStop",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "lib_landing_tour_stops",
+      "label": "TOUR_STOPS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L163"
+    },
+    {
+      "id": "lib_landing_comparisonrow",
+      "label": "ComparisonRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L198"
+    },
+    {
+      "id": "lib_landing_comparison_rows",
+      "label": "COMPARISON_ROWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L207"
+    },
+    {
+      "id": "lib_landing_faqrow",
+      "label": "FaqRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L218"
+    },
+    {
+      "id": "lib_landing_faq_rows",
+      "label": "FAQ_ROWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "lib_landing_storycard",
+      "label": "StoryCard",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L232"
+    },
+    {
+      "id": "lib_landing_landingdata",
+      "label": "LandingData",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L241"
+    },
+    {
+      "id": "lib_landing_landing_limits",
+      "label": "LANDING_LIMITS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L250"
+    },
+    {
+      "id": "lib_landing_empty_landing",
+      "label": "EMPTY_LANDING",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L260"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_rawstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_statkey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_publishedstat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_stat_floor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_stat_step",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_floortostep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_publishablestats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_planteaserinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_planteaser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_planteaser",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_proof_rails",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_proofrail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L149",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_tourstop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_tour_stops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_comparisonrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L198",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_comparison_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_faqrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_faq_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_storycard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_landingdata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_landing_limits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L250",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_landing_ts",
+      "target": "lib_landing_empty_landing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_landing_publishablestats",
+      "target": "lib_landing_floortostep",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_landing_floortostep",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_landing_floortostep",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_landing_publishablestats",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_landing_publishablestats",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_landing_planteaser",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_landing_planteaser",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_landing_planteaser",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_landing_planteaser",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_landing_planteaser",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/landing.ts",
+      "source_location": "L128"
+    }
+  ]
+}

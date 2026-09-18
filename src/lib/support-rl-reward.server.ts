@@ -16,13 +16,13 @@
  */
 
 export type RewardComponents = {
-  csatReward: number;         // [-1.0, +1.0]
-  groundingReward: number;    // [-0.3, +0.3]
-  toolReward: number;         // [-0.2, +0.25]
-  latencyPenalty: number;     // [0.0, 0.2]
-  guardrailPenalty: number;   // 0.0 or 1.0
-  loopPenalty: number;        // 0.0 or 0.8
-  resolutionBonus: number;    // 0.0 or 0.2
+  csatReward: number; // [-1.0, +1.0]
+  groundingReward: number; // [-0.3, +0.3]
+  toolReward: number; // [-0.2, +0.25]
+  latencyPenalty: number; // [0.0, 0.2]
+  guardrailPenalty: number; // 0.0 or 1.0
+  loopPenalty: number; // 0.0 or 0.8
+  resolutionBonus: number; // 0.0 or 0.2
 };
 
 export type TrajectoryStep = {
@@ -38,8 +38,8 @@ export type TrajectoryStep = {
 };
 
 export type EvaluatedReward = {
-  totalReward: number;        // [-2.0, +2.0]
-  normalizedScore: number;    // [0.0, 1.0]
+  totalReward: number; // [-2.0, +2.0]
+  normalizedScore: number; // [0.0, 1.0]
   components: RewardComponents;
   label: "high_quality" | "acceptable" | "low_quality" | "rejected";
 };
@@ -47,11 +47,11 @@ export type EvaluatedReward = {
 /** Weights for composite scalar reward */
 export const REWARD_WEIGHTS = {
   csat: 0.45,
-  grounding: 0.20,
+  grounding: 0.2,
   tool: 0.15,
   latency: 0.05,
-  guardrail: 0.50,
-  loop: 0.40,
+  guardrail: 0.5,
+  loop: 0.4,
   resolution: 0.15,
 } as const;
 
@@ -74,14 +74,14 @@ export function computeTrajectoryReward(step: TrajectoryStep): EvaluatedReward {
   if (step.toolCalls && step.toolCalls.length > 0) {
     const successful = step.toolCalls.filter((c) => c.ok).length;
     const total = step.toolCalls.length;
-    toolReward = successful === total ? 0.25 : -0.20;
+    toolReward = successful === total ? 0.25 : -0.2;
   }
 
   // 4. Latency Penalty Component
   let latencyPenalty = 0.0;
   if (step.latencyMs !== undefined) {
-    if (step.latencyMs > 5000) latencyPenalty = 0.20;
-    else if (step.latencyMs > 3000) latencyPenalty = 0.10;
+    if (step.latencyMs > 5000) latencyPenalty = 0.2;
+    else if (step.latencyMs > 3000) latencyPenalty = 0.1;
     else if (step.latencyMs < 1200) latencyPenalty = 0.0;
   }
 
@@ -91,8 +91,10 @@ export function computeTrajectoryReward(step: TrajectoryStep): EvaluatedReward {
 
   // 6. Action Resolution Bonus
   const resolutionBonus =
-    step.actionCompleted === "ticket" || step.actionCompleted === "callback" || step.actionCompleted === "answered"
-      ? 0.20
+    step.actionCompleted === "ticket" ||
+    step.actionCompleted === "callback" ||
+    step.actionCompleted === "answered"
+      ? 0.2
       : 0.0;
 
   // Composite weighted score
@@ -171,7 +173,11 @@ export function stepAtroposEnv(
   };
 
   const rewardEval = computeTrajectoryReward(fullStep);
-  const done = currentState.isDone || fullStep.guardrailBlocked || fullStep.loopDetected || (currentState.turnIndex >= 6);
+  const done =
+    currentState.isDone ||
+    fullStep.guardrailBlocked ||
+    fullStep.loopDetected ||
+    currentState.turnIndex >= 6;
 
   const nextState: AtroposEnvState = {
     conversationId: currentState.conversationId,

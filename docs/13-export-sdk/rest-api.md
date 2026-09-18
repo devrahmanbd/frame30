@@ -106,7 +106,7 @@ All RLS-bound to `merchant_id`:
   cards (HMAC secret masked, confirm-reset), enabled event set; writes are
   manager-role gated (staff-rbac four-eyes).
 - `POST /api/v1/api-keys` — create (plain token shown once); `POST
-  /api/v1/api-keys/:id/rotate` — rotate; `DELETE /api/v1/api-keys/:id` —
+/api/v1/api-keys/:id/rotate` — rotate; `DELETE /api/v1/api-keys/:id` —
   revoke. All three are writes that carry `merchant_id`, the `scopes`
   intersection rule and same-idempotency contract.
 
@@ -153,7 +153,7 @@ time (staff-rbac convention).
 
 - `admin_loop` (existing): API-key create → rotate → revoke; key_* → 401 on
   a dead key; export end-to-end; webhook HMAC verifies; over-bucket requests
-  get 429. 
+  get 429.
 - Any NEW check beyond the above is gated by a new `e2e_<area>_loop` in
   `docs/15-e2e` registered first (named TBD + owner), per README §11.
 - `store_loop` never calls the SDK/API live (README §11).

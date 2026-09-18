@@ -161,7 +161,15 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         permission: "shipping.read",
       },
     ],
-    more: [{ to: "/dashboard/pos", en: "POS till", bn: "পিওএস", icon: "pos", permission: "pos.read" }],
+    more: [
+      {
+        to: "/dashboard/pos",
+        en: "POS till",
+        bn: "পিওএস",
+        icon: "pos",
+        permission: "pos.read",
+      },
+    ],
   },
   {
     key: "products",
@@ -485,7 +493,13 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "plans",
         permission: "finance.read",
       },
-      { to: "/dashboard/fraud", en: "Risk", bn: "ঝুঁকি", icon: "fraud", permission: "fraud.read" },
+      {
+        to: "/dashboard/fraud",
+        en: "Risk",
+        bn: "ঝুঁকি",
+        icon: "fraud",
+        permission: "fraud.read",
+      },
       {
         to: "/dashboard/settings/providers",
         en: "Payment rails",
@@ -518,7 +532,13 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "settings",
         permission: "settings.read",
       },
-      { to: "/dashboard/staff", en: "Staff", bn: "স্টাফ", icon: "staff", permission: "staff.read" },
+      {
+        to: "/dashboard/staff",
+        en: "Staff",
+        bn: "স্টাফ",
+        icon: "staff",
+        permission: "staff.read",
+      },
       {
         to: "/dashboard/settings/domains",
         en: "Domains",
@@ -652,5 +672,7 @@ export function permissionForPath(pathname: string): Permission | null {
 }
 
 export function isNavActive(pathname: string, to: string): boolean {
-  return to === "/dashboard" ? pathname === to : pathname === to || pathname.startsWith(`${to}/`);
+  return to === "/dashboard"
+    ? pathname === to
+    : pathname === to || pathname.startsWith(`${to}/`);
 }

@@ -1,1 +1,307 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "label": "authorize.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L1"}, {"id": "oauth_authorize_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L14"}, {"id": "oauth_authorize_authorizepage", "label": "AuthorizePage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L37"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "admin_marketingui_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "users_rahman_documents_frame30_src_lib_developers_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "lib_developers_functions_oauthauthorizedescribefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "lib_developers_functions_oauthauthorizegrantfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "lib_api_scopes_parsescopes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "oauth_authorize_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx", "target": "oauth_authorize_authorizepage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L37", "weight": 1.0}], "raw_calls": [{"caller_nid": "oauth_authorize_authorizepage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L38"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useSearch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L39"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L40"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L41"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L42"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L43"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L44"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "parseScopes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L49"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L49"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L55"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L93"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L102"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L108"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L111"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L119"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L120"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L125"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L125"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L132"}, {"caller_nid": "oauth_authorize_authorizepage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx", "source_location": "L136"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "label": "authorize.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "oauth_authorize_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "oauth_authorize_authorizepage",
+      "label": "AuthorizePage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L37"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_marketingui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "admin_marketingui_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_developers_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "lib_developers_functions_oauthauthorizedescribefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "lib_developers_functions_oauthauthorizegrantfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_api_scopes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "lib_api_scopes_parsescopes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "oauth_authorize_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_oauth_authorize_tsx",
+      "target": "oauth_authorize_authorizepage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useSearch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "parseScopes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "oauth_authorize_authorizepage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/oauth/authorize.tsx",
+      "source_location": "L136"
+    }
+  ]
+}

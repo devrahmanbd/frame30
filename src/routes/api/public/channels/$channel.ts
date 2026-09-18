@@ -19,24 +19,35 @@ function isChannel(value: string): value is Channel {
   return (CHANNELS as string[]).includes(value);
 }
 
-type Normalised = { eventId: string; externalId: string; text: string; from: string | null } | null;
+type Normalised = {
+  eventId: string;
+  externalId: string;
+  text: string;
+  from: string | null;
+} | null;
 
 /** Extract the first inbound text message from either provider envelope. */
 function normalise(channel: Channel, payload: unknown): Normalised {
   const body = payload as Record<string, unknown>;
-  const entries = Array.isArray(body?.["entry"]) ? (body["entry"] as Record<string, unknown>[]) : [];
+  const entries = Array.isArray(body?.["entry"])
+    ? (body["entry"] as Record<string, unknown>[])
+    : [];
   const entry = entries[0];
   if (!entry) return null;
 
   if (channel === "whatsapp") {
-    const changes = Array.isArray(entry["changes"]) ? (entry["changes"] as Record<string, unknown>[]) : [];
+    const changes = Array.isArray(entry["changes"])
+      ? (entry["changes"] as Record<string, unknown>[])
+      : [];
     const value = changes[0]?.["value"] as Record<string, unknown> | undefined;
     const messages = Array.isArray(value?.["messages"])
       ? (value?.["messages"] as Record<string, unknown>[])
       : [];
     const message = messages[0];
     const meta = value?.["metadata"] as Record<string, unknown> | undefined;
-    const text = (message?.["text"] as Record<string, unknown> | undefined)?.["body"];
+    const text = (message?.["text"] as Record<string, unknown> | undefined)?.[
+      "body"
+    ];
     if (!message || typeof text !== "string") return null;
     return {
       eventId: String(message["id"] ?? ""),
@@ -55,7 +66,11 @@ function normalise(channel: Channel, payload: unknown): Normalised {
   const sender = event["sender"] as Record<string, unknown> | undefined;
   return {
     eventId: String(message["mid"] ?? event["timestamp"] ?? ""),
-    externalId: String((event["recipient"] as Record<string, unknown> | undefined)?.["id"] ?? entry["id"] ?? ""),
+    externalId: String(
+      (event["recipient"] as Record<string, unknown> | undefined)?.["id"] ??
+        entry["id"] ??
+        "",
+    ),
     text: message["text"],
     from: typeof sender?.["id"] === "string" ? sender["id"] : null,
   };
@@ -68,7 +83,8 @@ export const Route = createFileRoute("/api/public/channels/$channel")({
     handlers: {
       // Meta subscription handshake.
       GET: async ({ request, params }) => {
-        if (!isChannel(params.channel)) return new Response("Not found", { status: 404 });
+        if (!isChannel(params.channel))
+          return new Response("Not found", { status: 404 });
         const url = new URL(request.url);
         const verifyToken = process.env["SUPPORT_CHANNEL_VERIFY_TOKEN"];
         if (!verifyToken) return new Response("Not found", { status: 404 });
@@ -76,17 +92,21 @@ export const Route = createFileRoute("/api/public/channels/$channel")({
           url.searchParams.get("hub.mode") === "subscribe" &&
           url.searchParams.get("hub.verify_token") === verifyToken
         ) {
-          return new Response(url.searchParams.get("hub.challenge") ?? "", { headers: noStore });
+          return new Response(url.searchParams.get("hub.challenge") ?? "", {
+            headers: noStore,
+          });
         }
         return new Response("Forbidden", { status: 403, headers: noStore });
       },
 
       POST: async ({ request, params }) => {
-        if (!isChannel(params.channel)) return new Response("Not found", { status: 404 });
+        if (!isChannel(params.channel))
+          return new Response("Not found", { status: 404 });
         const channel = params.channel;
 
         const raw = await request.text();
-        if (raw.length > 100_000) return new Response("Payload too large", { status: 413 });
+        if (raw.length > 100_000)
+          return new Response("Payload too large", { status: 413 });
 
         let payload: unknown;
         try {
@@ -97,11 +117,17 @@ export const Route = createFileRoute("/api/public/channels/$channel")({
 
         const event = normalise(channel, payload);
         // Status callbacks, reactions, read receipts: acknowledge and drop.
-        if (!event || !event.eventId || !event.externalId || !event.text.trim()) {
+        if (
+          !event ||
+          !event.eventId ||
+          !event.externalId ||
+          !event.text.trim()
+        ) {
           return Response.json({ outcome: "ignored" }, { headers: noStore });
         }
 
-        const { ingestChannelEvent } = await import("@/lib/support-channels.server");
+        const { ingestChannelEvent } =
+          await import("@/lib/support-channels.server");
         const { RateLimitError } = await import("@/lib/rate-limit.server");
         try {
           const result = await ingestChannelEvent({
@@ -114,14 +140,23 @@ export const Route = createFileRoute("/api/public/channels/$channel")({
             signature: request.headers.get("x-hub-signature-256"),
             secret: process.env["SUPPORT_CHANNEL_SECRET"] ?? null,
           });
-          return Response.json({ outcome: result.outcome }, { headers: noStore });
+          return Response.json(
+            { outcome: result.outcome },
+            { headers: noStore },
+          );
         } catch (err) {
           if (err instanceof RateLimitError) {
-            return Response.json({ error: "rate_limited" }, { status: 429, headers: noStore });
+            return Response.json(
+              { error: "rate_limited" },
+              { status: 429, headers: noStore },
+            );
           }
           const { captureError } = await import("@/lib/observability.server");
           void captureError(err, { route: "channels.webhook", channel });
-          return Response.json({ error: "intake_failed" }, { status: 500, headers: noStore });
+          return Response.json(
+            { error: "intake_failed" },
+            { status: 500, headers: noStore },
+          );
         }
       },
     },

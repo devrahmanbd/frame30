@@ -3,7 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useLang } from "@/lib/i18n";
 import { moneyDeskFn } from "@/lib/money.functions";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 
 export const Route = createFileRoute("/root/money")({
   head: () => ({
@@ -14,10 +20,14 @@ export const Route = createFileRoute("/root/money")({
         content:
           "Currency conformance, append-only ledger integrity, legal-year VAT coverage and the FX snapshots behind the USD pilot.",
       },
-      { property: "og:title", content: "Money engine — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Money engine — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Ledger integrity, VAT coverage and FX snapshots for Framique.",
+        content:
+          "Ledger integrity, VAT coverage and FX snapshots for Framique.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -32,7 +42,10 @@ const num = "tabular-nums";
 function MoneyDesk() {
   const { t } = useLang();
   const load = useServerFn(moneyDeskFn);
-  const { data, isLoading, error } = useQuery({ queryKey: ["money-desk"], queryFn: () => load() });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["money-desk"],
+    queryFn: () => load(),
+  });
 
   if (isLoading) {
     return (
@@ -63,8 +76,14 @@ function MoneyDesk() {
       />
 
       <StatGrid>
-        <StatCard label={t("Invariant breaches", "নিয়মভঙ্গ")} value={String(data.breaches)} />
-        <StatCard label={t("Ledger rows", "লেজার সারি")} value={String(c.ledger_rows)} />
+        <StatCard
+          label={t("Invariant breaches", "নিয়মভঙ্গ")}
+          value={String(data.breaches)}
+        />
+        <StatCard
+          label={t("Ledger rows", "লেজার সারি")}
+          value={String(c.ledger_rows)}
+        />
         <StatCard
           label={t("Split mismatches", "স্প্লিট অমিল")}
           value={String(c.split_mismatch_rows)}
@@ -88,7 +107,8 @@ function MoneyDesk() {
             <span className={num}>{c.float_money_columns.length}</span>
           </span>
           <span className="text-muted-foreground">
-            {t("Missing append-only triggers", "অনুপস্থিত append-only ট্রিগার")}:{" "}
+            {t("Missing append-only triggers", "অনুপস্থিত append-only ট্রিগার")}
+            :{" "}
             <span className={num}>{c.missing_append_only_triggers.length}</span>
           </span>
         </div>
@@ -109,11 +129,19 @@ function MoneyDesk() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">{t("VAT legal years", "ভ্যাট আইনি বছর")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("VAT legal years", "ভ্যাট আইনি বছর")}
+        </h2>
         <StatePill tone={data.vat.currentYearCovered ? "ok" : "bad"}>
           {data.vat.currentYearCovered
-            ? t(`Covered for ${data.vat.year}`, `${data.vat.year} সালের জন্য কভার করা আছে`)
-            : t(`No rate for ${data.vat.year}`, `${data.vat.year} সালের হার নেই`)}
+            ? t(
+                `Covered for ${data.vat.year}`,
+                `${data.vat.year} সালের জন্য কভার করা আছে`,
+              )
+            : t(
+                `No rate for ${data.vat.year}`,
+                `${data.vat.year} সালের হার নেই`,
+              )}
         </StatePill>
         <OwnerTable
           head={[
@@ -127,7 +155,9 @@ function MoneyDesk() {
             <tr key={`${r.country_code}-${r.category}-${r.effective_year}`}>
               <td className="px-3 py-2">{r.country_code}</td>
               <td className="px-3 py-2">{r.category}</td>
-              <td className={`px-3 py-2 ${num}`}>{(r.rate_basis_points / 100).toFixed(2)}%</td>
+              <td className={`px-3 py-2 ${num}`}>
+                {(r.rate_basis_points / 100).toFixed(2)}%
+              </td>
               <td className={`px-3 py-2 ${num}`}>{r.effective_year}</td>
             </tr>
           ))}
@@ -135,7 +165,9 @@ function MoneyDesk() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">{t("FX snapshots", "এফএক্স স্ন্যাপশট")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("FX snapshots", "এফএক্স স্ন্যাপশট")}
+        </h2>
         <p className="text-sm text-muted-foreground">
           {t(
             "Conversion is restricted to the USD pilot and always reads the newest stored snapshot — never a live quote at charge time.",
@@ -166,10 +198,15 @@ function MoneyDesk() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-sm font-semibold">{t("Runtime counters", "রানটাইম কাউন্টার")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Runtime counters", "রানটাইম কাউন্টার")}
+        </h2>
         {data.metrics.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t("No money traffic in this isolate yet.", "এই ইনস্ট্যান্সে এখনো মানি ট্রাফিক নেই।")}
+            {t(
+              "No money traffic in this isolate yet.",
+              "এই ইনস্ট্যান্সে এখনো মানি ট্রাফিক নেই।",
+            )}
           </p>
         ) : (
           <OwnerTable head={[t("Counter", "কাউন্টার"), t("Value", "মান")]}>

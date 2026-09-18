@@ -30,16 +30,16 @@ when the merchant did not grant the scope that method requires.
 
 The full method surface — there is no dynamic or catch-all method:
 
-| Method | Required scope | Writes |
-| --- | --- | --- |
-| `shop.info` | `read_shop` | no |
-| `products.list` | `read_products` | no |
-| `products.update` | `write_products` | yes |
-| `orders.list` | `read_orders` | no |
-| `customers.get` | `read_customers` | no |
-| `cart.add` | `write_cart` | yes |
-| `cart.remove` | `write_cart` | yes |
-| `analytics.track` | `write_analytics` | yes |
+| Method            | Required scope    | Writes |
+| ----------------- | ----------------- | ------ |
+| `shop.info`       | `read_shop`       | no     |
+| `products.list`   | `read_products`   | no     |
+| `products.update` | `write_products`  | yes    |
+| `orders.list`     | `read_orders`     | no     |
+| `customers.get`   | `read_customers`  | no     |
+| `cart.add`        | `write_cart`      | yes    |
+| `cart.remove`     | `write_cart`      | yes    |
+| `analytics.track` | `write_analytics` | yes    |
 
 Scopes are declared in the manifest and shown to the merchant at install time
 with a risk level and a plain-language effect line in English and Bangla

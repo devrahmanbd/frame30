@@ -163,14 +163,14 @@ Feature-flag surface: listing review is feature-flagged (`marketplace.review`), 
 
 ## 12. Residual gaps / named TBD owners
 
-| Item | Owner |
-| --- | --- |
-| `marketplace.listing_fee_bdt` — setup/review fee per listing (currently 0 implied) | **NE** (product lead) |
-| `marketplace.sale_cap_bdt` — per-sale cap / min threshold for `paid` listings | **NE** (product lead) |
-| `marketplace.payout_cadence` — payout schedule for seller earnings (reconciles to 06 wallet) | **NE** (financial ops) |
-| BD-scheme compliance for cross-tenant paid listings (rides `licensing.md` named TBDs) | platform legal |
-| `e2e_marketplace_loop` registration in `docs/15-e2e` | **NE** (platform eng) |
-| `analytics.retention.purge` scheduler (90d raw purge, cited in §8) | **TBD** (`docs/09-analytics`) |
-| OAuth scope dependency (`docs/13-export-sdk/oauth.md` — **not yet approved**) | platform eng |
+| Item                                                                                         | Owner                         |
+| -------------------------------------------------------------------------------------------- | ----------------------------- |
+| `marketplace.listing_fee_bdt` — setup/review fee per listing (currently 0 implied)           | **NE** (product lead)         |
+| `marketplace.sale_cap_bdt` — per-sale cap / min threshold for `paid` listings                | **NE** (product lead)         |
+| `marketplace.payout_cadence` — payout schedule for seller earnings (reconciles to 06 wallet) | **NE** (financial ops)        |
+| BD-scheme compliance for cross-tenant paid listings (rides `licensing.md` named TBDs)        | platform legal                |
+| `e2e_marketplace_loop` registration in `docs/15-e2e`                                         | **NE** (platform eng)         |
+| `analytics.retention.purge` scheduler (90d raw purge, cited in §8)                           | **TBD** (`docs/09-analytics`) |
+| OAuth scope dependency (`docs/13-export-sdk/oauth.md` — **not yet approved**)                | platform eng                  |
 
 All numbers above that are not a named TBD trace to `docs/16-product-pricing`, `docs/06-payments`, or `docs/15-e2e`; none are invented.

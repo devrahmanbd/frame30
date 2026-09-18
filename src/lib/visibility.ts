@@ -41,7 +41,10 @@ export type VisibilityContext = {
 
 export type VisibilityResult = { visible: boolean; deferred: boolean };
 
-function ruleResult(rule: VisibilityRule, ctx: VisibilityContext): VisibilityResult {
+function ruleResult(
+  rule: VisibilityRule,
+  ctx: VisibilityContext,
+): VisibilityResult {
   switch (rule.kind) {
     case "auth": {
       if (ctx.signedIn === null) return { visible: false, deferred: true };
@@ -52,12 +55,20 @@ function ruleResult(rule: VisibilityRule, ctx: VisibilityContext): VisibilityRes
       if (ctx.cartCount === null) return { visible: false, deferred: true };
       const total = ctx.cartTotalMinor ?? 0;
       const n = Number(rule.value);
-      if (rule.op === "empty") return { visible: ctx.cartCount === 0, deferred: false };
-      if (rule.op === "not_empty") return { visible: ctx.cartCount > 0, deferred: false };
+      if (rule.op === "empty")
+        return { visible: ctx.cartCount === 0, deferred: false };
+      if (rule.op === "not_empty")
+        return { visible: ctx.cartCount > 0, deferred: false };
       if (rule.op === "min_items")
-        return { visible: ctx.cartCount >= (Number.isFinite(n) ? n : 0), deferred: false };
+        return {
+          visible: ctx.cartCount >= (Number.isFinite(n) ? n : 0),
+          deferred: false,
+        };
       if (rule.op === "min_total")
-        return { visible: total >= (Number.isFinite(n) ? n : 0), deferred: false };
+        return {
+          visible: total >= (Number.isFinite(n) ? n : 0),
+          deferred: false,
+        };
       return { visible: true, deferred: false };
     }
     case "locale": {
@@ -67,7 +78,10 @@ function ruleResult(rule: VisibilityRule, ctx: VisibilityContext): VisibilityRes
     case "date": {
       const at = Date.parse(String(rule.value));
       if (!Number.isFinite(at)) return { visible: true, deferred: false };
-      return { visible: rule.op === "before" ? ctx.now < at : ctx.now >= at, deferred: false };
+      return {
+        visible: rule.op === "before" ? ctx.now < at : ctx.now >= at,
+        deferred: false,
+      };
     }
     case "segment": {
       if (ctx.segments === null) return { visible: false, deferred: true };
@@ -110,7 +124,10 @@ export function abMatches(
 }
 
 /** Human summary used by the inspector rule list. */
-export function describeRule(rule: VisibilityRule, locale: "en" | "bn"): string {
+export function describeRule(
+  rule: VisibilityRule,
+  locale: "en" | "bn",
+): string {
   const en = `${rule.kind} ${rule.op} ${rule.value}`.trim();
   if (locale !== "bn") return en;
   const kindBn: Record<VisibilityKind, string> = {

@@ -1,4 +1,9 @@
-import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +22,8 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/root")({
   ssr: false,
   beforeLoad: async ({ location }) => {
-    const isLoginRoute = location.pathname === "/root/login" || location.pathname === "/root/auth";
+    const isLoginRoute =
+      location.pathname === "/root/login" || location.pathname === "/root/auth";
     const { data, error } = await supabase.auth.getUser();
     const user = !error && data?.user ? data.user : null;
 
@@ -31,7 +37,9 @@ export const Route = createFileRoute("/root")({
       if (adminRow) {
         isOwner = true;
       } else {
-        const serverCheck = await platformIsAdminFn().catch(() => ({ admin: false }));
+        const serverCheck = await platformIsAdminFn().catch(() => ({
+          admin: false,
+        }));
         if (serverCheck?.admin) {
           isOwner = true;
         }
@@ -63,7 +71,8 @@ export const Route = createFileRoute("/root")({
       { title: "Platform Owner Console — Framique" },
       {
         name: "description",
-        content: "Framique platform owner console: plan definitions, tenant usage, money and platform audit.",
+        content:
+          "Framique platform owner console: plan definitions, tenant usage, money and platform audit.",
       },
       { name: "robots", content: "noindex, nofollow" },
     ],
@@ -89,11 +98,19 @@ function RootLayout() {
   });
 
   if (isPending) {
-    return <p className="p-8 text-sm text-muted-foreground">{tk("common.loading")}</p>;
+    return (
+      <p className="p-8 text-sm text-muted-foreground">
+        {tk("common.loading")}
+      </p>
+    );
   }
   // Neutral copy: never confirm what lives behind this path.
   if (!data?.admin) {
-    return <p className="p-8 text-sm text-muted-foreground">{tk("owner.forbidden")}</p>;
+    return (
+      <p className="p-8 text-sm text-muted-foreground">
+        {tk("owner.forbidden")}
+      </p>
+    );
   }
 
   return (

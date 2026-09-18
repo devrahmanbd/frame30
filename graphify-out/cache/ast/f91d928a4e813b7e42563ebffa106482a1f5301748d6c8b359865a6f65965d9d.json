@@ -1,1 +1,309 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "label": "console-a11y.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L1"}, {"id": "lib_console_a11y_test_css", "label": "css", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L14"}, {"id": "lib_console_a11y_test_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L16"}, {"id": "lib_console_a11y_test_body", "label": "body", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L36"}, {"id": "lib_console_a11y_test_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L45"}, {"id": "lib_console_a11y_test_files", "label": "files", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L56"}, {"id": "lib_console_a11y_test_gate", "label": "gate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L82"}, {"id": "lib_console_a11y_test_pkg", "label": "pkg", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L84"}, {"id": "lib_console_a11y_test_doc", "label": "doc", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L90"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "users_rahman_documents_frame30_src_lib_console_a11y_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_console_breakpoints", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_console_contrast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_console_motion_ms", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_consolecontrastfailures", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_consolecontrastreport", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_contrastratio", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_hardcodedcolorhits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_body", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_files", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_gate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_pkg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts", "target": "lib_console_a11y_test_doc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L90", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_console_a11y_test_walk", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L17"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L18"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "isDirectory", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L19"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "statSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L19"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L20"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "endsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L20"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L21"}, {"caller_nid": "lib_console_a11y_test_walk", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts", "source_location": "L21"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "label": "console-a11y.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_console_a11y_test_css",
+      "label": "css",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_console_a11y_test_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_console_a11y_test_body",
+      "label": "body",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_console_a11y_test_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_console_a11y_test_files",
+      "label": "files",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_console_a11y_test_gate",
+      "label": "gate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "lib_console_a11y_test_pkg",
+      "label": "pkg",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_console_a11y_test_doc",
+      "label": "doc",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L90"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_console_a11y_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_console_breakpoints",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_console_contrast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_console_motion_ms",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_consolecontrastfailures",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_consolecontrastreport",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_contrastratio",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_hardcodedcolorhits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_body",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_gate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_pkg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_console_a11y_test_ts",
+      "target": "lib_console_a11y_test_doc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "isDirectory",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "statSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "endsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "lib_console_a11y_test_walk",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/console-a11y.test.ts",
+      "source_location": "L21"
+    }
+  ]
+}

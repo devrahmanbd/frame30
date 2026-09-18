@@ -205,15 +205,21 @@ for (const entry of MANIFEST) {
   const source = readFileSync(path, "utf8");
   const bytes = Buffer.byteLength(source);
   if (bytes < MIN_BYTES) {
-    failures.push(`${entry.file}: only ${bytes}B — a contract this small is a placeholder (min ${MIN_BYTES}B)`);
+    failures.push(
+      `${entry.file}: only ${bytes}B — a contract this small is a placeholder (min ${MIN_BYTES}B)`,
+    );
   }
 
   if (entry.kind !== "fixture") {
     const cases = (source.match(/\b(?:it|test)\s*\(/g) ?? []).length;
     if (cases === 0) failures.push(`${entry.file}: declares no test cases`);
-    const skipped = source.match(/\b(?:it|test|describe)\.(?:skip|todo|only)\b|\bxit\s*\(/g);
+    const skipped = source.match(
+      /\b(?:it|test|describe)\.(?:skip|todo|only)\b|\bxit\s*\(/g,
+    );
     if (skipped) {
-      failures.push(`${entry.file}: contains ${skipped.length} disabled/exclusive block(s) (${[...new Set(skipped)].join(", ")})`);
+      failures.push(
+        `${entry.file}: contains ${skipped.length} disabled/exclusive block(s) (${[...new Set(skipped)].join(", ")})`,
+      );
     }
     rows.push({ file: entry.file, cases, bytes });
   } else {
@@ -222,7 +228,9 @@ for (const entry of MANIFEST) {
 
   for (const marker of entry.mustCover ?? []) {
     if (!source.includes(marker)) {
-      failures.push(`${entry.file}: no longer covers \`${marker}\` — scope was narrowed`);
+      failures.push(
+        `${entry.file}: no longer covers \`${marker}\` — scope was narrowed`,
+      );
     }
   }
 }
@@ -233,28 +241,45 @@ if (args.has("--list")) {
 }
 
 if (failures.length) {
-  console.error("contract-gate FAILED — the enforced contract set is not intact:");
+  console.error(
+    "contract-gate FAILED — the enforced contract set is not intact:",
+  );
   for (const f of failures) console.error(`  • ${f}`);
-  console.error("\nRestore the file (git history has it) or, if a contract is genuinely obsolete,");
-  console.error("remove it from MANIFEST in scripts/contract-gate.mjs in the same change, with a reason.");
+  console.error(
+    "\nRestore the file (git history has it) or, if a contract is genuinely obsolete,",
+  );
+  console.error(
+    "remove it from MANIFEST in scripts/contract-gate.mjs in the same change, with a reason.",
+  );
   process.exit(1);
 }
 
 for (const r of rows) {
-  console.log(`contract ok  ${r.file.padEnd(52)} ${String(r.cases).padStart(3)} cases  ${(r.bytes / 1024).toFixed(1)}KB`);
+  console.log(
+    `contract ok  ${r.file.padEnd(52)} ${String(r.cases).padStart(3)} cases  ${(r.bytes / 1024).toFixed(1)}KB`,
+  );
 }
 
 if (args.has("--verify")) {
-  console.log("\ncontract-gate OK — manifest intact (tests not run: --verify).");
+  console.log(
+    "\ncontract-gate OK — manifest intact (tests not run: --verify).",
+  );
   process.exit(0);
 }
 
-const testFiles = MANIFEST.filter((e) => e.kind !== "fixture").map((e) => e.file);
+const testFiles = MANIFEST.filter((e) => e.kind !== "fixture").map(
+  (e) => e.file,
+);
 console.log(`\nrunning ${testFiles.length} contract suites…\n`);
-const result = spawnSync("bunx", ["vitest", "run", ...testFiles], { stdio: "inherit", cwd: ROOT });
+const result = spawnSync("bunx", ["vitest", "run", ...testFiles], {
+  stdio: "inherit",
+  cwd: ROOT,
+});
 
 if (result.error) {
-  console.error(`contract-gate: could not start vitest — ${result.error.message}`);
+  console.error(
+    `contract-gate: could not start vitest — ${result.error.message}`,
+  );
   process.exit(2);
 }
 if (result.status !== 0) {

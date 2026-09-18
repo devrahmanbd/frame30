@@ -20,7 +20,8 @@ export const ORG_NAP = {
   openingHours: "Su-Th 10:00-18:00",
   timezone: "Asia/Dhaka",
   currency: "BDT",
-  mapUrl: "https://www.google.com/maps/search/?api=1&query=Banani%2C%20Dhaka%201213%2C%20Bangladesh",
+  mapUrl:
+    "https://www.google.com/maps/search/?api=1&query=Banani%2C%20Dhaka%201213%2C%20Bangladesh",
 } as const;
 
 export function napAddressLine(): string {

@@ -14,7 +14,11 @@ import {
   getActiveTopologySlot,
   type TopologySlot,
 } from "./blue-green-router.server";
-import { abortCanary, getCanaryState, setCanaryStage } from "./canary-weights.server";
+import {
+  abortCanary,
+  getCanaryState,
+  setCanaryStage,
+} from "./canary-weights.server";
 import { tripCircuitBreaker } from "./circuit-breaker.server";
 import {
   readOrderAsVersionN,
@@ -34,8 +38,8 @@ export type DrillStep = {
 export type DisasterRecoveryDrillResult = {
   drillId: string;
   success: boolean;
-  rtoSeconds: number;         // Recovery Time Objective (Target: < 5.0s)
-  rpoLossCount: number;       // Recovery Point Objective (Target: exactly 0)
+  rtoSeconds: number; // Recovery Time Objective (Target: < 5.0s)
+  rpoLossCount: number; // Recovery Point Objective (Target: exactly 0)
   totalOrdersPlaced: number;
   ordersPreserved: number;
   steps: DrillStep[];
@@ -45,17 +49,19 @@ export type DisasterRecoveryDrillResult = {
 };
 
 export const DR_SLA = {
-  MAX_RTO_SECONDS: 5.0,  // Recovery Time Objective must be < 5 seconds
-  EXPECTED_RPO: 0,        // Recovery Point Objective must be 0 lost records
+  MAX_RTO_SECONDS: 5.0, // Recovery Time Objective must be < 5 seconds
+  EXPECTED_RPO: 0, // Recovery Point Objective must be 0 lost records
 };
 
 /**
  * Execute the full 7-step Disaster Recovery Instant Rollback Drill.
  */
-export async function executeDisasterRecoveryDrill(options: {
-  simulatedOrdersCount?: number;
-  skipStandbyVerification?: boolean;
-} = {}): Promise<DisasterRecoveryDrillResult> {
+export async function executeDisasterRecoveryDrill(
+  options: {
+    simulatedOrdersCount?: number;
+    skipStandbyVerification?: boolean;
+  } = {},
+): Promise<DisasterRecoveryDrillResult> {
   const drillId = `dr_drill_${Date.now()}`;
   const orderCount = options.simulatedOrdersCount || 50;
   const startedAt = new Date().toISOString();
@@ -98,74 +104,109 @@ export async function executeDisasterRecoveryDrill(options: {
     // --------------------------------------------------------------------------
     await trackStep(1, "Baseline Environment Verification", async () => {
       const activeSlot = await getActiveTopologySlot();
-      return { details: `Current active slot: ${activeSlot.toUpperCase()} (Primary Baseline)` };
+      return {
+        details: `Current active slot: ${activeSlot.toUpperCase()} (Primary Baseline)`,
+      };
     });
 
     // --------------------------------------------------------------------------
     // STEP 2: Full Cutover to GREEN (Candidate Promotion)
     // --------------------------------------------------------------------------
-    await trackStep(2, "Promote Candidate Release to GREEN (BLUE on Warm Standby)", async () => {
-      // Set to 100% GREEN, keeping BLUE on warm standby
-      await setCanaryStage(4, { candidateSlot: "green", primarySlot: "blue" });
-      await executeTopologyCutover("green");
+    await trackStep(
+      2,
+      "Promote Candidate Release to GREEN (BLUE on Warm Standby)",
+      async () => {
+        // Set to 100% GREEN, keeping BLUE on warm standby
+        await setCanaryStage(4, {
+          candidateSlot: "green",
+          primarySlot: "blue",
+        });
+        await executeTopologyCutover("green");
 
-      const current = await getActiveTopologySlot();
-      if (current !== "green") throw new Error("Cutover to GREEN failed verification");
+        const current = await getActiveTopologySlot();
+        if (current !== "green")
+          throw new Error("Cutover to GREEN failed verification");
 
-      return { details: "GREEN is now serving 100% traffic; BLUE retained on warm standby." };
-    });
+        return {
+          details:
+            "GREEN is now serving 100% traffic; BLUE retained on warm standby.",
+        };
+      },
+    );
 
     // --------------------------------------------------------------------------
     // STEP 3: Live Customer Traffic & Orders Under GREEN
     // --------------------------------------------------------------------------
-    await trackStep(3, `Simulate Live Checkout Transactions Under GREEN (${orderCount} Orders)`, async () => {
-      for (let i = 1; i <= orderCount; i++) {
-        const orderRow = writeOrderAsVersionNPlusOne({
-          id: `ord_dr_${drillId}_${i}`,
-          merchant_id: "m_atelier_dhaka",
-          customer_id: `cust_dr_${i}`,
-          total_minor_int: 150000 + i * 100, // 1500 BDT + delta
-          currency: "BDT",
-          tax_minor_int: 7500,
-          status: "paid",
-        });
-        createdOrders.push(orderRow);
-      }
+    await trackStep(
+      3,
+      `Simulate Live Checkout Transactions Under GREEN (${orderCount} Orders)`,
+      async () => {
+        for (let i = 1; i <= orderCount; i++) {
+          const orderRow = writeOrderAsVersionNPlusOne({
+            id: `ord_dr_${drillId}_${i}`,
+            merchant_id: "m_atelier_dhaka",
+            customer_id: `cust_dr_${i}`,
+            total_minor_int: 150000 + i * 100, // 1500 BDT + delta
+            currency: "BDT",
+            tax_minor_int: 7500,
+            status: "paid",
+          });
+          createdOrders.push(orderRow);
+        }
 
-      return { details: `Successfully recorded ${orderCount} live customer orders while GREEN was active.` };
-    });
+        return {
+          details: `Successfully recorded ${orderCount} live customer orders while GREEN was active.`,
+        };
+      },
+    );
 
     // --------------------------------------------------------------------------
     // STEP 4: Inject Catastrophic Failure on GREEN
     // --------------------------------------------------------------------------
-    await trackStep(4, "Inject Simulated Catastrophic Failure on GREEN (500 Error Surge)", async () => {
-      // Simulate sudden container panic or cascading 500 error spike
-      return { details: "Chaos injected: High error rate (5xx > 2.5%) detected on GREEN upstream." };
-    });
+    await trackStep(
+      4,
+      "Inject Simulated Catastrophic Failure on GREEN (500 Error Surge)",
+      async () => {
+        // Simulate sudden container panic or cascading 500 error spike
+        return {
+          details:
+            "Chaos injected: High error rate (5xx > 2.5%) detected on GREEN upstream.",
+        };
+      },
+    );
 
     // --------------------------------------------------------------------------
     // STEP 5: Instant Rollback to BLUE (< 5s RTO SLA)
     // --------------------------------------------------------------------------
     const rollbackStart = Date.now();
-    await trackStep(5, "Execute Instant Rollback to BLUE via Circuit Breaker", async () => {
-      // Trigger circuit breaker trip & instant rollback
-      const trip = await tripCircuitBreaker("DR DRILL: Simulated catastrophic failure on candidate GREEN");
-      await executeTopologyCutover("blue");
+    await trackStep(
+      5,
+      "Execute Instant Rollback to BLUE via Circuit Breaker",
+      async () => {
+        // Trigger circuit breaker trip & instant rollback
+        const trip = await tripCircuitBreaker(
+          "DR DRILL: Simulated catastrophic failure on candidate GREEN",
+        );
+        await executeTopologyCutover("blue");
 
-      const rollbackDurationMs = Date.now() - rollbackStart;
-      rtoSeconds = Math.round((rollbackDurationMs / 1000) * 1000) / 1000;
+        const rollbackDurationMs = Date.now() - rollbackStart;
+        rtoSeconds = Math.round((rollbackDurationMs / 1000) * 1000) / 1000;
 
-      const activeAfter = await getActiveTopologySlot();
-      if (activeAfter !== "blue") throw new Error("Rollback failed to restore BLUE");
+        const activeAfter = await getActiveTopologySlot();
+        if (activeAfter !== "blue")
+          throw new Error("Rollback failed to restore BLUE");
 
-      if (rtoSeconds > DR_SLA.MAX_RTO_SECONDS) {
-        throw new Error(`RTO exceeded SLA! Observed: ${rtoSeconds}s > Limit: ${DR_SLA.MAX_RTO_SECONDS}s`);
-      }
+        if (rtoSeconds > DR_SLA.MAX_RTO_SECONDS) {
+          throw new Error(
+            `RTO exceeded SLA! Observed: ${rtoSeconds}s > Limit: ${DR_SLA.MAX_RTO_SECONDS}s`,
+          );
+        }
 
-      return {
-        details: `100% traffic reverted to BLUE in ${rtoSeconds}s (SLA < ${DR_SLA.MAX_RTO_SECONDS}s).`,
-      };
-    });
+        return {
+          details: `100% traffic reverted to BLUE in ${rtoSeconds}s (SLA < ${DR_SLA.MAX_RTO_SECONDS}s).`,
+        };
+      },
+    );
 
     // --------------------------------------------------------------------------
     // STEP 6: Zero Data Loss Audit (RPO = 0 Guarantee)
@@ -173,25 +214,35 @@ export async function executeDisasterRecoveryDrill(options: {
     let preservedCount = 0;
     let rpoLoss = 0;
 
-    await trackStep(6, "Audit Data Consistency & Zero Lost Orders (RPO = 0)", async () => {
-      for (const row of createdOrders) {
-        // BLUE (Version N) reads order placed under GREEN
-        const readByBlue = readOrderAsVersionN(row);
-        if (readByBlue && readByBlue.id === row.id && readByBlue.status === "paid") {
-          preservedCount++;
-        } else {
-          rpoLoss++;
+    await trackStep(
+      6,
+      "Audit Data Consistency & Zero Lost Orders (RPO = 0)",
+      async () => {
+        for (const row of createdOrders) {
+          // BLUE (Version N) reads order placed under GREEN
+          const readByBlue = readOrderAsVersionN(row);
+          if (
+            readByBlue &&
+            readByBlue.id === row.id &&
+            readByBlue.status === "paid"
+          ) {
+            preservedCount++;
+          } else {
+            rpoLoss++;
+          }
         }
-      }
 
-      if (rpoLoss > 0) {
-        throw new Error(`Data loss detected! RPO violated with ${rpoLoss} missing orders.`);
-      }
+        if (rpoLoss > 0) {
+          throw new Error(
+            `Data loss detected! RPO violated with ${rpoLoss} missing orders.`,
+          );
+        }
 
-      return {
-        details: `All ${preservedCount} / ${orderCount} orders intact and readable by BLUE. RPO = 0 confirmed!`,
-      };
-    });
+        return {
+          details: `All ${preservedCount} / ${orderCount} orders intact and readable by BLUE. RPO = 0 confirmed!`,
+        };
+      },
+    );
 
     // --------------------------------------------------------------------------
     // STEP 7: Standby & Edge Verification

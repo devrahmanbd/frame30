@@ -7,7 +7,13 @@
  * answer ships with the source sections it was grounded in, so a reader can
  * verify the claim on the page it came from.
  */
-import { buildSearchIndex, docPath, searchDocs, CURRENT_VERSION, type DocVersionId } from "./docs";
+import {
+  buildSearchIndex,
+  docPath,
+  searchDocs,
+  CURRENT_VERSION,
+  type DocVersionId,
+} from "./docs";
 
 export type DocsAiSource = {
   title: string;
@@ -21,8 +27,11 @@ export type DocsAiAnswer = {
   sources: DocsAiSource[];
 };
 
-const GATEWAY = process.env["AI_GATEWAY_URL"] || "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = process.env["AI_MODEL"] || "nvidia/nemotron-3-ultra-550b-a55b:free";
+const GATEWAY =
+  process.env["AI_GATEWAY_URL"] ||
+  "https://openrouter.ai/api/v1/chat/completions";
+const MODEL =
+  process.env["AI_MODEL"] || "nvidia/nemotron-3-ultra-550b-a55b:free";
 const CONTEXT_CHARS = 1600;
 
 const SYSTEM = [
@@ -60,7 +69,9 @@ export async function answerDocsQuestion(input: {
 
   const context = hits
     .map((hit, i) => {
-      const entry = index.find((e) => e.slug === hit.slug && e.heading === hit.heading);
+      const entry = index.find(
+        (e) => e.slug === hit.slug && e.heading === hit.heading,
+      );
       const body = (entry?.text ?? hit.excerpt).slice(0, CONTEXT_CHARS);
       return `[${i + 1}] ${hit.title}${hit.heading ? ` — ${hit.heading}` : ""}\n${body}`;
     })
@@ -96,9 +107,13 @@ export async function answerDocsQuestion(input: {
 
   if (!response.ok) {
     const detail = await response.text().catch(() => "");
-    if (response.status === 429) throw new Error("Too many questions right now — try again in a moment.");
-    if (response.status === 402) throw new Error("The AI allowance for this workspace is used up.");
-    throw new Error(`Ask AI failed (${response.status}). ${detail.slice(0, 200)}`);
+    if (response.status === 429)
+      throw new Error("Too many questions right now — try again in a moment.");
+    if (response.status === 402)
+      throw new Error("The AI allowance for this workspace is used up.");
+    throw new Error(
+      `Ask AI failed (${response.status}). ${detail.slice(0, 200)}`,
+    );
   }
 
   const payload = (await response.json()) as {

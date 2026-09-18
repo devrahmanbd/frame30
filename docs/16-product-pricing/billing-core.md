@@ -1,7 +1,7 @@
 # Platform billing core — as built (BUILD 1.8)
 
 Implementation record for the billing runtime. Numbers here are the ones in
-code; the *policy* numbers they mirror stay drafts in `README.md` §14 until
+code; the _policy_ numbers they mirror stay drafts in `README.md` §14 until
 sign-off. Change the ladder or proration rule here and in the SQL together.
 
 ## 1. Storage
@@ -49,11 +49,11 @@ numbers the server then charges.
 
 Stages keyed off invoice age in days, evaluated by the sweep:
 
-| Stage | Day | Action                                     |
-| ----- | --- | ------------------------------------------ |
-| 1     | 3   | Email reminder queued                      |
-| 2     | 7   | SMS reminder queued                        |
-| 3     | 14  | Invoice → `past_due`, grace clock starts   |
+| Stage | Day | Action                                         |
+| ----- | --- | ---------------------------------------------- |
+| 1     | 3   | Email reminder queued                          |
+| 2     | 7   | SMS reminder queued                            |
+| 3     | 14  | Invoice → `past_due`, grace clock starts       |
 | 4     | 20  | Subscription → `paused` (storefront read-only) |
 | 5     | 45  | Subscription → `cancelled`, export window open |
 

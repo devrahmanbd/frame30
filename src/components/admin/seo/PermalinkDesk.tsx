@@ -17,7 +17,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
-import { ErrorFrame, Field, btnGhost, btnPrimary, inputClass } from "@/components/admin/MarketingUi";
+import {
+  ErrorFrame,
+  Field,
+  btnGhost,
+  btnPrimary,
+  inputClass,
+} from "@/components/admin/MarketingUi";
 import {
   missingDismissFn,
   missingResolveFn,
@@ -30,14 +36,21 @@ import {
   redirectListFn,
   redirectSaveFn,
 } from "@/lib/permalink.functions";
-import { ARTICLE_PATTERNS, DEFAULT_PERMALINKS, type PermalinkSettings } from "@/lib/permalink";
+import {
+  ARTICLE_PATTERNS,
+  DEFAULT_PERMALINKS,
+  type PermalinkSettings,
+} from "@/lib/permalink";
 
 type Plan = Awaited<ReturnType<typeof permalinkPreviewFn>>;
 
 const PATTERN_LABELS: Record<string, { en: string; bn: string }> = {
   "/%slug%": { en: "Post name", bn: "পোস্টের নাম" },
   "/%year%/%slug%": { en: "Year + name", bn: "বছর + নাম" },
-  "/%year%/%month%/%slug%": { en: "Year / month / name", bn: "বছর / মাস / নাম" },
+  "/%year%/%month%/%slug%": {
+    en: "Year / month / name",
+    bn: "বছর / মাস / নাম",
+  },
   "/%year%/%month%/%day%/%slug%": { en: "Day and name", bn: "দিন ও নাম" },
   "/%category%/%slug%": { en: "Category + name", bn: "ক্যাটাগরি + নাম" },
 };
@@ -62,7 +75,10 @@ export function PermalinkDesk() {
   const resolveMissing = useServerFn(missingResolveFn);
   const dismissMissing = useServerFn(missingDismissFn);
 
-  const stateQuery = useQuery({ queryKey: ["permalinks", "state"], queryFn: () => state() });
+  const stateQuery = useQuery({
+    queryKey: ["permalinks", "state"],
+    queryFn: () => state(),
+  });
 
   const [form, setForm] = useState<PermalinkSettings | null>(null);
   const settings = form ?? stateQuery.data?.settings ?? DEFAULT_PERMALINKS;
@@ -70,13 +86,25 @@ export function PermalinkDesk() {
 
   const dirty = useMemo(() => {
     const saved = stateQuery.data?.settings ?? DEFAULT_PERMALINKS;
-    return (Object.keys(saved) as (keyof PermalinkSettings)[]).some((k) => saved[k] !== settings[k]);
+    return (Object.keys(saved) as (keyof PermalinkSettings)[]).some(
+      (k) => saved[k] !== settings[k],
+    );
   }, [settings, stateQuery.data]);
 
-  const set = useCallback(<K extends keyof PermalinkSettings>(key: K, value: PermalinkSettings[K]) => {
-    setPlan(null);
-    setForm((current) => ({ ...(current ?? DEFAULT_PERMALINKS), ...settings, [key]: value }));
-  }, [settings]);
+  const set = useCallback(
+    <K extends keyof PermalinkSettings>(
+      key: K,
+      value: PermalinkSettings[K],
+    ) => {
+      setPlan(null);
+      setForm((current) => ({
+        ...(current ?? DEFAULT_PERMALINKS),
+        ...settings,
+        [key]: value,
+      }));
+    },
+    [settings],
+  );
 
   const previewMutation = useMutation({
     mutationFn: () => preview({ data: settings }),
@@ -106,7 +134,10 @@ export function PermalinkDesk() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const redirectQuery = useQuery({
     queryKey: ["permalinks", "redirects", search, page],
-    queryFn: () => listRedirects({ data: { search: search || undefined, page, pageSize: 25 } }),
+    queryFn: () =>
+      listRedirects({
+        data: { search: search || undefined, page, pageSize: 25 },
+      }),
   });
 
   const [newFrom, setNewFrom] = useState("");
@@ -121,7 +152,9 @@ export function PermalinkDesk() {
 
   const createMutation = useMutation({
     mutationFn: () =>
-      saveRedirect({ data: { fromPath: newFrom, toPath: newTo, status: newStatus } }),
+      saveRedirect({
+        data: { fromPath: newFrom, toPath: newTo, status: newStatus },
+      }),
     onSuccess: () => {
       setNewFrom("");
       setNewTo("");
@@ -134,7 +167,11 @@ export function PermalinkDesk() {
   const deleteMutation = useMutation({
     mutationFn: () => removeRedirects({ data: { ids: selectedIds } }),
     onSuccess: (result) => {
-      toast.success(bn ? `${result.deleted}টি মুছে ফেলা হয়েছে।` : `${result.deleted} deleted.`);
+      toast.success(
+        bn
+          ? `${result.deleted}টি মুছে ফেলা হয়েছে।`
+          : `${result.deleted} deleted.`,
+      );
       refreshRedirects();
     },
     onError: (error) => toast.error(errText(error)),
@@ -147,7 +184,9 @@ export function PermalinkDesk() {
         ? `${result.imported}টি ইমপোর্ট হয়েছে`
         : `${result.imported} rule(s) imported`;
       if (result.errors.length > 0) {
-        toast.warning(`${head} — ${result.errors.length} ${bn ? "সারিতে সমস্যা" : "problem row(s)"}`);
+        toast.warning(
+          `${head} — ${result.errors.length} ${bn ? "সারিতে সমস্যা" : "problem row(s)"}`,
+        );
       } else {
         toast.success(head);
       }
@@ -159,7 +198,9 @@ export function PermalinkDesk() {
   const exportMutation = useMutation({
     mutationFn: () => exportCsv(),
     onSuccess: ({ csv }) => {
-      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const url = URL.createObjectURL(
+        new Blob([csv], { type: "text/csv;charset=utf-8" }),
+      );
       const link = document.createElement("a");
       link.href = url;
       link.download = "redirects.csv";
@@ -171,12 +212,20 @@ export function PermalinkDesk() {
 
   /* -------------------------------- 404 log ------------------------------ */
 
-  const [missingTarget, setMissingTarget] = useState<Record<string, string>>({});
+  const [missingTarget, setMissingTarget] = useState<Record<string, string>>(
+    {},
+  );
   const resolveMutation = useMutation({
     mutationFn: (input: { id: string; toPath: string }) =>
-      resolveMissing({ data: { id: input.id, toPath: input.toPath, status: 301 } }),
+      resolveMissing({
+        data: { id: input.id, toPath: input.toPath, status: 301 },
+      }),
     onSuccess: () => {
-      toast.success(bn ? "৪০৪ থেকে রিডাইরেক্ট তৈরি হয়েছে।" : "Redirect created from the 404 log.");
+      toast.success(
+        bn
+          ? "৪০৪ থেকে রিডাইরেক্ট তৈরি হয়েছে।"
+          : "Redirect created from the 404 log.",
+      );
       refreshRedirects();
     },
     onError: (error) => toast.error(errText(error)),
@@ -194,12 +243,16 @@ export function PermalinkDesk() {
 
   return (
     <div className="space-y-6">
-      <ErrorFrame message={stateQuery.error ? errText(stateQuery.error) : null} />
+      <ErrorFrame
+        message={stateQuery.error ? errText(stateQuery.error) : null}
+      />
 
       {/* -------------------------- permalink pattern ------------------- */}
       <section className="rounded-xl border border-border bg-card p-4 space-y-4">
         <header>
-          <h3 className="text-sm font-semibold">{bn ? "পারমালিংক" : "Permalinks"}</h3>
+          <h3 className="text-sm font-semibold">
+            {bn ? "পারমালিংক" : "Permalinks"}
+          </h3>
           <p className="text-xs text-muted-foreground">
             {bn
               ? "URL গঠন বদলালে পুরোনো ঠিকানার জন্য স্বয়ংক্রিয়ভাবে ৩০১ রিডাইরেক্ট তৈরি হবে।"
@@ -220,23 +273,43 @@ export function PermalinkDesk() {
             <select
               className={inputClass}
               value={settings.articlePattern}
-              onChange={(e) => set("articlePattern", e.target.value as PermalinkSettings["articlePattern"])}
+              onChange={(e) =>
+                set(
+                  "articlePattern",
+                  e.target.value as PermalinkSettings["articlePattern"],
+                )
+              }
             >
               {ARTICLE_PATTERNS.map((pattern) => (
                 <option key={pattern} value={pattern}>
-                  {(bn ? PATTERN_LABELS[pattern]?.bn : PATTERN_LABELS[pattern]?.en) ?? pattern} — {pattern}
+                  {(bn
+                    ? PATTERN_LABELS[pattern]?.bn
+                    : PATTERN_LABELS[pattern]?.en) ?? pattern}{" "}
+                  — {pattern}
                 </option>
               ))}
             </select>
           </Field>
           <Field label={bn ? "পণ্য বেস" : "Product base"}>
-            <input className={inputClass} value={settings.productBase} onChange={(e) => set("productBase", e.target.value)} />
+            <input
+              className={inputClass}
+              value={settings.productBase}
+              onChange={(e) => set("productBase", e.target.value)}
+            />
           </Field>
           <Field label={bn ? "কালেকশন বেস" : "Collection base"}>
-            <input className={inputClass} value={settings.collectionBase} onChange={(e) => set("collectionBase", e.target.value)} />
+            <input
+              className={inputClass}
+              value={settings.collectionBase}
+              onChange={(e) => set("collectionBase", e.target.value)}
+            />
           </Field>
           <Field label={bn ? "পেজ বেস" : "Page base"}>
-            <input className={inputClass} value={settings.pageBase} onChange={(e) => set("pageBase", e.target.value)} />
+            <input
+              className={inputClass}
+              value={settings.pageBase}
+              onChange={(e) => set("pageBase", e.target.value)}
+            />
           </Field>
         </div>
 
@@ -248,8 +321,12 @@ export function PermalinkDesk() {
             onClick={() => previewMutation.mutate()}
           >
             {previewMutation.isPending
-              ? bn ? "হিসাব হচ্ছে…" : "Calculating…"
-              : bn ? "পরিবর্তন দেখুন" : "Preview change"}
+              ? bn
+                ? "হিসাব হচ্ছে…"
+                : "Calculating…"
+              : bn
+                ? "পরিবর্তন দেখুন"
+                : "Preview change"}
           </button>
           <button
             type="button"
@@ -258,12 +335,18 @@ export function PermalinkDesk() {
             onClick={() => applyMutation.mutate()}
           >
             {applyMutation.isPending
-              ? bn ? "প্রয়োগ হচ্ছে…" : "Applying…"
-              : bn ? "প্রয়োগ করুন" : "Apply & write redirects"}
+              ? bn
+                ? "প্রয়োগ হচ্ছে…"
+                : "Applying…"
+              : bn
+                ? "প্রয়োগ করুন"
+                : "Apply & write redirects"}
           </button>
           {dirty && !plan ? (
             <span className="self-center text-xs text-muted-foreground">
-              {bn ? "প্রয়োগের আগে প্রিভিউ দরকার।" : "Preview is required before applying."}
+              {bn
+                ? "প্রয়োগের আগে প্রিভিউ দরকার।"
+                : "Preview is required before applying."}
             </span>
           ) : null}
         </div>
@@ -271,7 +354,9 @@ export function PermalinkDesk() {
         {plan ? (
           <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs space-y-2">
             <p className="font-medium">
-              {bn ? `${plan.total}টি URL সরবে` : `${plan.total} URL(s) will move`}
+              {bn
+                ? `${plan.total}টি URL সরবে`
+                : `${plan.total} URL(s) will move`}
               {plan.droppedLoops > 0
                 ? bn
                   ? ` · ${plan.droppedLoops}টি লুপ বাদ`
@@ -279,14 +364,18 @@ export function PermalinkDesk() {
                 : ""}
             </p>
             {plan.warnings.map((warning) => (
-              <p key={warning.code} className="text-amber-600 dark:text-amber-400">
+              <p
+                key={warning.code}
+                className="text-amber-600 dark:text-amber-400"
+              >
                 {bn ? warning.bn : warning.en}
               </p>
             ))}
             <ul className="max-h-48 space-y-1 overflow-auto font-mono">
               {plan.sample.map((move) => (
                 <li key={move.from}>
-                  <span className="text-muted-foreground">{move.from}</span> → {move.to}
+                  <span className="text-muted-foreground">{move.from}</span> →{" "}
+                  {move.to}
                 </li>
               ))}
             </ul>
@@ -305,16 +394,26 @@ export function PermalinkDesk() {
       <section className="rounded-xl border border-border bg-card p-4 space-y-3">
         <header className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 className="text-sm font-semibold">{bn ? "রিডাইরেক্ট" : "Redirects"}</h3>
+            <h3 className="text-sm font-semibold">
+              {bn ? "রিডাইরেক্ট" : "Redirects"}
+            </h3>
             <p className="text-xs text-muted-foreground">
               {bn ? `${total}টি নিয়ম` : `${total} rule(s)`}
             </p>
           </div>
           <div className="flex gap-2">
-            <button type="button" className={btnGhost} onClick={() => fileRef.current?.click()}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => fileRef.current?.click()}
+            >
               {bn ? "CSV ইমপোর্ট" : "Import CSV"}
             </button>
-            <button type="button" className={btnGhost} onClick={() => exportMutation.mutate()}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => exportMutation.mutate()}
+            >
               {bn ? "CSV এক্সপোর্ট" : "Export CSV"}
             </button>
             <input
@@ -348,7 +447,9 @@ export function PermalinkDesk() {
           <select
             className={inputClass}
             value={newStatus}
-            onChange={(e) => setNewStatus(Number(e.target.value) as 301 | 302 | 410)}
+            onChange={(e) =>
+              setNewStatus(Number(e.target.value) as 301 | 302 | 410)
+            }
           >
             <option value={301}>301</option>
             <option value={302}>302</option>
@@ -380,7 +481,9 @@ export function PermalinkDesk() {
             disabled={selectedIds.length === 0 || deleteMutation.isPending}
             onClick={() => deleteMutation.mutate()}
           >
-            {bn ? `মুছুন (${selectedIds.length})` : `Delete (${selectedIds.length})`}
+            {bn
+              ? `মুছুন (${selectedIds.length})`
+              : `Delete (${selectedIds.length})`}
           </button>
         </div>
 
@@ -406,13 +509,17 @@ export function PermalinkDesk() {
                       checked={selectedIds.includes(row.id)}
                       onChange={(e) =>
                         setSelectedIds((ids) =>
-                          e.target.checked ? [...ids, row.id] : ids.filter((id) => id !== row.id),
+                          e.target.checked
+                            ? [...ids, row.id]
+                            : ids.filter((id) => id !== row.id),
                         )
                       }
                     />
                   </td>
                   <td className="p-2 font-mono">{row.fromPath}</td>
-                  <td className="p-2 font-mono">{row.status === 410 ? "—" : row.toPath}</td>
+                  <td className="p-2 font-mono">
+                    {row.status === 410 ? "—" : row.toPath}
+                  </td>
                   <td className="p-2">{row.status}</td>
                   <td className="p-2">{row.origin}</td>
                   <td className="p-2">{row.hits}</td>
@@ -420,7 +527,10 @@ export function PermalinkDesk() {
               ))}
               {redirects.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-4 text-center text-muted-foreground">
+                  <td
+                    colSpan={6}
+                    className="p-4 text-center text-muted-foreground"
+                  >
                     {bn ? "কোনো রিডাইরেক্ট নেই।" : "No redirects yet."}
                   </td>
                 </tr>
@@ -431,13 +541,23 @@ export function PermalinkDesk() {
 
         {pages > 1 ? (
           <div className="flex items-center gap-2 text-xs">
-            <button type="button" className={btnGhost} disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+            <button
+              type="button"
+              className={btnGhost}
+              disabled={page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
               ←
             </button>
             <span>
               {page} / {pages}
             </span>
-            <button type="button" className={btnGhost} disabled={page >= pages} onClick={() => setPage((p) => p + 1)}>
+            <button
+              type="button"
+              className={btnGhost}
+              disabled={page >= pages}
+              onClick={() => setPage((p) => p + 1)}
+            >
               →
             </button>
           </div>
@@ -456,7 +576,10 @@ export function PermalinkDesk() {
         </header>
         <ul className="space-y-2">
           {missing.map((row) => (
-            <li key={row.id} className="flex flex-wrap items-center gap-2 border-t border-border pt-2 text-xs">
+            <li
+              key={row.id}
+              className="flex flex-wrap items-center gap-2 border-t border-border pt-2 text-xs"
+            >
               <span className="font-mono">{row.path}</span>
               <span className="text-muted-foreground">
                 {row.hits} {bn ? "হিট" : "hits"}
@@ -465,23 +588,39 @@ export function PermalinkDesk() {
                 className={`${inputClass} max-w-xs`}
                 placeholder={bn ? "গন্তব্য পথ" : "Destination path"}
                 value={missingTarget[row.id] ?? ""}
-                onChange={(e) => setMissingTarget((map) => ({ ...map, [row.id]: e.target.value }))}
+                onChange={(e) =>
+                  setMissingTarget((map) => ({
+                    ...map,
+                    [row.id]: e.target.value,
+                  }))
+                }
               />
               <button
                 type="button"
                 className={btnPrimary}
                 disabled={!missingTarget[row.id] || resolveMutation.isPending}
-                onClick={() => resolveMutation.mutate({ id: row.id, toPath: missingTarget[row.id] ?? "" })}
+                onClick={() =>
+                  resolveMutation.mutate({
+                    id: row.id,
+                    toPath: missingTarget[row.id] ?? "",
+                  })
+                }
               >
                 {bn ? "রিডাইরেক্ট" : "Redirect"}
               </button>
-              <button type="button" className={btnGhost} onClick={() => dismissMutation.mutate(row.id)}>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => dismissMutation.mutate(row.id)}
+              >
                 {bn ? "বাতিল" : "Dismiss"}
               </button>
             </li>
           ))}
           {missing.length === 0 ? (
-            <li className="text-xs text-muted-foreground">{bn ? "কোনো ৪০৪ নেই।" : "No unresolved 404s."}</li>
+            <li className="text-xs text-muted-foreground">
+              {bn ? "কোনো ৪০৪ নেই।" : "No unresolved 404s."}
+            </li>
           ) : null}
         </ul>
       </section>

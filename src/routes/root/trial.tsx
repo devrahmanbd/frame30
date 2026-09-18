@@ -3,7 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useLang } from "@/lib/i18n";
 import { ownerTrialsFn } from "@/lib/owner.functions";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 
 export const Route = createFileRoute("/root/trial")({
   head: () => ({
@@ -30,22 +36,40 @@ export const Route = createFileRoute("/root/trial")({
 function TrialDesk() {
   const { tk } = useLang();
   const load = useServerFn(ownerTrialsFn);
-  const { data, isLoading } = useQuery({ queryKey: ["owner-trials"], queryFn: () => load() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["owner-trials"],
+    queryFn: () => load(),
+  });
 
   const rows = data?.rows ?? [];
-  const date = (v: string | null) => (v ? new Date(v).toLocaleDateString() : "—");
+  const date = (v: string | null) =>
+    v ? new Date(v).toLocaleDateString() : "—";
 
   return (
     <section className="space-y-4">
-      <OwnerHeader title={tk("owner.trial.title")} subtitle={tk("owner.trial.subtitle")} />
+      <OwnerHeader
+        title={tk("owner.trial.title")}
+        subtitle={tk("owner.trial.subtitle")}
+      />
 
       <StatGrid>
-        <StatCard label={tk("owner.trial.in_trial")} value={String(data?.counts.trial ?? 0)} />
-        <StatCard label={tk("owner.trial.active")} value={String(data?.counts.active ?? 0)} />
-        <StatCard label={tk("owner.trial.past_due")} value={String(data?.counts.pastDue ?? 0)} />
+        <StatCard
+          label={tk("owner.trial.in_trial")}
+          value={String(data?.counts.trial ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.trial.active")}
+          value={String(data?.counts.active ?? 0)}
+        />
+        <StatCard
+          label={tk("owner.trial.past_due")}
+          value={String(data?.counts.pastDue ?? 0)}
+        />
       </StatGrid>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
       {!isLoading && rows.length === 0 ? (
         <p className="rounded-fq-md border border-dashed border-border p-6 text-sm text-muted-foreground">
           {tk("common.empty")}
@@ -65,9 +89,17 @@ function TrialDesk() {
           {rows.map((r) => (
             <tr key={r.merchantId} className="border-t border-border">
               <td className="px-3 py-2">
-                <span className="font-medium">{r.merchantName ?? r.merchantId}</span>{" "}
+                <span className="font-medium">
+                  {r.merchantName ?? r.merchantId}
+                </span>{" "}
                 <StatePill
-                  tone={r.status === "past_due" ? "bad" : r.status === "active" ? "ok" : "warn"}
+                  tone={
+                    r.status === "past_due"
+                      ? "bad"
+                      : r.status === "active"
+                        ? "ok"
+                        : "warn"
+                  }
                 >
                   {r.status}
                 </StatePill>
@@ -75,7 +107,9 @@ function TrialDesk() {
               <td className="px-3 py-2">{r.plan}</td>
               <td className="px-3 py-2 tabular-nums">{r.trialDays ?? "—"}</td>
               <td className="px-3 py-2 tabular-nums">{date(r.trialEndsAt)}</td>
-              <td className="px-3 py-2 tabular-nums">{date(r.nextBillingAt)}</td>
+              <td className="px-3 py-2 tabular-nums">
+                {date(r.nextBillingAt)}
+              </td>
             </tr>
           ))}
         </OwnerTable>

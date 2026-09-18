@@ -33,7 +33,8 @@ import {
   FaqBand,
   CtaBand,
   type BandCard,
-  type BandStat} from "@/components/public/bands";
+  type BandStat,
+} from "@/components/public/bands";
 import {
   HERO,
   PROOF_STANDARD,
@@ -46,7 +47,8 @@ import {
   PROOF_OF_PLATFORM,
   SUBMIT_STORY,
   FAQ,
-  FINAL_CTA} from "@/lib/marketing/customers.content";
+  FINAL_CTA,
+} from "@/lib/marketing/customers.content";
 
 export const Route = createFileRoute("/customers")({
   loader: async () => {
@@ -54,14 +56,18 @@ export const Route = createFileRoute("/customers")({
     // route loader adds a second guard: a public marketing page must never
     // 500 because a sub-fetch above it changed shape.
     try {
-      const [site, landing] = await Promise.all([getSiteContext(), getLanding()]);
+      const [site, landing] = await Promise.all([
+        getSiteContext(),
+        getLanding(),
+      ]);
       return {
         origin: site.origin,
-        
+
         stories: landing.stories,
-        stats: landing.stats};
+        stats: landing.stats,
+      };
     } catch {
-      return { origin: null,  stories: [] as StoryCard[], stats: null };
+      return { origin: null, stories: [] as StoryCard[], stats: null };
     }
   },
   head: ({ loaderData }) => {
@@ -85,24 +91,43 @@ export const Route = createFileRoute("/customers")({
               position: index + 1,
               url: `${origin}/blog/${story.slug}`,
               name: story.title,
-              ...(story.coverImageUrl ? { image: story.coverImageUrl } : {})}))}
+              ...(story.coverImageUrl ? { image: story.coverImageUrl } : {}),
+            })),
+          }
         : null;
 
     const head = buildMarketingHead({
       route: "customers",
       origin,
-      extraSchema: itemList ? [itemList] : []});
+      extraSchema: itemList ? [itemList] : [],
+    });
     return { meta: head.meta, links: head.links, scripts: head.scripts };
   },
-  errorComponent: () => <CustomersMessage titleEn="Could not load customer stories" titleBn="গ্রাহকদের গল্প লোড করা যায়নি" />,
-  notFoundComponent: () => <CustomersMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />,
-  component: CustomersPage});
+  errorComponent: () => (
+    <CustomersMessage
+      titleEn="Could not load customer stories"
+      titleBn="গ্রাহকদের গল্প লোড করা যায়নি"
+    />
+  ),
+  notFoundComponent: () => (
+    <CustomersMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />
+  ),
+  component: CustomersPage,
+});
 
-function CustomersMessage({ titleEn, titleBn }: { titleEn: string; titleBn: string }) {
+function CustomersMessage({
+  titleEn,
+  titleBn,
+}: {
+  titleEn: string;
+  titleBn: string;
+}) {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-2xl px-4 py-24 text-center">
-      <h1 className="fq-display text-2xl font-semibold">{t(titleEn, titleBn)}</h1>
+      <h1 className="fq-display text-2xl font-semibold">
+        {t(titleEn, titleBn)}
+      </h1>
       <Link to="/" className="mt-4 inline-block text-sm text-primary underline">
         {t("Back to home", "হোমে ফিরে যান")}
       </Link>
@@ -112,7 +137,7 @@ function CustomersMessage({ titleEn, titleBn }: { titleEn: string; titleBn: stri
 
 function CustomersPage() {
   const { t, lang } = useLang();
-  const { stories, stats  } = Route.useLoaderData();
+  const { stories, stats } = Route.useLoaderData();
 
   const featured = stories[0] ?? null;
   const rest = stories.slice(1);
@@ -122,15 +147,23 @@ function CustomersPage() {
   // silently drift apart.
   const published = stats ? publishableStats(stats) : [];
   const STAT_LABEL: Record<string, Bilingual2> = {
-    merchants: { en: "Verified merchants live", bn: "সক্রিয় যাচাইকৃত মার্চেন্ট" },
+    merchants: {
+      en: "Verified merchants live",
+      bn: "সক্রিয় যাচাইকৃত মার্চেন্ট",
+    },
     products: { en: "Products live on Framique", bn: "সক্রিয় পণ্য" },
     articles: { en: "Published stories & guides", bn: "প্রকাশিত গল্প ও গাইড" },
-    paymentRails: { en: "Payment rails settled end to end", bn: "সম্পূর্ণ পেমেন্ট মাধ্যম" }};
+    paymentRails: {
+      en: "Payment rails settled end to end",
+      bn: "সম্পূর্ণ পেমেন্ট মাধ্যম",
+    },
+  };
   const bandStats: BandStat[] = published.map((stat) => ({
     id: stat.key,
     label: t(STAT_LABEL[stat.key].en, STAT_LABEL[stat.key].bn),
     value: null,
-    display: `${stat.value}${stat.suffix}`}));
+    display: `${stat.value}${stat.suffix}`,
+  }));
 
   const proofCards: BandCard[] = PROOF_STANDARD.commitments.map((c) => ({
     id: c.id,
@@ -139,30 +172,44 @@ function CustomersPage() {
       <>
         <p>{c.body}</p>
         <p className="mt-3 text-xs">
-          <span className="font-medium">{t("Breaks it:", "যা এটি ভাঙে:")}</span> {c.breaks}
+          <span className="font-medium">{t("Breaks it:", "যা এটি ভাঙে:")}</span>{" "}
+          {c.breaks}
         </p>
       </>
-    )}));
+    ),
+  }));
 
   const storyCards: BandCard[] = rest.map((story) => ({
     id: story.slug,
     title: story.title,
-    body: story.excerpt ? <div className="fx-softblur">{story.excerpt}</div> : undefined,
+    body: story.excerpt ? (
+      <div className="fx-softblur">{story.excerpt}</div>
+    ) : undefined,
     meta: story.merchantName ? (
       <span className="inline-flex items-center gap-1.5">
         <Chip>{story.merchantName}</Chip>
-        <AnimatedIcon icon={CheckCircle2} variant="sparkle" size="sm" className="text-primary" />
+        <AnimatedIcon
+          icon={CheckCircle2}
+          variant="sparkle"
+          size="sm"
+          className="text-primary"
+        />
       </span>
     ) : undefined,
     footer: (
-      <Link to="/blog/$slug" params={{ slug: story.slug }} className="text-sm font-medium text-primary inline-flex items-center gap-1 group">
+      <Link
+        to="/blog/$slug"
+        params={{ slug: story.slug }}
+        className="text-sm font-medium text-primary inline-flex items-center gap-1 group"
+      >
         <span>{STORY_SECTION.cardCta}</span>
         <AnimatedIcon icon={ArrowRight} variant="magnetic" size="sm" />
       </Link>
-    )}));
+    ),
+  }));
 
   return (
-    <PublicShell >
+    <PublicShell>
       <HeroBand
         eyebrow={t(HERO.eyebrow.en, HERO.eyebrow.bn)}
         title={HERO.title}
@@ -227,7 +274,9 @@ function CustomersPage() {
                   body={featured.excerpt ?? undefined}
                   aside={
                     featured.merchantName ? (
-                      <p className="max-w-xs text-sm opacity-85">{featured.merchantName}</p>
+                      <p className="max-w-xs text-sm opacity-85">
+                        {featured.merchantName}
+                      </p>
                     ) : undefined
                   }
                   actions={
@@ -295,14 +344,20 @@ function CustomersPage() {
                     alt="Prompt: Commercial photograph of a Bangladeshi female fashion boutique founder inspecting handcrafted Jamdani sarees in an elegant Dhaka showroom with soft ambient lighting, high-end textile studio, shot on Hasselblad 80mm lens, photorealistic, 8k resolution, aspect ratio 16:9."
                     aspect="16/9"
                     badge={t("Apparel & Jamdani", "ফ্যাশন ও জামদানি")}
-                    caption={t("Handcrafted fashion studio in Banani, Dhaka.", "বনানী, ঢাকায় অবস্থিত হ্যান্ডক্রাফটেড ফ্যাশন স্টুডিও।")}
+                    caption={t(
+                      "Handcrafted fashion studio in Banani, Dhaka.",
+                      "বনানী, ঢাকায় অবস্থিত হ্যান্ডক্রাফটেড ফ্যাশন স্টুডিও।",
+                    )}
                   />
                 ) : index === 1 ? (
                   <MarketingPlaceholderImage
                     alt="Prompt: A young energetic Bangladeshi merchant in a modern Dhaka tech accessories warehouse packing premium wireless earbuds into branded mailer boxes, dual monitors in background displaying Framique order dispatch screen, authentic studio lighting, 8k resolution, aspect ratio 16:9."
                     aspect="16/9"
                     badge={t("Consumer Tech", "কনজিউমার টেক")}
-                    caption={t("Fast-dispatch consumer accessories hub in Tejgaon, Dhaka.", "তেজগাঁও, ঢাকায় অবস্থিত কনজিউমার এক্সেসরিজ ডিসপ্যাচ হাব।")}
+                    caption={t(
+                      "Fast-dispatch consumer accessories hub in Tejgaon, Dhaka.",
+                      "তেজগাঁও, ঢাকায় অবস্থিত কনজিউমার এক্সেসরিজ ডিসপ্যাচ হাব।",
+                    )}
                   />
                 ) : undefined
               }
@@ -315,17 +370,24 @@ function CustomersPage() {
               }
               bullets={[
                 <>
-                  <span className="font-medium text-foreground">{t("Typical failure modes: ", "সাধারণ ব্যর্থতার ধরন: ")}</span>
+                  <span className="font-medium text-foreground">
+                    {t("Typical failure modes: ", "সাধারণ ব্যর্থতার ধরন: ")}
+                  </span>
                   {archetype.failureModes.join(" · ")}
                 </>,
                 <>
-                  <span className="font-medium text-foreground">{t("Metrics that matter: ", "গুরুত্বপূর্ণ মেট্রিক্স: ")}</span>
+                  <span className="font-medium text-foreground">
+                    {t("Metrics that matter: ", "গুরুত্বপূর্ণ মেট্রিক্স: ")}
+                  </span>
                   {archetype.metrics.join(" · ")}
                 </>,
                 archetype.plan,
               ]}
               action={
-                <p lang="bn" className="font-bangla fq-measure text-sm text-muted-foreground">
+                <p
+                  lang="bn"
+                  className="font-bangla fq-measure text-sm text-muted-foreground"
+                >
                   {archetype.bnNote}
                 </p>
               }
@@ -354,7 +416,12 @@ function CustomersPage() {
             rows={METRIC_DEFINITIONS.map((row) => ({
               id: row.id,
               label: row.metric,
-              cells: { formula: row.formula, source: row.source, mistake: row.mistake }}))}
+              cells: {
+                formula: row.formula,
+                source: row.source,
+                mistake: row.mistake,
+              },
+            }))}
           />
         </div>
       </Band>
@@ -370,22 +437,34 @@ function CustomersPage() {
         <ol className="fq-measure mt-10 space-y-6">
           {CASE_STUDY_GUIDE.steps.map((step, index) => (
             <li key={step.id} className="flex gap-4">
-              <span className="fq-display shrink-0 text-lg text-muted-foreground">{index + 1}.</span>
+              <span className="fq-display shrink-0 text-lg text-muted-foreground">
+                {index + 1}.
+              </span>
               <div>
                 <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{step.body}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {step.body}
+                </p>
               </div>
             </li>
           ))}
         </ol>
         <div className="fq-glass mt-10 rounded-fq-lg p-6">
           <h3 className="text-base font-semibold">
-            {t("A minimal self-audit checklist before you publish anything", "প্রকাশ করার আগে একটি ন্যূনতম স্ব-নিরীক্ষা চেকলিস্ট")}
+            {t(
+              "A minimal self-audit checklist before you publish anything",
+              "প্রকাশ করার আগে একটি ন্যূনতম স্ব-নিরীক্ষা চেকলিস্ট",
+            )}
           </h3>
-          <ul role="list" className="mt-4 space-y-2 text-sm text-muted-foreground">
+          <ul
+            role="list"
+            className="mt-4 space-y-2 text-sm text-muted-foreground"
+          >
             {CASE_STUDY_GUIDE.checklist.map((item) => (
               <li key={item} className="flex gap-3">
-                <span aria-hidden="true" className="mt-1 text-primary">✓</span>
+                <span aria-hidden="true" className="mt-1 text-primary">
+                  ✓
+                </span>
                 <span>{item}</span>
               </li>
             ))}
@@ -429,9 +508,16 @@ function CustomersPage() {
 
       {/* 10 — FAQ. No FAQPage schema on this route by design (see deck §SEO). */}
       <Band divided labelledBy="faq-title">
-        <BandHeading id="faq-title" title={t("Frequently asked questions", "সাধারণ জিজ্ঞাসা")} />
+        <BandHeading
+          id="faq-title"
+          title={t("Frequently asked questions", "সাধারণ জিজ্ঞাসা")}
+        />
         <FaqBand
-          entries={FAQ.map((row) => ({ id: row.id, question: row.question, answer: row.answer }))}
+          entries={FAQ.map((row) => ({
+            id: row.id,
+            question: row.question,
+            answer: row.answer,
+          }))}
         />
       </Band>
 

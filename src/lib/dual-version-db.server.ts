@@ -27,7 +27,7 @@ export type VersionNOrder = {
   id: string;
   merchant_id: string;
   customer_id: string;
-  total_amount: number;       // legacy decimal amount in BDT (e.g. 1500.50)
+  total_amount: number; // legacy decimal amount in BDT (e.g. 1500.50)
   status: string;
   created_at: string;
 };
@@ -37,10 +37,10 @@ export type VersionNPlusOneOrder = {
   id: string;
   merchant_id: string;
   customer_id: string;
-  total_amount: number;       // preserved for dual-write compatibility
-  total_minor_int: number;    // new exact integer in minor units (e.g. 150050)
-  currency: string;           // new currency code (e.g. 'BDT')
-  tax_minor_int: number;      // new tax minor integer
+  total_amount: number; // preserved for dual-write compatibility
+  total_minor_int: number; // new exact integer in minor units (e.g. 150050)
+  currency: string; // new currency code (e.g. 'BDT')
+  tax_minor_int: number; // new tax minor integer
   status: string;
   created_at: string;
 };
@@ -76,9 +76,9 @@ export type VersionNPlusOneProduct = {
   title: string;
   price: number;
   in_stock: boolean;
-  tags_v2?: string[];        // newly added nullable column
+  tags_v2?: string[]; // newly added nullable column
   theme_config_v2?: Record<string, unknown>; // newly added jsonb column
-  is_featured?: boolean;     // newly added column with default false
+  is_featured?: boolean; // newly added column with default false
 };
 
 export type DatabaseProductRow = {
@@ -115,7 +115,9 @@ export function readOrderAsVersionN(row: DatabaseOrderRow): VersionNOrder {
  * Version N+1 Order Reader:
  * Reads database row as Version N+1 model, deriving defaults for any legacy rows.
  */
-export function readOrderAsVersionNPlusOne(row: DatabaseOrderRow): VersionNPlusOneOrder {
+export function readOrderAsVersionNPlusOne(
+  row: DatabaseOrderRow,
+): VersionNPlusOneOrder {
   const totalMinorInt =
     row.total_minor_int !== undefined && row.total_minor_int !== null
       ? Number(row.total_minor_int)
@@ -128,7 +130,10 @@ export function readOrderAsVersionNPlusOne(row: DatabaseOrderRow): VersionNPlusO
     total_amount: Number(row.total_amount),
     total_minor_int: totalMinorInt,
     currency: row.currency || "BDT",
-    tax_minor_int: row.tax_minor_int !== undefined && row.tax_minor_int !== null ? Number(row.tax_minor_int) : 0,
+    tax_minor_int:
+      row.tax_minor_int !== undefined && row.tax_minor_int !== null
+        ? Number(row.tax_minor_int)
+        : 0,
     status: row.status,
     created_at: row.created_at,
   };
@@ -188,7 +193,9 @@ export function writeOrderAsVersionNPlusOne(input: {
  * Version N Product Reader:
  * Safely ignores newly added `tags_v2` or `theme_config_v2`.
  */
-export function readProductAsVersionN(row: DatabaseProductRow): VersionNProduct {
+export function readProductAsVersionN(
+  row: DatabaseProductRow,
+): VersionNProduct {
   return {
     id: row.id,
     merchant_id: row.merchant_id,
@@ -202,7 +209,9 @@ export function readProductAsVersionN(row: DatabaseProductRow): VersionNProduct 
  * Version N+1 Product Reader:
  * Supplies defaults for legacy product rows.
  */
-export function readProductAsVersionNPlusOne(row: DatabaseProductRow): VersionNPlusOneProduct {
+export function readProductAsVersionNPlusOne(
+  row: DatabaseProductRow,
+): VersionNPlusOneProduct {
   return {
     id: row.id,
     merchant_id: row.merchant_id,
@@ -257,7 +266,7 @@ export async function simulateDualVersionConcurrentTraffic(options: {
   const operations: Array<() => Promise<void>> = [];
 
   for (let i = 0; i < total; i++) {
-    const isVersionN = (i % 100) < nPercent;
+    const isVersionN = i % 100 < nPercent;
     const orderId = `ord_sim_${i + 1}`;
 
     if (isVersionN) {
@@ -276,13 +285,19 @@ export async function simulateDualVersionConcurrentTraffic(options: {
 
           // 2. Version N Read own write
           const readSelf = readOrderAsVersionN(writeRow);
-          if (readSelf.id !== orderId) throw new Error("Version N read self failed");
+          if (readSelf.id !== orderId)
+            throw new Error("Version N read self failed");
           readSuccesses++;
 
           // 3. Cross-Version Read: Version N+1 reads row written by Version N
           const crossRead = readOrderAsVersionNPlusOne(writeRow);
-          if (crossRead.total_minor_int !== Math.round(writeRow.total_amount * 100)) {
-            throw new Error(`Version N+1 failed to derive minor units from Version N: ${crossRead.total_minor_int} vs ${writeRow.total_amount * 100}`);
+          if (
+            crossRead.total_minor_int !==
+            Math.round(writeRow.total_amount * 100)
+          ) {
+            throw new Error(
+              `Version N+1 failed to derive minor units from Version N: ${crossRead.total_minor_int} vs ${writeRow.total_amount * 100}`,
+            );
           }
           crossVersionReadSuccesses++;
         } catch (err) {
@@ -316,7 +331,9 @@ export async function simulateDualVersionConcurrentTraffic(options: {
           // 3. Cross-Version Read: Version N reads row written by Version N+1 (ignoring new fields)
           const crossRead = readOrderAsVersionN(writeRow);
           if (crossRead.total_amount !== writeRow.total_amount) {
-            throw new Error(`Version N failed to read dual-write amount from Version N+1: ${crossRead.total_amount} vs ${writeRow.total_amount}`);
+            throw new Error(
+              `Version N failed to read dual-write amount from Version N+1: ${crossRead.total_amount} vs ${writeRow.total_amount}`,
+            );
           }
           crossVersionReadSuccesses++;
         } catch (err) {

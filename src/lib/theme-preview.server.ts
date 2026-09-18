@@ -31,8 +31,12 @@ export function issuePreviewToken(
   nowMs: number = Date.now(),
 ): string {
   const header = b64urlEncode(JSON.stringify({ alg: "HS256", typ: "FQPV1" }));
-  const payload = b64urlEncode(JSON.stringify({ m: merchantId, t: themeId, e: nowMs + PREVIEW_TTL_MS }));
-  const sig = b64urlEncode(createHmac("sha256", secret).update(`${header}.${payload}`).digest());
+  const payload = b64urlEncode(
+    JSON.stringify({ m: merchantId, t: themeId, e: nowMs + PREVIEW_TTL_MS }),
+  );
+  const sig = b64urlEncode(
+    createHmac("sha256", secret).update(`${header}.${payload}`).digest(),
+  );
   return `${header}.${payload}.${sig}`;
 }
 
@@ -50,14 +54,17 @@ export function verifyPreviewToken(
   } catch {
     return null;
   }
-  const expected = createHmac("sha256", secret).update(`${header}.${payload}`).digest();
+  const expected = createHmac("sha256", secret)
+    .update(`${header}.${payload}`)
+    .digest();
   let actual: Buffer;
   try {
     actual = b64urlDecode(sig);
   } catch {
     return null;
   }
-  if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) return null;
+  if (actual.length !== expected.length || !timingSafeEqual(actual, expected))
+    return null;
   const body = payloadJson as Record<string, unknown>;
   if (
     typeof body["m"] !== "string" ||
@@ -72,5 +79,9 @@ export function verifyPreviewToken(
 
 /** Which secret signs preview tokens. Never leaves the server boundary. */
 export function previewSecret(): string {
-  return process.env["PREVIEW_TOKEN_SECRET"] ?? process.env["AUTH_HASH_SALT"] ?? "framique-preview-dev";
+  return (
+    process.env["PREVIEW_TOKEN_SECRET"] ??
+    process.env["AUTH_HASH_SALT"] ??
+    "framique-preview-dev"
+  );
 }

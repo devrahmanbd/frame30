@@ -32,7 +32,8 @@ export function pixelWidth(text: string, fontSize = 16): number {
     else if (WIDE.has(char)) units += 0.92;
     else if (char === " ") units += 0.28;
     else if (/[A-Z0-9]/.test(char)) units += 0.68;
-    else if (/[\u0980-\u09FF]/.test(char)) units += 0.62; // বাংলা conjuncts run wide
+    else if (/[\u0980-\u09FF]/.test(char))
+      units += 0.62; // বাংলা conjuncts run wide
     else units += 0.52;
   }
   return Math.round(units * fontSize);
@@ -43,7 +44,11 @@ export function pixelWidth(text: string, fontSize = 16): number {
  * exactly the way a SERP line is clipped. Returns the original string when it
  * already fits, so a preview never shows a phantom ellipsis.
  */
-export function truncateToPixels(text: string, budgetPx: number, fontSize: number): string {
+export function truncateToPixels(
+  text: string,
+  budgetPx: number,
+  fontSize: number,
+): string {
   const clean = text.replace(/\s+/g, " ").trim();
   if (!clean || pixelWidth(clean, fontSize) <= budgetPx) return clean;
   const ellipsisPx = pixelWidth("…", fontSize);
@@ -101,6 +106,10 @@ export function serpMetrics(
   return {
     device,
     title: snippetMetrics(input.title, budget.titlePx, SERP_FONT.title),
-    description: snippetMetrics(input.description, budget.descriptionPx, SERP_FONT.description),
+    description: snippetMetrics(
+      input.description,
+      budget.descriptionPx,
+      SERP_FONT.description,
+    ),
   };
 }

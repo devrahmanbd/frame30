@@ -64,12 +64,12 @@ Existing merchant tables (products, product_variants, collections,
 product_collections, product_tags, tags, inventory) remain the single source of
 truth — no read-side projection table for catalog.
 
-| Surface | Access |
-|---|---|
-| `products` / `product_variants` / `collections` / `product_collections` / `tags` | no anon grants; staff RLS as in `02-merchant`; catalog reads happen inside definer RPCs |
-| `inventory` | never exposed; only aggregated `stock_status` flows out |
-| `catalog_search_translit` (new, helper) | Latin→Bangla transliteration pairs; write-only via seed/migration, read inside `search_products` |
-| catalog RPCs | `execute` granted to `anon` only |
+| Surface                                                                          | Access                                                                                           |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `products` / `product_variants` / `collections` / `product_collections` / `tags` | no anon grants; staff RLS as in `02-merchant`; catalog reads happen inside definer RPCs          |
+| `inventory`                                                                      | never exposed; only aggregated `stock_status` flows out                                          |
+| `catalog_search_translit` (new, helper)                                          | Latin→Bangla transliteration pairs; write-only via seed/migration, read inside `search_products` |
+| catalog RPCs                                                                     | `execute` granted to `anon` only                                                                 |
 
 Catalog RPCs are `security definer` with `set search_path = ''`; inside, every
 statement re-applies the DD-2 publication predicate and the resolved
@@ -78,13 +78,13 @@ settings, S1) — otherwise catalog RPCs return 404 for the slug.
 
 ## 4. RPC surface
 
-| RPC | Params | Returns |
-|---|---|---|
-| `list_collections(p_merchant_slug)` | slug | published collections (name, slug, image, product_count) |
-| `get_collection(p_merchant_slug, p_collection_slug, p_cursor, p_page_size)` | slug, keyset | collection meta + product cards + `next_cursor` |
-| `get_product_detail(p_merchant_slug, p_product_slug)` | slugs | product, all variants (price/stock), gallery, tags, related (DD-7) |
-| `search_products(p_merchant_slug, p_query, p_collection_slug, p_price_min, p_price_max, p_tags, p_in_stock, p_cursor, p_page_size)` | filters | product cards + facet counts + `next_cursor` |
-| `get_homepage(p_merchant_slug)` | slug | featured collections + featured products (merchant-picked order) |
+| RPC                                                                                                                                 | Params       | Returns                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------ |
+| `list_collections(p_merchant_slug)`                                                                                                 | slug         | published collections (name, slug, image, product_count)           |
+| `get_collection(p_merchant_slug, p_collection_slug, p_cursor, p_page_size)`                                                         | slug, keyset | collection meta + product cards + `next_cursor`                    |
+| `get_product_detail(p_merchant_slug, p_product_slug)`                                                                               | slugs        | product, all variants (price/stock), gallery, tags, related (DD-7) |
+| `search_products(p_merchant_slug, p_query, p_collection_slug, p_price_min, p_price_max, p_tags, p_in_stock, p_cursor, p_page_size)` | filters      | product cards + facet counts + `next_cursor`                       |
+| `get_homepage(p_merchant_slug)`                                                                                                     | slug         | featured collections + featured products (merchant-picked order)   |
 
 All: `volatile`, max page_size 48, response shape fixed (theme-agnostic JSON;
 themes map to their own templates). Errors: `not_found` (bad slug / storefront

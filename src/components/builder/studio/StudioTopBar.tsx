@@ -25,7 +25,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { STUDIO_SHORTCUTS, formatStudioShortcut, type StudioPlatform, type StudioShortcutId } from "@/lib/studio/shortcuts";
+import {
+  STUDIO_SHORTCUTS,
+  formatStudioShortcut,
+  type StudioPlatform,
+  type StudioShortcutId,
+} from "@/lib/studio/shortcuts";
 import { DEVICE_ICON } from "./StudioControls";
 
 export type TopBarProps = {
@@ -50,9 +55,15 @@ export type TopBarProps = {
   onExit: () => void;
 };
 
-function tip(id: StudioShortcutId, platform: StudioPlatform, label: string): string {
+function tip(
+  id: StudioShortcutId,
+  platform: StudioPlatform,
+  label: string,
+): string {
   const shortcut = STUDIO_SHORTCUTS.find((s) => s.id === id);
-  return shortcut ? `${label} (${formatStudioShortcut(shortcut, platform)})` : label;
+  return shortcut
+    ? `${label} (${formatStudioShortcut(shortcut, platform)})`
+    : label;
 }
 
 function BarButton({
@@ -86,7 +97,10 @@ export function StudioTopBar(props: TopBarProps) {
   const { platform } = props;
 
   return (
-    <header className="fq-studio-bar flex h-12 items-center gap-1 px-2" aria-label="Editor toolbar">
+    <header
+      className="fq-studio-bar flex h-12 items-center gap-1 px-2"
+      aria-label="Editor toolbar"
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
@@ -99,24 +113,41 @@ export function StudioTopBar(props: TopBarProps) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem onSelect={props.onSaveTemplate}>Save as template</DropdownMenuItem>
-          <DropdownMenuItem onSelect={props.onDesignSystem}>Design system</DropdownMenuItem>
-          <DropdownMenuItem onSelect={props.onShortcuts}>Keyboard shortcuts</DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onSaveTemplate}>
+            Save as template
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onDesignSystem}>
+            Design system
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onShortcuts}>
+            Keyboard shortcuts
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={props.onExit}>Exit to dashboard</DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onExit}>
+            Exit to dashboard
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
       <BarButton label="Add element" onClick={props.onAddElement}>
         <Plus className="size-5" aria-hidden />
       </BarButton>
-      <BarButton label={tip("pageSettings", platform, "Page settings")} onClick={props.onPageSettings}>
+      <BarButton
+        label={tip("pageSettings", platform, "Page settings")}
+        onClick={props.onPageSettings}
+      >
         <Settings2 className="size-5" aria-hidden />
       </BarButton>
-      <BarButton label={tip("history", platform, "History")} onClick={props.onHistory}>
+      <BarButton
+        label={tip("history", platform, "History")}
+        onClick={props.onHistory}
+      >
         <Clock className="size-5" aria-hidden />
       </BarButton>
-      <BarButton label={tip("siteSettings", platform, "Design system")} onClick={props.onDesignSystem}>
+      <BarButton
+        label={tip("siteSettings", platform, "Design system")}
+        onClick={props.onDesignSystem}
+      >
         <Palette className="size-5" aria-hidden />
       </BarButton>
 
@@ -132,7 +163,10 @@ export function StudioTopBar(props: TopBarProps) {
         {props.activeDevices.map((key) => {
           const Icon = DEVICE_ICON[key];
           const def = BREAKPOINT_BY_KEY[key];
-          const label = def.direction === "max" ? `${def.label} (up to ${def.edge}px)` : `${def.label} (${def.edge}px and up)`;
+          const label =
+            def.direction === "max"
+              ? `${def.label} (up to ${def.edge}px)`
+              : `${def.label} (${def.edge}px and up)`;
           return (
             <button
               key={key}
@@ -152,13 +186,22 @@ export function StudioTopBar(props: TopBarProps) {
         })}
       </div>
 
-      <BarButton label={tip("finder", platform, "Finder")} onClick={props.onFinder}>
+      <BarButton
+        label={tip("finder", platform, "Finder")}
+        onClick={props.onFinder}
+      >
         <Command className="size-5" aria-hidden />
       </BarButton>
-      <BarButton label={tip("navigator", platform, "Structure")} onClick={props.onStructure}>
+      <BarButton
+        label={tip("navigator", platform, "Structure")}
+        onClick={props.onStructure}
+      >
         <Layers className="size-5" aria-hidden />
       </BarButton>
-      <BarButton label={tip("preview", platform, "Preview changes")} onClick={props.onPreview}>
+      <BarButton
+        label={tip("preview", platform, "Preview changes")}
+        onClick={props.onPreview}
+      >
         <Eye className="size-5" aria-hidden />
       </BarButton>
 
@@ -166,7 +209,11 @@ export function StudioTopBar(props: TopBarProps) {
         type="button"
         onClick={props.onPublish}
         disabled={!props.dirty || props.saving}
-        title={props.dirty ? tip("publish", platform, "Publish") : "Nothing to publish"}
+        title={
+          props.dirty
+            ? tip("publish", platform, "Publish")
+            : "Nothing to publish"
+        }
         className="ml-1 inline-flex min-h-9 items-center rounded-fq-sm bg-primary px-4 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40"
       >
         {props.saving ? "Saving…" : "Publish"}
@@ -184,8 +231,12 @@ export function StudioTopBar(props: TopBarProps) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onSelect={props.onSaveDraft}>Save draft</DropdownMenuItem>
-          <DropdownMenuItem onSelect={props.onSaveTemplate}>Save as template</DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onSaveDraft}>
+            Save draft
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={props.onSaveTemplate}>
+            Save as template
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

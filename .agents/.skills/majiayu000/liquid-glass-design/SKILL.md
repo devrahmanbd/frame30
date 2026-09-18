@@ -9,6 +9,7 @@ allowed-tools: Bash, Read, Write, Edit
 Comprehensive guide to iOS 26 and macOS Tahoe's revolutionary Liquid Glass design system, including complete SwiftUI API coverage, Human Interface Guidelines, morphing animations, and implementation best practices.
 
 ## Prerequisites
+
 - Xcode 26+
 - iOS 26 / macOS Tahoe deployment target
 - SwiftUI framework
@@ -22,18 +23,21 @@ Liquid Glass is Apple's new design language that creates a lightweight, dynamic 
 ## Glass Variants
 
 ### Regular Glass (Default)
+
 ```swift
 Button("Action") { performAction() }
     .buttonStyle(.glass)
 ```
 
 ### Clear Glass
+
 ```swift
 Button("Subtle Action") { performAction() }
     .buttonStyle(.glassClear)
 ```
 
 ### Identity Glass (No effect)
+
 ```swift
 .glassEffect(.identity)
 ```
@@ -92,6 +96,7 @@ HStack {
 ```
 
 ## Transition Types
+
 ```swift
 .glassEffectTransition(.scale)
 .glassEffectTransition(.opacity)
@@ -106,6 +111,7 @@ HStack {
 ## Accessibility
 
 Liquid Glass automatically respects:
+
 - **Reduce Transparency**: Glass becomes more opaque
 - **Increase Contrast**: Glass shifts to black/white with prominent borders
 - **Reduce Motion**: Morphing animations are subdued
@@ -113,6 +119,7 @@ Liquid Glass automatically respects:
 ## Toolbar Integration
 
 iOS 26 toolbars automatically adopt Liquid Glass:
+
 - `ToolbarItem(placement: .primaryAction)` for glass buttons
 - `ToolbarSpacer(.fixed)` for grouping related items
 - `Button(role: .close)` for glass X styling
@@ -121,12 +128,14 @@ iOS 26 toolbars automatically adopt Liquid Glass:
 ## Best Practices
 
 **DO:**
+
 - Use glass for navigation elements (toolbars, tab bars, floating buttons)
 - Keep content behind glass (let users see through)
 - Use morphing for meaningful state transitions
 - Test with accessibility settings enabled
 
 **DON'T:**
+
 - Apply glass on content cards or text containers
 - Mix regular and clear glass variants
 - Nest glass elements

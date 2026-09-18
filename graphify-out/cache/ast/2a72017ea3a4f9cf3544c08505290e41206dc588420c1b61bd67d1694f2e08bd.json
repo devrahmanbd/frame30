@@ -1,1 +1,255 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "label": "UsagePanel.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L1"}, {"id": "billing_usagepanel_level_bar", "label": "LEVEL_BAR", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L17"}, {"id": "billing_usagepanel_usagepanel", "label": "UsagePanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L23"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "users_rahman_documents_frame30_src_lib_entitlements_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "lib_entitlements_functions_entitlementpanelfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "users_rahman_documents_frame30_src_lib_entitlements_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "lib_entitlements_resource_meta", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "lib_entitlements_formatusage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "lib_entitlements_entitlementverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "billing_usagepanel_level_bar", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx", "target": "billing_usagepanel_usagepanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L23", "weight": 1.0}], "raw_calls": [{"caller_nid": "billing_usagepanel_usagepanel", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L24"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L25"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L26"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L37"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L45"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L47"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L60"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L62"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L63"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L65"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L65"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L70"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L75"}, {"caller_nid": "billing_usagepanel_usagepanel", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx", "source_location": "L120"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "label": "UsagePanel.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "billing_usagepanel_level_bar",
+      "label": "LEVEL_BAR",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "billing_usagepanel_usagepanel",
+      "label": "UsagePanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L23"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_entitlements_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "lib_entitlements_functions_entitlementpanelfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_entitlements_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "lib_entitlements_resource_meta",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "lib_entitlements_formatusage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "lib_entitlements_entitlementverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "billing_usagepanel_level_bar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_billing_usagepanel_tsx",
+      "target": "billing_usagepanel_usagepanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "billing_usagepanel_usagepanel",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/billing/UsagePanel.tsx",
+      "source_location": "L120"
+    }
+  ]
+}

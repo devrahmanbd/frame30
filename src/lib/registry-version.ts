@@ -17,17 +17,31 @@ export const PRESET_API_RANGE = "^3.0.0";
 
 export type CompatibilityVerdict =
   | { ok: true }
-  | { ok: false; code: "registry.api_range_invalid" | "registry.api_incompatible"; message: string };
+  | {
+      ok: false;
+      code: "registry.api_range_invalid" | "registry.api_incompatible";
+      message: string;
+    };
 
 /**
  * A package (preset or listing) is installable when its declared range covers
  * the running builder API version. A missing range means "built before ranges
  * existed" and is treated as the official preset range, not as "anything".
  */
-export function checkApiCompatibility(range: string | null | undefined, api = BUILDER_API_VERSION): CompatibilityVerdict {
+export function checkApiCompatibility(
+  range: string | null | undefined,
+  api = BUILDER_API_VERSION,
+): CompatibilityVerdict {
   const declared = (range ?? PRESET_API_RANGE).trim();
-  if (!/^\^\d+\.\d+\.\d+$/.test(declared) && !/^>=\s*\d+\.\d+\.\d+\s+<\s*\d+\.\d+\.\d+$/.test(declared)) {
-    return { ok: false, code: "registry.api_range_invalid", message: `Unsupported compatibility range "${declared}"` };
+  if (
+    !/^\^\d+\.\d+\.\d+$/.test(declared) &&
+    !/^>=\s*\d+\.\d+\.\d+\s+<\s*\d+\.\d+\.\d+$/.test(declared)
+  ) {
+    return {
+      ok: false,
+      code: "registry.api_range_invalid",
+      message: `Unsupported compatibility range "${declared}"`,
+    };
   }
   if (!satisfiesApiRange(declared, api)) {
     return {
@@ -39,7 +53,10 @@ export function checkApiCompatibility(range: string | null | undefined, api = BU
   return { ok: true };
 }
 
-export function isCompatiblePackage(range: string | null | undefined, api = BUILDER_API_VERSION): boolean {
+export function isCompatiblePackage(
+  range: string | null | undefined,
+  api = BUILDER_API_VERSION,
+): boolean {
   return checkApiCompatibility(range, api).ok;
 }
 

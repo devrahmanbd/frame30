@@ -6,55 +6,55 @@
 
 ## What's New in 2026
 
-| Finding | Source | Confidence |
-|---|---|---|
-| Memory management itself is a learnable RL skill; optimizing only memory (not task policy) improves 32B model to frontier-competitive on Crafter/MiniHack/NetHack | AutoMem, arXiv 2607.01224, Jul 1 2026 | **A** |
-| "Bounded memory contract" — agents must make decisions from typed retrieval, never appending raw transcripts — enables unlimited-length runs with fixed context footprint | AgenticSTS, arXiv ~Jul 2 2026 | **A** |
-| "Ghost memory" failures (old+current facts coexisting) require state-aware validity annotations at write time, not retrieval-time filtering | A-TMA, arXiv Jul 2 2026 | **A** |
-| Partitioning recurrent memory into independent heads with selective update prevents information overwriting across agents | Multi-Head Recurrent Memory Agents, arXiv Jul 1 2026 | **A** |
-| CrewAI v1.14.7 (Jun 11 2026) ships pluggable default backends for memory, knowledge, RAG, and flow — memory backends are now table stakes for competitors | CrewAI changelog | **A** |
-| LongMemEval 2026 scores: Hindsight 94.6%, SuperMemory 81.6%, Zep 63.8%, Mem0 49.0% | vectorize.io 2026 guide | **B** |
+| Finding                                                                                                                                                                   | Source                                               | Confidence |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ---------- |
+| Memory management itself is a learnable RL skill; optimizing only memory (not task policy) improves 32B model to frontier-competitive on Crafter/MiniHack/NetHack         | AutoMem, arXiv 2607.01224, Jul 1 2026                | **A**      |
+| "Bounded memory contract" — agents must make decisions from typed retrieval, never appending raw transcripts — enables unlimited-length runs with fixed context footprint | AgenticSTS, arXiv ~Jul 2 2026                        | **A**      |
+| "Ghost memory" failures (old+current facts coexisting) require state-aware validity annotations at write time, not retrieval-time filtering                               | A-TMA, arXiv Jul 2 2026                              | **A**      |
+| Partitioning recurrent memory into independent heads with selective update prevents information overwriting across agents                                                 | Multi-Head Recurrent Memory Agents, arXiv Jul 1 2026 | **A**      |
+| CrewAI v1.14.7 (Jun 11 2026) ships pluggable default backends for memory, knowledge, RAG, and flow — memory backends are now table stakes for competitors                 | CrewAI changelog                                     | **A**      |
+| LongMemEval 2026 scores: Hindsight 94.6%, SuperMemory 81.6%, Zep 63.8%, Mem0 49.0%                                                                                        | vectorize.io 2026 guide                              | **B**      |
 
 ---
 
 ## Ruflo Current Capability
 
-| Capability | Implementation | Gap |
-|---|---|---|
-| Vector memory store | AgentDB + HNSW (~1.9x–4.7x vs brute force above crossover) | No RL training of memory ops |
-| Memory consolidation | `consolidate` background worker | Heuristic, not trajectory-learned |
-| Forgetting prevention | EWC++ | Applies to model weights, not memory operations |
-| Memory adaptation | SONA (0.0043ms/adapt) | Adapts neural weights, not memory management strategy |
-| Memory backends | Hybrid (SQLite + AgentDB) | Fixed; no pluggable backend registry (vs CrewAI v1.14.7) |
-| Memory contract | None | Agents may still append raw transcripts to context |
-| Validity annotations | None | No state-aware supersession at write time (cf. A-TMA) |
+| Capability            | Implementation                                             | Gap                                                      |
+| --------------------- | ---------------------------------------------------------- | -------------------------------------------------------- |
+| Vector memory store   | AgentDB + HNSW (~1.9x–4.7x vs brute force above crossover) | No RL training of memory ops                             |
+| Memory consolidation  | `consolidate` background worker                            | Heuristic, not trajectory-learned                        |
+| Forgetting prevention | EWC++                                                      | Applies to model weights, not memory operations          |
+| Memory adaptation     | SONA (0.0043ms/adapt)                                      | Adapts neural weights, not memory management strategy    |
+| Memory backends       | Hybrid (SQLite + AgentDB)                                  | Fixed; no pluggable backend registry (vs CrewAI v1.14.7) |
+| Memory contract       | None                                                       | Agents may still append raw transcripts to context       |
+| Validity annotations  | None                                                       | No state-aware supersession at write time (cf. A-TMA)    |
 
 ---
 
 ## Competitor Comparison
 
-| Framework | Memory Architecture | RL-Trained Ops | LongMemEval | Pluggable Backends | Notes |
-|---|---|---|---|---|---|
-| **LangGraph v0.4** | Checkpointers (short-term) + Stores (long-term) | ✗ | Not published | ✗ (backend per checkpointer class) | Strong human-in-the-loop integration |
-| **AutoGen 1.0 GA** | Custom memory stores, event-driven | ✗ | Not published | Partial | Feb 2026 GA; async-first design |
-| **CrewAI v1.14.7+** | Pluggable backends: memory/knowledge/RAG/flow; hierarchical isolation; Qdrant Edge support | ✗ | Not published | **✓** | Fastest moving in plugin memory space |
-| **OpenAI Agents SDK** | Stateless by default; third-party (Hindsight, Mem0) for persistence | ✗ | Hindsight: **94.6%** | Via tool injection | Swarm deprecated; SDK is production path |
-| **Ruflo/AgentDB** | HNSW + SONA adaptation + consolidate worker | ✗ | Not published | ✗ (fixed SQLite+AgentDB) | HNSW speedup measured; memory RL loop absent |
+| Framework             | Memory Architecture                                                                        | RL-Trained Ops | LongMemEval          | Pluggable Backends                 | Notes                                        |
+| --------------------- | ------------------------------------------------------------------------------------------ | -------------- | -------------------- | ---------------------------------- | -------------------------------------------- |
+| **LangGraph v0.4**    | Checkpointers (short-term) + Stores (long-term)                                            | ✗              | Not published        | ✗ (backend per checkpointer class) | Strong human-in-the-loop integration         |
+| **AutoGen 1.0 GA**    | Custom memory stores, event-driven                                                         | ✗              | Not published        | Partial                            | Feb 2026 GA; async-first design              |
+| **CrewAI v1.14.7+**   | Pluggable backends: memory/knowledge/RAG/flow; hierarchical isolation; Qdrant Edge support | ✗              | Not published        | **✓**                              | Fastest moving in plugin memory space        |
+| **OpenAI Agents SDK** | Stateless by default; third-party (Hindsight, Mem0) for persistence                        | ✗              | Hindsight: **94.6%** | Via tool injection                 | Swarm deprecated; SDK is production path     |
+| **Ruflo/AgentDB**     | HNSW + SONA adaptation + consolidate worker                                                | ✗              | Not published        | ✗ (fixed SQLite+AgentDB)           | HNSW speedup measured; memory RL loop absent |
 
 ---
 
 ## Benchmarks
 
-| Benchmark | System | Score | Source | Grade |
-|---|---|---|---|---|
-| LongMemEval (conversational retrieval) | Hindsight | 94.6% | vectorize.io 2026 | **B** |
-| LongMemEval | SuperMemory | 81.6% | vectorize.io 2026 | **B** |
-| LongMemEval | Zep | 63.8% | vectorize.io 2026 | **B** |
-| LongMemEval | Mem0 | 49.0% | vectorize.io 2026 | **B** |
-| Crafter (long-horizon game) | AutoMem (32B model) | **~2x–4x vs base** (competitive with Claude Opus 4.5) | arXiv 2607.01224 | **A** |
-| MiniHack / NetHack | AutoMem | ~2x–4x vs base agent | arXiv 2607.01224 | **A** |
-| AgentDB HNSW | Ruflo | ~1.9x at N=20k, ~3.2x–4.7x at N=5k vs brute force | Internal benchmark | **A** |
-| Ruflo LongMemEval | Ruflo | **No 2026 data available** | — | — |
+| Benchmark                              | System              | Score                                                 | Source             | Grade |
+| -------------------------------------- | ------------------- | ----------------------------------------------------- | ------------------ | ----- |
+| LongMemEval (conversational retrieval) | Hindsight           | 94.6%                                                 | vectorize.io 2026  | **B** |
+| LongMemEval                            | SuperMemory         | 81.6%                                                 | vectorize.io 2026  | **B** |
+| LongMemEval                            | Zep                 | 63.8%                                                 | vectorize.io 2026  | **B** |
+| LongMemEval                            | Mem0                | 49.0%                                                 | vectorize.io 2026  | **B** |
+| Crafter (long-horizon game)            | AutoMem (32B model) | **~2x–4x vs base** (competitive with Claude Opus 4.5) | arXiv 2607.01224   | **A** |
+| MiniHack / NetHack                     | AutoMem             | ~2x–4x vs base agent                                  | arXiv 2607.01224   | **A** |
+| AgentDB HNSW                           | Ruflo               | ~1.9x at N=20k, ~3.2x–4.7x at N=5k vs brute force     | Internal benchmark | **A** |
+| Ruflo LongMemEval                      | Ruflo               | **No 2026 data available**                            | —                  | —     |
 
 ---
 

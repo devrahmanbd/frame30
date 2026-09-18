@@ -2,7 +2,14 @@
 
 export const UNOFFICIAL_BADGE = "⚠️ Unofficial";
 
-const COMMUNITY_PROVIDERS = ["bkash", "nagad", "rocket", "upay", "tap", "mpesa"];
+const COMMUNITY_PROVIDERS = [
+  "bkash",
+  "nagad",
+  "rocket",
+  "upay",
+  "tap",
+  "mpesa",
+];
 
 export function isCommunityPlugin(provider: string): boolean {
   return COMMUNITY_PROVIDERS.includes(provider.toLowerCase());

@@ -7,8 +7,13 @@ import { createServerFn } from "@tanstack/react-start";
  */
 export const askDocsAi = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => {
-    const input = data as { question?: unknown; version?: unknown; history?: unknown };
-    const question = typeof input?.question === "string" ? input.question.trim() : "";
+    const input = data as {
+      question?: unknown;
+      version?: unknown;
+      history?: unknown;
+    };
+    const question =
+      typeof input?.question === "string" ? input.question.trim() : "";
     if (question.length < 2) throw new Error("Ask a question first.");
     const history = Array.isArray(input?.history)
       ? (input.history as Array<{ role?: unknown; content?: unknown }>)

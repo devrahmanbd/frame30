@@ -2,13 +2,14 @@
 
 > **Target Query:** `cloud ecommerce cms architecture`, `tanstack start ecommerce`, `postgres rls saas multi-tenant`  
 > **Reading Time:** 11 minutes  
-> **Published:** December 2026  
+> **Published:** December 2026
 
 ---
 
 ## 1. Why Modern E-Commerce Requires a Clean Sheet Architecture
 
 Most incumbent e-commerce platforms were engineered over a decade ago:
+
 - **Shopify (2006):** Built on a monolithic Ruby on Rails core with a Liquid templating engine.
 - **WooCommerce (2011):** Built on WordPress, an interpreted PHP blogging engine running on centralized Apache/MySQL servers.
 - **Magento (2008):** Complex PHP/Zend framework with heavy XML layout configurations.
@@ -44,8 +45,10 @@ These legacy architectures struggle with the demands of 2026: sub-50ms global mo
 ## 2. The Edge Presentation Layer: TanStack Start & Nitro
 
 ### The SSR Advantage Over Client-Side SPAs
+
 Client-side React SPAs force the user's mobile browser to download, parse, and execute megabytes of JavaScript before rendering initial content.  
 **TanStack Start** reverses this:
+
 1. The incoming HTTP request is intercepted by the Nitro edge engine.
 2. Server loaders resolve product catalog data, customer session context, and SEO metadata concurrently.
 3. Fully rendered semantic HTML streams to the browser with **sub-45ms Time to First Byte (TTFB)**.

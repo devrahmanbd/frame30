@@ -1,1 +1,139 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "label": "perf-worker.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L1"}, {"id": "helpers_perf_worker_should_run", "label": "should_run()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L16"}, {"id": "helpers_perf_worker_benchmark_search", "label": "benchmark_search()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L30"}, {"id": "helpers_perf_worker_benchmark_memory", "label": "benchmark_memory()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L52"}, {"id": "helpers_perf_worker_benchmark_startup", "label": "benchmark_startup()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L66"}, {"id": "helpers_perf_worker_run_benchmarks", "label": "run_benchmarks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L79"}, {"id": "helpers_perf_worker_run_deep_benchmark", "label": "run_deep_benchmark()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L116"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_should_run", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_benchmark_search", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_benchmark_memory", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_benchmark_startup", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_run_benchmarks", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh", "target": "helpers_perf_worker_run_deep_benchmark", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L116", "weight": 1.0}, {"source": "helpers_perf_worker_run_benchmarks", "target": "helpers_perf_worker_benchmark_search", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L82", "weight": 1.0, "context": "call"}, {"source": "helpers_perf_worker_run_benchmarks", "target": "helpers_perf_worker_benchmark_memory", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L83", "weight": 1.0, "context": "call"}, {"source": "helpers_perf_worker_run_benchmarks", "target": "helpers_perf_worker_benchmark_startup", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh", "source_location": "L84", "weight": 1.0, "context": "call"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "label": "perf-worker.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L1"
+    },
+    {
+      "id": "helpers_perf_worker_should_run",
+      "label": "should_run()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L16"
+    },
+    {
+      "id": "helpers_perf_worker_benchmark_search",
+      "label": "benchmark_search()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L30"
+    },
+    {
+      "id": "helpers_perf_worker_benchmark_memory",
+      "label": "benchmark_memory()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L52"
+    },
+    {
+      "id": "helpers_perf_worker_benchmark_startup",
+      "label": "benchmark_startup()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L66"
+    },
+    {
+      "id": "helpers_perf_worker_run_benchmarks",
+      "label": "run_benchmarks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L79"
+    },
+    {
+      "id": "helpers_perf_worker_run_deep_benchmark",
+      "label": "run_deep_benchmark()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L116"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_should_run",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_benchmark_search",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_benchmark_memory",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_benchmark_startup",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_run_benchmarks",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_perf_worker_sh",
+      "target": "helpers_perf_worker_run_deep_benchmark",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "helpers_perf_worker_run_benchmarks",
+      "target": "helpers_perf_worker_benchmark_search",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L82",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_perf_worker_run_benchmarks",
+      "target": "helpers_perf_worker_benchmark_memory",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L83",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_perf_worker_run_benchmarks",
+      "target": "helpers_perf_worker_benchmark_startup",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/perf-worker.sh",
+      "source_location": "L84",
+      "weight": 1.0,
+      "context": "call"
+    }
+  ]
+}

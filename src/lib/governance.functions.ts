@@ -10,7 +10,9 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
   return currentMerchantId(db, userId);
 }
 
-const grantSchema = z.array(z.object({ group: z.string(), action: z.string() }));
+const grantSchema = z.array(
+  z.object({ group: z.string(), action: z.string() }),
+);
 
 export const governanceLoadFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -41,7 +43,9 @@ export const governanceSaveRoleFn = createServerFn({ method: "POST" })
 
 export const governanceDeleteRoleFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ roleId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ roleId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteRole } = await import("./governance.server");
     await scope(context.supabase, context.userId);
@@ -152,7 +156,9 @@ export const governanceInviteFn = createServerFn({ method: "POST" })
 
 export const governanceRevokeSessionFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("staff.manage_grants")])
-  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ sessionId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { revokeSession } = await import("./governance.server");
     const merchantId = await scope(context.supabase, context.userId);

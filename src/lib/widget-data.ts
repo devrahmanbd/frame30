@@ -87,12 +87,19 @@ function stableParams(params: WidgetDataParams): string {
     .join("&");
 }
 
-export function requestKey(source: WidgetDataSource, params: WidgetDataParams): string {
+export function requestKey(
+  source: WidgetDataSource,
+  params: WidgetDataParams,
+): string {
   const tail = stableParams(params);
   return tail ? `${source}?${tail}` : source;
 }
 
-function coerce(kind: string, key: string, value: PropValue | undefined): string | number | boolean | undefined {
+function coerce(
+  kind: string,
+  key: string,
+  value: PropValue | undefined,
+): string | number | boolean | undefined {
   if (kind === "number") {
     const n = typeof value === "number" ? value : Number(value);
     if (!Number.isFinite(n)) return undefined;
@@ -116,15 +123,23 @@ export function requestForSection(section: Section): WidgetDataRequest | null {
     const value = coerce(field.kind, field.key, section.props[field.key]);
     if (value !== undefined) params[field.key] = value;
   }
-  return { key: requestKey(meta.data.source, params), source: meta.data.source, params };
+  return {
+    key: requestKey(meta.data.source, params),
+    source: meta.data.source,
+    params,
+  };
 }
 
 /**
  * Walk a template (or a section list) and collect every data request exactly
  * once. Nested children are included — containers hold data widgets too.
  */
-export function collectWidgetRequests(input: ThemeAst | Section[]): WidgetDataBundle {
-  const nodes = Array.isArray(input) ? flattenSections(input) : flattenAst(input);
+export function collectWidgetRequests(
+  input: ThemeAst | Section[],
+): WidgetDataBundle {
+  const nodes = Array.isArray(input)
+    ? flattenSections(input)
+    : flattenAst(input);
   const byNode: Record<string, string> = {};
   const seen = new Map<string, WidgetDataRequest>();
   for (const node of nodes) {

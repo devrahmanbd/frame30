@@ -54,11 +54,28 @@ export function effectiveDark(tokens: ThemeTokens): DarkTokens {
   return tokens.dark ?? DEFAULT_DARK_TOKENS;
 }
 
-type Pair = { label: string; fg: string; bg: string; floor: number; blocking: boolean };
+type Pair = {
+  label: string;
+  fg: string;
+  bg: string;
+  floor: number;
+  blocking: boolean;
+};
 
-function pairsFor(set: { brand: string; accent: string; surface: string; ink: string }): Pair[] {
+function pairsFor(set: {
+  brand: string;
+  accent: string;
+  surface: string;
+  ink: string;
+}): Pair[] {
   return [
-    { label: "body copy", fg: set.ink, bg: set.surface, floor: CONTRAST_FLOOR.text, blocking: true },
+    {
+      label: "body copy",
+      fg: set.ink,
+      bg: set.surface,
+      floor: CONTRAST_FLOOR.text,
+      blocking: true,
+    },
     {
       label: "brand button label",
       fg: inkOn(set.brand, set.ink),
@@ -75,8 +92,20 @@ function pairsFor(set: { brand: string; accent: string; surface: string; ink: st
     },
     // Non-text brand chrome: reported so a merchant sees the number, advisory so a
     // legitimate brand hue is not a publish blocker.
-    { label: "brand edge on surface", fg: set.brand, bg: set.surface, floor: CONTRAST_FLOOR.ui, blocking: false },
-    { label: "accent edge on surface", fg: set.accent, bg: set.surface, floor: CONTRAST_FLOOR.ui, blocking: false },
+    {
+      label: "brand edge on surface",
+      fg: set.brand,
+      bg: set.surface,
+      floor: CONTRAST_FLOOR.ui,
+      blocking: false,
+    },
+    {
+      label: "accent edge on surface",
+      fg: set.accent,
+      bg: set.surface,
+      floor: CONTRAST_FLOOR.ui,
+      blocking: false,
+    },
   ];
 }
 
@@ -92,7 +121,10 @@ export type ContrastRow = {
 
 /** Every ink/surface/accent pair, light and dark, with its measured ratio. */
 export function contrastReport(tokens: ThemeTokens): ContrastRow[] {
-  const sets: [ColourScheme, { brand: string; accent: string; surface: string; ink: string }][] = [
+  const sets: [
+    ColourScheme,
+    { brand: string; accent: string; surface: string; ink: string },
+  ][] = [
     ["light", tokens],
     ["dark", effectiveDark(tokens)],
   ];
@@ -129,10 +161,16 @@ export function contrastGate(tokens: ThemeTokens): GateFailure[] {
  * Zero-CLS skeleton parity: a data widget that reserves a box must reserve a
  * box with a known aspect, or the loaded image resizes it and the page shifts.
  */
-export const RESERVED_RATIOS = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square", "aspect-video"] as const;
+export const RESERVED_RATIOS = [
+  "aspect-[3/4]",
+  "aspect-[4/5]",
+  "aspect-square",
+  "aspect-video",
+] as const;
 
-
-export function skeletonParityGate(types: SectionType[] = WIDGET_TYPES): GateFailure[] {
+export function skeletonParityGate(
+  types: SectionType[] = WIDGET_TYPES,
+): GateFailure[] {
   const failures: GateFailure[] = [];
   for (const type of types) {
     const meta = WIDGET_REGISTRY[type];
@@ -157,7 +195,10 @@ export function skeletonParityGate(types: SectionType[] = WIDGET_TYPES): GateFai
         message: `skeleton: ${type} reserves media with no aspect ratio — the image will shift the page.`,
       });
     }
-    if (spec.ratio && !(RESERVED_RATIOS as readonly string[]).includes(spec.ratio)) {
+    if (
+      spec.ratio &&
+      !(RESERVED_RATIOS as readonly string[]).includes(spec.ratio)
+    ) {
       failures.push({
         code: "skeleton.ratio_unknown",
         message: `skeleton: ${type} reserves "${spec.ratio}", which is not a platform ratio.`,
@@ -208,10 +249,10 @@ export const RELEASE_GATES = [
     script: "scripts/browser-smoke.mjs",
     npm: "e2e:browsers",
     floor: null,
-    describes: "Chromium/Firefox/WebKit journey plus readable and navigable no-JS SSR",
+    describes:
+      "Chromium/Firefox/WebKit journey plus readable and navigable no-JS SSR",
   },
 ] as const;
-
 
 /**
  * The theme-side half of the publish gate, composed in one place: lint and
@@ -242,22 +283,41 @@ export function composePublishGate(input: {
   perf: PerfGateReport | null;
   responsive: ResponsiveGateReport | null;
 } {
-  const perf = input.perf ? perfGate({ ast: input.perf.ast, template: input.perf.template ?? null }) : null;
+  const perf = input.perf
+    ? perfGate({ ast: input.perf.ast, template: input.perf.template ?? null })
+    : null;
   const responsiveAst =
-    input.responsive === false ? null : (input.responsive?.ast ?? input.perf?.ast ?? null);
+    input.responsive === false
+      ? null
+      : (input.responsive?.ast ?? input.perf?.ast ?? null);
   const responsive = responsiveAst ? responsiveGate(responsiveAst) : null;
   const failures: GateFailure[] = [
     ...(input.lint ?? []).map((message) => ({ code: "lint", message })),
-    ...(input.translation ?? []).map((message) => ({ code: "translation", message })),
+    ...(input.translation ?? []).map((message) => ({
+      code: "translation",
+      message,
+    })),
     ...(input.fonts ?? []).map((message) => ({ code: "fonts", message })),
     ...contrastGate(input.tokens),
     ...skeletonParityGate(),
-    ...(perf?.failures ?? []).map((f) => ({ code: f.code, message: f.message })),
-    ...(responsive?.failures ?? []).map((f) => ({ code: f.code, message: f.message })),
+    ...(perf?.failures ?? []).map((f) => ({
+      code: f.code,
+      message: f.message,
+    })),
+    ...(responsive?.failures ?? []).map((f) => ({
+      code: f.code,
+      message: f.message,
+    })),
   ];
   const warnings: GateFailure[] = [
-    ...(perf?.warnings ?? []).map((f) => ({ code: f.code, message: f.message })),
-    ...(responsive?.warnings ?? []).map((f) => ({ code: f.code, message: f.message })),
+    ...(perf?.warnings ?? []).map((f) => ({
+      code: f.code,
+      message: f.message,
+    })),
+    ...(responsive?.warnings ?? []).map((f) => ({
+      code: f.code,
+      message: f.message,
+    })),
   ];
   return { ok: failures.length === 0, failures, warnings, perf, responsive };
 }

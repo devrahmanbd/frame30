@@ -6,15 +6,25 @@ import { incr, log, withSpan } from "./observability.server";
 import { rateLimit } from "./rate-limit.server";
 import { purgeThemeCache } from "./themes.server";
 
-export type ThemeSweepResult = { published: number; unpublished: number; failed: number };
+export type ThemeSweepResult = {
+  published: number;
+  unpublished: number;
+  failed: number;
+};
 
-export async function runThemeSweep(subject: string): Promise<ThemeSweepResult> {
+export async function runThemeSweep(
+  subject: string,
+): Promise<ThemeSweepResult> {
   await rateLimit("builder.sweep", subject);
   return withSpan("builder.sweep", async () => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await (
       supabaseAdmin as unknown as {
-        rpc: (n: string, a?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+        rpc: (
+          n: string,
+          a?: Record<string, unknown>,
+        ) => Promise<{ data: unknown; error: unknown }>;
       }
     ).rpc("theme_sweep");
     if (error) throw error;
@@ -27,7 +37,9 @@ export async function runThemeSweep(subject: string): Promise<ThemeSweepResult> 
     };
 
     if (result.published || result.unpublished) purgeThemeCache();
-    incr("framique_theme_sweep_total", { outcome: result.failed ? "partial" : "ok" });
+    incr("framique_theme_sweep_total", {
+      outcome: result.failed ? "partial" : "ok",
+    });
     log("info", "theme.sweep", { ...result, subject });
     return result;
   });

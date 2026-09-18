@@ -5,6 +5,7 @@ Detailed verification workflows for each testing level.
 ## Overview
 
 When `yolo_testing: on`, run three levels of verification after successful deployment:
+
 1. **Level 1**: Basic deployment verification (via Lovable)
 2. **Level 2**: Console error checking (production URL)
 3. **Level 3**: Functional testing (actual feature testing)
@@ -22,6 +23,7 @@ When `yolo_testing: off`, skip all testing.
 **Procedure:**
 
 1. **Submit follow-up prompt to Lovable:**
+
    ```
    "Show logs for [function-name] edge function"
    ```
@@ -29,6 +31,7 @@ When `yolo_testing: off`, skip all testing.
 2. **Wait for response** (60 second timeout)
 
 3. **Analyze logs response:**
+
    ```
    Success indicators:
    - Logs show recent deployment timestamp
@@ -55,6 +58,7 @@ When `yolo_testing: off`, skip all testing.
    ```
 
 **Example - Success:**
+
 ```
 Prompt: "Show logs for send-email edge function"
 
@@ -78,6 +82,7 @@ Result: ✅ PASS
 **Procedure:**
 
 1. **Identify what was migrated:**
+
    ```
    - Parse migration file name
    - Extract table/operation from SQL
@@ -85,6 +90,7 @@ Result: ✅ PASS
    ```
 
 2. **Submit follow-up prompt to Lovable:**
+
    ```
    For table creation:
    "Show me the [table-name] table structure"
@@ -99,6 +105,7 @@ Result: ✅ PASS
 3. **Wait for response** (60 second timeout)
 
 4. **Analyze schema response:**
+
    ```
    Success indicators:
    - Table exists (if CREATE TABLE)
@@ -119,6 +126,7 @@ Result: ✅ PASS
    ```
 
 **Example - Success:**
+
 ```
 Migration: 20240115_add_user_preferences.sql
 Content: ALTER TABLE users ADD COLUMN preferences JSONB;
@@ -150,6 +158,7 @@ Result: ✅ PASS
 ### Procedure
 
 1. **Navigate to production URL:**
+
    ```
    - Read: production_url from CLAUDE.md
    - Example: "https://my-app.lovable.app"
@@ -158,6 +167,7 @@ Result: ✅ PASS
    ```
 
 2. **Access browser console:**
+
    ```
    - Open developer tools
    - Navigate to Console tab
@@ -165,6 +175,7 @@ Result: ✅ PASS
    ```
 
 3. **Monitor for 10-15 seconds:**
+
    ```
    Capture:
 
@@ -182,6 +193,7 @@ Result: ✅ PASS
    ```
 
 4. **Filter noise:**
+
    ```
    Ignore:
    - Third-party script errors (analytics, ads)
@@ -196,6 +208,7 @@ Result: ✅ PASS
    ```
 
 5. **Categorize errors:**
+
    ```
    For each error:
    - Type: JS error, network error, etc.
@@ -225,6 +238,7 @@ Result: ✅ PASS
    ```
 
 **Example - With Errors:**
+
 ```
 Console monitoring (15 seconds):
 
@@ -256,6 +270,7 @@ Errors directly related to deployed edge function
 **Procedure:**
 
 1. **Determine endpoint URL:**
+
    ```
    Pattern: https://{project-ref}.supabase.co/functions/v1/{function-name}
 
@@ -266,6 +281,7 @@ Errors directly related to deployed edge function
    ```
 
 2. **Prepare test payload:**
+
    ```
    Option A: Known test data
    - If function has documented test in CLAUDE.md
@@ -281,6 +297,7 @@ Errors directly related to deployed edge function
    ```
 
 3. **Make HTTP request:**
+
    ```
    Method: POST (usually)
    URL: https://{ref}.supabase.co/functions/v1/{function}
@@ -292,6 +309,7 @@ Errors directly related to deployed edge function
    ```
 
 4. **Evaluate response:**
+
    ```
    Success: HTTP 200-299
    - Check: Response body structure
@@ -330,6 +348,7 @@ Errors directly related to deployed edge function
    ```
 
 **Example - Success:**
+
 ```
 Function: send-email
 Endpoint: https://abc123.supabase.co/functions/v1/send-email
@@ -361,6 +380,7 @@ Result: ✅ PASS
 ```
 
 **Example - Error (Missing Secret):**
+
 ```
 Function: send-email
 Endpoint: https://abc123.supabase.co/functions/v1/send-email
@@ -392,6 +412,7 @@ Fix:
 **Procedure:**
 
 1. **Determine test query:**
+
    ```
    Based on migration type:
 
@@ -413,6 +434,7 @@ Fix:
    ```
 
 2. **Execute test via Lovable:**
+
    ```
    Submit prompt:
    "Run this query: [test-query]"
@@ -421,6 +443,7 @@ Fix:
    ```
 
 3. **Analyze result:**
+
    ```
    Success indicators:
    - Query executes without error
@@ -442,6 +465,7 @@ Fix:
    ```
 
 **Example - Success:**
+
 ```
 Migration: 20240115_add_user_preferences.sql
 Operation: ADD COLUMN preferences JSONB
@@ -468,6 +492,7 @@ Result: ✅ PASS
 After all 3 levels complete, show summary:
 
 **All tests passed:**
+
 ```
 **Verification Tests:**
 1. ✅ Basic verification: Deployment confirmed
@@ -479,6 +504,7 @@ After all 3 levels complete, show summary:
 ```
 
 **Some tests failed:**
+
 ```
 **Verification Tests:**
 1. ✅ Basic verification: Deployment confirmed
@@ -492,6 +518,7 @@ After all 3 levels complete, show summary:
 ```
 
 **Tests skipped (yolo_testing: off):**
+
 ```
 **Verification Tests:**
 - Skipped (yolo_testing is off)
@@ -505,6 +532,7 @@ After all 3 levels complete, show summary:
 ## Performance Benchmarks
 
 **Typical test timings:**
+
 - Level 1: 2-5 seconds
 - Level 2: 10-15 seconds
 - Level 3: 1-5 seconds
@@ -512,11 +540,13 @@ After all 3 levels complete, show summary:
 **Total testing time:** 15-25 seconds
 
 **When to skip testing:**
+
 - Time-sensitive deployments
 - Repeat deployments (already verified)
 - Trusted code changes
 
 **When to run testing:**
+
 - First deployment of new function
 - After significant changes
 - Before production deployment
@@ -524,4 +554,4 @@ After all 3 levels complete, show summary:
 
 ---
 
-*These testing procedures ensure deployed features work correctly and catch issues early.*
+_These testing procedures ensure deployed features work correctly and catch issues early._

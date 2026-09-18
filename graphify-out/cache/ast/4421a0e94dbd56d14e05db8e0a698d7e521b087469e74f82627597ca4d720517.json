@@ -1,1 +1,364 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "label": "CommandPalette.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L1"}, {"id": "admin_commandpalette_readrecents", "label": "readRecents()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L19"}, {"id": "admin_commandpalette_usecommandpalette", "label": "useCommandPalette()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L30"}, {"id": "admin_commandpalette_entry", "label": "Entry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L46"}, {"id": "admin_commandpalette_commandpalette", "label": "CommandPalette()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L48"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "users_rahman_documents_frame30_src_lib_console_nav_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lib_console_nav_hidden_destinations", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lib_console_nav_navgroup", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lib_console_nav_navitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "users_rahman_documents_frame30_src_lib_authz_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "lib_authz_permission", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "admin_commandpalette_readrecents", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "admin_commandpalette_usecommandpalette", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "admin_commandpalette_entry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx", "target": "admin_commandpalette_commandpalette", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L48", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_commandpalette_readrecents", "callee": "getItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L22"}, {"caller_nid": "admin_commandpalette_readrecents", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L23"}, {"caller_nid": "admin_commandpalette_readrecents", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L24"}, {"caller_nid": "admin_commandpalette_readrecents", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L24"}, {"caller_nid": "admin_commandpalette_usecommandpalette", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L31"}, {"caller_nid": "admin_commandpalette_usecommandpalette", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L32"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L60"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useNavigate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L61"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L62"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L63"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L64"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L65"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L66"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L68"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L82"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L103"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L112"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L116"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L142"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L167"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L168"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L176"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L179"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L198"}, {"caller_nid": "admin_commandpalette_commandpalette", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx", "source_location": "L199"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "label": "CommandPalette.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_commandpalette_readrecents",
+      "label": "readRecents()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "admin_commandpalette_usecommandpalette",
+      "label": "useCommandPalette()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L30"
+    },
+    {
+      "id": "admin_commandpalette_entry",
+      "label": "Entry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L46"
+    },
+    {
+      "id": "admin_commandpalette_commandpalette",
+      "label": "CommandPalette()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L48"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_console_nav_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lib_console_nav_hidden_destinations",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lib_console_nav_navgroup",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lib_console_nav_navitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_authz_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "lib_authz_permission",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "admin_commandpalette_readrecents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "admin_commandpalette_usecommandpalette",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "admin_commandpalette_entry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_commandpalette_tsx",
+      "target": "admin_commandpalette_commandpalette",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L48",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_commandpalette_readrecents",
+      "callee": "getItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "admin_commandpalette_readrecents",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "admin_commandpalette_readrecents",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "admin_commandpalette_readrecents",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "admin_commandpalette_usecommandpalette",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "admin_commandpalette_usecommandpalette",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useNavigate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L198"
+    },
+    {
+      "caller_nid": "admin_commandpalette_commandpalette",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/CommandPalette.tsx",
+      "source_location": "L199"
+    }
+  ]
+}

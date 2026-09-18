@@ -45,10 +45,21 @@ export function verdictFor({ requests, failures, p95Ms }) {
 }
 
 /** Turns raw latencies into the exact shape `load_test_runs` stores. */
-export function summarize({ scenario, targetUrl, concurrency, durationSeconds, latencies, failures, notes }) {
+export function summarize({
+  scenario,
+  targetUrl,
+  concurrency,
+  durationSeconds,
+  latencies,
+  failures,
+  notes,
+}) {
   const requests = latencies.length + failures;
   const p95Ms = percentile(latencies, 95);
-  const rps = durationSeconds > 0 ? Math.round((requests / durationSeconds) * 100) / 100 : 0;
+  const rps =
+    durationSeconds > 0
+      ? Math.round((requests / durationSeconds) * 100) / 100
+      : 0;
   return {
     scenario,
     targetUrl,
@@ -109,14 +120,24 @@ async function worker(url, method, deadline, state) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.url) {
-    console.error("usage: load-drive.mjs --url <url> [--concurrency n] [--duration s] [--scenario name]");
+    console.error(
+      "usage: load-drive.mjs --url <url> [--concurrency n] [--duration s] [--scenario name]",
+    );
     process.exit(2);
   }
-  if (!Number.isFinite(args.concurrency) || args.concurrency < 1 || args.concurrency > 500) {
+  if (
+    !Number.isFinite(args.concurrency) ||
+    args.concurrency < 1 ||
+    args.concurrency > 500
+  ) {
     console.error("concurrency must be between 1 and 500");
     process.exit(2);
   }
-  if (!Number.isFinite(args.duration) || args.duration < 1 || args.duration > 3600) {
+  if (
+    !Number.isFinite(args.duration) ||
+    args.duration < 1 ||
+    args.duration > 3600
+  ) {
     console.error("duration must be between 1 and 3600 seconds");
     process.exit(2);
   }
@@ -127,7 +148,9 @@ async function main() {
     `driving ${args.url} — ${args.concurrency} workers for ${args.duration}s (scenario: ${args.scenario})`,
   );
   await Promise.all(
-    Array.from({ length: args.concurrency }, () => worker(args.url, args.method, deadline, state)),
+    Array.from({ length: args.concurrency }, () =>
+      worker(args.url, args.method, deadline, state),
+    ),
   );
 
   const summary = summarize({
@@ -149,5 +172,6 @@ async function main() {
   process.exit(summary.verdict === "fail" ? 1 : 0);
 }
 
-const invokedDirectly = process.argv[1] && process.argv[1].endsWith("load-drive.mjs");
+const invokedDirectly =
+  process.argv[1] && process.argv[1].endsWith("load-drive.mjs");
 if (invokedDirectly) await main();

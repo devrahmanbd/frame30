@@ -347,18 +347,18 @@ One `is_builtin` package `framique/fallback` v1:
 Everything below is editable by a merchant in the studio, with no code and no theme fork.
 A theme that requires code to change any of these is not shippable.
 
-| Surface | Control | Where it lives |
-| --- | --- | --- |
-| Colour | Brand, accent, surface, ink — light **and** designed dark set | `theme_tokens` `semantic.%` / `dark_semantic.%`, edited in `TokenEditor`; contrast is gated at publish (4.5:1 text, 3:1 chrome) |
-| Typography | Font pairing from the catalogue, or a merchant-uploaded WOFF2 family | `CustomFontsPanel`; budget ≤ 2 families × ≤ 4 weights, `latin` + `bengali` subsets, licence attestation required before publish |
-| Radius | Global radius scale | `component.radius.*` tokens |
-| Density | Comfortable / compact / list on every card surface | widget `density` prop |
-| Spacing | `padY` / `padX` per section, per breakpoint | universal style props on every widget |
-| Section order | Add, remove, reorder, nest, hide per breakpoint | AST v3 `children` + `bp` / `hidden[]`, via the layer tree |
-| Media ratio | Square / portrait / landscape / wide per media widget | `ratio` prop on `MediaFrame`-backed widgets |
-| Reveal | Motion on/off and reveal style per section | `reveal` prop; always yields to `prefers-reduced-motion` |
-| Copy | Every string, in English and বাংলা | bilingual props (`*_bn`); publish blocks below 90% বাংলা coverage |
-| SEO copy | Title/description templates per template kind | `seo_templates`, seeded per vertical on install, never overwriting merchant edits |
+| Surface       | Control                                                              | Where it lives                                                                                                                  |
+| ------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Colour        | Brand, accent, surface, ink — light **and** designed dark set        | `theme_tokens` `semantic.%` / `dark_semantic.%`, edited in `TokenEditor`; contrast is gated at publish (4.5:1 text, 3:1 chrome) |
+| Typography    | Font pairing from the catalogue, or a merchant-uploaded WOFF2 family | `CustomFontsPanel`; budget ≤ 2 families × ≤ 4 weights, `latin` + `bengali` subsets, licence attestation required before publish |
+| Radius        | Global radius scale                                                  | `component.radius.*` tokens                                                                                                     |
+| Density       | Comfortable / compact / list on every card surface                   | widget `density` prop                                                                                                           |
+| Spacing       | `padY` / `padX` per section, per breakpoint                          | universal style props on every widget                                                                                           |
+| Section order | Add, remove, reorder, nest, hide per breakpoint                      | AST v3 `children` + `bp` / `hidden[]`, via the layer tree                                                                       |
+| Media ratio   | Square / portrait / landscape / wide per media widget                | `ratio` prop on `MediaFrame`-backed widgets                                                                                     |
+| Reveal        | Motion on/off and reveal style per section                           | `reveal` prop; always yields to `prefers-reduced-motion`                                                                        |
+| Copy          | Every string, in English and বাংলা                                   | bilingual props (`*_bn`); publish blocks below 90% বাংলা coverage                                                               |
+| SEO copy      | Title/description templates per template kind                        | `seo_templates`, seeded per vertical on install, never overwriting merchant edits                                               |
 
 Two invariants make this contract hold:
 

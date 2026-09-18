@@ -12,7 +12,8 @@
  * proven in tests instead of guessed at from production logs.
  */
 
-export type JobState = "queued" | "running" | "succeeded" | "failed" | "dead" | "cancelled";
+export type JobState =
+  "queued" | "running" | "succeeded" | "failed" | "dead" | "cancelled";
 
 const JOB_TRANSITIONS: Record<JobState, JobState[]> = {
   queued: ["running", "cancelled"],
@@ -124,12 +125,17 @@ export function policyFor(queue: string): QueuePolicy {
  * thousand jobs that failed together retry together, re-creating the outage
  * that failed them; spreading them over the window is the whole point.
  */
-export function backoffSeconds(policy: QueuePolicy, attempt: number, jobId: string) {
+export function backoffSeconds(
+  policy: QueuePolicy,
+  attempt: number,
+  jobId: string,
+) {
   const exponent = Math.max(0, attempt - 1);
   const raw = policy.baseBackoffSeconds * 2 ** Math.min(exponent, 12);
   const capped = Math.min(policy.maxBackoffSeconds, raw);
   let hash = 0;
-  for (let i = 0; i < jobId.length; i += 1) hash = (hash * 31 + jobId.charCodeAt(i)) >>> 0;
+  for (let i = 0; i < jobId.length; i += 1)
+    hash = (hash * 31 + jobId.charCodeAt(i)) >>> 0;
   const jitter = 0.75 + (hash % 1000) / 2000; // 0.75x .. 1.25x
   return Math.max(1, Math.round(capped * jitter));
 }
@@ -154,7 +160,11 @@ export function afterFailure(
   if (!retryable || attempt >= policy.maxAttempts) {
     return { next: "dead", runAfterSeconds: 0, dead: true };
   }
-  return { next: "queued", runAfterSeconds: backoffSeconds(policy, attempt, jobId), dead: false };
+  return {
+    next: "queued",
+    runAfterSeconds: backoffSeconds(policy, attempt, jobId),
+    dead: false,
+  };
 }
 
 /** Errors worth retrying: transport, timeout, throttling, and 5xx. */
@@ -167,7 +177,11 @@ export function isRetryableError(status: number | null, message: string) {
 }
 
 /** A lease that outlived its window means the worker died mid-flight. */
-export function isLeaseExpired(lockedAt: string | null, leaseSeconds: number, now = Date.now()) {
+export function isLeaseExpired(
+  lockedAt: string | null,
+  leaseSeconds: number,
+  now = Date.now(),
+) {
   if (!lockedAt) return true;
   const t = Date.parse(lockedAt);
   if (Number.isNaN(t)) return true;
@@ -246,13 +260,22 @@ export type QueueVerdict = {
  */
 export function judgeQueue(depth: QueueDepth): QueueVerdict {
   if (depth.dead > 0 && depth.dead >= Math.max(5, depth.queued)) {
-    return { status: "failing", message: `${depth.dead} jobs gave up and need attention.` };
+    return {
+      status: "failing",
+      message: `${depth.dead} jobs gave up and need attention.`,
+    };
   }
   if (depth.oldestQueuedAgeSeconds > 900) {
-    return { status: "stalled", message: "Oldest job has been waiting over 15 minutes." };
+    return {
+      status: "stalled",
+      message: "Oldest job has been waiting over 15 minutes.",
+    };
   }
   if (depth.queued > 1000) {
-    return { status: "backlogged", message: `${depth.queued} jobs waiting; workers are behind.` };
+    return {
+      status: "backlogged",
+      message: `${depth.queued} jobs waiting; workers are behind.`,
+    };
   }
   return { status: "healthy", message: "Draining normally." };
 }

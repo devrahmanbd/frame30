@@ -14,10 +14,19 @@ export const CONTACT_LIMITS = {
   outboxFlushBatch: 6,
 } as const;
 
-export const CONTACT_ROUTES: Record<ContactTopic, { responseHours: number; label: Record<ContactLocale, string> }> = {
+export const CONTACT_ROUTES: Record<
+  ContactTopic,
+  { responseHours: number; label: Record<ContactLocale, string> }
+> = {
   sales: { responseHours: 4, label: { en: "Sales", bn: "সেলস" } },
-  support: { responseHours: 2, label: { en: "Merchant support", bn: "মার্চেন্ট সাপোর্ট" } },
-  migration: { responseHours: 8, label: { en: "Store migration", bn: "স্টোর মাইগ্রেশন" } },
+  support: {
+    responseHours: 2,
+    label: { en: "Merchant support", bn: "মার্চেন্ট সাপোর্ট" },
+  },
+  migration: {
+    responseHours: 8,
+    label: { en: "Store migration", bn: "স্টোর মাইগ্রেশন" },
+  },
 };
 
 export type ContactRejectReason =
@@ -43,7 +52,10 @@ export function normaliseContact(input: {
   const email = input.email.trim().toLowerCase();
   const phone = input.phone?.replace(/\s+/g, " ").trim() || null;
   const message = input.message.replace(/\r\n/g, "\n").trim();
-  if (name.length < CONTACT_LIMITS.minNameChars || name.length > CONTACT_LIMITS.maxNameChars)
+  if (
+    name.length < CONTACT_LIMITS.minNameChars ||
+    name.length > CONTACT_LIMITS.maxNameChars
+  )
     return { ok: false as const, reason: "name_invalid" as const };
   if (email.length > 254 || !EMAIL_RE.test(email))
     return { ok: false as const, reason: "email_invalid" as const };
@@ -67,7 +79,10 @@ export function scoreContact(signals: {
     score += 100;
     reasons.push("bot_honeypot");
   }
-  if (typeof signals.renderedAt === "number" && Number.isFinite(signals.renderedAt)) {
+  if (
+    typeof signals.renderedAt === "number" &&
+    Number.isFinite(signals.renderedAt)
+  ) {
     const elapsed = signals.submittedAt - signals.renderedAt;
     if (elapsed >= 0 && elapsed < CONTACT_LIMITS.minFillMs) {
       score += 70;
@@ -83,12 +98,18 @@ export function scoreContact(signals: {
 
 export function contactReference(now: Date, entropy: Uint8Array): string {
   const day = now.toISOString().slice(0, 10).replaceAll("-", "");
-  const suffix = [...entropy].slice(0, 5).map((v) => v.toString(36).padStart(2, "0")).join("").toUpperCase();
+  const suffix = [...entropy]
+    .slice(0, 5)
+    .map((v) => v.toString(36).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
   return `FQ-${day}-${suffix}`;
 }
 
 export function responseDueAt(topic: ContactTopic, now: Date): Date {
-  return new Date(now.getTime() + CONTACT_ROUTES[topic].responseHours * 3_600_000);
+  return new Date(
+    now.getTime() + CONTACT_ROUTES[topic].responseHours * 3_600_000,
+  );
 }
 
 export function retryAt(attempts: number, now: Date): Date {
@@ -96,9 +117,18 @@ export function retryAt(attempts: number, now: Date): Date {
   return new Date(now.getTime() + seconds * 1_000);
 }
 
-const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-})[char] ?? char);
+const escapeHtml = (value: string) =>
+  value.replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[char] ?? char,
+  );
 
 export function renderContactAcknowledgement(input: {
   name: string;
@@ -107,10 +137,21 @@ export function renderContactAcknowledgement(input: {
   locale: ContactLocale;
 }) {
   const route = CONTACT_ROUTES[input.topic];
-  const bnHours = String(route.responseHours).replace(/\d/g, (digit) => "০১২৩৪৫৬৭৮৯"[Number(digit)] ?? digit);
-  const subject = input.locale === "bn" ? `আপনার বার্তা পেয়েছি — ${input.reference}` : `We received your message — ${input.reference}`;
-  const text = input.locale === "bn"
-    ? `${input.name},\n\nআপনার ${route.label.bn} বার্তা পেয়েছি। রেফারেন্স: ${input.reference}। সাধারণত ${bnHours} কর্মঘণ্টার মধ্যে উত্তর দিই।\n\nFramique`
-    : `${input.name},\n\nWe received your ${route.label.en.toLowerCase()} message. Reference: ${input.reference}. We normally reply within ${route.responseHours} business hours.\n\nFramique`;
-  return { subject, text, html: `<p>${escapeHtml(text).replaceAll("\n", "<br>")}</p>` };
+  const bnHours = String(route.responseHours).replace(
+    /\d/g,
+    (digit) => "০১২৩৪৫৬৭৮৯"[Number(digit)] ?? digit,
+  );
+  const subject =
+    input.locale === "bn"
+      ? `আপনার বার্তা পেয়েছি — ${input.reference}`
+      : `We received your message — ${input.reference}`;
+  const text =
+    input.locale === "bn"
+      ? `${input.name},\n\nআপনার ${route.label.bn} বার্তা পেয়েছি। রেফারেন্স: ${input.reference}। সাধারণত ${bnHours} কর্মঘণ্টার মধ্যে উত্তর দিই।\n\nFramique`
+      : `${input.name},\n\nWe received your ${route.label.en.toLowerCase()} message. Reference: ${input.reference}. We normally reply within ${route.responseHours} business hours.\n\nFramique`;
+  return {
+    subject,
+    text,
+    html: `<p>${escapeHtml(text).replaceAll("\n", "<br>")}</p>`,
+  };
 }

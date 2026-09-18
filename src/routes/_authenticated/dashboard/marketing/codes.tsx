@@ -10,9 +10,14 @@ import {
   btnPrimary,
 } from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
-import { discountBatchesFn, discountGenerateFn } from "@/lib/commerce.functions";
+import {
+  discountBatchesFn,
+  discountGenerateFn,
+} from "@/lib/commerce.functions";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/codes")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/codes",
+)({
   head: () => ({
     meta: [
       { title: "Discount code batches — Framique admin" },
@@ -21,10 +26,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketing/codes"
         content:
           "Generate up to 500 unique single-use discount codes at once, with usage caps and expiry, then track redemption per batch.",
       },
-      { property: "og:title", content: "Discount code batches — Framique admin" },
+      {
+        property: "og:title",
+        content: "Discount code batches — Framique admin",
+      },
       {
         property: "og:description",
-        content: "Bulk unique codes that reuse the same server-side coupon validation.",
+        content:
+          "Bulk unique codes that reuse the same server-side coupon validation.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -47,9 +56,16 @@ function CodesPage() {
   const generate = useServerFn(discountGenerateFn);
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string[]>([]);
-  const [type, setType] = useState<"fixed" | "percent" | "free_shipping">("percent");
+  const [type, setType] = useState<"fixed" | "percent" | "free_shipping">(
+    "percent",
+  );
 
-  const { data, isLoading, isError, error: loadError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error: loadError,
+  } = useQuery({
     queryKey: KEY,
     queryFn: () => load(),
   });
@@ -103,10 +119,18 @@ function CodesPage() {
             <caption className="sr-only">Discount code batches</caption>
             <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th scope="col" className="p-3">{t("Batch", "ব্যাচ")}</th>
-                <th scope="col" className="p-3">{t("Codes", "কোড")}</th>
-                <th scope="col" className="p-3">{t("Active", "সক্রিয়")}</th>
-                <th scope="col" className="p-3">{t("Redeemed", "ব্যবহৃত")}</th>
+                <th scope="col" className="p-3">
+                  {t("Batch", "ব্যাচ")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Codes", "কোড")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Active", "সক্রিয়")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Redeemed", "ব্যবহৃত")}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
@@ -121,7 +145,10 @@ function CodesPage() {
               {!isLoading && batches.length === 0 && (
                 <tr>
                   <td colSpan={4} className="p-6 text-sm text-muted-foreground">
-                    {t("No batches generated yet.", "এখনো কোনো ব্যাচ তৈরি হয়নি।")}
+                    {t(
+                      "No batches generated yet.",
+                      "এখনো কোনো ব্যাচ তৈরি হয়নি।",
+                    )}
                   </td>
                 </tr>
               )}
@@ -130,7 +157,9 @@ function CodesPage() {
 
           {preview.length > 0 && (
             <div className="border-t border-border p-4">
-              <h2 className="text-sm font-semibold">{t("Latest codes", "সর্বশেষ কোড")}</h2>
+              <h2 className="text-sm font-semibold">
+                {t("Latest codes", "সর্বশেষ কোড")}
+              </h2>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {preview.map((code) => (
                   <li
@@ -158,7 +187,9 @@ function CodesPage() {
               type,
               amountMinorInt: Math.round(Number(form.get("amount") ?? 0) * 100),
               percentOff: Number(form.get("percent") ?? 0),
-              minSubtotalMinorInt: Math.round(Number(form.get("minSubtotal") ?? 0) * 100),
+              minSubtotalMinorInt: Math.round(
+                Number(form.get("minSubtotal") ?? 0) * 100,
+              ),
               maxDiscountMinorInt: null,
               usageLimit: usage > 0 ? usage : null,
               perCustomerLimit: 1,
@@ -167,9 +198,16 @@ function CodesPage() {
             });
           }}
         >
-          <h2 className="text-sm font-semibold">{t("Generate a batch", "ব্যাচ তৈরি করুন")}</h2>
+          <h2 className="text-sm font-semibold">
+            {t("Generate a batch", "ব্যাচ তৈরি করুন")}
+          </h2>
           <Field label={t("Batch name", "ব্যাচের নাম")}>
-            <input name="label" required maxLength={80} className={inputClass} />
+            <input
+              name="label"
+              required
+              maxLength={80}
+              className={inputClass}
+            />
           </Field>
           <Field label={t("Code prefix", "কোড প্রিফিক্স")} hint="EID, WINTER…">
             <input name="prefix" maxLength={12} className={inputClass} />
@@ -191,8 +229,12 @@ function CodesPage() {
               className={inputClass}
             >
               <option value="percent">{t("Percent off", "শতকরা ছাড়")}</option>
-              <option value="fixed">{t("Fixed taka off", "নির্দিষ্ট টাকা ছাড়")}</option>
-              <option value="free_shipping">{t("Free shipping", "ফ্রি ডেলিভারি")}</option>
+              <option value="fixed">
+                {t("Fixed taka off", "নির্দিষ্ট টাকা ছাড়")}
+              </option>
+              <option value="free_shipping">
+                {t("Free shipping", "ফ্রি ডেলিভারি")}
+              </option>
             </select>
           </Field>
           {type === "percent" && (

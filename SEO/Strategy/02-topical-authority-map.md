@@ -2,7 +2,7 @@
 
 > **Framework:** Koray Tuğberk Gübür Semantic SEO & Topical Authority Methodology  
 > **Source Context:** Modern Cloud E-Commerce CMS, Visual Website Builders & Sovereign Merchant Infrastructure  
-> **Target Goal:** Establish undisputed topical authority in Google Knowledge Graph, AI Overviews, Perplexity, and ChatGPT Search.  
+> **Target Goal:** Establish undisputed topical authority in Google Knowledge Graph, AI Overviews, Perplexity, and ChatGPT Search.
 
 ---
 
@@ -30,15 +30,15 @@ In Semantic SEO, search engines construct a Knowledge Graph composed of **Entiti
 
 ### 1.1 Entity Hierarchy Definition
 
-| Entity Level | Entity Name | Type (Schema / Ontology) | Semantic Role |
-| :--- | :--- | :--- | :--- |
-| **Central Entity** | **FRAMIQUE** | `SoftwareApplication` / `WebApplication` | The sovereign platform providing visual design + cloud e-commerce engine. |
-| **Core Entity 1** | **Visual Storefront Builder** | `SoftwareFeature` | Drag-and-drop canvas, responsive layouts, design token system (competing with Framer/Webflow). |
-| **Core Entity 2** | **Transactional Commerce Engine** | `SoftwareFeature` | Cart, multi-currency checkout, inventory ledger, tenant order management (competing with Shopify). |
-| **Core Entity 3** | **Local Merchant Infrastructure** | `Service` | Native local MFS payments (bKash/Nagad), automated courier dispatch, and COD verification. |
-| **Auxiliary Entity 1** | **Edge Server-Side Rendering (SSR)** | `ComputerLanguage` / `Technology` | TanStack Start, Nitro, sub-50ms regional TTFB, zero-hydration layout shift. |
-| **Auxiliary Entity 2** | **Multi-Tenant Isolation & Security** | `SecurityFeature` | Row-Level Security (RLS), custom domain edge routing, automated ACME SSL certificates. |
-| **Auxiliary Entity 3** | **Merchant Economics** | `FinancialService` | 0% platform transaction fees, transparent local currency billing, zero hidden app fees. |
+| Entity Level           | Entity Name                           | Type (Schema / Ontology)                 | Semantic Role                                                                                      |
+| :--------------------- | :------------------------------------ | :--------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| **Central Entity**     | **FRAMIQUE**                          | `SoftwareApplication` / `WebApplication` | The sovereign platform providing visual design + cloud e-commerce engine.                          |
+| **Core Entity 1**      | **Visual Storefront Builder**         | `SoftwareFeature`                        | Drag-and-drop canvas, responsive layouts, design token system (competing with Framer/Webflow).     |
+| **Core Entity 2**      | **Transactional Commerce Engine**     | `SoftwareFeature`                        | Cart, multi-currency checkout, inventory ledger, tenant order management (competing with Shopify). |
+| **Core Entity 3**      | **Local Merchant Infrastructure**     | `Service`                                | Native local MFS payments (bKash/Nagad), automated courier dispatch, and COD verification.         |
+| **Auxiliary Entity 1** | **Edge Server-Side Rendering (SSR)**  | `ComputerLanguage` / `Technology`        | TanStack Start, Nitro, sub-50ms regional TTFB, zero-hydration layout shift.                        |
+| **Auxiliary Entity 2** | **Multi-Tenant Isolation & Security** | `SecurityFeature`                        | Row-Level Security (RLS), custom domain edge routing, automated ACME SSL certificates.             |
+| **Auxiliary Entity 3** | **Merchant Economics**                | `FinancialService`                       | 0% platform transaction fees, transparent local currency billing, zero hidden app fees.            |
 
 ---
 
@@ -95,12 +95,13 @@ To dominate organic search without keyword cannibalization, content is strictly 
 According to Koray Tuğberk Gübür's research, search engines re-rank pages based on the **semantic clarity of internal link anchors**. Generic anchors ("click here", "read more", "learn more") are strictly prohibited.
 
 ### 4.1 Contextual Anchor Rules
+
 1. **Source Context Alignment:** The paragraph containing the link must discuss the exact topic of the target page before the anchor occurs.
 2. **Anchor Formulation:**
-   - *Bad:* "For Shopify alternatives, [click here]."
-   - *Good:* "Merchants seeking to eliminate the 2% gateway penalty can switch to a [zero-fee Shopify alternative for local commerce](/compare/shopify)."
-   - *Bad:* "Learn about payments [here]."
-   - *Good:* "Orders are processed through [native bKash and Nagad checkout integrations](/payments/local-gateways) without third-party plugins."
+   - _Bad:_ "For Shopify alternatives, [click here]."
+   - _Good:_ "Merchants seeking to eliminate the 2% gateway penalty can switch to a [zero-fee Shopify alternative for local commerce](/compare/shopify)."
+   - _Bad:_ "Learn about payments [here]."
+   - _Good:_ "Orders are processed through [native bKash and Nagad checkout integrations](/payments/local-gateways) without third-party plugins."
 3. **Anchor Uniqueness:** A single URL must have consistent semantic representation across the website. Do not link to `/features/builder` with the anchor text "pricing".
 4. **Hierarchical Flow:** Spokes must pass link equity back to the Pillar page using the primary entity phrase in the first 20% of the body text.
 
@@ -109,13 +110,17 @@ According to Koray Tuğberk Gübür's research, search engines re-rank pages bas
 ## 5. Micro-Context & Macro-Context Optimization Rules
 
 ### 5.1 Macro-Context
+
 The site-wide theme signals: **"High-performance cloud software for sovereign e-commerce brands."** Every published page reinforces:
+
 - High page speed / Core Web Vitals.
 - Security and reliability.
 - Financial sovereignty (0% fee, direct payment settlements).
 
 ### 5.2 Micro-Context
+
 Each individual section of an article must fulfill a single semantic sub-intent before introducing a new entity:
+
 - **Heading 2 (H2):** Formulated as a clear, definitive statement or question incorporating the entity and attribute (e.g., `## Why Shopify's 2% Transaction Fee Hurts Emerging Market Merchants`).
 - **First Paragraph:** Provides a direct factual answer (Subject + Predicate + Object) within 45 words to win Google's Featured Snippet and AI Overview citation.
 - **Subsequent Paragraphs:** Support the assertion with technical data, comparison metrics, or architectural diagrams (Information Gain).

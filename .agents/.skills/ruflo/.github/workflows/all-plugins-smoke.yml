@@ -15,16 +15,16 @@ on:
   push:
     branches: [main]
     paths:
-      - 'plugins/**'
-      - 'scripts/smoke-all-plugins.mjs'
-      - 'scripts/audit-plugin-mcp-prefix.mjs'
-      - '.github/workflows/all-plugins-smoke.yml'
+      - "plugins/**"
+      - "scripts/smoke-all-plugins.mjs"
+      - "scripts/audit-plugin-mcp-prefix.mjs"
+      - ".github/workflows/all-plugins-smoke.yml"
   pull_request:
     paths:
-      - 'plugins/**'
-      - 'scripts/smoke-all-plugins.mjs'
-      - 'scripts/audit-plugin-mcp-prefix.mjs'
-      - '.github/workflows/all-plugins-smoke.yml'
+      - "plugins/**"
+      - "scripts/smoke-all-plugins.mjs"
+      - "scripts/audit-plugin-mcp-prefix.mjs"
+      - ".github/workflows/all-plugins-smoke.yml"
   workflow_dispatch:
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Discover and run every plugin smoke contract (parallel)
         # --timeout 300 caps each individual plugin smoke at 5 minutes.

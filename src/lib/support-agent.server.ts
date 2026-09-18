@@ -26,8 +26,17 @@ import {
 import { searchKb, searchKbHybrid, type KbHit } from "./support-kb.server";
 import { draftAnswer } from "./support-llm.server";
 import { createTicket } from "./support-tickets.server";
-import { detectIntent, hashPhone, lookupOrder, SupportError, type Intent } from "./ai-support.server";
-import { detectTrajectoryLoop, type TrajectoryTurn } from "./support-loop-detector.server";
+import {
+  detectIntent,
+  hashPhone,
+  lookupOrder,
+  SupportError,
+  type Intent,
+} from "./ai-support.server";
+import {
+  detectTrajectoryLoop,
+  type TrajectoryTurn,
+} from "./support-loop-detector.server";
 import { captureTrainingTurn } from "./ai-training-data.server";
 
 let mockAdminClient: unknown = null;
@@ -62,9 +71,13 @@ function createTestDbProxy(): unknown {
         };
       }
       if (currentTable === "ai_conversations") {
-        const id = lastEqCol === "id" && typeof lastEqVal === "string" ? lastEqVal : "conv-test-123";
+        const id =
+          lastEqCol === "id" && typeof lastEqVal === "string"
+            ? lastEqVal
+            : "conv-test-123";
         try {
-          const { getMockConversation } = await import("./support-moderation.server");
+          const { getMockConversation } =
+            await import("./support-moderation.server");
           const mock = getMockConversation(id);
           if (mock) {
             return {
@@ -87,13 +100,17 @@ function createTestDbProxy(): unknown {
       return { data: null, error: null };
     },
     single: async () => {
-      const id = lastEqCol === "id" && typeof lastEqVal === "string" ? lastEqVal : "conv-test-123";
+      const id =
+        lastEqCol === "id" && typeof lastEqVal === "string"
+          ? lastEqVal
+          : "conv-test-123";
       return {
         data: { id },
         error: null,
       };
     },
-    then: (onfulfilled?: any, onrejected?: any) => promise.then(onfulfilled, onrejected),
+    then: (onfulfilled?: any, onrejected?: any) =>
+      promise.then(onfulfilled, onrejected),
     catch: (onrejected?: any) => promise.catch(onrejected),
   };
 
@@ -116,7 +133,8 @@ async function admin() {
     return createTestDbProxy() as any;
   }
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     return supabaseAdmin;
   } catch {
     return createTestDbProxy() as any;
@@ -233,8 +251,22 @@ export async function getConversationTakeoverState(
 async function merchantBySlugCached(slug: string) {
   return cached(`support:merchant:${slug}`, 120, async () => {
     const db = await admin();
-    const { data } = await db.from("merchants").select("id, name, slug").eq("slug", slug).maybeSingle();
-    if (!data) throw new SupportError("no_merchant", "support.store_not_found");
+    const querySlug = slug === "platform" ? "framique" : slug;
+    const { data } = await db
+      .from("merchants")
+      .select("id, name, slug")
+      .eq("slug", querySlug)
+      .maybeSingle();
+    if (!data) {
+      if (slug === "framique" || slug === "platform") {
+        return {
+          id: "00000000-0000-4000-8000-000000000001",
+          name: "Framique",
+          slug: "framique",
+        };
+      }
+      throw new SupportError("no_merchant", "support.store_not_found");
+    }
     return data;
   });
 }
@@ -286,7 +318,10 @@ async function recordToolCall(opts: {
     result_digest: opts.resultDigest ?? null,
     error_code: opts.errorCode ?? null,
   });
-  incr("framique_ai_tool_call_total", { tool: opts.tool, outcome: opts.ok ? "ok" : "error" });
+  incr("framique_ai_tool_call_total", {
+    tool: opts.tool,
+    outcome: opts.ok ? "ok" : "error",
+  });
   observe("framique_ai_tool_latency_ms", opts.latencyMs, { tool: opts.tool });
 }
 
@@ -315,7 +350,8 @@ async function ensureConversation(
     })
     .select("id")
     .single();
-  if (error || !data) throw new SupportError("conversation_failed", "support.chat_failed");
+  if (error || !data)
+    throw new SupportError("conversation_failed", "support.chat_failed");
   return data.id;
 }
 
@@ -337,13 +373,22 @@ async function appendMessage(
 
   // Maintain recent in-memory trajectory turns for fast loop detection
   const recent = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
-  recent.push({ role: role === "customer" ? "customer" : "bot", message: safe });
+  recent.push({
+    role: role === "customer" ? "customer" : "bot",
+    message: safe,
+  });
   if (recent.length > 12) recent.shift();
   CONVERSATION_RECENT_TURNS.set(conversationId, recent);
 
   await db
     .from("ai_messages")
-    .insert({ merchant_id: merchantId, conversation_id: conversationId, role, body: safe, flagged });
+    .insert({
+      merchant_id: merchantId,
+      conversation_id: conversationId,
+      role,
+      body: safe,
+      flagged,
+    });
   await db
     .from("ai_conversations")
     .update({ last_message_at: new Date().toISOString() })
@@ -428,7 +473,9 @@ export const UNGROUNDED_SPECULATIVE_PATTERNS: RegExp[] = [
 ];
 
 export function detectUngroundedOrSpeculative(message: string): boolean {
-  return UNGROUNDED_SPECULATIVE_PATTERNS.some((pattern) => pattern.test(message));
+  return UNGROUNDED_SPECULATIVE_PATTERNS.some((pattern) =>
+    pattern.test(message),
+  );
 }
 
 export const EPISTEMIC_ADMISSION_EN =
@@ -463,7 +510,8 @@ export const EPISTEMIC_ACTION_PATHS: EpistemicActionPath[] = [
     kind: "create_ticket",
     label: "Open Support Ticket",
     labelBn: "সাপোর্ট টিকিট খুলুন",
-    description: "Submit a formal tracked request with SLA resolution guarantees",
+    description:
+      "Submit a formal tracked request with SLA resolution guarantees",
     descriptionBn: "ট্র্যাকিং ও দ্রুত সমাধানের জন্য টিকিট জমা দিন",
   },
   {
@@ -530,7 +578,13 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     // 1. Rate limit before any model or database work.
     const verdict = await rateLimit("support.ask", `${merchant.id}:${subject}`);
     if (!verdict.allowed) {
-      await recordGuardrail(merchant.id, input.conversationId ?? null, "rate_limit", "support.ask", subject);
+      await recordGuardrail(
+        merchant.id,
+        input.conversationId ?? null,
+        "rate_limit",
+        "support.ask",
+        subject,
+      );
       return {
         conversationId: input.conversationId ?? null,
         reply: en("support.rate_limited"),
@@ -546,11 +600,22 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     // 2. Inbound guardrail runs before retrieval, so a hostile turn never
     //    reaches the knowledge base or an order lookup.
     const inbound = screenInbound(input.message);
-    const conversationId = await ensureConversation(merchant.id, input.conversationId, input.phone ?? null, channel);
+    const conversationId = await ensureConversation(
+      merchant.id,
+      input.conversationId,
+      input.phone ?? null,
+      channel,
+    );
     await appendMessage(merchant.id, conversationId, "customer", input.message);
 
     if (!inbound.allowed) {
-      await recordGuardrail(merchant.id, conversationId, inbound.kind ?? "unsafe", inbound.rule ?? "unknown", input.message);
+      await recordGuardrail(
+        merchant.id,
+        conversationId,
+        inbound.kind ?? "unsafe",
+        inbound.rule ?? "unknown",
+        input.message,
+      );
       const reply = en("support.guardrail_blocked");
       await appendMessage(merchant.id, conversationId, "bot", reply, true);
       incr("framique_ai_ask_total", { outcome: "blocked" });
@@ -582,27 +647,33 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     //  - Chat status is set to 'in_progress' if previously open or needs_agent
     //  - Real-time alert dispatched to the platform owner on /root/ai
     //  - The shopper's UI displays a subtle indicator: "Staff active" or "Human specialist is typing..."
-    const convState = await getConversationTakeoverState(merchant.id, conversationId);
+    const convState = await getConversationTakeoverState(
+      merchant.id,
+      conversationId,
+    );
     const isHumanTakeover =
       input.takeoverMode === "human_takeover" ||
       convState?.takeoverMode === "human_takeover";
 
     if (isHumanTakeover) {
-      // 1. Set status to in_progress if open or needs_agent
-      const db = await admin();
-      await db
-        .from("ai_conversations")
-        .update({
-          status: "in_progress",
-          last_customer_message_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        } as never)
-        .eq("merchant_id", merchant.id)
-        .eq("id", conversationId)
-        .catch(() => null);
+      try {
+        const db = await admin();
+        await db
+          .from("ai_conversations")
+          .update({
+            status: "in_progress",
+            last_customer_message_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          } as never)
+          .eq("merchant_id", merchant.id)
+          .eq("id", conversationId);
+      } catch {
+        // ignore update failure in offline or restricted environments
+      }
 
       try {
-        const { recordCustomerMessage } = await import("./support-moderation.server");
+        const { recordCustomerMessage } =
+          await import("./support-moderation.server");
         recordCustomerMessage(conversationId, input.message);
       } catch {
         // ignore offline mock import errors
@@ -625,7 +696,12 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         conversationId,
         subjectHash,
         channel,
-        steps: [{ step: "human_takeover_suppressed", customerMessage: redactPii(input.message).text }],
+        steps: [
+          {
+            step: "human_takeover_suppressed",
+            customerMessage: redactPii(input.message).text,
+          },
+        ],
         outcome: "suppressed_human_takeover",
       });
 
@@ -637,7 +713,8 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         grounded: false,
       }).catch(() => null);
 
-      const staffIndicator = locale === "bn" ? "অফিসার সক্রিয় আছেন" : "Staff active";
+      const staffIndicator =
+        locale === "bn" ? "অফিসার সক্রিয় আছেন" : "Staff active";
       const takeoverReply =
         locale === "bn"
           ? "আপনার বার্তাটি আমাদের কাস্টমার সাপোর্ট স্পেশালিস্টের কাছে পৌঁছেছে। একজন প্রতিনিধি শীঘ্রই উত্তর দেবেন।"
@@ -662,12 +739,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     const recentTurns = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
     // Prior turns before current user message
     const priorTurns = recentTurns.slice(0, -1);
-    const loopVerdict = detectTrajectoryLoop(priorTurns, input.message, "customer");
+    const loopVerdict = detectTrajectoryLoop(
+      priorTurns,
+      input.message,
+      "customer",
+    );
 
     if (loopVerdict.loopDetected) {
       const loopReply =
         locale === "bn"
-          ? (loopVerdict.interventionReplyBn || loopVerdict.interventionReply!)
+          ? loopVerdict.interventionReplyBn || loopVerdict.interventionReply!
           : loopVerdict.interventionReply!;
 
       const loopTicket = await createTicket({
@@ -742,7 +823,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         sourceTable: "orders",
         ok: Boolean(order),
         latencyMs: Date.now() - started,
-        resultDigest: order ? await digest(`${order.order_number}:${order.status}`) : null,
+        resultDigest: order
+          ? await digest(`${order.order_number}:${order.status}`)
+          : null,
         errorCode,
       });
       steps.push({ step: "tool", tool: "orders.lookup", ok: Boolean(order) });
@@ -779,12 +862,15 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     //  - If highest cosine similarity < 0.65 (distance > 0.35)
     // The agent MUST NOT hallucinate answers or invent fake policies.
     const isActionIntent =
-      intent === "create_ticket" || intent === "request_callback" || intent === "refund";
+      intent === "create_ticket" ||
+      intent === "request_callback" ||
+      intent === "refund";
 
     const isSpeculative = detectUngroundedOrSpeculative(input.message);
     const topVectorSim = hits[0]?.vector_sim;
     const lowVectorSim =
-      topVectorSim !== undefined && topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD;
+      topVectorSim !== undefined &&
+      topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD;
     const noKbHits = hits.length === 0;
 
     const contactInfo: ContactInfoCard = {
@@ -796,23 +882,30 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     };
 
     const triggerEpistemicHumility =
-      !pinned &&
-      !isActionIntent &&
-      (isSpeculative || noKbHits || lowVectorSim);
+      !pinned && !isActionIntent && (isSpeculative || noKbHits || lowVectorSim);
 
     if (triggerEpistemicHumility) {
       const humilityReply = buildEpistemicHumilityReply(locale, contactInfo);
 
       // Auto-escalate conversation to needs_agent so human operators on /root/ai are notified
-      const db = await admin();
-      await db
-        .from("ai_conversations")
-        .update({ status: "needs_agent", priority: "normal" } as never)
-        .eq("merchant_id", merchant.id)
-        .eq("id", conversationId)
-        .catch(() => null);
+      try {
+        const db = await admin();
+        await db
+          .from("ai_conversations")
+          .update({ status: "needs_agent", priority: "normal" } as never)
+          .eq("merchant_id", merchant.id)
+          .eq("id", conversationId);
+      } catch {
+        // ignore update failure in offline or restricted environments
+      }
 
-      await appendMessage(merchant.id, conversationId, "bot", humilityReply, true);
+      await appendMessage(
+        merchant.id,
+        conversationId,
+        "bot",
+        humilityReply,
+        true,
+      );
       incr("framique_ai_ask_total", { outcome: "epistemic_humility" });
 
       await captureTrainingTurn({
@@ -865,7 +958,13 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     // 5. Outbound guardrail: no authority claims, no unpinned figures.
     const outbound = screenOutbound(reply, { pinned: Boolean(pinned) });
     if (!outbound.allowed) {
-      await recordGuardrail(merchant.id, conversationId, outbound.kind ?? "authority", outbound.rule ?? "unknown", reply);
+      await recordGuardrail(
+        merchant.id,
+        conversationId,
+        outbound.kind ?? "authority",
+        outbound.rule ?? "unknown",
+        reply,
+      );
       reply = en("support.needs_human");
     }
 
@@ -883,7 +982,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     //
     // Only ONE tool fires per turn. Priority: create_ticket > request_callback > auto-escalate.
 
-    const unsureStreak = flagged ? await consecutiveUnsure(merchant.id, conversationId) : 0;
+    const unsureStreak = flagged
+      ? await consecutiveUnsure(merchant.id, conversationId)
+      : 0;
     const needsAgent =
       !outbound.allowed ||
       intent === "refund" ||
@@ -908,14 +1009,22 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       try {
         await db
           .from("ai_conversations")
-          .update({ status: "needs_agent", order_number: input.orderNumber ?? null })
+          .update({
+            status: "needs_agent",
+            order_number: input.orderNumber ?? null,
+          })
           .eq("merchant_id", merchant.id)
           .eq("id", conversationId);
       } catch {
         // ignore update error
       }
 
-      const priority = intent === "refund" ? "high" : intent === "create_ticket" ? "normal" : "normal";
+      const priority =
+        intent === "refund"
+          ? "high"
+          : intent === "create_ticket"
+            ? "normal"
+            : "normal";
       const reason =
         intent === "create_ticket"
           ? "support.explicit_ticket_request"
@@ -970,7 +1079,13 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         resultDigest: ticketId ? await digest(ticketId) : null,
         errorCode: ticketId ? null : "ticket_create_failed",
       });
-      steps.push({ step: "tool", tool: "create_support_ticket", ok: Boolean(ticketId), priority, reason });
+      steps.push({
+        step: "tool",
+        tool: "create_support_ticket",
+        ok: Boolean(ticketId),
+        priority,
+        reason,
+      });
     }
 
     // ── Tool: request_callback ────────────────────────────────────────────────
@@ -988,7 +1103,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         const cbResult = await createCallback({
           merchantId: merchant.id,
           conversationId,
-          customerName: "Customer",   // Widget will collect name via the form
+          customerName: "Customer", // Widget will collect name via the form
           phone: input.phone!.trim(),
           preferredWindow: "morning", // Default; widget lets customer pick
           note: redactPii(input.message).text.slice(0, 200),
@@ -1018,12 +1133,21 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           resultDigest: cbResult ? await digest(cbResult.id) : null,
           errorCode: cbResult ? null : "callback_create_failed",
         });
-        steps.push({ step: "tool", tool: "request_callback", ok: Boolean(cbResult) });
+        steps.push({
+          step: "tool",
+          tool: "request_callback",
+          ok: Boolean(cbResult),
+        });
       } else {
         // No phone on file — prompt widget to show the callback form
         reply = en("support.callback_prompt");
         cta = "callback";
-        steps.push({ step: "tool", tool: "request_callback", ok: false, reason: "no_phone_on_file" });
+        steps.push({
+          step: "tool",
+          tool: "request_callback",
+          ok: false,
+          reason: "no_phone_on_file",
+        });
       }
 
       if (callbackAction) {
@@ -1051,7 +1175,10 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       outcome: needsAgent ? "escalated" : confidence,
     });
 
-    incr("framique_ai_ask_total", { outcome: needsAgent ? "escalated" : confidence, channel });
+    incr("framique_ai_ask_total", {
+      outcome: needsAgent ? "escalated" : confidence,
+      channel,
+    });
     // 7. Continuous Training Data Flywheel Capture
     await captureTrainingTurn({
       merchantId: merchant.id,
@@ -1068,7 +1195,11 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       agentReply: reply,
       grounded: confidence === "grounded" || confidence === "pinned",
       guardrailBlocked: !outbound.allowed,
-      actionCompleted: ticketId ? "ticket" : callbackAction ? "callback" : "answered",
+      actionCompleted: ticketId
+        ? "ticket"
+        : callbackAction
+          ? "callback"
+          : "answered",
     }).catch(() => null);
 
     return {
@@ -1082,8 +1213,12 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       ticketId,
       ticketAction,
       callbackAction,
-      actionPaths: needsAgent || confidence === "unsure" ? EPISTEMIC_ACTION_PATHS : undefined,
-      contactInfo: needsAgent || confidence === "unsure" ? contactInfo : undefined,
+      actionPaths:
+        needsAgent || confidence === "unsure"
+          ? EPISTEMIC_ACTION_PATHS
+          : undefined,
+      contactInfo:
+        needsAgent || confidence === "unsure" ? contactInfo : undefined,
     };
   });
 }
@@ -1103,7 +1238,9 @@ export async function rateConversation(
 
   // 1. Update in-memory flywheel
   const { updateTurnCsat } = await import("./ai-training-data.server");
-  await updateTurnCsat(conversationId, value, safeReview ?? undefined).catch(() => null);
+  await updateTurnCsat(conversationId, value, safeReview ?? undefined).catch(
+    () => null,
+  );
 
   // 2. Persist to Supabase
   try {
@@ -1134,14 +1271,19 @@ export async function rateConversation(
     incr("framique_ai_rating_total", { outcome: "ok", rating: String(value) });
     return { ok: true, rating: value, review: safeReview } as const;
   } catch {
-    incr("framique_ai_rating_total", { outcome: "fallback", rating: String(value) });
+    incr("framique_ai_rating_total", {
+      outcome: "fallback",
+      rating: String(value),
+    });
     return { ok: true, rating: value, review: safeReview } as const;
   }
 }
 
-
 /** Uniform degradation: an outage answers honestly and offers a human. */
-export function degradedAnswer(conversationId: string | null, err?: unknown): AskResult {
+export function degradedAnswer(
+  conversationId: string | null,
+  err?: unknown,
+): AskResult {
   if (err instanceof RateLimitError) {
     incr("framique_ai_ask_total", { outcome: "rate_limited" });
   } else {
@@ -1162,4 +1304,3 @@ export function degradedAnswer(conversationId: string | null, err?: unknown): As
  * Phase 12.4 — Exported agent turn runner alias.
  */
 export const runSupportAgentTurn = askSupport;
-

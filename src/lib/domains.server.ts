@@ -62,7 +62,8 @@ export class DomainError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -85,7 +86,11 @@ const RESOLVERS = [
   "https://dns.google/resolve",
 ] as const;
 
-async function resolveOnce(resolver: string, name: string, type: "TXT" | "CNAME" | "A") {
+async function resolveOnce(
+  resolver: string,
+  name: string,
+  type: "TXT" | "CNAME" | "A",
+) {
   const url = `${resolver}?name=${encodeURIComponent(name)}&type=${type}`;
   const res = await fetch(url, {
     headers: { accept: "application/dns-json" },
@@ -101,10 +106,15 @@ async function resolveOnce(resolver: string, name: string, type: "TXT" | "CNAME"
  * resolver can see is good enough to proceed — propagation is uneven and we
  * would rather re-check later than block a correctly configured merchant.
  */
-export async function resolveDns(name: string, type: "TXT" | "CNAME" | "A"): Promise<string[]> {
+export async function resolveDns(
+  name: string,
+  type: "TXT" | "CNAME" | "A",
+): Promise<string[]> {
   return cached(`dns:${type}:${name}`, 30, async () => {
     const started = Date.now();
-    const settled = await Promise.allSettled(RESOLVERS.map((r) => resolveOnce(r, name, type)));
+    const settled = await Promise.allSettled(
+      RESOLVERS.map((r) => resolveOnce(r, name, type)),
+    );
     observe("framique_domain_dns_ms", Date.now() - started, { type });
     const ok = settled.filter((s) => s.status === "fulfilled");
     if (!ok.length) {
@@ -113,7 +123,8 @@ export async function resolveDns(name: string, type: "TXT" | "CNAME" | "A"): Pro
     }
     incr("framique_domain_dns_total", { type, outcome: "ok" });
     const out = new Set<string>();
-    for (const s of ok) for (const v of (s as PromiseFulfilledResult<string[]>).value) out.add(v);
+    for (const s of ok)
+      for (const v of (s as PromiseFulfilledResult<string[]>).value) out.add(v);
     return [...out];
   });
 }
@@ -124,7 +135,11 @@ async function transition(
   domain: Pick<DomainRow, "id" | "merchant_id" | "status">,
   to: DomainStatus,
   patch: Partial<Database["public"]["Tables"]["merchant_domains"]["Update"]>,
-  meta: { reason?: string | null; detail?: Record<string, unknown>; actor?: string | null } = {},
+  meta: {
+    reason?: string | null;
+    detail?: Record<string, unknown>;
+    actor?: string | null;
+  } = {},
 ) {
   const from = domain.status as DomainStatus;
   if (!canTransition(from, to)) {
@@ -149,7 +164,12 @@ async function transition(
       actor: meta.actor ?? null,
     });
     incr("framique_domain_transition_total", { from, to });
-    log("info", "domain.transition", { domain: domain.id, from, to, reason: meta.reason ?? null });
+    log("info", "domain.transition", {
+      domain: domain.id,
+      from,
+      to,
+      reason: meta.reason ?? null,
+    });
   }
 }
 
@@ -167,7 +187,12 @@ export type DomainView = {
   checkAttempts: number;
   lastError: string | null;
   observed: { type: string; values: string[] }[];
-  cert: { status: CertStatus; issuedAt: string | null; expiresAt: string | null; error: string | null };
+  cert: {
+    status: CertStatus;
+    issuedAt: string | null;
+    expiresAt: string | null;
+    error: string | null;
+  };
   certHealth: ReturnType<typeof certHealth>;
   verifiedAt: string | null;
   activatedAt: string | null;
@@ -189,7 +214,11 @@ function toView(row: DomainRow): DomainView {
     nextCheckAt: row.next_check_at,
     checkAttempts: row.check_attempts,
     lastError: row.last_error,
-    observed: (row.observed_records as unknown as { type: string; values: string[] }[]) ?? [],
+    observed:
+      (row.observed_records as unknown as {
+        type: string;
+        values: string[];
+      }[]) ?? [],
     cert: {
       status: row.cert_status as CertStatus,
       issuedAt: row.cert_issued_at,
@@ -203,7 +232,11 @@ function toView(row: DomainRow): DomainView {
   };
 }
 
-export async function listDomains(db: Client, merchantId: string, userId: string) {
+export async function listDomains(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   return withSpan("domains.list", async () => {
     await enforceRateLimit("domains.read", userId);
     const { data, error } = await db
@@ -221,7 +254,12 @@ export async function listDomains(db: Client, merchantId: string, userId: string
   });
 }
 
-export async function domainHistory(db: Client, merchantId: string, userId: string, domainId: string) {
+export async function domainHistory(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  domainId: string,
+) {
   await enforceRateLimit("domains.read", userId);
   const { data, error } = await db
     .from("domain_events")
@@ -236,7 +274,10 @@ export async function domainHistory(db: Client, merchantId: string, userId: stri
     from: e.from_status as DomainStatus | null,
     to: e.to_status as DomainStatus,
     reason: e.reason,
-    detail: (e.detail ?? {}) as Record<string, string | number | boolean | null>,
+    detail: (e.detail ?? {}) as Record<
+      string,
+      string | number | boolean | null
+    >,
     createdAt: e.created_at,
   }));
 }
@@ -248,14 +289,22 @@ function randomToken() {
   return [...bytes].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-export async function addDomain(db: Client, merchantId: string, userId: string, input: string) {
+export async function addDomain(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  input: string,
+) {
   return withSpan("domains.add", async () => {
     await enforceRateLimit("domains.write", userId);
     let hostname: string;
     try {
       hostname = normalizeHostname(input);
     } catch (err) {
-      throw new DomainError(err instanceof DomainInputError ? err.code : "domain.invalid", 400);
+      throw new DomainError(
+        err instanceof DomainInputError ? err.code : "domain.invalid",
+        400,
+      );
     }
 
     const { count } = await db
@@ -270,9 +319,11 @@ export async function addDomain(db: Client, merchantId: string, userId: string, 
       .eq("merchant_id", merchantId)
       .maybeSingle();
     const quota = domainQuotaForPlan(
-      (sub?.plan ?? "launch") as "launch" | "growth" | "business" | "enterprise",
+      (sub?.plan ?? "launch") as
+        "launch" | "growth" | "business" | "enterprise",
     );
-    if ((count ?? 0) >= quota) throw new DomainError("domain.limit_reached", 409);
+    if ((count ?? 0) >= quota)
+      throw new DomainError("domain.limit_reached", 409);
 
     const service = await admin();
     // Global uniqueness is enforced by a unique index; surfacing it as a clean
@@ -334,11 +385,20 @@ export async function verifyDomain(
   return withSpan("domains.verify", async () => {
     if (opts.manual !== false) await enforceRateLimit("domains.verify", userId);
     const row = await loadOwned(db, merchantId, domainId);
-    if (row.status === "disabled") throw new DomainError("domain.disabled", 409);
+    if (row.status === "disabled")
+      throw new DomainError("domain.disabled", 409);
 
     const service = await admin();
-    if ((row.status as DomainStatus) === "pending_dns" || (row.status as DomainStatus) === "failed") {
-      await transition(row, "verifying", {}, { reason: "domain.check_started", actor: opts.actor });
+    if (
+      (row.status as DomainStatus) === "pending_dns" ||
+      (row.status as DomainStatus) === "failed"
+    ) {
+      await transition(
+        row,
+        "verifying",
+        {},
+        { reason: "domain.check_started", actor: opts.actor },
+      );
       row.status = "verifying";
     }
 
@@ -398,7 +458,12 @@ export async function verifyDomain(
       );
       incr("framique_domain_verify_total", { outcome: "verified" });
       const refreshed = await loadOwned(db, merchantId, domainId);
-      return requestCertificate(db, merchantId, refreshed.id, opts.actor ?? null);
+      return requestCertificate(
+        db,
+        merchantId,
+        refreshed.id,
+        opts.actor ?? null,
+      );
     }
 
     const stalled = attempts >= MAX_AUTO_ATTEMPTS;
@@ -410,11 +475,15 @@ export async function verifyDomain(
         check_attempts: attempts,
         last_error: verdict.reason,
         observed_records: observed,
-        next_check_at: new Date(Date.now() + nextCheckDelaySeconds(attempts) * 1000).toISOString(),
+        next_check_at: new Date(
+          Date.now() + nextCheckDelaySeconds(attempts) * 1000,
+        ).toISOString(),
       },
       { reason: verdict.reason, detail: { attempts }, actor: opts.actor },
     );
-    incr("framique_domain_verify_total", { outcome: stalled ? "failed" : "pending" });
+    incr("framique_domain_verify_total", {
+      outcome: stalled ? "failed" : "pending",
+    });
     return toView(await loadOwned(db, merchantId, domainId));
   });
 }
@@ -447,7 +516,11 @@ export async function requestCertificate(
           "content-type": "application/json",
           authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
         },
-        body: JSON.stringify({ hostname: row.hostname, domainId: row.id, merchantId }),
+        body: JSON.stringify({
+          hostname: row.hostname,
+          domainId: row.id,
+          merchantId,
+        }),
         signal: AbortSignal.timeout(8000),
       });
       if (!res.ok) throw new Error(`edge_${res.status}`);
@@ -458,19 +531,30 @@ export async function requestCertificate(
       const service = await admin();
       await service
         .from("merchant_domains")
-        .update({ cert_error: err instanceof Error ? err.message : "edge_unreachable" })
+        .update({
+          cert_error: err instanceof Error ? err.message : "edge_unreachable",
+        })
         .eq("id", row.id);
     }
   }
   return toView(await loadOwned(db, merchantId, domainId));
 }
 
-export async function setPrimary(db: Client, merchantId: string, userId: string, domainId: string) {
+export async function setPrimary(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  domainId: string,
+) {
   await enforceRateLimit("domains.write", userId);
   const row = await loadOwned(db, merchantId, domainId);
-  if ((row.status as DomainStatus) !== "active") throw new DomainError("domain.not_active", 409);
+  if ((row.status as DomainStatus) !== "active")
+    throw new DomainError("domain.not_active", 409);
   const service = await admin();
-  await service.from("merchant_domains").update({ is_primary: false }).eq("merchant_id", merchantId);
+  await service
+    .from("merchant_domains")
+    .update({ is_primary: false })
+    .eq("merchant_id", merchantId);
   const { error } = await service
     .from("merchant_domains")
     .update({ is_primary: true, redirect_to_primary: false })
@@ -497,9 +581,13 @@ export async function setRedirect(
 ) {
   await enforceRateLimit("domains.write", userId);
   const row = await loadOwned(db, merchantId, domainId);
-  if (row.is_primary && redirect) throw new DomainError("domain.primary_cannot_redirect", 409);
+  if (row.is_primary && redirect)
+    throw new DomainError("domain.primary_cannot_redirect", 409);
   const service = await admin();
-  await service.from("merchant_domains").update({ redirect_to_primary: redirect }).eq("id", domainId);
+  await service
+    .from("merchant_domains")
+    .update({ redirect_to_primary: redirect })
+    .eq("id", domainId);
   return listDomains(db, merchantId, userId);
 }
 
@@ -516,18 +604,30 @@ export async function setDomainEnabled(
     row,
     enabled ? "pending_dns" : "disabled",
     enabled
-      ? { check_attempts: 0, last_error: null, next_check_at: new Date().toISOString() }
+      ? {
+          check_attempts: 0,
+          last_error: null,
+          next_check_at: new Date().toISOString(),
+        }
       : { is_primary: false },
     { reason: enabled ? "domain.enabled" : "domain.disabled", actor: userId },
   );
   return listDomains(db, merchantId, userId);
 }
 
-export async function removeDomain(db: Client, merchantId: string, userId: string, domainId: string) {
+export async function removeDomain(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  domainId: string,
+) {
   await enforceRateLimit("domains.write", userId);
   await loadOwned(db, merchantId, domainId);
   const service = await admin();
-  const { error } = await service.from("merchant_domains").delete().eq("id", domainId);
+  const { error } = await service
+    .from("merchant_domains")
+    .delete()
+    .eq("id", domainId);
   if (error) throw new DomainError(error.message, 500);
   incr("framique_domain_removed_total");
   return listDomains(db, merchantId, userId);
@@ -536,7 +636,11 @@ export async function removeDomain(db: Client, merchantId: string, userId: strin
 /* ----------------------------- edge integration --------------------------- */
 
 /** ACME http-01: the edge registers the token, we serve it over plain HTTP. */
-export async function storeChallenge(hostname: string, token: string, keyAuthorization: string) {
+export async function storeChallenge(
+  hostname: string,
+  token: string,
+  keyAuthorization: string,
+) {
   const service = await admin();
   const { data: domain } = await service
     .from("merchant_domains")
@@ -544,22 +648,23 @@ export async function storeChallenge(hostname: string, token: string, keyAuthori
     .eq("hostname", hostname)
     .maybeSingle();
   if (!domain) throw new DomainError("domain.not_found", 404);
-  await service
-    .from("domain_challenges")
-    .upsert(
-      {
-        domain_id: domain.id,
-        hostname,
-        token,
-        key_authorization: keyAuthorization,
-        expires_at: new Date(Date.now() + 3_600_000).toISOString(),
-      },
-      { onConflict: "hostname,token" },
-    );
+  await service.from("domain_challenges").upsert(
+    {
+      domain_id: domain.id,
+      hostname,
+      token,
+      key_authorization: keyAuthorization,
+      expires_at: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    { onConflict: "hostname,token" },
+  );
   incr("framique_domain_challenge_stored_total");
 }
 
-export async function readChallenge(hostname: string, token: string): Promise<string | null> {
+export async function readChallenge(
+  hostname: string,
+  token: string,
+): Promise<string | null> {
   const service = await admin();
   const { data } = await service
     .from("domain_challenges")
@@ -620,7 +725,10 @@ export async function applyCertResult(input: {
       .eq("merchant_id", row.merchant_id)
       .eq("is_primary", true);
     if (!count) {
-      await service.from("merchant_domains").update({ is_primary: true }).eq("id", row.id);
+      await service
+        .from("merchant_domains")
+        .update({ is_primary: true })
+        .eq("id", row.id);
     }
   } else {
     await transition(
@@ -685,7 +793,9 @@ export type DomainSweepResult = {
  * Poll every domain whose next check is due, then flag certificates inside the
  * renewal window so the edge can re-order before expiry.
  */
-export async function sweepDomains(subject = "cron"): Promise<DomainSweepResult> {
+export async function sweepDomains(
+  subject = "cron",
+): Promise<DomainSweepResult> {
   return withSpan("domains.sweep", async () => {
     await enforceRateLimit("domains.sweep", subject);
     const service = await admin();
@@ -694,7 +804,7 @@ export async function sweepDomains(subject = "cron"): Promise<DomainSweepResult>
     const { data: due } = await service
       .from("merchant_domains")
       .select("*")
-      .in("status", ["pending_dns", "verifying", "dns_verified"])
+      .in("status", ["pending_dns", "verifying", "dns_verified", "issuing_cert"])
       .lte("next_check_at", now)
       .order("next_check_at", { ascending: true })
       .limit(50);
@@ -717,7 +827,11 @@ export async function sweepDomains(subject = "cron"): Promise<DomainSweepResult>
           row.id,
           { manual: false, actor: null },
         );
-        if (view.status === "dns_verified" || view.status === "issuing_cert" || view.status === "active") {
+        if (
+          view.status === "dns_verified" ||
+          view.status === "issuing_cert" ||
+          view.status === "active"
+        ) {
           result.verified += 1;
         }
         if (view.status === "failed") result.failed += 1;
@@ -735,10 +849,16 @@ export async function sweepDomains(subject = "cron"): Promise<DomainSweepResult>
       .lt("cert_expires_at", renewAt)
       .limit(50);
     for (const row of renewals ?? []) {
-      await service.from("merchant_domains").update({ cert_status: "renewing" }).eq("id", row.id);
-      await requestCertificate(service as unknown as Client, row.merchant_id, row.id, null).catch(
-        () => undefined,
-      );
+      await service
+        .from("merchant_domains")
+        .update({ cert_status: "renewing" })
+        .eq("id", row.id);
+      await requestCertificate(
+        service as unknown as Client,
+        row.merchant_id,
+        row.id,
+        null,
+      ).catch(() => undefined);
       result.renewals += 1;
     }
 
@@ -748,7 +868,8 @@ export async function sweepDomains(subject = "cron"): Promise<DomainSweepResult>
       .lt("expires_at", now);
     result.expired_challenges = count ?? 0;
 
-    for (const [k, v] of Object.entries(result)) incr("framique_domain_sweep_total", { bucket: k }, v);
+    for (const [k, v] of Object.entries(result))
+      incr("framique_domain_sweep_total", { bucket: k }, v);
     log("info", "domains.sweep", { ...result });
     return result;
   });

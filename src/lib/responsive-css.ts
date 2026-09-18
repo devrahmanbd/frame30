@@ -55,13 +55,20 @@ const OVERRIDE_LAYERS: DeviceBucket[] = ["tablet", "mobile"];
 
 /* ------------------------------------------------------------- emitters */
 
-const num = (value: PropValue | undefined, min: number, max: number): number | null => {
+const num = (
+  value: PropValue | undefined,
+  min: number,
+  max: number,
+): number | null => {
   const n = typeof value === "number" ? value : Number(value);
   if (!Number.isFinite(n)) return null;
   return Math.min(max, Math.max(min, Math.trunc(n)));
 };
 
-const oneOf = <T extends string>(value: PropValue | undefined, allowed: readonly T[]): T | null => {
+const oneOf = <T extends string>(
+  value: PropValue | undefined,
+  allowed: readonly T[],
+): T | null => {
   const s = String(value ?? "");
   return (allowed as readonly string[]).includes(s) ? (s as T) : null;
 };
@@ -97,22 +104,44 @@ const EMITTERS: Record<string, (value: PropValue | undefined) => Decl[]> = {
   },
   columns: (v) => {
     const n = num(v, 1, 12);
-    return n === null ? [] : [["grid-template-columns", `repeat(${n}, minmax(0, 1fr))`]];
+    return n === null
+      ? []
+      : [["grid-template-columns", `repeat(${n}, minmax(0, 1fr))`]];
   },
   cols: (v) => {
     const n = num(v, 1, 12);
-    return n === null ? [] : [["grid-template-columns", `repeat(${n}, minmax(0, 1fr))`]];
+    return n === null
+      ? []
+      : [["grid-template-columns", `repeat(${n}, minmax(0, 1fr))`]];
   },
   align: (v) => {
     const a = oneOf(v, ["left", "center", "right"] as const);
-    return a === null ? [] : [["text-align", a === "center" ? "center" : a === "right" ? "right" : "left"]];
+    return a === null
+      ? []
+      : [
+          [
+            "text-align",
+            a === "center" ? "center" : a === "right" ? "right" : "left",
+          ],
+        ];
   },
   maxW: (v) => {
     const w = oneOf(v, ["container", "narrow", "full"] as const);
     if (w === null) return [];
-    if (w === "full") return [["max-width", "none"], ["width", "100%"]];
-    if (w === "narrow") return [["max-width", "42rem"], ["margin-inline", "auto"]];
-    return [["max-width", "72rem"], ["margin-inline", "auto"]];
+    if (w === "full")
+      return [
+        ["max-width", "none"],
+        ["width", "100%"],
+      ];
+    if (w === "narrow")
+      return [
+        ["max-width", "42rem"],
+        ["margin-inline", "auto"],
+      ];
+    return [
+      ["max-width", "72rem"],
+      ["margin-inline", "auto"],
+    ];
   },
   ratio: (v) => {
     const r = oneOf(v, ["auto", "1-1", "4-3", "16-9"] as const);
@@ -144,7 +173,9 @@ export type ResponsiveSignature = {
  * layout keys, only layers that survive normalisation, keys sorted so two
  * nodes authored in a different order still share one rule.
  */
-export function responsiveSignature(section: Section): ResponsiveSignature | null {
+export function responsiveSignature(
+  section: Section,
+): ResponsiveSignature | null {
   const hidden = [...new Set(section.hidden ?? [])].sort() as Breakpoint[];
   const layers: ResponsiveSignature["layers"] = {};
   for (const layer of OVERRIDE_LAYERS) {
@@ -164,7 +195,12 @@ export function responsiveSignature(section: Section): ResponsiveSignature | nul
 /** Canonical string form of a signature — the hash input and the dedupe key. */
 export function signatureKey(sig: ResponsiveSignature): string {
   const layers = OVERRIDE_LAYERS.filter((l) => sig.layers[l])
-    .map((l) => `${l}{${Object.entries(sig.layers[l]!).map(([k, v]) => `${k}:${String(v)}`).join(";")}}`)
+    .map(
+      (l) =>
+        `${l}{${Object.entries(sig.layers[l]!)
+          .map(([k, v]) => `${k}:${String(v)}`)
+          .join(";")}}`,
+    )
     .join("|");
   return `h=${sig.hidden.join(",")}|${layers}`;
 }
@@ -241,7 +277,9 @@ function blockFor(selector: string, decls: Decl[]): string {
  */
 export function compileResponsiveCss(
   input: Section[] | ThemeAst | null | undefined,
-  options: { budget?: Partial<Record<keyof typeof RESPONSIVE_CSS_BUDGET, number>> } = {},
+  options: {
+    budget?: Partial<Record<keyof typeof RESPONSIVE_CSS_BUDGET, number>>;
+  } = {},
 ): CompiledResponsive {
   const sections = Array.isArray(input) ? collect(input) : astSections(input);
   if (!sections.length) return EMPTY;
@@ -292,7 +330,9 @@ export function compileResponsiveCss(
     if (sig.hidden.includes("desktop")) {
       // Desktop is the base layer, so "hidden on desktop" is expressed as the
       // complement of the two narrow ranges rather than an unconditional rule.
-      push(`@media (min-width: ${DESKTOP_MIN_PX}px){${blockFor(selector, [["display", "none"]])}}`);
+      push(
+        `@media (min-width: ${DESKTOP_MIN_PX}px){${blockFor(selector, [["display", "none"]])}}`,
+      );
     }
 
     for (const layer of OVERRIDE_LAYERS) {
@@ -305,7 +345,9 @@ export function compileResponsiveCss(
       }
       if (!decls.length) continue;
       if (decls.length > budget.maxDeclsPerRule) {
-        warnings.push(`responsive: ${cls}/${layer} declares ${decls.length} properties — trimmed to ${budget.maxDeclsPerRule}.`);
+        warnings.push(
+          `responsive: ${cls}/${layer} declares ${decls.length} properties — trimmed to ${budget.maxDeclsPerRule}.`,
+        );
       }
       const media = layerMedia(layer);
       const block = blockFor(selector, decls);

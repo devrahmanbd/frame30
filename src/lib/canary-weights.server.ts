@@ -20,9 +20,9 @@ export type CanaryStageId = 0 | 1 | 2 | 3 | 4;
 export type CanaryStageDefinition = {
   id: CanaryStageId;
   name: string;
-  canaryWeight: number;    // percentage directed to candidate slot (0 - 100)
-  primaryWeight: number;   // percentage directed to primary slot (100 - 0)
-  soakDurationMs: number;  // required soak duration before advancing
+  canaryWeight: number; // percentage directed to candidate slot (0 - 100)
+  primaryWeight: number; // percentage directed to primary slot (100 - 0)
+  soakDurationMs: number; // required soak duration before advancing
   verificationCriteria: string[];
 };
 
@@ -123,7 +123,10 @@ export async function getCanaryState(): Promise<CanaryState> {
 
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", redisKey("platform", CANARY_STATE_KEY)]);
+      const res = await redisCommand([
+        "GET",
+        redisKey("platform", CANARY_STATE_KEY),
+      ]);
       if (res.ok && typeof res.value === "string") {
         state = JSON.parse(res.value) as CanaryState;
       }
@@ -187,7 +190,9 @@ export type GenerateCanaryConfigOptions = {
 /**
  * Generates production NGINX weighted upstream configuration for canary traffic splitting.
  */
-export function generateCanaryNginxUpstream(opts: GenerateCanaryConfigOptions): string {
+export function generateCanaryNginxUpstream(
+  opts: GenerateCanaryConfigOptions,
+): string {
   const stage = CANARY_STAGES[opts.stageId];
   const blueHost = `${opts.blueHost || "framique-blue"}:${opts.bluePort || 3000}`;
   const greenHost = `${opts.greenHost || "framique-green"}:${opts.greenPort || 3000}`;
@@ -311,11 +316,7 @@ export async function setCanaryStage(
     soakRemainingMs: stageDef.soakDurationMs,
     isSoakComplete: stageDef.soakDurationMs === 0,
     status:
-      targetStage === 0
-        ? "idle"
-        : targetStage === 4
-          ? "promoted"
-          : "soaking",
+      targetStage === 0 ? "idle" : targetStage === 4 ? "promoted" : "soaking",
     updatedAt: now.toISOString(),
   };
 
@@ -325,7 +326,9 @@ export async function setCanaryStage(
     primarySlot,
   });
 
-  const outPath = options.configPath || resolve(process.cwd(), "ops/routing/canary-weights.conf");
+  const outPath =
+    options.configPath ||
+    resolve(process.cwd(), "ops/routing/canary-weights.conf");
   writeCanaryConfigFile(outPath, config);
 
   await saveCanaryState(newState);
@@ -350,7 +353,9 @@ export async function setCanaryStage(
 /**
  * Abort active canary instantly and revert 100% traffic to primary slot.
  */
-export async function abortCanary(options: { configPath?: string } = {}): Promise<{
+export async function abortCanary(
+  options: { configPath?: string } = {},
+): Promise<{
   success: boolean;
   state: CanaryState;
 }> {
@@ -373,7 +378,9 @@ export async function abortCanary(options: { configPath?: string } = {}): Promis
     primarySlot: current.primarySlot,
   });
 
-  const outPath = options.configPath || resolve(process.cwd(), "ops/routing/canary-weights.conf");
+  const outPath =
+    options.configPath ||
+    resolve(process.cwd(), "ops/routing/canary-weights.conf");
   writeCanaryConfigFile(outPath, config);
 
   await saveCanaryState(abortedState);

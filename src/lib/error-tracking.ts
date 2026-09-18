@@ -62,10 +62,16 @@ export function errorRelease(env: EnvLike) {
 }
 
 export function errorCommit(env: EnvLike) {
-  return env["ERROR_COMMIT_SHA"] ?? env["SENTRY_COMMIT_SHA"] ?? env["COMMIT_SHA"] ?? "";
+  return (
+    env["ERROR_COMMIT_SHA"] ??
+    env["SENTRY_COMMIT_SHA"] ??
+    env["COMMIT_SHA"] ??
+    ""
+  );
 }
 
-const clamp01 = (n: number) => (Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0);
+const clamp01 = (n: number) =>
+  Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 0;
 
 /**
  * Fraction of *distinct fingerprints* forwarded. Production keeps everything by
@@ -74,14 +80,21 @@ const clamp01 = (n: number) => (Number.isFinite(n) ? Math.min(1, Math.max(0, n))
  */
 export function errorSampleRate(env: EnvLike): number {
   const explicit = env["ERROR_SAMPLE_RATE"];
-  if (explicit !== undefined && explicit !== "") return clamp01(Number(explicit));
+  if (explicit !== undefined && explicit !== "")
+    return clamp01(Number(explicit));
   return errorEnvironment(env) === "production" ? 1 : 0.25;
 }
 
 /** Per-fingerprint send ceiling inside a rolling window. */
 export function errorQuota(env: EnvLike): { limit: number; windowMs: number } {
-  const limit = Number(env["ERROR_QUOTA_PER_MINUTE"] ?? (errorEnvironment(env) === "production" ? 60 : 20));
-  return { limit: Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 60, windowMs: 60_000 };
+  const limit = Number(
+    env["ERROR_QUOTA_PER_MINUTE"] ??
+      (errorEnvironment(env) === "production" ? 60 : 20),
+  );
+  return {
+    limit: Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 60,
+    windowMs: 60_000,
+  };
 }
 
 /** Stable 32-bit hash — same input, same bucket, on every isolate. */
@@ -122,19 +135,31 @@ export function sanitizeEventFields(
   for (const [key, value] of Object.entries(input).slice(0, 40)) {
     if (FORBIDDEN_EVENT_FIELDS.test(key)) continue;
     if (value === null || value === undefined) continue;
-    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    if (
+      typeof value === "string" ||
+      typeof value === "number" ||
+      typeof value === "boolean"
+    ) {
       out[key] = typeof value === "string" ? value.slice(0, 500) : value;
     } else if (Array.isArray(value)) {
-      out[key] = value.slice(0, 20).map((v) => (typeof v === "object" && v !== null ? "[object]" : v));
+      out[key] = value
+        .slice(0, 20)
+        .map((v) => (typeof v === "object" && v !== null ? "[object]" : v));
     } else if (typeof value === "object") {
-      out[key] = sanitizeEventFields(value as Record<string, unknown>, depth + 1);
+      out[key] = sanitizeEventFields(
+        value as Record<string, unknown>,
+        depth + 1,
+      );
     }
   }
   return out;
 }
 
 /** Tag set shared by every event, on every backend. */
-export function baseTags(env: EnvLike, extra: Record<string, string> = {}): Record<string, string> {
+export function baseTags(
+  env: EnvLike,
+  extra: Record<string, string> = {},
+): Record<string, string> {
   const commit = errorCommit(env);
   return {
     environment: errorEnvironment(env),

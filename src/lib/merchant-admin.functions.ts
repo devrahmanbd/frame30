@@ -12,7 +12,8 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 export const adminOverviewFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { loadSetupState, loadNotifications } = await import("./merchant-admin.server");
+    const { loadSetupState, loadNotifications } =
+      await import("./merchant-admin.server");
     const merchantId = await scope(context.supabase, context.userId);
     const [setup, notifications] = await Promise.all([
       loadSetupState(context.supabase, merchantId),

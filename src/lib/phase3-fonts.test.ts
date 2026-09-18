@@ -39,7 +39,9 @@ describe("phase 3 — font resolver", () => {
     const stack = resolveFontStack("Playfair Display", "bn");
     expect(stack).toContain("Noto Sans Bengali");
     expect(stack.some((name) => coversScript(name, "bengali"))).toBe(true);
-    expect(fontStackCss("Playfair Display", "bn")).toContain('"Noto Sans Bengali"');
+    expect(fontStackCss("Playfair Display", "bn")).toContain(
+      '"Noto Sans Bengali"',
+    );
   });
 
   it("the stack always ends in a generic and carries the metric-matched fallback", () => {
@@ -67,9 +69,9 @@ describe("phase 3 — fallback faces and stylesheet", () => {
   });
 
   it("bengali pairings request the bengali subset", () => {
-    expect(fontStylesheetUrl(applyFontPairing(DEFAULT_TOKENS, "bengali-modern"))).toContain(
-      "subset=latin,bengali",
-    );
+    expect(
+      fontStylesheetUrl(applyFontPairing(DEFAULT_TOKENS, "bengali-modern")),
+    ).toContain("subset=latin,bengali");
   });
 
   it("head links preconnect to both origins and preload the sheet", () => {
@@ -88,20 +90,30 @@ describe("phase 3 — fallback faces and stylesheet", () => {
 
 describe("phase 3 — budget", () => {
   it("every shipped pairing is inside the budget", () => {
-    for (const key of Object.keys(FONT_PAIRINGS) as (keyof typeof FONT_PAIRINGS)[]) {
-      expect(checkFontBudget(applyFontPairing(DEFAULT_TOKENS, key)).ok).toBe(true);
+    for (const key of Object.keys(
+      FONT_PAIRINGS,
+    ) as (keyof typeof FONT_PAIRINGS)[]) {
+      expect(checkFontBudget(applyFontPairing(DEFAULT_TOKENS, key)).ok).toBe(
+        true,
+      );
     }
   });
 
   it("no family requests more than four weights and only latin/bengali subsets exist", () => {
     for (const meta of Object.values(FONT_FAMILIES)) {
-      expect(meta.weights.length).toBeLessThanOrEqual(FONT_BUDGET.maxWeightsPerFamily);
-      for (const script of meta.scripts) expect(FONT_BUDGET.subsets).toContain(script);
+      expect(meta.weights.length).toBeLessThanOrEqual(
+        FONT_BUDGET.maxWeightsPerFamily,
+      );
+      for (const script of meta.scripts)
+        expect(FONT_BUDGET.subsets).toContain(script);
     }
   });
 
   it("a third family fails the theme", () => {
-    const failures = checkFontBudget({ fontDisplay: "Comic Sans", fontBody: "Inter" }).failures;
+    const failures = checkFontBudget({
+      fontDisplay: "Comic Sans",
+      fontBody: "Inter",
+    }).failures;
     expect(failures.some((f) => f.code === "font:unknown")).toBe(true);
   });
 });
@@ -137,7 +149,12 @@ describe("phase 3 — custom fonts", () => {
       }),
     ).toMatchObject({ ok: false, code: "too_many" });
     expect(
-      validateFontUpload({ bytes: woff2(), family: "Acme", weight: 400, existingFilesForFamily: 1 }),
+      validateFontUpload({
+        bytes: woff2(),
+        family: "Acme",
+        weight: 400,
+        existingFilesForFamily: 1,
+      }),
     ).toEqual({ ok: true });
   });
 

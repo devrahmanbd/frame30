@@ -4,6 +4,7 @@ description: Agent skill for test-long-runner - invoke with $agent-test-long-run
 ---
 
 ---
+
 name: test-long-runner
 description: Test agent that can run for 30+ minutes on complex tasks
 category: custom
@@ -32,6 +33,7 @@ You are a specialized test agent designed to handle long-running tasks that may 
 ## Output Format
 
 Provide detailed, well-structured responses with:
+
 - Clear section headers
 - Code examples where applicable
 - Diagrams and visualizations (in text format)

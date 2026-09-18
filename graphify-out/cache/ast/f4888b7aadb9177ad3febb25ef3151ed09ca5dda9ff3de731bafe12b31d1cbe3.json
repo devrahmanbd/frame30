@@ -1,1 +1,186 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "label": "PluginBlock.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L1"}, {"id": "builder_pluginblock_pluginblock", "label": "PluginBlock()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L17"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "lib_plugin_manifest_resolvepluginwidget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "users_rahman_documents_frame30_src_lib_marketplace_scopes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "lib_marketplace_scopes_widget_api", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "lib_marketplace_scopes_widgetcall", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "users_rahman_documents_frame30_src_components_marketplace_widgetsandbox_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "marketplace_widgetsandbox_widgetsandbox", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "users_rahman_documents_frame30_src_components_builder_plugincontext_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "builder_plugincontext_useinstalledplugins", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx", "target": "builder_pluginblock_pluginblock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L17", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_pluginblock_pluginblock", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L26"}, {"caller_nid": "builder_pluginblock_pluginblock", "callee": "useInstalledPlugins", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L27"}, {"caller_nid": "builder_pluginblock_pluginblock", "callee": "resolvePluginWidget", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L28"}, {"caller_nid": "builder_pluginblock_pluginblock", "callee": "useCallback", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L30"}, {"caller_nid": "builder_pluginblock_pluginblock", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx", "source_location": "L56"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "label": "PluginBlock.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_pluginblock_pluginblock",
+      "label": "PluginBlock()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L17"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "lib_plugin_manifest_resolvepluginwidget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_marketplace_scopes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "lib_marketplace_scopes_widget_api",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "lib_marketplace_scopes_widgetcall",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "users_rahman_documents_frame30_src_components_marketplace_widgetsandbox_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "marketplace_widgetsandbox_widgetsandbox",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_plugincontext_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "builder_plugincontext_useinstalledplugins",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_pluginblock_tsx",
+      "target": "builder_pluginblock_pluginblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_pluginblock_pluginblock",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "builder_pluginblock_pluginblock",
+      "callee": "useInstalledPlugins",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "builder_pluginblock_pluginblock",
+      "callee": "resolvePluginWidget",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L28"
+    },
+    {
+      "caller_nid": "builder_pluginblock_pluginblock",
+      "callee": "useCallback",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "builder_pluginblock_pluginblock",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/PluginBlock.tsx",
+      "source_location": "L56"
+    }
+  ]
+}

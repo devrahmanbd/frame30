@@ -17,7 +17,11 @@ export {
   type BandSurface,
 } from "./Band";
 export { HeroBand, type HeroBandProps } from "./HeroBand";
-export { MarqueeBand, type MarqueeBandProps, type MarqueeMark } from "./MarqueeBand";
+export {
+  MarqueeBand,
+  type MarqueeBandProps,
+  type MarqueeMark,
+} from "./MarqueeBand";
 export { ZRow, type ZRowProps } from "./ZRow";
 export { CardGrid, type CardGridProps, type BandCard } from "./CardGrid";
 export {

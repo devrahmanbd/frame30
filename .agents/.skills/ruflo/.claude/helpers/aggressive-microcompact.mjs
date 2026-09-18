@@ -30,7 +30,15 @@
 //   CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50  → lowers all thresholds
 //   autoCompactEnabled=true             → enables the auto-compact fallback
 
-console.log('[AggressiveMicrocompact] Strategy: CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50');
-console.log('[AggressiveMicrocompact] Micro-compact activates when tokens > warning threshold');
-console.log('[AggressiveMicrocompact] Warning threshold = maxTokens - 20K (relative to override)');
-console.log('[AggressiveMicrocompact] Effect: pruning starts at ~45% instead of ~80%');
+console.log(
+  "[AggressiveMicrocompact] Strategy: CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=50",
+);
+console.log(
+  "[AggressiveMicrocompact] Micro-compact activates when tokens > warning threshold",
+);
+console.log(
+  "[AggressiveMicrocompact] Warning threshold = maxTokens - 20K (relative to override)",
+);
+console.log(
+  "[AggressiveMicrocompact] Effect: pruning starts at ~45% instead of ~80%",
+);

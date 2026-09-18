@@ -4,266 +4,266 @@ on:
   push:
     branches: [main, develop, v3]
     paths:
-      - 'v3/**'
-      - '.github/workflows/v3-ci.yml'
+      - "v3/**"
+      - ".github/workflows/v3-ci.yml"
       # Witness-verify + plugin-hooks-smoke depend on these scripts;
       # path filter keeps CI in sync with their changes.
-      - 'plugins/ruflo-core/scripts/witness/**'
-      - 'plugins/ruflo-core/scripts/test-hooks.mjs'
-      - 'plugins/ruflo-cost-tracker/scripts/test-hooks.mjs'
-      - 'verification/**'
+      - "plugins/ruflo-core/scripts/witness/**"
+      - "plugins/ruflo-core/scripts/test-hooks.mjs"
+      - "plugins/ruflo-cost-tracker/scripts/test-hooks.mjs"
+      - "verification/**"
       # scripts/*.mjs audits (tool-descriptions, plugin-packages, hook-commands)
-      - 'scripts/**'
+      - "scripts/**"
       # hook-command audit (#1921, #2721) — every plugin hooks.json + the
       # cross-platform ruflo-hook.cjs shims (ruflo-hook.sh is legacy/unused
       # as of #2721 but kept for reference; no longer referenced by hooks.json)
-      - '**/hooks/hooks.json'
-      - '**/scripts/ruflo-hook.cjs'
-      - '**/scripts/ruflo-hook.sh'
+      - "**/hooks/hooks.json"
+      - "**/scripts/ruflo-hook.cjs"
+      - "**/scripts/ruflo-hook.sh"
       # pre-bash hook safety (#2017) — both handler copies trigger the smoke
-      - '**/.claude/helpers/hook-handler.cjs'
+      - "**/.claude/helpers/hook-handler.cjs"
       # ruflo-browser rvf create flag (#2015) — TS source, plugin shell
       # scripts, agent-facing recipes all guarded by the same smoke.
-      - 'v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts'
-      - 'plugins/ruflo-browser/**'
+      - "v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts"
+      - "plugins/ruflo-browser/**"
       # ruflo-graph-intelligence (#2044, ADR-123) — outside v3 workspace,
       # has its own lockfile + tests; needs to be CI-guarded on every change.
-      - 'plugins/ruflo-graph-intelligence/**'
+      - "plugins/ruflo-graph-intelligence/**"
       # Supply-chain hardening (#2046) — every package.json + lockfile +
       # allowlist edit triggers the supply-chain audit.
-      - '**/package.json'
-      - '**/package-lock.json'
-      - '**/pnpm-lock.yaml'
-      - '.github/supply-chain/**'
-      - 'scripts/audit-supply-chain.mjs'
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "**/pnpm-lock.yaml"
+      - ".github/supply-chain/**"
+      - "scripts/audit-supply-chain.mjs"
       # Knowledge-graph plugin (#2049) — kg-extract type-import classifier
       # + kg-traverse controller wiring drift fast when SKILL.md edits
       # silently revert the bug-fix shape.
-      - 'plugins/ruflo-knowledge-graph/**'
-      - 'scripts/smoke-kg-extract-type-imports.mjs'
+      - "plugins/ruflo-knowledge-graph/**"
+      - "scripts/smoke-kg-extract-type-imports.mjs"
       # Neural-trader portfolio CG (#2068, ADR-126 Phase 3) — drift fast
       # when the adapter, skill, or runtime mirror diverge from the
       # ADR-123 Wedge 8 contract.
-      - 'plugins/ruflo-neural-trader/src/sublinear-adapter.ts'
-      - 'plugins/ruflo-neural-trader/src/sublinear-adapter.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-portfolio-cg/**'
-      - 'scripts/smoke-neural-trader-portfolio-cg.mjs'
+      - "plugins/ruflo-neural-trader/src/sublinear-adapter.ts"
+      - "plugins/ruflo-neural-trader/src/sublinear-adapter.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-portfolio-cg/**"
+      - "scripts/smoke-neural-trader-portfolio-cg.mjs"
       # Neural-trader backtest signing (#2068, ADR-126 Phase 4) — Ed25519
       # tamper-evidence for paper→live promotion; verifier MUST pin to a
       # trusted key (CWE-347 / #1922 pattern).
-      - 'plugins/ruflo-neural-trader/src/signed-artifact.ts'
-      - 'plugins/ruflo-neural-trader/src/signed-artifact.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-backtest/**'
-      - 'plugins/ruflo-neural-trader/skills/trader-cloud-backtest/**'
-      - 'scripts/smoke-neural-trader-backtest-signing.mjs'
+      - "plugins/ruflo-neural-trader/src/signed-artifact.ts"
+      - "plugins/ruflo-neural-trader/src/signed-artifact.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-backtest/**"
+      - "plugins/ruflo-neural-trader/skills/trader-cloud-backtest/**"
+      - "scripts/smoke-neural-trader-backtest-signing.mjs"
       # Neural-trader SendMessage risk-gate pipeline (#2068, ADR-126 Phase 5) —
       # structural gate: trading-strategist refuses --broker without an
       # explicit risk-analyst RiskDecision approval.
-      - 'plugins/ruflo-neural-trader/src/pipeline-messages.ts'
-      - 'plugins/ruflo-neural-trader/agents/market-analyst.md'
-      - 'plugins/ruflo-neural-trader/agents/trading-strategist.md'
-      - 'plugins/ruflo-neural-trader/agents/risk-analyst.md'
-      - 'plugins/ruflo-neural-trader/agents/backtest-engineer.md'
-      - 'scripts/smoke-neural-trader-pipeline.mjs'
+      - "plugins/ruflo-neural-trader/src/pipeline-messages.ts"
+      - "plugins/ruflo-neural-trader/agents/market-analyst.md"
+      - "plugins/ruflo-neural-trader/agents/trading-strategist.md"
+      - "plugins/ruflo-neural-trader/agents/risk-analyst.md"
+      - "plugins/ruflo-neural-trader/agents/backtest-engineer.md"
+      - "scripts/smoke-neural-trader-pipeline.mjs"
       # Neural-trader feature attribution (#2068, ADR-126 Phase 6) —
       # regulator-grade interpretability via single-entry PageRank.
       # Same signing scheme as Phase 4; ranking is seed-reproducible.
-      - 'plugins/ruflo-neural-trader/src/signed-attribution.ts'
-      - 'plugins/ruflo-neural-trader/src/signed-attribution.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-explain/**'
-      - 'scripts/smoke-neural-trader-feature-attribution.mjs'
+      - "plugins/ruflo-neural-trader/src/signed-attribution.ts"
+      - "plugins/ruflo-neural-trader/src/signed-attribution.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-explain/**"
+      - "scripts/smoke-neural-trader-feature-attribution.mjs"
       # Plugin-registry CWE-347 regression smoke (#1922) — `discovery.ts`
       # signature verifier + the smoke fixture must stay in lockstep.
-      - 'v3/@claude-flow/cli/src/plugins/store/discovery.ts'
-      - 'v3/@claude-flow/cli/src/transfer/ipfs/client.ts'
-      - 'v3/@claude-flow/cli/scripts/publish-registry.ts'
-      - 'scripts/smoke-plugin-registry-signature.mjs'
+      - "v3/@claude-flow/cli/src/plugins/store/discovery.ts"
+      - "v3/@claude-flow/cli/src/transfer/ipfs/client.ts"
+      - "v3/@claude-flow/cli/scripts/publish-registry.ts"
+      - "scripts/smoke-plugin-registry-signature.mjs"
       # ruvllm WASM auto-init regression smoke (#2086) — the
       # `loadRuvllmWasm()` helper in `ruvllm-tools.ts` and the
       # `ruvllm_status` un-init diagnostic path must stay in lockstep.
-      - 'v3/@claude-flow/cli/src/mcp-tools/ruvllm-tools.ts'
-      - 'v3/@claude-flow/cli/src/ruvector/ruvllm-wasm.ts'
-      - 'scripts/smoke-ruvllm-wasm-auto-init.mjs'
+      - "v3/@claude-flow/cli/src/mcp-tools/ruvllm-tools.ts"
+      - "v3/@claude-flow/cli/src/ruvector/ruvllm-wasm.ts"
+      - "scripts/smoke-ruvllm-wasm-auto-init.mjs"
       # agent_execute provider routing (#2042) — executeAgentTask must
       # not regress to inline Anthropic fetch, and the OpenRouter branch
       # in callAnthropicMessages must stay wired.
-      - 'v3/@claude-flow/cli/src/mcp-tools/agent-execute-core.ts'
-      - 'scripts/smoke-agent-execute-providers.mjs'
+      - "v3/@claude-flow/cli/src/mcp-tools/agent-execute-core.ts"
+      - "scripts/smoke-agent-execute-providers.mjs"
       # memory stats legacy-DB regression guard (#2120) — the WHERE
       # status='active' filter must accept NULL too, and the schema
       # backfill must promote NULL→'active' on existing DBs.
-      - 'v3/@claude-flow/cli/src/memory/memory-bridge.ts'
-      - 'v3/@claude-flow/cli/src/memory/memory-initializer.ts'
-      - 'v3/@claude-flow/cli/src/commands/status.ts'
-      - 'scripts/smoke-memory-stats-legacy-db.mjs'
+      - "v3/@claude-flow/cli/src/memory/memory-bridge.ts"
+      - "v3/@claude-flow/cli/src/memory/memory-initializer.ts"
+      - "v3/@claude-flow/cli/src/commands/status.ts"
+      - "scripts/smoke-memory-stats-legacy-db.mjs"
       # ADR-125 Phase 7 — no stray DB artifacts after `npm test` in
       # @claude-flow/memory. vitest.setup.ts must wipe *.db / *.rvf /
       # *.redb files written by agentdb / @ruvector/rvf bindings.
-      - 'v3/@claude-flow/memory/vitest.setup.ts'
-      - 'v3/@claude-flow/memory/vitest.config.ts'
-      - 'v3/@claude-flow/memory/vitest.config.mts'
-      - 'scripts/smoke-memory-no-stray-db.mjs'
+      - "v3/@claude-flow/memory/vitest.setup.ts"
+      - "v3/@claude-flow/memory/vitest.config.ts"
+      - "v3/@claude-flow/memory/vitest.config.mts"
+      - "scripts/smoke-memory-no-stray-db.mjs"
       # GitHub skills/agents/helpers surface (#2089, ADR-127) — injection
       # smoke + actions pin smoke gate every change to the .github surface.
-      - '.claude/agents/github/**'
-      - '.claude/skills/github-*/**'
-      - 'v3/@claude-flow/cli/.claude/commands/github/**'
-      - '.claude/helpers/github-safe.js'
-      - 'v3/@claude-flow/cli/.claude/helpers/github-safe.js'
-      - 'scripts/smoke-github-safe-injection.mjs'
-      - 'scripts/smoke-github-actions-pins.mjs'
-      - 'scripts/smoke-deprecated-actions.mjs'
-      - 'scripts/smoke-attribution-opt-in.mjs'
-      - '.github/supply-chain/allowed-deps.json'
+      - ".claude/agents/github/**"
+      - ".claude/skills/github-*/**"
+      - "v3/@claude-flow/cli/.claude/commands/github/**"
+      - ".claude/helpers/github-safe.js"
+      - "v3/@claude-flow/cli/.claude/helpers/github-safe.js"
+      - "scripts/smoke-github-safe-injection.mjs"
+      - "scripts/smoke-github-actions-pins.mjs"
+      - "scripts/smoke-deprecated-actions.mjs"
+      - "scripts/smoke-attribution-opt-in.mjs"
+      - ".github/supply-chain/allowed-deps.json"
       # Init-bundle invariants smoke (#2095, ADR-128) — orphan dirs, SKILLS_MAP
       # completeness, and plugin-init agent dedup are all guarded by Phase 5.
-      - 'v3/@claude-flow/cli/.claude/**'
-      - 'v3/@claude-flow/cli/src/init/**'
-      - 'plugins/*/agents/**'
-      - 'plugins/*/skills/**'
-      - 'plugins/*/commands/**'
-      - 'scripts/smoke-init-bundle-invariants.mjs'
+      - "v3/@claude-flow/cli/.claude/**"
+      - "v3/@claude-flow/cli/src/init/**"
+      - "plugins/*/agents/**"
+      - "plugins/*/skills/**"
+      - "plugins/*/commands/**"
+      - "scripts/smoke-init-bundle-invariants.mjs"
       # ADR-129 — rvagent full integration (P1-P4)
-      - 'v3/@claude-flow/cli/src/ruvector/agent-wasm.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts'
-      - 'scripts/smoke-wasm-provider-bridge.mjs'
-      - 'scripts/smoke-wasm-rvf-compose.mjs'
-      - 'scripts/smoke-wasm-gallery-crud.mjs'
-      - 'scripts/smoke-wasm-plugin-bridge.mjs'
+      - "v3/@claude-flow/cli/src/ruvector/agent-wasm.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts"
+      - "scripts/smoke-wasm-provider-bridge.mjs"
+      - "scripts/smoke-wasm-rvf-compose.mjs"
+      - "scripts/smoke-wasm-gallery-crud.mjs"
+      - "scripts/smoke-wasm-plugin-bridge.mjs"
       # ADR-130 — graph intelligence integration (P1-P6)
-      - 'v3/@claude-flow/cli/src/memory/memory-initializer.ts'
-      - 'v3/@claude-flow/cli/src/memory/embedding-quantization.ts'
-      - 'v3/@claude-flow/cli/src/memory/graph-edge-writer.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/agentdb-tools.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts'
-      - 'plugins/ruflo-graph-intelligence/src/adapters/knowledge-graph-adapter.ts'
-      - 'scripts/smoke-graph-schema-migration.mjs'
-      - 'scripts/smoke-graph-query-dispatch.mjs'
-      - 'scripts/smoke-trajectory-graph-edges.mjs'
-      - 'scripts/smoke-graph-plugin-adapter.mjs'
-      - 'scripts/smoke-graph-pathfinder.mjs'
-      - 'scripts/benchmark-graph.mjs'
+      - "v3/@claude-flow/cli/src/memory/memory-initializer.ts"
+      - "v3/@claude-flow/cli/src/memory/embedding-quantization.ts"
+      - "v3/@claude-flow/cli/src/memory/graph-edge-writer.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/agentdb-tools.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/hooks-tools.ts"
+      - "plugins/ruflo-graph-intelligence/src/adapters/knowledge-graph-adapter.ts"
+      - "scripts/smoke-graph-schema-migration.mjs"
+      - "scripts/smoke-graph-query-dispatch.mjs"
+      - "scripts/smoke-trajectory-graph-edges.mjs"
+      - "scripts/smoke-graph-plugin-adapter.mjs"
+      - "scripts/smoke-graph-pathfinder.mjs"
+      - "scripts/benchmark-graph.mjs"
       # statusline generator delegation regression guard (#2195)
-      - 'v3/@claude-flow/cli/src/init/statusline-generator.ts'
-      - '.claude/helpers/statusline.cjs'
-      - 'scripts/smoke-statusline-generator-delegation.mjs'
+      - "v3/@claude-flow/cli/src/init/statusline-generator.ts"
+      - ".claude/helpers/statusline.cjs"
+      - "scripts/smoke-statusline-generator-delegation.mjs"
       # wizard init regression guard (#2206 #2207 #2208)
-      - 'v3/@claude-flow/cli/src/init/mcp-generator.ts'
-      - 'v3/@claude-flow/cli/src/init/executor.ts'
-      - 'scripts/smoke-wizard-init-regression.mjs'
+      - "v3/@claude-flow/cli/src/init/mcp-generator.ts"
+      - "v3/@claude-flow/cli/src/init/executor.ts"
+      - "scripts/smoke-wizard-init-regression.mjs"
   pull_request:
     branches: [main, develop]
     paths:
-      - 'v3/**'
-      - 'plugins/ruflo-core/scripts/witness/**'
-      - 'plugins/ruflo-core/scripts/test-hooks.mjs'
-      - 'plugins/ruflo-cost-tracker/scripts/test-hooks.mjs'
-      - 'scripts/**'
-      - '**/hooks/hooks.json'
-      - '**/scripts/ruflo-hook.cjs'
-      - '**/scripts/ruflo-hook.sh'
-      - '**/.claude/helpers/hook-handler.cjs'
+      - "v3/**"
+      - "plugins/ruflo-core/scripts/witness/**"
+      - "plugins/ruflo-core/scripts/test-hooks.mjs"
+      - "plugins/ruflo-cost-tracker/scripts/test-hooks.mjs"
+      - "scripts/**"
+      - "**/hooks/hooks.json"
+      - "**/scripts/ruflo-hook.cjs"
+      - "**/scripts/ruflo-hook.sh"
+      - "**/.claude/helpers/hook-handler.cjs"
       # ruflo-browser rvf create flag (#2015)
-      - 'v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts'
-      - 'plugins/ruflo-browser/**'
+      - "v3/@claude-flow/cli/src/mcp-tools/browser-session-tools.ts"
+      - "plugins/ruflo-browser/**"
       # ruflo-graph-intelligence (#2044, ADR-123)
-      - 'plugins/ruflo-graph-intelligence/**'
+      - "plugins/ruflo-graph-intelligence/**"
       # Supply-chain hardening (#2046) — every dep + lockfile change is
       # CVE-audited, allowlist-checked, integrity-checked.
-      - '**/package.json'
-      - '**/package-lock.json'
-      - '**/pnpm-lock.yaml'
-      - '.github/supply-chain/**'
-      - 'scripts/audit-supply-chain.mjs'
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "**/pnpm-lock.yaml"
+      - ".github/supply-chain/**"
+      - "scripts/audit-supply-chain.mjs"
       # Knowledge-graph plugin (#2049)
-      - 'plugins/ruflo-knowledge-graph/**'
-      - 'scripts/smoke-kg-extract-type-imports.mjs'
+      - "plugins/ruflo-knowledge-graph/**"
+      - "scripts/smoke-kg-extract-type-imports.mjs"
       # Neural-trader portfolio CG (#2068, ADR-126 Phase 3)
-      - 'plugins/ruflo-neural-trader/src/sublinear-adapter.ts'
-      - 'plugins/ruflo-neural-trader/src/sublinear-adapter.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-portfolio-cg/**'
-      - 'scripts/smoke-neural-trader-portfolio-cg.mjs'
+      - "plugins/ruflo-neural-trader/src/sublinear-adapter.ts"
+      - "plugins/ruflo-neural-trader/src/sublinear-adapter.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-portfolio-cg/**"
+      - "scripts/smoke-neural-trader-portfolio-cg.mjs"
       # Neural-trader backtest signing (#2068, ADR-126 Phase 4)
-      - 'plugins/ruflo-neural-trader/src/signed-artifact.ts'
-      - 'plugins/ruflo-neural-trader/src/signed-artifact.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-backtest/**'
-      - 'plugins/ruflo-neural-trader/skills/trader-cloud-backtest/**'
-      - 'scripts/smoke-neural-trader-backtest-signing.mjs'
+      - "plugins/ruflo-neural-trader/src/signed-artifact.ts"
+      - "plugins/ruflo-neural-trader/src/signed-artifact.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-backtest/**"
+      - "plugins/ruflo-neural-trader/skills/trader-cloud-backtest/**"
+      - "scripts/smoke-neural-trader-backtest-signing.mjs"
       # Neural-trader SendMessage risk-gate pipeline (#2068, ADR-126 Phase 5)
-      - 'plugins/ruflo-neural-trader/src/pipeline-messages.ts'
-      - 'plugins/ruflo-neural-trader/agents/market-analyst.md'
-      - 'plugins/ruflo-neural-trader/agents/trading-strategist.md'
-      - 'plugins/ruflo-neural-trader/agents/risk-analyst.md'
-      - 'plugins/ruflo-neural-trader/agents/backtest-engineer.md'
-      - 'scripts/smoke-neural-trader-pipeline.mjs'
+      - "plugins/ruflo-neural-trader/src/pipeline-messages.ts"
+      - "plugins/ruflo-neural-trader/agents/market-analyst.md"
+      - "plugins/ruflo-neural-trader/agents/trading-strategist.md"
+      - "plugins/ruflo-neural-trader/agents/risk-analyst.md"
+      - "plugins/ruflo-neural-trader/agents/backtest-engineer.md"
+      - "scripts/smoke-neural-trader-pipeline.mjs"
       # Neural-trader feature attribution (#2068, ADR-126 Phase 6)
-      - 'plugins/ruflo-neural-trader/src/signed-attribution.ts'
-      - 'plugins/ruflo-neural-trader/src/signed-attribution.mjs'
-      - 'plugins/ruflo-neural-trader/skills/trader-explain/**'
-      - 'scripts/smoke-neural-trader-feature-attribution.mjs'
+      - "plugins/ruflo-neural-trader/src/signed-attribution.ts"
+      - "plugins/ruflo-neural-trader/src/signed-attribution.mjs"
+      - "plugins/ruflo-neural-trader/skills/trader-explain/**"
+      - "scripts/smoke-neural-trader-feature-attribution.mjs"
       # Plugin-registry CWE-347 regression (#1922)
-      - 'v3/@claude-flow/cli/src/plugins/store/discovery.ts'
-      - 'v3/@claude-flow/cli/src/transfer/ipfs/client.ts'
-      - 'v3/@claude-flow/cli/scripts/publish-registry.ts'
-      - 'scripts/smoke-plugin-registry-signature.mjs'
+      - "v3/@claude-flow/cli/src/plugins/store/discovery.ts"
+      - "v3/@claude-flow/cli/src/transfer/ipfs/client.ts"
+      - "v3/@claude-flow/cli/scripts/publish-registry.ts"
+      - "scripts/smoke-plugin-registry-signature.mjs"
       # ruvllm WASM auto-init regression (#2086)
-      - 'v3/@claude-flow/cli/src/mcp-tools/ruvllm-tools.ts'
-      - 'v3/@claude-flow/cli/src/ruvector/ruvllm-wasm.ts'
-      - 'scripts/smoke-ruvllm-wasm-auto-init.mjs'
+      - "v3/@claude-flow/cli/src/mcp-tools/ruvllm-tools.ts"
+      - "v3/@claude-flow/cli/src/ruvector/ruvllm-wasm.ts"
+      - "scripts/smoke-ruvllm-wasm-auto-init.mjs"
       # agent_execute provider routing (#2042)
-      - 'v3/@claude-flow/cli/src/mcp-tools/agent-execute-core.ts'
-      - 'scripts/smoke-agent-execute-providers.mjs'
+      - "v3/@claude-flow/cli/src/mcp-tools/agent-execute-core.ts"
+      - "scripts/smoke-agent-execute-providers.mjs"
       # memory stats legacy-DB regression (#2120)
-      - 'v3/@claude-flow/cli/src/memory/memory-bridge.ts'
-      - 'v3/@claude-flow/cli/src/memory/memory-initializer.ts'
-      - 'v3/@claude-flow/cli/src/commands/status.ts'
-      - 'scripts/smoke-memory-stats-legacy-db.mjs'
+      - "v3/@claude-flow/cli/src/memory/memory-bridge.ts"
+      - "v3/@claude-flow/cli/src/memory/memory-initializer.ts"
+      - "v3/@claude-flow/cli/src/commands/status.ts"
+      - "scripts/smoke-memory-stats-legacy-db.mjs"
       # ADR-125 Phase 7 — no stray DB artifacts after npm test
-      - 'v3/@claude-flow/memory/vitest.setup.ts'
-      - 'v3/@claude-flow/memory/vitest.config.ts'
-      - 'v3/@claude-flow/memory/vitest.config.mts'
-      - 'scripts/smoke-memory-no-stray-db.mjs'
+      - "v3/@claude-flow/memory/vitest.setup.ts"
+      - "v3/@claude-flow/memory/vitest.config.ts"
+      - "v3/@claude-flow/memory/vitest.config.mts"
+      - "scripts/smoke-memory-no-stray-db.mjs"
       # GitHub skills/agents/helpers surface (#2089, ADR-127)
-      - '.claude/agents/github/**'
-      - '.claude/skills/github-*/**'
-      - 'v3/@claude-flow/cli/.claude/commands/github/**'
-      - '.claude/helpers/github-safe.js'
-      - 'v3/@claude-flow/cli/.claude/helpers/github-safe.js'
-      - 'scripts/smoke-github-safe-injection.mjs'
-      - 'scripts/smoke-github-actions-pins.mjs'
-      - 'scripts/smoke-deprecated-actions.mjs'
-      - 'scripts/smoke-attribution-opt-in.mjs'
-      - '.github/supply-chain/allowed-deps.json'
+      - ".claude/agents/github/**"
+      - ".claude/skills/github-*/**"
+      - "v3/@claude-flow/cli/.claude/commands/github/**"
+      - ".claude/helpers/github-safe.js"
+      - "v3/@claude-flow/cli/.claude/helpers/github-safe.js"
+      - "scripts/smoke-github-safe-injection.mjs"
+      - "scripts/smoke-github-actions-pins.mjs"
+      - "scripts/smoke-deprecated-actions.mjs"
+      - "scripts/smoke-attribution-opt-in.mjs"
+      - ".github/supply-chain/allowed-deps.json"
       # Init-bundle invariants smoke (#2095, ADR-128)
-      - 'v3/@claude-flow/cli/.claude/**'
-      - 'v3/@claude-flow/cli/src/init/**'
-      - 'plugins/*/agents/**'
-      - 'plugins/*/skills/**'
-      - 'plugins/*/commands/**'
-      - 'scripts/smoke-init-bundle-invariants.mjs'
+      - "v3/@claude-flow/cli/.claude/**"
+      - "v3/@claude-flow/cli/src/init/**"
+      - "plugins/*/agents/**"
+      - "plugins/*/skills/**"
+      - "plugins/*/commands/**"
+      - "scripts/smoke-init-bundle-invariants.mjs"
       # ADR-129 — rvagent full integration (P1-P4)
-      - 'v3/@claude-flow/cli/src/ruvector/agent-wasm.ts'
-      - 'v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts'
-      - 'scripts/smoke-wasm-provider-bridge.mjs'
-      - 'scripts/smoke-wasm-rvf-compose.mjs'
-      - 'scripts/smoke-wasm-gallery-crud.mjs'
-      - 'scripts/smoke-wasm-plugin-bridge.mjs'
+      - "v3/@claude-flow/cli/src/ruvector/agent-wasm.ts"
+      - "v3/@claude-flow/cli/src/mcp-tools/wasm-agent-tools.ts"
+      - "scripts/smoke-wasm-provider-bridge.mjs"
+      - "scripts/smoke-wasm-rvf-compose.mjs"
+      - "scripts/smoke-wasm-gallery-crud.mjs"
+      - "scripts/smoke-wasm-plugin-bridge.mjs"
       # witness manifests / fix list — so witness-verify runs on PRs that
       # touch them (otherwise a stale per-OS manifest only fails post-merge).
-      - 'verification/**'
+      - "verification/**"
       # statusline generator delegation regression guard (#2195)
-      - 'v3/@claude-flow/cli/src/init/statusline-generator.ts'
-      - '.claude/helpers/statusline.cjs'
-      - 'scripts/smoke-statusline-generator-delegation.mjs'
+      - "v3/@claude-flow/cli/src/init/statusline-generator.ts"
+      - ".claude/helpers/statusline.cjs"
+      - "scripts/smoke-statusline-generator-delegation.mjs"
       # wizard init regression guard (#2206 #2207 #2208)
-      - 'v3/@claude-flow/cli/src/init/mcp-generator.ts'
-      - 'v3/@claude-flow/cli/src/init/executor.ts'
-      - 'scripts/smoke-wizard-init-regression.mjs'
+      - "v3/@claude-flow/cli/src/init/mcp-generator.ts"
+      - "v3/@claude-flow/cli/src/init/executor.ts"
+      - "scripts/smoke-wizard-init-regression.mjs"
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20'
-  PNPM_VERSION: '8'
+  NODE_VERSION: "20"
+  PNPM_VERSION: "8"
 
 jobs:
   # #2267 + #2257 regression guards — fast, no install, run first so any
@@ -274,7 +274,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '22' }
+        with: { node-version: "22" }
       # js-yaml + tsx are needed by the smokes — install only those. Installed
       # into an isolated prefix (not the repo root) and copied into node_modules
       # rather than `npm install`-ed directly here: the root package.json now
@@ -330,7 +330,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install dependencies
@@ -404,7 +404,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install dependencies
@@ -438,7 +438,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install dependencies
@@ -475,14 +475,14 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        node: ['22', '24']
+        node: ["22", "24"]
         # macos-latest's bundled Python 3.12 removed distutils, breaking
         # node-gyp on Node 24's hnswlib-node + better-sqlite3 builds. Drop
         # that one combo until the macOS image ships a compatible setup.
         # (Linux Node 24 + macOS Node 22 still cover the cross-product.)
         exclude:
           - os: macos-latest
-            node: '24'
+            node: "24"
 
     steps:
       - name: Checkout code
@@ -590,7 +590,7 @@ jobs:
         # round-tripping that didn't reproduce on Node 22 or locally — same
         # CLI binary, same hooks.json. Tracked as a follow-up; for now the
         # regression guard runs on the version users are actually on.
-        node: ['22']
+        node: ["22"]
 
     steps:
       - name: Checkout code
@@ -605,7 +605,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install + build cli (scoped, tolerates unrelated workspace failures)
@@ -656,7 +656,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -697,7 +697,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install plugin dependencies (npm — plugin is outside v3 workspace)
         working-directory: plugins/ruflo-graph-intelligence
@@ -745,7 +745,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install ruflo-graph-intelligence deps (for npm audit)
         working-directory: plugins/ruflo-graph-intelligence
@@ -828,7 +828,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Scan every witness marker for drift
         run: node scripts/smoke-witness-marker-drift.mjs
@@ -863,7 +863,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install root dependencies (provides @noble/ed25519 for Case 3)
         run: npm ci --legacy-peer-deps
@@ -901,7 +901,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run kg-extract type-import smoke
         run: node scripts/smoke-kg-extract-type-imports.mjs
@@ -944,7 +944,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run portfolio CG smoke
         run: node scripts/smoke-neural-trader-portfolio-cg.mjs
@@ -991,7 +991,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install root deps (for @noble/ed25519)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -1048,7 +1048,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run pipeline risk-gate smoke
         run: node scripts/smoke-neural-trader-pipeline.mjs
@@ -1101,7 +1101,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install root deps (for @noble/ed25519)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -1145,7 +1145,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install root deps (for @noble/ed25519)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -1187,7 +1187,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run ruvllm WASM auto-init smoke
         run: node scripts/smoke-ruvllm-wasm-auto-init.mjs
@@ -1207,7 +1207,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run agent_execute providers smoke
         run: node scripts/smoke-agent-execute-providers.mjs
@@ -1240,7 +1240,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Setup pnpm (workspace-aware install)
         uses: pnpm/action-setup@v6
@@ -1293,7 +1293,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -1341,7 +1341,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run github-safe injection smoke
         run: node scripts/smoke-github-safe-injection.mjs
@@ -1371,7 +1371,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run github actions pin smoke
         run: node scripts/smoke-github-actions-pins.mjs
@@ -1400,7 +1400,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run deprecated-actions smoke
         run: node scripts/smoke-deprecated-actions.mjs
@@ -1428,7 +1428,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run attribution opt-in smoke
         run: node scripts/smoke-attribution-opt-in.mjs
@@ -1462,7 +1462,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Drive Claude-Code-shaped PreToolUse JSON through both handler copies
         shell: bash
@@ -1495,8 +1495,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build mcp + shared packages (static scan needs dist)
@@ -1540,8 +1540,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build packages (static scan needs cli dist)
@@ -1583,8 +1583,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build cli (smoke needs dist)
@@ -1632,7 +1632,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run tool-description audit
         shell: bash
@@ -1670,7 +1670,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install root deps (semver for audit-wrapper-dep-ranges)
@@ -1774,7 +1774,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ['22', '24']
+        node: ["22", "24"]
 
     steps:
       - name: Checkout code
@@ -1789,7 +1789,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build cli (smoke packs from its dist/)
@@ -1825,7 +1825,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run ruflo-hook.cjs smoke
         shell: bash
@@ -1856,8 +1856,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build CLI
@@ -1901,8 +1901,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build CLI
@@ -1931,7 +1931,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run hook-command audit
         shell: bash
@@ -1978,7 +1978,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run vector-dim audit
         shell: bash
@@ -2009,8 +2009,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Build @claude-flow/security
@@ -2053,7 +2053,26 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-    needs: [smoke-install-no-bsqlite, plugin-hooks-smoke, pre-bash-hook-smoke, witness-verify-precondition-smoke, witness-marker-drift-smoke, browser-rvf-create-flags-smoke, mcp-protocol-smoke, memory-import-smoke, tool-descriptions-audit, mcp-roundtrip-smoke, plugin-package-audit, cli-npx-install-smoke, hook-command-audit, vector-dim-audit, windows-hook-shim-smoke, windows-init-hooks-smoke, windows-hook-execution-smoke]
+    needs:
+      [
+        smoke-install-no-bsqlite,
+        plugin-hooks-smoke,
+        pre-bash-hook-smoke,
+        witness-verify-precondition-smoke,
+        witness-marker-drift-smoke,
+        browser-rvf-create-flags-smoke,
+        mcp-protocol-smoke,
+        memory-import-smoke,
+        tool-descriptions-audit,
+        mcp-roundtrip-smoke,
+        plugin-package-audit,
+        cli-npx-install-smoke,
+        hook-command-audit,
+        vector-dim-audit,
+        windows-hook-shim-smoke,
+        windows-init-hooks-smoke,
+        windows-hook-execution-smoke,
+      ]
 
     steps:
       - name: Checkout code
@@ -2068,7 +2087,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install + build packages witness markers reference
@@ -2185,8 +2204,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install dependencies
@@ -2230,7 +2249,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run init-bundle invariants smoke
         run: node scripts/smoke-init-bundle-invariants.mjs
@@ -2251,7 +2270,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run wasm provider bridge smoke
         run: node scripts/smoke-wasm-provider-bridge.mjs
@@ -2270,7 +2289,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run wasm compose smoke
         run: node scripts/smoke-wasm-rvf-compose.mjs
@@ -2289,7 +2308,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run wasm gallery CRUD smoke
         run: node scripts/smoke-wasm-gallery-crud.mjs
@@ -2307,7 +2326,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Run wasm plugin bridge smoke
         run: node scripts/smoke-wasm-plugin-bridge.mjs
@@ -2326,8 +2345,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install root deps (sql.js for smoke scripts)
@@ -2371,8 +2390,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
 
       - name: Install root deps (sql.js for the smoke fixture)
@@ -2415,8 +2434,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: Install root deps (sql.js for smoke scripts)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -2454,8 +2473,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: Install root deps (sql.js for smoke scripts)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -2474,7 +2493,8 @@ jobs:
     # ADR-130 Phase 6 — graph write/query throughput benchmark
     name: graph benchmark (ADR-130 P6)
     runs-on: ubuntu-latest
-    needs: [graph-query-smoke, graph-trajectory-smoke, graph-plugin-adapter-smoke]
+    needs:
+      [graph-query-smoke, graph-trajectory-smoke, graph-plugin-adapter-smoke]
     timeout-minutes: 40
     steps:
       - name: Checkout code
@@ -2486,8 +2506,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'pnpm'
+          node-version: "22"
+          cache: "pnpm"
           cache-dependency-path: v3/pnpm-lock.yaml
       - name: Install root deps (sql.js for smoke scripts)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts
@@ -2528,7 +2548,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Guard 1 — static delegation contract
         shell: bash
@@ -2622,7 +2642,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Guard 1 — static #2206 server key contract
         shell: bash

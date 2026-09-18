@@ -15,16 +15,25 @@ const CORS = {
 function oauthError(code: string, status: number, detail?: string) {
   return Response.json(
     { error: code, error_description: detail },
-    { status, headers: { ...CORS, "cache-control": "no-store", pragma: "no-cache" } },
+    {
+      status,
+      headers: { ...CORS, "cache-control": "no-store", pragma: "no-cache" },
+    },
   );
 }
 
 async function readParams(request: Request): Promise<Record<string, string>> {
   const type = request.headers.get("content-type") ?? "";
   if (type.includes("application/json")) {
-    const body = (await request.json().catch(() => ({}))) as Record<string, unknown>;
+    const body = (await request.json().catch(() => ({}))) as Record<
+      string,
+      unknown
+    >;
     return Object.fromEntries(
-      Object.entries(body).map(([k, v]) => [k, typeof v === "string" ? v : String(v ?? "")]),
+      Object.entries(body).map(([k, v]) => [
+        k,
+        typeof v === "string" ? v : String(v ?? ""),
+      ]),
     );
   }
   const form = await request.formData().catch(() => null);
@@ -43,7 +52,10 @@ function basicAuth(request: Request) {
   try {
     const [id, secret] = atob(header.slice(6)).split(":");
     if (!id) return null;
-    return { clientId: decodeURIComponent(id), clientSecret: secret ? decodeURIComponent(secret) : null };
+    return {
+      clientId: decodeURIComponent(id),
+      clientSecret: secret ? decodeURIComponent(secret) : null,
+    };
   } catch {
     return null;
   }
@@ -57,10 +69,13 @@ export const Route = createFileRoute("/api/public/oauth/token")({
         const params = await readParams(request);
         const basic = basicAuth(request);
         const clientId = basic?.clientId ?? params["client_id"] ?? "";
-        const clientSecret = basic?.clientSecret ?? params["client_secret"] ?? null;
-        if (!clientId) return oauthError("invalid_client", 401, "client_id is required.");
+        const clientSecret =
+          basic?.clientSecret ?? params["client_secret"] ?? null;
+        if (!clientId)
+          return oauthError("invalid_client", 401, "client_id is required.");
 
-        const { OAuthError, exchangeCode, refreshToken } = await import("@/lib/oauth.server");
+        const { OAuthError, exchangeCode, refreshToken } =
+          await import("@/lib/oauth.server");
         try {
           const grant = params["grant_type"];
           if (grant === "authorization_code") {
@@ -72,7 +87,11 @@ export const Route = createFileRoute("/api/public/oauth/token")({
               codeVerifier: params["code_verifier"] ?? "",
             });
             return Response.json(pair, {
-              headers: { ...CORS, "cache-control": "no-store", pragma: "no-cache" },
+              headers: {
+                ...CORS,
+                "cache-control": "no-store",
+                pragma: "no-cache",
+              },
             });
           }
           if (grant === "refresh_token") {
@@ -82,12 +101,21 @@ export const Route = createFileRoute("/api/public/oauth/token")({
               refreshToken: params["refresh_token"] ?? "",
             });
             return Response.json(pair, {
-              headers: { ...CORS, "cache-control": "no-store", pragma: "no-cache" },
+              headers: {
+                ...CORS,
+                "cache-control": "no-store",
+                pragma: "no-cache",
+              },
             });
           }
-          return oauthError("unsupported_grant_type", 400, "Use authorization_code or refresh_token.");
+          return oauthError(
+            "unsupported_grant_type",
+            400,
+            "Use authorization_code or refresh_token.",
+          );
         } catch (err) {
-          if (err instanceof OAuthError) return oauthError(err.code, err.status, err.detail);
+          if (err instanceof OAuthError)
+            return oauthError(err.code, err.status, err.detail);
           const { captureError } = await import("@/lib/observability.server");
           void captureError(err, { route: "oauth.token" });
           return oauthError("server_error", 500);

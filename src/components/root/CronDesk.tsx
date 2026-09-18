@@ -8,7 +8,12 @@
  * never invents it.
  */
 import { useMemo, useState } from "react";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
@@ -21,11 +26,18 @@ import {
   opsAlertTestFn,
 } from "@/lib/cron-ops.functions";
 import { isUnhealthy, type CronHealth } from "@/lib/cron-registry";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 
 const btn =
   "rounded-fq-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50";
-const field = "rounded-fq-md border border-border bg-background px-3 py-2 text-sm";
+const field =
+  "rounded-fq-md border border-border bg-background px-3 py-2 text-sm";
 
 const TONE: Record<CronHealth, "ok" | "warn" | "bad"> = {
   ok: "ok",
@@ -66,7 +78,9 @@ export function CronDesk() {
   const alertTest = useServerFn(opsAlertTestFn);
 
   const [onlyProblems, setOnlyProblems] = useState(false);
-  const [format, setFormat] = useState<"crontab" | "github" | "pgcron">("crontab");
+  const [format, setFormat] = useState<"crontab" | "github" | "pgcron">(
+    "crontab",
+  );
   const [exported, setExported] = useState<string | null>(null);
   const [runFilter, setRunFilter] = useState<string>("all");
 
@@ -79,11 +93,14 @@ export function CronDesk() {
     placeholderData: keepPreviousData,
   });
 
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["owner-cron"] });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["owner-cron"] });
 
   const jobs = useMemo(() => {
     const all = data?.jobs ?? [];
-    const filtered = onlyProblems ? all.filter((j) => isUnhealthy(j.health)) : all;
+    const filtered = onlyProblems
+      ? all.filter((j) => isUnhealthy(j.health))
+      : all;
     // Worst first: an operator should never scroll to find the outage.
     const rank: Record<CronHealth, number> = {
       failing: 0,
@@ -96,17 +113,24 @@ export function CronDesk() {
       ok: 7,
     };
     return [...filtered].sort(
-      (a, b) => rank[a.health] - rank[b.health] || b.overdueSeconds - a.overdueSeconds,
+      (a, b) =>
+        rank[a.health] - rank[b.health] || b.overdueSeconds - a.overdueSeconds,
     );
   }, [data, onlyProblems]);
 
   const runs = useMemo(() => {
     const all = data?.runs ?? [];
-    return runFilter === "all" ? all.slice(0, 40) : all.filter((r) => r.job_key === runFilter).slice(0, 40);
+    return runFilter === "all"
+      ? all.slice(0, 40)
+      : all.filter((r) => r.job_key === runFilter).slice(0, 40);
   }, [data, runFilter]);
 
   const toggleMut = useMutation({
-    mutationFn: (v: { key: string; enabled: boolean; reason?: string | null }) => toggle({ data: v }),
+    mutationFn: (v: {
+      key: string;
+      enabled: boolean;
+      reason?: string | null;
+    }) => toggle({ data: v }),
     onSuccess: (r) => {
       toast.success(
         r.enabled
@@ -116,21 +140,31 @@ export function CronDesk() {
       invalidate();
     },
     onError: () =>
-      toast.error(t("Pausing a job needs a reason", "জব থামাতে একটি কারণ দরকার")),
+      toast.error(
+        t("Pausing a job needs a reason", "জব থামাতে একটি কারণ দরকার"),
+      ),
   });
 
   const triggerMut = useMutation({
     mutationFn: (key: string) => trigger({ data: { key } }),
     onSuccess: (r) => {
       const detail = r.skipped
-        ? t(`skipped (${r.reason ?? "already running"})`, `স্কিপ (${r.reason ?? "চলছে"})`)
+        ? t(
+            `skipped (${r.reason ?? "already running"})`,
+            `স্কিপ (${r.reason ?? "চলছে"})`,
+          )
         : `${r.httpStatus} · ${ms(r.durationMs)}`;
-      toast[r.ok ? "success" : "error"](t(`Run finished: ${detail}`, `রান শেষ: ${detail}`));
+      toast[r.ok ? "success" : "error"](
+        t(`Run finished: ${detail}`, `রান শেষ: ${detail}`),
+      );
       invalidate();
     },
     onError: () =>
       toast.error(
-        t("The endpoint could not be reached in time", "নির্দিষ্ট সময়ে এন্ডপয়েন্টে পৌঁছানো যায়নি"),
+        t(
+          "The endpoint could not be reached in time",
+          "নির্দিষ্ট সময়ে এন্ডপয়েন্টে পৌঁছানো যায়নি",
+        ),
       ),
   });
 
@@ -173,7 +207,8 @@ export function CronDesk() {
   // The fleet summary counts verdicts; "how bad is the worst one" is a view
   // concern, so it is derived here rather than widening the server contract.
   const worstOverdue = useMemo(
-    () => (data?.jobs ?? []).reduce((max, j) => Math.max(max, j.overdueSeconds), 0),
+    () =>
+      (data?.jobs ?? []).reduce((max, j) => Math.max(max, j.overdueSeconds), 0),
     [data],
   );
 
@@ -188,12 +223,20 @@ export function CronDesk() {
       />
 
       <StatGrid>
-        <StatCard label={t("Jobs registered", "নিবন্ধিত জব")} value={String(summary?.total ?? 0)} />
+        <StatCard
+          label={t("Jobs registered", "নিবন্ধিত জব")}
+          value={String(summary?.total ?? 0)}
+        />
         <StatCard
           label={t("Failing / stalled", "ব্যর্থ / আটকে")}
-          value={String((summary?.byHealth.failing ?? 0) + (summary?.byHealth.stalled ?? 0))}
+          value={String(
+            (summary?.byHealth.failing ?? 0) + (summary?.byHealth.stalled ?? 0),
+          )}
         />
-        <StatCard label={t("Late", "দেরি")} value={String(summary?.byHealth.late ?? 0)} />
+        <StatCard
+          label={t("Late", "দেরি")}
+          value={String(summary?.byHealth.late ?? 0)}
+        />
         <StatCard
           label={t("Worst overdue", "সবচেয়ে দেরি")}
           value={secs(worstOverdue)}
@@ -220,14 +263,19 @@ export function CronDesk() {
 
       {error ? (
         <p className="text-sm text-destructive">
-          {t("This desk is owner-only and could not be read.", "এই ডেস্ক শুধু ওনারের, পড়া যায়নি।")}
+          {t(
+            "This desk is owner-only and could not be read.",
+            "এই ডেস্ক শুধু ওনারের, পড়া যায়নি।",
+          )}
         </p>
       ) : null}
 
       {/* --------------------------------------------------------------- fleet */}
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-base font-semibold">{t("Job fleet", "জব ফ্লিট")}</h3>
+          <h3 className="text-base font-semibold">
+            {t("Job fleet", "জব ফ্লিট")}
+          </h3>
           <label className="flex items-center gap-2 text-xs font-medium">
             <input
               type="checkbox"
@@ -252,8 +300,15 @@ export function CronDesk() {
           >
             {t("Test alerting", "অ্যালার্ট পরীক্ষা")}
           </button>
-          <p className="text-xs text-muted-foreground tabular-nums" aria-live="polite">
-            {isPending ? t("Loading…", "লোড হচ্ছে…") : isFetching ? t("Refreshing…", "রিফ্রেশ হচ্ছে…") : `${jobs.length}`}
+          <p
+            className="text-xs text-muted-foreground tabular-nums"
+            aria-live="polite"
+          >
+            {isPending
+              ? t("Loading…", "লোড হচ্ছে…")
+              : isFetching
+                ? t("Refreshing…", "রিফ্রেশ হচ্ছে…")
+                : `${jobs.length}`}
           </p>
         </div>
 
@@ -271,20 +326,36 @@ export function CronDesk() {
         >
           {jobs.length === 0 ? (
             <tr>
-              <td colSpan={8} className="px-3 py-6 text-center text-sm text-muted-foreground">
+              <td
+                colSpan={8}
+                className="px-3 py-6 text-center text-sm text-muted-foreground"
+              >
                 {onlyProblems
-                  ? t("Every job is inside policy.", "প্রতিটি জব নীতির ভেতরে আছে।")
-                  : t("No jobs registered yet — run Sync registry.", "কোনো জব নিবন্ধিত নয় — রেজিস্ট্রি সিঙ্ক চালান।")}
+                  ? t(
+                      "Every job is inside policy.",
+                      "প্রতিটি জব নীতির ভেতরে আছে।",
+                    )
+                  : t(
+                      "No jobs registered yet — run Sync registry.",
+                      "কোনো জব নিবন্ধিত নয় — রেজিস্ট্রি সিঙ্ক চালান।",
+                    )}
               </td>
             </tr>
           ) : (
             jobs.map((j) => (
-              <tr key={j.definition.key} className="border-t border-border align-top">
+              <tr
+                key={j.definition.key}
+                className="border-t border-border align-top"
+              >
                 <td className="px-3 py-2">
                   <p className="text-sm font-medium">{j.definition.label}</p>
-                  <p className="text-xs text-muted-foreground">{j.definition.key}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {j.definition.key}
+                  </p>
                   {j.reasons.length ? (
-                    <p className="mt-1 text-xs text-destructive">{j.reasons.join(" · ")}</p>
+                    <p className="mt-1 text-xs text-destructive">
+                      {j.reasons.join(" · ")}
+                    </p>
                   ) : null}
                 </td>
                 <td className="px-3 py-2 text-xs">
@@ -299,7 +370,8 @@ export function CronDesk() {
                 <td className="px-3 py-2 text-xs tabular-nums">
                   <p>{when(j.state?.lastRunAt ?? null)}</p>
                   <p className="text-muted-foreground">
-                    {t("ok", "সফল")} {secs(j.sinceSuccessSeconds)} {t("ago", "আগে")}
+                    {t("ok", "সফল")} {secs(j.sinceSuccessSeconds)}{" "}
+                    {t("ago", "আগে")}
                   </p>
                 </td>
                 <td className="px-3 py-2 text-xs tabular-nums">
@@ -312,7 +384,8 @@ export function CronDesk() {
                   </p>
                 </td>
                 <td className="px-3 py-2 text-xs tabular-nums">
-                  {j.state?.consecutiveFailures ?? 0} / {(j.failureRate * 100).toFixed(0)}%
+                  {j.state?.consecutiveFailures ?? 0} /{" "}
+                  {(j.failureRate * 100).toFixed(0)}%
                 </td>
                 <td className="px-3 py-2">
                   <div className="flex flex-wrap gap-2">
@@ -330,7 +403,11 @@ export function CronDesk() {
                         className={btn}
                         disabled={toggleMut.isPending}
                         onClick={() =>
-                          toggleMut.mutate({ key: j.definition.key, enabled: true, reason: null })
+                          toggleMut.mutate({
+                            key: j.definition.key,
+                            enabled: true,
+                            reason: null,
+                          })
                         }
                       >
                         {t("Resume", "আবার চালু")}
@@ -342,10 +419,17 @@ export function CronDesk() {
                         disabled={toggleMut.isPending}
                         onClick={() => {
                           const reason = window.prompt(
-                            t("Why is this job being paused?", "এই জব কেন থামানো হচ্ছে?") ?? "",
+                            t(
+                              "Why is this job being paused?",
+                              "এই জব কেন থামানো হচ্ছে?",
+                            ) ?? "",
                           );
                           if (!reason || reason.trim().length < 4) return;
-                          toggleMut.mutate({ key: j.definition.key, enabled: false, reason });
+                          toggleMut.mutate({
+                            key: j.definition.key,
+                            enabled: false,
+                            reason,
+                          });
                         }}
                       >
                         {t("Pause", "থামান")}
@@ -362,10 +446,16 @@ export function CronDesk() {
       {/* ---------------------------------------------------------- run ledger */}
       <div className="space-y-3">
         <div className="flex flex-wrap items-end gap-3">
-          <h3 className="text-base font-semibold">{t("Run ledger", "রান লেজার")}</h3>
+          <h3 className="text-base font-semibold">
+            {t("Run ledger", "রান লেজার")}
+          </h3>
           <label className="space-y-1 text-xs font-medium">
             <span className="sr-only">{t("Job", "জব")}</span>
-            <select className={field} value={runFilter} onChange={(e) => setRunFilter(e.target.value)}>
+            <select
+              className={field}
+              value={runFilter}
+              onChange={(e) => setRunFilter(e.target.value)}
+            >
               <option value="all">{t("All jobs", "সব জব")}</option>
               {(data?.jobs ?? []).map((j) => (
                 <option key={j.definition.key} value={j.definition.key}>
@@ -388,14 +478,19 @@ export function CronDesk() {
         >
           {runs.length === 0 ? (
             <tr>
-              <td colSpan={6} className="px-3 py-6 text-center text-sm text-muted-foreground">
+              <td
+                colSpan={6}
+                className="px-3 py-6 text-center text-sm text-muted-foreground"
+              >
                 {t("No runs recorded yet.", "এখনো কোনো রান রেকর্ড হয়নি।")}
               </td>
             </tr>
           ) : (
             runs.map((r) => (
               <tr key={r.id} className="border-t border-border">
-                <td className="px-3 py-2 text-xs tabular-nums">{when(r.started_at)}</td>
+                <td className="px-3 py-2 text-xs tabular-nums">
+                  {when(r.started_at)}
+                </td>
                 <td className="px-3 py-2 text-xs">{r.job_key}</td>
                 <td className="px-3 py-2 text-xs">{r.trigger}</td>
                 <td className="px-3 py-2">
@@ -411,9 +506,13 @@ export function CronDesk() {
                     {r.status}
                   </StatePill>
                 </td>
-                <td className="px-3 py-2 text-xs tabular-nums">{ms(r.duration_ms)}</td>
+                <td className="px-3 py-2 text-xs tabular-nums">
+                  {ms(r.duration_ms)}
+                </td>
                 <td className="px-3 py-2 text-xs text-muted-foreground">
-                  {r.error_message ?? r.error_code ?? JSON.stringify(r.stats ?? {}).slice(0, 120)}
+                  {r.error_message ??
+                    r.error_code ??
+                    JSON.stringify(r.stats ?? {}).slice(0, 120)}
                 </td>
               </tr>
             ))
@@ -423,12 +522,20 @@ export function CronDesk() {
 
       {/* -------------------------------------------------------- alert history */}
       <div className="space-y-3">
-        <h3 className="text-base font-semibold">{t("Alert delivery", "অ্যালার্ট ডেলিভারি")}</h3>
+        <h3 className="text-base font-semibold">
+          {t("Alert delivery", "অ্যালার্ট ডেলিভারি")}
+        </h3>
         <p className="text-xs text-muted-foreground">
           {(data?.channels ?? []).length === 0
-            ? t("No alert channel is configured — nobody would be paged.", "কোনো অ্যালার্ট চ্যানেল নেই — কাউকে জানানো হবে না।")
+            ? t(
+                "No alert channel is configured — nobody would be paged.",
+                "কোনো অ্যালার্ট চ্যানেল নেই — কাউকে জানানো হবে না।",
+              )
             : (data?.channels ?? [])
-                .map((c) => `${c.label} (${c.kind}, ≥${c.minSeverity}${c.configured ? "" : ", unset"})`)
+                .map(
+                  (c) =>
+                    `${c.label} (${c.kind}, ≥${c.minSeverity}${c.configured ? "" : ", unset"})`,
+                )
                 .join(" · ")}
         </p>
         <OwnerTable
@@ -442,22 +549,43 @@ export function CronDesk() {
         >
           {(data?.alerts ?? []).length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-3 py-6 text-center text-sm text-muted-foreground">
+              <td
+                colSpan={5}
+                className="px-3 py-6 text-center text-sm text-muted-foreground"
+              >
                 {t("No alerts raised yet.", "এখনো কোনো অ্যালার্ট হয়নি।")}
               </td>
             </tr>
           ) : (
             (data?.alerts ?? []).map((a) => (
               <tr key={a.id} className="border-t border-border">
-                <td className="px-3 py-2 text-xs tabular-nums">{when(a.created_at)}</td>
+                <td className="px-3 py-2 text-xs tabular-nums">
+                  {when(a.created_at)}
+                </td>
                 <td className="px-3 py-2">
-                  <StatePill tone={a.severity === "critical" ? "bad" : a.severity === "warning" ? "warn" : "ok"}>
+                  <StatePill
+                    tone={
+                      a.severity === "critical"
+                        ? "bad"
+                        : a.severity === "warning"
+                          ? "warn"
+                          : "ok"
+                    }
+                  >
                     {a.severity}
                   </StatePill>
                 </td>
                 <td className="px-3 py-2 text-xs">{a.title}</td>
                 <td className="px-3 py-2">
-                  <StatePill tone={a.status === "sent" ? "ok" : a.status === "pending" ? "warn" : "bad"}>
+                  <StatePill
+                    tone={
+                      a.status === "sent"
+                        ? "ok"
+                        : a.status === "pending"
+                          ? "warn"
+                          : "bad"
+                    }
+                  >
                     {a.status}
                   </StatePill>
                 </td>
@@ -473,7 +601,9 @@ export function CronDesk() {
 
       {/* ------------------------------------------------------------- installs */}
       <div className="space-y-3">
-        <h3 className="text-base font-semibold">{t("Install the schedule", "শিডিউল ইনস্টল করুন")}</h3>
+        <h3 className="text-base font-semibold">
+          {t("Install the schedule", "শিডিউল ইনস্টল করুন")}
+        </h3>
         <p className="text-xs text-muted-foreground">
           {t(
             "Generated from the registry, so the installed schedule and the code can never drift. The secret is referenced, never printed.",

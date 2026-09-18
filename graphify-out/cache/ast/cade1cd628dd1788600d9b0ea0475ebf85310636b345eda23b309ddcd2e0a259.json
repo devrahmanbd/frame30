@@ -1,1 +1,12 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_agents_skills_memory_management_scripts_memory_consolidate_sh", "label": "memory-consolidate.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.agents/skills/memory-management/scripts/memory-consolidate.sh", "source_location": "L1"}], "edges": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_agents_skills_memory_management_scripts_memory_consolidate_sh",
+      "label": "memory-consolidate.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.agents/skills/memory-management/scripts/memory-consolidate.sh",
+      "source_location": "L1"
+    }
+  ],
+  "edges": []
+}

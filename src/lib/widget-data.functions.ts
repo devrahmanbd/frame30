@@ -6,7 +6,14 @@ const paramValue = z.union([z.string().max(120), z.number(), z.boolean()]);
 
 const requestSchema = z.object({
   key: z.string().min(1).max(300),
-  source: z.enum(["collection", "manual", "recommendation", "reviews", "facets", "taxonomy"]),
+  source: z.enum([
+    "collection",
+    "manual",
+    "recommendation",
+    "reviews",
+    "facets",
+    "taxonomy",
+  ]),
   params: z.record(z.string().max(40), paramValue),
 });
 
@@ -38,5 +45,8 @@ export const resolveWidgetDataFn = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!merchant) return {};
     const { resolveWidgetData } = await import("./widget-data.server");
-    return resolveWidgetData(merchant.id, { requests: data.requests, byNode: {} });
+    return resolveWidgetData(merchant.id, {
+      requests: data.requests,
+      byNode: {},
+    });
   });

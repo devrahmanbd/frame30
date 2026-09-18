@@ -1,1 +1,550 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_search_backend_ts", "label": "search-backend.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L1"}, {"id": "lib_search_backend_searchengine", "label": "SearchEngine", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L15"}, {"id": "lib_search_backend_backendhealth", "label": "BackendHealth", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L18"}, {"id": "lib_search_backend_backendconfig", "label": "BackendConfig", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L20"}, {"id": "lib_search_backend_default_backend", "label": "DEFAULT_BACKEND", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L32"}, {"id": "lib_search_backend_normalizebackend", "label": "normalizeBackend()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L43"}, {"id": "lib_search_backend_breakerstate", "label": "BreakerState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L62"}, {"id": "lib_search_backend_fresh_breaker", "label": "FRESH_BREAKER", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L68"}, {"id": "lib_search_backend_breakerdecision", "label": "BreakerDecision", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L74"}, {"id": "lib_search_backend_decideengine", "label": "decideEngine()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L87"}, {"id": "lib_search_backend_recordfailure", "label": "recordFailure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L111"}, {"id": "lib_search_backend_recordsuccess", "label": "recordSuccess()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L128"}, {"id": "lib_search_backend_neutralquery", "label": "NeutralQuery", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L139"}, {"id": "lib_search_backend_normalizequery", "label": "normalizeQuery()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L147"}, {"id": "lib_search_backend_tofilterexpression", "label": "toFilterExpression()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L167"}, {"id": "lib_search_backend_sortexpression", "label": "sortExpression()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L183"}, {"id": "lib_search_backend_indexop", "label": "IndexOp", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L192"}, {"id": "lib_search_backend_coalesceindexops", "label": "coalesceIndexOps()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L199"}, {"id": "lib_search_backend_search_messages", "label": "SEARCH_MESSAGES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L211"}, {"id": "lib_search_backend_explainhealth", "label": "explainHealth()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L226"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_searchengine", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_backendhealth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_backendconfig", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_default_backend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_normalizebackend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_breakerstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_fresh_breaker", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_breakerdecision", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_decideengine", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_recordfailure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L111", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_recordsuccess", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_neutralquery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_normalizequery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_tofilterexpression", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L167", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_sortexpression", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_indexop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L192", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_coalesceindexops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L199", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_search_messages", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L211", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_backend_ts", "target": "lib_search_backend_explainhealth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L226", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_search_backend_normalizebackend", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L47"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L53"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L54"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L54"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L54"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L55"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L55"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L55"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L56"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L56"}, {"caller_nid": "lib_search_backend_normalizebackend", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L56"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L148"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L148"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L148"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L156"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L156"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L156"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L157"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L157"}, {"caller_nid": "lib_search_backend_normalizequery", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L157"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L169"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L171"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L174"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L177"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L177"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L177"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L177"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L178"}, {"caller_nid": "lib_search_backend_tofilterexpression", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L180"}, {"caller_nid": "lib_search_backend_coalesceindexops", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L204"}, {"caller_nid": "lib_search_backend_coalesceindexops", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L205"}, {"caller_nid": "lib_search_backend_coalesceindexops", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L207"}, {"caller_nid": "lib_search_backend_coalesceindexops", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts", "source_location": "L207"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "label": "search-backend.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_search_backend_searchengine",
+      "label": "SearchEngine",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_search_backend_backendhealth",
+      "label": "BackendHealth",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_search_backend_backendconfig",
+      "label": "BackendConfig",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_search_backend_default_backend",
+      "label": "DEFAULT_BACKEND",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_search_backend_normalizebackend",
+      "label": "normalizeBackend()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L43"
+    },
+    {
+      "id": "lib_search_backend_breakerstate",
+      "label": "BreakerState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_search_backend_fresh_breaker",
+      "label": "FRESH_BREAKER",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_search_backend_breakerdecision",
+      "label": "BreakerDecision",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "lib_search_backend_decideengine",
+      "label": "decideEngine()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "lib_search_backend_recordfailure",
+      "label": "recordFailure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "lib_search_backend_recordsuccess",
+      "label": "recordSuccess()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_search_backend_neutralquery",
+      "label": "NeutralQuery",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "lib_search_backend_normalizequery",
+      "label": "normalizeQuery()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L147"
+    },
+    {
+      "id": "lib_search_backend_tofilterexpression",
+      "label": "toFilterExpression()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L167"
+    },
+    {
+      "id": "lib_search_backend_sortexpression",
+      "label": "sortExpression()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L183"
+    },
+    {
+      "id": "lib_search_backend_indexop",
+      "label": "IndexOp",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L192"
+    },
+    {
+      "id": "lib_search_backend_coalesceindexops",
+      "label": "coalesceIndexOps()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L199"
+    },
+    {
+      "id": "lib_search_backend_search_messages",
+      "label": "SEARCH_MESSAGES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L211"
+    },
+    {
+      "id": "lib_search_backend_explainhealth",
+      "label": "explainHealth()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L226"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_searchengine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_backendhealth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_backendconfig",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_default_backend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_normalizebackend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_breakerstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_fresh_breaker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_breakerdecision",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_decideengine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_recordfailure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_recordsuccess",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_neutralquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_normalizequery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_tofilterexpression",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_sortexpression",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_indexop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L192",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_coalesceindexops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_search_messages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_backend_ts",
+      "target": "lib_search_backend_explainhealth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L226",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizebackend",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_search_backend_normalizequery",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "lib_search_backend_tofilterexpression",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "lib_search_backend_coalesceindexops",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_search_backend_coalesceindexops",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "lib_search_backend_coalesceindexops",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "lib_search_backend_coalesceindexops",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-backend.ts",
+      "source_location": "L207"
+    }
+  ]
+}

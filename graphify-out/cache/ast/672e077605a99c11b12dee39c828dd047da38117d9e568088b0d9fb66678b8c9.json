@@ -1,1 +1,375 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_customer_view_ts", "label": "customer-view.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L1"}, {"id": "lib_customer_view_customer_order_columns", "label": "CUSTOMER_ORDER_COLUMNS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L11"}, {"id": "lib_customer_view_internal_order_columns", "label": "INTERNAL_ORDER_COLUMNS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L32"}, {"id": "lib_customer_view_customer_order_select", "label": "CUSTOMER_ORDER_SELECT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L42"}, {"id": "lib_customer_view_public_order_events", "label": "PUBLIC_ORDER_EVENTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L56"}, {"id": "lib_customer_view_rawevent", "label": "RawEvent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L77"}, {"id": "lib_customer_view_publicevent", "label": "PublicEvent", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L78"}, {"id": "lib_customer_view_publictimeline", "label": "publicTimeline()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L81"}, {"id": "lib_customer_view_delivery_steps", "label": "DELIVERY_STEPS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L93"}, {"id": "lib_customer_view_deliverystep", "label": "DeliveryStep", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L94"}, {"id": "lib_customer_view_step_of", "label": "STEP_OF", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L96"}, {"id": "lib_customer_view_delivery_step_labels", "label": "DELIVERY_STEP_LABELS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L107"}, {"id": "lib_customer_view_deliverystepindex", "label": "deliveryStepIndex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L116"}, {"id": "lib_customer_view_deliveryproblem", "label": "deliveryProblem()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L122"}, {"id": "lib_customer_view_return_reasons", "label": "RETURN_REASONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L132"}, {"id": "lib_customer_view_eligibility", "label": "Eligibility", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L140"}, {"id": "lib_customer_view_returneligibility", "label": "returnEligibility()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L148"}, {"id": "lib_customer_view_nextaction", "label": "NextAction", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L170"}, {"id": "lib_customer_view_open_order_statuses", "label": "OPEN_ORDER_STATUSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L189"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_customer_order_columns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_internal_order_columns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_customer_order_select", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_public_order_events", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_rawevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_publicevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_publictimeline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_delivery_steps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L93", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_deliverystep", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_step_of", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_delivery_step_labels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_deliverystepindex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L116", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_deliveryproblem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_return_reasons", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_eligibility", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_returneligibility", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_nextaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_nextaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_customer_view_ts", "target": "lib_customer_view_open_order_statuses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L189", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_customer_view_publictimeline", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L82"}, {"caller_nid": "lib_customer_view_publictimeline", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L82"}, {"caller_nid": "lib_customer_view_publictimeline", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L82"}, {"caller_nid": "lib_customer_view_deliverystepindex", "callee": "indexOf", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L118"}, {"caller_nid": "lib_customer_view_returneligibility", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L157"}, {"caller_nid": "lib_customer_view_returneligibility", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L158"}, {"caller_nid": "lib_customer_view_returneligibility", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L160"}, {"caller_nid": "lib_customer_view_returneligibility", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L162"}, {"caller_nid": "lib_customer_view_nextaction", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts", "source_location": "L182"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "label": "customer-view.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_customer_view_customer_order_columns",
+      "label": "CUSTOMER_ORDER_COLUMNS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_customer_view_internal_order_columns",
+      "label": "INTERNAL_ORDER_COLUMNS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_customer_view_customer_order_select",
+      "label": "CUSTOMER_ORDER_SELECT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_customer_view_public_order_events",
+      "label": "PUBLIC_ORDER_EVENTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_customer_view_rawevent",
+      "label": "RawEvent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_customer_view_publicevent",
+      "label": "PublicEvent",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "lib_customer_view_publictimeline",
+      "label": "publicTimeline()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_customer_view_delivery_steps",
+      "label": "DELIVERY_STEPS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L93"
+    },
+    {
+      "id": "lib_customer_view_deliverystep",
+      "label": "DeliveryStep",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "lib_customer_view_step_of",
+      "label": "STEP_OF",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_customer_view_delivery_step_labels",
+      "label": "DELIVERY_STEP_LABELS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_customer_view_deliverystepindex",
+      "label": "deliveryStepIndex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L116"
+    },
+    {
+      "id": "lib_customer_view_deliveryproblem",
+      "label": "deliveryProblem()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "lib_customer_view_return_reasons",
+      "label": "RETURN_REASONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L132"
+    },
+    {
+      "id": "lib_customer_view_eligibility",
+      "label": "Eligibility",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_customer_view_returneligibility",
+      "label": "returnEligibility()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_customer_view_nextaction",
+      "label": "NextAction",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L170"
+    },
+    {
+      "id": "lib_customer_view_open_order_statuses",
+      "label": "OPEN_ORDER_STATUSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L189"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_customer_order_columns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_internal_order_columns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_customer_order_select",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_public_order_events",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_rawevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_publicevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_publictimeline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_delivery_steps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_deliverystep",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_step_of",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_delivery_step_labels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_deliverystepindex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_deliveryproblem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_return_reasons",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_eligibility",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_returneligibility",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_nextaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_nextaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_customer_view_ts",
+      "target": "lib_customer_view_open_order_statuses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L189",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_customer_view_publictimeline",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_customer_view_publictimeline",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_customer_view_publictimeline",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "lib_customer_view_deliverystepindex",
+      "callee": "indexOf",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_customer_view_returneligibility",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_customer_view_returneligibility",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_customer_view_returneligibility",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_customer_view_returneligibility",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_customer_view_nextaction",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/customer-view.ts",
+      "source_location": "L182"
+    }
+  ]
+}

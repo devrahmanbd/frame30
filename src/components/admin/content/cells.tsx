@@ -36,7 +36,9 @@ export function TitleCell({
     <div className="min-w-[18rem]">
       <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5">
         {isTrash ? (
-          <span className="font-semibold text-foreground">{row.title || "(no title)"}</span>
+          <span className="font-semibold text-foreground">
+            {row.title || "(no title)"}
+          </span>
         ) : (
           <Link
             to={editHref(row.kind, row.id) as never}
@@ -61,8 +63,17 @@ export function TitleCell({
       >
         {actions.map((a, i) => (
           <span key={a} className="flex items-center">
-            {i > 0 ? <span aria-hidden className="mx-1 text-border">|</span> : null}
-            <RowActionLink action={a} row={row} storeSlug={storeSlug} onAction={onAction} />
+            {i > 0 ? (
+              <span aria-hidden className="mx-1 text-border">
+                |
+              </span>
+            ) : null}
+            <RowActionLink
+              action={a}
+              row={row}
+              storeSlug={storeSlug}
+              onAction={onAction}
+            />
           </span>
         ))}
         {isTrash ? (
@@ -100,7 +111,13 @@ function RowActionLink({
   if (action === "edit" || action === "edit-builder") {
     return (
       <Link
-        to={editHref(row.kind, row.id, action === "edit-builder" ? "builder" : undefined) as never}
+        to={
+          editHref(
+            row.kind,
+            row.id,
+            action === "edit-builder" ? "builder" : undefined,
+          ) as never
+        }
         className={base}
       >
         {label}
@@ -109,14 +126,24 @@ function RowActionLink({
   }
   if (action === "preview" || action === "view") {
     return (
-      <a href={previewHref(row.kind, row, storeSlug)} target="_blank" rel="noreferrer" className={cn(base, "inline-flex items-center gap-0.5")}>
+      <a
+        href={previewHref(row.kind, row, storeSlug)}
+        target="_blank"
+        rel="noreferrer"
+        className={cn(base, "inline-flex items-center gap-0.5")}
+      >
         {label}
         <ExternalLink aria-hidden className="size-3" />
       </a>
     );
   }
   return (
-    <button type="button" onClick={() => onAction(action, row)} className={base} aria-label={`${label}: ${row.title}`}>
+    <button
+      type="button"
+      onClick={() => onAction(action, row)}
+      className={base}
+      aria-label={`${label}: ${row.title}`}
+    >
       {label}
     </button>
   );
@@ -145,11 +172,15 @@ export function SeoCell({ seo }: { seo: ContentRow["seo"] }) {
     : `${BAND_WORD[band][l]} · ${seo.score}/100`;
   return (
     <div className="flex min-w-0 items-center gap-2" title={tip}>
-      <span aria-hidden className={cn("size-2.5 shrink-0 rounded-full", BAND_DOT[band])} />
+      <span
+        aria-hidden
+        className={cn("size-2.5 shrink-0 rounded-full", BAND_DOT[band])}
+      />
       <span className="fq-num text-sm text-foreground">{seo.score}</span>
       <span className="sr-only">{BAND_WORD[band][l]}</span>
       <span className="truncate text-xs fq-sub">
-        {seo.focusKeyword || (l === "bn" ? "কীওয়ার্ড নেই" : "No focus keyword")}
+        {seo.focusKeyword ||
+          (l === "bn" ? "কীওয়ার্ড নেই" : "No focus keyword")}
       </span>
     </div>
   );
@@ -175,13 +206,24 @@ export function DateCell({ row }: { row: ContentRow }) {
 /* ------------------------------------------------------------- Author cell */
 
 export function AuthorCell({ name }: { name: string | null }) {
-  return <span className={cn("text-sm", name ? "text-foreground" : "fq-sub")}>{name ?? "—"}</span>;
+  return (
+    <span className={cn("text-sm", name ? "text-foreground" : "fq-sub")}>
+      {name ?? "—"}
+    </span>
+  );
 }
 
 /* -------------------------------------------------------------- Terms cell */
 
-export function TermsCell({ items, emptyLabel }: { items: readonly string[]; emptyLabel: string }) {
-  if (items.length === 0) return <span className="text-sm fq-sub">{emptyLabel}</span>;
+export function TermsCell({
+  items,
+  emptyLabel,
+}: {
+  items: readonly string[];
+  emptyLabel: string;
+}) {
+  if (items.length === 0)
+    return <span className="text-sm fq-sub">{emptyLabel}</span>;
   return (
     <span className="text-sm text-foreground">
       {items.map((it, i) => (

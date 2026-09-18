@@ -1,1 +1,541 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "label": "store.$slug.p.$productSlug.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L1"}, {"id": "routes_store_slug_p_productslug_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L18"}, {"id": "routes_store_slug_p_productslug_productnotfound", "label": "ProductNotFound()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L69"}, {"id": "routes_store_slug_p_productslug_productdetail", "label": "ProductDetail()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L78"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_storeheader_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_storeheader_storeheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_storeimage_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_storeimage_storeimage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_themechrome_themechrome", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_supportwidget_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_supportwidget_supportwidget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_storefront_functions_getstoreproduct", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_missing_url_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_missing_url_handlemissingstoreurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_cart_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_cart_usecart", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_traffic_client_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_traffic_client_trackevent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_builder_usesectionchannel_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "builder_usesectionchannel_usesectionchannel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_theme_seo_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_theme_seo_buildproducthead", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_lib_search_console_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "lib_search_console_verificationtags", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "users_rahman_documents_frame30_src_components_store_conversionsurfaces_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_conversionsurfaces_productconversion", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "store_conversionsurfaces_scarcitybadge", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "routes_store_slug_p_productslug_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "routes_store_slug_p_productslug_productnotfound", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx", "target": "routes_store_slug_p_productslug_productdetail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L78", "weight": 1.0}], "raw_calls": [{"caller_nid": "routes_store_slug_p_productslug_productnotfound", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L70"}, {"caller_nid": "routes_store_slug_p_productslug_productnotfound", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L73"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L79"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useLoaderData", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L80"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L82"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L83"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useCart", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L84"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L85"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useSectionChannel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L88"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L90"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L96"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L102"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "fmtMinor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L121"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L121"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L124"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L132"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L134"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L159"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L160"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L174"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L181"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L185"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L204"}, {"caller_nid": "routes_store_slug_p_productslug_productdetail", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx", "source_location": "L231"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "label": "store.$slug.p.$productSlug.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "routes_store_slug_p_productslug_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "routes_store_slug_p_productslug_productnotfound",
+      "label": "ProductNotFound()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L69"
+    },
+    {
+      "id": "routes_store_slug_p_productslug_productdetail",
+      "label": "ProductDetail()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L78"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_storeheader_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_storeheader_storeheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_storeimage_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_storeimage_storeimage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_themechrome_themechrome",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_supportwidget_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_supportwidget_supportwidget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_storefront_functions_getstoreproduct",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_missing_url_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_missing_url_handlemissingstoreurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_cart_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_cart_usecart",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_traffic_client_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_traffic_client_trackevent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_usesectionchannel_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "builder_usesectionchannel_usesectionchannel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_theme_seo_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_theme_seo_buildproducthead",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_search_console_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "lib_search_console_verificationtags",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_conversionsurfaces_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_conversionsurfaces_productconversion",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "store_conversionsurfaces_scarcitybadge",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "routes_store_slug_p_productslug_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "routes_store_slug_p_productslug_productnotfound",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_store_slug_p_productslug_tsx",
+      "target": "routes_store_slug_p_productslug_productdetail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L78",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productnotfound",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productnotfound",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useLoaderData",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useCart",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useSectionChannel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "fmtMinor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L181"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "routes_store_slug_p_productslug_productdetail",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/store.$slug.p.$productSlug.tsx",
+      "source_location": "L231"
+    }
+  ]
+}

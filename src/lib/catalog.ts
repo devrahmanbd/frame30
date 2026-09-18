@@ -7,12 +7,23 @@
  * through `catalog_import_dry_run`.
  */
 
-export const PRODUCT_KINDS = ["physical", "digital", "service", "subscription"] as const;
+export const PRODUCT_KINDS = [
+  "physical",
+  "digital",
+  "service",
+  "subscription",
+] as const;
 export type ProductKind = (typeof PRODUCT_KINDS)[number];
 
 export const KIND_META: Record<
   ProductKind,
-  { en: string; bn: string; ships: boolean; needsStock: boolean; hint: { en: string; bn: string } }
+  {
+    en: string;
+    bn: string;
+    ships: boolean;
+    needsStock: boolean;
+    hint: { en: string; bn: string };
+  }
 > = {
   physical: {
     en: "Physical",
@@ -60,7 +71,14 @@ export function isShippable(kind: ProductKind) {
   return KIND_META[kind].ships;
 }
 
-export const METAFIELD_VALUE_TYPES = ["text", "number", "boolean", "json", "url", "date"] as const;
+export const METAFIELD_VALUE_TYPES = [
+  "text",
+  "number",
+  "boolean",
+  "json",
+  "url",
+  "date",
+] as const;
 export type MetafieldValueType = (typeof METAFIELD_VALUE_TYPES)[number];
 
 export const METAFIELD_OWNER_TYPES = [
@@ -103,7 +121,10 @@ export type CollectionCondition = {
   key?: string;
 };
 
-export type CollectionRules = { match: "all" | "any"; conditions: CollectionCondition[] };
+export type CollectionRules = {
+  match: "all" | "any";
+  conditions: CollectionCondition[];
+};
 
 export function normalizeRules(input: unknown): CollectionRules {
   const raw = (input ?? {}) as { match?: unknown; conditions?: unknown };
@@ -147,7 +168,8 @@ export const IMPORT_TEMPLATE =
   `${IMPORT_COLUMNS.join(",")}\n` +
   "Jamdani cotton shari,jamdani-cotton-shari,Handloom shari,active,physical,handloom|shari,Default,JAM-001,BDT,485000,12\n";
 
-export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export type JsonValue =
+  string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 export type JsonRecord = { [key: string]: JsonValue };
 
 export type ImportRow = Record<string, string>;
@@ -156,7 +178,11 @@ export type ImportRow = Record<string, string>;
  * RFC4180-ish CSV reader: quoted fields, escaped quotes, CRLF. Dependency-free
  * and bounded; the caller caps row count before upload.
  */
-export function parseCsv(text: string): { header: string[]; rows: ImportRow[]; errors: string[] } {
+export function parseCsv(text: string): {
+  header: string[];
+  rows: ImportRow[];
+  errors: string[];
+} {
   const errors: string[] = [];
   const cells: string[][] = [];
   let row: string[] = [];
@@ -232,15 +258,24 @@ export type ImportJob = {
   diff: ImportDiffEntry[];
   summary: { creates?: number; updates?: number; errors?: number };
   applied_at: string | null;
-  applied_summary: { created?: number; updated?: number; skipped?: number } | null;
+  applied_summary: {
+    created?: number;
+    updated?: number;
+    skipped?: number;
+  } | null;
   created_at: string;
 };
 
 /** Stable content hash: the same file uploaded twice resolves to the same job. */
 export async function hashRows(fileName: string, rows: ImportRow[]) {
   const payload = JSON.stringify({ fileName, rows });
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(payload));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(payload),
+  );
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 /**

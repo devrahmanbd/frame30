@@ -28,8 +28,18 @@ export type BlogFeed = {
 
 const BlogFeedContext = createContext<BlogFeed | null>(null);
 
-export function BlogFeedProvider({ value, children }: { value: BlogFeed; children: React.ReactNode }) {
-  return <BlogFeedContext.Provider value={value}>{children}</BlogFeedContext.Provider>;
+export function BlogFeedProvider({
+  value,
+  children,
+}: {
+  value: BlogFeed;
+  children: React.ReactNode;
+}) {
+  return (
+    <BlogFeedContext.Provider value={value}>
+      {children}
+    </BlogFeedContext.Provider>
+  );
 }
 
 export function useBlogFeed(): BlogFeed | null {
@@ -41,7 +51,8 @@ const SAMPLE: BlogCardData[] = [1, 2, 3, 4, 5, 6].map((n) => ({
   slug: `sample-${n}`,
   title: `Sample article ${n}`,
   titleEn: null,
-  excerpt: "A short summary of the article appears here once you publish a post.",
+  excerpt:
+    "A short summary of the article appears here once you publish a post.",
   coverImageUrl: null,
   publishedAt: null,
   merchantName: null,
@@ -56,10 +67,20 @@ const COL_CLASS: Record<number, string> = {
   4: "sm:grid-cols-2 lg:grid-cols-4",
 };
 
-function Cover({ article, className }: { article: BlogCardData; className: string }) {
+function Cover({
+  article,
+  className,
+}: {
+  article: BlogCardData;
+  className: string;
+}) {
   if (!article.coverImageUrl) return null;
   return (
-    <Link to="/blog/$slug" params={{ slug: article.slug }} className={className}>
+    <Link
+      to="/blog/$slug"
+      params={{ slug: article.slug }}
+      className={className}
+    >
       <img
         src={article.coverImageUrl}
         alt=""
@@ -74,7 +95,10 @@ function Cover({ article, className }: { article: BlogCardData; className: strin
 }
 
 function Meta({ article }: { article: BlogCardData }) {
-  const author = article.author?.displayNameEn || article.author?.displayName || article.merchantName;
+  const author =
+    article.author?.displayNameEn ||
+    article.author?.displayName ||
+    article.merchantName;
   return (
     <p className="mt-auto flex flex-wrap items-center gap-2 pt-2 text-xs text-muted-foreground">
       {author ? <span>{author}</span> : null}
@@ -88,7 +112,9 @@ function Meta({ article }: { article: BlogCardData }) {
           })}
         </time>
       ) : null}
-      {article.readingMinutes ? <span>{article.readingMinutes} min read</span> : null}
+      {article.readingMinutes ? (
+        <span>{article.readingMinutes} min read</span>
+      ) : null}
     </p>
   );
 }
@@ -109,7 +135,10 @@ function Card({
   return (
     <article className="flex flex-col overflow-hidden rounded-fq-md border border-border bg-card">
       {showCover ? (
-        <Cover article={article} className={`block overflow-hidden ${lead ? "aspect-[21/9]" : "aspect-[16/9]"}`} />
+        <Cover
+          article={article}
+          className={`block overflow-hidden ${lead ? "aspect-[21/9]" : "aspect-[16/9]"}`}
+        />
       ) : null}
       <div className="flex flex-1 flex-col gap-2 p-4">
         {article.category ? (
@@ -121,13 +150,21 @@ function Card({
             {article.category.name}
           </Link>
         ) : null}
-        <h3 className={`font-semibold leading-snug ${lead ? "text-2xl" : "text-lg"}`}>
-          <Link to="/blog/$slug" params={{ slug: article.slug }} className="hover:text-primary">
+        <h3
+          className={`font-semibold leading-snug ${lead ? "text-2xl" : "text-lg"}`}
+        >
+          <Link
+            to="/blog/$slug"
+            params={{ slug: article.slug }}
+            className="hover:text-primary"
+          >
             {article.title}
           </Link>
         </h3>
         {showExcerpt && article.excerpt ? (
-          <p className="line-clamp-3 text-sm text-muted-foreground">{article.excerpt}</p>
+          <p className="line-clamp-3 text-sm text-muted-foreground">
+            {article.excerpt}
+          </p>
         ) : null}
         {showMeta ? <Meta article={article} /> : null}
       </div>
@@ -148,7 +185,11 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
 
   const body = () => {
     if (!articles.length) {
-      return <p className="text-sm text-muted-foreground">{str("emptyText") || "No articles yet."}</p>;
+      return (
+        <p className="text-sm text-muted-foreground">
+          {str("emptyText") || "No articles yet."}
+        </p>
+      );
     }
     if (layout === "list") {
       return (
@@ -156,16 +197,25 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
           {articles.map((article) => (
             <div key={article.slug} className="flex gap-4 py-4">
               {showCover && article.coverImageUrl ? (
-                <Cover article={article} className="hidden w-40 shrink-0 overflow-hidden rounded-fq-md sm:block" />
+                <Cover
+                  article={article}
+                  className="hidden w-40 shrink-0 overflow-hidden rounded-fq-md sm:block"
+                />
               ) : null}
               <div className="flex flex-1 flex-col gap-1">
                 <h3 className="text-lg font-semibold leading-snug">
-                  <Link to="/blog/$slug" params={{ slug: article.slug }} className="hover:text-primary">
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: article.slug }}
+                    className="hover:text-primary"
+                  >
                     {article.title}
                   </Link>
                 </h3>
                 {showExcerpt && article.excerpt ? (
-                  <p className="line-clamp-2 text-sm text-muted-foreground">{article.excerpt}</p>
+                  <p className="line-clamp-2 text-sm text-muted-foreground">
+                    {article.excerpt}
+                  </p>
                 ) : null}
                 {showMeta ? <Meta article={article} /> : null}
               </div>
@@ -178,7 +228,10 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
       return (
         <ul className="flex flex-col gap-2">
           {articles.map((article) => (
-            <li key={article.slug} className="flex flex-wrap items-baseline gap-2">
+            <li
+              key={article.slug}
+              className="flex flex-wrap items-baseline gap-2"
+            >
               <Link
                 to="/blog/$slug"
                 params={{ slug: article.slug }}
@@ -187,8 +240,13 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
                 {article.title}
               </Link>
               {showMeta && article.publishedAt ? (
-                <time dateTime={article.publishedAt} className="text-xs text-muted-foreground">
-                  {new Date(article.publishedAt).toLocaleDateString("en-GB", { timeZone: "UTC" })}
+                <time
+                  dateTime={article.publishedAt}
+                  className="text-xs text-muted-foreground"
+                >
+                  {new Date(article.publishedAt).toLocaleDateString("en-GB", {
+                    timeZone: "UTC",
+                  })}
                 </time>
               ) : null}
             </li>
@@ -202,7 +260,13 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             {lead ? (
-              <Card article={lead} showCover={showCover} showExcerpt={showExcerpt} showMeta={showMeta} lead />
+              <Card
+                article={lead}
+                showCover={showCover}
+                showExcerpt={showExcerpt}
+                showMeta={showMeta}
+                lead
+              />
             ) : null}
           </div>
           <div className="flex flex-col gap-4">
@@ -236,7 +300,9 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
 
   return (
     <section>
-      {heading ? <h2 className="mb-4 text-xl font-semibold">{heading}</h2> : null}
+      {heading ? (
+        <h2 className="mb-4 text-xl font-semibold">{heading}</h2>
+      ) : null}
       {body()}
     </section>
   );
@@ -251,17 +317,27 @@ const BlogTermsWidget: WidgetComponent = ({ str, bool }) => {
   if (str("style") === "list") {
     return (
       <nav aria-label="Browse by topic">
-        {heading ? <h2 className="mb-2 text-sm font-semibold">{heading}</h2> : null}
+        {heading ? (
+          <h2 className="mb-2 text-sm font-semibold">{heading}</h2>
+        ) : null}
         <ul className="flex flex-col gap-1 text-sm">
           {facets.map((facet) => (
             <li key={`${facet.kind}:${facet.slug}`}>
               <Link
-                to={facet.kind === "tag" ? "/blog/tag/$slug" : "/blog/category/$slug"}
+                to={
+                  facet.kind === "tag"
+                    ? "/blog/tag/$slug"
+                    : "/blog/category/$slug"
+                }
                 params={{ slug: facet.slug }}
                 className="inline-flex min-h-11 items-center gap-2 hover:text-primary"
               >
                 <span>{facet.name}</span>
-                {showCounts ? <span className="text-xs text-muted-foreground">{facet.count}</span> : null}
+                {showCounts ? (
+                  <span className="text-xs text-muted-foreground">
+                    {facet.count}
+                  </span>
+                ) : null}
               </Link>
             </li>
           ))}
@@ -271,8 +347,13 @@ const BlogTermsWidget: WidgetComponent = ({ str, bool }) => {
   }
   return (
     <div>
-      {heading ? <h2 className="mb-2 text-sm font-semibold">{heading}</h2> : null}
-      <ArchiveRail facets={facets} {...(feed?.activeSlug ? { activeSlug: feed.activeSlug } : {})} />
+      {heading ? (
+        <h2 className="mb-2 text-sm font-semibold">{heading}</h2>
+      ) : null}
+      <ArchiveRail
+        facets={facets}
+        {...(feed?.activeSlug ? { activeSlug: feed.activeSlug } : {})}
+      />
     </div>
   );
 };
@@ -281,7 +362,12 @@ const BlogPagerWidget: WidgetComponent = ({ str }) => {
   const feed = useBlogFeed();
   if (!feed) return null;
   const align = str("align") || "center";
-  const justify = align === "left" ? "justify-start" : align === "right" ? "justify-end" : "justify-center";
+  const justify =
+    align === "left"
+      ? "justify-start"
+      : align === "right"
+        ? "justify-end"
+        : "justify-center";
   return (
     <div className={`flex ${justify}`}>
       <Pager paging={feed.paging} basePath={feed.basePath} />

@@ -1,1 +1,625 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "label": "selfhost-preflight.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L1"}, {"id": "scripts_selfhost_preflight_host", "label": "HOST", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L20"}, {"id": "scripts_selfhost_preflight_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L21"}, {"id": "scripts_selfhost_preflight_add", "label": "add()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L22"}, {"id": "scripts_selfhost_preflight_ok", "label": "ok()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L23"}, {"id": "scripts_selfhost_preflight_bad", "label": "bad()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L24"}, {"id": "scripts_selfhost_preflight_skip", "label": "skip()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L25"}, {"id": "scripts_selfhost_preflight_ls", "label": "ls()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27"}, {"id": "scripts_selfhost_preflight_compose", "label": "COMPOSE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L29"}, {"id": "scripts_selfhost_preflight_yaml_files", "label": "YAML_FILES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L34"}, {"id": "scripts_selfhost_preflight_dashboards", "label": "dashboards", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L51"}, {"id": "scripts_selfhost_preflight_d", "label": "d", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L55"}, {"id": "scripts_selfhost_preflight_secret_mounts", "label": "SECRET_MOUNTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L65"}, {"id": "scripts_selfhost_preflight_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L67"}, {"id": "scripts_selfhost_preflight_text", "label": "text", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L68"}, {"id": "scripts_selfhost_preflight_p", "label": "p", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L70"}, {"id": "scripts_selfhost_preflight_rel", "label": "rel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L71"}, {"id": "scripts_selfhost_preflight_images", "label": "images", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L82"}, {"id": "scripts_selfhost_preflight_floating", "label": "floating", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L83"}, {"id": "scripts_selfhost_preflight_db", "label": "db", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L94"}, {"id": "scripts_selfhost_preflight_i", "label": "i", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L104"}, {"id": "scripts_selfhost_preflight_envkeysof", "label": "envKeysOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L124"}, {"id": "scripts_selfhost_preflight_docker_builtins", "label": "DOCKER_BUILTINS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L133"}, {"id": "scripts_selfhost_preflight_env_scopes", "label": "ENV_SCOPES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L135"}, {"id": "scripts_selfhost_preflight_keys", "label": "keys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L151"}, {"id": "scripts_selfhost_preflight_referenced", "label": "referenced", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L156"}, {"id": "scripts_selfhost_preflight_undocumented", "label": "undocumented", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L160"}, {"id": "scripts_selfhost_preflight_host_secrets", "label": "HOST_SECRETS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L168"}, {"id": "scripts_selfhost_preflight_host_env", "label": "HOST_ENV", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L172"}, {"id": "scripts_selfhost_preflight_fails", "label": "fails", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L195"}, {"id": "scripts_selfhost_preflight_skips", "label": "skips", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L196"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "js_yaml", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_host", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_add", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_ok", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_bad", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_skip", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_ls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_compose", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_yaml_files", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_dashboards", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_d", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_secret_mounts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_p", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_rel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_images", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_floating", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_i", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_envkeysof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_docker_builtins", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_env_scopes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_referenced", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L156", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_undocumented", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_host_secrets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_host_env", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L172", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_fails", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L195", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs", "target": "scripts_selfhost_preflight_skips", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L196", "weight": 1.0}, {"source": "scripts_selfhost_preflight_ok", "target": "scripts_selfhost_preflight_add", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L23", "weight": 1.0}, {"source": "scripts_selfhost_preflight_bad", "target": "scripts_selfhost_preflight_add", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L24", "weight": 1.0}, {"source": "scripts_selfhost_preflight_skip", "target": "scripts_selfhost_preflight_add", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L25", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_selfhost_preflight_add", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L22"}, {"caller_nid": "scripts_selfhost_preflight_ls", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27"}, {"caller_nid": "scripts_selfhost_preflight_ls", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27"}, {"caller_nid": "scripts_selfhost_preflight_ls", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27"}, {"caller_nid": "scripts_selfhost_preflight_ls", "callee": "readdirSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L27"}, {"caller_nid": "scripts_selfhost_preflight_envkeysof", "callee": "existsSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L125"}, {"caller_nid": "scripts_selfhost_preflight_envkeysof", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L127"}, {"caller_nid": "scripts_selfhost_preflight_envkeysof", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L127"}, {"caller_nid": "scripts_selfhost_preflight_envkeysof", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L127"}, {"caller_nid": "scripts_selfhost_preflight_envkeysof", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs", "source_location": "L127"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "label": "selfhost-preflight.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_selfhost_preflight_host",
+      "label": "HOST",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L20"
+    },
+    {
+      "id": "scripts_selfhost_preflight_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L21"
+    },
+    {
+      "id": "scripts_selfhost_preflight_add",
+      "label": "add()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L22"
+    },
+    {
+      "id": "scripts_selfhost_preflight_ok",
+      "label": "ok()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L23"
+    },
+    {
+      "id": "scripts_selfhost_preflight_bad",
+      "label": "bad()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L24"
+    },
+    {
+      "id": "scripts_selfhost_preflight_skip",
+      "label": "skip()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L25"
+    },
+    {
+      "id": "scripts_selfhost_preflight_ls",
+      "label": "ls()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27"
+    },
+    {
+      "id": "scripts_selfhost_preflight_compose",
+      "label": "COMPOSE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L29"
+    },
+    {
+      "id": "scripts_selfhost_preflight_yaml_files",
+      "label": "YAML_FILES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L34"
+    },
+    {
+      "id": "scripts_selfhost_preflight_dashboards",
+      "label": "dashboards",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L51"
+    },
+    {
+      "id": "scripts_selfhost_preflight_d",
+      "label": "d",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L55"
+    },
+    {
+      "id": "scripts_selfhost_preflight_secret_mounts",
+      "label": "SECRET_MOUNTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L65"
+    },
+    {
+      "id": "scripts_selfhost_preflight_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L67"
+    },
+    {
+      "id": "scripts_selfhost_preflight_text",
+      "label": "text",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L68"
+    },
+    {
+      "id": "scripts_selfhost_preflight_p",
+      "label": "p",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L70"
+    },
+    {
+      "id": "scripts_selfhost_preflight_rel",
+      "label": "rel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L71"
+    },
+    {
+      "id": "scripts_selfhost_preflight_images",
+      "label": "images",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L82"
+    },
+    {
+      "id": "scripts_selfhost_preflight_floating",
+      "label": "floating",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L83"
+    },
+    {
+      "id": "scripts_selfhost_preflight_db",
+      "label": "db",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L94"
+    },
+    {
+      "id": "scripts_selfhost_preflight_i",
+      "label": "i",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L104"
+    },
+    {
+      "id": "scripts_selfhost_preflight_envkeysof",
+      "label": "envKeysOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L124"
+    },
+    {
+      "id": "scripts_selfhost_preflight_docker_builtins",
+      "label": "DOCKER_BUILTINS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L133"
+    },
+    {
+      "id": "scripts_selfhost_preflight_env_scopes",
+      "label": "ENV_SCOPES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L135"
+    },
+    {
+      "id": "scripts_selfhost_preflight_keys",
+      "label": "keys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L151"
+    },
+    {
+      "id": "scripts_selfhost_preflight_referenced",
+      "label": "referenced",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L156"
+    },
+    {
+      "id": "scripts_selfhost_preflight_undocumented",
+      "label": "undocumented",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L160"
+    },
+    {
+      "id": "scripts_selfhost_preflight_host_secrets",
+      "label": "HOST_SECRETS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L168"
+    },
+    {
+      "id": "scripts_selfhost_preflight_host_env",
+      "label": "HOST_ENV",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L172"
+    },
+    {
+      "id": "scripts_selfhost_preflight_fails",
+      "label": "fails",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L195"
+    },
+    {
+      "id": "scripts_selfhost_preflight_skips",
+      "label": "skips",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L196"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "js_yaml",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_host",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_add",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_ok",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_bad",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_skip",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_ls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_compose",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_yaml_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_dashboards",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_d",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_secret_mounts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_p",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_rel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_images",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_floating",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_i",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_envkeysof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_docker_builtins",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_env_scopes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_referenced",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_undocumented",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_host_secrets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_host_env",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L172",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_fails",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_selfhost_preflight_mjs",
+      "target": "scripts_selfhost_preflight_skips",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_selfhost_preflight_ok",
+      "target": "scripts_selfhost_preflight_add",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_selfhost_preflight_bad",
+      "target": "scripts_selfhost_preflight_add",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_selfhost_preflight_skip",
+      "target": "scripts_selfhost_preflight_add",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L25",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_selfhost_preflight_add",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_ls",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_ls",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_ls",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_ls",
+      "callee": "readdirSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_envkeysof",
+      "callee": "existsSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_envkeysof",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_envkeysof",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_envkeysof",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "scripts_selfhost_preflight_envkeysof",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/selfhost-preflight.mjs",
+      "source_location": "L127"
+    }
+  ]
+}

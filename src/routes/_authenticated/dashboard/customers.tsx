@@ -29,7 +29,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/customers")({
       { property: "og:title", content: "Customers — Framique admin" },
       {
         property: "og:description",
-        content: "Search shoppers, read lifetime value and reuse segments in marketing.",
+        content:
+          "Search shoppers, read lifetime value and reuse segments in marketing.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -57,13 +58,22 @@ const DAY = 86_400_000;
 
 const VIEWS = {
   all: { en: "All", bn: "সব", match: () => true },
-  repeat: { en: "Repeat", bn: "পুনরাবৃত্ত", match: (c: Customer) => c.orders > 1 },
-  new: { en: "One order", bn: "এক অর্ডার", match: (c: Customer) => c.orders === 1 },
+  repeat: {
+    en: "Repeat",
+    bn: "পুনরাবৃত্ত",
+    match: (c: Customer) => c.orders > 1,
+  },
+  new: {
+    en: "One order",
+    bn: "এক অর্ডার",
+    match: (c: Customer) => c.orders === 1,
+  },
   lapsed: {
     en: "Lapsed 90d",
     bn: "৯০ দিন নিষ্ক্রিয়",
     match: (c: Customer) =>
-      !!c.lastOrderAt && Date.now() - new Date(c.lastOrderAt).getTime() > 90 * DAY,
+      !!c.lastOrderAt &&
+      Date.now() - new Date(c.lastOrderAt).getTime() > 90 * DAY,
   },
 } as const;
 type ViewKey = keyof typeof VIEWS;
@@ -71,7 +81,11 @@ type ViewKey = keyof typeof VIEWS;
 function CustomersPage() {
   const { t } = useLang();
   const load = useServerFn(customersLoadFn);
-  const list = useListState({ defaultSort: "spend", defaultDir: "desc", pageSize: 25 });
+  const list = useListState({
+    defaultSort: "spend",
+    defaultDir: "desc",
+    pageSize: 25,
+  });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["commerce", "customers", list.q],
@@ -101,14 +115,22 @@ function CustomersPage() {
       key: "name",
       header: t("Name", "নাম"),
       sortable: true,
-      cell: (c) => <span className="font-medium text-foreground">{c.name ?? "—"}</span>,
+      cell: (c) => (
+        <span className="font-medium text-foreground">{c.name ?? "—"}</span>
+      ),
     },
     {
       key: "contact",
       header: t("Contact", "যোগাযোগ"),
       cell: (c) => <span className="fq-sub">{c.email ?? c.phone ?? "—"}</span>,
     },
-    { key: "orders", header: t("Orders", "অর্ডার"), numeric: true, sortable: true, cell: (c) => c.orders },
+    {
+      key: "orders",
+      header: t("Orders", "অর্ডার"),
+      numeric: true,
+      sortable: true,
+      cell: (c) => c.orders,
+    },
     {
       key: "spend",
       header: t("Spend", "খরচ"),
@@ -123,7 +145,9 @@ function CustomersPage() {
       sortable: true,
       cell: (c) =>
         c.lastOrderAt ? (
-          <span className="fq-num fq-sub">{new Date(c.lastOrderAt).toLocaleDateString()}</span>
+          <span className="fq-num fq-sub">
+            {new Date(c.lastOrderAt).toLocaleDateString()}
+          </span>
         ) : (
           <span className="fq-sub">—</span>
         ),
@@ -144,14 +168,20 @@ function CustomersPage() {
           <p className="fq-num text-2xl font-semibold">{customers.length}</p>
         </Card>
         <Card>
-          <p className="text-xs uppercase fq-sub">{t("Lifetime value", "মোট মূল্য")}</p>
+          <p className="text-xs uppercase fq-sub">
+            {t("Lifetime value", "মোট মূল্য")}
+          </p>
           <p className="text-2xl font-semibold">
             <Money minor={lifetime} />
           </p>
         </Card>
         <Card>
-          <p className="text-xs uppercase fq-sub">{t("Segments", "সেগমেন্ট")}</p>
-          <p className="fq-num text-2xl font-semibold">{data?.segments.length ?? 0}</p>
+          <p className="text-xs uppercase fq-sub">
+            {t("Segments", "সেগমেন্ট")}
+          </p>
+          <p className="fq-num text-2xl font-semibold">
+            {data?.segments.length ?? 0}
+          </p>
         </Card>
       </div>
 
@@ -163,7 +193,10 @@ function CustomersPage() {
             type="search"
             value={list.q}
             onChange={(e) => list.setQ(e.target.value)}
-            placeholder={t("Search name, email or phone", "নাম, ইমেইল বা ফোন খুঁজুন")}
+            placeholder={t(
+              "Search name, email or phone",
+              "নাম, ইমেইল বা ফোন খুঁজুন",
+            )}
             aria-label={t("Search customers", "ক্রেতা খুঁজুন")}
             className={`${inputClass} h-9 w-64 py-0`}
           />
@@ -194,8 +227,14 @@ function CustomersPage() {
         onPage={list.setPage}
         empty={
           <EmptyState
-            title={t("No customers match this search.", "এই খোঁজে কোনো ক্রেতা নেই।")}
-            description={t("Try another term or view.", "অন্য শব্দ বা ভিউ চেষ্টা করুন।")}
+            title={t(
+              "No customers match this search.",
+              "এই খোঁজে কোনো ক্রেতা নেই।",
+            )}
+            description={t(
+              "Try another term or view.",
+              "অন্য শব্দ বা ভিউ চেষ্টা করুন।",
+            )}
           />
         }
       />

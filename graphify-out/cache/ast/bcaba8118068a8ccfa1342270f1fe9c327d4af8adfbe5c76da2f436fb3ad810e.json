@@ -1,1 +1,495 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "label": "blog-diff.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L1"}, {"id": "lib_blog_diff_diff_limits", "label": "DIFF_LIMITS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L15"}, {"id": "lib_blog_diff_diffop", "label": "DiffOp", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L21"}, {"id": "lib_blog_diff_diffchunk", "label": "DiffChunk", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L22"}, {"id": "lib_blog_diff_tokenize", "label": "tokenize()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L25"}, {"id": "lib_blog_diff_trimcommon", "label": "trimCommon()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L29"}, {"id": "lib_blog_diff_myers", "label": "myers()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L39"}, {"id": "lib_blog_diff_backtrack", "label": "backtrack()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L67"}, {"id": "lib_blog_diff_merge", "label": "merge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L98"}, {"id": "lib_blog_diff_diffwords", "label": "diffWords()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L110"}, {"id": "lib_blog_diff_diffsummary", "label": "DiffSummary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L126"}, {"id": "lib_blog_diff_summarizediff", "label": "summarizeDiff()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L128"}, {"id": "lib_blog_diff_difffields", "label": "diffFields()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L142"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_diff_limits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_diffop", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_diffchunk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_tokenize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_trimcommon", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_myers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_backtrack", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_merge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_diffwords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_diffsummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_summarizediff", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "target": "lib_blog_diff_difffields", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L142", "weight": 1.0}, {"source": "lib_blog_diff_myers", "target": "lib_blog_diff_backtrack", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L57", "weight": 1.0}, {"source": "lib_blog_diff_diffwords", "target": "lib_blog_diff_tokenize", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L111", "weight": 1.0}, {"source": "lib_blog_diff_diffwords", "target": "lib_blog_diff_merge", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L114", "weight": 1.0}, {"source": "lib_blog_diff_diffwords", "target": "lib_blog_diff_trimcommon", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L119", "weight": 1.0}, {"source": "lib_blog_diff_diffwords", "target": "lib_blog_diff_myers", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L122", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_blog_diff_tokenize", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L26"}, {"caller_nid": "lib_blog_diff_myers", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L42"}, {"caller_nid": "lib_blog_diff_myers", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L47"}, {"caller_nid": "lib_blog_diff_myers", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L49"}, {"caller_nid": "lib_blog_diff_myers", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L49"}, {"caller_nid": "lib_blog_diff_myers", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_diff_myers", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L50"}, {"caller_nid": "lib_blog_diff_myers", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L56"}, {"caller_nid": "lib_blog_diff_myers", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L62"}, {"caller_nid": "lib_blog_diff_myers", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L62"}, {"caller_nid": "lib_blog_diff_myers", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L63"}, {"caller_nid": "lib_blog_diff_myers", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L63"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L74"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L74"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L76"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L81"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L85"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L88"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L93"}, {"caller_nid": "lib_blog_diff_backtrack", "callee": "reverse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L95"}, {"caller_nid": "lib_blog_diff_merge", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L104"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L120"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L120"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L121"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L121"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L122"}, {"caller_nid": "lib_blog_diff_diffwords", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L122"}, {"caller_nid": "lib_blog_diff_summarizediff", "callee": "words", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L134"}, {"caller_nid": "lib_blog_diff_summarizediff", "callee": "words", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L135"}, {"caller_nid": "lib_blog_diff_summarizediff", "callee": "words", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L136"}, {"caller_nid": "lib_blog_diff_difffields", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L143"}, {"caller_nid": "lib_blog_diff_difffields", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L143"}, {"caller_nid": "lib_blog_diff_difffields", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L144"}, {"caller_nid": "lib_blog_diff_difffields", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts", "source_location": "L144"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "label": "blog-diff.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_blog_diff_diff_limits",
+      "label": "DIFF_LIMITS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_blog_diff_diffop",
+      "label": "DiffOp",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_blog_diff_diffchunk",
+      "label": "DiffChunk",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_blog_diff_tokenize",
+      "label": "tokenize()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_blog_diff_trimcommon",
+      "label": "trimCommon()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_blog_diff_myers",
+      "label": "myers()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_blog_diff_backtrack",
+      "label": "backtrack()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L67"
+    },
+    {
+      "id": "lib_blog_diff_merge",
+      "label": "merge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_blog_diff_diffwords",
+      "label": "diffWords()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_blog_diff_diffsummary",
+      "label": "DiffSummary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L126"
+    },
+    {
+      "id": "lib_blog_diff_summarizediff",
+      "label": "summarizeDiff()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_blog_diff_difffields",
+      "label": "diffFields()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L142"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_diff_limits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_diffop",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_diffchunk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_tokenize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_trimcommon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_myers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_backtrack",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_merge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_diffwords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_diffsummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_summarizediff",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "target": "lib_blog_diff_difffields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_diff_myers",
+      "target": "lib_blog_diff_backtrack",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_diff_diffwords",
+      "target": "lib_blog_diff_tokenize",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_diff_diffwords",
+      "target": "lib_blog_diff_merge",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_diff_diffwords",
+      "target": "lib_blog_diff_trimcommon",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_blog_diff_diffwords",
+      "target": "lib_blog_diff_myers",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_blog_diff_tokenize",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L26"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_blog_diff_myers",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "lib_blog_diff_backtrack",
+      "callee": "reverse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "lib_blog_diff_merge",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_blog_diff_diffwords",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_blog_diff_summarizediff",
+      "callee": "words",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_blog_diff_summarizediff",
+      "callee": "words",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_blog_diff_summarizediff",
+      "callee": "words",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_blog_diff_difffields",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_blog_diff_difffields",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "lib_blog_diff_difffields",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "lib_blog_diff_difffields",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/blog-diff.ts",
+      "source_location": "L144"
+    }
+  ]
+}

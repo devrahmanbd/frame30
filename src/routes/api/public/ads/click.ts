@@ -45,13 +45,19 @@ const clickSchema = z.object({
   visitorId: z.string().trim().min(4).max(80),
   nonce: z.string().trim().min(16).max(64),
   sentAt: z.number().int().positive(),
-  signature: z.string().trim().regex(/^[0-9a-f]{64}$/).optional(),
+  signature: z
+    .string()
+    .trim()
+    .regex(/^[0-9a-f]{64}$/)
+    .optional(),
 });
 
 const ROUTE = "ads.click";
 
 function clientIp(request: Request) {
-  const forwarded = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for");
+  const forwarded =
+    request.headers.get("cf-connecting-ip") ??
+    request.headers.get("x-forwarded-for");
   return (forwarded?.split(",")[0] ?? "0.0.0.0").trim();
 }
 
@@ -59,10 +65,16 @@ function noStore(extra: Record<string, string> = {}) {
   return { "cache-control": "no-store", ...extra };
 }
 
-async function reject(reason: BeaconRejection, extraHeaders: Record<string, string> = {}) {
+async function reject(
+  reason: BeaconRejection,
+  extraHeaders: Record<string, string> = {},
+) {
   const { incr } = await import("@/lib/observability.server");
   incr("framique_ad_click_rejected_total", { reason });
-  return Response.json({ error: reason }, { status: rejectionStatus(reason), headers: noStore(extraHeaders) });
+  return Response.json(
+    { error: reason },
+    { status: rejectionStatus(reason), headers: noStore(extraHeaders) },
+  );
 }
 
 async function hmacHex(secret: string, payload: string) {
@@ -73,7 +85,11 @@ async function hmacHex(secret: string, payload: string) {
     false,
     ["sign"],
   );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(payload),
+  );
   return Array.from(new Uint8Array(sig))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
@@ -83,38 +99,44 @@ export const Route = createFileRoute("/api/public/ads/click")({
   server: {
     handlers: {
       GET: async () =>
-        new Response("Method not allowed", { status: 405, headers: noStore({ allow: "POST" }) }),
+        new Response("Method not allowed", {
+          status: 405,
+          headers: noStore({ allow: "POST" }),
+        }),
       POST: async ({ request }) => {
         const { withRequestTrace } = await import("@/lib/observability.server");
         return withRequestTrace("ads.click", request, async () => {
-          const {
-            addBreadcrumb,
-            captureError,
-            incr,
-            observe,
-            setTraceTag,
-          } = await import("@/lib/observability.server");
+          const { addBreadcrumb, captureError, incr, observe, setTraceTag } =
+            await import("@/lib/observability.server");
 
           if (!isJsonContentType(request.headers.get("content-type"))) {
             return reject("unsupported_media_type");
           }
           if (
             request.headers.get("content-length") &&
-            Number(request.headers.get("content-length")) > BEACON_MAX_BODY_BYTES
+            Number(request.headers.get("content-length")) >
+              BEACON_MAX_BODY_BYTES
           ) {
             return reject("payload_too_large");
           }
 
-          const { rateLimit, rateLimitHeaders } = await import("@/lib/rate-limit.server");
+          const { rateLimit, rateLimitHeaders } =
+            await import("@/lib/rate-limit.server");
 
           // Charge the source address before any parsing so a flood never
           // reaches the JSON parser, let alone the database.
           const ip = clientIp(request);
           const ipVerdict = await rateLimit("ads.click_ip", `edge:${ip}`);
-          if (!ipVerdict.allowed) return reject("rate_limited", rateLimitHeaders(ipVerdict));
+          if (!ipVerdict.allowed)
+            return reject("rate_limited", rateLimitHeaders(ipVerdict));
 
           const raw = await request.text();
-          if (!isBodyWithinLimit(request.headers.get("content-length"), new TextEncoder().encode(raw).length)) {
+          if (
+            !isBodyWithinLimit(
+              request.headers.get("content-length"),
+              new TextEncoder().encode(raw).length,
+            )
+          ) {
             return reject("payload_too_large");
           }
 
@@ -133,17 +155,30 @@ export const Route = createFileRoute("/api/public/ads/click")({
           const freshness = checkTimestamp(parsed.sentAt);
           if (freshness !== "ok") return reject(freshness);
 
-          const merchantVerdict = await rateLimit("ads.click", parsed.merchantId);
-          if (!merchantVerdict.allowed) return reject("rate_limited", rateLimitHeaders(merchantVerdict));
+          const merchantVerdict = await rateLimit(
+            "ads.click",
+            parsed.merchantId,
+          );
+          if (!merchantVerdict.allowed)
+            return reject("rate_limited", rateLimitHeaders(merchantVerdict));
 
-          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
           const { beaconPolicy } = await import("@/lib/ad-fraud.server");
-          const policy = await beaconPolicy(supabaseAdmin as never, parsed.merchantId);
+          const policy = await beaconPolicy(
+            supabaseAdmin as never,
+            parsed.merchantId,
+          );
           if (!policy.exists) return reject("unknown_merchant");
 
           // Origin allowlisting only engages once a merchant has declared its
           // storefront hosts, so an unconfigured store keeps working.
-          if (!isOriginAllowed(request.headers.get("origin"), policy.allowedOrigins)) {
+          if (
+            !isOriginAllowed(
+              request.headers.get("origin"),
+              policy.allowedOrigins,
+            )
+          ) {
             return reject("origin_not_allowed");
           }
 
@@ -158,18 +193,26 @@ export const Route = createFileRoute("/api/public/ads/click")({
                 network: parsed.network,
               }),
             );
-            if (!parsed.signature || !timingSafeEqualHex(parsed.signature, expected)) {
+            if (
+              !parsed.signature ||
+              !timingSafeEqualHex(parsed.signature, expected)
+            ) {
               return reject("invalid_signature");
             }
           }
 
-          const { claimIdempotency, completeIdempotency, hashRequest, releaseIdempotency } = await import(
-            "@/lib/replay-guard.server"
-          );
+          const {
+            claimIdempotency,
+            completeIdempotency,
+            hashRequest,
+            releaseIdempotency,
+          } = await import("@/lib/replay-guard.server");
           const requestHash = await hashRequest(raw);
           // The header wins when a client retries a network failure; otherwise
           // the beacon nonce is the natural single-use token.
-          const idemKey = (request.headers.get("idempotency-key") ?? parsed.nonce).slice(0, 64);
+          const idemKey = (
+            request.headers.get("idempotency-key") ?? parsed.nonce
+          ).slice(0, 64);
 
           let claim;
           try {
@@ -181,25 +224,41 @@ export const Route = createFileRoute("/api/public/ads/click")({
             });
           } catch (err) {
             void captureError(err, { route: ROUTE, stage: "idempotency" });
-            return Response.json({ error: "temporarily_unavailable" }, { status: 503, headers: noStore() });
+            return Response.json(
+              { error: "temporarily_unavailable" },
+              { status: 503, headers: noStore() },
+            );
           }
 
           if (claim.status === "conflict") {
-            incr("framique_ad_click_rejected_total", { reason: "idempotency_conflict" });
-            return Response.json({ error: "idempotency_conflict" }, { status: 409, headers: noStore() });
+            incr("framique_ad_click_rejected_total", {
+              reason: "idempotency_conflict",
+            });
+            return Response.json(
+              { error: "idempotency_conflict" },
+              { status: 409, headers: noStore() },
+            );
           }
           if (claim.status === "replay") {
             incr("framique_ad_click_replay_total", { source: "idempotency" });
-            return Response.json(claim.response ?? { ok: true, duplicate: true }, {
-              status: claim.httpStatus,
-              headers: noStore({ "idempotent-replay": "true", ...rateLimitHeaders(merchantVerdict) }),
-            });
+            return Response.json(
+              claim.response ?? { ok: true, duplicate: true },
+              {
+                status: claim.httpStatus,
+                headers: noStore({
+                  "idempotent-replay": "true",
+                  ...rateLimitHeaders(merchantVerdict),
+                }),
+              },
+            );
           }
 
           const started = Date.now();
           try {
             const { ingestClick } = await import("@/lib/ad-fraud.server");
-            addBreadcrumb("ads", "beacon accepted", { network: parsed.network });
+            addBreadcrumb("ads", "beacon accepted", {
+              network: parsed.network,
+            });
 
             const result = await ingestClick(
               supabaseAdmin as never,
@@ -212,7 +271,10 @@ export const Route = createFileRoute("/api/public/ads/click")({
                 clickId: parsed.clickId ?? null,
                 landingPath: safeLandingPath(parsed.landingPath),
                 referrerHost: safeReferrerHost(parsed.referrerHost),
-                userAgent: (request.headers.get("user-agent") ?? "").slice(0, 400),
+                userAgent: (request.headers.get("user-agent") ?? "").slice(
+                  0,
+                  400,
+                ),
                 ipRaw: ip,
                 visitorRaw: parsed.visitorId,
                 javascriptRan: parsed.javascriptRan,
@@ -222,11 +284,19 @@ export const Route = createFileRoute("/api/public/ads/click")({
                 visitorCountry: request.headers.get("cf-ipcountry"),
                 timezoneOffsetMinutes: parsed.timezoneOffsetMinutes ?? null,
               },
-              { asnHint: request.headers.get("cf-ray") ? null : null, targetCountry: policy.targetCountry },
+              {
+                asnHint: request.headers.get("cf-ray") ? null : null,
+                targetCountry: policy.targetCountry,
+              },
             );
 
-            observe("framique_ad_score", result.score, { network: parsed.network });
-            observe("framique_ad_ingest_ms", Date.now() - started, { network: parsed.network, path: "route" });
+            observe("framique_ad_score", result.score, {
+              network: parsed.network,
+            });
+            observe("framique_ad_ingest_ms", Date.now() - started, {
+              network: parsed.network,
+              path: "route",
+            });
 
             const body = { ok: true, duplicate: result.duplicate };
             await completeIdempotency(supabaseAdmin as never, {
@@ -248,8 +318,13 @@ export const Route = createFileRoute("/api/public/ads/click")({
               key: idemKey,
             }).catch(() => undefined);
             void captureError(err, { route: ROUTE, stage: "ingest" });
-            incr("framique_ad_click_rejected_total", { reason: "ingest_failed" });
-            return Response.json({ error: "ingest_failed" }, { status: 500, headers: noStore() });
+            incr("framique_ad_click_rejected_total", {
+              reason: "ingest_failed",
+            });
+            return Response.json(
+              { error: "ingest_failed" },
+              { status: 500, headers: noStore() },
+            );
           }
         });
       },

@@ -13,10 +13,20 @@ export const Route = createFileRoute("/.well-known/acme-challenge/$token")({
   server: {
     handlers: {
       GET: async ({ params, request }) => {
-        const host = (request.headers.get("host") ?? "").split(":")[0]?.toLowerCase() ?? "";
+        const host =
+          (request.headers.get("host") ?? "").split(":")[0]?.toLowerCase() ??
+          "";
         const token = params.token;
-        if (!host || !token || token.length > 128 || !/^[A-Za-z0-9_-]+$/.test(token)) {
-          return new Response("Not found", { status: 404, headers: { "cache-control": "no-store" } });
+        if (
+          !host ||
+          !token ||
+          token.length > 128 ||
+          !/^[A-Za-z0-9_-]+$/.test(token)
+        ) {
+          return new Response("Not found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
         }
         try {
           const { enforceRateLimit } = await import("@/lib/rate-limit.server");
@@ -32,10 +42,16 @@ export const Route = createFileRoute("/.well-known/acme-challenge/$token")({
           const { incr } = await import("@/lib/observability.server");
           incr("framique_domain_acme_served_total");
           return new Response(value, {
-            headers: { "content-type": "text/plain", "cache-control": "no-store" },
+            headers: {
+              "content-type": "text/plain",
+              "cache-control": "no-store",
+            },
           });
         } catch {
-          return new Response("Not found", { status: 404, headers: { "cache-control": "no-store" } });
+          return new Response("Not found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
         }
       },
     },

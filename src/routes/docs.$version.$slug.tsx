@@ -18,8 +18,13 @@ import {
   docSourcePath,
   docVersion,
   isDocVersion,
-  type DocVersionId} from "@/lib/docs";
-import { breadcrumbNode, buildMarketingHead, techArticleNode } from "@/lib/marketing-seo";
+  type DocVersionId,
+} from "@/lib/docs";
+import {
+  breadcrumbNode,
+  buildMarketingHead,
+  techArticleNode,
+} from "@/lib/marketing-seo";
 import { getSiteContext } from "@/lib/site-seo.functions";
 
 /**
@@ -39,10 +44,11 @@ export const Route = createFileRoute("/docs/$version/$slug")({
     const version = isDocVersion(params.version) ? params.version : null;
     return {
       origin: site.origin,
-      
+
       version,
       slug: params.slug,
-      found: Boolean(version && docPage(version, params.slug))};
+      found: Boolean(version && docPage(version, params.slug)),
+    };
   },
   head: ({ params, loaderData }) => {
     const origin = loaderData?.origin ?? null;
@@ -57,15 +63,25 @@ export const Route = createFileRoute("/docs/$version/$slug")({
       // Sunset and unknown URLs both point their canonical at the live page.
       path: page ? docCanonicalPath(page.slug) : path,
       ...(page
-        ? { title: `${page.title.en} — Framique docs`, description: page.summary.en }
+        ? {
+            title: `${page.title.en} — Framique docs`,
+            description: page.summary.en,
+          }
         : {
             title: "Documentation page not found",
             description:
-              "This documentation page does not exist in this version. Browse the current Framique developer documentation index instead."}),
-      ...(page && current ? {} : { robots: "noindex,follow" })});
+              "This documentation page does not exist in this version. Browse the current Framique developer documentation index instead.",
+          }),
+      ...(page && current ? {} : { robots: "noindex,follow" }),
+    });
 
     const nodes = [
-      breadcrumbNode("docs", origin, "en", page ? { name: page.title.en, path } : undefined),
+      breadcrumbNode(
+        "docs",
+        origin,
+        "en",
+        page ? { name: page.title.en, path } : undefined,
+      ),
       page
         ? techArticleNode({
             origin,
@@ -74,7 +90,8 @@ export const Route = createFileRoute("/docs/$version/$slug")({
             description: page.summary.en,
             publishedAt: page.updated,
             updatedAt: page.updated,
-            section: "Developer documentation"})
+            section: "Developer documentation",
+          })
         : null,
     ].filter((node): node is Record<string, unknown> => Boolean(node));
 
@@ -86,24 +103,35 @@ export const Route = createFileRoute("/docs/$version/$slug")({
           ? [
               {
                 type: "application/ld+json",
-                children: JSON.stringify({ "@context": "https://schema.org", "@graph": nodes })},
+                children: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@graph": nodes,
+                }),
+              },
             ]
-          : []};
+          : [],
+    };
   },
-  component: DocsPage});
+  component: DocsPage,
+});
 
 function DocsPage() {
   const { lang } = useLang();
-  const { version, slug, found  } = Route.useLoaderData();
+  const { version, slug, found } = Route.useLoaderData();
 
   if (!version || !found) {
     return (
-      <PublicShell >
+      <PublicShell>
         <section className="mx-auto max-w-3xl px-4 py-16">
-          <h1 className="font-bangla-display text-3xl font-bold">This page moved or never existed</h1>
+          <h1 className="font-bangla-display text-3xl font-bold">
+            This page moved or never existed
+          </h1>
           <p className="mt-3 text-muted-foreground">
-            Nothing is served at <code className="font-mono">/docs/{version ?? "?"}/{slug}</code>. The current
-            documentation index is below.
+            Nothing is served at{" "}
+            <code className="font-mono">
+              /docs/{version ?? "?"}/{slug}
+            </code>
+            . The current documentation index is below.
           </p>
           <ul className="mt-6 space-y-2 text-sm">
             {docNav(CURRENT_VERSION).flatMap((group) =>
@@ -132,9 +160,14 @@ function DocsPage() {
   const meta = docVersion(version);
 
   return (
-    <PublicShell >
+    <PublicShell>
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 lg:grid-cols-[16rem_minmax(0,1fr)_14rem]">
-        <DocsSidebar version={version} activeSlug={slug} nav={nav} lang={lang} />
+        <DocsSidebar
+          version={version}
+          activeSlug={slug}
+          nav={nav}
+          lang={lang}
+        />
 
         <article className="min-w-0">
           {meta.status === "sunset" && (
@@ -143,7 +176,8 @@ function DocsPage() {
               className="mb-6 rounded-fq-md border border-warning bg-warning-soft p-4 text-sm text-warning-foreground"
             >
               You are reading <strong>{meta.label}</strong>, which is retired
-              {meta.sunsetOn ? ` on ${meta.sunsetOn}` : ""}. It is kept online for existing integrations only.{" "}
+              {meta.sunsetOn ? ` on ${meta.sunsetOn}` : ""}. It is kept online
+              for existing integrations only.{" "}
               <Link
                 to="/docs/$version/$slug"
                 params={{ version: CURRENT_VERSION, slug }}
@@ -155,15 +189,22 @@ function DocsPage() {
             </p>
           )}
 
-          <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground">
+          <nav
+            aria-label="Breadcrumb"
+            className="text-xs text-muted-foreground"
+          >
             <Link to="/docs" className="hover:underline">
               Docs
             </Link>{" "}
             / <span>{page.title[lang]}</span>
           </nav>
 
-          <h1 className="mt-2 font-bangla-display text-3xl font-bold md:text-4xl">{page.title[lang]}</h1>
-          <p className="mt-3 text-lg text-muted-foreground">{page.summary[lang]}</p>
+          <h1 className="mt-2 font-bangla-display text-3xl font-bold md:text-4xl">
+            {page.title[lang]}
+          </h1>
+          <p className="mt-3 text-lg text-muted-foreground">
+            {page.summary[lang]}
+          </p>
           <p className="mt-2 text-xs text-muted-foreground">
             Version {meta.label} · updated {page.updated}
           </p>
@@ -176,8 +217,14 @@ function DocsPage() {
               </summary>
               <ul className="mt-2.5 space-y-1.5 border-t border-border/50 pt-2 text-muted-foreground">
                 {headings.map((heading) => (
-                  <li key={heading.anchor} className={heading.level === 3 ? "pl-3" : ""}>
-                    <a href={`#${heading.anchor}`} className="block py-1 hover:text-primary transition-colors">
+                  <li
+                    key={heading.anchor}
+                    className={heading.level === 3 ? "pl-3" : ""}
+                  >
+                    <a
+                      href={`#${heading.anchor}`}
+                      className="block py-1 hover:text-primary transition-colors"
+                    >
                       {heading.text}
                     </a>
                   </li>
@@ -224,11 +271,19 @@ function DocsPage() {
 
         <aside className="hidden lg:block">
           <div className="sticky top-24">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">On this page</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              On this page
+            </p>
             <ul className="mt-3 space-y-2 text-sm">
               {headings.map((heading) => (
-                <li key={heading.anchor} className={heading.level === 3 ? "pl-3" : ""}>
-                  <a href={`#${heading.anchor}`} className="fq-tap text-muted-foreground hover:text-foreground">
+                <li
+                  key={heading.anchor}
+                  className={heading.level === 3 ? "pl-3" : ""}
+                >
+                  <a
+                    href={`#${heading.anchor}`}
+                    className="fq-tap text-muted-foreground hover:text-foreground"
+                  >
                     {heading.text}
                   </a>
                 </li>
@@ -246,17 +301,24 @@ function DocsSidebar({
   version,
   activeSlug,
   nav,
-  lang}: {
+  lang,
+}: {
   version: DocVersionId;
   activeSlug: string;
   nav: ReturnType<typeof docNav>;
   lang: "en" | "bn";
 }) {
   return (
-    <nav aria-label="Documentation" className="lg:sticky lg:top-24 lg:self-start">
+    <nav
+      aria-label="Documentation"
+      className="lg:sticky lg:top-24 lg:self-start"
+    >
       <DocsSearch version={version} />
 
-      <label htmlFor="docs-version" className="mt-4 block text-xs font-semibold uppercase text-muted-foreground">
+      <label
+        htmlFor="docs-version"
+        className="mt-4 block text-xs font-semibold uppercase text-muted-foreground"
+      >
         Version
       </label>
       <select
@@ -265,7 +327,10 @@ function DocsSidebar({
         onChange={(event) => {
           // Full navigation keeps the version in the URL, which is what makes a
           // docs link shareable and quotable in a support thread.
-          window.location.href = docPath(event.target.value as DocVersionId, activeSlug);
+          window.location.href = docPath(
+            event.target.value as DocVersionId,
+            activeSlug,
+          );
         }}
         className="mt-1 min-h-11 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
       >
@@ -289,7 +354,9 @@ function DocsSidebar({
                   to="/docs/$version/$slug"
                   params={{ version, slug: page.slug }}
                   className={`block rounded-fq-md px-2 py-2 text-sm ${
-                    page.slug === activeSlug ? "bg-accent font-medium" : "hover:bg-accent"
+                    page.slug === activeSlug
+                      ? "bg-accent font-medium"
+                      : "hover:bg-accent"
                   }`}
                   aria-current={page.slug === activeSlug ? "page" : undefined}
                 >

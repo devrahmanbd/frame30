@@ -2,7 +2,13 @@ import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { StatusPill, Field, inputClass, btnPrimary, btnGhost } from "@/components/admin/MarketingUi";
+import {
+  StatusPill,
+  Field,
+  inputClass,
+  btnPrimary,
+  btnGhost,
+} from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
 import { PERMISSION_MATRIX, type Grant } from "@/lib/permissions";
 import {
@@ -23,10 +29,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/staff")({
       { title: "Staff & permissions — Framique admin" },
       {
         name: "description",
-        content: "Manage team members, custom roles, two-factor status and store verification.",
+        content:
+          "Manage team members, custom roles, two-factor status and store verification.",
       },
       { property: "og:title", content: "Staff & permissions — Framique admin" },
-      { property: "og:description", content: "Granular roles, audit trail and store verification." },
+      {
+        property: "og:description",
+        content: "Granular roles, audit trail and store verification.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -35,7 +45,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/staff")({
   component: StaffPage,
 });
 
-const STATUS_TONE: Record<string, "neutral" | "success" | "warning" | "danger" | "info"> = {
+const STATUS_TONE: Record<
+  string,
+  "neutral" | "success" | "warning" | "danger" | "info"
+> = {
   invited: "warning",
   active: "success",
   suspended: "danger",
@@ -50,7 +63,12 @@ const STATUS_TONE: Record<string, "neutral" | "success" | "warning" | "danger" |
 };
 
 const FORBIDDEN = ["staff:manage_roles", "staff:manage_grants"];
-const OWNER_ONLY = ["finance:read", "finance:initiate", "finance:approve", "settings:update"];
+const OWNER_ONLY = [
+  "finance:read",
+  "finance:initiate",
+  "finance:approve",
+  "settings:update",
+];
 
 function key(g: Grant) {
   return `${g.group}:${g.action}`;
@@ -67,7 +85,11 @@ function StaffPage() {
   const deleteRole = useServerFn(governanceDeleteRoleFn);
   const invite = useServerFn(governanceInviteFn);
   const revokeSession = useServerFn(governanceRevokeSessionFn);
-  const [inviteForm, setInviteForm] = useState<{ email: string; role: "admin" | "staff" | "viewer"; roleId: string }>({
+  const [inviteForm, setInviteForm] = useState<{
+    email: string;
+    role: "admin" | "staff" | "viewer";
+    roleId: string;
+  }>({
     email: "",
     role: "staff",
     roleId: "",
@@ -78,8 +100,12 @@ function StaffPage() {
   const [roleId, setRoleId] = useState<string | null>(editable[0]?.id ?? null);
   const current = data.roles.find((r) => r.id === roleId) ?? null;
   const [roleName, setRoleName] = useState(current?.name ?? "");
-  const [grants, setGrants] = useState<string[]>((current?.grants ?? []).map(key));
-  const [mfaRequired, setMfaRequired] = useState<boolean>(current?.mfaRequired ?? false);
+  const [grants, setGrants] = useState<string[]>(
+    (current?.grants ?? []).map(key),
+  );
+  const [mfaRequired, setMfaRequired] = useState<boolean>(
+    current?.mfaRequired ?? false,
+  );
   const [busy, setBusy] = useState(false);
   const [kyc, setKyc] = useState({
     legalName: data.kyc.legalName,
@@ -112,8 +138,12 @@ function StaffPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{tk("staff.title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{tk("staff.subtitle")}</p>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {tk("staff.title")}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {tk("staff.subtitle")}
+        </p>
       </header>
 
       <section className="rounded-fq-md border border-border bg-card">
@@ -192,7 +222,9 @@ function StaffPage() {
                         )
                       }
                     >
-                      {(["invited", "active", "suspended", "removed"] as const).map((s) => (
+                      {(
+                        ["invited", "active", "suspended", "removed"] as const
+                      ).map((s) => (
                         <option key={s} value={s}>
                           {tk(`staff.status.${s}`)}
                         </option>
@@ -206,7 +238,9 @@ function StaffPage() {
                     />
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {m.joinedAt ? new Date(m.joinedAt).toLocaleDateString() : "—"}
+                    {m.joinedAt
+                      ? new Date(m.joinedAt).toLocaleDateString()
+                      : "—"}
                   </td>
                 </tr>
               ))}
@@ -214,14 +248,18 @@ function StaffPage() {
           </table>
         </div>
         <div className="flex flex-wrap items-center gap-3 border-t border-border px-4 py-3">
-          <span className="text-sm text-muted-foreground">{tk("staff.mfa_own")}</span>
+          <span className="text-sm text-muted-foreground">
+            {tk("staff.mfa_own")}
+          </span>
           {(["none", "enrolled", "enforced"] as const).map((s) => (
             <button
               key={s}
               type="button"
               className={btnGhost}
               disabled={busy}
-              onClick={() => run(() => setMfa({ data: { status: s } }), "staff.mfa_updated")}
+              onClick={() =>
+                run(() => setMfa({ data: { status: s } }), "staff.mfa_updated")
+              }
             >
               {tk(`staff.mfa.${s}`)}
             </button>
@@ -230,7 +268,9 @@ function StaffPage() {
       </section>
 
       <section className="rounded-fq-md border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 text-sm font-semibold">{tk("staff.invite")}</h2>
+        <h2 className="border-b border-border px-4 py-3 text-sm font-semibold">
+          {tk("staff.invite")}
+        </h2>
         <form
           className="grid gap-3 px-4 py-4 sm:grid-cols-[2fr_1fr_1fr_auto] sm:items-end"
           onSubmit={(e) => {
@@ -243,7 +283,9 @@ function StaffPage() {
                     role: inviteForm.role,
                     roleId: inviteForm.roleId || null,
                   },
-                }).then(() => setInviteForm({ email: "", role: "staff", roleId: "" })),
+                }).then(() =>
+                  setInviteForm({ email: "", role: "staff", roleId: "" }),
+                ),
               "staff.invited",
             );
           }}
@@ -254,7 +296,9 @@ function StaffPage() {
               required
               className={inputClass}
               value={inviteForm.email}
-              onChange={(e) => setInviteForm((f) => ({ ...f, email: e.target.value }))}
+              onChange={(e) =>
+                setInviteForm((f) => ({ ...f, email: e.target.value }))
+              }
             />
           </Field>
           <Field label={tk("staff.base_role")}>
@@ -262,7 +306,10 @@ function StaffPage() {
               className={inputClass}
               value={inviteForm.role}
               onChange={(e) =>
-                setInviteForm((f) => ({ ...f, role: e.target.value as typeof f.role }))
+                setInviteForm((f) => ({
+                  ...f,
+                  role: e.target.value as typeof f.role,
+                }))
               }
             >
               {(["admin", "staff", "viewer"] as const).map((r) => (
@@ -276,7 +323,9 @@ function StaffPage() {
             <select
               className={inputClass}
               value={inviteForm.roleId}
-              onChange={(e) => setInviteForm((f) => ({ ...f, roleId: e.target.value }))}
+              onChange={(e) =>
+                setInviteForm((f) => ({ ...f, roleId: e.target.value }))
+              }
             >
               <option value="">{tk("staff.no_custom_role")}</option>
               {data.roles.map((r) => (
@@ -296,27 +345,46 @@ function StaffPage() {
       </section>
 
       <section className="rounded-fq-md border border-border bg-card">
-        <h2 className="border-b border-border px-4 py-3 text-sm font-semibold">{tk("staff.sessions")}</h2>
+        <h2 className="border-b border-border px-4 py-3 text-sm font-semibold">
+          {tk("staff.sessions")}
+        </h2>
         {data.sessions.length === 0 ? (
-          <p className="px-4 py-4 text-sm text-muted-foreground">{tk("staff.sessions_empty")}</p>
+          <p className="px-4 py-4 text-sm text-muted-foreground">
+            {tk("staff.sessions_empty")}
+          </p>
         ) : (
           <ul className="divide-y divide-border">
             {data.sessions.map((s) => (
-              <li key={s.id} className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
+              <li
+                key={s.id}
+                className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm"
+              >
                 <div className="min-w-0 flex-1">
                   <p className="font-medium">
-                    {s.name} {s.isSelf && <span className="text-xs text-muted-foreground">({tk("staff.session_current")})</span>}
+                    {s.name}{" "}
+                    {s.isSelf && (
+                      <span className="text-xs text-muted-foreground">
+                        ({tk("staff.session_current")})
+                      </span>
+                    )}
                   </p>
                   <p className="truncate text-xs text-muted-foreground">
                     {s.device || "—"} · {s.aal || "aal1"} ·{" "}
-                    {s.lastSeenAt ? new Date(s.lastSeenAt).toLocaleString() : "—"}
+                    {s.lastSeenAt
+                      ? new Date(s.lastSeenAt).toLocaleString()
+                      : "—"}
                   </p>
                 </div>
                 <button
                   type="button"
                   className={btnGhost}
                   disabled={busy}
-                  onClick={() => run(() => revokeSession({ data: { sessionId: s.id } }), "staff.session_revoked")}
+                  onClick={() =>
+                    run(
+                      () => revokeSession({ data: { sessionId: s.id } }),
+                      "staff.session_revoked",
+                    )
+                  }
                 >
                   {tk("staff.session_revoke")}
                 </button>
@@ -342,7 +410,9 @@ function StaffPage() {
               </option>
             ))}
           </select>
-          <span className="text-xs text-muted-foreground">{tk("staff.role_fixed_note")}</span>
+          <span className="text-xs text-muted-foreground">
+            {tk("staff.role_fixed_note")}
+          </span>
           {roleId && (
             <button
               type="button"
@@ -385,9 +455,14 @@ function StaffPage() {
           </p>
 
           <fieldset className="space-y-3">
-            <legend className="text-sm font-medium">{tk("staff.permissions")}</legend>
+            <legend className="text-sm font-medium">
+              {tk("staff.permissions")}
+            </legend>
             {PERMISSION_MATRIX.map((group) => (
-              <div key={group.group} className="rounded-fq-md border border-border p-3">
+              <div
+                key={group.group}
+                className="rounded-fq-md border border-border p-3"
+              >
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                   {tk(`perm.group.${group.group}`)}
                 </p>
@@ -399,7 +474,9 @@ function StaffPage() {
                     const disabled = busy || forbidden || ownerOnly;
                     const implied =
                       action === "read" &&
-                      grants.some((g) => g.startsWith(`${group.group}:`) && g !== id);
+                      grants.some(
+                        (g) => g.startsWith(`${group.group}:`) && g !== id,
+                      );
                     const checked = grants.includes(id) || implied;
                     return (
                       <label
@@ -413,7 +490,9 @@ function StaffPage() {
                           aria-describedby={`desc-${id}`}
                           onChange={() =>
                             setGrants((prev) =>
-                              prev.includes(id) ? prev.filter((g) => g !== id) : [...prev, id],
+                              prev.includes(id)
+                                ? prev.filter((g) => g !== id)
+                                : [...prev, id],
                             )
                           }
                         />
@@ -445,7 +524,10 @@ function StaffPage() {
                       mfaRequired,
                       grants: grants.map((g) => {
                         const [group, action] = g.split(":");
-                        return { group: group as string, action: action as string };
+                        return {
+                          group: group as string,
+                          action: action as string,
+                        };
                       }),
                     },
                   }),
@@ -458,7 +540,6 @@ function StaffPage() {
         </div>
       </section>
 
-
       <section className="rounded-fq-md border border-border bg-card p-4">
         <div className="flex items-center gap-3">
           <h2 className="text-sm font-semibold">{tk("kyc.title")}</h2>
@@ -467,9 +548,13 @@ function StaffPage() {
             label={tk(`kyc.state.${data.kyc.state}`)}
           />
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{tk("kyc.subtitle")}</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {tk("kyc.subtitle")}
+        </p>
         {data.kyc.rejectionReason && (
-          <p className="mt-2 text-sm text-destructive">{data.kyc.rejectionReason}</p>
+          <p className="mt-2 text-sm text-destructive">
+            {data.kyc.rejectionReason}
+          </p>
         )}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <Field label={tk("kyc.legal_name")}>
@@ -490,7 +575,9 @@ function StaffPage() {
             <input
               className={inputClass}
               value={kyc.tradeLicenseNo}
-              onChange={(e) => setKyc({ ...kyc, tradeLicenseNo: e.target.value })}
+              onChange={(e) =>
+                setKyc({ ...kyc, tradeLicenseNo: e.target.value })
+              }
             />
           </Field>
           <Field label={tk("kyc.bin")}>
@@ -505,7 +592,9 @@ function StaffPage() {
           type="button"
           className={`${btnPrimary} mt-4`}
           disabled={busy}
-          onClick={() => run(() => submitKyc({ data: kyc }), "kyc.submitted_toast")}
+          onClick={() =>
+            run(() => submitKyc({ data: kyc }), "kyc.submitted_toast")
+          }
         >
           {tk("kyc.submit")}
         </button>
@@ -517,7 +606,9 @@ function StaffPage() {
         </h2>
         <ul className="divide-y divide-border">
           {data.audit.length === 0 && (
-            <li className="px-4 py-3 text-sm text-muted-foreground">{tk("common.empty")}</li>
+            <li className="px-4 py-3 text-sm text-muted-foreground">
+              {tk("common.empty")}
+            </li>
           )}
           {data.audit.map((row) => (
             <li key={row.id} className="flex flex-wrap gap-2 px-4 py-3 text-sm">

@@ -49,10 +49,10 @@ RLS (README §3): both tables `enable row level security`; `merchant_reads_own_b
 
 ## 6. Named TBDs (owners)
 
-| Item | Owner |
-| --- | --- |
+| Item                                                                                  | Owner               |
+| ------------------------------------------------------------------------------------- | ------------------- |
 | `fraud.honeypot_window` — bounded honeypot window label used by trap + counters (§13) | **TBD** — fraud ops |
-| `fraud.hold_window_days` — hold expiry back to `review` (§5) | **TBD** — fraud ops |
+| `fraud.hold_window_days` — hold expiry back to `review` (§5)                          | **TBD** — fraud ops |
 
 Until sign-off: no numbers — the window and the days are only ever named (config rows carry `TBD_VALUE: fraud.honeypot_window` comments, never literals).
 

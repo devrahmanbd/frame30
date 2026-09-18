@@ -6,19 +6,19 @@ in band order, with the neuroscience lever named per block.
 
 Design tokens and surfaces: `/DESIGN.md`. Build order and gates: `/TODO.md`.
 
-| # | File | Route | H1 |
-|---|---|---|---|
-| 1 | `01-home.md` | `/` | Sell in Bangladesh. Ship worldwide. |
-| 2 | `02-pricing.md` | `/pricing` | Pricing that stays honest at scale. |
-| 3 | `03-features.md` | `/features` | One platform. Every part of the sale. |
-| 4 | `04-builder.md` | `/builder` | Design the storefront. Don't fight the theme. |
-| 5 | `05-payments.md` | `/payments` | bKash, Nagad, card, COD — reconciled. |
-| 6 | `06-fulfilment.md` | `/fulfilment` | From order to doorstep, tracked. |
-| 7 | `07-customers.md` | `/customers` | Stores that grew on Framique. |
-| 8 | `08-docs.md` | `/docs` | Build on the Framique API. |
-| 9 | `09-security.md` | `/security` | Tenant isolation you can verify. |
-| 10 | `10-about.md` | `/about` | Built in Dhaka, for the way Bangladesh sells. |
-| 11 | `11-contact.md` | `/contact` | Talk to a human. |
+| #   | File               | Route         | H1                                            |
+| --- | ------------------ | ------------- | --------------------------------------------- |
+| 1   | `01-home.md`       | `/`           | Sell in Bangladesh. Ship worldwide.           |
+| 2   | `02-pricing.md`    | `/pricing`    | Pricing that stays honest at scale.           |
+| 3   | `03-features.md`   | `/features`   | One platform. Every part of the sale.         |
+| 4   | `04-builder.md`    | `/builder`    | Design the storefront. Don't fight the theme. |
+| 5   | `05-payments.md`   | `/payments`   | bKash, Nagad, card, COD — reconciled.         |
+| 6   | `06-fulfilment.md` | `/fulfilment` | From order to doorstep, tracked.              |
+| 7   | `07-customers.md`  | `/customers`  | Stores that grew on Framique.                 |
+| 8   | `08-docs.md`       | `/docs`       | Build on the Framique API.                    |
+| 9   | `09-security.md`   | `/security`   | Tenant isolation you can verify.              |
+| 10  | `10-about.md`      | `/about`      | Built in Dhaka, for the way Bangladesh sells. |
+| 11  | `11-contact.md`    | `/contact`    | Talk to a human.                              |
 
 ## Rules that bind every deck
 

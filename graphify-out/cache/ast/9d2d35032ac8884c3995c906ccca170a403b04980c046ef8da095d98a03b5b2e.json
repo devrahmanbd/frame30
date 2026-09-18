@@ -1,1 +1,262 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "label": "ProductCard.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L1"}, {"id": "primitives_productcard_cardvariant", "label": "CardVariant", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L17"}, {"id": "primitives_productcard_ratio", "label": "RATIO", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L19"}, {"id": "primitives_productcard_pad", "label": "PAD", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L26"}, {"id": "primitives_productcard_title", "label": "TITLE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L33"}, {"id": "primitives_productcard_savepercent", "label": "savePercent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L41"}, {"id": "primitives_productcard_productcard", "label": "ProductCard()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L46"}, {"id": "primitives_productcard_productcardskeleton", "label": "ProductCardSkeleton()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L118"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "users_rahman_documents_frame30_src_lib_money_display_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "lib_money_display_formatdisplaymoney", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "lib_money_display_formatdisplaynumber", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "users_rahman_documents_frame30_src_lib_bitext_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "lib_bitext_locale", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "users_rahman_documents_frame30_src_lib_widget_data_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "lib_widget_data_widgetrow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "users_rahman_documents_frame30_src_components_builder_primitives_mediaframe_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_mediaframe_mediaframe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_cardvariant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_pad", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_title", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_savepercent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_productcard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx", "target": "primitives_productcard_productcardskeleton", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L118", "weight": 1.0}, {"source": "primitives_productcard_productcard", "target": "primitives_productcard_savepercent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L70", "weight": 1.0}], "raw_calls": [{"caller_nid": "primitives_productcard_savepercent", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L43"}, {"caller_nid": "primitives_productcard_productcard", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L75"}, {"caller_nid": "primitives_productcard_productcard", "callee": "formatDisplayMoney", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L89"}, {"caller_nid": "primitives_productcard_productcard", "callee": "formatDisplayMoney", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L92"}, {"caller_nid": "primitives_productcard_productcard", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx", "source_location": "L98"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "label": "ProductCard.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "primitives_productcard_cardvariant",
+      "label": "CardVariant",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "primitives_productcard_ratio",
+      "label": "RATIO",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "primitives_productcard_pad",
+      "label": "PAD",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L26"
+    },
+    {
+      "id": "primitives_productcard_title",
+      "label": "TITLE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "primitives_productcard_savepercent",
+      "label": "savePercent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L41"
+    },
+    {
+      "id": "primitives_productcard_productcard",
+      "label": "ProductCard()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L46"
+    },
+    {
+      "id": "primitives_productcard_productcardskeleton",
+      "label": "ProductCardSkeleton()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L118"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_display_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "lib_money_display_formatdisplaymoney",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "lib_money_display_formatdisplaynumber",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_bitext_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "lib_bitext_locale",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_widget_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "lib_widget_data_widgetrow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_primitives_mediaframe_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_mediaframe_mediaframe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_cardvariant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_pad",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_title",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_savepercent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_productcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_productcard_tsx",
+      "target": "primitives_productcard_productcardskeleton",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "primitives_productcard_productcard",
+      "target": "primitives_productcard_savepercent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L70",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "primitives_productcard_savepercent",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "primitives_productcard_productcard",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "primitives_productcard_productcard",
+      "callee": "formatDisplayMoney",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "primitives_productcard_productcard",
+      "callee": "formatDisplayMoney",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "primitives_productcard_productcard",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/ProductCard.tsx",
+      "source_location": "L98"
+    }
+  ]
+}

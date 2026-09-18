@@ -4,7 +4,11 @@
  * Rules are AND-combined and stored on the node, so the same evaluation runs
  * in the studio preview and on the storefront.
  */
-import { VISIBILITY_OPS, type VisibilityKind, type VisibilityRule } from "@/lib/visibility";
+import {
+  VISIBILITY_OPS,
+  type VisibilityKind,
+  type VisibilityRule,
+} from "@/lib/visibility";
 import { useLang } from "@/lib/i18n";
 
 const KIND_LABEL: Record<VisibilityKind, { en: string; bn: string }> = {
@@ -21,7 +25,8 @@ function defaultRule(kind: VisibilityKind): VisibilityRule {
   const op = VISIBILITY_OPS[kind][0]!;
   if (kind === "auth") return { kind, op, value: "in" };
   if (kind === "locale") return { kind, op, value: "bn" };
-  if (kind === "date") return { kind, op, value: new Date().toISOString().slice(0, 10) };
+  if (kind === "date")
+    return { kind, op, value: new Date().toISOString().slice(0, 10) };
   if (kind === "cart") return { kind, op, value: 0 };
   return { kind, op, value: "" };
 }
@@ -35,12 +40,16 @@ export function VisibilityRules({
 }) {
   const { t } = useLang();
   const patch = (index: number, next: Partial<VisibilityRule>) =>
-    onChange(rules.map((rule, i) => (i === index ? { ...rule, ...next } : rule)));
+    onChange(
+      rules.map((rule, i) => (i === index ? { ...rule, ...next } : rule)),
+    );
   const input = "rounded-fq-md border border-border bg-card px-2 py-1 text-xs";
 
   return (
     <fieldset className="space-y-2 rounded-fq-md border border-border p-3">
-      <legend className="px-1 text-xs font-medium">{t("Only show when…", "যখন দেখাবে…")}</legend>
+      <legend className="px-1 text-xs font-medium">
+        {t("Only show when…", "যখন দেখাবে…")}
+      </legend>
 
       {rules.length === 0 && (
         <p className="text-[0.65rem] text-muted-foreground">
@@ -53,7 +62,9 @@ export function VisibilityRules({
           <select
             aria-label={t("Condition", "শর্ত")}
             value={rule.kind}
-            onChange={(e) => patch(index, defaultRule(e.target.value as VisibilityKind))}
+            onChange={(e) =>
+              patch(index, defaultRule(e.target.value as VisibilityKind))
+            }
             className={input}
           >
             {KINDS.map((kind) => (
@@ -79,11 +90,20 @@ export function VisibilityRules({
           {rule.op !== "empty" && rule.op !== "not_empty" && (
             <input
               aria-label={t("Value", "মান")}
-              type={rule.kind === "cart" ? "number" : rule.kind === "date" ? "date" : "text"}
+              type={
+                rule.kind === "cart"
+                  ? "number"
+                  : rule.kind === "date"
+                    ? "date"
+                    : "text"
+              }
               value={String(rule.value)}
               onChange={(e) =>
                 patch(index, {
-                  value: rule.kind === "cart" ? Number(e.target.value) : e.target.value,
+                  value:
+                    rule.kind === "cart"
+                      ? Number(e.target.value)
+                      : e.target.value,
                 })
               }
               className={`${input} w-28`}

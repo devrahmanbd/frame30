@@ -1,1 +1,407 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "label": "mcp-policy.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L1"}, {"id": "harness_mcp_policy_comment", "label": "$comment", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L2"}, {"id": "harness_mcp_policy_schema", "label": "schema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L4"}, {"id": "harness_mcp_policy_policyversion", "label": "policyVersion", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L5"}, {"id": "harness_mcp_policy_harnessid", "label": "harnessId", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L6"}, {"id": "harness_mcp_policy_rationale", "label": "rationale", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L7"}, {"id": "harness_mcp_policy_defaultdeny", "label": "defaultDeny", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L9"}, {"id": "harness_mcp_policy_allowshell", "label": "allowShell", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L11"}, {"id": "harness_mcp_policy_allownetwork", "label": "allowNetwork", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L12"}, {"id": "harness_mcp_policy_allowfilewrite", "label": "allowFileWrite", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L13"}, {"id": "harness_mcp_policy_requireapprovalfordangerous", "label": "requireApprovalForDangerous", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L15"}, {"id": "harness_mcp_policy_auditlog", "label": "auditLog", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L16"}, {"id": "harness_mcp_policy_tooltimeoutms", "label": "toolTimeoutMs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L18"}, {"id": "harness_mcp_policy_maxtoolcallsperturn", "label": "maxToolCallsPerTurn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L19"}, {"id": "harness_mcp_policy_dangerouspatterns", "label": "dangerousPatterns", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21"}, {"id": "harness_mcp_policy_approvedservers", "label": "approvedServers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L32"}, {"id": "harness_mcp_policy_references", "label": "references", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L36"}, {"id": "harness_mcp_policy_references_adr", "label": "adr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L37"}, {"id": "harness_mcp_policy_references_constraint", "label": "constraint", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L38"}, {"id": "harness_mcp_policy_references_upstream", "label": "upstream", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L39"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_comment", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_schema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_policyversion", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_harnessid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_rationale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_defaultdeny", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_allowshell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_allownetwork", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_allowfilewrite", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_requireapprovalfordangerous", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_auditlog", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_tooltimeoutms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_maxtoolcallsperturn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_dangerouspatterns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_rm_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_sudo_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_chmod_s_777_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_curl_s_sh_bash_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_wget_s_sh_bash_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_ssh_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_git_s_push_force_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "harness_mcp_policy_dangerouspatterns", "target": "ref_bash_npm_s_publish_b", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L21", "weight": 1.0, "context": "import"}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_approvedservers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L32", "weight": 1.0}, {"source": "harness_mcp_policy_approvedservers", "target": "ref_claude_flow", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L32", "weight": 1.0, "context": "import"}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json", "target": "harness_mcp_policy_references", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L36", "weight": 1.0}, {"source": "harness_mcp_policy_references", "target": "harness_mcp_policy_references_adr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L37", "weight": 1.0}, {"source": "harness_mcp_policy_references", "target": "harness_mcp_policy_references_constraint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L38", "weight": 1.0}, {"source": "harness_mcp_policy_references", "target": "harness_mcp_policy_references_upstream", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json", "source_location": "L39", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "label": "mcp-policy.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "harness_mcp_policy_comment",
+      "label": "$comment",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "harness_mcp_policy_schema",
+      "label": "schema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "harness_mcp_policy_policyversion",
+      "label": "policyVersion",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "harness_mcp_policy_harnessid",
+      "label": "harnessId",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "harness_mcp_policy_rationale",
+      "label": "rationale",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "harness_mcp_policy_defaultdeny",
+      "label": "defaultDeny",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "harness_mcp_policy_allowshell",
+      "label": "allowShell",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "harness_mcp_policy_allownetwork",
+      "label": "allowNetwork",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "harness_mcp_policy_allowfilewrite",
+      "label": "allowFileWrite",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "harness_mcp_policy_requireapprovalfordangerous",
+      "label": "requireApprovalForDangerous",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "harness_mcp_policy_auditlog",
+      "label": "auditLog",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "harness_mcp_policy_tooltimeoutms",
+      "label": "toolTimeoutMs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "harness_mcp_policy_maxtoolcallsperturn",
+      "label": "maxToolCallsPerTurn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "harness_mcp_policy_dangerouspatterns",
+      "label": "dangerousPatterns",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "harness_mcp_policy_approvedservers",
+      "label": "approvedServers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "harness_mcp_policy_references",
+      "label": "references",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L36"
+    },
+    {
+      "id": "harness_mcp_policy_references_adr",
+      "label": "adr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L37"
+    },
+    {
+      "id": "harness_mcp_policy_references_constraint",
+      "label": "constraint",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L38"
+    },
+    {
+      "id": "harness_mcp_policy_references_upstream",
+      "label": "upstream",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L39"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_comment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_policyversion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_harnessid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_rationale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_defaultdeny",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_allowshell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_allownetwork",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_allowfilewrite",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_requireapprovalfordangerous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_auditlog",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_tooltimeoutms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_maxtoolcallsperturn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_dangerouspatterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_rm_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_sudo_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_chmod_s_777_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_curl_s_sh_bash_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_wget_s_sh_bash_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_ssh_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_git_s_push_force_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "harness_mcp_policy_dangerouspatterns",
+      "target": "ref_bash_npm_s_publish_b",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L21",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_approvedservers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_mcp_policy_approvedservers",
+      "target": "ref_claude_flow",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L32",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_mcp_policy_json",
+      "target": "harness_mcp_policy_references",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_mcp_policy_references",
+      "target": "harness_mcp_policy_references_adr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_mcp_policy_references",
+      "target": "harness_mcp_policy_references_constraint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_mcp_policy_references",
+      "target": "harness_mcp_policy_references_upstream",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/mcp-policy.json",
+      "source_location": "L39",
+      "weight": 1.0
+    }
+  ]
+}

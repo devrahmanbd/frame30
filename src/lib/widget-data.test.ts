@@ -13,7 +13,10 @@ import { WIDGET_REGISTRY } from "./widget-registry";
 
 function grid(props: Record<string, unknown> = {}): Section {
   const section = newSection("product_grid");
-  return { ...section, props: { ...section.props, ...props } as Section["props"] };
+  return {
+    ...section,
+    props: { ...section.props, ...props } as Section["props"],
+  };
 }
 
 function ast(main: Section[]): ThemeAst {
@@ -23,12 +26,18 @@ function ast(main: Section[]): ThemeAst {
 describe("widget data collection", () => {
   it("only data widgets produce requests", () => {
     expect(requestForSection(newSection("hero"))).toBeNull();
-    expect(requestForSection(newSection("product_grid"))?.source).toBe("collection");
-    expect(requestForSection(newSection("collection_grid"))?.source).toBe("taxonomy");
+    expect(requestForSection(newSection("product_grid"))?.source).toBe(
+      "collection",
+    );
+    expect(requestForSection(newSection("collection_grid"))?.source).toBe(
+      "taxonomy",
+    );
   });
 
   it("identical widgets collapse to one request", () => {
-    const bundle = collectWidgetRequests(ast([grid({ limit: 8 }), grid({ limit: 8 }), grid({ limit: 8 })]));
+    const bundle = collectWidgetRequests(
+      ast([grid({ limit: 8 }), grid({ limit: 8 }), grid({ limit: 8 })]),
+    );
     expect(bundle.requests).toHaveLength(1);
     expect(Object.keys(bundle.byNode)).toHaveLength(3);
     const keys = new Set(Object.values(bundle.byNode));
@@ -36,7 +45,9 @@ describe("widget data collection", () => {
   });
 
   it("different params produce different requests", () => {
-    const bundle = collectWidgetRequests(ast([grid({ limit: 8 }), grid({ limit: 12 })]));
+    const bundle = collectWidgetRequests(
+      ast([grid({ limit: 8 }), grid({ limit: 12 })]),
+    );
     expect(bundle.requests).toHaveLength(2);
   });
 
@@ -52,7 +63,10 @@ describe("widget data collection", () => {
   });
 
   it("collects data widgets nested inside containers", () => {
-    const container = { ...newSection("container"), children: [grid({ limit: 4 })] };
+    const container = {
+      ...newSection("container"),
+      children: [grid({ limit: 4 })],
+    };
     const bundle = collectWidgetRequests(ast([container]));
     expect(bundle.requests).toHaveLength(1);
   });
@@ -63,8 +77,12 @@ describe("widget data collection", () => {
   });
 
   it("caps the batch size", () => {
-    const many = Array.from({ length: MAX_WIDGET_REQUESTS + 10 }, (_, i) => grid({ limit: i + 1 }));
-    expect(collectWidgetRequests(ast(many)).requests.length).toBeLessThanOrEqual(MAX_WIDGET_REQUESTS);
+    const many = Array.from({ length: MAX_WIDGET_REQUESTS + 10 }, (_, i) =>
+      grid({ limit: i + 1 }),
+    );
+    expect(
+      collectWidgetRequests(ast(many)).requests.length,
+    ).toBeLessThanOrEqual(MAX_WIDGET_REQUESTS);
   });
 
   it("request keys are stable regardless of prop order", () => {
@@ -80,11 +98,15 @@ describe("batched resolution", () => {
     const loaders: SourceLoaders = {
       collection: async (_m, requests) => {
         calls.push({ source: "collection", count: requests.length });
-        return Object.fromEntries(requests.map((r) => [r.key, [{ id: r.key, title: "p" }]]));
+        return Object.fromEntries(
+          requests.map((r) => [r.key, [{ id: r.key, title: "p" }]]),
+        );
       },
       taxonomy: async (_m, requests) => {
         calls.push({ source: "taxonomy", count: requests.length });
-        return Object.fromEntries(requests.map((r) => [r.key, [{ id: r.key, title: "c" }]]));
+        return Object.fromEntries(
+          requests.map((r) => [r.key, [{ id: r.key, title: "c" }]]),
+        );
       },
     };
 
@@ -118,7 +140,11 @@ describe("batched resolution", () => {
         return {};
       },
     };
-    const map = await resolveWidgetData("m", collectWidgetRequests(ast([newSection("hero")])), loaders);
+    const map = await resolveWidgetData(
+      "m",
+      collectWidgetRequests(ast([newSection("hero")])),
+      loaders,
+    );
     expect(called).toBe(false);
     expect(map).toEqual({});
   });

@@ -15,7 +15,12 @@ import {
 
 describe("scopes", () => {
   it("drops unknown scopes and de-duplicates", () => {
-    const r = normalizeScopes(["read_shop", "read_shop", "mine_bitcoin", "write_cart"]);
+    const r = normalizeScopes([
+      "read_shop",
+      "read_shop",
+      "mine_bitcoin",
+      "write_cart",
+    ]);
     expect(r.scopes).toEqual(["read_shop", "write_cart"]);
     expect(r.unknown).toEqual(["mine_bitcoin"]);
   });
@@ -27,8 +32,12 @@ describe("scopes", () => {
   });
 
   it("reports scopes the merchant has not granted", () => {
-    expect(missingScopes(["read_shop", "write_cart"], ["read_shop"])).toEqual(["write_cart"]);
-    expect(missingScopes(["read_shop"], ["read_shop", "write_cart"])).toEqual([]);
+    expect(missingScopes(["read_shop", "write_cart"], ["read_shop"])).toEqual([
+      "write_cart",
+    ]);
+    expect(missingScopes(["read_shop"], ["read_shop", "write_cart"])).toEqual(
+      [],
+    );
   });
 });
 
@@ -59,12 +68,20 @@ describe("content addressing", () => {
   });
 
   it("rejects oversized, empty and dynamic-code bundles", () => {
-    expect(validateBundle({ entry: "export default 1" }, ["read_shop"]).ok).toBe(true);
+    expect(
+      validateBundle({ entry: "export default 1" }, ["read_shop"]).ok,
+    ).toBe(true);
     expect(validateBundle({}, ["read_shop"]).errors).toContain("bundle.empty");
-    expect(validateBundle({ entry: "eval('x')" }, ["read_shop"]).errors).toContain("bundle.dynamic_code");
-    expect(validateBundle({ entry: "ok" }, []).errors).toContain("bundle.no_scopes");
+    expect(
+      validateBundle({ entry: "eval('x')" }, ["read_shop"]).errors,
+    ).toContain("bundle.dynamic_code");
+    expect(validateBundle({ entry: "ok" }, []).errors).toContain(
+      "bundle.no_scopes",
+    );
     const big = { entry: "x".repeat(600_000) };
-    expect(validateBundle(big, ["read_shop"]).errors).toContain("bundle.too_large");
+    expect(validateBundle(big, ["read_shop"]).errors).toContain(
+      "bundle.too_large",
+    );
   });
 
   it("validates block keys", () => {
@@ -76,29 +93,43 @@ describe("content addressing", () => {
 
 describe("widget API authorization", () => {
   it("rejects malformed envelopes", () => {
-    expect(authorizeWidgetCall({ method: "shop.info" }, ["read_shop"])).toEqual({
-      allowed: false,
-      reason: "malformed",
-    });
+    expect(authorizeWidgetCall({ method: "shop.info" }, ["read_shop"])).toEqual(
+      {
+        allowed: false,
+        reason: "malformed",
+      },
+    );
   });
 
   it("rejects unknown methods", () => {
-    const v = authorizeWidgetCall({ v: 1, id: "1", method: "fs.read" }, ["read_shop"]);
+    const v = authorizeWidgetCall({ v: 1, id: "1", method: "fs.read" }, [
+      "read_shop",
+    ]);
     expect(v).toMatchObject({ allowed: false, reason: "unknown_method" });
   });
 
   it("denies calls whose scope was never granted", () => {
-    const v = authorizeWidgetCall({ v: 1, id: "1", method: "cart.add" }, ["read_shop"]);
+    const v = authorizeWidgetCall({ v: 1, id: "1", method: "cart.add" }, [
+      "read_shop",
+    ]);
     expect(v).toMatchObject({ allowed: false, reason: "scope_denied" });
   });
 
   it("allows granted calls and marks writes", () => {
-    expect(authorizeWidgetCall({ v: 1, id: "1", method: "cart.add" }, ["write_cart"])).toEqual({
+    expect(
+      authorizeWidgetCall({ v: 1, id: "1", method: "cart.add" }, [
+        "write_cart",
+      ]),
+    ).toEqual({
       allowed: true,
       method: "cart.add",
       write: true,
     });
-    expect(authorizeWidgetCall({ v: 1, id: "2", method: "shop.info" }, ["read_shop"])).toEqual({
+    expect(
+      authorizeWidgetCall({ v: 1, id: "2", method: "shop.info" }, [
+        "read_shop",
+      ]),
+    ).toEqual({
       allowed: true,
       method: "shop.info",
       write: false,

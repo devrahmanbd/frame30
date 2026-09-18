@@ -19,14 +19,14 @@ on:
   push:
     branches: [main]
     paths:
-      - 'v3/@claude-flow/cli/package.json'
-      - 'ruflo/package.json'
-      - '.github/workflows/no-cli-optdep-bloat-2561.yml'
+      - "v3/@claude-flow/cli/package.json"
+      - "ruflo/package.json"
+      - ".github/workflows/no-cli-optdep-bloat-2561.yml"
   pull_request:
     paths:
-      - 'v3/@claude-flow/cli/package.json'
-      - 'ruflo/package.json'
-      - '.github/workflows/no-cli-optdep-bloat-2561.yml'
+      - "v3/@claude-flow/cli/package.json"
+      - "ruflo/package.json"
+      - ".github/workflows/no-cli-optdep-bloat-2561.yml"
   workflow_dispatch:
 
 jobs:

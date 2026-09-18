@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`@agntcy/slim-bindings` pinned to the confirmed-working alpha** — the SLIM maintainers moved off `uniffi-bindgen-react-native` (which shipped raw, uncompiled TypeScript incompatible with plain Node `require`/`import` — filed as agntcy/slim#1916, reproduced and confirmed) onto `@ubjs/core`/`@ubjs/node` in the `2.0.0-alpha.4+` dist-tag, not yet promoted to `latest`. `v3/@claude-flow/cli/package.json` now pins the exact working alpha version (deliberate exact-pin for a pre-release channel, not a caret range) rather than the still-broken `latest`; verified live end-to-end (server bring-up, client connect, graceful shutdown, zero `ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING`). `detectAgntcyRuntime()` required zero logic changes — its existing graceful-degradation design already returned `configured: true` once the upstream package resolved.
-- **`security scan` failed open on unvalidated `--depth` / `--type` / `--target`** — an unrecognised `--type` matched none of the three phase guards, so no phase ran at all and the command still printed "No security issues found!" and exited 0; an unrecognised `--depth` fell through chained ternaries to the *shallowest* traversal (so `--depth full` scanned less than the default `standard`), which on a tree whose only HIGH finding sat below that budget also flipped the critical/high exit-code gate from 1 to 0; and a non-existent or non-directory `--target` read nothing, which the swallowed dir-read catches turned into a clean banner, exit 0, and a **persisted CLEAN report** that `getSecurityStatus` then surfaced as CLEAN. All three now fail closed before anything is scanned or written. Chained ternaries replaced with exhaustive `Record<ScanDepth, number>` maps behind real type predicates, and the recursion guard now positive-tests its budget so a bad value stops traversal instead of disabling the limiter. (`v3/@claude-flow/cli/src/commands/security.ts`)
+- **`security scan` failed open on unvalidated `--depth` / `--type` / `--target`** — an unrecognised `--type` matched none of the three phase guards, so no phase ran at all and the command still printed "No security issues found!" and exited 0; an unrecognised `--depth` fell through chained ternaries to the _shallowest_ traversal (so `--depth full` scanned less than the default `standard`), which on a tree whose only HIGH finding sat below that budget also flipped the critical/high exit-code gate from 1 to 0; and a non-existent or non-directory `--target` read nothing, which the swallowed dir-read catches turned into a clean banner, exit 0, and a **persisted CLEAN report** that `getSecurityStatus` then surfaced as CLEAN. All three now fail closed before anything is scanned or written. Chained ternaries replaced with exhaustive `Record<ScanDepth, number>` maps behind real type predicates, and the recursion guard now positive-tests its budget so a bad value stops traversal instead of disabling the limiter. (`v3/@claude-flow/cli/src/commands/security.ts`)
 
 ### Changed
 
@@ -267,14 +267,14 @@ This release marks the official rebranding from **Claude Flow** to **Ruflo** and
 
 ## Milestone Summary
 
-| Milestone | Version | Date | Key Feature |
-|-----------|---------|------|-------------|
-| Initial Release | v1.0.1 | 2025-01 | AI agent orchestration system |
-| SPARC Integration | v1.0.50 | 2025-03 | Swarm + SPARC methodology |
-| Alpha Foundation | v2.0.0-alpha.33 | 2025-05 | V2 alpha with hook safety |
-| agentic-flow | v2.7.0 | 2025-08 | agentic-flow coordination engine |
-| V3 Foundation | v3.0.0-alpha.1 | 2025-10 | V3 monorepo, 215 MCP tools |
-| Plugin Marketplace | v3.0.0-alpha.170 | 2025-12 | 8 plugins + IPFS registry |
-| Guidance Control Plane | v3.0.0-alpha.100 | 2026-01 | WASM policy kernel, ContinueGate |
-| AgentDB v3 | v3.1.0-alpha.55 | 2026-02 | 8 controllers, MutationGuard |
-| **Ruflo v3.5** | **v3.5.0** | **2026-02-27** | **First stable release, rebranding** |
+| Milestone              | Version          | Date           | Key Feature                          |
+| ---------------------- | ---------------- | -------------- | ------------------------------------ |
+| Initial Release        | v1.0.1           | 2025-01        | AI agent orchestration system        |
+| SPARC Integration      | v1.0.50          | 2025-03        | Swarm + SPARC methodology            |
+| Alpha Foundation       | v2.0.0-alpha.33  | 2025-05        | V2 alpha with hook safety            |
+| agentic-flow           | v2.7.0           | 2025-08        | agentic-flow coordination engine     |
+| V3 Foundation          | v3.0.0-alpha.1   | 2025-10        | V3 monorepo, 215 MCP tools           |
+| Plugin Marketplace     | v3.0.0-alpha.170 | 2025-12        | 8 plugins + IPFS registry            |
+| Guidance Control Plane | v3.0.0-alpha.100 | 2026-01        | WASM policy kernel, ContinueGate     |
+| AgentDB v3             | v3.1.0-alpha.55  | 2026-02        | 8 controllers, MutationGuard         |
+| **Ruflo v3.5**         | **v3.5.0**       | **2026-02-27** | **First stable release, rebranding** |

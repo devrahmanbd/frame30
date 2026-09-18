@@ -7,7 +7,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -17,9 +20,8 @@ vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const { listCatalog } = await import("./marketplace.server");
-const { installBuiltinTheme, uninstallBuiltinTheme } = await import(
-  "./marketplace-install.server"
-);
+const { installBuiltinTheme, uninstallBuiltinTheme } =
+  await import("./marketplace-install.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const INSTALL = "33333333-3333-3333-3333-333333333333";
@@ -45,13 +47,28 @@ describe("listCatalog theme states", () => {
         marketplace_themes: [],
         marketplace_widgets: [],
         marketplace_installs: [
-          { id: INSTALL, kind: "theme", listing_slug: "classic", status: "installed", merchant_id: MERCHANT },
+          {
+            id: INSTALL,
+            kind: "theme",
+            listing_slug: "classic",
+            status: "installed",
+            merchant_id: MERCHANT,
+          },
         ],
-        store_themes: [{ id: THEME, merchant_id: MERCHANT, is_active: false, source_install_id: INSTALL }],
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            is_active: false,
+            source_install_id: INSTALL,
+          },
+        ],
       },
     });
     const catalog = await listCatalog(db.asClient(), MERCHANT);
-    expect(catalog.themeStates).toEqual([{ slug: "classic", themeId: THEME, isActive: false }]);
+    expect(catalog.themeStates).toEqual([
+      { slug: "classic", themeId: THEME, isActive: false },
+    ]);
   });
 
   it("reports an empty map when nothing is installed", async () => {
@@ -75,14 +92,27 @@ describe("installBuiltinTheme", () => {
       tables: {
         marketplace_installs: [],
         // The marketplace_install_preset RPC created this row moments earlier.
-        store_themes: [{ id: THEME, merchant_id: MERCHANT, is_active: false, source_install_id: null }],
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            is_active: false,
+            source_install_id: null,
+          },
+        ],
       },
       rpc: (fn: string) => {
-        if (fn !== "marketplace_install_preset") return { data: null, error: { message: "unexpected" } };
+        if (fn !== "marketplace_install_preset")
+          return { data: null, error: { message: "unexpected" } };
         return { data: { theme_id: THEME, version_id: "v-1" }, error: null };
       },
     });
-    const out: any = await installBuiltinTheme(db.asClient(), MERCHANT, "classic", "key-1");
+    const out: any = await installBuiltinTheme(
+      db.asClient(),
+      MERCHANT,
+      "classic",
+      "key-1",
+    );
     expect(out.themeId).toBe(THEME);
     const ledger = db.rows("marketplace_installs");
     expect(ledger).toHaveLength(1);
@@ -94,7 +124,10 @@ describe("installBuiltinTheme", () => {
     });
     const themes = db.rows("store_themes");
     expect(themes).toHaveLength(1);
-    expect(themes[0]).toMatchObject({ id: THEME, source_install_id: ledger[0].id });
+    expect(themes[0]).toMatchObject({
+      id: THEME,
+      source_install_id: ledger[0].id,
+    });
   });
 });
 
@@ -103,12 +136,27 @@ describe("uninstallBuiltinTheme", () => {
     const db = fakeDb({
       tables: {
         marketplace_installs: [
-          { id: INSTALL, kind: "theme", listing_slug: "classic", status: "installed", merchant_id: MERCHANT },
+          {
+            id: INSTALL,
+            kind: "theme",
+            listing_slug: "classic",
+            status: "installed",
+            merchant_id: MERCHANT,
+          },
         ],
-        store_themes: [{ id: THEME, merchant_id: MERCHANT, is_active: true, source_install_id: INSTALL }],
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            is_active: true,
+            source_install_id: INSTALL,
+          },
+        ],
       },
     });
-    await expect(uninstallBuiltinTheme(db.asClient(), MERCHANT, INSTALL)).rejects.toThrow();
+    await expect(
+      uninstallBuiltinTheme(db.asClient(), MERCHANT, INSTALL),
+    ).rejects.toThrow();
     expect(db.rows("store_themes")).toHaveLength(1);
   });
 
@@ -116,12 +164,29 @@ describe("uninstallBuiltinTheme", () => {
     const db = fakeDb({
       tables: {
         marketplace_installs: [
-          { id: INSTALL, kind: "theme", listing_slug: "classic", status: "installed", merchant_id: MERCHANT },
+          {
+            id: INSTALL,
+            kind: "theme",
+            listing_slug: "classic",
+            status: "installed",
+            merchant_id: MERCHANT,
+          },
         ],
-        store_themes: [{ id: THEME, merchant_id: MERCHANT, is_active: false, source_install_id: INSTALL }],
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            is_active: false,
+            source_install_id: INSTALL,
+          },
+        ],
       },
     });
-    const out: any = await uninstallBuiltinTheme(db.asClient(), MERCHANT, INSTALL);
+    const out: any = await uninstallBuiltinTheme(
+      db.asClient(),
+      MERCHANT,
+      INSTALL,
+    );
     expect(out.ok).toBe(true);
     expect(db.rows("store_themes")).toHaveLength(0);
     expect(db.rows("marketplace_installs")[0].status).toBe("removed");

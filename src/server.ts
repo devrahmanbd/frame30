@@ -250,9 +250,7 @@ function withTenantCanaryHeaders(
     if (decision.cohortTier !== undefined) {
       headers.set("x-framique-cohort-tier", String(decision.cohortTier));
     }
-    if (decision.tenantId) {
-      headers.set("x-framique-tenant-id", decision.tenantId);
-    }
+    // Stop echoing x-framique-tenant-id to public shoppers (REPORT WF-26)
     if (decision.targetSlot) {
       headers.set("x-framique-target-slot", decision.targetSlot);
     }
@@ -348,12 +346,17 @@ export default {
                 });
               }
             }
-            // If neither Origin nor Referer is present, fail safely on non-API paths
-            else if (!isLocalhost && !url.pathname.startsWith("/api/")) {
-              return new Response(
-                "CSRF check failed (missing origin/referer)",
-                { status: 403 },
-              );
+            // If neither Origin nor Referer is present, fail safely unless authenticated via API token (REPORT WF-11)
+            else if (!isLocalhost) {
+              const hasToken =
+                request.headers.has("authorization") ||
+                request.headers.has("x-api-key");
+              if (!hasToken) {
+                return new Response(
+                  "CSRF check failed (missing origin/referer)",
+                  { status: 403 },
+                );
+              }
             }
           }
         }
@@ -406,6 +409,13 @@ export default {
       }
 
       if (url.pathname === "/api/canary-alert" && request.method === "POST") {
+        const webhookSecret = process.env["CANARY_WEBHOOK_SECRET"];
+        const auth =
+          request.headers.get("x-canary-secret") ||
+          request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
+        if (webhookSecret && auth !== webhookSecret) {
+          return new Response("Unauthorized", { status: 401 });
+        }
         const { processPrometheusAlertWebhook } =
           await import("./lib/circuit-breaker.server");
         const payload = (await request.json().catch(() => ({}))) as Record<

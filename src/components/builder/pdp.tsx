@@ -13,16 +13,30 @@ import { formatDisplayNumber } from "@/lib/money-display";
 import { rowSwatch } from "./beauty";
 import { SkinToneBackdrop } from "./primitives/SkinToneBackdrop";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
-import { Stars, HistogramBar, histogramPercents, clampRating } from "./primitives/Stars";
+import {
+  Stars,
+  HistogramBar,
+  histogramPercents,
+  clampRating,
+} from "./primitives/Stars";
 import { SwatchDot } from "./primitives/SwatchDot";
 import { StickyBar, useDockedAfterScroll } from "./primitives/StickyBar";
 import { Disclosure } from "./primitives/Disclosure";
 
 /* ------------------------------------------------------------------ shared */
 
-function Panel({ children, label }: { children: React.ReactNode; label?: string }) {
+function Panel({
+  children,
+  label,
+}: {
+  children: React.ReactNode;
+  label?: string;
+}) {
   return (
-    <section aria-label={label} className="rounded-fq-lg border border-border bg-card p-4">
+    <section
+      aria-label={label}
+      className="rounded-fq-lg border border-border bg-card p-4"
+    >
       {children}
     </section>
   );
@@ -31,32 +45,46 @@ function Panel({ children, label }: { children: React.ReactNode; label?: string 
 function Head({ ctx, fallback }: { ctx: WidgetCtx; fallback?: string }) {
   const text = ctx.str("heading") || fallback;
   if (!text) return null;
-  return <ctx.Heading className="mb-3 text-lg font-semibold">{text}</ctx.Heading>;
+  return (
+    <ctx.Heading className="mb-3 text-lg font-semibold">{text}</ctx.Heading>
+  );
 }
 
 function Skeleton({ lines = 3 }: { lines?: number }) {
   return (
     <div className="space-y-2" aria-hidden="true">
       {Array.from({ length: lines }, (_, i) => (
-        <div key={i} className="h-4 w-full animate-pulse rounded-fq-sm bg-muted" />
+        <div
+          key={i}
+          className="h-4 w-full animate-pulse rounded-fq-sm bg-muted"
+        />
       ))}
     </div>
   );
 }
 
 /** The variant a picker or buy box shows first: cheapest in-stock, else first. */
-export function defaultVariant(rows: WidgetRow[] | undefined): WidgetRow | undefined {
+export function defaultVariant(
+  rows: WidgetRow[] | undefined,
+): WidgetRow | undefined {
   if (!rows || rows.length === 0) return undefined;
   const inStock = rows.filter((r) => r.inStock !== false);
   const pool = inStock.length > 0 ? inStock : rows;
-  return pool.reduce((best, row) => ((row.priceMinor ?? 0) < (best.priceMinor ?? 0) ? row : best), pool[0]!);
+  return pool.reduce(
+    (best, row) =>
+      (row.priceMinor ?? 0) < (best.priceMinor ?? 0) ? row : best,
+    pool[0]!,
+  );
 }
 
 /** Splits `Red / M` option paths into ordered, de-duplicated axes. */
 export function variantAxes(rows: WidgetRow[]): string[][] {
   const axes: string[][] = [];
   for (const row of rows) {
-    const parts = (row.options ?? row.title ?? "").split("/").map((p) => p.trim()).filter(Boolean);
+    const parts = (row.options ?? row.title ?? "")
+      .split("/")
+      .map((p) => p.trim())
+      .filter(Boolean);
     parts.forEach((part, i) => {
       const axis = (axes[i] ??= []);
       if (!axis.includes(part)) axis.push(part);
@@ -66,7 +94,11 @@ export function variantAxes(rows: WidgetRow[]): string[][] {
 }
 
 /** Aggregate published reviews into an average and a [1★…5★] histogram. */
-export function reviewStats(rows: WidgetRow[]): { average: number; total: number; buckets: number[] } {
+export function reviewStats(rows: WidgetRow[]): {
+  average: number;
+  total: number;
+  buckets: number[];
+} {
   const buckets = [0, 0, 0, 0, 0];
   let sum = 0;
   for (const row of rows) {
@@ -102,13 +134,16 @@ const BuyBox: WidgetComponent = (ctx) => {
         <span className="text-2xl font-semibold tabular-nums">
           {money(variant?.priceMinor ?? 0, variant?.currency)}
         </span>
-        {typeof compareAt === "number" && compareAt > (variant?.priceMinor ?? 0) && (
-          <span className="text-sm text-muted-foreground line-through tabular-nums">
-            {money(compareAt, variant?.currency)}
-          </span>
-        )}
+        {typeof compareAt === "number" &&
+          compareAt > (variant?.priceMinor ?? 0) && (
+            <span className="text-sm text-muted-foreground line-through tabular-nums">
+              {money(compareAt, variant?.currency)}
+            </span>
+          )}
       </div>
-      {str("note") && <p className="mt-1 text-xs text-muted-foreground">{str("note")}</p>}
+      {str("note") && (
+        <p className="mt-1 text-xs text-muted-foreground">{str("note")}</p>
+      )}
       {variant?.options && (
         <p className="mt-2 text-sm text-muted-foreground">{variant.options}</p>
       )}
@@ -141,10 +176,16 @@ const BuyBox: WidgetComponent = (ctx) => {
           disabled={soldOut}
           className="h-11 flex-1 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          {soldOut ? (locale === "bn" ? "স্টক নেই" : "Sold out") : str("label") || "Add to cart"}
+          {soldOut
+            ? locale === "bn"
+              ? "স্টক নেই"
+              : "Sold out"
+            : str("label") || "Add to cart"}
         </button>
       </div>
-      {str("promise") && <p className="mt-3 text-xs text-muted-foreground">{str("promise")}</p>}
+      {str("promise") && (
+        <p className="mt-3 text-xs text-muted-foreground">{str("promise")}</p>
+      )}
     </Panel>
   );
 };
@@ -165,16 +206,24 @@ const VariantPicker: WidgetComponent = (ctx) => {
       <div>
         <Head ctx={ctx} />
         <label className="block text-sm">
-          <span className="sr-only">{str("heading") || (locale === "bn" ? "অপশন" : "Option")}</span>
+          <span className="sr-only">
+            {str("heading") || (locale === "bn" ? "অপশন" : "Option")}
+          </span>
           <select
             className="h-11 w-full rounded-fq-md border border-border bg-card px-3"
             value={current}
             onChange={(e) => setSelected(e.target.value)}
           >
             {rows.map((row) => (
-              <option key={row.id} value={row.id} disabled={row.inStock === false}>
+              <option
+                key={row.id}
+                value={row.id}
+                disabled={row.inStock === false}
+              >
                 {labelOf(row)}
-                {row.inStock === false ? ` — ${locale === "bn" ? "স্টক নেই" : "sold out"}` : ""}
+                {row.inStock === false
+                  ? ` — ${locale === "bn" ? "স্টক নেই" : "sold out"}`
+                  : ""}
               </option>
             ))}
           </select>
@@ -189,14 +238,21 @@ const VariantPicker: WidgetComponent = (ctx) => {
         <Head ctx={ctx} />
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
-            <caption className="sr-only">{str("heading") || "Variant matrix"}</caption>
+            <caption className="sr-only">
+              {str("heading") || "Variant matrix"}
+            </caption>
             <thead>
               <tr>
                 <th scope="col" className="p-2 text-left font-medium">
-                  {str("axisOneLabel") || (locale === "bn" ? "অপশন ১" : "Option 1")}
+                  {str("axisOneLabel") ||
+                    (locale === "bn" ? "অপশন ১" : "Option 1")}
                 </th>
                 {axes[1]!.map((col) => (
-                  <th key={col} scope="col" className="p-2 text-left font-medium">
+                  <th
+                    key={col}
+                    scope="col"
+                    className="p-2 text-left font-medium"
+                  >
                     {col}
                   </th>
                 ))}
@@ -209,7 +265,9 @@ const VariantPicker: WidgetComponent = (ctx) => {
                     {rowLabel}
                   </th>
                   {axes[1]!.map((col) => {
-                    const match = rows.find((r) => (r.options ?? r.title) === `${rowLabel} / ${col}`);
+                    const match = rows.find(
+                      (r) => (r.options ?? r.title) === `${rowLabel} / ${col}`,
+                    );
                     return (
                       <td key={col} className="p-2">
                         <button
@@ -218,7 +276,9 @@ const VariantPicker: WidgetComponent = (ctx) => {
                           aria-pressed={match?.id === current}
                           onClick={() => match && setSelected(match.id)}
                           className={`h-9 w-full rounded-fq-md border px-2 text-xs ${
-                            match?.id === current ? "border-primary ring-1 ring-primary" : "border-border"
+                            match?.id === current
+                              ? "border-primary ring-1 ring-primary"
+                              : "border-border"
                           } disabled:opacity-40`}
                         >
                           {match
@@ -250,7 +310,11 @@ const VariantPicker: WidgetComponent = (ctx) => {
     return (
       <div>
         <Head ctx={ctx} />
-        <div role="radiogroup" aria-label={str("heading") || "Shades"} className="flex flex-wrap gap-2">
+        <div
+          role="radiogroup"
+          aria-label={str("heading") || "Shades"}
+          className="flex flex-wrap gap-2"
+        >
           {rows.map((row) => (
             <SwatchDot
               key={row.id}
@@ -270,7 +334,9 @@ const VariantPicker: WidgetComponent = (ctx) => {
                 value={rowSwatch(chosen)}
                 label={locale === "bn" ? "ত্বকে শেড" : "Swatch on skin"}
                 toneLabels={
-                  locale === "bn" ? ["ফর্সা", "মাঝারি", "গাঢ়"] : ["Fair", "Medium", "Deep"]
+                  locale === "bn"
+                    ? ["ফর্সা", "মাঝারি", "গাঢ়"]
+                    : ["Fair", "Medium", "Deep"]
                 }
               />
             </div>
@@ -283,12 +349,19 @@ const VariantPicker: WidgetComponent = (ctx) => {
   return (
     <div>
       <Head ctx={ctx} />
-      <div role="radiogroup" aria-label={str("heading") || "Options"} className="flex flex-wrap gap-2">
+      <div
+        role="radiogroup"
+        aria-label={str("heading") || "Options"}
+        className="flex flex-wrap gap-2"
+      >
         {rows.map((row) =>
           mode === "swatch" ? (
             <SwatchDot
               key={row.id}
-              value={{ hex: row.swatch?.startsWith("#") ? row.swatch : undefined, image: row.imageUrl ?? undefined }}
+              value={{
+                hex: row.swatch?.startsWith("#") ? row.swatch : undefined,
+                image: row.imageUrl ?? undefined,
+              }}
               label={labelOf(row)}
               selected={row.id === current}
               disabled={row.inStock === false}
@@ -303,7 +376,9 @@ const VariantPicker: WidgetComponent = (ctx) => {
               disabled={row.inStock === false}
               onClick={() => setSelected(row.id)}
               className={`h-11 rounded-fq-md border px-3 text-sm ${
-                row.id === current ? "border-primary ring-1 ring-primary" : "border-border"
+                row.id === current
+                  ? "border-primary ring-1 ring-primary"
+                  : "border-border"
               } disabled:line-through disabled:opacity-40`}
             >
               {labelOf(row)}
@@ -334,7 +409,9 @@ const DeliveryPromise: WidgetComponent = (ctx) => {
             </div>
           ))}
       </dl>
-      {str("note") && <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>}
+      {str("note") && (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      )}
     </Panel>
   );
 };
@@ -360,10 +437,20 @@ const StockDelivery: WidgetComponent = (ctx) => {
           : "In stock";
   return (
     <p className="text-sm">
-      <span className={stock <= 0 ? "text-destructive" : stock <= low ? "text-warning" : "text-success"}>
+      <span
+        className={
+          stock <= 0
+            ? "text-destructive"
+            : stock <= low
+              ? "text-warning"
+              : "text-success"
+        }
+      >
         {status}
       </span>
-      {str("cutOff") && <span className="ml-2 text-muted-foreground">{str("cutOff")}</span>}
+      {str("cutOff") && (
+        <span className="ml-2 text-muted-foreground">{str("cutOff")}</span>
+      )}
     </p>
   );
 };
@@ -371,13 +458,18 @@ const StockDelivery: WidgetComponent = (ctx) => {
 const RatingSummary: WidgetComponent = (ctx) => {
   const { bool, locale, data } = ctx;
   if (data?.pending) return <Skeleton lines={4} />;
-  const rows = (data?.rows ?? []).filter((row) => !bool("verifiedOnly") || row.verified);
+  const rows = (data?.rows ?? []).filter(
+    (row) => !bool("verifiedOnly") || row.verified,
+  );
   const { average, total, buckets } = reviewStats(rows);
   if (total === 0) return null;
   const percents = histogramPercents(buckets);
   return (
     <Panel label={locale === "bn" ? "রেটিং" : "Ratings"}>
-      <Head ctx={ctx} fallback={locale === "bn" ? "রেটিং" : "Customer ratings"} />
+      <Head
+        ctx={ctx}
+        fallback={locale === "bn" ? "রেটিং" : "Customer ratings"}
+      />
       <div className="flex items-center gap-3">
         <span className="text-3xl font-semibold tabular-nums">
           {formatDisplayNumber(Math.round(average * 10) / 10, { locale })}
@@ -387,7 +479,12 @@ const RatingSummary: WidgetComponent = (ctx) => {
       {bool("showHistogram") && (
         <div className="mt-3 space-y-1">
           {[5, 4, 3, 2, 1].map((bucket) => (
-            <HistogramBar key={bucket} bucket={bucket} percent={percents[bucket - 1] ?? 0} locale={locale} />
+            <HistogramBar
+              key={bucket}
+              bucket={bucket}
+              percent={percents[bucket - 1] ?? 0}
+              locale={locale}
+            />
           ))}
         </div>
       )}
@@ -400,11 +497,15 @@ const ReviewList: WidgetComponent = (ctx) => {
   const [verified, setVerified] = useState(false);
   if (data?.pending) return <Skeleton lines={5} />;
   const all = data?.rows ?? [];
-  const filtered = all.filter((row) => (!bool("verifiedOnly") && !verified) || row.verified);
+  const filtered = all.filter(
+    (row) => (!bool("verifiedOnly") && !verified) || row.verified,
+  );
   const sort = str("sort") || "recent";
   const sorted = [...filtered].sort((a, b) => {
-    if (sort === "rating_desc") return clampRating(b.rating) - clampRating(a.rating);
-    if (sort === "rating_asc") return clampRating(a.rating) - clampRating(b.rating);
+    if (sort === "rating_desc")
+      return clampRating(b.rating) - clampRating(a.rating);
+    if (sort === "rating_asc")
+      return clampRating(a.rating) - clampRating(b.rating);
     return String(b.date ?? "").localeCompare(String(a.date ?? ""));
   });
   const rows = sorted.slice(0, int("limit", 6, 1, 24));
@@ -414,19 +515,29 @@ const ReviewList: WidgetComponent = (ctx) => {
         <Head ctx={ctx} fallback={locale === "bn" ? "রিভিউ" : "Reviews"} />
         {!bool("verifiedOnly") && all.length > 0 && (
           <label className="flex items-center gap-2 text-xs text-muted-foreground">
-            <input type="checkbox" checked={verified} onChange={(e) => setVerified(e.target.checked)} />
-            {locale === "bn" ? "শুধু যাচাইকৃত ক্রয়" : "Verified purchases only"}
+            <input
+              type="checkbox"
+              checked={verified}
+              onChange={(e) => setVerified(e.target.checked)}
+            />
+            {locale === "bn"
+              ? "শুধু যাচাইকৃত ক্রয়"
+              : "Verified purchases only"}
           </label>
         )}
       </div>
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          {str("emptyText") || (locale === "bn" ? "এখনো কোনো রিভিউ নেই।" : "No reviews yet.")}
+          {str("emptyText") ||
+            (locale === "bn" ? "এখনো কোনো রিভিউ নেই।" : "No reviews yet.")}
         </p>
       ) : (
         <ul className="space-y-3">
           {rows.map((row) => (
-            <li key={row.id} className="rounded-fq-lg border border-border bg-card p-3">
+            <li
+              key={row.id}
+              className="rounded-fq-lg border border-border bg-card p-3"
+            >
               <div className="flex flex-wrap items-center gap-2">
                 <Stars rating={row.rating} locale={locale} />
                 <span className="text-sm font-medium">{row.title}</span>
@@ -436,10 +547,14 @@ const ReviewList: WidgetComponent = (ctx) => {
                   </span>
                 )}
               </div>
-              {row.body && <p className="mt-1 text-sm text-muted-foreground">{row.body}</p>}
+              {row.body && (
+                <p className="mt-1 text-sm text-muted-foreground">{row.body}</p>
+              )}
               <p className="mt-1 text-xs text-muted-foreground">
                 {row.subtitle}
-                {row.date ? ` · ${new Date(row.date).toISOString().slice(0, 10)}` : ""}
+                {row.date
+                  ? ` · ${new Date(row.date).toISOString().slice(0, 10)}`
+                  : ""}
               </p>
             </li>
           ))}
@@ -460,9 +575,16 @@ const ProductQna: WidgetComponent = (ctx) => {
     : authored;
   if (entries.length === 0) return null;
   return (
-    <section aria-label={locale === "bn" ? "প্রশ্ন ও উত্তর" : "Questions and answers"}>
+    <section
+      aria-label={locale === "bn" ? "প্রশ্ন ও উত্তর" : "Questions and answers"}
+    >
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <Head ctx={ctx} fallback={locale === "bn" ? "প্রশ্ন ও উত্তর" : "Questions and answers"} />
+        <Head
+          ctx={ctx}
+          fallback={
+            locale === "bn" ? "প্রশ্ন ও উত্তর" : "Questions and answers"
+          }
+        />
         {str("askLabel") && str("askHref") && (
           <a
             href={str("askHref")}
@@ -500,15 +622,20 @@ const SellerCard: WidgetComponent = (ctx) => {
             decoding="async"
             className="h-12 w-12 rounded-fq-md border border-border object-cover"
           />
-
         )}
         <div className="min-w-0">
           <p className="truncate font-medium">{str("name")}</p>
-          {str("tagline") && <p className="truncate text-sm text-muted-foreground">{str("tagline")}</p>}
+          {str("tagline") && (
+            <p className="truncate text-sm text-muted-foreground">
+              {str("tagline")}
+            </p>
+          )}
           {rating > 0 && <Stars rating={rating} locale={locale} />}
         </div>
       </div>
-      {str("policy") && <p className="mt-2 text-xs text-muted-foreground">{str("policy")}</p>}
+      {str("policy") && (
+        <p className="mt-2 text-xs text-muted-foreground">{str("policy")}</p>
+      )}
       {str("linkHref") && str("linkLabel") && (
         <a
           href={str("linkHref")}
@@ -532,7 +659,9 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
       <div className="min-w-0">
         <p className="truncate text-sm font-medium">{variant.title}</p>
         {bool("showPrice") && (
-          <p className="text-sm tabular-nums">{money(variant.priceMinor ?? 0, variant.currency)}</p>
+          <p className="text-sm tabular-nums">
+            {money(variant.priceMinor ?? 0, variant.currency)}
+          </p>
         )}
       </div>
       <button
@@ -556,7 +685,10 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
     );
   }
   return (
-    <StickyBar visible={docked} label={locale === "bn" ? "দ্রুত কেনা" : "Quick buy"}>
+    <StickyBar
+      visible={docked}
+      label={locale === "bn" ? "দ্রুত কেনা" : "Quick buy"}
+    >
       {content}
     </StickyBar>
   );

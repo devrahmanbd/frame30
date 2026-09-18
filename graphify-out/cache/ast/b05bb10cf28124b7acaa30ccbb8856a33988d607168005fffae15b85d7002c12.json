@@ -1,1 +1,377 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "label": "large-tenant.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L1"}, {"id": "fixtures_large_tenant_large_tenant_shape", "label": "LARGE_TENANT_SHAPE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L21"}, {"id": "fixtures_large_tenant_large_tenant_total_rows", "label": "LARGE_TENANT_TOTAL_ROWS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L30"}, {"id": "fixtures_large_tenant_prng", "label": "prng()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L33"}, {"id": "fixtures_large_tenant_words", "label": "WORDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L44"}, {"id": "fixtures_large_tenant_phrase", "label": "phrase()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L59"}, {"id": "fixtures_large_tenant_isoat", "label": "isoAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L66"}, {"id": "fixtures_large_tenant_largetenantoptions", "label": "LargeTenantOptions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L70"}, {"id": "fixtures_large_tenant_largetenanttables", "label": "largeTenantTables()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L89"}, {"id": "fixtures_large_tenant_countrows", "label": "countRows()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L240"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_fake_db_row", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_large_tenant_shape", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_large_tenant_total_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_prng", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_words", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_phrase", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_isoat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_largetenantoptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_largetenanttables", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L89", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts", "target": "fixtures_large_tenant_countrows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L240", "weight": 1.0}, {"source": "fixtures_large_tenant_largetenanttables", "target": "fixtures_large_tenant_prng", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L93", "weight": 1.0}, {"source": "fixtures_large_tenant_largetenanttables", "target": "fixtures_large_tenant_phrase", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L101", "weight": 1.0}, {"source": "fixtures_large_tenant_largetenanttables", "target": "fixtures_large_tenant_isoat", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L107", "weight": 1.0}], "raw_calls": [{"caller_nid": "fixtures_large_tenant_phrase", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L61"}, {"caller_nid": "fixtures_large_tenant_phrase", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L61"}, {"caller_nid": "fixtures_large_tenant_phrase", "callee": "rand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L61"}, {"caller_nid": "fixtures_large_tenant_phrase", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L62"}, {"caller_nid": "fixtures_large_tenant_isoat", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L67"}, {"caller_nid": "fixtures_large_tenant_isoat", "callee": "UTC", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L67"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L92"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L92"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L97"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L98"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L114"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L116"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L132"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L133"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L148"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L149"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L164"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L166"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L182"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "size", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L183"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L186"}, {"caller_nid": "fixtures_large_tenant_largetenanttables", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L187"}, {"caller_nid": "fixtures_large_tenant_countrows", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L241"}, {"caller_nid": "fixtures_large_tenant_countrows", "callee": "values", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts", "source_location": "L241"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "label": "large-tenant.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "fixtures_large_tenant_large_tenant_shape",
+      "label": "LARGE_TENANT_SHAPE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "fixtures_large_tenant_large_tenant_total_rows",
+      "label": "LARGE_TENANT_TOTAL_ROWS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "fixtures_large_tenant_prng",
+      "label": "prng()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "fixtures_large_tenant_words",
+      "label": "WORDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "fixtures_large_tenant_phrase",
+      "label": "phrase()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "fixtures_large_tenant_isoat",
+      "label": "isoAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "fixtures_large_tenant_largetenantoptions",
+      "label": "LargeTenantOptions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "fixtures_large_tenant_largetenanttables",
+      "label": "largeTenantTables()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L89"
+    },
+    {
+      "id": "fixtures_large_tenant_countrows",
+      "label": "countRows()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L240"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_fake_db_row",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_large_tenant_shape",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_large_tenant_total_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_prng",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_words",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_phrase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_isoat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_largetenantoptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_largetenanttables",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_fixtures_large_tenant_ts",
+      "target": "fixtures_large_tenant_countrows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "fixtures_large_tenant_largetenanttables",
+      "target": "fixtures_large_tenant_prng",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "fixtures_large_tenant_largetenanttables",
+      "target": "fixtures_large_tenant_phrase",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "fixtures_large_tenant_largetenanttables",
+      "target": "fixtures_large_tenant_isoat",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "fixtures_large_tenant_phrase",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_phrase",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_phrase",
+      "callee": "rand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_phrase",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_isoat",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_isoat",
+      "callee": "UTC",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L164"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "size",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_largetenanttables",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_countrows",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L241"
+    },
+    {
+      "caller_nid": "fixtures_large_tenant_countrows",
+      "callee": "values",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/__fixtures__/large-tenant.ts",
+      "source_location": "L241"
+    }
+  ]
+}

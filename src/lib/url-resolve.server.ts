@@ -31,12 +31,21 @@ const RESOLVE_TIMEOUT_MS = 1_500;
 const MAX_HOPS = 3;
 
 export type PathResolution =
-  | { type: "article"; slug: string; merchantSlug: string | null; canonicalPath: string }
+  | {
+      type: "article";
+      slug: string;
+      merchantSlug: string | null;
+      canonicalPath: string;
+    }
   | { type: "redirect"; to: string; status: 301 | 302 | 410 }
   | { type: "gone" }
   | { type: "miss" };
 
-function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  fallback: T,
+): Promise<T> {
   return new Promise<T>((resolve) => {
     const timer = setTimeout(() => resolve(fallback), ms);
     promise.then(
@@ -54,7 +63,10 @@ function withTimeout<T>(promise: Promise<T>, ms: number, fallback: T): Promise<T
 
 type Loose = { from: (table: string) => any };
 
-async function lookupRedirect(db: Loose, path: string): Promise<PathResolution | null> {
+async function lookupRedirect(
+  db: Loose,
+  path: string,
+): Promise<PathResolution | null> {
   let current = path;
   for (let hop = 0; hop < MAX_HOPS; hop += 1) {
     const { data } = await db
@@ -72,7 +84,10 @@ async function lookupRedirect(db: Loose, path: string): Promise<PathResolution |
     // break the redirect itself.
     void db
       .from("url_redirects")
-      .update({ hits: Number(data.hits ?? 0) + 1, last_hit_at: new Date().toISOString() })
+      .update({
+        hits: Number(data.hits ?? 0) + 1,
+        last_hit_at: new Date().toISOString(),
+      })
       .eq("id", data.id)
       .then(
         () => undefined,
@@ -128,7 +143,12 @@ async function resolveUncached(rawPath: string): Promise<PathResolution> {
     .maybeSingle();
 
   if (canonicalPath === path) {
-    return { type: "article", slug: article.slug, merchantSlug: merchant?.slug ?? null, canonicalPath };
+    return {
+      type: "article",
+      slug: article.slug,
+      merchantSlug: merchant?.slug ?? null,
+      canonicalPath,
+    };
   }
 
   // The slug is real but the path shape is stale (an old pattern, a shared
@@ -144,16 +164,23 @@ async function resolveUncached(rawPath: string): Promise<PathResolution> {
 }
 
 /** Cached resolution. Never throws; a failure degrades to a miss. */
-export async function resolveStorefrontPath(rawPath: string): Promise<PathResolution> {
+export async function resolveStorefrontPath(
+  rawPath: string,
+): Promise<PathResolution> {
   const started = Date.now();
   try {
     const result = await cached(
       `url-resolve|${rawPath}`,
       RESOLVE_TTL,
-      () => withTimeout(resolveUncached(rawPath), RESOLVE_TIMEOUT_MS, { type: "miss" } as PathResolution),
+      () =>
+        withTimeout(resolveUncached(rawPath), RESOLVE_TIMEOUT_MS, {
+          type: "miss",
+        } as PathResolution),
       { staleSeconds: 600 },
     );
-    observe("framique_url_resolve_ms", Date.now() - started, { type: result.type });
+    observe("framique_url_resolve_ms", Date.now() - started, {
+      type: result.type,
+    });
     incr("framique_url_resolve_total", { type: result.type });
     return result;
   } catch (error) {
@@ -171,18 +198,30 @@ export async function resolveStorefrontPath(rawPath: string): Promise<PathResolu
  * path's first segment (a store URL), otherwise against the article's tenant.
  * Fail-soft by construction — logging must never turn a 404 into a 500.
  */
-export async function recordResolvedMiss(path: string, referrer?: string | null): Promise<void> {
+export async function recordResolvedMiss(
+  path: string,
+  referrer?: string | null,
+): Promise<void> {
   try {
     const { publicClient } = await import("./pricing.server");
     const db = publicClient() as unknown as Loose;
     const segments = normaliseBase(path).split("/").filter(Boolean);
     let merchantId: string | null = null;
     if (segments[0] === "store" && segments[1]) {
-      const { data } = await db.from("merchants").select("id").eq("slug", segments[1]).maybeSingle();
+      const { data } = await db
+        .from("merchants")
+        .select("id")
+        .eq("slug", segments[1])
+        .maybeSingle();
       merchantId = data?.id ?? null;
     }
     if (!merchantId) {
-      const { data } = await db.from("merchants").select("id").eq("status", "active").limit(1).maybeSingle();
+      const { data } = await db
+        .from("merchants")
+        .select("id")
+        .eq("status", "active")
+        .limit(1)
+        .maybeSingle();
       merchantId = data?.id ?? null;
     }
     if (!merchantId) return;

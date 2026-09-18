@@ -1,1 +1,378 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "label": "phase8-architecture.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L1"}, {"id": "lib_phase8_architecture_test_bundle", "label": "bundle", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L25"}, {"id": "lib_phase8_architecture_test_key", "label": "key", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L32"}, {"id": "lib_phase8_architecture_test_a", "label": "a", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L44"}, {"id": "lib_phase8_architecture_test_b", "label": "b", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L45"}, {"id": "lib_phase8_architecture_test_mine", "label": "mine", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L50"}, {"id": "lib_phase8_architecture_test_headers", "label": "headers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L67"}, {"id": "lib_phase8_architecture_test_loader", "label": "loader", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L92"}, {"id": "lib_phase8_architecture_test_text", "label": "text", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L112"}, {"id": "lib_phase8_architecture_test_dashboard", "label": "dashboard", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L119"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "users_rahman_documents_frame30_src_lib_storefront_cache_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_edge_ttl_seconds", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_storefront_cache_prefix", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_isstorefrontpath", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_parsecachekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_storefrontcacheheaders", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_storefrontcachekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_storefront_cache_tenantcacheprefix", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "users_rahman_documents_frame30_src_lib_tenant_scope_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_tenant_scope_asserttenantid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_tenant_scope_istenantid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_tenant_scope_istenantuuid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_tenant_scope_tenantscopeerror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_data_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_widget_data_server_resolvewidgetdata", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_data_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_widget_data_widgetdatabundle", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_data_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_widget_data_server_sourceloader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_bundle", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_a", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_b", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_mine", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_headers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L67", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_loader", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts", "target": "lib_phase8_architecture_test_dashboard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts", "source_location": "L119", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "label": "phase8-architecture.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase8_architecture_test_bundle",
+      "label": "bundle",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_phase8_architecture_test_key",
+      "label": "key",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_phase8_architecture_test_a",
+      "label": "a",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_phase8_architecture_test_b",
+      "label": "b",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_phase8_architecture_test_mine",
+      "label": "mine",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_phase8_architecture_test_headers",
+      "label": "headers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L67"
+    },
+    {
+      "id": "lib_phase8_architecture_test_loader",
+      "label": "loader",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_phase8_architecture_test_text",
+      "label": "text",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_phase8_architecture_test_dashboard",
+      "label": "dashboard",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L119"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_cache_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_edge_ttl_seconds",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_storefront_cache_prefix",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_isstorefrontpath",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_parsecachekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_storefrontcacheheaders",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_storefrontcachekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_storefront_cache_tenantcacheprefix",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_tenant_scope_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_tenant_scope_asserttenantid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_tenant_scope_istenantid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_tenant_scope_istenantuuid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_tenant_scope_tenantscopeerror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_data_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_widget_data_server_resolvewidgetdata",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_data_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_widget_data_widgetdatabundle",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_data_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_widget_data_server_sourceloader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_bundle",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_mine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_headers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_loader",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase8_architecture_test_ts",
+      "target": "lib_phase8_architecture_test_dashboard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase8-architecture.test.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

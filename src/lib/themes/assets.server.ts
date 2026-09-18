@@ -35,7 +35,8 @@ export class ThemeAssetError extends Error {
   }
 }
 
-const SELECT = "id, theme_id, kind, name, content, url, bytes, enabled, updated_at";
+const SELECT =
+  "id, theme_id, kind, name, content, url, bytes, enabled, updated_at";
 
 type Row = {
   id: string;
@@ -65,7 +66,10 @@ function toAsset(row: Row): ThemeAsset {
 
 const cacheKey = (merchantId: string) => `theme-assets|${merchantId}`;
 
-export async function listThemeAssets(db: Client, merchantId: string): Promise<ThemeAsset[]> {
+export async function listThemeAssets(
+  db: Client,
+  merchantId: string,
+): Promise<ThemeAsset[]> {
   assertTenantId(merchantId, "listThemeAssets");
   const { data, error } = await loose(db)
     .from("theme_assets")
@@ -99,15 +103,20 @@ export async function saveThemeAsset(
   if (input.kind === "css") {
     const clean = sanitiseThemeCss(content ?? "");
     const invalid = validateCss(clean.css);
-    if (invalid) throw new ThemeAssetError(invalid, "That stylesheet could not be saved.");
+    if (invalid)
+      throw new ThemeAssetError(invalid, "That stylesheet could not be saved.");
     content = clean.css;
   }
   if (input.kind === "tokens") {
     const invalid = validateTokens(content ?? "");
-    if (invalid) throw new ThemeAssetError(invalid, "Those tokens are not valid JSON.");
+    if (invalid)
+      throw new ThemeAssetError(invalid, "Those tokens are not valid JSON.");
   }
   if ((input.kind === "image" || input.kind === "font") && !input.url)
-    throw new ThemeAssetError("asset.url_required", "Upload the file before saving it.");
+    throw new ThemeAssetError(
+      "asset.url_required",
+      "Upload the file before saving it.",
+    );
 
   const row = {
     merchant_id: merchantId,
@@ -132,12 +141,17 @@ export async function saveThemeAsset(
 
   const { data, error } = await query;
   if (error) throw new ThemeAssetError("write_failed", error.message);
-  if (!data) throw new ThemeAssetError("not_found", "That asset no longer exists.");
+  if (!data)
+    throw new ThemeAssetError("not_found", "That asset no longer exists.");
   invalidate(cacheKey(merchantId));
   return toAsset(data as Row);
 }
 
-export async function deleteThemeAsset(db: Client, merchantId: string, id: string) {
+export async function deleteThemeAsset(
+  db: Client,
+  merchantId: string,
+  id: string,
+) {
   assertTenantId(merchantId, "deleteThemeAsset");
   const { error } = await loose(db)
     .from("theme_assets")

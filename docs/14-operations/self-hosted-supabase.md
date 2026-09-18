@@ -31,13 +31,13 @@ imgproxy 3.28, postgres-meta 0.86, Kong 2.8. Tags are pinned on purpose —
 Generated per environment, never committed. The full list is
 `supabase/docker/.env.example`; the shapes that matter:
 
-| Value | How to produce |
-|---|---|
-| `POSTGRES_PASSWORD` | `openssl rand -hex 32` |
-| `JWT_SECRET` | `openssl rand -hex 32` (≥32 chars) |
-| `ANON_KEY` / `SERVICE_ROLE_KEY` | JWTs signed with `JWT_SECRET` from the upstream key generator |
-| `REALTIME_ENC_KEY`, `REALTIME_SECRET_KEY_BASE` | `openssl rand -hex 32` / `-hex 64` |
-| SMTP credentials | from the mail provider |
+| Value                                          | How to produce                                                |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`                            | `openssl rand -hex 32`                                        |
+| `JWT_SECRET`                                   | `openssl rand -hex 32` (≥32 chars)                            |
+| `ANON_KEY` / `SERVICE_ROLE_KEY`                | JWTs signed with `JWT_SECRET` from the upstream key generator |
+| `REALTIME_ENC_KEY`, `REALTIME_SECRET_KEY_BASE` | `openssl rand -hex 32` / `-hex 64`                            |
+| SMTP credentials                               | from the mail provider                                        |
 
 Rotating `JWT_SECRET` invalidates every session and both API keys. Plan it as a
 sign-out, never as a hotfix.

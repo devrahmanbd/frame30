@@ -4,11 +4,18 @@ import { requirePermission } from "./authz-middleware";
 import { z } from "zod";
 
 const orderInput = (d: unknown) =>
-  z.object({ orderId: z.string().uuid(), reason: z.string().max(300).optional() }).parse(d);
+  z
+    .object({
+      orderId: z.string().uuid(),
+      reason: z.string().max(300).optional(),
+    })
+    .parse(d);
 
 export const loadOrderDetail = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ orderId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ orderId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadOrderDetail: run } = await import("./orders-admin.server");
     return run(context.supabase, data.orderId);
@@ -101,7 +108,9 @@ export const bulkAdvanceOrders = createServerFn({ method: "POST" })
 
 export const loadOrderDesk = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ orderId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ orderId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadOrderDesk: run } = await import("./orders-admin.server");
     return run(context.supabase, data.orderId);
@@ -139,7 +148,13 @@ export const refundOrderLines = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { refundOrderLines: run } = await import("./orders-admin.server");
-    return run(context.supabase, data.orderId, data.lines, data.reason, data.note);
+    return run(
+      context.supabase,
+      data.orderId,
+      data.lines,
+      data.reason,
+      data.note,
+    );
   });
 
 export const recordCodCall = createServerFn({ method: "POST" })
@@ -148,7 +163,13 @@ export const recordCodCall = createServerFn({ method: "POST" })
     z
       .object({
         orderId: z.string().uuid(),
-        outcome: z.enum(["confirmed", "no_answer", "wrong_number", "refused", "callback_requested"]),
+        outcome: z.enum([
+          "confirmed",
+          "no_answer",
+          "wrong_number",
+          "refused",
+          "callback_requested",
+        ]),
         note: z.string().max(300).optional(),
       })
       .parse(d),
@@ -161,7 +182,13 @@ export const recordCodCall = createServerFn({ method: "POST" })
 export const addOrderNote = createServerFn({ method: "POST" })
   .middleware([requirePermission("orders.update_status")])
   .inputValidator((d: unknown) =>
-    z.object({ orderId: z.string().uuid(), body: z.string().min(2).max(2000), pinned: z.boolean().optional() }).parse(d),
+    z
+      .object({
+        orderId: z.string().uuid(),
+        body: z.string().min(2).max(2000),
+        pinned: z.boolean().optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { addOrderNote: run } = await import("./orders-admin.server");
@@ -170,7 +197,9 @@ export const addOrderNote = createServerFn({ method: "POST" })
 
 export const deleteOrderNote = createServerFn({ method: "POST" })
   .middleware([requirePermission("orders.update_status")])
-  .inputValidator((d: unknown) => z.object({ noteId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ noteId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteOrderNote: run } = await import("./orders-admin.server");
     return run(context.supabase, data.noteId);
@@ -179,7 +208,12 @@ export const deleteOrderNote = createServerFn({ method: "POST" })
 export const setOrderTags = createServerFn({ method: "POST" })
   .middleware([requirePermission("orders.update_status")])
   .inputValidator((d: unknown) =>
-    z.object({ orderId: z.string().uuid(), tags: z.array(z.string().max(32)).max(20) }).parse(d),
+    z
+      .object({
+        orderId: z.string().uuid(),
+        tags: z.array(z.string().max(32)).max(20),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setOrderTags: run } = await import("./orders-admin.server");

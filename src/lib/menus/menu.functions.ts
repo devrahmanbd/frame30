@@ -36,7 +36,9 @@ export const menusWorkspaceFn = createServerFn({ method: "GET" })
 
 export const menuCreateFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ name: z.string().min(1).max(120) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ name: z.string().min(1).max(120) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { createMenu } = await import("./menu.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -63,7 +65,9 @@ export const menuSaveFn = createServerFn({ method: "POST" })
 
 export const menuDeleteFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ menuId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ menuId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteMenu } = await import("./menu.server");
     const merchantId = await scope(context.supabase, context.userId);

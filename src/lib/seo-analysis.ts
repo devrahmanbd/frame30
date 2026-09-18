@@ -77,7 +77,14 @@ export type CheckStatus = "pass" | "warn" | "fail" | "skip";
 
 export type SeoCheck = {
   id: string;
-  group: "meta" | "social" | "indexing" | "aeo" | "content" | "links" | "readability";
+  group:
+    | "meta"
+    | "social"
+    | "indexing"
+    | "aeo"
+    | "content"
+    | "links"
+    | "readability";
   label: string;
   labelBn: string;
   status: CheckStatus;
@@ -109,7 +116,10 @@ export type SeoReport = {
 const HTTPS = /^https:\/\/[^\s]+$/i;
 
 /** Normalises the caller's keyword list: trimmed, de-duplicated, capped. */
-export function normaliseKeywords(input: unknown, max = SECONDARY_KEYWORDS_MAX): string[] {
+export function normaliseKeywords(
+  input: unknown,
+  max = SECONDARY_KEYWORDS_MAX,
+): string[] {
   if (!Array.isArray(input)) return [];
   const seen = new Set<string>();
   const out: string[] = [];
@@ -133,10 +143,13 @@ export function normaliseKeywords(input: unknown, max = SECONDARY_KEYWORDS_MAX):
 export function analyseSeo(draft: SeoDraft): SeoReport {
   const locale: SeoLocale = draft.locale === "bn" ? "bn" : "en";
   const title = draft.metaTitle.trim() || draft.fallbackTitle?.trim() || "";
-  const desc = draft.metaDescription.trim() || draft.fallbackDescription?.trim() || "";
+  const desc =
+    draft.metaDescription.trim() || draft.fallbackDescription?.trim() || "";
   const keyword = draft.focusKeyword.trim();
   const secondary = normaliseKeywords(draft.secondaryKeywords ?? []);
-  const facts: DocumentFacts = documentFacts(draft.content ?? "", { origin: draft.origin ?? "" });
+  const facts: DocumentFacts = documentFacts(draft.content ?? "", {
+    origin: draft.origin ?? "",
+  });
   const judgeable = facts.words >= MIN_JUDGEABLE_WORDS;
   const read = readability(facts, locale);
   const checks: SeoCheck[] = [];
@@ -188,7 +201,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     "title.pixels",
     "meta",
     ["Title width", "টাইটেলের প্রস্থ"],
-    title.length === 0 ? "skip" : titlePx > SERP_DESKTOP.titlePx ? "warn" : "pass",
+    title.length === 0
+      ? "skip"
+      : titlePx > SERP_DESKTOP.titlePx
+        ? "warn"
+        : "pass",
     title.length === 0
       ? ["No title to measure yet.", "মাপার মতো টাইটেল নেই।"]
       : titlePx > SERP_DESKTOP.titlePx
@@ -229,7 +246,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     "description.pixels",
     "meta",
     ["Description width", "বর্ণনার প্রস্থ"],
-    desc.length === 0 ? "skip" : descPx > SERP_DESKTOP.descriptionPx ? "warn" : "pass",
+    desc.length === 0
+      ? "skip"
+      : descPx > SERP_DESKTOP.descriptionPx
+        ? "warn"
+        : "pass",
     desc.length === 0
       ? ["No description to measure yet.", "মাপার মতো বর্ণনা নেই।"]
       : descPx > SERP_DESKTOP.descriptionPx
@@ -250,7 +271,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     ["Focus keyword", "মূল কীওয়ার্ড"],
     keyword ? "pass" : "warn",
     keyword
-      ? [`Optimising for “${keyword}”.`, `“${keyword}” এর জন্য অপটিমাইজ করা হচ্ছে।`]
+      ? [
+          `Optimising for “${keyword}”.`,
+          `“${keyword}” এর জন্য অপটিমাইজ করা হচ্ছে।`,
+        ]
       : [
           "Set a focus keyword to score coverage.",
           "কভারেজ স্কোর পেতে একটি মূল কীওয়ার্ড দিন।",
@@ -270,7 +294,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       inTitle ? (position <= 0.4 ? "pass" : "warn") : "fail",
       inTitle
         ? position <= 0.4
-          ? ["Keyword appears near the start of the title.", "কীওয়ার্ডটি টাইটেলের শুরুর দিকে আছে।"]
+          ? [
+              "Keyword appears near the start of the title.",
+              "কীওয়ার্ডটি টাইটেলের শুরুর দিকে আছে।",
+            ]
           : [
               "Keyword is in the title but late — move it towards the front.",
               "কীওয়ার্ড টাইটেলে আছে কিন্তু পরে — শুরুর দিকে আনুন।",
@@ -295,12 +322,22 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     );
 
     const occurrences = phraseOccurrences(facts.text, keyword);
-    density = facts.words ? (occurrences * Math.max(1, normaliseText(keyword).split(" ").length) / facts.words) * 100 : 0;
+    density = facts.words
+      ? ((occurrences * Math.max(1, normaliseText(keyword).split(" ").length)) /
+          facts.words) *
+        100
+      : 0;
     push(
       "keyword.density",
       "meta",
       ["Keyword density", "কীওয়ার্ড ঘনত্ব"],
-      !judgeable ? "warn" : density === 0 ? "fail" : density > 4 ? "warn" : "pass",
+      !judgeable
+        ? "warn"
+        : density === 0
+          ? "fail"
+          : density > 4
+            ? "warn"
+            : "pass",
       !judgeable
         ? [
             "Content is too short to judge density (under 40 words).",
@@ -314,7 +351,9 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     );
 
     const url = draft.url ?? "";
-    const slugText = url.replace(/^https?:\/\/[^/]+/i, "").replace(/[/_-]+/g, " ");
+    const slugText = url
+      .replace(/^https?:\/\/[^/]+/i, "")
+      .replace(/[/_-]+/g, " ");
     push(
       "keyword.url",
       "meta",
@@ -325,7 +364,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
           ? "pass"
           : "warn",
       draft.url === undefined
-        ? ["No URL supplied for this entity.", "এই আইটেমের কোনো URL দেওয়া হয়নি।"]
+        ? [
+            "No URL supplied for this entity.",
+            "এই আইটেমের কোনো URL দেওয়া হয়নি।",
+          ]
         : containsPhrase(slugText, keyword)
           ? ["The slug carries the keyword.", "স্লাগে কীওয়ার্ডটি আছে।"]
           : [
@@ -339,9 +381,16 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       "keyword.first_paragraph",
       "content",
       ["Keyword in opening", "শুরুর অনুচ্ছেদে কীওয়ার্ড"],
-      !judgeable ? "skip" : containsPhrase(facts.firstParagraph, keyword) ? "pass" : "warn",
       !judgeable
-        ? ["Not enough copy to check the opening.", "শুরুর অনুচ্ছেদ যাচাই করার মতো লেখা নেই।"]
+        ? "skip"
+        : containsPhrase(facts.firstParagraph, keyword)
+          ? "pass"
+          : "warn",
+      !judgeable
+        ? [
+            "Not enough copy to check the opening.",
+            "শুরুর অনুচ্ছেদ যাচাই করার মতো লেখা নেই।",
+          ]
         : [
             "Mention the keyword in the first paragraph so the intent is obvious immediately.",
             "প্রথম অনুচ্ছেদেই কীওয়ার্ডটি লিখুন, যাতে উদ্দেশ্য সঙ্গে সঙ্গে বোঝা যায়।",
@@ -349,7 +398,9 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       8,
     );
 
-    const inSubheading = facts.headings.some((h) => h.level > 1 && containsPhrase(h.text, keyword));
+    const inSubheading = facts.headings.some(
+      (h) => h.level > 1 && containsPhrase(h.text, keyword),
+    );
     push(
       "keyword.subheading",
       "content",
@@ -373,7 +424,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       "keyword.image_alt",
       "content",
       ["Keyword in image alt", "ইমেজ alt-এ কীওয়ার্ড"],
-      facts.images.length === 0 ? "skip" : containsPhrase(altText, keyword) ? "pass" : "warn",
+      facts.images.length === 0
+        ? "skip"
+        : containsPhrase(altText, keyword)
+          ? "pass"
+          : "warn",
       facts.images.length === 0
         ? ["No images in this content.", "এই লেখায় কোনো ইমেজ নেই।"]
         : [
@@ -386,13 +441,18 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
 
   if (secondary.length) {
     const covered = secondary.filter(
-      (k) => containsPhrase(`${title} ${desc}`, k) || containsPhrase(facts.text, k),
+      (k) =>
+        containsPhrase(`${title} ${desc}`, k) || containsPhrase(facts.text, k),
     );
     push(
       "keyword.secondary",
       "meta",
       ["Secondary keywords", "সহায়ক কীওয়ার্ড"],
-      covered.length === secondary.length ? "pass" : covered.length > 0 ? "warn" : "fail",
+      covered.length === secondary.length
+        ? "pass"
+        : covered.length > 0
+          ? "warn"
+          : "fail",
       [
         `${covered.length} of ${secondary.length} supporting keywords appear in the copy.`,
         `${secondary.length}টির মধ্যে ${covered.length}টি সহায়ক কীওয়ার্ড লেখায় আছে।`,
@@ -428,12 +488,19 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     "content.headings",
     "content",
     ["Heading outline", "হেডিং কাঠামো"],
-    facts.headings.length === 0 ? "skip" : heading.length === 0 ? "pass" : "warn",
+    facts.headings.length === 0
+      ? "skip"
+      : heading.length === 0
+        ? "pass"
+        : "warn",
     facts.headings.length === 0
       ? ["No headings found in this content.", "এই লেখায় কোনো হেডিং নেই।"]
       : heading.length === 0
         ? ["One H1 and no skipped levels.", "একটি H1, কোনো লেভেল বাদ পড়েনি।"]
-        : [heading.join(" "), "হেডিং ক্রম ঠিক করুন — একটি H1, কোনো লেভেল বাদ নয়।"],
+        : [
+            heading.join(" "),
+            "হেডিং ক্রম ঠিক করুন — একটি H1, কোনো লেভেল বাদ নয়।",
+          ],
     6,
   );
 
@@ -464,7 +531,13 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     "links.internal",
     "links",
     ["Internal links", "অভ্যন্তরীণ লিংক"],
-    !judgeable ? "skip" : facts.internalLinks >= 2 ? "pass" : facts.internalLinks === 1 ? "warn" : "fail",
+    !judgeable
+      ? "skip"
+      : facts.internalLinks >= 2
+        ? "pass"
+        : facts.internalLinks === 1
+          ? "warn"
+          : "fail",
     !judgeable
       ? ["Too little copy to expect links.", "লিংক আশা করার মতো লেখা নেই।"]
       : [
@@ -501,7 +574,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
             "Readability scoring is English-only — we do not guess at বাংলা rather than report a wrong number.",
             "পঠনযোগ্যতা স্কোর শুধু ইংরেজির জন্য — ভুল সংখ্যা দেখানোর চেয়ে বাংলায় আমরা কিছু অনুমান করি না।",
           ]
-        : ["Not enough copy to assess readability.", "পঠনযোগ্যতা যাচাই করার মতো লেখা নেই।"],
+        : [
+            "Not enough copy to assess readability.",
+            "পঠনযোগ্যতা যাচাই করার মতো লেখা নেই।",
+          ],
       0,
     );
   } else {
@@ -520,7 +596,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       "readability.sentences",
       "readability",
       ["Sentence length", "বাক্যের দৈর্ঘ্য"],
-      read.longSentenceRatio <= 0.25 ? "pass" : read.longSentenceRatio <= 0.4 ? "warn" : "fail",
+      read.longSentenceRatio <= 0.25
+        ? "pass"
+        : read.longSentenceRatio <= 0.4
+          ? "warn"
+          : "fail",
       [
         `${Math.round(read.longSentenceRatio * 100)}% of sentences run over 20 words (target: 25% or less).`,
         `${Math.round(read.longSentenceRatio * 100)}% বাক্য ২০ শব্দের বেশি (লক্ষ্য: ২৫% বা কম)।`,
@@ -542,7 +622,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
       "readability.passive",
       "readability",
       ["Passive voice", "নিষ্ক্রিয় বাক্য"],
-      read.passiveRatio <= 0.1 ? "pass" : read.passiveRatio <= 0.2 ? "warn" : "fail",
+      read.passiveRatio <= 0.1
+        ? "pass"
+        : read.passiveRatio <= 0.2
+          ? "warn"
+          : "fail",
       [
         `${Math.round(read.passiveRatio * 100)}% of sentences look passive (target: 10% or less).`,
         `${Math.round(read.passiveRatio * 100)}% বাক্য নিষ্ক্রিয় মনে হচ্ছে (লক্ষ্য: ১০% বা কম)।`,
@@ -557,7 +641,11 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     "social.image",
     "social",
     ["Social share image", "সোশ্যাল শেয়ার ইমেজ"],
-    draft.ogImageUrl.trim() === "" ? "warn" : HTTPS.test(draft.ogImageUrl.trim()) ? "pass" : "fail",
+    draft.ogImageUrl.trim() === ""
+      ? "warn"
+      : HTTPS.test(draft.ogImageUrl.trim())
+        ? "pass"
+        : "fail",
     draft.ogImageUrl.trim() === ""
       ? [
           "Without an image the card renders as a plain text link.",
@@ -598,9 +686,15 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     ["Canonical URL", "ক্যানোনিকাল URL"],
     canonical === "" ? "pass" : HTTPS.test(canonical) ? "pass" : "fail",
     canonical === ""
-      ? ["Defaults to this page's own absolute URL.", "ডিফল্টভাবে এই পেজের নিজের URL ব্যবহার হবে।"]
+      ? [
+          "Defaults to this page's own absolute URL.",
+          "ডিফল্টভাবে এই পেজের নিজের URL ব্যবহার হবে।",
+        ]
       : HTTPS.test(canonical)
-        ? ["Custom canonical will override the default.", "কাস্টম ক্যানোনিকাল ডিফল্টের বদলে বসবে।"]
+        ? [
+            "Custom canonical will override the default.",
+            "কাস্টম ক্যানোনিকাল ডিফল্টের বদলে বসবে।",
+          ]
         : [
             "A canonical must be an absolute https:// URL.",
             "ক্যানোনিকাল অবশ্যই সম্পূর্ণ https:// URL হতে হবে।",
@@ -622,7 +716,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
           "২–৫টি প্রশ্ন যোগ করুন, যাতে সহকারীরা সরাসরি উত্তর উদ্ধৃত করতে পারে।",
         ]
       : faq.length > FAQ_MAX
-        ? [`Keep FAQ entries at ${FAQ_MAX} or fewer.`, `FAQ সর্বোচ্চ ${FAQ_MAX}টি রাখুন।`]
+        ? [
+            `Keep FAQ entries at ${FAQ_MAX} or fewer.`,
+            `FAQ সর্বোচ্চ ${FAQ_MAX}টি রাখুন।`,
+          ]
         : [
             `${faq.length} question${faq.length === 1 ? "" : "s"} will be emitted as FAQPage JSON-LD.`,
             `${faq.length}টি প্রশ্ন FAQPage JSON-LD হিসেবে যাবে।`,
@@ -630,7 +727,9 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
     10,
   );
 
-  const tooLong = faq.find((f) => f.q.length > FAQ_Q_MAX || f.a.length > FAQ_A_MAX);
+  const tooLong = faq.find(
+    (f) => f.q.length > FAQ_Q_MAX || f.a.length > FAQ_A_MAX,
+  );
   if (faq.length > 0) {
     push(
       "aeo.answer_length",
@@ -653,7 +752,13 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
   const scored = checks.filter((c) => c.status !== "skip");
   const total = scored.reduce((n, c) => n + c.weight, 0);
   const earned = scored.reduce(
-    (n, c) => n + (c.status === "pass" ? c.weight : c.status === "warn" ? c.weight * 0.5 : 0),
+    (n, c) =>
+      n +
+      (c.status === "pass"
+        ? c.weight
+        : c.status === "warn"
+          ? c.weight * 0.5
+          : 0),
     0,
   );
 
@@ -681,7 +786,10 @@ export function analyseSeo(draft: SeoDraft): SeoReport {
   };
 }
 
-export function scoreBand(score: number): { tone: "danger" | "warning" | "success"; label: string } {
+export function scoreBand(score: number): {
+  tone: "danger" | "warning" | "success";
+  label: string;
+} {
   if (score >= 80) return { tone: "success", label: "Good" };
   if (score >= 50) return { tone: "warning", label: "Needs work" };
   return { tone: "danger", label: "Poor" };

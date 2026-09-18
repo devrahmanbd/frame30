@@ -14,7 +14,9 @@ const OPS = join(process.cwd(), "ops", "observability");
 const GRAFANA = join(OPS, "grafana");
 
 const dashboards = readdirSync(GRAFANA).filter((f) => f.endsWith(".json"));
-const dashboardText = dashboards.map((f) => readFileSync(join(GRAFANA, f), "utf8")).join("\n");
+const dashboardText = dashboards
+  .map((f) => readFileSync(join(GRAFANA, f), "utf8"))
+  .join("\n");
 const alertsText = readFileSync(join(OPS, "alerts.rules.yml"), "utf8");
 const watched = `${dashboardText}\n${alertsText}`;
 
@@ -108,14 +110,19 @@ describe("metric coverage", () => {
 });
 
 describe("alert rules", () => {
-  const alerts = [...alertsText.matchAll(/- alert:\s*(\S+)/g)].map((m) => m[1] as string);
+  const alerts = [...alertsText.matchAll(/- alert:\s*(\S+)/g)].map(
+    (m) => m[1] as string,
+  );
 
   it("names every alert uniquely", () => {
     expect(new Set(alerts).size).toBe(alerts.length);
   });
 
   it("routes refresh-token reuse and AI guardrail blocks to a pager", () => {
-    for (const name of ["OAuthRefreshTokenReuseDetected", "AiGuardrailBlockFired"]) {
+    for (const name of [
+      "OAuthRefreshTokenReuseDetected",
+      "AiGuardrailBlockFired",
+    ]) {
       const block = alertsText.slice(alertsText.indexOf(`- alert: ${name}`));
       expect(alerts, name).toContain(name);
       expect(block.slice(0, 600)).toContain("severity: page");
@@ -143,7 +150,9 @@ describe("alert rules", () => {
   it("never divides by a bare rate — every ratio is clamped", () => {
     const ratios = [...alertsText.matchAll(/\/\s*\n?\s*(clamp_min\()?sum\(/g)];
     for (const match of ratios) {
-      expect(match[1], `unclamped division near: ${match[0]}`).toBe("clamp_min(");
+      expect(match[1], `unclamped division near: ${match[0]}`).toBe(
+        "clamp_min(",
+      );
     }
   });
 });

@@ -4,13 +4,13 @@ Normative for storefront search, tenant pages, shopper accounts and crawler surf
 
 ## Boundaries
 
-| Surface | Boundary | Tenancy | Identity |
-|---|---|---|---|
-| `/store/$slug/search` | `searchStorefrontFn` → `storefront_search` RPC | slug in URL | none (public) |
-| `/store/$slug/pages/$pageSlug` | `getStorePageFn` (SSR loader) | slug in URL | none (public) |
-| `/store/$slug/account` | `account*Fn` with `requireSupabaseAuth` | slug in URL | `auth.uid()` |
-| `/store/$slug/sitemap.xml`, `/robots.txt` | server route handlers | slug in URL | none (public) |
-| `/admin/pages` | `pagesDeskFn`, `savePageFn`, `archivePageFn` | `merchant_id` + RLS | staff session |
+| Surface                                   | Boundary                                       | Tenancy             | Identity      |
+| ----------------------------------------- | ---------------------------------------------- | ------------------- | ------------- |
+| `/store/$slug/search`                     | `searchStorefrontFn` → `storefront_search` RPC | slug in URL         | none (public) |
+| `/store/$slug/pages/$pageSlug`            | `getStorePageFn` (SSR loader)                  | slug in URL         | none (public) |
+| `/store/$slug/account`                    | `account*Fn` with `requireSupabaseAuth`        | slug in URL         | `auth.uid()`  |
+| `/store/$slug/sitemap.xml`, `/robots.txt` | server route handlers                          | slug in URL         | none (public) |
+| `/admin/pages`                            | `pagesDeskFn`, `savePageFn`, `archivePageFn`   | `merchant_id` + RLS | staff session |
 
 The storefront slug is the only tenancy source. No surface accepts a
 `merchant_id` from the client except the admin desk, where RLS re-checks it.

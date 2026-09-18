@@ -1,1 +1,61 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_ops_backup_backup_sh", "label": "backup.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L1"}, {"id": "backup_backup_dc", "label": "dc()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L29"}, {"id": "backup_backup_sum", "label": "sum()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L39"}, {"id": "backup_backup_size", "label": "size()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L40"}], "edges": [{"source": "users_rahman_documents_frame30_ops_backup_backup_sh", "target": "backup_backup_dc", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_ops_backup_backup_sh", "target": "backup_backup_sum", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_ops_backup_backup_sh", "target": "backup_backup_size", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh", "source_location": "L40", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_ops_backup_backup_sh",
+      "label": "backup.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L1"
+    },
+    {
+      "id": "backup_backup_dc",
+      "label": "dc()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L29"
+    },
+    {
+      "id": "backup_backup_sum",
+      "label": "sum()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L39"
+    },
+    {
+      "id": "backup_backup_size",
+      "label": "size()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L40"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_ops_backup_backup_sh",
+      "target": "backup_backup_dc",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_ops_backup_backup_sh",
+      "target": "backup_backup_sum",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_ops_backup_backup_sh",
+      "target": "backup_backup_size",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/ops/backup/backup.sh",
+      "source_location": "L40",
+      "weight": 1.0
+    }
+  ]
+}

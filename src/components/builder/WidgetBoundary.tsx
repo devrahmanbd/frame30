@@ -24,9 +24,12 @@ export function reportWidgetError(type: string, error: unknown) {
   // Client-side: one console line per broken widget, tagged so the log pipeline
   // can aggregate a widget error rate without shipping a second transport.
   console.error(
-    new Error(`widget_render_failed:${type}: ${(error as Error)?.message ?? String(error)}`, {
-      cause: error,
-    }),
+    new Error(
+      `widget_render_failed:${type}: ${(error as Error)?.message ?? String(error)}`,
+      {
+        cause: error,
+      },
+    ),
   );
 }
 
@@ -34,7 +37,10 @@ export class WidgetBoundary extends Component<Props, State> {
   override state: State = { failed: false, message: "" };
 
   static getDerivedStateFromError(error: unknown): State {
-    return { failed: true, message: (error as Error)?.message ?? "render failed" };
+    return {
+      failed: true,
+      message: (error as Error)?.message ?? "render failed",
+    };
   }
 
   override componentDidCatch(error: Error, _info: ErrorInfo) {
@@ -49,7 +55,8 @@ export class WidgetBoundary extends Component<Props, State> {
           role="note"
           className="rounded-fq-md border border-dashed border-danger bg-danger-soft p-4 text-sm"
         >
-          This “{this.props.type}” block failed to render. Check its settings or remove it.
+          This “{this.props.type}” block failed to render. Check its settings or
+          remove it.
         </div>
       );
     }

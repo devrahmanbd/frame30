@@ -17,18 +17,18 @@ This skill provides a comprehensive verification and quality assurance system th
 - **CI/CD Integration**: Export capabilities for continuous integration pipelines
 - **Real-time Monitoring**: Live dashboards and watch modes for ongoing verification
 
-> **Shipped vs. aspirational.** The *concrete, in-CI* verification stack — the 6 regression-guard jobs + the witness manifest + the tool-discoverability audit — is real and runs on every push. The truth-scoring / auto-rollback / WebSocket-dashboard surface described later in this doc is partly shipped (`ruflo verify` runs the witness checks) and partly design — treat the "CI Guards" section below as the authoritative current state.
+> **Shipped vs. aspirational.** The _concrete, in-CI_ verification stack — the 6 regression-guard jobs + the witness manifest + the tool-discoverability audit — is real and runs on every push. The truth-scoring / auto-rollback / WebSocket-dashboard surface described later in this doc is partly shipped (`ruflo verify` runs the witness checks) and partly design — treat the "CI Guards" section below as the authoritative current state.
 
 ## CI Guards — what's actually shipped (current state)
 
 Ruflo's regression protection is three layers, all gated before publish. Authoritative reference: [`verification/README.md`](../../../verification/README.md).
 
-| Layer | What | CI job(s) in `.github/workflows/v3-ci.yml` | ADR |
-|---|---|---|---|
-| **1 — install/behavioral smoke** | Exercise user-visible failure modes against a real build | `smoke-install-no-bsqlite` (npm install on platforms w/o prebuilds), `plugin-hooks-smoke` (#1859/#1862 — hook flag parsing), `mcp-protocol-smoke` (#1874 — HTTP MCP wire format), `memory-import-smoke` (#1883/#1884 — WSL path + key sanitization), `mcp-roundtrip-smoke` (#1889 paired-tool round-trip + #1863 cli-no-crash + ADR-095 G2 consensus-transport) | ADR-102 |
-| **1 — discoverability gate** | Every MCP tool description must answer "use this over native when?" | `tool-descriptions-audit` — `scripts/audit-tool-descriptions.mjs`, baseline at `verification/mcp-tool-baseline.json` (monotone-decreasing: noGuidance / tooShort / duplicates) | ADR-112 |
-| **2 — cryptographic witness** | Every documented fix's load-bearing marker must still be present in dist; Ed25519-signed, per-OS bundles | `witness-verify` (ubuntu/macos/windows) — `plugins/ruflo-core/scripts/witness/verify.mjs` against `verification/<os>/manifest.md.json` | ADR-103 |
-| **3 — temporal history** | When was a regression introduced | `verification/<os>/history.jsonl` + `history.mjs` (`summary` / `regressions` / `timeline`) | ADR-103 |
+| Layer                            | What                                                                                                     | CI job(s) in `.github/workflows/v3-ci.yml`                                                                                                                                                                                                                                                                                                                      | ADR     |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **1 — install/behavioral smoke** | Exercise user-visible failure modes against a real build                                                 | `smoke-install-no-bsqlite` (npm install on platforms w/o prebuilds), `plugin-hooks-smoke` (#1859/#1862 — hook flag parsing), `mcp-protocol-smoke` (#1874 — HTTP MCP wire format), `memory-import-smoke` (#1883/#1884 — WSL path + key sanitization), `mcp-roundtrip-smoke` (#1889 paired-tool round-trip + #1863 cli-no-crash + ADR-095 G2 consensus-transport) | ADR-102 |
+| **1 — discoverability gate**     | Every MCP tool description must answer "use this over native when?"                                      | `tool-descriptions-audit` — `scripts/audit-tool-descriptions.mjs`, baseline at `verification/mcp-tool-baseline.json` (monotone-decreasing: noGuidance / tooShort / duplicates)                                                                                                                                                                                  | ADR-112 |
+| **2 — cryptographic witness**    | Every documented fix's load-bearing marker must still be present in dist; Ed25519-signed, per-OS bundles | `witness-verify` (ubuntu/macos/windows) — `plugins/ruflo-core/scripts/witness/verify.mjs` against `verification/<os>/manifest.md.json`                                                                                                                                                                                                                          | ADR-103 |
+| **3 — temporal history**         | When was a regression introduced                                                                         | `verification/<os>/history.jsonl` + `history.mjs` (`summary` / `regressions` / `timeline`)                                                                                                                                                                                                                                                                      | ADR-103 |
 
 ### Run the guards locally
 
@@ -94,6 +94,7 @@ npx ruflo@alpha verify rollback --last-good
 Display comprehensive quality and reliability metrics for your codebase and agent tasks.
 
 **Basic Usage:**
+
 ```bash
 # View current truth scores (default: table format)
 npx ruflo@alpha truth
@@ -109,6 +110,7 @@ npx ruflo@alpha truth --threshold 0.8
 ```
 
 **Output Formats:**
+
 ```bash
 # Table format (default)
 npx ruflo@alpha truth --format table
@@ -124,6 +126,7 @@ npx ruflo@alpha truth --format html --export report.html
 ```
 
 **Real-time Monitoring:**
+
 ```bash
 # Watch mode with live updates
 npx ruflo@alpha truth --watch
@@ -135,6 +138,7 @@ npx ruflo@alpha truth --export .claude-flow/metrics/truth-$(date +%Y%m%d).json
 #### Truth Score Dashboard
 
 Example dashboard output:
+
 ```
 📊 Truth Metrics Dashboard
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -160,17 +164,20 @@ Recent Tasks:
 #### Metrics Explained
 
 **Truth Scores (0.0-1.0):**
+
 - `1.0-0.95`: Excellent ⭐ (production-ready)
 - `0.94-0.85`: Good ✅ (acceptable quality)
 - `0.84-0.75`: Warning ⚠️ (needs attention)
 - `<0.75`: Critical ❌ (requires immediate action)
 
 **Trend Indicators:**
+
 - ↗️ Improving (positive trend)
 - → Stable (consistent performance)
 - ↘️ Declining (quality regression detected)
 
 **Statistics:**
+
 - **Mean Score**: Average truth score across all measurements
 - **Median Score**: Middle value (less affected by outliers)
 - **Standard Deviation**: Consistency of scores (lower = more consistent)
@@ -183,6 +190,7 @@ Recent Tasks:
 Execute comprehensive verification checks on code, tasks, or agent outputs.
 
 **File Verification:**
+
 ```bash
 # Verify single file
 npx ruflo@alpha verify check --file src/app.js
@@ -198,6 +206,7 @@ npx ruflo@alpha verify check
 ```
 
 **Task Verification:**
+
 ```bash
 # Verify specific task output
 npx ruflo@alpha verify check --task task-123
@@ -210,6 +219,7 @@ npx ruflo@alpha verify check --task task-789 --verbose
 ```
 
 **Batch Verification:**
+
 ```bash
 # Verify multiple files in parallel
 npx ruflo@alpha verify batch --files "*.js" --parallel
@@ -289,6 +299,7 @@ npx ruflo@alpha verify check --json > verification.json
 Automatically revert changes that fail verification checks.
 
 **Basic Rollback:**
+
 ```bash
 # Rollback to last known good state
 npx ruflo@alpha verify rollback --last-good
@@ -301,6 +312,7 @@ npx ruflo@alpha verify rollback --interactive
 ```
 
 **Smart Rollback:**
+
 ```bash
 # Rollback only failed files (preserve good changes)
 npx ruflo@alpha verify rollback --selective
@@ -313,6 +325,7 @@ npx ruflo@alpha verify rollback --dry-run
 ```
 
 **Rollback Performance:**
+
 - Git-based rollback: <1 second
 - Selective file rollback: <500ms
 - Backup creation: Automatic before rollback
@@ -324,6 +337,7 @@ npx ruflo@alpha verify rollback --dry-run
 Create detailed verification reports with metrics and visualizations.
 
 **Report Formats:**
+
 ```bash
 # JSON report
 npx ruflo@alpha verify report --format json
@@ -339,6 +353,7 @@ npx ruflo@alpha verify report --format markdown
 ```
 
 **Time-based Reports:**
+
 ```bash
 # Last 24 hours
 npx ruflo@alpha verify report --period 24h
@@ -354,6 +369,7 @@ npx ruflo@alpha verify report --from 2025-01-01 --to 2025-01-31
 ```
 
 **Report Content:**
+
 - Overall truth scores
 - Per-agent performance metrics
 - Task completion quality
@@ -383,6 +399,7 @@ npx ruflo@alpha verify dashboard --refresh 5s
 ```
 
 **Dashboard Features:**
+
 - Real-time truth score updates (WebSocket)
 - Interactive charts and graphs
 - Agent performance comparison
@@ -432,6 +449,7 @@ Set verification preferences in `.claude-flow/config.json`:
 #### Threshold Configuration
 
 **Adjust verification strictness:**
+
 ```bash
 # Strict mode (99% accuracy required)
 npx ruflo@alpha verify check --threshold 0.99
@@ -444,13 +462,14 @@ npx ruflo@alpha config set verification.threshold 0.98
 ```
 
 **Per-environment thresholds:**
+
 ```json
 {
   "verification": {
     "thresholds": {
       "production": 0.99,
       "staging": 0.95,
-      "development": 0.90
+      "development": 0.9
     }
   }
 }
@@ -461,6 +480,7 @@ npx ruflo@alpha config set verification.threshold 0.98
 #### CI/CD Integration
 
 **GitHub Actions:**
+
 ```yaml
 name: Quality Verification
 
@@ -495,6 +515,7 @@ jobs:
 ```
 
 **GitLab CI:**
+
 ```yaml
 verify:
   stage: test
@@ -605,17 +626,20 @@ echo "✅ Verification passed with score: $score"
 ### Performance Metrics
 
 **Verification Speed:**
+
 - Single file check: <100ms
 - Directory scan: <500ms (per 100 files)
 - Full codebase analysis: <5s (typical project)
 - Truth score calculation: <50ms
 
 **Rollback Speed:**
+
 - Git-based rollback: <1s
 - Selective file rollback: <500ms
 - Backup creation: <2s
 
 **Dashboard Performance:**
+
 - Initial load: <1s
 - Real-time updates: <100ms latency (WebSocket)
 - Chart rendering: 60 FPS
@@ -625,6 +649,7 @@ echo "✅ Verification passed with score: $score"
 #### Common Issues
 
 **Low Truth Scores:**
+
 ```bash
 # Get detailed breakdown
 npx ruflo@alpha truth --verbose --threshold 0.0
@@ -637,6 +662,7 @@ npx ruflo@alpha truth --agent <agent-name> --format json
 ```
 
 **Rollback Failures:**
+
 ```bash
 # Check git status
 git status
@@ -649,6 +675,7 @@ git reset --hard HEAD~1
 ```
 
 **Verification Timeouts:**
+
 ```bash
 # Increase timeout
 npx ruflo@alpha verify check --timeout 60s

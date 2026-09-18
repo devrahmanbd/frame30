@@ -10,7 +10,9 @@ import { useId, useMemo, useState } from "react";
 export type TrendPoint = { date: string; value: number };
 
 function path(points: { x: number; y: number }[]) {
-  return points.map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ");
+  return points
+    .map((p, i) => `${i === 0 ? "M" : "L"}${p.x.toFixed(2)},${p.y.toFixed(2)}`)
+    .join(" ");
 }
 
 export function TrendChart({
@@ -99,7 +101,7 @@ export function TrendChart({
         {coords.map((c, i) => (
           <rect
             key={points[i]!.date}
-            x={c.x - (w / Math.max(points.length, 1)) / 2}
+            x={c.x - w / Math.max(points.length, 1) / 2}
             y={0}
             width={w / Math.max(points.length, 1)}
             height={h}

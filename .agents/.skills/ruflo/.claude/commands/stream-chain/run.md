@@ -23,6 +23,7 @@ Each prompt in the chain receives the complete output from the previous step as 
 ## Examples
 
 ### Basic Chain
+
 ```bash
 claude-flow stream-chain run \
   "Write a function" \
@@ -30,6 +31,7 @@ claude-flow stream-chain run \
 ```
 
 ### Complex Workflow
+
 ```bash
 claude-flow stream-chain run \
   "Analyze the authentication system" \
@@ -40,6 +42,7 @@ claude-flow stream-chain run \
 ```
 
 ### With Options
+
 ```bash
 claude-flow stream-chain run \
   "Complex analysis task" \

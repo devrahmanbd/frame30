@@ -63,7 +63,11 @@ describe("Phase 6.2 — Automated Pre-Flight Health, Smoke & DB Probes", () => {
           return Promise.resolve(new Response("Not Found", { status: 404 }));
         }
         if (url.includes("/healthz?type=liveness")) {
-          return Promise.resolve(new Response(JSON.stringify({ status: "healthy" }), { status: 200 }));
+          return Promise.resolve(
+            new Response(JSON.stringify({ status: "healthy" }), {
+              status: 200,
+            }),
+          );
         }
         // Root landing
         return Promise.resolve(
@@ -87,14 +91,18 @@ describe("Phase 6.2 — Automated Pre-Flight Health, Smoke & DB Probes", () => {
     it("fails when candidate container root returns 500 error", async () => {
       globalThis.fetch = vi.fn().mockImplementation((url: string) => {
         if (url.endsWith("/")) {
-          return Promise.resolve(new Response("Internal Server Error", { status: 500 }));
+          return Promise.resolve(
+            new Response("Internal Server Error", { status: 500 }),
+          );
         }
         return Promise.resolve(new Response("OK", { status: 200 }));
       });
 
       const report = await probeSmokeJourneys("http://green-pod:3000");
       expect(report.passed).toBe(false);
-      const rootJourney = report.journeys.find((j) => j.journey === "Public Root Landing");
+      const rootJourney = report.journeys.find(
+        (j) => j.journey === "Public Root Landing",
+      );
       expect(rootJourney?.passed).toBe(false);
     });
   });
@@ -119,7 +127,11 @@ describe("Phase 6.2 — Automated Pre-Flight Health, Smoke & DB Probes", () => {
     it("returns PROCEED_TO_CANARY when all 3 tiers pass", async () => {
       globalThis.fetch = vi.fn().mockImplementation((url: string) => {
         if (url.includes("/api/healthz?type=readiness")) {
-          return Promise.resolve(new Response(JSON.stringify({ status: "healthy" }), { status: 200 }));
+          return Promise.resolve(
+            new Response(JSON.stringify({ status: "healthy" }), {
+              status: 200,
+            }),
+          );
         }
         if (url.includes("/api/public/metrics")) {
           return Promise.resolve(new Response("Closed", { status: 404 }));
@@ -148,7 +160,11 @@ describe("Phase 6.2 — Automated Pre-Flight Health, Smoke & DB Probes", () => {
     });
 
     it("aborts promotion and guarantees BLUE remains untouched if readiness fails", async () => {
-      globalThis.fetch = vi.fn().mockResolvedValue(new Response("Service Unavailable", { status: 503 }));
+      globalThis.fetch = vi
+        .fn()
+        .mockResolvedValue(
+          new Response("Service Unavailable", { status: 503 }),
+        );
 
       const report = await runPreflightSuite({
         targetUrl: "http://green-pod:3000",

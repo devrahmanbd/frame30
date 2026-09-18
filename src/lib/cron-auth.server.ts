@@ -22,13 +22,15 @@ export type CronAuth = { ok: true } | { ok: false; response: Response };
 function safeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
 async function tokenRegistered(token: string) {
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await (
       supabaseAdmin as unknown as {
         rpc: (
@@ -48,12 +50,18 @@ async function tokenRegistered(token: string) {
 }
 
 /** Returns `{ ok: true }` or the exact Response the handler should return. */
-export async function authorizeCron(request: Request, route: string): Promise<CronAuth> {
+export async function authorizeCron(
+  request: Request,
+  route: string,
+): Promise<CronAuth> {
   const envSecret = process.env["BILLING_CRON_SECRET"];
   const auth = request.headers.get("authorization") ?? "";
   if (!auth.startsWith("Bearer ")) {
     incr("framique_cron_auth_total", { route, outcome: "unauthorized" });
-    return { ok: false, response: new Response("Unauthorized", { status: 401 }) };
+    return {
+      ok: false,
+      response: new Response("Unauthorized", { status: 401 }),
+    };
   }
   const presented = auth.slice(7);
 

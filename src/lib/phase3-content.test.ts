@@ -11,7 +11,12 @@ import {
 } from "./media";
 import { catalogEntry, parseAst, type Section } from "./builder-ast";
 import { translationCoverage } from "./translation-coverage";
-import { exportBlocks, importBlocks, sanitiseBlockNodes, type BlockEnvelope } from "./saved-blocks";
+import {
+  exportBlocks,
+  importBlocks,
+  sanitiseBlockNodes,
+  type BlockEnvelope,
+} from "./saved-blocks";
 
 const MERCHANT = "11111111-2222-3333-4444-555555555555";
 
@@ -30,13 +35,21 @@ describe("media paths", () => {
   });
 
   it("refuses a media URL with a tampered path", () => {
-    expect(validateMediaUrl(`${MEDIA_URL_PREFIX}${MERCHANT}/..%2Fetc`).ok).toBe(false);
+    expect(validateMediaUrl(`${MEDIA_URL_PREFIX}${MERCHANT}/..%2Fetc`).ok).toBe(
+      false,
+    );
   });
 
   it("refuses off-list remote hosts and allows listed ones", () => {
-    expect(validateMediaUrl("https://evil.example/x.jpg", ["cdn.example"]).ok).toBe(false);
-    expect(validateMediaUrl("https://cdn.example/x.jpg", ["cdn.example"]).ok).toBe(true);
-    expect(validateMediaUrl("javascript:alert(1)", ["cdn.example"]).ok).toBe(false);
+    expect(
+      validateMediaUrl("https://evil.example/x.jpg", ["cdn.example"]).ok,
+    ).toBe(false);
+    expect(
+      validateMediaUrl("https://cdn.example/x.jpg", ["cdn.example"]).ok,
+    ).toBe(true);
+    expect(validateMediaUrl("javascript:alert(1)", ["cdn.example"]).ok).toBe(
+      false,
+    );
   });
 
   it("collapses upload names to safe keys", () => {
@@ -57,7 +70,9 @@ describe("image props in the catalog", () => {
     const entry = catalogEntry("editorial_hero");
     const image = entry?.fields.find((field) => field.key === "imageUrl");
     expect(image?.kind).toBe("image");
-    expect(entry?.fields.find((f) => f.key === altKey("imageUrl"))?.kind).toBe("bitext");
+    expect(entry?.fields.find((f) => f.key === altKey("imageUrl"))?.kind).toBe(
+      "bitext",
+    );
     expect(entry?.defaults[sizesKey("imageUrl")]).toBe("full");
   });
 
@@ -95,7 +110,9 @@ describe("translation coverage", () => {
 
   it("counts a fully translated field as ok", () => {
     const report = translationCoverage({
-      index: template([heroWith({ heading: "Winter drop", heading_bn: "শীতের কালেকশন" })]),
+      index: template([
+        heroWith({ heading: "Winter drop", heading_bn: "শীতের কালেকশন" }),
+      ]),
     });
     expect(report.total).toBeGreaterThan(0);
     expect(report.byTemplate["index"]?.ok).toBeGreaterThan(0);
@@ -107,12 +124,22 @@ describe("translation coverage", () => {
     });
     expect(report.fallback).toBeGreaterThanOrEqual(1);
     expect(report.percent).toBeLessThan(100);
-    expect(report.worst.some((ref) => ref.fieldKey === "heading" && ref.state === "fallback")).toBe(true);
+    expect(
+      report.worst.some(
+        (ref) => ref.fieldKey === "heading" && ref.state === "fallback",
+      ),
+    ).toBe(true);
   });
 
   it("flags বাংলা-only copy as empty English and sorts it first", () => {
     const report = translationCoverage({
-      index: template([heroWith({ heading: "", heading_bn: "শীতের কালেকশন", body: "Some copy" })]),
+      index: template([
+        heroWith({
+          heading: "",
+          heading_bn: "শীতের কালেকশন",
+          body: "Some copy",
+        }),
+      ]),
     });
     expect(report.worst[0]?.state).toBe("empty");
   });
@@ -126,7 +153,11 @@ describe("translation coverage", () => {
 
 describe("block portability", () => {
   const nodes = sanitiseBlockNodes([
-    { id: "b1", type: "editorial_hero", props: { heading: "Eid edit", heading_bn: "ঈদ এডিট" } },
+    {
+      id: "b1",
+      type: "editorial_hero",
+      props: { heading: "Eid edit", heading_bn: "ঈদ এডিট" },
+    },
   ]);
 
   it("round-trips a library losslessly", () => {
@@ -148,10 +179,17 @@ describe("block portability", () => {
   it("drops unknown widgets rather than trusting an imported file", () => {
     const json = JSON.stringify({
       v: 1,
-      blocks: [{ name: "evil", nodes: [{ id: "x", type: "definitely_not_a_widget", props: {} }] }],
+      blocks: [
+        {
+          name: "evil",
+          nodes: [{ id: "x", type: "definitely_not_a_widget", props: {} }],
+        },
+      ],
     });
     const parsed = JSON.parse(json) as BlockEnvelope;
     const cleaned = sanitiseBlockNodes(parsed.blocks[0]?.nodes);
-    expect(cleaned.every((node) => String(node.type) !== "definitely_not_a_widget")).toBe(true);
+    expect(
+      cleaned.every((node) => String(node.type) !== "definitely_not_a_widget"),
+    ).toBe(true);
   });
 });

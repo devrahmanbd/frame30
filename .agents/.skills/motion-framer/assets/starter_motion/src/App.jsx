@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import HoverCard from './components/HoverCard'
-import DraggableBox from './components/DraggableBox'
-import StaggerList from './components/StaggerList'
-import './App.css'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import HoverCard from "./components/HoverCard";
+import DraggableBox from "./components/DraggableBox";
+import StaggerList from "./components/StaggerList";
+import "./App.css";
 
 function App() {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <div className="app">
@@ -34,12 +34,8 @@ function App() {
             <HoverCard title="Card 1">
               Hover over me to see the animation
             </HoverCard>
-            <HoverCard title="Card 2">
-              Different hover effects
-            </HoverCard>
-            <HoverCard title="Card 3">
-              Smooth transitions
-            </HoverCard>
+            <HoverCard title="Card 2">Different hover effects</HoverCard>
+            <HoverCard title="Card 3">Smooth transitions</HoverCard>
           </div>
         </section>
 
@@ -61,7 +57,7 @@ function App() {
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowModal(!showModal)}
           >
-            {showModal ? 'Close' : 'Open'} Modal
+            {showModal ? "Close" : "Open"} Modal
           </motion.button>
 
           <AnimatePresence mode="wait">
@@ -79,11 +75,14 @@ function App() {
                   initial={{ opacity: 0, scale: 0.9, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   onClick={(e) => e.stopPropagation()}
                 >
                   <h3>Modal Title</h3>
-                  <p>This modal animates in and out smoothly with AnimatePresence.</p>
+                  <p>
+                    This modal animates in and out smoothly with
+                    AnimatePresence.
+                  </p>
                   <motion.button
                     className="close-button"
                     whileHover={{ scale: 1.1 }}
@@ -109,7 +108,7 @@ function App() {
         </motion.p>
       </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

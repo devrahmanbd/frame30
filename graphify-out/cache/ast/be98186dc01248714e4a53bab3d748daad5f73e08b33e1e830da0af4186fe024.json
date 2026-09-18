@@ -1,1 +1,581 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "label": "builder-seo.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L1"}, {"id": "lib_builder_seo_test_ast", "label": "ast()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L25"}, {"id": "lib_builder_seo_test_withprops", "label": "withProps()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L29"}, {"id": "lib_builder_seo_test_seo", "label": "seo", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L36"}, {"id": "lib_builder_seo_test_preview", "label": "preview", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L63"}, {"id": "lib_builder_seo_test_report", "label": "report", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L80"}, {"id": "lib_builder_seo_test_faq", "label": "faq", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L95"}, {"id": "lib_builder_seo_test_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L107"}, {"id": "lib_builder_seo_test_a", "label": "a", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L114"}, {"id": "lib_builder_seo_test_b", "label": "b", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L115"}, {"id": "lib_builder_seo_test_empty", "label": "empty", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L122"}, {"id": "lib_builder_seo_test_filled", "label": "filled", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L123"}, {"id": "lib_builder_seo_test_head", "label": "head", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L154"}, {"id": "lib_builder_seo_test_sorted", "label": "sorted", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L186"}, {"id": "lib_builder_seo_test_plan", "label": "plan", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L194"}, {"id": "lib_builder_seo_test_node", "label": "node", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L199"}, {"id": "lib_builder_seo_test_at", "label": "at", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L218"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_ast_empty_ast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_ast_newsection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_seo_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_min_words", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_seo_title_px_max", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_analysetemplate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_hasskippedlevel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_issitemapeligible", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_pageseohead", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_parsepageseo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_pixelwidth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_safeurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_scorebuilderseo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_serppreview", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_empty_page_seo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_lint_fixes_classifyissue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_lint_fixes_classifyissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_lint_fixes_defaultcountdownend", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_lint_fixes_isactionable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_lint_fixes_planfix", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_ast", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_withprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_seo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_preview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_faq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L95", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_a", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_b", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L115", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_empty", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_filled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L123", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L146", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_head", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_head", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L163", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_sorted", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_plan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L199", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_plan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L209", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_plan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts", "target": "lib_builder_seo_test_at", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L218", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_builder_seo_test_withprops", "callee": "newSection", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts", "source_location": "L30"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "label": "builder-seo.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_builder_seo_test_ast",
+      "label": "ast()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_builder_seo_test_withprops",
+      "label": "withProps()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_builder_seo_test_seo",
+      "label": "seo",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_builder_seo_test_preview",
+      "label": "preview",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_builder_seo_test_report",
+      "label": "report",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "lib_builder_seo_test_faq",
+      "label": "faq",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L95"
+    },
+    {
+      "id": "lib_builder_seo_test_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L107"
+    },
+    {
+      "id": "lib_builder_seo_test_a",
+      "label": "a",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_builder_seo_test_b",
+      "label": "b",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "lib_builder_seo_test_empty",
+      "label": "empty",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "lib_builder_seo_test_filled",
+      "label": "filled",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L123"
+    },
+    {
+      "id": "lib_builder_seo_test_head",
+      "label": "head",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_builder_seo_test_sorted",
+      "label": "sorted",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L186"
+    },
+    {
+      "id": "lib_builder_seo_test_plan",
+      "label": "plan",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L194"
+    },
+    {
+      "id": "lib_builder_seo_test_node",
+      "label": "node",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L199"
+    },
+    {
+      "id": "lib_builder_seo_test_at",
+      "label": "at",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L218"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_ast_empty_ast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_ast_newsection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_seo_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_min_words",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_seo_title_px_max",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_analysetemplate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_hasskippedlevel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_issitemapeligible",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_pageseohead",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_parsepageseo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_pixelwidth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_safeurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_scorebuilderseo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_serppreview",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_empty_page_seo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_lint_fixes_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_lint_fixes_classifyissue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_lint_fixes_classifyissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_lint_fixes_defaultcountdownend",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_lint_fixes_isactionable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_lint_fixes_planfix",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_ast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_withprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_seo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_preview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_faq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_a",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_b",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_empty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_filled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_head",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_head",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_sorted",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_plan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_plan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L209",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_plan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_builder_seo_test_ts",
+      "target": "lib_builder_seo_test_at",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_builder_seo_test_withprops",
+      "callee": "newSection",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/builder-seo.test.ts",
+      "source_location": "L30"
+    }
+  ]
+}

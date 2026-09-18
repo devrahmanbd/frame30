@@ -32,13 +32,19 @@ export function isJsonContentType(header: string | null | undefined) {
   return /^application\/json\s*(;.*)?$/i.test(header.trim());
 }
 
-export function isBodyWithinLimit(declared: string | null | undefined, actualBytes: number) {
+export function isBodyWithinLimit(
+  declared: string | null | undefined,
+  actualBytes: number,
+) {
   const declaredLen = declared ? Number(declared) : Number.NaN;
-  if (Number.isFinite(declaredLen) && declaredLen > BEACON_MAX_BODY_BYTES) return false;
+  if (Number.isFinite(declaredLen) && declaredLen > BEACON_MAX_BODY_BYTES)
+    return false;
   return actualBytes <= BEACON_MAX_BODY_BYTES;
 }
 
-export function isValidNonce(nonce: string | null | undefined): nonce is string {
+export function isValidNonce(
+  nonce: string | null | undefined,
+): nonce is string {
   return typeof nonce === "string" && BEACON_NONCE_RE.test(nonce);
 }
 
@@ -47,7 +53,10 @@ export function isValidNonce(nonce: string | null | undefined): nonce is string 
  * request; one from the future is a clock-skew forgery attempt. Both are
  * distinguished so the metrics show which is happening.
  */
-export function checkTimestamp(sentAtMs: number, now = Date.now()): "ok" | "stale_timestamp" | "future_timestamp" {
+export function checkTimestamp(
+  sentAtMs: number,
+  now = Date.now(),
+): "ok" | "stale_timestamp" | "future_timestamp" {
   if (!Number.isFinite(sentAtMs)) return "stale_timestamp";
   const delta = now - sentAtMs;
   if (delta > BEACON_MAX_SKEW_MS) return "stale_timestamp";
@@ -56,7 +65,10 @@ export function checkTimestamp(sentAtMs: number, now = Date.now()): "ok" | "stal
 }
 
 /** Only same-site-ish origins are accepted when a merchant configured hosts. */
-export function isOriginAllowed(origin: string | null | undefined, allowed: string[]) {
+export function isOriginAllowed(
+  origin: string | null | undefined,
+  allowed: string[],
+) {
   if (allowed.length === 0) return true;
   if (!origin) return false;
   let host: string;
@@ -103,7 +115,13 @@ export function signaturePayload(input: {
   visitorId: string;
   network: string;
 }) {
-  return [input.merchantId, input.nonce, String(input.sentAt), input.visitorId, input.network].join("\n");
+  return [
+    input.merchantId,
+    input.nonce,
+    String(input.sentAt),
+    input.visitorId,
+    input.network,
+  ].join("\n");
 }
 
 /** Constant-time hex comparison — never leak signature bytes through timing. */
@@ -111,7 +129,8 @@ export function timingSafeEqualHex(a: string, b: string) {
   if (!a || !b) return false;
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 

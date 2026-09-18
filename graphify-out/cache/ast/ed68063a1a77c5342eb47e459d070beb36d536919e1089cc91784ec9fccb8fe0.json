@@ -1,1 +1,724 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "label": "phase1-cms.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L1"}, {"id": "lib_phase1_cms_contract_test_route", "label": "ROUTE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L34"}, {"id": "lib_phase1_cms_contract_test_editor", "label": "EDITOR", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L35"}, {"id": "lib_phase1_cms_contract_test_server", "label": "SERVER", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L36"}, {"id": "lib_phase1_cms_contract_test_memorystorage", "label": "memoryStorage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L38"}, {"id": "lib_phase1_cms_contract_test_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L56"}, {"id": "lib_phase1_cms_contract_test_once", "label": "once", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L66"}, {"id": "lib_phase1_cms_contract_test_blocks", "label": "blocks", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L68"}, {"id": "lib_phase1_cms_contract_test_html", "label": "html", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L92"}, {"id": "lib_phase1_cms_contract_test_huge", "label": "huge", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L104"}, {"id": "lib_phase1_cms_contract_test_issues", "label": "issues", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L112"}, {"id": "lib_phase1_cms_contract_test_stats", "label": "stats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L124"}, {"id": "lib_phase1_cms_contract_test_split", "label": "split", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L139"}, {"id": "lib_phase1_cms_contract_test_excerpt", "label": "excerpt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L146"}, {"id": "lib_phase1_cms_contract_test_chunks", "label": "chunks", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L154"}, {"id": "lib_phase1_cms_contract_test_summary", "label": "summary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L155"}, {"id": "lib_phase1_cms_contract_test_before", "label": "before", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L166"}, {"id": "lib_phase1_cms_contract_test_started", "label": "started", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L168"}, {"id": "lib_phase1_cms_contract_test_fields", "label": "fields", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L176"}, {"id": "lib_phase1_cms_contract_test_payload", "label": "payload", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L185"}, {"id": "lib_phase1_cms_contract_test_store", "label": "store", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L188"}, {"id": "lib_phase1_cms_contract_test_blocked", "label": "blocked", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L197"}, {"id": "lib_phase1_cms_contract_test_stored", "label": "stored", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L205"}, {"id": "lib_phase1_cms_contract_test_diverged", "label": "diverged", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L214"}, {"id": "lib_phase1_cms_contract_test_shared", "label": "shared", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L220"}, {"id": "lib_phase1_cms_contract_test_now", "label": "now", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L221"}, {"id": "lib_phase1_cms_contract_test_later", "label": "later", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L223"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_blog_body_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_body_limits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_blockstotext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_bodystats", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_deriveexcerpt", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_normalizebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_parsebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_safeurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_serializebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_splitatmore", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_body_validatebody", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_blog_diff_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_diff_diff_limits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_diff_difffields", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_diff_diffwords", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_diff_summarizediff", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_diff_tokenize", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_blog_draft_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_draft_createdraftstore", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_draft_drafthash", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_draft_draftpayloadof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_blog_draft_recoveryoffer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_editor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_server", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_memorystorage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_once", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L89", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_html", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_huge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L111", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_stats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L138", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_split", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_excerpt", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L146", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_chunks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_summary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L155", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_before", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L166", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_started", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_chunks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L169", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_fields", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L176", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_payload", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L185", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_blocked", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L197", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_stored", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_diverged", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L214", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_shared", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L220", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_now", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L221", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts", "target": "lib_phase1_cms_contract_test_later", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts", "source_location": "L223", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "label": "phase1-cms.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_route",
+      "label": "ROUTE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_editor",
+      "label": "EDITOR",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_server",
+      "label": "SERVER",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_memorystorage",
+      "label": "memoryStorage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_once",
+      "label": "once",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_blocks",
+      "label": "blocks",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_html",
+      "label": "html",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_huge",
+      "label": "huge",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_issues",
+      "label": "issues",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_stats",
+      "label": "stats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_split",
+      "label": "split",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_excerpt",
+      "label": "excerpt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L146"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_chunks",
+      "label": "chunks",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_summary",
+      "label": "summary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L155"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_before",
+      "label": "before",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L166"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_started",
+      "label": "started",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L168"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_fields",
+      "label": "fields",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L176"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_payload",
+      "label": "payload",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L185"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_store",
+      "label": "store",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L188"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_blocked",
+      "label": "blocked",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L197"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_stored",
+      "label": "stored",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L205"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_diverged",
+      "label": "diverged",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L214"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_shared",
+      "label": "shared",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L220"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_now",
+      "label": "now",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L221"
+    },
+    {
+      "id": "lib_phase1_cms_contract_test_later",
+      "label": "later",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L223"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_body_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_body_limits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_blockstotext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_bodystats",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_deriveexcerpt",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_normalizebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_parsebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_safeurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_serializebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_splitatmore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_body_validatebody",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_diff_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_diff_diff_limits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_diff_difffields",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_diff_diffwords",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_diff_summarizediff",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_diff_tokenize",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_blog_draft_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_draft_createdraftstore",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_draft_drafthash",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_draft_draftpayloadof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_blog_draft_recoveryoffer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_editor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_memorystorage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_once",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_html",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_huge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_stats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_split",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_excerpt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L146",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_chunks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_summary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_before",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_started",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_chunks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_fields",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_payload",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_blocked",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_stored",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_diverged",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_shared",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_now",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase1_cms_contract_test_ts",
+      "target": "lib_phase1_cms_contract_test_later",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase1-cms.contract.test.ts",
+      "source_location": "L223",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

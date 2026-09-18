@@ -39,7 +39,8 @@ export class AudioAlertEngine {
         const storedVol = window.localStorage.getItem(STORAGE_KEY_VOLUME);
         if (storedVol !== null) {
           const parsed = parseFloat(storedVol);
-          if (!isNaN(parsed)) this.masterVolume = Math.max(0, Math.min(1, parsed));
+          if (!isNaN(parsed))
+            this.masterVolume = Math.max(0, Math.min(1, parsed));
         }
       } catch {
         // localStorage restricted or disabled
@@ -56,7 +57,8 @@ export class AudioAlertEngine {
     if (!this.ctx) {
       const AudioCtxClass =
         window.AudioContext ||
-        (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
       if (AudioCtxClass) {
         this.ctx = new AudioCtxClass();
       }
@@ -77,7 +79,8 @@ export class AudioAlertEngine {
       typeof window !== "undefined" &&
       Boolean(
         window.AudioContext ||
-          (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext,
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext,
       )
     );
   }
@@ -216,15 +219,19 @@ export class AudioAlertEngine {
    * Get current notification permission state.
    */
   public getNotificationPermission(): NotificationPermission | "unsupported" {
-    if (!this.isNotificationSupported() || !window.Notification) return "unsupported";
+    if (!this.isNotificationSupported() || !window.Notification)
+      return "unsupported";
     return window.Notification.permission;
   }
 
   /**
    * Request native desktop notification permission.
    */
-  public async requestNotificationPermission(): Promise<NotificationPermission | "unsupported"> {
-    if (!this.isNotificationSupported() || !window.Notification) return "unsupported";
+  public async requestNotificationPermission(): Promise<
+    NotificationPermission | "unsupported"
+  > {
+    if (!this.isNotificationSupported() || !window.Notification)
+      return "unsupported";
     try {
       return await window.Notification.requestPermission();
     } catch {
@@ -248,7 +255,8 @@ export class AudioAlertEngine {
 
     // By default, only alert the operator via OS notifications if they are not actively looking at this tab
     const isTabBackgrounded =
-      typeof document !== "undefined" && (document.hidden || !document.hasFocus());
+      typeof document !== "undefined" &&
+      (document.hidden || !document.hasFocus());
     if (!isTabBackgrounded && !opts.force) {
       return false;
     }
@@ -291,11 +299,17 @@ export class AudioAlertEngine {
 
     this.titleInterval = setInterval(() => {
       // If user comes back to the tab, stop flashing
-      if (typeof document !== "undefined" && !document.hidden && document.hasFocus()) {
+      if (
+        typeof document !== "undefined" &&
+        !document.hidden &&
+        document.hasFocus()
+      ) {
         this.stopTitleAlert();
         return;
       }
-      document.title = toggle ? alertTitle : `💬 Action Required (${unreadCount})`;
+      document.title = toggle
+        ? alertTitle
+        : `💬 Action Required (${unreadCount})`;
       toggle = !toggle;
     }, 1200);
   }

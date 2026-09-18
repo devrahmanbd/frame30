@@ -9,24 +9,59 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import type { SaveState } from "@/components/console/kit";
-import { editorLoadFn, editorRevisionFn, editorSaveFn, editorSetKindFn, editorTrashFn } from "@/lib/editor/editor.functions";
-import { docSignature, emptyEditorDoc, type ContentKind, type EditorDoc } from "@/lib/editor/editor-doc";
-import { canRedo, canUndo, createHistory, pushHistory, redo, replacePresent, undo, type History } from "@/lib/editor/editor-history";
+import {
+  editorLoadFn,
+  editorRevisionFn,
+  editorSaveFn,
+  editorSetKindFn,
+  editorTrashFn,
+} from "@/lib/editor/editor.functions";
+import {
+  docSignature,
+  emptyEditorDoc,
+  type ContentKind,
+  type EditorDoc,
+} from "@/lib/editor/editor-doc";
+import {
+  canRedo,
+  canUndo,
+  createHistory,
+  pushHistory,
+  redo,
+  replacePresent,
+  undo,
+  type History,
+} from "@/lib/editor/editor-history";
 
 export const AUTOSAVE_MS = 10_000;
 
 export type SaveMode = "autosave" | "save" | "publish";
 
-export type EditorError = { code: string; en: string; bn: string; field: string };
+export type EditorError = {
+  code: string;
+  en: string;
+  bn: string;
+  field: string;
+};
 
 export function parseEditorError(err: unknown): EditorError {
   const raw = err instanceof Error ? err.message : String(err ?? "");
   const parts = raw.split("|");
-  if (parts.length === 4) return { code: parts[0]!, field: parts[1]!, en: parts[2]!, bn: parts[3]! };
-  return { code: "unknown", field: "", en: raw || "Something went wrong.", bn: raw || "কিছু ভুল হয়েছে।" };
+  if (parts.length === 4)
+    return { code: parts[0]!, field: parts[1]!, en: parts[2]!, bn: parts[3]! };
+  return {
+    code: "unknown",
+    field: "",
+    en: raw || "Something went wrong.",
+    bn: raw || "কিছু ভুল হয়েছে।",
+  };
 }
 
-export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (id: string) => void) {
+export function useEditorDoc(
+  kind: ContentKind,
+  id: string | null,
+  onCreated: (id: string) => void,
+) {
   const qc = useQueryClient();
   const load = useServerFn(editorLoadFn);
   const save = useServerFn(editorSaveFn);
@@ -41,8 +76,12 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
     refetchOnWindowFocus: false,
   });
 
-  const [history, setHistory] = useState<History<EditorDoc>>(() => createHistory(emptyEditorDoc(kind)));
-  const [baseline, setBaseline] = useState<string>(() => docSignature(emptyEditorDoc(kind)));
+  const [history, setHistory] = useState<History<EditorDoc>>(() =>
+    createHistory(emptyEditorDoc(kind)),
+  );
+  const [baseline, setBaseline] = useState<string>(() =>
+    docSignature(emptyEditorDoc(kind)),
+  );
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [error, setError] = useState<EditorError | null>(null);
   const [lastSavedAt, setLastSavedAt] = useState<string | null>(null);
@@ -67,17 +106,28 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
   const dirty = useMemo(() => docSignature(doc) !== baseline, [doc, baseline]);
 
   useEffect(() => {
-    setSaveState((s) => (s === "saving" ? s : dirty ? "dirty" : s === "dirty" ? "idle" : s));
+    setSaveState((s) =>
+      s === "saving" ? s : dirty ? "dirty" : s === "dirty" ? "idle" : s,
+    );
   }, [dirty]);
 
   /** Field-level update; `field` drives undo coalescing. */
-  const update = useCallback((patch: Partial<EditorDoc> | ((d: EditorDoc) => Partial<EditorDoc>), field = "misc") => {
-    setHistory((h) => {
-      const next = { ...h.present.value, ...(typeof patch === "function" ? patch(h.present.value) : patch) };
-      return pushHistory(h, next, field);
-    });
-    setError(null);
-  }, []);
+  const update = useCallback(
+    (
+      patch: Partial<EditorDoc> | ((d: EditorDoc) => Partial<EditorDoc>),
+      field = "misc",
+    ) => {
+      setHistory((h) => {
+        const next = {
+          ...h.present.value,
+          ...(typeof patch === "function" ? patch(h.present.value) : patch),
+        };
+        return pushHistory(h, next, field);
+      });
+      setError(null);
+    },
+    [],
+  );
 
   const doUndo = useCallback(() => setHistory((h) => undo(h)), []);
   const doRedo = useCallback(() => setHistory((h) => redo(h)), []);
@@ -92,7 +142,11 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
     async (mode: SaveMode): Promise<boolean> => {
       if (inflight.current) return false;
       const snapshot = docRef.current;
-      if (mode === "autosave" && (!dirtyRef.current || (!snapshot.title.trim() && !snapshot.body.trim()))) return false;
+      if (
+        mode === "autosave" &&
+        (!dirtyRef.current || (!snapshot.title.trim() && !snapshot.body.trim()))
+      )
+        return false;
       inflight.current = true;
       setSaveState("saving");
       try {
@@ -107,8 +161,22 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
         };
         // Autosave only checkpoints content: baseline is the snapshot we sent,
         // so keystrokes typed during the request still count as dirty.
-        setHistory((h) => replacePresent(h, { ...h.present.value, id: result.id, publishedAt: result.publishedAt, updatedAt: result.updatedAt, ...(mode !== "autosave" ? { slug: result.slug, status: result.status } : {}) }));
-        setBaseline(docSignature(mode === "autosave" ? { ...snapshot, id: result.id } : merged));
+        setHistory((h) =>
+          replacePresent(h, {
+            ...h.present.value,
+            id: result.id,
+            publishedAt: result.publishedAt,
+            updatedAt: result.updatedAt,
+            ...(mode !== "autosave"
+              ? { slug: result.slug, status: result.status }
+              : {}),
+          }),
+        );
+        setBaseline(
+          docSignature(
+            mode === "autosave" ? { ...snapshot, id: result.id } : merged,
+          ),
+        );
         setLastSavedAt(result.updatedAt);
         setSeoScore(result.seoScore);
         setSaveState("saved");
@@ -163,7 +231,11 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
           titleEn: rev.titleEn,
           excerpt: rev.excerpt,
           body: rev.body,
-          seo: { ...docRef.current.seo, metaTitle: rev.metaTitle, metaDescription: rev.metaDescription },
+          seo: {
+            ...docRef.current.seo,
+            metaTitle: rev.metaTitle,
+            metaDescription: rev.metaDescription,
+          },
         },
         `revision:${revisionId}`,
       );
@@ -182,7 +254,8 @@ export function useEditorDoc(kind: ContentKind, id: string | null, onCreated: (i
   const chooseEditor = useCallback(
     async (editor: "classic" | "builder") => {
       update({ editor }, "editor");
-      if (docRef.current.id) await setKind({ data: { kind, id: docRef.current.id, editor } });
+      if (docRef.current.id)
+        await setKind({ data: { kind, id: docRef.current.id, editor } });
     },
     [update, setKind, kind],
   );

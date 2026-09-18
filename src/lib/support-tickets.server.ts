@@ -10,7 +10,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { incr, log, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
-import { dueDates, summarise, type Priority, type SlaPolicy } from "./support-sla";
+import {
+  dueDates,
+  summarise,
+  type Priority,
+  type SlaPolicy,
+} from "./support-sla";
 
 type Client = SupabaseClient<Database>;
 
@@ -22,11 +27,15 @@ export class TicketError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
-export async function slaPolicies(db: Client | Awaited<ReturnType<typeof admin>>, merchantId: string) {
+export async function slaPolicies(
+  db: Client | Awaited<ReturnType<typeof admin>>,
+  merchantId: string,
+) {
   const { data } = await db
     .from("support_sla_policies")
     .select("priority, first_response_minutes, resolution_minutes")
@@ -56,7 +65,10 @@ export async function createTicket(input: CreateTicketInput) {
   try {
     const db = await admin();
     const policies = await slaPolicies(db, input.merchantId);
-    const { firstResponseDueAt: slaFirst, resolutionDueAt: slaRes } = dueDates(priority, policies);
+    const { firstResponseDueAt: slaFirst, resolutionDueAt: slaRes } = dueDates(
+      priority,
+      policies,
+    );
 
     const { data, error } = await db
       .from("support_tickets")
@@ -82,7 +94,11 @@ export async function createTicket(input: CreateTicketInput) {
       ticket_id: data.id,
       actor_id: input.actorId ?? null,
       action: "created",
-      after: { priority, channel: input.channel ?? "widget", order_number: input.orderNumber ?? null },
+      after: {
+        priority,
+        channel: input.channel ?? "widget",
+        order_number: input.orderNumber ?? null,
+      },
       reason: input.reason ?? "support.ticket_created",
     });
 
@@ -138,7 +154,11 @@ export async function listTickets(db: Client, merchantId: string) {
   };
 }
 
-export async function ticketEvents(db: Client, merchantId: string, ticketId: string) {
+export async function ticketEvents(
+  db: Client,
+  merchantId: string,
+  ticketId: string,
+) {
   const { data } = await db
     .from("support_ticket_events")
     .select("id, action, reason, before, after, actor_id, created_at")
@@ -171,7 +191,9 @@ export async function updateTicket(
     await enforceRateLimit("support.ticket", `${merchantId}:${actorId}`);
     const { data: before } = await db
       .from("support_tickets")
-      .select("id, status, priority, assignee_id, first_response_at, resolved_at")
+      .select(
+        "id, status, priority, assignee_id, first_response_at, resolved_at",
+      )
       .eq("merchant_id", merchantId)
       .eq("id", input.ticketId)
       .maybeSingle();
@@ -184,7 +206,10 @@ export async function updateTicket(
     if (input.firstResponse && !before.first_response_at) {
       patch.first_response_at = new Date().toISOString();
     }
-    if ((input.status === "resolved" || input.status === "closed") && !before.resolved_at) {
+    if (
+      (input.status === "resolved" || input.status === "closed") &&
+      !before.resolved_at
+    ) {
       patch.resolved_at = new Date().toISOString();
     }
     if (!Object.keys(patch).length) return { ok: true as const };
@@ -201,13 +226,18 @@ export async function updateTicket(
       ticket_id: input.ticketId,
       actor_id: actorId,
       action: input.status ? `status:${input.status}` : "updated",
-      before: before as unknown as Database["public"]["Tables"]["support_ticket_events"]["Insert"]["before"],
-      after: patch as Database["public"]["Tables"]["support_ticket_events"]["Insert"]["after"],
+      before:
+        before as unknown as Database["public"]["Tables"]["support_ticket_events"]["Insert"]["before"],
+      after:
+        patch as Database["public"]["Tables"]["support_ticket_events"]["Insert"]["after"],
 
       reason: input.note?.slice(0, 500) ?? null,
     });
 
-    incr("framique_support_ticket_total", { action: input.status ?? "updated", priority: before.priority });
+    incr("framique_support_ticket_total", {
+      action: input.status ?? "updated",
+      priority: before.priority,
+    });
     return { ok: true as const };
   });
 }

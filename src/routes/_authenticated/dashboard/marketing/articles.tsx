@@ -23,10 +23,25 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant, slugify } from "@/hooks/use-merchant";
 import { deleteArticleFn } from "@/lib/marketing.functions";
-import { saveArticleFn, articleRevisionsFn, restoreRevisionFn } from "@/lib/cms.functions";
+import {
+  saveArticleFn,
+  articleRevisionsFn,
+  restoreRevisionFn,
+} from "@/lib/cms.functions";
 import { lintArticle } from "@/lib/cms-lint";
-import { bodyStats, deriveExcerpt, parseBody, validateBody } from "@/lib/blog-body";
-import { createDraftStore, draftHash, draftPayloadOf, recoveryOffer, type StoredDraft } from "@/lib/blog-draft";
+import {
+  bodyStats,
+  deriveExcerpt,
+  parseBody,
+  validateBody,
+} from "@/lib/blog-body";
+import {
+  createDraftStore,
+  draftHash,
+  draftPayloadOf,
+  recoveryOffer,
+  type StoredDraft,
+} from "@/lib/blog-draft";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { PageBuilder } from "@/components/builder/page/PageBuilder";
 import {
@@ -38,7 +53,10 @@ import {
   type BuilderDoc,
 } from "@/lib/page-builder";
 import { RevisionCompare } from "@/components/admin/blog/RevisionCompare";
-import { ArticleTermPicker, TaxonomyDesk } from "@/components/admin/marketing/TaxonomyDesk";
+import {
+  ArticleTermPicker,
+  TaxonomyDesk,
+} from "@/components/admin/marketing/TaxonomyDesk";
 import { useLang } from "@/lib/i18n";
 import {
   ErrorFrame,
@@ -49,7 +67,9 @@ import {
   inputClass,
 } from "@/components/admin/MarketingUi";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/articles")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/articles",
+)({
   head: () => ({
     meta: [
       { title: "Articles — Framique Marketing" },
@@ -60,7 +80,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketing/articl
       { property: "og:title", content: "Article editor" },
       {
         property: "og:description",
-        content: "Blog content with slugs, tags, canonical and robots controls.",
+        content:
+          "Blog content with slugs, tags, canonical and robots controls.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -107,7 +128,9 @@ const AUTOSAVE_MS = 4000;
 const AUTOSAVE_MAX_FAILURES = 3;
 
 /** `code|field|en|bn` from the server, or a plain message from anything else. */
-function readServerError(message: string): { code: string; field: string; en: string; bn: string } | null {
+function readServerError(
+  message: string,
+): { code: string; field: string; en: string; bn: string } | null {
   const parts = message.split("|");
   if (parts.length !== 4) return null;
   return { code: parts[0]!, field: parts[1]!, en: parts[2]!, bn: parts[3]! };
@@ -122,7 +145,9 @@ function ArticlesPage() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [recovery, setRecovery] = useState<StoredDraft | null>(null);
-  const [autosaveState, setAutosaveState] = useState<"idle" | "saving" | "saved" | "paused">("idle");
+  const [autosaveState, setAutosaveState] = useState<
+    "idle" | "saving" | "saved" | "paused"
+  >("idle");
 
   const drafts = useMemo(() => createDraftStore(), []);
 
@@ -164,7 +189,10 @@ function ArticlesPage() {
     excerpt: form.excerpt,
     body: form.body,
     coverImageUrl: form.coverImageUrl,
-    tags: form.tags.split(",").map((s) => s.trim()).filter(Boolean),
+    tags: form.tags
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean),
     status: form.status as "draft" | "scheduled" | "published" | "archived",
     scheduledFor: form.scheduledFor || null,
     metaTitle: form.metaTitle,
@@ -191,7 +219,14 @@ function ArticlesPage() {
         metaDescription: form.metaDescription,
         excerpt: form.excerpt || autoExcerpt,
       }),
-    [form.title, form.body, form.metaTitle, form.metaDescription, form.excerpt, autoExcerpt],
+    [
+      form.title,
+      form.body,
+      form.metaTitle,
+      form.metaDescription,
+      form.excerpt,
+      autoExcerpt,
+    ],
   );
 
   const revisionsFor = useServerFn(articleRevisionsFn);
@@ -202,7 +237,8 @@ function ArticlesPage() {
   });
 
   const restore = useMutation({
-    mutationFn: (revisionId: string) => restoreRevisionFn({ data: { revisionId } }),
+    mutationFn: (revisionId: string) =>
+      restoreRevisionFn({ data: { revisionId } }),
     onSuccess: () => {
       setNotice(t("Revision restored", "সংস্করণ ফেরানো হয়েছে"));
       void qc.invalidateQueries({ queryKey: ["articles", merchantId] });
@@ -214,7 +250,8 @@ function ArticlesPage() {
   const failures = useRef(0);
 
   const save = useMutation({
-    mutationFn: (autosave: boolean) => saveArticleFn({ data: toInput(autosave) }),
+    mutationFn: (autosave: boolean) =>
+      saveArticleFn({ data: toInput(autosave) }),
     onMutate: (autosave) => {
       if (autosave) setAutosaveState("saving");
     },
@@ -226,7 +263,9 @@ function ArticlesPage() {
       if (autosave) {
         setAutosaveState("saved");
         setForm((current) => ({ ...current, id: current.id ?? res.id }));
-        setNotice(`${t("Autosaved", "স্বয়ংক্রিয় সংরক্ষণ")} ${new Date().toLocaleTimeString()}`);
+        setNotice(
+          `${t("Autosaved", "স্বয়ংক্রিয় সংরক্ষণ")} ${new Date().toLocaleTimeString()}`,
+        );
         return;
       }
       setAutosaveState("idle");
@@ -238,14 +277,18 @@ function ArticlesPage() {
       const detail = readServerError(e.message);
       setError(detail ? t(detail.en, detail.bn) : e.message);
       if (detail?.field) {
-        const node = document.querySelector<HTMLElement>(`[data-field="${detail.field}"]`);
+        const node = document.querySelector<HTMLElement>(
+          `[data-field="${detail.field}"]`,
+        );
         node?.focus();
       }
       if (autosave) {
         failures.current += 1;
         // Repeated autosave failure means the server is unhappy with this
         // document (or gone). Stop retrying and let the local draft hold it.
-        setAutosaveState(failures.current >= AUTOSAVE_MAX_FAILURES ? "paused" : "idle");
+        setAutosaveState(
+          failures.current >= AUTOSAVE_MAX_FAILURES ? "paused" : "idle",
+        );
       }
     },
   });
@@ -294,7 +337,9 @@ function ArticlesPage() {
         coverImageUrl: row.cover_image_url ?? "",
         tags: (row.tags ?? []).join(", "),
         status: row.status,
-        scheduledFor: row.scheduled_for ? new Date(row.scheduled_for).toISOString().slice(0, 16) : "",
+        scheduledFor: row.scheduled_for
+          ? new Date(row.scheduled_for).toISOString().slice(0, 16)
+          : "",
         metaTitle: row.meta_title ?? "",
         metaDescription: row.meta_description ?? "",
         canonical: row.canonical ?? "",
@@ -343,12 +388,18 @@ function ArticlesPage() {
     onError: (e: Error) => setError(e.message),
   });
 
-  const canSave = !save.isPending && bodyIssues.length === 0 && !!form.title.trim() && !!form.body.trim();
+  const canSave =
+    !save.isPending &&
+    bodyIssues.length === 0 &&
+    !!form.title.trim() &&
+    !!form.body.trim();
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Blog writing", "ব্লগ লেখা")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Blog writing", "ব্লগ লেখা")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "Published articles appear at /blog/<slug> and are added to the sitemap.",
@@ -359,22 +410,34 @@ function ArticlesPage() {
 
       <ErrorFrame message={error} />
       {notice && (
-        <p role="status" className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground">
+        <p
+          role="status"
+          className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm text-success-foreground"
+        >
           {notice}
         </p>
       )}
 
       {recovery && (
-        <div role="alert" className="flex flex-wrap items-center gap-3 rounded-fq-md border border-warning bg-warning-soft px-3 py-2 text-sm">
+        <div
+          role="alert"
+          className="flex flex-wrap items-center gap-3 rounded-fq-md border border-warning bg-warning-soft px-3 py-2 text-sm"
+        >
           <span>
-            {t("Unsaved draft found from", "সংরক্ষণ না-হওয়া খসড়া পাওয়া গেছে")}{" "}
+            {t(
+              "Unsaved draft found from",
+              "সংরক্ষণ না-হওয়া খসড়া পাওয়া গেছে",
+            )}{" "}
             {new Date(recovery.savedAt).toLocaleTimeString()}.
           </span>
           <button
             type="button"
             className={btnPrimary}
             onClick={() => {
-              setForm((current) => ({ ...current, ...draftPayloadOf(recovery) }));
+              setForm((current) => ({
+                ...current,
+                ...draftPayloadOf(recovery),
+              }));
               setRecovery(null);
             }}
           >
@@ -414,14 +477,22 @@ function ArticlesPage() {
               />
             </Field>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Field label={t("English title", "ইংরেজি শিরোনাম")} hint={t("Edited independently", "আলাদাভাবে সম্পাদিত")}>
+              <Field
+                label={t("English title", "ইংরেজি শিরোনাম")}
+                hint={t("Edited independently", "আলাদাভাবে সম্পাদিত")}
+              >
                 <input
                   className={inputClass}
                   value={form.titleEn}
-                  onChange={(e) => setForm({ ...form, titleEn: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, titleEn: e.target.value })
+                  }
                 />
               </Field>
-              <Field label={t("Permalink", "স্থায়ী লিঙ্ক")} hint={`/blog/${slugify(form.slug || form.titleEn || form.title) || "…"}`}>
+              <Field
+                label={t("Permalink", "স্থায়ী লিঙ্ক")}
+                hint={`/blog/${slugify(form.slug || form.titleEn || form.title) || "…"}`}
+              >
                 <input
                   data-field="slug"
                   className={inputClass}
@@ -433,10 +504,13 @@ function ArticlesPage() {
 
             <div data-field="body">
               <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs text-muted-foreground">{t("Editor", "এডিটর")}</span>
+                <span className="text-xs text-muted-foreground">
+                  {t("Editor", "এডিটর")}
+                </span>
                 <div className="flex gap-1 rounded-fq-md border border-border p-0.5">
                   {(["classic", "builder"] as const).map((m) => {
-                    const active = (isBuilderBody(form.body) ? "builder" : "classic") === m;
+                    const active =
+                      (isBuilderBody(form.body) ? "builder" : "classic") === m;
                     return (
                       <button
                         key={m}
@@ -444,20 +518,31 @@ function ArticlesPage() {
                         aria-pressed={active}
                         onClick={() =>
                           setForm((f) =>
-                            (isBuilderBody(f.body) ? "builder" : "classic") === m
+                            (isBuilderBody(f.body) ? "builder" : "classic") ===
+                            m
                               ? f
                               : {
                                   ...f,
                                   body:
                                     m === "builder"
-                                      ? serializeBuilderBody(f.body.trim() ? emptyDoc() : starterDoc(f.titleEn || f.title || "New post"))
+                                      ? serializeBuilderBody(
+                                          f.body.trim()
+                                            ? emptyDoc()
+                                            : starterDoc(
+                                                f.titleEn ||
+                                                  f.title ||
+                                                  "New post",
+                                              ),
+                                        )
                                       : "",
                                 },
                           )
                         }
                         className={`min-h-8 rounded-fq-sm px-3 text-xs font-medium ${active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"}`}
                       >
-                        {m === "classic" ? t("Classic editor", "ক্লাসিক এডিটর") : t("Page builder", "পেজ বিল্ডার")}
+                        {m === "classic"
+                          ? t("Classic editor", "ক্লাসিক এডিটর")
+                          : t("Page builder", "পেজ বিল্ডার")}
                       </button>
                     );
                   })}
@@ -465,18 +550,29 @@ function ArticlesPage() {
               </div>
               {isBuilderBody(form.body) ? (
                 <PageBuilder
-                  doc={(parseBuilderBody(form.body) ?? emptyDoc()) as BuilderDoc}
-                  onChange={(doc) => setForm((f) => ({ ...f, body: serializeBuilderBody(doc) }))}
+                  doc={
+                    (parseBuilderBody(form.body) ?? emptyDoc()) as BuilderDoc
+                  }
+                  onChange={(doc) =>
+                    setForm((f) => ({ ...f, body: serializeBuilderBody(doc) }))
+                  }
                   title={form.titleEn || form.title}
                 />
               ) : (
-                <ClassicEditor value={form.body} disabled={save.isPending} onChange={(body) => setForm((f) => ({ ...f, body }))} />
+                <ClassicEditor
+                  value={form.body}
+                  disabled={save.isPending}
+                  onChange={(body) => setForm((f) => ({ ...f, body }))}
+                />
               )}
             </div>
 
             <Field
               label={t("Excerpt", "সারসংক্ষেপ")}
-              hint={t("Empty uses the read-more split or the opening lines.", "খালি রাখলে “আরও পড়ুন” বিভাজন বা শুরুর লাইন ব্যবহার হবে।")}
+              hint={t(
+                "Empty uses the read-more split or the opening lines.",
+                "খালি রাখলে “আরও পড়ুন” বিভাজন বা শুরুর লাইন ব্যবহার হবে।",
+              )}
             >
               <textarea
                 className={`${inputClass} min-h-16`}
@@ -492,28 +588,55 @@ function ArticlesPage() {
               <caption className="sr-only">Article list</caption>
               <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-3 py-2">{t("Title", "শিরোনাম")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Slug", "স্লাগ")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Views", "ভিউ")}</th>
-                  <th scope="col" className="px-3 py-2">{t("Status", "অবস্থা")}</th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Title", "শিরোনাম")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Slug", "স্লাগ")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Views", "ভিউ")}
+                  </th>
+                  <th scope="col" className="px-3 py-2">
+                    {t("Status", "অবস্থা")}
+                  </th>
                   <th scope="col" className="px-3 py-2" />
                 </tr>
               </thead>
               <tbody>
                 {(articles ?? []).map((a) => (
-                  <tr key={a.id} className="border-b border-border/60 last:border-0">
+                  <tr
+                    key={a.id}
+                    className="border-b border-border/60 last:border-0"
+                  >
                     <td className="px-3 py-2 font-medium">{a.title}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{a.slug}</td>
+                    <td className="px-3 py-2 text-muted-foreground">
+                      {a.slug}
+                    </td>
                     <td className="px-3 py-2 tabular-nums">{a.views}</td>
                     <td className="px-3 py-2">
                       <StatusPill
-                        label={statusLabel[a.status] ? t(statusLabel[a.status].en, statusLabel[a.status].bn) : a.status}
-                        tone={statusTone[a.status as keyof typeof statusTone] ?? "neutral"}
+                        label={
+                          statusLabel[a.status]
+                            ? t(
+                                statusLabel[a.status].en,
+                                statusLabel[a.status].bn,
+                              )
+                            : a.status
+                        }
+                        tone={
+                          statusTone[a.status as keyof typeof statusTone] ??
+                          "neutral"
+                        }
                       />
                     </td>
                     <td className="px-3 py-2">
                       <div className="flex justify-end gap-2">
-                        <button type="button" className={btnGhost} onClick={() => openArticle(a)}>
+                        <button
+                          type="button"
+                          className={btnGhost}
+                          onClick={() => openArticle(a)}
+                        >
                           {t("Edit", "সম্পাদনা")}
                         </button>
                         <button
@@ -530,7 +653,10 @@ function ArticlesPage() {
                 ))}
                 {(articles ?? []).length === 0 && (
                   <tr>
-                    <td className="px-3 py-6 text-center text-muted-foreground" colSpan={5}>
+                    <td
+                      className="px-3 py-6 text-center text-muted-foreground"
+                      colSpan={5}
+                    >
                       {t("No articles yet.", "এখনও কোনো লেখা নেই।")}
                     </td>
                   </tr>
@@ -547,11 +673,16 @@ function ArticlesPage() {
               {form.id ? t("Publish", "প্রকাশ") : t("New article", "নতুন লেখা")}
             </h2>
             <p className="text-xs text-muted-foreground" aria-live="polite">
-              {autosaveState === "saving" && t("Autosaving…", "স্বয়ংক্রিয় সংরক্ষণ হচ্ছে…")}
+              {autosaveState === "saving" &&
+                t("Autosaving…", "স্বয়ংক্রিয় সংরক্ষণ হচ্ছে…")}
               {autosaveState === "saved" && t("Draft safe", "খসড়া নিরাপদ")}
               {autosaveState === "paused" &&
-                t("Autosave paused after repeated failures — save manually.", "বারবার ব্যর্থ হওয়ায় স্বয়ংক্রিয় সংরক্ষণ থেমেছে — নিজে সংরক্ষণ করুন।")}
-              {autosaveState === "idle" && `${stats.words} ${t("words", "শব্দ")} · ${stats.images} ${t("images", "ছবি")} · ${stats.links} ${t("links", "লিঙ্ক")}`}
+                t(
+                  "Autosave paused after repeated failures — save manually.",
+                  "বারবার ব্যর্থ হওয়ায় স্বয়ংক্রিয় সংরক্ষণ থেমেছে — নিজে সংরক্ষণ করুন।",
+                )}
+              {autosaveState === "idle" &&
+                `${stats.words} ${t("words", "শব্দ")} · ${stats.images} ${t("images", "ছবি")} · ${stats.links} ${t("links", "লিঙ্ক")}`}
             </p>
             <Field label={t("Status", "অবস্থা")}>
               <select
@@ -571,58 +702,95 @@ function ArticlesPage() {
                   type="datetime-local"
                   className={inputClass}
                   value={form.scheduledFor}
-                  onChange={(e) => setForm({ ...form, scheduledFor: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, scheduledFor: e.target.value })
+                  }
                 />
               </Field>
             )}
-            <Field label={t("Tags", "ট্যাগ")} hint={t("Separate with commas", "কমা দিয়ে আলাদা করুন")}>
-              <input className={inputClass} value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} />
+            <Field
+              label={t("Tags", "ট্যাগ")}
+              hint={t("Separate with commas", "কমা দিয়ে আলাদা করুন")}
+            >
+              <input
+                className={inputClass}
+                value={form.tags}
+                onChange={(e) => setForm({ ...form, tags: e.target.value })}
+              />
             </Field>
             <Field label={t("Cover image link", "কভার ছবির লিঙ্ক")}>
               <input
                 className={inputClass}
                 value={form.coverImageUrl}
-                onChange={(e) => setForm({ ...form, coverImageUrl: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, coverImageUrl: e.target.value })
+                }
               />
             </Field>
             <div className="flex gap-2">
-              <button type="submit" form="article-form" className={btnPrimary} disabled={!canSave}>
+              <button
+                type="submit"
+                form="article-form"
+                className={btnPrimary}
+                disabled={!canSave}
+              >
                 {t("Save", "সংরক্ষণ")}
               </button>
               {form.id && (
-                <button type="button" className={btnGhost} onClick={() => setForm(emptyForm)}>
+                <button
+                  type="button"
+                  className={btnGhost}
+                  onClick={() => setForm(emptyForm)}
+                >
                   {t("Cancel", "বাতিল")}
                 </button>
               )}
             </div>
             {bodyIssues.length > 0 && (
               <p className="text-xs text-danger">
-                {t("Fix the body issues above before saving.", "সংরক্ষণের আগে উপরের সমস্যা ঠিক করুন।")}
+                {t(
+                  "Fix the body issues above before saving.",
+                  "সংরক্ষণের আগে উপরের সমস্যা ঠিক করুন।",
+                )}
               </p>
             )}
           </section>
 
           <section className="space-y-3 rounded-fq-md border border-border bg-card p-4">
-            <h2 className="font-bangla-display text-base font-semibold">{t("Search appearance", "সার্চে উপস্থিতি")}</h2>
-            <Field label={t("Meta title", "মেটা শিরোনাম")} hint={`${(form.metaTitle || form.title).length}/60`}>
+            <h2 className="font-bangla-display text-base font-semibold">
+              {t("Search appearance", "সার্চে উপস্থিতি")}
+            </h2>
+            <Field
+              label={t("Meta title", "মেটা শিরোনাম")}
+              hint={`${(form.metaTitle || form.title).length}/60`}
+            >
               <input
                 className={inputClass}
                 value={form.metaTitle}
-                onChange={(e) => setForm({ ...form, metaTitle: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, metaTitle: e.target.value })
+                }
               />
             </Field>
-            <Field label={t("Meta description", "মেটা বিবরণ")} hint={`${form.metaDescription.length}/160`}>
+            <Field
+              label={t("Meta description", "মেটা বিবরণ")}
+              hint={`${form.metaDescription.length}/160`}
+            >
               <textarea
                 className={`${inputClass} min-h-16`}
                 value={form.metaDescription}
-                onChange={(e) => setForm({ ...form, metaDescription: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, metaDescription: e.target.value })
+                }
               />
             </Field>
             <Field label={t("Canonical", "ক্যানোনিকাল")}>
               <input
                 className={inputClass}
                 value={form.canonical}
-                onChange={(e) => setForm({ ...form, canonical: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, canonical: e.target.value })
+                }
               />
             </Field>
             <Field label="Robots">

@@ -50,7 +50,7 @@ Route: `src/routes/contact.tsx` · Shell: marketing (top-nav + footer) · Scope:
 
 ## 1. Hero — aurora hero, canvas
 
-*Lever: reduce commitment anxiety before the ask — tell people what happens the moment they click send.*
+_Lever: reduce commitment anxiety before the ask — tell people what happens the moment they click send._
 
 - **Eyebrow**: `{{support_hours_placeholder}} · {{support_timezone_placeholder}}`
 - **H1**: **Talk to the right person. First time.**
@@ -67,21 +67,21 @@ Route: `src/routes/contact.tsx` · Shell: marketing (top-nav + footer) · Scope:
 
 ## 2. Choose the right door — glass card grid + comparison table
 
-*Lever: category clarity — people commit faster once they see their own situation named back to them, and abandon less when they can see the queue is real (staffed, scoped) rather than a black box.*
+_Lever: category clarity — people commit faster once they see their own situation named back to them, and abandon less when they can see the queue is real (staffed, scoped) rather than a black box._
 
 Intro line: **Pick the row that matches what you actually need. It sets the form fields you'll see next and the queue that receives it.**
 বাংলা: **আপনার প্রয়োজনের সাথে মিলে যায় এমন সারিটি বেছে নিন। এটি পরবর্তী ফর্মের ফিল্ড এবং যে দল বার্তাটি পাবে তা নির্ধারণ করে।**
 
-| Enquiry type | Destination queue | What to include | Expected handling |
-|---|---|---|---|
-| Sales & pricing | Sales | Store size (SKU count, monthly order volume), current platform if migrating, target launch date | Reviewed same working day; a named sales rep replies with next steps, not a form letter |
-| Store migration | Migration specialists | Current platform, product/order/customer counts, custom domain status, any custom checkout logic | Discovery call offered within {{migration_response_placeholder}}; see the consultation band below |
-| Technical support (existing merchant) | Support engineers | Store URL, account email, error message or screenshot, steps to reproduce, browser/device | Triaged by severity (table below); acknowledged within {{support_response_placeholder}} |
-| Billing & invoices | Billing | Store URL, invoice number if disputing a charge, payment method (bKash/Nagad/card), what looks wrong | Reviewed within {{billing_response_placeholder}}; refunds/adjustments confirmed in writing before processing |
-| Security disclosure | Security | Affected endpoint or surface, reproduction steps, impact assessment, your PGP key if you want an encrypted reply | Acknowledged within {{security_response_placeholder}}; see disclosure note below |
-| Partnerships & integrations | Partnerships | Company name, integration type (payment/courier/app), audience size or reach, proposed scope | Reviewed within {{partnerships_response_placeholder}} |
-| Press & media | Communications | Outlet, deadline, specific ask (quote, interview, data), publication date | Acknowledged within {{press_response_placeholder}}; deadline-flagged requests are prioritised |
-| Careers | People team | Role of interest, portfolio/CV link, location preference (remote/Dhaka office) | Applications route to the open-roles board; unsolicited enquiries acknowledged within {{careers_response_placeholder}} |
+| Enquiry type                          | Destination queue     | What to include                                                                                                  | Expected handling                                                                                                      |
+| ------------------------------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Sales & pricing                       | Sales                 | Store size (SKU count, monthly order volume), current platform if migrating, target launch date                  | Reviewed same working day; a named sales rep replies with next steps, not a form letter                                |
+| Store migration                       | Migration specialists | Current platform, product/order/customer counts, custom domain status, any custom checkout logic                 | Discovery call offered within {{migration_response_placeholder}}; see the consultation band below                      |
+| Technical support (existing merchant) | Support engineers     | Store URL, account email, error message or screenshot, steps to reproduce, browser/device                        | Triaged by severity (table below); acknowledged within {{support_response_placeholder}}                                |
+| Billing & invoices                    | Billing               | Store URL, invoice number if disputing a charge, payment method (bKash/Nagad/card), what looks wrong             | Reviewed within {{billing_response_placeholder}}; refunds/adjustments confirmed in writing before processing           |
+| Security disclosure                   | Security              | Affected endpoint or surface, reproduction steps, impact assessment, your PGP key if you want an encrypted reply | Acknowledged within {{security_response_placeholder}}; see disclosure note below                                       |
+| Partnerships & integrations           | Partnerships          | Company name, integration type (payment/courier/app), audience size or reach, proposed scope                     | Reviewed within {{partnerships_response_placeholder}}                                                                  |
+| Press & media                         | Communications        | Outlet, deadline, specific ask (quote, interview, data), publication date                                        | Acknowledged within {{press_response_placeholder}}; deadline-flagged requests are prioritised                          |
+| Careers                               | People team           | Role of interest, portfolio/CV link, location preference (remote/Dhaka office)                                   | Applications route to the open-roles board; unsolicited enquiries acknowledged within {{careers_response_placeholder}} |
 
 **Security disclosure note (verbatim, no placeholder needed for the process itself)**: We do not offer a public bug bounty at this time. Good-faith disclosures that avoid data destruction, privacy violation, or service disruption during testing will be acknowledged and, where we can, credited once fixed. Do not test against live merchant stores you do not own.
 
@@ -91,38 +91,38 @@ Intro line: **Pick the row that matches what you actually need. It sets the form
 
 ## 3. The contact form — glass card, full field spec
 
-*Lever: reduce perceived form length by only ever showing fields relevant to the selected enquiry type — progressive disclosure lowers abandonment more than a shorter fixed form does.*
+_Lever: reduce perceived form length by only ever showing fields relevant to the selected enquiry type — progressive disclosure lowers abandonment more than a shorter fixed form does._
 
 Form id: `#contact-form`. Submit method: POST to routing endpoint; client-side validation blocks submit until all required fields pass; server re-validates identically.
 
 ### 3.1 Base fields (always shown)
 
-| Field | Label | Placeholder | Helper text | Validation rule | Error string (EN) | Error string (BN) |
-|---|---|---|---|---|---|---|
-| Enquiry type | `What do you need?` | `Select one` | Sets the fields below and the destination queue | Required, must match one of the 8 queue values | `Choose an enquiry type so we can route this correctly.` | `সঠিকভাবে পাঠাতে একটি বিষয় নির্বাচন করুন।` |
-| Full name | `Your name` | `e.g. Ayesha Rahman` | Used to address you in the reply, not published anywhere | Required, 2–80 chars, no URLs | `Enter your name (2–80 characters).` | `আপনার নাম লিখুন (২–৮০ অক্ষর)।` |
-| Email | `Email address` | `you@company.com` | We reply here — check your spam folder for the first message | Required, valid email format (RFC 5322 subset), disposable-domain blocklist | `Enter a valid email address.` | `একটি সঠিক ইমেইল ঠিকানা দিন।` |
-| Phone (optional) | `Phone number (optional)` | `+8801XXXXXXXXX` | Only if you'd rather we call — bKash/Nagad-linked numbers are fine | Optional; if filled, must match BD mobile pattern `^(\+?880|0)1[3-9]\d{8}$` or international E.164 | `That doesn't look like a valid phone number.` | `এটি একটি সঠিক ফোন নম্বর মনে হচ্ছে না।` |
-| Store URL (optional unless Support/Billing/Migration) | `Your store URL` | `yourstore.framique.shop or your custom domain` | Lets support pull up your account instantly | Required for Support, Billing, Migration; optional otherwise; must be a valid hostname | `Enter your store's web address so we can find your account.` | `আপনার স্টোরের ঠিকানা দিন যাতে আমরা অ্যাকাউন্টটি খুঁজে পেতে পারি।` |
-| Message | `Tell us what's going on` | `Include what you expected, what happened instead, and any error text` | Minimum detail: what/where/when. See the ticket template below for the fastest path to a fix | Required, 20–4000 chars | `Add a bit more detail (at least 20 characters) so we don't have to ask twice.` | `আরেকটু বিস্তারিত লিখুন (কমপক্ষে ২০ অক্ষর) যাতে আমাদের আবার জিজ্ঞেস করতে না হয়।` |
-| Attachment (optional) | `Attach a screenshot or file (optional)` | — | PNG, JPG, PDF, or CSV, up to 10MB, up to 3 files | Optional; file type/size enforced client-side | `Files must be PNG, JPG, PDF or CSV and under 10MB each.` | `ফাইল অবশ্যই PNG, JPG, PDF বা CSV হতে হবে এবং প্রতিটি ১০MB-এর কম হতে হবে।` |
-| Consent checkbox | `I agree Framique can use these details to respond to this message. See the privacy policy.` | — | Unchecked by default; "privacy policy" is a link, opens in new tab | Required, must be checked | `You need to accept this before we can reply.` | `উত্তর দেওয়ার আগে এটি গ্রহণ করা প্রয়োজন।` |
-| Honeypot | hidden field `website_url_confirm` | — | Invisible to real users via CSS, not `display:none` (screen-reader safe) | Must remain empty; non-empty = silent reject | (no user-facing error — see anti-spam band) | — |
+| Field                                                 | Label                                                                                        | Placeholder                                                            | Helper text                                                                                  | Validation rule                                                                        | Error string (EN)                                                               | Error string (BN)                                                                 |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Enquiry type                                          | `What do you need?`                                                                          | `Select one`                                                           | Sets the fields below and the destination queue                                              | Required, must match one of the 8 queue values                                         | `Choose an enquiry type so we can route this correctly.`                        | `সঠিকভাবে পাঠাতে একটি বিষয় নির্বাচন করুন।`                                       |
+| Full name                                             | `Your name`                                                                                  | `e.g. Ayesha Rahman`                                                   | Used to address you in the reply, not published anywhere                                     | Required, 2–80 chars, no URLs                                                          | `Enter your name (2–80 characters).`                                            | `আপনার নাম লিখুন (২–৮০ অক্ষর)।`                                                   |
+| Email                                                 | `Email address`                                                                              | `you@company.com`                                                      | We reply here — check your spam folder for the first message                                 | Required, valid email format (RFC 5322 subset), disposable-domain blocklist            | `Enter a valid email address.`                                                  | `একটি সঠিক ইমেইল ঠিকানা দিন।`                                                     |
+| Phone (optional)                                      | `Phone number (optional)`                                                                    | `+8801XXXXXXXXX`                                                       | Only if you'd rather we call — bKash/Nagad-linked numbers are fine                           | Optional; if filled, must match BD mobile pattern `^(\+?880                            | 0)1[3-9]\d{8}$` or international E.164                                          | `That doesn't look like a valid phone number.`                                    | `এটি একটি সঠিক ফোন নম্বর মনে হচ্ছে না।` |
+| Store URL (optional unless Support/Billing/Migration) | `Your store URL`                                                                             | `yourstore.framique.shop or your custom domain`                        | Lets support pull up your account instantly                                                  | Required for Support, Billing, Migration; optional otherwise; must be a valid hostname | `Enter your store's web address so we can find your account.`                   | `আপনার স্টোরের ঠিকানা দিন যাতে আমরা অ্যাকাউন্টটি খুঁজে পেতে পারি।`                |
+| Message                                               | `Tell us what's going on`                                                                    | `Include what you expected, what happened instead, and any error text` | Minimum detail: what/where/when. See the ticket template below for the fastest path to a fix | Required, 20–4000 chars                                                                | `Add a bit more detail (at least 20 characters) so we don't have to ask twice.` | `আরেকটু বিস্তারিত লিখুন (কমপক্ষে ২০ অক্ষর) যাতে আমাদের আবার জিজ্ঞেস করতে না হয়।` |
+| Attachment (optional)                                 | `Attach a screenshot or file (optional)`                                                     | —                                                                      | PNG, JPG, PDF, or CSV, up to 10MB, up to 3 files                                             | Optional; file type/size enforced client-side                                          | `Files must be PNG, JPG, PDF or CSV and under 10MB each.`                       | `ফাইল অবশ্যই PNG, JPG, PDF বা CSV হতে হবে এবং প্রতিটি ১০MB-এর কম হতে হবে।`        |
+| Consent checkbox                                      | `I agree Framique can use these details to respond to this message. See the privacy policy.` | —                                                                      | Unchecked by default; "privacy policy" is a link, opens in new tab                           | Required, must be checked                                                              | `You need to accept this before we can reply.`                                  | `উত্তর দেওয়ার আগে এটি গ্রহণ করা প্রয়োজন।`                                       |
+| Honeypot                                              | hidden field `website_url_confirm`                                                           | —                                                                      | Invisible to real users via CSS, not `display:none` (screen-reader safe)                     | Must remain empty; non-empty = silent reject                                           | (no user-facing error — see anti-spam band)                                     | —                                                                                 |
 
 ### 3.2 Conditional fields by enquiry type
 
-| Enquiry type | Extra field(s) shown | Field details |
-|---|---|---|
-| Sales & pricing | `Monthly order volume` (select: 0–50 / 51–500 / 501–5,000 / 5,000+) · `Current platform` (text, optional) | Both optional; used to route to the right sales tier, not gatekept |
-| Store migration | `Current platform` (required select: Shopify / WooCommerce / Daraz seller / custom / other) · `Approx. product count` (number) · `Target launch date` (date picker, optional) | "Current platform" required — the migration path differs by source system |
-| Technical support | `Severity` (required select, definitions in §5) · `Error message or code` (textarea, optional) · `Browser/device` (text, optional) | Severity selection changes the acknowledgement-time promise shown live above the submit button |
-| Billing & invoices | `Invoice number` (optional, format `INV-XXXXXX`) · `Payment method` (select: bKash / Nagad / card / bank transfer / other) | Invoice number speeds lookup but is not required — "I don't have it" is an explicit option in the select, not left blank and guessed |
-| Security disclosure | `Affected URL or endpoint` (required) · `Severity self-assessment` (select: informational / low / medium / high / critical) · `PGP public key` (optional textarea, monospace) | If PGP key is supplied, our first reply is encrypted to it; otherwise plaintext with a note that encrypted reply is available on request |
-| Partnerships & integrations | `Company name` (required) · `Integration type` (select: payment gateway / courier / app or plugin / agency reseller / other) · `Website` (optional URL) | — |
-| Press & media | `Outlet name` (required) · `Deadline` (date picker, optional but flagged red if within 48 hours to auto-prioritise) | — |
-| Careers | `Role of interest` (text, optional if attaching a general CV) · `Portfolio or CV link` (URL, optional) | No résumé upload here by design — link to Drive/portfolio keeps the form light; a dedicated careers page can add upload later |
+| Enquiry type                | Extra field(s) shown                                                                                                                                                          | Field details                                                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Sales & pricing             | `Monthly order volume` (select: 0–50 / 51–500 / 501–5,000 / 5,000+) · `Current platform` (text, optional)                                                                     | Both optional; used to route to the right sales tier, not gatekept                                                                       |
+| Store migration             | `Current platform` (required select: Shopify / WooCommerce / Daraz seller / custom / other) · `Approx. product count` (number) · `Target launch date` (date picker, optional) | "Current platform" required — the migration path differs by source system                                                                |
+| Technical support           | `Severity` (required select, definitions in §5) · `Error message or code` (textarea, optional) · `Browser/device` (text, optional)                                            | Severity selection changes the acknowledgement-time promise shown live above the submit button                                           |
+| Billing & invoices          | `Invoice number` (optional, format `INV-XXXXXX`) · `Payment method` (select: bKash / Nagad / card / bank transfer / other)                                                    | Invoice number speeds lookup but is not required — "I don't have it" is an explicit option in the select, not left blank and guessed     |
+| Security disclosure         | `Affected URL or endpoint` (required) · `Severity self-assessment` (select: informational / low / medium / high / critical) · `PGP public key` (optional textarea, monospace) | If PGP key is supplied, our first reply is encrypted to it; otherwise plaintext with a note that encrypted reply is available on request |
+| Partnerships & integrations | `Company name` (required) · `Integration type` (select: payment gateway / courier / app or plugin / agency reseller / other) · `Website` (optional URL)                       | —                                                                                                                                        |
+| Press & media               | `Outlet name` (required) · `Deadline` (date picker, optional but flagged red if within 48 hours to auto-prioritise)                                                           | —                                                                                                                                        |
+| Careers                     | `Role of interest` (text, optional if attaching a general CV) · `Portfolio or CV link` (URL, optional)                                                                        | No résumé upload here by design — link to Drive/portfolio keeps the form light; a dedicated careers page can add upload later            |
 
-**Design note**: conditional fields animate in with opacity+8px translate, 280ms, `cubic-bezier(0.22,1,0.36,1)` — matches the site's motion spec, never a layout jump. The severity select for Technical support live-updates a caption under the submit button: *"Selected: {{severity}} — first response target {{X}}."* sourced from the table in §5, so the promise is never disconnected from the picked value.
+**Design note**: conditional fields animate in with opacity+8px translate, 280ms, `cubic-bezier(0.22,1,0.36,1)` — matches the site's motion spec, never a layout jump. The severity select for Technical support live-updates a caption under the submit button: _"Selected: {{severity}} — first response target {{X}}."_ sourced from the table in §5, so the promise is never disconnected from the picked value.
 
 ### 3.3 Submit button and micro-trust line
 
@@ -136,7 +136,7 @@ Form id: `#contact-form`. Submit method: POST to routing endpoint; client-side v
 
 ## 4. Write a ticket that gets solved first time — glass card, single column
 
-*Lever: worked example — showing the ideal input format outperforms a bulleted "tips" list because people copy structure, not advice.*
+_Lever: worked example — showing the ideal input format outperforms a bulleted "tips" list because people copy structure, not advice._
 
 Intro: **The fastest replies come from the most complete first message. Copy this template into the message field and fill the brackets.**
 বাংলা: **সবচেয়ে দ্রুত উত্তর আসে সবচেয়ে সম্পূর্ণ প্রথম বার্তা থেকে। নিচের টেমপ্লেটটি বার্তার ঘরে কপি করে বন্ধনীগুলো পূরণ করুন।**
@@ -184,6 +184,7 @@ What I've already tried:
 ```
 
 **Three things that slow a ticket down** (shown as a compact three-row list below the template):
+
 1. "It's broken" with no store URL — we can't reproduce what we can't see.
 2. Screenshots of the error without the URL bar visible — we can't confirm which environment.
 3. Multiple unrelated issues in one message — each gets its own ticket so nothing gets lost when one is resolved and the other isn't.
@@ -194,28 +195,28 @@ What I've already tried:
 
 ## 5. Ticket lifecycle and severity — two tables, canvas
 
-*Lever: uncertainty reduction — a visible status vocabulary turns "why haven't they replied" into "it's in Investigating, that's expected."*
+_Lever: uncertainty reduction — a visible status vocabulary turns "why haven't they replied" into "it's in Investigating, that's expected."_
 
 ### 5.1 Lifecycle states
 
-| Status | Meaning | What you'll see |
-|---|---|---|
-| `Received` | Your message passed spam/rate checks and is in the destination queue | Automatic confirmation email with a reference number |
-| `Acknowledged` | A named person has read it and is working the case | Reply from a real person, not a template — may ask clarifying questions |
-| `Investigating` | We're reproducing the issue, checking logs, or consulting engineering | May take longer than the first-response target; you'll get an interim update if it crosses {{investigating_update_placeholder}} |
-| `Waiting on you` | We've asked a question or need something from you (access, a screenshot, a decision) | The clock pauses on our SLA while this status holds |
-| `Resolved` | The fix is live or the answer is final | A closing message explains what changed; you can reopen by replying to the same thread within {{reopen_window_placeholder}} |
-| `Closed` | No reply from either side within {{auto_close_placeholder}} of Resolved | Reopens automatically if you reply to the thread after closing |
+| Status           | Meaning                                                                              | What you'll see                                                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `Received`       | Your message passed spam/rate checks and is in the destination queue                 | Automatic confirmation email with a reference number                                                                            |
+| `Acknowledged`   | A named person has read it and is working the case                                   | Reply from a real person, not a template — may ask clarifying questions                                                         |
+| `Investigating`  | We're reproducing the issue, checking logs, or consulting engineering                | May take longer than the first-response target; you'll get an interim update if it crosses {{investigating_update_placeholder}} |
+| `Waiting on you` | We've asked a question or need something from you (access, a screenshot, a decision) | The clock pauses on our SLA while this status holds                                                                             |
+| `Resolved`       | The fix is live or the answer is final                                               | A closing message explains what changed; you can reopen by replying to the same thread within {{reopen_window_placeholder}}     |
+| `Closed`         | No reply from either side within {{auto_close_placeholder}} of Resolved              | Reopens automatically if you reply to the thread after closing                                                                  |
 
 ### 5.2 Severity definitions (technical support and security disclosure)
 
-| Severity | Definition | Example | First-response target |
-|---|---|---|---|
-| Critical | Store is down, checkout is broken for all customers, or a security issue allows data exposure | No orders can be placed on any storefront | {{critical_response_placeholder}} |
-| High | A core feature is broken for a meaningful share of merchants or customers, no workaround exists | bKash payments failing intermittently store-wide | {{high_response_placeholder}} |
-| Medium | A feature is degraded or broken but a workaround exists, or affects a single store | CSV export missing one column | {{medium_response_placeholder}} |
-| Low | Cosmetic issue, minor inconvenience, or a "how do I" question | Dashboard label text is misaligned | {{low_response_placeholder}} |
-| Informational | Feature request, feedback, or general question | "Can invoices support a custom logo?" | {{informational_response_placeholder}} |
+| Severity      | Definition                                                                                      | Example                                          | First-response target                  |
+| ------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------- |
+| Critical      | Store is down, checkout is broken for all customers, or a security issue allows data exposure   | No orders can be placed on any storefront        | {{critical_response_placeholder}}      |
+| High          | A core feature is broken for a meaningful share of merchants or customers, no workaround exists | bKash payments failing intermittently store-wide | {{high_response_placeholder}}          |
+| Medium        | A feature is degraded or broken but a workaround exists, or affects a single store              | CSV export missing one column                    | {{medium_response_placeholder}}        |
+| Low           | Cosmetic issue, minor inconvenience, or a "how do I" question                                   | Dashboard label text is misaligned               | {{low_response_placeholder}}           |
+| Informational | Feature request, feedback, or general question                                                  | "Can invoices support a custom logo?"            | {{informational_response_placeholder}} |
 
 **Design note**: both tables render on canvas with hairline row dividers (`{colors.hairline-soft}`), status names as small `caption`-weight pills (semantic-success green for Resolved, ink-muted for Closed, signal-blue outline for Investigating), never full-color badge fills that would compete with the aurora system.
 
@@ -223,7 +224,7 @@ What I've already tried:
 
 ## 6. Self-serve deflection — three hairline rows, canvas
 
-*Lever: fluency — the fastest support experience is not needing to contact anyone; surfacing this before the form footer (not just after) respects people who came here mid-typing.*
+_Lever: fluency — the fastest support experience is not needing to contact anyone; surfacing this before the form footer (not just after) respects people who came here mid-typing._
 
 - **Status** — Is something down right now, and for how long? → `/status`
 - **Status বাংলা** — এখন কি কিছু ডাউন আছে, এবং কতক্ষণ ধরে? → `/status`
@@ -238,7 +239,7 @@ What I've already tried:
 
 ## 7. Anti-spam, rate limits, and privacy notice
 
-*Lever: transparency about friction — telling people why a limit exists reduces frustration when they hit it, versus a bare "too many requests."*
+_Lever: transparency about friction — telling people why a limit exists reduces frustration when they hit it, versus a bare "too many requests."_
 
 ### 7.1 Anti-spam mechanics (plain-language, not marketing copy)
 
@@ -249,15 +250,15 @@ What I've already tried:
 
 ### 7.2 Privacy notice (shown as a collapsed disclosure under the consent checkbox, labelled "What we do with this")
 
-Copy: *We store your name, email, message, and any attachments to answer this enquiry and to keep a record if you contact us again. We don't sell this data or use it for marketing unless you separately opt in elsewhere. Full detail: {{privacy_policy_link_placeholder}}.*
+Copy: _We store your name, email, message, and any attachments to answer this enquiry and to keep a record if you contact us again. We don't sell this data or use it for marketing unless you separately opt in elsewhere. Full detail: {{privacy_policy_link_placeholder}}._
 
-বাংলা: *এই অনুরোধের উত্তর দিতে এবং আপনি আবার যোগাযোগ করলে রেকর্ড রাখতে আমরা আপনার নাম, ইমেইল, বার্তা এবং সংযুক্ত ফাইল সংরক্ষণ করি। আমরা এই তথ্য বিক্রি করি না বা অন্য কোথাও আলাদাভাবে সম্মতি না দিলে মার্কেটিংয়ের জন্য ব্যবহার করি না। সম্পূর্ণ বিবরণ: {{privacy_policy_link_placeholder}}।*
+বাংলা: _এই অনুরোধের উত্তর দিতে এবং আপনি আবার যোগাযোগ করলে রেকর্ড রাখতে আমরা আপনার নাম, ইমেইল, বার্তা এবং সংযুক্ত ফাইল সংরক্ষণ করি। আমরা এই তথ্য বিক্রি করি না বা অন্য কোথাও আলাদাভাবে সম্মতি না দিলে মার্কেটিংয়ের জন্য ব্যবহার করি না। সম্পূর্ণ বিবরণ: {{privacy_policy_link_placeholder}}।_
 
 ---
 
 ## 8. What happens to your data after you submit
 
-*Lever: concrete process disclosure lowers submission anxiety more effectively than a generic "your privacy matters" line.*
+_Lever: concrete process disclosure lowers submission anxiety more effectively than a generic "your privacy matters" line._
 
 Presented as a four-step horizontal strip (collapses to a vertical stack on mobile):
 
@@ -266,13 +267,13 @@ Presented as a four-step horizontal strip (collapses to a vertical stack on mobi
 3. **Retention** — Resolved/closed enquiries are retained for {{retention_period_placeholder}} for support-quality and dispute purposes, then deleted or anonymised. Attachments follow the same schedule.
 4. **Your control** — You can ask us to delete your enquiry record at any time by replying to the confirmation email with "please delete this record," subject to any legal retention requirement we disclose in that reply.
 
-বাংলা (compressed under a "বাংলায় পড়ুন" toggle rather than duplicated four times, to keep the strip visually light): *আপনার বার্তা সঠিক দলে পাঠানো হয়, শুধুমাত্র সেই দলের নির্দিষ্ট সদস্যরা এটি দেখতে পারেন, সমাধান হওয়ার পর {{retention_period_placeholder}} পর্যন্ত রাখা হয়, এবং আপনি যেকোনো সময় মুছে ফেলার অনুরোধ করতে পারেন।*
+বাংলা (compressed under a "বাংলায় পড়ুন" toggle rather than duplicated four times, to keep the strip visually light): _আপনার বার্তা সঠিক দলে পাঠানো হয়, শুধুমাত্র সেই দলের নির্দিষ্ট সদস্যরা এটি দেখতে পারেন, সমাধান হওয়ার পর {{retention_period_placeholder}} পর্যন্ত রাখা হয়, এবং আপনি যেকোনো সময় মুছে ফেলার অনুরোধ করতে পারেন।_
 
 ---
 
 ## 9. Enterprise & migration consultation — gradient spotlight card
 
-*Lever: reciprocity — leading with a structured discovery list (rather than a bare "book a call") signals the call will be substantive, which raises show-up rate.*
+_Lever: reciprocity — leading with a structured discovery list (rather than a bare "book a call") signals the call will be substantive, which raises show-up rate._
 
 - **Eyebrow**: `For teams doing 500+ orders/month or migrating a live store`
 - **H2**: **Bring your platform. We'll map the move.**
@@ -280,6 +281,7 @@ Presented as a four-step horizontal strip (collapses to a vertical stack on mobi
 - **Sub**: A 30-minute discovery call before any commercial conversation. No slide deck, just questions that determine whether Framique is actually a fit.
 
 **Discovery questions we'll ask** (rendered as a numbered list on the card):
+
 1. What platform are you migrating from, and what's forcing the move — cost, features, or reliability?
 2. How many products, orders/month, and customer records need to come across?
 3. Do you have custom checkout logic, subscriptions, or a POS integration that has to survive the move unchanged?
@@ -298,7 +300,7 @@ Presented as a four-step horizontal strip (collapses to a vertical stack on mobi
 
 ## 10. Offices & hours — placeholder template, canvas
 
-*Lever: legitimacy signal — a real address and hours reduce fraud-anxiety on a payments platform more than any trust badge; we do not fabricate this.*
+_Lever: legitimacy signal — a real address and hours reduce fraud-anxiety on a payments platform more than any trust badge; we do not fabricate this._
 
 > **NAP block — confirm all fields before publish, do not launch with bracketed placeholders live:**
 >
@@ -361,7 +363,7 @@ Identical block is emitted once as machine-readable data on this route (`Contact
 
 ## 13. FAQ — 10 rows, faq-row accordion
 
-*Lever: objection pre-emption — answering the "will this actually reach someone" question directly reduces support-avoidant behaviour (people not writing in at all).*
+_Lever: objection pre-emption — answering the "will this actually reach someone" question directly reduces support-avoidant behaviour (people not writing in at all)._
 
 1. **Is this a real inbox or a bot?** — A named person on the relevant team reads and replies to every message. The confirmation email is automatic; the reply that follows is not.
 2. **How fast will I hear back?** — Depends on the queue and, for support, the severity you select — see the tables in §2 and §5. The exact target is shown live above the submit button once you pick your enquiry type.

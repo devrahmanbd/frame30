@@ -4,12 +4,12 @@ Everything below runs on our own hardware. No error data leaves the node.
 
 ## Topology
 
-| Piece | Where | Notes |
-| --- | --- | --- |
-| GlitchTip | `ops/docker-compose.errors.yml`, profile `glitchtip` | Default. Postgres + Redis + web + worker. |
-| Sentry | same file, profile `sentry` | Heavy option; run only with headroom. |
-| App reporter | `src/lib/observability.server.ts` + `src/lib/client-error-reporter.ts` | One reporter, one DSN per backend. |
-| Alert bridge | `/api/public/error-alert` | Webhook → Alertmanager → the Phase 11 Slack/PagerDuty path. |
+| Piece        | Where                                                                  | Notes                                                       |
+| ------------ | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
+| GlitchTip    | `ops/docker-compose.errors.yml`, profile `glitchtip`                   | Default. Postgres + Redis + web + worker.                   |
+| Sentry       | same file, profile `sentry`                                            | Heavy option; run only with headroom.                       |
+| App reporter | `src/lib/observability.server.ts` + `src/lib/client-error-reporter.ts` | One reporter, one DSN per backend.                          |
+| Alert bridge | `/api/public/error-alert`                                              | Webhook → Alertmanager → the Phase 11 Slack/PagerDuty path. |
 
 Start one or both:
 
@@ -24,11 +24,11 @@ that is a supported state, not a failure.
 
 ## What the app sends
 
-* Browser `onerror`, unhandled promise rejections and React error-boundary
+- Browser `onerror`, unhandled promise rejections and React error-boundary
   failures. The page holds **no DSN**: it POSTs a trimmed report to
   `/api/public/errors`, which scrubs and forwards it.
-* SSR and server-function exceptions, through `captureError`.
-* Sampled HTTP transactions, for latency context.
+- SSR and server-function exceptions, through `captureError`.
+- Sampled HTTP transactions, for latency context.
 
 Every event carries `environment`, `release` and `commit` tags, plus `scope`
 and the trace id, so an issue links back to its logs and metrics.
@@ -37,7 +37,7 @@ and the trace id, so an issue links back to its logs and metrics.
 
 Two layers, both mandatory:
 
-1. `scrubText` / `scrubPayload` (`src/lib/ops.ts`) mask anything that *looks*
+1. `scrubText` / `scrubPayload` (`src/lib/ops.ts`) mask anything that _looks_
    like an email, phone, card or token, in messages, stacks and context.
 2. `sanitizeEventFields` (`src/lib/error-tracking.ts`) removes whole fields by
    name: customer details, addresses, order/cart/line-item payloads, request
@@ -48,11 +48,11 @@ merchant id, order id payload or customer record in an event body is a bug.
 
 ## Sampling and quotas
 
-| Knob | Default | Meaning |
-| --- | --- | --- |
-| `ERROR_SAMPLE_RATE` | `1` in production, `0.25` elsewhere | Fraction of distinct fingerprints forwarded. Deterministic per fingerprint. |
-| `ERROR_QUOTA_PER_MINUTE` | `60` production / `20` preview | Sends per fingerprint per minute. |
-| `ERROR_RETENTION_DAYS` | `30` | Event lifetime in both backends. |
+| Knob                     | Default                             | Meaning                                                                     |
+| ------------------------ | ----------------------------------- | --------------------------------------------------------------------------- |
+| `ERROR_SAMPLE_RATE`      | `1` in production, `0.25` elsewhere | Fraction of distinct fingerprints forwarded. Deterministic per fingerprint. |
+| `ERROR_QUOTA_PER_MINUTE` | `60` production / `20` preview      | Sends per fingerprint per minute.                                           |
+| `ERROR_RETENTION_DAYS`   | `30`                                | Event lifetime in both backends.                                            |
 
 Client side, a page view sends at most 10 reports and dedupes by
 mechanism+message, and `/api/public/errors` is rate limited to 30 requests per

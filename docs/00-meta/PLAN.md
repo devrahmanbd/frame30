@@ -19,25 +19,25 @@ Commerce-as-a-service for Bangladeshi merchants, competitive with Shopify on bre
 
 ## 3. Docs map (planning docs → SYSTEM.md → AGENTS.md)
 
-| # | Area | Pages (each embeds Design Guidelines) |
-|---|---|---|
-| 01 | Architecture | system overview, identity, data model, observability |
-| 02 | Merchant admin | dashboard, products, options & variants, customers, inventory, orders, shipping, POS, settings |
-| 03 | Storefront | theme runtime, themes, search, product reviews, customer accounts, checkout-skeleton |
-| 04 | Builder | editor, engine, widgets, design tokens, preview |
-| 05 | Marketing | SEO/AEO, email/forms, ads integrity, campaigns, blog |
-| 06 | Payments | gateway, MFS, COD, wallet, payouts, refunds, invoices |
-| 07 | Commerce | carts, collections, smart collections, coupons/promo, VAT |
-| 08 | POS & shipping | offline-first POS, courier integration |
-| 09 | Analytics | dashboards, buyer persona, behavior events |
-| 10 | AI support | support agent, chat, auto-respond, escalation |
-| 11 | Fraud | fake orders/visitors/ad-click protection, scoring |
-| 12 | Marketplace | themes/plugins marketplace, install, reviews |
-| 13 | Export & SDK | website export, migration, SDK, webhooks |
-| 14 | Operations | platform billing, trials, alerts, RBAC, security |
-| 15 | E2E | test harness, mock MFS sandbox, golden flows |
-| 16 | Pricing & merchant billing | plans/tiers & limits, subscription state machine, dunning, KYC/enrollment, invoices |
-| 17 | Owner console | `/root` platform-governance surface: pricing sign-off, gateway env gates, trial/coupons ops, fraud & AI desks, settings/compliance; no new tables (writes only `owner_action`) |
+| #   | Area                       | Pages (each embeds Design Guidelines)                                                                                                                                          |
+| --- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 01  | Architecture               | system overview, identity, data model, observability                                                                                                                           |
+| 02  | Merchant admin             | dashboard, products, options & variants, customers, inventory, orders, shipping, POS, settings                                                                                 |
+| 03  | Storefront                 | theme runtime, themes, search, product reviews, customer accounts, checkout-skeleton                                                                                           |
+| 04  | Builder                    | editor, engine, widgets, design tokens, preview                                                                                                                                |
+| 05  | Marketing                  | SEO/AEO, email/forms, ads integrity, campaigns, blog                                                                                                                           |
+| 06  | Payments                   | gateway, MFS, COD, wallet, payouts, refunds, invoices                                                                                                                          |
+| 07  | Commerce                   | carts, collections, smart collections, coupons/promo, VAT                                                                                                                      |
+| 08  | POS & shipping             | offline-first POS, courier integration                                                                                                                                         |
+| 09  | Analytics                  | dashboards, buyer persona, behavior events                                                                                                                                     |
+| 10  | AI support                 | support agent, chat, auto-respond, escalation                                                                                                                                  |
+| 11  | Fraud                      | fake orders/visitors/ad-click protection, scoring                                                                                                                              |
+| 12  | Marketplace                | themes/plugins marketplace, install, reviews                                                                                                                                   |
+| 13  | Export & SDK               | website export, migration, SDK, webhooks                                                                                                                                       |
+| 14  | Operations                 | platform billing, trials, alerts, RBAC, security                                                                                                                               |
+| 15  | E2E                        | test harness, mock MFS sandbox, golden flows                                                                                                                                   |
+| 16  | Pricing & merchant billing | plans/tiers & limits, subscription state machine, dunning, KYC/enrollment, invoices                                                                                            |
+| 17  | Owner console              | `/root` platform-governance surface: pricing sign-off, gateway env gates, trial/coupons ops, fraud & AI desks, settings/compliance; no new tables (writes only `owner_action`) |
 
 ## 4. Build slices (each ends with an E2E green + docs acceptance)
 

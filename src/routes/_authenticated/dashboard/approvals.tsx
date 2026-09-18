@@ -2,7 +2,13 @@ import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { StatusPill, Field, inputClass, btnPrimary, btnGhost } from "@/components/admin/MarketingUi";
+import {
+  StatusPill,
+  Field,
+  inputClass,
+  btnPrimary,
+  btnGhost,
+} from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
 import { governanceLoadFn } from "@/lib/governance.functions";
 import { approvalSubmitFn, approvalDecideFn } from "@/lib/governance.functions";
@@ -14,10 +20,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/approvals")({
       { title: "Approvals — Framique admin" },
       {
         name: "description",
-        content: "Four-eyes review queue for sensitive catalog, marketing, theme and finance actions.",
+        content:
+          "Four-eyes review queue for sensitive catalog, marketing, theme and finance actions.",
       },
       { property: "og:title", content: "Approvals — Framique admin" },
-      { property: "og:description", content: "Submit, review and decide on staff approval requests." },
+      {
+        property: "og:description",
+        content: "Submit, review and decide on staff approval requests.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -29,7 +39,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/approvals")({
 const AREAS = ["catalog", "marketing", "themes", "finance", "orders"] as const;
 const ACTIONS = ["publish", "update", "refund", "deactivate"] as const;
 
-const TONE: Record<string, "neutral" | "success" | "warning" | "danger" | "info"> = {
+const TONE: Record<
+  string,
+  "neutral" | "success" | "warning" | "danger" | "info"
+> = {
   pending: "warning",
   approved: "success",
   rejected: "danger",
@@ -69,8 +82,12 @@ function ApprovalsPage() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{tk("approval.title")}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{tk("approval.subtitle")}</p>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {tk("approval.title")}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {tk("approval.subtitle")}
+        </p>
       </header>
 
       <section className="rounded-fq-md border border-border bg-card p-4">
@@ -103,7 +120,11 @@ function ApprovalsPage() {
             </select>
           </Field>
           <Field label={tk("approval.note")}>
-            <input className={inputClass} value={note} onChange={(e) => setNote(e.target.value)} />
+            <input
+              className={inputClass}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
           </Field>
         </div>
         <button
@@ -127,27 +148,37 @@ function ApprovalsPage() {
         </h2>
         <ul className="divide-y divide-border">
           {pending.length === 0 && (
-            <li className="px-4 py-3 text-sm text-muted-foreground">{tk("common.empty")}</li>
+            <li className="px-4 py-3 text-sm text-muted-foreground">
+              {tk("common.empty")}
+            </li>
           )}
           {pending.map((a) => (
             <li key={a.id} className="space-y-3 px-4 py-4">
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <StatusPill tone="warning" label={tk("approval.status.pending")} />
+                <StatusPill
+                  tone="warning"
+                  label={tk("approval.status.pending")}
+                />
                 <span className="font-medium">
                   {tk(`perm.group.${a.resourceType}`)} · {a.resourceAction}
                 </span>
                 <span className="text-muted-foreground">{a.submittedBy}</span>
                 <span className="ml-auto text-xs tabular-nums text-muted-foreground">
-                  {tk("approval.expires")}: {new Date(a.expiresAt).toLocaleString()}
+                  {tk("approval.expires")}:{" "}
+                  {new Date(a.expiresAt).toLocaleString()}
                 </span>
               </div>
-              {a.summary && <p className="text-sm text-muted-foreground">{a.summary}</p>}
+              {a.summary && (
+                <p className="text-sm text-muted-foreground">{a.summary}</p>
+              )}
               <div className="flex flex-wrap items-end gap-3">
                 <Field label={tk("approval.comment")}>
                   <input
                     className={inputClass}
                     value={comments[a.id] ?? ""}
-                    onChange={(e) => setComments({ ...comments, [a.id]: e.target.value })}
+                    onChange={(e) =>
+                      setComments({ ...comments, [a.id]: e.target.value })
+                    }
                   />
                 </Field>
                 {a.isMine ? (
@@ -227,11 +258,19 @@ function ApprovalsPage() {
         </h2>
         <ul className="divide-y divide-border">
           {history.length === 0 && (
-            <li className="px-4 py-3 text-sm text-muted-foreground">{tk("common.empty")}</li>
+            <li className="px-4 py-3 text-sm text-muted-foreground">
+              {tk("common.empty")}
+            </li>
           )}
           {history.map((a) => (
-            <li key={a.id} className="flex flex-wrap items-center gap-2 px-4 py-3 text-sm">
-              <StatusPill tone={TONE[a.status] ?? "neutral"} label={tk(`approval.status.${a.status}`)} />
+            <li
+              key={a.id}
+              className="flex flex-wrap items-center gap-2 px-4 py-3 text-sm"
+            >
+              <StatusPill
+                tone={TONE[a.status] ?? "neutral"}
+                label={tk(`approval.status.${a.status}`)}
+              />
               <span className="font-medium">
                 {tk(`perm.group.${a.resourceType}`)} · {a.resourceAction}
               </span>
@@ -240,7 +279,9 @@ function ApprovalsPage() {
                 {a.reviewedBy ? ` → ${a.reviewedBy}` : ""}
               </span>
               {a.reviewComment && (
-                <span className="text-muted-foreground">“{a.reviewComment}”</span>
+                <span className="text-muted-foreground">
+                  “{a.reviewComment}”
+                </span>
               )}
               <span className="ml-auto text-xs tabular-nums text-muted-foreground">
                 {new Date(a.createdAt).toLocaleString()}

@@ -1,1 +1,92 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "label": "lang-boot.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L1"}, {"id": "lib_lang_boot_server_readserverbootlang", "label": "readServerBootLang()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L17"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "target": "server", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "target": "users_rahman_documents_frame30_src_lib_lang_boot_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "target": "lib_lang_boot_resolverequestlang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "target": "lib_lang_boot_bootlang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts", "target": "lib_lang_boot_server_readserverbootlang", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L17", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_lang_boot_server_readserverbootlang", "callee": "getRequest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L19"}, {"caller_nid": "lib_lang_boot_server_readserverbootlang", "callee": "resolveRequestLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L21"}, {"caller_nid": "lib_lang_boot_server_readserverbootlang", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts", "source_location": "L23"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "label": "lang-boot.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_lang_boot_server_readserverbootlang",
+      "label": "readServerBootLang()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L17"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_lang_boot_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "target": "lib_lang_boot_resolverequestlang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "target": "lib_lang_boot_bootlang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_lang_boot_server_ts",
+      "target": "lib_lang_boot_server_readserverbootlang",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_lang_boot_server_readserverbootlang",
+      "callee": "getRequest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_lang_boot_server_readserverbootlang",
+      "callee": "resolveRequestLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "lib_lang_boot_server_readserverbootlang",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/lang-boot.server.ts",
+      "source_location": "L23"
+    }
+  ]
+}

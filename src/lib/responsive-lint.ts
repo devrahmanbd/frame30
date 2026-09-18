@@ -26,7 +26,12 @@
  * Errors block publish. Warnings are advisory and surface in the lint panel.
  */
 import type { PropValue, Section, ThemeAst } from "./builder-ast";
-import { GRID_COLS, MIN_TOUCH_PX, hasFixedWidth, type DeviceBucket } from "./responsive";
+import {
+  GRID_COLS,
+  MIN_TOUCH_PX,
+  hasFixedWidth,
+  type DeviceBucket,
+} from "./responsive";
 import { compileResponsiveCss } from "./responsive-css";
 
 export type ResponsiveIssue = {
@@ -45,7 +50,12 @@ export type ResponsiveIssue = {
 export const SCROLL_LOCK_OWNERS = ["quick_view", "cart_drawer"] as const;
 
 /** Widgets pinned to a viewport edge — they need safe-area insets on mobile. */
-export const STICKY_WIDGETS = ["sticky_bar", "sticky_buy_bar", "announcement_bar", "utility_bar"] as const;
+export const STICKY_WIDGETS = [
+  "sticky_bar",
+  "sticky_buy_bar",
+  "announcement_bar",
+  "utility_bar",
+] as const;
 
 /** Props whose value is a tappable label, i.e. must stay elastic. */
 const TAPPABLE_LABEL_KEYS = [
@@ -60,7 +70,13 @@ const TAPPABLE_LABEL_KEYS = [
 ];
 
 /** Props that declare an explicit interactive size in px. */
-const TOUCH_SIZE_KEYS = ["tapSize", "buttonHeight", "iconSize", "minH", "minHeight"];
+const TOUCH_SIZE_KEYS = [
+  "tapSize",
+  "buttonHeight",
+  "iconSize",
+  "minH",
+  "minHeight",
+];
 
 const VIEWPORT_UNIT = /\b\d+(?:\.\d+)?vh\b/i;
 
@@ -72,16 +88,21 @@ function walk(sections: Section[], visit: (s: Section) => void): void {
 }
 
 function flatten(ast: ThemeAst | Section[]): Section[] {
-  const roots = Array.isArray(ast) ? ast : [...ast.header, ...ast.main, ...ast.footer];
+  const roots = Array.isArray(ast)
+    ? ast
+    : [...ast.header, ...ast.main, ...ast.footer];
   const out: Section[] = [];
   walk(roots, (s) => out.push(s));
   return out;
 }
 
 /** Every prop value across the base layer and every device layer. */
-function allValues(section: Section): [layer: DeviceBucket, key: string, value: PropValue][] {
+function allValues(
+  section: Section,
+): [layer: DeviceBucket, key: string, value: PropValue][] {
   const out: [DeviceBucket, string, PropValue][] = [];
-  for (const [key, value] of Object.entries(section.props)) out.push(["desktop", key, value as PropValue]);
+  for (const [key, value] of Object.entries(section.props))
+    out.push(["desktop", key, value as PropValue]);
   for (const layer of ["tablet", "mobile"] as DeviceBucket[]) {
     for (const [key, value] of Object.entries(section.bp?.[layer] ?? {})) {
       out.push([layer, key, value as PropValue]);
@@ -97,7 +118,12 @@ const asNumber = (value: PropValue): number | null => {
 
 /** Effective column count for a device, honouring the cascade. */
 function columnsAt(section: Section, bucket: DeviceBucket): number | null {
-  const chain: DeviceBucket[] = bucket === "mobile" ? ["mobile", "tablet", "desktop"] : bucket === "tablet" ? ["tablet", "desktop"] : ["desktop"];
+  const chain: DeviceBucket[] =
+    bucket === "mobile"
+      ? ["mobile", "tablet", "desktop"]
+      : bucket === "tablet"
+        ? ["tablet", "desktop"]
+        : ["desktop"];
   for (const layer of chain) {
     const bag = layer === "desktop" ? section.props : section.bp?.[layer];
     for (const key of ["columns", "cols"]) {
@@ -112,7 +138,12 @@ function columnsAt(section: Section, bucket: DeviceBucket): number | null {
 
 /** Effective span for a device, honouring the cascade. */
 function spanAt(section: Section, bucket: DeviceBucket): number | null {
-  const chain: DeviceBucket[] = bucket === "mobile" ? ["mobile", "tablet", "desktop"] : bucket === "tablet" ? ["tablet", "desktop"] : ["desktop"];
+  const chain: DeviceBucket[] =
+    bucket === "mobile"
+      ? ["mobile", "tablet", "desktop"]
+      : bucket === "tablet"
+        ? ["tablet", "desktop"]
+        : ["desktop"];
   for (const layer of chain) {
     const bag = layer === "desktop" ? section.props : section.bp?.[layer];
     if (bag && Object.prototype.hasOwnProperty.call(bag, "span")) {
@@ -129,7 +160,9 @@ function spanAt(section: Section, bucket: DeviceBucket): number | null {
  * Deliberately node-scoped: each issue names the node so the studio can jump
  * to it, and template-wide issues carry `nodeId: null`.
  */
-export function responsiveIssues(input: ThemeAst | Section[]): ResponsiveIssue[] {
+export function responsiveIssues(
+  input: ThemeAst | Section[],
+): ResponsiveIssue[] {
   const sections = flatten(input);
   const issues: ResponsiveIssue[] = [];
   const lockOwners: Section[] = [];
@@ -213,7 +246,8 @@ export function responsiveIssues(input: ThemeAst | Section[]): ResponsiveIssue[]
     }
 
     // 3. Sticky and overlay behaviour.
-    if ((SCROLL_LOCK_OWNERS as readonly string[]).includes(section.type)) lockOwners.push(section);
+    if ((SCROLL_LOCK_OWNERS as readonly string[]).includes(section.type))
+      lockOwners.push(section);
     if ((STICKY_WIDGETS as readonly string[]).includes(section.type)) {
       if (section.hidden?.includes("mobile")) {
         issues.push({
@@ -252,18 +286,30 @@ export type ResponsiveGateReport = {
  * (the page still renders at its base layout) but the merchant is told, because
  * silently dropping their mobile layout would be worse than a warning.
  */
-export function responsiveGate(input: ThemeAst | Section[]): ResponsiveGateReport {
+export function responsiveGate(
+  input: ThemeAst | Section[],
+): ResponsiveGateReport {
   const issues = responsiveIssues(input);
   const compiled = compileResponsiveCss(Array.isArray(input) ? input : input);
   const warnings = issues.filter((i) => i.level === "warn");
   for (const message of compiled.warnings) {
-    warnings.push({ code: "responsive.css_budget", level: "warn", nodeId: null, message });
+    warnings.push({
+      code: "responsive.css_budget",
+      level: "warn",
+      nodeId: null,
+      message,
+    });
   }
   const failures = issues.filter((i) => i.level === "error");
   return {
     ok: failures.length === 0,
     failures,
     warnings,
-    css: { rules: compiled.rules, bytes: compiled.bytes, nodes: compiled.nodes, truncated: compiled.truncated },
+    css: {
+      rules: compiled.rules,
+      bytes: compiled.bytes,
+      nodes: compiled.nodes,
+      truncated: compiled.truncated,
+    },
   };
 }

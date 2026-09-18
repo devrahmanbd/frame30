@@ -127,10 +127,15 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
   return (
     <section
       aria-label={t("SEO", "এসইও")}
-      className={cn("space-y-3 rounded-fq-lg border border-border bg-card p-3", props.className)}
+      className={cn(
+        "space-y-3 rounded-fq-lg border border-border bg-card p-3",
+        props.className,
+      )}
     >
       <header className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-foreground">{t("SEO", "এসইও")}</h2>
+        <h2 className="text-sm font-semibold text-foreground">
+          {t("SEO", "এসইও")}
+        </h2>
         <div className="flex items-center gap-2">
           {seo.focusKeywords[0] && (
             <span className="inline-flex min-h-6 items-center rounded-full border border-border px-2 text-[11px] text-muted-foreground">
@@ -143,7 +148,8 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
               tone,
             )}
           >
-            {report.score} / 100 · {lang === "bn" ? report.band.bn : report.band.en}
+            {report.score} / 100 ·{" "}
+            {lang === "bn" ? report.band.bn : report.band.en}
           </span>
         </div>
       </header>
@@ -172,7 +178,9 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
           />
 
           <div className="space-y-1.5">
-            <span className="text-xs font-medium">{t("Focus keywords", "মূল কীওয়ার্ড")}</span>
+            <span className="text-xs font-medium">
+              {t("Focus keywords", "মূল কীওয়ার্ড")}
+            </span>
             <KeywordPills
               values={seo.focusKeywords}
               max={FOCUS_KEYWORDS_MAX}
@@ -189,7 +197,9 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
 
           {props.onSlugChange && (
             <label className="block space-y-1.5">
-              <span className="text-xs font-medium">{t("Permalink", "পার্মালিংক")}</span>
+              <span className="text-xs font-medium">
+                {t("Permalink", "পার্মালিংক")}
+              </span>
               <span className="flex items-center gap-1 rounded-fq-md border border-border bg-card px-2">
                 <span className="shrink-0 truncate text-[11px] text-muted-foreground">
                   {props.url.replace(/[^/]*$/, "")}
@@ -249,31 +259,44 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
       {tab === "advanced" && (
         <div className="space-y-3">
           <fieldset className="space-y-1">
-            <legend className="text-xs font-medium">{t("Robots meta", "রোবটস মেটা")}</legend>
+            <legend className="text-xs font-medium">
+              {t("Robots meta", "রোবটস মেটা")}
+            </legend>
             <CheckboxRow
               checked={seo.robots.index}
               onChange={(index) => patch({ robots: { ...seo.robots, index } })}
               label={t("Index", "ইনডেক্স")}
-              hint={t("Let search engines list this page.", "সার্চ ইঞ্জিন এই পেজ দেখাতে পারবে।")}
+              hint={t(
+                "Let search engines list this page.",
+                "সার্চ ইঞ্জিন এই পেজ দেখাতে পারবে।",
+              )}
             />
             <CheckboxRow
               checked={seo.robots.follow}
-              onChange={(follow) => patch({ robots: { ...seo.robots, follow } })}
+              onChange={(follow) =>
+                patch({ robots: { ...seo.robots, follow } })
+              }
               label={t("Follow links", "লিংক ফলো")}
             />
             <CheckboxRow
               checked={seo.robots.noarchive}
-              onChange={(noarchive) => patch({ robots: { ...seo.robots, noarchive } })}
+              onChange={(noarchive) =>
+                patch({ robots: { ...seo.robots, noarchive } })
+              }
               label={t("No archive", "নো আর্কাইভ")}
             />
             <CheckboxRow
               checked={seo.robots.noimageindex}
-              onChange={(noimageindex) => patch({ robots: { ...seo.robots, noimageindex } })}
+              onChange={(noimageindex) =>
+                patch({ robots: { ...seo.robots, noimageindex } })
+              }
               label={t("No image index", "নো ইমেজ ইনডেক্স")}
             />
             <CheckboxRow
               checked={seo.robots.nosnippet}
-              onChange={(nosnippet) => patch({ robots: { ...seo.robots, nosnippet } })}
+              onChange={(nosnippet) =>
+                patch({ robots: { ...seo.robots, nosnippet } })
+              }
               label={t("No snippet", "নো স্নিপেট")}
             />
             <p className="fq-num rounded-fq-md bg-muted px-2 py-1 text-[11px] text-muted-foreground">
@@ -291,7 +314,8 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                   patch({
                     advancedRobots: {
                       ...seo.advancedRobots,
-                      maxSnippet: e.target.value === "" ? null : Number(e.target.value),
+                      maxSnippet:
+                        e.target.value === "" ? null : Number(e.target.value),
                     },
                   })
                 }
@@ -307,7 +331,8 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                   patch({
                     advancedRobots: {
                       ...seo.advancedRobots,
-                      maxVideoPreview: e.target.value === "" ? null : Number(e.target.value),
+                      maxVideoPreview:
+                        e.target.value === "" ? null : Number(e.target.value),
                     },
                   })
                 }
@@ -339,7 +364,9 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
           </div>
 
           <label className="block space-y-1 text-xs">
-            <span className="font-medium">{t("Canonical URL", "ক্যানোনিকাল URL")}</span>
+            <span className="font-medium">
+              {t("Canonical URL", "ক্যানোনিকাল URL")}
+            </span>
             <input
               value={seo.canonical}
               placeholder="https://"
@@ -349,7 +376,9 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
           </label>
 
           <label className="block space-y-1 text-xs">
-            <span className="font-medium">{t("Breadcrumb title", "ব্রেডক্রাম্ব টাইটেল")}</span>
+            <span className="font-medium">
+              {t("Breadcrumb title", "ব্রেডক্রাম্ব টাইটেল")}
+            </span>
             <input
               value={seo.breadcrumbTitle}
               onChange={(e) => patch({ breadcrumbTitle: e.target.value })}
@@ -358,10 +387,14 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
           </label>
 
           <fieldset className="space-y-2 rounded-fq-md border border-border p-2">
-            <legend className="px-1 text-xs font-medium">{t("Redirect", "রিডাইরেক্ট")}</legend>
+            <legend className="px-1 text-xs font-medium">
+              {t("Redirect", "রিডাইরেক্ট")}
+            </legend>
             <CheckboxRow
               checked={seo.redirect.enabled}
-              onChange={(enabled) => patch({ redirect: { ...seo.redirect, enabled } })}
+              onChange={(enabled) =>
+                patch({ redirect: { ...seo.redirect, enabled } })
+              }
               label={t("Redirect this URL", "এই URL রিডাইরেক্ট করুন")}
             />
             {seo.redirect.enabled && (
@@ -370,7 +403,11 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                   value={seo.redirect.target}
                   placeholder="/new-path"
                   aria-label={t("Redirect target", "রিডাইরেক্ট গন্তব্য")}
-                  onChange={(e) => patch({ redirect: { ...seo.redirect, target: e.target.value } })}
+                  onChange={(e) =>
+                    patch({
+                      redirect: { ...seo.redirect, target: e.target.value },
+                    })
+                  }
                   className={seoInput}
                 />
                 <select
@@ -378,7 +415,10 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                   aria-label={t("Redirect code", "রিডাইরেক্ট কোড")}
                   onChange={(e) =>
                     patch({
-                      redirect: { ...seo.redirect, code: Number(e.target.value) as RedirectCode },
+                      redirect: {
+                        ...seo.redirect,
+                        code: Number(e.target.value) as RedirectCode,
+                      },
                     })
                   }
                   className={seoInput}
@@ -398,11 +438,15 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
       {tab === "schema" && (
         <div className="space-y-3">
           <label className="block space-y-1 text-xs">
-            <span className="font-medium">{t("Schema type", "স্কিমা টাইপ")}</span>
+            <span className="font-medium">
+              {t("Schema type", "স্কিমা টাইপ")}
+            </span>
             <select
               value={seo.schema.type}
               onChange={(e) =>
-                patch({ schema: { ...seo.schema, type: e.target.value as SchemaType } })
+                patch({
+                  schema: { ...seo.schema, type: e.target.value as SchemaType },
+                })
               }
               className={seoInput}
             >
@@ -421,18 +465,26 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                 <input
                   value={seo.schema.headline}
                   placeholder={report.resolved.title}
-                  onChange={(e) => patch({ schema: { ...seo.schema, headline: e.target.value } })}
+                  onChange={(e) =>
+                    patch({
+                      schema: { ...seo.schema, headline: e.target.value },
+                    })
+                  }
                   className={seoInput}
                 />
               </label>
               <label className="block space-y-1 text-xs">
-                <span className="font-medium">{t("Description", "বর্ণনা")}</span>
+                <span className="font-medium">
+                  {t("Description", "বর্ণনা")}
+                </span>
                 <textarea
                   value={seo.schema.description}
                   rows={2}
                   placeholder={report.resolved.description}
                   onChange={(e) =>
-                    patch({ schema: { ...seo.schema, description: e.target.value } })
+                    patch({
+                      schema: { ...seo.schema, description: e.target.value },
+                    })
                   }
                   className={seoInput}
                 />
@@ -446,7 +498,12 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
               rows={seo.schema.faq.map((f) => [f.q, f.a] as [string, string])}
               placeholders={[t("Question", "প্রশ্ন"), t("Answer", "উত্তর")]}
               onChange={(rows) =>
-                patch({ schema: { ...seo.schema, faq: rows.map(([q, a]) => ({ q, a })) } })
+                patch({
+                  schema: {
+                    ...seo.schema,
+                    faq: rows.map(([q, a]) => ({ q, a })),
+                  },
+                })
               }
             />
           )}
@@ -454,22 +511,35 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
           {seo.schema.type === "HowTo" && (
             <Repeater
               label={t("Steps", "ধাপ")}
-              rows={seo.schema.steps.map((s) => [s.name, s.text] as [string, string])}
-              placeholders={[t("Step name", "ধাপের নাম"), t("Step detail", "ধাপের বিবরণ")]}
+              rows={seo.schema.steps.map(
+                (s) => [s.name, s.text] as [string, string],
+              )}
+              placeholders={[
+                t("Step name", "ধাপের নাম"),
+                t("Step detail", "ধাপের বিবরণ"),
+              ]}
               onChange={(rows) =>
                 patch({
-                  schema: { ...seo.schema, steps: rows.map(([name, text]) => ({ name, text })) },
+                  schema: {
+                    ...seo.schema,
+                    steps: rows.map(([name, text]) => ({ name, text })),
+                  },
                 })
               }
             />
           )}
 
           <div className="space-y-1">
-            <span className="text-xs font-medium">{t("JSON-LD preview", "JSON-LD প্রিভিউ")}</span>
+            <span className="text-xs font-medium">
+              {t("JSON-LD preview", "JSON-LD প্রিভিউ")}
+            </span>
             <pre className="max-h-56 overflow-auto rounded-fq-md border border-border bg-muted p-2 text-[11px] leading-relaxed text-foreground">
               {jsonLd
                 ? JSON.stringify(jsonLd, null, 2)
-                : t("No structured data on this page.", "এই পেজে স্ট্রাকচার্ড ডেটা নেই।")}
+                : t(
+                    "No structured data on this page.",
+                    "এই পেজে স্ট্রাকচার্ড ডেটা নেই।",
+                  )}
             </pre>
             <a
               href="https://search.google.com/test/rich-results"
@@ -502,12 +572,17 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                 <CheckboxRow
                   checked={card.useSeo}
                   onChange={(useSeo) => setCard({ useSeo })}
-                  label={t("Use SEO title and description", "এসইও টাইটেল ও বর্ণনা ব্যবহার করুন")}
+                  label={t(
+                    "Use SEO title and description",
+                    "এসইও টাইটেল ও বর্ণনা ব্যবহার করুন",
+                  )}
                 />
                 {!card.useSeo && (
                   <>
                     <label className="block space-y-1 text-xs">
-                      <span className="font-medium">{t("Title", "টাইটেল")}</span>
+                      <span className="font-medium">
+                        {t("Title", "টাইটেল")}
+                      </span>
                       <input
                         value={card.title}
                         onChange={(e) => setCard({ title: e.target.value })}
@@ -515,18 +590,24 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                       />
                     </label>
                     <label className="block space-y-1 text-xs">
-                      <span className="font-medium">{t("Description", "বর্ণনা")}</span>
+                      <span className="font-medium">
+                        {t("Description", "বর্ণনা")}
+                      </span>
                       <textarea
                         value={card.description}
                         rows={2}
-                        onChange={(e) => setCard({ description: e.target.value })}
+                        onChange={(e) =>
+                          setCard({ description: e.target.value })
+                        }
                         className={seoInput}
                       />
                     </label>
                   </>
                 )}
                 <label className="block space-y-1 text-xs">
-                  <span className="font-medium">{t("Image URL", "ইমেজ URL")}</span>
+                  <span className="font-medium">
+                    {t("Image URL", "ইমেজ URL")}
+                  </span>
                   <input
                     value={card.image}
                     placeholder="https://"
@@ -542,11 +623,18 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                 </label>
                 {network === "twitter" && (
                   <label className="block space-y-1 text-xs">
-                    <span className="font-medium">{t("Card type", "কার্ড টাইপ")}</span>
+                    <span className="font-medium">
+                      {t("Card type", "কার্ড টাইপ")}
+                    </span>
                     <select
                       value={seo.twitter.card}
                       onChange={(e) =>
-                        patch({ twitter: { ...seo.twitter, card: e.target.value as TwitterCard } })
+                        patch({
+                          twitter: {
+                            ...seo.twitter,
+                            card: e.target.value as TwitterCard,
+                          },
+                        })
                       }
                       className={seoInput}
                     >
@@ -577,7 +665,9 @@ export function SeoMetaBox(props: SeoMetaBoxProps) {
                       {props.siteName}
                     </p>
                     <p className="truncate text-[13px] font-medium text-foreground">
-                      {card.useSeo ? report.resolved.title : card.title || report.resolved.title}
+                      {card.useSeo
+                        ? report.resolved.title
+                        : card.title || report.resolved.title}
                     </p>
                     <p className="line-clamp-2 text-[11px] text-muted-foreground">
                       {card.useSeo
@@ -613,12 +703,19 @@ function Repeater({
     <div className="space-y-2">
       <span className="text-xs font-medium">{label}</span>
       {rows.map((row, i) => (
-        <div key={i} className="space-y-1 rounded-fq-md border border-border p-2">
+        <div
+          key={i}
+          className="space-y-1 rounded-fq-md border border-border p-2"
+        >
           <input
             value={row[0]}
             placeholder={placeholders[0]}
             aria-label={`${placeholders[0]} ${i + 1}`}
-            onChange={(e) => onChange(rows.map((r, j) => (i === j ? [e.target.value, r[1]] : r)))}
+            onChange={(e) =>
+              onChange(
+                rows.map((r, j) => (i === j ? [e.target.value, r[1]] : r)),
+              )
+            }
             className={seoInput}
           />
           <textarea
@@ -626,7 +723,11 @@ function Repeater({
             rows={2}
             placeholder={placeholders[1]}
             aria-label={`${placeholders[1]} ${i + 1}`}
-            onChange={(e) => onChange(rows.map((r, j) => (i === j ? [r[0], e.target.value] : r)))}
+            onChange={(e) =>
+              onChange(
+                rows.map((r, j) => (i === j ? [r[0], e.target.value] : r)),
+              )
+            }
             className={seoInput}
           />
           <button

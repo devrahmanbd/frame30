@@ -13,8 +13,16 @@ import { AlertTriangle } from "lucide-react";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { ShortcutHelp } from "@/components/admin/content/ShortcutHelp";
 import { StudioBuilder } from "@/components/builder/studio/StudioBuilder";
-import { readStudioBody, serializeStudioBody, upgradeV1 } from "@/lib/studio/model";
-import { ConfirmDialog, ErrorState, type MenuAction } from "@/components/console/kit";
+import {
+  readStudioBody,
+  serializeStudioBody,
+  upgradeV1,
+} from "@/lib/studio/model";
+import {
+  ConfirmDialog,
+  ErrorState,
+  type MenuAction,
+} from "@/components/console/kit";
 import { parseBody, serializeBody } from "@/lib/blog-body";
 import {
   EDITOR_SHORTCUTS,
@@ -45,7 +53,11 @@ import { useEditorDoc } from "./useEditorDoc";
 const SIDEBAR_MIN = 320;
 const SIDEBAR_MAX = 420;
 const SIDEBAR_KEY = "fq.editor.sidebar";
-const DEVICE_WIDTH: Record<Device, string> = { desktop: "100%", tablet: "768px", mobile: "390px" };
+const DEVICE_WIDTH: Record<Device, string> = {
+  desktop: "100%",
+  tablet: "768px",
+  mobile: "390px",
+};
 
 export function EditorShell({
   kind,
@@ -72,7 +84,9 @@ export function EditorShell({
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     if (typeof window === "undefined") return SIDEBAR_MIN;
     const stored = Number(window.localStorage.getItem(SIDEBAR_KEY));
-    return stored >= SIDEBAR_MIN && stored <= SIDEBAR_MAX ? stored : SIDEBAR_MIN;
+    return stored >= SIDEBAR_MIN && stored <= SIDEBAR_MAX
+      ? stored
+      : SIDEBAR_MIN;
   });
   const [sideTab, setSideTab] = useState<"document" | "block">("document");
   const [outlineOpen, setOutlineOpen] = useState(false);
@@ -106,9 +120,13 @@ export function EditorShell({
       markChoice();
       const next =
         forceEditor === "builder"
-          ? (parseBuilderBody(context.doc.body) ?? starterDoc(context.doc.title || undefined))
+          ? (parseBuilderBody(context.doc.body) ??
+            starterDoc(context.doc.title || undefined))
           : null;
-      update({ editor: forceEditor, body: next ? serializeBuilderBody(next) : "" }, "editor");
+      update(
+        { editor: forceEditor, body: next ? serializeBuilderBody(next) : "" },
+        "editor",
+      );
     } else if (forceEditor === "builder") {
       markChoice();
     }
@@ -153,7 +171,9 @@ export function EditorShell({
       const target = e.target as HTMLElement | null;
       const typing =
         !!target &&
-        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
       if (mod && e.key.toLowerCase() === "s") {
         e.preventDefault();
         void saveDraft();
@@ -187,7 +207,16 @@ export function EditorShell({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [saveDraft, state, back, outlineOpen, prePublish, leaveAsk, trashAsk, helpOpen]);
+  }, [
+    saveDraft,
+    state,
+    back,
+    outlineOpen,
+    prePublish,
+    leaveAsk,
+    trashAsk,
+    helpOpen,
+  ]);
 
   // Lock body scroll while the takeover is mounted.
   useEffect(() => {
@@ -204,7 +233,10 @@ export function EditorShell({
     const startX = e.clientX;
     const startW = sidebarWidth;
     const onMove = (ev: PointerEvent) => {
-      const next = Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, startW + (startX - ev.clientX)));
+      const next = Math.min(
+        SIDEBAR_MAX,
+        Math.max(SIDEBAR_MIN, startW + (startX - ev.clientX)),
+      );
       setSidebarWidth(next);
     };
     const onUp = () => {
@@ -238,7 +270,8 @@ export function EditorShell({
         doc.editor === "builder"
           ? t("Switch to Classic editor", "ক্লাসিক এডিটরে যান")
           : t("Edit with Builder", "বিল্ডারে সম্পাদনা"),
-      onSelect: () => switchEditor(doc.editor === "builder" ? "classic" : "builder"),
+      onSelect: () =>
+        switchEditor(doc.editor === "builder" ? "classic" : "builder"),
     },
     {
       id: "trash",
@@ -269,9 +302,7 @@ export function EditorShell({
       : null;
 
   return (
-    <div
-      className="fq-admin fixed inset-0 z-50 flex flex-col bg-background text-foreground"
-    >
+    <div className="fq-admin fixed inset-0 z-50 flex flex-col bg-background text-foreground">
       <EditorTopBar
         pill={pill}
         saveState={state.saveState}
@@ -309,7 +340,10 @@ export function EditorShell({
           role="alert"
           className="flex items-center gap-2 border-b border-[var(--fq-danger)]/40 bg-[color-mix(in_oklab,var(--fq-danger)_10%,var(--color-card))] px-4 py-2 text-sm"
         >
-          <AlertTriangle className="size-4 shrink-0 text-[var(--fq-danger)]" aria-hidden />
+          <AlertTriangle
+            className="size-4 shrink-0 text-[var(--fq-danger)]"
+            aria-hidden
+          />
           <span>{lang === "bn" ? state.error.bn : state.error.en}</span>
           <button
             type="button"
@@ -328,8 +362,9 @@ export function EditorShell({
             revisions={context.revisions}
             authors={context.authors}
             onJump={(index) => {
-              const node = canvasRef.current?.querySelectorAll("[role='textbox']")[index] as
-                HTMLElement | undefined;
+              const node = canvasRef.current?.querySelectorAll(
+                "[role='textbox']",
+              )[index] as HTMLElement | undefined;
               node?.scrollIntoView({ block: "center", behavior: "smooth" });
               node?.focus();
             }}
@@ -346,7 +381,9 @@ export function EditorShell({
         >
           <h1 className="sr-only">
             {doc.title?.trim() ||
-              (kind === "page" ? t("Untitled page", "শিরোনামহীন পেজ") : t("Untitled post", "শিরোনামহীন পোস্ট"))}
+              (kind === "page"
+                ? t("Untitled page", "শিরোনামহীন পেজ")
+                : t("Untitled post", "শিরোনামহীন পোস্ট"))}
           </h1>
           {state.query.isError ? (
             <div className="p-8">
@@ -379,11 +416,19 @@ export function EditorShell({
               }}
             >
               <div
-                className={cn("px-4 pb-24 pt-8 sm:px-6", doc.editor === "builder" && "px-0 pt-4")}
+                className={cn(
+                  "px-4 pb-24 pt-8 sm:px-6",
+                  doc.editor === "builder" && "px-0 pt-4",
+                )}
               >
                 <textarea
                   value={doc.title}
-                  onChange={(e) => update({ title: e.target.value.replace(/\n/g, "") }, "title")}
+                  onChange={(e) =>
+                    update(
+                      { title: e.target.value.replace(/\n/g, "") },
+                      "title",
+                    )
+                  }
                   placeholder={t("Add title", "শিরোনাম দিন")}
                   aria-label={t("Title", "শিরোনাম")}
                   rows={1}
@@ -398,7 +443,9 @@ export function EditorShell({
                 {kind === "post" && (
                   <input
                     value={doc.titleEn}
-                    onChange={(e) => update({ titleEn: e.target.value }, "titleEn")}
+                    onChange={(e) =>
+                      update({ titleEn: e.target.value }, "titleEn")
+                    }
                     placeholder={t(
                       "English title (used for the URL)",
                       "ইংরেজি শিরোনাম (URL-এর জন্য)",
@@ -420,9 +467,7 @@ export function EditorShell({
                     onChange={(next) => setBody(serializeStudioBody(next))}
                     docId={doc.id ? `${kind}:${doc.id}` : null}
                   />
-
                 ) : (
-
                   <ClassicBody
                     kind={kind}
                     body={doc.body}
@@ -458,8 +503,10 @@ export function EditorShell({
               tabIndex={0}
               onPointerDown={startResize}
               onKeyDown={(e) => {
-                if (e.key === "ArrowLeft") setSidebarWidth((w) => Math.min(SIDEBAR_MAX, w + 16));
-                if (e.key === "ArrowRight") setSidebarWidth((w) => Math.max(SIDEBAR_MIN, w - 16));
+                if (e.key === "ArrowLeft")
+                  setSidebarWidth((w) => Math.min(SIDEBAR_MAX, w + 16));
+                if (e.key === "ArrowRight")
+                  setSidebarWidth((w) => Math.max(SIDEBAR_MIN, w - 16));
               }}
               className="fq-focus-glow absolute inset-y-0 -left-1 z-10 hidden w-2 cursor-col-resize hover:bg-primary/30 lg:block"
             />
@@ -468,10 +515,17 @@ export function EditorShell({
               value={sideTab}
               onChange={setSideTab}
               tabs={[
-                { id: "document", label: kind === "page" ? t("Page", "পেজ") : t("Post", "পোস্ট") },
+                {
+                  id: "document",
+                  label:
+                    kind === "page" ? t("Page", "পেজ") : t("Post", "পোস্ট"),
+                },
                 {
                   id: "block",
-                  label: doc.editor === "builder" ? t("Element", "এলিমেন্ট") : t("Block", "ব্লক"),
+                  label:
+                    doc.editor === "builder"
+                      ? t("Element", "এলিমেন্ট")
+                      : t("Block", "ব্লক"),
                 },
               ]}
             />
@@ -521,7 +575,10 @@ export function EditorShell({
 
       <ConfirmDialog
         open={leaveAsk}
-        title={t("Save changes before leaving?", "চলে যাওয়ার আগে সংরক্ষণ করবেন?")}
+        title={t(
+          "Save changes before leaving?",
+          "চলে যাওয়ার আগে সংরক্ষণ করবেন?",
+        )}
         description={t(
           "You have unsaved edits. Save a draft or discard them.",
           "অসংরক্ষিত পরিবর্তন আছে। খসড়া সংরক্ষণ করুন বা বাতিল করুন।",
@@ -578,7 +635,12 @@ function ClassicBody({
   kind: ContentKind;
   body: string;
   onChange: (body: string) => void;
-  history: { canUndo: boolean; canRedo: boolean; undo: () => void; redo: () => void };
+  history: {
+    canUndo: boolean;
+    canRedo: boolean;
+    undo: () => void;
+    redo: () => void;
+  };
   onHelp: () => void;
 }) {
   const { t } = useLang();
@@ -607,7 +669,10 @@ function ClassicBody({
       variant="takeover"
       history={history}
       onHelp={onHelp}
-      placeholder={t("Start writing or type / to add a block", "লেখা শুরু করুন")}
+      placeholder={t(
+        "Start writing or type / to add a block",
+        "লেখা শুরু করুন",
+      )}
     />
   );
 }
@@ -671,7 +736,9 @@ function EditorSeoBox({
 const CHOICE_KEY = "fq.editor.choice-seen";
 function choiceNotMade(doc: EditorDoc): boolean {
   if (typeof window === "undefined") return false;
-  return doc.kind === "post" && window.sessionStorage.getItem(CHOICE_KEY) !== "1";
+  return (
+    doc.kind === "post" && window.sessionStorage.getItem(CHOICE_KEY) !== "1"
+  );
 }
 function markChoice() {
   window.sessionStorage.setItem(CHOICE_KEY, "1");

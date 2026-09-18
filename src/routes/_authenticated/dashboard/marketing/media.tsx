@@ -3,7 +3,9 @@
  */
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/_authenticated/dashboard/marketing/media")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/marketing/media",
+)({
   beforeLoad: () => {
     throw redirect({ to: "/dashboard/content/media" });
   },

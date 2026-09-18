@@ -3,9 +3,22 @@ import type { Database } from "@/integrations/supabase/types";
 
 type Client = SupabaseClient<Database>;
 
-const REVENUE_STATUSES = ["paid", "confirmed", "packed", "shipped", "delivered", "fulfilled"];
+const REVENUE_STATUSES = [
+  "paid",
+  "confirmed",
+  "packed",
+  "shipped",
+  "delivered",
+  "fulfilled",
+];
 const UNFULFILLED_STATUSES = ["paid", "confirmed", "packed"];
-const OPEN_COD_STATUSES = ["pending", "payment_pending", "confirmed", "packed", "shipped"];
+const OPEN_COD_STATUSES = [
+  "pending",
+  "payment_pending",
+  "confirmed",
+  "packed",
+  "shipped",
+];
 
 /**
  * Bounds for the home cards. The dashboard summarises a rolling window, so it
@@ -19,7 +32,12 @@ export const DASHBOARD_SUBSCRIBER_SCAN_LIMIT = 5;
 
 export type NeedsYouItem = {
   id: string;
-  kind: "unfulfilled" | "suspicious" | "payment_failed" | "low_stock" | "subscriber";
+  kind:
+    | "unfulfilled"
+    | "suspicious"
+    | "payment_failed"
+    | "low_stock"
+    | "subscriber";
   rank: number;
   titleEn: string;
   titleBn: string;
@@ -63,7 +81,11 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
   const baseCutoff = new Date(baseStart.getTime() + elapsedMs);
 
   const [{ data: merchant }, { data: orders, error }] = await Promise.all([
-    supabase.from("merchants").select("currency_code").eq("id", merchantId).maybeSingle(),
+    supabase
+      .from("merchants")
+      .select("currency_code")
+      .eq("id", merchantId)
+      .maybeSingle(),
     supabase
       .from("orders")
       .select(
@@ -81,11 +103,15 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
 
   const today = rows.filter((o) => o.created_at >= todayStart.toISOString());
   const baseline = rows.filter(
-    (o) => o.created_at >= baseStart.toISOString() && o.created_at < baseCutoff.toISOString(),
+    (o) =>
+      o.created_at >= baseStart.toISOString() &&
+      o.created_at < baseCutoff.toISOString(),
   );
 
-  const earning = (r: typeof rows) => r.filter((o) => REVENUE_STATUSES.includes(o.status));
-  const revenue = (r: typeof rows) => earning(r).reduce((a, o) => a + o.total_minor_int, 0);
+  const earning = (r: typeof rows) =>
+    r.filter((o) => REVENUE_STATUSES.includes(o.status));
+  const revenue = (r: typeof rows) =>
+    earning(r).reduce((a, o) => a + o.total_minor_int, 0);
   const aov = (r: typeof rows) => {
     const paid = earning(r);
     return paid.length ? Math.round(revenue(r) / paid.length) : 0;
@@ -98,14 +124,22 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       valueMinorInt: revenue(today),
       deltaPct: pct(revenue(today), revenue(baseline)),
     },
-    orders: { value: today.length, deltaPct: pct(today.length, baseline.length) },
-    aov: { valueMinorInt: aov(today), deltaPct: pct(aov(today), aov(baseline)) },
+    orders: {
+      value: today.length,
+      deltaPct: pct(today.length, baseline.length),
+    },
+    aov: {
+      valueMinorInt: aov(today),
+      deltaPct: pct(aov(today), aov(baseline)),
+    },
   };
 
   // ---- Needs you queue -------------------------------------------------
   const needs: NeedsYouItem[] = [];
 
-  const unfulfilled = rows.filter((o) => UNFULFILLED_STATUSES.includes(o.status));
+  const unfulfilled = rows.filter((o) =>
+    UNFULFILLED_STATUSES.includes(o.status),
+  );
   for (const o of unfulfilled.slice(0, 6)) {
     needs.push({
       id: `order-${o.id}`,
@@ -125,7 +159,9 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
   // High-value COD orders still open read as the suspicious-order signal until
   // the dedicated risk tables land.
   const suspicious = rows
-    .filter((o) => o.payment_method === "cod" && OPEN_COD_STATUSES.includes(o.status))
+    .filter(
+      (o) => o.payment_method === "cod" && OPEN_COD_STATUSES.includes(o.status),
+    )
     .sort((a, b) => b.total_minor_int - a.total_minor_int)
     .filter((o) => o.total_minor_int >= 500000)
     .slice(0, 4);
@@ -147,7 +183,9 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
 
   const { data: failedPayments } = await supabase
     .from("payments")
-    .select("id, order_id, amount_minor_int, payment_provider, payment_status, created_at")
+    .select(
+      "id, order_id, amount_minor_int, payment_provider, payment_status, created_at",
+    )
     .eq("merchant_id", merchantId)
     .eq("payment_status", "failed")
     .order("created_at", { ascending: false })
@@ -163,7 +201,9 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       detailBn: "প্রোভাইডার পেমেন্ট বাতিল করেছে",
       actionEn: "Open order",
       actionBn: "অর্ডার দেখুন",
-      to: p.order_id ? `/dashboard/orders/${p.order_id}` : "/dashboard/payments",
+      to: p.order_id
+        ? `/dashboard/orders/${p.order_id}`
+        : "/dashboard/payments",
       amountMinorInt: p.amount_minor_int,
     });
   }
@@ -189,7 +229,9 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       // Bounded by construction (`lowRows` is at most the stock scan limit),
       // but stated explicitly so the discipline audit can see it.
       .limit(DASHBOARD_STOCK_SCAN_LIMIT);
-    variantNames = new Map((variants ?? []).map((v) => [v.id, v.name ?? v.sku ?? "Variant"]));
+    variantNames = new Map(
+      (variants ?? []).map((v) => [v.id, v.name ?? v.sku ?? "Variant"]),
+    );
   }
   for (const l of lowRows.slice(0, 5)) {
     const available = l.on_hand - (l.reserved ?? 0);
@@ -207,7 +249,10 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
     });
   }
 
-  needs.sort((a, b) => a.rank - b.rank || (b.amountMinorInt ?? 0) - (a.amountMinorInt ?? 0));
+  needs.sort(
+    (a, b) =>
+      a.rank - b.rank || (b.amountMinorInt ?? 0) - (a.amountMinorInt ?? 0),
+  );
 
   // ---- Live feed seed --------------------------------------------------
   const { data: newSubscribers } = await supabase
@@ -234,7 +279,9 @@ export async function loadDashboardHome(supabase: Client, merchantId: string) {
       titleEn: `${p.payment_provider} payment failed`,
       titleBn: `${p.payment_provider} পেমেন্ট ব্যর্থ`,
       amountMinorInt: p.amount_minor_int,
-      to: p.order_id ? `/dashboard/orders/${p.order_id}` : "/dashboard/payments",
+      to: p.order_id
+        ? `/dashboard/orders/${p.order_id}`
+        : "/dashboard/payments",
     })),
     ...(newSubscribers ?? []).map<FeedItem>((s) => ({
       id: `sub-${s.id}`,

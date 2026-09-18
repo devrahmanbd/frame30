@@ -27,7 +27,10 @@ function mapError(message: string) {
   const code = Object.keys(MESSAGES).find((k) => message.includes(k));
   if (code) return new CommerceError(code, MESSAGES[code] as string);
   log("warn", "giftcard.rpc_failed", { detail: message.slice(0, 120) });
-  return new CommerceError("giftcard_unavailable", "Gift cards are temporarily unavailable");
+  return new CommerceError(
+    "giftcard_unavailable",
+    "Gift cards are temporarily unavailable",
+  );
 }
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -57,7 +60,11 @@ export async function loadGiftCards(db: Client, merchantId: string) {
   return data ?? [];
 }
 
-export async function loadGiftCardEntries(db: Client, merchantId: string, giftCardId: string) {
+export async function loadGiftCardEntries(
+  db: Client,
+  merchantId: string,
+  giftCardId: string,
+) {
   const { data } = await db
     .from("gift_card_entries")
     .select("*")
@@ -124,7 +131,10 @@ export async function redeemGiftCard(
   },
 ) {
   return withSpan("commerce.giftcard_redeem", async () => {
-    await enforceRateLimit("commerce.giftcard_redeem", `${merchantId}:${input.subject}`);
+    await enforceRateLimit(
+      "commerce.giftcard_redeem",
+      `${merchantId}:${input.subject}`,
+    );
     const { data, error } = await db.rpc("gift_card_redeem", {
       _merchant_id: merchantId,
       _code: input.code,
@@ -145,14 +155,22 @@ export async function redeemGiftCard(
 }
 
 /** Balance lookup for the checkout preview — reveals nothing but the balance. */
-export async function giftCardBalance(db: Client, merchantId: string, code: string) {
+export async function giftCardBalance(
+  db: Client,
+  merchantId: string,
+  code: string,
+) {
   const { data } = await db
     .from("gift_cards")
     .select("code, balance_minor_int, currency_code, status, expires_at")
     .eq("merchant_id", merchantId)
     .eq("code", code.trim().toUpperCase())
     .maybeSingle();
-  if (!data) throw new CommerceError("gift_card_not_found", MESSAGES["gift_card_not_found"] ?? "");
+  if (!data)
+    throw new CommerceError(
+      "gift_card_not_found",
+      MESSAGES["gift_card_not_found"] ?? "",
+    );
   return data;
 }
 

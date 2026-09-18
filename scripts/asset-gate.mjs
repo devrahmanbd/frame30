@@ -50,10 +50,9 @@ const flag = (name, fallback = null) => {
 };
 
 const ROOT = resolve(import.meta.dirname, "..");
-const BASE = String(flag("base", process.env.ASSET_GATE_BASE ?? "http://localhost:8080")).replace(
-  /\/$/,
-  "",
-);
+const BASE = String(
+  flag("base", process.env.ASSET_GATE_BASE ?? "http://localhost:8080"),
+).replace(/\/$/, "");
 const ONLY = flag("only", null);
 const WIDTHS = String(flag("widths", "390,1440"))
   .split(",")
@@ -63,8 +62,14 @@ const LOCALES = String(flag("locales", "en"))
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
-const CONCURRENCY = Math.max(1, Number.parseInt(String(flag("concurrency", "4")), 10) || 4);
-const ATTEMPTS = Math.max(1, Number.parseInt(String(flag("attempts", "2")), 10) || 2);
+const CONCURRENCY = Math.max(
+  1,
+  Number.parseInt(String(flag("concurrency", "4")), 10) || 4,
+);
+const ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(String(flag("attempts", "2")), 10) || 2,
+);
 const FAIL_ON = String(flag("fail-on", "error"));
 const JSON_OUT = flag("json", null);
 const LOG_LEVEL = String(flag("log-level", "info"));
@@ -100,7 +105,9 @@ const MEASURE = () => {
     return r.top < foldHeight && r.bottom > 0;
   };
 
-  const stills = [...document.querySelectorAll("img[data-still], figure[data-still] img")].map((img) => {
+  const stills = [
+    ...document.querySelectorAll("img[data-still], figure[data-still] img"),
+  ].map((img) => {
     const figure = img.closest("[data-still]");
     const picture = img.closest("picture");
     const offered = picture
@@ -108,15 +115,22 @@ const MEASURE = () => {
           .map((s) => (s.getAttribute("type") || "").replace("image/", ""))
           .filter(Boolean)
       : [];
-    const ext = (img.currentSrc || img.src || "").split(".").pop()?.split("?")[0];
+    const ext = (img.currentSrc || img.src || "")
+      .split(".")
+      .pop()
+      ?.split("?")[0];
     if (ext && !offered.includes(ext)) offered.push(ext);
     const box = img.getBoundingClientRect();
     return {
       id: figure?.getAttribute("data-still") ?? null,
       currentSrc: img.currentSrc || img.src || "",
       alt: img.getAttribute("alt"),
-      attrWidth: img.getAttribute("width") ? Number(img.getAttribute("width")) : null,
-      attrHeight: img.getAttribute("height") ? Number(img.getAttribute("height")) : null,
+      attrWidth: img.getAttribute("width")
+        ? Number(img.getAttribute("width"))
+        : null,
+      attrHeight: img.getAttribute("height")
+        ? Number(img.getAttribute("height"))
+        : null,
       naturalWidth: img.naturalWidth,
       naturalHeight: img.naturalHeight,
       displayWidth: box.width,
@@ -149,10 +163,13 @@ const MEASURE = () => {
   }
 
   const icons = [...document.querySelectorAll("svg")]
-    .filter((svg) => svg.closest("[data-fq-site], .fq-site, main, header, footer"))
+    .filter((svg) =>
+      svg.closest("[data-fq-site], .fq-site, main, header, footer"),
+    )
     .map((svg) => {
       const use = svg.querySelector("use");
-      const href = use?.getAttribute("href") ?? use?.getAttribute("xlink:href") ?? null;
+      const href =
+        use?.getAttribute("href") ?? use?.getAttribute("xlink:href") ?? null;
       const symbol = href && href.includes("#") ? href.split("#").pop() : null;
       const declared = svg.getAttribute("data-icon-standalone");
       const labelled = Boolean(svg.getAttribute("aria-label"));
@@ -203,7 +220,10 @@ async function probe(url) {
       contentType: res.headers.get("content-type"),
     };
   } catch (error) {
-    log("warn", "assets.probe_failed", { url, message: String(error?.message ?? error) });
+    log("warn", "assets.probe_failed", {
+      url,
+      message: String(error?.message ?? error),
+    });
     return null;
   }
 }
@@ -245,11 +265,15 @@ async function measureRoute(browser, spec, width, locale, assets) {
       bytes,
     };
     requests.push(record);
-    if (req.resourceType() === "image" && bytes !== null) bytesBySrc.set(url, bytes);
+    if (req.resourceType() === "image" && bytes !== null)
+      bytesBySrc.set(url, bytes);
   });
 
   const url = `${BASE}${spec.path}${locale === "en" ? "" : `${spec.path.includes("?") ? "&" : "?"}lang=${locale}`}`;
-  const response = await page.goto(url, { waitUntil: "networkidle", timeout: 45_000 });
+  const response = await page.goto(url, {
+    waitUntil: "networkidle",
+    timeout: 45_000,
+  });
   const status = response?.status() ?? 0;
   if (status >= 400) throw new Error(`${url} responded HTTP ${status}`);
 
@@ -279,13 +303,21 @@ async function measureRoute(browser, spec, width, locale, assets) {
     ogImage: raw.og.ogImage,
     twitterImage: raw.og.twitterImage,
     ogImageAlt: raw.og.ogImageAlt,
-    probe: raw.og.ogImage && /^https?:\/\//.test(raw.og.ogImage) ? await probe(raw.og.ogImage) : null,
+    probe:
+      raw.og.ogImage && /^https?:\/\//.test(raw.og.ogImage)
+        ? await probe(raw.og.ogImage)
+        : null,
     intrinsic:
-      raw.og.ogImage && /\.png($|\?)/.test(raw.og.ogImage) ? await decodePngSize(raw.og.ogImage) : null,
+      raw.og.ogImage && /\.png($|\?)/.test(raw.og.ogImage)
+        ? await decodePngSize(raw.og.ogImage)
+        : null,
     fromRoot: false,
   };
 
-  const stills = raw.stills.map((s) => ({ ...s, bytes: bytesBySrc.get(s.currentSrc) ?? null }));
+  const stills = raw.stills.map((s) => ({
+    ...s,
+    bytes: bytesBySrc.get(s.currentSrc) ?? null,
+  }));
 
   await context.close();
   return {
@@ -322,7 +354,9 @@ async function auditRootHead(assets) {
       },
     ];
   } catch (error) {
-    log("warn", "assets.root_probe_failed", { message: String(error?.message ?? error) });
+    log("warn", "assets.root_probe_failed", {
+      message: String(error?.message ?? error),
+    });
     return [];
   }
   void assets;
@@ -332,13 +366,22 @@ async function main() {
   const assets = await import(`${ROOT}/src/lib/marketing-assets.ts`);
   const seo = await import(`${ROOT}/src/lib/marketing-seo.ts`);
 
-  const only = ONLY ? new Set(String(ONLY).split(",").map((s) => s.trim())) : null;
+  const only = ONLY
+    ? new Set(
+        String(ONLY)
+          .split(",")
+          .map((s) => s.trim()),
+      )
+    : null;
   const specs = seo.MARKETING_ROUTES.filter(
-    (r) => assets.ogCard(r.id) && (!only || only.has(r.id)) && !r.path.includes(":"),
+    (r) =>
+      assets.ogCard(r.id) && (!only || only.has(r.id)) && !r.path.includes(":"),
   ).map((r) => ({ id: r.id, path: r.path }));
 
   if (specs.length === 0) {
-    console.error(`asset gate FAILED: --only "${ONLY}" matched no route with a registered OG card.`);
+    console.error(
+      `asset gate FAILED: --only "${ONLY}" matched no route with a registered OG card.`,
+    );
     process.exit(2);
   }
 
@@ -346,14 +389,18 @@ async function main() {
 
   /* Inventory first: a missing file is one named finding, not 40 404s. */
   if (!SKIP_INVENTORY) {
-    const inventory = assets.auditAssetInventory((p) => existsSync(resolve(ROOT, `public${p}`)));
+    const inventory = assets.auditAssetInventory((p) =>
+      existsSync(resolve(ROOT, `public${p}`)),
+    );
     findings.push(...inventory);
     log("info", "assets.inventory", { findings: inventory.length });
   }
 
   const browser = await chromium.launch();
   const jobs = [];
-  for (const spec of specs) for (const width of WIDTHS) for (const locale of LOCALES) jobs.push({ spec, width, locale });
+  for (const spec of specs)
+    for (const width of WIDTHS)
+      for (const locale of LOCALES) jobs.push({ spec, width, locale });
 
   const measurements = [];
   let cursor = 0;
@@ -364,7 +411,13 @@ async function main() {
       let lastError = null;
       for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
         try {
-          const m = await measureRoute(browser, job.spec, job.width, job.locale, assets);
+          const m = await measureRoute(
+            browser,
+            job.spec,
+            job.width,
+            job.locale,
+            assets,
+          );
           measurements.push(m);
           log("debug", "assets.measured", {
             route: job.spec.id,
@@ -396,16 +449,25 @@ async function main() {
       }
     }
   };
-  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker),
+  );
   await browser.close();
 
-  for (const m of measurements) findings.push(...assets.auditAssetPage(m).findings);
+  for (const m of measurements)
+    findings.push(...assets.auditAssetPage(m).findings);
   findings.push(...(await auditRootHead(assets)));
 
   const deduped = assets
     .dedupeAssetFindings(findings)
     .filter((f) => !ALLOW.has(f.code))
-    .sort((a, b) => (a.severity === b.severity ? a.where.localeCompare(b.where) : a.severity === "error" ? -1 : 1));
+    .sort((a, b) =>
+      a.severity === b.severity
+        ? a.where.localeCompare(b.where)
+        : a.severity === "error"
+          ? -1
+          : 1,
+    );
   const counts = assets.countAssetsBySeverity(deduped);
 
   for (const f of deduped) console.log(assets.formatAssetFinding(f));
@@ -418,21 +480,41 @@ async function main() {
   if (JSON_OUT && typeof JSON_OUT === "string") {
     writeFileSync(
       JSON_OUT,
-      JSON.stringify({ base: BASE, widths: WIDTHS, locales: LOCALES, counts, findings: deduped }, null, 2),
+      JSON.stringify(
+        {
+          base: BASE,
+          widths: WIDTHS,
+          locales: LOCALES,
+          counts,
+          findings: deduped,
+        },
+        null,
+        2,
+      ),
     );
   }
 
   const blocking =
-    FAIL_ON === "warn" ? counts.error + counts.warn : FAIL_ON === "info" ? deduped.length : counts.error;
+    FAIL_ON === "warn"
+      ? counts.error + counts.warn
+      : FAIL_ON === "info"
+        ? deduped.length
+        : counts.error;
   if (blocking > 0) {
-    console.error(`\nasset gate FAILED — ${blocking} finding(s) at or above "${FAIL_ON}".`);
+    console.error(
+      `\nasset gate FAILED — ${blocking} finding(s) at or above "${FAIL_ON}".`,
+    );
     process.exit(1);
   }
-  console.log("asset gate passed — every §10.5 promise holds on every measured surface.");
+  console.log(
+    "asset gate passed — every §10.5 promise holds on every measured surface.",
+  );
 }
 
 main().catch((error) => {
-  log("error", "assets.harness_failed", { message: String(error?.message ?? error) });
+  log("error", "assets.harness_failed", {
+    message: String(error?.message ?? error),
+  });
   console.error(`asset gate harness failed: ${error?.stack ?? error}`);
   process.exit(2);
 });

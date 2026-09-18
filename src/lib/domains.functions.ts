@@ -28,7 +28,9 @@ export const domainsListFn = createServerFn({ method: "GET" })
 
 export const domainAddFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ hostname: z.string().trim().min(3).max(253) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ hostname: z.string().trim().min(3).max(253) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { addDomain } = await import("./domains.server");
     await addDomain(

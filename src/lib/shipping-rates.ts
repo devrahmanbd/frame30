@@ -62,13 +62,18 @@ export function normalizeDistrict(value: string | null | undefined): string {
 }
 
 /** Highest-priority enabled zone whose district list contains the city. */
-export function matchZone(zones: ZoneLike[], city: string | null): ZoneLike | null {
+export function matchZone(
+  zones: ZoneLike[],
+  city: string | null,
+): ZoneLike | null {
   const needle = normalizeDistrict(city);
   const enabled = [...zones]
     .filter((z) => z.enabled)
     .sort((a, b) => a.priority - b.priority || a.code.localeCompare(b.code));
   if (needle) {
-    const hit = enabled.find((z) => z.districts.some((d) => normalizeDistrict(d) === needle));
+    const hit = enabled.find((z) =>
+      z.districts.some((d) => normalizeDistrict(d) === needle),
+    );
     if (hit) return hit;
   }
   return enabled.find((z) => z.isDefault) ?? enabled[0] ?? null;
@@ -105,7 +110,10 @@ export function billableKilos(weightGrams: number): number {
 }
 
 /** COD handling fee, rounded up so the merchant is never short by a paisa. */
-export function codFee(codAmountMinorInt: number, feeBasisPoints: number): number {
+export function codFee(
+  codAmountMinorInt: number,
+  feeBasisPoints: number,
+): number {
   if (codAmountMinorInt <= 0 || feeBasisPoints <= 0) return 0;
   return Math.ceil((codAmountMinorInt * feeBasisPoints) / 10_000);
 }
@@ -123,7 +131,9 @@ export function computeQuote(
   input: QuoteInput,
 ): QuoteBreakdown {
   const zone = matchZone(zones, input.city);
-  const rule = zone ? matchRule(rules, zone.id, input.carrierCode, input.weightGrams) : null;
+  const rule = zone
+    ? matchRule(rules, zone.id, input.carrierCode, input.weightGrams)
+    : null;
 
   const base = rule ? rule.baseMinorInt : FALLBACK_RULE.baseMinorInt;
   const perKg = rule ? rule.perKgMinorInt : FALLBACK_RULE.perKgMinorInt;
@@ -169,7 +179,14 @@ export const DEFAULT_ZONES = [
     code: "dhaka_suburb",
     nameEn: "Dhaka suburb",
     nameBn: "ঢাকা শহরতলি",
-    districts: ["Gazipur", "Narayanganj", "Savar", "Keraniganj", "গাজীপুর", "নারায়ণগঞ্জ"],
+    districts: [
+      "Gazipur",
+      "Narayanganj",
+      "Savar",
+      "Keraniganj",
+      "গাজীপুর",
+      "নারায়ণগঞ্জ",
+    ],
     isDefault: false,
     priority: 20,
     base: 9000,

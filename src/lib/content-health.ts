@@ -40,7 +40,12 @@
  * Entities
  * ========================================================================== */
 
-export const CONTENT_ENTITY_TYPES = ["article", "page", "product", "collection"] as const;
+export const CONTENT_ENTITY_TYPES = [
+  "article",
+  "page",
+  "product",
+  "collection",
+] as const;
 export type ContentEntityType = (typeof CONTENT_ENTITY_TYPES)[number];
 
 /**
@@ -144,13 +149,29 @@ export type ExternalOutcome =
   | { kind: "transient"; status: number; retryAfterMs: number | null }
   | { kind: "network"; reason: string };
 
-export function classifyHttpStatus(status: number, location?: string | null, retryAfter?: string | null): ExternalOutcome {
+export function classifyHttpStatus(
+  status: number,
+  location?: string | null,
+  retryAfter?: string | null,
+): ExternalOutcome {
   if (status >= 200 && status < 300) return { kind: "ok", status };
-  if (status >= 300 && status < 400) return { kind: "redirect", status, location: location ?? null };
+  if (status >= 300 && status < 400)
+    return { kind: "redirect", status, location: location ?? null };
   // 401/403/405/429 are the classic "we are being profiled, not broken" codes.
-  if (status === 429) return { kind: "transient", status, retryAfterMs: parseRetryAfter(retryAfter ?? null) };
-  if (status === 401 || status === 403 || status === 405 || status === 999) return { kind: "blocked", status };
-  if (status >= 500) return { kind: "transient", status, retryAfterMs: parseRetryAfter(retryAfter ?? null) };
+  if (status === 429)
+    return {
+      kind: "transient",
+      status,
+      retryAfterMs: parseRetryAfter(retryAfter ?? null),
+    };
+  if (status === 401 || status === 403 || status === 405 || status === 999)
+    return { kind: "blocked", status };
+  if (status >= 500)
+    return {
+      kind: "transient",
+      status,
+      retryAfterMs: parseRetryAfter(retryAfter ?? null),
+    };
   return { kind: "dead", status };
 }
 
@@ -159,18 +180,26 @@ export function isRetryable(outcome: ExternalOutcome): boolean {
 }
 
 /** `Retry-After` is either delta-seconds or an HTTP date. Both are honoured. */
-export function parseRetryAfter(value: string | null, now = Date.now()): number | null {
+export function parseRetryAfter(
+  value: string | null,
+  now = Date.now(),
+): number | null {
   if (!value) return null;
   const trimmed = value.trim();
-  if (/^\d+$/.test(trimmed)) return Math.min(Number(trimmed) * 1000, CRAWL_POLICY.backoffCapMs);
+  if (/^\d+$/.test(trimmed))
+    return Math.min(Number(trimmed) * 1000, CRAWL_POLICY.backoffCapMs);
   const at = Date.parse(trimmed);
   if (Number.isNaN(at)) return null;
   return Math.max(0, Math.min(at - now, CRAWL_POLICY.backoffCapMs));
 }
 
 /** Deterministic exponential backoff; a server-supplied wait always wins. */
-export function backoffMs(attempt: number, retryAfterMs: number | null = null): number {
-  if (retryAfterMs !== null) return Math.min(retryAfterMs, CRAWL_POLICY.backoffCapMs);
+export function backoffMs(
+  attempt: number,
+  retryAfterMs: number | null = null,
+): number {
+  if (retryAfterMs !== null)
+    return Math.min(retryAfterMs, CRAWL_POLICY.backoffCapMs);
   const raw = CRAWL_POLICY.backoffBaseMs * 2 ** Math.max(0, attempt - 1);
   return Math.min(raw, CRAWL_POLICY.backoffCapMs);
 }
@@ -179,7 +208,8 @@ export function backoffMs(attempt: number, retryAfterMs: number | null = null): 
  * Link extraction
  * ========================================================================== */
 
-export type LinkKind = "internal" | "external" | "anchor" | "mailto" | "tel" | "invalid";
+export type LinkKind =
+  "internal" | "external" | "anchor" | "mailto" | "tel" | "invalid";
 
 export type ExtractedLink = {
   href: string;
@@ -218,7 +248,10 @@ function stripTags(html: string): string {
  * sandboxed `<script>` blocks are skipped, because neither is a crawlable
  * link.
  */
-export function extractLinks(markup: string, limit: number = CRAWL_POLICY.maxLinksPerNode): ExtractedLink[] {
+export function extractLinks(
+  markup: string,
+  limit: number = CRAWL_POLICY.maxLinksPerNode,
+): ExtractedLink[] {
   if (!markup) return [];
   const cleaned = markup
     .replace(/<!--[\s\S]*?-->/g, " ")
@@ -249,7 +282,11 @@ export function extractLinks(markup: string, limit: number = CRAWL_POLICY.maxLin
   ANCHOR_RE.lastIndex = 0;
   for (let m = ANCHOR_RE.exec(cleaned); m; m = ANCHOR_RE.exec(cleaned)) {
     const attrs = m[1] ?? "";
-    push(attr(attrs.match(HREF_RE)), stripTags(m[2] ?? ""), attr(attrs.match(REL_RE)));
+    push(
+      attr(attrs.match(HREF_RE)),
+      stripTags(m[2] ?? ""),
+      attr(attrs.match(REL_RE)),
+    );
     if (out.length >= limit) return out;
   }
 
@@ -267,16 +304,21 @@ export function extractLinks(markup: string, limit: number = CRAWL_POLICY.maxLin
  * because that is how a browser resolves them; `javascript:` and anything
  * unparseable is `invalid` and reported rather than silently dropped.
  */
-export function classifyHref(rawHref: string, siteOrigin?: string | null): { kind: LinkKind; path: string | null } {
+export function classifyHref(
+  rawHref: string,
+  siteOrigin?: string | null,
+): { kind: LinkKind; path: string | null } {
   const href = rawHref.trim();
   if (!href) return { kind: "invalid", path: null };
   if (href.startsWith("#")) return { kind: "anchor", path: null };
   if (/^mailto:/i.test(href)) return { kind: "mailto", path: null };
   if (/^tel:/i.test(href)) return { kind: "tel", path: null };
-  if (/^(javascript|data|vbscript):/i.test(href)) return { kind: "invalid", path: null };
+  if (/^(javascript|data|vbscript):/i.test(href))
+    return { kind: "invalid", path: null };
   if (href.startsWith("//")) return { kind: "external", path: null };
 
-  if (href.startsWith("/")) return { kind: "internal", path: normalisePath(href) };
+  if (href.startsWith("/"))
+    return { kind: "internal", path: normalisePath(href) };
 
   if (/^https?:\/\//i.test(href)) {
     if (!siteOrigin) return { kind: "external", path: null };
@@ -284,7 +326,10 @@ export function classifyHref(rawHref: string, siteOrigin?: string | null): { kin
       const url = new URL(href);
       const origin = new URL(siteOrigin);
       if (url.host.toLowerCase() === origin.host.toLowerCase()) {
-        return { kind: "internal", path: normalisePath(`${url.pathname}${url.search}`) };
+        return {
+          kind: "internal",
+          path: normalisePath(`${url.pathname}${url.search}`),
+        };
       }
       return { kind: "external", path: null };
     } catch {
@@ -392,16 +437,34 @@ export function resolveInternal(
 
     const rule = redirects.get(current);
     if (!rule) {
-      return { status: "missing", finalPath: current, hops, entity: null, gone: false };
+      return {
+        status: "missing",
+        finalPath: current,
+        hops,
+        entity: null,
+        gone: false,
+      };
     }
     if (rule.status === 410 || !rule.to) {
-      return { status: "missing", finalPath: current, hops, entity: null, gone: true };
+      return {
+        status: "missing",
+        finalPath: current,
+        hops,
+        entity: null,
+        gone: true,
+      };
     }
 
     const next = pathKey(rule.to);
     hops += 1;
     if (visited.has(next) || hops > MAX_REDIRECT_HOPS) {
-      return { status: "loop", finalPath: next, hops, entity: null, gone: false };
+      return {
+        status: "loop",
+        finalPath: next,
+        hops,
+        entity: null,
+        gone: false,
+      };
     }
     visited.add(next);
     current = next;
@@ -467,13 +530,25 @@ export const FINDING_LABELS: Record<FindingCode, { en: string; bn: string }> = {
   "link.loop": { en: "Redirect loop", bn: "রিডাইরেক্ট লুপ" },
   "link.invalid": { en: "Unusable link", bn: "অকার্যকর লিংক" },
   "link.external_dead": { en: "External link is dead", bn: "বাইরের লিংক মৃত" },
-  "link.external_blocked": { en: "External site refused the check", bn: "বাইরের সাইট চেক করতে দেয়নি" },
+  "link.external_blocked": {
+    en: "External site refused the check",
+    bn: "বাইরের সাইট চেক করতে দেয়নি",
+  },
   "page.orphan": { en: "Orphan page", bn: "অরফান পেজ" },
-  "keyword.cannibalisation": { en: "Two pages target one keyword", bn: "একই কীওয়ার্ডে দুটি পেজ" },
+  "keyword.cannibalisation": {
+    en: "Two pages target one keyword",
+    bn: "একই কীওয়ার্ডে দুটি পেজ",
+  },
   "content.thin": { en: "Thin content", bn: "কম শব্দের কনটেন্ট" },
   "content.stale": { en: "Stale content", bn: "পুরনো কনটেন্ট" },
-  "schema.missing_field": { en: "Schema is missing a required field", bn: "স্কিমায় আবশ্যক ফিল্ড নেই" },
-  "schema.duplicate_graph": { en: "Duplicate JSON-LD graph", bn: "একাধিক JSON-LD গ্রাফ" },
+  "schema.missing_field": {
+    en: "Schema is missing a required field",
+    bn: "স্কিমায় আবশ্যক ফিল্ড নেই",
+  },
+  "schema.duplicate_graph": {
+    en: "Duplicate JSON-LD graph",
+    bn: "একাধিক JSON-LD গ্রাফ",
+  },
 };
 
 export type Finding = {
@@ -497,7 +572,10 @@ export type Finding = {
  * anything that legitimately changes between scans — no timestamps, no
  * counts — or an "ignore" would silently reopen on the next run.
  */
-export function fingerprintOf(code: FindingCode, parts: (string | null | undefined)[]): string {
+export function fingerprintOf(
+  code: FindingCode,
+  parts: (string | null | undefined)[],
+): string {
   const body = parts.map((p) => (p ?? "").toLowerCase().trim()).join("|");
   return `${code}::${body}`;
 }
@@ -519,7 +597,10 @@ function finding(
     entityTitle: node?.title ?? "",
     entityPath: node?.path ?? "",
     target,
-    fingerprint: fingerprintOf(code, fingerprintParts ?? [node?.type ?? "site", node?.id ?? "", target]),
+    fingerprint: fingerprintOf(
+      code,
+      fingerprintParts ?? [node?.type ?? "site", node?.id ?? "", target],
+    ),
     message,
     messageBn,
     detail,
@@ -558,7 +639,11 @@ export type GraphResult = {
 export function buildLinkGraph(
   nodes: ContentNode[],
   redirects: RedirectRow[],
-  opts: { siteOrigin?: string | null; wellKnown?: Set<string>; maxEdges?: number } = {},
+  opts: {
+    siteOrigin?: string | null;
+    wellKnown?: Set<string>;
+    maxEdges?: number;
+  } = {},
 ): GraphResult {
   const index = indexNodes(nodes);
   const redirectIndex = indexRedirects(redirects);
@@ -613,7 +698,10 @@ export function buildLinkGraph(
         const host = hostOf(link.href, opts.siteOrigin ?? null);
         if (host) hostCounts.set(host, (hostCounts.get(host) ?? 0) + 1);
         const normalised = link.href.trim();
-        if (!externalSeen.has(normalised) && externalTargets.length < CRAWL_POLICY.maxExternalChecksPerRun) {
+        if (
+          !externalSeen.has(normalised) &&
+          externalTargets.length < CRAWL_POLICY.maxExternalChecksPerRun
+        ) {
           externalSeen.add(normalised);
           externalTargets.push(normalised);
         }
@@ -626,7 +714,12 @@ export function buildLinkGraph(
         continue;
       }
 
-      const resolved = resolveInternal(link.path, index, redirectIndex, wellKnown);
+      const resolved = resolveInternal(
+        link.path,
+        index,
+        redirectIndex,
+        wellKnown,
+      );
       edges.push({
         ...base,
         targetPath: resolved.finalPath,
@@ -687,7 +780,12 @@ export function buildLinkGraph(
 
 function hostOf(href: string, siteOrigin: string | null): string | null {
   try {
-    const url = new URL(href, href.startsWith("//") ? "https:" : (siteOrigin ?? "https://example.invalid"));
+    const url = new URL(
+      href,
+      href.startsWith("//")
+        ? "https:"
+        : (siteOrigin ?? "https://example.invalid"),
+    );
     return url.host.toLowerCase() || null;
   } catch {
     return null;
@@ -708,11 +806,15 @@ function truncate(value: string, max: number) {
  * pass no signal), the home page is never an orphan, and drafts are skipped
  * because they are not supposed to be reachable yet.
  */
-export function orphanFindings(nodes: ContentNode[], edges: GraphEdge[]): Finding[] {
+export function orphanFindings(
+  nodes: ContentNode[],
+  edges: GraphEdge[],
+): Finding[] {
   const inbound = new Map<string, number>();
   for (const edge of edges) {
     if (edge.nofollow) continue;
-    if (!edge.targetId || edge.status === "missing" || edge.status === "loop") continue;
+    if (!edge.targetId || edge.status === "missing" || edge.status === "loop")
+      continue;
     if (edge.targetId === edge.sourceId) continue;
     inbound.set(edge.targetId, (inbound.get(edge.targetId) ?? 0) + 1);
   }
@@ -766,7 +868,9 @@ export function cannibalisationFindings(nodes: ContentNode[]): Finding[] {
   }
 
   const findings: Finding[] = [];
-  for (const [keyword, members] of [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+  for (const [keyword, members] of [...groups.entries()].sort((a, b) =>
+    a[0].localeCompare(b[0]),
+  )) {
     if (members.length < 2) continue;
     const ordered = [...members].sort((a, b) => a.path.localeCompare(b.path));
     const names = ordered.map((n) => `"${n.title}" (${n.path})`).join(", ");
@@ -779,7 +883,12 @@ export function cannibalisationFindings(nodes: ContentNode[]): Finding[] {
         `"${keyword}" কীওয়ার্ডে ${ordered.length}টি পেজ আছে: ${names}। একটি রাখুন, বাকিগুলো সেটির দিকে লিংক করুন।`,
         {
           keyword,
-          entities: ordered.map((n) => ({ type: n.type, id: n.id, title: n.title, path: n.path })),
+          entities: ordered.map((n) => ({
+            type: n.type,
+            id: n.id,
+            title: n.title,
+            path: n.path,
+          })),
         },
         [keyword],
       ),
@@ -819,7 +928,11 @@ export function daysBetween(fromIso: string, now: Date): number {
   return Math.floor((now.getTime() - then) / 86_400_000);
 }
 
-export function staleContentFindings(nodes: ContentNode[], now: Date, afterDays = STALE_AFTER_DAYS): Finding[] {
+export function staleContentFindings(
+  nodes: ContentNode[],
+  now: Date,
+  afterDays = STALE_AFTER_DAYS,
+): Finding[] {
   const findings: Finding[] = [];
   for (const node of nodes) {
     if (!node.publishedAt || !node.indexable) continue;
@@ -863,7 +976,10 @@ export type SchemaType = (typeof SCHEMA_TYPES)[number];
  * `field` is the JSON-LD property; `flag` is the `ContentNode` fact that proves
  * the storefront can actually emit it.
  */
-export const SCHEMA_REQUIREMENTS: Record<SchemaType, { field: string; flag: keyof ContentNode }[]> = {
+export const SCHEMA_REQUIREMENTS: Record<
+  SchemaType,
+  { field: string; flag: keyof ContentNode }[]
+> = {
   Article: [
     { field: "headline", flag: "title" },
     { field: "image", flag: "hasImage" },
@@ -919,7 +1035,12 @@ export function schemaReport(node: ContentNode): SchemaReportRow[] {
     const missing = SCHEMA_REQUIREMENTS[type]
       .filter(({ flag }) => !hasFact(node, flag))
       .map(({ field }) => field);
-    return { type, emitted: true, missing, duplicate: (counts.get(type) ?? 0) > 1 };
+    return {
+      type,
+      emitted: true,
+      missing,
+      duplicate: (counts.get(type) ?? 0) > 1,
+    };
   });
 }
 
@@ -972,8 +1093,29 @@ export function schemaFindings(nodes: ContentNode[]): Finding[] {
  * ========================================================================== */
 
 const STOPWORDS = new Set([
-  "the", "a", "an", "and", "or", "of", "for", "to", "in", "on", "with", "your",
-  "our", "this", "that", "is", "are", "be", "by", "from", "at", "it", "as",
+  "the",
+  "a",
+  "an",
+  "and",
+  "or",
+  "of",
+  "for",
+  "to",
+  "in",
+  "on",
+  "with",
+  "your",
+  "our",
+  "this",
+  "that",
+  "is",
+  "are",
+  "be",
+  "by",
+  "from",
+  "at",
+  "it",
+  "as",
 ]);
 
 export function tokenise(value: string): string[] {
@@ -1029,7 +1171,9 @@ export function suggestInternalLinks(
   const plainBody = stripTags(draft.body || "");
   const haystack = normaliseKeyword(`${draft.title} ${plainBody}`);
   const draftTerms = new Set(tokenise(`${draft.title} ${plainBody}`));
-  const draftTags = new Set((draft.tags ?? []).map(normaliseKeyword).filter(Boolean));
+  const draftTags = new Set(
+    (draft.tags ?? []).map(normaliseKeyword).filter(Boolean),
+  );
 
   const linked = new Set(
     extractLinks(draft.body || "")
@@ -1062,18 +1206,22 @@ export function suggestInternalLinks(
       }
     }
 
-    const titleTerms = new Set(tokenise(`${candidate.title} ${candidate.titleEn ?? ""}`));
+    const titleTerms = new Set(
+      tokenise(`${candidate.title} ${candidate.titleEn ?? ""}`),
+    );
     let shared = 0;
     for (const term of titleTerms) if (draftTerms.has(term)) shared += 1;
     if (shared) {
       score += Math.min(shared * 12, 36);
       if (!matchedPhrase) {
-        matchedPhrase = [...titleTerms].filter((t) => draftTerms.has(t)).sort()[0] ?? "";
+        matchedPhrase =
+          [...titleTerms].filter((t) => draftTerms.has(t)).sort()[0] ?? "";
       }
     }
 
     let tagHits = 0;
-    for (const tag of candidate.tags) if (draftTags.has(normaliseKeyword(tag))) tagHits += 1;
+    for (const tag of candidate.tags)
+      if (draftTags.has(normaliseKeyword(tag))) tagHits += 1;
     if (tagHits) {
       score += Math.min(tagHits * 10, 20);
       if (!matchedPhrase) {
@@ -1101,7 +1249,9 @@ export function suggestInternalLinks(
 
   // Deterministic order: score desc, then path asc. Never insertion order —
   // the database returns rows in whatever order it likes.
-  return scored.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path)).slice(0, limit);
+  return scored
+    .sort((a, b) => b.score - a.score || a.path.localeCompare(b.path))
+    .slice(0, limit);
 }
 
 function containsPhrase(haystack: string, phrase: string): boolean {
@@ -1136,7 +1286,12 @@ function byFingerprint(a: Finding, b: Finding) {
 export function analyseContentHealth(
   nodes: ContentNode[],
   redirects: RedirectRow[],
-  opts: { now?: Date; siteOrigin?: string | null; wellKnown?: Set<string>; truncated?: boolean } = {},
+  opts: {
+    now?: Date;
+    siteOrigin?: string | null;
+    wellKnown?: Set<string>;
+    truncated?: boolean;
+  } = {},
 ): ContentHealthReport {
   const now = opts.now ?? new Date();
   const graph = buildLinkGraph(nodes, redirects, {
@@ -1166,7 +1321,9 @@ export function analyseContentHealth(
 }
 
 export function countByCode(findings: Finding[]): Record<FindingCode, number> {
-  const counts = Object.fromEntries(FINDING_CODES.map((code) => [code, 0])) as Record<FindingCode, number>;
+  const counts = Object.fromEntries(
+    FINDING_CODES.map((code) => [code, 0]),
+  ) as Record<FindingCode, number>;
   for (const f of findings) counts[f.code] += 1;
   return counts;
 }
@@ -1177,8 +1334,12 @@ export function countBySeverity(findings: Finding[]): Record<Severity, number> {
   return counts;
 }
 
-export function countByType(nodes: ContentNode[]): Record<ContentEntityType, number> {
-  const counts = Object.fromEntries(CONTENT_ENTITY_TYPES.map((t) => [t, 0])) as Record<ContentEntityType, number>;
+export function countByType(
+  nodes: ContentNode[],
+): Record<ContentEntityType, number> {
+  const counts = Object.fromEntries(
+    CONTENT_ENTITY_TYPES.map((t) => [t, 0]),
+  ) as Record<ContentEntityType, number>;
   for (const node of nodes) counts[node.type] += 1;
   return counts;
 }
@@ -1188,11 +1349,15 @@ export function countByType(nodes: ContentNode[]): Record<ContentEntityType, num
  * notices barely at all, and the score is relative to how much content exists
  * so a 5-page shop is not punished the same as a 500-page one.
  */
-export function healthScore(report: Pick<ContentHealthReport, "bySeverity" | "scanned">): number {
+export function healthScore(
+  report: Pick<ContentHealthReport, "bySeverity" | "scanned">,
+): number {
   const total = Object.values(report.scanned).reduce((a, b) => a + b, 0);
   if (total === 0) return 100;
   const weighted =
-    report.bySeverity.error * 5 + report.bySeverity.warning * 2 + report.bySeverity.notice * 0.5;
+    report.bySeverity.error * 5 +
+    report.bySeverity.warning * 2 +
+    report.bySeverity.notice * 0.5;
   const penalty = Math.min(100, (weighted / total) * 20);
   return Math.max(0, Math.round(100 - penalty));
 }

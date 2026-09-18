@@ -13,7 +13,11 @@
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { MOTION_TOKENS, marqueeDurationMs } from "@/lib/motion-policy";
-import { onTabVisibility, useInView, useMotionIntent } from "@/lib/motion-runtime";
+import {
+  onTabVisibility,
+  useInView,
+  useMotionIntent,
+} from "@/lib/motion-runtime";
 
 export type MarqueeProps = {
   children: ReactNode;
@@ -24,12 +28,24 @@ export type MarqueeProps = {
   label: string;
 };
 
-export function Marquee({ children, speed = MOTION_TOKENS.marquee.speedPxPerSec as number, reverse = false, className, label }: MarqueeProps) {
+export function Marquee({
+  children,
+  speed = MOTION_TOKENS.marquee.speedPxPerSec as number,
+  reverse = false,
+  className,
+  label,
+}: MarqueeProps) {
   const intent = useMotionIntent();
   const animated = intent === "full";
   const trackRef = useRef<HTMLDivElement | null>(null);
-  const { ref: viewportRef, inView } = useInView<HTMLDivElement>({ once: false, enabled: animated, threshold: 0 });
-  const [durationMs, setDurationMs] = useState<number>(MOTION_TOKENS.marquee.minMs);
+  const { ref: viewportRef, inView } = useInView<HTMLDivElement>({
+    once: false,
+    enabled: animated,
+    threshold: 0,
+  });
+  const [durationMs, setDurationMs] = useState<number>(
+    MOTION_TOKENS.marquee.minMs,
+  );
   const [paused, setPaused] = useState(false);
   const [tabVisible, setTabVisible] = useState(true);
 
@@ -39,11 +55,17 @@ export function Marquee({ children, speed = MOTION_TOKENS.marquee.speedPxPerSec 
     if (!animated) return;
     const node = trackRef.current;
     if (!node) return;
-    const measure = () => setDurationMs(marqueeDurationMs(node.scrollWidth / 2, speed));
+    const measure = () =>
+      setDurationMs(marqueeDurationMs(node.scrollWidth / 2, speed));
     measure();
-    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(measure) : null;
+    const ro =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measure)
+        : null;
     ro?.observe(node);
-    void (document as Document & { fonts?: FontFaceSet }).fonts?.ready.then(measure).catch(() => {});
+    void (document as Document & { fonts?: FontFaceSet }).fonts?.ready
+      .then(measure)
+      .catch(() => {});
     return () => ro?.disconnect();
   }, [animated, speed, children]);
 

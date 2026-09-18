@@ -29,9 +29,7 @@
     "Bash\\(npm\\s+publish\\b"
   ],
 
-  "approvedServers": [
-    "claude-flow"
-  ],
+  "approvedServers": ["claude-flow"],
 
   "references": {
     "adr": "v3/docs/adr/ADR-150-metaharness-integration-surfaces.md",

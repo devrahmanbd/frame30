@@ -16,13 +16,13 @@ Decrypt AES-256-GCM ciphertext back to plaintext.
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `aad` | `string` | no | Additional authenticated data (must match what was used during encryption). |
-| `encoding` | `string` | no | Encoding for key, iv, and ciphertext. |
-| `iv` | `string` | yes | 12-byte initialization vector/nonce (same value used during encryption). |
-| `key` | `string` | yes | 32-byte AES encryption key (same encoding used during encryption). |
-| `value` | `string` | yes | Ciphertext to decrypt (hex or base64 encoded). |
+| Parameter  | Type     | Required | Description                                                                 |
+| ---------- | -------- | -------- | --------------------------------------------------------------------------- |
+| `aad`      | `string` | no       | Additional authenticated data (must match what was used during encryption). |
+| `encoding` | `string` | no       | Encoding for key, iv, and ciphertext.                                       |
+| `iv`       | `string` | yes      | 12-byte initialization vector/nonce (same value used during encryption).    |
+| `key`      | `string` | yes      | 32-byte AES encryption key (same encoding used during encryption).          |
+| `value`    | `string` | yes      | Ciphertext to decrypt (hex or base64 encoded).                              |
 
 Sample parameters:
 
@@ -48,10 +48,7 @@ Generated JSON parameter schema:
   "encoding": {
     "default": "hex",
     "description": "Encoding for key, iv, and ciphertext.",
-    "enum": [
-      "hex",
-      "base64"
-    ],
+    "enum": ["hex", "base64"],
     "required": false,
     "type": "string"
   },
@@ -83,13 +80,13 @@ Encrypt plaintext using AES-256-GCM authenticated encryption.
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `aad` | `string` | no | Additional authenticated data (verified during decryption but not encrypted). |
-| `encoding` | `string` | no | Encoding for key, iv, and output ciphertext. |
-| `iv` | `string` | yes | 12-byte initialization vector/nonce, encoded as hex or base64. |
-| `key` | `string` | yes | 32-byte AES encryption key, encoded as hex or base64. |
-| `value` | `string` | yes | Plaintext to encrypt. |
+| Parameter  | Type     | Required | Description                                                                   |
+| ---------- | -------- | -------- | ----------------------------------------------------------------------------- |
+| `aad`      | `string` | no       | Additional authenticated data (verified during decryption but not encrypted). |
+| `encoding` | `string` | no       | Encoding for key, iv, and output ciphertext.                                  |
+| `iv`       | `string` | yes      | 12-byte initialization vector/nonce, encoded as hex or base64.                |
+| `key`      | `string` | yes      | 32-byte AES encryption key, encoded as hex or base64.                         |
+| `value`    | `string` | yes      | Plaintext to encrypt.                                                         |
 
 Sample parameters:
 
@@ -115,10 +112,7 @@ Generated JSON parameter schema:
   "encoding": {
     "default": "hex",
     "description": "Encoding for key, iv, and output ciphertext.",
-    "enum": [
-      "hex",
-      "base64"
-    ],
+    "enum": ["hex", "base64"],
     "required": false,
     "type": "string"
   },
@@ -150,11 +144,11 @@ Generate a cryptographically secure random value in ASCII, BASE64, HEX, or UUID 
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `generation_type` | `string` | yes | Type of value to generate: ASCII, BASE64, HEX, or UUID. |
-| `length` | `integer` | no | Length of the generated value (ignored for UUID). Default: 32. |
-| `property_name` | `string` | yes | Name of the property to write the output to. |
+| Parameter         | Type      | Required | Description                                                    |
+| ----------------- | --------- | -------- | -------------------------------------------------------------- |
+| `generation_type` | `string`  | yes      | Type of value to generate: ASCII, BASE64, HEX, or UUID.        |
+| `length`          | `integer` | no       | Length of the generated value (ignored for UUID). Default: 32. |
+| `property_name`   | `string`  | yes      | Name of the property to write the output to.                   |
 
 Sample parameters:
 
@@ -172,12 +166,7 @@ Generated JSON parameter schema:
 {
   "generation_type": {
     "description": "Type of value to generate: ASCII, BASE64, HEX, or UUID.",
-    "enum": [
-      "ASCII",
-      "BASE64",
-      "HEX",
-      "UUID"
-    ],
+    "enum": ["ASCII", "BASE64", "HEX", "UUID"],
     "required": true,
     "type": "string"
   },
@@ -207,15 +196,15 @@ Compute a cryptographic hash of text or binary data using MD5, SHA, or SHA3 algo
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `binary_file` | `boolean` | no | Set to true to hash binary data from binary_value_base64 instead of text. |
-| `binary_property_name` | `string` | no | Metadata label for the binary input. |
-| `binary_value_base64` | `string` | no | Base64-encoded binary data to hash. Required when binary_file is true. |
-| `encoding` | `string` | no | Output encoding format. |
-| `hash_algorithm` | `string` | yes | Hash algorithm to use. |
-| `property_name` | `string` | no | Output property name. Defaults to hash_result. |
-| `value` | `string` | no | Plain text input to hash. Required unless binary_file is true. |
+| Parameter              | Type      | Required | Description                                                               |
+| ---------------------- | --------- | -------- | ------------------------------------------------------------------------- |
+| `binary_file`          | `boolean` | no       | Set to true to hash binary data from binary_value_base64 instead of text. |
+| `binary_property_name` | `string`  | no       | Metadata label for the binary input.                                      |
+| `binary_value_base64`  | `string`  | no       | Base64-encoded binary data to hash. Required when binary_file is true.    |
+| `encoding`             | `string`  | no       | Output encoding format.                                                   |
+| `hash_algorithm`       | `string`  | yes      | Hash algorithm to use.                                                    |
+| `property_name`        | `string`  | no       | Output property name. Defaults to hash_result.                            |
+| `value`                | `string`  | no       | Plain text input to hash. Required unless binary_file is true.            |
 
 Sample parameters:
 
@@ -254,10 +243,7 @@ Generated JSON parameter schema:
   "encoding": {
     "default": "hex",
     "description": "Output encoding format.",
-    "enum": [
-      "hex",
-      "base64"
-    ],
+    "enum": ["hex", "base64"],
     "required": false,
     "type": "string"
   },
@@ -298,15 +284,15 @@ Compute a keyed-hash message authentication code (HMAC) using a secret key.
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `binary_file` | `boolean` | no | Set to true to use binary data from binary_value_base64. |
-| `binary_value_base64` | `string` | no | Base64-encoded binary data. Required when binary_file is true. |
-| `encoding` | `string` | no | Output encoding format. |
-| `hash_algorithm` | `string` | yes | Hash algorithm to use for HMAC. |
-| `property_name` | `string` | no | Output property name. Defaults to hmac_result. |
-| `secret` | `string` | yes | Secret key for HMAC computation. |
-| `value` | `string` | no | Plain text input. Required unless binary_file is true. |
+| Parameter             | Type      | Required | Description                                                    |
+| --------------------- | --------- | -------- | -------------------------------------------------------------- |
+| `binary_file`         | `boolean` | no       | Set to true to use binary data from binary_value_base64.       |
+| `binary_value_base64` | `string`  | no       | Base64-encoded binary data. Required when binary_file is true. |
+| `encoding`            | `string`  | no       | Output encoding format.                                        |
+| `hash_algorithm`      | `string`  | yes      | Hash algorithm to use for HMAC.                                |
+| `property_name`       | `string`  | no       | Output property name. Defaults to hmac_result.                 |
+| `secret`              | `string`  | yes      | Secret key for HMAC computation.                               |
+| `value`               | `string`  | no       | Plain text input. Required unless binary_file is true.         |
 
 Sample parameters:
 
@@ -340,10 +326,7 @@ Generated JSON parameter schema:
   "encoding": {
     "default": "hex",
     "description": "Output encoding format.",
-    "enum": [
-      "hex",
-      "base64"
-    ],
+    "enum": ["hex", "base64"],
     "required": false,
     "type": "string"
   },
@@ -389,13 +372,13 @@ Create a digital signature using RSA or ECDSA with a PEM-encoded private key.
 
 Parameters:
 
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `algorithm` | `string` | yes | Signing algorithm to use. |
-| `encoding` | `string` | no | Output encoding format. |
-| `private_key` | `string` | yes | PEM-encoded private key for signing. |
-| `property_name` | `string` | no | Output property name. Defaults to signature. |
-| `value` | `string` | yes | The text data to sign. |
+| Parameter       | Type     | Required | Description                                  |
+| --------------- | -------- | -------- | -------------------------------------------- |
+| `algorithm`     | `string` | yes      | Signing algorithm to use.                    |
+| `encoding`      | `string` | no       | Output encoding format.                      |
+| `private_key`   | `string` | yes      | PEM-encoded private key for signing.         |
+| `property_name` | `string` | no       | Output property name. Defaults to signature. |
+| `value`         | `string` | yes      | The text data to sign.                       |
 
 Sample parameters:
 
@@ -415,23 +398,14 @@ Generated JSON parameter schema:
 {
   "algorithm": {
     "description": "Signing algorithm to use.",
-    "enum": [
-      "RS256",
-      "RS512",
-      "ES256",
-      "ES384",
-      "ES512"
-    ],
+    "enum": ["RS256", "RS512", "ES256", "ES384", "ES512"],
     "required": true,
     "type": "string"
   },
   "encoding": {
     "default": "hex",
     "description": "Output encoding format.",
-    "enum": [
-      "hex",
-      "base64"
-    ],
+    "enum": ["hex", "base64"],
     "required": false,
     "type": "string"
   },

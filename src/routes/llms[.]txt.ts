@@ -54,7 +54,8 @@ export const Route = createFileRoute("/llms.txt")({
               .map((row) => ({
                 slug: row.slug as string,
                 title: row.title as string,
-                updatedAt: (row.updated_at ?? row.published_at ?? null) as string | null,
+                updatedAt: (row.updated_at ?? row.published_at ?? null) as
+                  string | null,
               }));
           } catch (error) {
             log("warn", "llms_txt.articles_failed", {
@@ -64,14 +65,23 @@ export const Route = createFileRoute("/llms.txt")({
           }
         })();
 
-        const { PAYMENT_METHOD_KEYS, PAYMENT_METHOD_CATALOG } = await import("@/lib/payment-rails");
-        const paymentMethods = PAYMENT_METHOD_KEYS.map((key) => PAYMENT_METHOD_CATALOG[key].label);
+        const { PAYMENT_METHOD_KEYS, PAYMENT_METHOD_CATALOG } =
+          await import("@/lib/payment-rails");
+        const paymentMethods = PAYMENT_METHOD_KEYS.map(
+          (key) => PAYMENT_METHOD_CATALOG[key].label,
+        );
 
-        const body = renderMarketingLlmsTxt({ origin, plans, articles, paymentMethods });
+        const body = renderMarketingLlmsTxt({
+          origin,
+          plans,
+          articles,
+          paymentMethods,
+        });
         return new Response(body, {
           headers: {
             "content-type": "text/plain; charset=utf-8",
-            "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+            "cache-control":
+              "public, max-age=3600, stale-while-revalidate=86400",
           },
         });
       },

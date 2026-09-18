@@ -1,1 +1,154 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "label": "client.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L1"}, {"id": "supabase_client_server_isnewsupabaseapikey", "label": "isNewSupabaseApiKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L8"}, {"id": "supabase_client_server_createsupabasefetch", "label": "createSupabaseFetch()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L12"}, {"id": "supabase_client_server_createsupabaseadminclient", "label": "createSupabaseAdminClient()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L32"}, {"id": "supabase_client_server_supabaseadmin", "label": "supabaseAdmin", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L64"}], "edges": [{"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_types_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_client_server_isnewsupabaseapikey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_client_server_createsupabasefetch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_client_server_createsupabaseadminclient", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts", "target": "supabase_client_server_supabaseadmin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L64", "weight": 1.0}, {"source": "supabase_client_server_createsupabaseadminclient", "target": "supabase_client_server_createsupabasefetch", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L48", "weight": 1.0}], "raw_calls": [{"caller_nid": "supabase_client_server_isnewsupabaseapikey", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L9"}, {"caller_nid": "supabase_client_server_isnewsupabaseapikey", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L9"}, {"caller_nid": "supabase_client_server_createsupabaseadminclient", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L41"}, {"caller_nid": "supabase_client_server_createsupabaseadminclient", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L42"}, {"caller_nid": "supabase_client_server_createsupabaseadminclient", "callee": "createClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts", "source_location": "L46"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "label": "client.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "supabase_client_server_isnewsupabaseapikey",
+      "label": "isNewSupabaseApiKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "supabase_client_server_createsupabasefetch",
+      "label": "createSupabaseFetch()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "supabase_client_server_createsupabaseadminclient",
+      "label": "createSupabaseAdminClient()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "supabase_client_server_supabaseadmin",
+      "label": "supabaseAdmin",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L64"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_types_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_client_server_isnewsupabaseapikey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_client_server_createsupabasefetch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_client_server_createsupabaseadminclient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_integrations_supabase_client_server_ts",
+      "target": "supabase_client_server_supabaseadmin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "supabase_client_server_createsupabaseadminclient",
+      "target": "supabase_client_server_createsupabasefetch",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "supabase_client_server_isnewsupabaseapikey",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "supabase_client_server_isnewsupabaseapikey",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L9"
+    },
+    {
+      "caller_nid": "supabase_client_server_createsupabaseadminclient",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "supabase_client_server_createsupabaseadminclient",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "supabase_client_server_createsupabaseadminclient",
+      "callee": "createClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/integrations/supabase/client.server.ts",
+      "source_location": "L46"
+    }
+  ]
+}

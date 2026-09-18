@@ -1,1 +1,60 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_bn_tsx", "label": "Bn.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L1"}, {"id": "public_bn_bn", "label": "Bn()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L10"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_public_bn_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bn_tsx", "target": "users_rahman_documents_frame30_src_lib_public_locale_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bn_tsx", "target": "lib_public_locale_public_bangla_enabled", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bn_tsx", "target": "public_bn_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx", "source_location": "L10", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_bn_tsx",
+      "label": "Bn.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "public_bn_bn",
+      "label": "Bn()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L10"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bn_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bn_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_public_locale_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bn_tsx",
+      "target": "lib_public_locale_public_bangla_enabled",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bn_tsx",
+      "target": "public_bn_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/Bn.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

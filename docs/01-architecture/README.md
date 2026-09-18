@@ -7,6 +7,7 @@ Depth specs: [`domains.md`](domains.md) (custom domains & storefront subdomains)
 ---
 
 ## Purpose
+
 Define the system topology: services, tenancy boundary, data flow, edge, security posture, and the observability contract. Every other directory depends on this.
 
 ## 1. Tenants and boundaries
@@ -17,15 +18,15 @@ Define the system topology: services, tenancy boundary, data flow, edge, securit
 
 ## 2. Services
 
-| Service | Runtime | Responsibilities |
-|---|---|---|
-| Admin web app (TanStack SPA) | Edge + CDN | Admin UI, builder, settings. Calls PostgREST + Go gateway. |
-| Storefront runtime (theme renderer) | OpenResty/Node edge | Serves themed store pages headless from AST + data API. |
-| Go payments gateway | Go | Aggregator: MFS (bKash/Nagad/Rocket), bank, COD preauth; idempotent charge/refund/payout; webhook intake (mock live). |
-| Go rate limiter | Go/Redis | Per-key limit (signed requests, auth tokens, checkout). |
-| Redis (BullMQ workers) | queue | Emails, shipping events, refunds, export jobs, analytics aggregation. |
-| Search | Meilisearch (or PG FTS fallback) | Catalog + admin search (Bangla fuzzy, facets). |
-| Observability | Prometheus+Grafana+Sentry | Metrics; error tracking; spans via OpenTelemetry. |
+| Service                             | Runtime                          | Responsibilities                                                                                                      |
+| ----------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Admin web app (TanStack SPA)        | Edge + CDN                       | Admin UI, builder, settings. Calls PostgREST + Go gateway.                                                            |
+| Storefront runtime (theme renderer) | OpenResty/Node edge              | Serves themed store pages headless from AST + data API.                                                               |
+| Go payments gateway                 | Go                               | Aggregator: MFS (bKash/Nagad/Rocket), bank, COD preauth; idempotent charge/refund/payout; webhook intake (mock live). |
+| Go rate limiter                     | Go/Redis                         | Per-key limit (signed requests, auth tokens, checkout).                                                               |
+| Redis (BullMQ workers)              | queue                            | Emails, shipping events, refunds, export jobs, analytics aggregation.                                                 |
+| Search                              | Meilisearch (or PG FTS fallback) | Catalog + admin search (Bangla fuzzy, facets).                                                                        |
+| Observability                       | Prometheus+Grafana+Sentry        | Metrics; error tracking; spans via OpenTelemetry.                                                                     |
 
 ## 3. Data flow (primary happy path)
 
@@ -68,32 +69,40 @@ Define the system topology: services, tenancy boundary, data flow, edge, securit
 ## Strict guardrails
 
 ### 1. Money & orders
+
 - Money never flows through the edge or stores in the theme runtime: charge/refund/payout live only in the Go payments gateway (see 06).
 - Order state changes are owned by the order state machine (see 03/07 for the transition list), not the data flow above.
 
 ### 2. Data & tenancy
+
 - Every tenant row carries `merchant_id`; RLS (JWT claim) enforces scope; no per-tenant Postgres schemas.
 - Tenant domains stay `<merchant>.store.framique.com` and public reads pass RLS `anon` (published only) on the storefront arm.
 
 ### 3. State transitions
+
 - Served by the state machines owned per phase (order in 03/07, shipment in 08); this doc only notes where they run.
 
 ### 4. Vendors & data-export
+
 - Supabase, OpenResty/Node edge, Meilisearch, imgproxy, and the OTel collectors are current choices, not commitments; each has a named fallback or is swappable (search: PG FTS fallback; assets: imgproxy; observability: OTel contract mirrors Pragmatic Sys-1 EX).
 - Secret/credential scope: merchant credentials (MFS/Bank) never live in client bundles or stores-layer config — vault access only.
 
 ### 5. Consent & privacy
+
 - Storefront persona captures only events from the person-informed, consented ones; abandoned-cart & pop-optins land here too (see 05).
 - Logs stay PII-minimal; raw analytics retained 90d per global rails.
 
 ### 6. Accessibility & performance
+
 - SLOs (99.9% admin / 99.95% storefront, p95 < 250ms) and the 60s edge-cache TTL are operational contracts; degrade gracefully instead of erroring (fallback template, maintenance notice).
 - Static content is served from edge caches; interactive paths (checkout, auth) bypass rendering and go authenticated.
 
 ### 7. Failure & recovery
+
 - storefront down → SVG/cached HTML; runtime crash → fallback template with maintenance notice; payments gateway retries with exponential backoff + DLQ and re-entrant (idempotent) reversal paths.
 - Rate limits fail open to 429 rather than silent drop; login/checkout/MFS redirect get limiting.
 
 ### 8. Testing gates
+
 - store_loop must pass on every change touching the serving path; failure suites exercise provider down + dead-letter queue so SLO-relevant paths are always covered.
 - No new service enters the architecture without a failure/recovery row in §6 of this doc.

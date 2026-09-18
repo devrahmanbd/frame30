@@ -1,1 +1,557 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "label": "phase5-plugins.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L1"}, {"id": "lib_phase5_plugins_test_manifest", "label": "MANIFEST", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L20"}, {"id": "lib_phase5_plugins_test_installed", "label": "installed()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L39"}, {"id": "lib_phase5_plugins_test_verdict", "label": "verdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L54"}, {"id": "lib_phase5_plugins_test_bad", "label": "bad", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L63"}, {"id": "lib_phase5_plugins_test_noscope", "label": "noScope", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L77"}, {"id": "lib_phase5_plugins_test_badurl", "label": "badUrl", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L79"}, {"id": "lib_phase5_plugins_test_over", "label": "over", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L84"}, {"id": "lib_phase5_plugins_test_diff", "label": "diff", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L108"}, {"id": "lib_phase5_plugins_test_key", "label": "key", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L117"}, {"id": "lib_phase5_plugins_test_res", "label": "res", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L124"}, {"id": "lib_phase5_plugins_test_cases", "label": "cases", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L129"}, {"id": "lib_phase5_plugins_test_old", "label": "old", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L143"}, {"id": "lib_phase5_plugins_test_plugintypes", "label": "pluginTypes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L159"}, {"id": "lib_phase5_plugins_test_out", "label": "out", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L168"}, {"id": "lib_phase5_plugins_test_plugins", "label": "plugins", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L205"}, {"id": "lib_phase5_plugins_test_fetchmock", "label": "fetchMock", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L215"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_builder_api_version", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_plugin_budget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_defaultsettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_parsemanifest", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_parsepluginwidgetkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_permissiondiff", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_plugintrayentries", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_pluginwidgetkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_resolvepluginwidget", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_satisfiesapirange", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_validatesettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_manifest_installedplugin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_hooks_server_hook_timeout_ms", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_hooks_server_resetbreakers", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_plugin_hooks_server_runhook", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_builder_ast_section_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_widget_registry_widget_registry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_manifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_installed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_verdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_bad", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_noscope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_badurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_over", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_verdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_diff", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_res", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_cases", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_res", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L136", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_old", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_res", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_plugintypes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L168", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_verdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L179", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L181", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_plugins", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts", "target": "lib_phase5_plugins_test_fetchmock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L215", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_phase5_plugins_test_installed", "callee": "parseManifest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L40"}, {"caller_nid": "lib_phase5_plugins_test_installed", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L41"}, {"caller_nid": "lib_phase5_plugins_test_installed", "callee": "defaultSettings", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts", "source_location": "L46"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "label": "phase5-plugins.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase5_plugins_test_manifest",
+      "label": "MANIFEST",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_phase5_plugins_test_installed",
+      "label": "installed()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_phase5_plugins_test_verdict",
+      "label": "verdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_phase5_plugins_test_bad",
+      "label": "bad",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_phase5_plugins_test_noscope",
+      "label": "noScope",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_phase5_plugins_test_badurl",
+      "label": "badUrl",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_phase5_plugins_test_over",
+      "label": "over",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_phase5_plugins_test_diff",
+      "label": "diff",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "lib_phase5_plugins_test_key",
+      "label": "key",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "lib_phase5_plugins_test_res",
+      "label": "res",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "lib_phase5_plugins_test_cases",
+      "label": "cases",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "lib_phase5_plugins_test_old",
+      "label": "old",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "lib_phase5_plugins_test_plugintypes",
+      "label": "pluginTypes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_phase5_plugins_test_out",
+      "label": "out",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L168"
+    },
+    {
+      "id": "lib_phase5_plugins_test_plugins",
+      "label": "plugins",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L205"
+    },
+    {
+      "id": "lib_phase5_plugins_test_fetchmock",
+      "label": "fetchMock",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L215"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_builder_api_version",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_plugin_budget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_defaultsettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_parsemanifest",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_parsepluginwidgetkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_permissiondiff",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_plugintrayentries",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_pluginwidgetkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_resolvepluginwidget",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_satisfiesapirange",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_validatesettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_manifest_installedplugin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_hooks_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_hooks_server_hook_timeout_ms",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_hooks_server_resetbreakers",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_plugin_hooks_server_runhook",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_builder_ast_section_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_widget_registry_widget_registry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_manifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_installed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_verdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_bad",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_noscope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_badurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_over",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_verdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_diff",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_res",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_cases",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_res",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_old",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_res",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_plugintypes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L168",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_verdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_plugins",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase5_plugins_test_ts",
+      "target": "lib_phase5_plugins_test_fetchmock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_phase5_plugins_test_installed",
+      "callee": "parseManifest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_phase5_plugins_test_installed",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_phase5_plugins_test_installed",
+      "callee": "defaultSettings",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase5-plugins.test.ts",
+      "source_location": "L46"
+    }
+  ]
+}

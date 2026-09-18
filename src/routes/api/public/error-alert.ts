@@ -28,7 +28,8 @@ const payloadSchema = z.object({
 function safeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
@@ -39,29 +40,42 @@ export const Route = createFileRoute("/api/public/error-alert")({
     handlers: {
       POST: async ({ request }) => {
         const secret = process.env["ERROR_ALERT_SECRET"];
-        if (!secret) return new Response("Not found", { status: 404, headers: NO_STORE });
+        if (!secret)
+          return new Response("Not found", { status: 404, headers: NO_STORE });
 
         const presented =
           request.headers.get("x-error-alert-secret") ??
-          (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
+          (request.headers.get("authorization") ?? "").replace(
+            /^Bearer\s+/i,
+            "",
+          );
         if (!presented || !safeEqual(presented, secret)) {
-          return new Response("Unauthorized", { status: 401, headers: NO_STORE });
+          return new Response("Unauthorized", {
+            status: 401,
+            headers: NO_STORE,
+          });
         }
 
         let parsed: z.infer<typeof payloadSchema>;
         try {
           parsed = payloadSchema.parse(await request.json());
         } catch {
-          return new Response("Bad request", { status: 400, headers: NO_STORE });
+          return new Response("Bad request", {
+            status: 400,
+            headers: NO_STORE,
+          });
         }
 
         const ua = (request.headers.get("user-agent") ?? "").toLowerCase();
-        const source = parsed.source ?? (ua.includes("glitchtip") ? "glitchtip" : "sentry");
+        const source =
+          parsed.source ?? (ua.includes("glitchtip") ? "glitchtip" : "sentry");
         const summary = parsed.title ?? parsed.message ?? "Error tracker issue";
         const link = parsed.url ?? parsed.web_url ?? "";
-        const severity = (parsed.level ?? "error") === "fatal" ? "page" : "ticket";
+        const severity =
+          (parsed.level ?? "error") === "fatal" ? "page" : "ticket";
 
-        const alertmanager = process.env["ALERTMANAGER_URL"] ?? "http://alertmanager:9093";
+        const alertmanager =
+          process.env["ALERTMANAGER_URL"] ?? "http://alertmanager:9093";
         const body = [
           {
             labels: {
@@ -69,7 +83,9 @@ export const Route = createFileRoute("/api/public/error-alert")({
               severity,
               team: "platform",
               source,
-              ...(parsed.project ? { project: parsed.project.slice(0, 80) } : {}),
+              ...(parsed.project
+                ? { project: parsed.project.slice(0, 80) }
+                : {}),
             },
             annotations: {
               summary: summary.slice(0, 300),
@@ -84,14 +100,23 @@ export const Route = createFileRoute("/api/public/error-alert")({
 
         const { incr } = await import("@/lib/observability.server");
         try {
-          const res = await fetch(`${alertmanager.replace(/\/$/, "")}/api/v2/alerts`, {
-            method: "POST",
-            headers: { "content-type": "application/json" },
-            body: JSON.stringify(body),
+          const res = await fetch(
+            `${alertmanager.replace(/\/$/, "")}/api/v2/alerts`,
+            {
+              method: "POST",
+              headers: { "content-type": "application/json" },
+              body: JSON.stringify(body),
+            },
+          );
+          incr("framique_error_alert_bridge_total", {
+            source,
+            outcome: res.ok ? "sent" : `http_${res.status}`,
           });
-          incr("framique_error_alert_bridge_total", { source, outcome: res.ok ? "sent" : `http_${res.status}` });
         } catch {
-          incr("framique_error_alert_bridge_total", { source, outcome: "transport_error" });
+          incr("framique_error_alert_bridge_total", {
+            source,
+            outcome: "transport_error",
+          });
         }
         return new Response(null, { status: 202, headers: NO_STORE });
       },

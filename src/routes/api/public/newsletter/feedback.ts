@@ -28,7 +28,8 @@ const bodySchema = z.object({
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
@@ -40,8 +41,14 @@ async function hmacHex(secret: string, payload: string): Promise<string> {
     false,
     ["sign"],
   );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
-  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(payload),
+  );
+  return [...new Uint8Array(sig)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export const Route = createFileRoute("/api/public/newsletter/feedback")({
@@ -50,35 +57,54 @@ export const Route = createFileRoute("/api/public/newsletter/feedback")({
       POST: async ({ request }) => {
         const secret = process.env["NEWSLETTER_WEBHOOK_SECRET"];
         if (!secret) {
-          return new Response("not configured", { status: 503, headers: { "cache-control": "no-store" } });
+          return new Response("not configured", {
+            status: 503,
+            headers: { "cache-control": "no-store" },
+          });
         }
 
         const declared = Number(request.headers.get("content-length") ?? "0");
-        if (declared > MAX_BODY_BYTES) return new Response("too large", { status: 413 });
+        if (declared > MAX_BODY_BYTES)
+          return new Response("too large", { status: 413 });
 
         const raw = await request.text();
-        if (raw.length > MAX_BODY_BYTES) return new Response("too large", { status: 413 });
+        if (raw.length > MAX_BODY_BYTES)
+          return new Response("too large", { status: 413 });
 
         const timestamp = request.headers.get("x-framique-timestamp") ?? "";
-        const signature = (request.headers.get("x-framique-signature") ?? "").toLowerCase();
+        const signature = (
+          request.headers.get("x-framique-signature") ?? ""
+        ).toLowerCase();
         const skew = Math.abs(Date.now() / 1000 - Number(timestamp));
         if (!timestamp || !Number.isFinite(skew) || skew > MAX_SKEW_SECONDS) {
-          return new Response("stale", { status: 401, headers: { "cache-control": "no-store" } });
+          return new Response("stale", {
+            status: 401,
+            headers: { "cache-control": "no-store" },
+          });
         }
 
         const expected = await hmacHex(secret, `${timestamp}.${raw}`);
         if (!timingSafeEqual(signature, expected)) {
-          return new Response("bad signature", { status: 401, headers: { "cache-control": "no-store" } });
+          return new Response("bad signature", {
+            status: 401,
+            headers: { "cache-control": "no-store" },
+          });
         }
 
         const parsed = bodySchema.safeParse(JSON.parse(raw || "{}"));
-        if (!parsed.success) return new Response("bad request", { status: 400 });
+        if (!parsed.success)
+          return new Response("bad request", { status: 400 });
 
-        const { recordDeliveryFeedback } = await import("@/lib/newsletter.server");
+        const { recordDeliveryFeedback } =
+          await import("@/lib/newsletter.server");
         await recordDeliveryFeedback({
           email: parsed.data.email,
           kind:
-            parsed.data.type === "complaint" ? "complaint" : parsed.data.type === "hard_bounce" ? "hard" : "soft",
+            parsed.data.type === "complaint"
+              ? "complaint"
+              : parsed.data.type === "hard_bounce"
+                ? "hard"
+                : "soft",
           detail: parsed.data.detail ?? null,
         });
 
@@ -86,7 +112,10 @@ export const Route = createFileRoute("/api/public/newsletter/feedback")({
         // nothing about who is on the list.
         return new Response(JSON.stringify({ ok: true }), {
           status: 202,
-          headers: { "content-type": "application/json", "cache-control": "no-store" },
+          headers: {
+            "content-type": "application/json",
+            "cache-control": "no-store",
+          },
         });
       },
     },

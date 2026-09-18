@@ -1,10 +1,17 @@
-import { Outlet, createFileRoute, useMatches, useNavigate, redirect } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  useMatches,
+  useNavigate,
+  redirect,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
 import { chromeFromMatches } from "@/lib/console-routes";
 import { supabase } from "@/integrations/supabase/client";
+import { SupportWidget } from "@/components/store/SupportWidget";
 
 /**
  * Merchant Console Layout — strictly for Merchants only.
@@ -23,13 +30,21 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       await supabase.auth.signOut();
       throw redirect({ to: "/auth" });
     }
+
+    // Require TOTP AAL2 verification if user has enrolled factors
+    const { data: aal } =
+      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+      throw redirect({ to: "/auth" });
+    }
   },
   head: () => ({
     meta: [
       { title: "Merchant Dashboard — Framique" },
       {
         name: "description",
-        content: "Merchant control panel for managing products, orders, inventory, payouts and storefront settings.",
+        content:
+          "Merchant control panel for managing products, orders, inventory, payouts and storefront settings.",
       },
       { property: "og:title", content: "Merchant Dashboard — Framique" },
       { property: "og:type", content: "website" },
@@ -54,10 +69,18 @@ function MerchantDashboardLayout() {
   }, [isPending, merchant, navigate]);
 
   if (isPending) {
-    return <p className="p-8 text-sm text-muted-foreground">{tk("common.loading")}</p>;
+    return (
+      <p className="p-8 text-sm text-muted-foreground">
+        {tk("common.loading")}
+      </p>
+    );
   }
   if (!merchant) {
-    return <p className="p-8 text-sm text-muted-foreground">{tk("onboarding.required")}</p>;
+    return (
+      <p className="p-8 text-sm text-muted-foreground">
+        {tk("onboarding.required")}
+      </p>
+    );
   }
 
   // Editors take over the viewport (Gutenberg-style): no sidebar or topbar to tab through.
@@ -66,6 +89,9 @@ function MerchantDashboardLayout() {
   return (
     <AdminShell>
       <Outlet />
+      {merchant?.slug ? (
+        <SupportWidget slug={merchant.slug} mode="dashboard" />
+      ) : null}
     </AdminShell>
   );
 }

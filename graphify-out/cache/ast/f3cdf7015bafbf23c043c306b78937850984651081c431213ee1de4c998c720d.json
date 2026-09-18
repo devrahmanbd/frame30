@@ -1,1 +1,604 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "label": "saved-blocks.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L1"}, {"id": "lib_saved_blocks_savedblock", "label": "SavedBlock", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L11"}, {"id": "lib_saved_blocks_storage", "label": "storage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L21"}, {"id": "lib_saved_blocks_storekey", "label": "storeKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L29"}, {"id": "lib_saved_blocks_sanitiseblocknodes", "label": "sanitiseBlockNodes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L34"}, {"id": "lib_saved_blocks_listblocks", "label": "listBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L38"}, {"id": "lib_saved_blocks_saveblock", "label": "saveBlock()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L63"}, {"id": "lib_saved_blocks_deleteblock", "label": "deleteBlock()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L81"}, {"id": "lib_saved_blocks_blockenvelope", "label": "BlockEnvelope", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L98"}, {"id": "lib_saved_blocks_exportblocks", "label": "exportBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L106"}, {"id": "lib_saved_blocks_exportsection", "label": "exportSection()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L117"}, {"id": "lib_saved_blocks_importresult", "label": "ImportResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L130"}, {"id": "lib_saved_blocks_importblocks", "label": "importBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L137"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_builder_ast_parseast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_savedblock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_storage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_storekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_sanitiseblocknodes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_listblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_saveblock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_deleteblock", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_blockenvelope", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_exportblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_exportsection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_importresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L130", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts", "target": "lib_saved_blocks_importblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L137", "weight": 1.0}, {"source": "lib_saved_blocks_listblocks", "target": "lib_saved_blocks_storage", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L39", "weight": 1.0}, {"source": "lib_saved_blocks_listblocks", "target": "lib_saved_blocks_storekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L42", "weight": 1.0}, {"source": "lib_saved_blocks_saveblock", "target": "lib_saved_blocks_storage", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L64", "weight": 1.0}, {"source": "lib_saved_blocks_saveblock", "target": "lib_saved_blocks_listblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L65", "weight": 1.0}, {"source": "lib_saved_blocks_saveblock", "target": "lib_saved_blocks_sanitiseblocknodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L70", "weight": 1.0}, {"source": "lib_saved_blocks_saveblock", "target": "lib_saved_blocks_storekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L74", "weight": 1.0}, {"source": "lib_saved_blocks_deleteblock", "target": "lib_saved_blocks_storage", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L82", "weight": 1.0}, {"source": "lib_saved_blocks_deleteblock", "target": "lib_saved_blocks_listblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L84", "weight": 1.0}, {"source": "lib_saved_blocks_deleteblock", "target": "lib_saved_blocks_storekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L86", "weight": 1.0}, {"source": "lib_saved_blocks_exportblocks", "target": "lib_saved_blocks_listblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L107", "weight": 1.0}, {"source": "lib_saved_blocks_exportsection", "target": "lib_saved_blocks_sanitiseblocknodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L122", "weight": 1.0}, {"source": "lib_saved_blocks_importblocks", "target": "lib_saved_blocks_listblocks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L138", "weight": 1.0}, {"source": "lib_saved_blocks_importblocks", "target": "lib_saved_blocks_sanitiseblocknodes", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L159", "weight": 1.0}, {"source": "lib_saved_blocks_importblocks", "target": "lib_saved_blocks_saveblock", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L164", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_saved_blocks_sanitiseblocknodes", "callee": "parseAst", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L35"}, {"caller_nid": "lib_saved_blocks_listblocks", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L42"}, {"caller_nid": "lib_saved_blocks_listblocks", "callee": "getItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L42"}, {"caller_nid": "lib_saved_blocks_listblocks", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L43"}, {"caller_nid": "lib_saved_blocks_listblocks", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L44"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L67"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L67"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L67"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L67"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L67"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L68"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L68"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L69"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L72"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "setItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L74"}, {"caller_nid": "lib_saved_blocks_saveblock", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L74"}, {"caller_nid": "lib_saved_blocks_deleteblock", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L84"}, {"caller_nid": "lib_saved_blocks_deleteblock", "callee": "setItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L86"}, {"caller_nid": "lib_saved_blocks_deleteblock", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L86"}, {"caller_nid": "lib_saved_blocks_exportblocks", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L111"}, {"caller_nid": "lib_saved_blocks_exportblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L112"}, {"caller_nid": "lib_saved_blocks_exportblocks", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L114"}, {"caller_nid": "lib_saved_blocks_exportsection", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L121"}, {"caller_nid": "lib_saved_blocks_exportsection", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L124"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L145"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L151"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L152"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L158"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L158"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L160"}, {"caller_nid": "lib_saved_blocks_importblocks", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts", "source_location": "L165"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "label": "saved-blocks.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_saved_blocks_savedblock",
+      "label": "SavedBlock",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_saved_blocks_storage",
+      "label": "storage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_saved_blocks_storekey",
+      "label": "storeKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_saved_blocks_sanitiseblocknodes",
+      "label": "sanitiseBlockNodes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_saved_blocks_listblocks",
+      "label": "listBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_saved_blocks_saveblock",
+      "label": "saveBlock()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_saved_blocks_deleteblock",
+      "label": "deleteBlock()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_saved_blocks_blockenvelope",
+      "label": "BlockEnvelope",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_saved_blocks_exportblocks",
+      "label": "exportBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "lib_saved_blocks_exportsection",
+      "label": "exportSection()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "lib_saved_blocks_importresult",
+      "label": "ImportResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L130"
+    },
+    {
+      "id": "lib_saved_blocks_importblocks",
+      "label": "importBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L137"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_builder_ast_parseast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_savedblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_storage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_storekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_sanitiseblocknodes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_listblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_saveblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_deleteblock",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_blockenvelope",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_exportblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_exportsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_importresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_saved_blocks_ts",
+      "target": "lib_saved_blocks_importblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_listblocks",
+      "target": "lib_saved_blocks_storage",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_listblocks",
+      "target": "lib_saved_blocks_storekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_saveblock",
+      "target": "lib_saved_blocks_storage",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_saveblock",
+      "target": "lib_saved_blocks_listblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_saveblock",
+      "target": "lib_saved_blocks_sanitiseblocknodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_saveblock",
+      "target": "lib_saved_blocks_storekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_deleteblock",
+      "target": "lib_saved_blocks_storage",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_deleteblock",
+      "target": "lib_saved_blocks_listblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_deleteblock",
+      "target": "lib_saved_blocks_storekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_exportblocks",
+      "target": "lib_saved_blocks_listblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_exportsection",
+      "target": "lib_saved_blocks_sanitiseblocknodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_importblocks",
+      "target": "lib_saved_blocks_listblocks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_importblocks",
+      "target": "lib_saved_blocks_sanitiseblocknodes",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_saved_blocks_importblocks",
+      "target": "lib_saved_blocks_saveblock",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_saved_blocks_sanitiseblocknodes",
+      "callee": "parseAst",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_listblocks",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_listblocks",
+      "callee": "getItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_listblocks",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_listblocks",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "setItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_saveblock",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_deleteblock",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_deleteblock",
+      "callee": "setItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_deleteblock",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_exportblocks",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_exportblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_exportblocks",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_exportsection",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L121"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_exportsection",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_saved_blocks_importblocks",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/saved-blocks.ts",
+      "source_location": "L165"
+    }
+  ]
+}

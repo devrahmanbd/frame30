@@ -1,1 +1,13 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_aggressive_microcompact_mjs", "label": "aggressive-microcompact.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/aggressive-microcompact.mjs", "source_location": "L1"}], "edges": [], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_aggressive_microcompact_mjs",
+      "label": "aggressive-microcompact.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/aggressive-microcompact.mjs",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [],
+  "raw_calls": []
+}

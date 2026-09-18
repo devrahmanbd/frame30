@@ -1,1 +1,639 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "label": "virtual-delivery.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L1"}, {"id": "lib_virtual_delivery_codestate", "label": "CodeState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L16"}, {"id": "lib_virtual_delivery_deliverystate", "label": "DeliveryState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L18"}, {"id": "lib_virtual_delivery_deliverychannel", "label": "DeliveryChannel", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L20"}, {"id": "lib_virtual_delivery_code_transitions", "label": "CODE_TRANSITIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L22"}, {"id": "lib_virtual_delivery_cantransitioncode", "label": "canTransitionCode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L30"}, {"id": "lib_virtual_delivery_assertcodetransition", "label": "assertCodeTransition()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L34"}, {"id": "lib_virtual_delivery_delivery_transitions", "label": "DELIVERY_TRANSITIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L41"}, {"id": "lib_virtual_delivery_cantransitiondelivery", "label": "canTransitionDelivery()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L49"}, {"id": "lib_virtual_delivery_maskcode", "label": "maskCode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L58"}, {"id": "lib_virtual_delivery_normalizecode", "label": "normalizeCode()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L65"}, {"id": "lib_virtual_delivery_parsedbatch", "label": "ParsedBatch", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L69"}, {"id": "lib_virtual_delivery_parsecodebatch", "label": "parseCodeBatch()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L81"}, {"id": "lib_virtual_delivery_nextattemptdelayms", "label": "nextAttemptDelayMs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L122"}, {"id": "lib_virtual_delivery_shouldretry", "label": "shouldRetry()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L130"}, {"id": "lib_virtual_delivery_classifydeliveryerror", "label": "classifyDeliveryError()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L135"}, {"id": "lib_virtual_delivery_normalizebdmsisdn", "label": "normalizeBdMsisdn()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L150"}, {"id": "lib_virtual_delivery_isdeliverableemail", "label": "isDeliverableEmail()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L157"}, {"id": "lib_virtual_delivery_stockhealth", "label": "stockHealth()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L167"}, {"id": "lib_virtual_delivery_delivery_messages", "label": "DELIVERY_MESSAGES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L188"}, {"id": "lib_virtual_delivery_explaindelivery", "label": "explainDelivery()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L219"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_codestate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_deliverystate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_deliverychannel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_code_transitions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_cantransitioncode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_assertcodetransition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_delivery_transitions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_cantransitiondelivery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_maskcode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_normalizecode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_parsedbatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_parsecodebatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_nextattemptdelayms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L122", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_shouldretry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L130", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_classifydeliveryerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L135", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_normalizebdmsisdn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L150", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_isdeliverableemail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_stockhealth", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L167", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_delivery_messages", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L188", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts", "target": "lib_virtual_delivery_explaindelivery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L219", "weight": 1.0}, {"source": "lib_virtual_delivery_assertcodetransition", "target": "lib_virtual_delivery_cantransitioncode", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L35", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_virtual_delivery_cantransitioncode", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L31"}, {"caller_nid": "lib_virtual_delivery_cantransitiondelivery", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L50"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L59"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L60"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L60"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L61"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L61"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L61"}, {"caller_nid": "lib_virtual_delivery_maskcode", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L61"}, {"caller_nid": "lib_virtual_delivery_normalizecode", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L66"}, {"caller_nid": "lib_virtual_delivery_normalizecode", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L66"}, {"caller_nid": "lib_virtual_delivery_normalizecode", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L66"}, {"caller_nid": "lib_virtual_delivery_parsecodebatch", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L87"}, {"caller_nid": "lib_virtual_delivery_parsecodebatch", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L88"}, {"caller_nid": "lib_virtual_delivery_nextattemptdelayms", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L123"}, {"caller_nid": "lib_virtual_delivery_nextattemptdelayms", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L123"}, {"caller_nid": "lib_virtual_delivery_nextattemptdelayms", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L124"}, {"caller_nid": "lib_virtual_delivery_nextattemptdelayms", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L126"}, {"caller_nid": "lib_virtual_delivery_nextattemptdelayms", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L127"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L136"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L138"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L138"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L138"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L142"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L142"}, {"caller_nid": "lib_virtual_delivery_classifydeliveryerror", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L142"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L151"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L152"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L152"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L152"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L152"}, {"caller_nid": "lib_virtual_delivery_normalizebdmsisdn", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L153"}, {"caller_nid": "lib_virtual_delivery_isdeliverableemail", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L158"}, {"caller_nid": "lib_virtual_delivery_isdeliverableemail", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L159"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L173"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L173"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L174"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L174"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L175"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L176"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L182"}, {"caller_nid": "lib_virtual_delivery_stockhealth", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts", "source_location": "L182"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "label": "virtual-delivery.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_virtual_delivery_codestate",
+      "label": "CodeState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "lib_virtual_delivery_deliverystate",
+      "label": "DeliveryState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_virtual_delivery_deliverychannel",
+      "label": "DeliveryChannel",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_virtual_delivery_code_transitions",
+      "label": "CODE_TRANSITIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_virtual_delivery_cantransitioncode",
+      "label": "canTransitionCode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_virtual_delivery_assertcodetransition",
+      "label": "assertCodeTransition()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_virtual_delivery_delivery_transitions",
+      "label": "DELIVERY_TRANSITIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_virtual_delivery_cantransitiondelivery",
+      "label": "canTransitionDelivery()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_virtual_delivery_maskcode",
+      "label": "maskCode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_virtual_delivery_normalizecode",
+      "label": "normalizeCode()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_virtual_delivery_parsedbatch",
+      "label": "ParsedBatch",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_virtual_delivery_parsecodebatch",
+      "label": "parseCodeBatch()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_virtual_delivery_nextattemptdelayms",
+      "label": "nextAttemptDelayMs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L122"
+    },
+    {
+      "id": "lib_virtual_delivery_shouldretry",
+      "label": "shouldRetry()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L130"
+    },
+    {
+      "id": "lib_virtual_delivery_classifydeliveryerror",
+      "label": "classifyDeliveryError()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L135"
+    },
+    {
+      "id": "lib_virtual_delivery_normalizebdmsisdn",
+      "label": "normalizeBdMsisdn()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L150"
+    },
+    {
+      "id": "lib_virtual_delivery_isdeliverableemail",
+      "label": "isDeliverableEmail()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L157"
+    },
+    {
+      "id": "lib_virtual_delivery_stockhealth",
+      "label": "stockHealth()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L167"
+    },
+    {
+      "id": "lib_virtual_delivery_delivery_messages",
+      "label": "DELIVERY_MESSAGES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L188"
+    },
+    {
+      "id": "lib_virtual_delivery_explaindelivery",
+      "label": "explainDelivery()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L219"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_codestate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_deliverystate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_deliverychannel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_code_transitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_cantransitioncode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_assertcodetransition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_delivery_transitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_cantransitiondelivery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_maskcode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_normalizecode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_parsedbatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_parsecodebatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_nextattemptdelayms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L122",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_shouldretry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_classifydeliveryerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_normalizebdmsisdn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_isdeliverableemail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_stockhealth",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L167",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_delivery_messages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_virtual_delivery_ts",
+      "target": "lib_virtual_delivery_explaindelivery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L219",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_virtual_delivery_assertcodetransition",
+      "target": "lib_virtual_delivery_cantransitioncode",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_virtual_delivery_cantransitioncode",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_cantransitiondelivery",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_maskcode",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizecode",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizecode",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizecode",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_parsecodebatch",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_parsecodebatch",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_nextattemptdelayms",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_nextattemptdelayms",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_nextattemptdelayms",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_nextattemptdelayms",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_nextattemptdelayms",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_classifydeliveryerror",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L151"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_normalizebdmsisdn",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_isdeliverableemail",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_isdeliverableemail",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L174"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L176"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_virtual_delivery_stockhealth",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/virtual-delivery.ts",
+      "source_location": "L182"
+    }
+  ]
+}

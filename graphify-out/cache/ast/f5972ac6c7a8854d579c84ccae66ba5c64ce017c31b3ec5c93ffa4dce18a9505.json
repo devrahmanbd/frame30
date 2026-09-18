@@ -1,1 +1,334 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "label": "security.content.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L1"}, {"id": "marketing_security_content_bilingual", "label": "Bilingual", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L13"}, {"id": "marketing_security_content_hero", "label": "hero", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L19"}, {"id": "marketing_security_content_isolation", "label": "isolation", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L37"}, {"id": "marketing_security_content_authentication", "label": "authentication", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L106"}, {"id": "marketing_security_content_permissions", "label": "permissions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L147"}, {"id": "marketing_security_content_apikeys", "label": "apiKeys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L223"}, {"id": "marketing_security_content_secrethandling", "label": "secretHandling", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L255"}, {"id": "marketing_security_content_paymentboundary", "label": "paymentBoundary", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L274"}, {"id": "marketing_security_content_encryption", "label": "encryption", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L295"}, {"id": "marketing_security_content_backups", "label": "backups", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L310"}, {"id": "marketing_security_content_observability", "label": "observability", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L359"}, {"id": "marketing_security_content_incidentresponse", "label": "incidentResponse", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L395"}, {"id": "marketing_security_content_disclosure", "label": "disclosure", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L465"}, {"id": "marketing_security_content_supplychain", "label": "supplyChain", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L487"}, {"id": "marketing_security_content_selfhosting", "label": "selfHosting", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L503"}, {"id": "marketing_security_content_subprocessors", "label": "subprocessors", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L532"}, {"id": "marketing_security_content_checklist", "label": "checklist", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L580"}, {"id": "marketing_security_content_complianceroadmap", "label": "complianceRoadmap", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L602"}, {"id": "marketing_security_content_faq", "label": "faq", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L646"}, {"id": "marketing_security_content_finalcta", "label": "finalCta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L713"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_bilingual", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_hero", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_isolation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_authentication", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_permissions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_apikeys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L223", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_secrethandling", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L255", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_paymentboundary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L274", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_encryption", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L295", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_backups", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L310", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_observability", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L359", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_incidentresponse", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L395", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_disclosure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L465", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_supplychain", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L487", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_selfhosting", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L503", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_subprocessors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L532", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_checklist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L580", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_complianceroadmap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L602", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_faq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L646", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts", "target": "marketing_security_content_finalcta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts", "source_location": "L713", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "label": "security.content.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketing_security_content_bilingual",
+      "label": "Bilingual",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "marketing_security_content_hero",
+      "label": "hero",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "marketing_security_content_isolation",
+      "label": "isolation",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "marketing_security_content_authentication",
+      "label": "authentication",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "marketing_security_content_permissions",
+      "label": "permissions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L147"
+    },
+    {
+      "id": "marketing_security_content_apikeys",
+      "label": "apiKeys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L223"
+    },
+    {
+      "id": "marketing_security_content_secrethandling",
+      "label": "secretHandling",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L255"
+    },
+    {
+      "id": "marketing_security_content_paymentboundary",
+      "label": "paymentBoundary",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L274"
+    },
+    {
+      "id": "marketing_security_content_encryption",
+      "label": "encryption",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L295"
+    },
+    {
+      "id": "marketing_security_content_backups",
+      "label": "backups",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L310"
+    },
+    {
+      "id": "marketing_security_content_observability",
+      "label": "observability",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L359"
+    },
+    {
+      "id": "marketing_security_content_incidentresponse",
+      "label": "incidentResponse",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L395"
+    },
+    {
+      "id": "marketing_security_content_disclosure",
+      "label": "disclosure",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L465"
+    },
+    {
+      "id": "marketing_security_content_supplychain",
+      "label": "supplyChain",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L487"
+    },
+    {
+      "id": "marketing_security_content_selfhosting",
+      "label": "selfHosting",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L503"
+    },
+    {
+      "id": "marketing_security_content_subprocessors",
+      "label": "subprocessors",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L532"
+    },
+    {
+      "id": "marketing_security_content_checklist",
+      "label": "checklist",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L580"
+    },
+    {
+      "id": "marketing_security_content_complianceroadmap",
+      "label": "complianceRoadmap",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L602"
+    },
+    {
+      "id": "marketing_security_content_faq",
+      "label": "faq",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L646"
+    },
+    {
+      "id": "marketing_security_content_finalcta",
+      "label": "finalCta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L713"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_bilingual",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_hero",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_isolation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_authentication",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_permissions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_apikeys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L223",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_secrethandling",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L255",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_paymentboundary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L274",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_encryption",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_backups",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L310",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_observability",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L359",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_incidentresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L395",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_disclosure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L465",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_supplychain",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L487",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_selfhosting",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L503",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_subprocessors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L532",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_checklist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L580",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_complianceroadmap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L602",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_faq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L646",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketing_security_content_ts",
+      "target": "marketing_security_content_finalcta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketing/security.content.ts",
+      "source_location": "L713",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

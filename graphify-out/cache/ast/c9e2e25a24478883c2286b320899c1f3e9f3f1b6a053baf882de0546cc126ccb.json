@@ -1,1 +1,1443 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "label": "integrations.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L1"}, {"id": "lib_integrations_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L31"}, {"id": "lib_integrations_server_integrationerror", "label": "IntegrationError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L33"}, {"id": "lib_integrations_server_integrationerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L34"}, {"id": "lib_integrations_server_admin", "label": "admin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L40"}, {"id": "lib_integrations_server_connectionrow", "label": "ConnectionRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L45"}, {"id": "lib_integrations_server_credentialheaders", "label": "credentialHeaders()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L59"}, {"id": "lib_integrations_server_credentialpresent", "label": "credentialPresent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L71"}, {"id": "lib_integrations_server_proberesult", "label": "ProbeResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L76"}, {"id": "lib_integrations_server_probeservice", "label": "probeService()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L85"}, {"id": "lib_integrations_server_recordprobe", "label": "recordProbe()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L117"}, {"id": "lib_integrations_server_serviceview", "label": "ServiceView", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L139"}, {"id": "lib_integrations_server_loadintegrations", "label": "loadIntegrations()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L157"}, {"id": "lib_integrations_server_saveintegration", "label": "saveIntegration()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L199"}, {"id": "lib_integrations_server_disconnectintegration", "label": "disconnectIntegration()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L240"}, {"id": "lib_integrations_server_testintegration", "label": "testIntegration()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L263"}, {"id": "lib_integrations_server_probeallintegrations", "label": "probeAllIntegrations()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L292"}, {"id": "lib_integrations_server_sweepintegrationprobes", "label": "sweepIntegrationProbes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L307"}, {"id": "lib_integrations_server_getjson", "label": "getJson()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L324"}, {"id": "lib_integrations_server_promscalar", "label": "promScalar()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L338"}, {"id": "lib_integrations_server_baseurls", "label": "baseUrls()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L345"}, {"id": "lib_integrations_server_loadopssignals", "label": "loadOpsSignals()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L358"}, {"id": "lib_integrations_server_publishprobestatuses", "label": "publishProbeStatuses()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L442"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "users_rahman_documents_frame30_src_lib_platform_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_platform_server_requireplatformadmin", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_owner_ops_server_ownergate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "users_rahman_documents_frame30_src_lib_integrations_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_classifyprobe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_healthurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_isintegrationservice", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_service_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_uptimepercent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_validbaseurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_componentstateforprobe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_signal_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_status_component", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_integrationservice", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_opssignal", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_probestatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_signalkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_integrationerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "lib_integrations_server_integrationerror", "target": "lib_integrations_server_integrationerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_connectionrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_credentialheaders", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_credentialpresent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_proberesult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_probeservice", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_recordprobe", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_serviceview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_loadintegrations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_saveintegration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L199", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_disconnectintegration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L240", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_testintegration", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L263", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_probeallintegrations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L292", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_sweepintegrationprobes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L307", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_getjson", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L324", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_promscalar", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L338", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_baseurls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L345", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_loadopssignals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L358", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_integrations_server_ts", "target": "lib_integrations_server_publishprobestatuses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L442", "weight": 1.0}, {"source": "lib_integrations_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L41", "weight": 1.0}, {"source": "lib_integrations_server_probeservice", "target": "lib_integrations_server_credentialheaders", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L92", "weight": 1.0}, {"source": "lib_integrations_server_loadintegrations", "target": "lib_integrations_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L159", "weight": 1.0}, {"source": "lib_integrations_server_probeallintegrations", "target": "lib_integrations_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L293", "weight": 1.0}, {"source": "lib_integrations_server_probeallintegrations", "target": "lib_integrations_server_recordprobe", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L301", "weight": 1.0}, {"source": "lib_integrations_server_probeallintegrations", "target": "lib_integrations_server_publishprobestatuses", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L302", "weight": 1.0}, {"source": "lib_integrations_server_sweepintegrationprobes", "target": "lib_integrations_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L308", "weight": 1.0}, {"source": "lib_integrations_server_loadopssignals", "target": "lib_integrations_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L360", "weight": 1.0}, {"source": "lib_integrations_server_loadopssignals", "target": "lib_integrations_server_baseurls", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L361", "weight": 1.0}, {"source": "lib_integrations_server_loadopssignals", "target": "lib_integrations_server_getjson", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L368", "weight": 1.0}, {"source": "lib_integrations_server_loadopssignals", "target": "lib_integrations_server_credentialheaders", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L370", "weight": 1.0}, {"source": "lib_integrations_server_loadopssignals", "target": "lib_integrations_server_promscalar", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L372", "weight": 1.0}, {"source": "lib_integrations_server_publishprobestatuses", "target": "lib_integrations_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L444", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_integrations_server_integrationerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L35"}, {"caller_nid": "lib_integrations_server_credentialheaders", "callee": "btoa", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L66"}, {"caller_nid": "lib_integrations_server_credentialpresent", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L73"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L86"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "setTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L88"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L90"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "healthUrl", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L90"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L95"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "classifyProbe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L96"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L102"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L108"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L110"}, {"caller_nid": "lib_integrations_server_probeservice", "callee": "clearTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L113"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L118"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L118"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L124"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L124"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L124"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L130"}, {"caller_nid": "lib_integrations_server_recordprobe", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L133"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L158"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L160"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L160"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L161"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L162"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L162"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L163"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L163"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "gte", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L163"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L163"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L163"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L170"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L173"}, {"caller_nid": "lib_integrations_server_loadintegrations", "callee": "values", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L173"}, {"caller_nid": "lib_integrations_server_saveintegration", "callee": "isIntegrationService", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L204"}, {"caller_nid": "lib_integrations_server_saveintegration", "callee": "validBaseUrl", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L205"}, {"caller_nid": "lib_integrations_server_saveintegration", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L207"}, {"caller_nid": "lib_integrations_server_disconnectintegration", "callee": "isIntegrationService", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L241"}, {"caller_nid": "lib_integrations_server_disconnectintegration", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L243"}, {"caller_nid": "lib_integrations_server_testintegration", "callee": "isIntegrationService", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L264"}, {"caller_nid": "lib_integrations_server_testintegration", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L266"}, {"caller_nid": "lib_integrations_server_probeallintegrations", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L294"}, {"caller_nid": "lib_integrations_server_probeallintegrations", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L294"}, {"caller_nid": "lib_integrations_server_probeallintegrations", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L295"}, {"caller_nid": "lib_integrations_server_probeallintegrations", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L298"}, {"caller_nid": "lib_integrations_server_probeallintegrations", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L299"}, {"caller_nid": "lib_integrations_server_sweepintegrationprobes", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L309"}, {"caller_nid": "lib_integrations_server_sweepintegrationprobes", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L309"}, {"caller_nid": "lib_integrations_server_sweepintegrationprobes", "callee": "lt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L310"}, {"caller_nid": "lib_integrations_server_sweepintegrationprobes", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L310"}, {"caller_nid": "lib_integrations_server_sweepintegrationprobes", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L310"}, {"caller_nid": "lib_integrations_server_getjson", "callee": "setTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L326"}, {"caller_nid": "lib_integrations_server_getjson", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L328"}, {"caller_nid": "lib_integrations_server_getjson", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L330"}, {"caller_nid": "lib_integrations_server_getjson", "callee": "clearTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L334"}, {"caller_nid": "lib_integrations_server_promscalar", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L341"}, {"caller_nid": "lib_integrations_server_promscalar", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L342"}, {"caller_nid": "lib_integrations_server_baseurls", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L346"}, {"caller_nid": "lib_integrations_server_baseurls", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L346"}, {"caller_nid": "lib_integrations_server_baseurls", "callee": "isIntegrationService", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L349"}, {"caller_nid": "lib_integrations_server_baseurls", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L349"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "requirePlatformAdmin", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L359"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "encodeURIComponent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L369"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L372"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L373"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "encodeURIComponent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L379"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L383"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "flatMap", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L383"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L384"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L386"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L386"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L386"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "encodeURIComponent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L391"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L396"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L398"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L399"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L408"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L408"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L409"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L413"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L413"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L413"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L413"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L419"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L420"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L422"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L422"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L422"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "put", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L426"}, {"caller_nid": "lib_integrations_server_loadopssignals", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L430"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L449"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L450"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L454"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L454"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L454"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L454"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "componentStateForProbe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L461"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L463"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L463"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L463"}, {"caller_nid": "lib_integrations_server_publishprobestatuses", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts", "source_location": "L464"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "label": "integrations.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_integrations_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "id": "lib_integrations_server_integrationerror",
+      "label": "IntegrationError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_integrations_server_integrationerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_integrations_server_admin",
+      "label": "admin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_integrations_server_connectionrow",
+      "label": "ConnectionRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_integrations_server_credentialheaders",
+      "label": "credentialHeaders()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "lib_integrations_server_credentialpresent",
+      "label": "credentialPresent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "lib_integrations_server_proberesult",
+      "label": "ProbeResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_integrations_server_probeservice",
+      "label": "probeService()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_integrations_server_recordprobe",
+      "label": "recordProbe()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "lib_integrations_server_serviceview",
+      "label": "ServiceView",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "lib_integrations_server_loadintegrations",
+      "label": "loadIntegrations()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "id": "lib_integrations_server_saveintegration",
+      "label": "saveIntegration()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L199"
+    },
+    {
+      "id": "lib_integrations_server_disconnectintegration",
+      "label": "disconnectIntegration()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L240"
+    },
+    {
+      "id": "lib_integrations_server_testintegration",
+      "label": "testIntegration()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L263"
+    },
+    {
+      "id": "lib_integrations_server_probeallintegrations",
+      "label": "probeAllIntegrations()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L292"
+    },
+    {
+      "id": "lib_integrations_server_sweepintegrationprobes",
+      "label": "sweepIntegrationProbes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L307"
+    },
+    {
+      "id": "lib_integrations_server_getjson",
+      "label": "getJson()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "id": "lib_integrations_server_promscalar",
+      "label": "promScalar()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L338"
+    },
+    {
+      "id": "lib_integrations_server_baseurls",
+      "label": "baseUrls()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L345"
+    },
+    {
+      "id": "lib_integrations_server_loadopssignals",
+      "label": "loadOpsSignals()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L358"
+    },
+    {
+      "id": "lib_integrations_server_publishprobestatuses",
+      "label": "publishProbeStatuses()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L442"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_platform_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_platform_server_requireplatformadmin",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_integrations_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_classifyprobe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_healthurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_isintegrationservice",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_service_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_uptimepercent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_validbaseurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_componentstateforprobe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_signal_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_status_component",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_integrationservice",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_opssignal",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_probestatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_signalkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_integrationerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_integrationerror",
+      "target": "lib_integrations_server_integrationerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_connectionrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_credentialheaders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_credentialpresent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_proberesult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_probeservice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_recordprobe",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_serviceview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_loadintegrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_saveintegration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_disconnectintegration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_testintegration",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_probeallintegrations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L292",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_sweepintegrationprobes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L307",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_getjson",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L324",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_promscalar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L338",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_baseurls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L345",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_loadopssignals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L358",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_integrations_server_ts",
+      "target": "lib_integrations_server_publishprobestatuses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L442",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_probeservice",
+      "target": "lib_integrations_server_credentialheaders",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadintegrations",
+      "target": "lib_integrations_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_probeallintegrations",
+      "target": "lib_integrations_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_probeallintegrations",
+      "target": "lib_integrations_server_recordprobe",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L301",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_probeallintegrations",
+      "target": "lib_integrations_server_publishprobestatuses",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L302",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_sweepintegrationprobes",
+      "target": "lib_integrations_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L308",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadopssignals",
+      "target": "lib_integrations_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L360",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadopssignals",
+      "target": "lib_integrations_server_baseurls",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L361",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadopssignals",
+      "target": "lib_integrations_server_getjson",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L368",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadopssignals",
+      "target": "lib_integrations_server_credentialheaders",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L370",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_loadopssignals",
+      "target": "lib_integrations_server_promscalar",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L372",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_integrations_server_publishprobestatuses",
+      "target": "lib_integrations_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L444",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_integrations_server_integrationerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "lib_integrations_server_credentialheaders",
+      "callee": "btoa",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_integrations_server_credentialpresent",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "setTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "healthUrl",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "classifyProbe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeservice",
+      "callee": "clearTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_integrations_server_recordprobe",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "gte",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadintegrations",
+      "callee": "values",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "lib_integrations_server_saveintegration",
+      "callee": "isIntegrationService",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_integrations_server_saveintegration",
+      "callee": "validBaseUrl",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "lib_integrations_server_saveintegration",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L207"
+    },
+    {
+      "caller_nid": "lib_integrations_server_disconnectintegration",
+      "callee": "isIntegrationService",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L241"
+    },
+    {
+      "caller_nid": "lib_integrations_server_disconnectintegration",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "lib_integrations_server_testintegration",
+      "callee": "isIntegrationService",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "lib_integrations_server_testintegration",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L266"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeallintegrations",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeallintegrations",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L294"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeallintegrations",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeallintegrations",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "lib_integrations_server_probeallintegrations",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "lib_integrations_server_sweepintegrationprobes",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_integrations_server_sweepintegrationprobes",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_integrations_server_sweepintegrationprobes",
+      "callee": "lt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_integrations_server_sweepintegrationprobes",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_integrations_server_sweepintegrationprobes",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_integrations_server_getjson",
+      "callee": "setTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L326"
+    },
+    {
+      "caller_nid": "lib_integrations_server_getjson",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_integrations_server_getjson",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L330"
+    },
+    {
+      "caller_nid": "lib_integrations_server_getjson",
+      "callee": "clearTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "lib_integrations_server_promscalar",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_integrations_server_promscalar",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L342"
+    },
+    {
+      "caller_nid": "lib_integrations_server_baseurls",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_integrations_server_baseurls",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L346"
+    },
+    {
+      "caller_nid": "lib_integrations_server_baseurls",
+      "callee": "isIntegrationService",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "lib_integrations_server_baseurls",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "requirePlatformAdmin",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "encodeURIComponent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L369"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L373"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "encodeURIComponent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L379"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L383"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "flatMap",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L383"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L384"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L386"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "encodeURIComponent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L391"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L396"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L398"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L399"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L408"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L409"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L413"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L419"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L420"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L422"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L422"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L422"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "put",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L426"
+    },
+    {
+      "caller_nid": "lib_integrations_server_loadopssignals",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L430"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "componentStateForProbe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L461"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "lib_integrations_server_publishprobestatuses",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/integrations.server.ts",
+      "source_location": "L464"
+    }
+  ]
+}

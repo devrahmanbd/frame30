@@ -36,6 +36,7 @@ const settingsSchema = z.object({
       facebookCapiToken: z.string().max(1000).optional().default(""),
       googleConversionUrl: z.string().max(500).optional().default(""),
       googleTagManagerId: z.string().max(200).optional().default(""),
+      googleAnalyticsId: z.string().max(200).optional().default(""),
     })
     .optional(),
 });
@@ -45,17 +46,25 @@ export const siteSeoLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { loadSiteSeo } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return loadSiteSeo(context.supabase, merchantId);
   });
 
 export const siteSeoSaveFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("settings.update")])
-  .inputValidator((d: unknown) => z.object({ settings: settingsSchema }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ settings: settingsSchema }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { saveSiteSeo } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return saveSiteSeo(context.supabase, merchantId, data.settings);
   });
 
@@ -76,7 +85,10 @@ export const redirectSaveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { upsertRedirect } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return upsertRedirect(context.supabase, merchantId, data);
   });
 
@@ -86,7 +98,10 @@ export const redirectDeleteFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { deleteRedirect } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await deleteRedirect(context.supabase, merchantId, data.id);
     return { ok: true };
   });
@@ -94,22 +109,35 @@ export const redirectDeleteFn = createServerFn({ method: "POST" })
 export const notFoundRedirectFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("settings.update")])
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), targetPath: z.string().min(1).max(2048) }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        targetPath: z.string().min(1).max(2048),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { redirectNotFound } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return redirectNotFound(context.supabase, merchantId, data);
   });
 
 export const notFoundClearFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("settings.update")])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid().nullable() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid().nullable() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("@/lib/marketing.server");
     const { clearNotFound } = await import("./site-seo.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await clearNotFound(context.supabase, merchantId, data.id);
     return { ok: true };
   });

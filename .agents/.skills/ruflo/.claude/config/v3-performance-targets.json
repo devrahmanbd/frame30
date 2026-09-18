@@ -139,7 +139,11 @@
           }
         },
         "gates": {
-          "required": ["flashAttention", "searchImprovement", "mcpResponseTime"],
+          "required": [
+            "flashAttention",
+            "searchImprovement",
+            "mcpResponseTime"
+          ],
           "optional": ["memoryReduction", "learningAdaptation"]
         }
       },

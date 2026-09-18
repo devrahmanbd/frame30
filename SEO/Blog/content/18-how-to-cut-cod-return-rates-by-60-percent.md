@@ -2,7 +2,7 @@
 
 > **Target Query:** `cash on delivery return rate reduction`, `reduce rto ecommerce`, `cod fraud prevention bangladesh`  
 > **Reading Time:** 9 minutes  
-> **Published:** November 2026  
+> **Published:** November 2026
 
 ---
 
@@ -15,6 +15,7 @@ Many store owners only calculate the outbound delivery fee (e.g., 60–100 BDT).
 $$\text{Total RTO Cost} = \text{Outbound Delivery Fee} + \text{Return Delivery Fee (50\%)} + \text{Packaging Depreciation} + \text{Dead Inventory Holding Cost}$$
 
 On an average order of 1,500 BDT:
+
 - Outbound courier fee: 100 BDT
 - Return courier fee: 50 BDT
 - Damaged packaging & labeling: 30 BDT

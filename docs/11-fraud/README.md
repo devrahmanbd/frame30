@@ -92,16 +92,16 @@ fraud case — one machine (reason code on every transition)
 
 English keys; emitted by the engine, honeypot, or 06-payments gateway.
 
-| Event                  | Trigger                    | Carries                                  |
-| ---------------------- | -------------------------- | ---------------------------------------- |
-| `fraud.case.opened`    | case created at flag time  | case id, merchant_id, top signals        |
-| `fraud.review_started` | review queue pick-up       | case id, risk score, reason code         |
-| `fraud.rule_hit`       | any rule fired             | rule key, severity, contributing signals |
-| `fraud.order.blocked`  | block decision persisted   | case id, order id, reason code           |
-| `fraud.case.approved`  | approve decision persisted | case id, order id, release point         |
-| `fraud.escalated`      | escalation to analyst      | case id, escalation reason               |
+| Event                  | Trigger                    | Carries                                                              |
+| ---------------------- | -------------------------- | -------------------------------------------------------------------- |
+| `fraud.case.opened`    | case created at flag time  | case id, merchant_id, top signals                                    |
+| `fraud.review_started` | review queue pick-up       | case id, risk score, reason code                                     |
+| `fraud.rule_hit`       | any rule fired             | rule key, severity, contributing signals                             |
+| `fraud.order.blocked`  | block decision persisted   | case id, order id, reason code                                       |
+| `fraud.case.approved`  | approve decision persisted | case id, order id, release point                                     |
+| `fraud.escalated`      | escalation to analyst      | case id, escalation reason                                           |
 | `honeypot.triggered`   | storefront trap fired      | trap id, honeypot window (`fraud.honeypot_window`, §13), merchant_id |
-| `ad.traffic.bot_spike` | bot dial spike per source  | source, `ad_bot_score`, window           |
+| `ad.traffic.bot_spike` | bot dial spike per source  | source, `ad_bot_score`, window                                       |
 
 `fraud.review_started`, `fraud.rule_hit`, and `fraud.escalated` are the canonical review-flow events; the legacy open/approve/block events are preserved so existing analytics consumers keep working.
 
@@ -179,10 +179,10 @@ Per the `00-meta/design-system.md` §10 template.
 | Item                                                                 | Owner                  |
 | -------------------------------------------------------------------- | ---------------------- |
 | `fraud.rule_caps` — velocity/day and per-account caps (rules §7)     | **TBD** — platform eng |
-| `fraud.honeypot_window` — bounded honeypot hold window (§5)             | **TBD** — fraud ops    |
+| `fraud.honeypot_window` — bounded honeypot hold window (§5)          | **TBD** — fraud ops    |
 | `fraud.high_risk_threshold` — risk score at which a case blocks (§7) | **TBD** — fraud ops    |
-| `e2e_fraud_loop` ops owner (§11) — suite registered in `docs/15-e2e`   | **TBD** — QA           |
-| `fraud.review_sla` — max queue-pickup SLA for review cases (§2)        | **TBD** — fraud ops    |
+| `e2e_fraud_loop` ops owner (§11) — suite registered in `docs/15-e2e` | **TBD** — QA           |
+| `fraud.review_sla` — max queue-pickup SLA for review cases (§2)      | **TBD** — fraud ops    |
 | ML tier model + anomaly-score combine weights (§7)                   | **TBD** — data eng     |
 
 All numbers in this file trace to the corpus: retention windows (90d raw → 3y → purge) per `docs/09`; motion durations map to `design-system.md` §5 tokens (120/200/300ms); BDT-only integers and WCAG AAA on gated surfaces per `AGENTS.md` §2; admin TTI budget per `docs/15-e2e` §Perf. Honeypot windows, review SLA, velocity caps, and risk thresholds are named TBDs (§13) pending user sign-off. Nothing is invented.

@@ -30,35 +30,47 @@ npx agentic-flow workers benchmark --type concurrent
 ## Benchmark Types
 
 ### 1. Trigger Detection (`trigger-detection`)
+
 Tests keyword detection speed across 12 worker triggers.
+
 - **Target**: p95 < 5ms
 - **Iterations**: 1000
 - **Metrics**: latency, throughput, histogram
 
 ### 2. Worker Registry (`registry`)
+
 Tests CRUD operations on worker entries.
+
 - **Target**: p95 < 10ms
 - **Iterations**: 500 creates, gets, updates
 - **Metrics**: per-operation latency breakdown
 
 ### 3. Agent Selection (`agent-selection`)
+
 Tests performance-based agent selection.
+
 - **Target**: p95 < 1ms
 - **Iterations**: 1000
 - **Metrics**: selection confidence, agent scores
 
 ### 4. Model Cache (`cache`)
+
 Tests model caching performance.
+
 - **Target**: p95 < 0.5ms
 - **Metrics**: hit rate, cache size, eviction stats
 
 ### 5. Concurrent Workers (`concurrent`)
+
 Tests parallel worker creation and updates.
+
 - **Target**: < 1000ms for 10 workers
 - **Metrics**: per-worker latency, memory usage
 
 ### 6. Memory Key Generation (`memory-keys`)
+
 Tests memory pattern key generation.
+
 - **Target**: p95 < 0.1ms
 - **Iterations**: 5000
 - **Metrics**: unique patterns, throughput
@@ -116,7 +128,10 @@ Benchmark thresholds are configured in `.claude$settings.json`:
 ## Programmatic Usage
 
 ```typescript
-import { workerBenchmarks, runBenchmarks } from 'agentic-flow$workers$worker-benchmarks';
+import {
+  workerBenchmarks,
+  runBenchmarks,
+} from "agentic-flow$workers$worker-benchmarks";
 
 // Run full suite
 const suite = await runBenchmarks();

@@ -30,7 +30,10 @@ export type StorefrontCacheKeyInput = {
 };
 
 export class CacheKeyError extends Error {
-  constructor(readonly code: string, message: string) {
+  constructor(
+    readonly code: string,
+    message: string,
+  ) {
     super(message);
     this.name = "CacheKeyError";
   }
@@ -38,9 +41,16 @@ export class CacheKeyError extends Error {
 
 function segment(value: string, field: string): string {
   const clean = value.trim();
-  if (!clean) throw new CacheKeyError("cache.segment_required", `${field} (tenant scope) is required in a storefront cache key`);
+  if (!clean)
+    throw new CacheKeyError(
+      "cache.segment_required",
+      `${field} (tenant scope) is required in a storefront cache key`,
+    );
   if (clean.includes(":")) {
-    throw new CacheKeyError("cache.segment_invalid", `${field} may not contain ":" (key separator)`);
+    throw new CacheKeyError(
+      "cache.segment_invalid",
+      `${field} may not contain ":" (key separator)`,
+    );
   }
   return clean;
 }
@@ -57,15 +67,23 @@ export function tenantCachePrefix(merchantId: string): string {
 export function storefrontCacheKey(input: StorefrontCacheKeyInput): string {
   const template = segment(input.template, "template");
   const locale = input.locale ?? "*";
-  const version = input.themeVersion ? segment(input.themeVersion, "themeVersion") : "unversioned";
+  const version = input.themeVersion
+    ? segment(input.themeVersion, "themeVersion")
+    : "unversioned";
   return `${tenantCachePrefix(input.merchantId)}${template}:${locale}:${version}`;
 }
 
 /** Every part of a key, for assertions and debugging. */
 export function parseCacheKey(key: string) {
   const [prefix, merchantId, template, locale, version] = key.split(":");
-  if (`${prefix}:` !== STOREFRONT_CACHE_PREFIX || !merchantId || !template) return null;
-  return { merchantId, template, locale: (locale ?? "*") as CacheLocale, themeVersion: version ?? "unversioned" };
+  if (`${prefix}:` !== STOREFRONT_CACHE_PREFIX || !merchantId || !template)
+    return null;
+  return {
+    merchantId,
+    template,
+    locale: (locale ?? "*") as CacheLocale,
+    themeVersion: version ?? "unversioned",
+  };
 }
 
 /* ------------------------------------------------------------- edge response */
@@ -82,7 +100,9 @@ export function isStorefrontPath(pathname: string): boolean {
   if (/^\/store\/[^/]+(\/.*)?$/.test(pathname)) return true;
   if (
     pathname === "/" ||
-    /^\/(p|products|c|collections|pages|blog|cart|checkout|order)\b/.test(pathname)
+    /^\/(p|products|c|collections|pages|blog|cart|checkout|order)\b/.test(
+      pathname,
+    )
   ) {
     if (
       pathname.startsWith("/dashboard") ||
@@ -110,7 +130,13 @@ export function isStorefrontPath(pathname: string): boolean {
  * Covers both shapes: `/store/:slug/<segment>` and custom-domain `/<segment>`.
  * Mirrors `store.$slug.{cart,checkout,account,order.$orderId,track}.tsx`.
  */
-const PERSONALIZED_SEGMENTS = new Set(["cart", "checkout", "account", "order", "track"]);
+const PERSONALIZED_SEGMENTS = new Set([
+  "cart",
+  "checkout",
+  "account",
+  "order",
+  "track",
+]);
 
 export function isPersonalizedStorefrontPath(pathname: string): boolean {
   const pathBased = /^\/store\/[^/]+\/([^/]+)(\/.*)?$/.exec(pathname);
@@ -130,11 +156,13 @@ export function personalizedNoStoreHeaders(): Record<string, string> {
  * into the ETag so a publish makes every previously issued validator stale
  * without any edge purge call.
  */
-export function storefrontCacheHeaders(themeVersion: string | null): Record<string, string> {
+export function storefrontCacheHeaders(
+  themeVersion: string | null,
+): Record<string, string> {
   return {
     "cache-control": `public, max-age=0, s-maxage=${EDGE_TTL_SECONDS}, stale-while-revalidate=${EDGE_STALE_SECONDS}`,
-    // Locale is part of the cache identity, and it is negotiated per request.
-    vary: "accept-language",
+    // Locale and Host are part of cache identity (REPORT WF-09 / TODO §2.2)
+    vary: "accept-language, host",
     ...(themeVersion ? { etag: `W/"tv-${themeVersion}"` } : {}),
   };
 }

@@ -94,7 +94,9 @@ export function Popover({
     };
     document.addEventListener("mousedown", onDown);
     document.addEventListener("keydown", onKey, true);
-    const first = panelRef.current?.querySelector<HTMLElement>("input, button, select, textarea, [tabindex]:not([tabindex='-1'])");
+    const first = panelRef.current?.querySelector<HTMLElement>(
+      "input, button, select, textarea, [tabindex]:not([tabindex='-1'])",
+    );
     first?.focus();
     return () => {
       document.removeEventListener("mousedown", onDown);
@@ -121,7 +123,12 @@ export function Popover({
               <h4 id={`${id}-t`} className="text-sm font-semibold">
                 {title}
               </h4>
-              <button type="button" onClick={onClose} aria-label="Close" className="fq-focus-glow inline-flex size-8 items-center justify-center rounded-fq-md hover:bg-muted">
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close"
+                className="fq-focus-glow inline-flex size-8 items-center justify-center rounded-fq-md hover:bg-muted"
+              >
                 <X className="size-3.5" aria-hidden />
               </button>
             </div>
@@ -165,7 +172,13 @@ export function Collapsible({
             {title}
             {badge}
           </span>
-          <ChevronDown className={cn("size-4 transition-transform duration-150", open && "rotate-180")} aria-hidden />
+          <ChevronDown
+            className={cn(
+              "size-4 transition-transform duration-150",
+              open && "rotate-180",
+            )}
+            aria-hidden
+          />
         </button>
       </h2>
       {open && (
@@ -180,7 +193,19 @@ export function Collapsible({
 /* --------------------------------------------------------------- KvRow */
 
 /** WordPress document-panel row: muted label left, signal-coloured value button right. */
-export function KvRow({ label, value, onClick, open, disabled }: { label: ReactNode; value: ReactNode; onClick?: () => void; open?: boolean; disabled?: boolean }) {
+export function KvRow({
+  label,
+  value,
+  onClick,
+  open,
+  disabled,
+}: {
+  label: ReactNode;
+  value: ReactNode;
+  onClick?: () => void;
+  open?: boolean;
+  disabled?: boolean;
+}) {
   return (
     <div className="flex min-h-9 items-center justify-between gap-3 text-sm">
       <span className="fq-sub shrink-0">{label}</span>
@@ -204,9 +229,23 @@ export function KvRow({ label, value, onClick, open, disabled }: { label: ReactN
 
 /* ---------------------------------------------------------- UnderlineTabs */
 
-export function UnderlineTabs<T extends string>({ tabs, value, onChange, label }: { tabs: { id: T; label: ReactNode }[]; value: T; onChange: (id: T) => void; label: string }) {
+export function UnderlineTabs<T extends string>({
+  tabs,
+  value,
+  onChange,
+  label,
+}: {
+  tabs: { id: T; label: ReactNode }[];
+  value: T;
+  onChange: (id: T) => void;
+  label: string;
+}) {
   return (
-    <div role="tablist" aria-label={label} className="flex border-b border-border">
+    <div
+      role="tablist"
+      aria-label={label}
+      className="flex border-b border-border"
+    >
       {tabs.map((tab) => {
         const selected = tab.id === value;
         return (
@@ -222,7 +261,12 @@ export function UnderlineTabs<T extends string>({ tabs, value, onChange, label }
             )}
           >
             {tab.label}
-            {selected && <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-primary" />}
+            {selected && (
+              <span
+                aria-hidden
+                className="absolute inset-x-0 bottom-0 h-0.5 bg-primary"
+              />
+            )}
           </button>
         );
       })}
@@ -253,7 +297,15 @@ export function RadioList<T extends string>({
             o.disabled && "cursor-not-allowed opacity-50",
           )}
         >
-          <input type="radio" name={name} value={o.id} checked={value === o.id} disabled={o.disabled} onChange={() => onChange(o.id)} className="mt-0.5 size-[18px] shrink-0 accent-[var(--fq-signal)]" />
+          <input
+            type="radio"
+            name={name}
+            value={o.id}
+            checked={value === o.id}
+            disabled={o.disabled}
+            onChange={() => onChange(o.id)}
+            className="mt-0.5 size-[18px] shrink-0 accent-[var(--fq-signal)]"
+          />
           <span>
             <span className="block font-medium">{o.label}</span>
             {o.hint && <span className="fq-sub block text-xs">{o.hint}</span>}

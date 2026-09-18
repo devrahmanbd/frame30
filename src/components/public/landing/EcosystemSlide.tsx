@@ -1,12 +1,6 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
-import {
-  Smartphone,
-  CreditCard,
-  Banknote,
-  Truck,
-  Zap,
-} from "lucide-react";
+import { Smartphone, CreditCard, Banknote, Truck, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { useMotionIntent } from "@/lib/motion-runtime";
@@ -72,7 +66,8 @@ const PARTNERS: readonly PartnerCard[] = [
     category: "courier",
     categoryLabel: "Metro & Express",
     categoryLabelBn: "মেট্রো ও এক্সপ্রেস",
-    tagline: "On-demand city express and nationwide parcel delivery with live GPS.",
+    tagline:
+      "On-demand city express and nationwide parcel delivery with live GPS.",
     taglineBn: "দ্রুততম সিটি এক্সপ্রেস এবং লাইভ ট্র্যাকিংসহ পার্সেল ডেলিভারি।",
     feature: "Same-day metro dispatch",
     featureBn: "সেম-ডে মেট্রো ডেলিভারি",
@@ -85,7 +80,8 @@ const PARTNERS: readonly PartnerCard[] = [
     category: "card",
     categoryLabel: "Cards & Banking",
     categoryLabelBn: "কার্ড পেমেন্ট",
-    tagline: "Accept all local and global Visa debit and credit cards securely.",
+    tagline:
+      "Accept all local and global Visa debit and credit cards securely.",
     taglineBn: "সকল দেশি ও আন্তর্জাতিক ভিসা ডেবিট-ক্রেডিট কার্ড গ্রহণ করুন।",
     feature: "3D Secure 2.0 verified",
     featureBn: "৩ডি সিকিউর ২.০ ভেরিফাইড",
@@ -137,7 +133,8 @@ const PARTNERS: readonly PartnerCard[] = [
     category: "courier",
     categoryLabel: "Nationwide Hubs",
     categoryLabelBn: "দেশব্যাপী হাব",
-    tagline: "Extensive district network with automated return and exchange handling.",
+    tagline:
+      "Extensive district network with automated return and exchange handling.",
     taglineBn: "৬৪ জেলায় বিস্তৃত নেটওয়ার্ক ও স্বয়ংক্রিয় রিটার্ন সুবিধা।",
     feature: "Automated reverse pickup",
     featureBn: "অটোমেটেড রিটার্ন পিকআপ",
@@ -185,14 +182,11 @@ export function EcosystemSlide({ className }: { className?: string }) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
 
   const displayedPartners =
-    filter === "all"
-      ? PARTNERS
-      : PARTNERS.filter((p) => p.type === filter);
+    filter === "all" ? PARTNERS : PARTNERS.filter((p) => p.type === filter);
 
   // Duplicate for seamless infinite slide loop
   const slideItems = [...displayedPartners, ...displayedPartners];
 
-  
   // Drag to scroll handlers
   const onMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -229,9 +223,9 @@ export function EcosystemSlide({ className }: { className?: string }) {
       if (scroller) {
         scroller.scrollLeft += 0.5;
         // Loop back logic
-        if (scroller.scrollLeft >= (scroller.scrollWidth / 2)) {
-           // We've reached midway point (the start of duplicated content)
-           scroller.scrollLeft = 0;
+        if (scroller.scrollLeft >= scroller.scrollWidth / 2) {
+          // We've reached midway point (the start of duplicated content)
+          scroller.scrollLeft = 0;
         }
       }
       animationId = requestAnimationFrame(scroll);
@@ -343,17 +337,26 @@ export function EcosystemSlide({ className }: { className?: string }) {
           ref={scrollerRef}
           tabIndex={0}
           role="region"
-          aria-label={t("Payment methods and couriers slide", "পেমেন্ট ও কুরিয়ার স্লাইড")}
+          aria-label={t(
+            "Payment methods and couriers slide",
+            "পেমেন্ট ও কুরিয়ার স্লাইড",
+          )}
           className={cn(
             "flex overflow-x-auto py-2 gap-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden select-none",
-            isDragging ? "cursor-grabbing" : "cursor-grab"
+            isDragging ? "cursor-grabbing" : "cursor-grab",
           )}
           onMouseDown={onMouseDown}
           onMouseLeave={onMouseLeave}
           onMouseUp={onMouseUp}
           onMouseMove={onMouseMove}
-          onTouchStart={() => { setIsDragging(true); setIsPaused(true); }}
-          onTouchEnd={() => { setIsDragging(false); setIsPaused(false); }}
+          onTouchStart={() => {
+            setIsDragging(true);
+            setIsPaused(true);
+          }}
+          onTouchEnd={() => {
+            setIsDragging(false);
+            setIsPaused(false);
+          }}
         >
           <div className="flex items-center gap-4 shrink-0">
             {slideItems.map((partner, index) => (

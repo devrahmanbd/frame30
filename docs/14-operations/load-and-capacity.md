@@ -22,32 +22,32 @@ be gated on it.
 
 ## Seed scale the run assumes
 
-| Fixture | Target |
-| --- | --- |
+| Fixture                | Target                       |
+| ---------------------- | ---------------------------- |
 | Products in one tenant | 2,000 SKUs (≈4,000 variants) |
-| Orders in one tenant | 50,000 across 12 months |
-| Tenants active at once | 50 stores on one node |
+| Orders in one tenant   | 50,000 across 12 months      |
+| Tenants active at once | 50 stores on one node        |
 
 ## Budgets
 
-| Scenario | Budget p95 | Why |
-| --- | ---: | --- |
-| storefront_home | 800 ms | first paint of the shop |
-| collection_list | 900 ms | paginated catalogue read |
-| search | 900 ms | trigram search over 2,000 SKUs |
-| product_detail | 800 ms | the page that converts |
-| sitemap | 2,500 ms | generated, cached, crawler-facing |
-| cart | 800 ms | session read plus stock check |
-| order_track | 1,200 ms | order lookup at 50k rows |
+| Scenario        | Budget p95 | Why                               |
+| --------------- | ---------: | --------------------------------- |
+| storefront_home |     800 ms | first paint of the shop           |
+| collection_list |     900 ms | paginated catalogue read          |
+| search          |     900 ms | trigram search over 2,000 SKUs    |
+| product_detail  |     800 ms | the page that converts            |
+| sitemap         |   2,500 ms | generated, cached, crawler-facing |
+| cart            |     800 ms | session read plus stock check     |
+| order_track     |   1,200 ms | order lookup at 50k rows          |
 
 ## Run record
 
 Paste the table printed by the suite here after every run, newest first.
 
-| Date (UTC) | Build | Profile | Result | Notes |
-| --- | --- | --- | --- | --- |
-| _pending_ | — | single tenant, 25 workers | not yet run on a real host | needs the self-hosted node from Phase 10 |
-| _pending_ | — | 50 tenants, 100 workers | not yet run on a real host | needs the self-hosted node from Phase 10 |
+| Date (UTC) | Build | Profile                   | Result                     | Notes                                    |
+| ---------- | ----- | ------------------------- | -------------------------- | ---------------------------------------- |
+| _pending_  | —     | single tenant, 25 workers | not yet run on a real host | needs the self-hosted node from Phase 10 |
+| _pending_  | —     | 50 tenants, 100 workers   | not yet run on a real host | needs the self-hosted node from Phase 10 |
 
 A row is only allowed here when it came from the script; estimates do not go in
 this table.

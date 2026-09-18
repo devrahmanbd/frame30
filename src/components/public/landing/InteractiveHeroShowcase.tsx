@@ -28,10 +28,34 @@ interface StepMeta {
 }
 
 const STEPS: StepMeta[] = [
-  { id: "checkout", label: "01 Checkout", badge: "Order Created", icon: ShoppingBag, variant: "lift" },
-  { id: "payment", label: "02 bKash Rail", badge: "Instant Capture", icon: CreditCard, variant: "pulse" },
-  { id: "courier", label: "03 Logistics", badge: "Auto-Booked", icon: Truck, variant: "bounce" },
-  { id: "settle", label: "04 Settlement", badge: "Ledger Closed", icon: ShieldCheck, variant: "tilt" },
+  {
+    id: "checkout",
+    label: "01 Checkout",
+    badge: "Order Created",
+    icon: ShoppingBag,
+    variant: "lift",
+  },
+  {
+    id: "payment",
+    label: "02 bKash Rail",
+    badge: "Instant Capture",
+    icon: CreditCard,
+    variant: "pulse",
+  },
+  {
+    id: "courier",
+    label: "03 Logistics",
+    badge: "Auto-Booked",
+    icon: Truck,
+    variant: "bounce",
+  },
+  {
+    id: "settle",
+    label: "04 Settlement",
+    badge: "Ledger Closed",
+    icon: ShieldCheck,
+    variant: "tilt",
+  },
 ];
 
 export function InteractiveHeroShowcase({ className }: { className?: string }) {
@@ -67,7 +91,12 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 {isPassed ? (
                   <Check className="size-3.5 text-primary" />
                 ) : (
-                  <AnimatedIcon icon={Icon} variant={step.variant} size="sm" className="opacity-80" />
+                  <AnimatedIcon
+                    icon={Icon}
+                    variant={step.variant}
+                    size="sm"
+                    className="opacity-80"
+                  />
                 )}
               </span>
               <span className="truncate">{step.label}</span>
@@ -97,7 +126,9 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 <span className="inline-flex items-center rounded-fq-sm bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
                   Ready to Pay
                 </span>
-                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">৳3,450</p>
+                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">
+                  ৳3,450
+                </p>
               </div>
             </div>
 
@@ -105,9 +136,12 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
             <div className="rounded-fq-md border border-border/70 bg-muted/20 p-4 space-y-3">
               <div className="flex items-center justify-between text-xs pb-2 border-b border-border/50">
                 <span className="font-semibold text-foreground flex items-center gap-1.5">
-                  <Package className="size-3.5 text-primary" /> Order Items (2 items)
+                  <Package className="size-3.5 text-primary" /> Order Items (2
+                  items)
                 </span>
-                <span className="text-muted-foreground">Delivering to Dhanmondi Metro</span>
+                <span className="text-muted-foreground">
+                  Delivering to Dhanmondi Metro
+                </span>
               </div>
 
               <div className="space-y-2 text-xs">
@@ -157,7 +191,8 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 onClick={() => setActiveStep(1)}
                 className="group inline-flex items-center gap-1 text-primary font-medium hover:underline"
               >
-                Proceed to Payment <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
+                Proceed to Payment{" "}
+                <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -182,7 +217,9 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 <span className="inline-flex items-center rounded-fq-sm bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
                   Payment Captured
                 </span>
-                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">৳3,450</p>
+                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">
+                  ৳3,450
+                </p>
               </div>
             </div>
 
@@ -190,28 +227,38 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
             <div className="rounded-fq-md border border-border/70 bg-muted/20 p-4 space-y-3">
               <div className="flex items-center justify-between text-xs pb-2 border-b border-border/50">
                 <span className="font-semibold text-foreground flex items-center gap-1.5">
-                  <CreditCard className="size-3.5 text-primary" /> MFS Settlement Certificate
+                  <CreditCard className="size-3.5 text-primary" /> MFS
+                  Settlement Certificate
                 </span>
-                <span className="font-mono text-muted-foreground">TrxID: 9BK841029</span>
+                <span className="font-mono text-muted-foreground">
+                  TrxID: 9BK841029
+                </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <div className="rounded-fq-sm border border-border/60 bg-card/60 p-2.5">
-                  <p className="text-muted-foreground">Direct Settlement Target</p>
+                  <p className="text-muted-foreground">
+                    Direct Settlement Target
+                  </p>
                   <p className="font-semibold text-foreground mt-0.5 flex items-center gap-1">
-                    <Building2 className="size-3 text-primary" /> City Bank A/C ****4891
+                    <Building2 className="size-3 text-primary" /> City Bank A/C
+                    ****4891
                   </p>
                 </div>
                 <div className="rounded-fq-sm border border-border/60 bg-card/60 p-2.5">
                   <p className="text-muted-foreground">Platform Sales Cut</p>
-                  <p className="font-semibold text-primary mt-0.5">0% (You keep 100% revenue)</p>
+                  <p className="font-semibold text-primary mt-0.5">
+                    0% (You keep 100% revenue)
+                  </p>
                 </div>
               </div>
 
               <div className="rounded-fq-sm border border-border/40 bg-card/40 p-2.5 text-xs font-mono space-y-1 text-muted-foreground">
                 <div className="flex justify-between">
                   <span>Gross customer payment:</span>
-                  <span className="text-foreground font-semibold">৳3,450.00</span>
+                  <span className="text-foreground font-semibold">
+                    ৳3,450.00
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>bKash direct merchant fee (1.2%):</span>
@@ -225,13 +272,16 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
             </div>
 
             <div className="flex items-center justify-between text-xs text-muted-foreground pt-1">
-              <span>Settles directly into your account with zero platform hold</span>
+              <span>
+                Settles directly into your account with zero platform hold
+              </span>
               <button
                 type="button"
                 onClick={() => setActiveStep(2)}
                 className="group inline-flex items-center gap-1 text-primary font-medium hover:underline"
               >
-                Dispatch Courier <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
+                Dispatch Courier{" "}
+                <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -256,7 +306,9 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 <span className="inline-flex items-center rounded-fq-sm bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
                   Rider Assigned
                 </span>
-                <p className="text-xs text-muted-foreground mt-1 font-mono">Pickup: 3:00 PM</p>
+                <p className="text-xs text-muted-foreground mt-1 font-mono">
+                  Pickup: 3:00 PM
+                </p>
               </div>
             </div>
 
@@ -264,8 +316,12 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
             <div className="rounded-fq-md border border-border/70 bg-muted/20 p-4 space-y-3">
               <div className="flex items-center justify-between text-xs pb-2 border-b border-border/50">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold tracking-wider text-foreground">STEADFAST COURIER</span>
-                  <span className="rounded-fq-sm bg-muted/80 px-2 py-0.5 text-[10px] font-mono">EXPRESS</span>
+                  <span className="font-bold tracking-wider text-foreground">
+                    STEADFAST COURIER
+                  </span>
+                  <span className="rounded-fq-sm bg-muted/80 px-2 py-0.5 text-[10px] font-mono">
+                    EXPRESS
+                  </span>
                 </div>
                 <button
                   type="button"
@@ -291,14 +347,20 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                     <MapPin className="size-3 text-primary" /> Destination
                   </p>
                   <p className="font-semibold text-foreground">Nusrat Jahan</p>
-                  <p className="text-muted-foreground">House 42, Road 7, Dhanmondi, Dhaka</p>
+                  <p className="text-muted-foreground">
+                    House 42, Road 7, Dhanmondi, Dhaka
+                  </p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-muted-foreground flex items-center gap-1">
                     <Clock className="size-3 text-primary" /> Courier Rider
                   </p>
-                  <p className="font-semibold text-foreground">Tariqul Islam (01822-***890)</p>
-                  <p className="text-primary font-medium">Customer tracking SMS sent</p>
+                  <p className="font-semibold text-foreground">
+                    Tariqul Islam (01822-***890)
+                  </p>
+                  <p className="text-primary font-medium">
+                    Customer tracking SMS sent
+                  </p>
                 </div>
               </div>
             </div>
@@ -310,7 +372,8 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 onClick={() => setActiveStep(3)}
                 className="group inline-flex items-center gap-1 text-primary font-medium hover:underline"
               >
-                View Ledger Settlement <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
+                View Ledger Settlement{" "}
+                <ArrowRight className="size-3 transition-transform motion-safe:group-hover:translate-x-0.5" />
               </button>
             </div>
           </div>
@@ -335,7 +398,9 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
                 <span className="inline-flex items-center rounded-fq-sm bg-primary/15 px-2.5 py-1 text-xs font-semibold text-primary">
                   Settled
                 </span>
-                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">৳3,450</p>
+                <p className="fq-display text-2xl font-bold mt-1 tabular-nums text-foreground">
+                  ৳3,450
+                </p>
               </div>
             </div>
 
@@ -343,30 +408,41 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
             <div className="rounded-fq-md border border-border/70 bg-muted/20 p-4 space-y-3">
               <div className="flex items-center justify-between text-xs pb-2 border-b border-border/50">
                 <span className="font-semibold text-foreground flex items-center gap-1.5">
-                  <ShieldCheck className="size-3.5 text-primary" /> Multi-Channel Sync Confirmation
+                  <ShieldCheck className="size-3.5 text-primary" />{" "}
+                  Multi-Channel Sync Confirmation
                 </span>
-                <span className="text-muted-foreground font-mono">Ref #TX-98214</span>
+                <span className="text-muted-foreground font-mono">
+                  Ref #TX-98214
+                </span>
               </div>
 
               <div className="grid grid-cols-3 gap-2 text-xs text-center">
                 <div className="rounded-fq-sm border border-border/60 bg-card/60 p-2.5">
                   <p className="text-muted-foreground">Central Stock</p>
-                  <p className="font-semibold text-foreground mt-1 tabular-nums">43 → 42 units</p>
+                  <p className="font-semibold text-foreground mt-1 tabular-nums">
+                    43 → 42 units
+                  </p>
                 </div>
                 <div className="rounded-fq-sm border border-border/60 bg-card/60 p-2.5">
                   <p className="text-muted-foreground">Net Margin</p>
-                  <p className="font-semibold text-foreground mt-1 tabular-nums">54.2%</p>
+                  <p className="font-semibold text-foreground mt-1 tabular-nums">
+                    54.2%
+                  </p>
                 </div>
                 <div className="rounded-fq-sm border border-border/60 bg-card/60 p-2.5">
                   <p className="text-muted-foreground">COD Loss Risk</p>
-                  <p className="font-semibold text-primary mt-1">৳0 (Pre-paid)</p>
+                  <p className="font-semibold text-primary mt-1">
+                    ৳0 (Pre-paid)
+                  </p>
                 </div>
               </div>
 
               <div className="text-xs text-muted-foreground rounded-fq-sm border border-border/40 bg-card/40 p-2.5">
                 <div className="flex justify-between items-center">
                   <span>Storefront, Social DM & Dhanmondi POS:</span>
-                  <span className="text-foreground font-medium">Synced in 12ms</span>
+                  <span className="text-foreground font-medium">
+                    Synced in 12ms
+                  </span>
                 </div>
               </div>
             </div>
@@ -397,4 +473,3 @@ export function InteractiveHeroShowcase({ className }: { className?: string }) {
     </div>
   );
 }
-

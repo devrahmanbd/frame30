@@ -37,14 +37,17 @@ function safeHref(raw: string): string | null {
 const ICON_PATHS: Record<string, string> = {
   star: "M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.4l6.1-.9z",
   cart: "M3 4h2l2.4 10.4a2 2 0 002 1.6h7.7a2 2 0 002-1.6L20.5 8H6.2M9 20a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z",
-  truck: "M3 7h11v8H3zM14 10h4l3 3v2h-7zM7 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z",
+  truck:
+    "M3 7h11v8H3zM14 10h4l3 3v2h-7zM7 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z",
   shield: "M12 3l7 3v5c0 4.4-3 8.3-7 10-4-1.7-7-5.6-7-10V6z",
-  phone: "M6 3h4l2 5-2.5 1.5a12 12 0 005 5L16 12l5 2v4a2 2 0 01-2 2A16 16 0 014 5a2 2 0 012-2z",
+  phone:
+    "M6 3h4l2 5-2.5 1.5a12 12 0 005 5L16 12l5 2v4a2 2 0 01-2 2A16 16 0 014 5a2 2 0 012-2z",
   mail: "M3 6h18v12H3zM3 6l9 6 9-6",
   clock: "M12 4a8 8 0 100 16 8 8 0 000-16zm0 3v5l3 2",
   check: "M4 12l5 5L20 6",
   search: "M11 4a7 7 0 100 14 7 7 0 000-14zm5.5 11.5L21 20",
-  heart: "M12 20S4 14.5 4 9.5A4.5 4.5 0 0112 7a4.5 4.5 0 018 2.5C20 14.5 12 20 12 20z",
+  heart:
+    "M12 20S4 14.5 4 9.5A4.5 4.5 0 0112 7a4.5 4.5 0 018 2.5C20 14.5 12 20 12 20z",
   arrow: "M5 12h13M13 6l6 6-6 6",
 };
 
@@ -96,7 +99,10 @@ const ButtonWidget: WidgetComponent = ({ str, bool, editing }) => {
   const size = BUTTON_SIZE[str("size")] ?? BUTTON_SIZE["md"]!;
   const icon = str("icon");
   const newTab = bool("newTab");
-  if (!label) return editing ? <p className="text-xs text-muted-foreground">Button: add a label.</p> : null;
+  if (!label)
+    return editing ? (
+      <p className="text-xs text-muted-foreground">Button: add a label.</p>
+    ) : null;
 
   const className = `inline-flex items-center justify-center gap-2 rounded-fq-md font-medium transition ${variant} ${size} ${
     bool("fullWidth") ? "w-full" : ""
@@ -136,7 +142,9 @@ const IconWidget: WidgetComponent = ({ str, int }) => {
   const body = (
     <span className={`inline-flex flex-col items-center gap-1 ${tone}`}>
       <Glyph name={str("name")} size={size} />
-      {label ? <span className="text-xs text-muted-foreground">{label}</span> : null}
+      {label ? (
+        <span className="text-xs text-muted-foreground">{label}</span>
+      ) : null}
     </span>
   );
   return href ? (
@@ -165,14 +173,24 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
         href: safeHref(readString(r, "href")),
       }));
   const column = str("layout") === "column";
-  const align = str("align") === "center" ? "items-center text-center" : "items-start";
+  const align =
+    str("align") === "center" ? "items-center text-center" : "items-start";
   const heading = str("heading");
   if (items.length === 0)
-    return editing ? <p className="text-xs text-muted-foreground">Menu: add some links.</p> : null;
+    return editing ? (
+      <p className="text-xs text-muted-foreground">Menu: add some links.</p>
+    ) : null;
   return (
-    <nav aria-label={heading || "Menu"} className={`flex flex-col gap-2 ${align}`}>
-      {heading ? <p className="text-xs fq-caps text-muted-foreground">{heading}</p> : null}
-      <ul className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}>
+    <nav
+      aria-label={heading || "Menu"}
+      className={`flex flex-col gap-2 ${align}`}
+    >
+      {heading ? (
+        <p className="text-xs fq-caps text-muted-foreground">{heading}</p>
+      ) : null}
+      <ul
+        className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}
+      >
         {items.slice(0, 12).map((item, i) => {
           const label = item.label;
           const href = safeHref(item.href);
@@ -182,7 +200,10 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
           return (
             <li key={`${label}-${i}`} className="relative group">
               {href ? (
-                <a href={href} className="text-sm hover:text-primary hover:underline">
+                <a
+                  href={href}
+                  className="text-sm hover:text-primary hover:underline"
+                >
                   {label}
                 </a>
               ) : (
@@ -230,7 +251,11 @@ const LogoWidget: WidgetComponent = ({ str, int, editing }) => {
   const href = safeHref(str("href"));
   const height = int("height", 40, 16, 120);
   if (!image && !wordmark)
-    return editing ? <p className="text-xs text-muted-foreground">Logo: add an image or a name.</p> : null;
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        Logo: add an image or a name.
+      </p>
+    ) : null;
   const body = image ? (
     <img
       src={image}
@@ -241,7 +266,9 @@ const LogoWidget: WidgetComponent = ({ str, int, editing }) => {
       decoding="async"
     />
   ) : (
-    <span className="font-bangla-display text-xl font-bold tracking-tight">{wordmark}</span>
+    <span className="font-bangla-display text-xl font-bold tracking-tight">
+      {wordmark}
+    </span>
   );
   return href ? (
     <a href={href} className="inline-flex items-center">
@@ -254,8 +281,17 @@ const LogoWidget: WidgetComponent = ({ str, int, editing }) => {
 
 /* ------------------------------------------------------------- carousel */
 
-const CarouselWidget: WidgetComponent = ({ section, str, int, bool, Heading, primary }) => {
-  const slides = rowsOf(section, "slides").filter((row) => readString(row, "image"));
+const CarouselWidget: WidgetComponent = ({
+  section,
+  str,
+  int,
+  bool,
+  Heading,
+  primary,
+}) => {
+  const slides = rowsOf(section, "slides").filter((row) =>
+    readString(row, "image"),
+  );
   const perView = int("perView", 3, 1, 4);
   const heading = str("heading");
   const track = useRef<HTMLUListElement>(null);
@@ -263,7 +299,10 @@ const CarouselWidget: WidgetComponent = ({ section, str, int, bool, Heading, pri
   function scrollBy(direction: 1 | -1) {
     const el = track.current;
     if (!el) return;
-    el.scrollBy({ left: direction * (el.clientWidth / perView), behavior: "smooth" });
+    el.scrollBy({
+      left: direction * (el.clientWidth / perView),
+      behavior: "smooth",
+    });
   }
 
   if (slides.length === 0)
@@ -276,7 +315,11 @@ const CarouselWidget: WidgetComponent = ({ section, str, int, bool, Heading, pri
   return (
     <section className="space-y-3">
       {heading ? (
-        <Heading className={primary ? "text-2xl font-bold" : "text-xl font-semibold"}>{heading}</Heading>
+        <Heading
+          className={primary ? "text-2xl font-bold" : "text-xl font-semibold"}
+        >
+          {heading}
+        </Heading>
       ) : null}
       <div className="relative">
         <ul
@@ -296,14 +339,21 @@ const CarouselWidget: WidgetComponent = ({ section, str, int, bool, Heading, pri
                   loading="lazy"
                   decoding="async"
                 />
-                {caption ? <figcaption className="text-sm text-muted-foreground">{caption}</figcaption> : null}
+                {caption ? (
+                  <figcaption className="text-sm text-muted-foreground">
+                    {caption}
+                  </figcaption>
+                ) : null}
               </figure>
             );
             return (
               <li
                 key={`${i}-${caption}`}
                 className="shrink-0 snap-start"
-                style={{ width: `calc((100% - ${(perView - 1) * 16}px) / ${perView})`, minWidth: 180 }}
+                style={{
+                  width: `calc((100% - ${(perView - 1) * 16}px) / ${perView})`,
+                  minWidth: 180,
+                }}
               >
                 {href ? <a href={href}>{figure}</a> : figure}
               </li>
@@ -337,10 +387,19 @@ const CarouselWidget: WidgetComponent = ({ section, str, int, bool, Heading, pri
 
 /* ----------------------------------------------------------------- form */
 
-const FormWidget: WidgetComponent = ({ str, bool, Heading, primary, locale, editing }: WidgetCtx) => {
+const FormWidget: WidgetComponent = ({
+  str,
+  bool,
+  Heading,
+  primary,
+  locale,
+  editing,
+}: WidgetCtx) => {
   const prefix = useId();
   const renderedAt = useRef(Date.now());
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">(
+    "idle",
+  );
   const [honeypot, setHoneypot] = useState("");
   useEffect(() => {
     renderedAt.current = Date.now();
@@ -372,7 +431,10 @@ const FormWidget: WidgetComponent = ({ str, bool, Heading, primary, locale, edit
 
   if (state === "done")
     return (
-      <p role="status" className="rounded-fq-md border border-border bg-card p-6 text-sm">
+      <p
+        role="status"
+        className="rounded-fq-md border border-border bg-card p-6 text-sm"
+      >
         {str("successText")}
       </p>
     );
@@ -383,35 +445,66 @@ const FormWidget: WidgetComponent = ({ str, bool, Heading, primary, locale, edit
   return (
     <section className="space-y-3">
       {str("heading") ? (
-        <Heading className={primary ? "text-2xl font-bold" : "text-xl font-semibold"}>{str("heading")}</Heading>
+        <Heading
+          className={primary ? "text-2xl font-bold" : "text-xl font-semibold"}
+        >
+          {str("heading")}
+        </Heading>
       ) : null}
-      {str("body") ? <p className="text-sm text-muted-foreground">{str("body")}</p> : null}
+      {str("body") ? (
+        <p className="text-sm text-muted-foreground">{str("body")}</p>
+      ) : null}
       <form onSubmit={onSubmit} className="grid gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor={`${prefix}-name`} className="text-xs font-medium">
             {str("nameLabel")}
           </label>
-          <input id={`${prefix}-name`} name="name" required maxLength={80} className={field} />
+          <input
+            id={`${prefix}-name`}
+            name="name"
+            required
+            maxLength={80}
+            className={field}
+          />
         </div>
         <div>
           <label htmlFor={`${prefix}-email`} className="text-xs font-medium">
             {str("emailLabel")}
           </label>
-          <input id={`${prefix}-email`} name="email" type="email" required maxLength={120} className={field} />
+          <input
+            id={`${prefix}-email`}
+            name="email"
+            type="email"
+            required
+            maxLength={120}
+            className={field}
+          />
         </div>
         {bool("showPhone") ? (
           <div className="sm:col-span-2">
             <label htmlFor={`${prefix}-phone`} className="text-xs font-medium">
               {str("phoneLabel")}
             </label>
-            <input id={`${prefix}-phone`} name="phone" maxLength={30} className={field} />
+            <input
+              id={`${prefix}-phone`}
+              name="phone"
+              maxLength={30}
+              className={field}
+            />
           </div>
         ) : null}
         <div className="sm:col-span-2">
           <label htmlFor={`${prefix}-message`} className="text-xs font-medium">
             {str("messageLabel")}
           </label>
-          <textarea id={`${prefix}-message`} name="message" required rows={4} maxLength={2000} className={`${field} py-2`} />
+          <textarea
+            id={`${prefix}-message`}
+            name="message"
+            required
+            rows={4}
+            maxLength={2000}
+            className={`${field} py-2`}
+          />
         </div>
         {/* Honeypot: never shown, never announced. */}
         <input
@@ -431,7 +524,9 @@ const FormWidget: WidgetComponent = ({ str, bool, Heading, primary, locale, edit
           >
             {str("buttonLabel")}
           </button>
-          <span className="text-xs text-muted-foreground">{str("consentText")}</span>
+          <span className="text-xs text-muted-foreground">
+            {str("consentText")}
+          </span>
         </div>
         {state === "error" ? (
           <p role="alert" className="sm:col-span-2 text-sm text-danger">

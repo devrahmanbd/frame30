@@ -26,13 +26,16 @@ const DESTS: Dest[] = [
 export function CustomerShell({ children }: { children: ReactNode }) {
   const { t } = useLang();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const [selectedMerchantId, setSelectedMerchantId] = useState<string | undefined>();
+  const [selectedMerchantId, setSelectedMerchantId] = useState<
+    string | undefined
+  >();
   const [openStoreMenu, setOpenStoreMenu] = useState(false);
   const { data: account } = useCustomerAccount(selectedMerchantId);
   const { data: accountsData } = useCustomerAccounts();
   const accounts = accountsData ?? [];
 
-  const isActive = (to: string) => (to === "/dashboard" ? pathname === to : pathname.startsWith(to));
+  const isActive = (to: string) =>
+    to === "/dashboard" ? pathname === to : pathname.startsWith(to);
 
   return (
     <div className="fq-theme flex min-h-screen flex-col bg-background text-foreground">
@@ -57,7 +60,10 @@ export function CustomerShell({ children }: { children: ReactNode }) {
                 <span className="max-w-[140px] truncate font-bangla-display">
                   {account?.storeName ?? t("Select store", "দোকান নির্বাচন")}
                 </span>
-                <ChevronDown className="size-3 text-muted-foreground" aria-hidden />
+                <ChevronDown
+                  className="size-3 text-muted-foreground"
+                  aria-hidden
+                />
               </button>
               {openStoreMenu ? (
                 <>
@@ -85,8 +91,12 @@ export function CustomerShell({ children }: { children: ReactNode }) {
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           }`}
                         >
-                          <span className="truncate">{a.storeName ?? a.storeSlug ?? "Store"}</span>
-                          {a.merchantId === account?.merchantId ? <span>✓</span> : null}
+                          <span className="truncate">
+                            {a.storeName ?? a.storeSlug ?? "Store"}
+                          </span>
+                          {a.merchantId === account?.merchantId ? (
+                            <span>✓</span>
+                          ) : null}
                         </button>
                       </li>
                     ))}
@@ -133,7 +143,11 @@ export function CustomerShell({ children }: { children: ReactNode }) {
         </nav>
       </header>
 
-      <main id="customer-main" tabIndex={-1} className="mx-auto w-full max-w-4xl flex-1 p-4 pb-24 sm:pb-8">
+      <main
+        id="customer-main"
+        tabIndex={-1}
+        className="mx-auto w-full max-w-4xl flex-1 p-4 pb-24 sm:pb-8"
+      >
         {children}
       </main>
 

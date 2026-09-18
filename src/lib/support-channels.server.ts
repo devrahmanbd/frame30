@@ -15,7 +15,8 @@ import { digest } from "./support-guardrails";
 type Client = SupabaseClient<Database>;
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -30,11 +31,16 @@ export async function hashSecret(value: string) {
 function timingSafeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
-export async function verifySignature(secret: string, body: string, signature: string) {
+export async function verifySignature(
+  secret: string,
+  body: string,
+  signature: string,
+) {
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -42,11 +48,18 @@ export async function verifySignature(secret: string, body: string, signature: s
     false,
     ["sign"],
   );
-  const mac = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(body));
+  const mac = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(body),
+  );
   const expected = Array.from(new Uint8Array(mac))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  return timingSafeEqual(expected, signature.replace(/^sha256=/, "").toLowerCase());
+  return timingSafeEqual(
+    expected,
+    signature.replace(/^sha256=/, "").toLowerCase(),
+  );
 }
 
 export type ChannelIntake = {
@@ -60,7 +73,8 @@ export type ChannelIntake = {
   secret: string | null;
 };
 
-export type IntakeOutcome = "processed" | "duplicate" | "rejected" | "disabled" | "unknown_channel";
+export type IntakeOutcome =
+  "processed" | "duplicate" | "rejected" | "disabled" | "unknown_channel";
 
 /**
  * One inbound provider event. Returns the outcome instead of throwing so the
@@ -79,11 +93,17 @@ export async function ingestChannelEvent(input: ChannelIntake): Promise<{
       .eq("external_id", input.externalId)
       .maybeSingle();
     if (!channel) {
-      incr("framique_ai_channel_total", { channel: input.channel, outcome: "unknown_channel" });
+      incr("framique_ai_channel_total", {
+        channel: input.channel,
+        outcome: "unknown_channel",
+      });
       return { outcome: "unknown_channel" as const };
     }
 
-    await enforceRateLimit("support.channel", `${channel.merchant_id}:${input.channel}`);
+    await enforceRateLimit(
+      "support.channel",
+      `${channel.merchant_id}:${input.channel}`,
+    );
 
     const payloadDigest = await digest(input.rawBody);
     const base = {
@@ -99,7 +119,10 @@ export async function ingestChannelEvent(input: ChannelIntake): Promise<{
       .from("ai_channel_events")
       .insert({ ...base, status: "received" });
     if (insertError) {
-      incr("framique_ai_channel_total", { channel: input.channel, outcome: "duplicate" });
+      incr("framique_ai_channel_total", {
+        channel: input.channel,
+        outcome: "duplicate",
+      });
       return { outcome: "duplicate" as const };
     }
 
@@ -109,14 +132,24 @@ export async function ingestChannelEvent(input: ChannelIntake): Promise<{
         .update({ status, error: error ?? null })
         .eq("merchant_id", channel.merchant_id)
         .eq("external_event_id", input.eventId);
-      incr("framique_ai_channel_total", { channel: input.channel, outcome: status });
+      incr("framique_ai_channel_total", {
+        channel: input.channel,
+        outcome: status,
+      });
     };
 
     if (!channel.enabled) {
       await settle("disabled");
       return { outcome: "disabled" as const };
     }
-    if (input.secret && !(await verifySignature(input.secret, input.rawBody, input.signature ?? ""))) {
+    if (
+      input.secret &&
+      !(await verifySignature(
+        input.secret,
+        input.rawBody,
+        input.signature ?? "",
+      ))
+    ) {
       await settle("rejected", "bad_signature");
       log("warn", "support.channel_bad_signature", { channel: input.channel });
       return { outcome: "rejected" as const };
@@ -153,7 +186,9 @@ export async function listChannels(db: Client, merchantId: string) {
   await enforceRateLimit("support.read", merchantId);
   const { data } = await db
     .from("ai_channels")
-    .select("id, channel, display_name, external_id, enabled, status, last_event_at, created_at")
+    .select(
+      "id, channel, display_name, external_id, enabled, status, last_event_at, created_at",
+    )
     .eq("merchant_id", merchantId)
     .order("created_at");
   return data ?? [];
@@ -185,7 +220,11 @@ export async function saveChannel(
   if (input.secret) row.secret_hash = await hashSecret(input.secret);
 
   const { error } = input.id
-    ? await db.from("ai_channels").update(row).eq("merchant_id", merchantId).eq("id", input.id)
+    ? await db
+        .from("ai_channels")
+        .update(row)
+        .eq("merchant_id", merchantId)
+        .eq("id", input.id)
     : await db.from("ai_channels").insert(row);
   if (error) throw new Error("channel_save_failed");
   return { ok: true as const };

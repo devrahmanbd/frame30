@@ -25,13 +25,23 @@ export const productConversionFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => publicInput.parse(d))
   .handler(async ({ data }) => {
     const { storeBySlug } = await import("./accounts.server");
-    const { enforceRateLimit, RateLimitError } = await import("./rate-limit.server");
+    const { enforceRateLimit, RateLimitError } =
+      await import("./rate-limit.server");
     const store = await storeBySlug(data.slug);
     try {
-      await enforceRateLimit("storefront.social", `${store.id}:${data.sessionKey ?? "anon"}`);
+      await enforceRateLimit(
+        "storefront.social",
+        `${store.id}:${data.sessionKey ?? "anon"}`,
+      );
     } catch (err) {
       if (err instanceof RateLimitError) {
-        return { reviews: [], agg: null, recommendations: [], recentlyViewed: [], throttled: true };
+        return {
+          reviews: [],
+          agg: null,
+          recommendations: [],
+          recentlyViewed: [],
+          throttled: true,
+        };
       }
       throw err;
     }
@@ -46,13 +56,18 @@ export const productConversionFn = createServerFn({ method: "GET" })
 
 /** Fire-and-forget view beacon. Always answers 200 so it can never block a page. */
 export const trackProductViewFn = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => publicInput.extend({ sessionKey: sessionKey }).parse(d))
+  .inputValidator((d: unknown) =>
+    publicInput.extend({ sessionKey: sessionKey }).parse(d),
+  )
   .handler(async ({ data }) => {
     if (!data.sessionKey) return { ok: false };
     const { storeBySlug } = await import("./accounts.server");
     const { rateLimit } = await import("./rate-limit.server");
     const store = await storeBySlug(data.slug);
-    const verdict = await rateLimit("storefront.view", `${store.id}:${data.sessionKey}`);
+    const verdict = await rateLimit(
+      "storefront.view",
+      `${store.id}:${data.sessionKey}`,
+    );
     if (!verdict.allowed) return { ok: false };
     const { trackProductView } = await import("./conversion.server");
     await trackProductView(store.id, data.productId, data.sessionKey);
@@ -76,7 +91,10 @@ export const submitReviewFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("storefront.review", `${data.slug}:${context.userId}`);
+    await enforceRateLimit(
+      "storefront.review",
+      `${data.slug}:${context.userId}`,
+    );
     const { storeBySlug, submitReview } = await import("./accounts.server");
     const store = await storeBySlug(data.slug);
     await submitReview(context.supabase, store.id, {
@@ -101,7 +119,10 @@ export const reviewQueueFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => merchantInput.parse(d))
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.reviews", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.reviews",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { loadReviewQueue } = await import("./accounts.server");
     return loadReviewQueue(context.supabase, data.merchantId);
   });
@@ -120,9 +141,17 @@ export const moderateReviewFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.reviews", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.reviews",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { moderateReview } = await import("./accounts.server");
-    await moderateReview(context.supabase, data.reviewId, data.status, data.note);
+    await moderateReview(
+      context.supabase,
+      data.reviewId,
+      data.status,
+      data.note,
+    );
     const { purgeReviews } = await import("./conversion.server");
     purgeReviews(data.productId);
     return { ok: true };
@@ -141,7 +170,10 @@ export const replyReviewFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.reviews", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.reviews",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { replyToReview } = await import("./accounts.server");
     await replyToReview(context.supabase, data.reviewId, data.body);
     const { purgeReviews } = await import("./conversion.server");
@@ -166,7 +198,10 @@ export const experimentListFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => merchantInput.parse(d))
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.experiments", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.experiments",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { listExperiments } = await import("./experiments.server");
     return listExperiments(context.supabase, data.merchantId);
   });
@@ -192,7 +227,10 @@ export const experimentSaveFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.experiments", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.experiments",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { saveExperiment } = await import("./experiments.server");
     const id = await saveExperiment(context.supabase, data.merchantId, data);
     return { id };
@@ -210,8 +248,16 @@ export const experimentStatusFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    await enforceRateLimit("admin.experiments", `${data.merchantId}:${context.userId}`);
+    await enforceRateLimit(
+      "admin.experiments",
+      `${data.merchantId}:${context.userId}`,
+    );
     const { setExperimentStatus } = await import("./experiments.server");
-    await setExperimentStatus(context.supabase, data.merchantId, data.experimentId, data.status);
+    await setExperimentStatus(
+      context.supabase,
+      data.merchantId,
+      data.experimentId,
+      data.status,
+    );
     return { ok: true };
   });

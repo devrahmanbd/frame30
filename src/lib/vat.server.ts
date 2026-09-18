@@ -9,7 +9,10 @@ import { incr, log, withSpan } from "./observability.server";
 import type { VatRate } from "./vat";
 
 type Rpc = {
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 export function legalYear(at: Date = new Date()) {
@@ -48,8 +51,11 @@ export async function resolveVatRate(
           effective_year: number;
           resolved: boolean;
         };
-        incr("framique_vat_total", { outcome: row.resolved ? "resolved" : "missing_year" });
-        if (!row.resolved) log("warn", "vat.missing_legal_year", { country, category, year });
+        incr("framique_vat_total", {
+          outcome: row.resolved ? "resolved" : "missing_year",
+        });
+        if (!row.resolved)
+          log("warn", "vat.missing_legal_year", { country, category, year });
         return {
           countryCode: row.country_code,
           category: row.category,

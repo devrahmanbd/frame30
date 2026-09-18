@@ -1,1 +1,1615 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "label": "support-agent.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1"}, {"id": "lib_support_agent_server_setmockadminclient", "label": "setMockAdminClient()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L35"}, {"id": "lib_support_agent_server_createtestdbproxy", "label": "createTestDbProxy()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L39"}, {"id": "lib_support_agent_server_admin", "label": "admin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L113"}, {"id": "lib_support_agent_server_source", "label": "Source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L126"}, {"id": "lib_support_agent_server_askinput", "label": "AskInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L128"}, {"id": "lib_support_agent_server_ticketaction", "label": "TicketAction", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L139"}, {"id": "lib_support_agent_server_callbackaction", "label": "CallbackAction", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L148"}, {"id": "lib_support_agent_server_epistemicactionpath", "label": "EpistemicActionPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L157"}, {"id": "lib_support_agent_server_contactinfocard", "label": "ContactInfoCard", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L165"}, {"id": "lib_support_agent_server_askresult", "label": "AskResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L173"}, {"id": "lib_support_agent_server_getconversationtakeoverstate", "label": "getConversationTakeoverState()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L195"}, {"id": "lib_support_agent_server_merchantbyslugcached", "label": "merchantBySlugCached()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L233"}, {"id": "lib_support_agent_server_recordguardrail", "label": "recordGuardrail()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L242"}, {"id": "lib_support_agent_server_recordtoolcall", "label": "recordToolCall()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L266"}, {"id": "lib_support_agent_server_ensureconversation", "label": "ensureConversation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L293"}, {"id": "lib_support_agent_server_conversation_recent_turns", "label": "CONVERSATION_RECENT_TURNS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L322"}, {"id": "lib_support_agent_server_clearconversationrecentturns", "label": "clearConversationRecentTurns()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L324"}, {"id": "lib_support_agent_server_appendmessage", "label": "appendMessage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L328"}, {"id": "lib_support_agent_server_consecutiveunsure", "label": "consecutiveUnsure()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L355"}, {"id": "lib_support_agent_server_recordtrajectory", "label": "recordTrajectory()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L372"}, {"id": "lib_support_agent_server_ungrounded_speculative_patterns", "label": "UNGROUNDED_SPECULATIVE_PATTERNS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L412"}, {"id": "lib_support_agent_server_detectungroundedorspeculative", "label": "detectUngroundedOrSpeculative()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L430"}, {"id": "lib_support_agent_server_default_contact_info", "label": "DEFAULT_CONTACT_INFO", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L439"}, {"id": "lib_support_agent_server_epistemic_action_paths", "label": "EPISTEMIC_ACTION_PATHS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L447"}, {"id": "lib_support_agent_server_buildepistemichumilityreply", "label": "buildEpistemicHumilityReply()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L478"}, {"id": "lib_support_agent_server_fallback", "label": "FALLBACK", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L511"}, {"id": "lib_support_agent_server_asksupport", "label": "askSupport()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L522"}, {"id": "lib_support_agent_server_rateconversation", "label": "rateConversation()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1096"}, {"id": "lib_support_agent_server_degradedanswer", "label": "degradedAnswer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1144"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_i18n_dict_en", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_money_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_money_fmtminor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_rate_limit_server_ratelimiterror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_rate_limit_server_ratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_guardrails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_confidenceof", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_digest", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_redactpii", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_screeninbound", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_screenoutbound", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_confidence", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_guardrails_guardkind", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_kb_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_kb_server_searchkb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_kb_server_searchkbhybrid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_kb_server_kbhit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_llm_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_llm_server_draftanswer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_tickets_server_createticket", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_ai_support_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_support_server_detectintent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_support_server_hashphone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_support_server_lookuporder", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_support_server_supporterror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_support_server_intent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_loop_detector_server_detecttrajectoryloop", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_loop_detector_server_trajectoryturn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "users_rahman_documents_frame30_src_lib_ai_training_data_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_ai_training_data_server_capturetrainingturn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_setmockadminclient", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_createtestdbproxy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_askinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_ticketaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_callbackaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_epistemicactionpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L157", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_contactinfocard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L165", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_askresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_getconversationtakeoverstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L195", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_merchantbyslugcached", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L233", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_recordguardrail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L242", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_recordtoolcall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L266", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_ensureconversation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L293", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_conversation_recent_turns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L322", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_clearconversationrecentturns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L324", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_appendmessage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L328", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_consecutiveunsure", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L355", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_recordtrajectory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L372", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_ungrounded_speculative_patterns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L412", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_detectungroundedorspeculative", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L430", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_default_contact_info", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L439", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_epistemic_action_paths", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L447", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_buildepistemichumilityreply", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L478", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_fallback", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L511", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_asksupport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L522", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_rateconversation", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1096", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts", "target": "lib_support_agent_server_degradedanswer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1144", "weight": 1.0}, {"source": "lib_support_agent_server_admin", "target": "lib_support_agent_server_createtestdbproxy", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L116", "weight": 1.0}, {"source": "lib_support_agent_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L119", "weight": 1.0}, {"source": "lib_support_agent_server_getconversationtakeoverstate", "target": "users_rahman_documents_frame30_src_lib_support_moderation_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L201", "weight": 1.0}, {"source": "lib_support_agent_server_getconversationtakeoverstate", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L213", "weight": 1.0}, {"source": "lib_support_agent_server_recordguardrail", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L249", "weight": 1.0}, {"source": "lib_support_agent_server_recordtoolcall", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L277", "weight": 1.0}, {"source": "lib_support_agent_server_ensureconversation", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L299", "weight": 1.0}, {"source": "lib_support_agent_server_appendmessage", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L335", "weight": 1.0}, {"source": "lib_support_agent_server_consecutiveunsure", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L356", "weight": 1.0}, {"source": "lib_support_agent_server_recordtrajectory", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L381", "weight": 1.0}, {"source": "lib_support_agent_server_rateconversation", "target": "users_rahman_documents_frame30_src_lib_ai_training_data_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1105", "weight": 1.0}, {"source": "lib_support_agent_server_rateconversation", "target": "lib_support_agent_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1110", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_agent_server_createtestdbproxy", "callee": "resolve", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L40"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "getMockConversation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L202"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L214"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L214"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L214"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L214"}, {"caller_nid": "lib_support_agent_server_getconversationtakeoverstate", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L214"}, {"caller_nid": "lib_support_agent_server_merchantbyslugcached", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L234"}, {"caller_nid": "lib_support_agent_server_recordguardrail", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L250"}, {"caller_nid": "lib_support_agent_server_recordguardrail", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L250"}, {"caller_nid": "lib_support_agent_server_recordguardrail", "callee": "digest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L256"}, {"caller_nid": "lib_support_agent_server_recordguardrail", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L258"}, {"caller_nid": "lib_support_agent_server_recordguardrail", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L259"}, {"caller_nid": "lib_support_agent_server_recordtoolcall", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L278"}, {"caller_nid": "lib_support_agent_server_recordtoolcall", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L278"}, {"caller_nid": "lib_support_agent_server_recordtoolcall", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L285"}, {"caller_nid": "lib_support_agent_server_recordtoolcall", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L289"}, {"caller_nid": "lib_support_agent_server_recordtoolcall", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L290"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L301"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L301"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L301"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L301"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L301"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "single", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L309"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L309"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L309"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L309"}, {"caller_nid": "lib_support_agent_server_ensureconversation", "callee": "hashPhone", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L314"}, {"caller_nid": "lib_support_agent_server_clearconversationrecentturns", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L325"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L336"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "redactPii", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L336"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L339"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L340"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "shift", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L341"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L342"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L344"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L344"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L347"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L347"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L347"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L347"}, {"caller_nid": "lib_support_agent_server_appendmessage", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L349"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L357"}, {"caller_nid": "lib_support_agent_server_consecutiveunsure", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L365"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L382"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L391"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L394"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L394"}, {"caller_nid": "lib_support_agent_server_recordtrajectory", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L403"}, {"caller_nid": "lib_support_agent_server_detectungroundedorspeculative", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L431"}, {"caller_nid": "lib_support_agent_server_asksupport", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L523"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1101"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1101"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1101"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1102"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "redactPii", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1102"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "catch", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1106"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "updateTurnCsat", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1106"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1111"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1111"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1111"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1111"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1117"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1117"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1117"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1123"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1123"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1129"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1134"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1134"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1137"}, {"caller_nid": "lib_support_agent_server_rateconversation", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1137"}, {"caller_nid": "lib_support_agent_server_degradedanswer", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1146"}, {"caller_nid": "lib_support_agent_server_degradedanswer", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1148"}, {"caller_nid": "lib_support_agent_server_degradedanswer", "callee": "en", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts", "source_location": "L1152"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "label": "support-agent.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_agent_server_setmockadminclient",
+      "label": "setMockAdminClient()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_support_agent_server_createtestdbproxy",
+      "label": "createTestDbProxy()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "lib_support_agent_server_admin",
+      "label": "admin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_support_agent_server_source",
+      "label": "Source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "id": "lib_support_agent_server_askinput",
+      "label": "AskInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_support_agent_server_ticketaction",
+      "label": "TicketAction",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "lib_support_agent_server_callbackaction",
+      "label": "CallbackAction",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_support_agent_server_epistemicactionpath",
+      "label": "EpistemicActionPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "id": "lib_support_agent_server_contactinfocard",
+      "label": "ContactInfoCard",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L165"
+    },
+    {
+      "id": "lib_support_agent_server_askresult",
+      "label": "AskResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "lib_support_agent_server_getconversationtakeoverstate",
+      "label": "getConversationTakeoverState()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L195"
+    },
+    {
+      "id": "lib_support_agent_server_merchantbyslugcached",
+      "label": "merchantBySlugCached()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L233"
+    },
+    {
+      "id": "lib_support_agent_server_recordguardrail",
+      "label": "recordGuardrail()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L242"
+    },
+    {
+      "id": "lib_support_agent_server_recordtoolcall",
+      "label": "recordToolCall()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L266"
+    },
+    {
+      "id": "lib_support_agent_server_ensureconversation",
+      "label": "ensureConversation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L293"
+    },
+    {
+      "id": "lib_support_agent_server_conversation_recent_turns",
+      "label": "CONVERSATION_RECENT_TURNS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L322"
+    },
+    {
+      "id": "lib_support_agent_server_clearconversationrecentturns",
+      "label": "clearConversationRecentTurns()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L324"
+    },
+    {
+      "id": "lib_support_agent_server_appendmessage",
+      "label": "appendMessage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "id": "lib_support_agent_server_consecutiveunsure",
+      "label": "consecutiveUnsure()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L355"
+    },
+    {
+      "id": "lib_support_agent_server_recordtrajectory",
+      "label": "recordTrajectory()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L372"
+    },
+    {
+      "id": "lib_support_agent_server_ungrounded_speculative_patterns",
+      "label": "UNGROUNDED_SPECULATIVE_PATTERNS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L412"
+    },
+    {
+      "id": "lib_support_agent_server_detectungroundedorspeculative",
+      "label": "detectUngroundedOrSpeculative()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L430"
+    },
+    {
+      "id": "lib_support_agent_server_default_contact_info",
+      "label": "DEFAULT_CONTACT_INFO",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L439"
+    },
+    {
+      "id": "lib_support_agent_server_epistemic_action_paths",
+      "label": "EPISTEMIC_ACTION_PATHS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L447"
+    },
+    {
+      "id": "lib_support_agent_server_buildepistemichumilityreply",
+      "label": "buildEpistemicHumilityReply()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L478"
+    },
+    {
+      "id": "lib_support_agent_server_fallback",
+      "label": "FALLBACK",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L511"
+    },
+    {
+      "id": "lib_support_agent_server_asksupport",
+      "label": "askSupport()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L522"
+    },
+    {
+      "id": "lib_support_agent_server_rateconversation",
+      "label": "rateConversation()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1096"
+    },
+    {
+      "id": "lib_support_agent_server_degradedanswer",
+      "label": "degradedAnswer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1144"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_i18n_dict_en",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_money_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_money_fmtminor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_rate_limit_server_ratelimiterror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_rate_limit_server_ratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_guardrails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_confidenceof",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_digest",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_redactpii",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_screeninbound",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_screenoutbound",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_confidence",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_guardrails_guardkind",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_kb_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_kb_server_searchkb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_kb_server_searchkbhybrid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_kb_server_kbhit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_llm_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_llm_server_draftanswer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_tickets_server_createticket",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ai_support_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_support_server_detectintent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_support_server_hashphone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_support_server_lookuporder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_support_server_supporterror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_support_server_intent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_loop_detector_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_loop_detector_server_detecttrajectoryloop",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_loop_detector_server_trajectoryturn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_ai_training_data_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_ai_training_data_server_capturetrainingturn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_setmockadminclient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_createtestdbproxy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_askinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_ticketaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_callbackaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_epistemicactionpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_contactinfocard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_askresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_getconversationtakeoverstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L195",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_merchantbyslugcached",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L233",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_recordguardrail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_recordtoolcall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L266",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_ensureconversation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L293",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_conversation_recent_turns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L322",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_clearconversationrecentturns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L324",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_appendmessage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L328",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_consecutiveunsure",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L355",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_recordtrajectory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L372",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_ungrounded_speculative_patterns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L412",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_detectungroundedorspeculative",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L430",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_default_contact_info",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L439",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_epistemic_action_paths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L447",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_buildepistemichumilityreply",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L478",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_fallback",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L511",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_asksupport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L522",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_rateconversation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1096",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_agent_server_ts",
+      "target": "lib_support_agent_server_degradedanswer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1144",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_admin",
+      "target": "lib_support_agent_server_createtestdbproxy",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_getconversationtakeoverstate",
+      "target": "users_rahman_documents_frame30_src_lib_support_moderation_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L201",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_getconversationtakeoverstate",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_recordguardrail",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_recordtoolcall",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L277",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_ensureconversation",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L299",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_appendmessage",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L335",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_consecutiveunsure",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L356",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_recordtrajectory",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L381",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_rateconversation",
+      "target": "users_rahman_documents_frame30_src_lib_ai_training_data_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1105",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_agent_server_rateconversation",
+      "target": "lib_support_agent_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1110",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_agent_server_createtestdbproxy",
+      "callee": "resolve",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "getMockConversation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L202"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_getconversationtakeoverstate",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_merchantbyslugcached",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L234"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordguardrail",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordguardrail",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L250"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordguardrail",
+      "callee": "digest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L256"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordguardrail",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordguardrail",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L259"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtoolcall",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L278"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtoolcall",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L278"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtoolcall",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtoolcall",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtoolcall",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L301"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "single",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L309"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_ensureconversation",
+      "callee": "hashPhone",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_clearconversationrecentturns",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L325"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "redactPii",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L336"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L340"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "shift",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L342"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L344"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L347"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_appendmessage",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L349"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_consecutiveunsure",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L365"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L391"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L394"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_recordtrajectory",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L403"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_detectungroundedorspeculative",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L431"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_asksupport",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L523"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1101"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1101"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1101"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1102"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "redactPii",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1102"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "catch",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1106"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "updateTurnCsat",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1106"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1111"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1111"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1111"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1111"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1117"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1117"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1117"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1123"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1123"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1129"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1134"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1134"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1137"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_rateconversation",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1137"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_degradedanswer",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1146"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_degradedanswer",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1148"
+    },
+    {
+      "caller_nid": "lib_support_agent_server_degradedanswer",
+      "callee": "en",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-agent.server.ts",
+      "source_location": "L1152"
+    }
+  ]
+}

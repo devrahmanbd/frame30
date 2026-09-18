@@ -25,7 +25,9 @@ describe("code state machine", () => {
   it("never lets a delivered code be sold again", () => {
     expect(canTransitionCode("delivered", "available")).toBe(false);
     expect(canTransitionCode("delivered", "reserved")).toBe(false);
-    expect(() => assertCodeTransition("delivered", "available")).toThrow(/invalid_code_transition/);
+    expect(() => assertCodeTransition("delivered", "available")).toThrow(
+      /invalid_code_transition/,
+    );
   });
 
   it("releases a reservation when checkout is abandoned", () => {
@@ -81,7 +83,10 @@ describe("parseCodeBatch", () => {
   });
 
   it("stops at the import ceiling", () => {
-    const raw = Array.from({ length: 20 }, (_, i) => `CODE${String(i).padStart(6, "0")}`).join("\n");
+    const raw = Array.from(
+      { length: 20 },
+      (_, i) => `CODE${String(i).padStart(6, "0")}`,
+    ).join("\n");
     expect(parseCodeBatch(raw, 5).codes).toHaveLength(5);
   });
 
@@ -95,7 +100,9 @@ describe("retry policy", () => {
     const first = nextAttemptDelayMs(1, "delivery-1");
     const third = nextAttemptDelayMs(3, "delivery-1");
     expect(third).toBeGreaterThan(first);
-    expect(nextAttemptDelayMs(99, "delivery-1")).toBeLessThanOrEqual(30 * 60_000 * 1.2);
+    expect(nextAttemptDelayMs(99, "delivery-1")).toBeLessThanOrEqual(
+      30 * 60_000 * 1.2,
+    );
   });
 
   it("jitters per delivery so retries do not stampede together", () => {
@@ -105,20 +112,35 @@ describe("retry policy", () => {
   it("gives up on permanent failures and on the attempt ceiling", () => {
     expect(shouldRetry(1, { retryable: false })).toBe(false);
     expect(shouldRetry(MAX_DELIVERY_ATTEMPTS, { retryable: true })).toBe(false);
-    expect(shouldRetry(MAX_DELIVERY_ATTEMPTS - 1, { retryable: true })).toBe(true);
+    expect(shouldRetry(MAX_DELIVERY_ATTEMPTS - 1, { retryable: true })).toBe(
+      true,
+    );
   });
 
   it("classifies provider failures into retryable and terminal", () => {
-    expect(classifyDeliveryError(503, "bad gateway")).toMatchObject({ retryable: true });
-    expect(classifyDeliveryError(429, "slow down")).toMatchObject({ retryable: true });
-    expect(classifyDeliveryError(null, "fetch failed")).toMatchObject({ retryable: true });
-    expect(classifyDeliveryError(403, "denied")).toMatchObject({ retryable: false, code: "provider_auth" });
-    expect(classifyDeliveryError(400, "invalid recipient")).toMatchObject({ code: "bad_recipient" });
+    expect(classifyDeliveryError(503, "bad gateway")).toMatchObject({
+      retryable: true,
+    });
+    expect(classifyDeliveryError(429, "slow down")).toMatchObject({
+      retryable: true,
+    });
+    expect(classifyDeliveryError(null, "fetch failed")).toMatchObject({
+      retryable: true,
+    });
+    expect(classifyDeliveryError(403, "denied")).toMatchObject({
+      retryable: false,
+      code: "provider_auth",
+    });
+    expect(classifyDeliveryError(400, "invalid recipient")).toMatchObject({
+      code: "bad_recipient",
+    });
   });
 
   it("explains every failure in Bangla for the merchant", () => {
     expect(explainDelivery("provider_auth", "bn")).toMatch(/[\u0980-\u09FF]/);
-    expect(explainDelivery("nonsense-code", "en")).toBe(explainDelivery("unknown", "en"));
+    expect(explainDelivery("nonsense-code", "en")).toBe(
+      explainDelivery("unknown", "en"),
+    );
   });
 });
 
@@ -142,19 +164,43 @@ describe("recipient normalization", () => {
 
 describe("stockHealth", () => {
   it("turns velocity into days of cover", () => {
-    expect(stockHealth({ available: 70, reserved: 3, soldLast7Days: 70, lowStockThreshold: 10 })).toMatchObject(
-      { daysOfCover: 7, status: "healthy" },
-    );
+    expect(
+      stockHealth({
+        available: 70,
+        reserved: 3,
+        soldLast7Days: 70,
+        lowStockThreshold: 10,
+      }),
+    ).toMatchObject({ daysOfCover: 7, status: "healthy" });
   });
 
   it("flags a fast-selling product as critical before it hits zero", () => {
     expect(
-      stockHealth({ available: 10, reserved: 0, soldLast7Days: 140, lowStockThreshold: 5 }).status,
+      stockHealth({
+        available: 10,
+        reserved: 0,
+        soldLast7Days: 140,
+        lowStockThreshold: 5,
+      }).status,
     ).toBe("critical");
   });
 
   it("reports out of stock and unknown cover with no sales", () => {
-    expect(stockHealth({ available: 0, reserved: 2, soldLast7Days: 0, lowStockThreshold: 5 }).status).toBe("out");
-    expect(stockHealth({ available: 50, reserved: 0, soldLast7Days: 0, lowStockThreshold: 5 }).daysOfCover).toBeNull();
+    expect(
+      stockHealth({
+        available: 0,
+        reserved: 2,
+        soldLast7Days: 0,
+        lowStockThreshold: 5,
+      }).status,
+    ).toBe("out");
+    expect(
+      stockHealth({
+        available: 50,
+        reserved: 0,
+        soldLast7Days: 0,
+        lowStockThreshold: 5,
+      }).daysOfCover,
+    ).toBeNull();
   });
 });

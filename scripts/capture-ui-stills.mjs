@@ -33,7 +33,14 @@
  *   bun scripts/capture-ui-stills.mjs --only admin-orders --base http://localhost:8080
  *   bun scripts/capture-ui-stills.mjs --require-auth --json /tmp/stills.json
  */
-import { mkdirSync, writeFileSync, readFileSync, existsSync, statSync, rmSync } from "node:fs";
+import {
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  statSync,
+  rmSync,
+} from "node:fs";
 import { resolve, dirname, join } from "node:path";
 import { tmpdir, homedir } from "node:os";
 import { spawn } from "node:child_process";
@@ -46,12 +53,20 @@ const flag = (name, fallback = null) => {
   const v = argv[i + 1];
   return v && !v.startsWith("--") ? v : true;
 };
-const BASE = String(flag("base", process.env.STILLS_BASE ?? "http://localhost:8080")).replace(/\/$/, "");
+const BASE = String(
+  flag("base", process.env.STILLS_BASE ?? "http://localhost:8080"),
+).replace(/\/$/, "");
 const ONLY = flag("only", null);
 const REQUIRE_AUTH = argv.includes("--require-auth");
 const DRY = argv.includes("--dry-run");
-const CONCURRENCY = Math.max(1, Number.parseInt(String(flag("concurrency", "2")), 10) || 2);
-const ATTEMPTS = Math.max(1, Number.parseInt(String(flag("attempts", "2")), 10) || 2);
+const CONCURRENCY = Math.max(
+  1,
+  Number.parseInt(String(flag("concurrency", "2")), 10) || 2,
+);
+const ATTEMPTS = Math.max(
+  1,
+  Number.parseInt(String(flag("attempts", "2")), 10) || 2,
+);
 const JSON_OUT = flag("json", null);
 const ROOT = resolve(import.meta.dirname, "..");
 const WORK = join(tmpdir(), `fq-stills-${process.pid}`);
@@ -85,7 +100,12 @@ function run(cmd, args, timeoutMs = 120_000) {
     child.on("close", (code) => {
       clearTimeout(timer);
       if (code === 0) resolvePromise();
-      else reject(new Error(`${cmd} exited ${code}: ${stderr.trim().split("\n").slice(-3).join(" | ")}`));
+      else
+        reject(
+          new Error(
+            `${cmd} exited ${code}: ${stderr.trim().split("\n").slice(-3).join(" | ")}`,
+          ),
+        );
     });
   });
 }
@@ -98,17 +118,50 @@ function run(cmd, args, timeoutMs = 120_000) {
  */
 async function encode(pngPath, outBase) {
   await run("ffmpeg", [
-    "-y", "-loglevel", "error", "-i", pngPath,
-    "-c:v", "libaom-av1", "-still-picture", "1", "-cpu-used", "6", "-crf", "34",
-    "-pix_fmt", "yuv420p", `${outBase}.avif`,
+    "-y",
+    "-loglevel",
+    "error",
+    "-i",
+    pngPath,
+    "-c:v",
+    "libaom-av1",
+    "-still-picture",
+    "1",
+    "-cpu-used",
+    "6",
+    "-crf",
+    "34",
+    "-pix_fmt",
+    "yuv420p",
+    `${outBase}.avif`,
   ]);
   await run("ffmpeg", [
-    "-y", "-loglevel", "error", "-i", pngPath,
-    "-c:v", "libwebp", "-pix_fmt", "yuv420p", "-quality", "82", "-compression_level", "6", `${outBase}.webp`,
+    "-y",
+    "-loglevel",
+    "error",
+    "-i",
+    pngPath,
+    "-c:v",
+    "libwebp",
+    "-pix_fmt",
+    "yuv420p",
+    "-quality",
+    "82",
+    "-compression_level",
+    "6",
+    `${outBase}.webp`,
   ]);
   await run("ffmpeg", [
-    "-y", "-loglevel", "error", "-i", pngPath,
-    "-vf", "scale=iw:ih", "-compression_level", "100", `${outBase}.png`,
+    "-y",
+    "-loglevel",
+    "error",
+    "-i",
+    pngPath,
+    "-vf",
+    "scale=iw:ih",
+    "-compression_level",
+    "100",
+    `${outBase}.png`,
   ]);
 }
 
@@ -122,7 +175,12 @@ function readSession() {
   const envKey = process.env.BROWSER_SUPABASE_STORAGE_KEY;
   const envCookies = process.env.BROWSER_SUPABASE_COOKIES_JSON;
   if (envJson && envKey) {
-    return { status, storageKey: envKey, session: envJson, cookies: envCookies ?? null };
+    return {
+      status,
+      storageKey: envKey,
+      session: envJson,
+      cookies: envCookies ?? null,
+    };
   }
   const minted = join(homedir(), ".cache/framique-auth/session.json");
   if (existsSync(minted)) {
@@ -137,7 +195,9 @@ function readSession() {
         };
       }
     } catch (error) {
-      log("warn", "stills.session_unreadable", { message: String(error?.message ?? error) });
+      log("warn", "stills.session_unreadable", {
+        message: String(error?.message ?? error),
+      });
     }
   }
   return null;
@@ -147,10 +207,15 @@ async function restore(context, page, session) {
   if (!session) return false;
   if (session.cookies) {
     try {
-      const cookies = JSON.parse(session.cookies).map((c) => ({ ...c, url: BASE }));
+      const cookies = JSON.parse(session.cookies).map((c) => ({
+        ...c,
+        url: BASE,
+      }));
       await context.addCookies(cookies);
     } catch (error) {
-      log("warn", "stills.cookie_restore_failed", { message: String(error?.message ?? error) });
+      log("warn", "stills.cookie_restore_failed", {
+        message: String(error?.message ?? error),
+      });
     }
   }
   await page.goto(BASE, { waitUntil: "domcontentloaded" });
@@ -166,11 +231,21 @@ async function restore(context, page, session) {
 /* -------------------------------------------------------------------------- */
 
 async function main() {
-  const { UI_STILLS, STILLS, STILL_DIR } = await import(`${ROOT}/src/lib/marketing-assets.ts`);
-  const only = ONLY ? new Set(String(ONLY).split(",").map((s) => s.trim())) : null;
+  const { UI_STILLS, STILLS, STILL_DIR } = await import(
+    `${ROOT}/src/lib/marketing-assets.ts`
+  );
+  const only = ONLY
+    ? new Set(
+        String(ONLY)
+          .split(",")
+          .map((s) => s.trim()),
+      )
+    : null;
   const jobs = UI_STILLS.filter((s) => !only || only.has(s.id));
   if (jobs.length === 0) {
-    console.error(`ui stills FAILED: --only "${ONLY}" matched nothing in UI_STILLS.`);
+    console.error(
+      `ui stills FAILED: --only "${ONLY}" matched nothing in UI_STILLS.`,
+    );
     process.exit(1);
   }
 
@@ -185,8 +260,12 @@ async function main() {
   }
 
   const session = readSession();
-  const authStatus = process.env.BROWSER_AUTH_STATUS ?? (session ? "minted" : "absent");
-  log("info", "stills.session", { status: authStatus, restored: Boolean(session) });
+  const authStatus =
+    process.env.BROWSER_AUTH_STATUS ?? (session ? "minted" : "absent");
+  log("info", "stills.session", {
+    status: authStatus,
+    restored: Boolean(session),
+  });
 
   mkdirSync(WORK, { recursive: true });
   const browser = await chromium.launch();
@@ -212,23 +291,41 @@ async function main() {
         try {
           if (spec.capture.auth === "admin") {
             const ok = await restore(context, page, session);
-            if (!ok) throw Object.assign(new Error("no session available for an admin capture"), {
-              skip: true,
-            });
+            if (!ok)
+              throw Object.assign(
+                new Error("no session available for an admin capture"),
+                {
+                  skip: true,
+                },
+              );
           }
           const url = `${BASE}${spec.capture.path}`;
-          const response = await page.goto(url, { waitUntil: "networkidle", timeout: 45_000 });
+          const response = await page.goto(url, {
+            waitUntil: "networkidle",
+            timeout: 45_000,
+          });
           const status = response?.status() ?? 0;
           if (status >= 400) throw new Error(`${url} responded HTTP ${status}`);
-          if (/\/auth(\?|$)/.test(page.url()) && spec.capture.auth === "admin") {
-            throw Object.assign(new Error(`redirected to ${page.url()} — session was rejected`), {
-              skip: true,
-            });
+          if (
+            /\/auth(\?|$)/.test(page.url()) &&
+            spec.capture.auth === "admin"
+          ) {
+            throw Object.assign(
+              new Error(`redirected to ${page.url()} — session was rejected`),
+              {
+                skip: true,
+              },
+            );
           }
           if (spec.capture.waitFor) {
             await page
               .waitForSelector(spec.capture.waitFor, { timeout: 15_000 })
-              .catch(() => log("warn", "stills.waitfor_absent", { id: spec.id, selector: spec.capture.waitFor }));
+              .catch(() =>
+                log("warn", "stills.waitfor_absent", {
+                  id: spec.id,
+                  selector: spec.capture.waitFor,
+                }),
+              );
           }
           // Let fonts and any settled reveal finish; a half-entered card looks
           // like a rendering bug in a marketing screenshot.
@@ -247,7 +344,9 @@ async function main() {
           }
 
           const target = page.locator(spec.capture.selector).first();
-          const useElement = (await target.count()) > 0 && !/^(body|html|:root)$/i.test(spec.capture.selector);
+          const useElement =
+            (await target.count()) > 0 &&
+            !/^(body|html|:root)$/i.test(spec.capture.selector);
           const raw = join(WORK, `${spec.id}.png`);
           /**
            * A page-level selector is captured through `page.screenshot` with an
@@ -262,7 +361,11 @@ async function main() {
            * encoders.
            */
           if (useElement) {
-            await target.screenshot({ path: raw, animations: "disabled", scale: "device" });
+            await target.screenshot({
+              path: raw,
+              animations: "disabled",
+              scale: "device",
+            });
           } else {
             await page.screenshot({
               path: raw,
@@ -318,7 +421,9 @@ async function main() {
     }
   };
 
-  await Promise.all(Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker));
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, jobs.length) }, worker),
+  );
   await browser.close();
   rmSync(WORK, { recursive: true, force: true });
 
@@ -331,11 +436,16 @@ async function main() {
     if (r.state === "ok") {
       console.log(
         `  OK   ${r.id.padEnd(20)} ${r.files
-          .map((f) => `${f.format} ${String(Math.round(f.bytes / 1024)).padStart(4)}KB`)
+          .map(
+            (f) =>
+              `${f.format} ${String(Math.round(f.bytes / 1024)).padStart(4)}KB`,
+          )
           .join("  ")}`,
       );
     } else {
-      console.log(`  ${r.state === "skipped" ? "SKIP" : "FAIL"} ${r.id.padEnd(20)} ${r.reason}`);
+      console.log(
+        `  ${r.state === "skipped" ? "SKIP" : "FAIL"} ${r.id.padEnd(20)} ${r.reason}`,
+      );
     }
   }
   for (const o of over) {
@@ -349,7 +459,11 @@ async function main() {
   if (JSON_OUT && typeof JSON_OUT === "string") {
     writeFileSync(
       JSON_OUT,
-      JSON.stringify({ base: BASE, authStatus, dpr: STILLS.dpr, results }, null, 2),
+      JSON.stringify(
+        { base: BASE, authStatus, dpr: STILLS.dpr, results },
+        null,
+        2,
+      ),
     );
   }
   // Manifest lives next to the assets so the gate and a reviewer can tell when
@@ -361,7 +475,10 @@ async function main() {
         capturedAt: new Date().toISOString(),
         base: BASE,
         dpr: STILLS.dpr,
-        stills: ok.map((r) => ({ id: r.id, files: r.files.map((f) => ({ format: f.format, bytes: f.bytes })) })),
+        stills: ok.map((r) => ({
+          id: r.id,
+          files: r.files.map((f) => ({ format: f.format, bytes: f.bytes })),
+        })),
         skipped: skipped.map((r) => ({ id: r.id, reason: r.reason })),
       },
       null,
@@ -383,8 +500,13 @@ async function main() {
   ).map((spec) => spec.id);
   captured.sort();
   const modulePath = resolve(ROOT, "src/lib/still-manifest.ts");
-  const previous = existsSync(modulePath) ? readFileSync(modulePath, "utf8") : "";
-  const header = previous.slice(0, previous.indexOf("export const CAPTURED_STILLS"));
+  const previous = existsSync(modulePath)
+    ? readFileSync(modulePath, "utf8")
+    : "";
+  const header = previous.slice(
+    0,
+    previous.indexOf("export const CAPTURED_STILLS"),
+  );
   const body = [
     `${header}export const CAPTURED_STILLS: readonly string[] = ${JSON.stringify(captured)};`,
     "",
@@ -402,13 +524,17 @@ async function main() {
   );
   if (failed.length > 0 || over.length > 0) process.exit(1);
   if (skipped.length > 0 && REQUIRE_AUTH) {
-    console.error("--require-auth was passed and at least one still could not be captured.");
+    console.error(
+      "--require-auth was passed and at least one still could not be captured.",
+    );
     process.exit(1);
   }
 }
 
 main().catch((error) => {
-  log("error", "stills.harness_failed", { message: String(error?.message ?? error) });
+  log("error", "stills.harness_failed", {
+    message: String(error?.message ?? error),
+  });
   console.error(`ui still harness failed: ${error?.stack ?? error}`);
   process.exit(2);
 });

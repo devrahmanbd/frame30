@@ -12,7 +12,11 @@ import { getRequest } from "@tanstack/react-start/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { incr, log, withSpan } from "./observability.server";
-import { enforceRateLimit, rateLimit, type RateVerdict } from "./rate-limit.server";
+import {
+  enforceRateLimit,
+  rateLimit,
+  type RateVerdict,
+} from "./rate-limit.server";
 
 type Client = SupabaseClient<Database>;
 type LooseDb = {
@@ -22,7 +26,10 @@ type LooseDb = {
     select: (cols: string) => any;
     update: (patch: unknown) => any;
   };
-  rpc: (fn: string, args?: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 
 export class StepUpRequiredError extends Error {
@@ -33,13 +40,20 @@ export class StepUpRequiredError extends Error {
 }
 
 /** Actions that always require a fresh second-factor confirmation. */
-export const STEP_UP_ACTIONS = ["refund", "payout", "purge", "api_key.rotate"] as const;
+export const STEP_UP_ACTIONS = [
+  "refund",
+  "payout",
+  "purge",
+  "api_key.rotate",
+] as const;
 export type StepUpAction = (typeof STEP_UP_ACTIONS)[number];
 export const STEP_UP_TTL_SECONDS = 300;
 
 async function sha256(value: string) {
   const salt = process.env["AUTH_HASH_SALT"] ?? "framique-identity";
-  const bytes = new TextEncoder().encode(`${salt}:${value.trim().toLowerCase()}`);
+  const bytes = new TextEncoder().encode(
+    `${salt}:${value.trim().toLowerCase()}`,
+  );
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)]
     .map((b) => b.toString(16).padStart(2, "0"))
@@ -61,7 +75,11 @@ export async function requestFingerprint() {
   } catch {
     // Outside a request scope (tests, scripts): fall through to defaults.
   }
-  return { ipHash: await sha256(ip), device: describeDevice(ua), userAgent: ua.slice(0, 180) };
+  return {
+    ipHash: await sha256(ip),
+    device: describeDevice(ua),
+    userAgent: ua.slice(0, 180),
+  };
 }
 
 /** Resolves the authenticated user id from the request bearer token, or null if guest/anonymous. */
@@ -72,7 +90,8 @@ export async function resolveRequestUserId(): Promise<string | null> {
     if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
     const token = authHeader.replace("Bearer ", "").trim();
     if (!token || token.split(".").length !== 3) return null;
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await supabaseAdmin.auth.getClaims(token);
     if (error || !data?.claims?.sub) {
       const { data: userData } = await supabaseAdmin.auth.getUser(token);
@@ -121,7 +140,8 @@ export async function recordAuthEvent(input: AuthEventInput) {
   const { event, outcome } = input;
   incr("framique_auth_event_total", { event, outcome });
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const fp = await requestFingerprint();
     await (supabaseAdmin as unknown as LooseDb).from("auth_events").insert({
       user_id: input.userId ?? null,
@@ -133,7 +153,11 @@ export async function recordAuthEvent(input: AuthEventInput) {
       detail: input.detail ?? {},
     });
   } catch (err) {
-    log("warn", "auth_event.persist_failed", { event, outcome, message: String(err) });
+    log("warn", "auth_event.persist_failed", {
+      event,
+      outcome,
+      message: String(err),
+    });
   }
 }
 
@@ -182,7 +206,8 @@ export async function registerSession(
   userId: string,
   input: { sessionId: string; aal?: string | null },
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const fp = await requestFingerprint();
   const db = supabaseAdmin as unknown as LooseDb;
   const { error } = await db.from("auth_sessions").upsert(
@@ -197,18 +222,31 @@ export async function registerSession(
     },
     { onConflict: "user_id,session_id" },
   );
-  if (error) log("warn", "auth_session.upsert_failed", { message: String(error) });
+  if (error)
+    log("warn", "auth_session.upsert_failed", { message: String(error) });
   await recordAuthEvent({ event: "session.seen", outcome: "ok", userId });
   return { ok: true };
 }
 
-export async function markSessionsRevoked(userId: string, keepSessionId: string | null) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+export async function markSessionsRevoked(
+  userId: string,
+  keepSessionId: string | null,
+) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as LooseDb;
-  let q = db.from("auth_sessions").update({ revoked_at: new Date().toISOString() }).eq("user_id", userId).is("revoked_at", null);
+  let q = db
+    .from("auth_sessions")
+    .update({ revoked_at: new Date().toISOString() })
+    .eq("user_id", userId)
+    .is("revoked_at", null);
   if (keepSessionId) q = q.neq("session_id", keepSessionId);
   await q;
-  await recordAuthEvent({ event: "session.revoked_others", outcome: "ok", userId });
+  await recordAuthEvent({
+    event: "session.revoked_others",
+    outcome: "ok",
+    userId,
+  });
   return { ok: true };
 }
 
@@ -222,7 +260,13 @@ export type SecurityDesk = {
     revoked_at: string | null;
     current: boolean;
   }[];
-  events: { id: string; event: string; outcome: string; created_at: string; device: string | null }[];
+  events: {
+    id: string;
+    event: string;
+    outcome: string;
+    created_at: string;
+    device: string | null;
+  }[];
   stepUpActions: string[];
   stepUpTtlSeconds: number;
 };
@@ -237,7 +281,9 @@ export async function loadSecurityDesk(
     const [sessions, events] = await Promise.all([
       db
         .from("auth_sessions")
-        .select("id, session_id, device, aal, created_at, last_seen_at, revoked_at")
+        .select(
+          "id, session_id, device, aal, created_at, last_seen_at, revoked_at",
+        )
         .eq("user_id", userId)
         .order("last_seen_at", { ascending: false })
         .limit(25),
@@ -257,15 +303,20 @@ export async function loadSecurityDesk(
         created_at: String(s["created_at"]),
         last_seen_at: String(s["last_seen_at"]),
         revoked_at: s["revoked_at"] ?? null,
-        current: currentSessionId != null && s["session_id"] === currentSessionId,
+        current:
+          currentSessionId != null && s["session_id"] === currentSessionId,
       })),
-      events: ((events.data ?? []) as Record<string, string | null>[]).map((e) => ({
-        id: String(e["id"]),
-        event: String(e["event"]),
-        outcome: String(e["outcome"]),
-        created_at: String(e["created_at"]),
-        device: e["user_agent"] ? describeDevice(String(e["user_agent"])) : null,
-      })),
+      events: ((events.data ?? []) as Record<string, string | null>[]).map(
+        (e) => ({
+          id: String(e["id"]),
+          event: String(e["event"]),
+          outcome: String(e["outcome"]),
+          created_at: String(e["created_at"]),
+          device: e["user_agent"]
+            ? describeDevice(String(e["user_agent"]))
+            : null,
+        }),
+      ),
       stepUpActions: [...STEP_UP_ACTIONS],
       stepUpTtlSeconds: STEP_UP_TTL_SECONDS,
     };
@@ -292,15 +343,20 @@ export async function grantStepUp(
     });
     throw new StepUpRequiredError(input.action);
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const expiresAt = new Date(Date.now() + STEP_UP_TTL_SECONDS * 1000).toISOString();
-  const { error } = await (supabaseAdmin as unknown as LooseDb).from("step_up_grants").insert({
-    user_id: userId,
-    action: input.action,
-    merchant_id: input.merchantId ?? null,
-    method: "totp",
-    expires_at: expiresAt,
-  });
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const expiresAt = new Date(
+    Date.now() + STEP_UP_TTL_SECONDS * 1000,
+  ).toISOString();
+  const { error } = await (supabaseAdmin as unknown as LooseDb)
+    .from("step_up_grants")
+    .insert({
+      user_id: userId,
+      action: input.action,
+      merchant_id: input.merchantId ?? null,
+      method: "totp",
+      expires_at: expiresAt,
+    });
   if (error) throw new Error("step_up.grant_failed");
   await recordAuthEvent({
     event: "step_up.granted",
@@ -320,10 +376,13 @@ export async function requireStepUp(
   action: StepUpAction,
   merchantId?: string | null,
 ) {
-  const { data, error } = await (supabase as unknown as LooseDb).rpc("step_up_consume", {
-    _action: action,
-    _merchant_id: merchantId ?? null,
-  });
+  const { data, error } = await (supabase as unknown as LooseDb).rpc(
+    "step_up_consume",
+    {
+      _action: action,
+      _merchant_id: merchantId ?? null,
+    },
+  );
   if (error || data !== true) {
     incr("framique_step_up_total", { action, outcome: "required" });
     throw new StepUpRequiredError(action);
@@ -341,11 +400,18 @@ export async function requestPasswordReset(email: string, redirectTo: string) {
     rateLimit("auth.reset", `ip:${fp.ipHash}`),
   ]);
   if (!byEmail.allowed || !byIp.allowed) {
-    await recordAuthEvent({ event: "password_reset.throttled", outcome: "denied", email });
+    await recordAuthEvent({
+      event: "password_reset.throttled",
+      outcome: "denied",
+      email,
+    });
     return { sent: true as const, throttled: true as const };
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, { redirectTo });
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+    redirectTo,
+  });
   await recordAuthEvent({
     event: "password_reset.requested",
     outcome: error ? "error" : "ok",
@@ -371,8 +437,15 @@ export async function requestEmailChange(
     await enforceRateLimit("auth.email_change", userId);
     const { data: current } = await supabase.auth.getUser();
     const currentEmail = current?.user?.email ?? null;
-    if (currentEmail && currentEmail.toLowerCase() === input.newEmail.trim().toLowerCase()) {
-      await recordAuthEvent({ event: "email.change.requested", outcome: "denied", userId });
+    if (
+      currentEmail &&
+      currentEmail.toLowerCase() === input.newEmail.trim().toLowerCase()
+    ) {
+      await recordAuthEvent({
+        event: "email.change.requested",
+        outcome: "denied",
+        userId,
+      });
       throw new Error("email_change.same_address");
     }
     const { error } = await supabase.auth.updateUser(
@@ -380,7 +453,11 @@ export async function requestEmailChange(
       { emailRedirectTo: input.redirectTo },
     );
     if (error) {
-      await recordAuthEvent({ event: "email.change.requested", outcome: "error", userId });
+      await recordAuthEvent({
+        event: "email.change.requested",
+        outcome: "error",
+        userId,
+      });
       // Never echo the provider message: it distinguishes taken addresses.
       throw new Error("email_change.failed");
     }
@@ -395,24 +472,52 @@ export async function requestEmailChange(
   });
 }
 
-export async function registerMerchant(input: { email: string; password: string; fullName: string }) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  
+export async function registerMerchant(input: {
+  email: string;
+  password: string;
+  fullName?: string;
+  firstName?: string;
+  lastName?: string;
+  businessIndustry?: string;
+  referralSource?: string;
+  previousCms?: string;
+}) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+
+  const resolvedFullName =
+    input.fullName?.trim() ||
+    [input.firstName, input.lastName].filter(Boolean).join(" ").trim() ||
+    input.email.split("@")[0];
+
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
     email: input.email.trim(),
     password: input.password,
     email_confirm: true,
     user_metadata: {
-      full_name: input.fullName.trim(),
-      _server_provisioned_merchant: true
-    }
+      full_name: resolvedFullName,
+      first_name: input.firstName?.trim() || "",
+      last_name: input.lastName?.trim() || "",
+      business_industry: input.businessIndustry?.trim() || "",
+      referral_source: input.referralSource?.trim() || "",
+      previous_cms: input.previousCms?.trim() || "",
+      _server_provisioned_merchant: true,
+    },
   });
 
   if (error) {
-    await recordAuthEvent({ event: "signup.failed", outcome: "error", email: input.email });
+    await recordAuthEvent({
+      event: "signup.failed",
+      outcome: "error",
+      email: input.email,
+    });
     throw error;
   }
 
-  await recordAuthEvent({ event: "signup.success", outcome: "ok", email: input.email });
-  return { ok: true };
+  await recordAuthEvent({
+    event: "signup.success",
+    outcome: "ok",
+    email: input.email,
+  });
+  return { ok: true, userId: data.user.id };
 }

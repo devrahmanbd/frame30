@@ -11,7 +11,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 
 import { useLang } from "@/lib/i18n";
-import { FONT_BUDGET, type FontAsset, type FontScript } from "@/lib/theme-fonts";
+import {
+  FONT_BUDGET,
+  type FontAsset,
+  type FontScript,
+} from "@/lib/theme-fonts";
 import {
   confirmFontLicenceFn,
   deleteFontAssetFn,
@@ -19,7 +23,8 @@ import {
   uploadFontAssetFn,
 } from "@/lib/theme-fonts.functions";
 
-const INPUT = "w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm";
+const INPUT =
+  "w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm";
 
 function toBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -42,17 +47,36 @@ export function CustomFontsPanel() {
   const [weight, setWeight] = useState(400);
   const [subset, setSubset] = useState<FontScript>("latin");
 
-  const assets = useQuery({ queryKey: ["font-assets"], queryFn: () => list({}) });
+  const assets = useQuery({
+    queryKey: ["font-assets"],
+    queryFn: () => list({}),
+  });
   const refresh = () => qc.invalidateQueries({ queryKey: ["font-assets"] });
-  const fail = (e: unknown) => toast.error(e instanceof Error ? e.message : "Something went wrong");
+  const fail = (e: unknown) =>
+    toast.error(e instanceof Error ? e.message : "Something went wrong");
 
   const uploadFile = useMutation({
     mutationFn: async (file: File) => {
-      if (file.size > FONT_BUDGET.maxFileBytes) throw new Error(t("Font must be 400 KB or smaller", "ফন্ট ৪০০ কেবি বা কম হতে হবে"));
-      return upload({ data: { family: family.trim(), weight, subset, base64: await toBase64(file) } });
+      if (file.size > FONT_BUDGET.maxFileBytes)
+        throw new Error(
+          t("Font must be 400 KB or smaller", "ফন্ট ৪০০ কেবি বা কম হতে হবে"),
+        );
+      return upload({
+        data: {
+          family: family.trim(),
+          weight,
+          subset,
+          base64: await toBase64(file),
+        },
+      });
     },
     onSuccess: () => {
-      toast.success(t("Font uploaded — confirm the licence to use it", "ফন্ট আপলোড হয়েছে — ব্যবহারের আগে লাইসেন্স নিশ্চিত করুন"));
+      toast.success(
+        t(
+          "Font uploaded — confirm the licence to use it",
+          "ফন্ট আপলোড হয়েছে — ব্যবহারের আগে লাইসেন্স নিশ্চিত করুন",
+        ),
+      );
       refresh();
     },
     onError: fail,
@@ -77,7 +101,9 @@ export function CustomFontsPanel() {
 
   return (
     <div className="space-y-3 rounded-fq-md border border-border p-3">
-      <p className="text-xs font-semibold">{t("Custom fonts", "কাস্টম ফন্ট")}</p>
+      <p className="text-xs font-semibold">
+        {t("Custom fonts", "কাস্টম ফন্ট")}
+      </p>
       <p className="text-[0.65rem] text-muted-foreground">
         {t(
           "woff2 only, up to 400 KB and 4 weights per family. You must confirm you are licensed to use the font before publishing.",
@@ -86,7 +112,10 @@ export function CustomFontsPanel() {
       </p>
 
       <div className="grid grid-cols-3 gap-2">
-        <label className="col-span-3 block text-[0.65rem] font-medium" htmlFor="font-family">
+        <label
+          className="col-span-3 block text-[0.65rem] font-medium"
+          htmlFor="font-family"
+        >
           {t("Family name", "ফ্যামিলির নাম")}
           <input
             id="font-family"
@@ -96,7 +125,10 @@ export function CustomFontsPanel() {
             className={INPUT}
           />
         </label>
-        <label className="block text-[0.65rem] font-medium" htmlFor="font-weight">
+        <label
+          className="block text-[0.65rem] font-medium"
+          htmlFor="font-weight"
+        >
           {t("Weight", "ওয়েট")}
           <select
             id="font-weight"
@@ -111,7 +143,10 @@ export function CustomFontsPanel() {
             ))}
           </select>
         </label>
-        <label className="block text-[0.65rem] font-medium" htmlFor="font-subset">
+        <label
+          className="block text-[0.65rem] font-medium"
+          htmlFor="font-subset"
+        >
           {t("Script", "স্ক্রিপ্ট")}
           <select
             id="font-subset"
@@ -147,7 +182,8 @@ export function CustomFontsPanel() {
             className="flex flex-wrap items-center justify-between gap-2 rounded-fq-md border border-border px-3 py-2 text-xs"
           >
             <span>
-              {asset.family} · {asset.weight} · {Math.round(asset.bytes / 1024)} KB
+              {asset.family} · {asset.weight} · {Math.round(asset.bytes / 1024)}{" "}
+              KB
             </span>
             {asset.licenceConfirmedAt ? (
               <span className="rounded-fq-md bg-success-soft px-2 py-1 text-success-foreground">
@@ -159,17 +195,27 @@ export function CustomFontsPanel() {
                 onClick={() => attest.mutate(asset.id)}
                 className="rounded-fq-md border border-border px-2 py-1"
               >
-                {t("I am licensed to use this font", "আমি এই ফন্ট ব্যবহারের লাইসেন্সপ্রাপ্ত")}
+                {t(
+                  "I am licensed to use this font",
+                  "আমি এই ফন্ট ব্যবহারের লাইসেন্সপ্রাপ্ত",
+                )}
               </button>
             )}
-            <button type="button" onClick={() => drop.mutate(asset.id)} className="underline">
+            <button
+              type="button"
+              onClick={() => drop.mutate(asset.id)}
+              className="underline"
+            >
               {t("Remove", "সরান")}
             </button>
           </li>
         ))}
         {rows.length === 0 && (
           <li className="text-[0.65rem] text-muted-foreground">
-            {t("No custom fonts uploaded.", "কোনো কাস্টম ফন্ট আপলোড করা হয়নি।")}
+            {t(
+              "No custom fonts uploaded.",
+              "কোনো কাস্টম ফন্ট আপলোড করা হয়নি।",
+            )}
           </li>
         )}
       </ul>

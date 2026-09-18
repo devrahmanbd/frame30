@@ -9,7 +9,15 @@
  * The hard rule of this phase lives here: totals are whatever the server
  * returned. Nothing downstream of this file does money arithmetic.
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useCart, type CartLine } from "@/lib/cart";
 import { quoteCart } from "@/lib/storefront.functions";
 import type { PaymentMethodKey } from "@/lib/payment-rails";
@@ -150,7 +158,14 @@ export function useLiveCart(storeSlug: string): CartContextValue {
     }
     const ticket = ++seq.current;
     setPending(true);
-    quoteCart({ data: { slug: storeSlug, cart: cart.lines, paymentMethod: method, couponCode } })
+    quoteCart({
+      data: {
+        slug: storeSlug,
+        cart: cart.lines,
+        paymentMethod: method,
+        couponCode,
+      },
+    })
       .then((result) => {
         // Out-of-order responses are dropped: the last request wins, so a fast
         // quantity tap never leaves an older total on screen.
@@ -162,16 +177,20 @@ export function useLiveCart(storeSlug: string): CartContextValue {
       .catch((cause: unknown) => {
         if (ticket !== seq.current) return;
         setTotals(null);
-        setError(cause instanceof Error ? cause.message : "Could not price this cart");
+        setError(
+          cause instanceof Error ? cause.message : "Could not price this cart",
+        );
       })
       .finally(() => {
         if (ticket === seq.current) setPending(false);
       });
     // `signature` stands in for the line array identity.
-     
   }, [signature, method, couponCode, storeSlug, cart.hydrated]);
 
-  const remove = useCallback((variantId: string) => cart.setQuantity(variantId, 0), [cart]);
+  const remove = useCallback(
+    (variantId: string) => cart.setQuantity(variantId, 0),
+    [cart],
+  );
 
   return useMemo(
     () => ({
@@ -190,7 +209,19 @@ export function useLiveCart(storeSlug: string): CartContextValue {
       clear: cart.clear,
       live: true,
     }),
-    [cart.lines, cart.count, cart.setQuantity, cart.clear, totals, pending, error, methods, method, couponCode, remove],
+    [
+      cart.lines,
+      cart.count,
+      cart.setQuantity,
+      cart.clear,
+      totals,
+      pending,
+      error,
+      methods,
+      method,
+      couponCode,
+      remove,
+    ],
   );
 }
 

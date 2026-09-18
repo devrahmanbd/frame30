@@ -44,19 +44,28 @@ export function DocBlocks({ page }: { page: DocPage }) {
           }
           case "p":
             return (
-              <p key={index} className="mt-4 leading-relaxed text-foreground/90">
+              <p
+                key={index}
+                className="mt-4 leading-relaxed text-foreground/90"
+              >
                 {block.text}
               </p>
             );
           case "list":
             return block.ordered ? (
-              <ol key={index} className="mt-4 list-decimal space-y-2 pl-6 text-foreground/90">
+              <ol
+                key={index}
+                className="mt-4 list-decimal space-y-2 pl-6 text-foreground/90"
+              >
                 {block.items.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ol>
             ) : (
-              <ul key={index} className="mt-4 list-disc space-y-2 pl-6 text-foreground/90">
+              <ul
+                key={index}
+                className="mt-4 list-disc space-y-2 pl-6 text-foreground/90"
+              >
                 {block.items.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
@@ -83,7 +92,11 @@ export function DocBlocks({ page }: { page: DocPage }) {
                   <thead>
                     <tr className="border-b border-border text-left">
                       {block.head.map((cell, i) => (
-                        <th key={i} scope="col" className="py-2 pr-4 font-semibold">
+                        <th
+                          key={i}
+                          scope="col"
+                          className="py-2 pr-4 font-semibold"
+                        >
                           {cell}
                         </th>
                       ))}
@@ -91,7 +104,10 @@ export function DocBlocks({ page }: { page: DocPage }) {
                   </thead>
                   <tbody>
                     {block.rows.map((row, r) => (
-                      <tr key={r} className="border-b border-border/60 align-top">
+                      <tr
+                        key={r}
+                        className="border-b border-border/60 align-top"
+                      >
                         {row.map((cell, c) => (
                           <td key={c} className="py-2 pr-4 tabular-nums">
                             {cell}

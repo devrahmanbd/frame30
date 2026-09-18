@@ -15,31 +15,41 @@ Comprehensive SEO guidance across content, technical implementation, and strateg
 - Map keywords to content types and pages
 
 **Content Optimization:**
+
 - Primary keyword: 1-2% density, natural placement
 - Include in: Title tag, H1, first paragraph, URL, meta description
 
 ## 2. On-Page SEO
 
 **Title Tag:**
+
 ```html
 <title>Ultimate Guide to React Hooks - Learn useEffect & useState</title>
 ```
+
 - Keep under 60 characters
 - Place primary keyword near beginning
 - Unique for every page
 
 **Meta Description:**
+
 ```html
-<meta name="description" content="Master React Hooks with our comprehensive guide. Learn useState, useEffect, and custom hooks with practical examples. Start building better React apps today.">
+<meta
+  name="description"
+  content="Master React Hooks with our comprehensive guide. Learn useState, useEffect, and custom hooks with practical examples. Start building better React apps today."
+/>
 ```
+
 - 150-160 characters, compelling, with CTA
 
 **Header Structure:**
+
 - One H1 per page with primary keyword
 - Logical hierarchy H1 → H2 → H3
 - Headings describe content
 
 **URL Structure:**
+
 - Good: `/blog/react-hooks-guide`
 - Bad: `/blog?p=12345` or `/page.php?id=abc`
 
@@ -58,22 +68,24 @@ Comprehensive SEO guidance across content, technical implementation, and strateg
 **Schema Markup:** Article, Product, FAQPage, HowTo, Organization, LocalBusiness, BreadcrumbList
 
 **Core Web Vitals Targets:**
+
 - LCP < 2.5s
 - INP < 200ms
 - CLS < 0.1
 
 **Performance:**
+
 - Preload critical resources
 - Lazy load non-critical images
 - Use CDN for static assets
 
 ## 5. Core Web Vitals
 
-| Metric | Target | Fix |
-|--------|--------|-----|
-| LCP | < 2.5s | Optimize images, CDN, inline critical CSS |
-| INP | < 200ms | Break long tasks, defer JavaScript |
-| CLS | < 0.1 | Set image dimensions, reserve ad space |
+| Metric | Target  | Fix                                       |
+| ------ | ------- | ----------------------------------------- |
+| LCP    | < 2.5s  | Optimize images, CDN, inline critical CSS |
+| INP    | < 200ms | Break long tasks, defer JavaScript        |
+| CLS    | < 0.1   | Set image dimensions, reserve ad space    |
 
 ## SEO Content Checklist
 

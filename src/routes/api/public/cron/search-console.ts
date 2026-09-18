@@ -16,7 +16,8 @@ export const Route = createFileRoute("/api/public/cron/search-console")({
     handlers: {
       GET: cronGet,
       POST: cronPost("search-console", async (ctx) => {
-        const { runSearchConsoleSweep } = await import("@/lib/search-console.server");
+        const { runSearchConsoleSweep } =
+          await import("@/lib/search-console.server");
         return runSearchConsoleSweep({
           limit: ctx.num("limit", 50, 200),
           days: ctx.num("days", 28, 90),

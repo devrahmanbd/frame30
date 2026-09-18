@@ -2,10 +2,29 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { SECTION_CATALOG, type SectionType } from "./builder-ast";
 import { isDataWidget } from "./widget-registry";
 import { WIDGET_COMPONENTS } from "@/components/builder/widgets";
-import { clearSlot, pushSlot, readSlot, SLOT_LIMIT, subscribeChannel } from "./section-channel";
-import { biTextState, bnKey, readBiText, resolveBiText, textOf, toDigits } from "./bitext";
+import {
+  clearSlot,
+  pushSlot,
+  readSlot,
+  SLOT_LIMIT,
+  subscribeChannel,
+} from "./section-channel";
+import {
+  biTextState,
+  bnKey,
+  readBiText,
+  resolveBiText,
+  textOf,
+  toDigits,
+} from "./bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "./money-display";
-import { canAdvance, flowReducer, progressOf, startFlow, type FlowStep } from "./flow-machine";
+import {
+  canAdvance,
+  flowReducer,
+  progressOf,
+  startFlow,
+  type FlowStep,
+} from "./flow-machine";
 
 describe("bitext", () => {
   it("falls back to English when বাংলা is missing", () => {
@@ -34,7 +53,9 @@ describe("money display", () => {
   });
 
   it("renders Bengali numerals for a Bengali page", () => {
-    expect(formatDisplayMoney(120000, { locale: "bn", compact: true })).toContain("১,২০০");
+    expect(
+      formatDisplayMoney(120000, { locale: "bn", compact: true }),
+    ).toContain("১,২০০");
     expect(formatDisplayNumber(42, { locale: "bn" })).toBe("৪২");
   });
 
@@ -46,7 +67,11 @@ describe("money display", () => {
 describe("flow machine", () => {
   const steps: FlowStep[] = [
     { key: "skin", choices: [{ value: "dry", label: "Dry" }], required: true },
-    { key: "concern", choices: [{ value: "acne", label: "Acne" }], multiple: true },
+    {
+      key: "concern",
+      choices: [{ value: "acne", label: "Acne" }],
+      multiple: true,
+    },
   ];
 
   it("blocks advancing past an unanswered required step", () => {
@@ -56,7 +81,11 @@ describe("flow machine", () => {
   });
 
   it("advances once answered and reports progress", () => {
-    let state = flowReducer(steps, startFlow(), { kind: "answer", step: "skin", value: "dry" });
+    let state = flowReducer(steps, startFlow(), {
+      kind: "answer",
+      step: "skin",
+      value: "dry",
+    });
     expect(canAdvance(steps, state)).toBe(true);
     state = flowReducer(steps, state, { kind: "next" });
     expect(state.index).toBe(1);
@@ -64,8 +93,16 @@ describe("flow machine", () => {
   });
 
   it("toggles multi-select answers and resets cleanly", () => {
-    let state = flowReducer(steps, startFlow(), { kind: "answer", step: "concern", value: "acne" });
-    state = flowReducer(steps, state, { kind: "answer", step: "concern", value: "acne" });
+    let state = flowReducer(steps, startFlow(), {
+      kind: "answer",
+      step: "concern",
+      value: "acne",
+    });
+    state = flowReducer(steps, state, {
+      kind: "answer",
+      step: "concern",
+      value: "acne",
+    });
     expect(state.answers["concern"]).toEqual([]);
     expect(flowReducer(steps, state, { kind: "reset" })).toEqual(startFlow());
   });
@@ -89,7 +126,10 @@ describe("phase 1 catalog wiring", () => {
 
   it("exposes every phase 1 primitive in the catalog", () => {
     for (const type of PHASE1) {
-      expect(SECTION_CATALOG.some((entry) => entry.type === type), type).toBe(true);
+      expect(
+        SECTION_CATALOG.some((entry) => entry.type === type),
+        type,
+      ).toBe(true);
     }
   });
 
@@ -125,7 +165,9 @@ describe("cross-section channel", () => {
     for (let i = 0; i < SLOT_LIMIT.recentlyViewed + 5; i += 1) {
       pushSlot("acme", "recentlyViewed", `p${i}`);
     }
-    expect(readSlot("acme", "recentlyViewed")).toHaveLength(SLOT_LIMIT.recentlyViewed);
+    expect(readSlot("acme", "recentlyViewed")).toHaveLength(
+      SLOT_LIMIT.recentlyViewed,
+    );
     expect(readSlot("other", "recentlyViewed")).toEqual([]);
   });
 

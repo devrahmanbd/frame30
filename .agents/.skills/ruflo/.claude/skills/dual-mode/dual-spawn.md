@@ -15,26 +15,29 @@ Spawn multiple headless Codex workers to run tasks in parallel while you continu
 
 ## Parameters
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `task` | required | Task description for workers |
-| `--workers` | 3 | Number of parallel workers |
-| `--type` | coder | Worker type: coder, tester, docs, reviewer |
-| `--wait` | false | Wait for completion |
+| Parameter   | Default  | Description                                |
+| ----------- | -------- | ------------------------------------------ |
+| `task`      | required | Task description for workers               |
+| `--workers` | 3        | Number of parallel workers                 |
+| `--type`    | coder    | Worker type: coder, tester, docs, reviewer |
+| `--wait`    | false    | Wait for completion                        |
 
 ## Examples
 
 ### Spawn Implementation Workers
+
 ```
 /dual-spawn "Implement user authentication" --workers 2 --type coder
 ```
 
 ### Spawn Test Writers
+
 ```
 /dual-spawn "Write comprehensive tests for auth module" --workers 2 --type tester
 ```
 
 ### Spawn Documentation Workers
+
 ```
 /dual-spawn "Document all API endpoints" --workers 1 --type docs
 ```
@@ -71,11 +74,13 @@ echo "Spawned {{workers}} headless workers"
 ## After Spawning
 
 Use `/dual-collect` to gather results:
+
 ```
 /dual-collect --namespace results
 ```
 
 Or check manually:
+
 ```bash
 npx claude-flow memory list --namespace results
 ```

@@ -31,7 +31,9 @@ function printEvaluation(res: GatekeeperEvaluation, filePath?: string) {
   const fileDisplay = filePath ? filePath.split("/").pop() : "inline.sql";
   const stageHeader = `\x1b[36m${res.stageName}\x1b[0m`;
 
-  console.log(`\nEvaluation for: \x1b[1m${fileDisplay}\x1b[0m [${stageHeader}]`);
+  console.log(
+    `\nEvaluation for: \x1b[1m${fileDisplay}\x1b[0m [${stageHeader}]`,
+  );
 
   if (res.allowed) {
     console.log(`  \x1b[32m✓ PASSED\x1b[0m: ${res.summary}`);
@@ -42,7 +44,9 @@ function printEvaluation(res: GatekeeperEvaluation, filePath?: string) {
   if (res.backfillVerification) {
     const bv = res.backfillVerification;
     if (bv.verified) {
-      console.log(`  \x1b[32m✓ Backfill Verified\x1b[0m: Job '${bv.jobId}' reached 100% (${bv.migratedRows}/${bv.totalRows} rows).`);
+      console.log(
+        `  \x1b[32m✓ Backfill Verified\x1b[0m: Job '${bv.jobId}' reached 100% (${bv.migratedRows}/${bv.totalRows} rows).`,
+      );
     } else {
       console.log(`  \x1b[31m✗ Backfill Unverified\x1b[0m: ${bv.reason}`);
     }
@@ -51,7 +55,9 @@ function printEvaluation(res: GatekeeperEvaluation, filePath?: string) {
   if (res.violations.length > 0) {
     console.log(`\n  \x1b[31mBlockers (${res.violations.length}):\x1b[0m`);
     for (const v of res.violations) {
-      console.log(`    \x1b[31m• [Line ${v.lineNumber}] ${v.ruleId}\x1b[0m: ${v.message}`);
+      console.log(
+        `    \x1b[31m• [Line ${v.lineNumber}] ${v.ruleId}\x1b[0m: ${v.message}`,
+      );
       console.log(`      DDL  : \x1b[90m${v.lineContent}\x1b[0m`);
       console.log(`      Fix  : \x1b[32m${v.remediation}\x1b[0m`);
     }
@@ -60,7 +66,9 @@ function printEvaluation(res: GatekeeperEvaluation, filePath?: string) {
   if (res.warnings.length > 0) {
     console.log(`\n  \x1b[33mWarnings (${res.warnings.length}):\x1b[0m`);
     for (const w of res.warnings) {
-      console.log(`    \x1b[33m• [Line ${w.lineNumber}] ${w.ruleId}\x1b[0m: ${w.message}`);
+      console.log(
+        `    \x1b[33m• [Line ${w.lineNumber}] ${w.ruleId}\x1b[0m: ${w.message}`,
+      );
       console.log(`      Tip  : ${w.remediation}`);
     }
   }
@@ -70,7 +78,9 @@ async function main() {
   const args = process.argv.slice(2);
 
   console.log("=".repeat(80));
-  console.log("Framique 4-Release Expand-and-Contract Migration Pipeline Automation");
+  console.log(
+    "Framique 4-Release Expand-and-Contract Migration Pipeline Automation",
+  );
   console.log("Enforcing Zero-Downtime PR Gatekeeper Protocol (Phase 11.3)");
   console.log("=".repeat(80));
 
@@ -98,13 +108,17 @@ async function main() {
   // Subcommand: verify-backfill
   if (verifyBackfillOnly) {
     if (!backfillJob) {
-      console.error("\x1b[31mError: --job=<id> is required for verify-backfill\x1b[0m");
+      console.error(
+        "\x1b[31mError: --job=<id> is required for verify-backfill\x1b[0m",
+      );
       process.exit(1);
     }
     console.log(`\nVerifying Backfill Job: \x1b[1m${backfillJob}\x1b[0m...`);
     const status = await verifyBackfillJobStatus(backfillJob);
     if (status.verified) {
-      console.log(`\x1b[32m✓ 100% Verified\x1b[0m: Job '${backfillJob}' migrated ${status.migratedRows}/${status.totalRows} rows.`);
+      console.log(
+        `\x1b[32m✓ 100% Verified\x1b[0m: Job '${backfillJob}' migrated ${status.migratedRows}/${status.totalRows} rows.`,
+      );
       process.exit(0);
     } else {
       console.error(`\x1b[31m✗ Incomplete\x1b[0m: ${status.reason}`);
@@ -119,15 +133,23 @@ async function main() {
       process.exit(1);
     }
 
-    const evalResult = await validateMigrationFile(filePath, stage, backfillJob);
+    const evalResult = await validateMigrationFile(
+      filePath,
+      stage,
+      backfillJob,
+    );
     printEvaluation(evalResult, filePath);
 
     if (!evalResult.allowed) {
-      console.error("\n\x1b[31m[PR BLOCKED] Pull request contains breaking schema changes.\x1b[0m");
+      console.error(
+        "\n\x1b[31m[PR BLOCKED] Pull request contains breaking schema changes.\x1b[0m",
+      );
       process.exit(1);
     }
 
-    console.log("\n\x1b[32m[PR APPROVED] Schema changes are safe for deployment.\x1b[0m");
+    console.log(
+      "\n\x1b[32m[PR APPROVED] Schema changes are safe for deployment.\x1b[0m",
+    );
     process.exit(0);
   }
 
@@ -138,13 +160,21 @@ async function main() {
     process.exit(1);
   }
 
-  const files = readdirSync(targetDir).filter((f) => f.endsWith(".sql")).sort();
-  console.log(`\nScanning ${files.length} migrations in ${targetDir} against ${PIPELINE_STAGES[stage].name}...\n`);
+  const files = readdirSync(targetDir)
+    .filter((f) => f.endsWith(".sql"))
+    .sort();
+  console.log(
+    `\nScanning ${files.length} migrations in ${targetDir} against ${PIPELINE_STAGES[stage].name}...\n`,
+  );
 
   let totalBlockers = 0;
   for (const f of files) {
     const fullPath = resolve(targetDir, f);
-    const evalResult = await validateMigrationFile(fullPath, stage, backfillJob);
+    const evalResult = await validateMigrationFile(
+      fullPath,
+      stage,
+      backfillJob,
+    );
     if (!evalResult.allowed) {
       totalBlockers += evalResult.violations.length;
       printEvaluation(evalResult, f);
@@ -153,11 +183,15 @@ async function main() {
 
   console.log("\n" + "=".repeat(80));
   if (totalBlockers > 0) {
-    console.error(`\x1b[31m[CI PIPELINE FAILED] Found ${totalBlockers} blocker(s) in migration directory.\x1b[0m`);
+    console.error(
+      `\x1b[31m[CI PIPELINE FAILED] Found ${totalBlockers} blocker(s) in migration directory.\x1b[0m`,
+    );
     process.exit(1);
   }
 
-  console.log(`\x1b[32m[CI PIPELINE PASSED] All scanned migrations conform to ${PIPELINE_STAGES[stage].name}.\x1b[0m`);
+  console.log(
+    `\x1b[32m[CI PIPELINE PASSED] All scanned migrations conform to ${PIPELINE_STAGES[stage].name}.\x1b[0m`,
+  );
   process.exit(0);
 }
 

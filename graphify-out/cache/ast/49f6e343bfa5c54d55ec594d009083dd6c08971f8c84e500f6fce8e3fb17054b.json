@@ -1,1 +1,386 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_history_ts", "label": "history.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L1"}, {"id": "studio_history_historyverb", "label": "HistoryVerb", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L10"}, {"id": "studio_history_historyentry", "label": "HistoryEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L21"}, {"id": "studio_history_historystate", "label": "HistoryState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L30"}, {"id": "studio_history_inithistory", "label": "initHistory()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L39"}, {"id": "studio_history_historylabel", "label": "historyLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L47"}, {"id": "studio_history_pushhistory", "label": "pushHistory()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L52"}, {"id": "studio_history_canundo", "label": "canUndo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L66"}, {"id": "studio_history_canredo", "label": "canRedo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L70"}, {"id": "studio_history_undo", "label": "undo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L74"}, {"id": "studio_history_redo", "label": "redo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L78"}, {"id": "studio_history_jumpto", "label": "jumpTo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L82"}, {"id": "studio_history_currentdoc", "label": "currentDoc()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L87"}, {"id": "studio_history_historylist", "label": "historyList()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L92"}, {"id": "studio_history_revisionentry", "label": "RevisionEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L98"}, {"id": "studio_history_revisionlabel", "label": "revisionLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L105"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "users_rahman_documents_frame30_src_lib_studio_model_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_model_studiodoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_historyverb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_historyentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_historystate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_inithistory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_historylabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_pushhistory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_canundo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L66", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_canredo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_undo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_redo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_jumpto", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L82", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_currentdoc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_historylist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_revisionentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_history_ts", "target": "studio_history_revisionlabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L105", "weight": 1.0}, {"source": "studio_history_undo", "target": "studio_history_canundo", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L75", "weight": 1.0}, {"source": "studio_history_redo", "target": "studio_history_canredo", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L79", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_history_inithistory", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L41"}, {"caller_nid": "studio_history_historylabel", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L49"}, {"caller_nid": "studio_history_historylabel", "callee": "charAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L49"}, {"caller_nid": "studio_history_historylabel", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L49"}, {"caller_nid": "studio_history_pushhistory", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L59"}, {"caller_nid": "studio_history_pushhistory", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L60"}, {"caller_nid": "studio_history_pushhistory", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L61"}, {"caller_nid": "studio_history_pushhistory", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L62"}, {"caller_nid": "studio_history_historylist", "callee": "reverse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L93"}, {"caller_nid": "studio_history_historylist", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L93"}, {"caller_nid": "studio_history_revisionlabel", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L106"}, {"caller_nid": "studio_history_revisionlabel", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L106"}, {"caller_nid": "studio_history_revisionlabel", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts", "source_location": "L108"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "label": "history.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_history_historyverb",
+      "label": "HistoryVerb",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "studio_history_historyentry",
+      "label": "HistoryEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "studio_history_historystate",
+      "label": "HistoryState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "studio_history_inithistory",
+      "label": "initHistory()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "studio_history_historylabel",
+      "label": "historyLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "studio_history_pushhistory",
+      "label": "pushHistory()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "studio_history_canundo",
+      "label": "canUndo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L66"
+    },
+    {
+      "id": "studio_history_canredo",
+      "label": "canRedo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "studio_history_undo",
+      "label": "undo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "studio_history_redo",
+      "label": "redo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "studio_history_jumpto",
+      "label": "jumpTo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L82"
+    },
+    {
+      "id": "studio_history_currentdoc",
+      "label": "currentDoc()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "studio_history_historylist",
+      "label": "historyList()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "studio_history_revisionentry",
+      "label": "RevisionEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "studio_history_revisionlabel",
+      "label": "revisionLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L105"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "users_rahman_documents_frame30_src_lib_studio_model_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_model_studiodoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_historyverb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_historyentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_historystate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_inithistory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_historylabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_pushhistory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_canundo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_canredo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_undo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_redo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_jumpto",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_currentdoc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_historylist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_revisionentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_history_ts",
+      "target": "studio_history_revisionlabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L105",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_history_undo",
+      "target": "studio_history_canundo",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_history_redo",
+      "target": "studio_history_canredo",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_history_inithistory",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "studio_history_historylabel",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "studio_history_historylabel",
+      "callee": "charAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "studio_history_historylabel",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "studio_history_pushhistory",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "studio_history_pushhistory",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "studio_history_pushhistory",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "studio_history_pushhistory",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "studio_history_historylist",
+      "callee": "reverse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "studio_history_historylist",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "studio_history_revisionlabel",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "studio_history_revisionlabel",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "studio_history_revisionlabel",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/history.ts",
+      "source_location": "L108"
+    }
+  ]
+}

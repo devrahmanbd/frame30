@@ -476967,11 +476967,7 @@
       "type": "process",
       "label": "Quality Gate Pipeline",
       "description": "Engineering gates + E2E testing framework + console UX checklist form the quality enforcement pipeline: standards definition, automated validation, release gating.",
-      "member_nodes": [
-        "engineering_gates",
-        "e2e_testing",
-        "console_ux"
-      ],
+      "member_nodes": ["engineering_gates", "e2e_testing", "console_ux"],
       "confidence_score": 0.85,
       "attributes": {
         "source_type": "INFERRED",
@@ -477176,11 +477172,7 @@
     {
       "id": "ai_support_system",
       "label": "AI Support System",
-      "nodes": [
-        "ai_support",
-        "rag_retrieval",
-        "consent_model"
-      ],
+      "nodes": ["ai_support", "rag_retrieval", "consent_model"],
       "description": "Advisory AI assistant: RAG retrieval, consent-gated data handling, escalate-to-human flow.",
       "confidence": 1.0,
       "confidence_reason": "All nodes are AI support components."
@@ -477429,19 +477421,13 @@
     },
     {
       "id": "wp_media_management",
-      "nodes": [
-        "el_26_media_modal",
-        "el_27_svg_upload"
-      ],
+      "nodes": ["el_26_media_modal", "el_27_svg_upload"],
       "description": "Media upload and management interface",
       "confidence": 0.85
     },
     {
       "id": "wp_theme_management",
-      "nodes": [
-        "themes_2_details",
-        "el_33_tablet"
-      ],
+      "nodes": ["themes_2_details", "el_33_tablet"],
       "description": "Theme customization and preview features",
       "confidence": 0.75
     },
@@ -477462,11 +477448,7 @@
     {
       "id": "wp_content_management",
       "label": "WordPress Content Management Screens",
-      "nodes": [
-        "wp_pages_quick_edit",
-        "wp_post_edit",
-        "themes_4_upload"
-      ],
+      "nodes": ["wp_pages_quick_edit", "wp_post_edit", "themes_4_upload"],
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.75,
@@ -477488,11 +477470,7 @@
     {
       "id": "elementor_page_building_flow",
       "label": "Elementor Page Building Workflow",
-      "nodes": [
-        "el_3b_presets",
-        "el_24_image_added",
-        "el_7_dropped"
-      ],
+      "nodes": ["el_3b_presets", "el_24_image_added", "el_7_dropped"],
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
@@ -477501,10 +477479,7 @@
     {
       "id": "wp_administration_screens",
       "label": "WordPress Administration and Customization Screens",
-      "nodes": [
-        "wp_pages_bulk_edit",
-        "themes_8_customize"
-      ],
+      "nodes": ["wp_pages_bulk_edit", "themes_8_customize"],
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.75,
@@ -477513,11 +477488,7 @@
     {
       "id": "elementor_image_workflow",
       "label": "Elementor Image Widget Workflow",
-      "nodes": [
-        "el_3b_presets",
-        "el_7_dropped",
-        "el_24_image_added"
-      ],
+      "nodes": ["el_3b_presets", "el_7_dropped", "el_24_image_added"],
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
@@ -477580,10 +477551,7 @@
     {
       "id": "framique_brand_assets",
       "label": "Framique Brand Icon Assets",
-      "nodes": [
-        "favicon_ico",
-        "apple_touch_icon"
-      ],
+      "nodes": ["favicon_ico", "apple_touch_icon"],
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -477605,11 +477573,7 @@
     {
       "id": "framique_logo_variants",
       "label": "Framique Brand Logo Variants",
-      "nodes": [
-        "frame_svg",
-        "logo_svg",
-        "favicon_svg"
-      ],
+      "nodes": ["frame_svg", "logo_svg", "favicon_svg"],
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -477632,10 +477596,7 @@
     {
       "id": "storefront_image_formats",
       "label": "Storefront Screenshot Format Variants",
-      "nodes": [
-        "storefront_mobile_png",
-        "storefront_mobile_webp"
-      ],
+      "nodes": ["storefront_mobile_png", "storefront_mobile_webp"],
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -477644,12 +477605,7 @@
     {
       "id": "framique_og_images",
       "label": "Framique Open Graph Social Preview Images",
-      "nodes": [
-        "og_fulfilment",
-        "og_features",
-        "og_pricing",
-        "og_builder"
-      ],
+      "nodes": ["og_fulfilment", "og_features", "og_pricing", "og_builder"],
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -477685,12 +477641,7 @@
     },
     {
       "id": "he_social_previews",
-      "nodes": [
-        "og_home",
-        "og_contact",
-        "og_blog",
-        "og_payments"
-      ],
+      "nodes": ["og_home", "og_contact", "og_blog", "og_payments"],
       "label": "Marketing Pages OG",
       "properties": {
         "category": "marketing"
@@ -477698,10 +477649,7 @@
     },
     {
       "id": "he_infrastructure_pages",
-      "nodes": [
-        "og_status",
-        "og_payments"
-      ],
+      "nodes": ["og_status", "og_payments"],
       "label": "Infrastructure Pages",
       "properties": {
         "category": "system"
@@ -477709,11 +477657,7 @@
     },
     {
       "id": "he_main_navigation",
-      "nodes": [
-        "og_home",
-        "og_contact",
-        "og_blog"
-      ],
+      "nodes": ["og_home", "og_contact", "og_blog"],
       "label": "Main Site Navigation",
       "properties": {
         "category": "navigation"
@@ -477721,11 +477665,7 @@
     },
     {
       "id": "he_informational_pages",
-      "nodes": [
-        "og_docs",
-        "og_about",
-        "og_customers"
-      ],
+      "nodes": ["og_docs", "og_about", "og_customers"],
       "label": "Informational Content",
       "properties": {
         "category": "content"
@@ -477733,11 +477673,7 @@
     },
     {
       "id": "he_trust_compliance",
-      "nodes": [
-        "og_security",
-        "og_legal",
-        "og_docs"
-      ],
+      "nodes": ["og_security", "og_legal", "og_docs"],
       "label": "Trust & Compliance",
       "properties": {
         "category": "compliance"
@@ -477745,11 +477681,7 @@
     },
     {
       "id": "he_company_pages",
-      "nodes": [
-        "og_about",
-        "og_customers",
-        "og_security"
-      ],
+      "nodes": ["og_about", "og_customers", "og_security"],
       "label": "Company & Trust Pages",
       "properties": {
         "category": "branding"
@@ -477757,11 +477689,7 @@
     },
     {
       "id": "he_product_features",
-      "nodes": [
-        "mkt_dashboard",
-        "mkt_themes",
-        "mkt_mobile_store"
-      ],
+      "nodes": ["mkt_dashboard", "mkt_themes", "mkt_mobile_store"],
       "label": "Core Platform Features",
       "properties": {
         "category": "product"
@@ -477769,10 +477697,7 @@
     },
     {
       "id": "he_commerce_operations",
-      "nodes": [
-        "mkt_courier",
-        "mkt_payment_hands"
-      ],
+      "nodes": ["mkt_courier", "mkt_payment_hands"],
       "label": "Commerce Operations",
       "properties": {
         "category": "operations"
@@ -477780,11 +477705,7 @@
     },
     {
       "id": "he_user_interfaces",
-      "nodes": [
-        "mkt_dashboard",
-        "mkt_mobile_store",
-        "mkt_themes"
-      ],
+      "nodes": ["mkt_dashboard", "mkt_mobile_store", "mkt_themes"],
       "label": "User Interfaces",
       "properties": {
         "category": "ux"
@@ -477792,11 +477713,7 @@
     },
     {
       "id": "he_merchant_persona",
-      "nodes": [
-        "mkt_shop_owner_phone",
-        "mkt_merchant",
-        "mkt_team_studio"
-      ],
+      "nodes": ["mkt_shop_owner_phone", "mkt_merchant", "mkt_team_studio"],
       "label": "Merchant Personas",
       "properties": {
         "category": "target_audience"
@@ -477804,10 +477721,7 @@
     },
     {
       "id": "he_retail_operations",
-      "nodes": [
-        "mkt_pos_counter",
-        "mkt_packing_station"
-      ],
+      "nodes": ["mkt_pos_counter", "mkt_packing_station"],
       "label": "Retail Operations",
       "properties": {
         "category": "operations"
@@ -477827,10 +477741,7 @@
     },
     {
       "id": "he_back_office",
-      "nodes": [
-        "mkt_inventory_desk",
-        "mkt_support_team"
-      ],
+      "nodes": ["mkt_inventory_desk", "mkt_support_team"],
       "label": "Back Office Operations",
       "properties": {
         "category": "operations"
@@ -477838,9 +477749,7 @@
     },
     {
       "id": "he_operations_marketing",
-      "nodes": [
-        "mkt_inventory_desk"
-      ],
+      "nodes": ["mkt_inventory_desk"],
       "label": "Inventory Operations",
       "properties": {
         "category": "product_feature"
@@ -477848,9 +477757,7 @@
     },
     {
       "id": "he_customer_experience",
-      "nodes": [
-        "mkt_support_team"
-      ],
+      "nodes": ["mkt_support_team"],
       "label": "Customer Support",
       "properties": {
         "category": "service"

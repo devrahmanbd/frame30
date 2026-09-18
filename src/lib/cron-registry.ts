@@ -54,7 +54,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "jobs",
     label: "Queue worker tick",
-    description: "Fires due schedules, reclaims stalled jobs and drains every worker queue.",
+    description:
+      "Fires due schedules, reclaims stalled jobs and drains every worker queue.",
     schedule: "* * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -68,7 +69,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "webhooks",
     label: "Outbound webhook dispatch",
-    description: "Retries pending merchant webhook deliveries and ages out dead letters.",
+    description:
+      "Retries pending merchant webhook deliveries and ages out dead letters.",
     schedule: "*/2 * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -110,7 +112,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "payouts",
     label: "Payout sweep",
-    description: "Advances payout batches, applies holds and reconciles settlements.",
+    description:
+      "Advances payout batches, applies holds and reconciles settlements.",
     schedule: "12 * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -124,7 +127,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "billing",
     label: "Subscription billing run",
-    description: "Invoices due subscriptions, advances dunning and suspends non-payers.",
+    description:
+      "Invoices due subscriptions, advances dunning and suspends non-payers.",
     schedule: "20 2 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -138,7 +142,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "ops",
     label: "Reliability sweep",
-    description: "Retention sweep, backup drill, registry sync, lease reaping, status health.",
+    description:
+      "Retention sweep, backup drill, registry sync, lease reaping, status health.",
     schedule: "40 3 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -152,7 +157,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "purge",
     label: "Data purge",
-    description: "Executes honoured erasure requests and expires soft-deleted rows.",
+    description:
+      "Executes honoured erasure requests and expires soft-deleted rows.",
     schedule: "55 3 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -180,7 +186,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "ad-fraud",
     label: "Ad integrity sweep",
-    description: "Scores click sessions, updates blocklists and closes integrity days.",
+    description:
+      "Scores click sessions, updates blocklists and closes integrity days.",
     schedule: "35 * * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -208,7 +215,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "support",
     label: "Support SLA sweep",
-    description: "Escalates unanswered conversations and closes resolved threads.",
+    description:
+      "Escalates unanswered conversations and closes resolved threads.",
     schedule: "*/20 * * * *",
     timezone: "UTC",
     timeoutMs: 45_000,
@@ -222,7 +230,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "domains",
     label: "Custom domain sweep",
-    description: "Re-checks DNS, renews certificates and expires stale challenges.",
+    description:
+      "Re-checks DNS, renews certificates and expires stale challenges.",
     schedule: "50 */2 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -236,7 +245,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "themes",
     label: "Marketplace theme sweep",
-    description: "Reconciles installs, rolls back failed versions and settles payouts.",
+    description:
+      "Reconciles installs, rolls back failed versions and settles payouts.",
     schedule: "45 4 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -250,7 +260,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "search-console",
     label: "Search Console refresh",
-    description: "The only scheduled Google pull: performance snapshots and sitemap pings.",
+    description:
+      "The only scheduled Google pull: performance snapshots and sitemap pings.",
     schedule: "15 5 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -265,7 +276,8 @@ export const CRON_JOBS: CronJobDefinition[] = [
   {
     key: "content-health",
     label: "Content health scan",
-    description: "Rebuilds the internal link graph and refreshes editorial findings.",
+    description:
+      "Rebuilds the internal link graph and refreshes editorial findings.",
     schedule: "30 6 * * *",
     timezone: "UTC",
     timeoutMs: 55_000,
@@ -298,22 +310,35 @@ export const OPS_OBJECTIVES = {
 
 type Field = { min: number; max: number; values: number[] };
 
-function parseField(spec: string, min: number, max: number, label: string): Field {
+function parseField(
+  spec: string,
+  min: number,
+  max: number,
+  label: string,
+): Field {
   const values = new Set<number>();
   for (const part of spec.split(",")) {
     const piece = part.trim();
     if (!piece) throw new Error(`cron: empty ${label} field`);
     const [range, stepRaw] = piece.split("/");
     const step = stepRaw === undefined ? 1 : Number(stepRaw);
-    if (!Number.isInteger(step) || step < 1) throw new Error(`cron: bad step in ${label}`);
+    if (!Number.isInteger(step) || step < 1)
+      throw new Error(`cron: bad step in ${label}`);
     let lo = min;
     let hi = max;
     if (range !== "*") {
       const bounds = (range ?? "").split("-");
       lo = Number(bounds[0]);
-      hi = bounds.length > 1 ? Number(bounds[1]) : stepRaw === undefined ? lo : max;
-      if (!Number.isInteger(lo) || !Number.isInteger(hi)) throw new Error(`cron: bad ${label} value`);
-      if (lo < min || hi > max || hi < lo) throw new Error(`cron: ${label} out of range`);
+      hi =
+        bounds.length > 1
+          ? Number(bounds[1])
+          : stepRaw === undefined
+            ? lo
+            : max;
+      if (!Number.isInteger(lo) || !Number.isInteger(hi))
+        throw new Error(`cron: bad ${label} value`);
+      if (lo < min || hi > max || hi < lo)
+        throw new Error(`cron: ${label} out of range`);
     }
     for (let v = lo; v <= hi; v += step) values.add(v);
   }
@@ -335,7 +360,13 @@ export type ParsedCron = {
 export function parseCron(expr: string): ParsedCron {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) throw new Error("cron: expected 5 fields");
-  const [m, h, dom, mon, dow] = parts as [string, string, string, string, string];
+  const [m, h, dom, mon, dow] = parts as [
+    string,
+    string,
+    string,
+    string,
+    string,
+  ];
   return {
     minute: parseField(m, 0, 59, "minute"),
     hour: parseField(h, 0, 23, "hour"),
@@ -361,9 +392,14 @@ function matches(parsed: ParsedCron, d: Date): boolean {
  * four years so an unsatisfiable expression (e.g. 31 February) returns null
  * instead of spinning.
  */
-export function nextRunAfter(expr: string, from: Date = new Date()): Date | null {
+export function nextRunAfter(
+  expr: string,
+  from: Date = new Date(),
+): Date | null {
   const parsed = parseCron(expr);
-  const cursor = new Date(Math.floor(from.getTime() / 60_000) * 60_000 + 60_000);
+  const cursor = new Date(
+    Math.floor(from.getTime() / 60_000) * 60_000 + 60_000,
+  );
   const limit = 60 * 24 * 366 * 4;
   for (let i = 0; i < limit; i += 1) {
     if (matches(parsed, cursor)) return cursor;
@@ -373,7 +409,10 @@ export function nextRunAfter(expr: string, from: Date = new Date()): Date | null
 }
 
 /** Previous firing at or before `from`; used to judge lateness. */
-export function previousRunBefore(expr: string, from: Date = new Date()): Date | null {
+export function previousRunBefore(
+  expr: string,
+  from: Date = new Date(),
+): Date | null {
   const parsed = parseCron(expr);
   const cursor = new Date(Math.floor(from.getTime() / 60_000) * 60_000);
   const limit = 60 * 24 * 366 * 4;
@@ -404,7 +443,13 @@ export function cadenceSeconds(expr: string, from: Date = new Date()): number {
 export function describeSchedule(expr: string): string {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return expr;
-  const [m, h, dom, mon, dow] = parts as [string, string, string, string, string];
+  const [m, h, dom, mon, dow] = parts as [
+    string,
+    string,
+    string,
+    string,
+    string,
+  ];
   const every = (spec: string, unit: string) => {
     if (spec === "*") return `every ${unit}`;
     if (spec.startsWith("*/")) return `every ${spec.slice(2)} ${unit}s`;
@@ -413,7 +458,8 @@ export function describeSchedule(expr: string): string {
   if (m === "*" && h === "*") return "every minute";
   const mEvery = every(m, "minute");
   if (mEvery && h === "*") return `${mEvery} (UTC)`;
-  if (h === "*" && dom === "*" && mon === "*" && dow === "*") return `hourly at :${m.padStart(2, "0")} UTC`;
+  if (h === "*" && dom === "*" && mon === "*" && dow === "*")
+    return `hourly at :${m.padStart(2, "0")} UTC`;
   if (dom === "*" && mon === "*" && dow === "*") {
     const hEvery = every(h, "hour");
     if (hEvery) return `${hEvery} at :${m.padStart(2, "0")} UTC`;
@@ -497,7 +543,9 @@ export function classifyJob(
   const expected = previousRunBefore(definition.schedule, now);
   const lastRun = s.lastRunAt ? new Date(s.lastRunAt) : null;
   const lastSuccess = s.lastSuccessAt ? new Date(s.lastSuccessAt) : null;
-  const leaseLive = s.leaseExpiresAt ? new Date(s.leaseExpiresAt).getTime() > now.getTime() : false;
+  const leaseLive = s.leaseExpiresAt
+    ? new Date(s.leaseExpiresAt).getTime() > now.getTime()
+    : false;
 
   const overdueSeconds =
     expected && (!lastRun || lastRun.getTime() < expected.getTime())
@@ -532,7 +580,9 @@ export function classifyJob(
     reasons.push(`Last run failed (${s.lastError ?? "no detail"})`);
   } else if ((s.lastDurationMs ?? 0) > definition.slaMaxDurationMs) {
     health = "slow";
-    reasons.push(`Last run took ${Math.round((s.lastDurationMs ?? 0) / 1000)}s over budget`);
+    reasons.push(
+      `Last run took ${Math.round((s.lastDurationMs ?? 0) / 1000)}s over budget`,
+    );
   } else {
     health = "ok";
   }
@@ -545,13 +595,18 @@ export function classifyJob(
     sinceSuccessSeconds,
     cadenceSeconds: cadence,
     scheduleText,
-    nextRunAt: (s.nextRunAt ?? next?.toISOString()) ?? null,
+    nextRunAt: s.nextRunAt ?? next?.toISOString() ?? null,
     failureRate,
     reasons,
   };
 }
 
-export const UNHEALTHY: CronHealth[] = ["failing", "stalled", "late", "never_run"];
+export const UNHEALTHY: CronHealth[] = [
+  "failing",
+  "stalled",
+  "late",
+  "never_run",
+];
 
 export function isUnhealthy(health: CronHealth) {
   return UNHEALTHY.includes(health);
@@ -579,7 +634,11 @@ export function summarizeFleet(views: CronJobView[]): FleetSummary {
     never_run: 0,
   } as Record<CronHealth, number>;
   let worst: CronSeverity | null = null;
-  const rank: Record<CronSeverity, number> = { info: 1, warning: 2, critical: 3 };
+  const rank: Record<CronSeverity, number> = {
+    info: 1,
+    warning: 2,
+    critical: 3,
+  };
   for (const v of views) {
     byHealth[v.health] += 1;
     if (isUnhealthy(v.health)) {
@@ -590,7 +649,8 @@ export function summarizeFleet(views: CronJobView[]): FleetSummary {
   return {
     total: views.length,
     ok: byHealth.ok + byHealth.running + byHealth.slow,
-    attention: byHealth.failing + byHealth.late + byHealth.stalled + byHealth.never_run,
+    attention:
+      byHealth.failing + byHealth.late + byHealth.stalled + byHealth.never_run,
     paused: byHealth.paused,
     neverRun: byHealth.never_run,
     worst,
@@ -619,9 +679,12 @@ export function alertForJob(view: CronJobView): AlertIntent | null {
   const { definition: d, state } = view;
   // A brand-new deployment has never-run jobs by definition; only page once the
   // job has been overdue by more than its own tolerance.
-  if (view.health === "never_run" && view.overdueSeconds <= d.maxOverdueSeconds) return null;
+  if (view.health === "never_run" && view.overdueSeconds <= d.maxOverdueSeconds)
+    return null;
   const severity: CronSeverity =
-    view.health === "late" && d.severity === "critical" ? "warning" : d.severity;
+    view.health === "late" && d.severity === "critical"
+      ? "warning"
+      : d.severity;
   return {
     severity,
     dedupeKey: `cron:${d.key}:${view.health}`,
@@ -630,7 +693,9 @@ export function alertForJob(view: CronJobView): AlertIntent | null {
       `${d.label} (${view.scheduleText})`,
       ...view.reasons.map((r) => `- ${r}`),
       state?.lastRunAt ? `Last run: ${state.lastRunAt}` : "Last run: never",
-      state?.lastSuccessAt ? `Last success: ${state.lastSuccessAt}` : "Last success: never",
+      state?.lastSuccessAt
+        ? `Last success: ${state.lastSuccessAt}`
+        : "Last success: never",
       `Next expected: ${view.nextRunAt ?? "unknown"}`,
     ].join("\n"),
     source: `cron.${d.key}`,

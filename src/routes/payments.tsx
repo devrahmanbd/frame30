@@ -28,7 +28,8 @@ import {
   ArrowRight,
   RefreshCw,
   Layers,
-  Copy} from "lucide-react";
+  Copy,
+} from "lucide-react";
 import {
   Band,
   BandHeading,
@@ -43,7 +44,8 @@ import {
   type BandCard,
   type MatrixColumn,
   type MatrixRow,
-  type FaqEntry} from "@/components/public/bands";
+  type FaqEntry,
+} from "@/components/public/bands";
 import { MarketingFigure } from "@/components/public/MarketingFigure";
 import paymentHandsImg from "@/assets/marketing/payment-hands.jpg";
 import { PAYMENT_METHOD_CATALOG } from "@/lib/payment-rails";
@@ -73,12 +75,13 @@ import {
   PAYOUTS,
   DEVELOPERS,
   PAYMENTS_FAQ,
-  FINAL_CTA} from "@/lib/marketing/payments.content";
+  FINAL_CTA,
+} from "@/lib/marketing/payments.content";
 
 export const Route = createFileRoute("/payments")({
   loader: async () => {
     const site = await getSiteContext().catch(() => null);
-    return {  origin: site.origin };
+    return { origin: site.origin };
   },
   head: ({ loaderData }) => {
     const origin = loaderData?.origin ?? null;
@@ -88,15 +91,30 @@ export const Route = createFileRoute("/payments")({
     const graph = buildGraph({
       route: "payments",
       origin,
-      faq: PAYMENTS_FAQ.map((entry) => ({ question: entry.question.en, answer: entry.answer.en }))});
+      faq: PAYMENTS_FAQ.map((entry) => ({
+        question: entry.question.en,
+        answer: entry.answer.en,
+      })),
+    });
     return {
       meta: head.meta,
       links: head.links,
-      scripts: graph ? [{ type: "application/ld+json", children: JSON.stringify(graph) }] : []};
+      scripts: graph
+        ? [{ type: "application/ld+json", children: JSON.stringify(graph) }]
+        : [],
+    };
   },
-  errorComponent: () => <PaymentsMessage titleEn="Could not load this page" titleBn="পেজটি লোড করা যায়নি" />,
-  notFoundComponent: () => <PaymentsMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />,
-  component: PaymentsPage});
+  errorComponent: () => (
+    <PaymentsMessage
+      titleEn="Could not load this page"
+      titleBn="পেজটি লোড করা যায়নি"
+    />
+  ),
+  notFoundComponent: () => (
+    <PaymentsMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />
+  ),
+  component: PaymentsPage,
+});
 
 type RailKey = "bkash" | "nagad" | "card" | "cod";
 
@@ -122,7 +140,9 @@ const SIMULATOR_RAILS: Record<RailKey, RailConfig> = {
     settlementTime: "Real-time Instant Webhook",
     destination: "Direct to Merchant bKash Account",
     icon: Smartphone,
-    description: "Tokenized customer checkout with direct automated reversal on dispatch refusal."},
+    description:
+      "Tokenized customer checkout with direct automated reversal on dispatch refusal.",
+  },
   nagad: {
     id: "nagad",
     label: "Nagad Gateway",
@@ -132,7 +152,9 @@ const SIMULATOR_RAILS: Record<RailKey, RailConfig> = {
     settlementTime: "Instant Webhook Confirmation",
     destination: "Direct to Merchant Nagad Wallet",
     icon: Smartphone,
-    description: "Direct carrier PG callback with SHA-256 merchant signature validation."},
+    description:
+      "Direct carrier PG callback with SHA-256 merchant signature validation.",
+  },
   card: {
     id: "card",
     label: "City Bank Visa / Mastercard",
@@ -142,7 +164,9 @@ const SIMULATOR_RAILS: Record<RailKey, RailConfig> = {
     settlementTime: "T+1 Merchant Settlement",
     destination: "Direct to Merchant Corporate Current A/C",
     icon: CreditCard,
-    description: "EMV 3DS2 frictionless OTP rail directly routed to City Bank Bangladesh gateway."},
+    description:
+      "EMV 3DS2 frictionless OTP rail directly routed to City Bank Bangladesh gateway.",
+  },
   cod: {
     id: "cod",
     label: "Cash on Delivery (COD)",
@@ -152,7 +176,10 @@ const SIMULATOR_RAILS: Record<RailKey, RailConfig> = {
     settlementTime: "Courier Remittance Cycle",
     destination: "Steadfast & Pathao Automated Remittance",
     icon: Banknote,
-    description: "Courier rider collects cash at doorstep with pre-dispatch OTP confirmation."}};
+    description:
+      "Courier rider collects cash at doorstep with pre-dispatch OTP confirmation.",
+  },
+};
 
 function PaymentSettlementSandbox() {
   const { t, lang } = useLang();
@@ -183,12 +210,15 @@ function PaymentSettlementSandbox() {
       platform_cut: 0,
       interchange_fee: Number(gatewayFee.toFixed(2)),
       merchant_net_settlement: Number(netTakeHome.toFixed(2)),
-      customer_phone: "+880 1712-***489"},
+      customer_phone: "+880 1712-***489",
+    },
     routing: {
       rail: selectedRail,
       gateway_confirmation_ms: simulatedMs,
       merchant_settlement: rail.destination,
-      reconciliation_state: "LEDGER_LOCKED"}};
+      reconciliation_state: "LEDGER_LOCKED",
+    },
+  };
 
   return (
     <div className="fq-glass fq-halo rounded-fq-lg border border-border/80 bg-card/90 p-6 sm:p-8 mt-12 shadow-lift-lg">
@@ -196,13 +226,23 @@ function PaymentSettlementSandbox() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/60 pb-6">
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
-            <Sparkles className="size-3" /> {t("Interactive Rail & Settlement Simulator", "ইন্টারেক্টিভ পেমেন্ট রেল ও সেটেলমেন্ট সিমুলেটর")}
+            <Sparkles className="size-3" />{" "}
+            {t(
+              "Interactive Rail & Settlement Simulator",
+              "ইন্টারেক্টিভ পেমেন্ট রেল ও সেটেলমেন্ট সিমুলেটর",
+            )}
           </span>
           <h3 className="fq-display text-xl sm:text-2xl font-bold mt-2 text-foreground">
-            {t("Live Payment Settlement & Webhook Sandbox", "লাইভ পেমেন্ট সেটেলমেন্ট ও ওয়েবহুক স্যান্ডবক্স")}
+            {t(
+              "Live Payment Settlement & Webhook Sandbox",
+              "লাইভ পেমেন্ট সেটেলমেন্ট ও ওয়েবহুক স্যান্ডবক্স",
+            )}
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-            {t("Simulate real-world customer checkouts and watch 0% platform commission with instant ledger writes.", "বাস্তব গ্রাহক চেকআউট সিমুলেট করুন এবং ০% প্ল্যাটফর্ম কমিশনের সুবিধা সরাসরি দেখুন।")}
+            {t(
+              "Simulate real-world customer checkouts and watch 0% platform commission with instant ledger writes.",
+              "বাস্তব গ্রাহক চেকআউট সিমুলেট করুন এবং ০% প্ল্যাটফর্ম কমিশনের সুবিধা সরাসরি দেখুন।",
+            )}
           </p>
         </div>
 
@@ -214,7 +254,9 @@ function PaymentSettlementSandbox() {
           className="min-h-[44px] w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition-all hover:scale-[0.98] disabled:opacity-50 shrink-0"
         >
           <AnimatedIcon icon={RefreshCw} variant="spin-slow" size="sm" />
-          {isSimulating ? t("Simulating...", "সিমুলেট হচ্ছে...") : t("Trigger Test Webhook", "টেস্ট ওয়েবহুক ট্রিগার করুন")}
+          {isSimulating
+            ? t("Simulating...", "সিমুলেট হচ্ছে...")
+            : t("Trigger Test Webhook", "টেস্ট ওয়েবহুক ট্রিগার করুন")}
         </button>
       </div>
 
@@ -245,7 +287,14 @@ function PaymentSettlementSandbox() {
                     )}
                   >
                     <div className="flex items-center justify-between gap-1.5">
-                      <span className={cn("grid size-7 place-items-center rounded-fq-sm shrink-0", active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
+                      <span
+                        className={cn(
+                          "grid size-7 place-items-center rounded-fq-sm shrink-0",
+                          active
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground",
+                        )}
+                      >
                         <AnimatedIcon icon={RIcon} variant="lift" size="sm" />
                       </span>
                       <span className="rounded-fq-sm bg-muted/60 px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
@@ -253,8 +302,12 @@ function PaymentSettlementSandbox() {
                       </span>
                     </div>
                     <div className="mt-3">
-                      <p className="font-semibold text-xs text-foreground truncate">{lang === "bn" ? r.labelBn : r.label}</p>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{r.feePercent}% Fee · 0% Platform</p>
+                      <p className="font-semibold text-xs text-foreground truncate">
+                        {lang === "bn" ? r.labelBn : r.label}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {r.feePercent}% Fee · 0% Platform
+                      </p>
                     </div>
                   </button>
                 );
@@ -269,9 +322,21 @@ function PaymentSettlementSandbox() {
             </p>
             <div className="flex flex-wrap gap-2">
               {[
-                { label: "৳1,200", value: 1200, item: t("Cotton Panjabi", "কটন পাঞ্জাবি") },
-                { label: "৳3,600", value: 3600, item: t("Tangail Jamdani", "টাঙ্গাইল জামদানি") },
-                { label: "৳8,500", value: 8500, item: t("Showroom Wholesale", "শো-রুম পাইকারি") },
+                {
+                  label: "৳1,200",
+                  value: 1200,
+                  item: t("Cotton Panjabi", "কটন পাঞ্জাবি"),
+                },
+                {
+                  label: "৳3,600",
+                  value: 3600,
+                  item: t("Tangail Jamdani", "টাঙ্গাইল জামদানি"),
+                },
+                {
+                  label: "৳8,500",
+                  value: 8500,
+                  item: t("Showroom Wholesale", "শো-রুম পাইকারি"),
+                },
               ].map((preset) => (
                 <button
                   key={preset.value}
@@ -285,7 +350,9 @@ function PaymentSettlementSandbox() {
                   )}
                 >
                   <span>{preset.label}</span>
-                  <span className="opacity-75 font-normal">({preset.item})</span>
+                  <span className="opacity-75 font-normal">
+                    ({preset.item})
+                  </span>
                 </button>
               ))}
             </div>
@@ -300,25 +367,38 @@ function PaymentSettlementSandbox() {
               </span>
               <div className="flex items-center gap-3">
                 <span className="font-mono text-[11px] text-primary">
-                  {t("Verified Rail Latency:", "যাচাইকৃত লেটেন্সি:")} {simulatedMs}ms
+                  {t("Verified Rail Latency:", "যাচাইকৃত লেটেন্সি:")}{" "}
+                  {simulatedMs}ms
                 </span>
                 <button
                   type="button"
                   onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(sampleWebhookPayload, null, 2));
+                    navigator.clipboard.writeText(
+                      JSON.stringify(sampleWebhookPayload, null, 2),
+                    );
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
                   }}
                   className="rounded-fq-sm border border-border/70 bg-card px-2.5 py-1 text-[11px] font-medium text-foreground hover:border-primary/50 transition-colors inline-flex items-center gap-1.5"
                 >
-                  <AnimatedIcon icon={copied ? CheckCircle2 : Copy} variant={copied ? "sparkle" : "draw"} size="sm" />
-                  <span>{copied ? t("Copied", "কপি হয়েছে") : t("Copy JSON", "কপি করুন")}</span>
+                  <AnimatedIcon
+                    icon={copied ? CheckCircle2 : Copy}
+                    variant={copied ? "sparkle" : "draw"}
+                    size="sm"
+                  />
+                  <span>
+                    {copied
+                      ? t("Copied", "কপি হয়েছে")
+                      : t("Copy JSON", "কপি করুন")}
+                  </span>
                 </button>
               </div>
             </div>
             <div className="rounded-fq-md border border-border/80 bg-background/90 p-4 font-mono text-xs overflow-x-auto shadow-inner">
               <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40 text-muted-foreground text-[11px]">
-                <span className="text-foreground font-semibold">POST /api/webhooks/payments/{selectedRail}</span>
+                <span className="text-foreground font-semibold">
+                  POST /api/webhooks/payments/{selectedRail}
+                </span>
                 <span className="text-primary font-semibold flex items-center gap-1.5">
                   <AnimatedIcon icon={CheckCircle2} variant="ping" size="sm" />
                   200 OK • {simulatedMs}ms
@@ -326,7 +406,9 @@ function PaymentSettlementSandbox() {
               </div>
               <div className="mb-2 text-[11px] text-muted-foreground flex items-center gap-2">
                 <span>Transaction ID:</span>
-                <span className="fx-datastream">{sampleWebhookPayload.transaction_id}</span>
+                <span className="fx-datastream">
+                  {sampleWebhookPayload.transaction_id}
+                </span>
               </div>
               <pre className="text-foreground leading-relaxed">
                 {JSON.stringify(sampleWebhookPayload, null, 2)}
@@ -340,7 +422,10 @@ function PaymentSettlementSandbox() {
           <div className="border-b border-border/60 pb-4">
             <div className="flex items-center justify-between">
               <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                {t("Instant P&L Net Ledger", "ইনস্ট্যান্ট পিঅ্যান্ডএল নিট লেজার")}
+                {t(
+                  "Instant P&L Net Ledger",
+                  "ইনস্ট্যান্ট পিঅ্যান্ডএল নিট লেজার",
+                )}
               </span>
               <span className="font-mono text-[11px] font-medium text-muted-foreground">
                 STATUS: SETTLED
@@ -363,7 +448,9 @@ function PaymentSettlementSandbox() {
             </div>
 
             <div className="flex items-center justify-between py-1.5 border-b border-border/40 text-primary">
-              <span className="font-semibold">{t("Framique Platform Cut", "ফ্রেমিক প্ল্যাটফর্ম কমিশন")}</span>
+              <span className="font-semibold">
+                {t("Framique Platform Cut", "ফ্রেমিক প্ল্যাটফর্ম কমিশন")}
+              </span>
               <span className="font-mono tabular-nums font-bold">
                 0% (৳0.00)
               </span>
@@ -372,7 +459,9 @@ function PaymentSettlementSandbox() {
             <div className="flex items-center justify-between py-1.5 border-b border-border/40 text-muted-foreground">
               <div>
                 <span>{t("Gateway Interchange Fee", "গেটওয়ে ফি")}</span>
-                <span className="block text-[10px] opacity-75 font-normal">{rail.feePercent}% direct carrier fee</span>
+                <span className="block text-[10px] opacity-75 font-normal">
+                  {rail.feePercent}% direct carrier fee
+                </span>
               </div>
               <span className="font-mono tabular-nums font-semibold text-foreground">
                 -৳{gatewayFee.toFixed(2)}
@@ -381,8 +470,12 @@ function PaymentSettlementSandbox() {
 
             <div className="pt-3 border-t-2 border-primary/30 flex items-baseline justify-between">
               <div>
-                <span className="fq-display text-sm font-bold text-foreground">{t("Net Merchant Take-Home", "মার্চেন্টের নিট আয়")}</span>
-                <span className="block text-[11px] text-primary font-medium mt-0.5">{t("100% Top-line Cash", "১০০% টপ-লাইন ক্যাশ")}</span>
+                <span className="fq-display text-sm font-bold text-foreground">
+                  {t("Net Merchant Take-Home", "মার্চেন্টের নিট আয়")}
+                </span>
+                <span className="block text-[11px] text-primary font-medium mt-0.5">
+                  {t("100% Top-line Cash", "১০০% টপ-লাইন ক্যাশ")}
+                </span>
               </div>
               <span className="fq-display text-2xl font-extrabold text-foreground tabular-nums">
                 ৳{netTakeHome.toFixed(2)}
@@ -410,11 +503,19 @@ function PaymentSettlementSandbox() {
   );
 }
 
-function PaymentsMessage({ titleEn, titleBn }: { titleEn: string; titleBn: string }) {
+function PaymentsMessage({
+  titleEn,
+  titleBn,
+}: {
+  titleEn: string;
+  titleBn: string;
+}) {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-2xl px-4 py-16 text-center">
-      <h1 className="font-bangla-display text-2xl font-semibold">{t(titleEn, titleBn)}</h1>
+      <h1 className="font-bangla-display text-2xl font-semibold">
+        {t(titleEn, titleBn)}
+      </h1>
       <Link to="/" className="mt-4 inline-block text-sm text-primary underline">
         {t("Back to home", "হোমে ফিরে যান")}
       </Link>
@@ -424,7 +525,6 @@ function PaymentsMessage({ titleEn, titleBn }: { titleEn: string; titleBn: strin
 
 function PaymentsPage() {
   const { t, lang } = useLang();
-  
 
   // Rail comparison table columns — one column per fact the deck's table asks
   // for. Column ids match the `cells` keys built below.
@@ -432,53 +532,76 @@ function PaymentsPage() {
     { id: "settlement", label: t("Settlement timing", "সেটেলমেন্ট সময়") },
     { id: "failures", label: t("Common failure modes", "সাধারণ ব্যর্থতা") },
     { id: "refund", label: t("Refund path", "রিফান্ড পথ") },
-    { id: "reconciliation", label: t("Reconciliation difficulty", "মিলকরণের কঠিনতা") },
+    {
+      id: "reconciliation",
+      label: t("Reconciliation difficulty", "মিলকরণের কঠিনতা"),
+    },
     { id: "basket", label: t("Best-fit basket size", "উপযুক্ত বাস্কেট সাইজ") },
   ];
   const comparisonRows: MatrixRow[] = RAIL_COMPARISON.map((row) => ({
     id: row.id,
     label: row.methodKeys
-      .map((key) => (lang === "bn" ? PAYMENT_METHOD_CATALOG[key].labelBn : PAYMENT_METHOD_CATALOG[key].label))
+      .map((key) =>
+        lang === "bn"
+          ? PAYMENT_METHOD_CATALOG[key].labelBn
+          : PAYMENT_METHOD_CATALOG[key].label,
+      )
       .join(" / "),
     cells: {
       settlement: row.settlementTiming,
       failures: row.failureModes,
       refund: row.refundPath,
       reconciliation: row.reconciliationDifficulty,
-      basket: row.bestFitBasket}}));
+      basket: row.bestFitBasket,
+    },
+  }));
 
   // Refund SLA is a second, smaller matrix reusing the same rail-key pattern.
-  const refundColumns: MatrixColumn[] = [{ id: "sla", label: t("Typical refund time", "রিফান্ডের সময়") }];
+  const refundColumns: MatrixColumn[] = [
+    { id: "sla", label: t("Typical refund time", "রিফান্ডের সময়") },
+  ];
   const refundRows: MatrixRow[] = REFUND_SLA_ROWS.map((row) => ({
     id: row.id,
     label: row.methodKeys
-      .map((key) => (lang === "bn" ? PAYMENT_METHOD_CATALOG[key].labelBn : PAYMENT_METHOD_CATALOG[key].label))
+      .map((key) =>
+        lang === "bn"
+          ? PAYMENT_METHOD_CATALOG[key].labelBn
+          : PAYMENT_METHOD_CATALOG[key].label,
+      )
       .join(" / "),
-    cells: { sla: row.typicalTime }}));
+    cells: { sla: row.typicalTime },
+  }));
 
   const railCards: BandCard[] = FOUR_RAILS.map((card) => ({
     id: card.id,
     title: railCardLabel(card, lang),
     body: (
       <>
-        <span className="block font-medium text-foreground">{t(card.headline.en, card.headline.bn)}</span>
+        <span className="block font-medium text-foreground">
+          {t(card.headline.en, card.headline.bn)}
+        </span>
         <span className="mt-1 block">{t(card.detail.en, card.detail.bn)}</span>
       </>
-    )}));
+    ),
+  }));
 
   const playbookCards: BandCard[] = COD_PLAYBOOK.map((card) => ({
     id: card.id,
-    icon: <span className="fq-display text-lg text-primary">{card.number}</span>,
+    icon: (
+      <span className="fq-display text-lg text-primary">{card.number}</span>
+    ),
     title: t(card.title.en, card.title.bn),
-    body: t(card.body.en, card.body.bn)}));
+    body: t(card.body.en, card.body.bn),
+  }));
 
   const faqEntries: FaqEntry[] = PAYMENTS_FAQ.map((entry) => ({
     id: entry.id,
     question: t(entry.question.en, entry.question.bn),
-    answer: t(entry.answer.en, entry.answer.bn)}));
+    answer: t(entry.answer.en, entry.answer.bn),
+  }));
 
   return (
-    <PublicShell >
+    <PublicShell>
       {/* 1 — Hero */}
       <HeroBand
         eyebrow={t(HERO.eyebrow.en, HERO.eyebrow.bn)}
@@ -504,7 +627,11 @@ function PaymentsPage() {
         proof={
           <span className="flex flex-wrap gap-2">
             {HERO_RAIL_PILLS.map((key) => (
-              <Chip key={key}>{lang === "bn" ? PAYMENT_METHOD_CATALOG[key].labelBn : PAYMENT_METHOD_CATALOG[key].label}</Chip>
+              <Chip key={key}>
+                {lang === "bn"
+                  ? PAYMENT_METHOD_CATALOG[key].labelBn
+                  : PAYMENT_METHOD_CATALOG[key].label}
+              </Chip>
             ))}
           </span>
         }
@@ -543,12 +670,21 @@ function PaymentsPage() {
       <Band surface="glass" labelledBy="rail-comparison-title" divided>
         <BandHeading
           id="rail-comparison-title"
-          eyebrow={t("Which rail should I lead with?", "কোন রেল দিয়ে শুরু করব?")}
-          title={t("Rail comparison — the table to bring into a finance conversation.", "রেল তুলনা — অর্থ বিভাগের আলোচনায় আনার টেবিল।")}
+          eyebrow={t(
+            "Which rail should I lead with?",
+            "কোন রেল দিয়ে শুরু করব?",
+          )}
+          title={t(
+            "Rail comparison — the table to bring into a finance conversation.",
+            "রেল তুলনা — অর্থ বিভাগের আলোচনায় আনার টেবিল।",
+          )}
         />
         <div className="mt-8">
           <MatrixTable
-            caption={t("Payment rail comparison: settlement, failure modes, refunds, reconciliation", "পেমেন্ট রেল তুলনা")}
+            caption={t(
+              "Payment rail comparison: settlement, failure modes, refunds, reconciliation",
+              "পেমেন্ট রেল তুলনা",
+            )}
             layout="cards"
             columns={comparisonColumns}
             rows={comparisonRows}
@@ -584,7 +720,9 @@ function PaymentsPage() {
             </div>
           }
         />
-        <p className="fq-measure mt-4 text-sm text-muted-foreground">{t(RECONCILIATION.worked.en)}</p>
+        <p className="fq-measure mt-4 text-sm text-muted-foreground">
+          {t(RECONCILIATION.worked.en)}
+        </p>
       </Band>
 
       {/* 5 — Refunds and partial refunds */}
@@ -599,7 +737,10 @@ function PaymentsPage() {
           visual={
             <div className="mt-4">
               <MatrixTable
-                caption={t("Typical refund time by rail", "রেল অনুযায়ী রিফান্ড সময়")}
+                caption={t(
+                  "Typical refund time by rail",
+                  "রেল অনুযায়ী রিফান্ড সময়",
+                )}
                 layout="cards"
                 columns={refundColumns}
                 rows={refundRows}
@@ -630,7 +771,9 @@ function PaymentsPage() {
                         : "mt-1.5 size-2 shrink-0 rounded-full bg-border"
                     }
                   />
-                  <span className="text-muted-foreground">{t(signal.label.en)}</span>
+                  <span className="text-muted-foreground">
+                    {t(signal.label.en)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -640,24 +783,37 @@ function PaymentsPage() {
 
       {/* 7 — COD risk management playbook */}
       <Band surface="glass" labelledBy="cod-playbook-title" divided>
-        <BandHeading id="cod-playbook-title" title={t(COD_PLAYBOOK_TITLE.en, COD_PLAYBOOK_TITLE.bn)} />
+        <BandHeading
+          id="cod-playbook-title"
+          title={t(COD_PLAYBOOK_TITLE.en, COD_PLAYBOOK_TITLE.bn)}
+        />
         <div className="mt-10">
           <CardGrid cards={playbookCards} columns={3} />
         </div>
         <div className="mt-12 border-t border-border pt-10">
-          <h3 className="fq-display text-xl">{t(COD_WORKED_EXAMPLE_TITLE.en)}</h3>
+          <h3 className="fq-display text-xl">
+            {t(COD_WORKED_EXAMPLE_TITLE.en)}
+          </h3>
           <div className="mt-6">
             <MatrixTable
               caption={t(COD_WORKED_EXAMPLE_TITLE.en)}
               layout="cards"
               columns={[
                 { id: "before", label: t("Before playbook", "প্লেবুকের আগে") },
-                { id: "after", label: t("After playbook (refusal cut to 8%)", "প্লেবুকের পরে (৮% এ নেমে আসা)"), highlight: true },
+                {
+                  id: "after",
+                  label: t(
+                    "After playbook (refusal cut to 8%)",
+                    "প্লেবুকের পরে (৮% এ নেমে আসা)",
+                  ),
+                  highlight: true,
+                },
               ]}
               rows={COD_WORKED_EXAMPLE_ROWS.map((row) => ({
                 id: row.id,
                 label: t(row.metric.en),
-                cells: { before: row.before, after: row.after }}))}
+                cells: { before: row.before, after: row.after },
+              }))}
               note={t(COD_WORKED_EXAMPLE_NOTE.en)}
             />
           </div>
@@ -668,11 +824,16 @@ function PaymentsPage() {
       <Band divided>
         <BandHeading title={t(CHARGEBACKS.title.en)} />
         <div className="fq-glass mt-8 max-w-3xl rounded-fq-lg p-6">
-          <p className="text-sm text-muted-foreground">{t(CHARGEBACKS.body.en)}</p>
+          <p className="text-sm text-muted-foreground">
+            {t(CHARGEBACKS.body.en)}
+          </p>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
             {CHARGEBACKS.bullets.map((b, i) => (
               <li key={i} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-border" />
+                <span
+                  aria-hidden="true"
+                  className="mt-2 size-1.5 shrink-0 rounded-full bg-border"
+                />
                 <span>{t(b.en)}</span>
               </li>
             ))}
@@ -700,7 +861,8 @@ function PaymentsPage() {
               rows={CHECKOUT_FIELDS.map((f) => ({
                 id: f.id,
                 label: t(f.field.en),
-                cells: { required: f.required, why: t(f.why.en) }}))}
+                cells: { required: f.required, why: t(f.why.en) },
+              }))}
             />
           }
         />
@@ -713,7 +875,10 @@ function PaymentsPage() {
           <ul className="space-y-3 text-sm text-muted-foreground">
             {SECURITY.bullets.map((b, i) => (
               <li key={i} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-border" />
+                <span
+                  aria-hidden="true"
+                  className="mt-2 size-1.5 shrink-0 rounded-full bg-border"
+                />
                 <span>{t(b.en)}</span>
               </li>
             ))}
@@ -724,9 +889,16 @@ function PaymentsPage() {
             </p>
             <ul className="mt-4 space-y-3 text-sm">
               {SECURITY_KEY_SCOPES.map((scope) => (
-                <li key={scope.id} className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-0 last:pb-0">
-                  <span className="font-mono text-foreground">{scope.scope.en}</span>
-                  <span className="text-right text-muted-foreground">{t(scope.grants.en)}</span>
+                <li
+                  key={scope.id}
+                  className="flex items-center justify-between gap-4 border-b border-border pb-3 last:border-0 last:pb-0"
+                >
+                  <span className="font-mono text-foreground">
+                    {scope.scope.en}
+                  </span>
+                  <span className="text-right text-muted-foreground">
+                    {t(scope.grants.en)}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -748,19 +920,28 @@ function PaymentsPage() {
 
       {/* 12 — Built for developers */}
       <Band divided>
-        <BandHeading title={t(DEVELOPERS.title.en)} sub={t(DEVELOPERS.body.en)} />
+        <BandHeading
+          title={t(DEVELOPERS.title.en)}
+          sub={t(DEVELOPERS.body.en)}
+        />
         <div className="fq-glass mt-8 rounded-fq-lg p-6">
           <ul className="space-y-4 text-sm">
             {DEVELOPERS.endpoints.map((ep) => (
               <li key={ep.id}>
-                <code className="rounded bg-background px-2 py-1 font-mono text-xs text-foreground">{ep.code}</code>
+                <code className="rounded bg-background px-2 py-1 font-mono text-xs text-foreground">
+                  {ep.code}
+                </code>
                 <p className="mt-1 text-muted-foreground">{t(ep.desc.en)}</p>
               </li>
             ))}
           </ul>
           <div className="mt-6 flex flex-wrap gap-4 border-t border-border pt-4 text-sm">
             {DEVELOPERS.docsLinks.map((link) => (
-              <Link key={link.id} to={link.href} className="text-primary underline">
+              <Link
+                key={link.id}
+                to={link.href}
+                className="text-primary underline"
+              >
                 {t(link.label.en)}
               </Link>
             ))}
@@ -770,7 +951,10 @@ function PaymentsPage() {
 
       {/* 13 — FAQ */}
       <Band surface="glass" labelledBy="payments-faq-title" divided>
-        <BandHeading id="payments-faq-title" title={t("Frequently asked", "সচরাচর জিজ্ঞাসা")} />
+        <BandHeading
+          id="payments-faq-title"
+          title={t("Frequently asked", "সচরাচর জিজ্ঞাসা")}
+        />
         <FaqBand entries={faqEntries} />
       </Band>
 

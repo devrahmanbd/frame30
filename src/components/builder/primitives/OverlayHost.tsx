@@ -73,7 +73,10 @@ export function OverlayHost({
             return;
           }
           if (event.key !== "Tab") return;
-          const nodes = [...(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
+          const nodes = [
+            ...(panelRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ??
+              []),
+          ];
           if (nodes.length === 0) return;
           const first = nodes[0]!;
           const last = nodes[nodes.length - 1]!;
@@ -89,7 +92,9 @@ export function OverlayHost({
         className={`${position} overflow-auto rounded-fq-lg border border-border bg-card p-4 shadow-md`}
       >
         <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <h2 className="truncate font-bangla-display text-base font-semibold">{title}</h2>
+          <h2 className="truncate font-bangla-display text-base font-semibold">
+            {title}
+          </h2>
           <button
             type="button"
             onClick={onClose}

@@ -38,7 +38,9 @@ const codes = (fs: { code: string }[]) => fs.map((f) => f.code);
 describe("rhythm geometry", () => {
   it("caps the container at the artboard width and subtracts gutters below it", () => {
     expect(expectedContainerPx("default", 1920)).toBe(RHYTHM.containerPx);
-    expect(expectedContainerPx("default", 320)).toBe(320 - RHYTHM.gutterMobilePx * 2);
+    expect(expectedContainerPx("default", 320)).toBe(
+      320 - RHYTHM.gutterMobilePx * 2,
+    );
     expect(expectedContainerPx("wide", 1920)).toBe(RHYTHM.widePx);
     expect(expectedContainerPx("narrow", 1920)).toBe(RHYTHM.narrowPx);
   });
@@ -50,15 +52,19 @@ describe("rhythm geometry", () => {
   });
 
   it("fails a container wider than its preset but tolerates rounding", () => {
-    expect(codes(auditGeometry([band({ containerWidthPx: 1320 })], 1920))).toContain(
-      "rhythm.container.too_wide",
-    );
-    expect(auditGeometry([band({ containerWidthPx: 1201 })], 1920)).toHaveLength(0);
+    expect(
+      codes(auditGeometry([band({ containerWidthPx: 1320 })], 1920)),
+    ).toContain("rhythm.container.too_wide");
+    expect(
+      auditGeometry([band({ containerWidthPx: 1201 })], 1920),
+    ).toHaveLength(0);
   });
 
   it("warns when padding falls under the rhythm but not when it exceeds it", () => {
     expect(
-      codes(auditGeometry([band({ paddingTopPx: 40, paddingBottomPx: 112 })], 1440)),
+      codes(
+        auditGeometry([band({ paddingTopPx: 40, paddingBottomPx: 112 })], 1440),
+      ),
     ).toEqual(["rhythm.section.padding_drift"]);
     expect(
       auditGeometry([band({ paddingTopPx: 180, paddingBottomPx: 180 })], 1440),
@@ -66,9 +72,9 @@ describe("rhythm geometry", () => {
   });
 
   it("flags a band that scrolls wider than its own box", () => {
-    expect(codes(auditGeometry([band({ scrollWidthPx: 1500 })], 1440))).toContain(
-      "rhythm.section.overflow",
-    );
+    expect(
+      codes(auditGeometry([band({ scrollWidthPx: 1500 })], 1440)),
+    ).toContain("rhythm.section.overflow");
   });
 });
 
@@ -105,9 +111,9 @@ describe("surface order", () => {
   });
 
   it("names bands that declare no surface", () => {
-    expect(codes(auditSurfaceOrder([{ surface: "unknown", label: "?" }]))).toEqual([
-      "surface.unknown",
-    ]);
+    expect(
+      codes(auditSurfaceOrder([{ surface: "unknown", label: "?" }])),
+    ).toEqual(["surface.unknown"]);
   });
 });
 
@@ -119,11 +125,15 @@ describe("chroma budget", () => {
   });
 
   it("warns on a page with no chromatic anchor at all", () => {
-    expect(codes(auditChroma([band(), band({ index: 1 })]))).toContain("chroma.greyscale_page");
+    expect(codes(auditChroma([band(), band({ index: 1 })]))).toContain(
+      "chroma.greyscale_page",
+    );
   });
 
   it("is silent on a page with exactly one aurora field", () => {
-    expect(auditChroma([band({ auroraCount: 1 }), band({ index: 1 })])).toHaveLength(0);
+    expect(
+      auditChroma([band({ auroraCount: 1 }), band({ index: 1 })]),
+    ).toHaveLength(0);
   });
 
   it("has a budget consistent with the spec constants", () => {
@@ -133,7 +143,9 @@ describe("chroma budget", () => {
 });
 
 describe("typography", () => {
-  const sample = (over: Partial<Parameters<typeof auditTypography>[0][number]> = {}) => ({
+  const sample = (
+    over: Partial<Parameters<typeof auditTypography>[0][number]> = {},
+  ) => ({
     label: "p",
     kind: "body" as const,
     lang: "en",
@@ -149,20 +161,34 @@ describe("typography", () => {
   });
 
   it("warns on a 15px body size and a tight line box", () => {
-    expect(codes(auditTypography([sample({ fontSizePx: 15, lineHeightPx: 20 })]))).toEqual(
+    expect(
+      codes(auditTypography([sample({ fontSizePx: 15, lineHeightPx: 20 })])),
+    ).toEqual(
       expect.arrayContaining(["type.body_size", "type.body_line_height"]),
     );
   });
 
   it("keeps display tracking as a percentage of size", () => {
     const ok = auditTypography([
-      sample({ kind: "display", fontFamily: "Space Grotesk", fontSizePx: 64, letterSpacingPx: 64 * -0.042, lineHeightPx: 64 }),
+      sample({
+        kind: "display",
+        fontFamily: "Space Grotesk",
+        fontSizePx: 64,
+        letterSpacingPx: 64 * -0.042,
+        lineHeightPx: 64,
+      }),
     ]);
     expect(ok).toHaveLength(0);
 
     const lost = auditTypography([
       // -2px tracking authored at 24px, still -2px once clamped to 64px.
-      sample({ kind: "display", fontFamily: "Space Grotesk", fontSizePx: 64, letterSpacingPx: -2, lineHeightPx: 64 }),
+      sample({
+        kind: "display",
+        fontFamily: "Space Grotesk",
+        fontSizePx: 64,
+        letterSpacingPx: -2,
+        lineHeightPx: 64,
+      }),
     ]);
     expect(codes(lost)).toContain("type.display_tracking_lost");
   });
@@ -179,16 +205,25 @@ describe("typography", () => {
       }),
     ]);
     expect(codes(found)).toEqual(
-      expect.arrayContaining(["type.bn_tracking_not_reset", "type.bn_line_box_tight"]),
+      expect.arrayContaining([
+        "type.bn_tracking_not_reset",
+        "type.bn_line_box_tight",
+      ]),
     );
     expect(found.every((f) => f.severity === "error")).toBe(true);
   });
 
   it("treats a Bangla body line box under 1.35 as blocking", () => {
     const found = auditTypography([
-      sample({ lang: "bn", fontFamily: "Noto Sans Bengali", lineHeightPx: 17 * 1.2 }),
+      sample({
+        lang: "bn",
+        fontFamily: "Noto Sans Bengali",
+        lineHeightPx: 17 * 1.2,
+      }),
     ]);
-    expect(found.find((f) => f.code === "type.body_line_height")?.severity).toBe("error");
+    expect(
+      found.find((f) => f.code === "type.body_line_height")?.severity,
+    ).toBe("error");
   });
 });
 
@@ -197,7 +232,13 @@ describe("elevation", () => {
     expect(
       codes(
         auditElevation([
-          { label: "card", edgeAlpha: null, edgeWidthPx: 0, ambientBlurPx: 40, hasInsetHighlight: false },
+          {
+            label: "card",
+            edgeAlpha: null,
+            edgeWidthPx: 0,
+            ambientBlurPx: 40,
+            hasInsetHighlight: false,
+          },
         ]),
       ),
     ).toContain("elevation.edge_missing");
@@ -221,7 +262,13 @@ describe("elevation", () => {
     expect(
       codes(
         auditElevation([
-          { label: "card", edgeAlpha: 0.14, edgeWidthPx: 1, ambientBlurPx: 140, hasInsetHighlight: false },
+          {
+            label: "card",
+            edgeAlpha: 0.14,
+            edgeWidthPx: 1,
+            ambientBlurPx: 140,
+            hasInsetHighlight: false,
+          },
         ]),
       ),
     ).toContain("elevation.shadow_only");
@@ -289,7 +336,9 @@ describe("stylesheet agrees with the spec", () => {
   });
 
   it("pins the edge-light alpha and the body scale", () => {
-    expect(css).toContain(`--fq-edge: rgb(255 255 255 / ${ELEVATION.edgeAlpha})`);
+    expect(css).toContain(
+      `--fq-edge: rgb(255 255 255 / ${ELEVATION.edgeAlpha})`,
+    );
     expect(css).toContain(`font-size: ${TYPE.bodyPx}px`);
     expect(css).toContain(`line-height: ${TYPE.bodyLineHeight}`);
   });

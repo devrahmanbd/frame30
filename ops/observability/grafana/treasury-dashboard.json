@@ -18,14 +18,21 @@
     ]
   },
   "panels": [
-    { "type": "row", "title": "Payouts — money leaving the platform", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+    {
+      "type": "row",
+      "title": "Payouts — money leaving the platform",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 }
+    },
     {
       "type": "stat",
       "title": "Payout requests / hr",
       "gridPos": { "h": 5, "w": 4, "x": 0, "y": 1 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum(rate(framique_payout_request_total{outcome=\"ok\"}[1h])) * 3600", "legendFormat": "accepted" }
+        {
+          "expr": "sum(rate(framique_payout_request_total{outcome=\"ok\"}[1h])) * 3600",
+          "legendFormat": "accepted"
+        }
       ],
       "fieldConfig": { "defaults": { "unit": "short", "decimals": 1 } }
     },
@@ -75,7 +82,10 @@
       "description": "A non-zero rate means something tried to move a payout out of a terminal state — double-settle pressure.",
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum(increase(framique_payout_transition_total{outcome=\"rejected\"}[1h]))", "legendFormat": "rejected/hr" }
+        {
+          "expr": "sum(increase(framique_payout_transition_total{outcome=\"rejected\"}[1h]))",
+          "legendFormat": "rejected/hr"
+        }
       ],
       "fieldConfig": {
         "defaults": {
@@ -121,7 +131,11 @@
       ],
       "fieldConfig": { "defaults": { "unit": "reqps" } }
     },
-    { "type": "row", "title": "Disbursement worker", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 } },
+    {
+      "type": "row",
+      "title": "Disbursement worker",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 18 }
+    },
     {
       "type": "timeseries",
       "title": "Worker outcomes",
@@ -141,7 +155,10 @@
       "gridPos": { "h": 8, "w": 6, "x": 12, "y": 19 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "time() - max(framique_payout_worker_last_success_timestamp_seconds)", "legendFormat": "age" }
+        {
+          "expr": "time() - max(framique_payout_worker_last_success_timestamp_seconds)",
+          "legendFormat": "age"
+        }
       ],
       "fieldConfig": { "defaults": { "unit": "s" } }
     },
@@ -152,18 +169,28 @@
       "description": "Instructions parked because the merchant has no approved provider credential (§4.1 gate).",
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum(increase(framique_payout_worker_total{outcome=\"deferred\"}[6h]))", "legendFormat": "deferred/6h" }
+        {
+          "expr": "sum(increase(framique_payout_worker_total{outcome=\"deferred\"}[6h]))",
+          "legendFormat": "deferred/6h"
+        }
       ],
       "fieldConfig": { "defaults": { "unit": "short" } }
     },
-    { "type": "row", "title": "Provider sign-off gate (§4.1)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 } },
+    {
+      "type": "row",
+      "title": "Provider sign-off gate (§4.1)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 }
+    },
     {
       "type": "timeseries",
       "title": "Credential submissions and decisions",
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 28 },
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum by (outcome) (rate(framique_provider_submit_total[30m]))", "legendFormat": "submit {{outcome}}" },
+        {
+          "expr": "sum by (outcome) (rate(framique_provider_submit_total[30m]))",
+          "legendFormat": "submit {{outcome}}"
+        },
         {
           "expr": "sum by (to) (rate(framique_provider_transition_total[30m]))",
           "legendFormat": "state {{to}}"
@@ -185,7 +212,11 @@
       ],
       "fieldConfig": { "defaults": { "unit": "short" } }
     },
-    { "type": "row", "title": "Currency gate and FX (§4.1)", "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 } },
+    {
+      "type": "row",
+      "title": "Currency gate and FX (§4.1)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 36 }
+    },
     {
       "type": "timeseries",
       "title": "USD pilot gate decisions",
@@ -206,7 +237,10 @@
       "description": "A stale FX table silently misprices every USD order.",
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "targets": [
-        { "expr": "sum by (outcome) (rate(framique_fx_total[1h]))", "legendFormat": "{{outcome}}" }
+        {
+          "expr": "sum by (outcome) (rate(framique_fx_total[1h]))",
+          "legendFormat": "{{outcome}}"
+        }
       ],
       "fieldConfig": { "defaults": { "unit": "reqps" } }
     }

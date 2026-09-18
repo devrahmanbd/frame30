@@ -1,1 +1,488 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "label": "AddThemeScreen.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L1"}, {"id": "themes_addthemescreen_addthemescreen", "label": "AddThemeScreen()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L34"}, {"id": "themes_addthemescreen_catalogcard", "label": "CatalogCard()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L179"}, {"id": "themes_addthemescreen_uploaddropzone", "label": "UploadDropzone()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L273"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "users_rahman_documents_frame30_src_lib_themes_appearance_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_catalog_tabs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_empty_selection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_max_theme_upload_bytes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_catalogview", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_formatbytes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_selectioncount", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_validatethemeupload", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_catalogtab", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_catalogtheme", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_appearance_featureselection", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "users_rahman_documents_frame30_src_components_console_kit_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "console_kit_emptystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "console_kit_inlineerror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "console_kit_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "console_kit_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "console_kit_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "users_rahman_documents_frame30_src_components_admin_themes_themescreenshot_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_themescreenshot_themescreenshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "users_rahman_documents_frame30_src_components_admin_themes_featurefilterdrawer_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_featurefilterdrawer_featurefilterdrawer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_addthemescreen_addthemescreen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_addthemescreen_catalogcard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L179", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx", "target": "themes_addthemescreen_uploaddropzone", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L273", "weight": 1.0}], "raw_calls": [{"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L51"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L52"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L53"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L54"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L55"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L57"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L76"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L88"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "selectionCount", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L113"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "selectionCount", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L115"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L130"}, {"caller_nid": "themes_addthemescreen_addthemescreen", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L154"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L194"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L213"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L221"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L230"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L237"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L249"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L264"}, {"caller_nid": "themes_addthemescreen_catalogcard", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L265"}, {"caller_nid": "themes_addthemescreen_uploaddropzone", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L274"}, {"caller_nid": "themes_addthemescreen_uploaddropzone", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L275"}, {"caller_nid": "themes_addthemescreen_uploaddropzone", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L276"}, {"caller_nid": "themes_addthemescreen_uploaddropzone", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L306"}, {"caller_nid": "themes_addthemescreen_uploaddropzone", "callee": "formatBytes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx", "source_location": "L313"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "label": "AddThemeScreen.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "themes_addthemescreen_addthemescreen",
+      "label": "AddThemeScreen()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "themes_addthemescreen_catalogcard",
+      "label": "CatalogCard()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L179"
+    },
+    {
+      "id": "themes_addthemescreen_uploaddropzone",
+      "label": "UploadDropzone()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L273"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_themes_appearance_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_catalog_tabs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_empty_selection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_max_theme_upload_bytes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_catalogview",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_formatbytes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_selectioncount",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_validatethemeupload",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_catalogtab",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_catalogtheme",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_appearance_featureselection",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_console_kit_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "console_kit_emptystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "console_kit_inlineerror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "console_kit_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "console_kit_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "console_kit_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_themes_themescreenshot_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_themescreenshot_themescreenshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_themes_featurefilterdrawer_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_featurefilterdrawer_featurefilterdrawer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_addthemescreen_addthemescreen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_addthemescreen_catalogcard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_themes_addthemescreen_tsx",
+      "target": "themes_addthemescreen_uploaddropzone",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L273",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "selectionCount",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "selectionCount",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_addthemescreen",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L194"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L213"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L237"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_catalogcard",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_uploaddropzone",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_uploaddropzone",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_uploaddropzone",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L276"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_uploaddropzone",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "themes_addthemescreen_uploaddropzone",
+      "callee": "formatBytes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/themes/AddThemeScreen.tsx",
+      "source_location": "L313"
+    }
+  ]
+}

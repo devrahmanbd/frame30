@@ -33,14 +33,39 @@ export type SnapshotTable = {
  */
 export const SNAPSHOT_TABLES: readonly SnapshotTable[] = [
   // ---- platform (global) ------------------------------------------------
-  { table: "plan_definitions", group: "platform", scopeColumn: null, key: "plan" },
+  {
+    table: "plan_definitions",
+    group: "platform",
+    scopeColumn: null,
+    key: "plan",
+  },
   { table: "platform_flags", group: "platform", scopeColumn: null, key: "key" },
-  { table: "platform_admins", group: "platform", scopeColumn: null, key: "user_id" },
+  {
+    table: "platform_admins",
+    group: "platform",
+    scopeColumn: null,
+    key: "user_id",
+  },
   // ---- tenancy & commerce ----------------------------------------------
   { table: "merchants", group: "commerce", scopeColumn: "id", key: "id" },
-  { table: "merchant_members", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "merchant_settings", group: "commerce", scopeColumn: "merchant_id", key: "merchant_id" },
-  { table: "tenant_limits", group: "platform", scopeColumn: "merchant_id", key: "merchant_id" },
+  {
+    table: "merchant_members",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "merchant_settings",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "merchant_id",
+  },
+  {
+    table: "tenant_limits",
+    group: "platform",
+    scopeColumn: "merchant_id",
+    key: "merchant_id",
+  },
   {
     table: "gateway_accounts",
     group: "platform",
@@ -48,55 +73,237 @@ export const SNAPSHOT_TABLES: readonly SnapshotTable[] = [
     key: "id",
     redact: ["credentials_ciphertext", "webhook_secret"],
   },
-  { table: "categories", group: "commerce", scopeColumn: "merchant_id", key: "id" },
+  {
+    table: "categories",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
   { table: "brands", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "products", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "product_variants", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "inventory_locations", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "inventory_levels", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "collections", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "collection_products", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "customers", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "customer_addresses", group: "commerce", scopeColumn: "merchant_id", key: "id" },
+  {
+    table: "products",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "product_variants",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "inventory_locations",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "inventory_levels",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "collections",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "collection_products",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "customers",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "customer_addresses",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
   { table: "orders", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "order_items", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "order_events", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "payments", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "refunds", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "invoices", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "payouts", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "wallet_ledger_entries", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "gift_cards", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "gift_card_entries", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "subscriptions", group: "commerce", scopeColumn: "merchant_id", key: "id" },
-  { table: "coupons", group: "commerce", scopeColumn: "merchant_id", key: "id" },
+  {
+    table: "order_items",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "order_events",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "payments",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "refunds",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "invoices",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "payouts",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "wallet_ledger_entries",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "gift_cards",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "gift_card_entries",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "subscriptions",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "coupons",
+    group: "commerce",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
   // ---- content ---------------------------------------------------------
-  { table: "blog_terms", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "articles", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "article_terms", group: "content", scopeColumn: "merchant_id", key: "article_id,term_id" },
-  { table: "storefront_pages", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "nav_menus", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "nav_menu_items", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "media_assets", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "seo_meta", group: "content", scopeColumn: "merchant_id", key: "id" },
-  { table: "url_redirects", group: "content", scopeColumn: "merchant_id", key: "id" },
+  {
+    table: "blog_terms",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "articles",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "article_terms",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "article_id,term_id",
+  },
+  {
+    table: "storefront_pages",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "nav_menus",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "nav_menu_items",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "media_assets",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "seo_meta",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "url_redirects",
+    group: "content",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
   // ---- design ----------------------------------------------------------
-  { table: "theme_registry", group: "design", scopeColumn: "merchant_id", key: "key" },
-  { table: "theme_versions", group: "design", scopeColumn: "merchant_id", key: "id" },
-  { table: "store_themes", group: "design", scopeColumn: "merchant_id", key: "id" },
-  { table: "theme_assets", group: "design", scopeColumn: "merchant_id", key: "id" },
-  { table: "theme_schedules", group: "design", scopeColumn: "merchant_id", key: "id" },
+  {
+    table: "theme_registry",
+    group: "design",
+    scopeColumn: "merchant_id",
+    key: "key",
+  },
+  {
+    table: "theme_versions",
+    group: "design",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "store_themes",
+    group: "design",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "theme_assets",
+    group: "design",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
+  {
+    table: "theme_schedules",
+    group: "design",
+    scopeColumn: "merchant_id",
+    key: "id",
+  },
   // ---- audit trail last: it references everything above ----------------
-  { table: "platform_audit_log", group: "platform", scopeColumn: null, key: "id" },
+  {
+    table: "platform_audit_log",
+    group: "platform",
+    scopeColumn: null,
+    key: "id",
+  },
 ];
 
-export const SNAPSHOT_GROUPS: readonly SnapshotGroup[] = ["commerce", "content", "design", "platform"];
+export const SNAPSHOT_GROUPS: readonly SnapshotGroup[] = [
+  "commerce",
+  "content",
+  "design",
+  "platform",
+];
 
 export const ARCHIVE_FORMAT = "framique.snapshot.v1";
 
 /** Tables a single-store snapshot can carry (everything scoped to a merchant). */
 export function tablesForScope(scope: "platform" | "store"): SnapshotTable[] {
-  return SNAPSHOT_TABLES.filter((t) => (scope === "platform" ? true : t.scopeColumn !== null));
+  return SNAPSHOT_TABLES.filter((t) =>
+    scope === "platform" ? true : t.scopeColumn !== null,
+  );
 }
 
 export function tableSpec(table: string): SnapshotTable | null {
@@ -104,7 +311,10 @@ export function tableSpec(table: string): SnapshotTable | null {
 }
 
 /** Blanks the credential columns for a table. Never mutates the input row. */
-export function redactRow(table: string, row: Record<string, unknown>): Record<string, unknown> {
+export function redactRow(
+  table: string,
+  row: Record<string, unknown>,
+): Record<string, unknown> {
   const spec = tableSpec(table);
   if (!spec?.redact?.length) return { ...row };
   const out = { ...row };
@@ -149,7 +359,11 @@ export function formatBytes(bytes: number): string {
   return `${value >= 10 || unit === 0 ? Math.round(value) : value.toFixed(1)} ${units[unit]}`;
 }
 
-export function archivePath(scope: "platform" | "store", id: string, takenAt: string): string {
+export function archivePath(
+  scope: "platform" | "store",
+  id: string,
+  takenAt: string,
+): string {
   const stamp = takenAt.replace(/[:.]/g, "-");
   return `${scope}/${stamp}-${id}.ndjson.gz`;
 }
@@ -182,7 +396,9 @@ export function verifyArchive(
   checks.push({
     name: "checksum",
     ok: intact,
-    detail: intact ? checksum : `recorded ${checksum}, archive reads ${recomputed}`,
+    detail: intact
+      ? checksum
+      : `recorded ${checksum}, archive reads ${recomputed}`,
   });
 
   const rows = totalRows(archived);
@@ -196,15 +412,20 @@ export function verifyArchive(
   const drift: VerifyVerdict["drift"] = [];
   for (const c of archived) {
     const now = liveByTable.get(c.table) ?? 0;
-    if (now !== c.rows) drift.push({ table: c.table, archived: c.rows, live: now });
+    if (now !== c.rows)
+      drift.push({ table: c.table, archived: c.rows, live: now });
   }
   checks.push({
     name: "live_match",
     ok: drift.length === 0,
-    detail: drift.length === 0 ? "live database matches the archive" : `${drift.length} tables differ`,
+    detail:
+      drift.length === 0
+        ? "live database matches the archive"
+        : `${drift.length} tables differ`,
   });
 
-  const status: VerifyVerdict["status"] = !intact || rows === 0 ? "damaged" : drift.length ? "drifted" : "matches";
+  const status: VerifyVerdict["status"] =
+    !intact || rows === 0 ? "damaged" : drift.length ? "drifted" : "matches";
   return { status, checks, drift };
 }
 
@@ -228,7 +449,9 @@ export function confirmPhrase(label: string): string {
 }
 
 export function phraseMatches(typed: string, label: string): boolean {
-  return typed.trim().toLowerCase().replace(/\s+/g, " ") === confirmPhrase(label);
+  return (
+    typed.trim().toLowerCase().replace(/\s+/g, " ") === confirmPhrase(label)
+  );
 }
 
 export const RESTORE_BATCH_SIZE = 400;

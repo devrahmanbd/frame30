@@ -1,1 +1,80 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx", "label": "StaggerList.jsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L1"}, {"id": "components_staggerlist_container", "label": "container", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L3"}, {"id": "components_staggerlist_item", "label": "item", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L14"}, {"id": "components_staggerlist_staggerlist", "label": "StaggerList()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L23"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx", "target": "framer_motion", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx", "target": "components_staggerlist_container", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx", "target": "components_staggerlist_item", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx", "target": "components_staggerlist_staggerlist", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L23", "weight": 1.0}], "raw_calls": [{"caller_nid": "components_staggerlist_staggerlist", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx", "source_location": "L42"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx",
+      "label": "StaggerList.jsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_staggerlist_container",
+      "label": "container",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L3"
+    },
+    {
+      "id": "components_staggerlist_item",
+      "label": "item",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "components_staggerlist_staggerlist",
+      "label": "StaggerList()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L23"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx",
+      "target": "framer_motion",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx",
+      "target": "components_staggerlist_container",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx",
+      "target": "components_staggerlist_item",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_src_components_staggerlist_jsx",
+      "target": "components_staggerlist_staggerlist",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L23",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "components_staggerlist_staggerlist",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/src/components/StaggerList.jsx",
+      "source_location": "L42"
+    }
+  ]
+}

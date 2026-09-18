@@ -7,7 +7,14 @@
  * is fully reachable without a pointer.
  */
 import { useState, type DragEvent } from "react";
-import { ChevronDown, ChevronsLeft, ChevronsRight, ChevronUp, GripVertical, Trash2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronsLeft,
+  ChevronsRight,
+  ChevronUp,
+  GripVertical,
+  Trash2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { btnGhost, inputClass } from "@/components/console/kit";
 import {
@@ -50,7 +57,8 @@ export function MenuStructure({
     if (!dragId || dragId === targetId) return;
     const box = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const ratio = (event.clientY - box.top) / box.height;
-    const position: MenuDropPosition = ratio < 0.3 ? "before" : ratio > 0.7 ? "after" : "child";
+    const position: MenuDropPosition =
+      ratio < 0.3 ? "before" : ratio > 0.7 ? "after" : "child";
     onMove(dragId, targetId, position);
     setDragId(null);
   };
@@ -74,7 +82,9 @@ export function MenuStructure({
               event.preventDefault();
               setOverId(row.id);
             }}
-            onDragLeave={() => setOverId((current) => (current === row.id ? null : current))}
+            onDragLeave={() =>
+              setOverId((current) => (current === row.id ? null : current))
+            }
             onDrop={(event) => onDrop(event, row.id)}
             className={cn(
               "overflow-hidden rounded-fq-md border bg-card transition-shadow",
@@ -105,7 +115,10 @@ export function MenuStructure({
                 </span>
                 <ChevronDown
                   aria-hidden
-                  className={cn("size-4 shrink-0 text-muted-foreground transition-transform", expanded && "rotate-180")}
+                  className={cn(
+                    "size-4 shrink-0 text-muted-foreground transition-transform",
+                    expanded && "rotate-180",
+                  )}
                 />
               </button>
               <RowButton
@@ -138,7 +151,11 @@ export function MenuStructure({
               </RowButton>
             </div>
 
-            <div id={`menu-item-${row.id}`} hidden={!expanded} className="border-t border-border p-3">
+            <div
+              id={`menu-item-${row.id}`}
+              hidden={!expanded}
+              className="border-t border-border p-3"
+            >
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="block space-y-1">
                   <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -147,7 +164,9 @@ export function MenuStructure({
                   <input
                     className={inputClass}
                     value={row.label}
-                    onChange={(event) => onChange(row.id, { label: event.target.value })}
+                    onChange={(event) =>
+                      onChange(row.id, { label: event.target.value })
+                    }
                   />
                 </label>
                 <label className="block space-y-1">
@@ -157,7 +176,9 @@ export function MenuStructure({
                   <input
                     className={inputClass}
                     value={row.url}
-                    onChange={(event) => onChange(row.id, { url: event.target.value })}
+                    onChange={(event) =>
+                      onChange(row.id, { url: event.target.value })
+                    }
                   />
                 </label>
                 <label className="block space-y-1">
@@ -167,7 +188,9 @@ export function MenuStructure({
                   <input
                     className={inputClass}
                     value={row.titleAttr}
-                    onChange={(event) => onChange(row.id, { titleAttr: event.target.value })}
+                    onChange={(event) =>
+                      onChange(row.id, { titleAttr: event.target.value })
+                    }
                   />
                 </label>
                 <label className="block space-y-1">
@@ -177,7 +200,9 @@ export function MenuStructure({
                   <input
                     className={inputClass}
                     value={row.cssClass}
-                    onChange={(event) => onChange(row.id, { cssClass: event.target.value })}
+                    onChange={(event) =>
+                      onChange(row.id, { cssClass: event.target.value })
+                    }
                   />
                 </label>
               </div>
@@ -187,15 +212,22 @@ export function MenuStructure({
                   type="checkbox"
                   className="size-4"
                   checked={row.newTab}
-                  onChange={(event) => onChange(row.id, { newTab: event.target.checked })}
+                  onChange={(event) =>
+                    onChange(row.id, { newTab: event.target.checked })
+                  }
                 />
                 Open in a new tab
               </label>
 
               {rowIssues.length > 0 && (
-                <ul role="alert" className="mt-2 space-y-1 text-xs text-destructive">
+                <ul
+                  role="alert"
+                  className="mt-2 space-y-1 text-xs text-destructive"
+                >
                   {rowIssues.map((issue) => (
-                    <li key={`${issue.field}-${issue.message}`}>{issue.message}</li>
+                    <li key={`${issue.field}-${issue.message}`}>
+                      {issue.message}
+                    </li>
                   ))}
                 </ul>
               )}
@@ -215,7 +247,8 @@ export function MenuStructure({
       })}
       {rows.length === 0 && (
         <li className="rounded-fq-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          Add pages, posts or custom links from the left to start building this menu.
+          Add pages, posts or custom links from the left to start building this
+          menu.
         </li>
       )}
     </ol>

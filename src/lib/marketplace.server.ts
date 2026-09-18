@@ -18,7 +18,9 @@ const LISTING_COLUMNS =
   "id, seller_merchant_id, name, slug, description, vendor_name, thumbnail_url, category, version, compatible_versions, price_minor_int, currency_code, trial_allowed, status, manifest, version_history, install_count, rating_sum, rating_count, created_at";
 
 export function table(kind: Kind) {
-  return kind === "theme" ? ("marketplace_themes" as const) : ("marketplace_widgets" as const);
+  return kind === "theme"
+    ? ("marketplace_themes" as const)
+    : ("marketplace_widgets" as const);
 }
 
 export function isCompatible(compatible: unknown) {
@@ -29,11 +31,19 @@ export function isCompatible(compatible: unknown) {
 
 export async function listCatalog(db: Client, merchantId: string) {
   const [themes, widgets, installs, themeRows] = await Promise.all([
-    db.from("marketplace_themes").select(LISTING_COLUMNS).order("install_count", { ascending: false }),
-    db.from("marketplace_widgets").select(LISTING_COLUMNS).order("install_count", { ascending: false }),
+    db
+      .from("marketplace_themes")
+      .select(LISTING_COLUMNS)
+      .order("install_count", { ascending: false }),
+    db
+      .from("marketplace_widgets")
+      .select(LISTING_COLUMNS)
+      .order("install_count", { ascending: false }),
     db
       .from("marketplace_installs")
-      .select("id, kind, theme_id, widget_id, listing_slug, listing_name, status, is_trial, price_minor_int, currency_code, started_at, expires_at")
+      .select(
+        "id, kind, theme_id, widget_id, listing_slug, listing_name, status, is_trial, price_minor_int, currency_code, started_at, expires_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false }),
     db
@@ -55,14 +65,22 @@ export async function listCatalog(db: Client, merchantId: string) {
   // WordPress parity: which installed listings already have a theme row,
   // and which of those is live. Linked through source_install_id.
   const installById = new Map(
-    ((installs.data ?? []) as { id: string; listing_slug: string }[]).map((i) => [i.id, i]),
+    ((installs.data ?? []) as { id: string; listing_slug: string }[]).map(
+      (i) => [i.id, i],
+    ),
   );
   const themeStates = (
-    (themeRows.data ?? []) as { id: string; is_active: boolean; source_install_id: string | null }[]
+    (themeRows.data ?? []) as {
+      id: string;
+      is_active: boolean;
+      source_install_id: string | null;
+    }[]
   ).flatMap((t) => {
     if (!t.source_install_id) return [];
     const inst = installById.get(t.source_install_id);
-    return inst ? [{ slug: inst.listing_slug, themeId: t.id, isActive: t.is_active }] : [];
+    return inst
+      ? [{ slug: inst.listing_slug, themeId: t.id, isActive: t.is_active }]
+      : [];
   });
 
   return {
@@ -70,11 +88,15 @@ export async function listCatalog(db: Client, merchantId: string) {
     // when no third-party creator has published yet.
     themes: [
       ...builtinThemes(),
-      ...decorate(themes.data, "theme").filter((r) => r.status === "active" || r.mine),
+      ...decorate(themes.data, "theme").filter(
+        (r) => r.status === "active" || r.mine,
+      ),
     ],
     widgets: [
       ...builtinWidgets(),
-      ...decorate(widgets.data, "widget").filter((r) => r.status === "active" || r.mine),
+      ...decorate(widgets.data, "widget").filter(
+        (r) => r.status === "active" || r.mine,
+      ),
     ],
     installs: installs.data ?? [],
     themeStates,
@@ -119,26 +141,43 @@ function builtinThemes() {
 
 export async function listMine(db: Client, merchantId: string) {
   const [themes, widgets, ledger] = await Promise.all([
-    db.from("marketplace_themes").select(LISTING_COLUMNS).eq("seller_merchant_id", merchantId),
-    db.from("marketplace_widgets").select(LISTING_COLUMNS).eq("seller_merchant_id", merchantId),
+    db
+      .from("marketplace_themes")
+      .select(LISTING_COLUMNS)
+      .eq("seller_merchant_id", merchantId),
+    db
+      .from("marketplace_widgets")
+      .select(LISTING_COLUMNS)
+      .eq("seller_merchant_id", merchantId),
     db
       .from("wallet_ledger_entries")
-      .select("id, source, direction, gross_minor_int, seller_minor_int, platform_minor_int, currency_code, memo, created_at")
+      .select(
+        "id, source, direction, gross_minor_int, seller_minor_int, platform_minor_int, currency_code, memo, created_at",
+      )
       .eq("counterparty_merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(50),
   ]);
   return {
     themes: (themes.data ?? []).map((r) => ({ ...r, kind: "theme" as const })),
-    widgets: (widgets.data ?? []).map((r) => ({ ...r, kind: "widget" as const })),
+    widgets: (widgets.data ?? []).map((r) => ({
+      ...r,
+      kind: "widget" as const,
+    })),
     ledger: ledger.data ?? [],
   };
 }
 
 export async function listModeration(db: Client) {
   const [themes, widgets] = await Promise.all([
-    db.from("marketplace_themes").select(LISTING_COLUMNS).in("status", ["review", "active", "paused"]),
-    db.from("marketplace_widgets").select(LISTING_COLUMNS).in("status", ["review", "active", "paused"]),
+    db
+      .from("marketplace_themes")
+      .select(LISTING_COLUMNS)
+      .in("status", ["review", "active", "paused"]),
+    db
+      .from("marketplace_widgets")
+      .select(LISTING_COLUMNS)
+      .in("status", ["review", "active", "paused"]),
   ]);
   return [
     ...(themes.data ?? []).map((r) => ({ ...r, kind: "theme" as const })),
@@ -147,6 +186,10 @@ export async function listModeration(db: Client) {
 }
 
 export async function isPlatformAdmin(db: Client, userId: string) {
-  const { data } = await db.from("platform_admins").select("user_id").eq("user_id", userId).maybeSingle();
+  const { data } = await db
+    .from("platform_admins")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
   return Boolean(data);
 }

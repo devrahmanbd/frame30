@@ -1,1 +1,438 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "label": "plans.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L1"}, {"id": "root_plans_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L9"}, {"id": "root_plans_plan_keys", "label": "PLAN_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L31"}, {"id": "root_plans_plankey", "label": "PlanKey", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L32"}, {"id": "root_plans_methods", "label": "METHODS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L33"}, {"id": "root_plans_flags", "label": "FLAGS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L34"}, {"id": "root_plans_draft", "label": "Draft", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L39"}, {"id": "root_plans_plandef", "label": "PlanDef", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L55"}, {"id": "root_plans_emptydraft", "label": "emptyDraft()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L69"}, {"id": "root_plans_todraft", "label": "toDraft()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L87"}, {"id": "root_plans_planform", "label": "PlanForm()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L107"}, {"id": "root_plans_plansandlimits", "label": "PlansAndLimits()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L312"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "users_rahman_documents_frame30_src_lib_platform_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "lib_platform_functions_platformplansfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "lib_platform_functions_platformsaveplanfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_plan_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_plankey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_methods", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_flags", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_draft", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_plandef", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L55", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_emptydraft", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_todraft", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_planform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L107", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_plans_tsx", "target": "root_plans_plansandlimits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L312", "weight": 1.0}], "raw_calls": [{"caller_nid": "root_plans_todraft", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L96"}, {"caller_nid": "root_plans_todraft", "callee": "fromEntries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L99"}, {"caller_nid": "root_plans_todraft", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L100"}, {"caller_nid": "root_plans_todraft", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L100"}, {"caller_nid": "root_plans_planform", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L108"}, {"caller_nid": "root_plans_planform", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L109"}, {"caller_nid": "root_plans_planform", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L110"}, {"caller_nid": "root_plans_planform", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L111"}, {"caller_nid": "root_plans_planform", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L113"}, {"caller_nid": "root_plans_planform", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L199"}, {"caller_nid": "root_plans_planform", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L258"}, {"caller_nid": "root_plans_planform", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L274"}, {"caller_nid": "root_plans_planform", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L306"}, {"caller_nid": "root_plans_plansandlimits", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L313"}, {"caller_nid": "root_plans_plansandlimits", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L314"}, {"caller_nid": "root_plans_plansandlimits", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L315"}, {"caller_nid": "root_plans_plansandlimits", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L316"}, {"caller_nid": "root_plans_plansandlimits", "callee": "tk", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L323"}, {"caller_nid": "root_plans_plansandlimits", "callee": "tError", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L324"}, {"caller_nid": "root_plans_plansandlimits", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L327"}, {"caller_nid": "root_plans_plansandlimits", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx", "source_location": "L336"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "label": "plans.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "root_plans_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L9"
+    },
+    {
+      "id": "root_plans_plan_keys",
+      "label": "PLAN_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L31"
+    },
+    {
+      "id": "root_plans_plankey",
+      "label": "PlanKey",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "root_plans_methods",
+      "label": "METHODS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "root_plans_flags",
+      "label": "FLAGS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "root_plans_draft",
+      "label": "Draft",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L39"
+    },
+    {
+      "id": "root_plans_plandef",
+      "label": "PlanDef",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L55"
+    },
+    {
+      "id": "root_plans_emptydraft",
+      "label": "emptyDraft()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L69"
+    },
+    {
+      "id": "root_plans_todraft",
+      "label": "toDraft()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L87"
+    },
+    {
+      "id": "root_plans_planform",
+      "label": "PlanForm()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L107"
+    },
+    {
+      "id": "root_plans_plansandlimits",
+      "label": "PlansAndLimits()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L312"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_platform_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "lib_platform_functions_platformplansfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "lib_platform_functions_platformsaveplanfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_plan_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_plankey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_methods",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_flags",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_draft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_plandef",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_emptydraft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_todraft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_planform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_plans_tsx",
+      "target": "root_plans_plansandlimits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L312",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "root_plans_todraft",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "root_plans_todraft",
+      "callee": "fromEntries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "root_plans_todraft",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "root_plans_todraft",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L108"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "root_plans_planform",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L306"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L316"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "tk",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "tError",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "root_plans_plansandlimits",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/plans.tsx",
+      "source_location": "L336"
+    }
+  ]
+}

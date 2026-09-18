@@ -1,111 +1,616 @@
 {
   "nodes": [
-    {"id": "payments", "type": "module", "label": "Payments (06)", "file_type": "document", "confidence": 1.0},
-    {"id": "currency_gates", "type": "depth_spec", "label": "Currency gates — BDT-locked default, USD pilot gate, conformance, rollback", "file_type": "document", "confidence": 1.0},
-    {"id": "currency_money_model", "type": "depth_spec", "label": "Multi-currency money model — BDT + USD representation, FX sourcing, checkout conversion, payouts, refunds", "file_type": "document", "confidence": 1.0},
-    {"id": "settlement_reconciliation", "type": "depth_spec", "label": "Settlement & reconciliation — daily money-out truth, ledger match, variance alerting", "file_type": "document", "confidence": 1.0},
-    {"id": "webhook_gateway", "type": "depth_spec", "label": "Webhook gateway — HMAC-verified ingest, DLQ, replay, security", "file_type": "document", "confidence": 1.0},
-    {"id": "money_runtime", "type": "spec", "label": "Money runtime — Money type, pinned rounding, VAT service, FX snapshot, append-only ledger writer", "file_type": "document", "confidence": 1.0},
-    {"id": "analytics", "type": "module", "label": "Analytics (09)", "file_type": "document", "confidence": 1.0},
-    {"id": "event_pipeline", "type": "depth_spec", "label": "Event pipeline — raw to aggregate, retention hand-off, RLS", "file_type": "document", "confidence": 1.0},
-    {"id": "export_sdk", "type": "module", "label": "Export & SDK (13)", "file_type": "document", "confidence": 1.0},
-    {"id": "export_job", "type": "depth_spec", "label": "Export job lifecycle — queued, generating, signing, ready_for_download, downloaded, expired", "file_type": "document", "confidence": 1.0},
-    {"id": "oauth", "type": "depth_spec", "label": "OAuth for merchant apps — OAuth 2.1, token lifecycle, consent, key rotation", "file_type": "document", "confidence": 1.0},
-    {"id": "rest_api", "type": "depth_spec", "label": "Admin REST API — RLS reads, API-key auth, cursor pagination, rate limit, idempotency", "file_type": "document", "confidence": 1.0},
-    {"id": "api_sdk", "type": "depth_spec", "label": "Client SDKs — Node/Go generated patterns, retry, money boundary, deprecation policy", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing", "type": "module", "label": "Marketing (05)", "file_type": "document", "confidence": 1.0},
-    {"id": "abtesting", "type": "depth_spec", "label": "A/B testing & experiments — pre-registered plans, server-resolved assignment, holdout, audit", "file_type": "document", "confidence": 1.0},
-    {"id": "content_cms", "type": "depth_spec", "label": "Content CMS — articles, media library, menus, SEO/AEO, blog admin", "file_type": "document", "confidence": 1.0},
-    {"id": "seo_consent", "type": "spec", "label": "SEO & consent — merchant SEO panel, answer-engine output, sitemaps, consent ledger", "file_type": "document", "confidence": 1.0},
-    {"id": "voice_messaging", "type": "spec", "label": "Voice, messaging & bilingual copy — prose half of copy system, brand-voice enforcement", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy", "type": "document", "label": "Marketing copy decks — 11 public pages with SEO head and section-by-section copy", "file_type": "document", "confidence": 1.0},
-    {"id": "store_currency_settings", "type": "data_model", "label": "store_currency_settings table — presentation_code, settlement_code, fx_policy", "file_type": "code", "confidence": 0.95},
-    {"id": "fx_rates", "type": "data_model", "label": "fx_rates table — daily legal rate, buy/sell split, audit trail", "file_type": "code", "confidence": 0.95},
-    {"id": "settlement_files", "type": "data_model", "label": "settlement_files, settlement_items, settlement_matches tables", "file_type": "code", "confidence": 0.95},
-    {"id": "gateway_webhook_dead_letter", "type": "data_model", "label": "gateway.webhook.dead_letter queue — HMAC failures, parse errors, amount mismatches", "file_type": "code", "confidence": 0.95},
-    {"id": "analytics_events", "type": "data_model", "label": "analytics.events, analytics.daily, analytics.batches tables with RLS", "file_type": "code", "confidence": 0.95},
-    {"id": "exports_table", "type": "data_model", "label": "exports, export_files, export_schema tables", "file_type": "code", "confidence": 0.95},
-    {"id": "oauth_clients", "type": "data_model", "label": "oauth_clients, oauth_authorizations, oauth_token_records, app_consents tables", "file_type": "code", "confidence": 0.95},
-    {"id": "api_keys_table", "type": "data_model", "label": "api_keys table — key lifecycle, rotation, scopes", "file_type": "code", "confidence": 0.95},
-    {"id": "experiments", "type": "data_model", "label": "experiments table — variant assignment, sample plans, lifecycle states", "file_type": "code", "confidence": 0.95},
-    {"id": "articles", "type": "data_model", "label": "articles table — JSON-structured documents, publish state machine, revisions", "file_type": "code", "confidence": 0.95},
-    {"id": "seo_meta", "type": "data_model", "label": "seo_meta, seo_meta_audit, consent_events, customer_consents tables", "file_type": "code", "confidence": 0.95},
-    {"id": "consent_events", "type": "data_model", "label": "consent_events table — append-only consent ledger", "file_type": "code", "confidence": 0.95},
-    {"id": "marketing_copy_pricing", "type": "copy_deck", "label": "/pricing — flat plans, unit economics, break-even calculator, migration guarantees", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy_contact", "type": "copy_deck", "label": "/contact — routed contact form, eight destination queues, ticket lifecycle", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy_customers", "type": "copy_deck", "label": "/customers — consented stories, verified numbers, segment archetypes", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy_fulfilment", "type": "copy_deck", "label": "/fulfilment — courier booking, order lifecycle, returns, remittance reconciliation", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy_features", "type": "copy_deck", "label": "/features — six pillars, unified data model, themes, Bangla-first", "file_type": "document", "confidence": 1.0},
-    {"id": "marketing_copy_payments", "type": "copy_deck", "label": "/payments — four rails, reconciliation engine, fraud scoring, COD risk playbook", "file_type": "document", "confidence": 1.0},
-    {"id": "money_type", "type": "concept", "label": "Money type — {currency, minor} where minor is integer count of minor units", "file_type": "code", "confidence": 1.0},
-    {"id": "append_only_ledger", "type": "concept", "label": "Append-only ledger — money_append_only() trigger, compensating corrections, no edits", "file_type": "code", "confidence": 1.0},
-    {"id": "integer_money_rule", "type": "guardrail", "label": "Integer money rule — money is never a float, amount_minor_int + currency_code on every monetary column", "file_type": "document", "confidence": 1.0},
-    {"id": "rls_tenant_isolation", "type": "guardrail", "label": "RLS on every tenant table — merchant_id scoping across all data", "file_type": "document", "confidence": 1.0}
+    {
+      "id": "payments",
+      "type": "module",
+      "label": "Payments (06)",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "currency_gates",
+      "type": "depth_spec",
+      "label": "Currency gates — BDT-locked default, USD pilot gate, conformance, rollback",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "currency_money_model",
+      "type": "depth_spec",
+      "label": "Multi-currency money model — BDT + USD representation, FX sourcing, checkout conversion, payouts, refunds",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "settlement_reconciliation",
+      "type": "depth_spec",
+      "label": "Settlement & reconciliation — daily money-out truth, ledger match, variance alerting",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "webhook_gateway",
+      "type": "depth_spec",
+      "label": "Webhook gateway — HMAC-verified ingest, DLQ, replay, security",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "money_runtime",
+      "type": "spec",
+      "label": "Money runtime — Money type, pinned rounding, VAT service, FX snapshot, append-only ledger writer",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "analytics",
+      "type": "module",
+      "label": "Analytics (09)",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "event_pipeline",
+      "type": "depth_spec",
+      "label": "Event pipeline — raw to aggregate, retention hand-off, RLS",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "export_sdk",
+      "type": "module",
+      "label": "Export & SDK (13)",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "export_job",
+      "type": "depth_spec",
+      "label": "Export job lifecycle — queued, generating, signing, ready_for_download, downloaded, expired",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "oauth",
+      "type": "depth_spec",
+      "label": "OAuth for merchant apps — OAuth 2.1, token lifecycle, consent, key rotation",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "rest_api",
+      "type": "depth_spec",
+      "label": "Admin REST API — RLS reads, API-key auth, cursor pagination, rate limit, idempotency",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "api_sdk",
+      "type": "depth_spec",
+      "label": "Client SDKs — Node/Go generated patterns, retry, money boundary, deprecation policy",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing",
+      "type": "module",
+      "label": "Marketing (05)",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "abtesting",
+      "type": "depth_spec",
+      "label": "A/B testing & experiments — pre-registered plans, server-resolved assignment, holdout, audit",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "content_cms",
+      "type": "depth_spec",
+      "label": "Content CMS — articles, media library, menus, SEO/AEO, blog admin",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "seo_consent",
+      "type": "spec",
+      "label": "SEO & consent — merchant SEO panel, answer-engine output, sitemaps, consent ledger",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "voice_messaging",
+      "type": "spec",
+      "label": "Voice, messaging & bilingual copy — prose half of copy system, brand-voice enforcement",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy",
+      "type": "document",
+      "label": "Marketing copy decks — 11 public pages with SEO head and section-by-section copy",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "store_currency_settings",
+      "type": "data_model",
+      "label": "store_currency_settings table — presentation_code, settlement_code, fx_policy",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "fx_rates",
+      "type": "data_model",
+      "label": "fx_rates table — daily legal rate, buy/sell split, audit trail",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "settlement_files",
+      "type": "data_model",
+      "label": "settlement_files, settlement_items, settlement_matches tables",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "gateway_webhook_dead_letter",
+      "type": "data_model",
+      "label": "gateway.webhook.dead_letter queue — HMAC failures, parse errors, amount mismatches",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "analytics_events",
+      "type": "data_model",
+      "label": "analytics.events, analytics.daily, analytics.batches tables with RLS",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "exports_table",
+      "type": "data_model",
+      "label": "exports, export_files, export_schema tables",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "oauth_clients",
+      "type": "data_model",
+      "label": "oauth_clients, oauth_authorizations, oauth_token_records, app_consents tables",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "api_keys_table",
+      "type": "data_model",
+      "label": "api_keys table — key lifecycle, rotation, scopes",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "experiments",
+      "type": "data_model",
+      "label": "experiments table — variant assignment, sample plans, lifecycle states",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "articles",
+      "type": "data_model",
+      "label": "articles table — JSON-structured documents, publish state machine, revisions",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "seo_meta",
+      "type": "data_model",
+      "label": "seo_meta, seo_meta_audit, consent_events, customer_consents tables",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "consent_events",
+      "type": "data_model",
+      "label": "consent_events table — append-only consent ledger",
+      "file_type": "code",
+      "confidence": 0.95
+    },
+    {
+      "id": "marketing_copy_pricing",
+      "type": "copy_deck",
+      "label": "/pricing — flat plans, unit economics, break-even calculator, migration guarantees",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy_contact",
+      "type": "copy_deck",
+      "label": "/contact — routed contact form, eight destination queues, ticket lifecycle",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy_customers",
+      "type": "copy_deck",
+      "label": "/customers — consented stories, verified numbers, segment archetypes",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy_fulfilment",
+      "type": "copy_deck",
+      "label": "/fulfilment — courier booking, order lifecycle, returns, remittance reconciliation",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy_features",
+      "type": "copy_deck",
+      "label": "/features — six pillars, unified data model, themes, Bangla-first",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "marketing_copy_payments",
+      "type": "copy_deck",
+      "label": "/payments — four rails, reconciliation engine, fraud scoring, COD risk playbook",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "money_type",
+      "type": "concept",
+      "label": "Money type — {currency, minor} where minor is integer count of minor units",
+      "file_type": "code",
+      "confidence": 1.0
+    },
+    {
+      "id": "append_only_ledger",
+      "type": "concept",
+      "label": "Append-only ledger — money_append_only() trigger, compensating corrections, no edits",
+      "file_type": "code",
+      "confidence": 1.0
+    },
+    {
+      "id": "integer_money_rule",
+      "type": "guardrail",
+      "label": "Integer money rule — money is never a float, amount_minor_int + currency_code on every monetary column",
+      "file_type": "document",
+      "confidence": 1.0
+    },
+    {
+      "id": "rls_tenant_isolation",
+      "type": "guardrail",
+      "label": "RLS on every tenant table — merchant_id scoping across all data",
+      "file_type": "document",
+      "confidence": 1.0
+    }
   ],
   "edges": [
-    {"source": "payments", "target": "currency_gates", "relation": "contains", "confidence": 1.0},
-    {"source": "payments", "target": "currency_money_model", "relation": "contains", "confidence": 1.0},
-    {"source": "payments", "target": "settlement_reconciliation", "relation": "contains", "confidence": 1.0},
-    {"source": "payments", "target": "webhook_gateway", "relation": "contains", "confidence": 1.0},
-    {"source": "payments", "target": "money_runtime", "relation": "contains", "confidence": 1.0},
-    {"source": "analytics", "target": "event_pipeline", "relation": "contains", "confidence": 1.0},
-    {"source": "export_sdk", "target": "export_job", "relation": "contains", "confidence": 1.0},
-    {"source": "export_sdk", "target": "oauth", "relation": "contains", "confidence": 1.0},
-    {"source": "export_sdk", "target": "rest_api", "relation": "contains", "confidence": 1.0},
-    {"source": "export_sdk", "target": "api_sdk", "relation": "contains", "confidence": 1.0},
-    {"source": "marketing", "target": "abtesting", "relation": "contains", "confidence": 1.0},
-    {"source": "marketing", "target": "content_cms", "relation": "contains", "confidence": 1.0},
-    {"source": "marketing", "target": "seo_consent", "relation": "contains", "confidence": 1.0},
-    {"source": "marketing", "target": "voice_messaging", "relation": "contains", "confidence": 1.0},
-    {"source": "marketing", "target": "marketing_copy", "relation": "contains", "confidence": 1.0},
-    {"source": "currency_money_model", "target": "currency_gates", "relation": "enforced_by", "confidence": 1.0},
-    {"source": "currency_money_model", "target": "money_runtime", "relation": "implemented_by", "confidence": 1.0},
-    {"source": "currency_money_model", "target": "store_currency_settings", "relation": "stores_in", "confidence": 0.95},
-    {"source": "currency_money_model", "target": "fx_rates", "relation": "reads_from", "confidence": 0.95},
-    {"source": "currency_money_model", "target": "integer_money_rule", "relation": "governed_by", "confidence": 1.0},
-    {"source": "settlement_reconciliation", "target": "settlement_files", "relation": "stores_in", "confidence": 0.95},
-    {"source": "webhook_gateway", "target": "gateway_webhook_dead_letter", "relation": "stores_in", "confidence": 0.95},
-    {"source": "event_pipeline", "target": "analytics_events", "relation": "stores_in", "confidence": 0.95},
-    {"source": "analytics_events", "target": "rls_tenant_isolation", "relation": "governed_by", "confidence": 1.0},
-    {"source": "export_job", "target": "exports_table", "relation": "stores_in", "confidence": 0.95},
-    {"source": "oauth", "target": "oauth_clients", "relation": "stores_in", "confidence": 0.95},
-    {"source": "rest_api", "target": "api_keys_table", "relation": "stores_in", "confidence": 0.95},
-    {"source": "abtesting", "target": "experiments", "relation": "stores_in", "confidence": 0.95},
-    {"source": "content_cms", "target": "articles", "relation": "stores_in", "confidence": 0.95},
-    {"source": "seo_consent", "target": "seo_meta", "relation": "stores_in", "confidence": 0.95},
-    {"source": "seo_consent", "target": "consent_events", "relation": "stores_in", "confidence": 0.95},
-    {"source": "marketing_copy_pricing", "target": "payments", "relation": "references", "confidence": 0.95},
-    {"source": "marketing_copy_pricing", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "marketing_copy_contact", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "marketing_copy_customers", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "marketing_copy_fulfilment", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "marketing_copy_features", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "marketing_copy_payments", "target": "payments", "relation": "describes", "confidence": 0.95},
-    {"source": "marketing_copy_payments", "target": "marketing", "relation": "belongs_to", "confidence": 1.0},
-    {"source": "money_type", "target": "money_runtime", "relation": "defined_in", "confidence": 1.0},
-    {"source": "money_type", "target": "integer_money_rule", "relation": "implements", "confidence": 1.0},
-    {"source": "append_only_ledger", "target": "money_runtime", "relation": "enforced_in", "confidence": 1.0},
-    {"source": "export_job", "target": "oauth", "relation": "authenticates_via", "confidence": 0.95},
-    {"source": "rest_api", "target": "oauth", "relation": "authenticates_via", "confidence": 0.95},
-    {"source": "event_pipeline", "target": "analytics", "relation": "feeds", "confidence": 1.0},
-    {"source": "content_cms", "target": "seo_consent", "relation": "shares_consent_model", "confidence": 0.85}
+    {
+      "source": "payments",
+      "target": "currency_gates",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "payments",
+      "target": "currency_money_model",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "payments",
+      "target": "settlement_reconciliation",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "payments",
+      "target": "webhook_gateway",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "payments",
+      "target": "money_runtime",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "analytics",
+      "target": "event_pipeline",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_sdk",
+      "target": "export_job",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_sdk",
+      "target": "oauth",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_sdk",
+      "target": "rest_api",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_sdk",
+      "target": "api_sdk",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing",
+      "target": "abtesting",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing",
+      "target": "content_cms",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing",
+      "target": "seo_consent",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing",
+      "target": "voice_messaging",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing",
+      "target": "marketing_copy",
+      "relation": "contains",
+      "confidence": 1.0
+    },
+    {
+      "source": "currency_money_model",
+      "target": "currency_gates",
+      "relation": "enforced_by",
+      "confidence": 1.0
+    },
+    {
+      "source": "currency_money_model",
+      "target": "money_runtime",
+      "relation": "implemented_by",
+      "confidence": 1.0
+    },
+    {
+      "source": "currency_money_model",
+      "target": "store_currency_settings",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "currency_money_model",
+      "target": "fx_rates",
+      "relation": "reads_from",
+      "confidence": 0.95
+    },
+    {
+      "source": "currency_money_model",
+      "target": "integer_money_rule",
+      "relation": "governed_by",
+      "confidence": 1.0
+    },
+    {
+      "source": "settlement_reconciliation",
+      "target": "settlement_files",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "webhook_gateway",
+      "target": "gateway_webhook_dead_letter",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "event_pipeline",
+      "target": "analytics_events",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "analytics_events",
+      "target": "rls_tenant_isolation",
+      "relation": "governed_by",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_job",
+      "target": "exports_table",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "oauth",
+      "target": "oauth_clients",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "rest_api",
+      "target": "api_keys_table",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "abtesting",
+      "target": "experiments",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "content_cms",
+      "target": "articles",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "seo_consent",
+      "target": "seo_meta",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "seo_consent",
+      "target": "consent_events",
+      "relation": "stores_in",
+      "confidence": 0.95
+    },
+    {
+      "source": "marketing_copy_pricing",
+      "target": "payments",
+      "relation": "references",
+      "confidence": 0.95
+    },
+    {
+      "source": "marketing_copy_pricing",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing_copy_contact",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing_copy_customers",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing_copy_fulfilment",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing_copy_features",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "marketing_copy_payments",
+      "target": "payments",
+      "relation": "describes",
+      "confidence": 0.95
+    },
+    {
+      "source": "marketing_copy_payments",
+      "target": "marketing",
+      "relation": "belongs_to",
+      "confidence": 1.0
+    },
+    {
+      "source": "money_type",
+      "target": "money_runtime",
+      "relation": "defined_in",
+      "confidence": 1.0
+    },
+    {
+      "source": "money_type",
+      "target": "integer_money_rule",
+      "relation": "implements",
+      "confidence": 1.0
+    },
+    {
+      "source": "append_only_ledger",
+      "target": "money_runtime",
+      "relation": "enforced_in",
+      "confidence": 1.0
+    },
+    {
+      "source": "export_job",
+      "target": "oauth",
+      "relation": "authenticates_via",
+      "confidence": 0.95
+    },
+    {
+      "source": "rest_api",
+      "target": "oauth",
+      "relation": "authenticates_via",
+      "confidence": 0.95
+    },
+    {
+      "source": "event_pipeline",
+      "target": "analytics",
+      "relation": "feeds",
+      "confidence": 1.0
+    },
+    {
+      "source": "content_cms",
+      "target": "seo_consent",
+      "relation": "shares_consent_model",
+      "confidence": 0.85
+    }
   ],
   "hyperedges": [
     {
       "id": "money_subsystem",
-      "nodes": ["payments", "currency_money_model", "currency_gates", "money_runtime", "integer_money_rule", "store_currency_settings", "fx_rates"],
+      "nodes": [
+        "payments",
+        "currency_money_model",
+        "currency_gates",
+        "money_runtime",
+        "integer_money_rule",
+        "store_currency_settings",
+        "fx_rates"
+      ],
       "label": "Money subsystem — BDT-locked default, optional USD pilot, integer minor units, FX snapshots, append-only ledger",
       "confidence": 1.0
     },
     {
       "id": "merchant_data_export_subsystem",
-      "nodes": ["export_sdk", "export_job", "oauth", "rest_api", "api_sdk", "exports_table", "oauth_clients", "api_keys_table"],
+      "nodes": [
+        "export_sdk",
+        "export_job",
+        "oauth",
+        "rest_api",
+        "api_sdk",
+        "exports_table",
+        "oauth_clients",
+        "api_keys_table"
+      ],
       "label": "Merchant data export & API subsystem — export lifecycle, OAuth 2.1, REST API, Node/Go SDK, API-key rotation",
       "confidence": 1.0
     },
     {
       "id": "marketing_surface",
-      "nodes": ["marketing", "marketing_copy", "abtesting", "content_cms", "seo_consent", "marketing_copy_pricing", "marketing_copy_payments", "marketing_copy_features", "marketing_copy_fulfilment", "marketing_copy_customers", "marketing_copy_contact"],
+      "nodes": [
+        "marketing",
+        "marketing_copy",
+        "abtesting",
+        "content_cms",
+        "seo_consent",
+        "marketing_copy_pricing",
+        "marketing_copy_payments",
+        "marketing_copy_features",
+        "marketing_copy_fulfilment",
+        "marketing_copy_customers",
+        "marketing_copy_contact"
+      ],
       "label": "Marketing surface — 11 copy decks, A/B experiments, content CMS, SEO/consent, voice & messaging",
       "confidence": 1.0
     }

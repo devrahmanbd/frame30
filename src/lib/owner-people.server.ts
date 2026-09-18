@@ -19,7 +19,8 @@ type Client = SupabaseClient<Database>;
 type Loose = any;
 
 async function service() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Loose;
 }
 
@@ -31,29 +32,48 @@ export type PersonRow = {
   confirmed: boolean;
   isOwner: boolean;
   isYou: boolean;
-  memberships: { merchantId: string; merchantName: string; role: string; status: string }[];
+  memberships: {
+    merchantId: string;
+    merchantName: string;
+    role: string;
+    status: string;
+  }[];
 };
 
 export async function loadPeople(db: Client, userId: string, page = 1) {
   return ownerGate(
     db,
     userId,
-    { action: "people.read", entity: "auth.users", bucket: "owner.read", kind: "read", meta: { page } },
+    {
+      action: "people.read",
+      entity: "auth.users",
+      bucket: "owner.read",
+      kind: "read",
+      meta: { page },
+    },
     async () => {
       const svc = await service();
       const perPage = 50;
       const listed = await svc.auth.admin.listUsers({ page, perPage });
-      if (listed.error) throw new OwnerError("people.read_failed", listed.error.message);
+      if (listed.error)
+        throw new OwnerError("people.read_failed", listed.error.message);
       const users = (listed.data?.users ?? []) as Loose[];
 
       const [admins, members, merchants] = await Promise.all([
         svc.from("platform_admins").select("user_id, created_at"),
-        svc.from("merchant_members").select("user_id, merchant_id, role, status"),
+        svc
+          .from("merchant_members")
+          .select("user_id, merchant_id, role, status"),
         svc.from("merchants").select("id, name"),
       ]);
-      const ownerIds = new Set(((admins.data ?? []) as Loose[]).map((a) => a.user_id as string));
+      const ownerIds = new Set(
+        ((admins.data ?? []) as Loose[]).map((a) => a.user_id as string),
+      );
       const names = new Map<string, string>(
-        ((merchants.data ?? []) as Loose[]).map((m) => [m.id as string, m.name as string]),
+        ((merchants.data ?? []) as Loose[]).map((m) => [
+          m.id as string,
+          m.name as string,
+        ]),
       );
       const byUser = new Map<string, PersonRow["memberships"]>();
       for (const m of (members.data ?? []) as Loose[]) {
@@ -110,12 +130,17 @@ export type CreateAccountInput = {
   role?: "owner" | "admin" | "staff" | "viewer" | string | null;
 };
 
-export async function createAccount(db: Client, actorId: string, input: CreateAccountInput) {
+export async function createAccount(
+  db: Client,
+  actorId: string,
+  input: CreateAccountInput,
+) {
   const email = input.email.trim().toLowerCase();
   if (!email || !email.includes("@")) {
     throw new OwnerError("people.invalid_email", "Valid email is required.");
   }
-  const password = input.password?.trim() || Math.random().toString(36).slice(-10) + "Aa1!";
+  const password =
+    input.password?.trim() || Math.random().toString(36).slice(-10) + "Aa1!";
 
   return ownerGate(
     db,
@@ -125,7 +150,11 @@ export async function createAccount(db: Client, actorId: string, input: CreateAc
       entity: "auth.users",
       bucket: "platform.write",
       kind: "write",
-      meta: { email, isOwner: Boolean(input.isOwner), merchantId: input.merchantId ?? null },
+      meta: {
+        email,
+        isOwner: Boolean(input.isOwner),
+        merchantId: input.merchantId ?? null,
+      },
     },
     async () => {
       const svc = await service();
@@ -138,8 +167,13 @@ export async function createAccount(db: Client, actorId: string, input: CreateAc
       let userId = created?.user?.id;
       if (error) {
         // Check if user already exists
-        const listed = await svc.auth.admin.listUsers({ page: 1, perPage: 100 });
-        const existing = (listed.data?.users ?? []).find((u: any) => u.email?.toLowerCase() === email);
+        const listed = await svc.auth.admin.listUsers({
+          page: 1,
+          perPage: 100,
+        });
+        const existing = (listed.data?.users ?? []).find(
+          (u: any) => u.email?.toLowerCase() === email,
+        );
         if (!existing) {
           throw new OwnerError("people.create_failed", error.message);
         }
@@ -147,30 +181,33 @@ export async function createAccount(db: Client, actorId: string, input: CreateAc
       }
 
       if (!userId) {
-        throw new OwnerError("people.create_failed", "Could not create user account.");
+        throw new OwnerError(
+          "people.create_failed",
+          "Could not create user account.",
+        );
       }
 
       if (input.isOwner) {
         const { error: adminErr } = await svc
           .from("platform_admins")
           .upsert({ user_id: userId }, { onConflict: "user_id" });
-        if (adminErr) throw new OwnerError("people.grant_failed", adminErr.message);
+        if (adminErr)
+          throw new OwnerError("people.grant_failed", adminErr.message);
       }
 
       if (input.merchantId) {
         const role = input.role || "staff";
-        const { error: memberErr } = await svc
-          .from("merchant_members")
-          .upsert(
-            {
-              user_id: userId,
-              merchant_id: input.merchantId,
-              role,
-              status: "active",
-            },
-            { onConflict: "merchant_id,user_id" },
-          );
-        if (memberErr) throw new OwnerError("people.membership_failed", memberErr.message);
+        const { error: memberErr } = await svc.from("merchant_members").upsert(
+          {
+            user_id: userId,
+            merchant_id: input.merchantId,
+            role,
+            status: "active",
+          },
+          { onConflict: "merchant_id,user_id" },
+        );
+        if (memberErr)
+          throw new OwnerError("people.membership_failed", memberErr.message);
       }
 
       return { ok: true, userId };
@@ -188,7 +225,11 @@ export type UpdateAccountInput = {
   isOwner?: boolean | null;
 };
 
-export async function updateAccount(db: Client, actorId: string, input: UpdateAccountInput) {
+export async function updateAccount(
+  db: Client,
+  actorId: string,
+  input: UpdateAccountInput,
+) {
   return ownerGate(
     db,
     actorId,
@@ -211,47 +252,65 @@ export async function updateAccount(db: Client, actorId: string, input: UpdateAc
       }
 
       if (Object.keys(updates).length > 0) {
-        const { error: updateErr } = await svc.auth.admin.updateUserById(input.userId, updates);
-        if (updateErr) throw new OwnerError("people.update_failed", updateErr.message);
+        const { error: updateErr } = await svc.auth.admin.updateUserById(
+          input.userId,
+          updates,
+        );
+        if (updateErr)
+          throw new OwnerError("people.update_failed", updateErr.message);
       }
 
       if (typeof input.isOwner === "boolean") {
         if (input.isOwner) {
-          await svc.from("platform_admins").upsert({ user_id: input.userId }, { onConflict: "user_id" });
+          await svc
+            .from("platform_admins")
+            .upsert({ user_id: input.userId }, { onConflict: "user_id" });
         } else {
           if (input.userId === actorId) {
-            throw new OwnerError("people.cannot_demote_self", "Cannot revoke your own root owner rights.");
+            throw new OwnerError(
+              "people.cannot_demote_self",
+              "Cannot revoke your own root owner rights.",
+            );
           }
           const remaining = await svc.from("platform_admins").select("user_id");
           if (((remaining.data ?? []) as Loose[]).length <= 1) {
-            throw new OwnerError("people.last_owner", "Cannot revoke the last platform owner.");
+            throw new OwnerError(
+              "people.last_owner",
+              "Cannot revoke the last platform owner.",
+            );
           }
-          await svc.from("platform_admins").delete().eq("user_id", input.userId);
+          await svc
+            .from("platform_admins")
+            .delete()
+            .eq("user_id", input.userId);
         }
       }
 
       if (input.merchantId) {
         const role = input.role || "staff";
-        const { error: memberErr } = await svc
-          .from("merchant_members")
-          .upsert(
-            {
-              user_id: input.userId,
-              merchant_id: input.merchantId,
-              role,
-              status: "active",
-            },
-            { onConflict: "merchant_id,user_id" },
-          );
-        if (memberErr) throw new OwnerError("people.membership_failed", memberErr.message);
+        const { error: memberErr } = await svc.from("merchant_members").upsert(
+          {
+            user_id: input.userId,
+            merchant_id: input.merchantId,
+            role,
+            status: "active",
+          },
+          { onConflict: "merchant_id,user_id" },
+        );
+        if (memberErr)
+          throw new OwnerError("people.membership_failed", memberErr.message);
       }
 
       if (input.removeMerchantId) {
         const { error: delErr } = await svc
           .from("merchant_members")
           .delete()
-          .match({ user_id: input.userId, merchant_id: input.removeMerchantId });
-        if (delErr) throw new OwnerError("people.detach_failed", delErr.message);
+          .match({
+            user_id: input.userId,
+            merchant_id: input.removeMerchantId,
+          });
+        if (delErr)
+          throw new OwnerError("people.detach_failed", delErr.message);
       }
 
       return { ok: true };
@@ -259,9 +318,16 @@ export async function updateAccount(db: Client, actorId: string, input: UpdateAc
   );
 }
 
-export async function deleteAccount(db: Client, actorId: string, targetUserId: string) {
+export async function deleteAccount(
+  db: Client,
+  actorId: string,
+  targetUserId: string,
+) {
   if (targetUserId === actorId) {
-    throw new OwnerError("people.cannot_delete_self", "Cannot delete your own account.");
+    throw new OwnerError(
+      "people.cannot_delete_self",
+      "Cannot delete your own account.",
+    );
   }
 
   return ownerGate(
@@ -285,7 +351,10 @@ export async function deleteAccount(db: Client, actorId: string, targetUserId: s
       if (adminRow) {
         const remaining = await svc.from("platform_admins").select("user_id");
         if (((remaining.data ?? []) as Loose[]).length <= 1) {
-          throw new OwnerError("people.last_owner", "Cannot delete the last platform owner.");
+          throw new OwnerError(
+            "people.last_owner",
+            "Cannot delete the last platform owner.",
+          );
         }
         await svc.from("platform_admins").delete().eq("user_id", targetUserId);
       }
@@ -300,8 +369,14 @@ export async function deleteAccount(db: Client, actorId: string, targetUserId: s
   );
 }
 
-export async function setOwnerRight(db: Client, actorId: string, targetUserId: string, grant: boolean) {
-  if (!grant && targetUserId === actorId) throw new OwnerError("people.cannot_demote_self");
+export async function setOwnerRight(
+  db: Client,
+  actorId: string,
+  targetUserId: string,
+  grant: boolean,
+) {
+  if (!grant && targetUserId === actorId)
+    throw new OwnerError("people.cannot_demote_self");
   return ownerGate(
     db,
     actorId,
@@ -324,14 +399,21 @@ export async function setOwnerRight(db: Client, actorId: string, targetUserId: s
         if (((remaining.data ?? []) as Loose[]).length <= 1) {
           throw new OwnerError("people.last_owner");
         }
-        const configuredOwner = process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase();
+        const configuredOwner =
+          process.env["PLATFORM_OWNER_EMAIL"]?.toLowerCase();
         if (configuredOwner) {
           const target = await svc.auth.admin.getUserById(targetUserId);
           if (target?.data?.user?.email?.toLowerCase() === configuredOwner) {
-            throw new OwnerError("people.cannot_demote_owner", "Cannot revoke root owner rights.");
+            throw new OwnerError(
+              "people.cannot_demote_owner",
+              "Cannot revoke root owner rights.",
+            );
           }
         }
-        const { error } = await svc.from("platform_admins").delete().eq("user_id", targetUserId);
+        const { error } = await svc
+          .from("platform_admins")
+          .delete()
+          .eq("user_id", targetUserId);
         if (error) throw new OwnerError("people.revoke_failed", error.message);
       }
       return { ok: true };

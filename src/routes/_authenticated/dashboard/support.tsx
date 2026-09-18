@@ -3,7 +3,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, LifeBuoy, BookOpen, Plug, ShieldCheck, Timer, PhoneCall, Star } from "lucide-react";
+import {
+  Loader2,
+  LifeBuoy,
+  BookOpen,
+  Plug,
+  ShieldCheck,
+  Timer,
+  PhoneCall,
+  Star,
+} from "lucide-react";
 import { useLang } from "@/lib/i18n";
 import {
   getCsatAnalyticsFn,
@@ -20,7 +29,15 @@ import {
   updateCallbackStatusFn,
 } from "@/lib/support.functions";
 import { DEFAULT_SLA, type Priority } from "@/lib/support-sla";
-import { Empty, Pill, SLA_TONE, Section, Stat, minutes, ticketSla } from "@/components/admin/SupportDeskUi";
+import {
+  Empty,
+  Pill,
+  SLA_TONE,
+  Section,
+  Stat,
+  minutes,
+  ticketSla,
+} from "@/components/admin/SupportDeskUi";
 
 export const Route = createFileRoute("/_authenticated/dashboard/support")({
   head: () => ({
@@ -34,7 +51,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/support")({
       { property: "og:title", content: "Support desk — Framique admin" },
       {
         property: "og:description",
-        content: "Tickets, SLA policies, knowledge base, channels and AI guardrail audit.",
+        content:
+          "Tickets, SLA policies, knowledge base, channels and AI guardrail audit.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -79,14 +97,19 @@ function SupportDesk() {
   const loadAudit = useServerFn(supportAuditFn);
   const [tab, setTab] = useState<Tab>("tickets");
 
-  const desk = useQuery({ queryKey: ["support-desk"], queryFn: () => loadDesk(), staleTime: 15_000 });
+  const desk = useQuery({
+    queryKey: ["support-desk"],
+    queryFn: () => loadDesk(),
+    staleTime: 15_000,
+  });
   const audit = useQuery({
     queryKey: ["support-audit"],
     queryFn: () => loadAudit(),
     enabled: tab === "trust",
   });
 
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["support-desk"] });
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["support-desk"] });
   const summary = desk.data?.summary;
 
   const tabs: { key: Tab; label: string; Icon: typeof LifeBuoy }[] = [
@@ -95,13 +118,19 @@ function SupportDesk() {
     { key: "kb", label: t("Knowledge base", "নলেজ বেস"), Icon: BookOpen },
     { key: "channels", label: t("Channels", "চ্যানেল"), Icon: Plug },
     { key: "sla", label: t("SLA policy", "এসএলএ নীতি"), Icon: Timer },
-    { key: "trust", label: t("Trust & audit", "ট্রাস্ট ও অডিট"), Icon: ShieldCheck },
+    {
+      key: "trust",
+      label: t("Trust & audit", "ট্রাস্ট ও অডিট"),
+      Icon: ShieldCheck,
+    },
   ];
 
   return (
     <div className="space-y-5 p-4 md:p-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Support desk", "সাপোর্ট ডেস্ক")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Support desk", "সাপোর্ট ডেস্ক")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "Every escalation, help article and channel the assistant relies on — with the SLA clock visible.",
@@ -112,8 +141,14 @@ function SupportDesk() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label={t("Open", "চলমান")} value={String(summary?.open ?? 0)} />
-        <Stat label={t("Breached", "এসএলএ ভঙ্গ")} value={String(summary?.breached ?? 0)} />
-        <Stat label={t("At risk", "ঝুঁকিতে")} value={String(summary?.atRisk ?? 0)} />
+        <Stat
+          label={t("Breached", "এসএলএ ভঙ্গ")}
+          value={String(summary?.breached ?? 0)}
+        />
+        <Stat
+          label={t("At risk", "ঝুঁকিতে")}
+          value={String(summary?.atRisk ?? 0)}
+        />
         <Stat
           label={t("Median first response", "গড় প্রথম উত্তর")}
           value={minutes(summary?.firstResponseP50Minutes ?? null)}
@@ -121,7 +156,10 @@ function SupportDesk() {
         />
       </div>
 
-      <nav className="flex flex-wrap gap-2" aria-label={t("Support sections", "সাপোর্ট সেকশন")}>
+      <nav
+        className="flex flex-wrap gap-2"
+        aria-label={t("Support sections", "সাপোর্ট সেকশন")}
+      >
         {tabs.map(({ key, label, Icon }) => (
           <button
             key={key}
@@ -129,7 +167,9 @@ function SupportDesk() {
             onClick={() => setTab(key)}
             aria-current={tab === key}
             className={`inline-flex items-center gap-1.5 rounded-fq-md border px-3 py-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-              tab === key ? "border-primary bg-info-soft text-info-foreground" : "border-border hover:bg-muted"
+              tab === key
+                ? "border-primary bg-info-soft text-info-foreground"
+                : "border-border hover:bg-muted"
             }`}
           >
             <Icon className="size-4" aria-hidden />
@@ -145,17 +185,31 @@ function SupportDesk() {
         </p>
       ) : desk.isError ? (
         <p className="text-sm text-destructive">
-          {t("The desk could not be loaded. Try again.", "ডেস্ক লোড করা যায়নি। আবার চেষ্টা করুন।")}
+          {t(
+            "The desk could not be loaded. Try again.",
+            "ডেস্ক লোড করা যায়নি। আবার চেষ্টা করুন।",
+          )}
         </p>
       ) : (
         <>
-          {tab === "tickets" ? <Tickets rows={desk.data?.tickets ?? []} onDone={refresh} /> : null}
+          {tab === "tickets" ? (
+            <Tickets rows={desk.data?.tickets ?? []} onDone={refresh} />
+          ) : null}
           {tab === "callbacks" ? <CallbacksQueue /> : null}
-          {tab === "kb" ? <KnowledgeBase docs={desk.data?.docs ?? []} onDone={refresh} /> : null}
-          {tab === "channels" ? <Channels rows={desk.data?.channels ?? []} onDone={refresh} /> : null}
-          {tab === "sla" ? <SlaPolicies rows={desk.data?.policies ?? []} onDone={refresh} /> : null}
+          {tab === "kb" ? (
+            <KnowledgeBase docs={desk.data?.docs ?? []} onDone={refresh} />
+          ) : null}
+          {tab === "channels" ? (
+            <Channels rows={desk.data?.channels ?? []} onDone={refresh} />
+          ) : null}
+          {tab === "sla" ? (
+            <SlaPolicies rows={desk.data?.policies ?? []} onDone={refresh} />
+          ) : null}
           {tab === "trust" ? (
-            <Trust guardrails={audit.data?.guardrails ?? []} tools={audit.data?.tools ?? []} />
+            <Trust
+              guardrails={audit.data?.guardrails ?? []}
+              tools={audit.data?.tools ?? []}
+            />
           ) : null}
         </>
       )}
@@ -165,14 +219,18 @@ function SupportDesk() {
 
 /* ------------------------------- tickets -------------------------------- */
 
-type Ticket = NonNullable<Awaited<ReturnType<typeof supportDeskFn>>>["tickets"][number];
+type Ticket = NonNullable<
+  Awaited<ReturnType<typeof supportDeskFn>>
+>["tickets"][number];
 
 function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
   const { t } = useLang();
   const update = useServerFn(supportTicketUpdateFn);
   const create = useServerFn(supportTicketCreateFn);
   const events = useServerFn(supportTicketEventsFn);
-  const [filter, setFilter] = useState<"all" | (typeof STATUSES)[number]>("open");
+  const [filter, setFilter] = useState<"all" | (typeof STATUSES)[number]>(
+    "open",
+  );
   const [openId, setOpenId] = useState<string | null>(null);
   const [subject, setSubject] = useState("");
   const [note, setNote] = useState("");
@@ -195,17 +253,20 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
       setNote("");
       onDone();
     },
-    onError: () => toast.error(t("Could not update the ticket", "টিকিট আপডেট করা যায়নি")),
+    onError: () =>
+      toast.error(t("Could not update the ticket", "টিকিট আপডেট করা যায়নি")),
   });
 
   const open = useMutation({
-    mutationFn: () => create({ data: { subject: subject.trim(), priority: "normal" } }),
+    mutationFn: () =>
+      create({ data: { subject: subject.trim(), priority: "normal" } }),
     onSuccess: () => {
       toast.success(t("Ticket created", "টিকিট তৈরি হয়েছে"));
       setSubject("");
       onDone();
     },
-    onError: () => toast.error(t("Could not create the ticket", "টিকিট তৈরি করা যায়নি")),
+    onError: () =>
+      toast.error(t("Could not create the ticket", "টিকিট তৈরি করা যায়নি")),
   });
 
   const active = rows.find((r) => r.id === openId) ?? null;
@@ -214,7 +275,10 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
     <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
       <Section
         title={t("Queue", "সারি")}
-        description={t("Sorted newest first. SLA state is computed live.", "নতুন আগে। এসএলএ অবস্থা লাইভ।")}
+        description={t(
+          "Sorted newest first. SLA state is computed live.",
+          "নতুন আগে। এসএলএ অবস্থা লাইভ।",
+        )}
         action={
           <div className="flex flex-wrap gap-1">
             {(["all", ...STATUSES] as const).map((s) => (
@@ -244,8 +308,14 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
             className={field}
             aria-label={t("New ticket subject", "নতুন টিকিটের বিষয়")}
           />
-          <button type="submit" className={btn} disabled={open.isPending || subject.trim().length < 3}>
-            {open.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+          <button
+            type="submit"
+            className={btn}
+            disabled={open.isPending || subject.trim().length < 3}
+          >
+            {open.isPending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : null}
             {t("Open", "খুলুন")}
           </button>
         </form>
@@ -274,13 +344,18 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
                     }`}
                   >
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-medium">{ticket.subject}</span>
-                      <Pill tone={SLA_TONE[state]}>{state.replace("_", " ")}</Pill>
+                      <span className="text-sm font-medium">
+                        {ticket.subject}
+                      </span>
+                      <Pill tone={SLA_TONE[state]}>
+                        {state.replace("_", " ")}
+                      </Pill>
                       <Pill>{ticket.priority}</Pill>
                       <Pill>{ticket.channel}</Pill>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {ticket.status} · {new Date(ticket.created_at).toLocaleString()}
+                      {ticket.status} ·{" "}
+                      {new Date(ticket.created_at).toLocaleString()}
                       {ticket.order_number ? ` · #${ticket.order_number}` : ""}
                     </p>
                   </button>
@@ -293,21 +368,34 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
 
       <Section
         title={t("Ticket", "টিকিট")}
-        description={t("Actions are audited with your note.", "প্রতিটি পদক্ষেপ নোটসহ অডিট হয়।")}
+        description={t(
+          "Actions are audited with your note.",
+          "প্রতিটি পদক্ষেপ নোটসহ অডিট হয়।",
+        )}
       >
         {!active ? (
-          <Empty>{t("Select a ticket to work on it.", "কাজ করতে একটি টিকিট বেছে নিন।")}</Empty>
+          <Empty>
+            {t(
+              "Select a ticket to work on it.",
+              "কাজ করতে একটি টিকিট বেছে নিন।",
+            )}
+          </Empty>
         ) : (
           <div className="space-y-3">
             <div>
               <p className="text-sm font-medium">{active.subject}</p>
               {active.body ? (
-                <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">{String(active.body ?? "")}</p>
+                <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
+                  {String(active.body ?? "")}
+                </p>
               ) : null}
             </div>
 
             <label className="block text-xs text-muted-foreground">
-              {t("Note (stored in the audit trail)", "নোট (অডিট ট্রেইলে সংরক্ষিত)")}
+              {t(
+                "Note (stored in the audit trail)",
+                "নোট (অডিট ট্রেইলে সংরক্ষিত)",
+              )}
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value.slice(0, 500))}
@@ -322,7 +410,11 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
                 className={btnGhost}
                 disabled={patch.isPending || Boolean(active.first_response_at)}
                 onClick={() =>
-                  patch.mutate({ ticketId: active.id, firstResponse: true, note: note || undefined })
+                  patch.mutate({
+                    ticketId: active.id,
+                    firstResponse: true,
+                    note: note || undefined,
+                  })
                 }
               >
                 {t("Mark first response", "প্রথম উত্তর দেওয়া হয়েছে")}
@@ -333,7 +425,13 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
                   type="button"
                   className={btnGhost}
                   disabled={patch.isPending || active.status === s}
-                  onClick={() => patch.mutate({ ticketId: active.id, status: s, note: note || undefined })}
+                  onClick={() =>
+                    patch.mutate({
+                      ticketId: active.id,
+                      status: s,
+                      note: note || undefined,
+                    })
+                  }
                 >
                   {s}
                 </button>
@@ -344,7 +442,13 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
                   type="button"
                   className={btnGhost}
                   disabled={patch.isPending || active.priority === p}
-                  onClick={() => patch.mutate({ ticketId: active.id, priority: p, note: note || undefined })}
+                  onClick={() =>
+                    patch.mutate({
+                      ticketId: active.id,
+                      priority: p,
+                      note: note || undefined,
+                    })
+                  }
                 >
                   {p}
                 </button>
@@ -354,9 +458,13 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
             <div>
               <p className="text-xs font-medium">{t("History", "ইতিহাস")}</p>
               {timeline.isPending ? (
-                <p className="text-xs text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("Loading…", "লোড হচ্ছে…")}
+                </p>
               ) : (timeline.data ?? []).length === 0 ? (
-                <p className="text-xs text-muted-foreground">{t("No events yet.", "এখনও কোনো ইভেন্ট নেই।")}</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("No events yet.", "এখনও কোনো ইভেন্ট নেই।")}
+                </p>
               ) : (
                 <ol className="mt-1 space-y-1 text-xs text-muted-foreground">
                   {(timeline.data ?? []).map((e) => (
@@ -378,7 +486,9 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
 
 /* ----------------------------- knowledge base ---------------------------- */
 
-type Doc = NonNullable<Awaited<ReturnType<typeof supportDeskFn>>>["docs"][number];
+type Doc = NonNullable<
+  Awaited<ReturnType<typeof supportDeskFn>>
+>["docs"][number];
 type AuditData = NonNullable<Awaited<ReturnType<typeof supportAuditFn>>>;
 
 function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
@@ -406,28 +516,45 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
         },
       }),
     onSuccess: () => {
-      toast.success(t("Saved · Knowledge base updated", "সংরক্ষিত · নলেজ বেস আপডেট হয়েছে"));
-      setDraft({ id: null, title: "", body: "", locale: draft.locale, status: "published" });
+      toast.success(
+        t("Saved · Knowledge base updated", "সংরক্ষিত · নলেজ বেস আপডেট হয়েছে"),
+      );
+      setDraft({
+        id: null,
+        title: "",
+        body: "",
+        locale: draft.locale,
+        status: "published",
+      });
       onDone();
     },
-    onError: () => toast.error(t("Could not save the article", "নথি সংরক্ষণ করা যায়নি")),
+    onError: () =>
+      toast.error(t("Could not save the article", "নথি সংরক্ষণ করা যায়নি")),
   });
 
   const del = useMutation({
     mutationFn: (docId: string) => remove({ data: { docId } }),
     onSuccess: () => {
-      toast.success(t("Article removed from retrieval", "নথি রিট্রিভাল থেকে সরানো হয়েছে"));
+      toast.success(
+        t("Article removed from retrieval", "নথি রিট্রিভাল থেকে সরানো হয়েছে"),
+      );
       onDone();
     },
-    onError: () => toast.error(t("Could not remove the article", "নথি সরানো যায়নি")),
+    onError: () =>
+      toast.error(t("Could not remove the article", "নথি সরানো যায়নি")),
   });
 
-  const valid = draft.title.trim().length >= 3 && draft.body.trim().length >= 10;
+  const valid =
+    draft.title.trim().length >= 3 && draft.body.trim().length >= 10;
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <Section
-        title={draft.id ? t("Edit article", "নথি সম্পাদনা") : t("New article", "নতুন নথি")}
+        title={
+          draft.id
+            ? t("Edit article", "নথি সম্পাদনা")
+            : t("New article", "নতুন নথি")
+        }
         description={t(
           "Published articles are what the assistant is allowed to quote.",
           "প্রকাশিত নথি থেকেই সহকারী উদ্ধৃতি দিতে পারে।",
@@ -458,7 +585,9 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
           <div className="flex gap-2">
             <select
               value={draft.locale}
-              onChange={(e) => setDraft({ ...draft, locale: e.target.value as "bn" | "en" })}
+              onChange={(e) =>
+                setDraft({ ...draft, locale: e.target.value as "bn" | "en" })
+              }
               aria-label={t("Language", "ভাষা")}
               className={field}
             >
@@ -467,7 +596,12 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
             </select>
             <select
               value={draft.status}
-              onChange={(e) => setDraft({ ...draft, status: e.target.value as "draft" | "published" })}
+              onChange={(e) =>
+                setDraft({
+                  ...draft,
+                  status: e.target.value as "draft" | "published",
+                })
+              }
               aria-label={t("Status", "অবস্থা")}
               className={field}
             >
@@ -476,8 +610,14 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
             </select>
           </div>
           <div className="flex gap-2">
-            <button type="submit" className={btn} disabled={!valid || write.isPending}>
-              {write.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+            <button
+              type="submit"
+              className={btn}
+              disabled={!valid || write.isPending}
+            >
+              {write.isPending ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+              ) : null}
               {t("Save", "সংরক্ষণ")}
             </button>
             {draft.id ? (
@@ -485,7 +625,13 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
                 type="button"
                 className={btnGhost}
                 onClick={() =>
-                  setDraft({ id: null, title: "", body: "", locale: draft.locale, status: "published" })
+                  setDraft({
+                    id: null,
+                    title: "",
+                    body: "",
+                    locale: draft.locale,
+                    status: "published",
+                  })
                 }
               >
                 {t("Cancel", "বাতিল")}
@@ -501,11 +647,15 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
         ) : (
           <ul className="divide-y divide-border">
             {docs.map((doc) => (
-              <li key={doc.id} className="flex items-start justify-between gap-2 py-2">
+              <li
+                key={doc.id}
+                className="flex items-start justify-between gap-2 py-2"
+              >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{doc.title}</p>
                   <p className="text-[11px] text-muted-foreground">
-                    {doc.locale} · {doc.status} · {new Date(doc.updated_at).toLocaleDateString()}
+                    {doc.locale} · {doc.status} ·{" "}
+                    {new Date(doc.updated_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-1">
@@ -544,9 +694,17 @@ function KnowledgeBase({ docs, onDone }: { docs: Doc[]; onDone: () => void }) {
 
 /* -------------------------------- channels ------------------------------- */
 
-type ChannelRow = NonNullable<Awaited<ReturnType<typeof supportDeskFn>>>["channels"][number];
+type ChannelRow = NonNullable<
+  Awaited<ReturnType<typeof supportDeskFn>>
+>["channels"][number];
 
-function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) {
+function Channels({
+  rows,
+  onDone,
+}: {
+  rows: ChannelRow[];
+  onDone: () => void;
+}) {
   const { t } = useLang();
   const save = useServerFn(supportChannelSaveFn);
   const [form, setForm] = useState<{
@@ -556,19 +714,37 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
     externalId: string;
     enabled: boolean;
     secret: string;
-  }>({ id: null, channel: "whatsapp", displayName: "", externalId: "", enabled: true, secret: "" });
+  }>({
+    id: null,
+    channel: "whatsapp",
+    displayName: "",
+    externalId: "",
+    enabled: true,
+    secret: "",
+  });
 
   const write = useMutation({
     mutationFn: (input: ChannelPatch) => save({ data: input }),
     onSuccess: () => {
       toast.success(t("Channel saved", "চ্যানেল সংরক্ষিত"));
-      setForm({ id: null, channel: form.channel, displayName: "", externalId: "", enabled: true, secret: "" });
+      setForm({
+        id: null,
+        channel: form.channel,
+        displayName: "",
+        externalId: "",
+        enabled: true,
+        secret: "",
+      });
       onDone();
     },
-    onError: () => toast.error(t("Could not save the channel", "চ্যানেল সংরক্ষণ করা যায়নি")),
+    onError: () =>
+      toast.error(
+        t("Could not save the channel", "চ্যানেল সংরক্ষণ করা যায়নি"),
+      ),
   });
 
-  const valid = form.displayName.trim().length >= 2 && form.externalId.trim().length >= 3;
+  const valid =
+    form.displayName.trim().length >= 2 && form.externalId.trim().length >= 3;
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
@@ -596,7 +772,12 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
         >
           <select
             value={form.channel}
-            onChange={(e) => setForm({ ...form, channel: e.target.value as "whatsapp" | "messenger" })}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                channel: e.target.value as "whatsapp" | "messenger",
+              })
+            }
             aria-label={t("Channel", "চ্যানেল")}
             className={field}
           >
@@ -613,7 +794,10 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
           <input
             value={form.externalId}
             onChange={(e) => setForm({ ...form, externalId: e.target.value })}
-            placeholder={t("Provider ID (phone number id / page id)", "প্রোভাইডার আইডি")}
+            placeholder={t(
+              "Provider ID (phone number id / page id)",
+              "প্রোভাইডার আইডি",
+            )}
             aria-label={t("Provider ID", "প্রোভাইডার আইডি")}
             className={`${field} font-mono`}
           />
@@ -621,7 +805,10 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
             value={form.secret}
             onChange={(e) => setForm({ ...form, secret: e.target.value })}
             type="password"
-            placeholder={t("Shared secret (stored hashed)", "শেয়ার্ড সিক্রেট (হ্যাশ করে রাখা হয়)")}
+            placeholder={t(
+              "Shared secret (stored hashed)",
+              "শেয়ার্ড সিক্রেট (হ্যাশ করে রাখা হয়)",
+            )}
             aria-label={t("Shared secret", "শেয়ার্ড সিক্রেট")}
             className={field}
           />
@@ -633,8 +820,14 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
             />
             {t("Accept inbound messages", "ইনবাউন্ড বার্তা গ্রহণ করুন")}
           </label>
-          <button type="submit" className={btn} disabled={!valid || write.isPending}>
-            {write.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+          <button
+            type="submit"
+            className={btn}
+            disabled={!valid || write.isPending}
+          >
+            {write.isPending ? (
+              <Loader2 className="size-4 animate-spin" aria-hidden />
+            ) : null}
             {t("Save channel", "চ্যানেল সংরক্ষণ")}
           </button>
         </form>
@@ -642,18 +835,26 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
 
       <Section title={t("Connected", "যুক্ত")} description={`${rows.length}`}>
         {rows.length === 0 ? (
-          <Empty>{t("No channels connected.", "কোনো চ্যানেল যুক্ত নেই।")}</Empty>
+          <Empty>
+            {t("No channels connected.", "কোনো চ্যানেল যুক্ত নেই।")}
+          </Empty>
         ) : (
           <ul className="divide-y divide-border">
             {rows.map((c) => (
-              <li key={c.id} className="flex items-center justify-between gap-2 py-2">
+              <li
+                key={c.id}
+                className="flex items-center justify-between gap-2 py-2"
+              >
                 <div>
                   <p className="text-sm font-medium">
-                    {c.display_name} <Pill tone={c.enabled ? "ok" : "muted"}>{c.status}</Pill>
+                    {c.display_name}{" "}
+                    <Pill tone={c.enabled ? "ok" : "muted"}>{c.status}</Pill>
                   </p>
                   <p className="font-mono text-[11px] text-muted-foreground">
                     {c.channel} · {c.external_id}
-                    {c.last_event_at ? ` · ${new Date(c.last_event_at).toLocaleString()}` : ""}
+                    {c.last_event_at
+                      ? ` · ${new Date(c.last_event_at).toLocaleString()}`
+                      : ""}
                   </p>
                 </div>
                 <button
@@ -683,12 +884,24 @@ function Channels({ rows, onDone }: { rows: ChannelRow[]; onDone: () => void }) 
 
 /* ---------------------------------- SLA ---------------------------------- */
 
-type PolicyRow = { priority: string; first_response_minutes: number; resolution_minutes: number };
+type PolicyRow = {
+  priority: string;
+  first_response_minutes: number;
+  resolution_minutes: number;
+};
 
-function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }) {
+function SlaPolicies({
+  rows,
+  onDone,
+}: {
+  rows: PolicyRow[];
+  onDone: () => void;
+}) {
   const { t } = useLang();
   const save = useServerFn(supportSlaSaveFn);
-  const [draft, setDraft] = useState<Record<string, { first: number; resolution: number }>>({});
+  const [draft, setDraft] = useState<
+    Record<string, { first: number; resolution: number }>
+  >({});
 
   const value = (p: Priority) => {
     const row = rows.find((r) => r.priority === p);
@@ -713,7 +926,8 @@ function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }
       toast.success(t("SLA policy saved", "এসএলএ নীতি সংরক্ষিত"));
       onDone();
     },
-    onError: () => toast.error(t("Could not save the policy", "নীতি সংরক্ষণ করা যায়নি")),
+    onError: () =>
+      toast.error(t("Could not save the policy", "নীতি সংরক্ষণ করা যায়নি")),
   });
 
   return (
@@ -729,8 +943,12 @@ function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }
           <thead className="text-left text-xs text-muted-foreground">
             <tr>
               <th className="py-2">{t("Priority", "অগ্রাধিকার")}</th>
-              <th className="py-2">{t("First response (min)", "প্রথম উত্তর (মিনিট)")}</th>
-              <th className="py-2">{t("Resolution (min)", "সমাধান (মিনিট)")}</th>
+              <th className="py-2">
+                {t("First response (min)", "প্রথম উত্তর (মিনিট)")}
+              </th>
+              <th className="py-2">
+                {t("Resolution (min)", "সমাধান (মিনিট)")}
+              </th>
               <th />
             </tr>
           </thead>
@@ -748,7 +966,10 @@ function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }
                       value={v.first}
                       aria-label={`${p} first response minutes`}
                       onChange={(e) =>
-                        setDraft({ ...draft, [p]: { ...v, first: Number(e.target.value) || 0 } })
+                        setDraft({
+                          ...draft,
+                          [p]: { ...v, first: Number(e.target.value) || 0 },
+                        })
                       }
                       className={`${field} w-28 tabular-nums`}
                     />
@@ -761,7 +982,13 @@ function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }
                       value={v.resolution}
                       aria-label={`${p} resolution minutes`}
                       onChange={(e) =>
-                        setDraft({ ...draft, [p]: { ...v, resolution: Number(e.target.value) || 0 } })
+                        setDraft({
+                          ...draft,
+                          [p]: {
+                            ...v,
+                            resolution: Number(e.target.value) || 0,
+                          },
+                        })
                       }
                       className={`${field} w-28 tabular-nums`}
                     />
@@ -788,7 +1015,13 @@ function SlaPolicies({ rows, onDone }: { rows: PolicyRow[]; onDone: () => void }
 
 /* --------------------------------- trust --------------------------------- */
 
-function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; tools: AuditData["tools"] }) {
+function Trust({
+  guardrails,
+  tools,
+}: {
+  guardrails: AuditData["guardrails"];
+  tools: AuditData["tools"];
+}) {
   const { t } = useLang();
   const getCsat = useServerFn(getCsatAnalyticsFn);
   const csat = useQuery({
@@ -810,7 +1043,10 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
     <div className="space-y-4">
       {/* CSAT Analytics & Satisfaction Breakdown */}
       <Section
-        title={t("Chat Satisfaction & CSAT Analytics", "চ্যাট সন্তুষ্টি ও সি-স্যাট অ্যানালিটিক্স")}
+        title={t(
+          "Chat Satisfaction & CSAT Analytics",
+          "চ্যাট সন্তুষ্টি ও সি-স্যাট অ্যানালিটিক্স",
+        )}
         description={t(
           "Customer 5-star ratings and qualitative reviews submitted directly through the storefront widget.",
           "স্টোরফ্রন্ট উইজেটের মাধ্যমে গ্রাহকদের দেওয়া ৫-স্টার রেটিং ও মতামত।",
@@ -821,10 +1057,15 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
             <div className="flex items-center gap-1 text-2xl font-bold text-foreground">
               <Star className="size-6 fill-amber-400 text-amber-400" />
               <span>{csatData.averageRating.toFixed(1)}</span>
-              <span className="text-sm font-normal text-muted-foreground">/ 5.0</span>
+              <span className="text-sm font-normal text-muted-foreground">
+                / 5.0
+              </span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t(`Based on ${csatData.totalRatings} ratings`, `${csatData.totalRatings}টি রেটিংয়ের ভিত্তিতে`)}
+              {t(
+                `Based on ${csatData.totalRatings} ratings`,
+                `${csatData.totalRatings}টি রেটিংয়ের ভিত্তিতে`,
+              )}
             </p>
           </div>
 
@@ -844,14 +1085,18 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
 
               return (
                 <div key={stars} className="flex items-center gap-2 text-xs">
-                  <span className="w-8 font-medium text-foreground">{stars} ★</span>
+                  <span className="w-8 font-medium text-foreground">
+                    {stars} ★
+                  </span>
                   <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
                     <div
                       className="h-full bg-amber-400 transition-all duration-300"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <span className="w-8 text-right tabular-nums text-muted-foreground">{count}</span>
+                  <span className="w-8 text-right tabular-nums text-muted-foreground">
+                    {count}
+                  </span>
                 </div>
               );
             })}
@@ -865,14 +1110,19 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
             </h4>
             <div className="space-y-2">
               {csatData.recentReviews.map((rev) => (
-                <div key={rev.id} className="rounded-fq-md border border-border/60 bg-card p-2.5 text-xs">
+                <div
+                  key={rev.id}
+                  className="rounded-fq-md border border-border/60 bg-card p-2.5 text-xs"
+                >
                   <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1">
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
                           className={`size-3 ${
-                            i < rev.rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"
+                            i < rev.rating
+                              ? "fill-amber-400 text-amber-400"
+                              : "text-muted-foreground/30"
                           }`}
                         />
                       ))}
@@ -896,15 +1146,23 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
           )}
         >
           {guardrails.length === 0 ? (
-            <Empty>{t("Nothing blocked recently.", "সম্প্রতি কিছু ব্লক হয়নি।")}</Empty>
+            <Empty>
+              {t("Nothing blocked recently.", "সম্প্রতি কিছু ব্লক হয়নি।")}
+            </Empty>
           ) : (
             <ul className="space-y-1 text-xs">
               {guardrails.map((g) => (
-                <li key={g.id} className="flex items-center justify-between gap-2">
+                <li
+                  key={g.id}
+                  className="flex items-center justify-between gap-2"
+                >
                   <span>
-                    <Pill tone="bad">{g.kind}</Pill> <span className="font-mono">{g.rule}</span>
+                    <Pill tone="bad">{g.kind}</Pill>{" "}
+                    <span className="font-mono">{g.rule}</span>
                   </span>
-                  <span className="text-muted-foreground">{new Date(g.created_at).toLocaleString()}</span>
+                  <span className="text-muted-foreground">
+                    {new Date(g.created_at).toLocaleString()}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -923,12 +1181,19 @@ function Trust({ guardrails, tools }: { guardrails: AuditData["guardrails"]; too
           ) : (
             <ul className="space-y-1 text-xs">
               {tools.map((tool) => (
-                <li key={tool.id} className="flex items-center justify-between gap-2">
+                <li
+                  key={tool.id}
+                  className="flex items-center justify-between gap-2"
+                >
                   <span>
                     <Pill tone={tool.ok ? "ok" : "bad"}>{tool.tool}</Pill>{" "}
-                    <span className="font-mono text-muted-foreground">{tool.source_table}</span>
+                    <span className="font-mono text-muted-foreground">
+                      {tool.source_table}
+                    </span>
                   </span>
-                  <span className="tabular-nums text-muted-foreground">{tool.latency_ms}ms</span>
+                  <span className="tabular-nums text-muted-foreground">
+                    {tool.latency_ms}ms
+                  </span>
                 </li>
               ))}
             </ul>
@@ -955,12 +1220,20 @@ function CallbacksQueue() {
 
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  async function handleStatus(callbackId: string, status: "contacted" | "failed" | "cancelled") {
+  async function handleStatus(
+    callbackId: string,
+    status: "contacted" | "failed" | "cancelled",
+  ) {
     setBusyId(callbackId);
     try {
       const res = await updateStatus({ data: { callbackId, status } });
       if (res.ok) {
-        toast.success(t(`Callback marked as ${status}`, `কলব্যাক স্ট্যাটাস ${status} করা হয়েছে`));
+        toast.success(
+          t(
+            `Callback marked as ${status}`,
+            `কলব্যাক স্ট্যাটাস ${status} করা হয়েছে`,
+          ),
+        );
         void qc.invalidateQueries({ queryKey: ["support-callbacks"] });
       } else {
         toast.error(t("Failed to update status", "স্ট্যাটাস আপডেট করা যায়নি"));
@@ -999,7 +1272,9 @@ function CallbacksQueue() {
           </span>
           <button
             type="button"
-            onClick={() => void qc.invalidateQueries({ queryKey: ["support-callbacks"] })}
+            onClick={() =>
+              void qc.invalidateQueries({ queryKey: ["support-callbacks"] })
+            }
             className={btnGhost}
           >
             {t("Refresh", "রিফ্রেশ")}
@@ -1012,11 +1287,19 @@ function CallbacksQueue() {
             {t("Loading callbacks…", "কলব্যাক লোড হচ্ছে…")}
           </p>
         ) : rows.length === 0 ? (
-          <Empty>{t("No callback requests found.", "কোনো কলব্যাক অনুরোধ পাওয়া যায়নি।")}</Empty>
+          <Empty>
+            {t(
+              "No callback requests found.",
+              "কোনো কলব্যাক অনুরোধ পাওয়া যায়নি।",
+            )}
+          </Empty>
         ) : (
           <div className="divide-y divide-border overflow-hidden rounded-fq-md border border-border bg-card">
             {rows.map((cb) => {
-              const windowLabels: Record<string, { en: string; bn: string; time: string }> = {
+              const windowLabels: Record<
+                string,
+                { en: string; bn: string; time: string }
+              > = {
                 morning: { en: "Morning", bn: "সকাল", time: "10am–1pm" },
                 afternoon: { en: "Afternoon", bn: "দুপুর", time: "2pm–5pm" },
                 evening: { en: "Evening", bn: "সন্ধ্যা", time: "6pm–9pm" },
@@ -1035,10 +1318,15 @@ function CallbacksQueue() {
                     : "warn";
 
               return (
-                <div key={cb.id} className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between">
+                <div
+                  key={cb.id}
+                  className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-foreground text-sm">{cb.customer_name}</span>
+                      <span className="font-semibold text-foreground text-sm">
+                        {cb.customer_name}
+                      </span>
                       <Pill tone={tone}>{cb.status}</Pill>
                       <span className="text-xs font-mono text-muted-foreground">
                         #CB-{cb.id.slice(-6).toUpperCase()}
@@ -1059,7 +1347,9 @@ function CallbacksQueue() {
                       <span>{new Date(cb.created_at).toLocaleString()}</span>
                     </div>
                     {cb.note ? (
-                      <p className="text-xs text-foreground/80 italic mt-0.5">"{cb.note}"</p>
+                      <p className="text-xs text-foreground/80 italic mt-0.5">
+                        "{cb.note}"
+                      </p>
                     ) : null}
                   </div>
 

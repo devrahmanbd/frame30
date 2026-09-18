@@ -8,7 +8,7 @@ Quick links: [Quick start](#quick-start) · [10 CLI subcommands](#cli-subcommand
 
 ## What is MetaHarness?
 
-`metaharness` is a sibling agent-harness scaffolding system designed by the same author as ruflo. Where ruflo *is* a harness, metaharness analyzes harnesses — scoring readiness, mapping MCP surfaces, threat-modeling, fingerprinting genome characteristics, and detecting drift over time. ADR-150 integrates it as a first-class subsystem so you can audit and characterize ruflo (or any harness) from the same CLI.
+`metaharness` is a sibling agent-harness scaffolding system designed by the same author as ruflo. Where ruflo _is_ a harness, metaharness analyzes harnesses — scoring readiness, mapping MCP surfaces, threat-modeling, fingerprinting genome characteristics, and detecting drift over time. ADR-150 integrates it as a first-class subsystem so you can audit and characterize ruflo (or any harness) from the same CLI.
 
 The integration is **strictly optional**. Per [ADR-150](../v3/docs/adr/ADR-150-metaharness-integration-surfaces.md) constraint #4, ruflo remains fully operational even when every `@metaharness/*` package is uninstalled — every command degrades gracefully with a clear `degraded: true` payload instead of crashing.
 
@@ -49,18 +49,18 @@ All commands accept `--format json|table` and `--help`.
 npx ruflo metaharness <subcommand> [flags]
 ```
 
-| # | Subcommand | One-line | Output shape |
-|---|---|---|---|
-| 1 | `score` | 5-dim readiness scorecard | `{harnessFit, compileConfidence, taskCoverage, toolSafety, memoryUsefulness, estCostPerRunUsd, recommendedMode, archetype, template}` |
-| 2 | `genome` | 7-section categorical report | `{repo_type, agent_topology, risk_score, mcp_surface, test_confidence, publish_readiness}` |
-| 3 | `mcp-scan` | Static MCP security findings | `{findings: [{severity, message, ...}], summary, alert}` |
-| 4 | `threat-model` | Enterprise threat report | `{worst, findings: [{category, severity, ...}]}` |
-| 5 | `oia-audit` | Composite audit → memory | `{timing, composite: {worst}, components, fingerprint, alert, persisted}` |
-| 6 | `audit-list` | Enumerate audit records | `{namespace, filters, records: [{key, startedAt, ...}], generatedAt}` |
-| 7 | `audit-trend` | Diff two audits (drift) | `{verdict, structuralDistance, introduced, cleared, alert}` |
-| 8 | `similarity` | ADR-152 §3.1 weighted similarity | `{overall, components: {cosine, categorical, jaccard}, perDimension?}` |
-| 9 | `drift-from-history` | One-command drift detection | `{timing, baseline, current, drift, alert}` |
-| 10 | `mint` | Scaffold a custom harness | dry-run by default; refuses in-repo target |
+| #   | Subcommand           | One-line                         | Output shape                                                                                                                          |
+| --- | -------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `score`              | 5-dim readiness scorecard        | `{harnessFit, compileConfidence, taskCoverage, toolSafety, memoryUsefulness, estCostPerRunUsd, recommendedMode, archetype, template}` |
+| 2   | `genome`             | 7-section categorical report     | `{repo_type, agent_topology, risk_score, mcp_surface, test_confidence, publish_readiness}`                                            |
+| 3   | `mcp-scan`           | Static MCP security findings     | `{findings: [{severity, message, ...}], summary, alert}`                                                                              |
+| 4   | `threat-model`       | Enterprise threat report         | `{worst, findings: [{category, severity, ...}]}`                                                                                      |
+| 5   | `oia-audit`          | Composite audit → memory         | `{timing, composite: {worst}, components, fingerprint, alert, persisted}`                                                             |
+| 6   | `audit-list`         | Enumerate audit records          | `{namespace, filters, records: [{key, startedAt, ...}], generatedAt}`                                                                 |
+| 7   | `audit-trend`        | Diff two audits (drift)          | `{verdict, structuralDistance, introduced, cleared, alert}`                                                                           |
+| 8   | `similarity`         | ADR-152 §3.1 weighted similarity | `{overall, components: {cosine, categorical, jaccard}, perDimension?}`                                                                |
+| 9   | `drift-from-history` | One-command drift detection      | `{timing, baseline, current, drift, alert}`                                                                                           |
+| 10  | `mint`               | Scaffold a custom harness        | dry-run by default; refuses in-repo target                                                                                            |
 
 ### `score` — 5-dimension readiness
 
@@ -85,7 +85,7 @@ Plus `estCostPerRunUsd`, `recommendedMode` (`CLI` / `CLI + MCP`), `archetype`, `
 npx ruflo metaharness genome --path . --alert-on-risk-above 0.5
 ```
 
-Returns categorical (string/enum) classifications that complement `score`'s numerics. Pair them: `score` is *how ready*, `genome` is *what kind*.
+Returns categorical (string/enum) classifications that complement `score`'s numerics. Pair them: `score` is _how ready_, `genome` is _what kind_.
 
 ### `mcp-scan` — MCP security
 
@@ -148,6 +148,7 @@ npx ruflo metaharness similarity \
 ```
 
 Returns `overall ∈ [0,1]` plus per-component breakdown:
+
 - **cosine** over 9 numerics (harnessFit, riskScore, etc.)
 - **categorical** over 4 enums (repo_type, recommendedMode, archetype, template)
 - **jaccard** over `agent_topology` (set of declared roles)
@@ -175,11 +176,11 @@ npx ruflo metaharness drift-from-history \
 
 Composes `audit-list` + `oia-audit` + `audit-trend` into one structured report. **Three tiers** of execution speed:
 
-| Tier | Flag | Wall time | When to use |
-|---|---|---|---|
-| Slow | (none) | ~26 s | Interactive — let it discover the baseline |
-| Fast | `--baseline-key` | ~1.8 s | When you already know the key (e.g., from `audit-list`) |
-| Fastest | `--baseline-file` | ~1.4 s | CI artifact pipelines (diff this run vs downloaded prior artifact) |
+| Tier    | Flag              | Wall time | When to use                                                        |
+| ------- | ----------------- | --------- | ------------------------------------------------------------------ |
+| Slow    | (none)            | ~26 s     | Interactive — let it discover the baseline                         |
+| Fast    | `--baseline-key`  | ~1.8 s    | When you already know the key (e.g., from `audit-list`)            |
+| Fastest | `--baseline-file` | ~1.4 s    | CI artifact pipelines (diff this run vs downloaded prior artifact) |
 
 `--alert-on-new-severity` is orthogonal to `--threshold`: a CRITICAL finding triggers even if structural similarity stays above the threshold.
 
@@ -213,11 +214,11 @@ Every handler returns the `{success, data, degraded, exitCode}` contract:
 
 ```ts
 type MCPHandlerResult = {
-  success: boolean;   // false on alert.triggered OR exitCode != 0
-  data: any;          // the wrapped JSON payload
-  degraded: boolean;  // true when metaharness is uninstalled
-  exitCode: number;   // mirrors the CLI exit code
-}
+  success: boolean; // false on alert.triggered OR exitCode != 0
+  data: any; // the wrapped JSON payload
+  degraded: boolean; // true when metaharness is uninstalled
+  exitCode: number; // mirrors the CLI exit code
+};
 ```
 
 `success === false` is the source of truth for "this should block downstream action" — `exitCode` is also surfaced for shell-script consumers but the MCP layer uses `success`.
@@ -230,12 +231,12 @@ Each tool description includes `Use when ...` guidance per [ADR-112](../v3/docs/
 
 The integration enforces **four constraints** as load-bearing invariants:
 
-| # | Constraint | Enforced by |
-|---|---|---|
-| 1 | **Removable** | `npm ls --without @metaharness/*` produces a working CLI |
-| 2 | **Optional in `package.json`** | `@metaharness/*` packages MUST be in `optionalDependencies`, never `dependencies` |
-| 3 | **Graceful degradation** | Every code path catches `MODULE_NOT_FOUND` and falls back to a `degraded: true` payload |
-| 4 | **CI gate** | `.github/workflows/no-metaharness-smoke.yml` enforces 1–3 by static grep + runtime drill on every PR |
+| #   | Constraint                     | Enforced by                                                                                          |
+| --- | ------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| 1   | **Removable**                  | `npm ls --without @metaharness/*` produces a working CLI                                             |
+| 2   | **Optional in `package.json`** | `@metaharness/*` packages MUST be in `optionalDependencies`, never `dependencies`                    |
+| 3   | **Graceful degradation**       | Every code path catches `MODULE_NOT_FOUND` and falls back to a `degraded: true` payload              |
+| 4   | **CI gate**                    | `.github/workflows/no-metaharness-smoke.yml` enforces 1–3 by static grep + runtime drill on every PR |
 
 If `@metaharness/router`, `metaharness`, or `@metaharness/kernel` are absent, every command emits:
 
@@ -266,6 +267,7 @@ npx ruflo metaharness drift-from-history --threshold 0.95 \
 ```
 
 The composite audit writes a record keyed by ISO timestamp. `drift-from-history` discovers it via `audit-list`, runs a fresh audit, diffs the fingerprints via ADR-152 §3.1 similarity, and alerts when:
+
 - Structural similarity falls below `--threshold` **OR**
 - Any introduced finding meets `--alert-on-new-severity` (orthogonal gate)
 
@@ -326,22 +328,22 @@ The Recommender surfaces the closest-fit templates for a given target repo.
 
 A **pure-TS, zero-`@metaharness/*`-dep** similarity engine. Weighted blend:
 
-| Component | Weight | What it compares |
-|---|---|---|
-| **cosine** | 0.4 | 9 numerics: `harnessFit`, `compileConfidence`, `taskCoverage`, `toolSafety`, `memoryUsefulness`, `risk_score`, `test_confidence`, `publish_readiness`, `estCostPerRunUsd` |
-| **categorical** | 0.3 | 4 enums: `repo_type`, `recommendedMode`, `archetype`, `template` |
-| **jaccard** | 0.3 | `agent_topology` (set of declared roles) |
+| Component       | Weight | What it compares                                                                                                                                                          |
+| --------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **cosine**      | 0.4    | 9 numerics: `harnessFit`, `compileConfidence`, `taskCoverage`, `toolSafety`, `memoryUsefulness`, `risk_score`, `test_confidence`, `publish_readiness`, `estCostPerRunUsd` |
+| **categorical** | 0.3    | 4 enums: `repo_type`, `recommendedMode`, `archetype`, `template`                                                                                                          |
+| **jaccard**     | 0.3    | `agent_topology` (set of declared roles)                                                                                                                                  |
 
 `overall = w_c · cosine + w_k · categorical + w_j · jaccard`, all in `[0, 1]`.
 
 **Verdict thresholds:**
 
-| overall | verdict |
-|---|---|
-| ≥ 0.95 | `near-identical` |
-| ≥ 0.85 | `minor-drift` |
-| ≥ 0.5 | `moderate-drift` |
-| < 0.5 | `major-drift` |
+| overall | verdict          |
+| ------- | ---------------- |
+| ≥ 0.95  | `near-identical` |
+| ≥ 0.85  | `minor-drift`    |
+| ≥ 0.5   | `moderate-drift` |
+| < 0.5   | `major-drift`    |
 
 These are the structural-distance verdicts surfaced by `audit-trend` and `drift-from-history`.
 
@@ -421,7 +423,7 @@ The optional `metaharness` / `@metaharness/*` packages aren't in `node_modules`.
 npm install -D metaharness@latest @metaharness/router@latest
 ```
 
-(Or accept the degraded mode — ruflo doesn't *require* metaharness for any non-metaharness command.)
+(Or accept the degraded mode — ruflo doesn't _require_ metaharness for any non-metaharness command.)
 
 ### Drift report exits 2 with "no audit records found"
 
@@ -444,6 +446,7 @@ AUDIT_LIST_NAMESPACE=my-custom-ns npx ruflo metaharness audit-list
 ### Composite audit takes 30+ seconds on CI
 
 Expected — `oia-audit` spawns 5 sub-audits in parallel and each shells out to `npx metaharness <cmd>`. Cold-cache npx warmup is ~25 s per process. Mitigations:
+
 - Pre-install metaharness in the runner (skips npx fetch)
 - Use `--dry-run` to skip the memory-store roundtrip
 - Pin a CI cache for the npm/npx store
@@ -469,6 +472,7 @@ Usually transient network ECONNRESET on sharp / onnxruntime-node postinstall. Re
 ## Cross-references
 
 Filed upstream issues (open):
+
 - `ruvnet/agent-harness-generator#15` — CLI schema mismatch (downstream workaround via `runMetaharness` routing in place)
 - `ruvnet/agent-harness-generator#16` — `mcp-scan` text-only output (downstream `parseMcpScanText` parser donated as MIT contribution)
 

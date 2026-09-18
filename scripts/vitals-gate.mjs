@@ -150,7 +150,9 @@ for (const target of PAGES) {
 
     const res = await page.goto(base + target.path, { waitUntil: "load" });
     if (!res || res.status() >= 400) {
-      failures.push(`${target.name}: HTTP ${res ? res.status() : "no response"}`);
+      failures.push(
+        `${target.name}: HTTP ${res ? res.status() : "no response"}`,
+      );
       continue;
     }
     await page.waitForTimeout(3000);
@@ -169,7 +171,10 @@ for (const target of PAGES) {
     await page.addScriptTag({ content: axeSource });
     const results = await page.evaluate(async () =>
       window.axe.run(document, {
-        runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+        runOnly: {
+          type: "tag",
+          values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"],
+        },
       }),
     );
     // Likewise: a page where axe asserted nothing has not scored 100.
@@ -186,14 +191,21 @@ for (const target of PAGES) {
 
     const budget = target.budget ?? { ...VITALS_BUDGET, tbtMs: TBT_BUDGET_MS };
     if (vitals.lcpMs > budget.lcpMs)
-      failures.push(`${target.name}: LCP ${vitals.lcpMs}ms > ${budget.lcpMs}ms`);
+      failures.push(
+        `${target.name}: LCP ${vitals.lcpMs}ms > ${budget.lcpMs}ms`,
+      );
     if (vitals.cls > budget.cls)
       failures.push(`${target.name}: CLS ${vitals.cls} > ${budget.cls}`);
     if (vitals.tbtMs > budget.tbtMs)
-      failures.push(`${target.name}: TBT ${vitals.tbtMs}ms > ${budget.tbtMs}ms`);
-    if (a11y < a11yMin) failures.push(`${target.name}: a11y ${a11y} < ${a11yMin}`);
+      failures.push(
+        `${target.name}: TBT ${vitals.tbtMs}ms > ${budget.tbtMs}ms`,
+      );
+    if (a11y < a11yMin)
+      failures.push(`${target.name}: a11y ${a11y} < ${a11yMin}`);
   } catch (err) {
-    failures.push(`${target.name}: ${err instanceof Error ? err.message : String(err)}`);
+    failures.push(
+      `${target.name}: ${err instanceof Error ? err.message : String(err)}`,
+    );
   } finally {
     await page.close();
   }
@@ -207,4 +219,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`  - ${f}`);
   process.exit(1);
 }
-console.log("\nvitals gate passed — every storefront surface is inside budget.");
+console.log(
+  "\nvitals gate passed — every storefront surface is inside budget.",
+);

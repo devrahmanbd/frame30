@@ -29,7 +29,8 @@ const bodySchema = z.discriminatedUnion("action", [
 function safeEqual(a: string, b: string) {
   if (a.length !== b.length) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 
@@ -41,8 +42,14 @@ async function hmacHex(secret: string, payload: string) {
     false,
     ["sign"],
   );
-  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
-  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const sig = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(payload),
+  );
+  return [...new Uint8Array(sig)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export const Route = createFileRoute("/api/public/domains/callback")({
@@ -61,11 +68,16 @@ export const Route = createFileRoute("/api/public/domains/callback")({
           }),
         ) as { t?: string; v1?: string };
         const ts = Number(parts.t);
-        if (!parts.v1 || !Number.isFinite(ts) || Math.abs(Date.now() / 1000 - ts) > 300) {
+        if (
+          !parts.v1 ||
+          !Number.isFinite(ts) ||
+          Math.abs(Date.now() / 1000 - ts) > 300
+        ) {
           return new Response("Unauthorized", { status: 401 });
         }
         const expected = await hmacHex(secret, `${parts.t}.${raw}`);
-        if (!safeEqual(parts.v1, expected)) return new Response("Unauthorized", { status: 401 });
+        if (!safeEqual(parts.v1, expected))
+          return new Response("Unauthorized", { status: 401 });
 
         let body: z.infer<typeof bodySchema>;
         try {
@@ -77,7 +89,11 @@ export const Route = createFileRoute("/api/public/domains/callback")({
         try {
           if (body.action === "challenge") {
             const { storeChallenge } = await import("@/lib/domains.server");
-            await storeChallenge(body.hostname.toLowerCase(), body.token, body.keyAuthorization);
+            await storeChallenge(
+              body.hostname.toLowerCase(),
+              body.token,
+              body.keyAuthorization,
+            );
           } else {
             const { applyCertResult } = await import("@/lib/domains.server");
             await applyCertResult({
@@ -87,11 +103,18 @@ export const Route = createFileRoute("/api/public/domains/callback")({
               error: body.error ?? null,
             });
           }
-          return Response.json({ ok: true }, { headers: { "cache-control": "no-store" } });
+          return Response.json(
+            { ok: true },
+            { headers: { "cache-control": "no-store" } },
+          );
         } catch (err) {
           const { captureError } = await import("@/lib/observability.server");
-          void captureError(err, { route: "domains.callback", action: body.action });
-          const status = (err as { status?: number }).status === 404 ? 404 : 500;
+          void captureError(err, {
+            route: "domains.callback",
+            action: body.action,
+          });
+          const status =
+            (err as { status?: number }).status === 404 ? 404 : 500;
           return Response.json({ error: "callback_failed" }, { status });
         }
       },

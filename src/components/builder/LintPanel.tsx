@@ -46,7 +46,10 @@ export function LintPanel({
   }
 
   return (
-    <section aria-label={t("Template checks", "টেমপ্লেট চেক")} className="space-y-1">
+    <section
+      aria-label={t("Template checks", "টেমপ্লেট চেক")}
+      className="space-y-1"
+    >
       <p className="text-xs text-muted-foreground" aria-live="polite">
         {t(
           `${summary.errors} blocking, ${summary.warnings} advisory`,
@@ -94,8 +97,15 @@ export function LintPanel({
         })}
       </ul>
       {classified.length > visible.length && (
-        <button type="button" onClick={() => setShowAll(true)} className="text-xs underline">
-          {t(`Show ${classified.length - visible.length} more`, `আরও ${classified.length - visible.length} দেখুন`)}
+        <button
+          type="button"
+          onClick={() => setShowAll(true)}
+          className="text-xs underline"
+        >
+          {t(
+            `Show ${classified.length - visible.length} more`,
+            `আরও ${classified.length - visible.length} দেখুন`,
+          )}
         </button>
       )}
     </section>

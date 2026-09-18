@@ -1,7 +1,7 @@
 # 06-payments — Currency gates (BDT-locked default, USD pilot gate, conformance, rollback)
 
 Status: Planning · Slice S3/S4 · Companion: [`currency.md`](currency.md) (money model that these gates enforce) · Reference: `docs/06-payments/README.md` (Strict guardrails); `docs/15-e2e/README.md` (§Suites, §Standard, `@device-class` suffix rule); `docs/16-product-pricing/README.md` (§3 `check_entitlement`, §2 plan matrix — plan prices are drafts pending user sign-off per 16 §13); `docs/08-pos-shipping/README.md` (offline POS fallback snapshot); `docs/00-meta/design-system.md` (semantic tokens)
-This depth spec turns the money model in `currency.md` into a rollout policy: the **default store is BDT-only and locked**, a store enters USD only through the **pilot tier gate** below, every non-pilot store is *proven* BDT-only by the conformance matrix, and **rollback to BDT is always allowed** with a history row. It adds no new money behavior; it gates who may enter multi-currency and how we prove the default stayed integer-currency-clean.
+This depth spec turns the money model in `currency.md` into a rollout policy: the **default store is BDT-only and locked**, a store enters USD only through the **pilot tier gate** below, every non-pilot store is _proven_ BDT-only by the conformance matrix, and **rollback to BDT is always allowed** with a history row. It adds no new money behavior; it gates who may enter multi-currency and how we prove the default stayed integer-currency-clean.
 
 > Hard gate (identical to `currency.md`): money is **never a float and never currency-agnostic** — every stored monetary column carries `amount_minor_int` (integer minor units) **and** `currency_code` (ISO 4217 STRING). Any code or migration that stores a money amount without both is a review-stop defect.
 
@@ -36,13 +36,13 @@ each transition appends an fx_policy_history row; revert requires the currency_g
 
 A store's currency surface is a function of its plan tier (`docs/16-product-pricing/README.md` §2; plan values there are drafts pending user sign-off — this matrix repeats the tier, not a new number). "USD gate" = `currency_pilot` entitlement + §5 checks.
 
-| Plan tier | Plan (from 16 §2, BDT/mo) | BDT-only surface | Multi-currency surface | USD pilot gate |
-|-----------|---------------------------|------------------|------------------------|----------------|
-| Startup (trial / unconfigured store) | BDT 0 (14d trial → BDT 0 forever, capped) | locked | never present | unavailable (no pilot flag) |
-| Growth | BDT 1,200 | locked | never presented | unavailable (no pilot flag) |
-| Business | BDT 2,500 | locked (all non-pilot Business stores) | available only via §5 gate | `check_entitlement(tenant_id, 'currency_pilot', 1)` → `true` required |
-| Enterprise | custom | locked (same rule) | available only via §5 gate | same entitlement check |
-| **Unconfigured / new tenant** | — (no plan row yet) | locked by construction | blocked | `entity: no gate` — store stays BDT until a subscription resolves |
+| Plan tier                            | Plan (from 16 §2, BDT/mo)                 | BDT-only surface                       | Multi-currency surface     | USD pilot gate                                                        |
+| ------------------------------------ | ----------------------------------------- | -------------------------------------- | -------------------------- | --------------------------------------------------------------------- |
+| Startup (trial / unconfigured store) | BDT 0 (14d trial → BDT 0 forever, capped) | locked                                 | never present              | unavailable (no pilot flag)                                           |
+| Growth                               | BDT 1,200                                 | locked                                 | never presented            | unavailable (no pilot flag)                                           |
+| Business                             | BDT 2,500                                 | locked (all non-pilot Business stores) | available only via §5 gate | `check_entitlement(tenant_id, 'currency_pilot', 1)` → `true` required |
+| Enterprise                           | custom                                    | locked (same rule)                     | available only via §5 gate | same entitlement check                                                |
+| **Unconfigured / new tenant**        | — (no plan row yet)                       | locked by construction                 | blocked                    | `entity: no gate` — store stays BDT until a subscription resolves     |
 
 - A store that has never passed the gate or has **no** resolved plan row is BDT-only; the matrix is ADD-only (a row can't be removed by a code path, only superseded by a `currency_gate` transition).
 - **Pilot stores always settle in BDT** in pilot v1 (`currency.md` §6 `settlement_code` always `BDT`; mutability = named TBD-3, owner: currency). The matrix only ever enables the presentation side; settlement switching is out until TBD-3 resolves.
@@ -59,6 +59,7 @@ A store's currency surface is a function of its plan tier (`docs/16-product-pric
 5. **KYC standing** — merchant KYC is not suspended; a suspended payout keeps the store BDT (16 §8 expiry → payouts suspended).
 
 Failures are explicit, not silent:
+
 - any check fails → the predicate returns `false`; the USD admin surface is `currency_pilot_denied` (see §10), and the store remains `bdt_locked`.
 - `currency_pilot_denied` is returned as a named event (`currency.gate_denied`) — reviewable, not debug-swallowed.
 
@@ -79,30 +80,30 @@ The standard suite names follow `docs/15-e2e/README.md` §Suites + §Standard (`
 
 ### 6.1 Non-pilot store (any tier, `bdt_locked`)
 
-| Header | Assertion |
-|---|---|
-| `api_money_no_conversion_path` | a non-pilot store can't reach a conversion endpoint; any attempt returns `404`/`403`, no fallback conversion |
-| `ledger_store_frozen_bdt` | `store_currency_settings.presentation_code == 'BDT'` for a `bdt_locked` store across restarts |
-| `storefront_bdt_only_price_chip` | storefront render: BDT symbol + tabular numerals; no `≈` converted chip appears for a non-pilot store |
+| Header                           | Assertion                                                                                                    |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `api_money_no_conversion_path`   | a non-pilot store can't reach a conversion endpoint; any attempt returns `404`/`403`, no fallback conversion |
+| `ledger_store_frozen_bdt`        | `store_currency_settings.presentation_code == 'BDT'` for a `bdt_locked` store across restarts                |
+| `storefront_bdt_only_price_chip` | storefront render: BDT symbol + tabular numerals; no `≈` converted chip appears for a non-pilot store        |
 
 ### 6.2 Ledger sanity (every money row, every write)
 
-| ID | Assertion |
-|---|---|
-| `ledger_no_mix_currencies` | every `payments`, `payments_attempts`, `refunds`, `refund_attempts`, `payouts`, `wallet_ledger`, `vat_rates`, `invoices`, `cart` row: `amount_minor_int` + `currency_code` present; identical `currency_code` on both sides of a ledger entry (never a mixed-entry) |
-| `ledger_no_float_columns` | schema check: no `float`/`numeric(k,n)` money column introduced in any migration (CI gate, same as `currency.md` §4 integer-only rule) |
-| `ledger_rounding_adjustment_is_flagged` | a ≥1 diff writes an explicit `rounding_adjustment` row carrying `currency_code` — never a silent round (parity per `currency.md` §9) |
-| `ledger_currency_filter_required` | all money queries filter/group by `currency_code`; a query without it fails the check that `amount_minor_int` alone is disallowed (one code path rule, `currency.md` §17 Design decisions 1) |
+| ID                                      | Assertion                                                                                                                                                                                                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ledger_no_mix_currencies`              | every `payments`, `payments_attempts`, `refunds`, `refund_attempts`, `payouts`, `wallet_ledger`, `vat_rates`, `invoices`, `cart` row: `amount_minor_int` + `currency_code` present; identical `currency_code` on both sides of a ledger entry (never a mixed-entry) |
+| `ledger_no_float_columns`               | schema check: no `float`/`numeric(k,n)` money column introduced in any migration (CI gate, same as `currency.md` §4 integer-only rule)                                                                                                                              |
+| `ledger_rounding_adjustment_is_flagged` | a ≥1 diff writes an explicit `rounding_adjustment` row carrying `currency_code` — never a silent round (parity per `currency.md` §9)                                                                                                                                |
+| `ledger_currency_filter_required`       | all money queries filter/group by `currency_code`; a query without it fails the check that `amount_minor_int` alone is disallowed (one code path rule, `currency.md` §17 Design decisions 1)                                                                        |
 
 ### 6.3 Conversion boundary (only when the store is `usd_enabled`)
 
-| ID | Assertion |
-|---|---|
-| `api_fx_quote_idempotent` | retrying the same `order_id + attempt` re-asserts the same `fx_rate_id` snapshot — never re-lookups the rate or re-converts |
-| `api_fx_round_half_up` | conversion = `round_half_up(original_minor_int × base_rate_scaled) ÷ divisor`; parity gets 1-currency-related residual `rounding_adjustment` (never a silent 1-unit diff), per `currency.md` §9 |
-| `api_fx_stale_fails_closed` | rate past the staleness window (TBD-1) → checkout returns "price under review", no silent fallback/convection path |
-| `e2e_payin_usd_payout_bdt` | `store_loop`-style flow: USD-presented pay-in converts at checkout (order currency `USD`), settles at the BDT buy rate (sold BDT), payout row matches the snapshot — end-to-end. Runs only in `currency_pilot` tenant, never in the default `store_loop` |
-| `api_refund_order_currency` | refund returns in `orders.currency`; mismatch drift → block + `refund.currency_mismatch`, never auto-convert (TBD-4 default) |
+| ID                          | Assertion                                                                                                                                                                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api_fx_quote_idempotent`   | retrying the same `order_id + attempt` re-asserts the same `fx_rate_id` snapshot — never re-lookups the rate or re-converts                                                                                                                              |
+| `api_fx_round_half_up`      | conversion = `round_half_up(original_minor_int × base_rate_scaled) ÷ divisor`; parity gets 1-currency-related residual `rounding_adjustment` (never a silent 1-unit diff), per `currency.md` §9                                                          |
+| `api_fx_stale_fails_closed` | rate past the staleness window (TBD-1) → checkout returns "price under review", no silent fallback/convection path                                                                                                                                       |
+| `e2e_payin_usd_payout_bdt`  | `store_loop`-style flow: USD-presented pay-in converts at checkout (order currency `USD`), settles at the BDT buy rate (sold BDT), payout row matches the snapshot — end-to-end. Runs only in `currency_pilot` tenant, never in the default `store_loop` |
+| `api_refund_order_currency` | refund returns in `orders.currency`; mismatch drift → block + `refund.currency_mismatch`, never auto-convert (TBD-4 default)                                                                                                                             |
 
 Pilot conformance is distinct from the default path: `e2e_payin_usd_payout_bdt` runs against a `test-*` tenant with `currency_pilot` entitlement (15-e2e `test-*` reset), and the **default `store_loop` stays BDT-only** — asserting no accidental currency conversion is exactly what `store_loop` already does (currency.md §21).
 
@@ -176,11 +177,11 @@ Pilot conformance is distinct from the default path: `e2e_payin_usd_payout_bdt` 
 
 ## 14. Residual gaps — named TBDs (owners)
 
-| # | Lead | Owner | Scope of decision |
-|----|------|-------|---------------------|
-| G-TBD-1 | `is_currency_pilot` rollout flag: per-plan vs per-tenant override; and its placement vs 16's entitlements | platform · product | where the flag lives and who can revoke it |
-| G-TBD-2 | Conformance-header registration into `docs/15-e2e` (the `e2e_promo_loop` pattern) | currency product owner | when the pilot scope freezes; registers `currency_gate` and USD-only suites |
-| G-TBD-3 | Rollback window for in-flight USD orders at settlement (grace for partially-settled rows) | treasury | the exact "oldest in-flight" rule after a `rollback.to_bdt` |
-| G-TBD-4 | Delinquency on `currency_pilot` gate (KYC suspension → auto BDT at which time) | treasury + ops | the expiry→locked transition timing |
+| #       | Lead                                                                                                      | Owner                  | Scope of decision                                                           |
+| ------- | --------------------------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------- |
+| G-TBD-1 | `is_currency_pilot` rollout flag: per-plan vs per-tenant override; and its placement vs 16's entitlements | platform · product     | where the flag lives and who can revoke it                                  |
+| G-TBD-2 | Conformance-header registration into `docs/15-e2e` (the `e2e_promo_loop` pattern)                         | currency product owner | when the pilot scope freezes; registers `currency_gate` and USD-only suites |
+| G-TBD-3 | Rollback window for in-flight USD orders at settlement (grace for partially-settled rows)                 | treasury               | the exact "oldest in-flight" rule after a `rollback.to_bdt`                 |
+| G-TBD-4 | Delinquency on `currency_pilot` gate (KYC suspension → auto BDT at which time)                            | treasury + ops         | the expiry→locked transition timing                                         |
 
 All `G-TBD-*` follow the named-TBD protocol (`docs/00-meta/README.md` §2); they extend, not duplicate, `currency.md` §22's TBD-1..TBD-5 (staleness window, sell/buy spread, settlement immutability, refund-mismatch drift, USD export wallet). Nothing above lifts until each is resolved; every row in this document is a noted plan column/milestone, and the full corpus remains docs-only planning (status **Planning**, no ships).

@@ -1,1 +1,503 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "label": "controls.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L1"}, {"id": "studio_controls_controltab", "label": "ControlTab", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L12"}, {"id": "studio_controls_paneltab", "label": "PanelTab", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L15"}, {"id": "studio_controls_panel_tab_controls", "label": "PANEL_TAB_CONTROLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L17"}, {"id": "studio_controls_controltype", "label": "ControlType", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L24"}, {"id": "studio_controls_controloption", "label": "ControlOption", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L42"}, {"id": "studio_controls_control", "label": "Control", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L44"}, {"id": "studio_controls_align_options", "label": "ALIGN_OPTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L65"}, {"id": "studio_controls_c", "label": "c()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L72"}, {"id": "studio_controls_style_controls", "label": "STYLE_CONTROLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L78"}, {"id": "studio_controls_advanced_controls", "label": "ADVANCED_CONTROLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L187"}, {"id": "studio_controls_container_controls", "label": "CONTAINER_CONTROLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L245"}, {"id": "studio_controls_content", "label": "CONTENT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L331"}, {"id": "studio_controls_commerce_controls", "label": "COMMERCE_CONTROLS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L602"}, {"id": "studio_controls_commerce_keys", "label": "COMMERCE_KEYS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L621"}, {"id": "studio_controls_contentcontrols", "label": "contentControls()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L631"}, {"id": "studio_controls_controlsfor", "label": "controlsFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L637"}, {"id": "studio_controls_controlsfortab", "label": "controlsForTab()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L641"}, {"id": "studio_controls_controlsection", "label": "ControlSection", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L645"}, {"id": "studio_controls_sectionsfortab", "label": "sectionsForTab()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L647"}, {"id": "studio_controls_iscontrolvisible", "label": "isControlVisible()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L658"}, {"id": "studio_controls_sectionsforpaneltab", "label": "sectionsForPanelTab()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L670"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "users_rahman_documents_frame30_src_lib_studio_model_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_model_nodesettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_model_studionode", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "users_rahman_documents_frame30_src_lib_studio_responsive_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_responsive_units", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_responsive_unit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controltab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_paneltab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_panel_tab_controls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controltype", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controloption", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_control", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_align_options", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_c", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_style_controls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_advanced_controls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L187", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_container_controls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L245", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_content", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L331", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_commerce_controls", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L602", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_commerce_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L621", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_contentcontrols", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L631", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controlsfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L637", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controlsfortab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L641", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_controlsection", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L645", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_sectionsfortab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L647", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_iscontrolvisible", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L658", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_controls_ts", "target": "studio_controls_sectionsforpaneltab", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L670", "weight": 1.0}, {"source": "studio_controls_contentcontrols", "target": "studio_controls_c", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L634", "weight": 1.0}, {"source": "studio_controls_controlsfor", "target": "studio_controls_contentcontrols", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L638", "weight": 1.0}, {"source": "studio_controls_controlsfortab", "target": "studio_controls_controlsfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L642", "weight": 1.0}, {"source": "studio_controls_sectionsfortab", "target": "studio_controls_controlsfortab", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L649", "weight": 1.0}, {"source": "studio_controls_sectionsforpaneltab", "target": "studio_controls_sectionsfortab", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L673", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_controls_contentcontrols", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L633"}, {"caller_nid": "studio_controls_controlsfortab", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L642"}, {"caller_nid": "studio_controls_sectionsfortab", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L651"}, {"caller_nid": "studio_controls_sectionsfortab", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L652"}, {"caller_nid": "studio_controls_iscontrolvisible", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L662"}, {"caller_nid": "studio_controls_sectionsforpaneltab", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts", "source_location": "L674"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "label": "controls.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_controls_controltab",
+      "label": "ControlTab",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "studio_controls_paneltab",
+      "label": "PanelTab",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "studio_controls_panel_tab_controls",
+      "label": "PANEL_TAB_CONTROLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "studio_controls_controltype",
+      "label": "ControlType",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "studio_controls_controloption",
+      "label": "ControlOption",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "studio_controls_control",
+      "label": "Control",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "studio_controls_align_options",
+      "label": "ALIGN_OPTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "studio_controls_c",
+      "label": "c()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "studio_controls_style_controls",
+      "label": "STYLE_CONTROLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "studio_controls_advanced_controls",
+      "label": "ADVANCED_CONTROLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L187"
+    },
+    {
+      "id": "studio_controls_container_controls",
+      "label": "CONTAINER_CONTROLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L245"
+    },
+    {
+      "id": "studio_controls_content",
+      "label": "CONTENT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L331"
+    },
+    {
+      "id": "studio_controls_commerce_controls",
+      "label": "COMMERCE_CONTROLS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L602"
+    },
+    {
+      "id": "studio_controls_commerce_keys",
+      "label": "COMMERCE_KEYS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L621"
+    },
+    {
+      "id": "studio_controls_contentcontrols",
+      "label": "contentControls()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L631"
+    },
+    {
+      "id": "studio_controls_controlsfor",
+      "label": "controlsFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L637"
+    },
+    {
+      "id": "studio_controls_controlsfortab",
+      "label": "controlsForTab()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L641"
+    },
+    {
+      "id": "studio_controls_controlsection",
+      "label": "ControlSection",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L645"
+    },
+    {
+      "id": "studio_controls_sectionsfortab",
+      "label": "sectionsForTab()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L647"
+    },
+    {
+      "id": "studio_controls_iscontrolvisible",
+      "label": "isControlVisible()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L658"
+    },
+    {
+      "id": "studio_controls_sectionsforpaneltab",
+      "label": "sectionsForPanelTab()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L670"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "users_rahman_documents_frame30_src_lib_studio_model_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_model_nodesettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_model_studionode",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "users_rahman_documents_frame30_src_lib_studio_responsive_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_responsive_units",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_responsive_unit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controltab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_paneltab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_panel_tab_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controltype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controloption",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_control",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_align_options",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_c",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_style_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_advanced_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L187",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_container_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L245",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_content",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L331",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_commerce_controls",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L602",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_commerce_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L621",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_contentcontrols",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L631",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controlsfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L637",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controlsfortab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L641",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_controlsection",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L645",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_sectionsfortab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L647",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_iscontrolvisible",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L658",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_controls_ts",
+      "target": "studio_controls_sectionsforpaneltab",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L670",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_controls_contentcontrols",
+      "target": "studio_controls_c",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L634",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_controls_controlsfor",
+      "target": "studio_controls_contentcontrols",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L638",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_controls_controlsfortab",
+      "target": "studio_controls_controlsfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L642",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_controls_sectionsfortab",
+      "target": "studio_controls_controlsfortab",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L649",
+      "weight": 1.0
+    },
+    {
+      "source": "studio_controls_sectionsforpaneltab",
+      "target": "studio_controls_sectionsfortab",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L673",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_controls_contentcontrols",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L633"
+    },
+    {
+      "caller_nid": "studio_controls_controlsfortab",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L642"
+    },
+    {
+      "caller_nid": "studio_controls_sectionsfortab",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L651"
+    },
+    {
+      "caller_nid": "studio_controls_sectionsfortab",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L652"
+    },
+    {
+      "caller_nid": "studio_controls_iscontrolvisible",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L662"
+    },
+    {
+      "caller_nid": "studio_controls_sectionsforpaneltab",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/controls.ts",
+      "source_location": "L674"
+    }
+  ]
+}

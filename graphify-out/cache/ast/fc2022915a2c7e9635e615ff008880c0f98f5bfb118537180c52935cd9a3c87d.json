@@ -1,1 +1,468 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "label": "search-console.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L1"}, {"id": "lib_search_console_contract_test_read", "label": "read()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L25"}, {"id": "lib_search_console_contract_test_server", "label": "SERVER", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L26"}, {"id": "lib_search_console_contract_test_functions", "label": "FUNCTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L27"}, {"id": "lib_search_console_contract_test_cron", "label": "CRON", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L28"}, {"id": "lib_search_console_contract_test_value_issues", "label": "{ value, issues }", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L32"}, {"id": "lib_search_console_contract_test_tags", "label": "tags", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L42"}, {"id": "lib_search_console_contract_test_resolution", "label": "resolution", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L50"}, {"id": "lib_search_console_contract_test_headers", "label": "headers", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L61"}, {"id": "lib_search_console_contract_test_rows", "label": "rows", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L73"}, {"id": "lib_search_console_contract_test_agg", "label": "[agg]", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L80"}, {"id": "lib_search_console_contract_test_current", "label": "current", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L86"}, {"id": "lib_search_console_contract_test_previous", "label": "previous", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L87"}, {"id": "lib_search_console_contract_test_day", "label": "day", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L92"}, {"id": "lib_search_console_contract_test_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L98"}, {"id": "lib_search_console_contract_test_plan", "label": "plan", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L106"}, {"id": "lib_search_console_contract_test_head", "label": "head", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L113"}, {"id": "lib_search_console_contract_test_admin", "label": "admin", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L151"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_search_console_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_aggregate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_classifyresponse", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_compareperiods", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_daterange", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_latestusableday", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_normaliserows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_parseretryafter", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_resolveproperty", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_shouldsubmitsitemap", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_tagplan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_validatesitekit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_verificationtags", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_server", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_functions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_cron", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_value_issues", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_tags", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_resolution", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_headers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_rows", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L73", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_agg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_current", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L86", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_previous", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_day", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L92", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_plan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_head", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts", "target": "lib_search_console_contract_test_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L151", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_search_console_contract_test_read", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L25"}, {"caller_nid": "lib_search_console_contract_test_read", "callee": "join", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L25"}, {"caller_nid": "lib_search_console_contract_test_read", "callee": "cwd", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts", "source_location": "L25"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "label": "search-console.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_search_console_contract_test_read",
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_search_console_contract_test_server",
+      "label": "SERVER",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_search_console_contract_test_functions",
+      "label": "FUNCTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_search_console_contract_test_cron",
+      "label": "CRON",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_search_console_contract_test_value_issues",
+      "label": "{ value, issues }",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_search_console_contract_test_tags",
+      "label": "tags",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_search_console_contract_test_resolution",
+      "label": "resolution",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_search_console_contract_test_headers",
+      "label": "headers",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_search_console_contract_test_rows",
+      "label": "rows",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L73"
+    },
+    {
+      "id": "lib_search_console_contract_test_agg",
+      "label": "[agg]",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "lib_search_console_contract_test_current",
+      "label": "current",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L86"
+    },
+    {
+      "id": "lib_search_console_contract_test_previous",
+      "label": "previous",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "lib_search_console_contract_test_day",
+      "label": "day",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L92"
+    },
+    {
+      "id": "lib_search_console_contract_test_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_search_console_contract_test_plan",
+      "label": "plan",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "lib_search_console_contract_test_head",
+      "label": "head",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_search_console_contract_test_admin",
+      "label": "admin",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L151"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_search_console_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_aggregate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_classifyresponse",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_compareperiods",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_daterange",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_latestusableday",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_normaliserows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_parseretryafter",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_resolveproperty",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_shouldsubmitsitemap",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_tagplan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_validatesitekit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_verificationtags",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_server",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_functions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_cron",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_value_issues",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_tags",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_resolution",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_headers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_rows",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_agg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_current",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_previous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_day",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_plan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_head",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_search_console_contract_test_ts",
+      "target": "lib_search_console_contract_test_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_search_console_contract_test_read",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_search_console_contract_test_read",
+      "callee": "join",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_search_console_contract_test_read",
+      "callee": "cwd",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/search-console.contract.test.ts",
+      "source_location": "L25"
+    }
+  ]
+}

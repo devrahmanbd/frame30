@@ -10,7 +10,14 @@
  *    orders, and ML training sets, and asserting RPO = 0 and RTO < 15 minutes.
  */
 
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { incr, log } from "./observability.server";
@@ -72,7 +79,7 @@ function computeSha256(data: string): string {
  * Fetch current status of the Time-Machine Continuous Archiving Daemon.
  */
 export async function getTimeMachineDaemonStatus(
-  customBase?: string
+  customBase?: string,
 ): Promise<TimeMachineDaemonStatus> {
   const baseDir = customBase || defaultBackupBase();
   const pidFile = resolve(baseDir, "time-machine-daemon.pid");
@@ -116,7 +123,9 @@ export async function getTimeMachineDaemonStatus(
   let lastDrDrillPassed: boolean | undefined;
   if (existsSync(lastReportFile)) {
     try {
-      const rep = JSON.parse(readFileSync(lastReportFile, "utf8")) as DrDrillReport;
+      const rep = JSON.parse(
+        readFileSync(lastReportFile, "utf8"),
+      ) as DrDrillReport;
       lastDrDrillPassed = rep.status === "PASSED";
     } catch {
       lastDrDrillPassed = false;
@@ -125,7 +134,9 @@ export async function getTimeMachineDaemonStatus(
 
   let totalSnapshots = 0;
   if (existsSync(snapDir)) {
-    totalSnapshots = readdirSync(snapDir).filter((d) => d.startsWith("snap_")).length;
+    totalSnapshots = readdirSync(snapDir).filter((d) =>
+      d.startsWith("snap_"),
+    ).length;
   }
 
   return {
@@ -133,7 +144,8 @@ export async function getTimeMachineDaemonStatus(
     pid,
     backupBaseDir: baseDir,
     walLocalDir: resolve(baseDir, "wal"),
-    walRemoteTarget: process.env.WAL_REMOTE_TARGET || "s3://framique-backups/wal",
+    walRemoteTarget:
+      process.env.WAL_REMOTE_TARGET || "s3://framique-backups/wal",
     lastWalSyncAt,
     lastSnapshotTag,
     lastDrDrillPassed,
@@ -144,10 +156,12 @@ export async function getTimeMachineDaemonStatus(
 /**
  * Execute WAL replication to secondary durable mirror.
  */
-export async function executeWalSync(options: {
-  backupBaseDir?: string;
-  simulatedSegments?: string[];
-} = {}): Promise<{ syncedCount: number; timestamp: string }> {
+export async function executeWalSync(
+  options: {
+    backupBaseDir?: string;
+    simulatedSegments?: string[];
+  } = {},
+): Promise<{ syncedCount: number; timestamp: string }> {
   const baseDir = options.backupBaseDir || defaultBackupBase();
   const walDir = resolve(baseDir, "wal");
   const mirrorDir = resolve(baseDir, "remote_wal_mirror");
@@ -173,8 +187,13 @@ export async function executeWalSync(options: {
   const timestamp = new Date().toISOString();
   writeFileSync(resolve(baseDir, "last_wal_sync.txt"), timestamp);
 
-  incr("framique_time_machine_wal_synced_total", { count: String(files.length) });
-  log("info", "time_machine.wal_synced", { filesCount: files.length, timestamp });
+  incr("framique_time_machine_wal_synced_total", {
+    count: String(files.length),
+  });
+  log("info", "time_machine.wal_synced", {
+    filesCount: files.length,
+    timestamp,
+  });
 
   return { syncedCount: files.length, timestamp };
 }
@@ -182,16 +201,21 @@ export async function executeWalSync(options: {
 /**
  * Create a basebackup snapshot with table checksums and PITR metadata.
  */
-export async function createTimeMachineBasebackup(options: {
-  backupBaseDir?: string;
-  type?: BasebackupManifest["type"];
-  tag?: string;
-} = {}): Promise<BasebackupManifest> {
+export async function createTimeMachineBasebackup(
+  options: {
+    backupBaseDir?: string;
+    type?: BasebackupManifest["type"];
+    tag?: string;
+  } = {},
+): Promise<BasebackupManifest> {
   const baseDir = options.backupBaseDir || defaultBackupBase();
   const snapDir = resolve(baseDir, "snapshots");
   mkdirSync(snapDir, { recursive: true });
 
-  const ts = new Date().toISOString().replace(/[-:T.]/g, "").slice(0, 15);
+  const ts = new Date()
+    .toISOString()
+    .replace(/[-:T.]/g, "")
+    .slice(0, 15);
   const tag = options.tag || `snap_hourly_${ts}`;
   const targetDir = resolve(snapDir, tag);
   mkdirSync(targetDir, { recursive: true });
@@ -212,7 +236,10 @@ export async function createTimeMachineBasebackup(options: {
     status: "ready",
   };
 
-  writeFileSync(resolve(targetDir, "metadata.json"), JSON.stringify(manifest, null, 2));
+  writeFileSync(
+    resolve(targetDir, "metadata.json"),
+    JSON.stringify(manifest, null, 2),
+  );
   writeFileSync(resolve(baseDir, "last_snapshot_tag.txt"), tag);
 
   incr("framique_time_machine_basebackup_created_total", { tag });
@@ -225,10 +252,17 @@ export async function createTimeMachineBasebackup(options: {
  * Grandfather-Father-Son Retention Pruning:
  * Keeps up to maxRetained (default: 35 = 24 hourly + 7 daily + 4 weekly).
  */
-export async function pruneTimeMachineSnapshots(options: {
-  backupBaseDir?: string;
-  maxRetained?: number;
-} = {}): Promise<{ totalFound: number; retainedCount: number; prunedCount: number; prunedTags: string[] }> {
+export async function pruneTimeMachineSnapshots(
+  options: {
+    backupBaseDir?: string;
+    maxRetained?: number;
+  } = {},
+): Promise<{
+  totalFound: number;
+  retainedCount: number;
+  prunedCount: number;
+  prunedTags: string[];
+}> {
   const baseDir = options.backupBaseDir || defaultBackupBase();
   const snapDir = resolve(baseDir, "snapshots");
   const maxRetained = options.maxRetained ?? 35;
@@ -253,7 +287,9 @@ export async function pruneTimeMachineSnapshots(options: {
     }
   }
 
-  incr("framique_time_machine_snapshots_pruned_total", { count: String(prunedTags.length) });
+  incr("framique_time_machine_snapshots_pruned_total", {
+    count: String(prunedTags.length),
+  });
   log("info", "time_machine.pruned_snapshots", {
     totalFound: total,
     prunedCount: prunedTags.length,
@@ -274,11 +310,13 @@ export async function pruneTimeMachineSnapshots(options: {
  * replays WAL up to the corruption second, verifies data parity across all tenant
  * tables and ML training sets, and asserts RPO = 0 and RTO < 15 minutes.
  */
-export async function runDisasterRecoveryDrill(options: {
-  backupBaseDir?: string;
-  targetTimestamp?: string;
-  simulatedOrdersCount?: number;
-} = {}): Promise<DrDrillReport> {
+export async function runDisasterRecoveryDrill(
+  options: {
+    backupBaseDir?: string;
+    targetTimestamp?: string;
+    simulatedOrdersCount?: number;
+  } = {},
+): Promise<DrDrillReport> {
   const baseDir = options.backupBaseDir || defaultBackupBase();
   const snapDir = resolve(baseDir, "snapshots");
   const startTime = Date.now();
@@ -295,7 +333,10 @@ export async function runDisasterRecoveryDrill(options: {
 
   const candidatePath = resolve(snapDir, candidateTag);
   if (!existsSync(candidatePath)) {
-    await createTimeMachineBasebackup({ backupBaseDir: baseDir, tag: candidateTag });
+    await createTimeMachineBasebackup({
+      backupBaseDir: baseDir,
+      tag: candidateTag,
+    });
   }
 
   // 1. Simulate primary disk corruption workspace
@@ -304,7 +345,9 @@ export async function runDisasterRecoveryDrill(options: {
   mkdirSync(resolve(drillWorkspace, "data"), { recursive: true });
 
   // 2. Mount basebackup
-  const manifest = JSON.parse(readFileSync(resolve(candidatePath, "metadata.json"), "utf8")) as BasebackupManifest;
+  const manifest = JSON.parse(
+    readFileSync(resolve(candidatePath, "metadata.json"), "utf8"),
+  ) as BasebackupManifest;
 
   // 3. Replay WAL up to target timestamp
   const targetTime = options.targetTimestamp || new Date().toISOString();
@@ -343,7 +386,10 @@ recovery_target_action = 'promote'
   // Clean workspace
   rmSync(drillWorkspace, { recursive: true, force: true });
 
-  writeFileSync(resolve(baseDir, "last_dr_drill_report.json"), JSON.stringify(report, null, 2));
+  writeFileSync(
+    resolve(baseDir, "last_dr_drill_report.json"),
+    JSON.stringify(report, null, 2),
+  );
 
   incr("framique_time_machine_dr_drill_passed_total");
   log("info", "time_machine.dr_drill_completed", { report });

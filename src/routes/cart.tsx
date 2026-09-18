@@ -5,7 +5,8 @@ import { getFeaturedStoreSlug } from "@/lib/storefront.functions";
 export const Route = createFileRoute("/cart")({
   loader: async () => {
     const slug = await getFeaturedStoreSlug();
-    if (slug) throw redirect({ to: "/store/$slug", params: { slug }, replace: true });
+    if (slug)
+      throw redirect({ to: "/store/$slug", params: { slug }, replace: true });
     throw redirect({ to: "/", replace: true });
   },
 });

@@ -1,1 +1,718 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "label": "MenusScreen.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L1"}, {"id": "menus_menusscreen_newid", "label": "newId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L53"}, {"id": "menus_menusscreen_menusscreen", "label": "MenusScreen()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L58"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_components_console_kit_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_card", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_confirmdialog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_emptystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_inlineerror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_page", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_skeleton", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_btnghost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_btnprimary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "console_kit_inputclass", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_lib_menus_menu_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menu_locations", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menudropposition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menuitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menulocation", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menusource", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_navmenu", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_additem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_indentitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_locationslabel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_menudirty", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_moveitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_movevertical", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_outdentitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_removeitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_sourcetoitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_togglelocation", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_updateitem", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_validatemenu", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_lib_menus_menu_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_functions_menucreatefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_functions_menudeletefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_functions_menusavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menu_functions_menusworkspacefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L43", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_components_admin_menus_menusourcepanel_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menusourcepanel_menusourcepanel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "users_rahman_documents_frame30_src_components_admin_menus_menustructure_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menustructure_menustructure", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menusscreen_newid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx", "target": "menus_menusscreen_menusscreen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L58", "weight": 1.0}], "raw_calls": [{"caller_nid": "menus_menusscreen_newid", "callee": "randomUUID", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L55"}, {"caller_nid": "menus_menusscreen_newid", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L56"}, {"caller_nid": "menus_menusscreen_newid", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L56"}, {"caller_nid": "menus_menusscreen_newid", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L56"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L59"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L60"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L61"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L62"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L63"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L65"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L66"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L67"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L68"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L69"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L70"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L71"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L72"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L74"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L80"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L81"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L82"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L84"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L92"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L94"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "menuDirty", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L95"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L97"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L97"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L101"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L113"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L123"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L185"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L218"}, {"caller_nid": "menus_menusscreen_menusscreen", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx", "source_location": "L262"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "label": "MenusScreen.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "menus_menusscreen_newid",
+      "label": "newId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L53"
+    },
+    {
+      "id": "menus_menusscreen_menusscreen",
+      "label": "MenusScreen()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L58"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_console_kit_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_card",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_confirmdialog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_emptystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_inlineerror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_page",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_skeleton",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_btnghost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_btnprimary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "console_kit_inputclass",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_menus_menu_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menu_locations",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menudropposition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menuitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menulocation",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menusource",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_navmenu",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_additem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_indentitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_locationslabel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_menudirty",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_moveitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_movevertical",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_outdentitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_removeitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_sourcetoitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_togglelocation",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_updateitem",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_validatemenu",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_menus_menu_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_functions_menucreatefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_functions_menudeletefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_functions_menusavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menu_functions_menusworkspacefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_menus_menusourcepanel_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menusourcepanel_menusourcepanel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_menus_menustructure_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menustructure_menustructure",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menusscreen_newid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_menus_menusscreen_tsx",
+      "target": "menus_menusscreen_menusscreen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "menus_menusscreen_newid",
+      "callee": "randomUUID",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "menus_menusscreen_newid",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "menus_menusscreen_newid",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "menus_menusscreen_newid",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "menuDirty",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "menus_menusscreen_menusscreen",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/menus/MenusScreen.tsx",
+      "source_location": "L262"
+    }
+  ]
+}

@@ -1,1 +1,682 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "label": "image-transform.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L1"}, {"id": "lib_image_transform_server_hex", "label": "hex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L30"}, {"id": "lib_image_transform_server_hmachex", "label": "hmacHex()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L34"}, {"id": "lib_image_transform_server_signingsecret", "label": "signingSecret()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L45"}, {"id": "lib_image_transform_server_allowedhosts", "label": "allowedHosts()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L51"}, {"id": "lib_image_transform_server_buildimageurl", "label": "buildImageUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L68"}, {"id": "lib_image_transform_server_transformoutcome", "label": "TransformOutcome", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L79"}, {"id": "lib_image_transform_server_refuse", "label": "refuse()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L83"}, {"id": "lib_image_transform_server_servetransform", "label": "serveTransform()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L98"}, {"id": "lib_image_transform_server_imgproxyurl", "label": "imgproxyUrl()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L156"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "users_rahman_documents_frame30_src_lib_image_transform_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_cachecontrolfor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_contenttypefor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_decodesource", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_decodespec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_encodesource", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_encodespec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_isallowedsource", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_negotiateformat", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_safeequalhex", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_signaturepayload", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_transformspec", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_hex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_hmachex", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_signingsecret", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_allowedhosts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_buildimageurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_transformoutcome", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_refuse", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_servetransform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L98", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts", "target": "lib_image_transform_server_imgproxyurl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L156", "weight": 1.0}, {"source": "lib_image_transform_server_hmachex", "target": "lib_image_transform_server_hex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L42", "weight": 1.0}, {"source": "lib_image_transform_server_buildimageurl", "target": "lib_image_transform_server_allowedhosts", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L72", "weight": 1.0}, {"source": "lib_image_transform_server_buildimageurl", "target": "lib_image_transform_server_hmachex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_image_transform_server_buildimageurl", "target": "lib_image_transform_server_signingsecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_image_transform_server_servetransform", "target": "lib_image_transform_server_refuse", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L104", "weight": 1.0}, {"source": "lib_image_transform_server_servetransform", "target": "lib_image_transform_server_signingsecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L106", "weight": 1.0}, {"source": "lib_image_transform_server_servetransform", "target": "lib_image_transform_server_hmachex", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L109", "weight": 1.0}, {"source": "lib_image_transform_server_servetransform", "target": "lib_image_transform_server_allowedhosts", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L118", "weight": 1.0}, {"source": "lib_image_transform_server_servetransform", "target": "lib_image_transform_server_imgproxyurl", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L129", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_image_transform_server_hex", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L31"}, {"caller_nid": "lib_image_transform_server_hex", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L31"}, {"caller_nid": "lib_image_transform_server_hmachex", "callee": "importKey", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L35"}, {"caller_nid": "lib_image_transform_server_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L37"}, {"caller_nid": "lib_image_transform_server_hmachex", "callee": "sign", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L42"}, {"caller_nid": "lib_image_transform_server_hmachex", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L42"}, {"caller_nid": "lib_image_transform_server_allowedhosts", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L53"}, {"caller_nid": "lib_image_transform_server_allowedhosts", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L53"}, {"caller_nid": "lib_image_transform_server_allowedhosts", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L53"}, {"caller_nid": "lib_image_transform_server_allowedhosts", "callee": "(() => {\n    try {\n      return new URL(process.env[\"SUPABASE_URL\"] ?? \"\").hostname;\n    } catch {\n      return null;\n    }\n  })", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L57"}, {"caller_nid": "lib_image_transform_server_buildimageurl", "callee": "isAllowedSource", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L72"}, {"caller_nid": "lib_image_transform_server_buildimageurl", "callee": "encodeSpec", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L73"}, {"caller_nid": "lib_image_transform_server_buildimageurl", "callee": "encodeSource", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L74"}, {"caller_nid": "lib_image_transform_server_buildimageurl", "callee": "signaturePayload", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L75"}, {"caller_nid": "lib_image_transform_server_buildimageurl", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L76"}, {"caller_nid": "lib_image_transform_server_refuse", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L84"}, {"caller_nid": "lib_image_transform_server_refuse", "callee": "cacheControlFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L90"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L102"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L109"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "signaturePayload", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L109"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "safeEqualHex", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L110"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "decodeSpec", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L112"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "decodeSource", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L115"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "isAllowedSource", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L118"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L120"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "negotiateFormat", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L124"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L129"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L129"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "contentTypeFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L130"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L132"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L132"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L136"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L136"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L137"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "contentTypeFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L144"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L144"}, {"caller_nid": "lib_image_transform_server_servetransform", "callee": "cacheControlFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L145"}, {"caller_nid": "lib_image_transform_server_imgproxyurl", "callee": "encodeURIComponent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L158"}, {"caller_nid": "lib_image_transform_server_imgproxyurl", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts", "source_location": "L159"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "label": "image-transform.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_image_transform_server_hex",
+      "label": "hex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_image_transform_server_hmachex",
+      "label": "hmacHex()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_image_transform_server_signingsecret",
+      "label": "signingSecret()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_image_transform_server_allowedhosts",
+      "label": "allowedHosts()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_image_transform_server_buildimageurl",
+      "label": "buildImageUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_image_transform_server_transformoutcome",
+      "label": "TransformOutcome",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_image_transform_server_refuse",
+      "label": "refuse()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_image_transform_server_servetransform",
+      "label": "serveTransform()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L98"
+    },
+    {
+      "id": "lib_image_transform_server_imgproxyurl",
+      "label": "imgproxyUrl()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L156"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_image_transform_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_cachecontrolfor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_contenttypefor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_decodesource",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_decodespec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_encodesource",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_encodespec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_isallowedsource",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_negotiateformat",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_safeequalhex",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_signaturepayload",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_transformspec",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_hex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_hmachex",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_signingsecret",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_allowedhosts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_buildimageurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_transformoutcome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_refuse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_servetransform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_image_transform_server_ts",
+      "target": "lib_image_transform_server_imgproxyurl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_hmachex",
+      "target": "lib_image_transform_server_hex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_buildimageurl",
+      "target": "lib_image_transform_server_allowedhosts",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_buildimageurl",
+      "target": "lib_image_transform_server_hmachex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_buildimageurl",
+      "target": "lib_image_transform_server_signingsecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_servetransform",
+      "target": "lib_image_transform_server_refuse",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_servetransform",
+      "target": "lib_image_transform_server_signingsecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_servetransform",
+      "target": "lib_image_transform_server_hmachex",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L109",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_servetransform",
+      "target": "lib_image_transform_server_allowedhosts",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_image_transform_server_servetransform",
+      "target": "lib_image_transform_server_imgproxyurl",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_image_transform_server_hex",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_hex",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_hmachex",
+      "callee": "importKey",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_hmachex",
+      "callee": "sign",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_hmachex",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_allowedhosts",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_allowedhosts",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_allowedhosts",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_allowedhosts",
+      "callee": "(() => {\n    try {\n      return new URL(process.env[\"SUPABASE_URL\"] ?? \"\").hostname;\n    } catch {\n      return null;\n    }\n  })",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_buildimageurl",
+      "callee": "isAllowedSource",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_buildimageurl",
+      "callee": "encodeSpec",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_buildimageurl",
+      "callee": "encodeSource",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_buildimageurl",
+      "callee": "signaturePayload",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_buildimageurl",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_refuse",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_refuse",
+      "callee": "cacheControlFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "signaturePayload",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "safeEqualHex",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "decodeSpec",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "decodeSource",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "isAllowedSource",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "negotiateFormat",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "contentTypeFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "contentTypeFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_servetransform",
+      "callee": "cacheControlFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_imgproxyurl",
+      "callee": "encodeURIComponent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_image_transform_server_imgproxyurl",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/image-transform.server.ts",
+      "source_location": "L159"
+    }
+  ]
+}

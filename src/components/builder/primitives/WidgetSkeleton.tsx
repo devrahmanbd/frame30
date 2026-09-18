@@ -9,7 +9,9 @@ import { skeletonSpec, type SkeletonSpec } from "@/lib/widget-skeletons";
 import type { SectionType } from "@/lib/builder-ast";
 
 function Block({ className }: { className: string }) {
-  return <div className={`animate-pulse rounded-fq-md bg-muted ${className}`} />;
+  return (
+    <div className={`animate-pulse rounded-fq-md bg-muted ${className}`} />
+  );
 }
 
 export function WidgetSkeleton({ spec }: { spec: SkeletonSpec }) {

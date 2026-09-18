@@ -47,7 +47,11 @@ export const Route = createFileRoute("/_authenticated/dashboard/")({
 function Dashboard() {
   const { t } = useLang();
   const fetchAnalytics = useServerFn(analyticsFn);
-  const { data: home, isLoading: homeLoading, error: homeError } = useDashboardOnboarding();
+  const {
+    data: home,
+    isLoading: homeLoading,
+    error: homeError,
+  } = useDashboardOnboarding();
   useHomeRealtime();
   const onboarding = home?.onboarding ?? false;
 
@@ -63,7 +67,9 @@ function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">{t("Dashboard", "ড্যাশবোর্ড")}</h1>
+          <h1 className="text-xl font-semibold tracking-tight">
+            {t("Dashboard", "ড্যাশবোর্ড")}
+          </h1>
           <p className="mt-1 text-[13px] fq-sub">
             {onboarding
               ? t(
@@ -84,7 +90,10 @@ function Dashboard() {
       <SetupChecklist />
 
       {homeError ? (
-        <p role="alert" className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground">
+        <p
+          role="alert"
+          className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+        >
           {(homeError as Error).message}
         </p>
       ) : null}
@@ -93,14 +102,23 @@ function Dashboard() {
         <DashboardHome />
       ) : (
         <>
-          {homeLoading || !home ? <DashboardSkeleton /> : <TodayStrip data={home} />}
+          {homeLoading || !home ? (
+            <DashboardSkeleton />
+          ) : (
+            <TodayStrip data={home} />
+          )}
 
           {/* Asymmetric: a wide analysis column, a narrow decision rail. */}
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:items-start">
             <div className="space-y-4">
-              <section aria-label="Revenue trend" className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4">
+              <section
+                aria-label="Revenue trend"
+                className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4"
+              >
                 <div className="flex items-baseline justify-between gap-3">
-                  <h2 className="text-sm font-semibold">{t("Revenue trend", "বিক্রির ধারা")}</h2>
+                  <h2 className="text-sm font-semibold">
+                    {t("Revenue trend", "বিক্রির ধারা")}
+                  </h2>
                   {data ? (
                     <span className="fq-num text-xs fq-sub">
                       {fmtMinor(data.totals.revenueMinorInt, currency)} ·{" "}
@@ -113,31 +131,46 @@ function Dashboard() {
                     {(error as Error).message}
                   </p>
                 ) : isLoading || !data ? (
-                  <div className="mt-3 h-[132px] animate-pulse rounded-fq-md bg-muted/40" aria-busy />
+                  <div
+                    className="mt-3 h-[132px] animate-pulse rounded-fq-md bg-muted/40"
+                    aria-busy
+                  />
                 ) : (
                   <div className="mt-1">
                     <TrendChart
                       label={t("Revenue, last 7 days", "বিক্রি, শেষ ৭ দিন")}
-                      points={data.series.map((p) => ({ date: p.date, value: p.revenueMinorInt }))}
+                      points={data.series.map((p) => ({
+                        date: p.date,
+                        value: p.revenueMinorInt,
+                      }))}
                       format={(v) => fmtMinor(v, currency)}
                     />
                   </div>
                 )}
               </section>
 
-              <section aria-label="Top products" className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4">
+              <section
+                aria-label="Top products"
+                className="fq-card fq-beam fq-hover-spotlight fq-edge-inner p-4"
+              >
                 <h2 className="text-sm font-semibold">
                   {t("Top products (7 days)", "সেরা পণ্য (৭ দিন)")}
                 </h2>
                 {!data || data.topProducts.length === 0 ? (
-                  <p className="mt-3 text-sm fq-sub">{t("No sales yet.", "এখনো কোনো বিক্রি নেই।")}</p>
+                  <p className="mt-3 text-sm fq-sub">
+                    {t("No sales yet.", "এখনো কোনো বিক্রি নেই।")}
+                  </p>
                 ) : (
                   <ul className="mt-2 divide-y divide-border text-sm">
                     {data.topProducts.slice(0, 5).map((p) => (
-                      <li key={p.title} className="flex items-baseline justify-between gap-3 py-2">
+                      <li
+                        key={p.title}
+                        className="flex items-baseline justify-between gap-3 py-2"
+                      >
                         <span className="min-w-0 truncate">{p.title}</span>
                         <span className="fq-num shrink-0 fq-sub">
-                          {p.quantity} × · {fmtMinor(p.revenueMinorInt, currency)}
+                          {p.quantity} × ·{" "}
+                          {fmtMinor(p.revenueMinorInt, currency)}
                         </span>
                       </li>
                     ))}
@@ -151,9 +184,18 @@ function Dashboard() {
                   className="fq-card fq-edge-inner flex flex-wrap gap-x-8 gap-y-3 p-4 text-sm"
                 >
                   {[
-                    { label: t("COD pending", "COD পেন্ডিং"), value: `${fmtMinor(data.totals.codPendingMinorInt, currency)} · ${data.totals.codPendingCount}` },
-                    { label: t("Average order value", "গড় অর্ডার মূল্য"), value: fmtMinor(data.totals.aovMinorInt, currency) },
-                    { label: t("VAT collected", "ভ্যাট সংগৃহীত"), value: fmtMinor(data.totals.vatMinorInt, currency) },
+                    {
+                      label: t("COD pending", "COD পেন্ডিং"),
+                      value: `${fmtMinor(data.totals.codPendingMinorInt, currency)} · ${data.totals.codPendingCount}`,
+                    },
+                    {
+                      label: t("Average order value", "গড় অর্ডার মূল্য"),
+                      value: fmtMinor(data.totals.aovMinorInt, currency),
+                    },
+                    {
+                      label: t("VAT collected", "ভ্যাট সংগৃহীত"),
+                      value: fmtMinor(data.totals.vatMinorInt, currency),
+                    },
                     {
                       label: t("Cancelled / refunded", "বাতিল / রিফান্ড"),
                       value: `${data.totals.cancelledCount} / ${data.totals.refundedCount}`,

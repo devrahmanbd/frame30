@@ -28,7 +28,12 @@ export const tenancyRequestPurgeFn = createServerFn({ method: "POST" })
 export const tenancyCancelPurgeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ requestId: z.string().uuid(), reason: z.string().min(4).max(500) }).parse(d),
+    z
+      .object({
+        requestId: z.string().uuid(),
+        reason: z.string().min(4).max(500),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { cancelPurge } = await import("./tenancy.server");
@@ -37,7 +42,9 @@ export const tenancyCancelPurgeFn = createServerFn({ method: "POST" })
 
 export const tenancyExecutePurgeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ requestId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ requestId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { executePurge } = await import("./tenancy.server");
     return executePurge(context.supabase, context.userId, data.requestId);

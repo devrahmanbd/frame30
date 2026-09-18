@@ -9,7 +9,11 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { listRegistry, installRegistryTheme, registryPackage } from "@/lib/themes.server";
+import {
+  listRegistry,
+  installRegistryTheme,
+  registryPackage,
+} from "@/lib/themes.server";
 import { presetByKey } from "@/lib/theme-presets";
 import { catalogMeta } from "./catalog-meta";
 import {
@@ -69,7 +73,9 @@ function toInstalled(row: Row, latest: Map<string, string>): InstalledTheme {
     favourite: row.favourite,
     installedAt: row.installed_at,
     updateAvailable:
-      catalogueVersion && isNewerVersion(catalogueVersion, version) ? catalogueVersion : null,
+      catalogueVersion && isNewerVersion(catalogueVersion, version)
+        ? catalogueVersion
+        : null,
   };
 }
 
@@ -83,7 +89,10 @@ async function rows(db: Client, merchantId: string): Promise<Row[]> {
   return (data ?? []) as unknown as Row[];
 }
 
-async function favouriteKeys(db: Client, merchantId: string): Promise<Set<string>> {
+async function favouriteKeys(
+  db: Client,
+  merchantId: string,
+): Promise<Set<string>> {
   const { data, error } = await db
     .from("theme_catalog_favourites")
     .select("theme_key")
@@ -103,7 +112,9 @@ export async function loadThemesWorkspace(
     favouriteKeys(db, merchantId),
   ]);
   const latest = new Map(registry.map((entry) => [entry.key, entry.version]));
-  const installed = orderInstalled(installedRows.map((row) => toInstalled(row, latest)));
+  const installed = orderInstalled(
+    installedRows.map((row) => toInstalled(row, latest)),
+  );
   const byKey = new Map(installed.filter((t) => t.key).map((t) => [t.key!, t]));
 
   const catalogue: CatalogTheme[] = registry.map((entry) => {
@@ -132,7 +143,11 @@ export async function loadThemesWorkspace(
   return { installed, catalogue };
 }
 
-async function requireRow(db: Client, merchantId: string, themeId: string): Promise<Row> {
+async function requireRow(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<Row> {
   const { data, error } = await db
     .from("store_themes")
     .select(SELECT)
@@ -140,7 +155,8 @@ async function requireRow(db: Client, merchantId: string, themeId: string): Prom
     .eq("id", themeId)
     .maybeSingle();
   if (error) throw error;
-  if (!data) throw new ThemeDeskError("theme.missing", "That theme is not installed.");
+  if (!data)
+    throw new ThemeDeskError("theme.missing", "That theme is not installed.");
   return data as unknown as Row;
 }
 
@@ -160,8 +176,14 @@ export async function installCatalogTheme(
 ) {
   const registry = await listRegistry(db);
   const entry = registry.find((theme) => theme.key === key);
-  if (!entry) throw new ThemeDeskError("theme.unknown", "That theme is not in the catalogue.");
-  const existing = (await rows(db, merchantId)).find((row) => row.source_listing_slug === key);
+  if (!entry)
+    throw new ThemeDeskError(
+      "theme.unknown",
+      "That theme is not in the catalogue.",
+    );
+  const existing = (await rows(db, merchantId)).find(
+    (row) => row.source_listing_slug === key,
+  );
   if (existing) return { id: existing.id, alreadyInstalled: true };
 
   const pkg = registryPackage(key);
@@ -180,7 +202,10 @@ export async function installCatalogTheme(
     })
     .select("id")
     .single();
-  if (error || !data) throw error ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+  if (error || !data)
+    throw (
+      error ?? new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
   const themeId = (data as { id: string }).id;
 
   const { data: version, error: versionError } = await db
@@ -201,7 +226,10 @@ export async function installCatalogTheme(
     .single();
   if (versionError || !version) {
     await db.from("store_themes").delete().eq("id", themeId);
-    throw versionError ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+    throw (
+      versionError ??
+      new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
   }
 
   const { error: draftError } = await db.from("theme_drafts").insert({
@@ -237,7 +265,10 @@ export async function installCatalogTheme(
     .single();
   if (ledgerError || !ledger) {
     await db.from("store_themes").delete().eq("id", themeId);
-    throw ledgerError ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+    throw (
+      ledgerError ??
+      new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
   }
 
   await db
@@ -296,7 +327,12 @@ export async function activateTheme(
       // Refresh-only, never overwrite: overwrite=true here silently destroyed
       // merchant customizations on every activation (Sept 2026). A present
       // draft wins; absent drafts get seeded from the registry.
-      await installRegistryTheme(db, merchantId, row.source_listing_slug, false);
+      await installRegistryTheme(
+        db,
+        merchantId,
+        row.source_listing_slug,
+        false,
+      );
       applied = true;
     } catch {
       applied = false;
@@ -313,7 +349,10 @@ export async function deleteTheme(
 ) {
   const row = await requireRow(db, merchantId, themeId);
   if (row.is_active) {
-    throw new ThemeDeskError("theme.active", "Activate another theme before deleting this one.");
+    throw new ThemeDeskError(
+      "theme.active",
+      "Activate another theme before deleting this one.",
+    );
   }
   const { error } = await db
     .from("store_themes")
@@ -342,7 +381,8 @@ export async function setThemeFlags(
   const update: Record<string, unknown> = {};
   if (patch.autoUpdate !== undefined) update.auto_update = patch.autoUpdate;
   if (patch.favourite !== undefined) update.favourite = patch.favourite;
-  if (patch.name !== undefined) update.name = patch.name.trim().slice(0, 80) || "Untitled theme";
+  if (patch.name !== undefined)
+    update.name = patch.name.trim().slice(0, 80) || "Untitled theme";
   if (!Object.keys(update).length) return { id: themeId };
   const { error } = await db
     .from("store_themes")
@@ -363,7 +403,10 @@ export async function setCatalogFavourite(
   if (on) {
     const { error } = await db
       .from("theme_catalog_favourites")
-      .upsert({ merchant_id: merchantId, theme_key: key }, { onConflict: "merchant_id,theme_key" });
+      .upsert(
+        { merchant_id: merchantId, theme_key: key },
+        { onConflict: "merchant_id,theme_key" },
+      );
     if (error) throw error;
   } else {
     const { error } = await db

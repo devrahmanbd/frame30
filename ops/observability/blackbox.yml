@@ -21,7 +21,7 @@ modules:
       method: POST
       headers:
         Content-Type: application/json
-      body: '{}'
+      body: "{}"
       valid_status_codes: [200, 400, 401]
 
   tcp_connect:

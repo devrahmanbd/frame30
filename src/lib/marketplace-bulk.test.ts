@@ -5,7 +5,10 @@
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { metricRecorder, allowAllRateLimits } from "./__fixtures__/test-doubles";
+import {
+  metricRecorder,
+  allowAllRateLimits,
+} from "./__fixtures__/test-doubles";
 
 const rec = vi.hoisted(() => ({ holder: null as any }));
 const recorder = metricRecorder();
@@ -25,11 +28,28 @@ function bulkDb() {
   return fakeDb({
     tables: {
       marketplace_installs: [
-        { id: W1, kind: "widget", listing_slug: "whatsapp-chat", status: "paused", merchant_id: MERCHANT },
-        { id: W2, kind: "widget", listing_slug: "loyalty-lite", status: "installed", merchant_id: MERCHANT },
+        {
+          id: W1,
+          kind: "widget",
+          listing_slug: "whatsapp-chat",
+          status: "paused",
+          merchant_id: MERCHANT,
+        },
+        {
+          id: W2,
+          kind: "widget",
+          listing_slug: "loyalty-lite",
+          status: "installed",
+          merchant_id: MERCHANT,
+        },
       ],
       plugin_state: [
-        { id: "p-1", merchant_id: MERCHANT, plugin_id: "whatsapp-chat", enabled: false },
+        {
+          id: "p-1",
+          merchant_id: MERCHANT,
+          plugin_id: "whatsapp-chat",
+          enabled: false,
+        },
       ],
       activity_log: [],
     },
@@ -41,7 +61,13 @@ beforeEach(() => recorder.reset());
 describe("bulkInstallStatus", () => {
   it("enables paused rows and reports each result", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(db.asClient(), MERCHANT, ACTOR, [W1, W2], "enable");
+    const out: any = await bulkInstallStatus(
+      db.asClient(),
+      MERCHANT,
+      ACTOR,
+      [W1, W2],
+      "enable",
+    );
     expect(out.results).toHaveLength(2);
     expect(out.results.every((r: any) => r.ok)).toBe(true);
     const rows = db.rows("marketplace_installs");
@@ -50,9 +76,17 @@ describe("bulkInstallStatus", () => {
 
   it("pauses installed rows", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(db.asClient(), MERCHANT, ACTOR, [W2], "pause");
+    const out: any = await bulkInstallStatus(
+      db.asClient(),
+      MERCHANT,
+      ACTOR,
+      [W2],
+      "pause",
+    );
     expect(out.results[0]).toMatchObject({ installId: W2, ok: true });
-    expect(db.rows("marketplace_installs").find((r) => r.id === W2)!.status).toBe("paused");
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === W2)!.status,
+    ).toBe("paused");
   });
 
   it("isolates failures per row instead of aborting the batch", async () => {
@@ -80,9 +114,17 @@ describe("bulkInstallStatus", () => {
 
   it("deletes widget installs end to end", async () => {
     const db = bulkDb();
-    const out: any = await bulkInstallStatus(db.asClient(), MERCHANT, ACTOR, [W1], "delete");
+    const out: any = await bulkInstallStatus(
+      db.asClient(),
+      MERCHANT,
+      ACTOR,
+      [W1],
+      "delete",
+    );
     expect(out.results[0].ok).toBe(true);
-    expect(db.rows("marketplace_installs").find((r) => r.id === W1)!.status).toBe("removed");
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === W1)!.status,
+    ).toBe("removed");
     expect(db.rows("plugin_state")).toHaveLength(0);
   });
 });

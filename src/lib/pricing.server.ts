@@ -41,9 +41,19 @@ export type Totals = {
   freeShippingThresholdMinor: number | null;
   /** How much more the shopper must spend to earn free shipping. Server math. */
   freeShippingRemainingMinor: number;
-  coupon: { id: string; code: string; discountMinor: number; freeShipping: boolean } | null;
+  coupon: {
+    id: string;
+    code: string;
+    discountMinor: number;
+    freeShipping: boolean;
+  } | null;
   /** Every coupon that survived the stack rules, in application order. */
-  coupons: { id: string; code: string; discountMinor: number; freeShipping: boolean }[];
+  coupons: {
+    id: string;
+    code: string;
+    discountMinor: number;
+    freeShipping: boolean;
+  }[];
   lines: {
     variantId: string;
     productTitle: string;
@@ -76,7 +86,9 @@ export async function priceCart(
 
   const { data: settings } = await db
     .from("merchant_settings")
-    .select("cod_enabled, mfs_enabled, cod_surcharge_minor_int, shipping_flat_minor_int, free_shipping_threshold_minor_int, prices_include_vat")
+    .select(
+      "cod_enabled, mfs_enabled, cod_surcharge_minor_int, shipping_flat_minor_int, free_shipping_threshold_minor_int, prices_include_vat",
+    )
     .eq("merchant_id", merchant.id)
     .maybeSingle();
 
@@ -86,8 +98,12 @@ export async function priceCart(
   // Which online rails this merchant has actually taken live. A rail without a
   // live credential is never offered — quoting it would take an order the
   // merchant has no way to capture.
-  const { data: liveRails } = await db.rpc("storefront_payment_methods", { _slug: slug });
-  const configured = (liveRails ?? []).map((r) => credentialKeyToMethod(r.provider_key));
+  const { data: liveRails } = await db.rpc("storefront_payment_methods", {
+    _slug: slug,
+  });
+  const configured = (liveRails ?? []).map((r) =>
+    credentialKeyToMethod(r.provider_key),
+  );
   const availability = { codEnabled, onlineEnabled: mfsEnabled, configured };
   const gate = assertMethodAllowed(paymentMethod, availability);
   if (!gate.ok) {
@@ -104,19 +120,29 @@ export async function priceCart(
 
   const { data: variants, error: vErr } = await db
     .from("product_variants")
-    .select("id, name, sku, price_amount_minor_int, stock_quantity, currency_code, products(title, status, merchant_id)")
+    .select(
+      "id, name, sku, price_amount_minor_int, stock_quantity, currency_code, products(title, status, merchant_id)",
+    )
     .in("id", ids);
   if (vErr) throw vErr;
 
   const lines: Totals["lines"] = [];
   for (const line of cart) {
     const v = variants?.find((x) => x.id === line.variantId);
-    const product = one<{ title: string; status: string; merchant_id: string }>(v?.products);
-    if (!v || !product || product.merchant_id !== merchant.id || product.status !== "active") {
+    const product = one<{ title: string; status: string; merchant_id: string }>(
+      v?.products,
+    );
+    if (
+      !v ||
+      !product ||
+      product.merchant_id !== merchant.id ||
+      product.status !== "active"
+    ) {
       throw new Error("A product in your cart is no longer available");
     }
     const quantity = Math.max(1, Math.floor(line.quantity));
-    if (v.stock_quantity < quantity) throw new Error(`Not enough stock for ${product.title}`);
+    if (v.stock_quantity < quantity)
+      throw new Error(`Not enough stock for ${product.title}`);
     lines.push({
       variantId: v.id,
       productTitle: product.title,
@@ -135,20 +161,25 @@ export async function priceCart(
   const threshold = settings?.free_shipping_threshold_minor_int
     ? Number(settings.free_shipping_threshold_minor_int)
     : null;
-  let shippingMinor = threshold !== null && subtotalMinor >= threshold ? 0 : flat;
+  let shippingMinor =
+    threshold !== null && subtotalMinor >= threshold ? 0 : flat;
 
   let discountMinor = 0;
   let coupon: Totals["coupon"] = null;
   let coupons: Totals["coupons"] = [];
   if (couponCode && couponCode.trim()) {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { validateCoupons } = await import("./coupons.server");
     const result = await validateCoupons(
       supabaseAdmin,
       merchant.id,
       couponCode.split(","),
       subtotalMinor,
-      lines.map((l) => ({ unitPriceMinor: l.unitPriceMinor, quantity: l.quantity })),
+      lines.map((l) => ({
+        unitPriceMinor: l.unitPriceMinor,
+        quantity: l.quantity,
+      })),
       customerKey,
     );
     discountMinor = result.discountMinor;
@@ -162,18 +193,30 @@ export async function priceCart(
     coupon = coupons[0] ?? null;
   }
   const codSurchargeMinor =
-    paymentMethod === "cod" ? Number(settings?.cod_surcharge_minor_int ?? 0) : 0;
+    paymentMethod === "cod"
+      ? Number(settings?.cod_surcharge_minor_int ?? 0)
+      : 0;
 
   // VAT comes from the legal-year table via `vat_resolve`, never a constant.
-  const rate = await resolveVatRate(db, { country: "BD", category: "standard" });
+  const rate = await resolveVatRate(db, {
+    country: "BD",
+    category: "standard",
+  });
   const currency = merchant.currency_code;
-  const net = clampAtZero(sub(money(subtotalMinor, currency), money(discountMinor, currency)));
-  const taxableMoney = money(net.minor + shippingMinor + codSurchargeMinor, currency);
+  const net = clampAtZero(
+    sub(money(subtotalMinor, currency), money(discountMinor, currency)),
+  );
+  const taxableMoney = money(
+    net.minor + shippingMinor + codSurchargeMinor,
+    currency,
+  );
 
   // Display parity: when the merchant lists VAT-inclusive prices, VAT is
   // extracted from the amount the shopper already saw instead of added on top,
   // so the stored total always equals the displayed total.
-  const vatMode: VatMode = settings?.prices_include_vat ? "inclusive" : "exclusive";
+  const vatMode: VatMode = settings?.prices_include_vat
+    ? "inclusive"
+    : "exclusive";
   const breakdown = vatBreakdown(taxableMoney, rate, vatMode);
 
   // Per-line VAT reconciles to the invoice VAT paisa for paisa.
@@ -200,12 +243,27 @@ export async function priceCart(
       totalMinor: breakdown.gross.minor,
       freeShippingThresholdMinor: threshold,
       freeShippingRemainingMinor:
-        threshold === null ? 0 : Math.max(0, threshold - clampAtZero(sub(money(subtotalMinor, currency), money(discountMinor, currency))).minor),
+        threshold === null
+          ? 0
+          : Math.max(
+              0,
+              threshold -
+                clampAtZero(
+                  sub(
+                    money(subtotalMinor, currency),
+                    money(discountMinor, currency),
+                  ),
+                ).minor,
+            ),
       coupon,
       coupons,
       lines,
     } satisfies Totals,
-    settings: { codEnabled, mfsEnabled, methods, priceDisplayInclusive: vatMode === "inclusive" },
+    settings: {
+      codEnabled,
+      mfsEnabled,
+      methods,
+      priceDisplayInclusive: vatMode === "inclusive",
+    },
   };
 }
-

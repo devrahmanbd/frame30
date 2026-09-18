@@ -63,7 +63,9 @@ const NOW = new Date("2026-06-01T00:00:00.000Z");
 const DAY = 86_400_000;
 const daysAgo = (n: number) => new Date(NOW.getTime() - n * DAY).toISOString();
 
-function node(partial: Partial<ContentNode> & Pick<ContentNode, "id" | "path">): ContentNode {
+function node(
+  partial: Partial<ContentNode> & Pick<ContentNode, "id" | "path">,
+): ContentNode {
   return {
     type: "article",
     slug: partial.path.split("/").pop() ?? partial.id,
@@ -89,9 +91,13 @@ describe("crawl policy", () => {
     expect(CRAWL_POLICY.perHostDelayMs).toBeGreaterThanOrEqual(1_000);
     expect(CRAWL_POLICY.externalTimeoutMs).toBeLessThanOrEqual(10_000);
     expect(CRAWL_POLICY.maxExternalChecksPerRun).toBeLessThanOrEqual(500);
-    expect(CRAWL_POLICY.runBudgetMs).toBeLessThanOrEqual(CRAWL_POLICY.sweepBudgetMs);
+    expect(CRAWL_POLICY.runBudgetMs).toBeLessThanOrEqual(
+      CRAWL_POLICY.sweepBudgetMs,
+    );
     expect(CRAWL_POLICY.maxAttempts).toBeGreaterThanOrEqual(2);
-    expect(CRAWL_POLICY.backoffCapMs).toBeGreaterThan(CRAWL_POLICY.backoffBaseMs);
+    expect(CRAWL_POLICY.backoffCapMs).toBeGreaterThan(
+      CRAWL_POLICY.backoffBaseMs,
+    );
     expect(MAX_REDIRECT_HOPS).toBe(CRAWL_POLICY.maxRedirectHops);
   });
 
@@ -120,7 +126,9 @@ describe("crawl policy", () => {
   it("honours Retry-After and never waits longer than the cap", () => {
     const base = Date.parse("2026-06-01T00:00:00.000Z");
     expect(parseRetryAfter("5", base)).toBe(5_000);
-    expect(parseRetryAfter(new Date(base + 30_000).toUTCString(), base)).toBeGreaterThan(0);
+    expect(
+      parseRetryAfter(new Date(base + 30_000).toUTCString(), base),
+    ).toBeGreaterThan(0);
     expect(parseRetryAfter("not-a-number", base)).toBeNull();
     expect(parseRetryAfter(null, base)).toBeNull();
 
@@ -129,7 +137,9 @@ describe("crawl policy", () => {
       expect(backoffMs(attempt)).toBeGreaterThan(0);
     }
     // A hostile Retry-After cannot park a worker for an hour.
-    expect(backoffMs(1, 3_600_000)).toBeLessThanOrEqual(CRAWL_POLICY.backoffCapMs);
+    expect(backoffMs(1, 3_600_000)).toBeLessThanOrEqual(
+      CRAWL_POLICY.backoffCapMs,
+    );
     expect(backoffMs(3)).toBeGreaterThanOrEqual(backoffMs(1));
   });
 });
@@ -146,7 +156,11 @@ describe("link extraction", () => {
     expect(paths).toContain("/store/x/p/one");
     expect(paths).toContain("/store/x/p/two");
     expect(links.find((l) => l.path === "/store/x/p/two")?.nofollow).toBe(true);
-    expect(links.filter((l) => l.href === "/store/x/p/one" && l.anchorText === "One")).toHaveLength(1);
+    expect(
+      links.filter(
+        (l) => l.href === "/store/x/p/one" && l.anchorText === "One",
+      ),
+    ).toHaveLength(1);
     expect(links.some((l) => l.kind === "external")).toBe(true);
   });
 
@@ -161,7 +175,10 @@ describe("link extraction", () => {
   });
 
   it("caps how much work one pathological body can cause", () => {
-    const body = Array.from({ length: 900 }, (_, i) => `<a href="/p/${i}">n${i}</a>`).join("");
+    const body = Array.from(
+      { length: 900 },
+      (_, i) => `<a href="/p/${i}">n${i}</a>`,
+    ).join("");
     expect(extractLinks(body).length).toBe(CRAWL_POLICY.maxLinksPerNode);
     expect(extractLinks(body, 10)).toHaveLength(10);
     expect(extractLinks("")).toEqual([]);
@@ -175,9 +192,13 @@ describe("link extraction", () => {
     expect(classifyHref("mailto:a@b.co").kind).toBe("mailto");
     expect(classifyHref("tel:+8801").kind).toBe("tel");
     expect(classifyHref("//cdn.example.com/x").kind).toBe("external");
-    expect(classifyHref("https://other.example/x", "https://shop.example").kind).toBe("external");
+    expect(
+      classifyHref("https://other.example/x", "https://shop.example").kind,
+    ).toBe("external");
     // Same host with an origin supplied is internal, and keeps its query.
-    expect(classifyHref("https://shop.example/a?b=1", "https://shop.example")).toEqual({
+    expect(
+      classifyHref("https://shop.example/a?b=1", "https://shop.example"),
+    ).toEqual({
       kind: "internal",
       path: "/a?b=1",
     });
@@ -192,7 +213,10 @@ describe("link extraction", () => {
 });
 
 describe("internal resolution", () => {
-  const nodes = indexNodes([node({ id: "a", path: "/store/s/p/a" }), node({ id: "b", path: "/store/s/p/b" })]);
+  const nodes = indexNodes([
+    node({ id: "a", path: "/store/s/p/a" }),
+    node({ id: "b", path: "/store/s/p/b" }),
+  ]);
 
   const resolve = (path: string, rows: RedirectRow[]) =>
     resolveInternal(path, nodes, indexRedirects(rows));
@@ -200,7 +224,9 @@ describe("internal resolution", () => {
   it("reports a direct hit, a single redirect and a chain distinctly", () => {
     expect(resolve("/store/s/p/a", []).status).toBe("ok");
 
-    const one = resolve("/old", [{ from: "/old", to: "/store/s/p/a", status: 301 }]);
+    const one = resolve("/old", [
+      { from: "/old", to: "/store/s/p/a", status: 301 },
+    ]);
     expect(one.status).toBe("redirect");
     expect(one.hops).toBe(1);
     expect(one.entity?.id).toBe("a");
@@ -257,12 +283,15 @@ describe("link graph findings", () => {
              <a href="javascript:void(0)">bad</a>`,
     });
     const target = node({ id: "t", type: "product", path: "/store/s/p/real" });
-    const graph = buildLinkGraph([home, source, target], [
-      { from: "/chain-start", to: "/chain-mid", status: 301 },
-      { from: "/chain-mid", to: "/store/s/p/real", status: 301 },
-      { from: "/loop-a", to: "/loop-b", status: 301 },
-      { from: "/loop-b", to: "/loop-a", status: 301 },
-    ]);
+    const graph = buildLinkGraph(
+      [home, source, target],
+      [
+        { from: "/chain-start", to: "/chain-mid", status: 301 },
+        { from: "/chain-mid", to: "/store/s/p/real", status: 301 },
+        { from: "/loop-a", to: "/loop-b", status: 301 },
+        { from: "/loop-b", to: "/loop-a", status: 301 },
+      ],
+    );
 
     const codes = graph.findings.map((f) => f.code);
     expect(codes).toContain("link.broken");
@@ -277,11 +306,18 @@ describe("link graph findings", () => {
     const many = node({
       id: "ext",
       path: "/store/s/blog/ext",
-      body: Array.from({ length: 400 }, (_, i) => `<a href="https://h${i % 7}.example/p${i}">x</a>`).join(""),
+      body: Array.from(
+        { length: 400 },
+        (_, i) => `<a href="https://h${i % 7}.example/p${i}">x</a>`,
+      ).join(""),
     });
     const graph = buildLinkGraph([many], []);
-    expect(graph.externalTargets.length).toBeLessThanOrEqual(CRAWL_POLICY.maxExternalChecksPerRun);
-    expect(new Set(graph.externalTargets).size).toBe(graph.externalTargets.length);
+    expect(graph.externalTargets.length).toBeLessThanOrEqual(
+      CRAWL_POLICY.maxExternalChecksPerRun,
+    );
+    expect(new Set(graph.externalTargets).size).toBe(
+      graph.externalTargets.length,
+    );
     expect(graph.externalHosts[0]!.count).toBeGreaterThan(0);
     // Hosts come back most-linked first so the desk shows the real dependency.
     const counts = graph.externalHosts.map((h) => h.count);
@@ -292,7 +328,10 @@ describe("link graph findings", () => {
     const big = node({
       id: "big",
       path: "/store/s/blog/big",
-      body: Array.from({ length: 50 }, (_, i) => `<a href="/p/${i}">n</a>`).join(""),
+      body: Array.from(
+        { length: 50 },
+        (_, i) => `<a href="/p/${i}">n</a>`,
+      ).join(""),
     });
     const graph = buildLinkGraph([big], [], { maxEdges: 10 });
     expect(graph.edges).toHaveLength(10);
@@ -302,11 +341,34 @@ describe("link graph findings", () => {
 
 describe("orphans", () => {
   it("flags only published, indexable, unlinked pages — and never the home page", () => {
-    const home = node({ id: "home", type: "page", path: "/", body: `<a href="/store/s/p/linked">go</a>` });
-    const linked = node({ id: "linked", type: "product", path: "/store/s/p/linked" });
-    const orphan = node({ id: "orphan", type: "product", path: "/store/s/p/orphan" });
-    const draft = node({ id: "draft", type: "article", path: "/store/s/blog/draft", publishedAt: null });
-    const hidden = node({ id: "hidden", type: "page", path: "/store/s/pages/hidden", indexable: false });
+    const home = node({
+      id: "home",
+      type: "page",
+      path: "/",
+      body: `<a href="/store/s/p/linked">go</a>`,
+    });
+    const linked = node({
+      id: "linked",
+      type: "product",
+      path: "/store/s/p/linked",
+    });
+    const orphan = node({
+      id: "orphan",
+      type: "product",
+      path: "/store/s/p/orphan",
+    });
+    const draft = node({
+      id: "draft",
+      type: "article",
+      path: "/store/s/blog/draft",
+      publishedAt: null,
+    });
+    const hidden = node({
+      id: "hidden",
+      type: "page",
+      path: "/store/s/pages/hidden",
+      indexable: false,
+    });
 
     const nodes = [home, linked, orphan, draft, hidden];
     const { edges } = buildLinkGraph(nodes, []);
@@ -321,7 +383,11 @@ describe("orphans", () => {
       path: "/store/s/blog/self",
       body: `<a href="/store/s/blog/self">me</a>`,
     });
-    const nofollowed = node({ id: "nf", type: "product", path: "/store/s/p/nf" });
+    const nofollowed = node({
+      id: "nf",
+      type: "product",
+      path: "/store/s/p/nf",
+    });
     const linker = node({
       id: "linker",
       path: "/store/s/blog/linker",
@@ -330,7 +396,9 @@ describe("orphans", () => {
     // `linker` is linked by nobody, so it is an orphan too — that is correct.
     const nodes = [selfLinked, nofollowed, linker];
     const { edges } = buildLinkGraph(nodes, []);
-    const ids = orphanFindings(nodes, edges).map((f) => f.entityId).sort();
+    const ids = orphanFindings(nodes, edges)
+      .map((f) => f.entityId)
+      .sort();
     expect(ids).toEqual(["linker", "nf"]);
   });
 });
@@ -341,7 +409,12 @@ describe("cannibalisation, thin and stale", () => {
       node({ id: "1", path: "/store/s/blog/a", focusKeyword: "Eid Panjabi" }),
       node({ id: "2", path: "/store/s/blog/b", focusKeyword: "eid  panjabi!" }),
       node({ id: "3", path: "/store/s/blog/c", focusKeyword: "winter shawl" }),
-      node({ id: "4", path: "/store/s/blog/d", focusKeyword: "Eid Panjabi", publishedAt: null }),
+      node({
+        id: "4",
+        path: "/store/s/blog/d",
+        focusKeyword: "Eid Panjabi",
+        publishedAt: null,
+      }),
     ];
     const findings = cannibalisationFindings(nodes);
     expect(findings).toHaveLength(1);
@@ -351,15 +424,34 @@ describe("cannibalisation, thin and stale", () => {
 
   it("applies a per-kind word floor", () => {
     const nodes = [
-      node({ id: "a", type: "article", path: "/store/s/blog/a", wordCount: THIN_CONTENT_FLOOR.article - 1 }),
-      node({ id: "p", type: "product", path: "/store/s/p/p", wordCount: THIN_CONTENT_FLOOR.product + 1 }),
+      node({
+        id: "a",
+        type: "article",
+        path: "/store/s/blog/a",
+        wordCount: THIN_CONTENT_FLOOR.article - 1,
+      }),
+      node({
+        id: "p",
+        type: "product",
+        path: "/store/s/p/p",
+        wordCount: THIN_CONTENT_FLOOR.product + 1,
+      }),
       node({ id: "c", type: "collection", path: "/store/s/c/c", wordCount: 0 }),
     ];
-    expect(thinContentFindings(nodes).map((f) => f.entityId).sort()).toEqual(["a", "c"]);
+    expect(
+      thinContentFindings(nodes)
+        .map((f) => f.entityId)
+        .sort(),
+    ).toEqual(["a", "c"]);
   });
 
   it("only calls content stale once it is old enough to judge", () => {
-    const fresh = node({ id: "fresh", path: "/f", updatedAt: daysAgo(10), publishedAt: daysAgo(400) });
+    const fresh = node({
+      id: "fresh",
+      path: "/f",
+      updatedAt: daysAgo(10),
+      publishedAt: daysAgo(400),
+    });
     const newborn = node({
       id: "new",
       path: "/n",
@@ -372,7 +464,9 @@ describe("cannibalisation, thin and stale", () => {
       updatedAt: daysAgo(STALE_AFTER_DAYS + 1),
       publishedAt: daysAgo(STALE_AFTER_DAYS + 1),
     });
-    const ids = staleContentFindings([fresh, newborn, stale], NOW).map((f) => f.entityId);
+    const ids = staleContentFindings([fresh, newborn, stale], NOW).map(
+      (f) => f.entityId,
+    );
     expect(ids).toEqual(["stale"]);
   });
 });
@@ -405,8 +499,12 @@ describe("schema audit", () => {
       hasAvailability: false,
       hasSku: false,
     });
-    const missing = schemaReport(product).find((r) => r.type === "Product")!.missing;
-    expect(missing).toEqual(expect.arrayContaining(["offers.price", "offers.availability", "sku"]));
+    const missing = schemaReport(product).find(
+      (r) => r.type === "Product",
+    )!.missing;
+    expect(missing).toEqual(
+      expect.arrayContaining(["offers.price", "offers.availability", "sku"]),
+    );
   });
 
   it("treats a duplicated graph as an error, not a warning", () => {
@@ -424,8 +522,20 @@ describe("schema audit", () => {
   });
 
   it("skips drafts and noindex pages entirely", () => {
-    const draft = node({ id: "d", type: "article", path: "/d", publishedAt: null, hasImage: false });
-    const hidden = node({ id: "h", type: "article", path: "/h", indexable: false, hasImage: false });
+    const draft = node({
+      id: "d",
+      type: "article",
+      path: "/d",
+      publishedAt: null,
+      hasImage: false,
+    });
+    const hidden = node({
+      id: "h",
+      type: "article",
+      path: "/h",
+      indexable: false,
+      hasImage: false,
+    });
     expect(schemaFindings([draft, hidden])).toEqual([]);
   });
 });
@@ -443,7 +553,9 @@ describe("finding identity", () => {
     expect(fingerprintOf("link.broken", ["Article", "ID-1", "/A"])).toBe(
       fingerprintOf("link.broken", ["article", "id-1", "/a"]),
     );
-    expect(fingerprintOf("link.broken", ["a"])).not.toBe(fingerprintOf("link.chain", ["a"]));
+    expect(fingerprintOf("link.broken", ["a"])).not.toBe(
+      fingerprintOf("link.chain", ["a"]),
+    );
     expect(fingerprintOf("content.thin", ["a", null, undefined])).toBe(
       fingerprintOf("content.thin", ["a", "", ""]),
     );
@@ -451,8 +563,18 @@ describe("finding identity", () => {
 
   it("survives a rescan unchanged, so an ignored finding stays ignored", () => {
     const nodes = [
-      node({ id: "src", path: "/store/s/blog/src", body: `<a href="/gone">x</a>`, wordCount: 10 }),
-      node({ id: "orph", type: "product", path: "/store/s/p/orph", wordCount: 5 }),
+      node({
+        id: "src",
+        path: "/store/s/blog/src",
+        body: `<a href="/gone">x</a>`,
+        wordCount: 10,
+      }),
+      node({
+        id: "orph",
+        type: "product",
+        path: "/store/s/p/orph",
+        wordCount: 5,
+      }),
     ];
     const first = analyseContentHealth(nodes, [], { now: NOW });
     // Word counts and timestamps move between scans; identities must not.
@@ -461,7 +583,9 @@ describe("finding identity", () => {
       [],
       { now: new Date(NOW.getTime() + 3 * DAY) },
     );
-    expect(later.findings.map((f) => f.fingerprint)).toEqual(first.findings.map((f) => f.fingerprint));
+    expect(later.findings.map((f) => f.fingerprint)).toEqual(
+      first.findings.map((f) => f.fingerprint),
+    );
   });
 });
 
@@ -498,10 +622,14 @@ describe("report composition", () => {
     const b = analyseContentHealth([...nodes].reverse(), [], { now: NOW });
 
     // Row order out of the database must not change the report.
-    expect(b.findings.map((f) => f.fingerprint)).toEqual(a.findings.map((f) => f.fingerprint));
+    expect(b.findings.map((f) => f.fingerprint)).toEqual(
+      a.findings.map((f) => f.fingerprint),
+    );
     expect(a.counts).toEqual(countByCode(a.findings));
     expect(a.bySeverity).toEqual(countBySeverity(a.findings));
-    expect(Object.values(a.counts).reduce((x, y) => x + y, 0)).toBe(a.findings.length);
+    expect(Object.values(a.counts).reduce((x, y) => x + y, 0)).toBe(
+      a.findings.length,
+    );
     expect(a.scanned.article + a.scanned.page).toBe(nodes.length);
 
     const codes = new Set(a.findings.map((f) => f.code));
@@ -519,10 +647,17 @@ describe("report composition", () => {
       { now: NOW },
     );
     const broken = analyseContentHealth(nodes, [], { now: NOW });
-    expect(healthScore({ bySeverity: clean.bySeverity, scanned: clean.scanned })).toBeGreaterThan(
+    expect(
+      healthScore({ bySeverity: clean.bySeverity, scanned: clean.scanned }),
+    ).toBeGreaterThan(
       healthScore({ bySeverity: broken.bySeverity, scanned: broken.scanned }),
     );
-    expect(healthScore({ bySeverity: { error: 0, warning: 0, notice: 0 }, scanned: clean.scanned })).toBe(100);
+    expect(
+      healthScore({
+        bySeverity: { error: 0, warning: 0, notice: 0 },
+        scanned: clean.scanned,
+      }),
+    ).toBe(100);
     // An empty site is not a failing site.
     expect(
       healthScore({
@@ -543,13 +678,24 @@ describe("internal link suggestions", () => {
       focusKeyword: "eid panjabi",
       tags: ["eid"],
     }),
-    node({ id: "shawl", type: "product", path: "/store/s/p/shawl", title: "Winter Shawl", tags: ["winter"] }),
+    node({
+      id: "shawl",
+      type: "product",
+      path: "/store/s/p/shawl",
+      title: "Winter Shawl",
+      tags: ["winter"],
+    }),
     node({ id: "self", path: "/store/s/blog/draft", title: "Draft" }),
   ];
 
   it("ranks a focus-keyword match above a weak term match, deterministically", () => {
     const out = suggestInternalLinks(
-      { id: "self", title: "Best Eid Panjabi picks", body: "<p>A guide to winter styles.</p>", tags: ["eid"] },
+      {
+        id: "self",
+        title: "Best Eid Panjabi picks",
+        body: "<p>A guide to winter styles.</p>",
+        tags: ["eid"],
+      },
       candidates,
       { now: NOW },
     );

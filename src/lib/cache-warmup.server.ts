@@ -40,12 +40,22 @@ export type WarmupOptions = {
 const DEFAULT_WARMUP_TTL = 3600; // 1 hour
 
 /** Helper to write raw cache key directly to Redis L2 with TTL */
-async function setWarmKey(key: string, value: unknown, ttlSeconds = DEFAULT_WARMUP_TTL): Promise<boolean> {
+async function setWarmKey(
+  key: string,
+  value: unknown,
+  ttlSeconds = DEFAULT_WARMUP_TTL,
+): Promise<boolean> {
   if (!redisConfigured()) return false;
   try {
     const payload = JSON.stringify({ v: value });
     const fullKey = redisKey("cache", key);
-    const res = await redisCommand(["SET", fullKey, payload, "PX", ttlSeconds * 1000]);
+    const res = await redisCommand([
+      "SET",
+      fullKey,
+      payload,
+      "PX",
+      ttlSeconds * 1000,
+    ]);
     return res.ok;
   } catch {
     return false;
@@ -53,7 +63,9 @@ async function setWarmKey(key: string, value: unknown, ttlSeconds = DEFAULT_WARM
 }
 
 /** 1. Pre-warm theme presets and blueprints */
-export async function warmThemePresets(ttl = DEFAULT_WARMUP_TTL): Promise<WarmupItemResult> {
+export async function warmThemePresets(
+  ttl = DEFAULT_WARMUP_TTL,
+): Promise<WarmupItemResult> {
   const start = Date.now();
   try {
     const { THEME_PRESETS } = await import("./theme-presets");
@@ -62,7 +74,8 @@ export async function warmThemePresets(ttl = DEFAULT_WARMUP_TTL): Promise<Warmup
     let count = 0;
     // Cache all presets aggregate
     if (await setWarmKey("theme:presets:all", THEME_PRESETS, ttl)) count++;
-    if (await setWarmKey("theme:blueprints:all", BLUEPRINT_PRESETS, ttl)) count++;
+    if (await setWarmKey("theme:blueprints:all", BLUEPRINT_PRESETS, ttl))
+      count++;
 
     // Cache individual theme presets by key
     for (const [key, preset] of Object.entries(THEME_PRESETS)) {
@@ -95,7 +108,8 @@ export async function warmMerchantMetadata(
 ): Promise<WarmupItemResult> {
   const start = Date.now();
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data: merchants, error } = await supabaseAdmin
       .from("merchants")
       .select("id, name, slug, status, plan, created_at")
@@ -108,7 +122,13 @@ export async function warmMerchantMetadata(
     let count = 0;
     for (const m of merchants ?? []) {
       // Warm slug lookup cache used by support agent and storefront
-      if (await setWarmKey(`support:merchant:${m.slug}`, { id: m.id, name: m.name, slug: m.slug }, ttl)) {
+      if (
+        await setWarmKey(
+          `support:merchant:${m.slug}`,
+          { id: m.id, name: m.name, slug: m.slug },
+          ttl,
+        )
+      ) {
         count++;
       }
       if (await setWarmKey(`merchant:slug:${m.slug}`, m, ttl)) {
@@ -137,7 +157,9 @@ export async function warmMerchantMetadata(
 }
 
 /** 3. Pre-warm standard FX currency exchange rates */
-export async function warmFxRates(ttl = DEFAULT_WARMUP_TTL): Promise<WarmupItemResult> {
+export async function warmFxRates(
+  ttl = DEFAULT_WARMUP_TTL,
+): Promise<WarmupItemResult> {
   const start = Date.now();
   try {
     // Standard baseline FX conversion table (BDT base)
@@ -177,10 +199,13 @@ export async function warmFxRates(ttl = DEFAULT_WARMUP_TTL): Promise<WarmupItemR
 }
 
 /** 4. Pre-warm platform dynamic configuration */
-export async function warmPlatformDynamicConfig(ttl = DEFAULT_WARMUP_TTL): Promise<WarmupItemResult> {
+export async function warmPlatformDynamicConfig(
+  ttl = DEFAULT_WARMUP_TTL,
+): Promise<WarmupItemResult> {
   const start = Date.now();
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data: configs, error } = await supabaseAdmin
       .from("platform_dynamic_config")
       .select("id, active_slot, blue_payload, red_payload, version");
@@ -189,7 +214,8 @@ export async function warmPlatformDynamicConfig(ttl = DEFAULT_WARMUP_TTL): Promi
 
     let count = 0;
     for (const c of configs ?? []) {
-      const activePayload = c.active_slot === "blue" ? c.blue_payload : c.red_payload;
+      const activePayload =
+        c.active_slot === "blue" ? c.blue_payload : c.red_payload;
       if (await setWarmKey(`dynamic_config:${c.id}`, activePayload, ttl)) {
         count++;
       }
@@ -213,18 +239,21 @@ export async function warmPlatformDynamicConfig(ttl = DEFAULT_WARMUP_TTL): Promi
 }
 
 /** 5. Pre-warm default shipping rate tables */
-export async function warmShippingDefaults(ttl = DEFAULT_WARMUP_TTL): Promise<WarmupItemResult> {
+export async function warmShippingDefaults(
+  ttl = DEFAULT_WARMUP_TTL,
+): Promise<WarmupItemResult> {
   const start = Date.now();
   try {
     const defaultRateTable = {
       defaultDomesticRate: 6000, // 60 BDT inside Dhaka
-      outsideDhakaRate: 12000,   // 120 BDT outside Dhaka
+      outsideDhakaRate: 12000, // 120 BDT outside Dhaka
       codFeePercentage: 1.0,
       couriers: ["steadfast", "pathao", "redx", "paperfly"],
     };
 
     let count = 0;
-    if (await setWarmKey("shipping:rates:default", defaultRateTable, ttl)) count++;
+    if (await setWarmKey("shipping:rates:default", defaultRateTable, ttl))
+      count++;
 
     return {
       layer: "Shipping Rate Defaults",
@@ -246,7 +275,9 @@ export async function warmShippingDefaults(ttl = DEFAULT_WARMUP_TTL): Promise<Wa
 /**
  * Execute all cache pre-warming routines concurrently.
  */
-export async function warmupAll(opts: WarmupOptions = {}): Promise<CacheWarmupReport> {
+export async function warmupAll(
+  opts: WarmupOptions = {},
+): Promise<CacheWarmupReport> {
   const start = Date.now();
   const ttl = opts.ttlSeconds ?? DEFAULT_WARMUP_TTL;
   const merchantLimit = opts.merchantLimit ?? 50;
@@ -257,7 +288,12 @@ export async function warmupAll(opts: WarmupOptions = {}): Promise<CacheWarmupRe
       totalKeysWarmed: 0,
       totalDurationMs: 0,
       layers: [
-        { layer: "Dry Run Simulation", keysWarmed: 0, durationMs: 0, status: "ok" },
+        {
+          layer: "Dry Run Simulation",
+          keysWarmed: 0,
+          durationMs: 0,
+          status: "ok",
+        },
       ],
       timestamp: new Date().toISOString(),
     };

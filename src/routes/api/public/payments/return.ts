@@ -18,19 +18,31 @@ export const Route = createFileRoute("/api/public/payments/return")({
           request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
           "unknown";
 
-        const { applySignedReturn, PaymentError } = await import("@/lib/payments.server");
+        const { applySignedReturn, PaymentError } =
+          await import("@/lib/payments.server");
         try {
           const result = await applySignedReturn(intent, status, sig, ip);
-          const target = new URL(`/store/${result.slug}/order/${result.orderId}`, url.origin);
-          if (result.accessToken) target.searchParams.set("t", result.accessToken);
-          if (result.status !== "paid") target.searchParams.set("pay", result.status);
+          const target = new URL(
+            `/store/${result.slug}/order/${result.orderId}`,
+            url.origin,
+          );
+          if (result.accessToken)
+            target.searchParams.set("t", result.accessToken);
+          if (result.status !== "paid")
+            target.searchParams.set("pay", result.status);
           return new Response(null, {
             status: 303,
-            headers: { location: target.pathname + target.search, "cache-control": "no-store" },
+            headers: {
+              location: target.pathname + target.search,
+              "cache-control": "no-store",
+            },
           });
         } catch (e) {
-          const code = e instanceof PaymentError ? e.code : "payment.signature_invalid";
-          return new Response(code, { status: code === "payment.signature_invalid" ? 401 : 400 });
+          const code =
+            e instanceof PaymentError ? e.code : "payment.signature_invalid";
+          return new Response(code, {
+            status: code === "payment.signature_invalid" ? 401 : 400,
+          });
         }
       },
     },

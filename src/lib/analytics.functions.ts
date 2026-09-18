@@ -12,7 +12,9 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 
 export const analyticsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ range: z.enum(["7d", "30d", "90d"]) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ range: z.enum(["7d", "30d", "90d"]) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadAnalytics } = await import("./analytics.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -26,7 +28,8 @@ export const analyticsFunnelFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ days: rangeDays }).parse(d ?? {}))
   .handler(async ({ data, context }) => {
     const { rateLimit } = await import("./rate-limit.server");
-    const { loadFunnel, loadCohorts } = await import("./analytics-warehouse.server");
+    const { loadFunnel, loadCohorts } =
+      await import("./analytics-warehouse.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("analytics.read", merchantId);
     const [funnel, cohorts] = await Promise.all([
@@ -41,7 +44,8 @@ export const analyticsAudienceFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ days: rangeDays }).parse(d ?? {}))
   .handler(async ({ data, context }) => {
     const { rateLimit } = await import("./rate-limit.server");
-    const { loadPersonas, loadProductPerformance } = await import("./analytics-warehouse.server");
+    const { loadPersonas, loadProductPerformance } =
+      await import("./analytics-warehouse.server");
     const merchantId = await scope(context.supabase, context.userId);
     await rateLimit("analytics.read", merchantId);
     const [personas, products] = await Promise.all([
@@ -61,7 +65,9 @@ export const analyticsPipelineFn = createServerFn({ method: "GET" })
     const health = await loadPipelineHealth(context.supabase, merchantId);
     const { data: conversions } = await (context.supabase as any)
       .from("analytics_conversion_events")
-      .select("id, provider, event_name, status, attempts, last_error, created_at, value_minor_int")
+      .select(
+        "id, provider, event_name, status, attempts, last_error, created_at, value_minor_int",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(25);
@@ -72,7 +78,8 @@ export const analyticsFlushFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const { flushBatch, rebuildCohorts } = await import("./analytics-warehouse.server");
+    const { flushBatch, rebuildCohorts } =
+      await import("./analytics-warehouse.server");
     const merchantId = await scope(context.supabase, context.userId);
     await enforceRateLimit("analytics.flush", merchantId);
     const batch = await flushBatch(context.supabase, merchantId);
@@ -115,7 +122,9 @@ export const analyticsSaveReportFn = createServerFn({ method: "POST" })
 
 export const analyticsDeleteReportFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ reportId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ reportId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
     const { deleteReport } = await import("./analytics-warehouse.server");
@@ -126,7 +135,9 @@ export const analyticsDeleteReportFn = createServerFn({ method: "POST" })
 
 export const analyticsRunReportFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ reportId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ reportId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { enforceRateLimit } = await import("./rate-limit.server");
     const { runReport } = await import("./analytics-warehouse.server");
@@ -134,7 +145,15 @@ export const analyticsRunReportFn = createServerFn({ method: "POST" })
     await enforceRateLimit("analytics.report_run", merchantId);
     const result = await runReport(context.supabase, merchantId, data.reportId);
     // Keep the payload small: the preview is capped, the CSV carries everything.
-    return { rowCount: result.rowCount, columns: result.columns, preview: result.rows.slice(0, 50) as Record<string, string | number | null>[], csv: result.csv };
+    return {
+      rowCount: result.rowCount,
+      columns: result.columns,
+      preview: result.rows.slice(0, 50) as Record<
+        string,
+        string | number | null
+      >[],
+      csv: result.csv,
+    };
   });
 
 /** Traffic tab: visitors, clicks, geography and device/source mix. */

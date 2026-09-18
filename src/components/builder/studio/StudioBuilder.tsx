@@ -87,7 +87,6 @@ export function StudioBuilder({
   saving = false,
   docId = null,
 }: StudioBuilderProps) {
-
   const studio = useStudio(initialDoc);
   const {
     doc,
@@ -104,16 +103,31 @@ export function StudioBuilder({
   const [preview, setPreview] = useState(false);
   const [structure, setStructure] = useState(false);
   const [modal, setModal] = useState<
-    null | "layout" | "templates" | "page" | "history" | "finder" | "shortcuts" | "classes"
+    | null
+    | "layout"
+    | "templates"
+    | "page"
+    | "history"
+    | "finder"
+    | "shortcuts"
+    | "classes"
   >(null);
-  const [menu, setMenu] = useState<{ id: string; at: { x: number; y: number } } | null>(null);
-  const [templates, setTemplates] = useState<StudioTemplate[]>(() => builtInTemplates());
+  const [menu, setMenu] = useState<{
+    id: string;
+    at: { x: number; y: number };
+  } | null>(null);
+  const [templates, setTemplates] = useState<StudioTemplate[]>(() =>
+    builtInTemplates(),
+  );
   const [pendingDrop, setPendingDrop] = useState<DropTarget | null>(null);
   const dragWidget = useRef<string | null>(null);
   const dragNode = useRef<string | null>(null);
 
   useEffect(() => setPlatform(detectStudioPlatform(navigator)), []);
-  useEffect(() => setTemplates([...builtInTemplates(), ...loadMyTemplates()]), []);
+  useEffect(
+    () => setTemplates([...builtInTemplates(), ...loadMyTemplates()]),
+    [],
+  );
 
   /* keep the host in sync without pushing on every keystroke */
   const lastSent = useRef(doc);
@@ -190,10 +204,12 @@ export function StudioBuilder({
     setRecovery(null);
   }, [docId]);
 
-
   const saveTemplate = useCallback(() => {
     const nodes = selected ? [selected] : doc.root;
-    const name = window.prompt("Template name", selected ? widgetLabel(selected.el) : doc.page.title);
+    const name = window.prompt(
+      "Template name",
+      selected ? widgetLabel(selected.el) : doc.page.title,
+    );
     if (name === null) return;
     const template = saveAsTemplate(name, nodes);
     const mine = [...loadMyTemplates(), template];
@@ -214,33 +230,71 @@ export function StudioBuilder({
       const shortcut = matchStudioShortcut(event, platform);
       if (!shortcut) return;
       switch (shortcut.id) {
-        case "undo": studio.undo(); break;
-        case "redo": studio.redo(); break;
-        case "copy": if (id) studio.copy(id); break;
-        case "paste": studio.paste(); break;
-        case "duplicate": if (id) studio.duplicate(id); break;
-        case "delete": if (id) studio.remove(id); break;
-        case "pasteStyle": if (id) studio.pasteStyle(id); break;
-        case "resetStyle": if (id) studio.resetStyle(id); break;
-        case "save": saveDraft(); break;
-        case "publish": void publish(); break;
-        case "preview": setPreview((value) => !value); break;
-        case "hideHandles": setPreview((value) => !value); break;
-        case "navigator": setStructure((value) => !value); break;
-        case "finder": setModal("finder"); break;
-        case "templates": setModal("templates"); break;
-        case "pageSettings": setModal("page"); break;
-        case "siteSettings": setModal("classes"); break;
-        case "history": setModal("history"); break;
-        case "shortcuts": setModal("shortcuts"); break;
-        default: return;
+        case "undo":
+          studio.undo();
+          break;
+        case "redo":
+          studio.redo();
+          break;
+        case "copy":
+          if (id) studio.copy(id);
+          break;
+        case "paste":
+          studio.paste();
+          break;
+        case "duplicate":
+          if (id) studio.duplicate(id);
+          break;
+        case "delete":
+          if (id) studio.remove(id);
+          break;
+        case "pasteStyle":
+          if (id) studio.pasteStyle(id);
+          break;
+        case "resetStyle":
+          if (id) studio.resetStyle(id);
+          break;
+        case "save":
+          saveDraft();
+          break;
+        case "publish":
+          void publish();
+          break;
+        case "preview":
+          setPreview((value) => !value);
+          break;
+        case "hideHandles":
+          setPreview((value) => !value);
+          break;
+        case "navigator":
+          setStructure((value) => !value);
+          break;
+        case "finder":
+          setModal("finder");
+          break;
+        case "templates":
+          setModal("templates");
+          break;
+        case "pageSettings":
+          setModal("page");
+          break;
+        case "siteSettings":
+          setModal("classes");
+          break;
+        case "history":
+          setModal("history");
+          break;
+        case "shortcuts":
+          setModal("shortcuts");
+          break;
+        default:
+          return;
       }
       event.preventDefault();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [platform, publish, saveDraft, selectedId, setSelectedId, studio]);
-
 
   const finderItems = useMemo(
     () => [
@@ -260,11 +314,34 @@ export function StudioBuilder({
     const node = flatten(doc.root).find((entry) => entry.node.id === id)?.node;
     const label = node ? (node.name ?? widgetLabel(node.el)) : "Element";
     return [
-      { kind: "action", id: "edit", label: `Edit ${label}`, run: () => setSelectedId(id) },
-      { kind: "action", id: "duplicate", label: "Duplicate", hint: "⌘D", run: () => studio.duplicate(id) },
+      {
+        kind: "action",
+        id: "edit",
+        label: `Edit ${label}`,
+        run: () => setSelectedId(id),
+      },
+      {
+        kind: "action",
+        id: "duplicate",
+        label: "Duplicate",
+        hint: "⌘D",
+        run: () => studio.duplicate(id),
+      },
       { kind: "separator", id: "s1" },
-      { kind: "action", id: "copy", label: "Copy", hint: "⌘C", run: () => studio.copy(id) },
-      { kind: "action", id: "paste", label: "Paste", hint: "⌘V", run: () => studio.paste({ id, position: "after" }) },
+      {
+        kind: "action",
+        id: "copy",
+        label: "Copy",
+        hint: "⌘C",
+        run: () => studio.copy(id),
+      },
+      {
+        kind: "action",
+        id: "paste",
+        label: "Paste",
+        hint: "⌘V",
+        run: () => studio.paste({ id, position: "after" }),
+      },
       {
         kind: "action",
         id: "copy-style",
@@ -272,13 +349,42 @@ export function StudioBuilder({
         hint: "⌘⇧C",
         run: () => studio.copyStyle(id),
       },
-      { kind: "action", id: "paste-style", label: "Paste style", hint: "⌘⇧V", run: () => studio.pasteStyle(id) },
-      { kind: "action", id: "reset-style", label: "Reset style", run: () => studio.resetStyle(id) },
+      {
+        kind: "action",
+        id: "paste-style",
+        label: "Paste style",
+        hint: "⌘⇧V",
+        run: () => studio.pasteStyle(id),
+      },
+      {
+        kind: "action",
+        id: "reset-style",
+        label: "Reset style",
+        run: () => studio.resetStyle(id),
+      },
       { kind: "separator", id: "s2" },
-      { kind: "action", id: "save-template", label: "Save as template", run: saveTemplate },
-      { kind: "action", id: "structure", label: "Structure", hint: "⌘I", run: () => setStructure(true) },
+      {
+        kind: "action",
+        id: "save-template",
+        label: "Save as template",
+        run: saveTemplate,
+      },
+      {
+        kind: "action",
+        id: "structure",
+        label: "Structure",
+        hint: "⌘I",
+        run: () => setStructure(true),
+      },
       { kind: "separator", id: "s3" },
-      { kind: "action", id: "delete", label: "Delete", hint: "⌦", danger: true, run: () => studio.remove(id) },
+      {
+        kind: "action",
+        id: "delete",
+        label: "Delete",
+        hint: "⌦",
+        danger: true,
+        run: () => studio.remove(id),
+      },
     ];
   }, [doc.root, menu, saveTemplate, setSelectedId, studio]);
 
@@ -327,7 +433,8 @@ export function StudioBuilder({
           className="flex flex-wrap items-center gap-3 border-b border-border bg-muted/60 px-4 py-2 text-sm"
         >
           <span className="text-foreground">
-            Unsaved changes from {draftAgeLabel(recovery.at)} were recovered from this browser.
+            Unsaved changes from {draftAgeLabel(recovery.at)} were recovered
+            from this browser.
           </span>
           <div className="ml-auto flex gap-2">
             <button
@@ -354,8 +461,6 @@ export function StudioBuilder({
         </div>
       )}
 
-
-
       <div className="flex min-h-0 flex-1">
         {!preview && (
           <div className="hidden w-80 shrink-0 border-r border-border md:block">
@@ -365,7 +470,9 @@ export function StudioBuilder({
                 device={device}
                 activeDevices={activeDevices}
                 onDevice={setDevice}
-                onChange={(key, value) => studio.setSetting(selected.id, key, value)}
+                onChange={(key, value) =>
+                  studio.setSetting(selected.id, key, value)
+                }
                 onBack={() => setSelectedId(null)}
                 onResetStyles={() => studio.resetStyle(selected.id)}
                 classes={studio.classes}
@@ -377,21 +484,33 @@ export function StudioBuilder({
                 onDragWidget={(key) => {
                   dragWidget.current = key;
                 }}
-                savedBlocks={templates.filter((t) => t.kind === "mine").map((t) => ({ id: t.id, name: t.name }))}
+                savedBlocks={templates
+                  .filter((t) => t.kind === "mine")
+                  .map((t) => ({ id: t.id, name: t.name }))}
                 onInsertSaved={(id) => {
                   const template = templates.find((t) => t.id === id);
-                  if (template) instantiate(template).forEach((node) => studio.addNode(node));
+                  if (template)
+                    instantiate(template).forEach((node) =>
+                      studio.addNode(node),
+                    );
                 }}
                 globals={[]}
-                onInsertGlobal={() => toast.info("Global elements arrive with the design system.")}
+                onInsertGlobal={() =>
+                  toast.info("Global elements arrive with the design system.")
+                }
               />
             )}
           </div>
         )}
 
-        <main className="relative min-h-0 flex-1 overflow-auto bg-muted/40 p-4" aria-label="Page canvas">
+        <main
+          className="relative min-h-0 flex-1 overflow-auto bg-muted/40 p-4"
+          aria-label="Page canvas"
+        >
           <div
-            className={cn("mx-auto min-h-full bg-background shadow-fq-md transition-[max-width] duration-200")}
+            className={cn(
+              "mx-auto min-h-full bg-background shadow-fq-md transition-[max-width] duration-200",
+            )}
             style={{ maxWidth: CANVAS_WIDTH[device] }}
           >
             <StudioCanvas
@@ -472,9 +591,15 @@ export function StudioBuilder({
         open={modal === "templates"}
         onOpenChange={(open) => setModal(open ? "templates" : null)}
         templates={templates}
-        onInsert={(template) => instantiate(template).forEach((node) => studio.addNode(node))}
+        onInsert={(template) =>
+          instantiate(template).forEach((node) => studio.addNode(node))
+        }
         onToggleFavourite={(id) =>
-          setTemplates((list) => list.map((t) => (t.id === id ? { ...t, favourite: !t.favourite } : t)))
+          setTemplates((list) =>
+            list.map((t) =>
+              t.id === id ? { ...t, favourite: !t.favourite } : t,
+            ),
+          )
         }
         onImport={(json) => {
           const template = importTemplateJson(json);
@@ -502,7 +627,11 @@ export function StudioBuilder({
         history={studio.history}
         revisions={revisions}
         onJump={studio.jump}
-        onRestore={() => toast.info("Revision restore is handled by the editor's revisions panel.")}
+        onRestore={() =>
+          toast.info(
+            "Revision restore is handled by the editor's revisions panel.",
+          )
+        }
       />
 
       <FinderDialog

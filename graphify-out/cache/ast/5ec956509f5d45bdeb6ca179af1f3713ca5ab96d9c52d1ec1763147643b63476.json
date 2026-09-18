@@ -1,1 +1,241 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "label": "swarm-monitor.sh", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L1"}, {"id": "helpers_swarm_monitor_log", "label": "log()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L20"}, {"id": "helpers_swarm_monitor_warn", "label": "warn()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L24"}, {"id": "helpers_swarm_monitor_error", "label": "error()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L28"}, {"id": "helpers_swarm_monitor_success", "label": "success()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L32"}, {"id": "helpers_swarm_monitor_count_active_processes", "label": "count_active_processes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L37"}, {"id": "helpers_swarm_monitor_update_activity_metrics", "label": "update_activity_metrics()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L70"}, {"id": "helpers_swarm_monitor_monitor_continuous", "label": "monitor_continuous()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L113"}, {"id": "helpers_swarm_monitor_check_once", "label": "check_once()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L145"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_log", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_warn", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_error", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_success", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_count_active_processes", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_update_activity_metrics", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_monitor_continuous", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh", "target": "helpers_swarm_monitor_check_once", "relation": "defines", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L145", "weight": 1.0}, {"source": "helpers_swarm_monitor_monitor_continuous", "target": "helpers_swarm_monitor_log", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L118", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_monitor_continuous", "target": "helpers_swarm_monitor_count_active_processes", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L122", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_monitor_continuous", "target": "helpers_swarm_monitor_update_activity_metrics", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L126", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_monitor_continuous", "target": "helpers_swarm_monitor_success", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L132", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_monitor_continuous", "target": "helpers_swarm_monitor_warn", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L134", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_check_once", "target": "helpers_swarm_monitor_log", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L146", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_check_once", "target": "helpers_swarm_monitor_count_active_processes", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L148", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_check_once", "target": "helpers_swarm_monitor_update_activity_metrics", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L149", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_check_once", "target": "helpers_swarm_monitor_success", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L161", "weight": 1.0, "context": "call"}, {"source": "helpers_swarm_monitor_check_once", "target": "helpers_swarm_monitor_warn", "relation": "calls", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh", "source_location": "L163", "weight": 1.0, "context": "call"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "label": "swarm-monitor.sh",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L1"
+    },
+    {
+      "id": "helpers_swarm_monitor_log",
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L20"
+    },
+    {
+      "id": "helpers_swarm_monitor_warn",
+      "label": "warn()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L24"
+    },
+    {
+      "id": "helpers_swarm_monitor_error",
+      "label": "error()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L28"
+    },
+    {
+      "id": "helpers_swarm_monitor_success",
+      "label": "success()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L32"
+    },
+    {
+      "id": "helpers_swarm_monitor_count_active_processes",
+      "label": "count_active_processes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L37"
+    },
+    {
+      "id": "helpers_swarm_monitor_update_activity_metrics",
+      "label": "update_activity_metrics()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L70"
+    },
+    {
+      "id": "helpers_swarm_monitor_monitor_continuous",
+      "label": "monitor_continuous()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L113"
+    },
+    {
+      "id": "helpers_swarm_monitor_check_once",
+      "label": "check_once()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L145"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_log",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_warn",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_error",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_success",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_count_active_processes",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_update_activity_metrics",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_monitor_continuous",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_claude_helpers_swarm_monitor_sh",
+      "target": "helpers_swarm_monitor_check_once",
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "helpers_swarm_monitor_monitor_continuous",
+      "target": "helpers_swarm_monitor_log",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L118",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_monitor_continuous",
+      "target": "helpers_swarm_monitor_count_active_processes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L122",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_monitor_continuous",
+      "target": "helpers_swarm_monitor_update_activity_metrics",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L126",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_monitor_continuous",
+      "target": "helpers_swarm_monitor_success",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L132",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_monitor_continuous",
+      "target": "helpers_swarm_monitor_warn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L134",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_check_once",
+      "target": "helpers_swarm_monitor_log",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L146",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_check_once",
+      "target": "helpers_swarm_monitor_count_active_processes",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L148",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_check_once",
+      "target": "helpers_swarm_monitor_update_activity_metrics",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L149",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_check_once",
+      "target": "helpers_swarm_monitor_success",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L161",
+      "weight": 1.0,
+      "context": "call"
+    },
+    {
+      "source": "helpers_swarm_monitor_check_once",
+      "target": "helpers_swarm_monitor_warn",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.claude/helpers/swarm-monitor.sh",
+      "source_location": "L163",
+      "weight": 1.0,
+      "context": "call"
+    }
+  ]
+}

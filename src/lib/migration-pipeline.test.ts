@@ -32,7 +32,10 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.orders ADD COLUMN discount_amount NUMERIC(12,2) NULL;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 1, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 1,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(true);
       expect(evalResult.violations).toHaveLength(0);
       expect(evalResult.summary).toContain("[CI GATEKEEPER PASSED]");
@@ -43,9 +46,14 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.orders DROP COLUMN legacy_discount;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 1, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 1,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN")).toBe(true);
+      expect(
+        evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN"),
+      ).toBe(true);
       expect(evalResult.violations[0].message).toContain("[STAGE 1 BLOCKED]");
     });
 
@@ -54,9 +62,14 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         DROP TABLE public.legacy_logs;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 1, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 1,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_TABLE")).toBe(true);
+      expect(
+        evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_TABLE"),
+      ).toBe(true);
     });
 
     it("strictly blocks RENAME COLUMN in Release 1 (Expand)", async () => {
@@ -64,9 +77,14 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.orders RENAME COLUMN phone TO mobile_phone;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 1, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 1,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_RENAME_COLUMN")).toBe(true);
+      expect(
+        evalResult.violations.some((v) => v.ruleId === "RULE_NO_RENAME_COLUMN"),
+      ).toBe(true);
     });
 
     it("strictly blocks NOT NULL column addition without DEFAULT in Release 1", async () => {
@@ -74,9 +92,16 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.orders ADD COLUMN tax_identifier VARCHAR(32) NOT NULL;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 1, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 1,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_NOT_NULL_WITHOUT_DEFAULT")).toBe(true);
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_NO_NOT_NULL_WITHOUT_DEFAULT",
+        ),
+      ).toBe(true);
     });
   });
 
@@ -86,9 +111,14 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.customers DROP COLUMN legacy_phone;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 2, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 2,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN")).toBe(true);
+      expect(
+        evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN"),
+      ).toBe(true);
       expect(evalResult.violations[0].message).toContain("[STAGE 2 BLOCKED]");
     });
 
@@ -97,9 +127,16 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
         ALTER TABLE public.orders ALTER COLUMN total TYPE bigint;
       `;
 
-      const evalResult = await validatePrMigration({ stage: 2, sqlContent: sql });
+      const evalResult = await validatePrMigration({
+        stage: 2,
+        sqlContent: sql,
+      });
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_IN_PLACE_TYPE_ALTERATION")).toBe(true);
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_NO_IN_PLACE_TYPE_ALTERATION",
+        ),
+      ).toBe(true);
     });
   });
 
@@ -177,8 +214,14 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
       });
 
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_BACKFILL_INCOMPLETE")).toBe(true);
-      expect(evalResult.violations[0].message).toContain("Background backfill incomplete");
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_BACKFILL_INCOMPLETE",
+        ),
+      ).toBe(true);
+      expect(evalResult.violations[0].message).toContain(
+        "Background backfill incomplete",
+      );
       expect(evalResult.violations[0].message).toContain("running");
     });
 
@@ -194,7 +237,9 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
       });
 
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN")).toBe(true);
+      expect(
+        evalResult.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN"),
+      ).toBe(true);
       expect(evalResult.violations[0].message).toContain("[STAGE 3 BLOCKED]");
     });
   });
@@ -253,7 +298,11 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
       });
 
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_CONTRACT_ANNOTATION_REQUIRED")).toBe(true);
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_CONTRACT_ANNOTATION_REQUIRED",
+        ),
+      ).toBe(true);
     });
 
     it("blocks DROP COLUMN in Release 4 if rationale documentation is missing", async () => {
@@ -269,7 +318,11 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
       });
 
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_CONTRACT_RATIONALE_REQUIRED")).toBe(true);
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_CONTRACT_RATIONALE_REQUIRED",
+        ),
+      ).toBe(true);
     });
 
     it("blocks DROP COLUMN in Release 4 if prerequisite backfill is missing or incomplete", async () => {
@@ -285,7 +338,11 @@ describe("Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automa
       });
 
       expect(evalResult.allowed).toBe(false);
-      expect(evalResult.violations.some((v) => v.ruleId === "RULE_PREREQUISITE_BACKFILL_REQUIRED")).toBe(true);
+      expect(
+        evalResult.violations.some(
+          (v) => v.ruleId === "RULE_PREREQUISITE_BACKFILL_REQUIRED",
+        ),
+      ).toBe(true);
     });
   });
 });

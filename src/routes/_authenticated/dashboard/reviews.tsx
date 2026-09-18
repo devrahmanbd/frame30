@@ -106,12 +106,16 @@ function ReviewModeration() {
       <header>
         <h1 className="text-xl font-semibold">Review moderation</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Nothing reaches your storefront until you publish it. Verified badges are decided from
-          order history, not from what the reviewer claims.
+          Nothing reaches your storefront until you publish it. Verified badges
+          are decided from order history, not from what the reviewer claims.
         </p>
       </header>
 
-      <div className="mt-6 flex flex-wrap gap-2" role="tablist" aria-label="Review status">
+      <div
+        className="mt-6 flex flex-wrap gap-2"
+        role="tablist"
+        aria-label="Review status"
+      >
         {FILTERS.map((f) => (
           <button
             key={f.key}
@@ -126,18 +130,27 @@ function ReviewModeration() {
             }`}
           >
             {f.label}
-            <span className="ml-2 tabular-nums opacity-70">{counts[f.key] ?? 0}</span>
+            <span className="ml-2 tabular-nums opacity-70">
+              {counts[f.key] ?? 0}
+            </span>
           </button>
         ))}
       </div>
 
       {queue.isLoading && (
-        <div className="mt-6 h-40 animate-pulse rounded-fq-md bg-muted" aria-hidden />
+        <div
+          className="mt-6 h-40 animate-pulse rounded-fq-md bg-muted"
+          aria-hidden
+        />
       )}
       {queue.isError && (
         <p className="mt-6 rounded-fq-md bg-danger-soft p-4 text-sm text-danger-foreground">
           Could not load the review queue.{" "}
-          <button type="button" className="underline" onClick={() => void queue.refetch()}>
+          <button
+            type="button"
+            className="underline"
+            onClick={() => void queue.refetch()}
+          >
             Retry
           </button>
         </p>
@@ -153,9 +166,13 @@ function ReviewModeration() {
         {rows.map((r) => {
           const busy =
             (setStatus.isPending && setStatus.variables?.reviewId === r.id) ||
-            (publishReply.isPending && publishReply.variables?.reviewId === r.id);
+            (publishReply.isPending &&
+              publishReply.variables?.reviewId === r.id);
           return (
-            <li key={r.id} className="rounded-fq-md border border-border bg-card p-4">
+            <li
+              key={r.id}
+              className="rounded-fq-md border border-border bg-card p-4"
+            >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-center gap-2">
                   <Stars value={r.rating} label={`${r.rating} of 5`} />
@@ -171,7 +188,9 @@ function ReviewModeration() {
                 </span>
               </div>
 
-              <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">{r.body}</p>
+              <p className="mt-2 whitespace-pre-line text-sm text-muted-foreground">
+                {r.body}
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {r.productTitle} · {r.authorName || "Customer"} ·{" "}
                 {new Date(r.createdAt).toLocaleString()}
@@ -200,7 +219,9 @@ function ReviewModeration() {
                     type="button"
                     disabled={busy}
                     onClick={() => {
-                      const note = window.prompt("Reason for rejecting (kept internal)") ?? "";
+                      const note =
+                        window.prompt("Reason for rejecting (kept internal)") ??
+                        "";
                       setStatus.mutate({
                         reviewId: r.id,
                         productId: r.productId,
@@ -213,7 +234,12 @@ function ReviewModeration() {
                     Reject
                   </button>
                 )}
-                {busy && <Loader2 aria-hidden className="size-4 animate-spin self-center" />}
+                {busy && (
+                  <Loader2
+                    aria-hidden
+                    className="size-4 animate-spin self-center"
+                  />
+                )}
               </div>
 
               <div className="mt-4 border-t border-border pt-3">
@@ -229,7 +255,11 @@ function ReviewModeration() {
                       e.preventDefault();
                       const body = (drafts[r.id] ?? "").trim();
                       if (body.length < 2) return;
-                      publishReply.mutate({ reviewId: r.id, productId: r.productId, body });
+                      publishReply.mutate({
+                        reviewId: r.id,
+                        productId: r.productId,
+                        body,
+                      });
                     }}
                   >
                     <label className="sr-only" htmlFor={`reply-${r.id}`}>
@@ -238,7 +268,9 @@ function ReviewModeration() {
                     <input
                       id={`reply-${r.id}`}
                       value={drafts[r.id] ?? ""}
-                      onChange={(e) => setDrafts((d) => ({ ...d, [r.id]: e.target.value }))}
+                      onChange={(e) =>
+                        setDrafts((d) => ({ ...d, [r.id]: e.target.value }))
+                      }
                       placeholder="Reply publicly…"
                       maxLength={2000}
                       className="min-h-11 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"

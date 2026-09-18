@@ -23,7 +23,11 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 import { useMotionIntent } from "@/lib/motion-runtime";
-import { auditSurfaceOrder, formatFinding, type RhythmSurface } from "@/lib/site-rhythm";
+import {
+  auditSurfaceOrder,
+  formatFinding,
+  type RhythmSurface,
+} from "@/lib/site-rhythm";
 
 export type BandSurface = RhythmSurface;
 export type BandWidth = "default" | "narrow" | "wide";
@@ -84,7 +88,13 @@ const SequenceCtx = createContext<SequenceSink | null>(null);
  * visitor, and the blocking version of this same check runs in the release gate
  * (`scripts/rhythm-gate.mjs`), which shares the auditor in `site-rhythm.ts`.
  */
-export function BandSequence({ route, children }: { route: string; children: ReactNode }) {
+export function BandSequence({
+  route,
+  children,
+}: {
+  route: string;
+  children: ReactNode;
+}) {
   const entries = useRef<{ surface: BandSurface; label: string }[]>([]);
   // A fresh render pass must not append to the previous pass's list.
   entries.current = [];
@@ -185,7 +195,13 @@ export function BandHeading({
 }: BandHeadingProps) {
   const Tag = (level === 3 ? "h3" : "h2") as ElementType;
   return (
-    <div className={cn(align === "center" && "mx-auto text-center", "max-w-3xl", className)}>
+    <div
+      className={cn(
+        align === "center" && "mx-auto text-center",
+        "max-w-3xl",
+        className,
+      )}
+    >
       {eyebrow ? (
         <p
           data-band-eyebrow=""
@@ -196,14 +212,20 @@ export function BandHeading({
       ) : null}
       <Tag
         id={id}
-        className={cn("fq-display", level === 3 ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl")}
+        className={cn(
+          "fq-display",
+          level === 3 ? "text-2xl sm:text-3xl" : "text-3xl sm:text-4xl",
+        )}
       >
         {title}
       </Tag>
       {sub ? (
         <p
           data-type-role="body"
-          className={cn("mt-4 text-base text-muted-foreground", align === "left" && "fq-measure")}
+          className={cn(
+            "mt-4 text-base text-muted-foreground",
+            align === "left" && "fq-measure",
+          )}
         >
           {sub}
         </p>
@@ -213,7 +235,13 @@ export function BandHeading({
 }
 
 /** Glass pill used for eyebrows, proof chips and status labels. */
-export function Chip({ children, className }: { children: ReactNode; className?: string }) {
+export function Chip({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <span
       className={cn(

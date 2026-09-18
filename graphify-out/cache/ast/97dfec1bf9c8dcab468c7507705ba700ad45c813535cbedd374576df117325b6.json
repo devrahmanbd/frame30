@@ -1,1 +1,288 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "label": "theme-contract.test.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L1"}, {"id": "builder_theme_contract_test_rendertemplate", "label": "renderTemplate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L28"}, {"id": "builder_theme_contract_test_counth1", "label": "countH1()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L44"}, {"id": "builder_theme_contract_test_parsed", "label": "parsed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L53"}, {"id": "builder_theme_contract_test_primaryid", "label": "primaryId", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L58"}, {"id": "builder_theme_contract_test_header", "label": "header", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L60"}, {"id": "builder_theme_contract_test_main", "label": "main", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L61"}, {"id": "builder_theme_contract_test_footer", "label": "footer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L62"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "server", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_sectionrenderer_sectionrenderer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "lib_builder_ast_template_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "lib_builder_ast_parsetemplates", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "lib_theme_presets_theme_presets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "store_themechrome_primarysectionid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_rendertemplate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_counth1", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_parsed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_primaryid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_header", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx", "target": "builder_theme_contract_test_footer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L62", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_theme_contract_test_rendertemplate", "callee": "renderToStaticMarkup", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L29"}, {"caller_nid": "builder_theme_contract_test_rendertemplate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L31"}, {"caller_nid": "builder_theme_contract_test_counth1", "callee": "match", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx", "source_location": "L44"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "label": "theme-contract.test.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_theme_contract_test_rendertemplate",
+      "label": "renderTemplate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L28"
+    },
+    {
+      "id": "builder_theme_contract_test_counth1",
+      "label": "countH1()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L44"
+    },
+    {
+      "id": "builder_theme_contract_test_parsed",
+      "label": "parsed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L53"
+    },
+    {
+      "id": "builder_theme_contract_test_primaryid",
+      "label": "primaryId",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L58"
+    },
+    {
+      "id": "builder_theme_contract_test_header",
+      "label": "header",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L60"
+    },
+    {
+      "id": "builder_theme_contract_test_main",
+      "label": "main",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L61"
+    },
+    {
+      "id": "builder_theme_contract_test_footer",
+      "label": "footer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L62"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "users_rahman_documents_frame30_src_components_builder_sectionrenderer_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_sectionrenderer_sectionrenderer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "lib_builder_ast_template_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "lib_builder_ast_parsetemplates",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_theme_presets_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "lib_theme_presets_theme_presets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "users_rahman_documents_frame30_src_components_store_themechrome_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "store_themechrome_primarysectionid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_rendertemplate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_counth1",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_parsed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_primaryid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_header",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_theme_contract_test_tsx",
+      "target": "builder_theme_contract_test_footer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L62",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_theme_contract_test_rendertemplate",
+      "callee": "renderToStaticMarkup",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "builder_theme_contract_test_rendertemplate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "builder_theme_contract_test_counth1",
+      "callee": "match",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/theme-contract.test.tsx",
+      "source_location": "L44"
+    }
+  ]
+}

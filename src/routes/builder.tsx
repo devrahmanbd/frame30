@@ -23,7 +23,8 @@ import {
   ShieldCheck,
   Type as TypeIcon,
   Gauge,
-  Globe2} from "lucide-react";
+  Globe2,
+} from "lucide-react";
 import { PublicShell } from "@/components/public/PublicShell";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead, buildGraph } from "@/lib/marketing-seo";
@@ -37,7 +38,8 @@ import {
   CardGrid,
   MatrixTable,
   FaqBand,
-  CtaBand} from "@/components/public/bands";
+  CtaBand,
+} from "@/components/public/bands";
 import {
   hero,
   canvasMock,
@@ -54,7 +56,8 @@ import {
   comparison,
   accessibility,
   faq,
-  cta} from "@/lib/marketing/builder.content";
+  cta,
+} from "@/lib/marketing/builder.content";
 
 export const Route = createFileRoute("/builder")({
   // Fail-soft: getSiteContext never throws (renderRead handles caching/
@@ -68,17 +71,38 @@ export const Route = createFileRoute("/builder")({
     const graph = buildGraph({
       route: "builder",
       origin,
-      faq: faq.map((entry) => ({ question: entry.question, answer: entry.answer }))});
+      faq: faq.map((entry) => ({
+        question: entry.question,
+        answer: entry.answer,
+      })),
+    });
     return {
       meta: head.meta,
       links: head.links,
-      scripts: graph ? [{ type: "application/ld+json", children: JSON.stringify(graph) }] : []};
+      scripts: graph
+        ? [{ type: "application/ld+json", children: JSON.stringify(graph) }]
+        : [],
+    };
   },
-  errorComponent: () => <BuilderMessage titleEn="Could not load this page" titleBn="পেজটি লোড করা যায়নি" />,
-  notFoundComponent: () => <BuilderMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />,
-  component: BuilderPage});
+  errorComponent: () => (
+    <BuilderMessage
+      titleEn="Could not load this page"
+      titleBn="পেজটি লোড করা যায়নি"
+    />
+  ),
+  notFoundComponent: () => (
+    <BuilderMessage titleEn="Page not found" titleBn="পেজটি পাওয়া যায়নি" />
+  ),
+  component: BuilderPage,
+});
 
-function BuilderMessage({ titleEn, titleBn }: { titleEn: string; titleBn: string }) {
+function BuilderMessage({
+  titleEn,
+  titleBn,
+}: {
+  titleEn: string;
+  titleBn: string;
+}) {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-2xl px-4 py-16 text-center">
@@ -104,7 +128,9 @@ function CanvasMock() {
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="size-2 rounded-full bg-primary" />
-          <span className="text-xs font-semibold text-foreground">Storefront Studio Canvas</span>
+          <span className="text-xs font-semibold text-foreground">
+            Storefront Studio Canvas
+          </span>
         </div>
         <span className="rounded-fq-md bg-card border border-border/60 px-3 py-1 text-xs text-muted-foreground font-mono">
           yourstore.example.com
@@ -112,20 +138,32 @@ function CanvasMock() {
       </div>
       <div className="grid grid-cols-[minmax(0,0.7fr)_minmax(0,2fr)_minmax(0,0.7fr)] gap-px bg-border">
         <div className="space-y-2 bg-background p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Sections</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            Sections
+          </p>
           {canvasMock.rail.map((item) => (
-            <p key={item} className="rounded-fq-md bg-card px-2 py-1.5 text-xs text-muted-foreground">
+            <p
+              key={item}
+              className="rounded-fq-md bg-card px-2 py-1.5 text-xs text-muted-foreground"
+            >
               {item}
             </p>
           ))}
         </div>
         <div className="flex min-h-[220px] items-center justify-center bg-background p-4">
-          <p className="fq-display text-lg text-muted-foreground">Live canvas</p>
+          <p className="fq-display text-lg text-muted-foreground">
+            Live canvas
+          </p>
         </div>
         <div className="space-y-2 bg-background p-4">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Tokens</p>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            Tokens
+          </p>
           {canvasMock.tokens.map((item) => (
-            <p key={item} className="rounded-fq-md bg-card px-2 py-1.5 text-xs text-muted-foreground">
+            <p
+              key={item}
+              className="rounded-fq-md bg-card px-2 py-1.5 text-xs text-muted-foreground"
+            >
               {item}
             </p>
           ))}
@@ -137,23 +175,28 @@ function CanvasMock() {
 
 function BuilderPage() {
   const { lang, t } = useLang();
-  
 
   const perfColumns = perfBand.columns;
   const perfRows = perfBand.rows.map((row) => ({
     id: row.id,
     label: row.label,
-    cells: { budget: row.budget }}));
+    cells: { budget: row.budget },
+  }));
 
   const comparisonRows = comparison.rows.map((row) => ({
     id: row.id,
     label: row.label,
-    cells: { generic: row.generic, framique: row.framique }}));
+    cells: { generic: row.generic, framique: row.framique },
+  }));
 
-  const faqEntries = faq.map((entry) => ({ id: entry.id, question: entry.question, answer: entry.answer }));
+  const faqEntries = faq.map((entry) => ({
+    id: entry.id,
+    question: entry.question,
+    answer: entry.answer,
+  }));
 
   return (
-    <PublicShell >
+    <PublicShell>
       {/* 1 — Hero, aurora. The only H1 on the page. */}
       <HeroBand
         eyebrow={hero.eyebrow}
@@ -182,15 +225,26 @@ function BuilderPage() {
 
       {/* 2 — Canvas mock: glass browser frame, structural claim about renderer parity. */}
       <Band surface="canvas" labelledBy="canvas-mock-title">
-        <BandHeading id="canvas-mock-title" eyebrow="Same renderer, no surprises" title={canvasMock.title} />
+        <BandHeading
+          id="canvas-mock-title"
+          eyebrow="Same renderer, no surprises"
+          title={canvasMock.title}
+        />
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
           <CanvasMock />
           <div>
-            <p className="fq-measure text-muted-foreground">{canvasMock.caption}</p>
-            <p lang="bn" className="font-bangla mt-2 text-sm text-muted-foreground">
+            <p className="fq-measure text-muted-foreground">
+              {canvasMock.caption}
+            </p>
+            <p
+              lang="bn"
+              className="font-bangla mt-2 text-sm text-muted-foreground"
+            >
               {canvasMock.captionBn}
             </p>
-            <p className="fq-measure mt-4 text-sm text-muted-foreground">{canvasMock.body}</p>
+            <p className="fq-measure mt-4 text-sm text-muted-foreground">
+              {canvasMock.body}
+            </p>
           </div>
         </div>
       </Band>
@@ -220,8 +274,14 @@ function BuilderPage() {
 
       {/* 4 — Publish lifecycle: drafts, autosave, versioning, rollback, schedule. */}
       <Band surface="canvas" labelledBy="lifecycle-title" divided>
-        <BandHeading id="lifecycle-title" eyebrow="Never ship by accident" title={lifecycle.title} />
-        <p className="fq-measure mt-6 text-muted-foreground">{lifecycle.intro}</p>
+        <BandHeading
+          id="lifecycle-title"
+          eyebrow="Never ship by accident"
+          title={lifecycle.title}
+        />
+        <p className="fq-measure mt-6 text-muted-foreground">
+          {lifecycle.intro}
+        </p>
         <div className="mt-10">
           <MatrixTable
             caption="The publish lifecycle: stage, visibility, and reversibility"
@@ -234,11 +294,20 @@ function BuilderPage() {
             rows={lifecycle.rows.map((row) => ({
               id: row.stage,
               label: row.stage,
-              cells: { happens: row.happens, who: row.who, reversible: row.reversible }}))}
+              cells: {
+                happens: row.happens,
+                who: row.who,
+                reversible: row.reversible,
+              },
+            }))}
           />
         </div>
-        <p className="fq-measure mt-8 text-muted-foreground">{lifecycle.worked}</p>
-        <p className="fq-measure mt-4 text-muted-foreground">{lifecycle.scheduled}</p>
+        <p className="fq-measure mt-8 text-muted-foreground">
+          {lifecycle.worked}
+        </p>
+        <p className="fq-measure mt-4 text-muted-foreground">
+          {lifecycle.scheduled}
+        </p>
       </Band>
 
       {/* 5 — The five official themes: merchandising guidance + decision table. */}
@@ -257,7 +326,8 @@ function BuilderPage() {
               icon: <LayoutGrid aria-hidden="true" className="size-5" />,
               title: theme.name,
               body: theme.body,
-              meta: <Chip>{theme.fit}</Chip>}))}
+              meta: <Chip>{theme.fit}</Chip>,
+            }))}
           />
         </div>
         <div className="mt-10">
@@ -271,16 +341,25 @@ function BuilderPage() {
             rows={themeDecisionTable.rows.map((row) => ({
               id: row.situation,
               label: row.situation,
-              cells: { theme: row.theme, because: row.because }}))}
+              cells: { theme: row.theme, because: row.because },
+            }))}
           />
         </div>
       </Band>
 
       {/* 6 — Design tokens and brand consistency. */}
       <Band surface="canvas" labelledBy="tokens-title" divided>
-        <BandHeading id="tokens-title" eyebrow="Single source of truth" title={tokensBand.title} />
-        <p className="fq-measure mt-6 text-muted-foreground">{tokensBand.body}</p>
-        <p className="fq-measure mt-4 text-muted-foreground">{tokensBand.worked}</p>
+        <BandHeading
+          id="tokens-title"
+          eyebrow="Single source of truth"
+          title={tokensBand.title}
+        />
+        <p className="fq-measure mt-6 text-muted-foreground">
+          {tokensBand.body}
+        </p>
+        <p className="fq-measure mt-4 text-muted-foreground">
+          {tokensBand.worked}
+        </p>
         <Chip className="mt-6">
           <SlidersHorizontal aria-hidden="true" className="size-3.5" />
           {tokensBand.note}
@@ -294,14 +373,24 @@ function BuilderPage() {
           eyebrow="One record, two languages"
           title={bilingualCatalogue.title}
         />
-        <p lang="bn" className="font-bangla fq-display mt-2 text-xl text-muted-foreground">
+        <p
+          lang="bn"
+          className="font-bangla fq-display mt-2 text-xl text-muted-foreground"
+        >
           {bilingualCatalogue.titleBn}
         </p>
-        <p className="fq-measure mt-6 text-muted-foreground">{bilingualCatalogue.body}</p>
-        <p lang="bn" className="font-bangla fq-measure mt-3 text-sm text-muted-foreground">
+        <p className="fq-measure mt-6 text-muted-foreground">
+          {bilingualCatalogue.body}
+        </p>
+        <p
+          lang="bn"
+          className="font-bangla fq-measure mt-3 text-sm text-muted-foreground"
+        >
           {bilingualCatalogue.bodyBn}
         </p>
-        <p className="fq-measure mt-4 text-muted-foreground">{bilingualCatalogue.commercial}</p>
+        <p className="fq-measure mt-4 text-muted-foreground">
+          {bilingualCatalogue.commercial}
+        </p>
         <Chip className="mt-6">
           <Globe2 aria-hidden="true" className="size-3.5" />
           {bilingualCatalogue.typography}
@@ -318,28 +407,50 @@ function BuilderPage() {
         <div className="mt-10 grid gap-10 md:grid-cols-2">
           <div>
             <h3 className="fq-display text-xl">
-              <TypeIcon aria-hidden="true" className="mr-2 inline size-5 text-muted-foreground" />
+              <TypeIcon
+                aria-hidden="true"
+                className="mr-2 inline size-5 text-muted-foreground"
+              />
               {fontsAndCode.fontsTitle}
             </h3>
-            <p className="fq-measure mt-3 text-sm text-muted-foreground">{fontsAndCode.fontsBody}</p>
-            <p className="fq-measure mt-3 text-sm text-muted-foreground">{fontsAndCode.fontsBudget}</p>
-            <p className="fq-measure mt-3 text-sm text-muted-foreground">{fontsAndCode.fontsWorked}</p>
+            <p className="fq-measure mt-3 text-sm text-muted-foreground">
+              {fontsAndCode.fontsBody}
+            </p>
+            <p className="fq-measure mt-3 text-sm text-muted-foreground">
+              {fontsAndCode.fontsBudget}
+            </p>
+            <p className="fq-measure mt-3 text-sm text-muted-foreground">
+              {fontsAndCode.fontsWorked}
+            </p>
           </div>
           <div>
             <h3 className="fq-display text-xl">
-              <ShieldCheck aria-hidden="true" className="mr-2 inline size-5 text-muted-foreground" />
+              <ShieldCheck
+                aria-hidden="true"
+                className="mr-2 inline size-5 text-muted-foreground"
+              />
               {fontsAndCode.codeTitle}
             </h3>
-            <p className="fq-measure mt-3 text-sm text-muted-foreground">{fontsAndCode.codeBody}</p>
-            <p className="fq-measure mt-3 text-sm text-muted-foreground">{fontsAndCode.codeScanning}</p>
+            <p className="fq-measure mt-3 text-sm text-muted-foreground">
+              {fontsAndCode.codeBody}
+            </p>
+            <p className="fq-measure mt-3 text-sm text-muted-foreground">
+              {fontsAndCode.codeScanning}
+            </p>
           </div>
         </div>
       </Band>
 
       {/* 10 — Performance budgets: why LCP matters for BDT conversion. */}
       <Band surface="canvas" labelledBy="perf-title" divided>
-        <BandHeading id="perf-title" eyebrow="Made-concrete abstraction" title={perfBand.title} />
-        <p className="fq-measure mt-6 text-muted-foreground">{perfBand.intro}</p>
+        <BandHeading
+          id="perf-title"
+          eyebrow="Made-concrete abstraction"
+          title={perfBand.title}
+        />
+        <p className="fq-measure mt-6 text-muted-foreground">
+          {perfBand.intro}
+        </p>
         <div className="mt-10">
           <MatrixTable
             caption={perfBand.caption}
@@ -352,7 +463,9 @@ function BuilderPage() {
           <Gauge aria-hidden="true" className="mr-2 inline size-4" />
           {perfBand.worked}
         </p>
-        <p className="fq-measure mt-4 text-muted-foreground">{perfBand.enforcement}</p>
+        <p className="fq-measure mt-4 text-muted-foreground">
+          {perfBand.enforcement}
+        </p>
       </Band>
 
       {/* 11 — Anatomy of a high-converting product page: 15-item checklist. */}
@@ -364,8 +477,13 @@ function BuilderPage() {
         />
         <ol className="mt-8 grid gap-3 sm:grid-cols-2">
           {productPageChecklist.map((item, index) => (
-            <li key={item} className="fq-glass flex gap-3 rounded-fq-md p-4 text-sm text-muted-foreground">
-              <span className="fq-display shrink-0 text-muted-foreground">{index + 1}.</span>
+            <li
+              key={item}
+              className="fq-glass flex gap-3 rounded-fq-md p-4 text-sm text-muted-foreground"
+            >
+              <span className="fq-display shrink-0 text-muted-foreground">
+                {index + 1}.
+              </span>
               <span>{item}</span>
             </li>
           ))}
@@ -381,13 +499,18 @@ function BuilderPage() {
         />
         <ol className="mt-8 space-y-4">
           {firstHour.map((step) => (
-            <li key={step.title} className="flex gap-4 border-l border-border pl-4">
+            <li
+              key={step.title}
+              className="flex gap-4 border-l border-border pl-4"
+            >
               <span className="w-24 shrink-0 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground">
                 {step.time}
               </span>
               <div>
                 <h3 className="text-sm font-semibold">{step.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{step.body}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {step.body}
+                </p>
               </div>
             </li>
           ))}
@@ -417,13 +540,23 @@ function BuilderPage() {
 
       {/* 14 — Accessibility. */}
       <Band surface="glass" labelledBy="accessibility-title" divided>
-        <BandHeading id="accessibility-title" eyebrow="Built in, not bolted on" title={accessibility.title} />
-        <p className="fq-measure mt-6 text-muted-foreground">{accessibility.body}</p>
+        <BandHeading
+          id="accessibility-title"
+          eyebrow="Built in, not bolted on"
+          title={accessibility.title}
+        />
+        <p className="fq-measure mt-6 text-muted-foreground">
+          {accessibility.body}
+        </p>
       </Band>
 
       {/* 15 — FAQ (10), verbatim source shared with buildGraph. */}
       <Band surface="canvas" labelledBy="faq-title" divided>
-        <BandHeading id="faq-title" eyebrow="Questions" title={t("Frequently asked questions", "সাধারণ জিজ্ঞাসা")} />
+        <BandHeading
+          id="faq-title"
+          eyebrow="Questions"
+          title={t("Frequently asked questions", "সাধারণ জিজ্ঞাসা")}
+        />
         <FaqBand entries={faqEntries} />
       </Band>
 

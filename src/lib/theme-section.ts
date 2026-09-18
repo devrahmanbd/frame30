@@ -7,10 +7,18 @@
  * half-translated copy.
  */
 import { biTextKeysOf } from "./builder-ast";
-import type { Breakpoint, PropValue, Section, SectionType } from "./builder-ast";
+import type {
+  Breakpoint,
+  PropValue,
+  Section,
+  SectionType,
+} from "./builder-ast";
 import { bnKey } from "./bitext";
 
-export type Extras = { hidden?: Breakpoint[]; bp?: Partial<Record<Breakpoint, Record<string, PropValue>>> };
+export type Extras = {
+  hidden?: Breakpoint[];
+  bp?: Partial<Record<Breakpoint, Record<string, PropValue>>>;
+};
 
 /** Fills the বাংলা side of every bilingual prop from `dict`. */
 export function withBn(
@@ -22,7 +30,8 @@ export function withBn(
   for (const key of biTextKeysOf(type)) {
     const en = props[key];
     if (typeof en !== "string" || !en.trim()) continue;
-    if (typeof out[bnKey(key)] === "string" && String(out[bnKey(key)]).trim()) continue;
+    if (typeof out[bnKey(key)] === "string" && String(out[bnKey(key)]).trim())
+      continue;
     const bn = dict[en];
     if (bn) out[bnKey(key)] = bn;
   }
@@ -40,11 +49,20 @@ export function makeSection(
   dict: Record<string, string> = {},
 ): Section {
   counter += 1;
-  return { id: `${key}-${type.replace(/_/g, "-")}-${counter}`, type, props: withBn(type, props, dict), ...extras };
+  return {
+    id: `${key}-${type.replace(/_/g, "-")}-${counter}`,
+    type,
+    props: withBn(type, props, dict),
+    ...extras,
+  };
 }
 
 /** Curried factory bound to one preset key and one dictionary. */
 export function sectionFactory(dict: Record<string, string>) {
-  return (key: string, type: SectionType, props: Record<string, PropValue>, extras: Extras = {}): Section =>
-    makeSection(key, type, props, extras, dict);
+  return (
+    key: string,
+    type: SectionType,
+    props: Record<string, PropValue>,
+    extras: Extras = {},
+  ): Section => makeSection(key, type, props, extras, dict);
 }

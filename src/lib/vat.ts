@@ -56,19 +56,30 @@ export function vatExclusive(net: Money, rate: VatRate): VatBreakdown {
  */
 export function vatInclusive(gross: Money, rate: VatRate): VatBreakdown {
   const bp = rate.rateBasisPoints;
-  const vatMinor = bp === 0 ? 0 : Math.floor((gross.minor * bp) / (10000 + bp) + 0.5);
+  const vatMinor =
+    bp === 0 ? 0 : Math.floor((gross.minor * bp) / (10000 + bp) + 0.5);
   const vat = money(vatMinor, gross.currency);
   return { mode: "inclusive", rate, net: sub(gross, vat), vat, gross };
 }
 
-export function vatBreakdown(amount: Money, rate: VatRate, mode: VatMode): VatBreakdown {
-  return mode === "inclusive" ? vatInclusive(amount, rate) : vatExclusive(amount, rate);
+export function vatBreakdown(
+  amount: Money,
+  rate: VatRate,
+  mode: VatMode,
+): VatBreakdown {
+  return mode === "inclusive"
+    ? vatInclusive(amount, rate)
+    : vatExclusive(amount, rate);
 }
 
 /** Per-line VAT split that reconciles to the invoice total, paisa for paisa. */
-export function splitVatAcrossLines(breakdown: VatBreakdown, lineTotals: Money[]): Money[] {
+export function splitVatAcrossLines(
+  breakdown: VatBreakdown,
+  lineTotals: Money[],
+): Money[] {
   if (lineTotals.length === 0) return [];
-  if (breakdown.vat.minor === 0) return lineTotals.map(() => zero(breakdown.vat.currency));
+  if (breakdown.vat.minor === 0)
+    return lineTotals.map(() => zero(breakdown.vat.currency));
   return allocateByLines(breakdown.vat, lineTotals);
 }
 
@@ -76,8 +87,12 @@ export function splitVatAcrossLines(breakdown: VatBreakdown, lineTotals: Money[]
  * Refund VAT component. A partial refund carries its proportional VAT share so
  * the credit note is legally correct; full refunds return the whole VAT.
  */
-export function refundVatComponent(breakdown: VatBreakdown, refund: Money): Money {
-  if (breakdown.gross.minor === 0 || refund.minor <= 0) return zero(refund.currency);
+export function refundVatComponent(
+  breakdown: VatBreakdown,
+  refund: Money,
+): Money {
+  if (breakdown.gross.minor === 0 || refund.minor <= 0)
+    return zero(refund.currency);
   if (refund.minor >= breakdown.gross.minor) return breakdown.vat;
   const [share] = allocateByLines(breakdown.vat, [
     refund,
@@ -88,6 +103,8 @@ export function refundVatComponent(breakdown: VatBreakdown, refund: Money): Mone
 
 /** Invoice display line: "including VAT" is never implied, always stated. */
 export function vatLabel(rate: VatRate, lang: "en" | "bn") {
-  const pct = (rate.rateBasisPoints / 100).toFixed(rate.rateBasisPoints % 100 === 0 ? 0 : 2);
+  const pct = (rate.rateBasisPoints / 100).toFixed(
+    rate.rateBasisPoints % 100 === 0 ? 0 : 2,
+  );
   return lang === "bn" ? `ভ্যাট ${pct}%` : `VAT ${pct}%`;
 }

@@ -8,7 +8,14 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * following a renamed link (301) or a permanently removed one (410).
  */
 export const resolveMissingUrlFn = createServerFn({ method: "GET" })
-  .inputValidator((data) => z.object({ slug: z.string().min(1).max(80), path: z.string().min(1).max(512) }).parse(data))
+  .inputValidator((data) =>
+    z
+      .object({
+        slug: z.string().min(1).max(80),
+        path: z.string().min(1).max(512),
+      })
+      .parse(data),
+  )
   .handler(async ({ data }) => {
     const { resolveMissingUrl } = await import("./url-lifecycle.server");
     return resolveMissingUrl(data.slug, data.path);
@@ -32,7 +39,10 @@ export const recordSlugChangeFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { recordSlugChange } = await import("./url-lifecycle.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     if (!merchantId) return { ok: false as const };
     const { data: merchant } = await (context.supabase as any)
       .from("merchants")

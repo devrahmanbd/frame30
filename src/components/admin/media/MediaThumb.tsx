@@ -6,7 +6,12 @@
  */
 import { FileAudio, FileText, FileVideo, ImageOff, Shapes } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type Attachment, extensionOf, isPreviewable, mediaKind } from "@/lib/media/library";
+import {
+  type Attachment,
+  extensionOf,
+  isPreviewable,
+  mediaKind,
+} from "@/lib/media/library";
 
 export function MediaThumb({
   item,
@@ -33,7 +38,13 @@ export function MediaThumb({
   }
 
   const Icon =
-    kind === "video" ? FileVideo : kind === "audio" ? FileAudio : kind === "document" ? FileText : ImageOff;
+    kind === "video"
+      ? FileVideo
+      : kind === "audio"
+        ? FileAudio
+        : kind === "document"
+          ? FileText
+          : ImageOff;
 
   return (
     <div

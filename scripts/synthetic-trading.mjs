@@ -30,7 +30,9 @@ function updateBalance(accountId, amountMinor) {
   const current = balances.get(accountId) ?? 0n;
   const updated = current + BigInt(amountMinor);
   if (updated < 0n) {
-    throw new Error(`Negative balance detected for account ${accountId}: ${updated}`);
+    throw new Error(
+      `Negative balance detected for account ${accountId}: ${updated}`,
+    );
   }
   balances.set(accountId, updated);
   return updated;
@@ -93,15 +95,32 @@ for (let i = 0; i < NUM_COURIERS; i++) {
     awb,
     status: i < 5 ? "delivered" : i < 15 ? "in_transit" : "picked_up",
     checkpoints: [
-      { status: "created", time: new Date(Date.now() - 86400000).toISOString() },
-      { status: "picked_up", time: new Date(Date.now() - 43200000).toISOString() },
-      ...(i < 15 ? [{ status: "in_transit", time: new Date(Date.now() - 21600000).toISOString() }] : []),
-      ...(i < 5 ? [{ status: "delivered", time: new Date().toISOString() }] : []),
+      {
+        status: "created",
+        time: new Date(Date.now() - 86400000).toISOString(),
+      },
+      {
+        status: "picked_up",
+        time: new Date(Date.now() - 43200000).toISOString(),
+      },
+      ...(i < 15
+        ? [
+            {
+              status: "in_transit",
+              time: new Date(Date.now() - 21600000).toISOString(),
+            },
+          ]
+        : []),
+      ...(i < 5
+        ? [{ status: "delivered", time: new Date().toISOString() }]
+        : []),
     ],
   };
   shipments.push(shipment);
 }
-console.log(`✅ ${shipments.length} courier shipments booked and tracked across 4 carriers.`);
+console.log(
+  `✅ ${shipments.length} courier shipments booked and tracked across 4 carriers.`,
+);
 
 // 3. Simulate 5 refunds
 console.log(`\n💸 Simulating ${NUM_REFUNDS} order refunds...`);
@@ -124,7 +143,9 @@ for (let i = 0; i < NUM_REFUNDS; i++) {
     memo: `Refund for ${order.orderNumber}`,
   });
 }
-console.log(`✅ ${NUM_REFUNDS} refunds processed with corresponding ledger debit entries.`);
+console.log(
+  `✅ ${NUM_REFUNDS} refunds processed with corresponding ledger debit entries.`,
+);
 
 // 4. Simulate 1 daily payout settlement file
 console.log(`\n📑 Simulating daily payout settlement file reconciliation...`);
@@ -139,7 +160,9 @@ ledger.push({
   platformMinor: 0n,
   memo: `Daily payout batch file settlement`,
 });
-console.log(`✅ Daily payout settlement file generated for ${payoutAmount / 100n} BDT.`);
+console.log(
+  `✅ Daily payout settlement file generated for ${payoutAmount / 100n} BDT.`,
+);
 
 // 5. Verifications & Invariants Check
 console.log(`\n🔍 Verifying Ledger Conformance & Accounting Invariants...`);
@@ -155,20 +178,28 @@ for (const entry of ledger) {
 
   // Strict per-entry double-entry invariant
   if (entry.grossMinor !== entry.sellerMinor + entry.platformMinor) {
-    throw new Error(`Double-entry balance mismatch in entry: ${JSON.stringify(entry)}`);
+    throw new Error(
+      `Double-entry balance mismatch in entry: ${JSON.stringify(entry)}`,
+    );
   }
 }
 
 console.log(`   • Total Gross Volume : ${totalGross / 100n} BDT`);
 console.log(`   • Total Seller Share : ${totalSeller / 100n} BDT`);
 console.log(`   • Total Platform Fee : ${totalPlatform / 100n} BDT`);
-console.log(`   • Balance Verification: ${totalGross === totalSeller + totalPlatform ? "PASSED (Double-entry exact match)" : "FAILED"}`);
+console.log(
+  `   • Balance Verification: ${totalGross === totalSeller + totalPlatform ? "PASSED (Double-entry exact match)" : "FAILED"}`,
+);
 
 for (const [account, bal] of balances.entries()) {
   if (bal < 0n) {
-    throw new Error(`Negative balance constraint violated on ${account}: ${bal}`);
+    throw new Error(
+      `Negative balance constraint violated on ${account}: ${bal}`,
+    );
   }
   console.log(`   • Balance check ${account}: ${bal / 100n} BDT (OK)`);
 }
 
-console.log("\n🎉 Synthetic Trading Run Completed Successfully! All invariants satisfied.\n");
+console.log(
+  "\n🎉 Synthetic Trading Run Completed Successfully! All invariants satisfied.\n",
+);

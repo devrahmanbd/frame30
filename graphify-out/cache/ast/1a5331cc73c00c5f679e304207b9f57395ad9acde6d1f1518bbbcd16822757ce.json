@@ -1,1 +1,422 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "label": "payouts.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L1"}, {"id": "lib_payouts_test_rec", "label": "rec", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L21"}, {"id": "lib_payouts_test_recorder", "label": "recorder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L22"}, {"id": "lib_payouts_test_shared", "label": "shared", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L25"}, {"id": "lib_payouts_test_supabaseadmin", "label": "supabaseAdmin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L30"}, {"id": "lib_payouts_test_opts", "label": "Opts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L56"}, {"id": "lib_payouts_test_db", "label": "db()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L65"}, {"id": "lib_payouts_test_request", "label": "request", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L94"}, {"id": "lib_payouts_test_approvedpayout", "label": "approvedPayout()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L100"}, {"id": "lib_payouts_test_events", "label": "events()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L126"}, {"id": "lib_payouts_test_counters", "label": "counters()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L129"}, {"id": "lib_payouts_test_store", "label": "store", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L142"}, {"id": "lib_payouts_test_trail", "label": "trail", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L315"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "fixtures_fake_db_fakedb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "fixtures_fake_db_fakedb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_test_doubles_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "fixtures_test_doubles_metricrecorder", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "fixtures_test_doubles_allowallratelimits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_rec", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_recorder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_shared", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_supabaseadmin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_opts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_request", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_approvedpayout", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_events", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L126", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_counters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L142", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L152", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L161", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L170", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L178", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L197", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L206", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L214", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L243", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L256", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L270", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L291", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L300", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_store", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L313", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_payouts_test_ts", "target": "lib_payouts_test_trail", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L315", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_payouts_test_db", "callee": "fakeDb", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L66"}, {"caller_nid": "lib_payouts_test_events", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L127"}, {"caller_nid": "lib_payouts_test_events", "callee": "rows", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L127"}, {"caller_nid": "lib_payouts_test_counters", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts", "source_location": "L129"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "label": "payouts.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_payouts_test_rec",
+      "label": "rec",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_payouts_test_recorder",
+      "label": "recorder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_payouts_test_shared",
+      "label": "shared",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_payouts_test_supabaseadmin",
+      "label": "supabaseAdmin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_payouts_test_opts",
+      "label": "Opts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_payouts_test_db",
+      "label": "db()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_payouts_test_request",
+      "label": "request",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "lib_payouts_test_approvedpayout",
+      "label": "approvedPayout()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_payouts_test_events",
+      "label": "events()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L126"
+    },
+    {
+      "id": "lib_payouts_test_counters",
+      "label": "counters()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L129"
+    },
+    {
+      "id": "lib_payouts_test_store",
+      "label": "store",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L142"
+    },
+    {
+      "id": "lib_payouts_test_trail",
+      "label": "trail",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L315"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "fixtures_fake_db_fakedb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "fixtures_fake_db_fakedb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_test_doubles_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "fixtures_test_doubles_metricrecorder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "fixtures_test_doubles_allowallratelimits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_rec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_recorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_shared",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_supabaseadmin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_opts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_request",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_approvedpayout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_events",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L126",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_counters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L170",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L256",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L270",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L300",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_store",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L313",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_payouts_test_ts",
+      "target": "lib_payouts_test_trail",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L315",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_payouts_test_db",
+      "callee": "fakeDb",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_payouts_test_events",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_payouts_test_events",
+      "callee": "rows",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_payouts_test_counters",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/payouts.test.ts",
+      "source_location": "L129"
+    }
+  ]
+}

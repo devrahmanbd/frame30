@@ -53,7 +53,8 @@ const current: { db: FakeDb } = { db: fakeDb() };
 // turn every count assertion into a tautology. Passing through keeps the test
 // honest about what the code does on a cold cache — the case that hurts.
 vi.mock("./cache.server", () => ({
-  cached: async <T,>(_key: string, _ttl: number, load: () => Promise<T>) => load(),
+  cached: async <T>(_key: string, _ttl: number, load: () => Promise<T>) =>
+    load(),
   invalidate: () => {},
   cacheStats: () => ({ entries: 0, hits: 0, misses: 0 }),
 }));
@@ -74,7 +75,8 @@ const {
   BULK_PAGE_MAX,
   SEO_INDEX_LIMITS,
 } = await import("./seo.server");
-const { loadDashboardHome, DASHBOARD_ORDER_SCAN_LIMIT } = await import("./dashboard.server");
+const { loadDashboardHome, DASHBOARD_ORDER_SCAN_LIMIT } =
+  await import("./dashboard.server");
 
 /* -------------------------------------------------------------------------- */
 /* Shared assertions                                                          */
@@ -84,7 +86,9 @@ type Select = Extract<Call, { kind: "select" }>;
 
 /** A read is bounded when the database can stop early. Everything else scans. */
 function unbounded(reads: Select[]): Select[] {
-  return reads.filter((r) => r.limit === null && r.range === null && !r.single && !r.head);
+  return reads.filter(
+    (r) => r.limit === null && r.range === null && !r.single && !r.head,
+  );
 }
 
 function describeRead(r: Select) {
@@ -95,7 +99,10 @@ function describeRead(r: Select) {
 
 function expectEveryReadBounded(db: FakeDb) {
   const offenders = unbounded(db.selects());
-  expect(offenders.map(describeRead), "unbounded reads are table scans").toEqual([]);
+  expect(
+    offenders.map(describeRead),
+    "unbounded reads are table scans",
+  ).toEqual([]);
 }
 
 /** Largest number of rows any single read handed back. */
@@ -136,7 +143,9 @@ describe("large-tenant fixture", () => {
     expect(countRows(a)).toBeGreaterThanOrEqual(50_000);
     // Same seed, same rows: a failure here is reproducible, not a flake.
     expect(b["products"]?.[17]?.["title"]).toBe(a["products"]?.[17]?.["title"]);
-    expect(b["seo_meta"]?.[99]?.["meta_description"]).toBe(a["seo_meta"]?.[99]?.["meta_description"]);
+    expect(b["seo_meta"]?.[99]?.["meta_description"]).toBe(
+      a["seo_meta"]?.[99]?.["meta_description"],
+    );
   });
 });
 
@@ -155,7 +164,10 @@ describe("admin SEO index — listSeoEntities", () => {
   it("never fans out into a per-entity override lookup", async () => {
     const db = fakeDb({ tables: largeTenantTables() });
     current.db = db;
-    const entities = await listSeoEntities(db.asClient<Client>(), LARGE_TENANT_ID);
+    const entities = await listSeoEntities(
+      db.asClient<Client>(),
+      LARGE_TENANT_ID,
+    );
 
     // One read per kind, one for the override table, plus the merchant rows.
     expect(db.selects("seo_meta")).toHaveLength(1);
@@ -176,7 +188,9 @@ describe("bulk SEO table — listSeoBulk", () => {
   it("caps the page size at 100 however large a page the caller asks for", async () => {
     const db = fakeDb({ tables: largeTenantTables() });
     current.db = db;
-    const page = await listSeoBulk(db.asClient<Client>(), LARGE_TENANT_ID, { pageSize: 5_000 });
+    const page = await listSeoBulk(db.asClient<Client>(), LARGE_TENANT_ID, {
+      pageSize: 5_000,
+    });
 
     expect(page.pageSize).toBe(BULK_PAGE_MAX);
     expect(page.rows.length).toBeLessThanOrEqual(BULK_PAGE_MAX);
@@ -225,7 +239,9 @@ describe("sitemap shards — loadSitemapByKind", () => {
 
       expect(urls, `${kind} shard should exist`).not.toBeNull();
       expect(urls!.length).toBeLessThanOrEqual(SITEMAP_MAX_URLS);
-      expect(widestRead(db), `${kind} read too many rows`).toBeLessThanOrEqual(SITEMAP_SHARD_MAX_ROWS);
+      expect(widestRead(db), `${kind} read too many rows`).toBeLessThanOrEqual(
+        SITEMAP_SHARD_MAX_ROWS,
+      );
       expectEveryReadBounded(db);
       // Content reads only: no per-URL override or permalink lookup.
       expect(db.selects().length).toBeLessThanOrEqual(6);
@@ -244,7 +260,9 @@ describe("sitemap shards — loadSitemapByKind", () => {
   it("returns an empty shard rather than throwing for an unknown store", async () => {
     const db = fakeDb({ tables: largeTenantTables({ scale: 0.01 }) });
     current.db = db;
-    await expect(loadSitemapByKind("no-such-store", "pages")).resolves.toBeNull();
+    await expect(
+      loadSitemapByKind("no-such-store", "pages"),
+    ).resolves.toBeNull();
   });
 });
 
@@ -252,12 +270,17 @@ describe("dashboard home — loadDashboardHome", () => {
   it("scans a bounded order window, not the tenant's history", async () => {
     const db = fakeDb({ tables: largeTenantTables() });
     current.db = db;
-    const home = await loadDashboardHome(db.asClient<Client>(), LARGE_TENANT_ID);
+    const home = await loadDashboardHome(
+      db.asClient<Client>(),
+      LARGE_TENANT_ID,
+    );
 
     const orderReads = db.selects("orders").filter((r) => !r.head);
     expect(orderReads).toHaveLength(1);
     expect(orderReads[0]!.limit).toBe(DASHBOARD_ORDER_SCAN_LIMIT);
-    expect(orderReads[0]!.returned).toBeLessThanOrEqual(DASHBOARD_ORDER_SCAN_LIMIT);
+    expect(orderReads[0]!.returned).toBeLessThanOrEqual(
+      DASHBOARD_ORDER_SCAN_LIMIT,
+    );
 
     // Lifetime volume is a COUNT, so it transfers no rows at all.
     const counts = db.selects("orders").filter((r) => r.head);

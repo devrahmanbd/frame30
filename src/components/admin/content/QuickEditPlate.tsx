@@ -1,4 +1,11 @@
-import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type KeyboardEvent,
+} from "react";
 import { btnGhost, btnPrimary, inputClass } from "@/components/console/kit";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
@@ -52,10 +59,14 @@ export function QuickEditPlate({
     titleRef.current?.select();
   }, []);
 
-  const set = <K extends keyof QuickEditDraft>(key: K, value: QuickEditDraft[K]) => {
+  const set = <K extends keyof QuickEditDraft>(
+    key: K,
+    value: QuickEditDraft[K],
+  ) => {
     setDraft((d) => {
       const next = { ...d, [key]: value };
-      if (key === "title" && !touchedSlug) next.slug = slugifyTitle(String(value));
+      if (key === "title" && !touchedSlug)
+        next.slug = slugifyTitle(String(value));
       return next;
     });
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
@@ -99,7 +110,9 @@ export function QuickEditPlate({
       aria-label={t("Quick edit", "দ্রুত সম্পাদনা")}
       className="fq-enter border-y border-border bg-card px-4 py-4"
     >
-      <h3 className="mb-3 text-sm font-semibold text-foreground">{t("Quick Edit", "দ্রুত সম্পাদনা")}</h3>
+      <h3 className="mb-3 text-sm font-semibold text-foreground">
+        {t("Quick Edit", "দ্রুত সম্পাদনা")}
+      </h3>
       <div className="grid gap-x-8 gap-y-3 md:grid-cols-2">
         {/* Left column */}
         <div className="space-y-3">
@@ -127,7 +140,10 @@ export function QuickEditPlate({
             </label>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1">
-                <span className="hidden max-w-[40%] truncate text-xs fq-sub sm:block" title={permalinkPrefix(row.kind, storeSlug)}>
+                <span
+                  className="hidden max-w-[40%] truncate text-xs fq-sub sm:block"
+                  title={permalinkPrefix(row.kind, storeSlug)}
+                >
                   {permalinkPrefix(row.kind, storeSlug)}
                 </span>
                 <input
@@ -136,7 +152,10 @@ export function QuickEditPlate({
                   maxLength={60}
                   onChange={(e) => {
                     setTouchedSlug(true);
-                    set("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"));
+                    set(
+                      "slug",
+                      e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+                    );
                   }}
                   aria-invalid={Boolean(errors.slug)}
                   className={cn(inputClass, "fq-num")}
@@ -160,7 +179,10 @@ export function QuickEditPlate({
                 className={cn(inputClass, "fq-num")}
               />
               <p className="mt-1 text-xs fq-sub">
-                {t("A future date with status Published schedules it.", "ভবিষ্যতের তারিখ ও Published স্ট্যাটাস দিলে নির্ধারিত হবে।")}
+                {t(
+                  "A future date with status Published schedules it.",
+                  "ভবিষ্যতের তারিখ ও Published স্ট্যাটাস দিলে নির্ধারিত হবে।",
+                )}
               </p>
               {err("date")}
             </div>
@@ -179,12 +201,16 @@ export function QuickEditPlate({
                   value={draft.password}
                   maxLength={64}
                   disabled={draft.isPrivate}
-                  placeholder={row.hasPassword ? t("(unchanged)", "(অপরিবর্তিত)") : ""}
+                  placeholder={
+                    row.hasPassword ? t("(unchanged)", "(অপরিবর্তিত)") : ""
+                  }
                   onChange={(e) => set("password", e.target.value)}
                   aria-invalid={Boolean(errors.password)}
                   className={cn(inputClass, "max-w-[12rem]")}
                 />
-                <span className="text-xs uppercase tracking-wide fq-sub">{t("–OR–", "–অথবা–")}</span>
+                <span className="text-xs uppercase tracking-wide fq-sub">
+                  {t("–OR–", "–অথবা–")}
+                </span>
                 <label className="inline-flex items-center gap-2 text-sm text-foreground">
                   <input
                     id={id("isPrivate")}
@@ -215,7 +241,9 @@ export function QuickEditPlate({
                   aria-invalid={Boolean(errors.parentId)}
                   className={inputClass}
                 >
-                  <option value="">{t("Main Page (no parent)", "মূল পেজ (প্যারেন্ট নেই)")}</option>
+                  <option value="">
+                    {t("Main Page (no parent)", "মূল পেজ (প্যারেন্ট নেই)")}
+                  </option>
                   {parents.map((p) => (
                     <option key={p.id} value={p.id}>
                       {"\u00a0\u00a0".repeat(p.depth)}
@@ -254,7 +282,12 @@ export function QuickEditPlate({
               {t("Template", "টেমপ্লেট")}
             </label>
             <div className="min-w-0 flex-1">
-              <select id={id("template")} value={draft.template} onChange={(e) => set("template", e.target.value)} className={inputClass}>
+              <select
+                id={id("template")}
+                value={draft.template}
+                onChange={(e) => set("template", e.target.value)}
+                className={inputClass}
+              >
                 {PAGE_TEMPLATES.map((tpl) => (
                   <option key={tpl.id} value={tpl.id}>
                     {tpl[l]}
@@ -288,16 +321,25 @@ export function QuickEditPlate({
                 id={id("status")}
                 value={draft.status}
                 disabled={draft.isPrivate}
-                onChange={(e) => set("status", e.target.value as QuickEditDraft["status"])}
+                onChange={(e) =>
+                  set("status", e.target.value as QuickEditDraft["status"])
+                }
                 className={inputClass}
               >
                 <option value="published">{t("Published", "প্রকাশিত")}</option>
-                <option value="pending">{t("Pending Review", "পর্যালোচনা বাকি")}</option>
+                <option value="pending">
+                  {t("Pending Review", "পর্যালোচনা বাকি")}
+                </option>
                 <option value="draft">{t("Draft", "খসড়া")}</option>
                 <option value="scheduled">{t("Scheduled", "নির্ধারিত")}</option>
               </select>
               {draft.isPrivate ? (
-                <p className="mt-1 text-xs fq-sub">{t("Private items are published, but only visible to your team.", "ব্যক্তিগত আইটেম প্রকাশিত, তবে শুধু আপনার টিম দেখতে পায়।")}</p>
+                <p className="mt-1 text-xs fq-sub">
+                  {t(
+                    "Private items are published, but only visible to your team.",
+                    "ব্যক্তিগত আইটেম প্রকাশিত, তবে শুধু আপনার টিম দেখতে পায়।",
+                  )}
+                </p>
               ) : null}
             </div>
           </div>
@@ -317,7 +359,9 @@ export function QuickEditPlate({
         <button type="button" onClick={onCancel} className={btnGhost}>
           {t("Cancel", "বাতিল")}
         </button>
-        <span className="ml-auto text-xs fq-sub">{t("Esc to cancel", "বাতিল করতে Esc")}</span>
+        <span className="ml-auto text-xs fq-sub">
+          {t("Esc to cancel", "বাতিল করতে Esc")}
+        </span>
       </div>
     </form>
   );

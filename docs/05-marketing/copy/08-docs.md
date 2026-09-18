@@ -12,9 +12,9 @@ Scope: this deck covers the `/docs` landing page only — the reference sub-page
 - **og:description**: `REST, webhooks and SDKs with a sandbox you can call from this page.`
 - **canonical / og:url**: `/docs`
 - **JSON-LD**:
-    - `BreadcrumbList` — Home → Docs.
-    - `SoftwareApplication` — name `Framique API`, applicationCategory `BusinessApplication`, operatingSystem `Web`, offers referencing the pricing page.
-    - `TechArticle` — headline `Framique developer documentation`, about `REST API`, proficiencyLevel `Beginner`, dependencies `curl, TypeScript`. Sub-pages (`docs.$version.$slug.tsx`) each emit their own `TechArticle` with a `datePublished`/`dateModified` pair sourced from the changelog.
+  - `BreadcrumbList` — Home → Docs.
+  - `SoftwareApplication` — name `Framique API`, applicationCategory `BusinessApplication`, operatingSystem `Web`, offers referencing the pricing page.
+  - `TechArticle` — headline `Framique developer documentation`, about `REST API`, proficiencyLevel `Beginner`, dependencies `curl, TypeScript`. Sub-pages (`docs.$version.$slug.tsx`) each emit their own `TechArticle` with a `datePublished`/`dateModified` pair sourced from the changelog.
 - **H1 rule**: exactly one `<h1>` per render — `Build on the Framique API.` on the landing surface; sub-pages set their own H1 to the endpoint or guide title and demote this copy's H1 to a breadcrumb label.
 - Docs pages carry their own sitemap shard (`/docs/sitemap.xml`), regenerated on every route-registry change so new endpoints are indexed within a day.
 - **og:type**: `website`
@@ -55,7 +55,7 @@ Scope: this deck covers the `/docs` landing page only — the reference sub-page
 
 ## 1. Hero
 
-*Lever:* **Instrumentality** — before anything else, tell the reader exactly what class of person this page rewards (someone about to write a request), so they don't scan for a marketing summary that isn't coming.
+_Lever:_ **Instrumentality** — before anything else, tell the reader exactly what class of person this page rewards (someone about to write a request), so they don't scan for a marketing summary that isn't coming.
 
 - **Eyebrow**: `v1 stable · v0 archived`
 - **H1**: **Build on the Framique API.**
@@ -65,6 +65,7 @@ Scope: this deck covers the `/docs` landing page only — the reference sub-page
 - Inline: docs search field (`⌘K` / `Ctrl K`), keyboard-focusable, results ranked client-side against a static index of route summaries and guide titles — no network round trip for the first keystroke.
 
 **বাংলা variant** (language toggle in nav, not auto-detected):
+
 - H1: `ফ্রেমিক API দিয়ে তৈরি করুন।`
 - Sub: `REST, ওয়েবহুক ও SDK — এই পাতা থেকেই স্যান্ডবক্সে কল করুন।`
 
@@ -74,7 +75,7 @@ Scope: this deck covers the `/docs` landing page only — the reference sub-page
 
 ## 2. Quickstart in five minutes
 
-*Lever:* **Reduced friction / commitment device** — a five-minute promise only works if the first code block actually runs unmodified, so every sample below is copy-paste complete, including the sandbox key.
+_Lever:_ **Reduced friction / commitment device** — a five-minute promise only works if the first code block actually runs unmodified, so every sample below is copy-paste complete, including the sandbox key.
 
 **Step 1 — Create a key.** Dashboard → Developers → API keys → New key. Pick scopes; a key that can read orders cannot refund them unless `orders.write` is granted explicitly. Keys are shown once; store the secret in your own vault, not in source control.
 
@@ -109,15 +110,25 @@ Response shape:
 ```json
 {
   "data": [
-    { "id": "ord_7g2k", "status": "paid", "total_minor": 149000, "currency": "BDT", "created_at": "2024-03-11T09:12:04Z" }
+    {
+      "id": "ord_7g2k",
+      "status": "paid",
+      "total_minor": 149000,
+      "currency": "BDT",
+      "created_at": "2024-03-11T09:12:04Z"
+    }
   ],
-  "page": { "limit": 5, "next_cursor": "eyJ0cyI6IjIwMjQtMDMtMTEiLCJpZCI6Im9yZF83ZzJrIn0" }
+  "page": {
+    "limit": 5,
+    "next_cursor": "eyJ0cyI6IjIwMjQtMDMtMTEiLCJpZCI6Im9yZF83ZzJrIn0"
+  }
 }
 ```
 
 **Step 3 — Subscribe to a webhook.** Dashboard → Developers → Webhooks → New endpoint, or `POST /v1/webhooks` with `webhooks.write`. Every delivery is HMAC-signed and shows up in a per-endpoint delivery log with a replay button — see Band 9.
 
 **বাংলা variant** (button labels only, code stays English per platform convention):
+
 - `একটি কী তৈরি করুন` · `এন্ডপয়েন্ট কল করুন` · `ওয়েবহুক সাবস্ক্রাইব করুন`
 
 **Design note**: three glass steps in a row (3-up → 1-up at 640px), each with a number chip in signal blue, code block on `surface-1` with a hairline border and a copy-to-clipboard affordance in the top-right corner. No syntax-theme gimmicks — monochrome tokens with signal blue reserved for strings, matching the one-accent-color rule.
@@ -126,44 +137,44 @@ Response shape:
 
 ## 3. Authentication and scoped keys
 
-*Lever:* **Loss aversion / trust signaling** — naming the exact two rules that govern scopes removes the vague fear that "the docs probably don't cover this edge case."
+_Lever:_ **Loss aversion / trust signaling** — naming the exact two rules that govern scopes removes the vague fear that "the docs probably don't cover this edge case."
 
 Every request carries a bearer key: `Authorization: Bearer fq_live_...` (or `fq_test_...` against the sandbox host). Keys are scoped, not account-wide. Two rules govern every authorization decision, enforced by the same pure scope module on the consent screen, the key editor and the gateway — a scope cannot mean one thing in the dashboard and another at the wire:
 
 1. An app's effective grant is the **intersection** of what it requested and what its registration allows. Nothing widens a grant at request time.
-2. A `.write` scope implies `.read` of the *same* resource only. `orders.write` implies `orders.read`; it implies nothing about `products` or `customers`.
+2. A `.write` scope implies `.read` of the _same_ resource only. `orders.write` implies `orders.read`; it implies nothing about `products` or `customers`.
 
 Requesting a scope your key was never issued does not error silently — the response names the refused scopes verbatim so you can fix the request instead of guessing.
 
 ### Scope catalogue
 
-| Scope | Grants | PII | Mutates state |
-|---|---|---|---|
-| `orders.read` | Read orders and their totals | Yes | No |
-| `orders.write` | Add notes and tags to orders | Yes | Yes |
-| `products.read` | Read the catalogue | No | No |
-| `products.write` | Create and edit products | No | Yes |
-| `customers.read` | Read customer profiles | Yes | No |
-| `analytics.read` | Read aggregated analytics | No | No |
-| `exports.read` | List export jobs and downloads | Yes | No |
-| `exports.write` | Start new export jobs | Yes | Yes |
-| `webhooks.read` | List webhook endpoints | No | No |
-| `webhooks.write` | Create, rotate and delete webhooks | No | Yes |
+| Scope            | Grants                             | PII | Mutates state |
+| ---------------- | ---------------------------------- | --- | ------------- |
+| `orders.read`    | Read orders and their totals       | Yes | No            |
+| `orders.write`   | Add notes and tags to orders       | Yes | Yes           |
+| `products.read`  | Read the catalogue                 | No  | No            |
+| `products.write` | Create and edit products           | No  | Yes           |
+| `customers.read` | Read customer profiles             | Yes | No            |
+| `analytics.read` | Read aggregated analytics          | No  | No            |
+| `exports.read`   | List export jobs and downloads     | Yes | No            |
+| `exports.write`  | Start new export jobs              | Yes | Yes           |
+| `webhooks.read`  | List webhook endpoints             | No  | No            |
+| `webhooks.write` | Create, rotate and delete webhooks | No  | Yes           |
 
 **বাংলা labels** (consent screen and key editor use these verbatim):
 
-| Scope | বাংলা |
-|---|---|
-| `orders.read` | অর্ডার ও মোট মূল্য দেখা |
-| `orders.write` | অর্ডারে নোট ও ট্যাগ যোগ |
-| `products.read` | ক্যাটালগ পড়া |
-| `products.write` | পণ্য তৈরি ও সম্পাদনা |
-| `customers.read` | গ্রাহক প্রোফাইল পড়া |
-| `analytics.read` | সমষ্টিগত বিশ্লেষণ পড়া |
-| `exports.read` | এক্সপোর্ট জব দেখা |
-| `exports.write` | নতুন এক্সপোর্ট শুরু |
-| `webhooks.read` | ওয়েবহুক এন্ডপয়েন্ট দেখা |
-| `webhooks.write` | ওয়েবহুক তৈরি ও ঘোরানো |
+| Scope            | বাংলা                     |
+| ---------------- | ------------------------- |
+| `orders.read`    | অর্ডার ও মোট মূল্য দেখা   |
+| `orders.write`   | অর্ডারে নোট ও ট্যাগ যোগ   |
+| `products.read`  | ক্যাটালগ পড়া             |
+| `products.write` | পণ্য তৈরি ও সম্পাদনা      |
+| `customers.read` | গ্রাহক প্রোফাইল পড়া      |
+| `analytics.read` | সমষ্টিগত বিশ্লেষণ পড়া    |
+| `exports.read`   | এক্সপোর্ট জব দেখা         |
+| `exports.write`  | নতুন এক্সপোর্ট শুরু       |
+| `webhooks.read`  | ওয়েবহুক এন্ডপয়েন্ট দেখা |
+| `webhooks.write` | ওয়েবহুক তৈরি ও ঘোরানো    |
 
 Practical guidance: scope a server-side integration to only the resources it touches. A pricing sync only ever needs `products.read` and `products.write` — never issue it `customers.read`. Any scope flagged PII in the table above should live behind a key with a short rotation cadence; the dashboard surfaces a "last used" timestamp per key so unused broad grants are visible before they become a liability.
 
@@ -173,18 +184,18 @@ Practical guidance: scope a server-side integration to only the resources it tou
 
 ## 4. Endpoint groups
 
-*Lever:* **Chunking** — a page of fourteen routes is easier to hold in memory as five named groups than as one flat list.
+_Lever:_ **Chunking** — a page of fourteen routes is easier to hold in memory as five named groups than as one flat list.
 
 Endpoint tables on the reference sub-pages are generated from the live route registry, so method, path, scope and description never drift from what the gateway actually accepts. The landing page shows the group summary; each row expands to a curl and TypeScript sample and a JSON response shape.
 
-| Group | Routes | Primary scope |
-|---|---|---|
-| Identity | `GET /me` | `products.read` |
-| Orders | `GET /orders`, `GET /orders/:id`, `POST /orders/:id/notes` | `orders.read` / `orders.write` |
-| Products | `GET /products`, `GET /products/:id`, `POST /products` | `products.read` / `products.write` |
-| Customers | `GET /customers` | `customers.read` |
-| Exports | `GET /exports`, `POST /exports`, `GET /exports/:id` | `exports.read` / `exports.write` |
-| Webhooks | `GET /webhooks`, `POST /webhooks`, `DELETE /webhooks/:id` | `webhooks.read` / `webhooks.write` |
+| Group     | Routes                                                     | Primary scope                      |
+| --------- | ---------------------------------------------------------- | ---------------------------------- |
+| Identity  | `GET /me`                                                  | `products.read`                    |
+| Orders    | `GET /orders`, `GET /orders/:id`, `POST /orders/:id/notes` | `orders.read` / `orders.write`     |
+| Products  | `GET /products`, `GET /products/:id`, `POST /products`     | `products.read` / `products.write` |
+| Customers | `GET /customers`                                           | `customers.read`                   |
+| Exports   | `GET /exports`, `POST /exports`, `GET /exports/:id`        | `exports.read` / `exports.write`   |
+| Webhooks  | `GET /webhooks`, `POST /webhooks`, `DELETE /webhooks/:id`  | `webhooks.read` / `webhooks.write` |
 
 All list routes (`orders`, `products`, `customers`, `exports`) are cursor-paginated; all non-`GET` routes require an `Idempotency-Key` header. Both are covered in Bands 5 and 6.
 
@@ -194,7 +205,7 @@ All list routes (`orders`, `products`, `customers`, `exports`) are cursor-pagina
 
 ## 5. Idempotency and retries
 
-*Lever:* **Safety net** — naming the failure mode ("your network drops the response, not the request") pre-empts the anxiety that keeps integrators from retrying at all.
+_Lever:_ **Safety net** — naming the failure mode ("your network drops the response, not the request") pre-empts the anxiety that keeps integrators from retrying at all.
 
 Every request that isn't a `GET` must carry an `Idempotency-Key` header — a UUID or ULID you generate client-side. The gateway stores the result of the first successful attempt against that key for 24 hours; a repeated request with the same key returns the original response verbatim instead of creating a second resource. This makes retries safe by construction: if a request times out after your write already committed, retrying with the same key cannot double-charge, double-note or double-export.
 
@@ -218,7 +229,7 @@ Retry policy:
 
 ## 6. Pagination and filtering
 
-*Lever:* **Predictability** — cursor pagination avoids the classic offset-drift bug, and saying so explicitly builds confidence that the API was designed by people who have shipped a paginated API before.
+_Lever:_ **Predictability** — cursor pagination avoids the classic offset-drift bug, and saying so explicitly builds confidence that the API was designed by people who have shipped a paginated API before.
 
 List endpoints use cursor pagination, not page numbers. A cursor encodes a timestamp and an id, so results stay stable even when rows are inserted between requests — offset pagination would silently skip or repeat rows under concurrent writes. Cursors are opaque; treat them as strings. A tampered or expired cursor never 500s — it's simply treated as "no cursor," which restarts the page rather than erroring the integration.
 
@@ -237,16 +248,16 @@ curl "https://api.framique.com/v1/orders?limit=25&cursor=eyJ0cyI6IjIwMjQtMDMtMTE
 
 ## 7. Rate limits
 
-*Lever:* **Transparency reduces support load** — publishing the exact headers means integrators self-diagnose a `429` instead of filing a ticket.
+_Lever:_ **Transparency reduces support load** — publishing the exact headers means integrators self-diagnose a `429` instead of filing a ticket.
 
 Rate limits are per API key, per rolling minute, and vary by scope tier (read-only keys get a higher ceiling than write-capable keys, since writes carry more downstream cost). Every response — successful or not — carries the current budget:
 
-| Header | Meaning |
-|---|---|
-| `X-RateLimit-Limit` | Requests allowed in the current window |
-| `X-RateLimit-Remaining` | Requests left in the current window |
-| `X-RateLimit-Reset` | Unix timestamp when the window resets |
-| `Retry-After` | Present only on `429`; seconds to wait before retrying |
+| Header                  | Meaning                                                |
+| ----------------------- | ------------------------------------------------------ |
+| `X-RateLimit-Limit`     | Requests allowed in the current window                 |
+| `X-RateLimit-Remaining` | Requests left in the current window                    |
+| `X-RateLimit-Reset`     | Unix timestamp when the window resets                  |
+| `Retry-After`           | Present only on `429`; seconds to wait before retrying |
 
 ```bash
 HTTP/1.1 429 Too Many Requests
@@ -264,7 +275,7 @@ Design your client to read `X-RateLimit-Remaining` proactively and slow down bef
 
 ## 8. Error taxonomy
 
-*Lever:* **Reduced ambiguity** — a client that can branch on `error.code` instead of parsing `error.message` strings is a client that survives a copy change on our side.
+_Lever:_ **Reduced ambiguity** — a client that can branch on `error.code` instead of parsing `error.message` strings is a client that survives a copy change on our side.
 
 Every error response shares one envelope:
 
@@ -279,17 +290,17 @@ Every error response shares one envelope:
 }
 ```
 
-| HTTP status | `error.code` | Meaning | Recommended client handling |
-|---|---|---|---|
-| 400 | `validation_failed` | Request body or query params failed schema checks | Fix the payload; don't retry unmodified |
-| 401 | `invalid_key` | Key missing, malformed, or revoked | Stop; re-issue the key, don't retry |
-| 403 | `scope_refused` | Key lacks a required scope | Surface `refused_scopes` to the operator; don't retry |
-| 404 | `not_found` | Resource doesn't exist or isn't visible to this key | Stop; verify the id and the key's tenant |
-| 409 | `idempotency_key_conflict` | Same key, different body, within the 24h window | Generate a new idempotency key if the request truly changed |
-| 422 | `state_conflict` | Valid request, but the resource isn't in a state that allows it (e.g. noting a cancelled order) | Stop; re-read current state before retrying |
-| 429 | `rate_limited` | Budget exhausted for this key | Backoff per `Retry-After`; do not hot-loop |
-| 500 | `internal_error` | Unexpected server fault | Retry with backoff; escalate if it persists past 3 attempts |
-| 503 | `upstream_unavailable` | A dependency (payments, SMS, export storage) is degraded | Retry with backoff; check `/status` |
+| HTTP status | `error.code`               | Meaning                                                                                         | Recommended client handling                                 |
+| ----------- | -------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 400         | `validation_failed`        | Request body or query params failed schema checks                                               | Fix the payload; don't retry unmodified                     |
+| 401         | `invalid_key`              | Key missing, malformed, or revoked                                                              | Stop; re-issue the key, don't retry                         |
+| 403         | `scope_refused`            | Key lacks a required scope                                                                      | Surface `refused_scopes` to the operator; don't retry       |
+| 404         | `not_found`                | Resource doesn't exist or isn't visible to this key                                             | Stop; verify the id and the key's tenant                    |
+| 409         | `idempotency_key_conflict` | Same key, different body, within the 24h window                                                 | Generate a new idempotency key if the request truly changed |
+| 422         | `state_conflict`           | Valid request, but the resource isn't in a state that allows it (e.g. noting a cancelled order) | Stop; re-read current state before retrying                 |
+| 429         | `rate_limited`             | Budget exhausted for this key                                                                   | Backoff per `Retry-After`; do not hot-loop                  |
+| 500         | `internal_error`           | Unexpected server fault                                                                         | Retry with backoff; escalate if it persists past 3 attempts |
+| 503         | `upstream_unavailable`     | A dependency (payments, SMS, export storage) is degraded                                        | Retry with backoff; check `/status`                         |
 
 `request_id` is present on every error and is the single value support needs to trace a request server-side — include it verbatim in any ticket.
 
@@ -299,19 +310,29 @@ Every error response shares one envelope:
 
 ## 9. Webhooks
 
-*Lever:* **Verifiable trust** — showing the verification code rather than just asserting "signed payloads" lets a skeptical engineer confirm the claim in under a minute.
+_Lever:_ **Verifiable trust** — showing the verification code rather than just asserting "signed payloads" lets a skeptical engineer confirm the claim in under a minute.
 
 Webhook deliveries are HMAC-SHA256 signed. Each request carries `Framique-Signature: t=<unix_ts>,v1=<hex_hmac>` computed over `${timestamp}.${raw_body}` using your endpoint's signing secret (shown once at creation, rotatable any time from the dashboard).
 
 ```ts
 import { createHmac, timingSafeEqual } from "node:crypto";
 
-function verifyFramiqueSignature(rawBody: string, header: string, secret: string, toleranceSec = 300): boolean {
-  const parts = Object.fromEntries(header.split(",").map((p) => p.split("=") as [string, string]));
+function verifyFramiqueSignature(
+  rawBody: string,
+  header: string,
+  secret: string,
+  toleranceSec = 300,
+): boolean {
+  const parts = Object.fromEntries(
+    header.split(",").map((p) => p.split("=") as [string, string]),
+  );
   const timestamp = Number(parts.t);
-  if (!timestamp || Math.abs(Date.now() / 1000 - timestamp) > toleranceSec) return false;
+  if (!timestamp || Math.abs(Date.now() / 1000 - timestamp) > toleranceSec)
+    return false;
 
-  const expected = createHmac("sha256", secret).update(`${timestamp}.${rawBody}`).digest("hex");
+  const expected = createHmac("sha256", secret)
+    .update(`${timestamp}.${rawBody}`)
+    .digest("hex");
   const given = Buffer.from(parts.v1 ?? "", "hex");
   const wanted = Buffer.from(expected, "hex");
   return given.length === wanted.length && timingSafeEqual(given, wanted);
@@ -339,6 +360,7 @@ Delivery behaviour: failed deliveries (non-2xx or timeout) retry with backoff ov
 - [ ] Keep the signing secret out of logs; treat it like an API key.
 
 **বাংলা variant** (dashboard copy near the signing secret field):
+
 - `সাইনিং সিক্রেট — একবার দেখানো হয়, প্রয়োজনে যেকোনো সময় ঘোরান।`
 
 **Design note**: checklist renders as a real markdown checklist (not a card grid) so it reads as a literal to-do; code blocks stay ungradiented on `surface-1` even though this band could take a spotlight card — reserve gradient cards for the recipes band instead.
@@ -347,7 +369,7 @@ Delivery behaviour: failed deliveries (non-2xx or timeout) retry with backoff ov
 
 ## 10. Try It sandbox
 
-*Lever:* **Try-before-you-buy / reduced activation energy** — letting someone see a real response with zero setup shortens the gap between "reading" and "believing."
+_Lever:_ **Try-before-you-buy / reduced activation energy** — letting someone see a real response with zero setup shortens the gap between "reading" and "believing."
 
 The Try It panel calls live, read-only endpoints directly from this page using a shared, heavily-throttled sandbox key — no account required. It shows the exact request (method, path, headers with the key redacted) alongside the response, so what you see is what you'd get from your own key.
 
@@ -361,7 +383,7 @@ The Try It panel calls live, read-only endpoints directly from this page using a
 
 ## 11. Versioning and deprecation
 
-*Lever:* **Commitment and consistency** — a stated, dated deprecation policy is what lets a team justify integrating today instead of waiting for "stability."
+_Lever:_ **Commitment and consistency** — a stated, dated deprecation policy is what lets a team justify integrating today instead of waiting for "stability."
 
 `v1` is the current stable version and the only version new integrations should target. Breaking changes — removing a field, tightening a validation, changing a status code's meaning — always ship as a new major version (`v2`), never as a silent change to `v1`. Additive changes (new optional fields, new endpoints, new optional query params) ship into `v1` without a version bump, since they cannot break a well-behaved client that ignores unknown fields.
 
@@ -380,7 +402,7 @@ Link: <https://framique.com/docs/v1/migrate-orders-notes>; rel="deprecation"
 
 ## 12. SDKs and no-SDK guidance
 
-*Lever:* **Autonomy** — telling a reader when *not* to reach for a dependency respects their judgment more than pushing an SDK as the default path.
+_Lever:_ **Autonomy** — telling a reader when _not_ to reach for a dependency respects their judgment more than pushing an SDK as the default path.
 
 Official SDKs cover TypeScript/Node and PHP, both thin wrappers that add request signing helpers, typed responses and built-in retry/backoff — nothing they do is unavailable to a plain `fetch` call, so treat them as convenience, not a requirement.
 
@@ -407,7 +429,7 @@ Every code sample on this page and its sub-pages ships in both forms — raw `fe
 
 ## 13. Integration recipes
 
-*Lever:* **Worked examples reduce perceived effort** — a named recipe with explicit pitfalls signals "someone has already made this mistake so you don't have to."
+_Lever:_ **Worked examples reduce perceived effort** — a named recipe with explicit pitfalls signals "someone has already made this mistake so you don't have to."
 
 ### Recipe A — Sync a catalogue from an ERP
 
@@ -416,7 +438,7 @@ Every code sample on this page and its sub-pages ships in both forms — raw `fe
 3. `POST /products` for new SKUs, `PATCH` (via the reference sub-page for products) for changed ones, using an `Idempotency-Key` derived deterministically from `sku + version` so a re-run of the same export batch is a no-op rather than a duplicate.
 4. Reconcile deletions explicitly — a SKU missing from this run's export should archive, not delete, since deletion cascades to historical orders' line-item references.
 
-**Pitfalls**: treating the ERP export as authoritative for price *and* inventory in the same call — race the two separately if your ERP updates them on different cadences, or a stale price can overwrite a manual promotional price set inside Framique.
+**Pitfalls**: treating the ERP export as authoritative for price _and_ inventory in the same call — race the two separately if your ERP updates them on different cadences, or a stale price can overwrite a manual promotional price set inside Framique.
 
 ### Recipe B — Push orders to accounting
 
@@ -448,7 +470,7 @@ Every code sample on this page and its sub-pages ships in both forms — raw `fe
 
 ## 14. Support and status
 
-*Lever:* **Reassurance before commitment** — placing this immediately before the FAQ answers the unspoken "what happens when something breaks" question right when a reader is deciding whether to build on this.
+_Lever:_ **Reassurance before commitment** — placing this immediately before the FAQ answers the unspoken "what happens when something breaks" question right when a reader is deciding whether to build on this.
 
 Live incident and uptime history: `status.framique.com`, independent of the marketing site so it stays reachable during an incident affecting the main domain. Subscribe to status updates by email or webhook from that page.
 
@@ -460,7 +482,7 @@ For integration questions: the docs search (Band 1) covers the reference sub-pag
 
 ## 15. FAQ
 
-*Lever:* **Objection handling at the point of hesitation** — these are the ten questions that stall an integration decision, answered plainly enough to unstall it.
+_Lever:_ **Objection handling at the point of hesitation** — these are the ten questions that stall an integration decision, answered plainly enough to unstall it.
 
 1. **Is there a sandbox environment separate from the Try It panel?**
    Yes — `fq_test_` keys hit the same routes and shapes as production but write to an isolated test tenant with no real payment or SMS side effects.
@@ -498,7 +520,7 @@ For integration questions: the docs search (Band 1) covers the reference sub-pag
 
 ## 16. Final CTA
 
-*Lever:* **Momentum after resolution** — placed right after the FAQ clears the last objections, so the CTA catches intent at its peak rather than asking the reader to scroll back up.
+_Lever:_ **Momentum after resolution** — placed right after the FAQ clears the last objections, so the CTA catches intent at its peak rather than asking the reader to scroll back up.
 
 **H2**: Ship the integration this week.
 **Sub**: Scoped keys, signed webhooks, a sandbox that never touches your account.
@@ -506,6 +528,7 @@ For integration questions: the docs search (Band 1) covers the reference sub-pag
 **Alt CTA**: `Read the webhook guide` → `/docs/v1/webhooks`
 
 **বাংলা variant**:
+
 - H2: `এই সপ্তাহেই ইন্টিগ্রেশন চালু করুন।`
 - Primary: `একটি API কী নিন` · Alt: `ওয়েবহুক গাইড পড়ুন`
 

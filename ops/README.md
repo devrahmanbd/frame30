@@ -64,11 +64,11 @@ committed dashboards and both datasources wired.
 
 ## 3. The three signals
 
-| Signal | Produced by | Transported by | Read in |
-|---|---|---|---|
-| Metrics | `incr` / `setGauge` / `observe` in `src/lib/observability.server.ts`, exposed at `/api/public/metrics` (Bearer `METRICS_TOKEN`) | Prometheus scrape, 30s | Grafana dashboards, alert rules |
-| Logs | `log()` — PII-scrubbed JSON lines on stdout, stamped with `trace_id`/`span_id` | Promtail (docker SD) → Loki | Grafana Explore, log-based alerts |
-| Errors & traces | `withSpan` / `withRequestTrace` → Sentry envelopes | direct HTTPS to self-hosted Sentry, budgeted | Sentry UI, linked from Loki lines |
+| Signal          | Produced by                                                                                                                     | Transported by                               | Read in                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------- |
+| Metrics         | `incr` / `setGauge` / `observe` in `src/lib/observability.server.ts`, exposed at `/api/public/metrics` (Bearer `METRICS_TOKEN`) | Prometheus scrape, 30s                       | Grafana dashboards, alert rules   |
+| Logs            | `log()` — PII-scrubbed JSON lines on stdout, stamped with `trace_id`/`span_id`                                                  | Promtail (docker SD) → Loki                  | Grafana Explore, log-based alerts |
+| Errors & traces | `withSpan` / `withRequestTrace` → Sentry envelopes                                                                              | direct HTTPS to self-hosted Sentry, budgeted | Sentry UI, linked from Loki lines |
 
 Correlation is the point: a Grafana panel spike → the Loki lines behind it →
 the `trace_id` derived field → the Sentry trace, without leaving the browser.
@@ -162,4 +162,3 @@ nomad job run -var="image=framique:candidate" ops/nomad/framique-green.nomad
 # 5. Monitor canary health & blast radius
 nomad job status framique-green
 ```
-

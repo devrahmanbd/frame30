@@ -1,1 +1,453 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "label": "entitlements.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L1"}, {"id": "lib_entitlements_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L27"}, {"id": "lib_entitlements_server_rpc", "label": "Rpc", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L28"}, {"id": "lib_entitlements_server_cache", "label": "cache", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L36"}, {"id": "lib_entitlements_server_invalidateentitlements", "label": "invalidateEntitlements()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L40"}, {"id": "lib_entitlements_server_entitlementsnapshot", "label": "entitlementSnapshot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L44"}, {"id": "lib_entitlements_server_assertentitlement", "label": "assertEntitlement()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L76"}, {"id": "lib_entitlements_server_entitlementcheck", "label": "entitlementCheck()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L108"}, {"id": "lib_entitlements_server_entitlementpanel", "label": "entitlementPanel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L118"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "users_rahman_documents_frame30_src_lib_entitlements_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_entitlementerror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_normalizesnapshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_usagereport", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_verdictfor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_entitlementresource", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_entitlementsnapshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_rpc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_cache", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_invalidateentitlements", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_entitlementsnapshot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_assertentitlement", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_entitlementcheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts", "target": "lib_entitlements_server_entitlementpanel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L118", "weight": 1.0}, {"source": "lib_entitlements_server_entitlementsnapshot", "target": "lib_entitlements_server_rpc", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L52", "weight": 1.0}, {"source": "lib_entitlements_server_assertentitlement", "target": "lib_entitlements_server_entitlementsnapshot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L82", "weight": 1.0}, {"source": "lib_entitlements_server_entitlementcheck", "target": "lib_entitlements_server_entitlementsnapshot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L114", "weight": 1.0}, {"source": "lib_entitlements_server_entitlementpanel", "target": "lib_entitlements_server_entitlementsnapshot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L119", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_entitlements_server_invalidateentitlements", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L41"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L49"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L50"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L59"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L60"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L60"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "normalizeSnapshot", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L64"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "clear", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L65"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L66"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L66"}, {"caller_nid": "lib_entitlements_server_entitlementsnapshot", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L67"}, {"caller_nid": "lib_entitlements_server_assertentitlement", "callee": "verdictFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L83"}, {"caller_nid": "lib_entitlements_server_assertentitlement", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L85"}, {"caller_nid": "lib_entitlements_server_assertentitlement", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L92"}, {"caller_nid": "lib_entitlements_server_entitlementcheck", "callee": "verdictFor", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L115"}, {"caller_nid": "lib_entitlements_server_entitlementpanel", "callee": "usageReport", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L120"}, {"caller_nid": "lib_entitlements_server_entitlementpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L126"}, {"caller_nid": "lib_entitlements_server_entitlementpanel", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L126"}, {"caller_nid": "lib_entitlements_server_entitlementpanel", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L127"}, {"caller_nid": "lib_entitlements_server_entitlementpanel", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts", "source_location": "L127"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "label": "entitlements.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_entitlements_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_entitlements_server_rpc",
+      "label": "Rpc",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_entitlements_server_cache",
+      "label": "cache",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_entitlements_server_invalidateentitlements",
+      "label": "invalidateEntitlements()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_entitlements_server_entitlementsnapshot",
+      "label": "entitlementSnapshot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_entitlements_server_assertentitlement",
+      "label": "assertEntitlement()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_entitlements_server_entitlementcheck",
+      "label": "entitlementCheck()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L108"
+    },
+    {
+      "id": "lib_entitlements_server_entitlementpanel",
+      "label": "entitlementPanel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L118"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_entitlements_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_entitlementerror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_normalizesnapshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_usagereport",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_verdictfor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_entitlementresource",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_entitlementsnapshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_rpc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_cache",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_invalidateentitlements",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_entitlementsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_assertentitlement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_entitlementcheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_entitlements_server_ts",
+      "target": "lib_entitlements_server_entitlementpanel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_entitlements_server_entitlementsnapshot",
+      "target": "lib_entitlements_server_rpc",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_entitlements_server_assertentitlement",
+      "target": "lib_entitlements_server_entitlementsnapshot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_entitlements_server_entitlementcheck",
+      "target": "lib_entitlements_server_entitlementsnapshot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_entitlements_server_entitlementpanel",
+      "target": "lib_entitlements_server_entitlementsnapshot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L119",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_entitlements_server_invalidateentitlements",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L50"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "normalizeSnapshot",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "clear",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementsnapshot",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_assertentitlement",
+      "callee": "verdictFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L83"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_assertentitlement",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L85"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_assertentitlement",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementcheck",
+      "callee": "verdictFor",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementpanel",
+      "callee": "usageReport",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementpanel",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementpanel",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_entitlements_server_entitlementpanel",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/entitlements.server.ts",
+      "source_location": "L127"
+    }
+  ]
+}

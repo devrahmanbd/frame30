@@ -24,7 +24,7 @@ Reuses `docs/15-e2e/admin_loop.md` frame: seeded merchant fixture, admin console
 
 **Golden C — escalate → manual review.** `fraud.escalate_case` lifts the case to the manual console (§8) without deciding; no money moves.
 
-**Golden D — hold → expiry → re-review.** `fraud.hold_case` holds; after `fraud.hold_window_days` (named TBD) the case returns to `review` — asserts it is *not* auto-approved; honeypot double-fire within the same window fires + logs only once (`honeypot.triggered`, trap id, window id).
+**Golden D — hold → expiry → re-review.** `fraud.hold_case` holds; after `fraud.hold_window_days` (named TBD) the case returns to `review` — asserts it is _not_ auto-approved; honeypot double-fire within the same window fires + logs only once (`honeypot.triggered`, trap id, window id).
 
 **Golden E — blacklist audit.** Adding an entry leaves an audit line (who, why); removing leaves a second audited line; merchants see only their own rows.
 

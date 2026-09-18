@@ -1,1 +1,250 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "label": "shortcuts.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L1"}, {"id": "studio_shortcuts_studioshortcutid", "label": "StudioShortcutId", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L7"}, {"id": "studio_shortcuts_studioshortcut", "label": "StudioShortcut", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L28"}, {"id": "studio_shortcuts_studio_shortcuts", "label": "STUDIO_SHORTCUTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L39"}, {"id": "studio_shortcuts_studioplatform", "label": "StudioPlatform", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L61"}, {"id": "studio_shortcuts_detectstudioplatform", "label": "detectStudioPlatform()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L63"}, {"id": "studio_shortcuts_formatstudioshortcut", "label": "formatStudioShortcut()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L68"}, {"id": "studio_shortcuts_keyeventlike", "label": "KeyEventLike", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L77"}, {"id": "studio_shortcuts_matchstudioshortcut", "label": "matchStudioShortcut()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L85"}, {"id": "studio_shortcuts_istypingelement", "label": "isTypingElement()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L100"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_studioshortcutid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_studioshortcut", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_studio_shortcuts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_studioplatform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_detectstudioplatform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_formatstudioshortcut", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_keyeventlike", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_matchstudioshortcut", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts", "target": "studio_shortcuts_istypingelement", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L100", "weight": 1.0}], "raw_calls": [{"caller_nid": "studio_shortcuts_detectstudioplatform", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L64"}, {"caller_nid": "studio_shortcuts_detectstudioplatform", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L65"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L70"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L71"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L72"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L73"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L73"}, {"caller_nid": "studio_shortcuts_formatstudioshortcut", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L74"}, {"caller_nid": "studio_shortcuts_matchstudioshortcut", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L89"}, {"caller_nid": "studio_shortcuts_matchstudioshortcut", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L89"}, {"caller_nid": "studio_shortcuts_matchstudioshortcut", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L90"}, {"caller_nid": "studio_shortcuts_matchstudioshortcut", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L91"}, {"caller_nid": "studio_shortcuts_istypingelement", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts", "source_location": "L104"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "label": "shortcuts.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "studio_shortcuts_studioshortcutid",
+      "label": "StudioShortcutId",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "studio_shortcuts_studioshortcut",
+      "label": "StudioShortcut",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "studio_shortcuts_studio_shortcuts",
+      "label": "STUDIO_SHORTCUTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "studio_shortcuts_studioplatform",
+      "label": "StudioPlatform",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "studio_shortcuts_detectstudioplatform",
+      "label": "detectStudioPlatform()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "studio_shortcuts_formatstudioshortcut",
+      "label": "formatStudioShortcut()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "studio_shortcuts_keyeventlike",
+      "label": "KeyEventLike",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "studio_shortcuts_matchstudioshortcut",
+      "label": "matchStudioShortcut()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "studio_shortcuts_istypingelement",
+      "label": "isTypingElement()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L100"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_studioshortcutid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_studioshortcut",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_studio_shortcuts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_studioplatform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_detectstudioplatform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_formatstudioshortcut",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_keyeventlike",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_matchstudioshortcut",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_studio_shortcuts_ts",
+      "target": "studio_shortcuts_istypingelement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "studio_shortcuts_detectstudioplatform",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "studio_shortcuts_detectstudioplatform",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "studio_shortcuts_formatstudioshortcut",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "studio_shortcuts_matchstudioshortcut",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "studio_shortcuts_matchstudioshortcut",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "studio_shortcuts_matchstudioshortcut",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "studio_shortcuts_matchstudioshortcut",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "studio_shortcuts_istypingelement",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/studio/shortcuts.ts",
+      "source_location": "L104"
+    }
+  ]
+}

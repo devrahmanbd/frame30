@@ -22,14 +22,20 @@ describe("Phase 7 — empty and missing states", () => {
   });
 
   it("a populated rail still renders its items and controls", () => {
-    const html = markup(<Rail label="Trending">{[<span key="a">item</span>]}</Rail>);
+    const html = markup(
+      <Rail label="Trending">{[<span key="a">item</span>]}</Rail>,
+    );
     expect(html).toContain("item");
     expect(html).toContain('aria-label="Scroll right"');
   });
 
   it("a missing image reserves the same ratio box as a present one", () => {
-    const withImage = markup(<MediaFrame src="/a.jpg" alt="Kurta" ratio="portrait" />);
-    const without = markup(<MediaFrame src={null} alt="Kurta" ratio="portrait" />);
+    const withImage = markup(
+      <MediaFrame src="/a.jpg" alt="Kurta" ratio="portrait" />,
+    );
+    const without = markup(
+      <MediaFrame src={null} alt="Kurta" ratio="portrait" />,
+    );
     expect(withImage).toContain("aspect-[3/4]");
     expect(without).toContain("aspect-[3/4]");
     expect(without).not.toContain("<img");
@@ -45,7 +51,9 @@ describe("Phase 7 — one bad widget never takes a page down", () => {
           if (index === failAt) {
             const failed = new WidgetBoundary({ type, children: null });
             failed.state = { failed: true, message: "boom" };
-            return <div key={index}>{failed.render() as React.ReactElement}</div>;
+            return (
+              <div key={index}>{failed.render() as React.ReactElement}</div>
+            );
           }
           return (
             <WidgetBoundary key={index} type={type}>
@@ -59,7 +67,9 @@ describe("Phase 7 — one bad widget never takes a page down", () => {
 
   for (const preset of SHIPPED_BLUEPRINTS) {
     it(`${preset.key}: the surrounding template keeps rendering`, () => {
-      const index = parseAst((preset.templates as Record<string, unknown>)["index"]);
+      const index = parseAst(
+        (preset.templates as Record<string, unknown>)["index"],
+      );
       const types = flattenAst(index).map((section) => section.type);
       expect(types.length).toBeGreaterThan(2);
 

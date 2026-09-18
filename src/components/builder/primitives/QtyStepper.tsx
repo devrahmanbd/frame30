@@ -28,7 +28,11 @@ export function QtyStepper({
   const btn =
     "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-fq-md border border-border text-base leading-none disabled:opacity-50";
   return (
-    <div className="inline-flex items-center gap-1" role="group" aria-label={label}>
+    <div
+      className="inline-flex items-center gap-1"
+      role="group"
+      aria-label={label}
+    >
       <button
         type="button"
         className={btn}

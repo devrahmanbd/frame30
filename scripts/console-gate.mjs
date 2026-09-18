@@ -85,7 +85,10 @@ if ((!sessionJson || !storageKey) && (!email || !password)) {
 
 mkdirSync(outDir, { recursive: true });
 
-const only = (process.env.GATE_ONLY ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+const only = (process.env.GATE_ONLY ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
 const failures = [];
 const browser = await chromium.launch();
 
@@ -97,7 +100,9 @@ const browser = await chromium.launch();
  */
 let seededState = null;
 if (!sessionJson || !storageKey) {
-  const loginContext = await browser.newContext({ viewport: { width: 1280, height: 1400 } });
+  const loginContext = await browser.newContext({
+    viewport: { width: 1280, height: 1400 },
+  });
   const loginPage = await loginContext.newPage();
   await loginPage.goto(`${base}/auth`, { waitUntil: "domcontentloaded" });
   await loginPage.waitForSelector("input[type=email]", { timeout: 20000 });
@@ -105,14 +110,20 @@ if (!sessionJson || !storageKey) {
   await loginPage.waitForTimeout(3500);
   await loginPage.fill("input[type=email]", email);
   await loginPage.fill("input[type=password]", password);
-  await loginPage.getByRole("button", { name: /sign in/i }).first().click();
+  await loginPage
+    .getByRole("button", { name: /sign in/i })
+    .first()
+    .click();
   await loginPage.waitForURL(/\/admin/, { timeout: 30000 }).catch(() => {});
   await loginPage.waitForTimeout(1500);
   const state = await loginContext.storageState();
-  seededState = state.origins?.find((o) => base.startsWith(o.origin))?.localStorage ?? [];
+  seededState =
+    state.origins?.find((o) => base.startsWith(o.origin))?.localStorage ?? [];
   await loginContext.close();
   if (seededState.length === 0) {
-    console.error("console gate FAILED: could not sign in with GATE_EMAIL / GATE_PASSWORD.");
+    console.error(
+      "console gate FAILED: could not sign in with GATE_EMAIL / GATE_PASSWORD.",
+    );
     await browser.close();
     process.exit(1);
   }
@@ -129,7 +140,8 @@ for (const variant of VARIANTS) {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     if (seededState) {
       await page.evaluate((entries) => {
-        for (const { name, value } of entries) window.localStorage.setItem(name, value);
+        for (const { name, value } of entries)
+          window.localStorage.setItem(name, value);
       }, seededState);
     } else {
       await page.evaluate(
@@ -138,29 +150,41 @@ for (const variant of VARIANTS) {
       );
     }
 
-
-    for (const target of PAGES.filter((p) => !only.length || only.some((o) => p.name.includes(o)))) {
+    for (const target of PAGES.filter(
+      (p) => !only.length || only.some((o) => p.name.includes(o)),
+    )) {
       const label = `${target.name} [${variant.name}@${width}]`;
       try {
-        const res = await page.goto(base + target.path, { waitUntil: "domcontentloaded" });
+        const res = await page.goto(base + target.path, {
+          waitUntil: "domcontentloaded",
+        });
         if (!res || res.status() >= 400) {
           failures.push(`${label}: HTTP ${res ? res.status() : "no response"}`);
           continue;
         }
         // Hydration in dev can take seconds; wait for the page heading before auditing.
-        await page.waitForSelector("main h1, main textarea[aria-label]", { timeout: 20000 }).catch(() => {});
+        await page
+          .waitForSelector("main h1, main textarea[aria-label]", {
+            timeout: 20000,
+          })
+          .catch(() => {});
         await page.waitForTimeout(1200);
 
         await page.addScriptTag({ content: axeSource });
         const results = await page.evaluate(async () =>
           window.axe.run(document, {
-            runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"] },
+            runOnly: {
+              type: "tag",
+              values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"],
+            },
           }),
         );
         const value = score(results);
         console.log(`${String(value).padStart(3)}  ${label}`);
         for (const v of results.violations) {
-          console.log(`      ${v.impact ?? "minor"}  ${v.id} — ${v.help} (${v.nodes.length})`);
+          console.log(
+            `      ${v.impact ?? "minor"}  ${v.id} — ${v.help} (${v.nodes.length})`,
+          );
         }
         if (value < min) failures.push(`${label}: axe score ${value} < ${min}`);
         if (results.violations.some((v) => v.id === "color-contrast"))
@@ -168,9 +192,12 @@ for (const variant of VARIANTS) {
 
         // No console surface may scroll sideways at any sweep width.
         const overflow = await page.evaluate(
-          () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          () =>
+            document.documentElement.scrollWidth -
+            document.documentElement.clientWidth,
         );
-        if (overflow > 2) failures.push(`${label}: ${overflow}px horizontal overflow`);
+        if (overflow > 2)
+          failures.push(`${label}: ${overflow}px horizontal overflow`);
 
         // Primary tap targets stay reachable with a thumb on the phone width.
         if (width === 390) {
@@ -184,10 +211,15 @@ for (const variant of VARIANTS) {
                 const r = el.getBoundingClientRect();
                 return r.height > 0 && r.height < 32;
               })
-              .map((el) => `${Math.round(el.getBoundingClientRect().height)}px "${(el.textContent ?? "").trim().slice(0, 24)}" .${el.className.toString().slice(0, 60)}`),
+              .map(
+                (el) =>
+                  `${Math.round(el.getBoundingClientRect().height)}px "${(el.textContent ?? "").trim().slice(0, 24)}" .${el.className.toString().slice(0, 60)}`,
+              ),
           );
           if (small.length > 0)
-            failures.push(`${label}: ${small.length} tap target(s) under 32px tall — ${small.join(" | ")}`);
+            failures.push(
+              `${label}: ${small.length} tap target(s) under 32px tall — ${small.join(" | ")}`,
+            );
         }
 
         // Keyboard: the first tab stop must show a visible focus ring.
@@ -199,17 +231,21 @@ for (const variant of VARIANTS) {
         await page.waitForTimeout(120);
         const ring = await page.evaluate(() => {
           const el = document.activeElement;
-          if (!el || el === document.body) return { state: "none", who: "body" };
+          if (!el || el === document.body)
+            return { state: "none", who: "body" };
           const s = getComputedStyle(el);
           const visible =
-            (s.outlineStyle !== "none" && parseFloat(s.outlineWidth) > 0) || s.boxShadow !== "none";
+            (s.outlineStyle !== "none" && parseFloat(s.outlineWidth) > 0) ||
+            s.boxShadow !== "none";
           return {
             state: visible ? "ok" : "missing",
             who: `<${el.tagName.toLowerCase()}> "${(el.textContent ?? "").trim().slice(0, 24)}" .${el.className.toString().slice(0, 60)}`,
           };
         });
         if (ring.state !== "ok")
-          failures.push(`${label}: first tab stop has no visible focus ring — ${ring.who}`);
+          failures.push(
+            `${label}: first tab stop has no visible focus ring — ${ring.who}`,
+          );
 
         if (variant.reducedMotion === "reduce") {
           const animating = await page.evaluate(() =>
@@ -218,7 +254,8 @@ for (const variant of VARIANTS) {
               .filter((a) => a.playState === "running")
               .map((a) => {
                 const t = a.effect?.target;
-                const name = a.animationName ?? a.transitionProperty ?? "animation";
+                const name =
+                  a.animationName ?? a.transitionProperty ?? "animation";
                 return `${name} on <${t?.tagName?.toLowerCase() ?? "?"}> .${t?.className?.toString?.().slice(0, 50) ?? ""}`;
               }),
           );
@@ -232,7 +269,9 @@ for (const variant of VARIANTS) {
           await page.screenshot({ path: `${outDir}/${target.name}.png` });
         }
       } catch (err) {
-        failures.push(`${label}: ${err instanceof Error ? err.message : String(err)}`);
+        failures.push(
+          `${label}: ${err instanceof Error ? err.message : String(err)}`,
+        );
       }
     }
 
@@ -247,4 +286,6 @@ if (failures.length > 0) {
   for (const f of failures) console.error(`  - ${f}`);
   process.exit(1);
 }
-console.log(`\nconsole gate passed — every section scored >= ${min} at 390/768/1280/1920.`);
+console.log(
+  `\nconsole gate passed — every section scored >= ${min} at 390/768/1280/1920.`,
+);

@@ -1,1 +1,550 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_section_channel_ts", "label": "section-channel.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L1"}, {"id": "lib_section_channel_channel_slots", "label": "CHANNEL_SLOTS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L11"}, {"id": "lib_section_channel_channelslot", "label": "ChannelSlot", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L12"}, {"id": "lib_section_channel_slot_limit", "label": "SLOT_LIMIT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L15"}, {"id": "lib_section_channel_channelstate", "label": "ChannelState", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L21"}, {"id": "lib_section_channel_empty", "label": "EMPTY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L23"}, {"id": "lib_section_channel_memory", "label": "memory", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L25"}, {"id": "lib_section_channel_listeners", "label": "listeners", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L26"}, {"id": "lib_section_channel_storagekey", "label": "storageKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L28"}, {"id": "lib_section_channel_hydrate", "label": "hydrate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L30"}, {"id": "lib_section_channel_commit", "label": "commit()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L53"}, {"id": "lib_section_channel_readslot", "label": "readSlot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L65"}, {"id": "lib_section_channel_pushslot", "label": "pushSlot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L70"}, {"id": "lib_section_channel_removeslot", "label": "removeSlot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L77"}, {"id": "lib_section_channel_toggleslot", "label": "toggleSlot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L85"}, {"id": "lib_section_channel_clearslot", "label": "clearSlot()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L91"}, {"id": "lib_section_channel_subscribechannel", "label": "subscribeChannel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L96"}, {"id": "lib_section_channel_resetchannel", "label": "resetChannel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L104"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_channel_slots", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_channelslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_slot_limit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_channelstate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_empty", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_memory", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_listeners", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_storagekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_hydrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_commit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L53", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_readslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_pushslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_removeslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L77", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_toggleslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L85", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_clearslot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L91", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_subscribechannel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_section_channel_ts", "target": "lib_section_channel_resetchannel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L104", "weight": 1.0}, {"source": "lib_section_channel_hydrate", "target": "lib_section_channel_storagekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L36", "weight": 1.0}, {"source": "lib_section_channel_commit", "target": "lib_section_channel_storagekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L57", "weight": 1.0}, {"source": "lib_section_channel_readslot", "target": "lib_section_channel_hydrate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L66", "weight": 1.0}, {"source": "lib_section_channel_pushslot", "target": "lib_section_channel_hydrate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_section_channel_pushslot", "target": "lib_section_channel_commit", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L73", "weight": 1.0}, {"source": "lib_section_channel_removeslot", "target": "lib_section_channel_hydrate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L78", "weight": 1.0}, {"source": "lib_section_channel_removeslot", "target": "lib_section_channel_commit", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L80", "weight": 1.0}, {"source": "lib_section_channel_toggleslot", "target": "lib_section_channel_readslot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L86", "weight": 1.0}, {"source": "lib_section_channel_toggleslot", "target": "lib_section_channel_removeslot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L87", "weight": 1.0}, {"source": "lib_section_channel_toggleslot", "target": "lib_section_channel_pushslot", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L88", "weight": 1.0}, {"source": "lib_section_channel_clearslot", "target": "lib_section_channel_commit", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L92", "weight": 1.0}, {"source": "lib_section_channel_clearslot", "target": "lib_section_channel_hydrate", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L92", "weight": 1.0}, {"source": "lib_section_channel_resetchannel", "target": "lib_section_channel_storagekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L108", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_section_channel_hydrate", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L31"}, {"caller_nid": "lib_section_channel_hydrate", "callee": "getItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L36"}, {"caller_nid": "lib_section_channel_hydrate", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L37"}, {"caller_nid": "lib_section_channel_hydrate", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L38"}, {"caller_nid": "lib_section_channel_hydrate", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L49"}, {"caller_nid": "lib_section_channel_commit", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L54"}, {"caller_nid": "lib_section_channel_commit", "callee": "setItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L57"}, {"caller_nid": "lib_section_channel_commit", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L57"}, {"caller_nid": "lib_section_channel_commit", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L62"}, {"caller_nid": "lib_section_channel_commit", "callee": "listener", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L62"}, {"caller_nid": "lib_section_channel_pushslot", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L72"}, {"caller_nid": "lib_section_channel_pushslot", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L72"}, {"caller_nid": "lib_section_channel_removeslot", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L79"}, {"caller_nid": "lib_section_channel_toggleslot", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L86"}, {"caller_nid": "lib_section_channel_subscribechannel", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L97"}, {"caller_nid": "lib_section_channel_subscribechannel", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L98"}, {"caller_nid": "lib_section_channel_subscribechannel", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L99"}, {"caller_nid": "lib_section_channel_resetchannel", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L105"}, {"caller_nid": "lib_section_channel_resetchannel", "callee": "removeItem", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts", "source_location": "L108"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "label": "section-channel.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_section_channel_channel_slots",
+      "label": "CHANNEL_SLOTS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_section_channel_channelslot",
+      "label": "ChannelSlot",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "lib_section_channel_slot_limit",
+      "label": "SLOT_LIMIT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_section_channel_channelstate",
+      "label": "ChannelState",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "lib_section_channel_empty",
+      "label": "EMPTY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_section_channel_memory",
+      "label": "memory",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_section_channel_listeners",
+      "label": "listeners",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_section_channel_storagekey",
+      "label": "storageKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_section_channel_hydrate",
+      "label": "hydrate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_section_channel_commit",
+      "label": "commit()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L53"
+    },
+    {
+      "id": "lib_section_channel_readslot",
+      "label": "readSlot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L65"
+    },
+    {
+      "id": "lib_section_channel_pushslot",
+      "label": "pushSlot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "lib_section_channel_removeslot",
+      "label": "removeSlot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L77"
+    },
+    {
+      "id": "lib_section_channel_toggleslot",
+      "label": "toggleSlot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L85"
+    },
+    {
+      "id": "lib_section_channel_clearslot",
+      "label": "clearSlot()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L91"
+    },
+    {
+      "id": "lib_section_channel_subscribechannel",
+      "label": "subscribeChannel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_section_channel_resetchannel",
+      "label": "resetChannel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L104"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_channel_slots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_channelslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_slot_limit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_channelstate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_empty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_memory",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_listeners",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_storagekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_hydrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_commit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_readslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_pushslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_removeslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_toggleslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_clearslot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_subscribechannel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_section_channel_ts",
+      "target": "lib_section_channel_resetchannel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_hydrate",
+      "target": "lib_section_channel_storagekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_commit",
+      "target": "lib_section_channel_storagekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_readslot",
+      "target": "lib_section_channel_hydrate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_pushslot",
+      "target": "lib_section_channel_hydrate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_pushslot",
+      "target": "lib_section_channel_commit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_removeslot",
+      "target": "lib_section_channel_hydrate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_removeslot",
+      "target": "lib_section_channel_commit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_toggleslot",
+      "target": "lib_section_channel_readslot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_toggleslot",
+      "target": "lib_section_channel_removeslot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_toggleslot",
+      "target": "lib_section_channel_pushslot",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_clearslot",
+      "target": "lib_section_channel_commit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_clearslot",
+      "target": "lib_section_channel_hydrate",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_section_channel_resetchannel",
+      "target": "lib_section_channel_storagekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_section_channel_hydrate",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_section_channel_hydrate",
+      "callee": "getItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_section_channel_hydrate",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L37"
+    },
+    {
+      "caller_nid": "lib_section_channel_hydrate",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_section_channel_hydrate",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_section_channel_commit",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_section_channel_commit",
+      "callee": "setItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_section_channel_commit",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_section_channel_commit",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_section_channel_commit",
+      "callee": "listener",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "lib_section_channel_pushslot",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_section_channel_pushslot",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_section_channel_removeslot",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "lib_section_channel_toggleslot",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_section_channel_subscribechannel",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_section_channel_subscribechannel",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "lib_section_channel_subscribechannel",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_section_channel_resetchannel",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_section_channel_resetchannel",
+      "callee": "removeItem",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/section-channel.ts",
+      "source_location": "L108"
+    }
+  ]
+}

@@ -18,19 +18,23 @@ import {
   infraSaveSearchFn,
 } from "@/lib/infra.functions";
 
-export const Route = createFileRoute("/_authenticated/dashboard/settings_/infrastructure")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/settings_/infrastructure",
+)({
   loader: () => infraOverviewFn(),
   head: () => ({
     meta: [
       { title: "ইনফ্রাস্ট্রাকচার — Framique admin" },
       {
         name: "description",
-        content: "Background queues, fast search health, image delivery and load-test results for your store.",
+        content:
+          "Background queues, fast search health, image delivery and load-test results for your store.",
       },
       { property: "og:title", content: "ইনফ্রাস্ট্রাকচার — Framique admin" },
       {
         property: "og:description",
-        content: "Monitor job queues, search failover and load tests in one place.",
+        content:
+          "Monitor job queues, search failover and load tests in one place.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -74,7 +78,11 @@ function Infrastructure() {
       setMsg(done);
       await router.invalidate();
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+      setErr(
+        e instanceof Error
+          ? e.message
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -83,7 +91,9 @@ function Infrastructure() {
   function submitSearch(e: React.FormEvent) {
     e.preventDefault();
     if (engine !== "postgres" && !host.trim()) {
-      setErr(bn ? "সার্চ সার্ভারের ঠিকানা দিন।" : "Enter the search server address.");
+      setErr(
+        bn ? "সার্চ সার্ভারের ঠিকানা দিন।" : "Enter the search server address.",
+      );
       return;
     }
     void run(
@@ -139,7 +149,9 @@ function Infrastructure() {
           />
           <Kpi
             label={bn ? "সার্চ ইঞ্জিন" : "Search engine"}
-            value={breakerOpen ? (bn ? "ফলব্যাক" : "Fallback") : desk.search.engine}
+            value={
+              breakerOpen ? (bn ? "ফলব্যাক" : "Fallback") : desk.search.engine
+            }
             hint={
               breakerOpen
                 ? bn
@@ -171,7 +183,10 @@ function Infrastructure() {
               : "Each queue retries on its own policy — money work retries hardest, bulk work gives up early."
           }
         >
-          <QueueTable rows={queues} emptyLabel={bn ? "কোনো কাজ নেই।" : "Nothing queued right now."} />
+          <QueueTable
+            rows={queues}
+            emptyLabel={bn ? "কোনো কাজ নেই।" : "Nothing queued right now."}
+          />
         </Section>
 
         <Section
@@ -188,13 +203,15 @@ function Infrastructure() {
             emptyLabel={bn ? "এখনো কোনো কাজ চলেনি।" : "No jobs have run yet."}
             onReplay={(id) =>
               void run(
-                () => infraJobActionFn({ data: { jobId: id, action: "replay" } }),
+                () =>
+                  infraJobActionFn({ data: { jobId: id, action: "replay" } }),
                 bn ? "কাজটি আবার সারিতে দেওয়া হয়েছে।" : "Job requeued.",
               )
             }
             onCancel={(id) =>
               void run(
-                () => infraJobActionFn({ data: { jobId: id, action: "cancel" } }),
+                () =>
+                  infraJobActionFn({ data: { jobId: id, action: "cancel" } }),
                 bn ? "কাজটি বাতিল হয়েছে।" : "Job cancelled.",
               )
             }
@@ -226,7 +243,9 @@ function Infrastructure() {
         >
           <form onSubmit={submitSearch} className="grid gap-3 sm:grid-cols-2">
             <label className="text-sm">
-              <span className="mb-1 block text-xs text-muted-foreground">{bn ? "ইঞ্জিন" : "Engine"}</span>
+              <span className="mb-1 block text-xs text-muted-foreground">
+                {bn ? "ইঞ্জিন" : "Engine"}
+              </span>
               <select
                 value={engine}
                 onChange={(e) => setEngine(e.target.value as typeof engine)}
@@ -273,7 +292,11 @@ function Infrastructure() {
             <label className="text-sm sm:col-span-2">
               <span className="mb-1 block text-xs text-muted-foreground">
                 {bn ? "API কী" : "API key"}
-                {desk.search.hasApiKey ? (bn ? " (সংরক্ষিত আছে)" : " (saved)") : ""}
+                {desk.search.hasApiKey
+                  ? bn
+                    ? " (সংরক্ষিত আছে)"
+                    : " (saved)"
+                  : ""}
               </span>
               <input
                 value={apiKey}
@@ -310,7 +333,12 @@ function Infrastructure() {
               : "Recorded results from k6/Artillery runs, so you know the store's ceiling before a campaign finds it for you."
           }
         >
-          <LoadTestTable rows={loadTests} emptyLabel={bn ? "কোনো টেস্ট রেকর্ড নেই।" : "No load tests recorded yet."} />
+          <LoadTestTable
+            rows={loadTests}
+            emptyLabel={
+              bn ? "কোনো টেস্ট রেকর্ড নেই।" : "No load tests recorded yet."
+            }
+          />
         </Section>
       </div>
     </>

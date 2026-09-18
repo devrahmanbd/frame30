@@ -1,1 +1,359 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "label": "phase2-collection.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L1"}, {"id": "lib_phase2_collection_test_types", "label": "TYPES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L24"}, {"id": "lib_phase2_collection_test_base", "label": "base()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L33"}, {"id": "lib_phase2_collection_test_once", "label": "once", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L42"}, {"id": "lib_phase2_collection_test_params", "label": "params", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L48"}, {"id": "lib_phase2_collection_test_cleared", "label": "cleared", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L49"}, {"id": "lib_phase2_collection_test_href", "label": "href", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L72"}, {"id": "lib_phase2_collection_test_window", "label": "window", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L83"}, {"id": "lib_phase2_collection_test_groups", "label": "groups", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L93"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "users_rahman_documents_frame30_src_lib_storefront_search_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_storefront_search_normalizesearchparams", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "users_rahman_documents_frame30_src_lib_facet_url_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_activefilters", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_clearfacets", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_facethref", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_isindexablefacetstate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_pagewindow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_togglefacet", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_withfacet", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_withpage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_facet_url_withsort", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_builder_ast_section_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_builder_ast_sectiontype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_widget_registry_widgetmeta", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "users_rahman_documents_frame30_src_components_builder_collection_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "builder_collection_groupfacetrows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_types", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_once", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_params", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_cleared", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_params", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_href", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_window", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts", "target": "lib_phase2_collection_test_groups", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L93", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_phase2_collection_test_base", "callee": "normalizeSearchParams", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts", "source_location": "L33"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "label": "phase2-collection.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_phase2_collection_test_types",
+      "label": "TYPES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_phase2_collection_test_base",
+      "label": "base()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_phase2_collection_test_once",
+      "label": "once",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_phase2_collection_test_params",
+      "label": "params",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_phase2_collection_test_cleared",
+      "label": "cleared",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_phase2_collection_test_href",
+      "label": "href",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L72"
+    },
+    {
+      "id": "lib_phase2_collection_test_window",
+      "label": "window",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_phase2_collection_test_groups",
+      "label": "groups",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L93"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_storefront_search_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_storefront_search_normalizesearchparams",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_facet_url_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_activefilters",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_clearfacets",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_facethref",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_isindexablefacetstate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_pagewindow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_togglefacet",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_withfacet",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_withpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_facet_url_withsort",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_builder_ast_section_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_builder_ast_sectiontype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_widget_registry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_widget_registry_widgetmeta",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "users_rahman_documents_frame30_src_components_builder_collection_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "builder_collection_groupfacetrows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_once",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_params",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_cleared",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_params",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_href",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_window",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_phase2_collection_test_ts",
+      "target": "lib_phase2_collection_test_groups",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_phase2_collection_test_base",
+      "callee": "normalizeSearchParams",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/phase2-collection.test.ts",
+      "source_location": "L33"
+    }
+  ]
+}

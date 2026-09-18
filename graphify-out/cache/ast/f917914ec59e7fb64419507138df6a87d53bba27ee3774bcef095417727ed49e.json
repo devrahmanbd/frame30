@@ -1,1 +1,487 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "label": "semrush.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L1"}, {"id": "lib_semrush_server_resolvesemrushapikey", "label": "resolveSemrushApiKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L33"}, {"id": "lib_semrush_server_fetchsemrushdomainrank", "label": "fetchSemrushDomainRank()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L41"}, {"id": "lib_semrush_server_fetchsemrushkeywords", "label": "fetchSemrushKeywords()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L94"}, {"id": "lib_semrush_server_fetchsemrushcompetitors", "label": "fetchSemrushCompetitors()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L148"}, {"id": "lib_semrush_server_fetchsemrushcrawlaudit", "label": "fetchSemrushCrawlAudit()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L199"}, {"id": "lib_semrush_server_fetchsemrushbacklinks", "label": "fetchSemrushBacklinks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L217"}, {"id": "lib_semrush_server_fetchsemrushoverview", "label": "fetchSemrushOverview()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L234"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "users_rahman_documents_frame30_src_lib_semrush_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_default_semrush_audit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_default_semrush_backlinks", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_default_semrush_competitors", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_default_semrush_domain_rank", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_default_semrush_keywords", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrush_default_api_key", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_buildsemrushurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_masksemrushkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_parsesemrushtable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_validatesemrushapikey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushbacklinks", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushcompetitor", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushcrawlaudit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushdatabase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushdomainrank", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushkeywordposition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_semrushoverview", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_resolvesemrushapikey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushdomainrank", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushkeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L94", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushcompetitors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushcrawlaudit", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L199", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushbacklinks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L217", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_semrush_server_ts", "target": "lib_semrush_server_fetchsemrushoverview", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L234", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushdomainrank", "target": "lib_semrush_server_resolvesemrushapikey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L45", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushkeywords", "target": "lib_semrush_server_resolvesemrushapikey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L99", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushcompetitors", "target": "lib_semrush_server_resolvesemrushapikey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L153", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_resolvesemrushapikey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L238", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_fetchsemrushdomainrank", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L240", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_fetchsemrushkeywords", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L241", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_fetchsemrushcompetitors", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L242", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_fetchsemrushcrawlaudit", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L243", "weight": 1.0}, {"source": "lib_semrush_server_fetchsemrushoverview", "target": "lib_semrush_server_fetchsemrushbacklinks", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L244", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_semrush_server_resolvesemrushapikey", "callee": "validateSemrushApiKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L35"}, {"caller_nid": "lib_semrush_server_resolvesemrushapikey", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L36"}, {"caller_nid": "lib_semrush_server_fetchsemrushdomainrank", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L48"}, {"caller_nid": "lib_semrush_server_fetchsemrushkeywords", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L102"}, {"caller_nid": "lib_semrush_server_fetchsemrushcompetitors", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L156"}, {"caller_nid": "lib_semrush_server_fetchsemrushcrawlaudit", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L204"}, {"caller_nid": "lib_semrush_server_fetchsemrushbacklinks", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L222"}, {"caller_nid": "lib_semrush_server_fetchsemrushoverview", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L239"}, {"caller_nid": "lib_semrush_server_fetchsemrushoverview", "callee": "maskSemrushKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L248"}, {"caller_nid": "lib_semrush_server_fetchsemrushoverview", "callee": "validateSemrushApiKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts", "source_location": "L249"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "label": "semrush.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_semrush_server_resolvesemrushapikey",
+      "label": "resolveSemrushApiKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushdomainrank",
+      "label": "fetchSemrushDomainRank()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushkeywords",
+      "label": "fetchSemrushKeywords()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushcompetitors",
+      "label": "fetchSemrushCompetitors()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushcrawlaudit",
+      "label": "fetchSemrushCrawlAudit()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L199"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushbacklinks",
+      "label": "fetchSemrushBacklinks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "id": "lib_semrush_server_fetchsemrushoverview",
+      "label": "fetchSemrushOverview()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L234"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_semrush_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_default_semrush_audit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_default_semrush_backlinks",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_default_semrush_competitors",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_default_semrush_domain_rank",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_default_semrush_keywords",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrush_default_api_key",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_buildsemrushurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_masksemrushkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_parsesemrushtable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_validatesemrushapikey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushbacklinks",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushcompetitor",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushcrawlaudit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushdatabase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushdomainrank",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushkeywordposition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_semrushoverview",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_resolvesemrushapikey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushdomainrank",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushkeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushcompetitors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushcrawlaudit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushbacklinks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_semrush_server_ts",
+      "target": "lib_semrush_server_fetchsemrushoverview",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L234",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushdomainrank",
+      "target": "lib_semrush_server_resolvesemrushapikey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushkeywords",
+      "target": "lib_semrush_server_resolvesemrushapikey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushcompetitors",
+      "target": "lib_semrush_server_resolvesemrushapikey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_resolvesemrushapikey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_fetchsemrushdomainrank",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_fetchsemrushkeywords",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_fetchsemrushcompetitors",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_fetchsemrushcrawlaudit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_semrush_server_fetchsemrushoverview",
+      "target": "lib_semrush_server_fetchsemrushbacklinks",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_semrush_server_resolvesemrushapikey",
+      "callee": "validateSemrushApiKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L35"
+    },
+    {
+      "caller_nid": "lib_semrush_server_resolvesemrushapikey",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushdomainrank",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushkeywords",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushcompetitors",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushcrawlaudit",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushbacklinks",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushoverview",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L239"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushoverview",
+      "callee": "maskSemrushKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L248"
+    },
+    {
+      "caller_nid": "lib_semrush_server_fetchsemrushoverview",
+      "callee": "validateSemrushApiKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/semrush.server.ts",
+      "source_location": "L249"
+    }
+  ]
+}

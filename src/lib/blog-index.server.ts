@@ -42,7 +42,11 @@ export type BlogCard = {
   /** Primary category, when the article has one — powers the card chip. */
   category: { slug: string; name: string } | null;
   readingMinutes: number;
-  author: { slug: string; displayName: string; displayNameEn: string | null } | null;
+  author: {
+    slug: string;
+    displayName: string;
+    displayNameEn: string | null;
+  } | null;
 };
 
 export type BlogListing = {
@@ -60,7 +64,10 @@ export type TermArchive = BlogListing & {
   children: TermRow[];
 };
 
-const EMPTY_LISTING = (path: (page: number) => string, page: number): BlogListing => ({
+const EMPTY_LISTING = (
+  path: (page: number) => string,
+  page: number,
+): BlogListing => ({
   articles: [],
   paging: paging(path, page, 0),
   facets: [],
@@ -106,8 +113,19 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
 
   type MerchantChip = { id: string; name: string; slug: string };
   type PrimaryLink = { article_id: string; term_id: string };
-  const authorIds = [...new Set(rows.map((row) => row.author_id).filter((id): id is string => Boolean(id)))];
-  type AuthorChip = { id: string; slug: string; display_name: string; display_name_en: string | null };
+  const authorIds = [
+    ...new Set(
+      rows
+        .map((row) => row.author_id)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+  type AuthorChip = {
+    id: string;
+    slug: string;
+    display_name: string;
+    display_name_en: string | null;
+  };
   const [merchants, primaries, authors] = (await Promise.all([
     db
       .from("merchants")
@@ -123,7 +141,14 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
       .then((r: any) => (r.data ?? []) as PrimaryLink[])
       .catch(() => [] as PrimaryLink[]),
     authorIds.length
-      ? db.from("blog_authors").select("id, slug, display_name, display_name_en").in("id", authorIds).eq("is_public", true).limit(BLOG_PAGE_SIZE).then((r: any) => (r.data ?? []) as AuthorChip[]).catch(() => [] as AuthorChip[])
+      ? db
+          .from("blog_authors")
+          .select("id, slug, display_name, display_name_en")
+          .in("id", authorIds)
+          .eq("is_public", true)
+          .limit(BLOG_PAGE_SIZE)
+          .then((r: any) => (r.data ?? []) as AuthorChip[])
+          .catch(() => [] as AuthorChip[])
       : Promise.resolve([] as AuthorChip[]),
   ])) as [MerchantChip[], PrimaryLink[], AuthorChip[]];
 
@@ -162,7 +187,13 @@ async function decorate(db: Db, rows: ArticleRow[]): Promise<BlogCard[]> {
       merchantSlug: merchant?.slug ?? null,
       category: category ? { slug: category.slug, name: category.name } : null,
       readingMinutes: Math.max(1, Number(row.reading_minutes ?? 1)),
-      author: byline ? { slug: byline.slug, displayName: byline.display_name, displayNameEn: byline.display_name_en } : null,
+      author: byline
+        ? {
+            slug: byline.slug,
+            displayName: byline.display_name,
+            displayNameEn: byline.display_name_en,
+          }
+        : null,
     };
   });
 }
@@ -182,14 +213,19 @@ async function loadFacets(db: Db): Promise<BlogListing["facets"]> {
     .gt("article_count", 0)
     .order("article_count", { ascending: false })
     .limit(24);
-  return ((data ?? []) as { slug: string; name: string; kind: string; article_count: number }[]).map(
-    (row) => ({
-      slug: row.slug,
-      name: row.name,
-      kind: (row.kind === "tag" ? "tag" : "category") as TermKind,
-      count: row.article_count,
-    }),
-  );
+  return (
+    (data ?? []) as {
+      slug: string;
+      name: string;
+      kind: string;
+      article_count: number;
+    }[]
+  ).map((row) => ({
+    slug: row.slug,
+    name: row.name,
+    kind: (row.kind === "tag" ? "tag" : "category") as TermKind,
+    count: row.article_count,
+  }));
 }
 
 /* ------------------------------------------------------------------ index */
@@ -214,7 +250,8 @@ export async function loadBlogIndex(rawPage: unknown): Promise<BlogListing> {
         loadFacets(db),
       ]);
       const pageInfo = paging(blogIndexPath, page, count ?? 0);
-      if (pageInfo.overrun) return { articles: [], paging: pageInfo, facets, degraded: false };
+      if (pageInfo.overrun)
+        return { articles: [], paging: pageInfo, facets, degraded: false };
 
       const { data } = await db
         .from("articles")
@@ -250,7 +287,11 @@ const TERM_COLUMNS =
  * articles. Ordering by `(article_count desc, id asc)` keeps the choice stable
  * across requests, which is what canonical URLs require.
  */
-async function resolveTerm(db: Db, kind: TermKind, slug: string): Promise<TermRow | null> {
+async function resolveTerm(
+  db: Db,
+  kind: TermKind,
+  slug: string,
+): Promise<TermRow | null> {
   const { data } = await db
     .from("blog_terms")
     .select(TERM_COLUMNS)
@@ -324,12 +365,23 @@ export async function loadTermArchive(
       ]);
 
       const { termAncestry } = await import("./blog-taxonomy");
-      const ancestry = termAncestry(siblings.length ? siblings : [term], term.id);
+      const ancestry = termAncestry(
+        siblings.length ? siblings : [term],
+        term.id,
+      );
       const children = siblings.filter((row) => row.parent_id === term.id);
 
       const pageInfo = paging(basePath, page, count ?? 0);
       if (pageInfo.overrun) {
-        return { articles: [], paging: pageInfo, facets, degraded: false, term, ancestry, children };
+        return {
+          articles: [],
+          paging: pageInfo,
+          facets,
+          degraded: false,
+          term,
+          ancestry,
+          children,
+        };
       }
 
       // Two-step instead of a join: the anon client cannot rely on an embedded
@@ -341,9 +393,19 @@ export async function loadTermArchive(
         .eq("term_id", term.id)
         .order("created_at", { ascending: false })
         .range(pageInfo.from, pageInfo.to);
-      const ids = ((links ?? []) as { article_id: string }[]).map((row) => row.article_id);
+      const ids = ((links ?? []) as { article_id: string }[]).map(
+        (row) => row.article_id,
+      );
       if (!ids.length) {
-        return { articles: [], paging: pageInfo, facets, degraded: false, term, ancestry, children };
+        return {
+          articles: [],
+          paging: pageInfo,
+          facets,
+          degraded: false,
+          term,
+          ancestry,
+          children,
+        };
       }
 
       const { data } = await db
@@ -375,7 +437,9 @@ export async function loadTermArchive(
  * advertising a `noindex` URL in a sitemap is the exact conflict Search Console
  * reports as "Submitted URL marked noindex".
  */
-export async function listArchiveUrls(limit = 500): Promise<{ path: string; updatedAt: string | null }[]> {
+export async function listArchiveUrls(
+  limit = 500,
+): Promise<{ path: string; updatedAt: string | null }[]> {
   return renderRead<{ path: string; updatedAt: string | null }[]>({
     name: "blog.archive_urls",
     key: `blog|archive_urls|${limit}`,
@@ -389,7 +453,9 @@ export async function listArchiveUrls(limit = 500): Promise<{ path: string; upda
         .eq("robots_index", true)
         .order("updated_at", { ascending: false })
         .limit(Math.min(2_000, Math.max(1, limit)));
-      return ((data ?? []) as { kind: string; slug: string; updated_at: string }[]).map((row) => ({
+      return (
+        (data ?? []) as { kind: string; slug: string; updated_at: string }[]
+      ).map((row) => ({
         path: termArchivePath(row.kind, row.slug),
         updatedAt: row.updated_at ?? null,
       }));

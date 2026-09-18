@@ -18,14 +18,22 @@ import { openRefund as requestPartialRefund } from "@/lib/payments.functions";
 import { OrderDesk } from "@/components/admin/OrderDesk";
 import { useLang } from "@/lib/i18n";
 
-
-export const Route = createFileRoute("/_authenticated/dashboard/orders/$orderId")({
+export const Route = createFileRoute(
+  "/_authenticated/dashboard/orders/$orderId",
+)({
   head: () => ({
     meta: [
       { title: "Order detail — Framique Admin" },
-      { name: "description", content: "Inspect line items, totals, timeline and issue refunds for an order." },
+      {
+        name: "description",
+        content:
+          "Inspect line items, totals, timeline and issue refunds for an order.",
+      },
       { property: "og:title", content: "Order detail" },
-      { property: "og:description", content: "Fulfil, cancel or refund a storefront order." },
+      {
+        property: "og:description",
+        content: "Fulfil, cancel or refund a storefront order.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -36,19 +44,34 @@ export const Route = createFileRoute("/_authenticated/dashboard/orders/$orderId"
       {error.message}
     </p>
   ),
-  notFoundComponent: () => <p className="text-sm text-muted-foreground">Order not found.</p>,
+  notFoundComponent: () => (
+    <p className="text-sm text-muted-foreground">Order not found.</p>
+  ),
 });
 
-const FORWARD: Record<string, "packed" | "shipped" | "delivered" | undefined> = {
-  confirmed: "packed",
-  paid: "packed",
-  packed: "shipped",
-  shipped: "delivered",
-};
-const CANCELLABLE = ["pending", "payment_pending", "confirmed", "paid", "packed"];
+const FORWARD: Record<string, "packed" | "shipped" | "delivered" | undefined> =
+  {
+    confirmed: "packed",
+    paid: "packed",
+    packed: "shipped",
+    shipped: "delivered",
+  };
+const CANCELLABLE = [
+  "pending",
+  "payment_pending",
+  "confirmed",
+  "paid",
+  "packed",
+];
 const TERMINAL = ["cancelled", "refunded"];
 
-const STEPS = ["created", "confirmed", "packed", "shipped", "delivered"] as const;
+const STEPS = [
+  "created",
+  "confirmed",
+  "packed",
+  "shipped",
+  "delivered",
+] as const;
 
 type Dialog = "cancel" | "refund" | "decline" | null;
 
@@ -130,9 +153,16 @@ function OrderDetailPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  if (isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
-  if (error) return <p role="alert" className="text-sm text-danger-foreground">{error.message}</p>;
-  if (!data) return <p className="text-sm text-muted-foreground">Order not found.</p>;
+  if (isLoading)
+    return <p className="text-sm text-muted-foreground">Loading…</p>;
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-danger-foreground">
+        {error.message}
+      </p>
+    );
+  if (!data)
+    return <p className="text-sm text-muted-foreground">Order not found.</p>;
 
   const { order, items, events, refunds, payments, amendments } = data;
   const currency = order.currency_code;
@@ -146,7 +176,11 @@ function OrderDetailPage() {
     .filter((p) => p.payment_status === "paid")
     .reduce((sum, p) => sum + Number(p.amount_minor_int), 0);
   const refundedMinor = refunds
-    .filter((r) => ["requested", "approved", "processing", "settled"].includes(r.status ?? ""))
+    .filter((r) =>
+      ["requested", "approved", "processing", "settled"].includes(
+        r.status ?? "",
+      ),
+    )
     .reduce((sum, r) => sum + Number(r.amount_minor_int), 0);
   const refundableMinor = Math.max(0, capturedMinor - refundedMinor);
 
@@ -164,8 +198,12 @@ function OrderDetailPage() {
       </Link>
 
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <h1 className="money font-bangla-display text-xl font-semibold">{order.order_number}</h1>
-        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusTone[status] ?? ""}`}>
+        <h1 className="money font-bangla-display text-xl font-semibold">
+          {order.order_number}
+        </h1>
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusTone[status] ?? ""}`}
+        >
           {statusLabel[status] ?? status}
         </span>
         <span className="money text-xs text-muted-foreground">
@@ -182,8 +220,8 @@ function OrderDetailPage() {
 
       {closed ? (
         <p className="mt-4 rounded-fq-lg border border-border bg-muted p-3 text-sm text-foreground">
-          {t("This order is closed", "এই অর্ডারটি বন্ধ")} ({statusLabel[status] ?? status}). No further actions
-          are available.
+          {t("This order is closed", "এই অর্ডারটি বন্ধ")} (
+          {statusLabel[status] ?? status}). No further actions are available.
         </p>
       ) : (
         <div className="mt-4 flex flex-wrap gap-2">
@@ -218,7 +256,8 @@ function OrderDetailPage() {
               onClick={() => action.mutate("advance")}
               className="min-h-11 rounded-fq-md bg-bd-teal-700 px-4 text-sm font-medium text-background disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              {t("Mark as", "হিসেবে চিহ্নিত করুন")} {statusLabel[nextStep] ?? nextStep}
+              {t("Mark as", "হিসেবে চিহ্নিত করুন")}{" "}
+              {statusLabel[nextStep] ?? nextStep}
             </button>
           ) : null}
 
@@ -236,7 +275,10 @@ function OrderDetailPage() {
         </div>
       )}
 
-      <ol className="mt-6 flex flex-wrap gap-2" aria-label="Fulfilment progress">
+      <ol
+        className="mt-6 flex flex-wrap gap-2"
+        aria-label="Fulfilment progress"
+      >
         {STEPS.map((s) => {
           const done = reached.has(s);
           return (
@@ -274,7 +316,11 @@ function OrderDetailPage() {
             <br />
             {order.city} <span className="money">{order.postcode ?? ""}</span>
           </p>
-          {order.note ? <p className="mt-2 text-xs text-muted-foreground">Note: {order.note}</p> : null}
+          {order.note ? (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Note: {order.note}
+            </p>
+          ) : null}
         </div>
 
         <div className="rounded-fq-lg border border-border bg-card p-4">
@@ -282,10 +328,17 @@ function OrderDetailPage() {
           <dl className="mt-2 space-y-1 text-sm">
             <Row label="Method" value={order.payment_method.toUpperCase()} />
             <Row label="Payment id" value={payment?.id ?? "—"} />
-            <Row label="Payment status" value={payment?.payment_status ?? "—"} />
+            <Row
+              label="Payment status"
+              value={payment?.payment_status ?? "—"}
+            />
             <Row
               label="Captured"
-              value={payment ? fmtMinor(Number(payment.amount_minor_int), currency) : "—"}
+              value={
+                payment
+                  ? fmtMinor(Number(payment.amount_minor_int), currency)
+                  : "—"
+              }
             />
           </dl>
         </div>
@@ -293,15 +346,31 @@ function OrderDetailPage() {
         <div className="rounded-fq-lg border border-border bg-card p-4">
           <h2 className="text-sm font-semibold">{t("Totals", "মোট")}</h2>
           <dl className="mt-2 space-y-1 text-sm">
-            <Row label="Subtotal" value={fmtMinor(Number(order.subtotal_minor_int), currency)} />
-            <Row label="Discount" value={fmtMinor(Number(order.discount_minor_int), currency)} />
-            <Row label="Delivery" value={fmtMinor(Number(order.shipping_minor_int), currency)} />
-            <Row label="COD surcharge" value={fmtMinor(Number(order.cod_surcharge_minor_int), currency)} />
+            <Row
+              label="Subtotal"
+              value={fmtMinor(Number(order.subtotal_minor_int), currency)}
+            />
+            <Row
+              label="Discount"
+              value={fmtMinor(Number(order.discount_minor_int), currency)}
+            />
+            <Row
+              label="Delivery"
+              value={fmtMinor(Number(order.shipping_minor_int), currency)}
+            />
+            <Row
+              label="COD surcharge"
+              value={fmtMinor(Number(order.cod_surcharge_minor_int), currency)}
+            />
             <Row
               label={`VAT (${(order.vat_rate_basis_points / 100).toFixed(1)}%)`}
               value={fmtMinor(Number(order.vat_minor_int), currency)}
             />
-            <Row label="Total" value={fmtMinor(Number(order.total_minor_int), currency)} strong />
+            <Row
+              label="Total"
+              value={fmtMinor(Number(order.total_minor_int), currency)}
+              strong
+            />
             {refunds.map((r) => (
               <Row
                 key={r.id}
@@ -318,12 +387,24 @@ function OrderDetailPage() {
           <caption className="sr-only">Order line items</caption>
           <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
             <tr>
-              <th scope="col" className="p-3">Product</th>
-              <th scope="col" className="p-3">Variant</th>
-              <th scope="col" className="p-3">SKU</th>
-              <th scope="col" className="p-3">Qty</th>
-              <th scope="col" className="p-3">Unit</th>
-              <th scope="col" className="p-3">Line total</th>
+              <th scope="col" className="p-3">
+                Product
+              </th>
+              <th scope="col" className="p-3">
+                Variant
+              </th>
+              <th scope="col" className="p-3">
+                SKU
+              </th>
+              <th scope="col" className="p-3">
+                Qty
+              </th>
+              <th scope="col" className="p-3">
+                Unit
+              </th>
+              <th scope="col" className="p-3">
+                Line total
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -331,9 +412,13 @@ function OrderDetailPage() {
               <tr key={i.id}>
                 <td className="p-3">{i.product_title}</td>
                 <td className="p-3 text-muted-foreground">{i.variant_name}</td>
-                <td className="money p-3 text-muted-foreground">{i.sku ?? "—"}</td>
+                <td className="money p-3 text-muted-foreground">
+                  {i.sku ?? "—"}
+                </td>
                 <td className="money p-3">{i.quantity}</td>
-                <td className="money p-3">{fmtMinor(Number(i.unit_price_minor_int), currency)}</td>
+                <td className="money p-3">
+                  {fmtMinor(Number(i.unit_price_minor_int), currency)}
+                </td>
                 <td className="money p-3 font-medium">
                   {fmtMinor(Number(i.line_total_minor_int), currency)}
                 </td>
@@ -359,13 +444,19 @@ function OrderDetailPage() {
       />
 
       <div className="mt-4 rounded-fq-lg border border-border bg-card p-4">
-        <h2 className="text-sm font-semibold">{t("Refund whole order", "পুরো অর্ডার রিফান্ড")}</h2>
+        <h2 className="text-sm font-semibold">
+          {t("Refund whole order", "পুরো অর্ডার রিফান্ড")}
+        </h2>
         <p className="money mt-1 text-sm text-muted-foreground">
-          {t("Refundable now", "এখন রিফান্ডযোগ্য")}: {fmtMinor(refundableMinor, currency)}
+          {t("Refundable now", "এখন রিফান্ডযোগ্য")}:{" "}
+          {fmtMinor(refundableMinor, currency)}
         </p>
         {refundableMinor === 0 ? (
           <p className="mt-2 text-sm text-muted-foreground">
-            {t("Nothing left to refund on this order.", "এই অর্ডারে রিফান্ড করার কিছু বাকি নেই।")}
+            {t(
+              "Nothing left to refund on this order.",
+              "এই অর্ডারে রিফান্ড করার কিছু বাকি নেই।",
+            )}
           </p>
         ) : (
           <form
@@ -377,7 +468,9 @@ function OrderDetailPage() {
             }}
           >
             <label className="text-sm">
-              <span className="block text-muted-foreground">{t("Amount (minor)", "পরিমাণ (পয়সা)")}</span>
+              <span className="block text-muted-foreground">
+                {t("Amount (minor)", "পরিমাণ (পয়সা)")}
+              </span>
               <input
                 name="amount"
                 type="number"
@@ -389,7 +482,9 @@ function OrderDetailPage() {
               />
             </label>
             <label className="text-sm">
-              <span className="block text-muted-foreground">{t("Reason", "কারণ")}</span>
+              <span className="block text-muted-foreground">
+                {t("Reason", "কারণ")}
+              </span>
               <input
                 name="reason"
                 minLength={4}
@@ -403,16 +498,19 @@ function OrderDetailPage() {
               disabled={partialRefund.isPending}
               className="mt-6 min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground disabled:opacity-50"
             >
-              {partialRefund.isPending ? t("Requesting…", "অনুরোধ হচ্ছে…") : t("Request refund", "রিফান্ড অনুরোধ")}
+              {partialRefund.isPending
+                ? t("Requesting…", "অনুরোধ হচ্ছে…")
+                : t("Request refund", "রিফান্ড অনুরোধ")}
             </button>
           </form>
         )}
       </div>
 
-
       <div className="mt-4 rounded-fq-lg border border-border bg-card p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold">{t("Amend amounts", "পরিমাণ সংশোধন")}</h2>
+          <h2 className="text-sm font-semibold">
+            {t("Amend amounts", "পরিমাণ সংশোধন")}
+          </h2>
           {!closed && (
             <button
               type="button"
@@ -420,7 +518,12 @@ function OrderDetailPage() {
               onClick={() => setAmendOpen((v) => !v)}
               className="min-h-11 rounded-fq-md border border-border px-4 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             >
-              {amendOpen ? t("Close", "বন্ধ") : t("Edit shipping / discount", "ডেলিভারি / ডিসকাউন্ট সম্পাদনা")}
+              {amendOpen
+                ? t("Close", "বন্ধ")
+                : t(
+                    "Edit shipping / discount",
+                    "ডেলিভারি / ডিসকাউন্ট সম্পাদনা",
+                  )}
             </button>
           )}
         </div>
@@ -440,7 +543,9 @@ function OrderDetailPage() {
             }}
           >
             <label className="block text-sm">
-              <span className="mb-1 block font-medium">{t("Delivery (minor units)", "ডেলিভারি (পয়সা)")}</span>
+              <span className="mb-1 block font-medium">
+                {t("Delivery (minor units)", "ডেলিভারি (পয়সা)")}
+              </span>
               <input
                 name="shipping"
                 type="number"
@@ -452,7 +557,9 @@ function OrderDetailPage() {
               />
             </label>
             <label className="block text-sm">
-              <span className="mb-1 block font-medium">{t("Discount (minor units)", "ডিসকাউন্ট (পয়সা)")}</span>
+              <span className="mb-1 block font-medium">
+                {t("Discount (minor units)", "ডিসকাউন্ট (পয়সা)")}
+              </span>
               <input
                 name="discount"
                 type="number"
@@ -464,7 +571,9 @@ function OrderDetailPage() {
               />
             </label>
             <label className="block text-sm">
-              <span className="mb-1 block font-medium">{t("Reason", "কারণ")}</span>
+              <span className="mb-1 block font-medium">
+                {t("Reason", "কারণ")}
+              </span>
               <input
                 name="reason"
                 required
@@ -480,7 +589,9 @@ function OrderDetailPage() {
                 disabled={amendment.isPending}
                 className="min-h-11 rounded-fq-md bg-bd-teal-700 px-4 text-sm font-medium text-background disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
               >
-                {amendment.isPending ? t("Applying…", "প্রয়োগ হচ্ছে…") : t("Apply amendment", "সংশোধন প্রয়োগ")}
+                {amendment.isPending
+                  ? t("Applying…", "প্রয়োগ হচ্ছে…")
+                  : t("Apply amendment", "সংশোধন প্রয়োগ")}
               </button>
             </div>
           </form>
@@ -489,7 +600,10 @@ function OrderDetailPage() {
         {amendments.length > 0 && (
           <ul className="mt-4 space-y-2">
             {amendments.map((a) => (
-              <li key={a.id} className="rounded-fq-md border border-border p-3 text-sm">
+              <li
+                key={a.id}
+                className="rounded-fq-md border border-border p-3 text-sm"
+              >
                 <p className="font-medium">{a.reason}</p>
                 <p className="money mt-1 text-xs text-muted-foreground">
                   {new Date(a.created_at).toLocaleString("en-BD")} ·{" "}
@@ -512,9 +626,14 @@ function OrderDetailPage() {
             </p>
           </li>
           {events.map((e) => (
-            <li key={e.id} className="rounded-fq-lg rounded-bl-sm bg-info-soft p-3 text-sm">
+            <li
+              key={e.id}
+              className="rounded-fq-lg rounded-bl-sm bg-info-soft p-3 text-sm"
+            >
               <p className="font-medium">{e.event_type}</p>
-              {e.note ? <p className="text-muted-foreground">{e.note}</p> : null}
+              {e.note ? (
+                <p className="text-muted-foreground">{e.note}</p>
+              ) : null}
               <p className="money mt-1 text-xs text-muted-foreground">
                 {new Date(e.created_at).toLocaleString("en-BD")}
               </p>
@@ -556,9 +675,19 @@ function OrderDetailPage() {
   );
 }
 
-function Row({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+function Row({
+  label,
+  value,
+  strong,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+}) {
   return (
-    <div className={`flex items-center justify-between gap-3 ${strong ? "font-semibold" : ""}`}>
+    <div
+      className={`flex items-center justify-between gap-3 ${strong ? "font-semibold" : ""}`}
+    >
       <dt className="text-muted-foreground">{label}</dt>
       <dd className="money truncate">{value}</dd>
     </div>

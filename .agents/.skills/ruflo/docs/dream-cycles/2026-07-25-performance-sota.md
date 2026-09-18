@@ -4,46 +4,46 @@
 
 ## What's New in 2026
 
-| Finding | Source | Confidence |
-|---------|--------|------------|
-| AA-AgentPerf: first agentic inference benchmark, Agents/MW metric; GB300 = 61,354 vs H200 = 2,594 (23.6× gap) | Artificial Analysis, Jun 12 2026 | **A** |
-| Mixture-of-agents Pareto-optimal: +2.7pp over self-consistency on MMLU-Pro; most efficient when parallel > sequential | arXiv 2605.01566, ACL 2026 SRW | **A** |
-| RecursiveMAS: 1.2–2.4× inference speedup, 34.6–75.6% token reduction, +8.3% accuracy across 9 benchmarks | arXiv 2604.25917 | **B** |
-| AutoAgents-Rust: 4.97 rps vs LangGraph 2.70 rps (+84%); CrewAI 44% failure rate excluded | dev.to/saivishwak, Feb 2026 | **B** |
-| Mixture-of-agents at 20× CoT budget yields +7.1% MMLU-Pro over chain-of-thought baseline | arXiv 2605.01566, ACL 2026 SRW | **A** |
+| Finding                                                                                                               | Source                           | Confidence |
+| --------------------------------------------------------------------------------------------------------------------- | -------------------------------- | ---------- |
+| AA-AgentPerf: first agentic inference benchmark, Agents/MW metric; GB300 = 61,354 vs H200 = 2,594 (23.6× gap)         | Artificial Analysis, Jun 12 2026 | **A**      |
+| Mixture-of-agents Pareto-optimal: +2.7pp over self-consistency on MMLU-Pro; most efficient when parallel > sequential | arXiv 2605.01566, ACL 2026 SRW   | **A**      |
+| RecursiveMAS: 1.2–2.4× inference speedup, 34.6–75.6% token reduction, +8.3% accuracy across 9 benchmarks              | arXiv 2604.25917                 | **B**      |
+| AutoAgents-Rust: 4.97 rps vs LangGraph 2.70 rps (+84%); CrewAI 44% failure rate excluded                              | dev.to/saivishwak, Feb 2026      | **B**      |
+| Mixture-of-agents at 20× CoT budget yields +7.1% MMLU-Pro over chain-of-thought baseline                              | arXiv 2605.01566, ACL 2026 SRW   | **A**      |
 
 ## Ruflo Current Capability
 
-| Capability | Status | Notes |
-|-----------|--------|-------|
+| Capability                | Status                          | Notes                                                              |
+| ------------------------- | ------------------------------- | ------------------------------------------------------------------ |
 | Agent inference benchmark | ❌ No AA-AgentPerf registration | `performance benchmark --suite all` exists but no Agents/MW metric |
-| Test-time compute scaling | ❌ Absent | No mixture-of-agents routing config; 3-tier routing is cost-only |
-| Flash Attention speedup | ❌ Unverified | CLAUDE.md: "unverified — no benchmark exists for this claim" |
-| MCP response target | ⚠️ Unmeasured | <100ms target set but no CI gate |
-| Framework throughput | ⚠️ Unbenchmarked | No public rps/latency numbers |
+| Test-time compute scaling | ❌ Absent                       | No mixture-of-agents routing config; 3-tier routing is cost-only   |
+| Flash Attention speedup   | ❌ Unverified                   | CLAUDE.md: "unverified — no benchmark exists for this claim"       |
+| MCP response target       | ⚠️ Unmeasured                   | <100ms target set but no CI gate                                   |
+| Framework throughput      | ⚠️ Unbenchmarked                | No public rps/latency numbers                                      |
 
 ## Competitor Comparison
 
-| Framework | Throughput (rps) | P95 Latency (ms) | Failure Rate | Test-Time Scaling | Agents/MW |
-|-----------|:----------------:|:----------------:|:------------:|:-----------------:|:---------:|
-| **Ruflo** | Unbenchmarked | Unbenchmarked | Unknown | None | Not registered |
-| LangGraph | 2.70 (B) | 16,891 (B) | 0% | None | Not registered |
-| AutoGen/AG2 | ~2.0 (C) | ~15,000 (C) | Low | Self-refine (B) | Not registered |
-| CrewAI | Excluded (B) | — | 44% (B) | None | Not registered |
-| OpenAI Swarm | Lowest latency (C) | — | Low (C) | None | Not registered |
-| AutoAgents-Rust | 4.97 (B) | 9,652 (B) | 0% | None | Not registered |
+| Framework       |  Throughput (rps)  | P95 Latency (ms) | Failure Rate | Test-Time Scaling |   Agents/MW    |
+| --------------- | :----------------: | :--------------: | :----------: | :---------------: | :------------: |
+| **Ruflo**       |   Unbenchmarked    |  Unbenchmarked   |   Unknown    |       None        | Not registered |
+| LangGraph       |      2.70 (B)      |    16,891 (B)    |      0%      |       None        | Not registered |
+| AutoGen/AG2     |      ~2.0 (C)      |   ~15,000 (C)    |     Low      |  Self-refine (B)  | Not registered |
+| CrewAI          |    Excluded (B)    |        —         |   44% (B)    |       None        | Not registered |
+| OpenAI Swarm    | Lowest latency (C) |        —         |   Low (C)    |       None        | Not registered |
+| AutoAgents-Rust |      4.97 (B)      |    9,652 (B)     |      0%      |       None        | Not registered |
 
-*(B = vendor/dev benchmark 2026; C = single source)*
+_(B = vendor/dev benchmark 2026; C = single source)_
 
 ## Benchmarks
 
-| Benchmark | Key Number | Grade | Reference |
-|-----------|-----------|-------|----------|
-| AA-AgentPerf GB300 | 61,354 Agents/MW | **A** | Artificial Analysis Jun 2026 |
-| AA-AgentPerf H200 | 2,594 Agents/MW | **A** | Artificial Analysis Jun 2026 |
-| Mixture-of-agents MMLU-Pro | +7.1% over CoT @ 20× budget | **A** | arXiv 2605.01566, ACL 2026 |
-| RecursiveMAS speedup | 1.2–2.4× end-to-end | **B** | arXiv 2604.25917 |
-| AutoAgents-Rust vs LangGraph | +84% throughput | **B** | dev.to Feb 2026 |
+| Benchmark                    | Key Number                  | Grade | Reference                    |
+| ---------------------------- | --------------------------- | ----- | ---------------------------- |
+| AA-AgentPerf GB300           | 61,354 Agents/MW            | **A** | Artificial Analysis Jun 2026 |
+| AA-AgentPerf H200            | 2,594 Agents/MW             | **A** | Artificial Analysis Jun 2026 |
+| Mixture-of-agents MMLU-Pro   | +7.1% over CoT @ 20× budget | **A** | arXiv 2605.01566, ACL 2026   |
+| RecursiveMAS speedup         | 1.2–2.4× end-to-end         | **B** | arXiv 2604.25917             |
+| AutoAgents-Rust vs LangGraph | +84% throughput             | **B** | dev.to Feb 2026              |
 
 ## SOTA Proof & Witness
 

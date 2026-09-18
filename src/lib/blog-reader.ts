@@ -35,18 +35,27 @@ export function headingId(label: string, index: number): string {
   return slug || `section-${index + 1}`;
 }
 
-export function articleOutline(body: string): { blocks: Block[]; toc: TocItem[]; readingMinutes: number } {
+export function articleOutline(body: string): {
+  blocks: Block[];
+  toc: TocItem[];
+  readingMinutes: number;
+} {
   const blocks = parseBody(body);
   const used = new Map<string, number>();
   const toc: TocItem[] = [];
   for (const block of blocks) {
-    if (block.type !== "heading" || toc.length >= BLOG_READER_LIMITS.tocItems) continue;
+    if (block.type !== "heading" || toc.length >= BLOG_READER_LIMITS.tocItems)
+      continue;
     const label = inlineToText(block.inline).trim();
     if (!label) continue;
     const base = headingId(label, toc.length);
     const seen = used.get(base) ?? 0;
     used.set(base, seen + 1);
-    toc.push({ id: seen ? `${base}-${seen + 1}` : base, label, level: block.level });
+    toc.push({
+      id: seen ? `${base}-${seen + 1}` : base,
+      label,
+      level: block.level,
+    });
   }
   return { blocks, toc, readingMinutes: bodyStats(blocks).readingMinutes };
 }
@@ -137,11 +146,16 @@ export function personJsonLd(origin: string, author: BlogAuthor) {
     image: author.avatarUrl || undefined,
     jobTitle: author.roleTitle || undefined,
     sameAs: [author.websiteUrl, ...Object.values(author.socialLinks)].filter(
-      (value): value is string => typeof value === "string" && value.startsWith("https://"),
+      (value): value is string =>
+        typeof value === "string" && value.startsWith("https://"),
     ),
   };
 }
 
 export function escapeFeedXml(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

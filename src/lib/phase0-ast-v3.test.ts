@@ -12,7 +12,11 @@ import {
 } from "./builder-ast";
 import { THEME_PRESETS } from "./theme-presets";
 
-const box = (children: Section[], id = "box"): Section => ({ ...newSection("container"), id, children });
+const box = (children: Section[], id = "box"): Section => ({
+  ...newSection("container"),
+  id,
+  children,
+});
 
 function nest(depth: number): Section {
   let node = { ...newSection("heading"), id: "leaf" } as Section;
@@ -22,7 +26,11 @@ function nest(depth: number): Section {
 
 describe("AST v3 nesting", () => {
   it("recurses into container children", () => {
-    const ast = parseAst({ header: [], main: [box([{ ...newSection("heading"), id: "h" }])], footer: [] });
+    const ast = parseAst({
+      header: [],
+      main: [box([{ ...newSection("heading"), id: "h" }])],
+      footer: [],
+    });
     expect(ast.main[0]?.children?.[0]?.id).toBe("h");
   });
 
@@ -34,13 +42,20 @@ describe("AST v3 nesting", () => {
   });
 
   it("caps total nodes per template", () => {
-    const many = Array.from({ length: 400 }, (_, i) => ({ ...newSection("heading"), id: `n${i}` }));
+    const many = Array.from({ length: 400 }, (_, i) => ({
+      ...newSection("heading"),
+      id: `n${i}`,
+    }));
     const ast = parseAst({ main: [box(many)] });
     expect(flattenAst(ast).length).toBeLessThanOrEqual(MAX_NODES_PER_TEMPLATE);
   });
 
   it("survives a cyclic payload", () => {
-    const cycle: Record<string, unknown> = { id: "loop", type: "container", props: {} };
+    const cycle: Record<string, unknown> = {
+      id: "loop",
+      type: "container",
+      props: {},
+    };
     cycle["children"] = [cycle];
     expect(() => parseAst({ main: [cycle] })).not.toThrow();
     expect(flattenAst(parseAst({ main: [cycle] })).length).toBe(1);
@@ -55,36 +70,60 @@ describe("AST v3 nesting", () => {
   });
 
   it("degrades unknown widgets to a visible placeholder", () => {
-    const ast = parseAst({ main: [{ id: "x", type: "not_a_widget", props: {} }] });
+    const ast = parseAst({
+      main: [{ id: "x", type: "not_a_widget", props: {} }],
+    });
     expect(ast.main[0]?.invalid).toBe("unknown_widget:not_a_widget");
   });
 
   it("validates slot legality per parent, at depth", () => {
-    const ast = parseAst({ footer: [box([{ ...newSection("hero"), id: "hero" }], "fbox")] });
+    const ast = parseAst({
+      footer: [box([{ ...newSection("hero"), id: "hero" }], "fbox")],
+    });
     expect(ast.footer[0]?.children?.[0]?.invalid).toMatch(/illegal_slot/);
   });
 
   it("lints illegal nesting and empty containers", () => {
     const ast: ThemeAst = {
       header: [],
-      main: [box([]), { ...newSection("heading"), id: "leaf", children: [{ ...newSection("heading"), id: "kid" }] }],
+      main: [
+        box([]),
+        {
+          ...newSection("heading"),
+          id: "leaf",
+          children: [{ ...newSection("heading"), id: "kid" }],
+        },
+      ],
       footer: [],
     };
     const messages = lintTemplate(ast).map((i) => i.message);
     expect(messages.some((m) => /Empty container/.test(m))).toBe(true);
-    expect(messages.some((m) => /cannot hold nested widgets/.test(m))).toBe(true);
+    expect(messages.some((m) => /cannot hold nested widgets/.test(m))).toBe(
+      true,
+    );
   });
 });
 
 describe("AST v2 → v3 migration", () => {
   it("lifts a flat v2 document into slots", () => {
-    const v3 = upgradeAstV2ToV3({ sections: [{ id: "a", type: "heading", props: {} }] });
+    const v3 = upgradeAstV2ToV3({
+      sections: [{ id: "a", type: "heading", props: {} }],
+    });
     expect(v3["main"]).toHaveLength(1);
     expect(v3["header"]).toEqual([]);
   });
 
   it("renames v2 container child keys to children", () => {
-    const v3 = upgradeAstV2ToV3({ main: [{ id: "b", type: "container", props: {}, items: [{ id: "c", type: "heading", props: {} }] }] });
+    const v3 = upgradeAstV2ToV3({
+      main: [
+        {
+          id: "b",
+          type: "container",
+          props: {},
+          items: [{ id: "c", type: "heading", props: {} }],
+        },
+      ],
+    });
     const node = (v3["main"] as Record<string, unknown>[])[0]!;
     expect(node["items"]).toBeUndefined();
     expect(node["children"]).toHaveLength(1);
@@ -107,8 +146,13 @@ describe("round trip", () => {
     for (const preset of THEME_PRESETS) {
       for (const [key, ast] of Object.entries(preset.templates)) {
         const round = parseAst(JSON.parse(JSON.stringify(ast)));
-        expect(flattenAst(round).filter((n) => n.invalid), `${preset.key ?? ""} ${key}`).toEqual([]);
-        expect(parseAst(JSON.parse(JSON.stringify(round))), `${key}`).toEqual(round);
+        expect(
+          flattenAst(round).filter((n) => n.invalid),
+          `${preset.key ?? ""} ${key}`,
+        ).toEqual([]);
+        expect(parseAst(JSON.parse(JSON.stringify(round))), `${key}`).toEqual(
+          round,
+        );
       }
     }
   });

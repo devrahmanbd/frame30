@@ -26,8 +26,8 @@ import {
 import { motionLog } from "./motion-runtime";
 
 export type MotionEngine = {
-  gsap: typeof import("gsap")["gsap"];
-  ScrollTrigger: typeof import("gsap/ScrollTrigger")["ScrollTrigger"];
+  gsap: (typeof import("gsap"))["gsap"];
+  ScrollTrigger: (typeof import("gsap/ScrollTrigger"))["ScrollTrigger"];
 };
 
 export type EngineState = "idle" | "loading" | "ready" | "degraded";
@@ -49,9 +49,16 @@ export function __resetMotionEngine() {
   consecutiveFailures = 0;
 }
 
-function timeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+function timeout<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+    const timer = setTimeout(
+      () => reject(new Error(`${label} timed out after ${ms}ms`)),
+      ms,
+    );
     promise.then(
       (value) => {
         clearTimeout(timer);
@@ -86,7 +93,9 @@ export type LoadOptions = {
  * Returns the engine, or `null` when motion must degrade. Concurrent callers
  * share one in-flight load — ten pinned sections cost one network request.
  */
-export async function loadMotionEngine(options: LoadOptions = {}): Promise<MotionEngine | null> {
+export async function loadMotionEngine(
+  options: LoadOptions = {},
+): Promise<MotionEngine | null> {
   if (state === "ready" && engine) return engine;
   if (state === "degraded") return null;
   if (inflight) return inflight;
@@ -100,16 +109,26 @@ export async function loadMotionEngine(options: LoadOptions = {}): Promise<Motio
   inflight = (async () => {
     for (let attempt = 0; ; attempt += 1) {
       try {
-        const loaded = await timeout(loader(), policy.timeoutMs, "motion engine import");
+        const loaded = await timeout(
+          loader(),
+          policy.timeoutMs,
+          "motion engine import",
+        );
         engine = loaded;
         state = "ready";
         consecutiveFailures = 0;
-        motionLog("info", "engine.ready", { attempt, ms: Date.now() - startedAt });
+        motionLog("info", "engine.ready", {
+          attempt,
+          ms: Date.now() - startedAt,
+        });
         return loaded;
       } catch (error) {
         consecutiveFailures += 1;
         const message = error instanceof Error ? error.message : "unknown";
-        if (!shouldRetryLoad(attempt, policy) || consecutiveFailures >= policy.breakerThreshold) {
+        if (
+          !shouldRetryLoad(attempt, policy) ||
+          consecutiveFailures >= policy.breakerThreshold
+        ) {
           state = "degraded";
           motionLog("error", "engine.degraded", {
             attempt,

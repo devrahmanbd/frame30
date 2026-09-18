@@ -31,14 +31,16 @@ export async function ensureRules(db: Client, merchantId: string) {
     .select("id, code, enabled, params, precedence, action")
     .eq("merchant_id", merchantId);
   const existing = new Set((data ?? []).map((r) => r.code));
-  const missing = RULE_CATALOG.filter((r) => !existing.has(r.code)).map((r) => ({
-    merchant_id: merchantId,
-    code: r.code,
-    enabled: true,
-    precedence: r.precedence,
-    action: r.action,
-    params: DEFAULT_PARAMS[r.code]!,
-  }));
+  const missing = RULE_CATALOG.filter((r) => !existing.has(r.code)).map(
+    (r) => ({
+      merchant_id: merchantId,
+      code: r.code,
+      enabled: true,
+      precedence: r.precedence,
+      action: r.action,
+      params: DEFAULT_PARAMS[r.code]!,
+    }),
+  );
   if (missing.length) {
     await db.from("fraud_rules").insert(missing);
     const { data: fresh } = await db
@@ -50,10 +52,17 @@ export async function ensureRules(db: Client, merchantId: string) {
   return data ?? [];
 }
 
-async function cachedRules(db: Client, merchantId: string): Promise<RuleState[]> {
+async function cachedRules(
+  db: Client,
+  merchantId: string,
+): Promise<RuleState[]> {
   return cached(`fraud:rules:${merchantId}`, 60, async () => {
     const rows = await ensureRules(db, merchantId);
-    return rows.map((r) => ({ code: r.code, enabled: r.enabled, params: r.params }));
+    return rows.map((r) => ({
+      code: r.code,
+      enabled: r.enabled,
+      params: r.params,
+    }));
   });
 }
 
@@ -68,11 +77,17 @@ export function maskPhone(phone: string) {
 }
 
 /** PII-minimal stable identity for an assessment row. */
-export async function subjectHash(merchantId: string, phone: string, email?: string | null) {
+export async function subjectHash(
+  merchantId: string,
+  phone: string,
+  email?: string | null,
+) {
   const input = `${merchantId}|${phone.replace(/\D/g, "")}|${(email ?? "").toLowerCase()}`;
   const bytes = new TextEncoder().encode(input);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
 export async function writeAudit(
@@ -118,7 +133,11 @@ function toHistory(rows: OrderRow[]): HistoryOrder[] {
   }));
 }
 
-export function scoreOrder(order: OrderRow, all: OrderRow[], rules: RuleState[]) {
+export function scoreOrder(
+  order: OrderRow,
+  all: OrderRow[],
+  rules: RuleState[],
+) {
   const verdict = assess(
     {
       amountMinorInt: order.total_minor_int,
@@ -179,7 +198,8 @@ export async function assessCheckout(
 ): Promise<FraudAssessment & { subjectHash: string }> {
   return withSpan("fraud.assess", async () => {
     await enforceRateLimit("fraud.assess", `${merchantId}:${subject}`);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as unknown as Client;
     const hash = await subjectHash(merchantId, input.phone, input.email);
 
@@ -200,7 +220,9 @@ export async function assessCheckout(
     const blacklisted = blacklist.some(
       (b) =>
         (b.kind === "phone" && b.value.replace(/\D/g, "") === phoneDigits) ||
-        (b.kind === "email" && !!input.email && b.value === input.email.toLowerCase()),
+        (b.kind === "email" &&
+          !!input.email &&
+          b.value === input.email.toLowerCase()),
     );
 
     const ctx: FraudContext = {
@@ -235,7 +257,8 @@ export async function assessCheckout(
     });
 
     incr("framique_fraud_assessment_total", { action: verdict.action });
-    for (const signal of verdict.signals) incr("framique_fraud_rule_hits_total", { rule: signal.code });
+    for (const signal of verdict.signals)
+      incr("framique_fraud_rule_hits_total", { rule: signal.code });
     if (verdict.action === "block")
       log("warn", "fraud.blocked", {
         merchantId,
@@ -257,7 +280,8 @@ export async function recordOrderVerdict(
   amountMinorInt: number,
   verdict: FraudAssessment & { subjectHash: string },
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as Client;
   await db
     .from("fraud_assessments")
@@ -278,7 +302,10 @@ export async function recordOrderVerdict(
       currency_code: currency,
       risk_score: verdict.score,
       signals: verdict.signals as never,
-      reason: { rules: verdict.signals.map((s) => s.code), engine: verdict.version } as never,
+      reason: {
+        rules: verdict.signals.map((s) => s.code),
+        engine: verdict.version,
+      } as never,
     })
     .select("id")
     .single();
@@ -290,7 +317,11 @@ export async function recordOrderVerdict(
  * Fulfilment gate: an order under open review may not ship. Fails closed —
  * if the hold cannot be read the fulfilment is refused.
  */
-export async function assertNoFraudHold(db: Client, merchantId: string, orderId: string) {
+export async function assertNoFraudHold(
+  db: Client,
+  merchantId: string,
+  orderId: string,
+) {
   const { data, error } = await db
     .from("fraud_cases")
     .select("id, status, risk_score")
@@ -311,7 +342,8 @@ export async function assertNoFraudHold(db: Client, merchantId: string, orderId:
 
 /** Honeypot trip on a public surface: recorded, counted, never surfaced to the bot. */
 export async function recordHoneypotTrip(merchantId: string, surface: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const db = supabaseAdmin as unknown as Client;
   incr("framique_fraud_honeypot_total", { surface });
   await db.from("fraud_audit").insert({
@@ -322,7 +354,11 @@ export async function recordHoneypotTrip(merchantId: string, surface: string) {
   });
 }
 
-export async function scanOrders(db: Client, merchantId: string, actor: string) {
+export async function scanOrders(
+  db: Client,
+  merchantId: string,
+  actor: string,
+) {
   return withSpan("fraud.scan", async () => {
     await enforceRateLimit("fraud.scan", `${merchantId}:${actor}`);
     const rules = await cachedRules(db, merchantId);
@@ -344,7 +380,11 @@ export async function scanOrders(db: Client, merchantId: string, actor: string) 
     let created = 0;
     for (const order of rows) {
       if (seen.has(order.id)) continue;
-      const { score, signals, action, decisiveCode } = scoreOrder(order, rows, rules);
+      const { score, signals, action, decisiveCode } = scoreOrder(
+        order,
+        rows,
+        rules,
+      );
       if (action === "allow") continue;
       const { data: inserted } = await db
         .from("fraud_cases")

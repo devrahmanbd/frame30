@@ -29,7 +29,8 @@ import { permalinkSettingsFor } from "./permalink.server";
 
 type Client = SupabaseClient<Database>;
 
-export type SeoEntityType = "store" | "product" | "collection" | "page" | "article";
+export type SeoEntityType =
+  "store" | "product" | "collection" | "page" | "article";
 
 /* ------------------------- query-discipline bounds ------------------------- */
 
@@ -129,43 +130,55 @@ export type SeoEntity = {
 };
 
 /** Everything a merchant can optimise, with its current score attached. */
-export async function listSeoEntities(db: Client, merchantId: string): Promise<SeoEntity[]> {
+export async function listSeoEntities(
+  db: Client,
+  merchantId: string,
+): Promise<SeoEntity[]> {
   return withSpan("seo.index", async () => {
-    const [merchant, settings, products, collections, pages, articles, metas] = await Promise.all([
-      db.from("merchants").select("name, slug").eq("id", merchantId).maybeSingle(),
-      db.from("merchant_settings").select("tagline").eq("merchant_id", merchantId).maybeSingle(),
-      db
-        .from("products")
-        .select("id, title, slug, description")
-        .eq("merchant_id", merchantId)
-        .eq("status", "active")
-        .is("deleted_at", null)
-        .order("updated_at", { ascending: false })
-        .limit(SEO_INDEX_LIMITS.products),
-      db
-        .from("collections")
-        .select("id, name, slug, description")
-        .eq("merchant_id", merchantId)
-        .is("deleted_at", null)
-        .limit(SEO_INDEX_LIMITS.collections),
-      db
-        .from("storefront_pages")
-        .select("id, title, slug, excerpt, body_markdown")
-        .eq("merchant_id", merchantId)
-        .is("deleted_at", null)
-        .limit(SEO_INDEX_LIMITS.pages),
-      db
-        .from("articles")
-        .select("id, title, slug, excerpt, body, published_at")
-        .eq("merchant_id", merchantId)
-        .is("deleted_at", null)
-        .limit(SEO_INDEX_LIMITS.articles),
-      db
-        .from("seo_meta")
-        .select("entity_type, entity_id, score, robots_index")
-        .eq("merchant_id", merchantId)
-        .limit(SEO_INDEX_LIMITS.meta),
-    ]);
+    const [merchant, settings, products, collections, pages, articles, metas] =
+      await Promise.all([
+        db
+          .from("merchants")
+          .select("name, slug")
+          .eq("id", merchantId)
+          .maybeSingle(),
+        db
+          .from("merchant_settings")
+          .select("tagline")
+          .eq("merchant_id", merchantId)
+          .maybeSingle(),
+        db
+          .from("products")
+          .select("id, title, slug, description")
+          .eq("merchant_id", merchantId)
+          .eq("status", "active")
+          .is("deleted_at", null)
+          .order("updated_at", { ascending: false })
+          .limit(SEO_INDEX_LIMITS.products),
+        db
+          .from("collections")
+          .select("id, name, slug, description")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null)
+          .limit(SEO_INDEX_LIMITS.collections),
+        db
+          .from("storefront_pages")
+          .select("id, title, slug, excerpt, body_markdown")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null)
+          .limit(SEO_INDEX_LIMITS.pages),
+        db
+          .from("articles")
+          .select("id, title, slug, excerpt, body, published_at")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null)
+          .limit(SEO_INDEX_LIMITS.articles),
+        db
+          .from("seo_meta")
+          .select("entity_type, entity_id, score, robots_index")
+          .eq("merchant_id", merchantId)
+          .limit(SEO_INDEX_LIMITS.meta),
+      ]);
 
     // Article URLs are owned by the tenant's permalink pattern, so the panel
     // must show the same path the storefront serves — never a hardcoded /blog.
@@ -176,7 +189,10 @@ export async function listSeoEntities(db: Client, merchantId: string): Promise<S
     const key = (t: string, id: string | null) => `${t}:${id ?? "-"}`;
     const scores = new Map<string, { score: number; indexed: boolean }>();
     for (const m of metas.data ?? []) {
-      scores.set(key(m.entity_type, m.entity_id), { score: m.score, indexed: m.robots_index });
+      scores.set(key(m.entity_type, m.entity_id), {
+        score: m.score,
+        indexed: m.robots_index,
+      });
     }
 
     const rows: SeoEntity[] = [
@@ -270,7 +286,9 @@ export async function loadSeoMeta(
     .select("*")
     .eq("merchant_id", merchantId)
     .eq("entity_type", entityType);
-  query = entityId ? query.eq("entity_id", entityId) : query.is("entity_id", null);
+  query = entityId
+    ? query.eq("entity_id", entityId)
+    : query.is("entity_id", null);
   const { data, error } = await query.maybeSingle();
   if (error) throw new SeoError("seo_read_failed", error.message);
   return data ? toRecord(data as Row) : { entityType, entityId, ...EMPTY };
@@ -301,13 +319,20 @@ export type SeoInput = {
 };
 
 function clean(value: string, max: number) {
-  return value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().slice(0, max);
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
 }
 
 function assertUrl(value: string, field: string) {
   const v = value.trim();
   if (v && !/^https:\/\/[^\s]+$/i.test(v)) {
-    throw new SeoError("seo_url_invalid", `${field} must be an absolute https:// URL`);
+    throw new SeoError(
+      "seo_url_invalid",
+      `${field} must be an absolute https:// URL`,
+    );
   }
   return v;
 }
@@ -322,7 +347,10 @@ export async function saveSeoMeta(
     await enforceRateLimit("seo.write", `${merchantId}:${actor}`);
 
     if (input.entityType === "store" && input.entityId) {
-      throw new SeoError("seo_entity_invalid", "The store record has no entity id");
+      throw new SeoError(
+        "seo_entity_invalid",
+        "The store record has no entity id",
+      );
     }
     if (input.entityType !== "store" && !input.entityId) {
       throw new SeoError("seo_entity_invalid", "An entity must be selected");
@@ -348,7 +376,12 @@ export async function saveSeoMeta(
     // The score shown to the merchant and the score stored are one computation.
     const report = analyseSeo(draft);
 
-    const before = await loadSeoMeta(db, merchantId, input.entityType, input.entityId);
+    const before = await loadSeoMeta(
+      db,
+      merchantId,
+      input.entityType,
+      input.entityId,
+    );
     const row = {
       merchant_id: merchantId,
       entity_type: input.entityType,
@@ -371,23 +404,43 @@ export async function saveSeoMeta(
       .upsert(row, { onConflict: "merchant_id,entity_type,entity_id" });
     if (error) {
       // Older rows may predate the partial unique index for the store record.
-      const existing = await loadSeoMeta(db, merchantId, input.entityType, input.entityId);
+      const existing = await loadSeoMeta(
+        db,
+        merchantId,
+        input.entityType,
+        input.entityId,
+      );
       if (existing.updatedAt) {
-        let update = db.from("seo_meta").update(row).eq("merchant_id", merchantId).eq("entity_type", input.entityType);
-        update = input.entityId ? update.eq("entity_id", input.entityId) : update.is("entity_id", null);
+        let update = db
+          .from("seo_meta")
+          .update(row)
+          .eq("merchant_id", merchantId)
+          .eq("entity_type", input.entityType);
+        update = input.entityId
+          ? update.eq("entity_id", input.entityId)
+          : update.is("entity_id", null);
         const { error: updateError } = await update;
-        if (updateError) throw new SeoError("seo_save_failed", updateError.message);
+        if (updateError)
+          throw new SeoError("seo_save_failed", updateError.message);
       } else {
         const { error: insertError } = await db.from("seo_meta").insert(row);
-        if (insertError) throw new SeoError("seo_save_failed", insertError.message);
+        if (insertError)
+          throw new SeoError("seo_save_failed", insertError.message);
       }
     }
 
     await writeAudit(merchantId, actor, input, before, report.score);
     invalidate(`seo|${merchantId}`);
     invalidate("sf-sitemap|");
-    incr("framique_seo_save_total", { entity: input.entityType, band: report.score >= 80 ? "good" : report.score >= 50 ? "fair" : "poor" });
-    log("info", "seo.saved", { merchantId, entity: input.entityType, score: report.score });
+    incr("framique_seo_save_total", {
+      entity: input.entityType,
+      band: report.score >= 80 ? "good" : report.score >= 50 ? "fair" : "poor",
+    });
+    log("info", "seo.saved", {
+      merchantId,
+      entity: input.entityType,
+      score: report.score,
+    });
     return { score: report.score, checks: report.checks };
   });
 }
@@ -400,7 +453,12 @@ async function assertEntityBelongs(
 ) {
   if (entityType === "store" || !entityId) return;
   const table = (
-    { product: "products", collection: "collections", page: "storefront_pages", article: "articles" } as const
+    {
+      product: "products",
+      collection: "collections",
+      page: "storefront_pages",
+      article: "articles",
+    } as const
   )[entityType];
   const { data } = await db
     .from(table)
@@ -408,7 +466,11 @@ async function assertEntityBelongs(
     .eq("id", entityId)
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (!data) throw new SeoError("seo_entity_not_found", "That item does not belong to this store");
+  if (!data)
+    throw new SeoError(
+      "seo_entity_not_found",
+      "That item does not belong to this store",
+    );
 }
 
 async function writeAudit(
@@ -418,7 +480,8 @@ async function writeAudit(
   before: SeoRecord,
   score: number,
 ) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   await supabaseAdmin.from("seo_meta_audit").insert({
     merchant_id: merchantId,
     entity_type: input.entityType,
@@ -474,10 +537,14 @@ export async function resolveSeo(
       const db = publicClient();
       let query = db
         .from("seo_meta")
-        .select("meta_title, meta_description, canonical, robots_index, robots_follow, og_image_url, faq")
+        .select(
+          "meta_title, meta_description, canonical, robots_index, robots_follow, og_image_url, faq",
+        )
         .eq("merchant_id", merchantId)
         .eq("entity_type", entityType);
-      query = entityId ? query.eq("entity_id", entityId) : query.is("entity_id", null);
+      query = entityId
+        ? query.eq("entity_id", entityId)
+        : query.is("entity_id", null);
       const { data, error } = await query.maybeSingle();
       if (error) throw new Error(error.message);
       if (!data) return null;
@@ -533,7 +600,10 @@ export async function loadStoreRobotsPolicy(
         .eq("entity_type", "store")
         .maybeSingle();
       const indexable = data?.robots_index !== false;
-      return { indexable, aiCrawlers: indexable && data?.robots_follow !== false };
+      return {
+        indexable,
+        aiCrawlers: indexable && data?.robots_follow !== false,
+      };
     },
   });
 }
@@ -541,9 +611,19 @@ export async function loadStoreRobotsPolicy(
 /* -------------------------------- sitemaps -------------------------------- */
 
 export type SitemapKind = "pages" | "products" | "collections" | "articles";
-export const SITEMAP_KINDS: SitemapKind[] = ["pages", "products", "collections", "articles"];
+export const SITEMAP_KINDS: SitemapKind[] = [
+  "pages",
+  "products",
+  "collections",
+  "articles",
+];
 
-export type SitemapUrl = { path: string; lastmod?: string; changefreq: string; priority: string };
+export type SitemapUrl = {
+  path: string;
+  lastmod?: string;
+  changefreq: string;
+  priority: string;
+};
 
 /**
  * One sitemap per template type so a large catalogue never pushes content
@@ -565,127 +645,149 @@ export async function loadSitemapByKind(
     timeoutMs: 4_000,
     context: { slug, kind },
     load: async () => {
-    const { publicClient } = await import("./pricing.server");
-    const db = publicClient();
-    const { data: merchant } = await db
-      .from("merchants")
-      .select("id")
-      .eq("slug", slug)
-      .eq("status", "active")
-      .maybeSingle();
-    if (!merchant) return null;
-
-    const { data: overrides } = await db
-      .from("seo_meta")
-      .select("entity_type, entity_id, robots_index")
-      .eq("merchant_id", merchant.id)
-      .eq("robots_index", false)
-      .limit(SITEMAP_OVERRIDE_SCAN_LIMIT);
-    const hidden = new Set((overrides ?? []).map((o) => `${o.entity_type}:${o.entity_id ?? "-"}`));
-
-    // Phase 3: a template the builder marked `noindex` must not be advertised
-    // either — the sitemap and the page's own robots directive have to agree.
-    const { hiddenTemplates } = await import("./template-seo.server");
-    const hiddenTpl = await hiddenTemplates(merchant.id);
-
-    const urls: SitemapUrl[] = [];
-    if (kind === "pages") {
-      if (!hidden.has("store:-") && !hiddenTpl.has("index")) {
-        urls.push({ path: `/store/${slug}`, changefreq: "daily", priority: "1.0" });
-        urls.push({ path: `/store/${slug}/search`, changefreq: "weekly", priority: "0.4" });
-      }
-      const { data } = await db
-        .from("storefront_pages")
-        .select("id, slug, updated_at, robots")
-        .eq("merchant_id", merchant.id)
-        .eq("is_published", true)
-        .is("deleted_at", null)
-        .limit(Math.min(1_000, SITEMAP_SHARD_MAX_ROWS));
-      for (const p of data ?? []) {
-        if (p.robots?.startsWith("noindex") || hidden.has(`page:${p.id}`) || hiddenTpl.has("page")) continue;
-        urls.push({
-          path: `/store/${slug}/pages/${p.slug}`,
-          lastmod: p.updated_at?.slice(0, 10),
-          changefreq: "monthly",
-          priority: "0.5",
-        });
-      }
-    }
-    if (kind === "products") {
-      const { data } = await db
-        .from("products")
-        .select("id, slug, updated_at")
-        .eq("merchant_id", merchant.id)
+      const { publicClient } = await import("./pricing.server");
+      const db = publicClient();
+      const { data: merchant } = await db
+        .from("merchants")
+        .select("id")
+        .eq("slug", slug)
         .eq("status", "active")
-        .is("deleted_at", null)
-        .order("updated_at", { ascending: false })
-        .limit(SITEMAP_SHARD_MAX_ROWS);
-      for (const p of data ?? []) {
-        if (hidden.has(`product:${p.id}`) || hiddenTpl.has("product")) continue;
-        urls.push({
-          path: `/store/${slug}/p/${p.slug}`,
-          lastmod: p.updated_at?.slice(0, 10),
-          changefreq: "weekly",
-          priority: "0.8",
-        });
-      }
-    }
-    if (kind === "collections") {
-      const { data } = await db
-        .from("collections")
-        .select("id, slug, updated_at, is_published")
+        .maybeSingle();
+      if (!merchant) return null;
+
+      const { data: overrides } = await db
+        .from("seo_meta")
+        .select("entity_type, entity_id, robots_index")
         .eq("merchant_id", merchant.id)
-        .eq("is_published", true)
-        .is("deleted_at", null)
-        .limit(Math.min(1_000, SITEMAP_SHARD_MAX_ROWS));
-      for (const c of data ?? []) {
-        if (hidden.has(`collection:${c.id}`) || hiddenTpl.has("collection")) continue;
-        urls.push({
-          path: `/store/${slug}/search?collection=${c.slug}`,
-          lastmod: c.updated_at?.slice(0, 10),
-          changefreq: "weekly",
-          priority: "0.6",
-        });
+        .eq("robots_index", false)
+        .limit(SITEMAP_OVERRIDE_SCAN_LIMIT);
+      const hidden = new Set(
+        (overrides ?? []).map((o) => `${o.entity_type}:${o.entity_id ?? "-"}`),
+      );
+
+      // Phase 3: a template the builder marked `noindex` must not be advertised
+      // either — the sitemap and the page's own robots directive have to agree.
+      const { hiddenTemplates } = await import("./template-seo.server");
+      const hiddenTpl = await hiddenTemplates(merchant.id);
+
+      const urls: SitemapUrl[] = [];
+      if (kind === "pages") {
+        if (!hidden.has("store:-") && !hiddenTpl.has("index")) {
+          urls.push({
+            path: `/store/${slug}`,
+            changefreq: "daily",
+            priority: "1.0",
+          });
+          urls.push({
+            path: `/store/${slug}/search`,
+            changefreq: "weekly",
+            priority: "0.4",
+          });
+        }
+        const { data } = await db
+          .from("storefront_pages")
+          .select("id, slug, updated_at, robots")
+          .eq("merchant_id", merchant.id)
+          .eq("is_published", true)
+          .is("deleted_at", null)
+          .limit(Math.min(1_000, SITEMAP_SHARD_MAX_ROWS));
+        for (const p of data ?? []) {
+          if (
+            p.robots?.startsWith("noindex") ||
+            hidden.has(`page:${p.id}`) ||
+            hiddenTpl.has("page")
+          )
+            continue;
+          urls.push({
+            path: `/store/${slug}/pages/${p.slug}`,
+            lastmod: p.updated_at?.slice(0, 10),
+            changefreq: "monthly",
+            priority: "0.5",
+          });
+        }
       }
-    }
-    if (kind === "articles") {
-      const { data } = await db
-        .from("articles")
-        .select("id, slug, updated_at, published_at, robots")
-        .eq("merchant_id", merchant.id)
-        .eq("status", "published")
-        .is("deleted_at", null)
-        .limit(Math.min(2_000, SITEMAP_SHARD_MAX_ROWS));
-      const permalinks = await permalinkSettingsFor(db, merchant.id);
-      for (const a of data ?? []) {
-        if (a.robots?.startsWith("noindex") || hidden.has(`article:${a.id}`)) continue;
-        urls.push({
-          path: buildPermalink(permalinks, {
-            kind: "article",
-            slug: a.slug,
-            date: a.published_at ?? null,
-          }),
-          lastmod: (a.updated_at ?? a.published_at)?.slice(0, 10),
-          changefreq: "monthly",
-          priority: "0.7",
-        });
+      if (kind === "products") {
+        const { data } = await db
+          .from("products")
+          .select("id, slug, updated_at")
+          .eq("merchant_id", merchant.id)
+          .eq("status", "active")
+          .is("deleted_at", null)
+          .order("updated_at", { ascending: false })
+          .limit(SITEMAP_SHARD_MAX_ROWS);
+        for (const p of data ?? []) {
+          if (hidden.has(`product:${p.id}`) || hiddenTpl.has("product"))
+            continue;
+          urls.push({
+            path: `/store/${slug}/p/${p.slug}`,
+            lastmod: p.updated_at?.slice(0, 10),
+            changefreq: "weekly",
+            priority: "0.8",
+          });
+        }
       }
-    }
-    incr("framique_sitemap_build_total", { kind });
-    // Belt and braces: the protocol ceiling is 50k URLs per file. The row caps
-    // above already keep us far below it, but a future kind that fans one row
-    // out into several URLs must not silently emit an invalid sitemap.
-    if (urls.length > SITEMAP_MAX_URLS) {
-      log("warn", "seo.sitemap.truncated", { kind, slug, urls: urls.length });
-      incr("framique_sitemap_truncated_total", { kind });
-      return urls.slice(0, SITEMAP_MAX_URLS);
-    }
-    return urls;
+      if (kind === "collections") {
+        const { data } = await db
+          .from("collections")
+          .select("id, slug, updated_at, is_published")
+          .eq("merchant_id", merchant.id)
+          .eq("is_published", true)
+          .is("deleted_at", null)
+          .limit(Math.min(1_000, SITEMAP_SHARD_MAX_ROWS));
+        for (const c of data ?? []) {
+          if (hidden.has(`collection:${c.id}`) || hiddenTpl.has("collection"))
+            continue;
+          urls.push({
+            path: `/store/${slug}/search?collection=${c.slug}`,
+            lastmod: c.updated_at?.slice(0, 10),
+            changefreq: "weekly",
+            priority: "0.6",
+          });
+        }
+      }
+      if (kind === "articles") {
+        const { data } = await db
+          .from("articles")
+          .select("id, slug, updated_at, published_at, robots")
+          .eq("merchant_id", merchant.id)
+          .eq("status", "published")
+          .is("deleted_at", null)
+          .limit(Math.min(2_000, SITEMAP_SHARD_MAX_ROWS));
+        const permalinks = await permalinkSettingsFor(db, merchant.id);
+        for (const a of data ?? []) {
+          if (a.robots?.startsWith("noindex") || hidden.has(`article:${a.id}`))
+            continue;
+          urls.push({
+            path: buildPermalink(permalinks, {
+              kind: "article",
+              slug: a.slug,
+              date: a.published_at ?? null,
+            }),
+            lastmod: (a.updated_at ?? a.published_at)?.slice(0, 10),
+            changefreq: "monthly",
+            priority: "0.7",
+          });
+        }
+      }
+      incr("framique_sitemap_build_total", { kind });
+      // Belt and braces: the protocol ceiling is 50k URLs per file. The row caps
+      // above already keep us far below it, but a future kind that fans one row
+      // out into several URLs must not silently emit an invalid sitemap.
+      if (urls.length > SITEMAP_MAX_URLS) {
+        log("warn", "seo.sitemap.truncated", { kind, slug, urls: urls.length });
+        incr("framique_sitemap_truncated_total", { kind });
+        return urls.slice(0, SITEMAP_MAX_URLS);
+      }
+      return urls;
     },
   });
 }
 
-export function renderSitemapIndex(origin: string, slug: string, kinds: SitemapKind[]) {
+export function renderSitemapIndex(
+  origin: string,
+  slug: string,
+  kinds: SitemapKind[],
+) {
   const body = kinds
     .map(
       (kind) =>
@@ -698,7 +800,12 @@ export function renderSitemapIndex(origin: string, slug: string, kinds: SitemapK
 /* --------------------- Phase 7.4 — store-wide templates -------------------- */
 
 export type SeoTemplateType = "product" | "collection" | "page" | "article";
-export const SEO_TEMPLATE_TYPES: SeoTemplateType[] = ["product", "collection", "page", "article"];
+export const SEO_TEMPLATE_TYPES: SeoTemplateType[] = [
+  "product",
+  "collection",
+  "page",
+  "article",
+];
 
 export type SeoTemplate = {
   entityType: SeoTemplateType;
@@ -708,7 +815,10 @@ export type SeoTemplate = {
 };
 
 /** One row per content type, with the untouched types returned empty. */
-export async function listSeoTemplates(db: Client, merchantId: string): Promise<SeoTemplate[]> {
+export async function listSeoTemplates(
+  db: Client,
+  merchantId: string,
+): Promise<SeoTemplate[]> {
   const { data, error } = await db
     .from("seo_templates")
     .select("entity_type, title_template, description_template, updated_at")
@@ -727,7 +837,12 @@ export async function listSeoTemplates(db: Client, merchantId: string): Promise<
   );
   return SEO_TEMPLATE_TYPES.map(
     (entityType) =>
-      byType.get(entityType) ?? { entityType, titleTemplate: "", descriptionTemplate: "", updatedAt: null },
+      byType.get(entityType) ?? {
+        entityType,
+        titleTemplate: "",
+        descriptionTemplate: "",
+        updatedAt: null,
+      },
   );
 }
 
@@ -739,7 +854,11 @@ export async function saveSeoTemplate(
   db: Client,
   merchantId: string,
   userId: string,
-  input: { entityType: SeoTemplateType; titleTemplate: string; descriptionTemplate: string },
+  input: {
+    entityType: SeoTemplateType;
+    titleTemplate: string;
+    descriptionTemplate: string;
+  },
 ): Promise<SeoTemplate> {
   const { templateIssues } = await import("./seo-answers");
   const issues = [
@@ -762,7 +881,10 @@ export async function saveSeoTemplate(
     .select("entity_type, title_template, description_template, updated_at")
     .single();
   if (error) throw new SeoError("template_write_failed", error.message);
-  log("info", "seo.template.saved", { merchantId, entityType: input.entityType });
+  log("info", "seo.template.saved", {
+    merchantId,
+    entityType: input.entityType,
+  });
   return {
     entityType: data.entity_type as SeoTemplateType,
     titleTemplate: data.title_template ?? "",
@@ -786,7 +908,9 @@ export async function seedSeoTemplates(
   const { presetSeoTemplates } = await import("./theme-seo");
   const existing = await listSeoTemplates(db, merchantId);
   const authored = new Set(
-    existing.filter((row) => row.titleTemplate || row.descriptionTemplate).map((row) => row.entityType),
+    existing
+      .filter((row) => row.titleTemplate || row.descriptionTemplate)
+      .map((row) => row.entityType),
   );
   const rows = presetSeoTemplates(themeKey)
     .filter((row) => !authored.has(row.entityType))
@@ -798,12 +922,22 @@ export async function seedSeoTemplates(
       ...(userId ? { updated_by: userId } : {}),
     }));
   if (!rows.length) return 0;
-  const { error } = await db.from("seo_templates").upsert(rows, { onConflict: "merchant_id,entity_type" });
+  const { error } = await db
+    .from("seo_templates")
+    .upsert(rows, { onConflict: "merchant_id,entity_type" });
   if (error) {
-    log("warn", "seo.template.seed_failed", { merchantId, themeKey, message: error.message });
+    log("warn", "seo.template.seed_failed", {
+      merchantId,
+      themeKey,
+      message: error.message,
+    });
     return 0;
   }
-  log("info", "seo.template.seeded", { merchantId, themeKey, rows: rows.length });
+  log("info", "seo.template.seeded", {
+    merchantId,
+    themeKey,
+    rows: rows.length,
+  });
   return rows.length;
 }
 
@@ -818,7 +952,11 @@ export type RedirectRow = {
   createdAt: string;
 };
 
-export async function listRedirects(db: Client, merchantId: string, limit = 200): Promise<RedirectRow[]> {
+export async function listRedirects(
+  db: Client,
+  merchantId: string,
+  limit = 200,
+): Promise<RedirectRow[]> {
   const { data, error } = await db
     .from("url_redirects")
     .select("id, from_path, to_path, status, entity_type, created_at")
@@ -836,8 +974,15 @@ export async function listRedirects(db: Client, merchantId: string, limit = 200)
   }));
 }
 
-async function storeSlugOf(db: Client, merchantId: string): Promise<string | null> {
-  const { data } = await db.from("merchants").select("slug").eq("id", merchantId).maybeSingle();
+async function storeSlugOf(
+  db: Client,
+  merchantId: string,
+): Promise<string | null> {
+  const { data } = await db
+    .from("merchants")
+    .select("slug")
+    .eq("id", merchantId)
+    .maybeSingle();
   return data?.slug ?? null;
 }
 
@@ -854,10 +999,16 @@ export async function createRedirect(
   const { normalizePath } = await import("./url-lifecycle");
   const from = normalizePath(input.fromPath);
   const to = input.status === 410 ? "" : normalizePath(input.toPath);
-  if (from === "/") throw new SeoError("redirect_invalid", "Source path is required.");
+  if (from === "/")
+    throw new SeoError("redirect_invalid", "Source path is required.");
   if (input.status === 301) {
-    if (!input.toPath.trim()) throw new SeoError("redirect_invalid", "A 301 needs a destination path.");
-    if (to === from) throw new SeoError("redirect_invalid", "A redirect cannot point at itself.");
+    if (!input.toPath.trim())
+      throw new SeoError("redirect_invalid", "A 301 needs a destination path.");
+    if (to === from)
+      throw new SeoError(
+        "redirect_invalid",
+        "A redirect cannot point at itself.",
+      );
   }
   const { data, error } = await db
     .from("url_redirects")
@@ -887,8 +1038,16 @@ export async function createRedirect(
   };
 }
 
-export async function deleteRedirect(db: Client, merchantId: string, id: string): Promise<void> {
-  const { error } = await db.from("url_redirects").delete().eq("merchant_id", merchantId).eq("id", id);
+export async function deleteRedirect(
+  db: Client,
+  merchantId: string,
+  id: string,
+): Promise<void> {
+  const { error } = await db
+    .from("url_redirects")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("id", id);
   if (error) throw new SeoError("redirect_delete_failed", error.message);
   const slug = await storeSlugOf(db, merchantId);
   if (slug) invalidate(`sf-redirects|${slug}`);
@@ -911,7 +1070,9 @@ export type LlmsSummary = {
  * Catalogue shape for the per-store llms.txt. Public data only — the same rows
  * a crawler could reach by walking the sitemap, minus anything noindexed.
  */
-export async function loadStoreLlmsSummary(slug: string): Promise<LlmsSummary | null> {
+export async function loadStoreLlmsSummary(
+  slug: string,
+): Promise<LlmsSummary | null> {
   const { renderRead } = await import("./render-read.server");
   return renderRead<LlmsSummary | null>({
     name: "seo.llms",
@@ -922,66 +1083,74 @@ export async function loadStoreLlmsSummary(slug: string): Promise<LlmsSummary | 
     timeoutMs: 3_000,
     context: { slug },
     load: async () => {
-    const { publicClient } = await import("./pricing.server");
-    const db = publicClient();
-    const { data: merchant } = await db
-      .from("merchants")
-      .select("id, name")
-      .eq("slug", slug)
-      .eq("status", "active")
-      .maybeSingle();
-    if (!merchant) return null;
-
-    const [settings, count, collections, pages, articles] = await Promise.all([
-      db
-        .from("merchant_settings")
-        .select("tagline, support_email")
-        .eq("merchant_id", merchant.id)
-        .maybeSingle(),
-      db
-        .from("products")
-        .select("id", { count: "exact", head: true })
-        .eq("merchant_id", merchant.id)
+      const { publicClient } = await import("./pricing.server");
+      const db = publicClient();
+      const { data: merchant } = await db
+        .from("merchants")
+        .select("id, name")
+        .eq("slug", slug)
         .eq("status", "active")
-        .is("deleted_at", null),
-      db
-        .from("collections")
-        .select("name, slug, description")
-        .eq("merchant_id", merchant.id)
-        .eq("is_published", true)
-        .is("deleted_at", null)
-        .limit(60),
-      db
-        .from("storefront_pages")
-        .select("title, slug")
-        .eq("merchant_id", merchant.id)
-        .eq("is_published", true)
-        .is("deleted_at", null)
-        .limit(60),
-      db
-        .from("articles")
-        .select("title, slug")
-        .eq("merchant_id", merchant.id)
-        .eq("status", "published")
-        .is("deleted_at", null)
-        .order("published_at", { ascending: false })
-        .limit(40),
-    ]);
+        .maybeSingle();
+      if (!merchant) return null;
 
-    return {
-      storeName: merchant.name,
-      tagline: settings.data?.tagline ?? "",
-      currency: "BDT",
-      contact: settings.data?.support_email ?? "",
-      productCount: count.count ?? 0,
-      collections: (collections.data ?? []).map((c) => ({
-        title: c.name,
-        path: `/store/${slug}/search?collection=${c.slug}`,
-        note: c.description ? c.description.slice(0, 140) : undefined,
-      })),
-      pages: (pages.data ?? []).map((p) => ({ title: p.title, path: `/store/${slug}/pages/${p.slug}` })),
-      guides: (articles.data ?? []).map((a) => ({ title: a.title, path: `/blog/${a.slug}` })),
-    };
+      const [settings, count, collections, pages, articles] = await Promise.all(
+        [
+          db
+            .from("merchant_settings")
+            .select("tagline, support_email")
+            .eq("merchant_id", merchant.id)
+            .maybeSingle(),
+          db
+            .from("products")
+            .select("id", { count: "exact", head: true })
+            .eq("merchant_id", merchant.id)
+            .eq("status", "active")
+            .is("deleted_at", null),
+          db
+            .from("collections")
+            .select("name, slug, description")
+            .eq("merchant_id", merchant.id)
+            .eq("is_published", true)
+            .is("deleted_at", null)
+            .limit(60),
+          db
+            .from("storefront_pages")
+            .select("title, slug")
+            .eq("merchant_id", merchant.id)
+            .eq("is_published", true)
+            .is("deleted_at", null)
+            .limit(60),
+          db
+            .from("articles")
+            .select("title, slug")
+            .eq("merchant_id", merchant.id)
+            .eq("status", "published")
+            .is("deleted_at", null)
+            .order("published_at", { ascending: false })
+            .limit(40),
+        ],
+      );
+
+      return {
+        storeName: merchant.name,
+        tagline: settings.data?.tagline ?? "",
+        currency: "BDT",
+        contact: settings.data?.support_email ?? "",
+        productCount: count.count ?? 0,
+        collections: (collections.data ?? []).map((c) => ({
+          title: c.name,
+          path: `/store/${slug}/search?collection=${c.slug}`,
+          note: c.description ? c.description.slice(0, 140) : undefined,
+        })),
+        pages: (pages.data ?? []).map((p) => ({
+          title: p.title,
+          path: `/store/${slug}/pages/${p.slug}`,
+        })),
+        guides: (articles.data ?? []).map((a) => ({
+          title: a.title,
+          path: `/blog/${a.slug}`,
+        })),
+      };
     },
   });
 }
@@ -1022,7 +1191,12 @@ export type SeoBulkPage = {
   page: number;
   pageSize: number;
   /** Tenant-wide counts, computed before paging so the header does not lie. */
-  summary: { optimised: number; missingTitle: number; missingDescription: number; noindex: number };
+  summary: {
+    optimised: number;
+    missingTitle: number;
+    missingDescription: number;
+    noindex: number;
+  };
 };
 
 export type SeoBulkQuery = {
@@ -1040,7 +1214,10 @@ export const BULK_PAGE_MAX = 100;
 /** Smallest page, so a `pageSize=0` cannot turn pagination into an infinite scroll. */
 export const BULK_PAGE_MIN = 5;
 
-async function bulkSource(db: Client, merchantId: string): Promise<SeoBulkRow[]> {
+async function bulkSource(
+  db: Client,
+  merchantId: string,
+): Promise<SeoBulkRow[]> {
   return cached(`seo-bulk|${merchantId}`, 15, async () => {
     const [entities, metas] = await Promise.all([
       listSeoEntities(db, merchantId),
@@ -1053,7 +1230,9 @@ async function bulkSource(db: Client, merchantId: string): Promise<SeoBulkRow[]>
         .limit(SEO_INDEX_LIMITS.meta),
     ]);
     const key = (t: string, id: string | null) => `${t}:${id ?? "-"}`;
-    const overrides = new Map((metas.data ?? []).map((m) => [key(m.entity_type, m.entity_id), m]));
+    const overrides = new Map(
+      (metas.data ?? []).map((m) => [key(m.entity_type, m.entity_id), m]),
+    );
 
     return entities.map((entity) => {
       const row = overrides.get(key(entity.type, entity.id));
@@ -1096,9 +1275,11 @@ export async function listSeoBulk(
 
     const needle = (query.search ?? "").trim().toLowerCase();
     let rows = all.filter((row) => {
-      if (query.type && query.type !== "all" && row.type !== query.type) return false;
+      if (query.type && query.type !== "all" && row.type !== query.type)
+        return false;
       if (needle) {
-        const hay = `${row.label} ${row.effectiveTitle} ${row.path} ${row.focusKeyword}`.toLowerCase();
+        const hay =
+          `${row.label} ${row.effectiveTitle} ${row.path} ${row.focusKeyword}`.toLowerCase();
         if (!hay.includes(needle)) return false;
       }
       switch (query.state) {
@@ -1118,12 +1299,20 @@ export async function listSeoBulk(
     const direction = query.direction === "desc" ? -1 : 1;
     const sort = query.sort ?? "label";
     rows = rows.slice().sort((a, b) => {
-      if (sort === "score") return ((a.score ?? -1) - (b.score ?? -1)) * direction;
-      if (sort === "type") return a.type.localeCompare(b.type) * direction || a.label.localeCompare(b.label);
+      if (sort === "score")
+        return ((a.score ?? -1) - (b.score ?? -1)) * direction;
+      if (sort === "type")
+        return (
+          a.type.localeCompare(b.type) * direction ||
+          a.label.localeCompare(b.label)
+        );
       return a.label.localeCompare(b.label) * direction;
     });
 
-    const pageSize = Math.min(BULK_PAGE_MAX, Math.max(BULK_PAGE_MIN, Math.trunc(query.pageSize ?? 25) || 25));
+    const pageSize = Math.min(
+      BULK_PAGE_MAX,
+      Math.max(BULK_PAGE_MIN, Math.trunc(query.pageSize ?? 25) || 25),
+    );
     const pages = Math.max(1, Math.ceil(rows.length / pageSize));
     const page = Math.min(Math.max(1, query.page ?? 1), pages);
     incr("framique_seo_bulk_list_total", { state: query.state ?? "all" });
@@ -1162,7 +1351,8 @@ export async function saveSeoBulk(
 ): Promise<{ saved: number; scores: { key: string; score: number }[] }> {
   return withSpan("seo.bulk.save", async () => {
     if (edits.length === 0) return { saved: 0, scores: [] };
-    if (edits.length > 50) throw new SeoError("bulk_too_large", "Save at most 50 rows at a time");
+    if (edits.length > 50)
+      throw new SeoError("bulk_too_large", "Save at most 50 rows at a time");
     await enforceRateLimit("seo.write", `${merchantId}:${actor}`);
 
     const source = await bulkSource(db, merchantId);
@@ -1173,7 +1363,10 @@ export async function saveSeoBulk(
       .select("*")
       .eq("merchant_id", merchantId);
     const existing = new Map(
-      (existingRows ?? []).map((r) => [`${r.entity_type}:${r.entity_id ?? "-"}`, r as Row]),
+      (existingRows ?? []).map((r) => [
+        `${r.entity_type}:${r.entity_id ?? "-"}`,
+        r as Row,
+      ]),
     );
 
     const payload: Record<string, unknown>[] = [];
@@ -1183,7 +1376,8 @@ export async function saveSeoBulk(
     for (const edit of edits) {
       const key = `${edit.entityType}:${edit.entityId ?? "-"}`;
       const entity = byKey.get(key);
-      if (!entity) throw new SeoError("seo_entity_not_found", `Unknown entity ${key}`);
+      if (!entity)
+        throw new SeoError("seo_entity_not_found", `Unknown entity ${key}`);
       const prior = existing.get(key);
 
       const draft: SeoDraft = {
@@ -1226,7 +1420,11 @@ export async function saveSeoBulk(
         actor,
         reason: "seo_bulk_edit",
         before: prior
-          ? { metaTitle: prior.meta_title, metaDescription: prior.meta_description, robotsIndex: prior.robots_index }
+          ? {
+              metaTitle: prior.meta_title,
+              metaDescription: prior.meta_description,
+              robotsIndex: prior.robots_index,
+            }
           : {},
         after: {
           metaTitle: draft.metaTitle,
@@ -1239,10 +1437,13 @@ export async function saveSeoBulk(
 
     const { error } = await db
       .from("seo_meta")
-      .upsert(payload as never, { onConflict: "merchant_id,entity_type,entity_id" });
+      .upsert(payload as never, {
+        onConflict: "merchant_id,entity_type,entity_id",
+      });
     if (error) throw new SeoError("seo_bulk_save_failed", error.message);
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     await supabaseAdmin.from("seo_meta_audit").insert(audits as never);
 
     invalidate(`seo|${merchantId}`);
@@ -1278,7 +1479,9 @@ export async function evaluateSeoPublishGate(
   const { composeSeoPublishGate } = await import("./seo-publish-gate");
   const rows = await bulkSource(db, merchantId);
   const self = rows.find(
-    (r) => r.type === input.entityType && (r.id ?? null) === (input.entityId ?? null),
+    (r) =>
+      r.type === input.entityType &&
+      (r.id ?? null) === (input.entityId ?? null),
   );
   const origin = input.origin.replace(/\/+$/, "");
   const title = input.title ?? self?.effectiveTitle ?? "";
@@ -1295,7 +1498,12 @@ export async function evaluateSeoPublishGate(
     inSitemap: robotsIndex && input.entityType !== "store",
     siblings: rows
       .filter((r) => r.robotsIndex)
-      .map((r) => ({ type: r.type, id: r.id, label: r.label, title: r.effectiveTitle })),
+      .map((r) => ({
+        type: r.type,
+        id: r.id,
+        label: r.label,
+        title: r.effectiveTitle,
+      })),
   });
 }
 
@@ -1309,7 +1517,10 @@ export async function assertSeoPublishable(
   if (!gate.ok) {
     const first = gate.failures.find((f) => f.blocking);
     incr("framique_seo_gate_block_total", { code: first?.code ?? "unknown" });
-    throw new SeoError(first?.code ?? "seo_gate_failed", first?.message ?? "SEO publish gate failed");
+    throw new SeoError(
+      first?.code ?? "seo_gate_failed",
+      first?.message ?? "SEO publish gate failed",
+    );
   }
   return gate;
 }

@@ -4,7 +4,7 @@
 **Parent Platform:** FRAMIQUE (A SaaS Cloud CMS & Zero-Transaction-Fee Commerce Engine)  
 **Parent Entity:** devrahmanbd (Framique Engineering Council)  
 **Frameworks Integrated:** Koray Tuğberk Gübür Holistic Semantic SEO + Semrush Keyword Intelligence + Reddit SEO + FLOW Framework (`seo-flow`) + `sickn33-awareness-stage-mapper` + `hallmark` Anti-AI-Slop Voice  
-**Date:** September 2026  
+**Date:** September 2026
 
 ---
 
@@ -54,7 +54,7 @@
 
 2. **Reddit SERP & Community Dominance:**
    - Targets Google's high-ranking "Discussions and Forums" SERP modules.
-   - Authentic, non-spam taglines for each persona (e.g. *"Keep 100% of your revenue. Zero transaction penalties. Zero app tax"*).
+   - Authentic, non-spam taglines for each persona (e.g. _"Keep 100% of your revenue. Zero transaction penalties. Zero app tax"_).
    - High-karma community value contribution playbooks for `r/ecommerce`, `r/shopify`, `r/webflow`, `r/framer`, `r/webdev`, and `r/smallbusiness`.
 
 3. **12-Week Editorial Content Calendar:**

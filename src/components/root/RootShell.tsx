@@ -64,9 +64,7 @@ export function RootShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setUtcTime(
-        now.toISOString().substring(11, 19) + " UTC",
-      );
+      setUtcTime(now.toISOString().substring(11, 19) + " UTC");
     };
     updateTime();
     const interval = setInterval(updateTime, 1000);
@@ -104,7 +102,8 @@ export function RootShell({ children }: { children: ReactNode }) {
   const dlqCount = opsData?.summary?.total ?? 0;
 
   const isAiDisabled = settingsData?.flags?.["ai_support_enabled"] === false;
-  const isFraudDisabled = settingsData?.flags?.["fraud_engine_enabled"] === false;
+  const isFraudDisabled =
+    settingsData?.flags?.["fraud_engine_enabled"] === false;
   const isPlatformDegraded =
     isAiDisabled || isFraudDisabled || needsAgentCount > 10 || dlqCount > 0;
 
@@ -119,9 +118,15 @@ export function RootShell({ children }: { children: ReactNode }) {
       icon: TrendingUp,
       items: [
         { to: "/root", label: t("Command Center", "কমান্ড সেন্টার") },
-        { to: "/root/revenue", label: t("Platform Revenue", "প্ল্যাটফর্ম রেভিনিউ") },
+        {
+          to: "/root/revenue",
+          label: t("Platform Revenue", "প্ল্যাটফর্ম রেভিনিউ"),
+        },
         { to: "/root/plans", label: t("Plans & Quotas", "প্ল্যান ও কোটা") },
-        { to: "/root/trial", label: t("Trial Lifecycle", "ট্রায়াল ব্যবস্থাপনা") },
+        {
+          to: "/root/trial",
+          label: t("Trial Lifecycle", "ট্রায়াল ব্যবস্থাপনা"),
+        },
         { to: "/root/coupons", label: t("Global Coupons", "গ্লোবাল কুপন") },
       ],
     },
@@ -129,24 +134,39 @@ export function RootShell({ children }: { children: ReactNode }) {
       heading: t("Tenancy & Access", "টেন্যান্সি ও অ্যাক্সেস"),
       icon: Building2,
       items: [
-        { to: "/root/tenants", label: t("Tenants Directory", "টেন্যান্ট তালিকা") },
-        { to: "/root/tenancy", label: t("Tenancy & Purge", "টেন্যান্সি ও পার্জ") },
+        {
+          to: "/root/tenants",
+          label: t("Tenants Directory", "টেন্যান্ট তালিকা"),
+        },
+        {
+          to: "/root/tenancy",
+          label: t("Tenancy & Purge", "টেন্যান্সি ও পার্জ"),
+        },
         { to: "/root/users", label: t("Platform Users", "প্ল্যাটফর্ম ইউজার") },
-        { to: "/root/access", label: t("Store Impersonation", "স্টোর ইমপারসোনেশন") },
+        {
+          to: "/root/access",
+          label: t("Store Impersonation", "স্টোর ইমপারসোনেশন"),
+        },
       ],
     },
     {
       heading: t("Financials & Rails", "আর্থিক ও গেটওয়ে"),
       icon: CreditCard,
       items: [
-        { to: "/root/money", label: t("Money Conformance", "মুদ্রা নিয়ন্ত্রণ") },
+        {
+          to: "/root/money",
+          label: t("Money Conformance", "মুদ্রা নিয়ন্ত্রণ"),
+        },
         {
           to: "/root/payouts",
           label: t("Merchant Payouts", "মার্চেন্ট পেআউট"),
           badge: pendingPayoutCount > 0 ? pendingPayoutCount : undefined,
           alert: pendingPayoutCount > 0,
         },
-        { to: "/root/gateway", label: t("Payment Gateways", "পেমেন্ট গেটওয়ে") },
+        {
+          to: "/root/gateway",
+          label: t("Payment Gateways", "পেমেন্ট গেটওয়ে"),
+        },
       ],
     },
     {
@@ -160,7 +180,10 @@ export function RootShell({ children }: { children: ReactNode }) {
           badge: needsAgentCount > 0 ? needsAgentCount : undefined,
           alert: needsAgentCount > 0,
         },
-        { to: "/root/marketing", label: t("Marketing Switches", "মার্কেটিং সুইচ") },
+        {
+          to: "/root/marketing",
+          label: t("Marketing Switches", "মার্কেটিং সুইচ"),
+        },
       ],
     },
     {
@@ -173,11 +196,20 @@ export function RootShell({ children }: { children: ReactNode }) {
           badge: dlqCount > 0 ? dlqCount : undefined,
           alert: dlqCount > 0,
         },
-        { to: "/root/snapshots", label: t("Snapshots & Restore", "স্ন্যাপশট ও রিস্টোর") },
+        {
+          to: "/root/snapshots",
+          label: t("Snapshots & Restore", "স্ন্যাপশট ও রিস্টোর"),
+        },
         { to: "/root/status", label: t("System Status", "সিস্টেম স্ট্যাটাস") },
-        { to: "/root/observability", label: t("Deep Observability", "ডিপ অবজারভেবিলিটি") },
+        {
+          to: "/root/observability",
+          label: t("Deep Observability", "ডিপ অবজারভেবিলিটি"),
+        },
         { to: "/root/audit", label: t("Audit Trail", "অডিট ট্রেইল") },
-        { to: "/root/settings", label: t("Compliance & Settings", "কমপ্লায়েন্স ও সেটিংস") },
+        {
+          to: "/root/settings",
+          label: t("Compliance & Settings", "কমপ্লায়েন্স ও সেটিংস"),
+        },
       ],
     },
   ];
@@ -189,7 +221,10 @@ export function RootShell({ children }: { children: ReactNode }) {
         return (
           <div key={g.heading} className="space-y-1.5">
             <div className="flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 font-mono">
-              <GroupIcon className="size-3.5 opacity-70 shrink-0" aria-hidden="true" />
+              <GroupIcon
+                className="size-3.5 opacity-70 shrink-0"
+                aria-hidden="true"
+              />
               <span className="truncate">{g.heading}</span>
             </div>
             <div className="space-y-0.5">
@@ -249,7 +284,9 @@ export function RootShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={() => setMobileNavOpen((prev) => !prev)}
-              aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
+              aria-label={
+                mobileNavOpen ? "Close navigation" : "Open navigation"
+              }
               aria-expanded={mobileNavOpen}
               className="flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-border/80 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
             >
@@ -319,7 +356,10 @@ export function RootShell({ children }: { children: ReactNode }) {
                 title="Operational UTC Clock"
                 className="hidden xl:flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-2.5 py-1 text-xs font-mono text-muted-foreground"
               >
-                <Clock className="size-3 text-muted-foreground/70" aria-hidden="true" />
+                <Clock
+                  className="size-3 text-muted-foreground/70"
+                  aria-hidden="true"
+                />
                 <span>{utcTime}</span>
               </div>
             )}
@@ -346,7 +386,10 @@ export function RootShell({ children }: { children: ReactNode }) {
             <button
               type="button"
               onClick={handleSignOut}
-              title={t("Sign out of sovereign root session", "রুট সেশন থেকে লগআউট")}
+              title={t(
+                "Sign out of sovereign root session",
+                "রুট সেশন থেকে লগআউট",
+              )}
               className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border/80 px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-all hover:bg-rose-500/10 hover:border-rose-500/30 hover:text-rose-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
             >
               <LogOut className="size-3.5 shrink-0" aria-hidden="true" />
@@ -395,11 +438,15 @@ export function RootShell({ children }: { children: ReactNode }) {
               <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground space-y-1 font-mono">
                 <div className="flex justify-between">
                   <span>RLS Security:</span>
-                  <span className="text-emerald-600 font-semibold">Tier-1 Live</span>
+                  <span className="text-emerald-600 font-semibold">
+                    Tier-1 Live
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span>Isolation:</span>
-                  <span className="text-foreground font-semibold">Enforced</span>
+                  <span className="text-foreground font-semibold">
+                    Enforced
+                  </span>
                 </div>
               </div>
               <button
@@ -439,11 +486,15 @@ export function RootShell({ children }: { children: ReactNode }) {
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Multi-Tenant:</span>
-                  <span className="text-foreground font-medium">Strict Deny</span>
+                  <span className="text-foreground font-medium">
+                    Strict Deny
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Edge Cache:</span>
-                  <span className="text-foreground font-medium">Private PII Safe</span>
+                  <span className="text-foreground font-medium">
+                    Private PII Safe
+                  </span>
                 </div>
               </div>
             </div>

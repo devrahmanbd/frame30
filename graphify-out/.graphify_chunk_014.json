@@ -176,7 +176,12 @@
     {
       "id": "wp_media_management",
       "label": "WordPress Media Library Management",
-      "nodes": ["wp_media_details", "wp_media_details_metadata", "wp_media_grid", "wp_media_grid_toolbar"],
+      "nodes": [
+        "wp_media_details",
+        "wp_media_details_metadata",
+        "wp_media_grid",
+        "wp_media_grid_toolbar"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -194,7 +199,11 @@
     {
       "id": "elementor_template_system",
       "label": "Elementor Template Library System",
-      "nodes": ["el_66_template_library", "el_66_library_blocks_tab", "el_66_library_pro_templates"],
+      "nodes": [
+        "el_66_template_library",
+        "el_66_library_blocks_tab",
+        "el_66_library_pro_templates"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,

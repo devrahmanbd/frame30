@@ -1,1 +1,817 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "label": "responsive-css.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L1"}, {"id": "lib_responsive_css_responsive_css_budget", "label": "RESPONSIVE_CSS_BUDGET", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L41"}, {"id": "lib_responsive_css_override_layers", "label": "OVERRIDE_LAYERS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L54"}, {"id": "lib_responsive_css_num", "label": "num()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L58"}, {"id": "lib_responsive_css_oneof", "label": "oneOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L64"}, {"id": "lib_responsive_css_decl", "label": "Decl", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L69"}, {"id": "lib_responsive_css_emitters", "label": "EMITTERS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L76"}, {"id": "lib_responsive_css_hash", "label": "hash()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L128"}, {"id": "lib_responsive_css_responsivesignature", "label": "ResponsiveSignature", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L137"}, {"id": "lib_responsive_css_signaturekey", "label": "signatureKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L165"}, {"id": "lib_responsive_css_responsiveclassof", "label": "responsiveClassOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L177"}, {"id": "lib_responsive_css_compiledresponsive", "label": "CompiledResponsive", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L184"}, {"id": "lib_responsive_css_empty", "label": "EMPTY", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L200"}, {"id": "lib_responsive_css_walk", "label": "walk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L210"}, {"id": "lib_responsive_css_astsections", "label": "astSections()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L218"}, {"id": "lib_responsive_css_blockfor", "label": "blockFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L225"}, {"id": "lib_responsive_css_compileresponsivecss", "label": "compileResponsiveCss()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L242"}, {"id": "lib_responsive_css_collect", "label": "collect()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L333"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_builder_ast_breakpoint", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_builder_ast_propvalue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "users_rahman_documents_frame30_src_lib_responsive_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_breakpoint_px", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_responsive_layout_keys", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_isresponsivelayoutkey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_layermedia", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_devicebucket", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_responsive_css_budget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_override_layers", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_num", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_oneof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L64", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_decl", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_emitters", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_hash", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_responsivesignature", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_responsivesignature", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L147", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_signaturekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L165", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_responsiveclassof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L177", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_compiledresponsive", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L184", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_empty", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_walk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L210", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_astsections", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L218", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_blockfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L225", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_compileresponsivecss", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L242", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_responsive_css_ts", "target": "lib_responsive_css_collect", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L333", "weight": 1.0}, {"source": "lib_responsive_css_responsiveclassof", "target": "lib_responsive_css_responsivesignature", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L178", "weight": 1.0}, {"source": "lib_responsive_css_responsiveclassof", "target": "lib_responsive_css_hash", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L179", "weight": 1.0}, {"source": "lib_responsive_css_responsiveclassof", "target": "lib_responsive_css_signaturekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L179", "weight": 1.0}, {"source": "lib_responsive_css_astsections", "target": "lib_responsive_css_walk", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L221", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_collect", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L246", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_astsections", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L246", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_responsivesignature", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L253", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_signaturekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L256", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_hash", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L283", "weight": 1.0}, {"source": "lib_responsive_css_compileresponsivecss", "target": "lib_responsive_css_blockfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L290", "weight": 1.0}, {"source": "lib_responsive_css_collect", "target": "lib_responsive_css_walk", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L335", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_responsive_css_num", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L59"}, {"caller_nid": "lib_responsive_css_num", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L60"}, {"caller_nid": "lib_responsive_css_num", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L61"}, {"caller_nid": "lib_responsive_css_num", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L61"}, {"caller_nid": "lib_responsive_css_num", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L61"}, {"caller_nid": "lib_responsive_css_oneof", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L65"}, {"caller_nid": "lib_responsive_css_oneof", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L66"}, {"caller_nid": "lib_responsive_css_hash", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L131"}, {"caller_nid": "lib_responsive_css_hash", "callee": "imul", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L132"}, {"caller_nid": "lib_responsive_css_hash", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L134"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L148"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L154"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L154"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "isResponsiveLayoutKey", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L155"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "EMITTERS[key]", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L156"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L158"}, {"caller_nid": "lib_responsive_css_responsivesignature", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L160"}, {"caller_nid": "lib_responsive_css_signaturekey", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L166"}, {"caller_nid": "lib_responsive_css_signaturekey", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L166"}, {"caller_nid": "lib_responsive_css_signaturekey", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L166"}, {"caller_nid": "lib_responsive_css_signaturekey", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L169"}, {"caller_nid": "lib_responsive_css_walk", "callee": "visit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L212"}, {"caller_nid": "lib_responsive_css_blockfor", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L226"}, {"caller_nid": "lib_responsive_css_blockfor", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L226"}, {"caller_nid": "lib_responsive_css_blockfor", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L226"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L246"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L257"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L257"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L280"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L280"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L287"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "layerMedia", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L288"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L290"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L292"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L295"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "call", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L303"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L304"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "EMITTERS[prop]", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L304"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L308"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "layerMedia", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L310"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L312"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L317"}, {"caller_nid": "lib_responsive_css_compileresponsivecss", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts", "source_location": "L323"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "label": "responsive-css.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_responsive_css_responsive_css_budget",
+      "label": "RESPONSIVE_CSS_BUDGET",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_responsive_css_override_layers",
+      "label": "OVERRIDE_LAYERS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_responsive_css_num",
+      "label": "num()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_responsive_css_oneof",
+      "label": "oneOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L64"
+    },
+    {
+      "id": "lib_responsive_css_decl",
+      "label": "Decl",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_responsive_css_emitters",
+      "label": "EMITTERS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_responsive_css_hash",
+      "label": "hash()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_responsive_css_responsivesignature",
+      "label": "ResponsiveSignature",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "lib_responsive_css_signaturekey",
+      "label": "signatureKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L165"
+    },
+    {
+      "id": "lib_responsive_css_responsiveclassof",
+      "label": "responsiveClassOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L177"
+    },
+    {
+      "id": "lib_responsive_css_compiledresponsive",
+      "label": "CompiledResponsive",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L184"
+    },
+    {
+      "id": "lib_responsive_css_empty",
+      "label": "EMPTY",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L200"
+    },
+    {
+      "id": "lib_responsive_css_walk",
+      "label": "walk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L210"
+    },
+    {
+      "id": "lib_responsive_css_astsections",
+      "label": "astSections()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L218"
+    },
+    {
+      "id": "lib_responsive_css_blockfor",
+      "label": "blockFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L225"
+    },
+    {
+      "id": "lib_responsive_css_compileresponsivecss",
+      "label": "compileResponsiveCss()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L242"
+    },
+    {
+      "id": "lib_responsive_css_collect",
+      "label": "collect()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L333"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_builder_ast_breakpoint",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_builder_ast_propvalue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "users_rahman_documents_frame30_src_lib_responsive_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_breakpoint_px",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_responsive_layout_keys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_isresponsivelayoutkey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_layermedia",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_devicebucket",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_responsive_css_budget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_override_layers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_num",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_oneof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_decl",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_emitters",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_hash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_responsivesignature",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_responsivesignature",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L147",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_signaturekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L165",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_responsiveclassof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_compiledresponsive",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_empty",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_walk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L210",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_astsections",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L218",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_blockfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L225",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_compileresponsivecss",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_responsive_css_ts",
+      "target": "lib_responsive_css_collect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L333",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_responsiveclassof",
+      "target": "lib_responsive_css_responsivesignature",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_responsiveclassof",
+      "target": "lib_responsive_css_hash",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_responsiveclassof",
+      "target": "lib_responsive_css_signaturekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L179",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_astsections",
+      "target": "lib_responsive_css_walk",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_collect",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_astsections",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_responsivesignature",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_signaturekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L256",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_hash",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L283",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_compileresponsivecss",
+      "target": "lib_responsive_css_blockfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L290",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_responsive_css_collect",
+      "target": "lib_responsive_css_walk",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L335",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_responsive_css_num",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_responsive_css_num",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_responsive_css_num",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_responsive_css_num",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_responsive_css_num",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_responsive_css_oneof",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_responsive_css_oneof",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_responsive_css_hash",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_responsive_css_hash",
+      "callee": "imul",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "lib_responsive_css_hash",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "isResponsiveLayoutKey",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "EMITTERS[key]",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L156"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_responsive_css_responsivesignature",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_responsive_css_signaturekey",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_responsive_css_signaturekey",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_responsive_css_signaturekey",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "lib_responsive_css_signaturekey",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "lib_responsive_css_walk",
+      "callee": "visit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L212"
+    },
+    {
+      "caller_nid": "lib_responsive_css_blockfor",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "lib_responsive_css_blockfor",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "lib_responsive_css_blockfor",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L257"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L280"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L280"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L287"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "layerMedia",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L288"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L290"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L292"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "call",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L303"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "EMITTERS[prop]",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L308"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "layerMedia",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L312"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_responsive_css_compileresponsivecss",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/responsive-css.ts",
+      "source_location": "L323"
+    }
+  ]
+}

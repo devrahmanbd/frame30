@@ -36,7 +36,9 @@ export function VerdictPill({ verdict }: { verdict: string }) {
         ? "border-warning bg-warning-soft text-warning-strong"
         : "border-success bg-success-soft text-success-strong";
   return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tone}`}>
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${tone}`}
+    >
       {verdict}
     </span>
   );
@@ -61,7 +63,9 @@ export function Kpi({
       >
         {value}
       </p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -82,7 +86,11 @@ export function Section({
       <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold">{title}</h2>
-          {description ? <p className="mt-0.5 text-xs text-muted-foreground">{description}</p> : null}
+          {description ? (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {description}
+            </p>
+          ) : null}
         </div>
         {action}
       </header>
@@ -122,7 +130,11 @@ export function CampaignTable({
   onBlock: (campaign: string) => void;
 }) {
   if (rows.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">{emptyLabel}</p>;
+    return (
+      <p className="py-6 text-center text-sm text-muted-foreground">
+        {emptyLabel}
+      </p>
+    );
   }
   return (
     <div className="overflow-x-auto">
@@ -130,19 +142,36 @@ export function CampaignTable({
         <caption className="sr-only">Campaign attribution integrity</caption>
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-            <th scope="col" className="py-2 pr-3 font-medium">Campaign</th>
-            <th scope="col" className="py-2 pr-3 font-medium">Grade</th>
-            <th scope="col" className="py-2 pr-3 font-medium text-right">Clicks</th>
-            <th scope="col" className="py-2 pr-3 font-medium text-right">Refused</th>
-            <th scope="col" className="py-2 pr-3 font-medium text-right">Reported CPC</th>
-            <th scope="col" className="py-2 pr-3 font-medium text-right">True CPC</th>
-            <th scope="col" className="py-2 pr-3 font-medium text-right">Wasted</th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Campaign
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Grade
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium text-right">
+              Clicks
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium text-right">
+              Refused
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium text-right">
+              Reported CPC
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium text-right">
+              True CPC
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium text-right">
+              Wasted
+            </th>
             <th scope="col" className="py-2 font-medium" />
           </tr>
         </thead>
         <tbody>
           {rows.map((r) => (
-            <tr key={`${r.day}-${r.network}-${r.campaign}`} className="border-b border-border/60">
+            <tr
+              key={`${r.day}-${r.network}-${r.campaign}`}
+              className="border-b border-border/60"
+            >
               <td className="py-2 pr-3">
                 <span className="font-medium">{r.campaign}</span>
                 <span className="ml-2 text-xs text-muted-foreground">
@@ -155,7 +184,9 @@ export function CampaignTable({
               <td className="py-2 pr-3 text-right tabular-nums">{r.clicks}</td>
               <td className="py-2 pr-3 text-right tabular-nums">
                 {r.invalidClicks}
-                <span className="ml-1 text-xs text-muted-foreground">({r.invalidRate}%)</span>
+                <span className="ml-1 text-xs text-muted-foreground">
+                  ({r.invalidRate}%)
+                </span>
               </td>
               <td className="py-2 pr-3 text-right tabular-nums">
                 {fmtMinor(r.reportedCpcMinorInt, r.currencyCode)}
@@ -193,7 +224,9 @@ export type ExplainedSignal = {
 
 export function SignalList({ signals }: { signals: ExplainedSignal[] }) {
   if (signals.length === 0) {
-    return <p className="text-xs text-muted-foreground">No risk signals fired.</p>;
+    return (
+      <p className="text-xs text-muted-foreground">No risk signals fired.</p>
+    );
   }
   return (
     <ul className="space-y-1.5">

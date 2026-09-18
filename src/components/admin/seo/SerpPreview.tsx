@@ -9,12 +9,20 @@
  * Presentation only: no data fetching, no analysis. Semantic tokens throughout.
  */
 import { useState } from "react";
-import { SERP_DESKTOP, SERP_MOBILE, serpMetrics, type SerpDevice } from "@/lib/seo-pixels";
+import {
+  SERP_DESKTOP,
+  SERP_MOBILE,
+  serpMetrics,
+  type SerpDevice,
+} from "@/lib/seo-pixels";
 import { useLang } from "@/lib/i18n";
 
 function Meter({ fill, truncated }: { fill: number; truncated: boolean }) {
   return (
-    <div className="h-1 w-full overflow-hidden rounded-full bg-muted" aria-hidden>
+    <div
+      className="h-1 w-full overflow-hidden rounded-full bg-muted"
+      aria-hidden
+    >
       <div
         className={`h-full rounded-full transition-all ${truncated ? "bg-danger" : fill > 0.75 ? "bg-warning" : "bg-success"}`}
         style={{ width: `${Math.min(100, Math.round(fill * 100))}%` }}
@@ -40,7 +48,11 @@ export function SerpPreview({
   const [device, setDevice] = useState<SerpDevice>("desktop");
   const metrics = serpMetrics({ title, description }, device);
   const budget = device === "mobile" ? SERP_MOBILE : SERP_DESKTOP;
-  const crumb = url.replace(/^https?:\/\//i, "").replace(/\/+$/, "").split("/").join(" › ");
+  const crumb = url
+    .replace(/^https?:\/\//i, "")
+    .replace(/\/+$/, "")
+    .split("/")
+    .join(" › ");
 
   return (
     <section
@@ -48,8 +60,13 @@ export function SerpPreview({
       className="space-y-3 rounded-fq-lg border border-border bg-card p-4"
     >
       <header className="flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold">{t("Search preview", "সার্চ প্রিভিউ")}</h3>
-        <div className="flex gap-1 rounded-fq-md border border-border p-0.5" role="tablist">
+        <h3 className="text-sm font-semibold">
+          {t("Search preview", "সার্চ প্রিভিউ")}
+        </h3>
+        <div
+          className="flex gap-1 rounded-fq-md border border-border p-0.5"
+          role="tablist"
+        >
           {(["desktop", "mobile"] as SerpDevice[]).map((d) => (
             <button
               key={d}
@@ -59,7 +76,9 @@ export function SerpPreview({
               onClick={() => setDevice(d)}
               className={`rounded-fq-sm px-2 py-1 text-xs ${device === d ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
             >
-              {d === "desktop" ? t("Desktop", "ডেস্কটপ") : t("Mobile", "মোবাইল")}
+              {d === "desktop"
+                ? t("Desktop", "ডেস্কটপ")
+                : t("Mobile", "মোবাইল")}
             </button>
           ))}
         </div>
@@ -69,12 +88,15 @@ export function SerpPreview({
         className="space-y-1 rounded-fq-md border border-border p-3"
         style={{ maxWidth: device === "mobile" ? 420 : 620 }}
       >
-        <p className="truncate text-xs text-muted-foreground">{crumb || t("No URL yet", "এখনো URL নেই")}</p>
+        <p className="truncate text-xs text-muted-foreground">
+          {crumb || t("No URL yet", "এখনো URL নেই")}
+        </p>
         <p className="text-base leading-snug text-primary">
           {metrics.title.shown || t("Untitled page", "শিরোনামহীন পেজ")}
         </p>
         <p className="text-sm leading-snug text-muted-foreground">
-          {metrics.description.shown || t("No description yet.", "এখনো বর্ণনা নেই।")}
+          {metrics.description.shown ||
+            t("No description yet.", "এখনো বর্ণনা নেই।")}
         </p>
       </div>
 
@@ -86,7 +108,10 @@ export function SerpPreview({
               `টাইটেল ${metrics.title.px}/${budget.titlePx}px`,
             )}
           </p>
-          <Meter fill={metrics.title.fill} truncated={metrics.title.truncated} />
+          <Meter
+            fill={metrics.title.fill}
+            truncated={metrics.title.truncated}
+          />
         </div>
         <div className="space-y-1">
           <p className="text-[11px] text-muted-foreground">
@@ -95,7 +120,10 @@ export function SerpPreview({
               `বর্ণনা ${metrics.description.px}/${budget.descriptionPx}px`,
             )}
           </p>
-          <Meter fill={metrics.description.fill} truncated={metrics.description.truncated} />
+          <Meter
+            fill={metrics.description.fill}
+            truncated={metrics.description.truncated}
+          />
         </div>
       </div>
 
@@ -112,15 +140,24 @@ export function SerpPreview({
           />
         ) : (
           <div className="flex aspect-[1200/630] w-full items-center justify-center bg-muted text-xs text-muted-foreground">
-            {t("No social image — shares render as a text link.", "সোশ্যাল ইমেজ নেই — শেয়ার শুধু টেক্সট লিংক দেখাবে।")}
+            {t(
+              "No social image — shares render as a text link.",
+              "সোশ্যাল ইমেজ নেই — শেয়ার শুধু টেক্সট লিংক দেখাবে।",
+            )}
           </div>
         )}
         <div className="space-y-0.5 border-t border-border p-2">
           <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
-            {siteName || crumb.split(" › ")[0] || t("Your store", "আপনার স্টোর")}
+            {siteName ||
+              crumb.split(" › ")[0] ||
+              t("Your store", "আপনার স্টোর")}
           </p>
-          <p className="truncate text-sm font-medium">{title || t("Untitled page", "শিরোনামহীন পেজ")}</p>
-          <p className="line-clamp-2 text-xs text-muted-foreground">{description}</p>
+          <p className="truncate text-sm font-medium">
+            {title || t("Untitled page", "শিরোনামহীন পেজ")}
+          </p>
+          <p className="line-clamp-2 text-xs text-muted-foreground">
+            {description}
+          </p>
         </div>
       </div>
     </section>

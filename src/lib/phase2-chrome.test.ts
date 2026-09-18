@@ -24,7 +24,8 @@ describe("phase 2.1 chrome widgets", () => {
   });
 
   it("has a renderer for every chrome widget", () => {
-    for (const type of CHROME) expect(typeof WIDGET_COMPONENTS[type]).toBe("function");
+    for (const type of CHROME)
+      expect(typeof WIDGET_COMPONENTS[type]).toBe("function");
   });
 
   it("declares bilingual copy on every merchant-authored string", () => {
@@ -46,14 +47,20 @@ describe("phase 2.1 chrome widgets", () => {
   });
 
   it("keeps header-only widgets out of other slots", () => {
-    for (const type of ["utility_bar", "mega_menu", "search_command", "account_cart"] as SectionType[]) {
+    for (const type of [
+      "utility_bar",
+      "mega_menu",
+      "search_command",
+      "account_cart",
+    ] as SectionType[]) {
       expect(widgetMeta(type)?.slots).toContain("header");
     }
     expect(widgetMeta("footer_sitemap")?.slots).toEqual(["footer"]);
   });
 
   it("claims no primary heading from the chrome", () => {
-    for (const type of CHROME) expect(widgetMeta(type)?.seo.heading).toBe(false);
+    for (const type of CHROME)
+      expect(widgetMeta(type)?.seo.heading).toBe(false);
   });
 });
 
@@ -63,7 +70,9 @@ describe("footer sitemap link parsing", () => {
       { label: "New in", href: "/new" },
       { label: "Sale", href: "/sale" },
     ]);
-    expect(parseLinkList("|/orphan, Contact")).toEqual([{ label: "Contact", href: "#" }]);
+    expect(parseLinkList("|/orphan, Contact")).toEqual([
+      { label: "Contact", href: "#" },
+    ]);
   });
 
   it("caps a column at eight links", () => {

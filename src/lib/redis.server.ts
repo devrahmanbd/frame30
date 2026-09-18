@@ -26,13 +26,40 @@
  *
  * Never import this from client-reachable code — it is `.server.ts` on purpose.
  */
-import { incr, log, observe, registerMetric, setGauge } from "./observability.server";
+import {
+  incr,
+  log,
+  observe,
+  registerMetric,
+  setGauge,
+} from "./observability.server";
 
-registerMetric("framique_redis_commands_total", "counter", "Redis commands by command and outcome (ok/error/timeout/unavailable/open)");
-registerMetric("framique_redis_command_ms", "histogram", "Redis command latency in milliseconds", [1, 2, 5, 10, 25, 50, 100, 250, 500]);
-registerMetric("framique_redis_connects_total", "counter", "Redis connection attempts by outcome");
-registerMetric("framique_redis_breaker_open", "gauge", "1 when the Redis circuit breaker is open");
-registerMetric("framique_redis_enabled", "gauge", "1 when REDIS_URL is configured for this isolate");
+registerMetric(
+  "framique_redis_commands_total",
+  "counter",
+  "Redis commands by command and outcome (ok/error/timeout/unavailable/open)",
+);
+registerMetric(
+  "framique_redis_command_ms",
+  "histogram",
+  "Redis command latency in milliseconds",
+  [1, 2, 5, 10, 25, 50, 100, 250, 500],
+);
+registerMetric(
+  "framique_redis_connects_total",
+  "counter",
+  "Redis connection attempts by outcome",
+);
+registerMetric(
+  "framique_redis_breaker_open",
+  "gauge",
+  "1 when the Redis circuit breaker is open",
+);
+registerMetric(
+  "framique_redis_enabled",
+  "gauge",
+  "1 when REDIS_URL is configured for this isolate",
+);
 
 const CONNECT_TIMEOUT_MS = 750;
 const COMMAND_TIMEOUT_MS = 250;
@@ -72,7 +99,10 @@ export function parseRedisUrl(raw: string | undefined): Target | null {
     return null;
   }
   if (url.protocol !== "redis:" && url.protocol !== "rediss:") {
-    log("error", "redis.url_invalid", { reason: "scheme", scheme: url.protocol });
+    log("error", "redis.url_invalid", {
+      reason: "scheme",
+      scheme: url.protocol,
+    });
     return null;
   }
   const db = url.pathname.replace(/^\//, "");
@@ -125,7 +155,11 @@ function byteLength(value: string): number {
   return bytes;
 }
 
-export type DecodeResult = { value: RedisValue; rest: string; error?: string } | null;
+export type DecodeResult = {
+  value: RedisValue;
+  rest: string;
+  error?: string;
+} | null;
 
 /**
  * Decode exactly one RESP2 reply from the head of `buffer`.
@@ -232,7 +266,10 @@ class Connection {
     this.fail(new Error("redis.closed"));
   }
 
-  send(args: (string | number)[], timeoutMs = COMMAND_TIMEOUT_MS): Promise<RedisValue> {
+  send(
+    args: (string | number)[],
+    timeoutMs = COMMAND_TIMEOUT_MS,
+  ): Promise<RedisValue> {
     if (this.closed) return Promise.reject(new Error("redis.closed"));
     if (this.queue.length >= MAX_QUEUE) {
       // Backpressure is a fault, not a queue: a saturated socket means the
@@ -278,12 +315,17 @@ function recordFault(where: string, error: Error) {
   if (failures >= BREAKER_FAILURES && Date.now() >= openUntil) {
     openUntil = Date.now() + BREAKER_COOLDOWN_MS;
     setGauge("framique_redis_breaker_open", 1);
-    log("error", "redis.breaker_open", { where, cooldown_ms: BREAKER_COOLDOWN_MS, reason: error.message.slice(0, 120) });
+    log("error", "redis.breaker_open", {
+      where,
+      cooldown_ms: BREAKER_COOLDOWN_MS,
+      reason: error.message.slice(0, 120),
+    });
   }
 }
 
 function recordSuccess() {
-  if (failures > 0) log("info", "redis.recovered", { after_failures: failures });
+  if (failures > 0)
+    log("info", "redis.recovered", { after_failures: failures });
   failures = 0;
   openUntil = 0;
   setGauge("framique_redis_breaker_open", 0);
@@ -296,9 +338,18 @@ async function connect(): Promise<Connection | null> {
   const socket = await withDeadline(
     (async () => {
       const raw = cfg.tls
-        ? (await import("node:tls")).connect({ host: cfg.host, port: cfg.port, servername: cfg.host })
-        : (await import("node:net")).connect({ host: cfg.host, port: cfg.port });
-      const sock = raw as unknown as Socket & { once: (e: string, l: (...a: unknown[]) => void) => void };
+        ? (await import("node:tls")).connect({
+            host: cfg.host,
+            port: cfg.port,
+            servername: cfg.host,
+          })
+        : (await import("node:net")).connect({
+            host: cfg.host,
+            port: cfg.port,
+          });
+      const sock = raw as unknown as Socket & {
+        once: (e: string, l: (...a: unknown[]) => void) => void;
+      };
       await new Promise<void>((resolve, reject) => {
         sock.once(cfg.tls ? "secureConnect" : "connect", () => resolve());
         sock.once("error", (error: unknown) => reject(asError(error)));
@@ -312,13 +363,22 @@ async function connect(): Promise<Connection | null> {
 
   const conn = new Connection(socket);
   if (cfg.password) {
-    await conn.send(cfg.username ? ["AUTH", cfg.username, cfg.password] : ["AUTH", cfg.password], CONNECT_TIMEOUT_MS);
+    await conn.send(
+      cfg.username
+        ? ["AUTH", cfg.username, cfg.password]
+        : ["AUTH", cfg.password],
+      CONNECT_TIMEOUT_MS,
+    );
   }
   if (cfg.db) await conn.send(["SELECT", cfg.db], CONNECT_TIMEOUT_MS);
   return conn;
 }
 
-function withDeadline<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+function withDeadline<T>(
+  promise: Promise<T>,
+  ms: number,
+  label: string,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new Error(label)), ms);
     promise.then(
@@ -341,7 +401,9 @@ async function acquire(): Promise<Connection | null> {
     connecting = connect()
       .then((conn) => {
         connection = conn;
-        incr("framique_redis_connects_total", { outcome: conn ? "ok" : "disabled" });
+        incr("framique_redis_connects_total", {
+          outcome: conn ? "ok" : "disabled",
+        });
         return conn;
       })
       .catch((error: unknown) => {
@@ -361,7 +423,11 @@ async function acquire(): Promise<Connection | null> {
 /* ------------------------------------------------------------------ */
 
 export type RedisOutcome = "ok" | "error" | "timeout" | "unavailable" | "open";
-export type RedisResult = { ok: boolean; value: RedisValue; outcome: RedisOutcome };
+export type RedisResult = {
+  ok: boolean;
+  value: RedisValue;
+  outcome: RedisOutcome;
+};
 
 /**
  * Run one command. Never throws: the caller inspects `ok` and takes its
@@ -385,11 +451,17 @@ export async function redisCommand(
   try {
     const conn = await acquire();
     if (!conn) {
-      incr("framique_redis_commands_total", { command, outcome: "unavailable" });
+      incr("framique_redis_commands_total", {
+        command,
+        outcome: "unavailable",
+      });
       return { ok: false, value: null, outcome: "unavailable" };
     }
     const value = await conn.send(args, opts.timeoutMs ?? COMMAND_TIMEOUT_MS);
-    observe("framique_redis_command_ms", Date.now() - started, { command, outcome: "ok" });
+    observe("framique_redis_command_ms", Date.now() - started, {
+      command,
+      outcome: "ok",
+    });
     incr("framique_redis_commands_total", { command, outcome: "ok" });
     recordSuccess();
     return { ok: true, value, outcome: "ok" };
@@ -397,10 +469,17 @@ export async function redisCommand(
     const err = asError(error);
     const timeout = /timeout/.test(err.message);
     const outcome: RedisOutcome = timeout ? "timeout" : "error";
-    observe("framique_redis_command_ms", Date.now() - started, { command, outcome });
+    observe("framique_redis_command_ms", Date.now() - started, {
+      command,
+      outcome,
+    });
     incr("framique_redis_commands_total", { command, outcome });
     recordFault(command, err);
-    log("warn", "redis.command_failed", { command, outcome, reason: err.message.slice(0, 160) });
+    log("warn", "redis.command_failed", {
+      command,
+      outcome,
+      reason: err.message.slice(0, 160),
+    });
     return { ok: false, value: null, outcome };
   }
 }
@@ -420,9 +499,13 @@ export async function redisEval(
 ): Promise<RedisResult> {
   const sha = await sha1(script);
   if (sha) {
-    const cached = await redisCommand(["EVALSHA", sha, keys.length, ...keys, ...args], opts);
+    const cached = await redisCommand(
+      ["EVALSHA", sha, keys.length, ...keys, ...args],
+      opts,
+    );
     if (cached.ok) return cached;
-    if (cached.outcome === "unavailable" || cached.outcome === "open") return cached;
+    if (cached.outcome === "unavailable" || cached.outcome === "open")
+      return cached;
   }
   return redisCommand(["EVAL", script, keys.length, ...keys, ...args], opts);
 }
@@ -445,7 +528,9 @@ async function sha1(script: string): Promise<string | null> {
 /** Namespaced key. Every tenant value MUST pass its merchant id here. */
 export function redisKey(...parts: (string | number)[]): string {
   const prefix = process.env["REDIS_PREFIX"] ?? "fq";
-  return [prefix, ...parts.map((p) => String(p).replace(/\s+/g, "_"))].join(":");
+  return [prefix, ...parts.map((p) => String(p).replace(/\s+/g, "_"))].join(
+    ":",
+  );
 }
 
 /** Test/ops hook: drop the connection and reset the breaker. */
@@ -468,8 +553,18 @@ export function redisHealth() {
 }
 
 /** Liveness probe for `/status` and the ops desk. Never throws. */
-export async function redisPing(): Promise<{ ok: boolean; ms: number; outcome: RedisOutcome }> {
+export async function redisPing(): Promise<{
+  ok: boolean;
+  ms: number;
+  outcome: RedisOutcome;
+}> {
   const started = Date.now();
-  const result = await redisCommand(["PING"], { timeoutMs: CONNECT_TIMEOUT_MS });
-  return { ok: result.ok && result.value === "PONG", ms: Date.now() - started, outcome: result.outcome };
+  const result = await redisCommand(["PING"], {
+    timeoutMs: CONNECT_TIMEOUT_MS,
+  });
+  return {
+    ok: result.ok && result.value === "PONG",
+    ms: Date.now() - started,
+    outcome: result.outcome,
+  };
 }

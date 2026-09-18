@@ -20,7 +20,12 @@ export type CatalogMeta = {
   installs: number;
 };
 
-const BASE_FEATURES = ["custom colours", "block patterns", "bangla ready", "accessibility ready"];
+const BASE_FEATURES = [
+  "custom colours",
+  "block patterns",
+  "bangla ready",
+  "accessibility ready",
+];
 
 export const CATALOG_META: Record<string, CatalogMeta> = {
   classic: {
@@ -53,7 +58,13 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
   "heavy-shop": {
     author: "Framique",
     subjects: ["grocery", "marketplace"],
-    features: [...BASE_FEATURES, "mega menu", "product filters", "quick view", "wishlist"],
+    features: [
+      ...BASE_FEATURES,
+      "mega menu",
+      "product filters",
+      "quick view",
+      "wishlist",
+    ],
     layouts: ["grid", "sidebar left", "boxed"],
     tags: ["dense", "catalogue", "high volume"],
     rating: 0,
@@ -87,7 +98,13 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
   "clothing-modern": {
     author: "Framique",
     subjects: ["fashion", "beauty"],
-    features: [...BASE_FEATURES, "quick view", "wishlist", "reviews", "dark mode"],
+    features: [
+      ...BASE_FEATURES,
+      "quick view",
+      "wishlist",
+      "reviews",
+      "dark mode",
+    ],
     layouts: ["grid", "full width"],
     tags: ["fashion", "lookbook", "editorial"],
     rating: 0,

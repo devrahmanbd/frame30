@@ -41,7 +41,9 @@ function cat(overrides: Partial<CatalogTheme> & { key: string }): CatalogTheme {
   };
 }
 
-function inst(overrides: Partial<InstalledTheme> & { id: string }): InstalledTheme {
+function inst(
+  overrides: Partial<InstalledTheme> & { id: string },
+): InstalledTheme {
   return {
     key: null,
     name: overrides.id,
@@ -76,7 +78,9 @@ describe("search", () => {
   ];
 
   it("matches on every term", () => {
-    expect(searchCatalog(themes, "editorial fashion").map((t) => t.key)).toEqual(["atelier"]);
+    expect(
+      searchCatalog(themes, "editorial fashion").map((t) => t.key),
+    ).toEqual(["atelier"]);
     expect(searchCatalog(themes, "editorial electronics")).toHaveLength(0);
   });
 
@@ -89,7 +93,9 @@ describe("search", () => {
       inst({ id: "a", name: "Atelier", tags: ["fashion"] }),
       inst({ id: "b", name: "Voltage" }),
     ];
-    expect(searchInstalled(installed, "fashion").map((t) => t.id)).toEqual(["a"]);
+    expect(searchInstalled(installed, "fashion").map((t) => t.id)).toEqual([
+      "a",
+    ]);
     expect(searchInstalled(installed, "")).toHaveLength(2);
   });
 });
@@ -102,7 +108,12 @@ describe("feature filter", () => {
       features: ["wishlist", "dark mode"],
       layouts: ["grid"],
     }),
-    cat({ key: "b", subjects: ["fashion", "beauty"], features: ["wishlist"], layouts: ["list"] }),
+    cat({
+      key: "b",
+      subjects: ["fashion", "beauty"],
+      features: ["wishlist"],
+      layouts: ["list"],
+    }),
   ];
 
   it("ANDs every selected option", () => {
@@ -129,16 +140,31 @@ describe("feature filter", () => {
 describe("sorting", () => {
   const themes = [
     cat({ key: "a", name: "A", installs: 10, rating: 4, version: "1.2.0" }),
-    cat({ key: "b", name: "B", installs: 90, rating: 5, version: "1.10.0", favourite: true }),
+    cat({
+      key: "b",
+      name: "B",
+      installs: 90,
+      rating: 5,
+      version: "1.10.0",
+      favourite: true,
+    }),
     cat({ key: "c", name: "C", installs: 90, rating: 3, version: "2.0.0" }),
   ];
 
   it("orders popular by installs then rating", () => {
-    expect(sortCatalog(themes, "popular").map((t) => t.key)).toEqual(["b", "c", "a"]);
+    expect(sortCatalog(themes, "popular").map((t) => t.key)).toEqual([
+      "b",
+      "c",
+      "a",
+    ]);
   });
 
   it("orders latest by semantic version, not string order", () => {
-    expect(sortCatalog(themes, "latest").map((t) => t.key)).toEqual(["c", "b", "a"]);
+    expect(sortCatalog(themes, "latest").map((t) => t.key)).toEqual([
+      "c",
+      "b",
+      "a",
+    ]);
   });
 
   it("shows only favourites on the favourites tab", () => {
@@ -161,10 +187,23 @@ describe("installed ordering", () => {
     const list = [
       inst({ id: "old", installedAt: "2026-01-01T00:00:00.000Z" }),
       inst({ id: "new", installedAt: "2026-05-01T00:00:00.000Z" }),
-      inst({ id: "fav", favourite: true, installedAt: "2026-02-01T00:00:00.000Z" }),
-      inst({ id: "active", isActive: true, installedAt: "2025-01-01T00:00:00.000Z" }),
+      inst({
+        id: "fav",
+        favourite: true,
+        installedAt: "2026-02-01T00:00:00.000Z",
+      }),
+      inst({
+        id: "active",
+        isActive: true,
+        installedAt: "2025-01-01T00:00:00.000Z",
+      }),
     ];
-    expect(orderInstalled(list).map((t) => t.id)).toEqual(["active", "fav", "new", "old"]);
+    expect(orderInstalled(list).map((t) => t.id)).toEqual([
+      "active",
+      "fav",
+      "new",
+      "old",
+    ]);
   });
 });
 
@@ -177,9 +216,15 @@ describe("uploads", () => {
   });
 
   it("rejects the wrong extension, empty and oversized files", () => {
-    expect(validateThemeUpload({ name: "atelier.tar", size: 10 }).ok).toBe(false);
-    expect(validateThemeUpload({ name: "atelier.zip", size: 0 }).ok).toBe(false);
-    expect(validateThemeUpload({ name: "atelier.zip", size: 40 * 1024 * 1024 }).ok).toBe(false);
+    expect(validateThemeUpload({ name: "atelier.tar", size: 10 }).ok).toBe(
+      false,
+    );
+    expect(validateThemeUpload({ name: "atelier.zip", size: 0 }).ok).toBe(
+      false,
+    );
+    expect(
+      validateThemeUpload({ name: "atelier.zip", size: 40 * 1024 * 1024 }).ok,
+    ).toBe(false);
   });
 
   it("formats byte counts", () => {
@@ -212,7 +257,9 @@ describe("presentation helpers", () => {
     expect(previewUrl("cloudman", "atelier", "mobile")).toBe(
       "/store/cloudman?preview_device=mobile&preview_theme=atelier",
     );
-    expect(previewUrl("cloudman", null, "desktop")).toBe("/store/cloudman?preview_device=desktop");
+    expect(previewUrl("cloudman", null, "desktop")).toBe(
+      "/store/cloudman?preview_device=desktop",
+    );
   });
 });
 

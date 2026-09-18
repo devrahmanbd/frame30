@@ -32,7 +32,9 @@ button.pay{background:#0f766e;color:#fff;border-color:#0f766e}</style></head>
 <button name="outcome" value="fail" type="submit">Decline payment</button>
 <button name="outcome" value="cancel" type="submit">Cancel and go back</button>
 </form></main></body></html>`;
-        return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
+        return new Response(html, {
+          headers: { "content-type": "text/html; charset=utf-8" },
+        });
       },
 
       POST: async ({ request, params }) => {
@@ -44,9 +46,11 @@ button.pay{background:#0f766e;color:#fff;border-color:#0f766e}</style></head>
         }
         const { rateLimit } = await import("@/lib/rate-limit.server");
         const verdict = await rateLimit("payments.return", `mock:${intent}`);
-        if (!verdict.allowed) return new Response("Too many attempts", { status: 429 });
+        if (!verdict.allowed)
+          return new Response("Too many attempts", { status: 429 });
 
-        const { mockAuthorise, PaymentError } = await import("@/lib/payments.server");
+        const { mockAuthorise, PaymentError } =
+          await import("@/lib/payments.server");
         try {
           const origin = new URL(request.url).origin;
           const { redirectTo } = await mockAuthorise(
@@ -55,9 +59,13 @@ button.pay{background:#0f766e;color:#fff;border-color:#0f766e}</style></head>
             outcome as "success" | "fail" | "cancel",
             origin,
           );
-          return new Response(null, { status: 303, headers: { location: redirectTo } });
+          return new Response(null, {
+            status: 303,
+            headers: { location: redirectTo },
+          });
         } catch (e) {
-          const code = e instanceof PaymentError ? e.code : "payment.intent_not_found";
+          const code =
+            e instanceof PaymentError ? e.code : "payment.intent_not_found";
           return new Response(code, { status: 400 });
         }
       },

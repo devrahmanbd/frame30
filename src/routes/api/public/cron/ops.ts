@@ -21,14 +21,20 @@ export const Route = createFileRoute("/api/public/cron/ops")({
     handlers: {
       GET: cronGet,
       POST: cronPost("ops", async (ctx) => {
-        const [{ syncRegistry, reapStaleLeases, watchFleet }, { runRetentionSweep }] =
-          await Promise.all([import("@/lib/cron-ops.server"), import("@/lib/ops.server")]);
+        const [
+          { syncRegistry, reapStaleLeases, watchFleet },
+          { runRetentionSweep },
+        ] = await Promise.all([
+          import("@/lib/cron-ops.server"),
+          import("@/lib/ops.server"),
+        ]);
 
         const registry = await syncRegistry();
         const leases = await reapStaleLeases();
         const retention = await runRetentionSweep("cron");
 
-        const { lastPassedDrillAt, runBackupDrill } = await import("@/lib/backup-drill.server");
+        const { lastPassedDrillAt, runBackupDrill } =
+          await import("@/lib/backup-drill.server");
         const { OPS_OBJECTIVES } = await import("@/lib/cron-registry");
         const lastDrill = await lastPassedDrillAt();
         const drillDue =
@@ -36,15 +42,19 @@ export const Route = createFileRoute("/api/public/cron/ops")({
           !lastDrill ||
           Date.now() - new Date(lastDrill).getTime() >
             (OPS_OBJECTIVES.drillMaxAgeDays / 2) * 86_400_000;
-        const drill = drillDue ? await runBackupDrill({ scope: "platform", actor: null }) : null;
+        const drill = drillDue
+          ? await runBackupDrill({ scope: "platform", actor: null })
+          : null;
 
         // Integration probes: hit every connected service's health endpoint,
         // record the result, and publish worst-case to the public status page.
-        const { probeAllIntegrations, sweepIntegrationProbes } = await import("@/lib/integrations.server");
+        const { probeAllIntegrations, sweepIntegrationProbes } =
+          await import("@/lib/integrations.server");
         const probes = await probeAllIntegrations();
         const pruned = await sweepIntegrationProbes();
 
-        const { refreshComponentHealth } = await import("@/lib/status-health.server");
+        const { refreshComponentHealth } =
+          await import("@/lib/status-health.server");
         const status = await refreshComponentHealth();
         const fleet = await watchFleet();
 

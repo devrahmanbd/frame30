@@ -5,19 +5,23 @@ function publicClient() {
   const url =
     process.env["SUPABASE_URL"] ||
     process.env["VITE_SUPABASE_URL"] ||
-    (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_SUPABASE_URL ||
+    (import.meta as unknown as { env?: Record<string, string> }).env
+      ?.VITE_SUPABASE_URL ||
     "https://placeholder.supabase.co";
   const key =
     process.env["SUPABASE_PUBLISHABLE_KEY"] ||
     process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
-    (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_SUPABASE_PUBLISHABLE_KEY ||
+    (import.meta as unknown as { env?: Record<string, string> }).env
+      ?.VITE_SUPABASE_PUBLISHABLE_KEY ||
     "placeholder-key";
 
-  return createClient<Database>(
-    url,
-    key,
-    { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-  );
+  return createClient<Database>(url, key, {
+    auth: {
+      storage: undefined,
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
 }
 
 export type PublicPlan = {
@@ -44,7 +48,12 @@ const DEFAULT_PLANS: PublicPlan[] = [
     productsLimit: 100,
     staffLimit: 1,
     paymentMethods: ["bkash", "nagad", "cod"],
-    features: ["100 products", "1 staff seat", "bKash & Nagad checkout", "Courier integration"],
+    features: [
+      "100 products",
+      "1 staff seat",
+      "bKash & Nagad checkout",
+      "Courier integration",
+    ],
   },
   {
     plan: "growth",
@@ -56,7 +65,13 @@ const DEFAULT_PLANS: PublicPlan[] = [
     productsLimit: 1000,
     staffLimit: 5,
     paymentMethods: ["bkash", "nagad", "rocket", "card", "cod"],
-    features: ["1,000 products", "5 staff seats", "Automated couriers", "COD Return Shield", "Custom domain"],
+    features: [
+      "1,000 products",
+      "5 staff seats",
+      "Automated couriers",
+      "COD Return Shield",
+      "Custom domain",
+    ],
   },
   {
     plan: "scale",
@@ -68,7 +83,13 @@ const DEFAULT_PLANS: PublicPlan[] = [
     productsLimit: 10000,
     staffLimit: 15,
     paymentMethods: ["bkash", "nagad", "rocket", "card", "cod", "pos"],
-    features: ["Unlimited products", "15 staff seats", "Multi-location POS", "Priority support", "Custom API"],
+    features: [
+      "Unlimited products",
+      "15 staff seats",
+      "Multi-location POS",
+      "Priority support",
+      "Custom API",
+    ],
   },
 ];
 
@@ -90,7 +111,9 @@ export async function publicPlans(): Promise<PublicPlan[]> {
     if (error) throw error;
 
     const list = (value: unknown): string[] =>
-      Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+      Array.isArray(value)
+        ? value.filter((v): v is string => typeof v === "string")
+        : [];
 
     const rows = (data ?? []).map((row) => ({
       plan: row.plan,
@@ -107,8 +130,10 @@ export async function publicPlans(): Promise<PublicPlan[]> {
 
     return rows.length > 0 ? rows : DEFAULT_PLANS;
   } catch (err) {
-    console.warn("Failed to load public plans from DB, using fallback plans:", err);
+    console.warn(
+      "Failed to load public plans from DB, using fallback plans:",
+      err,
+    );
     return DEFAULT_PLANS;
   }
 }
-

@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { BROWSER_REPORT_MAX_BYTES, BROWSER_REPORT_MECHANISMS } from "@/lib/error-tracking";
+import {
+  BROWSER_REPORT_MAX_BYTES,
+  BROWSER_REPORT_MECHANISMS,
+} from "@/lib/error-tracking";
 
 /**
  * Phase 12 — browser error collector.
@@ -34,7 +37,10 @@ export const Route = createFileRoute("/api/public/errors")({
   server: {
     handlers: {
       GET: async () =>
-        new Response("Method not allowed", { status: 405, headers: { allow: "POST", ...NO_STORE } }),
+        new Response("Method not allowed", {
+          status: 405,
+          headers: { allow: "POST", ...NO_STORE },
+        }),
 
       POST: async ({ request }) => {
         const declared = Number(request.headers.get("content-length") ?? "0");
@@ -52,21 +58,26 @@ export const Route = createFileRoute("/api/public/errors")({
           return new Response(null, { status: 413, headers: NO_STORE });
         }
 
-        const parsed = bodySchema.safeParse(((): unknown => {
-          try {
-            return JSON.parse(raw);
-          } catch {
-            return null;
-          }
-        })());
-        if (!parsed.success) return new Response(null, { status: 400, headers: NO_STORE });
+        const parsed = bodySchema.safeParse(
+          ((): unknown => {
+            try {
+              return JSON.parse(raw);
+            } catch {
+              return null;
+            }
+          })(),
+        );
+        if (!parsed.success)
+          return new Response(null, { status: 400, headers: NO_STORE });
 
         const { rateLimit } = await import("@/lib/rate-limit.server");
         const limit = await rateLimit("errors.ingest_ip", clientIp(request));
-        if (!limit.allowed) return new Response(null, { status: 429, headers: NO_STORE });
+        if (!limit.allowed)
+          return new Response(null, { status: 429, headers: NO_STORE });
 
         try {
-          const { captureBrowserError } = await import("@/lib/observability.server");
+          const { captureBrowserError } =
+            await import("@/lib/observability.server");
           await captureBrowserError(parsed.data);
         } catch {
           // Error reporting must never fail the page that is already broken.

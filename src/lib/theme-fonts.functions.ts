@@ -13,7 +13,10 @@ export const listFontAssetsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listFontAssets } = await import("./theme-fonts.server");
-    return listFontAssets(context.supabase, await scope(context.supabase, context.userId));
+    return listFontAssets(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+    );
   });
 
 export const uploadFontAssetFn = createServerFn({ method: "POST" })
@@ -30,17 +33,27 @@ export const uploadFontAssetFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { uploadFontAsset } = await import("./theme-fonts.server");
-    return uploadFontAsset(context.supabase, await scope(context.supabase, context.userId), data);
+    return uploadFontAsset(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data,
+    );
   });
 
 export const confirmFontLicenceFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), note: z.string().max(200).optional() }).parse(d),
+    z
+      .object({ id: z.string().uuid(), note: z.string().max(200).optional() })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { confirmFontLicence } = await import("./theme-fonts.server");
-    return confirmFontLicence(context.supabase, await scope(context.supabase, context.userId), data);
+    return confirmFontLicence(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data,
+    );
   });
 
 export const deleteFontAssetFn = createServerFn({ method: "POST" })
@@ -48,6 +61,10 @@ export const deleteFontAssetFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { deleteFontAsset } = await import("./theme-fonts.server");
-    await deleteFontAsset(context.supabase, await scope(context.supabase, context.userId), data.id);
+    await deleteFontAsset(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data.id,
+    );
     return { ok: true };
   });

@@ -20,22 +20,32 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 export const infraOverviewFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const [{ enforceRateLimit }, { queueDepths }, { loadBackend }] = await Promise.all([
-      import("./rate-limit.server"),
-      import("./job-queue.server"),
-      import("./search-backend.server"),
-    ]);
+    const [{ enforceRateLimit }, { queueDepths }, { loadBackend }] =
+      await Promise.all([
+        import("./rate-limit.server"),
+        import("./job-queue.server"),
+        import("./search-backend.server"),
+      ]);
     const merchantId = await scope(context.supabase, context.userId);
     await enforceRateLimit("infra.read", merchantId);
 
-    const [queues, backend] = await Promise.all([queueDepths(), loadBackend(merchantId)]);
-    const { data: jobs } = await (context.supabase as unknown as { from: (t: string) => any })
+    const [queues, backend] = await Promise.all([
+      queueDepths(),
+      loadBackend(merchantId),
+    ]);
+    const { data: jobs } = await (
+      context.supabase as unknown as { from: (t: string) => any }
+    )
       .from("job_queue")
-      .select("id,queue,name,state,attempts,max_attempts,run_after,last_error_code,last_error_message,created_at")
+      .select(
+        "id,queue,name,state,attempts,max_attempts,run_after,last_error_code,last_error_message,created_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(50);
-    const { data: loadTests } = await (context.supabase as unknown as { from: (t: string) => any })
+    const { data: loadTests } = await (
+      context.supabase as unknown as { from: (t: string) => any }
+    )
       .from("load_test_runs")
       .select("*")
       .order("created_at", { ascending: false })
@@ -91,7 +101,9 @@ export const infraReindexFn = createServerFn({ method: "POST" })
     const merchantId = await scope(context.supabase, context.userId);
     await enforceRateLimit("infra.reindex", merchantId);
 
-    const { data } = await (context.supabase as unknown as { from: (t: string) => any })
+    const { data } = await (
+      context.supabase as unknown as { from: (t: string) => any }
+    )
       .from("products")
       .select("id")
       .eq("merchant_id", merchantId)
@@ -106,7 +118,12 @@ export const infraReindexFn = createServerFn({ method: "POST" })
 export const infraJobActionFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ jobId: z.string().uuid(), action: z.enum(["replay", "cancel"]) }).parse(d),
+    z
+      .object({
+        jobId: z.string().uuid(),
+        action: z.enum(["replay", "cancel"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const [{ enforceRateLimit }, { replayJob, cancelJob }] = await Promise.all([
@@ -118,7 +135,9 @@ export const infraJobActionFn = createServerFn({ method: "POST" })
 
     // RLS lets a member read only their own jobs; re-check ownership before a
     // service-role mutation so the control plane cannot cross tenants.
-    const { data: owned } = await (context.supabase as unknown as { from: (t: string) => any })
+    const { data: owned } = await (
+      context.supabase as unknown as { from: (t: string) => any }
+    )
       .from("job_queue")
       .select("id")
       .eq("id", data.jobId)
@@ -126,7 +145,9 @@ export const infraJobActionFn = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!owned) throw new Error("job_not_found");
 
-    return data.action === "replay" ? replayJob(data.jobId) : cancelJob(data.jobId);
+    return data.action === "replay"
+      ? replayJob(data.jobId)
+      : cancelJob(data.jobId);
   });
 
 export const infraRecordLoadTestFn = createServerFn({ method: "POST" })
@@ -154,23 +175,31 @@ export const infraRecordLoadTestFn = createServerFn({ method: "POST" })
     await enforceRateLimit("infra.loadtest", merchantId);
 
     const errorRate = data.requests > 0 ? data.failures / data.requests : 0;
-    const verdict = errorRate > 0.01 || data.p95Ms > 1500 ? "fail" : data.p95Ms > 800 ? "warn" : "pass";
+    const verdict =
+      errorRate > 0.01 || data.p95Ms > 1500
+        ? "fail"
+        : data.p95Ms > 800
+          ? "warn"
+          : "pass";
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    await (supabaseAdmin as unknown as { from: (t: string) => any }).from("load_test_runs").insert({
-      merchant_id: merchantId,
-      scenario: data.scenario,
-      target_url: data.targetUrl,
-      duration_seconds: data.durationSeconds,
-      concurrency: data.concurrency,
-      requests: data.requests,
-      failures: data.failures,
-      p50_ms: data.p50Ms,
-      p95_ms: data.p95Ms,
-      p99_ms: data.p99Ms,
-      rps: data.rps,
-      verdict,
-      notes: data.notes ?? null,
-    });
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    await (supabaseAdmin as unknown as { from: (t: string) => any })
+      .from("load_test_runs")
+      .insert({
+        merchant_id: merchantId,
+        scenario: data.scenario,
+        target_url: data.targetUrl,
+        duration_seconds: data.durationSeconds,
+        concurrency: data.concurrency,
+        requests: data.requests,
+        failures: data.failures,
+        p50_ms: data.p50Ms,
+        p95_ms: data.p95Ms,
+        p99_ms: data.p99Ms,
+        rps: data.rps,
+        verdict,
+        notes: data.notes ?? null,
+      });
     return { verdict };
   });

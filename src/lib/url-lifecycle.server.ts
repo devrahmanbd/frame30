@@ -67,24 +67,31 @@ export async function loadRedirectMap(slug: string) {
  * `Location` values are the caller's job — the map is host-agnostic so a store
  * served from a custom domain redirects within that domain.
  */
-export async function resolveMissingUrl(slug: string, path: string): Promise<UrlVerdict> {
+export async function resolveMissingUrl(
+  slug: string,
+  path: string,
+): Promise<UrlVerdict> {
   return resolveUrl(await loadRedirectMap(slug), path);
 }
 
-async function upsertRule(merchantId: string, entityType: string, rule: RedirectRule, slug?: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  await supabaseAdmin
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        entity_type: entityType,
-        from_path: rule.from,
-        to_path: rule.to,
-        status: rule.status,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+async function upsertRule(
+  merchantId: string,
+  entityType: string,
+  rule: RedirectRule,
+  slug?: string,
+) {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  await supabaseAdmin.from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      entity_type: entityType,
+      from_path: rule.from,
+      to_path: rule.to,
+      status: rule.status,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   // A rename back to a previous slug would otherwise leave a hop pointing at
   // the URL we just started serving again.
   if (rule.to) {

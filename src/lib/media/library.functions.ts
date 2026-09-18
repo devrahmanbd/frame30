@@ -55,14 +55,20 @@ export const mediaUpdateAttachmentFn = createServerFn({ method: "POST" })
     const { updateAttachment } = await import("./library.server");
     const merchantId = await scope(context.supabase, context.userId);
     const { id, ...patch } = data;
-    return { item: await updateAttachment(context.supabase, merchantId, id, patch) };
+    return {
+      item: await updateAttachment(context.supabase, merchantId, id, patch),
+    };
   });
 
 export const mediaDeleteAttachmentsFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ ids: z.array(z.string().uuid()).min(1).max(200) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ ids: z.array(z.string().uuid()).min(1).max(200) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteAttachments } = await import("./library.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { removed: await deleteAttachments(context.supabase, merchantId, data.ids) };
+    return {
+      removed: await deleteAttachments(context.supabase, merchantId, data.ids),
+    };
   });

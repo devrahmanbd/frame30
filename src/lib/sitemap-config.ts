@@ -23,7 +23,12 @@
 
 /* ------------------------------- constants -------------------------------- */
 
-export const SITEMAP_KINDS = ["pages", "products", "collections", "articles"] as const;
+export const SITEMAP_KINDS = [
+  "pages",
+  "products",
+  "collections",
+  "articles",
+] as const;
 export type SitemapKind = (typeof SITEMAP_KINDS)[number];
 
 export const CHANGEFREQS = [
@@ -48,10 +53,21 @@ export const MAX_SHARDS_PER_KIND = 200;
 
 /** Platform-owned paths that must never become crawlable, whatever a merchant
  * types into the robots editor. */
-export const SAFETY_DISALLOW = ["/dashboard", "/root", "/auth", "/checkout", "/api/"] as const;
+export const SAFETY_DISALLOW = [
+  "/dashboard",
+  "/root",
+  "/auth",
+  "/checkout",
+  "/api/",
+] as const;
 
 /** Per-store transactional paths, disallowed relative to the store base. */
-export const STORE_SAFETY_SUFFIXES = ["/checkout", "/account", "/order", "/track"] as const;
+export const STORE_SAFETY_SUFFIXES = [
+  "/checkout",
+  "/account",
+  "/order",
+  "/track",
+] as const;
 
 /** Answer-engine crawlers gated behind one merchant opt-in. */
 export const AI_CRAWLER_AGENTS = [
@@ -200,7 +216,6 @@ export function violatesSafety(path: string): boolean {
   });
 }
 
-
 export function validateRobotsRule(input: Partial<RobotsRule>): RobotsRule {
   const agent = normaliseAgent(input.agent) || "*";
   const allow = (input.allow ?? [])
@@ -222,7 +237,9 @@ export function validateRobotsRule(input: Partial<RobotsRule>): RobotsRule {
   }
   const delayRaw = Number(input.crawlDelay);
   const crawlDelay =
-    Number.isFinite(delayRaw) && delayRaw > 0 ? Math.min(CRAWL_DELAY_MAX, Math.round(delayRaw)) : null;
+    Number.isFinite(delayRaw) && delayRaw > 0
+      ? Math.min(CRAWL_DELAY_MAX, Math.round(delayRaw))
+      : null;
   if (!allow.length && !disallow.length && crawlDelay === null) {
     throw new CrawlSettingsError(
       "invalid_rule",
@@ -279,12 +296,23 @@ export function validateRawAppend(text: string): RawAppendCheck {
     }
     const directive = match[1]!.toLowerCase();
     const value2 = match[2]!.trim();
-    if (!["user-agent", "allow", "disallow", "crawl-delay", "sitemap", "host"].includes(directive)) {
+    if (
+      ![
+        "user-agent",
+        "allow",
+        "disallow",
+        "crawl-delay",
+        "sitemap",
+        "host",
+      ].includes(directive)
+    ) {
       errors.push(`Line ${index + 1}: unknown directive "${match[1]}".`);
       continue;
     }
     if (directive === "allow" && violatesSafety(value2 || "/")) {
-      errors.push(`Line ${index + 1}: cannot allow the protected path "${value2}".`);
+      errors.push(
+        `Line ${index + 1}: cannot allow the protected path "${value2}".`,
+      );
       continue;
     }
     lines.push(`${match[1]}: ${value2}`);
@@ -302,9 +330,16 @@ export function validateCrawlSettings(input: unknown): CrawlSettings {
     const fallback = DEFAULT_KIND_CONFIG[kind];
     const cfg = (sitemapRaw.kinds?.[kind] ?? {}) as Partial<KindConfig>;
     kinds[kind] = {
-      include: cfg.include === undefined ? fallback.include : Boolean(cfg.include),
-      changefreq: cfg.changefreq === undefined ? fallback.changefreq : normaliseChangefreq(cfg.changefreq),
-      priority: cfg.priority === undefined ? fallback.priority : normalisePriority(cfg.priority),
+      include:
+        cfg.include === undefined ? fallback.include : Boolean(cfg.include),
+      changefreq:
+        cfg.changefreq === undefined
+          ? fallback.changefreq
+          : normaliseChangefreq(cfg.changefreq),
+      priority:
+        cfg.priority === undefined
+          ? fallback.priority
+          : normalisePriority(cfg.priority),
     };
   }
 
@@ -322,10 +357,13 @@ export function validateCrawlSettings(input: unknown): CrawlSettings {
     sitemap: {
       kinds,
       includeImages: Boolean(sitemapRaw.includeImages ?? false),
-      entriesPerFile: clampEntriesPerFile(sitemapRaw.entriesPerFile ?? ENTRIES_PER_FILE_DEFAULT),
+      entriesPerFile: clampEntriesPerFile(
+        sitemapRaw.entriesPerFile ?? ENTRIES_PER_FILE_DEFAULT,
+      ),
     },
     robots: {
-      indexable: robotsRaw.indexable === undefined ? true : Boolean(robotsRaw.indexable),
+      indexable:
+        robotsRaw.indexable === undefined ? true : Boolean(robotsRaw.indexable),
       aiCrawlers: Boolean(robotsRaw.aiCrawlers ?? false),
       rules,
       extraSitemaps,
@@ -362,7 +400,10 @@ export function shardPlan(
 }
 
 /** Inclusive `[from, to]` row range for a shard, matching PostgREST `.range()`. */
-export function shardRange(page: number, entriesPerFile: number): { from: number; to: number } {
+export function shardRange(
+  page: number,
+  entriesPerFile: number,
+): { from: number; to: number } {
   const size = clampEntriesPerFile(entriesPerFile);
   const safePage = Math.max(1, Math.floor(page) || 1);
   const from = (safePage - 1) * size;
@@ -384,7 +425,9 @@ export function xmlEscape(value: string): string {
  * `lastmod`, honestly. Only a real entity timestamp qualifies; anything
  * unparsable returns `undefined` so the tag is omitted entirely.
  */
-export function entityLastmod(...candidates: (string | null | undefined)[]): string | undefined {
+export function entityLastmod(
+  ...candidates: (string | null | undefined)[]
+): string | undefined {
   for (const candidate of candidates) {
     if (!candidate) continue;
     const date = new Date(candidate);
@@ -402,7 +445,8 @@ export type SitemapEntry = {
   images?: string[];
 };
 
-const IMAGE_NS = ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"';
+const IMAGE_NS =
+  ' xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"';
 
 /** Renders one `<urlset>`. Built by string concat over a bounded shard. */
 export function renderUrlset(
@@ -411,7 +455,8 @@ export function renderUrlset(
   opts: { includeImages?: boolean } = {},
 ): string {
   const base = origin.replace(/\/+$/, "");
-  const useImages = Boolean(opts.includeImages) && entries.some((e) => e.images?.length);
+  const useImages =
+    Boolean(opts.includeImages) && entries.some((e) => e.images?.length);
   const parts: string[] = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"${useImages ? IMAGE_NS : ""}>`,
@@ -419,12 +464,17 @@ export function renderUrlset(
   for (const entry of entries) {
     parts.push("  <url>");
     parts.push(`    <loc>${xmlEscape(`${base}${entry.path}`)}</loc>`);
-    if (entry.lastmod) parts.push(`    <lastmod>${xmlEscape(entry.lastmod)}</lastmod>`);
-    if (entry.changefreq) parts.push(`    <changefreq>${xmlEscape(entry.changefreq)}</changefreq>`);
-    if (entry.priority) parts.push(`    <priority>${xmlEscape(entry.priority)}</priority>`);
+    if (entry.lastmod)
+      parts.push(`    <lastmod>${xmlEscape(entry.lastmod)}</lastmod>`);
+    if (entry.changefreq)
+      parts.push(`    <changefreq>${xmlEscape(entry.changefreq)}</changefreq>`);
+    if (entry.priority)
+      parts.push(`    <priority>${xmlEscape(entry.priority)}</priority>`);
     if (useImages) {
       for (const image of entry.images ?? []) {
-        parts.push(`    <image:image><image:loc>${xmlEscape(image)}</image:loc></image:image>`);
+        parts.push(
+          `    <image:image><image:loc>${xmlEscape(image)}</image:loc></image:image>`,
+        );
       }
     }
     parts.push("  </url>");
@@ -433,7 +483,11 @@ export function renderUrlset(
   return `${parts.join("\n")}\n`;
 }
 
-export function shardPath(storeSlug: string, kind: SitemapKind, page: number): string {
+export function shardPath(
+  storeSlug: string,
+  kind: SitemapKind,
+  page: number,
+): string {
   return `/store/${storeSlug}/sitemaps/${kind}-${Math.max(1, page)}.xml`;
 }
 
@@ -451,7 +505,9 @@ export function renderSitemapIndexXml(
   for (const shard of shards) {
     const lastmod = lastmodByKind[shard.kind];
     parts.push("  <sitemap>");
-    parts.push(`    <loc>${xmlEscape(`${base}${shardPath(storeSlug, shard.kind, shard.page)}`)}</loc>`);
+    parts.push(
+      `    <loc>${xmlEscape(`${base}${shardPath(storeSlug, shard.kind, shard.page)}`)}</loc>`,
+    );
     if (lastmod) parts.push(`    <lastmod>${xmlEscape(lastmod)}</lastmod>`);
     parts.push("  </sitemap>");
   }
@@ -460,14 +516,17 @@ export function renderSitemapIndexXml(
 }
 
 /** `products-3.xml` → `{ kind: "products", page: 3 }`; anything else is null. */
-export function parseShardParam(param: string): { kind: SitemapKind; page: number } | null {
+export function parseShardParam(
+  param: string,
+): { kind: SitemapKind; page: number } | null {
   const cleaned = param.replace(/\.xml$/i, "");
   const match = /^([a-z]+)(?:-(\d+))?$/.exec(cleaned);
   if (!match) return null;
   const kind = match[1] as SitemapKind;
   if (!(SITEMAP_KINDS as readonly string[]).includes(kind)) return null;
   const page = match[2] ? Number(match[2]) : 1;
-  if (!Number.isFinite(page) || page < 1 || page > MAX_SHARDS_PER_KIND) return null;
+  if (!Number.isFinite(page) || page < 1 || page > MAX_SHARDS_PER_KIND)
+    return null;
   return { kind, page };
 }
 
@@ -507,11 +566,14 @@ export function renderRobotsTxt(input: RobotsRenderInput): string {
   lines.push("User-agent: *");
   lines.push(`Allow: ${base}`);
   for (const path of merchantStar?.allow ?? []) lines.push(`Allow: ${path}`);
-  for (const path of merchantStar?.disallow ?? []) lines.push(`Disallow: ${path}`);
-  for (const suffix of STORE_SAFETY_SUFFIXES) lines.push(`Disallow: ${base}${suffix}`);
+  for (const path of merchantStar?.disallow ?? [])
+    lines.push(`Disallow: ${path}`);
+  for (const suffix of STORE_SAFETY_SUFFIXES)
+    lines.push(`Disallow: ${base}${suffix}`);
   lines.push(`Disallow: ${base}/search?*`);
   for (const safety of SAFETY_DISALLOW) lines.push(`Disallow: ${safety}`);
-  if (merchantStar?.crawlDelay) lines.push(`Crawl-delay: ${merchantStar.crawlDelay}`);
+  if (merchantStar?.crawlDelay)
+    lines.push(`Crawl-delay: ${merchantStar.crawlDelay}`);
   lines.push("");
 
   for (const rule of settings.rules) {
@@ -575,8 +637,15 @@ function patternMatches(pattern: string, path: string): number {
  * Googlebot uses, run against the *rendered* file so the preview and the
  * production answer can never diverge.
  */
-export function testRobotsPath(robotsTxt: string, path: string, agent = "*"): RobotsVerdict {
-  const groups: { agents: string[]; directives: { type: "allow" | "disallow"; value: string }[] }[] = [];
+export function testRobotsPath(
+  robotsTxt: string,
+  path: string,
+  agent = "*",
+): RobotsVerdict {
+  const groups: {
+    agents: string[];
+    directives: { type: "allow" | "disallow"; value: string }[];
+  }[] = [];
   let current: (typeof groups)[number] | null = null;
   let lastWasAgent = false;
   for (const rawLine of robotsTxt.split(/\r?\n/)) {
@@ -608,17 +677,26 @@ export function testRobotsPath(robotsTxt: string, path: string, agent = "*"): Ro
   const applicable = specific.length ? specific : wildcard;
   if (!applicable.length) return { allowed: true, rule: null, agent };
 
-  let best: { type: "allow" | "disallow"; value: string; length: number } | null = null;
+  let best: {
+    type: "allow" | "disallow";
+    value: string;
+    length: number;
+  } | null = null;
   for (const group of applicable) {
     for (const directive of group.directives) {
       if (directive.value === "") {
         // "Disallow:" with an empty value means "allow everything".
-        if (directive.type === "disallow" && !best) best = { ...directive, length: 0, type: "allow" };
+        if (directive.type === "disallow" && !best)
+          best = { ...directive, length: 0, type: "allow" };
         continue;
       }
       const length = patternMatches(directive.value, path);
       if (length < 0) continue;
-      if (!best || length > best.length || (length === best.length && directive.type === "disallow")) {
+      if (
+        !best ||
+        length > best.length ||
+        (length === best.length && directive.type === "disallow")
+      ) {
         best = { type: directive.type, value: directive.value, length };
       }
     }
@@ -641,10 +719,15 @@ export function diffLines(before: string, after: string): DiffLine[] {
   const b = after.split("\n");
   const rows = a.length + 1;
   const cols = b.length + 1;
-  const table: number[][] = Array.from({ length: rows }, () => new Array<number>(cols).fill(0));
+  const table: number[][] = Array.from({ length: rows }, () =>
+    new Array<number>(cols).fill(0),
+  );
   for (let i = a.length - 1; i >= 0; i -= 1) {
     for (let j = b.length - 1; j >= 0; j -= 1) {
-      table[i]![j] = a[i] === b[j] ? table[i + 1]![j + 1]! + 1 : Math.max(table[i + 1]![j]!, table[i]![j + 1]!);
+      table[i]![j] =
+        a[i] === b[j]
+          ? table[i + 1]![j + 1]! + 1
+          : Math.max(table[i + 1]![j]!, table[i]![j + 1]!);
     }
   }
   const out: DiffLine[] = [];
@@ -668,7 +751,10 @@ export function diffLines(before: string, after: string): DiffLine[] {
   return out;
 }
 
-export function diffSummary(lines: readonly DiffLine[]): { added: number; removed: number } {
+export function diffSummary(lines: readonly DiffLine[]): {
+  added: number;
+  removed: number;
+} {
   return {
     added: lines.filter((l) => l.kind === "added").length,
     removed: lines.filter((l) => l.kind === "removed").length,

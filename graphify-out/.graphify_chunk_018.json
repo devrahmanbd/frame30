@@ -1,19 +1,89 @@
 {
   "nodes": [
-    {"id": "og_docs", "type": "image", "label": "Docs Page OG Image", "properties": {"page": "docs", "format": "png", "purpose": "social_preview"}},
-    {"id": "og_legal", "type": "image", "label": "Legal Page OG Image", "properties": {"page": "legal", "format": "png", "purpose": "social_preview"}},
-    {"id": "og_customers", "type": "image", "label": "Customers Page OG Image", "properties": {"page": "customers", "format": "png", "purpose": "social_preview"}},
-    {"id": "og_about", "type": "image", "label": "About Page OG Image", "properties": {"page": "about", "format": "png", "purpose": "social_preview"}},
-    {"id": "og_security", "type": "image", "label": "Security Page OG Image", "properties": {"page": "security", "format": "png", "purpose": "social_preview"}}
+    {
+      "id": "og_docs",
+      "type": "image",
+      "label": "Docs Page OG Image",
+      "properties": {
+        "page": "docs",
+        "format": "png",
+        "purpose": "social_preview"
+      }
+    },
+    {
+      "id": "og_legal",
+      "type": "image",
+      "label": "Legal Page OG Image",
+      "properties": {
+        "page": "legal",
+        "format": "png",
+        "purpose": "social_preview"
+      }
+    },
+    {
+      "id": "og_customers",
+      "type": "image",
+      "label": "Customers Page OG Image",
+      "properties": {
+        "page": "customers",
+        "format": "png",
+        "purpose": "social_preview"
+      }
+    },
+    {
+      "id": "og_about",
+      "type": "image",
+      "label": "About Page OG Image",
+      "properties": {
+        "page": "about",
+        "format": "png",
+        "purpose": "social_preview"
+      }
+    },
+    {
+      "id": "og_security",
+      "type": "image",
+      "label": "Security Page OG Image",
+      "properties": {
+        "page": "security",
+        "format": "png",
+        "purpose": "social_preview"
+      }
+    }
   ],
   "edges": [
-    {"source": "og_docs", "target": "og_security", "type": "related_to", "properties": {"relation": "trust_compliance"}},
-    {"source": "og_about", "target": "og_customers", "type": "related_to", "properties": {"relation": "company_social_proof"}}
+    {
+      "source": "og_docs",
+      "target": "og_security",
+      "type": "related_to",
+      "properties": { "relation": "trust_compliance" }
+    },
+    {
+      "source": "og_about",
+      "target": "og_customers",
+      "type": "related_to",
+      "properties": { "relation": "company_social_proof" }
+    }
   ],
   "hyperedges": [
-    {"id": "he_informational_pages", "nodes": ["og_docs", "og_about", "og_customers"], "label": "Informational Content", "properties": {"category": "content"}},
-    {"id": "he_trust_compliance", "nodes": ["og_security", "og_legal", "og_docs"], "label": "Trust & Compliance", "properties": {"category": "compliance"}},
-    {"id": "he_company_pages", "nodes": ["og_about", "og_customers", "og_security"], "label": "Company & Trust Pages", "properties": {"category": "branding"}}
+    {
+      "id": "he_informational_pages",
+      "nodes": ["og_docs", "og_about", "og_customers"],
+      "label": "Informational Content",
+      "properties": { "category": "content" }
+    },
+    {
+      "id": "he_trust_compliance",
+      "nodes": ["og_security", "og_legal", "og_docs"],
+      "label": "Trust & Compliance",
+      "properties": { "category": "compliance" }
+    },
+    {
+      "id": "he_company_pages",
+      "nodes": ["og_about", "og_customers", "og_security"],
+      "label": "Company & Trust Pages",
+      "properties": { "category": "branding" }
+    }
   ],
   "input_tokens": 0,
   "output_tokens": 0

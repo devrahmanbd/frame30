@@ -3,7 +3,7 @@
  * Shows model, tokens, cost, swarm status, and memory usage
  */
 
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 // Cache for expensive operations
 let lastSwarmCheck = 0;
@@ -15,21 +15,24 @@ const CACHE_TTL = 5000; // 5 seconds
  */
 function getSwarmStatus() {
   const now = Date.now();
-  if (cachedSwarmStatus && (now - lastSwarmCheck) < CACHE_TTL) {
+  if (cachedSwarmStatus && now - lastSwarmCheck < CACHE_TTL) {
     return cachedSwarmStatus;
   }
 
   try {
-    const result = execSync('npx agentic-flow@alpha mcp status 2>/dev/null || echo "idle"', {
-      encoding: 'utf-8',
-      timeout: 2000
-    }).trim();
+    const result = execSync(
+      'npx agentic-flow@alpha mcp status 2>/dev/null || echo "idle"',
+      {
+        encoding: "utf-8",
+        timeout: 2000,
+      },
+    ).trim();
 
-    cachedSwarmStatus = result.includes('running') ? '🐝' : '⚡';
+    cachedSwarmStatus = result.includes("running") ? "🐝" : "⚡";
     lastSwarmCheck = now;
     return cachedSwarmStatus;
   } catch {
-    cachedSwarmStatus = '⚡';
+    cachedSwarmStatus = "⚡";
     lastSwarmCheck = now;
     return cachedSwarmStatus;
   }
@@ -65,16 +68,16 @@ export default function statusline(context) {
   const parts = [];
 
   // Agentic Flow indicator
-  parts.push('🤖');
+  parts.push("🤖");
 
   // Model name (shortened)
   if (context.model) {
     const model = context.model
-      .replace('claude-', '')
-      .replace('-20250514', '')
-      .replace('sonnet-4', 'S4')
-      .replace('opus-4', 'O4')
-      .replace('haiku-3.5', 'H3.5');
+      .replace("claude-", "")
+      .replace("-20250514", "")
+      .replace("sonnet-4", "S4")
+      .replace("opus-4", "O4")
+      .replace("haiku-3.5", "H3.5");
     parts.push(model);
   }
 
@@ -105,5 +108,5 @@ export default function statusline(context) {
     }
   }
 
-  return parts.join(' │ ');
+  return parts.join(" │ ");
 }

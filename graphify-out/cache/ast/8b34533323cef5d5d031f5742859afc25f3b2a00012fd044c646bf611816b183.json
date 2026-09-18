@@ -1,1 +1,176 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "label": "HeroBand.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L1"}, {"id": "bands_heroband_herobandprops", "label": "HeroBandProps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L18"}, {"id": "bands_heroband_heroband", "label": "HeroBand()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L37"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "users_rahman_documents_frame30_src_lib_public_locale_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "lib_public_locale_public_bangla_enabled", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "users_rahman_documents_frame30_src_components_public_bands_band_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "bands_band_band", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "bands_band_chip", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "bands_heroband_herobandprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx", "target": "bands_heroband_heroband", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L37", "weight": 1.0}], "raw_calls": [{"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L60"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L64"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L71"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L95"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L107"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L115"}, {"caller_nid": "bands_heroband_heroband", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx", "source_location": "L127"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "label": "HeroBand.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "bands_heroband_herobandprops",
+      "label": "HeroBandProps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "bands_heroband_heroband",
+      "label": "HeroBand()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L37"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_public_locale_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "lib_public_locale_public_bangla_enabled",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "users_rahman_documents_frame30_src_components_public_bands_band_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "bands_band_band",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "bands_band_chip",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "bands_heroband_herobandprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_bands_heroband_tsx",
+      "target": "bands_heroband_heroband",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "bands_heroband_heroband",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/bands/HeroBand.tsx",
+      "source_location": "L127"
+    }
+  ]
+}

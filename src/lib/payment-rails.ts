@@ -46,7 +46,6 @@ export const PAYMENT_METHOD_KEYS = [
   "piprapay",
 ] as const;
 
-
 export type PaymentMethodKey = (typeof PAYMENT_METHOD_KEYS)[number];
 
 export type PaymentMethodSpec = {
@@ -76,10 +75,12 @@ export type PaymentMethodSpec = {
   support?: "community";
 };
 
-
 const spec = (s: PaymentMethodSpec) => s;
 
-export const PAYMENT_METHOD_CATALOG: Record<PaymentMethodKey, PaymentMethodSpec> = {
+export const PAYMENT_METHOD_CATALOG: Record<
+  PaymentMethodKey,
+  PaymentMethodSpec
+> = {
   cod: spec({
     key: "cod",
     layer: "cod",
@@ -289,13 +290,14 @@ export function isCommunityMethod(key: string) {
   return (COMMUNITY_METHOD_KEYS as readonly string[]).includes(key);
 }
 
-
 export function isPaymentMethodKey(value: string): value is PaymentMethodKey {
   return (PAYMENT_METHOD_KEYS as readonly string[]).includes(value);
 }
 
 /** Every method that moves money online — i.e. everything except COD. */
-export const ONLINE_METHOD_KEYS = PAYMENT_METHOD_KEYS.filter((k) => k !== "cod");
+export const ONLINE_METHOD_KEYS = PAYMENT_METHOD_KEYS.filter(
+  (k) => k !== "cod",
+);
 
 export function methodLabel(key: PaymentMethodKey, lang: "en" | "bn") {
   const s = PAYMENT_METHOD_CATALOG[key];
@@ -330,15 +332,28 @@ export function availableMethods(av: MethodAvailability): PaymentMethodKey[] {
 
 /** Fails closed: an unknown or uncontracted method is never chargeable. */
 export function assertMethodAllowed(method: string, av: MethodAvailability) {
-  if (!isPaymentMethodKey(method)) return { ok: false as const, reason: "payment.unsupported_provider" };
+  if (!isPaymentMethodKey(method))
+    return { ok: false as const, reason: "payment.unsupported_provider" };
   if (!availableMethods(av).includes(method)) {
-    return { ok: false as const, reason: method === "cod" ? "payment.cod_unavailable" : "payment.rail_unavailable" };
+    return {
+      ok: false as const,
+      reason:
+        method === "cod"
+          ? "payment.cod_unavailable"
+          : "payment.rail_unavailable",
+    };
   }
   return { ok: true as const, reason: null };
 }
 
 /** Grouped for the storefront radio list, aggregators last (they are a fallback). */
-export const METHOD_GROUP_ORDER: MethodLayer[] = ["cod", "mfs", "bank", "card", "aggregator"];
+export const METHOD_GROUP_ORDER: MethodLayer[] = [
+  "cod",
+  "mfs",
+  "bank",
+  "card",
+  "aggregator",
+];
 
 export function groupMethods(keys: PaymentMethodKey[]) {
   return METHOD_GROUP_ORDER.map((layer) => ({

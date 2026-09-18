@@ -15,15 +15,16 @@ Coordinate hybrid workflows that use Claude Code for interactive reasoning and C
 
 ## Parameters
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `--workflow` | hybrid_development | Workflow template to use |
-| `--task` | required | Task description |
-| `--interactive-first` | true | Start with interactive phase |
+| Parameter             | Default            | Description                  |
+| --------------------- | ------------------ | ---------------------------- |
+| `--workflow`          | hybrid_development | Workflow template to use     |
+| `--task`              | required           | Task description             |
+| `--interactive-first` | true               | Start with interactive phase |
 
 ## Available Workflows
 
 ### hybrid_development
+
 Design interactively, implement in parallel, review interactively.
 
 ```
@@ -31,6 +32,7 @@ Design interactively, implement in parallel, review interactively.
 ```
 
 ### parallel_feature
+
 Spawn multiple Codex workers for parallel implementation.
 
 ```
@@ -38,6 +40,7 @@ Spawn multiple Codex workers for parallel implementation.
 ```
 
 ### design_and_execute
+
 Interactive design phase, then batch execution.
 
 ```
@@ -75,6 +78,7 @@ npx claude-flow@v3alpha memory list --namespace results
 ```
 
 This will:
+
 1. **Design Phase** (Interactive): Discuss requirements, design endpoints, plan implementation
 2. **Implement Phase** (Headless): Spawn coders, testers, docs writers in parallel
 3. **Review Phase** (Interactive): Review implementation, discuss improvements

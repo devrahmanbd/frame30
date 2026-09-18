@@ -11,10 +11,18 @@ import {
   scoreBuilderSeo,
   type PageSeo,
 } from "@/lib/builder-seo";
-import { templateSeoListFn, templateSeoSaveFn } from "@/lib/builder-seo.functions";
+import {
+  templateSeoListFn,
+  templateSeoSaveFn,
+} from "@/lib/builder-seo.functions";
 import { useLang } from "@/lib/i18n";
 
-type Stored = { template: TemplateKey; seo: PageSeo; score: number; revision: number };
+type Stored = {
+  template: TemplateKey;
+  seo: PageSeo;
+  score: number;
+  revision: number;
+};
 
 /**
  * Phase 3 — the per-page SEO drawer.
@@ -45,7 +53,8 @@ export function SeoDrawer({
 
   const stored = useQuery({
     queryKey: ["builder-template-seo", themeId],
-    queryFn: async () => (await list({ data: { themeId } })) as unknown as Stored[],
+    queryFn: async () =>
+      (await list({ data: { themeId } })) as unknown as Stored[],
     enabled: Boolean(themeId),
     staleTime: 30_000,
   });
@@ -82,13 +91,22 @@ export function SeoDrawer({
     onSuccess: async () => {
       setDirty(false);
       toast.success(t("Page SEO saved.", "পেজ SEO সেভ হয়েছে।"));
-      await client.invalidateQueries({ queryKey: ["builder-template-seo", themeId] });
+      await client.invalidateQueries({
+        queryKey: ["builder-template-seo", themeId],
+      });
     },
     onError: async (error: unknown) => {
       const message = String((error as { message?: string })?.message ?? error);
       if (message.includes("conflict")) {
-        toast.error(t("Someone else saved this page — reloading.", "অন্য কেউ সেভ করেছেন — রিলোড হচ্ছে।"));
-        await client.invalidateQueries({ queryKey: ["builder-template-seo", themeId] });
+        toast.error(
+          t(
+            "Someone else saved this page — reloading.",
+            "অন্য কেউ সেভ করেছেন — রিলোড হচ্ছে।",
+          ),
+        );
+        await client.invalidateQueries({
+          queryKey: ["builder-template-seo", themeId],
+        });
         return;
       }
       toast.error(t("Could not save page SEO.", "পেজ SEO সেভ করা যায়নি।"));
@@ -129,7 +147,10 @@ export function SeoDrawer({
   );
 
   return (
-    <section aria-label={t("Page SEO", "পেজ SEO")} className="space-y-3 rounded-fq-lg border border-border bg-card p-4">
+    <section
+      aria-label={t("Page SEO", "পেজ SEO")}
+      className="space-y-3 rounded-fq-lg border border-border bg-card p-4"
+    >
       <header className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold">{t("Page SEO", "পেজ SEO")}</h2>
         <span
@@ -147,12 +168,15 @@ export function SeoDrawer({
 
       {/* SERP preview, measured in pixels because that is how Google truncates. */}
       <div className="space-y-1 rounded-fq-md border border-border p-3">
-        <p className="truncate text-sm text-primary">{report.preview.title || t("Untitled page", "শিরোনামহীন পেজ")}</p>
+        <p className="truncate text-sm text-primary">
+          {report.preview.title || t("Untitled page", "শিরোনামহীন পেজ")}
+        </p>
         <p className="text-xs text-muted-foreground">
           {draft.canonical || t("No canonical URL set", "ক্যানোনিকাল URL নেই")}
         </p>
         <p className="line-clamp-2 text-xs">
-          {report.preview.description || t("No description yet.", "এখনো বর্ণনা নেই।")}
+          {report.preview.description ||
+            t("No description yet.", "এখনো বর্ণনা নেই।")}
         </p>
         <p className="text-[10px] text-muted-foreground">
           {t(
@@ -164,12 +188,28 @@ export function SeoDrawer({
 
       <div className="space-y-2">
         {field("title", { en: "Search title", bn: "সার্চ টাইটেল" })}
-        {field("description", { en: "Search description", bn: "সার্চ বর্ণনা" }, { textarea: true })}
-        {field("canonical", { en: "Canonical URL", bn: "ক্যানোনিকাল URL" }, { placeholder: "https://" })}
+        {field(
+          "description",
+          { en: "Search description", bn: "সার্চ বর্ণনা" },
+          { textarea: true },
+        )}
+        {field(
+          "canonical",
+          { en: "Canonical URL", bn: "ক্যানোনিকাল URL" },
+          { placeholder: "https://" },
+        )}
         {field("focusKeyword", { en: "Focus keyword", bn: "মূল কীওয়ার্ড" })}
         {field("ogTitle", { en: "Social title", bn: "সোশ্যাল টাইটেল" })}
-        {field("ogDescription", { en: "Social description", bn: "সোশ্যাল বর্ণনা" }, { textarea: true })}
-        {field("ogImage", { en: "Social image URL", bn: "সোশ্যাল ইমেজ URL" }, { placeholder: "https://" })}
+        {field(
+          "ogDescription",
+          { en: "Social description", bn: "সোশ্যাল বর্ণনা" },
+          { textarea: true },
+        )}
+        {field(
+          "ogImage",
+          { en: "Social image URL", bn: "সোশ্যাল ইমেজ URL" },
+          { placeholder: "https://" },
+        )}
         <label className="flex items-center gap-2 text-xs">
           <input
             type="checkbox"
@@ -179,7 +219,10 @@ export function SeoDrawer({
               setDirty(true);
             }}
           />
-          {t("Hide this page from search engines", "এই পেজ সার্চ ইঞ্জিন থেকে লুকান")}
+          {t(
+            "Hide this page from search engines",
+            "এই পেজ সার্চ ইঞ্জিন থেকে লুকান",
+          )}
         </label>
       </div>
 
@@ -189,7 +232,11 @@ export function SeoDrawer({
             <span
               aria-hidden
               className={`mt-0.5 inline-block size-2 shrink-0 rounded-full ${
-                check.status === "pass" ? "bg-success" : check.status === "warn" ? "bg-warning" : "bg-danger"
+                check.status === "pass"
+                  ? "bg-success"
+                  : check.status === "warn"
+                    ? "bg-warning"
+                    : "bg-danger"
               }`}
             />
             <span>
@@ -205,7 +252,9 @@ export function SeoDrawer({
         onClick={() => mutation.mutate()}
         className="rounded-fq-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
       >
-        {mutation.isPending ? t("Saving…", "সেভ হচ্ছে…") : t("Save page SEO", "পেজ SEO সেভ")}
+        {mutation.isPending
+          ? t("Saving…", "সেভ হচ্ছে…")
+          : t("Save page SEO", "পেজ SEO সেভ")}
       </button>
     </section>
   );

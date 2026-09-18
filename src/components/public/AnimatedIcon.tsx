@@ -30,17 +30,23 @@ const SIZE_MAP = {
 };
 
 const VARIANT_MAP: Record<IconAnimationVariant, string> = {
-  bounce: "motion-safe:group-hover:-translate-y-1 transition-transform duration-300 ease-out",
+  bounce:
+    "motion-safe:group-hover:-translate-y-1 transition-transform duration-300 ease-out",
   tilt: "motion-safe:group-hover:rotate-12 transition-transform duration-300 ease-out",
-  wiggle: "motion-safe:group-hover:rotate-6 motion-safe:group-hover:scale-110 transition-transform duration-200",
+  wiggle:
+    "motion-safe:group-hover:rotate-6 motion-safe:group-hover:scale-110 transition-transform duration-200",
   pulse: "motion-safe:group-hover:scale-110 transition-transform duration-300",
   lift: "motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:scale-105 transition-transform duration-200",
-  "spin-slow": "motion-safe:group-hover:rotate-45 transition-transform duration-500",
+  "spin-slow":
+    "motion-safe:group-hover:rotate-45 transition-transform duration-500",
   ping: "motion-safe:animate-pulse motion-safe:group-hover:scale-110 transition-transform duration-300",
   draw: "motion-safe:group-hover:scale-105 motion-safe:group-hover:stroke-[2.2] transition-all duration-300",
-  float: "motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:rotate-2 transition-all duration-300 ease-out",
-  sparkle: "motion-safe:group-hover:scale-125 motion-safe:group-hover:rotate-12 transition-all duration-300 ease-out",
-  magnetic: "motion-safe:group-hover:translate-x-1 transition-transform duration-200 ease-out",
+  float:
+    "motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:rotate-2 transition-all duration-300 ease-out",
+  sparkle:
+    "motion-safe:group-hover:scale-125 motion-safe:group-hover:rotate-12 transition-all duration-300 ease-out",
+  magnetic:
+    "motion-safe:group-hover:translate-x-1 transition-transform duration-200 ease-out",
   glow: "motion-safe:group-hover:drop-shadow-[0_0_6px_var(--fq-signal)] transition-all duration-300",
 };
 
@@ -75,11 +81,7 @@ export function AnimatedIcon({
         />
       )}
       <Icon
-        className={cn(
-          SIZE_MAP[size],
-          VARIANT_MAP[variant],
-          iconClassName,
-        )}
+        className={cn(SIZE_MAP[size], VARIANT_MAP[variant], iconClassName)}
       />
     </span>
   );

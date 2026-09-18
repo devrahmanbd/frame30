@@ -45,7 +45,14 @@ export function MediaPicker({
    * text the merchant already wrote, and the intrinsic size. Callers that only
    * store a URL can ignore it.
    */
-  onPick: (url: string, meta?: { altText?: string | null; width?: number | null; height?: number | null }) => void;
+  onPick: (
+    url: string,
+    meta?: {
+      altText?: string | null;
+      width?: number | null;
+      height?: number | null;
+    },
+  ) => void;
 
   onSizes: (preset: string) => void;
 }) {
@@ -67,7 +74,9 @@ export function MediaPicker({
     mutationFn: async (file: File) => {
       if (file.size > MEDIA_MAX_BYTES) throw new Error("too_large");
       const base64 = await readAsBase64(file);
-      return upload({ data: { name: file.name, contentType: file.type, base64 } });
+      return upload({
+        data: { name: file.name, contentType: file.type, base64 },
+      });
     },
     onSuccess: (result) => {
       setError(null);
@@ -88,8 +97,14 @@ export function MediaPicker({
     <div className="space-y-2">
       {value ? (
         <div className="flex items-center gap-2 rounded-fq-md border border-border p-2">
-          <img src={value} alt="" className="size-12 shrink-0 rounded-fq-sm object-cover" />
-          <span className="min-w-0 flex-1 truncate text-[0.65rem] text-muted-foreground">{value}</span>
+          <img
+            src={value}
+            alt=""
+            className="size-12 shrink-0 rounded-fq-sm object-cover"
+          />
+          <span className="min-w-0 flex-1 truncate text-[0.65rem] text-muted-foreground">
+            {value}
+          </span>
           <button
             type="button"
             disabled={disabled}
@@ -100,7 +115,9 @@ export function MediaPicker({
           </button>
         </div>
       ) : (
-        <p className="text-[0.65rem] text-muted-foreground">{t("No image selected.", "কোনো ছবি বাছা হয়নি।")}</p>
+        <p className="text-[0.65rem] text-muted-foreground">
+          {t("No image selected.", "কোনো ছবি বাছা হয়নি।")}
+        </p>
       )}
 
       <div className="flex gap-1">
@@ -111,7 +128,9 @@ export function MediaPicker({
             onClick={() => setTab(key)}
             aria-pressed={tab === key}
             className={`rounded-fq-sm border px-2 py-1 text-[0.65rem] ${
-              tab === key ? "border-primary text-primary" : "border-border text-muted-foreground"
+              tab === key
+                ? "border-primary text-primary"
+                : "border-border text-muted-foreground"
             }`}
           >
             {key === "library" ? t("Library", "লাইব্রেরি") : t("URL", "ইউআরএল")}
@@ -137,7 +156,9 @@ export function MediaPicker({
           </label>
 
           {library.isLoading && (
-            <p className="text-[0.65rem] text-muted-foreground">{t("Loading…", "লোড হচ্ছে…")}</p>
+            <p className="text-[0.65rem] text-muted-foreground">
+              {t("Loading…", "লোড হচ্ছে…")}
+            </p>
           )}
           {!library.isLoading && items.length === 0 && (
             <p className="text-[0.65rem] text-muted-foreground">
@@ -152,7 +173,11 @@ export function MediaPicker({
                   type="button"
                   disabled={disabled}
                   onClick={() =>
-                    onPick(item.url, { altText: item.altText, width: item.width, height: item.height })
+                    onPick(item.url, {
+                      altText: item.altText,
+                      width: item.width,
+                      height: item.height,
+                    })
                   }
                   title={item.altText || item.name}
 
@@ -160,7 +185,11 @@ export function MediaPicker({
                     value === item.url ? "border-primary" : "border-border"
                   }`}
                 >
-                  <img src={item.url} alt={item.altText || item.name} className="aspect-square w-full object-cover" />
+                  <img
+                    src={item.url}
+                    alt={item.altText || item.name}
+                    className="aspect-square w-full object-cover"
+                  />
                 </button>
               </li>
             ))}
@@ -191,9 +220,16 @@ export function MediaPicker({
               // has to be plain https here — the image route re-checks its host.
               const ok = raw.startsWith(MEDIA_URL_PREFIX)
                 ? validateMediaUrl(raw).ok
-                : parsed?.protocol === "https:" && !parsed.username && !parsed.password;
+                : parsed?.protocol === "https:" &&
+                  !parsed.username &&
+                  !parsed.password;
               if (!ok) {
-                setError(t("That URL cannot be used.", "এই ইউআরএল ব্যবহার করা যাবে না।"));
+                setError(
+                  t(
+                    "That URL cannot be used.",
+                    "এই ইউআরএল ব্যবহার করা যাবে না।",
+                  ),
+                );
                 return;
               }
               setError(null);
@@ -207,7 +243,9 @@ export function MediaPicker({
         </div>
       )}
 
-      {error && <p className="text-[0.65rem] text-danger-foreground">{error}</p>}
+      {error && (
+        <p className="text-[0.65rem] text-danger-foreground">{error}</p>
+      )}
 
       <label className="block text-[0.65rem] text-muted-foreground">
         {t("Rendered width", "রেন্ডার প্রস্থ")}

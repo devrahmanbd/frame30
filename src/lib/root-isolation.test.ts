@@ -39,7 +39,9 @@ function walk(path: string): string[] {
 }
 
 function imports(src: string): string[] {
-  return [...src.matchAll(/(?:from|import)\s*\(?\s*["']([^"']+)["']/g)].map((m) => m[1]!);
+  return [...src.matchAll(/(?:from|import)\s*\(?\s*["']([^"']+)["']/g)].map(
+    (m) => m[1]!,
+  );
 }
 
 describe("/root isolation", () => {
@@ -63,8 +65,17 @@ describe("/root isolation", () => {
 
   it("keeps the owner shell and dialog exclusive to /root", () => {
     const outside = walk(join(process.cwd(), "src"))
-      .filter((f) => !f.includes("/components/root/") && !f.includes("/routes/root") && !f.endsWith("root-isolation.test.ts"))
-      .filter((f) => /RootShell|RootConfirmDialog|RootCommandPalette/.test(readFileSync(f, "utf8")))
+      .filter(
+        (f) =>
+          !f.includes("/components/root/") &&
+          !f.includes("/routes/root") &&
+          !f.endsWith("root-isolation.test.ts"),
+      )
+      .filter((f) =>
+        /RootShell|RootConfirmDialog|RootCommandPalette/.test(
+          readFileSync(f, "utf8"),
+        ),
+      )
       .map((f) => f.replace(process.cwd() + "/", ""));
     expect(outside).toEqual([]);
   });

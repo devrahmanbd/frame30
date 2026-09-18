@@ -14,8 +14,11 @@ export function requestOrigin(): string | null {
     const req = getRequest();
     if (!req) return null;
     const proto = req.headers.get("x-forwarded-proto")?.split(",")[0]?.trim();
-    const host = req.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ?? req.headers.get("host");
-    if (host) return `${proto || new URL(req.url).protocol.replace(":", "")}://${host}`;
+    const host =
+      req.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ??
+      req.headers.get("host");
+    if (host)
+      return `${proto || new URL(req.url).protocol.replace(":", "")}://${host}`;
     return new URL(req.url).origin;
   } catch {
     return null;

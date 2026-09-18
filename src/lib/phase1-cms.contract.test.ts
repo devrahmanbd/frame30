@@ -28,11 +28,28 @@ import {
   splitAtMore,
   validateBody,
 } from "./blog-body";
-import { DIFF_LIMITS, diffFields, diffWords, summarizeDiff, tokenize } from "./blog-diff";
-import { createDraftStore, draftHash, draftPayloadOf, recoveryOffer } from "./blog-draft";
+import {
+  DIFF_LIMITS,
+  diffFields,
+  diffWords,
+  summarizeDiff,
+  tokenize,
+} from "./blog-diff";
+import {
+  createDraftStore,
+  draftHash,
+  draftPayloadOf,
+  recoveryOffer,
+} from "./blog-draft";
 
-const ROUTE = readFileSync("src/routes/_authenticated/admin/marketing/articles.tsx", "utf8");
-const EDITOR = readFileSync("src/components/admin/blog/ClassicEditor.tsx", "utf8");
+const ROUTE = readFileSync(
+  "src/routes/_authenticated/dashboard/marketing/articles.tsx",
+  "utf8",
+);
+const EDITOR = readFileSync(
+  "src/components/admin/blog/ClassicEditor.tsx",
+  "utf8",
+);
 const SERVER = readFileSync("src/lib/cms.server.ts", "utf8");
 
 function memoryStorage(fail = false) {
@@ -55,7 +72,7 @@ describe("body model — parse and serialize", () => {
   it("round-trips every block type without drift", () => {
     const source = [
       "<h2>Heading</h2>",
-      "<p>Plain <strong>bold</strong> and <em>italic</em> and <a href=\"https://example.com\">a link</a>.</p>",
+      '<p>Plain <strong>bold</strong> and <em>italic</em> and <a href="https://example.com">a link</a>.</p>',
       "<ul><li>one</li><li>two</li></ul>",
       "<ol><li>first</li></ol>",
       "<blockquote><p>Quoted</p></blockquote>",
@@ -94,7 +111,9 @@ describe("body model — parse and serialize", () => {
     expect(html).not.toContain("onclick");
     expect(html).not.toContain("javascript:");
     expect(safeUrl("javascript:alert(1)")).toBeNull();
-    expect(safeUrl("  https://ok.example.com/a ")).toBe("https://ok.example.com/a");
+    expect(safeUrl("  https://ok.example.com/a ")).toBe(
+      "https://ok.example.com/a",
+    );
     expect(safeUrl("/relative/path")).toBe("/relative/path");
   });
 
@@ -108,9 +127,14 @@ describe("body model — parse and serialize", () => {
 
 describe("zero-CLS image contract", () => {
   it("flags an image with no dimensions or no alt", () => {
-    const blocks = parseBody('<figure><img src="https://cdn.example.com/a.jpg" alt=""></figure>');
+    const blocks = parseBody(
+      '<figure><img src="https://cdn.example.com/a.jpg" alt=""></figure>',
+    );
     const issues = validateBody(blocks);
-    expect(issues.map((issue) => issue.code).sort()).toEqual(["image_alt_missing", "image_dimensions_missing"]);
+    expect(issues.map((issue) => issue.code).sort()).toEqual([
+      "image_alt_missing",
+      "image_dimensions_missing",
+    ]);
   });
 
   it("passes an image carrying alt plus intrinsic size", () => {
@@ -159,7 +183,9 @@ describe("revision diff", () => {
   });
 
   it("says nothing changed when nothing changed", () => {
-    expect(summarizeDiff(diffWords("same text", "same text")).changed).toBe(false);
+    expect(summarizeDiff(diffWords("same text", "same text")).changed).toBe(
+      false,
+    );
   });
 
   it("stays bounded on very large documents instead of exhausting memory", () => {
@@ -195,11 +221,13 @@ describe("local draft recovery", () => {
   it("never throws when storage is unavailable or blocked", () => {
     // A blocked quota must not lose the edit: the in-tab mirror still answers.
     const blocked = createDraftStore({ storage: memoryStorage(true) });
-    expect(blocked.write("m1", "a1", payload, "h")).toMatchObject({ ok: true, persisted: false });
+    expect(blocked.write("m1", "a1", payload, "h")).toMatchObject({
+      ok: true,
+      persisted: false,
+    });
     expect(blocked.read("m1", "a1")?.body).toBe(payload.body);
     expect(createDraftStore({ storage: null }).read("m1", "a1")).toBeNull();
   });
-
 
   it("offers recovery only when the local copy really diverges", () => {
     const stored = {
@@ -219,11 +247,18 @@ describe("local draft recovery", () => {
   it("drops an expired draft rather than resurrecting stale text", () => {
     const shared = memoryStorage();
     const now = Date.now();
-    createDraftStore({ storage: shared, now: () => now }).write("m1", "a1", payload, "h");
-    const later = createDraftStore({ storage: shared, now: () => now + 30 * 24 * 3600_000 });
+    createDraftStore({ storage: shared, now: () => now }).write(
+      "m1",
+      "a1",
+      payload,
+      "h",
+    );
+    const later = createDraftStore({
+      storage: shared,
+      now: () => now + 30 * 24 * 3600_000,
+    });
     expect(later.read("m1", "a1")).toBeNull();
   });
-
 });
 
 describe("surface wiring", () => {

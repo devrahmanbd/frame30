@@ -21,8 +21,22 @@ import {
 } from "./courier-adapters.server";
 
 const zones: ZoneLike[] = [
-  { id: "z1", code: "dhaka_metro", districts: ["Dhaka"], isDefault: false, enabled: true, priority: 10 },
-  { id: "z2", code: "outside", districts: [], isDefault: true, enabled: true, priority: 90 },
+  {
+    id: "z1",
+    code: "dhaka_metro",
+    districts: ["Dhaka"],
+    isDefault: false,
+    enabled: true,
+    priority: 10,
+  },
+  {
+    id: "z2",
+    code: "outside",
+    districts: [],
+    isDefault: true,
+    enabled: true,
+    priority: 90,
+  },
 ];
 
 const rules: RateRuleLike[] = [
@@ -82,7 +96,9 @@ describe("zone matching", () => {
   });
 
   it("skips disabled zones", () => {
-    const disabled = zones.map((z) => (z.id === "z1" ? { ...z, enabled: false } : z));
+    const disabled = zones.map((z) =>
+      z.id === "z1" ? { ...z, enabled: false } : z,
+    );
     expect(matchZone(disabled, "Dhaka")?.code).toBe("outside");
   });
 });
@@ -165,7 +181,11 @@ describe("money maths", () => {
       orderTotalMinorInt: 99999,
       carrierCode: "steadfast",
     });
-    for (const value of [q.shippingMinorInt, q.codFeeMinorInt, q.totalMinorInt]) {
+    for (const value of [
+      q.shippingMinorInt,
+      q.codFeeMinorInt,
+      q.totalMinorInt,
+    ]) {
       expect(Number.isInteger(value)).toBe(true);
     }
   });
@@ -181,10 +201,18 @@ describe("courier adapters", () => {
   });
 
   it("verifies HMAC signatures and rejects tampered bodies", async () => {
-    const body = JSON.stringify({ event_id: "e1", awb: "A1", status: "delivered" });
+    const body = JSON.stringify({
+      event_id: "e1",
+      awb: "A1",
+      status: "delivered",
+    });
     const sig = await hmacHex("s3cret", body);
-    await expect(verifySignature("s3cret", body, `sha256=${sig}`)).resolves.toBe(true);
-    await expect(verifySignature("s3cret", `${body} `, sig)).resolves.toBe(false);
+    await expect(
+      verifySignature("s3cret", body, `sha256=${sig}`),
+    ).resolves.toBe(true);
+    await expect(verifySignature("s3cret", `${body} `, sig)).resolves.toBe(
+      false,
+    );
     await expect(verifySignature("s3cret", body, null)).resolves.toBe(false);
   });
 
@@ -196,7 +224,9 @@ describe("courier adapters", () => {
 
   it("opens the circuit after repeated failures and fails fast", async () => {
     const fail = () => Promise.reject(new Error("boom"));
-    await expect(callCarrier("flaky", "op", fail, { retries: 2, timeoutMs: 50 })).rejects.toThrow();
+    await expect(
+      callCarrier("flaky", "op", fail, { retries: 2, timeoutMs: 50 }),
+    ).rejects.toThrow();
     expect(breakerState("flaky")).toBe("open");
     await expect(
       callCarrier("flaky", "op", () => Promise.resolve(1), { retries: 0 }),
@@ -205,9 +235,10 @@ describe("courier adapters", () => {
 
   it("parses only well-formed carrier payloads", () => {
     const adapter = adapterFor("steadfast");
-    expect(adapter.parseEvent({ event_id: "1", awb: "A", status: "delivered" })?.status).toBe(
-      "delivered",
-    );
+    expect(
+      adapter.parseEvent({ event_id: "1", awb: "A", status: "delivered" })
+        ?.status,
+    ).toBe("delivered");
     expect(adapter.parseEvent({ awb: "A", status: "delivered" })).toBeNull();
     expect(adapter.parseEvent("nope")).toBeNull();
   });

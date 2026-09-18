@@ -58,8 +58,12 @@ const MARKETING_BUDGET = {
 };
 
 const ADMIN_BUDGET = {
-  "src/routes/_authenticated/admin/marketing/seo.tsx": { jsGzBytes: 280 * 1024 },
-  "src/routes/_authenticated/admin/marketing/articles.tsx": { jsGzBytes: 320 * 1024 },
+  "src/routes/_authenticated/admin/marketing/seo.tsx": {
+    jsGzBytes: 280 * 1024,
+  },
+  "src/routes/_authenticated/admin/marketing/articles.tsx": {
+    jsGzBytes: 320 * 1024,
+  },
 };
 
 /** Source contract: the analysis worker may only be created on first keystroke. */
@@ -76,24 +80,32 @@ const warnings = [];
 
 function checkLazyWorker() {
   if (!existsSync(WORKER_HOOK)) {
-    failures.push(`${WORKER_HOOK}: missing — the analysis hook is a required surface`);
+    failures.push(
+      `${WORKER_HOOK}: missing — the analysis hook is a required surface`,
+    );
     return;
   }
   const src = readFileSync(WORKER_HOOK, "utf8");
 
   // 1. The worker module must never be a static import: that would pull the
   //    whole analysis graph into the editor chunk even when it is never used.
-  const staticImports = [...src.matchAll(/(?:^|\n)\s*import\s[^;]*?["']([^"']+)["']/g)].map((m) => m[1]);
+  const staticImports = [
+    ...src.matchAll(/(?:^|\n)\s*import\s[^;]*?["']([^"']+)["']/g),
+  ].map((m) => m[1]);
   for (const spec of staticImports) {
     if (WORKER_MODULE.test(spec) && !spec.includes("worker-contract")) {
-      failures.push(`${WORKER_HOOK}: statically imports ${spec}; the worker must be referenced via new URL()`);
+      failures.push(
+        `${WORKER_HOOK}: statically imports ${spec}; the worker must be referenced via new URL()`,
+      );
     }
   }
 
   // 2. `new Worker(` must exist exactly once and sit inside a function.
   const constructions = [...src.matchAll(/new Worker\(/g)];
   if (constructions.length !== 1) {
-    failures.push(`${WORKER_HOOK}: expected exactly one \`new Worker(\`, found ${constructions.length}`);
+    failures.push(
+      `${WORKER_HOOK}: expected exactly one \`new Worker(\`, found ${constructions.length}`,
+    );
   }
   for (const match of constructions) {
     if (depthAt(src, match.index) === 0) {
@@ -109,22 +121,31 @@ function checkLazyWorker() {
   const callSites = [...src.matchAll(/createWorker\(\)/g)].filter(
     (m) => !/function\s+$/.test(src.slice(Math.max(0, m.index - 12), m.index)),
   );
-  if (callSites.length === 0) failures.push(`${WORKER_HOOK}: no worker factory call site found`);
+  if (callSites.length === 0)
+    failures.push(`${WORKER_HOOK}: no worker factory call site found`);
   if (!scheduler) {
-    failures.push(`${WORKER_HOOK}: no debounced \`schedule\` block; cannot prove lazy construction`);
+    failures.push(
+      `${WORKER_HOOK}: no debounced \`schedule\` block; cannot prove lazy construction`,
+    );
   } else {
     for (const site of callSites) {
       if (site.index < scheduler.start || site.index > scheduler.end) {
-        failures.push(`${WORKER_HOOK}: createWorker() called outside the debounced scheduler (offset ${site.index})`);
+        failures.push(
+          `${WORKER_HOOK}: createWorker() called outside the debounced scheduler (offset ${site.index})`,
+        );
       }
     }
   }
   if (!/setTimeout\(\s*schedule\s*,/.test(src)) {
-    failures.push(`${WORKER_HOOK}: \`schedule\` is not deferred behind setTimeout — the worker would spin up on mount`);
+    failures.push(
+      `${WORKER_HOOK}: \`schedule\` is not deferred behind setTimeout — the worker would spin up on mount`,
+    );
   }
   // 4. The first paint must not wait on the worker at all.
   if (!/analyseSeo\(/.test(src)) {
-    failures.push(`${WORKER_HOOK}: no inline fallback; a blocked worker would leave the panel empty`);
+    failures.push(
+      `${WORKER_HOOK}: no inline fallback; a blocked worker would leave the panel empty`,
+    );
   }
 }
 
@@ -187,12 +208,16 @@ if (!manifestPath) {
     for (const f of failures) console.error(`  • ${f}`);
     process.exit(1);
   }
-  console.error(`perf-budget: no Vite manifest under ${distRoot}. Run \`bun run build\` first.`);
+  console.error(
+    `perf-budget: no Vite manifest under ${distRoot}. Run \`bun run build\` first.`,
+  );
   process.exit(2);
 }
 
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-const assetRoot = manifestPath.replace(/[\\/]\.vite[\\/]manifest\.json$/, "").replace(/[\\/]manifest\.json$/, "");
+const assetRoot = manifestPath
+  .replace(/[\\/]\.vite[\\/]manifest\.json$/, "")
+  .replace(/[\\/]manifest\.json$/, "");
 
 const gzCache = new Map();
 function gzBytes(file) {
@@ -209,7 +234,10 @@ function walk(key, seen) {
   seen.add(key);
   let js = entry.file && entry.file.endsWith(".js") ? gzBytes(entry.file) : 0;
   let css = (entry.css ?? []).reduce((sum, f) => sum + gzBytes(f), 0);
-  for (const dep of [...(entry.imports ?? []), ...(entry.dynamicImports ?? [])]) {
+  for (const dep of [
+    ...(entry.imports ?? []),
+    ...(entry.dynamicImports ?? []),
+  ]) {
     const child = walk(dep, seen);
     js += child.js;
     css += child.css;
@@ -221,7 +249,9 @@ const entryKey = Object.keys(manifest).find((k) => manifest[k].isEntry) ?? null;
 const rows = [];
 
 for (const route of ROUTES) {
-  const key = Object.keys(manifest).find((k) => k === route || k.endsWith(route));
+  const key = Object.keys(manifest).find(
+    (k) => k === route || k.endsWith(route),
+  );
   if (!key) continue;
   const seen = new Set();
   const shell = entryKey ? walk(entryKey, seen) : { js: 0, css: 0 };
@@ -230,33 +260,47 @@ for (const route of ROUTES) {
   const css = shell.css + page.css;
   rows.push({ route, js, css });
   if (css > ASSET_BUDGET.cssGzBytes) {
-    failures.push(`${route}: CSS ${(css / 1024).toFixed(1)}KB gz > ${(ASSET_BUDGET.cssGzBytes / 1024).toFixed(0)}KB`);
+    failures.push(
+      `${route}: CSS ${(css / 1024).toFixed(1)}KB gz > ${(ASSET_BUDGET.cssGzBytes / 1024).toFixed(0)}KB`,
+    );
   }
   if (js > ASSET_BUDGET.jsGzBytes) {
-    failures.push(`${route}: JS ${(js / 1024).toFixed(1)}KB gz > ${(ASSET_BUDGET.jsGzBytes / 1024).toFixed(0)}KB`);
+    failures.push(
+      `${route}: JS ${(js / 1024).toFixed(1)}KB gz > ${(ASSET_BUDGET.jsGzBytes / 1024).toFixed(0)}KB`,
+    );
   }
 }
 
 for (const [route, budget] of Object.entries(ADMIN_BUDGET)) {
-  const key = Object.keys(manifest).find((k) => k === route || k.endsWith(route));
+  const key = Object.keys(manifest).find(
+    (k) => k === route || k.endsWith(route),
+  );
   if (!key) {
-    warnings.push(`${route}: no chunk in the manifest (route removed, or the build split it differently)`);
+    warnings.push(
+      `${route}: no chunk in the manifest (route removed, or the build split it differently)`,
+    );
     continue;
   }
   const seen = new Set();
   const { js, css } = walk(key, seen);
   rows.push({ route, js, css, admin: true });
   if (js > budget.jsGzBytes) {
-    failures.push(`${route}: JS ${(js / 1024).toFixed(1)}KB gz > ${(budget.jsGzBytes / 1024).toFixed(0)}KB (admin budget)`);
+    failures.push(
+      `${route}: JS ${(js / 1024).toFixed(1)}KB gz > ${(budget.jsGzBytes / 1024).toFixed(0)}KB (admin budget)`,
+    );
   }
 }
 
 // Marketing routes carry the shared client shell too — a visitor pays for it
 // on the first paint of `/`, so it is counted, exactly as it is for a store.
 for (const [route, budget] of Object.entries(MARKETING_BUDGET)) {
-  const key = Object.keys(manifest).find((k) => k === route || k.endsWith(route));
+  const key = Object.keys(manifest).find(
+    (k) => k === route || k.endsWith(route),
+  );
   if (!key) {
-    warnings.push(`${route}: no chunk in the manifest (marketing route removed or renamed)`);
+    warnings.push(
+      `${route}: no chunk in the manifest (marketing route removed or renamed)`,
+    );
     continue;
   }
   const seen = new Set();
@@ -278,7 +322,9 @@ for (const [route, budget] of Object.entries(MARKETING_BUDGET)) {
 }
 
 if (rows.length === 0) {
-  console.error("perf-budget: no storefront route chunks found in the manifest.");
+  console.error(
+    "perf-budget: no storefront route chunks found in the manifest.",
+  );
   process.exit(2);
 }
 

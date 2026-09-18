@@ -13,12 +13,27 @@ import {
   isUppercaseHostile,
   spanClass,
 } from "./responsive";
-import { SECTION_CATALOG, STYLE_KEYS, lintTemplate, newSection, parseAst, resolveProps, sectionStyle } from "./builder-ast";
+import {
+  SECTION_CATALOG,
+  STYLE_KEYS,
+  lintTemplate,
+  newSection,
+  parseAst,
+  resolveProps,
+  sectionStyle,
+} from "./builder-ast";
 import { THEME_PRESETS } from "./theme-presets";
 
 describe("Phase 6 — platform breakpoints", () => {
   it("pins the platform breakpoints", () => {
-    expect(BREAKPOINT_PX).toEqual({ base: 0, sm: 640, md: 768, lg: 1024, xl: 1280, "2xl": 1536 });
+    expect(BREAKPOINT_PX).toEqual({
+      base: 0,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      "2xl": 1536,
+    });
     expect(GRID_COLS).toEqual({ mobile: 4, tablet: 8, desktop: 12 });
     expect(GRID_GUTTER_PX).toBe(16);
     expect(MIN_TOUCH_PX).toBe(44);
@@ -27,7 +42,9 @@ describe("Phase 6 — platform breakpoints", () => {
 
   it("resolves a viewport width to the same bucket the editor edits", () => {
     for (const preset of DEVICE_PRESETS) {
-      expect(bucketForWidth(preset.width), String(preset.width)).toBe(preset.bp);
+      expect(bucketForWidth(preset.width), String(preset.width)).toBe(
+        preset.bp,
+      );
     }
     expect(bucketForWidth(319)).toBe("mobile");
     expect(bucketForWidth(1536)).toBe("desktop");
@@ -35,7 +52,9 @@ describe("Phase 6 — platform breakpoints", () => {
 
   it("keeps every breakpoint name mapped to a bucket", () => {
     for (const name of Object.keys(BREAKPOINT_PX)) {
-      expect(BUCKET_OF_BREAKPOINT[name as keyof typeof BREAKPOINT_PX]).toBeTruthy();
+      expect(
+        BUCKET_OF_BREAKPOINT[name as keyof typeof BREAKPOINT_PX],
+      ).toBeTruthy();
     }
   });
 });
@@ -71,7 +90,9 @@ describe("Phase 6 — column span per breakpoint", () => {
       main: [{ ...newSection("hero"), id: "h1", bp: { mobile: { span: 4 } } }],
     });
     const node = ast.main[0]!;
-    expect(sectionStyle(resolveProps(node, "mobile")).className).toContain("fq-span-4");
+    expect(sectionStyle(resolveProps(node, "mobile")).className).toContain(
+      "fq-span-4",
+    );
     expect(sectionStyle(resolveProps(node)).className).not.toContain("fq-span");
   });
 });
@@ -88,10 +109,16 @@ describe("Phase 6 — elasticity lint", () => {
   it("blocks publish on a fixed-width prop", () => {
     const base = newSection("banner");
     const ast = parseAst({
-      main: [{ ...base, id: "b1", props: { ...base.props, text: "Buy w-[220px]" } }],
+      main: [
+        { ...base, id: "b1", props: { ...base.props, text: "Buy w-[220px]" } },
+      ],
     });
     const issues = lintTemplate(ast, "index");
-    expect(issues.some((i) => i.level === "error" && /Fixed pixel width/.test(i.message))).toBe(true);
+    expect(
+      issues.some(
+        (i) => i.level === "error" && /Fixed pixel width/.test(i.message),
+      ),
+    ).toBe(true);
   });
 
   it("flags uppercase styling on বাংলা copy", () => {
@@ -99,16 +126,28 @@ describe("Phase 6 — elasticity lint", () => {
     expect(isUppercaseHostile("Offer")).toBe(false);
     const base = newSection("banner");
     const ast = parseAst({
-      main: [{ ...base, id: "b2", props: { ...base.props, text: "Offer uppercase", text_bn: "অফার" } }],
+      main: [
+        {
+          ...base,
+          id: "b2",
+          props: { ...base.props, text: "Offer uppercase", text_bn: "অফার" },
+        },
+      ],
     });
-    expect(lintTemplate(ast, "index").some((i) => /Uppercase styling/.test(i.message))).toBe(true);
+    expect(
+      lintTemplate(ast, "index").some((i) =>
+        /Uppercase styling/.test(i.message),
+      ),
+    ).toBe(true);
   });
 
   it("ships presets free of fixed widths", () => {
     for (const preset of THEME_PRESETS) {
       for (const [template, ast] of Object.entries(preset.templates)) {
         const issues = lintTemplate(ast, template as never).filter(
-          (i) => i.level === "error" && /Fixed pixel width|Uppercase styling/.test(i.message),
+          (i) =>
+            i.level === "error" &&
+            /Fixed pixel width|Uppercase styling/.test(i.message),
         );
         expect(issues, `${preset.key}/${template}`).toEqual([]);
       }

@@ -35,7 +35,7 @@ import {
 import { newSection } from "@/lib/builder-ast";
 
 const STUDIO = readFileSync(
-  join(process.cwd(), "src/routes/_authenticated/admin/builder.tsx"),
+  join(process.cwd(), "src/routes/_authenticated/dashboard/builder.tsx"),
   "utf8",
 );
 
@@ -56,7 +56,9 @@ describe("Phase 1.4 — shortcut registry", () => {
   it("dispatches every advertised shortcut", () => {
     // The overlay renders from SHORTCUTS, so an id with no case in the studio's
     // dispatch table would advertise a key that silently does nothing.
-    const missing = SHORTCUTS.filter((spec) => !STUDIO.includes(`case "${spec.id}"`));
+    const missing = SHORTCUTS.filter(
+      (spec) => !STUDIO.includes(`case "${spec.id}"`),
+    );
     expect(missing.map((spec) => spec.id)).toEqual([]);
   });
 
@@ -75,7 +77,9 @@ describe("Phase 1.4 — shortcut registry", () => {
   });
 
   it("renders platform-correct modifiers", () => {
-    expect(detectPlatform("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")).toBe("mac");
+    expect(
+      detectPlatform("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"),
+    ).toBe("mac");
     expect(detectPlatform("Mozilla/5.0 (Windows NT 10.0)")).toBe("other");
     const copy = SHORTCUTS.find((spec) => spec.id === "copy")!;
     expect(formatShortcut(copy, "mac")).toContain("⌘");
@@ -85,15 +89,28 @@ describe("Phase 1.4 — shortcut registry", () => {
   it("matches the mod key of the host platform only", () => {
     expect(matchShortcut({ key: "z", metaKey: true })).toBe("undo");
     expect(matchShortcut({ key: "z", ctrlKey: true })).toBe("undo");
-    expect(matchShortcut({ key: "z", metaKey: true, shiftKey: true })).toBe("redo");
+    expect(matchShortcut({ key: "z", metaKey: true, shiftKey: true })).toBe(
+      "redo",
+    );
     expect(matchShortcut({ key: "z" })).toBeNull();
   });
 
   it("never hijacks typing", () => {
-    expect(isTypingTarget({ tagName: "INPUT" } as unknown as EventTarget)).toBe(true);
-    expect(isTypingTarget({ tagName: "TEXTAREA" } as unknown as EventTarget)).toBe(true);
-    expect(isTypingTarget({ tagName: "DIV", isContentEditable: true } as unknown as EventTarget)).toBe(true);
-    expect(isTypingTarget({ tagName: "DIV" } as unknown as EventTarget)).toBe(false);
+    expect(isTypingTarget({ tagName: "INPUT" } as unknown as EventTarget)).toBe(
+      true,
+    );
+    expect(
+      isTypingTarget({ tagName: "TEXTAREA" } as unknown as EventTarget),
+    ).toBe(true);
+    expect(
+      isTypingTarget({
+        tagName: "DIV",
+        isContentEditable: true,
+      } as unknown as EventTarget),
+    ).toBe(true);
+    expect(isTypingTarget({ tagName: "DIV" } as unknown as EventTarget)).toBe(
+      false,
+    );
   });
 });
 
@@ -101,14 +118,22 @@ describe("Phase 1.3 — clipboard", () => {
   it("round-trips a copy through storage", () => {
     const store = createClipboardStore({ storage: memoryStorage() });
     const node = newSection("hero");
-    const result = store.write({ kind: "nodes", from: { template: "index", slot: "main" }, nodes: [node] });
+    const result = store.write({
+      kind: "nodes",
+      from: { template: "index", slot: "main" },
+      nodes: [node],
+    });
     expect(result.ok && result.persisted).toBe(true);
     expect(store.read()?.nodes[0]?.type).toBe("hero");
   });
 
   it("stays usable in this tab when storage is blocked", () => {
     const store = createClipboardStore({ storage: memoryStorage(true) });
-    const result = store.write({ kind: "nodes", from: { template: "index", slot: "main" }, nodes: [newSection("hero")] });
+    const result = store.write({
+      kind: "nodes",
+      from: { template: "index", slot: "main" },
+      nodes: [newSection("hero")],
+    });
     expect(result.ok).toBe(true);
     expect(result.ok && result.persisted).toBe(false);
     expect(store.read()?.nodes).toHaveLength(1);
@@ -116,12 +141,26 @@ describe("Phase 1.3 — clipboard", () => {
 
   it("refuses an empty or oversized selection", () => {
     const store = createClipboardStore({ storage: memoryStorage() });
-    expect(store.write({ kind: "nodes", from: { template: "index", slot: "main" }, nodes: [] })).toMatchObject({
+    expect(
+      store.write({
+        kind: "nodes",
+        from: { template: "index", slot: "main" },
+        nodes: [],
+      }),
+    ).toMatchObject({
       ok: false,
       reason: "empty",
     });
-    const many = Array.from({ length: CLIPBOARD_LIMITS.maxNodes + 1 }, () => newSection("hero"));
-    expect(store.write({ kind: "nodes", from: { template: "index", slot: "main" }, nodes: many })).toMatchObject({
+    const many = Array.from({ length: CLIPBOARD_LIMITS.maxNodes + 1 }, () =>
+      newSection("hero"),
+    );
+    expect(
+      store.write({
+        kind: "nodes",
+        from: { template: "index", slot: "main" },
+        nodes: many,
+      }),
+    ).toMatchObject({
       ok: false,
     });
   });
@@ -129,14 +168,22 @@ describe("Phase 1.3 — clipboard", () => {
   it("rejects foreign, malformed and stale payloads", () => {
     expect(parseClipboard(null).ok).toBe(false);
     expect(parseClipboard("not json").ok).toBe(false);
-    expect(parseClipboard(JSON.stringify({ version: 0, nodes: [] })).ok).toBe(false);
+    expect(parseClipboard(JSON.stringify({ version: 0, nodes: [] })).ok).toBe(
+      false,
+    );
   });
 
   it("paste-style moves style keys only, never content", () => {
     const source = newSection("hero");
     const target = newSection("hero");
-    const styled = { ...source, props: { ...source.props, padding: "xl", headline: "SOURCE COPY" } };
-    const patched = applyStylePatch({ ...target, props: { ...target.props, headline: "TARGET COPY" } }, styleSubsetOf(styled));
+    const styled = {
+      ...source,
+      props: { ...source.props, padding: "xl", headline: "SOURCE COPY" },
+    };
+    const patched = applyStylePatch(
+      { ...target, props: { ...target.props, headline: "TARGET COPY" } },
+      styleSubsetOf(styled),
+    );
     expect(patched.props["headline"]).toBe("TARGET COPY");
     expect(patched.id).toBe(target.id);
   });
@@ -169,8 +216,10 @@ describe("Phase 1.5 — global blocks", () => {
 
   it("gives grafted nodes traceable, deterministic ids", () => {
     const placement = asPlacement(newSection("container"), block);
-    const first = resolveGlobalBlocks([placement], [block]).sections[0]!.children![0]!.id;
-    const second = resolveGlobalBlocks([placement], [block]).sections[0]!.children![0]!.id;
+    const first = resolveGlobalBlocks([placement], [block]).sections[0]!
+      .children![0]!.id;
+    const second = resolveGlobalBlocks([placement], [block]).sections[0]!
+      .children![0]!.id;
     expect(first).toBe(second);
     expect(isGraftedId(first)).toBe(true);
     expect(placementOwnerOf(first)).toBe(placement.id);
@@ -185,15 +234,22 @@ describe("Phase 1.5 — global blocks", () => {
   });
 
   it("detach leaves real, independently editable nodes", () => {
-    const detached = detachPlacement(asPlacement(newSection("container"), block), block.nodes);
+    const detached = detachPlacement(
+      asPlacement(newSection("container"), block),
+      block.nodes,
+    );
     expect(linkedBlockId(detached)).toBeNull();
     expect(detached.children ?? []).toHaveLength(2);
-    expect((detached.children ?? []).every((child) => !isGraftedId(child.id))).toBe(true);
+    expect(
+      (detached.children ?? []).every((child) => !isGraftedId(child.id)),
+    ).toBe(true);
   });
 
   it("counts usage across every template and slot", () => {
     const placement = asPlacement(newSection("container"), block);
     const other = asPlacement(newSection("container"), block);
-    expect(placementCounts([[placement], [newSection("hero"), other]])["blk_1"]).toBe(2);
+    expect(
+      placementCounts([[placement], [newSection("hero"), other]])["blk_1"],
+    ).toBe(2);
   });
 });

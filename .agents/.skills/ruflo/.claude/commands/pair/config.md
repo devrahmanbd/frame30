@@ -34,7 +34,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "language": "javascript",
       "timezone": "UTC"
     },
-    
+
     "modes": {
       "driver": {
         "enabled": true,
@@ -56,7 +56,7 @@ Main configuration file: `.claude-flow/pair-config.json`
         "pauseOnIdle": true
       }
     },
-    
+
     "verification": {
       "enabled": true,
       "threshold": 0.95,
@@ -65,7 +65,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "continuousMonitoring": true,
       "blockOnFailure": true
     },
-    
+
     "testing": {
       "enabled": true,
       "autoRun": true,
@@ -80,7 +80,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "watch": true,
       "parallel": true
     },
-    
+
     "review": {
       "enabled": true,
       "continuous": true,
@@ -94,7 +94,7 @@ Main configuration file: `.claude-flow/pair-config.json`
         "maxLines": 100
       }
     },
-    
+
     "git": {
       "enabled": true,
       "autoCommit": false,
@@ -103,7 +103,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "pushOnEnd": false,
       "branchProtection": true
     },
-    
+
     "session": {
       "autoSave": true,
       "saveInterval": "5m",
@@ -114,7 +114,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "recordSession": false,
       "shareByDefault": false
     },
-    
+
     "ai": {
       "model": "advanced",
       "temperature": 0.7,
@@ -124,7 +124,7 @@ Main configuration file: `.claude-flow/pair-config.json`
       "expertise": ["backend", "testing", "security"],
       "learningEnabled": true
     },
-    
+
     "interface": {
       "theme": "dark",
       "fontSize": 14,
@@ -138,7 +138,7 @@ Main configuration file: `.claude-flow/pair-config.json`
         "test": "ctrl+t"
       }
     },
-    
+
     "quality": {
       "linting": {
         "enabled": true,
@@ -156,7 +156,7 @@ Main configuration file: `.claude-flow/pair-config.json`
         "checkCompleteness": true
       }
     },
-    
+
     "advanced": {
       "parallelSessions": false,
       "multiAgent": false,
@@ -226,6 +226,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 ## Mode-Specific Configuration
 
 ### Driver Mode
+
 ```json
 {
   "driver": {
@@ -249,6 +250,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 ```
 
 ### Navigator Mode
+
 ```json
 {
   "navigator": {
@@ -267,6 +269,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 ```
 
 ### Switch Mode
+
 ```json
 {
   "switch": {
@@ -290,7 +293,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 {
   "thresholds": {
     "verification": {
-      "error": 0.90,
+      "error": 0.9,
       "warning": 0.95,
       "success": 0.98
     },
@@ -311,6 +314,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 ## Language-Specific Settings
 
 ### JavaScript/TypeScript
+
 ```json
 {
   "languages": {
@@ -326,6 +330,7 @@ Main configuration file: `.claude-flow/pair-config.json`
 ```
 
 ### Python
+
 ```json
 {
   "languages": {
@@ -354,6 +359,7 @@ export CLAUDE_PAIR_AUTO_TEST=true
 ## CLI Configuration
 
 ### Set Configuration
+
 ```bash
 # Set single value
 claude-flow pair config set defaultMode switch
@@ -366,6 +372,7 @@ claude-flow pair config import config.json
 ```
 
 ### Get Configuration
+
 ```bash
 # Get all configuration
 claude-flow pair config get
@@ -378,6 +385,7 @@ claude-flow pair config export > config.json
 ```
 
 ### Reset Configuration
+
 ```bash
 # Reset to defaults
 claude-flow pair config reset
@@ -389,6 +397,7 @@ claude-flow pair config reset verification
 ## Profile Management
 
 ### Create Profile
+
 ```bash
 claude-flow pair profile create refactoring \
   --mode driver \
@@ -398,16 +407,19 @@ claude-flow pair profile create refactoring \
 ```
 
 ### Use Profile
+
 ```bash
 claude-flow pair --start --profile refactoring
 ```
 
 ### List Profiles
+
 ```bash
 claude-flow pair profile list
 ```
 
 ### Profiles Configuration
+
 ```json
 {
   "profiles": {
@@ -438,15 +450,19 @@ claude-flow pair profile list
 ## Workspace Configuration
 
 ### Project-Specific
+
 `.claude-flow/pair-config.json` in project root
 
 ### User-Specific
+
 `~/.claude-flow/pair-config.json`
 
 ### Global
+
 `/etc/claude-flow/pair-config.json`
 
 ### Priority Order
+
 1. Command-line arguments
 2. Environment variables
 3. Project configuration
@@ -467,11 +483,13 @@ claude-flow pair config test
 ## Migration
 
 ### From Version 1.x
+
 ```bash
 claude-flow pair config migrate --from 1.x
 ```
 
 ### Export/Import
+
 ```bash
 # Export current config
 claude-flow pair config export > my-config.json
@@ -491,12 +509,14 @@ claude-flow pair config import my-config.json
 ## Troubleshooting
 
 ### Configuration Not Loading
+
 - Check file syntax (JSON)
 - Verify file permissions
 - Check priority order
 - Validate configuration
 
 ### Settings Not Applied
+
 - Restart session
 - Clear cache
 - Check overrides

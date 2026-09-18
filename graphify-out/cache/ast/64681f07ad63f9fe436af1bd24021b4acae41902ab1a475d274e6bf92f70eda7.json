@@ -1,1 +1,980 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "label": "catalog.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L1"}, {"id": "admin_catalog_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L32"}, {"id": "admin_catalog_catalogdeskpage", "label": "CatalogDeskPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L57"}, {"id": "admin_catalog_gap", "label": "Gap()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L394"}, {"id": "admin_catalog_badge", "label": "Badge()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L411"}, {"id": "admin_catalog_definitionrow", "label": "DefinitionRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L424"}, {"id": "admin_catalog_metafielddefinitions", "label": "MetafieldDefinitions()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L434"}, {"id": "admin_catalog_friendly", "label": "friendly()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L607"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "hooks_use_merchant_usemerchant", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "users_rahman_documents_frame30_src_lib_catalog_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_import_max_rows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_import_template", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_kind_meta", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_metafield_owner_types", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_metafield_value_types", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_product_kinds", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_hashrows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_parsecsv", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_importjob", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_importrow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_productkind", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "users_rahman_documents_frame30_src_lib_catalog_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogapplyimportfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogdeletedefinitionfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogdeskfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogdiscardimportfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogdryrunfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogexportcsvfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "lib_catalog_functions_catalogsavedefinitionfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_catalogdeskpage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_gap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L394", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_badge", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L411", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_definitionrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L424", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_metafielddefinitions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L434", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx", "target": "admin_catalog_friendly", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L607", "weight": 1.0}], "raw_calls": [{"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L58"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMerchant", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L59"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L61"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L63"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L64"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L65"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L66"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L67"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L68"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L69"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useRef", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L71"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L72"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L73"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L74"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L76"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L82"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L96"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L115"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L129"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L159"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L170"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L173"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L182"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L185"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L201"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L205"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L209"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L218"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "encodeURIComponent", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L221"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L225"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L235"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L236"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L245"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L260"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L261"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L265"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L273"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L274"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L275"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L277"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L283"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L284"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L285"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L286"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L293"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L297"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L298"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L299"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L300"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L304"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L304"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L327"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L342"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L343"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L350"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L359"}, {"caller_nid": "admin_catalog_catalogdeskpage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L362"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L453"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L454"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L463"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L491"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L494"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L502"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L508"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L516"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L525"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L535"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L544"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L550"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L565"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L572"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L579"}, {"caller_nid": "admin_catalog_metafielddefinitions", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L600"}, {"caller_nid": "admin_catalog_friendly", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L608"}, {"caller_nid": "admin_catalog_friendly", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L609"}, {"caller_nid": "admin_catalog_friendly", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L610"}, {"caller_nid": "admin_catalog_friendly", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L611"}, {"caller_nid": "admin_catalog_friendly", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L612"}, {"caller_nid": "admin_catalog_friendly", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx", "source_location": "L612"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "label": "catalog.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "admin_catalog_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L32"
+    },
+    {
+      "id": "admin_catalog_catalogdeskpage",
+      "label": "CatalogDeskPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L57"
+    },
+    {
+      "id": "admin_catalog_gap",
+      "label": "Gap()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L394"
+    },
+    {
+      "id": "admin_catalog_badge",
+      "label": "Badge()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L411"
+    },
+    {
+      "id": "admin_catalog_definitionrow",
+      "label": "DefinitionRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L424"
+    },
+    {
+      "id": "admin_catalog_metafielddefinitions",
+      "label": "MetafieldDefinitions()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L434"
+    },
+    {
+      "id": "admin_catalog_friendly",
+      "label": "friendly()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L607"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "users_rahman_documents_frame30_src_hooks_use_merchant_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "hooks_use_merchant_usemerchant",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_catalog_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_import_max_rows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_import_template",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_kind_meta",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_metafield_owner_types",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_metafield_value_types",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_product_kinds",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_hashrows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_parsecsv",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_importjob",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_importrow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_productkind",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_catalog_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogapplyimportfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogdeletedefinitionfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogdeskfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogdiscardimportfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogdryrunfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogexportcsvfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "lib_catalog_functions_catalogsavedefinitionfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_catalogdeskpage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_gap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L394",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_badge",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L411",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_definitionrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L424",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_metafielddefinitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L434",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_authenticated_admin_catalog_tsx",
+      "target": "admin_catalog_friendly",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L607",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMerchant",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L67"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useRef",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L129"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L159"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L173"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L185"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L201"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L205"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "encodeURIComponent",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L225"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L235"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L236"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L245"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L273"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L274"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L275"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L277"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L283"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L284"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L286"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L293"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L300"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L304"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L327"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L342"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L343"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L350"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L359"
+    },
+    {
+      "caller_nid": "admin_catalog_catalogdeskpage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L362"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L453"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L454"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L491"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L494"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L502"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L516"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L525"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L535"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L544"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L550"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L565"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L572"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L579"
+    },
+    {
+      "caller_nid": "admin_catalog_metafielddefinitions",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L600"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L608"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L609"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L610"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L611"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L612"
+    },
+    {
+      "caller_nid": "admin_catalog_friendly",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/_authenticated/admin/catalog.tsx",
+      "source_location": "L612"
+    }
+  ]
+}

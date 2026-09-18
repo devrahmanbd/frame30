@@ -7,14 +7,20 @@ type Client = SupabaseClient<Database>;
 export async function listConversations(db: Client, merchantId: string) {
   const { data } = await db
     .from("ai_conversations")
-    .select("id, status, rating, phone_hash, order_number, first_message_at, last_message_at")
+    .select(
+      "id, status, rating, phone_hash, order_number, first_message_at, last_message_at",
+    )
     .eq("merchant_id", merchantId)
     .order("last_message_at", { ascending: false })
     .limit(100);
   return data ?? [];
 }
 
-export async function listMessages(db: Client, merchantId: string, conversationId: string) {
+export async function listMessages(
+  db: Client,
+  merchantId: string,
+  conversationId: string,
+) {
   const { data } = await db
     .from("ai_messages")
     .select("id, role, body, flagged, created_at")
@@ -34,16 +40,28 @@ export type SupportStats = {
 };
 
 export function computeStats(
-  rows: Array<{ status: string; rating: number | null; last_message_at: string }>,
+  rows: Array<{
+    status: string;
+    rating: number | null;
+    last_message_at: string;
+  }>,
 ): SupportStats {
   const hourAgo = Date.now() - 3_600_000;
-  const rated = rows.filter((r) => r.rating != null).map((r) => r.rating as number);
+  const rated = rows
+    .filter((r) => r.rating != null)
+    .map((r) => r.rating as number);
   return {
     total: rows.length,
-    lastHour: rows.filter((r) => new Date(r.last_message_at).getTime() >= hourAgo).length,
+    lastHour: rows.filter(
+      (r) => new Date(r.last_message_at).getTime() >= hourAgo,
+    ).length,
     needsAgent: rows.filter((r) => r.status === "needs_agent").length,
-    resolved: rows.filter((r) => r.status === "resolved" || r.status === "closed").length,
-    ratingAvg: rated.length ? rated.reduce((a, b) => a + b, 0) / rated.length : null,
+    resolved: rows.filter(
+      (r) => r.status === "resolved" || r.status === "closed",
+    ).length,
+    ratingAvg: rated.length
+      ? rated.reduce((a, b) => a + b, 0) / rated.length
+      : null,
     ratingCount: rated.length,
   };
 }
@@ -56,7 +74,12 @@ export async function agentReply(
 ) {
   const { error } = await db
     .from("ai_messages")
-    .insert({ merchant_id: merchantId, conversation_id: conversationId, role: "agent", body });
+    .insert({
+      merchant_id: merchantId,
+      conversation_id: conversationId,
+      role: "agent",
+      body,
+    });
   if (error) throw new Error("reply_failed");
   await db
     .from("ai_conversations")
@@ -81,7 +104,11 @@ export async function setConversationStatus(
   return { ok: true, status } as const;
 }
 
-export const SUGGESTIONS: Array<{ intent: string; label: string; body: string }> = [
+export const SUGGESTIONS: Array<{
+  intent: string;
+  label: string;
+  body: string;
+}> = [
   {
     intent: "order_status",
     label: en("support.suggestion.order_status.label"),

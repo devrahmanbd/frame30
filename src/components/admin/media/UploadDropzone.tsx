@@ -34,11 +34,16 @@ function readAsBase64(file: File): Promise<string> {
   });
 }
 
-function measure(dataUrl: string, contentType: string): Promise<{ width: number; height: number } | null> {
-  if (!contentType.startsWith("image/") || typeof Image === "undefined") return Promise.resolve(null);
+function measure(
+  dataUrl: string,
+  contentType: string,
+): Promise<{ width: number; height: number } | null> {
+  if (!contentType.startsWith("image/") || typeof Image === "undefined")
+    return Promise.resolve(null);
   return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+    img.onload = () =>
+      resolve({ width: img.naturalWidth, height: img.naturalHeight });
     img.onerror = () => resolve(null);
     img.src = dataUrl;
   });
@@ -135,7 +140,8 @@ export function UploadDropzone({
           Select files
         </button>
         <p className="text-xs text-muted-foreground">
-          Maximum file size {formatBytes(MEDIA_UPLOAD_MAX_BYTES)}. Images, SVG, video, audio and documents.
+          Maximum file size {formatBytes(MEDIA_UPLOAD_MAX_BYTES)}. Images, SVG,
+          video, audio and documents.
         </p>
         {progress && progress.total > 0 && (
           <p aria-live="polite" className="text-xs font-medium text-primary">
@@ -143,7 +149,10 @@ export function UploadDropzone({
           </p>
         )}
         {errors.length > 0 && (
-          <ul className="w-full max-w-md space-y-1 text-left text-xs text-destructive" role="alert">
+          <ul
+            className="w-full max-w-md space-y-1 text-left text-xs text-destructive"
+            role="alert"
+          >
             {errors.map((message) => (
               <li key={message}>{message}</li>
             ))}

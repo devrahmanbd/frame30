@@ -2,7 +2,7 @@
 
 > **Target Query:** `d2c ecommerce fee savings`, `shopify fee case study`, `zero fee ecommerce platform`  
 > **Reading Time:** 7 minutes  
-> **Published:** October 2026  
+> **Published:** October 2026
 
 ---
 
@@ -45,6 +45,7 @@ In addition to direct software costs, Nocturne lost an estimated **$8,000+ per y
 ## 3. The Migration to FRAMIQUE
 
 In September 2026, the brand migrated their 240-SKU catalog from Shopify to **FRAMIQUE** in an evening:
+
 1. Catalog CSV imported in 4 minutes.
 2. Direct bKash and Nagad merchant credentials connected without intermediary plugins.
 3. Steadfast Courier API keys connected to automate shipping label printing.
@@ -70,7 +71,8 @@ In September 2026, the brand migrated their 240-SKU catalog from Shopify to **FR
 ```
 
 ### Direct Founder Quote:
-> *"Switching to Framique felt like taking off a 20-pound backpack. We aren't checking app invoices every month, our checkout loads instantly on mobile, and the money clears straight to our business account. That $14k savings paid for our entire winter fabric order."*
+
+> _"Switching to Framique felt like taking off a 20-pound backpack. We aren't checking app invoices every month, our checkout loads instantly on mobile, and the money clears straight to our business account. That $14k savings paid for our entire winter fabric order."_
 
 ---
 

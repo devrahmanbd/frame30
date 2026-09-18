@@ -13,10 +13,19 @@ export type BundleItemInput = { variantId: string; quantity: number };
 export type BundleQuote = {
   currency: string;
   totalMinor: number;
-  lines: { variantId: string; title: string; quantity: number; unitPriceMinor: number; lineTotalMinor: number }[];
+  lines: {
+    variantId: string;
+    title: string;
+    quantity: number;
+    unitPriceMinor: number;
+    lineTotalMinor: number;
+  }[];
 };
 
-export async function quoteBundleTotal(slug: string, items: BundleItemInput[]): Promise<BundleQuote> {
+export async function quoteBundleTotal(
+  slug: string,
+  items: BundleItemInput[],
+): Promise<BundleQuote> {
   const db = publicClient();
   const { data: merchant } = await db
     .from("merchants")
@@ -32,7 +41,9 @@ export async function quoteBundleTotal(slug: string, items: BundleItemInput[]): 
 
   const { data: variants, error } = await db
     .from("product_variants")
-    .select("id, name, price_amount_minor_int, products(title, status, merchant_id)")
+    .select(
+      "id, name, price_amount_minor_int, products(title, status, merchant_id)",
+    )
     .in(
       "id",
       wanted.map((i) => i.variantId),
@@ -42,10 +53,17 @@ export async function quoteBundleTotal(slug: string, items: BundleItemInput[]): 
   const lines: BundleQuote["lines"] = [];
   for (const item of wanted) {
     const variant = variants?.find((v) => v.id === item.variantId);
-    const product = one<{ title: string; status: string; merchant_id: string }>(variant?.products);
+    const product = one<{ title: string; status: string; merchant_id: string }>(
+      variant?.products,
+    );
     // Silently skipping an unavailable item would quote a price the shopper
     // cannot buy, so the whole quote fails instead.
-    if (!variant || !product || product.merchant_id !== merchant.id || product.status !== "active") {
+    if (
+      !variant ||
+      !product ||
+      product.merchant_id !== merchant.id ||
+      product.status !== "active"
+    ) {
       throw new Error("An item in this bundle is no longer available");
     }
     const quantity = Math.max(1, Math.floor(item.quantity));
@@ -59,5 +77,9 @@ export async function quoteBundleTotal(slug: string, items: BundleItemInput[]): 
     });
   }
 
-  return { currency, totalMinor: lines.reduce((sum, l) => sum + l.lineTotalMinor, 0), lines };
+  return {
+    currency,
+    totalMinor: lines.reduce((sum, l) => sum + l.lineTotalMinor, 0),
+    lines,
+  };
 }

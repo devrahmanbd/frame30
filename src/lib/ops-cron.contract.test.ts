@@ -75,9 +75,13 @@ describe("cron registry integrity", () => {
   });
 
   it("staggers schedules so the fleet does not stampede one minute", () => {
-    const perMinute = CRON_JOBS.filter((j) => j.schedule.startsWith("* ")).length;
+    const perMinute = CRON_JOBS.filter((j) =>
+      j.schedule.startsWith("* "),
+    ).length;
     expect(perMinute).toBeLessThanOrEqual(2);
-    const zeroMinute = CRON_JOBS.filter((j) => j.schedule.startsWith("0 ")).length;
+    const zeroMinute = CRON_JOBS.filter((j) =>
+      j.schedule.startsWith("0 "),
+    ).length;
     expect(zeroMinute).toBeLessThanOrEqual(3);
   });
 
@@ -92,7 +96,10 @@ describe("cron registry integrity", () => {
 
   it("routes every job through the shared wrapper, never a bare handler", () => {
     for (const job of CRON_JOBS) {
-      const src = readFileSync(`src/routes/api/public/cron/${job.key}.ts`, "utf8");
+      const src = readFileSync(
+        `src/routes/api/public/cron/${job.key}.ts`,
+        "utf8",
+      );
       expect(src, job.key).toContain("cronPost");
       expect(src, job.key).toContain("cronGet");
       // The wrapper owns auth; a hand-rolled gate would drift from it.
@@ -103,15 +110,24 @@ describe("cron registry integrity", () => {
 
 describe("cron expression evaluation", () => {
   it("computes the next and previous fire time for stepped and fixed fields", () => {
-    expect(nextRunAfter("*/15 * * * *", new Date("2026-03-10T12:04:00Z"))?.toISOString()).toBe(
-      "2026-03-10T12:15:00.000Z",
-    );
-    expect(previousRunBefore("*/15 * * * *", new Date("2026-03-10T12:04:00Z"))?.toISOString()).toBe(
-      "2026-03-10T12:00:00.000Z",
-    );
-    expect(nextRunAfter("30 3 * * *", new Date("2026-03-10T12:00:00Z"))?.toISOString()).toBe(
-      "2026-03-11T03:30:00.000Z",
-    );
+    expect(
+      nextRunAfter(
+        "*/15 * * * *",
+        new Date("2026-03-10T12:04:00Z"),
+      )?.toISOString(),
+    ).toBe("2026-03-10T12:15:00.000Z");
+    expect(
+      previousRunBefore(
+        "*/15 * * * *",
+        new Date("2026-03-10T12:04:00Z"),
+      )?.toISOString(),
+    ).toBe("2026-03-10T12:00:00.000Z");
+    expect(
+      nextRunAfter(
+        "30 3 * * *",
+        new Date("2026-03-10T12:00:00Z"),
+      )?.toISOString(),
+    ).toBe("2026-03-11T03:30:00.000Z");
   });
 
   it("derives cadence from real fire times, not from the expression text", () => {
@@ -134,7 +150,11 @@ describe("health classification", () => {
   });
 
   it("never reports a paused job as failing", () => {
-    const v = classifyJob(job, state({ enabled: false, consecutiveFailures: 9 }), NOW);
+    const v = classifyJob(
+      job,
+      state({ enabled: false, consecutiveFailures: 9 }),
+      NOW,
+    );
     expect(v.health).toBe("paused");
   });
 
@@ -173,7 +193,11 @@ describe("health classification", () => {
   });
 
   it("flags a slow-but-successful run without calling it a failure", () => {
-    const v = classifyJob(job, state({ lastDurationMs: job.slaMaxDurationMs + 1 }), NOW);
+    const v = classifyJob(
+      job,
+      state({ lastDurationMs: job.slaMaxDurationMs + 1 }),
+      NOW,
+    );
     expect(v.health).toBe("slow");
     expect(isUnhealthy(v.health)).toBe(false);
     expect(v.reasons.join(" ")).toMatch(/slow|duration|sla|budget/i);
@@ -205,12 +229,21 @@ describe("alert policy", () => {
 
   it("stays quiet for healthy, slow and paused jobs", () => {
     expect(alertForJob(classifyJob(job, state(), NOW))).toBeNull();
-    expect(alertForJob(classifyJob(job, state({ enabled: false }), NOW))).toBeNull();
+    expect(
+      alertForJob(classifyJob(job, state({ enabled: false }), NOW)),
+    ).toBeNull();
   });
 
   it("pages once a job crosses its own failure threshold", () => {
     const intent = alertForJob(
-      classifyJob(job, state({ consecutiveFailures: job.alertAfterFailures, lastStatus: "failed" }), NOW),
+      classifyJob(
+        job,
+        state({
+          consecutiveFailures: job.alertAfterFailures,
+          lastStatus: "failed",
+        }),
+        NOW,
+      ),
     );
     expect(intent).not.toBeNull();
     expect(intent!.severity).toBe("critical");
@@ -218,10 +251,18 @@ describe("alert policy", () => {
 
   it("uses a stable dedupe key so one broken job is not a pager storm", () => {
     const a = alertForJob(
-      classifyJob(job, state({ consecutiveFailures: 3, lastStatus: "failed" }), NOW),
+      classifyJob(
+        job,
+        state({ consecutiveFailures: 3, lastStatus: "failed" }),
+        NOW,
+      ),
     );
     const b = alertForJob(
-      classifyJob(job, state({ consecutiveFailures: 4, lastStatus: "failed" }), NOW),
+      classifyJob(
+        job,
+        state({ consecutiveFailures: 4, lastStatus: "failed" }),
+        NOW,
+      ),
     );
     expect(a!.dedupeKey).toBe(b!.dedupeKey);
   });
@@ -231,7 +272,11 @@ describe("fleet summary", () => {
   it("counts verdicts and surfaces the worst severity in play", () => {
     const views = [
       classifyJob(cronJob("jobs")!, state(), NOW),
-      classifyJob(cronJob("billing")!, state({ consecutiveFailures: 5, lastStatus: "failed" }), NOW),
+      classifyJob(
+        cronJob("billing")!,
+        state({ consecutiveFailures: 5, lastStatus: "failed" }),
+        NOW,
+      ),
       classifyJob(cronJob("themes")!, state({ enabled: false }), NOW),
     ];
     const s = summarizeFleet(views);
@@ -243,7 +288,10 @@ describe("fleet summary", () => {
 });
 
 describe("generated schedules", () => {
-  const target = { baseUrl: "https://example.test", secretRef: "FRAMIQUE_CRON_SECRET" };
+  const target = {
+    baseUrl: "https://example.test",
+    secretRef: "FRAMIQUE_CRON_SECRET",
+  };
 
   it("references the secret by name in the env-based formats", () => {
     expect(renderCrontab(target)).toContain(target.secretRef);

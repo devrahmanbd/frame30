@@ -75,7 +75,9 @@ export function ThemeDetailsModal({
           />
           <div className="min-w-0 space-y-4">
             <div>
-              <h2 className="text-xl font-semibold text-foreground">{theme.name}</h2>
+              <h2 className="text-xl font-semibold text-foreground">
+                {theme.name}
+              </h2>
               <p className="mt-1 text-sm fq-sub">
                 Version {theme.version} · By {theme.author}
               </p>
@@ -87,7 +89,8 @@ export function ThemeDetailsModal({
             </div>
 
             <p className="text-sm text-foreground/90">
-              {theme.description || "No description was supplied with this theme."}
+              {theme.description ||
+                "No description was supplied with this theme."}
             </p>
 
             {theme.updateAvailable ? (
@@ -100,11 +103,15 @@ export function ThemeDetailsModal({
               <input
                 type="checkbox"
                 checked={theme.autoUpdate}
-                onChange={(event) => onToggleAutoUpdate(event.currentTarget.checked)}
+                onChange={(event) =>
+                  onToggleAutoUpdate(event.currentTarget.checked)
+                }
                 className="mt-0.5 size-5 accent-[var(--fq-signal)]"
               />
               <span className="text-sm">
-                <span className="font-medium text-foreground">Automatic updates</span>
+                <span className="font-medium text-foreground">
+                  Automatic updates
+                </span>
                 <span className="mt-0.5 block text-xs fq-sub">
                   Install catalogue updates for this theme as soon as they ship.
                 </span>
@@ -113,7 +120,9 @@ export function ThemeDetailsModal({
 
             {theme.tags.length ? (
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide fq-sub">Tags</p>
+                <p className="text-xs font-medium uppercase tracking-wide fq-sub">
+                  Tags
+                </p>
                 <ul className="mt-2 flex flex-wrap gap-1.5">
                   {theme.tags.map((tag) => (
                     <li
@@ -136,7 +145,12 @@ export function ThemeDetailsModal({
             </button>
           ) : (
             <>
-              <button type="button" className={btnPrimary} onClick={onActivate} disabled={busy}>
+              <button
+                type="button"
+                className={btnPrimary}
+                onClick={onActivate}
+                disabled={busy}
+              >
                 Activate
               </button>
               <button type="button" className={btnGhost} onClick={onPreview}>

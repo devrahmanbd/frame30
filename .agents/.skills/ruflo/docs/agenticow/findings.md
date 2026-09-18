@@ -12,20 +12,20 @@
 
 ## Measured
 
-| N      | Branch ms | Branch bytes | Query ms (top-10) | Full-copy ms | Speedup vs copy | Size reduction |
-|--------|-----------|--------------|-------------------|--------------|-----------------|----------------|
+| N      | Branch ms | Branch bytes | Query ms (top-10) | Full-copy ms | Speedup vs copy    | Size reduction |
+| ------ | --------- | ------------ | ----------------- | ------------ | ------------------ | -------------- |
 | 1,000  | 9.6       | 162          | 0.09              | 0.37         | 0.04× **(slower)** | 3,214×         |
 | 10,000 | 9.07      | 162          | 0.45              | 3.01         | 0.33× **(slower)** | 35,761×        |
-| 50,000 | 9.73      | 162          | 0.74              | 16.40        | **1.69×**       | 181,930×       |
+| 50,000 | 9.73      | 162          | 0.74              | 16.40        | **1.69×**          | 181,930×       |
 
 ## Verdict per claim
 
-| Claim                              | Result | Notes |
-|------------------------------------|--------|-------|
-| 162 bytes per branch               | ✅ **Confirmed** | Constant at exactly 162 bytes across all N. |
-| Size reduction vs full-copy        | ✅ **Confirmed and exceeded** | 3,214× at N=1k grows unboundedly because copy scales linearly with N. At N=50k it's already 181k× ahead. |
-| 0.5ms branch latency               | ❌ **Not reproduced** | Measured ~9-10ms regardless of N. Looks like a fixed setup cost (file create + COW init), not the 0.5ms target. |
-| 83× faster than full-copy          | ❌ **Not reproduced at observed N** | At small N full-copy is *faster* because it scales with the file size; agenticow's fixed ~10ms only beats full-copy once full-copy exceeds 10ms. **Crossover ≈ N=30k at dim=128.** |
+| Claim                       | Result                              | Notes                                                                                                                                                                              |
+| --------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 162 bytes per branch        | ✅ **Confirmed**                    | Constant at exactly 162 bytes across all N.                                                                                                                                        |
+| Size reduction vs full-copy | ✅ **Confirmed and exceeded**       | 3,214× at N=1k grows unboundedly because copy scales linearly with N. At N=50k it's already 181k× ahead.                                                                           |
+| 0.5ms branch latency        | ❌ **Not reproduced**               | Measured ~9-10ms regardless of N. Looks like a fixed setup cost (file create + COW init), not the 0.5ms target.                                                                    |
+| 83× faster than full-copy   | ❌ **Not reproduced at observed N** | At small N full-copy is _faster_ because it scales with the file size; agenticow's fixed ~10ms only beats full-copy once full-copy exceeds 10ms. **Crossover ≈ N=30k at dim=128.** |
 
 ## First-query warmup
 

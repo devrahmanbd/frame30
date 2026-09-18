@@ -37,7 +37,9 @@ describe("provider sign-off gate", () => {
 
   it("blocks live submission until every piece of evidence and secret exists", () => {
     const spec = PROVIDER_CATALOG.bkash;
-    const partial = Object.fromEntries(spec.requires.slice(0, 2).map((k) => [k, true]));
+    const partial = Object.fromEntries(
+      spec.requires.slice(0, 2).map((k) => [k, true]),
+    );
     const bad = evaluateSubmission("bkash", "live", partial, ["app_key"]);
     expect(bad.ok).toBe(false);
     expect(bad.missingEvidence.length).toBeGreaterThan(0);
@@ -63,7 +65,8 @@ describe("provider sign-off gate", () => {
     const offers = emiOffers("bank_emi", 3_000_000);
     expect(offers.length).toBeGreaterThan(0);
     for (const o of offers) {
-      const first = (o as unknown as { firstInstalmentMinor: number }).firstInstalmentMinor;
+      const first = (o as unknown as { firstInstalmentMinor: number })
+        .firstInstalmentMinor;
       expect(first + o.perInstalmentMinor * (o.months - 1)).toBe(o.totalMinor);
       expect(Number.isInteger(o.perInstalmentMinor)).toBe(true);
     }
@@ -92,13 +95,20 @@ describe("payout rules", () => {
   });
 
   it("never reports a negative available balance", () => {
-    expect(computeBalance({ entries: [], reservedMinor: 1000, holdMinor: 0 }).availableMinor).toBe(0);
+    expect(
+      computeBalance({ entries: [], reservedMinor: 1000, holdMinor: 0 })
+        .availableMinor,
+    ).toBe(0);
   });
 
   it("enforces the amount envelope", () => {
     expect(validateAmount(10_00, 1_000_00).code).toBe("payout.below_minimum");
-    expect(validateAmount(600_00, 100_00).code).toBe("payout.insufficient_balance");
-    expect(validateAmount(6_000_000_00, 100_000_000_00).code).toBe("payout.above_maximum");
+    expect(validateAmount(600_00, 100_00).code).toBe(
+      "payout.insufficient_balance",
+    );
+    expect(validateAmount(6_000_000_00, 100_000_000_00).code).toBe(
+      "payout.above_maximum",
+    );
     expect(validateAmount(600_00, 1_000_00).ok).toBe(true);
     expect(validateAmount(1.5, 1_000_00).code).toBe("payout.not_integer");
   });
@@ -111,7 +121,11 @@ describe("payout rules", () => {
   });
 
   it("requires four eyes above the threshold and refuses self approval", () => {
-    const small = evaluateApprovals({ amountMinor: 1_000_00, requesterId: "a", approvals: [{ actorId: "b", decision: "approve", at: "t" }] });
+    const small = evaluateApprovals({
+      amountMinor: 1_000_00,
+      requesterId: "a",
+      approvals: [{ actorId: "b", decision: "approve", at: "t" }],
+    });
     expect(small.required).toBe(1);
     expect(small.satisfied).toBe(true);
 
@@ -161,15 +175,39 @@ describe("payout rules", () => {
 
   it("validates destinations per rail and masks them", () => {
     expect(normalizeMsisdn("+8801712345678")).toBe("01712345678");
-    expect(validateAccount({ method: "mfs", holderName: "Rahim Uddin", msisdn: "8801712345678" }).ok).toBe(true);
-    expect(validateAccount({ method: "mfs", holderName: "Rahim Uddin", msisdn: "0121234" }).code).toBe("payout.bad_msisdn");
     expect(
-      validateAccount({ method: "bank", holderName: "Rahim Uddin", bankName: "BRAC Bank", accountNumber: "1234567890" }).ok,
+      validateAccount({
+        method: "mfs",
+        holderName: "Rahim Uddin",
+        msisdn: "8801712345678",
+      }).ok,
     ).toBe(true);
     expect(
-      validateAccount({ method: "bank", holderName: "R", bankName: "BRAC Bank", accountNumber: "1234567890" }).code,
+      validateAccount({
+        method: "mfs",
+        holderName: "Rahim Uddin",
+        msisdn: "0121234",
+      }).code,
+    ).toBe("payout.bad_msisdn");
+    expect(
+      validateAccount({
+        method: "bank",
+        holderName: "Rahim Uddin",
+        bankName: "BRAC Bank",
+        accountNumber: "1234567890",
+      }).ok,
+    ).toBe(true);
+    expect(
+      validateAccount({
+        method: "bank",
+        holderName: "R",
+        bankName: "BRAC Bank",
+        accountNumber: "1234567890",
+      }).code,
     ).toBe("payout.bad_holder");
-    expect(maskDestination({ method: "mfs", msisdn: "01712345678" })).toBe("••••5678");
+    expect(maskDestination({ method: "mfs", msisdn: "01712345678" })).toBe(
+      "••••5678",
+    );
   });
 
   it("backs off exponentially but caps at six hours", () => {
@@ -196,29 +234,56 @@ describe("USD pilot gate", () => {
   });
 
   it("fails closed on a stale FX feed and names the check", () => {
-    const v = evaluateCurrencyGate({ ...passing, fxSnapshotAt: "2026-08-01T00:00:00Z" });
+    const v = evaluateCurrencyGate({
+      ...passing,
+      fxSnapshotAt: "2026-08-01T00:00:00Z",
+    });
     expect(v.allowed).toBe(false);
     expect(v.deniedFor).toContain("fx_feed");
   });
 
   it("denies a starter plan, a missing entitlement and suspended KYC", () => {
-    expect(evaluateCurrencyGate({ ...passing, planTier: "growth" }).deniedFor).toContain("plan_tier");
-    expect(evaluateCurrencyGate({ ...passing, entitled: false }).deniedFor).toContain("entitlement");
-    expect(evaluateCurrencyGate({ ...passing, kycState: "suspended" }).deniedFor).toContain("kyc_standing");
-    expect(evaluateCurrencyGate({ ...passing, consentAt: null }).deniedFor).toContain("owner_consent");
+    expect(
+      evaluateCurrencyGate({ ...passing, planTier: "growth" }).deniedFor,
+    ).toContain("plan_tier");
+    expect(
+      evaluateCurrencyGate({ ...passing, entitled: false }).deniedFor,
+    ).toContain("entitlement");
+    expect(
+      evaluateCurrencyGate({ ...passing, kycState: "suspended" }).deniedFor,
+    ).toContain("kyc_standing");
+    expect(
+      evaluateCurrencyGate({ ...passing, consentAt: null }).deniedFor,
+    ).toContain("owner_consent");
   });
 
   it("always allows rollback to BDT but never a silent jump into USD", () => {
     expect(currencyModeCanTransition("usd_enabled", "bdt_locked")).toBe(true);
     expect(currencyModeCanTransition("bdt_locked", "usd_enabled")).toBe(false);
-    expect(currencyModeCanTransition("pilot_assessing", "usd_enabled")).toBe(true);
+    expect(currencyModeCanTransition("pilot_assessing", "usd_enabled")).toBe(
+      true,
+    );
   });
 
   it("flags suspicious FX drift", () => {
     expect(driftBps(100_000, 101_000)).toBe(100);
     const audited = auditSnapshots([
-      { snapshotId: "1", base: "USD", quote: "BDT", ratePpm: 120_000_000, source: "feed", effectiveAt: "2026-08-01T00:00:00Z" },
-      { snapshotId: "2", base: "USD", quote: "BDT", ratePpm: 132_000_000, source: "feed", effectiveAt: "2026-08-02T00:00:00Z" },
+      {
+        snapshotId: "1",
+        base: "USD",
+        quote: "BDT",
+        ratePpm: 120_000_000,
+        source: "feed",
+        effectiveAt: "2026-08-01T00:00:00Z",
+      },
+      {
+        snapshotId: "2",
+        base: "USD",
+        quote: "BDT",
+        ratePpm: 132_000_000,
+        source: "feed",
+        effectiveAt: "2026-08-02T00:00:00Z",
+      },
     ]);
     expect(audited[1]?.suspicious).toBe(true);
     expect(audited[0]?.driftBps).toBe(0);

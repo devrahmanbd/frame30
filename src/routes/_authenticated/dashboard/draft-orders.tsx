@@ -22,7 +22,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/draft-orders")({
           "Build an order for a customer, send it as a secure invoice link, and convert it into a real order once accepted.",
       },
       { property: "og:title", content: "Draft orders and invoice links" },
-      { property: "og:description", content: "Quote, share and convert orders without a checkout." },
+      {
+        property: "og:description",
+        content: "Quote, share and convert orders without a checkout.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -70,13 +73,20 @@ function DraftOrdersPage() {
   const act = useServerFn(draftOrderActionFn);
   const [form, setForm] = useState({ ...EMPTY });
 
-  const drafts = useQuery({ queryKey: ["draft-orders"], queryFn: () => load() });
-  const invalidate = () => void qc.invalidateQueries({ queryKey: ["draft-orders"] });
+  const drafts = useQuery({
+    queryKey: ["draft-orders"],
+    queryFn: () => load(),
+  });
+  const invalidate = () =>
+    void qc.invalidateQueries({ queryKey: ["draft-orders"] });
 
   const totals = useMemo(
     () =>
       draftTotals(
-        form.items.map((i) => ({ quantity: i.quantity, unitPriceMinor: i.unitPriceMinorInt })),
+        form.items.map((i) => ({
+          quantity: i.quantity,
+          unitPriceMinor: i.unitPriceMinorInt,
+        })),
         {
           discountMinor: form.discountMinorInt,
           shippingMinor: form.shippingMinorInt,
@@ -110,16 +120,23 @@ function DraftOrdersPage() {
   });
 
   const runAction = useMutation({
-    mutationFn: (vars: { id: string; action: "send" | "convert" | "cancel" }) => act({ data: vars }),
+    mutationFn: (vars: { id: string; action: "send" | "convert" | "cancel" }) =>
+      act({ data: vars }),
     onSuccess: (res) => {
       invalidate();
       const outcome = (res as { outcome?: string }).outcome;
-      if (outcome === "already_converted") toast.info("That draft was already converted");
-      else if ((res as { action?: string }).action === "send") toast.success("Invoice link ready to share");
+      if (outcome === "already_converted")
+        toast.info("That draft was already converted");
+      else if ((res as { action?: string }).action === "send")
+        toast.success("Invoice link ready to share");
       else toast.success("Done");
     },
     onError: (err: unknown) =>
-      toast.error(err instanceof Error ? err.message : "That action could not be completed"),
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "That action could not be completed",
+      ),
   });
 
   const copyLink = async (token: string) => {
@@ -131,16 +148,21 @@ function DraftOrdersPage() {
   const setLine = (index: number, patch: Partial<LineDraft>) =>
     setForm((f) => ({
       ...f,
-      items: f.items.map((line, i) => (i === index ? { ...line, ...patch } : line)),
+      items: f.items.map((line, i) =>
+        i === index ? { ...line, ...patch } : line,
+      ),
     }));
 
   return (
     <section className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">Draft orders</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          Draft orders
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Quote a customer, send them a secure invoice link, then convert it into a real order once they
-          accept. Nothing is charged and no stock moves until you convert.
+          Quote a customer, send them a secure invoice link, then convert it
+          into a real order once they accept. Nothing is charged and no stock
+          moves until you convert.
         </p>
       </header>
 
@@ -158,11 +180,16 @@ function DraftOrdersPage() {
                 ["postcode", "Postcode"],
               ] as const
             ).map(([key, label]) => (
-              <label key={key} className="text-xs font-medium text-muted-foreground">
+              <label
+                key={key}
+                className="text-xs font-medium text-muted-foreground"
+              >
                 {label}
                 <input
                   value={form[key]}
-                  onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, [key]: e.target.value }))
+                  }
                   className="mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm text-foreground"
                 />
               </label>
@@ -178,7 +205,14 @@ function DraftOrdersPage() {
                   ...f,
                   items: [
                     ...f.items,
-                    { variantId: null, title: "", variantName: "", sku: "", quantity: 1, unitPriceMinorInt: 0 },
+                    {
+                      variantId: null,
+                      title: "",
+                      variantName: "",
+                      sku: "",
+                      quantity: 1,
+                      unitPriceMinorInt: 0,
+                    },
                   ],
                 }))
               }
@@ -193,7 +227,10 @@ function DraftOrdersPage() {
           ) : (
             <ul className="mt-2 space-y-2">
               {form.items.map((line, index) => (
-                <li key={index} className="grid gap-2 rounded-fq-md border border-border p-2 sm:grid-cols-[1fr_90px_120px_40px]">
+                <li
+                  key={index}
+                  className="grid gap-2 rounded-fq-md border border-border p-2 sm:grid-cols-[1fr_90px_120px_40px]"
+                >
                   <input
                     aria-label={`Item ${index + 1} title`}
                     placeholder="Product title"
@@ -206,7 +243,9 @@ function DraftOrdersPage() {
                     type="number"
                     min={1}
                     value={line.quantity}
-                    onChange={(e) => setLine(index, { quantity: Number(e.target.value) || 1 })}
+                    onChange={(e) =>
+                      setLine(index, { quantity: Number(e.target.value) || 1 })
+                    }
                     className="money min-h-9 rounded-fq-md border border-border bg-background px-2 text-sm"
                   />
                   <input
@@ -214,13 +253,22 @@ function DraftOrdersPage() {
                     type="number"
                     min={0}
                     value={line.unitPriceMinorInt}
-                    onChange={(e) => setLine(index, { unitPriceMinorInt: Number(e.target.value) || 0 })}
+                    onChange={(e) =>
+                      setLine(index, {
+                        unitPriceMinorInt: Number(e.target.value) || 0,
+                      })
+                    }
                     className="money min-h-9 rounded-fq-md border border-border bg-background px-2 text-sm"
                   />
                   <button
                     type="button"
                     aria-label={`Remove item ${index + 1}`}
-                    onClick={() => setForm((f) => ({ ...f, items: f.items.filter((_, i) => i !== index) }))}
+                    onClick={() =>
+                      setForm((f) => ({
+                        ...f,
+                        items: f.items.filter((_, i) => i !== index),
+                      }))
+                    }
                     className="inline-flex min-h-9 items-center justify-center rounded-fq-md border border-border text-muted-foreground hover:bg-muted"
                   >
                     <Trash2 className="size-4" aria-hidden />
@@ -238,13 +286,21 @@ function DraftOrdersPage() {
                 ["vatMinorInt", "VAT (paisa)"],
               ] as const
             ).map(([key, label]) => (
-              <label key={key} className="text-xs font-medium text-muted-foreground">
+              <label
+                key={key}
+                className="text-xs font-medium text-muted-foreground"
+              >
                 {label}
                 <input
                   type="number"
                   min={0}
                   value={form[key]}
-                  onChange={(e) => setForm((f) => ({ ...f, [key]: Number(e.target.value) || 0 }))}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      [key]: Number(e.target.value) || 0,
+                    }))
+                  }
                   className="money mt-1 min-h-9 w-full rounded-fq-md border border-border bg-background px-2 text-sm"
                 />
               </label>
@@ -260,7 +316,9 @@ function DraftOrdersPage() {
             </p>
             <div className="flex items-center gap-2">
               {!sendable.ok && form.items.length > 0 ? (
-                <span className="text-xs text-muted-foreground">{sendable.reason}</span>
+                <span className="text-xs text-muted-foreground">
+                  {sendable.reason}
+                </span>
               ) : null}
               <button
                 type="button"
@@ -268,7 +326,9 @@ function DraftOrdersPage() {
                 onClick={() => saveDraft.mutate()}
                 className="inline-flex min-h-10 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
               >
-                {saveDraft.isPending ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
+                {saveDraft.isPending ? (
+                  <Loader2 className="size-4 animate-spin" aria-hidden />
+                ) : null}
                 Save draft
               </button>
             </div>
@@ -278,10 +338,19 @@ function DraftOrdersPage() {
         <div className="rounded-fq-lg border border-border bg-card p-4">
           <h2 className="text-sm font-semibold">How this works</h2>
           <ol className="mt-2 space-y-2 text-sm text-muted-foreground">
-            <li>1. Save the draft with the customer&apos;s details and items.</li>
-            <li>2. Send it — that creates a private link you can share on any channel.</li>
-            <li>3. The customer opens the link, reviews the quote and accepts.</li>
-            <li>4. Convert it once. A second conversion returns the same order.</li>
+            <li>
+              1. Save the draft with the customer&apos;s details and items.
+            </li>
+            <li>
+              2. Send it — that creates a private link you can share on any
+              channel.
+            </li>
+            <li>
+              3. The customer opens the link, reviews the quote and accepts.
+            </li>
+            <li>
+              4. Convert it once. A second conversion returns the same order.
+            </li>
           </ol>
         </div>
       </div>
@@ -291,22 +360,38 @@ function DraftOrdersPage() {
           <caption className="sr-only">Draft orders</caption>
           <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
             <tr>
-              <th scope="col" className="p-3">Draft</th>
-              <th scope="col" className="p-3">Customer</th>
-              <th scope="col" className="p-3">Items</th>
-              <th scope="col" className="p-3">Total</th>
-              <th scope="col" className="p-3">Status</th>
-              <th scope="col" className="p-3">Actions</th>
+              <th scope="col" className="p-3">
+                Draft
+              </th>
+              <th scope="col" className="p-3">
+                Customer
+              </th>
+              <th scope="col" className="p-3">
+                Items
+              </th>
+              <th scope="col" className="p-3">
+                Total
+              </th>
+              <th scope="col" className="p-3">
+                Status
+              </th>
+              <th scope="col" className="p-3">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {drafts.isLoading ? (
               <tr>
-                <td colSpan={6} className="p-4 text-muted-foreground">Loading…</td>
+                <td colSpan={6} className="p-4 text-muted-foreground">
+                  Loading…
+                </td>
               </tr>
             ) : !drafts.data?.drafts.length ? (
               <tr>
-                <td colSpan={6} className="p-4 text-muted-foreground">No drafts yet.</td>
+                <td colSpan={6} className="p-4 text-muted-foreground">
+                  No drafts yet.
+                </td>
               </tr>
             ) : (
               drafts.data.drafts.map((d) => (
@@ -314,14 +399,20 @@ function DraftOrdersPage() {
                   <td className="money p-3 font-medium">{d.number}</td>
                   <td className="p-3">
                     {d.customer_name || "—"}
-                    <span className="block text-xs text-muted-foreground">{d.customer_email}</span>
+                    <span className="block text-xs text-muted-foreground">
+                      {d.customer_email}
+                    </span>
                   </td>
-                  <td className="money p-3">{d.draft_order_items?.length ?? 0}</td>
+                  <td className="money p-3">
+                    {d.draft_order_items?.length ?? 0}
+                  </td>
                   <td className="money p-3 font-semibold">
                     {fmtMinor(Number(d.total_minor_int), d.currency_code)}
                   </td>
                   <td className="p-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs ${STATUS_TONE[d.status] ?? ""}`}>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-xs ${STATUS_TONE[d.status] ?? ""}`}
+                    >
                       {d.status}
                     </span>
                   </td>
@@ -330,7 +421,9 @@ function DraftOrdersPage() {
                       {d.status === "draft" ? (
                         <button
                           type="button"
-                          onClick={() => runAction.mutate({ id: d.id, action: "send" })}
+                          onClick={() =>
+                            runAction.mutate({ id: d.id, action: "send" })
+                          }
                           className="inline-flex min-h-9 items-center gap-1 rounded-fq-md border border-border px-2 text-xs hover:bg-muted"
                         >
                           <Send className="size-3.5" aria-hidden /> Send
@@ -345,19 +438,25 @@ function DraftOrdersPage() {
                           <Copy className="size-3.5" aria-hidden /> Copy link
                         </button>
                       ) : null}
-                      {(d.status === "sent" || d.status === "accepted") && !d.order_id ? (
+                      {(d.status === "sent" || d.status === "accepted") &&
+                      !d.order_id ? (
                         <button
                           type="button"
-                          onClick={() => runAction.mutate({ id: d.id, action: "convert" })}
+                          onClick={() =>
+                            runAction.mutate({ id: d.id, action: "convert" })
+                          }
                           className="inline-flex min-h-9 items-center gap-1 rounded-fq-md bg-primary px-2 text-xs text-primary-foreground"
                         >
-                          <FileCheck2 className="size-3.5" aria-hidden /> Convert
+                          <FileCheck2 className="size-3.5" aria-hidden />{" "}
+                          Convert
                         </button>
                       ) : null}
                       {d.status !== "converted" && d.status !== "cancelled" ? (
                         <button
                           type="button"
-                          onClick={() => runAction.mutate({ id: d.id, action: "cancel" })}
+                          onClick={() =>
+                            runAction.mutate({ id: d.id, action: "cancel" })
+                          }
                           className="inline-flex min-h-9 items-center rounded-fq-md border border-border px-2 text-xs text-muted-foreground hover:bg-muted"
                         >
                           Cancel

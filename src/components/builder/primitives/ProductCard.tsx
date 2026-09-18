@@ -38,8 +38,12 @@ const TITLE: Record<CardVariant, string> = {
 };
 
 /** Discount percentage from server-valued minor units. Display only. */
-export function savePercent(priceMinor?: number, compareAtMinor?: number): number | null {
-  if (!priceMinor || !compareAtMinor || compareAtMinor <= priceMinor) return null;
+export function savePercent(
+  priceMinor?: number,
+  compareAtMinor?: number,
+): number | null {
+  if (!priceMinor || !compareAtMinor || compareAtMinor <= priceMinor)
+    return null;
   return Math.round(((compareAtMinor - priceMinor) / compareAtMinor) * 100);
 }
 
@@ -80,18 +84,37 @@ export function ProductCard({
           {locale === "bn" ? "স্পনসর্ড" : "Sponsored"}
         </span>
       )}
-      <MediaFrame src={row.imageUrl} alt={row.title} ratio={RATIO[variant]} className="rounded-none" eager={eager} />
+      <MediaFrame
+        src={row.imageUrl}
+        alt={row.title}
+        ratio={RATIO[variant]}
+        className="rounded-none"
+        eager={eager}
+      />
       <div className={`flex min-w-0 flex-1 flex-col ${PAD[variant]}`}>
         <p className={`line-clamp-2 ${TITLE[variant]}`}>{row.title}</p>
-        {row.subtitle && <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">{row.subtitle}</p>}
+        {row.subtitle && (
+          <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+            {row.subtitle}
+          </p>
+        )}
         {withPrice && typeof row.priceMinor === "number" && (
           <p className="money mt-1 flex flex-wrap items-baseline gap-2 text-sm font-semibold">
-            <span>{formatDisplayMoney(row.priceMinor, { locale, currency: row.currency ?? "BDT" })}</span>
-            {typeof row.compareAtMinor === "number" && row.compareAtMinor > (row.priceMinor ?? 0) && (
-              <s className="text-xs font-normal text-muted-foreground">
-                {formatDisplayMoney(row.compareAtMinor, { locale, currency: row.currency ?? "BDT" })}
-              </s>
-            )}
+            <span>
+              {formatDisplayMoney(row.priceMinor, {
+                locale,
+                currency: row.currency ?? "BDT",
+              })}
+            </span>
+            {typeof row.compareAtMinor === "number" &&
+              row.compareAtMinor > (row.priceMinor ?? 0) && (
+                <s className="text-xs font-normal text-muted-foreground">
+                  {formatDisplayMoney(row.compareAtMinor, {
+                    locale,
+                    currency: row.currency ?? "BDT",
+                  })}
+                </s>
+              )}
             {save !== null && (
               <span className="rounded-fq-sm bg-success-soft px-1.5 py-0.5 text-[0.65rem] font-semibold tabular-nums">
                 {badgeLabel ? `${badgeLabel} ` : ""}
@@ -105,9 +128,15 @@ export function ProductCard({
             ★★★★★
           </p>
         )}
-        {promise && <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{promise}</p>}
+        {promise && (
+          <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+            {promise}
+          </p>
+        )}
         {row.inStock === false && (
-          <p className="mt-1 text-xs text-muted-foreground">{locale === "bn" ? "স্টক নেই" : "Out of stock"}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {locale === "bn" ? "স্টক নেই" : "Out of stock"}
+          </p>
         )}
       </div>
     </article>
@@ -124,11 +153,16 @@ export function ProductCardSkeleton({
 }) {
   const ratio = RATIO[variant] === "square" ? "aspect-square" : "aspect-[4/3]";
   return (
-    <div className="overflow-hidden rounded-fq-lg border border-border bg-card" aria-hidden="true">
+    <div
+      className="overflow-hidden rounded-fq-lg border border-border bg-card"
+      aria-hidden="true"
+    >
       <div className={`${ratio} animate-pulse bg-muted`} />
       <div className={`space-y-2 ${PAD[variant]}`}>
         <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
-        {withPrice && <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />}
+        {withPrice && (
+          <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+        )}
       </div>
     </div>
   );

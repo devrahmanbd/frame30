@@ -74,9 +74,15 @@ export function BulkEditPlate({
         <span className="fq-num fq-sub font-normal">({selected.length})</span>
       </h3>
       <div className="grid gap-x-8 gap-y-3 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]">
-        <ul className="max-h-56 space-y-1 overflow-auto rounded-fq-md border border-border bg-background p-2" aria-label={t("Selected items", "নির্বাচিত আইটেম")}>
+        <ul
+          className="max-h-56 space-y-1 overflow-auto rounded-fq-md border border-border bg-background p-2"
+          aria-label={t("Selected items", "নির্বাচিত আইটেম")}
+        >
           {selected.map((r) => (
-            <li key={r.id} className="flex items-center justify-between gap-2 rounded-fq-sm px-2 py-1 text-sm hover:bg-muted">
+            <li
+              key={r.id}
+              className="flex items-center justify-between gap-2 rounded-fq-sm px-2 py-1 text-sm hover:bg-muted"
+            >
               <span className="truncate text-foreground">{r.title}</span>
               <button
                 type="button"
@@ -88,7 +94,11 @@ export function BulkEditPlate({
               </button>
             </li>
           ))}
-          {selected.length === 0 ? <li className="px-2 py-1 text-sm fq-sub">{t("Nothing selected.", "কিছু নির্বাচিত নেই।")}</li> : null}
+          {selected.length === 0 ? (
+            <li className="px-2 py-1 text-sm fq-sub">
+              {t("Nothing selected.", "কিছু নির্বাচিত নেই।")}
+            </li>
+          ) : null}
         </ul>
 
         <div className="space-y-3">
@@ -99,7 +109,12 @@ export function BulkEditPlate({
             <select
               id={id("author")}
               value={draft.authorId}
-              onChange={(e) => setDraft((d) => ({ ...d, authorId: e.target.value as BulkEditDraft["authorId"] }))}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  authorId: e.target.value as BulkEditDraft["authorId"],
+                }))
+              }
               className={inputClass}
             >
               <option value={NO_CHANGE}>{noChange}</option>
@@ -122,13 +137,20 @@ export function BulkEditPlate({
                 onChange={(e) =>
                   setDraft((d) => ({
                     ...d,
-                    parentId: e.target.value === NO_CHANGE ? NO_CHANGE : e.target.value === "__none__" ? null : e.target.value,
+                    parentId:
+                      e.target.value === NO_CHANGE
+                        ? NO_CHANGE
+                        : e.target.value === "__none__"
+                          ? null
+                          : e.target.value,
                   }))
                 }
                 className={inputClass}
               >
                 <option value={NO_CHANGE}>{noChange}</option>
-                <option value="__none__">{t("Main Page (no parent)", "মূল পেজ (প্যারেন্ট নেই)")}</option>
+                <option value="__none__">
+                  {t("Main Page (no parent)", "মূল পেজ (প্যারেন্ট নেই)")}
+                </option>
                 {parentOptions(rows)
                   .filter((p) => !selected.some((s) => s.id === p.id))
                   .map((p) => (
@@ -149,7 +171,9 @@ export function BulkEditPlate({
             <select
               id={id("template")}
               value={draft.template}
-              onChange={(e) => setDraft((d) => ({ ...d, template: e.target.value }))}
+              onChange={(e) =>
+                setDraft((d) => ({ ...d, template: e.target.value }))
+              }
               className={inputClass}
             >
               <option value={NO_CHANGE}>{noChange}</option>
@@ -168,9 +192,21 @@ export function BulkEditPlate({
               </label>
               <select
                 id={id("comments")}
-                value={draft.allowComments === NO_CHANGE ? NO_CHANGE : draft.allowComments ? "on" : "off"}
+                value={
+                  draft.allowComments === NO_CHANGE
+                    ? NO_CHANGE
+                    : draft.allowComments
+                      ? "on"
+                      : "off"
+                }
                 onChange={(e) =>
-                  setDraft((d) => ({ ...d, allowComments: e.target.value === NO_CHANGE ? NO_CHANGE : e.target.value === "on" }))
+                  setDraft((d) => ({
+                    ...d,
+                    allowComments:
+                      e.target.value === NO_CHANGE
+                        ? NO_CHANGE
+                        : e.target.value === "on",
+                  }))
                 }
                 className={inputClass}
               >
@@ -188,13 +224,20 @@ export function BulkEditPlate({
             <select
               id={id("status")}
               value={draft.status}
-              onChange={(e) => setDraft((d) => ({ ...d, status: e.target.value as BulkEditDraft["status"] }))}
+              onChange={(e) =>
+                setDraft((d) => ({
+                  ...d,
+                  status: e.target.value as BulkEditDraft["status"],
+                }))
+              }
               className={inputClass}
             >
               <option value={NO_CHANGE}>{noChange}</option>
               <option value="published">{t("Published", "প্রকাশিত")}</option>
               <option value="private">{t("Private", "ব্যক্তিগত")}</option>
-              <option value="pending">{t("Pending Review", "পর্যালোচনা বাকি")}</option>
+              <option value="pending">
+                {t("Pending Review", "পর্যালোচনা বাকি")}
+              </option>
               <option value="draft">{t("Draft", "খসড়া")}</option>
             </select>
           </div>
@@ -202,13 +245,21 @@ export function BulkEditPlate({
       </div>
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button type="submit" disabled={saving || !dirty || selected.length === 0} className={btnPrimary}>
+        <button
+          type="submit"
+          disabled={saving || !dirty || selected.length === 0}
+          className={btnPrimary}
+        >
           {saving ? t("Updating…", "আপডেট হচ্ছে…") : t("Update", "আপডেট")}
         </button>
         <button type="button" onClick={onCancel} className={btnGhost}>
           {t("Cancel", "বাতিল")}
         </button>
-        {!dirty ? <span className="ml-auto text-xs fq-sub">{t("Pick at least one change.", "অন্তত একটি পরিবর্তন বেছে নিন।")}</span> : null}
+        {!dirty ? (
+          <span className="ml-auto text-xs fq-sub">
+            {t("Pick at least one change.", "অন্তত একটি পরিবর্তন বেছে নিন।")}
+          </span>
+        ) : null}
       </div>
     </form>
   );

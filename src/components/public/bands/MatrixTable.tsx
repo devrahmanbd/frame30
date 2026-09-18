@@ -91,7 +91,9 @@ export function MatrixTable({
                       {highlightCol.label}
                     </p>
                     <div className="mt-1 text-sm font-semibold text-foreground">
-                      {row.cells[highlightCol.id] ?? <Minus className="size-4 text-muted-foreground inline" />}
+                      {row.cells[highlightCol.id] ?? (
+                        <Minus className="size-4 text-muted-foreground inline" />
+                      )}
                     </div>
                   </div>
                 )}
@@ -134,9 +136,17 @@ export function MatrixTable({
         >
           <table className="w-full border-collapse text-left text-sm">
             <caption className="sr-only">{caption}</caption>
-            <thead className={cn(stickyHeader && "sticky top-16 z-10 bg-card/95 backdrop-blur-sm")}>
+            <thead
+              className={cn(
+                stickyHeader &&
+                  "sticky top-16 z-10 bg-card/95 backdrop-blur-sm",
+              )}
+            >
               <tr className="border-b border-border/80 bg-muted/20">
-                <th scope="col" className="px-5 py-3.5 font-semibold text-muted-foreground">
+                <th
+                  scope="col"
+                  className="px-5 py-3.5 font-semibold text-muted-foreground"
+                >
                   Feature / Dimension
                 </th>
                 {columns.map((column) => (
@@ -162,7 +172,10 @@ export function MatrixTable({
                   key={row.id}
                   className="transition-colors hover:bg-muted/10 group"
                 >
-                  <th scope="row" className="px-5 py-4 font-medium text-foreground align-middle">
+                  <th
+                    scope="row"
+                    className="px-5 py-4 font-medium text-foreground align-middle"
+                  >
                     <div className="flex items-center gap-2">
                       <span>{row.label}</span>
                       {row.badge && (
@@ -245,7 +258,9 @@ export function InfographicCard({
             <div
               className={cn(
                 "flex size-10 items-center justify-center rounded-fq-md shrink-0",
-                highlight ? "bg-primary text-primary-foreground" : "bg-muted/40 text-foreground",
+                highlight
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted/40 text-foreground",
               )}
             >
               {icon}
@@ -265,8 +280,14 @@ export function InfographicCard({
           )}
         </div>
 
-        <h3 className="fq-display text-lg font-bold text-foreground mt-4">{title}</h3>
-        {subtitle && <p className="text-xs sm:text-sm text-muted-foreground mt-1">{subtitle}</p>}
+        <h3 className="fq-display text-lg font-bold text-foreground mt-4">
+          {title}
+        </h3>
+        {subtitle && (
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            {subtitle}
+          </p>
+        )}
 
         {value && (
           <div className="mt-4 border-t border-border/50 pt-3">
@@ -279,7 +300,10 @@ export function InfographicCard({
         {points && points.length > 0 && (
           <ul className="mt-4 space-y-2 border-t border-border/50 pt-3">
             {points.map((pt, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground">
+              <li
+                key={idx}
+                className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground"
+              >
                 <Check className="size-4 text-primary shrink-0 mt-0.5" />
                 <span>{pt}</span>
               </li>
@@ -290,4 +314,3 @@ export function InfographicCard({
     </div>
   );
 }
-

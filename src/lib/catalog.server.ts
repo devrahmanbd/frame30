@@ -23,7 +23,10 @@ import {
 type Client = SupabaseClient<Database>;
 type Loose = {
   from: (t: string) => any;
-  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
 };
 const loose = (db: Client) => db as unknown as Loose;
 
@@ -58,35 +61,67 @@ export type CatalogDesk = {
 };
 
 /** Read-side health of the catalog: which products are incoherent for their kind. */
-export async function loadCatalogDesk(supabase: Client, merchantId: string): Promise<CatalogDesk> {
+export async function loadCatalogDesk(
+  supabase: Client,
+  merchantId: string,
+): Promise<CatalogDesk> {
   await assertStaff(supabase, merchantId);
   return withSpan("catalog.desk", async () => {
-    const [products, assets, services, terms, collections, definitions, jobs] = await Promise.all([
-      loose(supabase)
-        .from("products")
-        .select("id, status, product_kind")
-        .eq("merchant_id", merchantId)
-        .is("deleted_at", null),
-      loose(supabase).from("digital_assets").select("product_id").eq("merchant_id", merchantId).is("deleted_at", null),
-      loose(supabase).from("service_offerings").select("product_id").eq("merchant_id", merchantId),
-      loose(supabase).from("subscription_terms").select("variant_id").eq("merchant_id", merchantId),
-      loose(supabase).from("collections").select("id, is_smart").eq("merchant_id", merchantId).is("deleted_at", null),
-      loose(supabase)
-        .from("metafield_definitions")
-        .select("id, owner_type, namespace, key, label, value_type, is_required, validation")
-        .eq("merchant_id", merchantId)
-        .order("owner_type"),
-      loose(supabase)
-        .from("catalog_import_jobs")
-        .select("*")
-        .eq("merchant_id", merchantId)
-        .order("created_at", { ascending: false })
-        .limit(10),
-    ]);
+    const [products, assets, services, terms, collections, definitions, jobs] =
+      await Promise.all([
+        loose(supabase)
+          .from("products")
+          .select("id, status, product_kind")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null),
+        loose(supabase)
+          .from("digital_assets")
+          .select("product_id")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null),
+        loose(supabase)
+          .from("service_offerings")
+          .select("product_id")
+          .eq("merchant_id", merchantId),
+        loose(supabase)
+          .from("subscription_terms")
+          .select("variant_id")
+          .eq("merchant_id", merchantId),
+        loose(supabase)
+          .from("collections")
+          .select("id, is_smart")
+          .eq("merchant_id", merchantId)
+          .is("deleted_at", null),
+        loose(supabase)
+          .from("metafield_definitions")
+          .select(
+            "id, owner_type, namespace, key, label, value_type, is_required, validation",
+          )
+          .eq("merchant_id", merchantId)
+          .order("owner_type"),
+        loose(supabase)
+          .from("catalog_import_jobs")
+          .select("*")
+          .eq("merchant_id", merchantId)
+          .order("created_at", { ascending: false })
+          .limit(10),
+      ]);
 
-    const rows = (products.data ?? []) as Array<{ id: string; status: string; product_kind: ProductKind }>;
-    const assetProducts = new Set(((assets.data ?? []) as Array<{ product_id: string }>).map((a) => a.product_id));
-    const serviceProducts = new Set(((services.data ?? []) as Array<{ product_id: string }>).map((s) => s.product_id));
+    const rows = (products.data ?? []) as Array<{
+      id: string;
+      status: string;
+      product_kind: ProductKind;
+    }>;
+    const assetProducts = new Set(
+      ((assets.data ?? []) as Array<{ product_id: string }>).map(
+        (a) => a.product_id,
+      ),
+    );
+    const serviceProducts = new Set(
+      ((services.data ?? []) as Array<{ product_id: string }>).map(
+        (s) => s.product_id,
+      ),
+    );
     const termCount = ((terms.data ?? []) as unknown[]).length;
 
     const counts: Record<ProductKind, number> = {
@@ -105,8 +140,10 @@ export async function loadCatalogDesk(supabase: Client, merchantId: string): Pro
       counts[p.product_kind] = (counts[p.product_kind] ?? 0) + 1;
       if (p.status === "draft") drafts += 1;
       if (p.status === "archived") archived += 1;
-      if (p.product_kind === "digital" && !assetProducts.has(p.id)) missingDigitalAsset += 1;
-      if (p.product_kind === "service" && !serviceProducts.has(p.id)) missingServiceConfig += 1;
+      if (p.product_kind === "digital" && !assetProducts.has(p.id))
+        missingDigitalAsset += 1;
+      if (p.product_kind === "service" && !serviceProducts.has(p.id))
+        missingServiceConfig += 1;
       if (p.product_kind === "subscription") subscriptions += 1;
     }
 
@@ -117,7 +154,9 @@ export async function loadCatalogDesk(supabase: Client, merchantId: string): Pro
       missingDigitalAsset,
       missingServiceConfig,
       missingSubscriptionTerms: Math.max(0, subscriptions - termCount),
-      smartCollections: ((collections.data ?? []) as Array<{ is_smart: boolean }>).filter((c) => c.is_smart).length,
+      smartCollections: (
+        (collections.data ?? []) as Array<{ is_smart: boolean }>
+      ).filter((c) => c.is_smart).length,
       definitions: (definitions.data ?? []) as CatalogDesk["definitions"],
       jobs: (jobs.data ?? []) as ImportJob[],
     };
@@ -131,7 +170,8 @@ export async function dryRunImport(
 ): Promise<ImportJob> {
   await assertStaff(supabase, merchantId);
   await enforceRateLimit("catalog.import", merchantId);
-  if (input.rows.length > IMPORT_MAX_ROWS) throw new Error("catalog.too_many_rows");
+  if (input.rows.length > IMPORT_MAX_ROWS)
+    throw new Error("catalog.too_many_rows");
 
   const { data, error } = await loose(supabase).rpc("catalog_import_dry_run", {
     _merchant_id: merchantId,
@@ -144,26 +184,46 @@ export async function dryRunImport(
     throw error;
   }
   incr("framique_catalog_import_total", { phase: "dry_run" });
-  log("info", "catalog.import.dry_run", { merchantId, rows: input.rows.length });
+  log("info", "catalog.import.dry_run", {
+    merchantId,
+    rows: input.rows.length,
+  });
   return data as ImportJob;
 }
 
-export async function applyImport(supabase: Client, merchantId: string, jobId: string) {
+export async function applyImport(
+  supabase: Client,
+  merchantId: string,
+  jobId: string,
+) {
   await assertStaff(supabase, merchantId);
   await enforceRateLimit("catalog.import", merchantId);
-  const { data, error } = await loose(supabase).rpc("catalog_import_apply", { _job_id: jobId });
+  const { data, error } = await loose(supabase).rpc("catalog_import_apply", {
+    _job_id: jobId,
+  });
   if (error) {
     await captureError(error, { scope: "catalog.apply", merchantId, jobId });
     throw error;
   }
   const result = data as { replayed: boolean; summary: Record<string, number> };
-  incr("framique_catalog_import_total", { phase: result.replayed ? "replayed" : "applied" });
-  log("info", "catalog.import.applied", { merchantId, jobId, ...result.summary, replayed: result.replayed });
+  incr("framique_catalog_import_total", {
+    phase: result.replayed ? "replayed" : "applied",
+  });
+  log("info", "catalog.import.applied", {
+    merchantId,
+    jobId,
+    ...result.summary,
+    replayed: result.replayed,
+  });
   invalidate(`catalog:${merchantId}`);
   return result;
 }
 
-export async function discardImport(supabase: Client, merchantId: string, jobId: string) {
+export async function discardImport(
+  supabase: Client,
+  merchantId: string,
+  jobId: string,
+) {
   await assertStaff(supabase, merchantId);
   const { error } = await loose(supabase)
     .from("catalog_import_jobs")
@@ -179,7 +239,12 @@ export type KindConfigInput = {
   merchantId: string;
   productId: string;
   kind: ProductKind;
-  digital?: { fileName: string; storagePath: string; maxDownloads: number; expiryHours: number } | null;
+  digital?: {
+    fileName: string;
+    storagePath: string;
+    maxDownloads: number;
+    expiryHours: number;
+  } | null;
   service?: {
     durationMinutes: number;
     bufferMinutes: number;
@@ -221,38 +286,34 @@ export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
   }
 
   if (input.kind === "service" && input.service) {
-    const { error } = await loose(supabase)
-      .from("service_offerings")
-      .upsert(
-        {
-          merchant_id: input.merchantId,
-          product_id: input.productId,
-          duration_minutes: input.service.durationMinutes,
-          buffer_minutes: input.service.bufferMinutes,
-          capacity_per_slot: input.service.capacityPerSlot,
-          location_kind: input.service.locationKind,
-          advance_booking_days: input.service.advanceBookingDays,
-          cancellation_hours: input.service.cancellationHours,
-        },
-        { onConflict: "product_id" },
-      );
+    const { error } = await loose(supabase).from("service_offerings").upsert(
+      {
+        merchant_id: input.merchantId,
+        product_id: input.productId,
+        duration_minutes: input.service.durationMinutes,
+        buffer_minutes: input.service.bufferMinutes,
+        capacity_per_slot: input.service.capacityPerSlot,
+        location_kind: input.service.locationKind,
+        advance_booking_days: input.service.advanceBookingDays,
+        cancellation_hours: input.service.cancellationHours,
+      },
+      { onConflict: "product_id" },
+    );
     if (error) throw error;
   }
 
   if (input.kind === "subscription" && input.subscription) {
-    const { error } = await loose(supabase)
-      .from("subscription_terms")
-      .upsert(
-        {
-          merchant_id: input.merchantId,
-          variant_id: input.subscription.variantId,
-          interval_unit: input.subscription.intervalUnit,
-          interval_count: input.subscription.intervalCount,
-          trial_days: input.subscription.trialDays,
-          minimum_cycles: input.subscription.minimumCycles,
-        },
-        { onConflict: "variant_id" },
-      );
+    const { error } = await loose(supabase).from("subscription_terms").upsert(
+      {
+        merchant_id: input.merchantId,
+        variant_id: input.subscription.variantId,
+        interval_unit: input.subscription.intervalUnit,
+        interval_count: input.subscription.intervalCount,
+        trial_days: input.subscription.trialDays,
+        minimum_cycles: input.subscription.minimumCycles,
+      },
+      { onConflict: "variant_id" },
+    );
     if (error) throw error;
   }
 
@@ -261,7 +322,11 @@ export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
   return { ok: true };
 }
 
-export async function loadKindConfig(supabase: Client, merchantId: string, productId: string) {
+export async function loadKindConfig(
+  supabase: Client,
+  merchantId: string,
+  productId: string,
+) {
   await assertStaff(supabase, merchantId);
   const [assets, service, product] = await Promise.all([
     loose(supabase)
@@ -270,8 +335,16 @@ export async function loadKindConfig(supabase: Client, merchantId: string, produ
       .eq("merchant_id", merchantId)
       .eq("product_id", productId)
       .is("deleted_at", null),
-    loose(supabase).from("service_offerings").select("*").eq("product_id", productId).maybeSingle(),
-    loose(supabase).from("products").select("product_kind, requires_shipping, tags, tax_category").eq("id", productId).maybeSingle(),
+    loose(supabase)
+      .from("service_offerings")
+      .select("*")
+      .eq("product_id", productId)
+      .maybeSingle(),
+    loose(supabase)
+      .from("products")
+      .select("product_kind, requires_shipping, tags, tax_category")
+      .eq("id", productId)
+      .maybeSingle(),
   ]);
   return {
     product: product.data ?? null,
@@ -306,16 +379,26 @@ export async function saveMetafieldDefinition(
     validation: input.validation,
   };
   const { error } = input.id
-    ? await loose(supabase).from("metafield_definitions").update(row).eq("id", input.id)
+    ? await loose(supabase)
+        .from("metafield_definitions")
+        .update(row)
+        .eq("id", input.id)
     : await loose(supabase)
         .from("metafield_definitions")
         .upsert(row, { onConflict: "merchant_id,owner_type,namespace,key" });
   if (error) throw error;
-  log("info", "catalog.metafield_definition.saved", { merchantId: input.merchantId, key: input.key });
+  log("info", "catalog.metafield_definition.saved", {
+    merchantId: input.merchantId,
+    key: input.key,
+  });
   return { ok: true };
 }
 
-export async function deleteMetafieldDefinition(supabase: Client, merchantId: string, id: string) {
+export async function deleteMetafieldDefinition(
+  supabase: Client,
+  merchantId: string,
+  id: string,
+) {
   await assertStaff(supabase, merchantId);
   const { error } = await loose(supabase)
     .from("metafield_definitions")
@@ -329,7 +412,12 @@ export async function deleteMetafieldDefinition(supabase: Client, merchantId: st
 /** Save smart-collection rules; the DB trigger is the final gate on shape. */
 export async function saveCollectionRules(
   supabase: Client,
-  input: { merchantId: string; collectionId: string; isSmart: boolean; rules: unknown },
+  input: {
+    merchantId: string;
+    collectionId: string;
+    isSmart: boolean;
+    rules: unknown;
+  },
 ) {
   await assertStaff(supabase, input.merchantId);
   const rules = normalizeRules(input.rules);
@@ -340,27 +428,43 @@ export async function saveCollectionRules(
     .eq("merchant_id", input.merchantId);
   if (error) throw error;
   invalidate(`collection:${input.collectionId}`);
-  incr("framique_collection_rules_saved_total", { smart: String(input.isSmart) });
+  incr("framique_collection_rules_saved_total", {
+    smart: String(input.isSmart),
+  });
   return { ok: true, rules };
 }
 
 /** Preview resolution; cached briefly because the resolver scans the catalog. */
-export async function previewCollection(supabase: Client, merchantId: string, collectionId: string) {
+export async function previewCollection(
+  supabase: Client,
+  merchantId: string,
+  collectionId: string,
+) {
   await assertStaff(supabase, merchantId);
   await enforceRateLimit("catalog.search", `${merchantId}:preview`);
   return cached(`collection:${collectionId}:preview`, 15, async () => {
-    const { data, error } = await loose(supabase).rpc("collection_resolve", { _collection_id: collectionId });
+    const { data, error } = await loose(supabase).rpc("collection_resolve", {
+      _collection_id: collectionId,
+    });
     if (error) throw error;
     const ids = ((data ?? []) as unknown[])
-      .map((r) => (typeof r === "string" ? r : (r as { collection_resolve?: string }).collection_resolve))
+      .map((r) =>
+        typeof r === "string"
+          ? r
+          : (r as { collection_resolve?: string }).collection_resolve,
+      )
       .filter((v): v is string => !!v)
       .slice(0, 60);
-    if (!ids.length) return { count: 0, products: [] as Array<{ id: string; title: string }> };
+    if (!ids.length)
+      return { count: 0, products: [] as Array<{ id: string; title: string }> };
     const { data: products } = await loose(supabase)
       .from("products")
       .select("id, title, product_kind, status")
       .in("id", ids);
-    return { count: ids.length, products: (products ?? []) as Array<{ id: string; title: string }> };
+    return {
+      count: ids.length,
+      products: (products ?? []) as Array<{ id: string; title: string }>,
+    };
   });
 }
 
@@ -380,7 +484,9 @@ export async function exportCatalogCsv(supabase: Client, merchantId: string) {
       .order("title", { ascending: true }),
     supabase
       .from("product_variants")
-      .select("product_id, name, sku, currency_code, price_amount_minor_int, stock_quantity, position")
+      .select(
+        "product_id, name, sku, currency_code, price_amount_minor_int, stock_quantity, position",
+      )
       .eq("merchant_id", merchantId)
       .is("deleted_at", null)
       .order("position", { ascending: true }),
@@ -395,7 +501,9 @@ export async function exportCatalogCsv(supabase: Client, merchantId: string) {
     byProduct.set(v.product_id, list);
   }
 
-  const rows: import("./catalog").CatalogExportRow[] = (products.data ?? []).flatMap((p): import("./catalog").CatalogExportRow[] => {
+  const rows: import("./catalog").CatalogExportRow[] = (
+    products.data ?? []
+  ).flatMap((p): import("./catalog").CatalogExportRow[] => {
     const vs = byProduct.get(p.id) ?? [];
     const base = {
       title: p.title,
@@ -406,7 +514,16 @@ export async function exportCatalogCsv(supabase: Client, merchantId: string) {
       tags: p.tags ?? [],
     };
     if (!vs.length) {
-      return [{ ...base, variant: "Default", sku: null, currency: null, price_minor: 0, stock: 0 }];
+      return [
+        {
+          ...base,
+          variant: "Default",
+          sku: null,
+          currency: null,
+          price_minor: 0,
+          stock: 0,
+        },
+      ];
     }
     return vs.map((v) => ({
       ...base,

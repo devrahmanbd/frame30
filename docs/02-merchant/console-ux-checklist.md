@@ -9,7 +9,7 @@ motion, source rules) and `bun run console:gate` (browser sweep, screenshots).
 - [ ] No hardcoded colour utilities (`text-white`, `bg-gray-100`, `bg-[#...]`).
       Every colour comes from the `.fq-admin` token layer.
 - [ ] Exactly two text tones: `text-foreground` and `fq-sub` (muted). No third ramp.
-- [ ] Text contrast >= **4.5:1**, non-text/UI >= 3:1, in light *and* dark.
+- [ ] Text contrast >= **4.5:1**, non-text/UI >= 3:1, in light _and_ dark.
 - [ ] Brand teal (`--fq-brand`) is used for data only; never for chrome or CTAs.
 - [ ] Status is never colour alone — always a label, and usually an icon.
 

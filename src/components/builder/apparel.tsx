@@ -33,7 +33,9 @@ function t(locale: string, en: string, bn: string) {
 function Eyebrow({ text }: { text: string }) {
   if (!text) return null;
   return (
-    <p className="mb-2 text-[11px] fq-caps tracking-[0.16em] text-muted-foreground">{text}</p>
+    <p className="mb-2 text-[11px] fq-caps tracking-[0.16em] text-muted-foreground">
+      {text}
+    </p>
   );
 }
 
@@ -49,11 +51,21 @@ function Cta({ label, href }: { label: string; href: string }) {
   );
 }
 
-function TileSkeleton({ count = 4, ratio = "aspect-[3/4]" }: { count?: number; ratio?: string }) {
+function TileSkeleton({
+  count = 4,
+  ratio = "aspect-[3/4]",
+}: {
+  count?: number;
+  ratio?: string;
+}) {
   return (
     <>
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className={`${ratio} animate-pulse rounded-fq-md bg-muted`} aria-hidden="true" />
+        <div
+          key={i}
+          className={`${ratio} animate-pulse rounded-fq-md bg-muted`}
+          aria-hidden="true"
+        />
       ))}
     </>
   );
@@ -76,10 +88,22 @@ const EditorialHero: WidgetComponent = (ctx) => {
     />
   );
   const copy = (
-    <div className={split ? "" : "rounded-fq-lg border border-border bg-card p-6 shadow-fq-sm"}>
+    <div
+      className={
+        split
+          ? ""
+          : "rounded-fq-lg border border-border bg-card p-6 shadow-fq-sm"
+      }
+    >
       <Eyebrow text={str("eyebrow")} />
-      <Heading className="text-3xl font-semibold leading-tight md:text-5xl">{str("heading")}</Heading>
-      {str("body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str("body")}</p>}
+      <Heading className="text-3xl font-semibold leading-tight md:text-5xl">
+        {str("heading")}
+      </Heading>
+      {str("body") && (
+        <p className="mt-3 max-w-prose text-sm text-muted-foreground">
+          {str("body")}
+        </p>
+      )}
       <Cta label={str("ctaLabel")} href={str("ctaHref")} />
     </div>
   );
@@ -101,7 +125,9 @@ const EditorialHero: WidgetComponent = (ctx) => {
           className="pointer-events-none absolute inset-0 rounded-fq-lg bg-foreground/25"
         />
       )}
-      <div className="relative -mt-16 px-4 md:-mt-24 md:max-w-md md:px-8">{copy}</div>
+      <div className="relative -mt-16 px-4 md:-mt-24 md:max-w-md md:px-8">
+        {copy}
+      </div>
     </section>
   );
 };
@@ -122,11 +148,21 @@ const Lookbook: WidgetComponent = (ctx) => {
   if (tiles.length === 0) return null;
   return (
     <section>
-      {str("heading") && <Heading className="mb-4 text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="mb-4 text-lg font-semibold">
+          {str("heading")}
+        </Heading>
+      )}
       <div className="grid gap-4 sm:grid-cols-2">
         {tiles.map((tile, index) => {
           const body = (
-            <MediaFrame src={tile.src} alt={tile.alt} ratio={tile.ratio} className="rounded-fq-md" eager={index === 0} />
+            <MediaFrame
+              src={tile.src}
+              alt={tile.alt}
+              ratio={tile.ratio}
+              className="rounded-fq-md"
+              eager={index === 0}
+            />
           );
           return (
             <div
@@ -154,8 +190,14 @@ const ShoppableImage: WidgetComponent = (ctx) => {
     y: int(`p${i + 1}y`, 30 + i * 15, 0, 100),
   }));
   return (
-    <section aria-label={str("heading") || t(locale, "Shop the look", "লুক কিনুন")}>
-      {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+    <section
+      aria-label={str("heading") || t(locale, "Shop the look", "লুক কিনুন")}
+    >
+      {str("heading") && (
+        <Heading className="mb-3 text-lg font-semibold">
+          {str("heading")}
+        </Heading>
+      )}
       <div className="relative">
         <MediaFrame
           src={str("imageUrl")}
@@ -172,9 +214,16 @@ const ShoppableImage: WidgetComponent = (ctx) => {
                 x={pin.x}
                 y={pin.y}
                 index={index + 1}
-                label={t(locale, `Show ${pin.row.title}`, `${pin.row.title} দেখুন`)}
+                label={t(
+                  locale,
+                  `Show ${pin.row.title}`,
+                  `${pin.row.title} দেখুন`,
+                )}
               >
-                <a href={pin.row.href ?? "#"} className="flex items-center gap-2">
+                <a
+                  href={pin.row.href ?? "#"}
+                  className="flex items-center gap-2"
+                >
                   <MediaFrame
                     src={pin.row.imageUrl}
                     alt=""
@@ -182,7 +231,9 @@ const ShoppableImage: WidgetComponent = (ctx) => {
                     className="w-14 shrink-0 rounded-fq-sm"
                   />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium">{pin.row.title}</span>
+                    <span className="block truncate text-sm font-medium">
+                      {pin.row.title}
+                    </span>
                     {pin.row.priceMinor !== undefined && (
                       <span className="block text-xs tabular-nums text-muted-foreground">
                         {money(pin.row.priceMinor, pin.row.currency)}
@@ -216,7 +267,11 @@ const SplitFeature: WidgetComponent = (ctx) => {
       <div className={flip ? "md:order-1" : undefined}>
         <Eyebrow text={str("eyebrow")} />
         <Heading className="text-2xl font-semibold">{str("heading")}</Heading>
-        {str("body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str("body")}</p>}
+        {str("body") && (
+          <p className="mt-3 max-w-prose text-sm text-muted-foreground">
+            {str("body")}
+          </p>
+        )}
         <Cta label={str("ctaLabel")} href={str("ctaHref")} />
       </div>
     </section>
@@ -236,12 +291,18 @@ const CollectionStory: WidgetComponent = (ctx) => {
         sizes={sizesAttr(str(sizesKey("imageUrl")))}
         className="rounded-fq-lg"
       />
-      {bool("scrim") && <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />}
+      {bool("scrim") && (
+        <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />
+      )}
       <div className="absolute inset-0 flex items-end p-6 md:p-10">
         <div className="max-w-xl text-background">
           <Eyebrow text={str("eyebrow")} />
-          <Heading className="text-2xl font-semibold md:text-4xl">{str("heading")}</Heading>
-          {str("body") && <p className="mt-3 text-sm opacity-90">{str("body")}</p>}
+          <Heading className="text-2xl font-semibold md:text-4xl">
+            {str("heading")}
+          </Heading>
+          {str("body") && (
+            <p className="mt-3 text-sm opacity-90">{str("body")}</p>
+          )}
           <Cta label={str("ctaLabel")} href={str("ctaHref")} />
         </div>
       </div>
@@ -256,24 +317,42 @@ const UgcGallery: WidgetComponent = (ctx) => {
   const limit = int("limit", 6, 2, 12);
   const rows = (data?.rows ?? []).slice(0, limit);
   return (
-    <section aria-label={str("heading") || t(locale, "Customer gallery", "ক্রেতাদের ছবি")}>
-      {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+    <section
+      aria-label={
+        str("heading") || t(locale, "Customer gallery", "ক্রেতাদের ছবি")
+      }
+    >
+      {str("heading") && (
+        <Heading className="mb-3 text-lg font-semibold">
+          {str("heading")}
+        </Heading>
+      )}
       <ul className="m-0 grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-3 lg:grid-cols-6">
         {data?.pending
           ? Array.from({ length: limit }, (_, i) => (
               <li key={i}>
-                <div className="aspect-square animate-pulse rounded-fq-md bg-muted" aria-hidden="true" />
+                <div
+                  className="aspect-square animate-pulse rounded-fq-md bg-muted"
+                  aria-hidden="true"
+                />
               </li>
             ))
           : rows.map((row) => (
               <li key={row.id}>
                 <a href={row.href ?? "#"}>
-                  <MediaFrame src={row.imageUrl} alt={row.title} ratio="square" className="rounded-fq-md" />
+                  <MediaFrame
+                    src={row.imageUrl}
+                    alt={row.title}
+                    ratio="square"
+                    className="rounded-fq-md"
+                  />
                 </a>
               </li>
             ))}
       </ul>
-      {str("note") && <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>}
+      {str("note") && (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      )}
     </section>
   );
 };
@@ -282,7 +361,9 @@ const UgcGallery: WidgetComponent = (ctx) => {
 
 const SocialStrip: WidgetComponent = (ctx) => {
   const { str, Heading } = ctx;
-  const images = [1, 2, 3, 4, 5, 6].map((n) => str(`i${n}Image`)).filter(Boolean);
+  const images = [1, 2, 3, 4, 5, 6]
+    .map((n) => str(`i${n}Image`))
+    .filter(Boolean);
   if (images.length === 0) return null;
   return (
     <section>
@@ -298,7 +379,13 @@ const SocialStrip: WidgetComponent = (ctx) => {
       </div>
       <Rail label={str("heading") || "Social"}>
         {images.map((src, i) => (
-          <MediaFrame key={i} src={src} alt="" ratio="square" className="w-40 rounded-fq-md" />
+          <MediaFrame
+            key={i}
+            src={src}
+            alt=""
+            ratio="square"
+            className="w-40 rounded-fq-md"
+          />
         ))}
       </Rail>
     </section>
@@ -320,17 +407,33 @@ const StoreLocator: WidgetComponent = (ctx) => {
   if (stores.length === 0) return null;
   return (
     <section aria-label={str("heading") || t(locale, "Stores", "দোকান")}>
-      {str("heading") && <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>}
+      {str("heading") && (
+        <Heading className="mb-3 text-lg font-semibold">
+          {str("heading")}
+        </Heading>
+      )}
       <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {stores.map((store) => (
-          <li key={store.name} className="rounded-fq-md border border-border bg-card p-4">
+          <li
+            key={store.name}
+            className="rounded-fq-md border border-border bg-card p-4"
+          >
             <p className="text-sm font-semibold">{store.name}</p>
             {store.address && (
-              <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">{store.address}</p>
+              <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
+                {store.address}
+              </p>
             )}
-            {store.hours && <p className="mt-1 text-xs text-muted-foreground">{store.hours}</p>}
+            {store.hours && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                {store.hours}
+              </p>
+            )}
             {store.phone && (
-              <a href={`tel:${store.phone}`} className="mt-2 inline-flex min-h-11 items-center text-sm underline">
+              <a
+                href={`tel:${store.phone}`}
+                className="mt-2 inline-flex min-h-11 items-center text-sm underline"
+              >
                 {store.phone}
               </a>
             )}
@@ -345,7 +448,9 @@ const StoreLocator: WidgetComponent = (ctx) => {
 
 /** Variant rows whose option path looks like a size, in catalogue order. */
 export function sizeRows(rows: WidgetRow[] | undefined): WidgetRow[] {
-  return (rows ?? []).filter((row) => (row.options ?? row.title).trim().length > 0);
+  return (rows ?? []).filter(
+    (row) => (row.options ?? row.title).trim().length > 0,
+  );
 }
 
 const SizeSelector: WidgetComponent = (ctx) => {
@@ -357,7 +462,10 @@ const SizeSelector: WidgetComponent = (ctx) => {
     return (
       <div className="flex flex-wrap gap-2" aria-hidden="true">
         {Array.from({ length: 5 }, (_, i) => (
-          <div key={i} className="h-11 w-14 animate-pulse rounded-fq-md bg-muted" />
+          <div
+            key={i}
+            className="h-11 w-14 animate-pulse rounded-fq-md bg-muted"
+          />
         ))}
       </div>
     );
@@ -365,7 +473,11 @@ const SizeSelector: WidgetComponent = (ctx) => {
   if (rows.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        {t(locale, "Sizes appear once the product is connected.", "পণ্য যুক্ত হলে সাইজ দেখা যাবে।")}
+        {t(
+          locale,
+          "Sizes appear once the product is connected.",
+          "পণ্য যুক্ত হলে সাইজ দেখা যাবে।",
+        )}
       </p>
     );
   }
@@ -373,14 +485,20 @@ const SizeSelector: WidgetComponent = (ctx) => {
   return (
     <section aria-label={str("heading") || t(locale, "Size", "সাইজ")}>
       <div className="mb-2 flex items-center justify-between">
-        <p className="text-sm font-medium">{str("heading") || t(locale, "Size", "সাইজ")}</p>
+        <p className="text-sm font-medium">
+          {str("heading") || t(locale, "Size", "সাইজ")}
+        </p>
         {str("guideLabel") && (
           <a href="#size-guide" className="text-sm underline">
             {str("guideLabel")}
           </a>
         )}
       </div>
-      <div role="radiogroup" aria-label={str("heading") || "Size"} className="flex flex-wrap gap-2">
+      <div
+        role="radiogroup"
+        aria-label={str("heading") || "Size"}
+        className="flex flex-wrap gap-2"
+      >
         {rows.map((row) => {
           const label = row.options ?? row.title;
           const out = row.inStock === false;
@@ -393,21 +511,32 @@ const SizeSelector: WidgetComponent = (ctx) => {
               onClick={() => setSelected(row.id)}
               className={[
                 "min-h-11 min-w-11 rounded-fq-md border px-3 text-sm",
-                selected === row.id ? "border-primary bg-primary text-primary-foreground" : "border-border",
+                selected === row.id
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border",
                 out ? "line-through opacity-60" : "",
               ].join(" ")}
             >
               {label}
-              {out && <span className="sr-only"> — {t(locale, "out of stock", "স্টক নেই")}</span>}
+              {out && (
+                <span className="sr-only">
+                  {" "}
+                  — {t(locale, "out of stock", "স্টক নেই")}
+                </span>
+              )}
             </button>
           );
         })}
       </div>
-      {selected && rows.find((row) => row.id === selected)?.inStock === false && (
-        <a href="#back-in-stock" className="mt-3 inline-flex min-h-11 items-center text-sm underline">
-          {str("notifyLabel") || t(locale, "Notify me", "জানাবেন")}
-        </a>
-      )}
+      {selected &&
+        rows.find((row) => row.id === selected)?.inStock === false && (
+          <a
+            href="#back-in-stock"
+            className="mt-3 inline-flex min-h-11 items-center text-sm underline"
+          >
+            {str("notifyLabel") || t(locale, "Notify me", "জানাবেন")}
+          </a>
+        )}
     </section>
   );
 };
@@ -417,7 +546,9 @@ const SizeSelector: WidgetComponent = (ctx) => {
 const SizeGuide: WidgetComponent = (ctx) => {
   const { str, int, locale } = ctx;
   const [open, setOpen] = useState(false);
-  const [unit, setUnit] = useState<SizeUnit>(str("unit") === "in" ? "in" : "cm");
+  const [unit, setUnit] = useState<SizeUnit>(
+    str("unit") === "in" ? "in" : "cm",
+  );
 
   const columns = [1, 2, 3]
     .map((n) => ({ key: `c${n}`, label: str(`c${n}Label`) }))
@@ -453,7 +584,11 @@ const SizeGuide: WidgetComponent = (ctx) => {
         title={str("heading") || t(locale, "Size guide", "সাইজ গাইড")}
       >
         <div className="mb-3">
-          <UnitToggle unit={unit} onChange={setUnit} label={t(locale, "Units", "একক")} />
+          <UnitToggle
+            unit={unit}
+            onChange={setUnit}
+            label={t(locale, "Units", "একক")}
+          />
         </div>
         <DataTable
           caption={str("heading")}
@@ -461,7 +596,9 @@ const SizeGuide: WidgetComponent = (ctx) => {
           rows={rows}
           stickyFirstColumn
         />
-        {str("note") && <p className="mt-3 text-xs text-muted-foreground">{str("note")}</p>}
+        {str("note") && (
+          <p className="mt-3 text-xs text-muted-foreground">{str("note")}</p>
+        )}
       </OverlayHost>
     </section>
   );
@@ -470,9 +607,15 @@ const SizeGuide: WidgetComponent = (ctx) => {
 /* -------------------------------------------------------------- fit_note */
 
 const FIT_LABELS: Record<string, { en: string; bn: string }> = {
-  small: { en: "Runs small — consider sizing up", bn: "একটু ছোট — বড় সাইজ নিন" },
+  small: {
+    en: "Runs small — consider sizing up",
+    bn: "একটু ছোট — বড় সাইজ নিন",
+  },
   true: { en: "True to size", bn: "সঠিক মাপ" },
-  large: { en: "Runs large — consider sizing down", bn: "একটু বড় — ছোট সাইজ নিন" },
+  large: {
+    en: "Runs large — consider sizing down",
+    bn: "একটু বড় — ছোট সাইজ নিন",
+  },
 };
 
 const FitNote: WidgetComponent = (ctx) => {
@@ -481,10 +624,13 @@ const FitNote: WidgetComponent = (ctx) => {
   return (
     <p className="rounded-fq-md border border-border bg-muted/40 p-3 text-sm">
       <span className="font-medium">{t(locale, fit.en, fit.bn)}</span>
-      {str("note") && <span className="text-muted-foreground"> · {str("note")}</span>}
+      {str("note") && (
+        <span className="text-muted-foreground"> · {str("note")}</span>
+      )}
       {(str("modelHeight") || str("modelSize")) && (
         <span className="block text-xs text-muted-foreground">
-          {t(locale, "Model", "মডেল")}: {str("modelHeight")} {str("modelSize") && `· ${str("modelSize")}`}
+          {t(locale, "Model", "মডেল")}: {str("modelHeight")}{" "}
+          {str("modelSize") && `· ${str("modelSize")}`}
         </span>
       )}
     </p>
@@ -497,10 +643,19 @@ const BackInStock: WidgetComponent = (ctx) => {
   const { str, data, locale, section } = ctx;
   const rows = sizeRows(data?.rows).filter((row) => row.inStock === false);
   return (
-    <section id="back-in-stock" className="rounded-fq-md border border-border bg-card p-4">
+    <section
+      id="back-in-stock"
+      className="rounded-fq-md border border-border bg-card p-4"
+    >
       <p className="text-sm font-semibold">{str("heading")}</p>
-      {str("body") && <p className="mt-1 text-sm text-muted-foreground">{str("body")}</p>}
-      <form className="mt-3 flex flex-wrap gap-2" method="post" action="#back-in-stock">
+      {str("body") && (
+        <p className="mt-1 text-sm text-muted-foreground">{str("body")}</p>
+      )}
+      <form
+        className="mt-3 flex flex-wrap gap-2"
+        method="post"
+        action="#back-in-stock"
+      >
         {rows.length > 0 && (
           <>
             <label className="sr-only" htmlFor={`bis-variant-${section.id}`}>
@@ -537,7 +692,10 @@ const BackInStock: WidgetComponent = (ctx) => {
           {str("buttonLabel") || t(locale, "Notify me", "জানাবেন")}
         </button>
       </form>
-      <ConsentChip props={{ consentText: str("consentText") }} locale={locale} />
+      <ConsentChip
+        props={{ consentText: str("consentText") }}
+        locale={locale}
+      />
     </section>
   );
 };
@@ -555,14 +713,18 @@ const CarePanel: WidgetComponent = (ctx) => {
       <dl className="m-0 space-y-2 text-sm">
         {str("composition") && (
           <div>
-            <dt className="font-medium">{t(locale, "Composition", "উপাদান")}</dt>
+            <dt className="font-medium">
+              {t(locale, "Composition", "উপাদান")}
+            </dt>
             <dd className="m-0 text-muted-foreground">{str("composition")}</dd>
           </div>
         )}
         {str("care") && (
           <div>
             <dt className="font-medium">{t(locale, "Care", "যত্ন")}</dt>
-            <dd className="m-0 whitespace-pre-line text-muted-foreground">{str("care")}</dd>
+            <dd className="m-0 whitespace-pre-line text-muted-foreground">
+              {str("care")}
+            </dd>
           </div>
         )}
         {str("origin") && (
@@ -585,8 +747,12 @@ const SustainBadge: WidgetComponent = (ctx) => {
     .filter((claim) => claim.label);
   if (claims.length === 0) return null;
   return (
-    <section aria-label={str("heading") || t(locale, "Sustainability", "টেকসইতা")}>
-      {str("heading") && <p className="mb-2 text-sm font-medium">{str("heading")}</p>}
+    <section
+      aria-label={str("heading") || t(locale, "Sustainability", "টেকসইতা")}
+    >
+      {str("heading") && (
+        <p className="mb-2 text-sm font-medium">{str("heading")}</p>
+      )}
       <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
         {claims.map((claim) => (
           <li key={claim.label}>
@@ -616,9 +782,16 @@ const CompleteTheLook: WidgetComponent = (ctx) => {
       <Heading className="mb-3 text-lg font-semibold">{label}</Heading>
       <Rail label={label}>
         {data?.pending
-          ? Array.from({ length: limit }, (_, i) => <ProductCardSkeleton key={i} variant="compact" />)
+          ? Array.from({ length: limit }, (_, i) => (
+              <ProductCardSkeleton key={i} variant="compact" />
+            ))
           : rows.map((row) => (
-              <ProductCard key={row.id} row={row} locale={locale} variant="compact" />
+              <ProductCard
+                key={row.id}
+                row={row}
+                locale={locale}
+                variant="compact"
+              />
             ))}
       </Rail>
       {rows.length > 0 && (
@@ -653,9 +826,13 @@ const WishlistButton: WidgetComponent = (ctx) => {
       className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border px-4 text-sm"
     >
       <span aria-hidden="true">{saved ? "♥" : "♡"}</span>
-      {saved ? str("savedLabel") || t(locale, "Saved", "সংরক্ষিত") : str("addLabel") || t(locale, "Save", "সংরক্ষণ")}
+      {saved
+        ? str("savedLabel") || t(locale, "Saved", "সংরক্ষিত")
+        : str("addLabel") || t(locale, "Save", "সংরক্ষণ")}
       {bool("showCount") && ids.length > 0 && (
-        <span className="tabular-nums text-muted-foreground">({ids.length})</span>
+        <span className="tabular-nums text-muted-foreground">
+          ({ids.length})
+        </span>
       )}
     </button>
   );

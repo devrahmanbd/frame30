@@ -70,7 +70,9 @@ export function exportToMarkdown(
     `**Channel:** ${conv.channel}  `,
     `**Status**: \`${conv.status}\` | **Takeover Mode**: \`${conv.takeoverMode ?? "ai"}\` | **Priority:** ${conv.priority ?? "normal"}  `,
     `**Created**: ${new Date(conv.createdAt).toUTCString()}  `,
-    conv.resolvedAt ? `**Resolved**: ${new Date(conv.resolvedAt).toUTCString()}  ` : "",
+    conv.resolvedAt
+      ? `**Resolved**: ${new Date(conv.resolvedAt).toUTCString()}  `
+      : "",
     conv.orderNumber ? `**Order Ref**: \`#${conv.orderNumber}\`  ` : "",
     `**SLA Status**: ${sla.slaStatus.toUpperCase()} (TTFR: ${sla.formattedTtfr}, Resolution: ${sla.formattedResolutionTime})  `,
     ``,
@@ -91,11 +93,16 @@ export function exportToMarkdown(
     }
     const d = new Date(m.createdAt);
     const validDate = isNaN(d.getTime()) ? new Date() : d;
-    const time = validDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    const time = validDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
     const date = validDate.toISOString().slice(0, 10);
 
     if (m.isInternalNote) {
-      lines.push(`🔒 **Internal Staff Note** *(${date} ${time})* — Operator \`${m.sentByOperatorId ?? "Staff"}\``);
+      lines.push(
+        `🔒 **Internal Staff Note** *(${date} ${time})* — Operator \`${m.sentByOperatorId ?? "Staff"}\``,
+      );
       lines.push(`> ${body.replace(/\n/g, "\n> ")}`);
       lines.push(``);
     } else if (m.role === "agent") {
@@ -154,7 +161,12 @@ export function exportToJsonl(
       JSON.stringify({
         conversationId: conv.id,
         messageId: m.id,
-        role: m.role === "agent" ? "operator" : m.role === "user" ? "customer" : m.role,
+        role:
+          m.role === "agent"
+            ? "operator"
+            : m.role === "user"
+              ? "customer"
+              : m.role,
         body,
         isInternalNote: Boolean(m.isInternalNote),
         sentByOperatorId: m.sentByOperatorId ?? null,
@@ -172,7 +184,12 @@ export function exportToJsonl(
 function escapeCsv(field: string | null | undefined): string {
   if (field === null || field === undefined) return "";
   const str = String(field);
-  if (str.includes(",") || str.includes('"') || str.includes("\n") || str.includes("\r")) {
+  if (
+    str.includes(",") ||
+    str.includes('"') ||
+    str.includes("\n") ||
+    str.includes("\r")
+  ) {
     return `"${str.replace(/"/g, '""')}"`;
   }
   return str;
@@ -231,8 +248,10 @@ function normalizeConv(c: any): ExportConversationMetadata {
     orderNumber: c.orderNumber ?? c.order_number,
     createdAt: c.createdAt ?? c.created_at ?? new Date().toISOString(),
     resolvedAt: c.resolvedAt ?? c.resolved_at,
-    lastCustomerMessageAt: c.lastCustomerMessageAt ?? c.last_customer_message_at,
-    lastOperatorMessageAt: c.lastOperatorMessageAt ?? c.last_operator_message_at,
+    lastCustomerMessageAt:
+      c.lastCustomerMessageAt ?? c.last_customer_message_at,
+    lastOperatorMessageAt:
+      c.lastOperatorMessageAt ?? c.last_operator_message_at,
     operatorNotes: c.operatorNotes ?? c.operator_notes,
   };
 }

@@ -32,15 +32,24 @@ export type BuildManifest = {
   isGitClean: boolean;
 };
 
-export function resolveGitMetadata(): { gitSha: string; shortSha: string; isClean: boolean } {
+export function resolveGitMetadata(): {
+  gitSha: string;
+  shortSha: string;
+  isClean: boolean;
+} {
   try {
     const gitSha = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
-    const shortSha = execSync("git rev-parse --short=8 HEAD", { encoding: "utf8" }).trim();
-    const status = execSync("git status --porcelain", { encoding: "utf8" }).trim();
+    const shortSha = execSync("git rev-parse --short=8 HEAD", {
+      encoding: "utf8",
+    }).trim();
+    const status = execSync("git status --porcelain", {
+      encoding: "utf8",
+    }).trim();
     return { gitSha, shortSha, isClean: status.length === 0 };
   } catch {
     // Fallback if running outside git repo (e.g. tarball in CI)
-    const fallbackSha = process.env["GIT_SHA"] || "0000000000000000000000000000000000000000";
+    const fallbackSha =
+      process.env["GIT_SHA"] || "0000000000000000000000000000000000000000";
     return {
       gitSha: fallbackSha,
       shortSha: fallbackSha.slice(0, 8),
@@ -49,7 +58,9 @@ export function resolveGitMetadata(): { gitSha: string; shortSha: string; isClea
   }
 }
 
-export function generateBuildManifest(opts: BuildArtifactOptions = {}): BuildManifest {
+export function generateBuildManifest(
+  opts: BuildArtifactOptions = {},
+): BuildManifest {
   const pkgPath = resolve(process.cwd(), "package.json");
   const pkg = JSON.parse(readFileSync(pkgPath, "utf8")) as { version?: string };
   const version = pkg.version || "1.0.0";
@@ -154,7 +165,9 @@ if (import.meta.main) {
     console.log(`  Git SHA:       ${manifest.gitSha}`);
     console.log(`  Build Date:    ${manifest.buildDate}`);
   } catch (err) {
-    console.error(`[build-immutable-artifact] ERROR: ${(err as Error).message}`);
+    console.error(
+      `[build-immutable-artifact] ERROR: ${(err as Error).message}`,
+    );
     process.exit(1);
   }
 }

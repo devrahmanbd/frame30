@@ -1,1 +1,66 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js", "label": "cli.js", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L1"}, {"id": "bin_cli_dirname", "label": "__dirname", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L9"}, {"id": "bin_cli_clipath", "label": "cliPath", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L10"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js", "target": "node_url", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js", "target": "bin_cli_dirname", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js", "target": "bin_cli_clipath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js", "source_location": "L10", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js",
+      "label": "cli.js",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L1"
+    },
+    {
+      "id": "bin_cli_dirname",
+      "label": "__dirname",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L9"
+    },
+    {
+      "id": "bin_cli_clipath",
+      "label": "cliPath",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L10"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js",
+      "target": "node_url",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js",
+      "target": "bin_cli_dirname",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_bin_cli_js",
+      "target": "bin_cli_clipath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/bin/cli.js",
+      "source_location": "L10",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

@@ -8,9 +8,19 @@
 import { toDigits, type DigitSystem, type Locale } from "./bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "./money-display";
 
-export type UnitKind = "bdt" | "mah" | "gb" | "ml" | "g" | "months" | "percent" | "count";
+export type UnitKind =
+  "bdt" | "mah" | "gb" | "ml" | "g" | "months" | "percent" | "count";
 
-export const UNIT_KINDS: UnitKind[] = ["bdt", "mah", "gb", "ml", "g", "months", "percent", "count"];
+export const UNIT_KINDS: UnitKind[] = [
+  "bdt",
+  "mah",
+  "gb",
+  "ml",
+  "g",
+  "months",
+  "percent",
+  "count",
+];
 
 export type UnitFormatOptions = {
   digits?: DigitSystem;
@@ -19,7 +29,10 @@ export type UnitFormatOptions = {
   currencyDisplay?: "symbol" | "code";
 };
 
-const SUFFIX: Record<Exclude<UnitKind, "bdt" | "count">, { en: string; bn: string }> = {
+const SUFFIX: Record<
+  Exclude<UnitKind, "bdt" | "count">,
+  { en: string; bn: string }
+> = {
   mah: { en: " mAh", bn: " mAh" },
   gb: { en: " GB", bn: " জিবি" },
   ml: { en: " ml", bn: " মিলি" },
@@ -35,7 +48,8 @@ export function formatUnit(
   options: UnitFormatOptions = {},
 ): string {
   const locale: Locale = options.locale ?? "en";
-  const digits: DigitSystem = options.digits ?? (locale === "bn" ? "bengali" : "latin");
+  const digits: DigitSystem =
+    options.digits ?? (locale === "bn" ? "bengali" : "latin");
 
   if (unit === "bdt") {
     return formatDisplayMoney(value, {
@@ -43,7 +57,9 @@ export function formatUnit(
       locale,
       compact: true,
       ...(options.currency ? { currency: options.currency } : {}),
-      ...(options.currencyDisplay ? { currencyDisplay: options.currencyDisplay } : {}),
+      ...(options.currencyDisplay
+        ? { currencyDisplay: options.currencyDisplay }
+        : {}),
     });
   }
 

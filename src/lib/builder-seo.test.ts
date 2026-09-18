@@ -26,9 +26,14 @@ function ast(main: ReturnType<typeof newSection>[]): ThemeAst {
   return { ...EMPTY_AST, main };
 }
 
-function withProps(type: Parameters<typeof newSection>[0], props: Record<string, unknown>) {
+function withProps(
+  type: Parameters<typeof newSection>[0],
+  props: Record<string, unknown>,
+) {
   const node = newSection(type);
-  return { ...node, props: { ...node.props, ...props } } as ReturnType<typeof newSection>;
+  return { ...node, props: { ...node.props, ...props } } as ReturnType<
+    typeof newSection
+  >;
 }
 
 describe("page SEO parsing", () => {
@@ -69,9 +74,10 @@ describe("pixel-width SERP preview", () => {
   });
 
   it("falls back to the route title when no override is set", () => {
-    expect(serpPreview(EMPTY_PAGE_SEO, { title: "Home — Store", description: "d" }).title).toBe(
-      "Home — Store",
-    );
+    expect(
+      serpPreview(EMPTY_PAGE_SEO, { title: "Home — Store", description: "d" })
+        .title,
+    ).toBe("Home — Store");
   });
 });
 
@@ -79,8 +85,14 @@ describe("template analysis", () => {
   it("counts h1 claims, alt coverage and internal links from the AST", () => {
     const report = analyseTemplate(
       ast([
-        withProps("hero", { title: "Spring drop", image: "https://cdn/x.jpg", image_alt: "" }),
-        withProps("rich_text", { body: "Lorem ipsum copy that a crawler can read." }),
+        withProps("hero", {
+          title: "Spring drop",
+          image: "https://cdn/x.jpg",
+          image_alt: "",
+        }),
+        withProps("rich_text", {
+          body: "Lorem ipsum copy that a crawler can read.",
+        }),
         withProps("banner", { ctaHref: "/collections/new", text: "Shop new" }),
       ]),
     );
@@ -92,7 +104,12 @@ describe("template analysis", () => {
   });
 
   it("reports duplicate singleton JSON-LD types", () => {
-    const faq = withProps("faq", { q1: "Delivery?", a1: "1-3 days", q2: "Returns?", a2: "7 days" });
+    const faq = withProps("faq", {
+      q1: "Delivery?",
+      a1: "1-3 days",
+      q2: "Returns?",
+      a2: "7 days",
+    });
     const report = analyseTemplate(ast([faq, { ...faq, id: `${faq.id}-2` }]));
     expect(report.duplicateJsonLdTypes).toContain("FAQPage");
   });
@@ -105,7 +122,13 @@ describe("template analysis", () => {
 
 describe("scoring", () => {
   const base = {
-    ast: ast([withProps("hero", { title: "Spring drop", image: "https://cdn/x.jpg", image_alt: "Model" })]),
+    ast: ast([
+      withProps("hero", {
+        title: "Spring drop",
+        image: "https://cdn/x.jpg",
+        image_alt: "Model",
+      }),
+    ]),
     template: "index" as const,
     storeName: "Framique",
   };
@@ -124,7 +147,8 @@ describe("scoring", () => {
       ...base,
       seo: parsePageSeo({
         title: "Spring drop — Framique",
-        description: "Shop the spring drop: light cottons, easy layers and free delivery over BDT 2,000.",
+        description:
+          "Shop the spring drop: light cottons, easy layers and free delivery over BDT 2,000.",
         canonical: "https://framique.com/",
         ogImage: "https://framique.com/og.jpg",
         focusKeyword: "spring drop",
@@ -139,47 +163,81 @@ describe("scoring", () => {
       seo: EMPTY_PAGE_SEO,
       issues: [{ level: "error", message: "Empty container", sectionId: "a" }],
     });
-    expect(report.checks.find((c) => c.id === "content.lints")?.status).toBe("fail");
+    expect(report.checks.find((c) => c.id === "content.lints")?.status).toBe(
+      "fail",
+    );
   });
 
   it("warns about thin copy", () => {
     const report = scoreBuilderSeo({ ...base, seo: EMPTY_PAGE_SEO });
     expect(report.content.words).toBeLessThan(MIN_WORDS);
-    expect(report.checks.find((c) => c.id === "content.words")?.status).not.toBe("pass");
+    expect(
+      report.checks.find((c) => c.id === "content.words")?.status,
+    ).not.toBe("pass");
   });
 });
 
 describe("head fragments", () => {
   it("drops the canonical and adds robots when noindex is set", () => {
-    const head = pageSeoHead(parsePageSeo({ canonical: "https://x.com/a", noindex: true }), {
-      title: "T",
-      description: "D",
-    });
+    const head = pageSeoHead(
+      parsePageSeo({ canonical: "https://x.com/a", noindex: true }),
+      {
+        title: "T",
+        description: "D",
+      },
+    );
     expect(head.links).toHaveLength(0);
-    expect(head.meta).toEqual(expect.arrayContaining([{ name: "robots", content: "noindex, nofollow" }]));
+    expect(head.meta).toEqual(
+      expect.arrayContaining([
+        { name: "robots", content: "noindex, nofollow" },
+      ]),
+    );
   });
 
   it("emits hreflang alternates alongside an indexable canonical", () => {
-    const head = pageSeoHead(parsePageSeo({ canonical: "https://x.com/a" }), { title: "T", description: "D" });
+    const head = pageSeoHead(parsePageSeo({ canonical: "https://x.com/a" }), {
+      title: "T",
+      description: "D",
+    });
     expect(head.links.length).toBeGreaterThan(1);
-    expect(head.links[0]).toEqual({ rel: "canonical", href: "https://x.com/a" });
+    expect(head.links[0]).toEqual({
+      rel: "canonical",
+      href: "https://x.com/a",
+    });
   });
 
   it("gates the sitemap on published and indexable", () => {
-    expect(isSitemapEligible({ published: true, seo: EMPTY_PAGE_SEO })).toBe(true);
-    expect(isSitemapEligible({ published: true, seo: { ...EMPTY_PAGE_SEO, noindex: true } })).toBe(false);
-    expect(isSitemapEligible({ published: false, seo: EMPTY_PAGE_SEO })).toBe(false);
+    expect(isSitemapEligible({ published: true, seo: EMPTY_PAGE_SEO })).toBe(
+      true,
+    );
+    expect(
+      isSitemapEligible({
+        published: true,
+        seo: { ...EMPTY_PAGE_SEO, noindex: true },
+      }),
+    ).toBe(false);
+    expect(isSitemapEligible({ published: false, seo: EMPTY_PAGE_SEO })).toBe(
+      false,
+    );
   });
 });
 
 describe("lint fixes", () => {
   it("classifies known messages and still surfaces unknown ones", () => {
-    expect(classifyIssue({ level: "warn", message: "Image is missing alt text", sectionId: null }).code).toBe(
-      "media.alt_missing",
-    );
-    expect(classifyIssue({ level: "warn", message: "Something new we never saw", sectionId: null }).code).toBe(
-      "template.other",
-    );
+    expect(
+      classifyIssue({
+        level: "warn",
+        message: "Image is missing alt text",
+        sectionId: null,
+      }).code,
+    ).toBe("media.alt_missing");
+    expect(
+      classifyIssue({
+        level: "warn",
+        message: "Something new we never saw",
+        sectionId: null,
+      }).code,
+    ).toBe("template.other");
   });
 
   it("sorts errors before warnings", () => {
@@ -191,14 +249,25 @@ describe("lint fixes", () => {
   });
 
   it("never invents copy for a missing translation", () => {
-    const plan = planFix(classifyIssue({ level: "warn", message: "Title has no বাংলা translation", sectionId: null }), null);
+    const plan = planFix(
+      classifyIssue({
+        level: "warn",
+        message: "Title has no বাংলা translation",
+        sectionId: null,
+      }),
+      null,
+    );
     expect(plan?.kind).toBe("focus");
   });
 
   it("resets raw colours to the catalog default", () => {
     const node = withProps("hero", { bg: "#ff0055" });
     const plan = planFix(
-      classifyIssue({ level: "warn", message: "Raw colour value on bg", sectionId: node.id }),
+      classifyIssue({
+        level: "warn",
+        message: "Raw colour value on bg",
+        sectionId: node.id,
+      }),
       node,
     );
     expect(plan?.kind).toBe("props");
@@ -208,7 +277,11 @@ describe("lint fixes", () => {
   it("does not offer a no-op props fix", () => {
     const node = withProps("hero", {});
     const plan = planFix(
-      classifyIssue({ level: "warn", message: "Raw colour value on bg", sectionId: node.id }),
+      classifyIssue({
+        level: "warn",
+        message: "Raw colour value on bg",
+        sectionId: node.id,
+      }),
       node,
     );
     expect(isActionable(plan)).toBe(false);

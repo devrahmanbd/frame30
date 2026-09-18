@@ -9,7 +9,10 @@
  */
 
 import { incr, log, observe } from "./observability.server";
-import { getAiGatewayConfig } from "./support-embed.server";
+import {
+  getAiGatewayConfig,
+  isPlaceholderApiKey,
+} from "./support-embed.server";
 
 export type DraftRequest = {
   question: string;
@@ -62,10 +65,11 @@ export class OpenRouterLLMService implements LLMService {
 
     const cfg = await getAiGatewayConfig();
     const apiKey = cfg.apiKey;
-    const baseUrl = cfg.gatewayUrl?.replace(/\/+$/, "") || "https://openrouter.ai/api/v1";
+    const baseUrl =
+      cfg.gatewayUrl?.replace(/\/+$/, "") || "https://openrouter.ai/api/v1";
     const chatUrl = `${baseUrl}/chat/completions`;
 
-    if (!apiKey) {
+    if (!apiKey || isPlaceholderApiKey(apiKey)) {
       log("warn", "ai.llm_no_api_key", { service: this.name });
       return mockLLM.draft(req);
     }
@@ -116,7 +120,9 @@ export class OpenRouterLLMService implements LLMService {
 
         if (!res.ok) {
           const detail = await res.text().catch(() => "");
-          throw new Error(`OpenRouter HTTP ${res.status}: ${detail.slice(0, 150)}`);
+          throw new Error(
+            `OpenRouter HTTP ${res.status}: ${detail.slice(0, 150)}`,
+          );
         }
 
         const payload = (await res.json()) as {
@@ -129,7 +135,11 @@ export class OpenRouterLLMService implements LLMService {
         }
 
         const elapsed = Date.now() - started;
-        incr("framique_ai_draft_total", { provider: this.name, model, outcome: "ok" });
+        incr("framique_ai_draft_total", {
+          provider: this.name,
+          model,
+          outcome: "ok",
+        });
         observe("framique_ai_draft_latency_ms", elapsed, { model });
 
         return { text: answerText, grounded: true };
@@ -145,12 +155,18 @@ export class OpenRouterLLMService implements LLMService {
 
         // If there's a fallback model remaining, continue loop
         if (i < modelsToTry.length - 1) {
-          incr("framique_ai_model_fallback_total", { from: model, to: modelsToTry[i + 1] });
+          incr("framique_ai_model_fallback_total", {
+            from: model,
+            to: modelsToTry[i + 1],
+          });
           continue;
         }
 
         // If all remote models failed, degrade gracefully to extractive mock
-        incr("framique_ai_draft_total", { provider: this.name, outcome: "error" });
+        incr("framique_ai_draft_total", {
+          provider: this.name,
+          outcome: "error",
+        });
         return mockLLM.draft(req);
       }
     }
@@ -176,10 +192,16 @@ export async function draftAnswer(req: DraftRequest): Promise<Draft | null> {
   const started = Date.now();
   try {
     const out = await active.draft(req);
-    incr("framique_ai_draft_total", { provider: active.name, outcome: out ? "ok" : "empty" });
+    incr("framique_ai_draft_total", {
+      provider: active.name,
+      outcome: out ? "ok" : "empty",
+    });
     return out;
   } catch (err) {
-    incr("framique_ai_draft_total", { provider: active.name, outcome: "error" });
+    incr("framique_ai_draft_total", {
+      provider: active.name,
+      outcome: "error",
+    });
     log("warn", "ai.provider_down", {
       provider: active.name,
       ms: Date.now() - started,

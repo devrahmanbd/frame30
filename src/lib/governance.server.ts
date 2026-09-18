@@ -22,11 +22,17 @@ function asGrants(value: unknown): Grant[] {
   });
 }
 
-export async function loadGovernance(supabase: Client, merchantId: string, userId: string) {
+export async function loadGovernance(
+  supabase: Client,
+  merchantId: string,
+  userId: string,
+) {
   const [members, roles, audit, kyc, approvals, sessions] = await Promise.all([
     supabase
       .from("merchant_members")
-      .select("id, user_id, role, role_id, status, mfa_status, last_login_at, created_at, invited_by")
+      .select(
+        "id, user_id, role, role_id, status, mfa_status, last_login_at, created_at, invited_by",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at"),
 
@@ -44,7 +50,9 @@ export async function loadGovernance(supabase: Client, merchantId: string, userI
       .limit(30),
     supabase
       .from("merchant_kyc")
-      .select("state, legal_name, contact_phone, trade_license_no, bin_no, rejection_reason, submitted_at, reviewed_at")
+      .select(
+        "state, legal_name, contact_phone, trade_license_no, bin_no, rejection_reason, submitted_at, reviewed_at",
+      )
       .eq("merchant_id", merchantId)
       .maybeSingle(),
     supabase
@@ -72,8 +80,17 @@ export async function loadGovernance(supabase: Client, merchantId: string, userI
   ).filter((id): id is string => Boolean(id));
 
   const { data: profiles } = profileIds.length
-    ? await supabase.from("profiles").select("id, email, full_name").in("id", profileIds)
-    : { data: [] as { id: string; email: string | null; full_name: string | null }[] };
+    ? await supabase
+        .from("profiles")
+        .select("id, email, full_name")
+        .in("id", profileIds)
+    : {
+        data: [] as {
+          id: string;
+          email: string | null;
+          full_name: string | null;
+        }[],
+      };
 
   const nameOf = (id: string | null) => {
     if (!id) return null;
@@ -182,13 +199,19 @@ function rethrow(message: string | undefined): never {
 export async function saveRole(
   supabase: Client,
   merchantId: string,
-  input: { roleId: string | null; name: string; grants: Grant[]; mfaRequired?: boolean },
+  input: {
+    roleId: string | null;
+    name: string;
+    grants: Grant[];
+    mfaRequired?: boolean;
+  },
 ) {
   const { data, error } = await supabase.rpc("staff_save_role", {
     _merchant_id: merchantId,
     _role_id: input.roleId as unknown as string,
     _name: input.name,
-    _grants: input.grants as unknown as Database["public"]["Tables"]["staff_roles"]["Row"]["grants"],
+    _grants:
+      input.grants as unknown as Database["public"]["Tables"]["staff_roles"]["Row"]["grants"],
     _mfa_required: input.mfaRequired ?? false,
   });
   if (error) rethrow(error.message);
@@ -196,14 +219,21 @@ export async function saveRole(
 }
 
 export async function deleteRole(supabase: Client, roleId: string) {
-  const { error } = await supabase.rpc("staff_delete_role", { _role_id: roleId });
+  const { error } = await supabase.rpc("staff_delete_role", {
+    _role_id: roleId,
+  });
   if (error) rethrow(error.message);
 }
 
 /** Mirrors the server guard so the editor can explain a rule before saving. */
 export const ROLE_GRANT_RULES = {
   forbidden: ["staff:manage_roles", "staff:manage_grants"],
-  ownerOnly: ["finance:read", "finance:initiate", "finance:approve", "settings:update"],
+  ownerOnly: [
+    "finance:read",
+    "finance:initiate",
+    "finance:approve",
+    "settings:update",
+  ],
 } as const;
 
 export async function setMember(
@@ -218,7 +248,11 @@ export async function setMember(
   if (error) rethrow(error.message);
 }
 
-export async function setOwnMfa(supabase: Client, merchantId: string, status: MfaStatus) {
+export async function setOwnMfa(
+  supabase: Client,
+  merchantId: string,
+  status: MfaStatus,
+) {
   const { error } = await supabase.rpc("staff_set_own_mfa", {
     _merchant_id: merchantId,
     _status: status,
@@ -277,11 +311,14 @@ export async function submitKyc(
   return data;
 }
 
-
 export async function inviteMember(
   supabase: Client,
   merchantId: string,
-  input: { email: string; role: Database["public"]["Enums"]["merchant_role"]; roleId: string | null },
+  input: {
+    email: string;
+    role: Database["public"]["Enums"]["merchant_role"];
+    roleId: string | null;
+  },
 ) {
   const { error } = await supabase.rpc("staff_invite", {
     _merchant_id: merchantId,
@@ -292,7 +329,11 @@ export async function inviteMember(
   if (error) rethrow(error.message);
 }
 
-export async function revokeSession(supabase: Client, merchantId: string, sessionRowId: string) {
+export async function revokeSession(
+  supabase: Client,
+  merchantId: string,
+  sessionRowId: string,
+) {
   const { error } = await supabase.rpc("staff_revoke_session", {
     _merchant_id: merchantId,
     _session_row_id: sessionRowId,

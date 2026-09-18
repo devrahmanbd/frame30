@@ -45,7 +45,10 @@ let localActiveSlot: TopologySlot = "blue";
 export async function getActiveTopologySlot(): Promise<TopologySlot> {
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", redisKey("platform", TOPOLOGY_KEY)]);
+      const res = await redisCommand([
+        "GET",
+        redisKey("platform", TOPOLOGY_KEY),
+      ]);
       if (res.ok && typeof res.value === "string") {
         const slot = res.value.toLowerCase().trim();
         if (slot === "blue" || slot === "green") {
@@ -61,11 +64,17 @@ export async function getActiveTopologySlot(): Promise<TopologySlot> {
 }
 
 /** Record new active slot in persistent Redis topology store and local memory */
-export async function setActiveTopologySlot(slot: TopologySlot): Promise<boolean> {
+export async function setActiveTopologySlot(
+  slot: TopologySlot,
+): Promise<boolean> {
   localActiveSlot = slot;
   if (!redisConfigured()) return true;
   try {
-    const res = await redisCommand(["SET", redisKey("platform", TOPOLOGY_KEY), slot]);
+    const res = await redisCommand([
+      "SET",
+      redisKey("platform", TOPOLOGY_KEY),
+      slot,
+    ]);
     return res.ok;
   } catch {
     return false;
@@ -139,7 +148,9 @@ ${upstreamServers}
 /**
  * Generate Kubernetes Service selector patch for active service router.
  */
-export function generateK8sServicePatch(slot: TopologySlot): Record<string, unknown> {
+export function generateK8sServicePatch(
+  slot: TopologySlot,
+): Record<string, unknown> {
   return {
     spec: {
       selector: {
@@ -172,7 +183,8 @@ export async function executeTopologyCutover(
 
     // Write updated upstream config file if path provided
     const outPath =
-      options.upstreamConfigPath || resolve(process.cwd(), "ops/routing/upstream.conf");
+      options.upstreamConfigPath ||
+      resolve(process.cwd(), "ops/routing/upstream.conf");
 
     if (existsSync(resolve(outPath, ".."))) {
       try {

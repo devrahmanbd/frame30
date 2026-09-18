@@ -1,1 +1,665 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "label": "observability.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L1"}, {"id": "root_observability_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L39"}, {"id": "root_observability_status_word", "label": "STATUS_WORD", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L65"}, {"id": "root_observability_observabilitydesk", "label": "ObservabilityDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L72"}, {"id": "root_observability_platformtraffic", "label": "PlatformTraffic()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L331"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "users_rahman_documents_frame30_src_lib_integrations_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_functions_disconnectintegrationfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_functions_loadintegrationsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_functions_loadopssignalsfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_functions_saveintegrationfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_functions_testintegrationfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "users_rahman_documents_frame30_src_lib_integrations_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_composecommand", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_costnote", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_formatsignal", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_signaltone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_signal_specs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_deeplink", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_envblock", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_overallintegrationstatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_service_catalog", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_status_tone", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_validbaseurl", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_integrationservice", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_integrations_probestatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "lib_owner_functions_ownertrafficfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_ownerui_ownerheader", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_ownerui_statcard", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_ownerui_statgrid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_ownerui_statepill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_observability_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L39", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_observability_status_word", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L65", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_observability_observabilitydesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L72", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_root_observability_tsx", "target": "root_observability_platformtraffic", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L331", "weight": 1.0}], "raw_calls": [{"caller_nid": "root_observability_observabilitydesk", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L73"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L74"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L75"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L76"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L77"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L78"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L79"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L80"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L82"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L88"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L96"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "overallIntegrationStatus", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L97"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L97"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L98"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L103"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L111"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L120"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L139"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L139"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L149"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L177"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L295"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "values", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L295"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "envBlock", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L314"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "composeCommand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L315"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L317"}, {"caller_nid": "root_observability_observabilitydesk", "callee": "costNote", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L317"}, {"caller_nid": "root_observability_platformtraffic", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L332"}, {"caller_nid": "root_observability_platformtraffic", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L333"}, {"caller_nid": "root_observability_platformtraffic", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L334"}, {"caller_nid": "root_observability_platformtraffic", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L345"}, {"caller_nid": "root_observability_platformtraffic", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L368"}, {"caller_nid": "root_observability_platformtraffic", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L369"}, {"caller_nid": "root_observability_platformtraffic", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L370"}, {"caller_nid": "root_observability_platformtraffic", "callee": "toLocaleString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L371"}, {"caller_nid": "root_observability_platformtraffic", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L372"}, {"caller_nid": "root_observability_platformtraffic", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L382"}, {"caller_nid": "root_observability_platformtraffic", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx", "source_location": "L397"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "label": "observability.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "root_observability_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L39"
+    },
+    {
+      "id": "root_observability_status_word",
+      "label": "STATUS_WORD",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L65"
+    },
+    {
+      "id": "root_observability_observabilitydesk",
+      "label": "ObservabilityDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L72"
+    },
+    {
+      "id": "root_observability_platformtraffic",
+      "label": "PlatformTraffic()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L331"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_integrations_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_functions_disconnectintegrationfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_functions_loadintegrationsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_functions_loadopssignalsfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_functions_saveintegrationfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_functions_testintegrationfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_integrations_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_composecommand",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_costnote",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_formatsignal",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_signaltone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_signal_specs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_deeplink",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_envblock",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_overallintegrationstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_service_catalog",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_status_tone",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_validbaseurl",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_integrationservice",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_integrations_probestatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_owner_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "lib_owner_functions_ownertrafficfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "users_rahman_documents_frame30_src_components_root_ownerui_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_ownerui_ownerheader",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_ownerui_statcard",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_ownerui_statgrid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_ownerui_statepill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_observability_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_observability_status_word",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_observability_observabilitydesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_root_observability_tsx",
+      "target": "root_observability_platformtraffic",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L331",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L77"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "overallIntegrationStatus",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L120"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L149"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L177"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "values",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L295"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "envBlock",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L314"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "composeCommand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L315"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "root_observability_observabilitydesk",
+      "callee": "costNote",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L332"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L333"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L334"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L345"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L368"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L369"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L370"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "toLocaleString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L382"
+    },
+    {
+      "caller_nid": "root_observability_platformtraffic",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/root/observability.tsx",
+      "source_location": "L397"
+    }
+  ]
+}

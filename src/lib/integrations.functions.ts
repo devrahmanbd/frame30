@@ -49,7 +49,11 @@ export const disconnectIntegrationFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ service: serviceKey }).parse(d))
   .handler(async ({ data, context }) => {
     const { disconnectIntegration } = await import("./integrations.server");
-    return disconnectIntegration(context.supabase, context.userId, data.service);
+    return disconnectIntegration(
+      context.supabase,
+      context.userId,
+      data.service,
+    );
   });
 
 export const loadOpsSignalsFn = createServerFn({ method: "GET" })

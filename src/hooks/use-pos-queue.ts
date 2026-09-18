@@ -27,12 +27,16 @@ export type QueuedCapture = {
 const KEY = "framique.pos.queue";
 const MAX_ATTEMPTS = 8;
 /** Exponential backoff so a failing till does not hammer the server. */
-const BACKOFF_MS = [0, 5_000, 15_000, 45_000, 120_000, 300_000, 600_000, 1_800_000];
+const BACKOFF_MS = [
+  0, 5_000, 15_000, 45_000, 120_000, 300_000, 600_000, 1_800_000,
+];
 
 function read(): QueuedCapture[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(window.localStorage.getItem(KEY) ?? "[]") as QueuedCapture[];
+    return JSON.parse(
+      window.localStorage.getItem(KEY) ?? "[]",
+    ) as QueuedCapture[];
   } catch {
     return [];
   }
@@ -119,7 +123,9 @@ export function usePosQueue(onSynced?: () => void) {
           remaining.push({
             ...item,
             attempts,
-            nextAttemptAt: Date.now() + (BACKOFF_MS[Math.min(attempts, BACKOFF_MS.length - 1)] ?? 0),
+            nextAttemptAt:
+              Date.now() +
+              (BACKOFF_MS[Math.min(attempts, BACKOFF_MS.length - 1)] ?? 0),
             error: error instanceof Error ? error.message : "sync failed",
           });
         }
@@ -145,5 +151,14 @@ export function usePosQueue(onSynced?: () => void) {
 
   const blocked = queue.filter((i) => (i.attempts ?? 0) >= MAX_ATTEMPTS);
 
-  return { queue, blocked, online, syncing, enqueue, sync, drop, maxAttempts: MAX_ATTEMPTS };
+  return {
+    queue,
+    blocked,
+    online,
+    syncing,
+    enqueue,
+    sync,
+    drop,
+    maxAttempts: MAX_ATTEMPTS,
+  };
 }

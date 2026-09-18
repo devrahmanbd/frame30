@@ -1,1 +1,135 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "label": "DocBlocks.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L1"}, {"id": "docs_docblocks_docblocks", "label": "DocBlocks()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L14"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "users_rahman_documents_frame30_src_components_docs_codeblock_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "docs_codeblock_codeblock", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "docs_endpointtable_endpointtable", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "users_rahman_documents_frame30_src_components_docs_tryitpanel_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "docs_tryitpanel_tryitpanel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "users_rahman_documents_frame30_src_lib_docs_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "lib_docs_anchorsbyblock", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "lib_docs_docpage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx", "target": "docs_docblocks_docblocks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L14", "weight": 1.0}], "raw_calls": [{"caller_nid": "docs_docblocks_docblocks", "callee": "anchorsByBlock", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L15"}, {"caller_nid": "docs_docblocks_docblocks", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx", "source_location": "L19"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "label": "DocBlocks.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "docs_docblocks_docblocks",
+      "label": "DocBlocks()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L14"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "users_rahman_documents_frame30_src_components_docs_codeblock_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "docs_codeblock_codeblock",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "users_rahman_documents_frame30_src_components_docs_endpointtable_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "docs_endpointtable_endpointtable",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "users_rahman_documents_frame30_src_components_docs_tryitpanel_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "docs_tryitpanel_tryitpanel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_docs_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "lib_docs_anchorsbyblock",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "lib_docs_docpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_docs_docblocks_tsx",
+      "target": "docs_docblocks_docblocks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "docs_docblocks_docblocks",
+      "callee": "anchorsByBlock",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "docs_docblocks_docblocks",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/docs/DocBlocks.tsx",
+      "source_location": "L19"
+    }
+  ]
+}

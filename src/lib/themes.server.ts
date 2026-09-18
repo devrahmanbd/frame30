@@ -63,7 +63,9 @@ async function resolveTheme(
   if (previewThemeId) {
     const { data } = await db
       .from("store_themes")
-      .select("id, name, is_active, published_version_id, source_listing_slug, source_version")
+      .select(
+        "id, name, is_active, published_version_id, source_listing_slug, source_version",
+      )
       .eq("merchant_id", merchantId)
       .eq("id", previewThemeId)
       .maybeSingle();
@@ -81,10 +83,15 @@ async function resolveTheme(
   return ensureTheme(db, merchantId);
 }
 
-async function ensureTheme(db: Client, merchantId: string): Promise<ThemeSummary> {
+async function ensureTheme(
+  db: Client,
+  merchantId: string,
+): Promise<ThemeSummary> {
   const { data, error } = await db
     .from("store_themes")
-    .select("id, name, is_active, published_version_id, source_listing_slug, source_version")
+    .select(
+      "id, name, is_active, published_version_id, source_listing_slug, source_version",
+    )
     .eq("merchant_id", merchantId)
     .order("is_active", { ascending: false })
     .order("created_at", { ascending: true })
@@ -204,7 +211,8 @@ export async function loadWorkspace(
     }
 
     const issues: BuilderWorkspace["issues"] = {};
-    for (const key of TEMPLATE_KEYS) issues[key] = lintTemplate(templateOf(templates, key));
+    for (const key of TEMPLATE_KEYS)
+      issues[key] = lintTemplate(templateOf(templates, key));
 
     return {
       theme,
@@ -237,15 +245,26 @@ export async function loadWorkspace(
   });
 }
 
-async function rpc<T>(db: Client, fn: string, args: Record<string, unknown>): Promise<T> {
+async function rpc<T>(
+  db: Client,
+  fn: string,
+  args: Record<string, unknown>,
+): Promise<T> {
   const { data, error } = await (
     db as unknown as {
-      rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: T; error: unknown }>;
+      rpc: (
+        n: string,
+        a: Record<string, unknown>,
+      ) => Promise<{ data: T; error: unknown }>;
     }
   ).rpc(fn, args);
   if (error) {
-    const message = (error as { message?: string }).message ?? "builder.rpc_failed";
-    throw new BuilderError(message.split(" ")[0] ?? "builder.rpc_failed", message);
+    const message =
+      (error as { message?: string }).message ?? "builder.rpc_failed";
+    throw new BuilderError(
+      message.split(" ")[0] ?? "builder.rpc_failed",
+      message,
+    );
   }
   return data;
 }
@@ -255,12 +274,21 @@ async function rpc<T>(db: Client, fn: string, args: Record<string, unknown>): Pr
  * checked before parsing, and sanitiser rejections are counted afterwards so
  * stripped markup, blocked links, and blocked embeds are visible in metrics.
  */
-function parseUntrusted(input: { templates?: unknown; tokens?: unknown }, surface: string) {
+function parseUntrusted(
+  input: { templates?: unknown; tokens?: unknown },
+  surface: string,
+) {
   try {
-    assertPayloadWithinLimits({ templates: input.templates ?? {}, tokens: input.tokens ?? {} });
+    assertPayloadWithinLimits({
+      templates: input.templates ?? {},
+      tokens: input.tokens ?? {},
+    });
   } catch (err) {
     const code = err instanceof Error ? err.message : "builder.payload_invalid";
-    throw new BuilderError(code, "Theme content is too large or too deeply nested.");
+    throw new BuilderError(
+      code,
+      "Theme content is too large or too deeply nested.",
+    );
   }
   takeSanitiserRejects();
   const templates = parseTemplates(input.templates);
@@ -277,16 +305,25 @@ function parseUntrusted(input: { templates?: unknown; tokens?: unknown }, surfac
 export async function autosave(
   db: Client,
   merchantId: string,
-  input: { themeId: string; templates?: unknown; tokens?: unknown; revision: number },
+  input: {
+    themeId: string;
+    templates?: unknown;
+    tokens?: unknown;
+    revision: number;
+  },
 ) {
   await rateLimit("builder.autosave", `${merchantId}`);
   const { templates, tokens } = parseUntrusted(input, "autosave");
-  const result = await rpc<{ revision: number; applied: boolean }>(db, "theme_autosave", {
-    _theme_id: input.themeId,
-    _templates: templates as unknown as Json,
-    _tokens: tokens as unknown as Json,
-    _revision: input.revision,
-  });
+  const result = await rpc<{ revision: number; applied: boolean }>(
+    db,
+    "theme_autosave",
+    {
+      _theme_id: input.themeId,
+      _templates: templates as unknown as Json,
+      _tokens: tokens as unknown as Json,
+      _revision: input.revision,
+    },
+  );
   incr("framique_builder_autosave_total", { applied: String(result.applied) });
   return result;
 }
@@ -295,7 +332,13 @@ export async function autosave(
 export async function commitVersion(
   db: Client,
   merchantId: string,
-  input: { themeId: string; templates?: unknown; tokens?: unknown; note?: string; label?: string },
+  input: {
+    themeId: string;
+    templates?: unknown;
+    tokens?: unknown;
+    note?: string;
+    label?: string;
+  },
 ) {
   await rateLimit("builder.commit", merchantId);
   const { templates, tokens } = parseUntrusted(input, "commit");
@@ -316,14 +359,22 @@ export async function commitVersion(
  */
 function purgeStorefront(reason: string, merchantId?: string) {
   invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
-  incr("framique_theme_purge_total", { reason, scope: merchantId ? "tenant" : "all" });
+  incr("framique_theme_purge_total", {
+    reason,
+    scope: merchantId ? "tenant" : "all",
+  });
 }
 
 /** Publish blocks on lint errors: a broken page never reaches shoppers. */
 export async function publishVersion(
   db: Client,
   merchantId: string,
-  input: { themeId: string; templates?: unknown; tokens?: unknown; note?: string },
+  input: {
+    themeId: string;
+    templates?: unknown;
+    tokens?: unknown;
+    note?: string;
+  },
 ) {
   await rateLimit("builder.publish", merchantId);
   const { templates } = parseUntrusted(input, "publish");
@@ -334,7 +385,9 @@ export async function publishVersion(
   );
   // Phase 9: missing বাংলা only warns per string, but a theme that is more than
   // 10% untranslated cannot go live half-Bangla.
-  const translation = translationGate(translationCoverage(templates)).map((issue) => issue.message);
+  const translation = translationGate(translationCoverage(templates)).map(
+    (issue) => issue.message,
+  );
   // Phase 3: a merchant-uploaded face without a licence attestation, or a
   // theme over the font loading budget, never reaches shoppers.
   const tokens = parseTokens(input.tokens);
@@ -344,7 +397,9 @@ export async function publishVersion(
     const { listFontAssets } = await import("./theme-fonts.server");
     const assets = await listFontAssets(db, merchantId).catch(() => []);
     fonts.push(...licenceGate(assets));
-    fonts.push(...checkFontBudget(tokens).failures.map((f) => `fonts: ${f.message}`));
+    fonts.push(
+      ...checkFontBudget(tokens).failures.map((f) => `fonts: ${f.message}`),
+    );
   }
   // Phase 6: parse clean + lint clean + ≥90% বাংলা + contrast in light/dark ×
   // EN/বাংলা + zero-CLS skeleton parity, composed in one place.
@@ -356,25 +411,38 @@ export async function publishVersion(
       merchant_id: merchantId,
       codes: gate.failures.map((f) => f.code).join(","),
     });
-    throw new BuilderError("builder.publish_blocked", blocking.slice(0, 5).join(" · "));
+    throw new BuilderError(
+      "builder.publish_blocked",
+      blocking.slice(0, 5).join(" · "),
+    );
   }
 
-
-
-  const { versionId } = await commitVersion(db, merchantId, { ...input, note: input.note });
+  const { versionId } = await commitVersion(db, merchantId, {
+    ...input,
+    note: input.note,
+  });
   // Phase 4: custom code is versioned with the theme. A secret-scan or XSS
   // finding in the merchant's CSS/JS blocks the publish before it goes live.
   const { snapshotCustomCode } = await import("./custom-code.server");
   await snapshotCustomCode(db, merchantId, input.themeId, versionId);
   await rpc<string>(db, "theme_publish", { _version_id: versionId });
   purgeStorefront("publish", merchantId);
-  log("info", "theme.published", { merchant_id: merchantId, version_id: versionId });
+  log("info", "theme.published", {
+    merchant_id: merchantId,
+    version_id: versionId,
+  });
   return { versionId };
 }
 
-export async function rollbackVersion(db: Client, merchantId: string, versionId: string) {
+export async function rollbackVersion(
+  db: Client,
+  merchantId: string,
+  versionId: string,
+) {
   await rateLimit("builder.publish", merchantId);
-  const newId = await rpc<string>(db, "theme_rollback", { _version_id: versionId });
+  const newId = await rpc<string>(db, "theme_rollback", {
+    _version_id: versionId,
+  });
   // The custom code that shipped with the target version rolls back with it.
   const { restoreCustomCode } = await import("./custom-code.server");
   const { data: target } = await db
@@ -383,10 +451,16 @@ export async function rollbackVersion(db: Client, merchantId: string, versionId:
     .eq("id", versionId)
     .maybeSingle();
   if (target?.theme_id) {
-    await restoreCustomCode(db, merchantId, target.theme_id, versionId).catch(() => null);
+    await restoreCustomCode(db, merchantId, target.theme_id, versionId).catch(
+      () => null,
+    );
   }
   purgeStorefront("rollback", merchantId);
-  log("warn", "theme.rolled_back", { merchant_id: merchantId, from: versionId, to: newId });
+  log("warn", "theme.rolled_back", {
+    merchant_id: merchantId,
+    from: versionId,
+    to: newId,
+  });
   return { versionId: newId };
 }
 
@@ -410,7 +484,11 @@ export async function scheduleTheme(
   return { id };
 }
 
-export async function cancelSchedule(db: Client, merchantId: string, scheduleId: string) {
+export async function cancelSchedule(
+  db: Client,
+  merchantId: string,
+  scheduleId: string,
+) {
   await rateLimit("builder.schedule", merchantId);
   await rpc<boolean>(db, "theme_schedule_cancel", { _schedule_id: scheduleId });
   return { ok: true };
@@ -464,7 +542,9 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
     const floor = presetCatalogue();
     const { data, error } = await db
       .from("theme_registry")
-      .select("key, name_en, name_bn, summary_en, summary_bn, category, version, preset")
+      .select(
+        "key, name_en, name_bn, summary_en, summary_bn, category, version, preset",
+      )
       .eq("active", true)
       .order("sort_order", { ascending: true });
     if (error) {
@@ -480,9 +560,14 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
     const byKey = new Map(floor.map((theme) => [theme.key, theme]));
     for (const row of rows) {
       const code = presetByKey(row.key);
-      const dbPreset = (row.preset ?? {}) as { tokens?: unknown; templates?: unknown };
+      const dbPreset = (row.preset ?? {}) as {
+        tokens?: unknown;
+        templates?: unknown;
+      };
       const tokens = code ? code.tokens : parseTokens(dbPreset.tokens);
-      const templates = code ? code.templates : parseTemplates(dbPreset.templates);
+      const templates = code
+        ? code.templates
+        : parseTemplates(dbPreset.templates);
       byKey.set(row.key, {
         key: row.key,
         nameEn: row.name_en,
@@ -502,7 +587,6 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
   });
 }
 
-
 /** Full template count shipped by the official themes, for docs and tests. */
 export function officialThemeKeys(): string[] {
   return THEME_PRESETS.map((preset) => preset.key);
@@ -515,19 +599,30 @@ export function registryPackage(key: string): {
   version: string;
 } {
   const preset = presetByKey(key);
-  const templates = preset ? parseTemplates(preset.templates) : ({} as ThemeTemplates);
+  const templates = preset
+    ? parseTemplates(preset.templates)
+    : ({} as ThemeTemplates);
   const templateKeys = Object.keys(templates) as TemplateKey[];
   const blocked = templateKeys.flatMap((templateKey) =>
-    lintTemplate(templates[templateKey]!, templateKey).filter((issue) => issue.level === "error"),
+    lintTemplate(templates[templateKey]!, templateKey).filter(
+      (issue) => issue.level === "error",
+    ),
   );
   if (!preset || templateKeys.length === 0 || blocked.length > 0) {
-    throw new BuilderError("builder.registry_invalid", "Theme package failed validation");
+    throw new BuilderError(
+      "builder.registry_invalid",
+      "Theme package failed validation",
+    );
   }
   // Phase 8 registry versioning: a package built for another builder API line
   // is never installed, so an old AST can't reach a newer runtime.
   const compat = checkApiCompatibility(preset.api ?? PRESET_API_RANGE);
   if (!compat.ok) throw new BuilderError(compat.code, compat.message);
-  return { templates, tokens: parseTokens(preset.tokens), version: preset.version };
+  return {
+    templates,
+    tokens: parseTokens(preset.tokens),
+    version: preset.version,
+  };
 }
 
 /**
@@ -547,7 +642,10 @@ export async function installRegistryTheme(
     const catalogue = await listRegistry(db);
     const entry = catalogue.find((t) => t.key === key);
     if (!entry)
-      throw new BuilderError("builder.registry_missing", "Theme not found in the registry");
+      throw new BuilderError(
+        "builder.registry_missing",
+        "Theme not found in the registry",
+      );
     let pkg: { templates: ThemeTemplates; tokens: ThemeTokens };
     try {
       pkg = registryPackage(key);
@@ -558,7 +656,10 @@ export async function installRegistryTheme(
     const versionId = await rpc<string>(db, "theme_install_preset", {
       _merchant_id: merchantId,
       _key: key,
-      _preset: { tokens: pkg.tokens, templates: pkg.templates } as unknown as Json,
+      _preset: {
+        tokens: pkg.tokens,
+        templates: pkg.templates,
+      } as unknown as Json,
       _overwrite_draft: overwriteDraft,
     });
     incr("framique_theme_install_total", { result: "ok" });
@@ -568,7 +669,11 @@ export async function installRegistryTheme(
       const { seedSeoTemplates } = await import("./seo.server");
       await seedSeoTemplates(db, merchantId, key);
     } catch (err) {
-      log("warn", "theme.seo_seed_failed", { merchant_id: merchantId, key, message: String(err) });
+      log("warn", "theme.seo_seed_failed", {
+        merchant_id: merchantId,
+        key,
+        message: String(err),
+      });
     }
     log("info", "theme.installed", {
       merchant_id: merchantId,
@@ -596,11 +701,17 @@ export async function previewPresetSwap(
   await rateLimit("builder.preset_swap", merchantId);
   const catalogue = await listRegistry(db);
   if (!catalogue.some((t) => t.key === key)) {
-    throw new BuilderError("builder.registry_missing", "Theme not found in the registry");
+    throw new BuilderError(
+      "builder.registry_missing",
+      "Theme not found in the registry",
+    );
   }
   const preset = presetByKey(key);
   if (!preset)
-    throw new BuilderError("builder.registry_invalid", "Theme package failed validation");
+    throw new BuilderError(
+      "builder.registry_invalid",
+      "Theme package failed validation",
+    );
   const mine = parseTemplates(currentTemplates);
   const { applyPreset } = await import("./theme-presets");
   const result = applyPreset(mine, preset);
@@ -639,7 +750,11 @@ function digestSection(section: {
   hidden?: unknown;
   bp?: unknown;
 }) {
-  return JSON.stringify([section.props, section.hidden ?? null, section.bp ?? null]);
+  return JSON.stringify([
+    section.props,
+    section.hidden ?? null,
+    section.bp ?? null,
+  ]);
 }
 
 function sectionsOf(templates: ThemeTemplates, key: TemplateKey) {
@@ -648,7 +763,10 @@ function sectionsOf(templates: ThemeTemplates, key: TemplateKey) {
 }
 
 /** Section-level diff between the merchant's current tree and the new package. */
-export function diffTemplates(mine: ThemeTemplates, upstream: ThemeTemplates): TemplateDiff[] {
+export function diffTemplates(
+  mine: ThemeTemplates,
+  upstream: ThemeTemplates,
+): TemplateDiff[] {
   const out: TemplateDiff[] = [];
   for (const key of TEMPLATE_KEYS) {
     const mineMap = new Map(sectionsOf(mine, key).map((s) => [s.id, s]));
@@ -656,7 +774,9 @@ export function diffTemplates(mine: ThemeTemplates, upstream: ThemeTemplates): T
     const added = [...upMap.keys()].filter((id) => !mineMap.has(id));
     const removed = [...mineMap.keys()].filter((id) => !upMap.has(id));
     const changed = [...upMap.keys()].filter(
-      (id) => mineMap.has(id) && digestSection(upMap.get(id)!) !== digestSection(mineMap.get(id)!),
+      (id) =>
+        mineMap.has(id) &&
+        digestSection(upMap.get(id)!) !== digestSection(mineMap.get(id)!),
     );
     if (added.length || removed.length || changed.length)
       out.push({ template: key, added, removed, changed });
@@ -677,8 +797,10 @@ export function mergeTemplates(
   for (const key of TEMPLATE_KEYS) {
     const mineAst = templateOf(mine, key);
     const upAst = templateOf(upstream, key);
-    const hasUp = upAst.header.length || upAst.main.length || upAst.footer.length;
-    const hasMine = mineAst.header.length || mineAst.main.length || mineAst.footer.length;
+    const hasUp =
+      upAst.header.length || upAst.main.length || upAst.footer.length;
+    const hasMine =
+      mineAst.header.length || mineAst.main.length || mineAst.footer.length;
     if (!hasUp && !hasMine) continue;
     if (!hasUp) {
       merged[key] = mineAst;
@@ -687,16 +809,31 @@ export function mergeTemplates(
     if (mode === "adopt") {
       const upIds = new Set(sectionsOf(upstream, key).map((s) => s.id));
       merged[key] = {
-        header: [...upAst.header, ...mineAst.header.filter((s) => !upIds.has(s.id))],
+        header: [
+          ...upAst.header,
+          ...mineAst.header.filter((s) => !upIds.has(s.id)),
+        ],
         main: [...upAst.main, ...mineAst.main.filter((s) => !upIds.has(s.id))],
-        footer: [...upAst.footer, ...mineAst.footer.filter((s) => !upIds.has(s.id))],
+        footer: [
+          ...upAst.footer,
+          ...mineAst.footer.filter((s) => !upIds.has(s.id)),
+        ],
       };
     } else {
       const mineIds = new Set(sectionsOf(mine, key).map((s) => s.id));
       merged[key] = {
-        header: [...mineAst.header, ...upAst.header.filter((s) => !mineIds.has(s.id))],
-        main: [...mineAst.main, ...upAst.main.filter((s) => !mineIds.has(s.id))],
-        footer: [...mineAst.footer, ...upAst.footer.filter((s) => !mineIds.has(s.id))],
+        header: [
+          ...mineAst.header,
+          ...upAst.header.filter((s) => !mineIds.has(s.id)),
+        ],
+        main: [
+          ...mineAst.main,
+          ...upAst.main.filter((s) => !mineIds.has(s.id)),
+        ],
+        footer: [
+          ...mineAst.footer,
+          ...upAst.footer.filter((s) => !mineIds.has(s.id)),
+        ],
       };
     }
   }
@@ -716,16 +853,22 @@ export async function previewThemeUpdate(
     const catalogue = await listRegistry(db);
     const entry = catalogue.find((t) => t.key === targetKey);
     if (!entry)
-      throw new BuilderError("builder.registry_missing", "Theme not found in the registry");
+      throw new BuilderError(
+        "builder.registry_missing",
+        "Theme not found in the registry",
+      );
     const pkg = registryPackage(targetKey);
     const installedVersion =
-      key && key !== workspace.theme.sourceKey ? null : workspace.theme.sourceVersion;
+      key && key !== workspace.theme.sourceKey
+        ? null
+        : workspace.theme.sourceVersion;
     return {
       key: targetKey,
       installedVersion,
       latestVersion: pkg.version,
       available: installedVersion !== pkg.version,
-      tokensChanged: JSON.stringify(pkg.tokens) !== JSON.stringify(workspace.tokens),
+      tokensChanged:
+        JSON.stringify(pkg.tokens) !== JSON.stringify(workspace.tokens),
       diff: diffTemplates(workspace.templates, pkg.templates),
       revision: workspace.revision,
     };
@@ -746,24 +889,38 @@ export async function applyThemeUpdate(
   return withSpan("builder.update", async () => {
     const workspace = await loadWorkspace(db, merchantId);
     const pkg = registryPackage(input.key);
-    const templates = mergeTemplates(workspace.templates, pkg.templates, input.mode);
-    const blocking = (Object.keys(templates) as TemplateKey[]).flatMap((templateKey) =>
-      lintTemplate(templates[templateKey]!, templateKey).filter((issue) => issue.level === "error"),
+    const templates = mergeTemplates(
+      workspace.templates,
+      pkg.templates,
+      input.mode,
+    );
+    const blocking = (Object.keys(templates) as TemplateKey[]).flatMap(
+      (templateKey) =>
+        lintTemplate(templates[templateKey]!, templateKey).filter(
+          (issue) => issue.level === "error",
+        ),
     );
     if (blocking.length) {
       incr("framique_theme_update_total", { result: "rejected" });
-      throw new BuilderError("builder.update_blocked", "Merged theme failed validation");
+      throw new BuilderError(
+        "builder.update_blocked",
+        "Merged theme failed validation",
+      );
     }
     const tokens = input.mode === "adopt" ? pkg.tokens : workspace.tokens;
-    const result = await rpc<{ version_id: string; revision: number }>(db, "theme_update_apply", {
-      _theme_id: workspace.theme.id,
-      _key: input.key,
-      _version: pkg.version,
-      _templates: templates as unknown as Json,
-      _tokens: tokens as unknown as Json,
-      _mode: input.mode,
-      _expected_revision: input.expectedRevision,
-    });
+    const result = await rpc<{ version_id: string; revision: number }>(
+      db,
+      "theme_update_apply",
+      {
+        _theme_id: workspace.theme.id,
+        _key: input.key,
+        _version: pkg.version,
+        _templates: templates as unknown as Json,
+        _tokens: tokens as unknown as Json,
+        _mode: input.mode,
+        _expected_revision: input.expectedRevision,
+      },
+    );
     incr("framique_theme_update_total", { result: input.mode });
     log("info", "theme.updated", {
       merchant_id: merchantId,
@@ -824,7 +981,7 @@ export async function publishedTheme(
         .select("ast, templates, tokens")
         .eq("id", versionId)
         .eq("merchant_id", merchantId)
-        .eq("status", "published")  // B-13: status discipline — only published versions evaluate at runtime; drafts are preview-only
+        .eq("status", "published") // B-13: status discipline — only published versions evaluate at runtime; drafts are preview-only
         .maybeSingle();
       if (!version) return null;
       const templates = parseTemplates(
@@ -857,7 +1014,11 @@ export async function publishedThemeById(
 ): Promise<PublishedTheme | null> {
   assertTenantId(merchantId, "publishedThemeById");
   return cached(
-    storefrontCacheKey({ merchantId, template: "pinned", themeVersion: themeId }),
+    storefrontCacheKey({
+      merchantId,
+      template: "pinned",
+      themeVersion: themeId,
+    }),
     120,
     async () => {
       const { data: theme } = await db
@@ -945,7 +1106,9 @@ function demoResult(raw: unknown): DemoImportResult {
   const r = (raw ?? {}) as Record<string, unknown>;
   const status = typeof r.status === "string" ? r.status : "";
   return {
-    imported: Boolean(r.imported ?? r.purged ?? (status === "imported" || status === "purged")),
+    imported: Boolean(
+      r.imported ?? r.purged ?? (status === "imported" || status === "purged"),
+    ),
     products: Number(r.products ?? 0),
     categories: Number(r.categories ?? 0),
     collections: Number(r.collections ?? 0),
@@ -959,7 +1122,11 @@ function demoResult(raw: unknown): DemoImportResult {
  * instead of a duplicate catalogue, and the preset's `index` layout is written
  * into the merchant's draft so the imported products have a page to appear on.
  */
-export async function importDemoContent(db: Client, merchantId: string, themeKey: string) {
+export async function importDemoContent(
+  db: Client,
+  merchantId: string,
+  themeKey: string,
+) {
   assertTenantId(merchantId, "importDemoContent");
   await rateLimit("builder.demo_import", merchantId);
   return withSpan("builder.demo_import", async () => {
@@ -973,8 +1140,15 @@ export async function importDemoContent(db: Client, merchantId: string, themeKey
       _catalog: demoCatalogFor(themeKey) as unknown as Json,
     });
     const result = demoResult(raw);
-    incr("framique_theme_demo_total", { action: "import", result: result.imported ? "ok" : "noop" });
-    log("info", "theme.demo_imported", { merchant_id: merchantId, key: themeKey, ...result });
+    incr("framique_theme_demo_total", {
+      action: "import",
+      result: result.imported ? "ok" : "noop",
+    });
+    log("info", "theme.demo_imported", {
+      merchant_id: merchantId,
+      key: themeKey,
+      ...result,
+    });
     purgeStorefront("demo_import", merchantId);
     return result;
   });
@@ -985,14 +1159,18 @@ export async function purgeDemoContent(db: Client, merchantId: string) {
   assertTenantId(merchantId, "purgeDemoContent");
   await rateLimit("builder.demo_import", merchantId);
   return withSpan("builder.demo_purge", async () => {
-    const result = demoResult(await rpc<unknown>(db, "theme_purge_demo", { _merchant_id: merchantId }));
-    incr("framique_theme_demo_total", { action: "purge", result: result.imported ? "ok" : "noop" });
+    const result = demoResult(
+      await rpc<unknown>(db, "theme_purge_demo", { _merchant_id: merchantId }),
+    );
+    incr("framique_theme_demo_total", {
+      action: "purge",
+      result: result.imported ? "ok" : "noop",
+    });
     log("info", "theme.demo_purged", { merchant_id: merchantId, ...result });
     purgeStorefront("demo_purge", merchantId);
     return result;
   });
 }
-
 
 export function purgeThemeCache() {
   purgeStorefront("manual");

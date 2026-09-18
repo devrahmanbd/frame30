@@ -40,19 +40,25 @@ claude-flow pair --start --verify --threshold 0.98
 ## Modes
 
 ### Driver Mode
+
 You write code, AI provides suggestions and reviews.
+
 ```bash
 claude-flow pair --start --mode driver
 ```
 
 ### Navigator Mode
+
 AI writes code, you provide guidance and review.
+
 ```bash
 claude-flow pair --start --mode navigator
 ```
 
 ### Switch Mode (Default)
+
 Alternate between driver and navigator roles.
+
 ```bash
 claude-flow pair --start --mode switch --interval 10m
 ```
@@ -60,23 +66,27 @@ claude-flow pair --start --mode switch --interval 10m
 ## Features
 
 ### Real-Time Verification
+
 - Continuous truth checking (0.95 threshold)
 - Automatic rollback on verification failure
 - Quality gates before commits
 
 ### Code Review
+
 - Instant feedback on code changes
 - Best practice suggestions
 - Security vulnerability detection
 - Performance optimization tips
 
 ### Test Integration
+
 - Automatic test generation
 - Test-driven development support
 - Coverage monitoring
 - Integration test suggestions
 
 ### Collaboration Tools
+
 - Shared context between you and AI
 - Session history and replay
 - Code explanation on demand
@@ -85,6 +95,7 @@ claude-flow pair --start --mode switch --interval 10m
 ## Session Management
 
 ### Start Session
+
 ```bash
 # Basic start
 claude-flow pair --start
@@ -98,6 +109,7 @@ claude-flow pair --start \
 ```
 
 ### During Session
+
 ```commands
 /help          - Show available commands
 /explain       - Explain current code
@@ -113,6 +125,7 @@ claude-flow pair --start \
 ```
 
 ### End Session
+
 ```bash
 # End and save session
 claude-flow pair --end --save
@@ -124,6 +137,7 @@ claude-flow pair --end --report
 ## Examples
 
 ### Refactoring Session
+
 ```bash
 claude-flow pair --start \
   --focus refactor \
@@ -132,6 +146,7 @@ claude-flow pair --start \
 ```
 
 ### Test-Driven Development
+
 ```bash
 claude-flow pair --start \
   --focus test \
@@ -140,6 +155,7 @@ claude-flow pair --start \
 ```
 
 ### Bug Fixing
+
 ```bash
 claude-flow pair --start \
   --focus debug \
@@ -148,6 +164,7 @@ claude-flow pair --start \
 ```
 
 ### Code Review Session
+
 ```bash
 claude-flow pair --start \
   --review \
@@ -158,6 +175,7 @@ claude-flow pair --start \
 ## Integration
 
 ### With Git
+
 ```bash
 # Auto-commit with verification
 claude-flow pair --start --git --auto-commit
@@ -167,6 +185,7 @@ claude-flow pair --start --git --review-commit
 ```
 
 ### With Testing Frameworks
+
 ```bash
 # Jest integration
 claude-flow pair --start --test-framework jest
@@ -176,6 +195,7 @@ claude-flow pair --start --test-framework pytest
 ```
 
 ### With CI/CD
+
 ```bash
 # CI-friendly mode
 claude-flow pair --start --ci --non-interactive

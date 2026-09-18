@@ -90,15 +90,15 @@ Framique solves this with an Anycast edge reverse-proxy architecture utilizing *
 
 Why did Framique choose **HTTP-01** challenges over **DNS-01** for merchant custom domains?
 
-| Parameter | HTTP-01 Challenge (Framique Choice) | DNS-01 Challenge |
-| :--- | :--- | :--- |
-| **Merchant Effort** | **1 CNAME record only** | Multiple TXT records + API access |
-| **Automation Feasibility** | **100% automated** upon CNAME pointing | Requires merchant DNS API keys |
-| **Wildcard Support** | No (Single host + apex only) | Yes (`*.brand.com`) |
-| **Propagation Speed** | **Near-instantaneous (< 10s)** | 5 to 60 minutes (DNS TTL lag) |
-| **Failure Rate** | **< 0.1%** | ~12% (DNS caching inconsistencies) |
+| Parameter                  | HTTP-01 Challenge (Framique Choice)    | DNS-01 Challenge                   |
+| :------------------------- | :------------------------------------- | :--------------------------------- |
+| **Merchant Effort**        | **1 CNAME record only**                | Multiple TXT records + API access  |
+| **Automation Feasibility** | **100% automated** upon CNAME pointing | Requires merchant DNS API keys     |
+| **Wildcard Support**       | No (Single host + apex only)           | Yes (`*.brand.com`)                |
+| **Propagation Speed**      | **Near-instantaneous (< 10s)**         | 5 to 60 minutes (DNS TTL lag)      |
+| **Failure Rate**           | **< 0.1%**                             | ~12% (DNS caching inconsistencies) |
 
-For merchant storefronts, wildcard certificates are completely unnecessary—each store operates on either `www.brand.com` and `brand.com`, or a specific regional subdomain like `shop.brand.com.bd`. 
+For merchant storefronts, wildcard certificates are completely unnecessary—each store operates on either `www.brand.com` and `brand.com`, or a specific regional subdomain like `shop.brand.com.bd`.
 
 By adopting HTTP-01 challenges, Framique eliminates the friction of asking non-technical merchants to create complex DNS TXT challenge records. As soon as the merchant points their CNAME, the edge proxy automatically handles the rest.
 
@@ -167,6 +167,7 @@ They copy a single CNAME record into their DNS portal, click "Connect Domain", a
 ---
 
 ### Related Architecture Reads
+
 - Learn how we connect [Regional .com.bd Domains with Edge SSL in 5 Minutes](/blog/connecting-com-bd-custom-domain-edge-ssl).
 - Discover how Framique delivers [Sub-50ms TTFB via Edge SSR Architecture](/blog/sub-50ms-ttfb-edge-ssr-vs-spa).
 - Inspect our [Multi-Tenant Postgres Row-Level Security Strategy](/blog/postgres-rls-vs-siloed-databases-saas).

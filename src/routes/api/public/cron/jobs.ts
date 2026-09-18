@@ -12,8 +12,13 @@ export const Route = createFileRoute("/api/public/cron/jobs")({
     handlers: {
       GET: cronGet,
       POST: cronPost("jobs", async (ctx) => {
-        const [{ drainQueue, reclaimStalled, runDueSchedules }, { JOB_HANDLERS, WORKER_QUEUES }] =
-          await Promise.all([import("@/lib/job-queue.server"), import("@/lib/job-handlers.server")]);
+        const [
+          { drainQueue, reclaimStalled, runDueSchedules },
+          { JOB_HANDLERS, WORKER_QUEUES },
+        ] = await Promise.all([
+          import("@/lib/job-queue.server"),
+          import("@/lib/job-handlers.server"),
+        ]);
 
         const workerId = `worker-${crypto.randomUUID().slice(0, 8)}`;
         const fired = await runDueSchedules();

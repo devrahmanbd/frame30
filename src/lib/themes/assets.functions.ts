@@ -15,7 +15,10 @@ export const themeAssetsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { listThemeAssets } = await import("./assets.server");
-    return listThemeAssets(context.supabase, await scope(context.supabase, context.userId));
+    return listThemeAssets(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+    );
   });
 
 export const themeAssetSaveFn = createServerFn({ method: "POST" })
@@ -35,15 +38,19 @@ export const themeAssetSaveFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { saveThemeAsset } = await import("./assets.server");
-    return saveThemeAsset(context.supabase, await scope(context.supabase, context.userId), {
-      id: data.id ?? null,
-      themeId: data.themeId ?? null,
-      kind: data.kind,
-      name: data.name,
-      content: data.content ?? null,
-      url: data.url ?? null,
-      enabled: data.enabled,
-    });
+    return saveThemeAsset(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      {
+        id: data.id ?? null,
+        themeId: data.themeId ?? null,
+        kind: data.kind,
+        name: data.name,
+        content: data.content ?? null,
+        url: data.url ?? null,
+        enabled: data.enabled,
+      },
+    );
   });
 
 export const themeAssetToggleFn = createServerFn({ method: "POST" })

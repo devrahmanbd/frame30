@@ -16,7 +16,9 @@ import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/cart")({
   loader: async ({ params }) => {
-    const chrome = await getStoreChrome({ data: { slug: params.slug, template: "cart" } });
+    const chrome = await getStoreChrome({
+      data: { slug: params.slug, template: "cart" },
+    });
     if (!chrome) throw notFound();
     return chrome;
   },
@@ -45,7 +47,9 @@ function CartMissing() {
   const { t } = useLang();
   return (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
-      <h1 className="text-2xl font-semibold">{t("Store not found", "দোকান পাওয়া যায়নি")}</h1>
+      <h1 className="text-2xl font-semibold">
+        {t("Store not found", "দোকান পাওয়া যায়নি")}
+      </h1>
     </main>
   );
 }
@@ -66,7 +70,8 @@ function CartPage() {
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} />
-          <SupportWidget slug={slug} />
+          {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+          {/* <SupportWidget slug={slug} /> */}
         </>
       }
       // The widgets render live cart data on their own; the keys simply tell
@@ -80,7 +85,9 @@ function CartPage() {
       }}
       fallback={
         <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
-          <h1 className="font-bangla-display text-2xl font-bold">{t("Your cart", "আপনার কার্ট")}</h1>
+          <h1 className="font-bangla-display text-2xl font-bold">
+            {t("Your cart", "আপনার কার্ট")}
+          </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {t(
               "Continue to checkout to review your items and pay.",

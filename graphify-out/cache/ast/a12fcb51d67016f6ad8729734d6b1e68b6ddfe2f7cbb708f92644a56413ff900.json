@@ -1,1 +1,1077 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "label": "seo-analysis.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L1"}, {"id": "lib_seo_analysis_seolocale", "label": "SeoLocale", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L48"}, {"id": "lib_seo_analysis_faqitem", "label": "FaqItem", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L50"}, {"id": "lib_seo_analysis_seodraft", "label": "SeoDraft", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L52"}, {"id": "lib_seo_analysis_checkstatus", "label": "CheckStatus", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L76"}, {"id": "lib_seo_analysis_seocheck", "label": "SeoCheck", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L78"}, {"id": "lib_seo_analysis_seoreport", "label": "SeoReport", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L90"}, {"id": "lib_seo_analysis_normalisekeywords", "label": "normaliseKeywords()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L112"}, {"id": "lib_seo_analysis_analyseseo", "label": "analyseSeo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L133"}, {"id": "lib_seo_analysis_scoreband", "label": "scoreBand()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L684"}, {"id": "lib_seo_analysis_normalisefaq", "label": "normaliseFaq()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L691"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "users_rahman_documents_frame30_src_lib_seo_content_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_documentfacts", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_containsphrase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_normalisetext", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_phraseoccurrences", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_phraseposition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_readability", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_documentfacts", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_content_readability", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "users_rahman_documents_frame30_src_lib_seo_pixels_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_pixels_serp_desktop", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_pixels_serp_font", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_pixels_pixelwidth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_technical_headingissues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L31", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_seolocale", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_faqitem", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L50", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_seodraft", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_checkstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_seocheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L78", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_seoreport", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_normalisekeywords", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_analyseseo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_scoreband", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L684", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "target": "lib_seo_analysis_normalisefaq", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L691", "weight": 1.0}, {"source": "lib_seo_analysis_analyseseo", "target": "lib_seo_analysis_normalisekeywords", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L138", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L113"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L117"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L117"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L117"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L117"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L117"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "normaliseText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L123"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "has", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L124"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "add", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L125"}, {"caller_nid": "lib_seo_analysis_normalisekeywords", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L126"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L135"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L135"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L136"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L136"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L137"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "documentFacts", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L139"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "readability", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L141"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L165"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "pixelWidth", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L186"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L187"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L206"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "pixelWidth", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L227"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L228"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L247"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L264"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "phrasePosition", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L265"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L266"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L285"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L289"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "phraseOccurrences", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L297"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L298"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L298"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "normaliseText", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L298"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L299"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L310"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "toFixed", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L311"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L317"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L317"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L318"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L324"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L329"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L338"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L342"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "some", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L352"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L353"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L357"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L371"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L371"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L372"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "containsPhrase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L376"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L388"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L391"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L406"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "headingIssues", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L426"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L427"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L436"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L440"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L441"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L463"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L477"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L494"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L508"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L519"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L525"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L526"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L530"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L541"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L547"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L548"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L556"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L560"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L560"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L560"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L561"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L566"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L566"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L577"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L594"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L595"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L599"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L602"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L613"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L614"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L633"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L635"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L653"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L654"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L655"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L661"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L664"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L665"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L666"}, {"caller_nid": "lib_seo_analysis_analyseseo", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L667"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "isArray", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L692"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L694"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L696"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L696"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L696"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L696"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L696"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L701"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L701"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L701"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L701"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L701"}, {"caller_nid": "lib_seo_analysis_normalisefaq", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts", "source_location": "L706"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "label": "seo-analysis.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_seo_analysis_seolocale",
+      "label": "SeoLocale",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_seo_analysis_faqitem",
+      "label": "FaqItem",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L50"
+    },
+    {
+      "id": "lib_seo_analysis_seodraft",
+      "label": "SeoDraft",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_seo_analysis_checkstatus",
+      "label": "CheckStatus",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "lib_seo_analysis_seocheck",
+      "label": "SeoCheck",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L78"
+    },
+    {
+      "id": "lib_seo_analysis_seoreport",
+      "label": "SeoReport",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L90"
+    },
+    {
+      "id": "lib_seo_analysis_normalisekeywords",
+      "label": "normaliseKeywords()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_seo_analysis_analyseseo",
+      "label": "analyseSeo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_seo_analysis_scoreband",
+      "label": "scoreBand()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L684"
+    },
+    {
+      "id": "lib_seo_analysis_normalisefaq",
+      "label": "normaliseFaq()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L691"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_content_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_documentfacts",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_containsphrase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_normalisetext",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_phraseoccurrences",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_phraseposition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_readability",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_documentfacts",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_content_readability",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_pixels_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_pixels_serp_desktop",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_pixels_serp_font",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_pixels_pixelwidth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_technical_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_technical_headingissues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_seolocale",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_faqitem",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_seodraft",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_checkstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_seocheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_seoreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_normalisekeywords",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_analyseseo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_scoreband",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L684",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "target": "lib_seo_analysis_normalisefaq",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L691",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_seo_analysis_analyseseo",
+      "target": "lib_seo_analysis_normalisekeywords",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "normaliseText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L123"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "has",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "add",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisekeywords",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L135"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L137"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "documentFacts",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L139"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "readability",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L165"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "pixelWidth",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "pixelWidth",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L227"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L228"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "phrasePosition",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L265"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L266"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L289"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "phraseOccurrences",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "normaliseText",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L298"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L299"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L310"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "toFixed",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L311"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L317"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L318"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L324"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L329"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L338"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L342"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "some",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L352"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L353"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L357"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L371"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L372"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "containsPhrase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L376"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L388"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L391"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L406"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "headingIssues",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L426"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L427"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L436"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L440"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L441"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L463"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L477"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L494"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L508"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L519"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L525"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L526"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L530"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L541"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L547"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L548"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L556"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L560"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L560"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L560"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L561"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L566"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L566"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L577"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L594"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L595"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L599"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L602"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L613"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L614"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L633"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L635"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L653"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L654"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L655"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L661"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L664"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L665"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L666"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_analyseseo",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L667"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "isArray",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L692"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L694"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L696"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L696"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L696"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L696"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L696"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_seo_analysis_normalisefaq",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo-analysis.ts",
+      "source_location": "L706"
+    }
+  ]
+}

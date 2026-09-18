@@ -64,7 +64,11 @@ export function CodeBlock({
           className="absolute right-2 top-2 z-10 rounded-fq-md border border-border bg-background px-3 py-1.5 text-xs font-medium opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100 md:text-xs"
           aria-label={label ? `Copy ${label}` : "Copy code sample"}
         >
-          {state === "copied" ? "Copied" : state === "failed" ? "Press ⌘C" : "Copy"}
+          {state === "copied"
+            ? "Copied"
+            : state === "failed"
+              ? "Press ⌘C"
+              : "Copy"}
         </button>
         <pre className="overflow-x-auto p-4 text-[13px] leading-relaxed">
           <code className="font-mono">
@@ -77,7 +81,11 @@ export function CodeBlock({
         </pre>
       </div>
       <span aria-live="polite" className="sr-only">
-        {state === "copied" ? "Code copied to clipboard" : state === "failed" ? "Copy failed" : ""}
+        {state === "copied"
+          ? "Code copied to clipboard"
+          : state === "failed"
+            ? "Copy failed"
+            : ""}
       </span>
     </figure>
   );

@@ -1,10 +1,15 @@
 import { en } from "./i18n-dict";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { checkExportReason, exportReasonMessage, needsExportReason } from "./export-controls";
+import {
+  checkExportReason,
+  exportReasonMessage,
+  needsExportReason,
+} from "./export-controls";
 
 type Client = SupabaseClient<Database>;
-export type ExportObjectType = Database["public"]["Enums"]["export_object_type"];
+export type ExportObjectType =
+  Database["public"]["Enums"]["export_object_type"];
 
 export class ExportError extends Error {
   constructor(
@@ -25,10 +30,17 @@ function csvCell(value: unknown) {
 }
 
 function toCsv(headers: string[], rows: unknown[][]) {
-  return [headers, ...rows].map((r) => r.map(csvCell).join(",")).join("\n") + "\n";
+  return (
+    [headers, ...rows].map((r) => r.map(csvCell).join(",")).join("\n") + "\n"
+  );
 }
 
-type Spec = { headers: string[]; select: string; table: string; dateColumn: string };
+type Spec = {
+  headers: string[];
+  select: string;
+  table: string;
+  dateColumn: string;
+};
 
 const SPECS: Record<ExportObjectType, Spec> = {
   orders: {
@@ -54,13 +66,29 @@ const SPECS: Record<ExportObjectType, Spec> = {
   products: {
     table: "products",
     dateColumn: "created_at",
-    headers: ["product_id", "title", "slug", "status", "brand_id", "category_id", "created_at"],
+    headers: [
+      "product_id",
+      "title",
+      "slug",
+      "status",
+      "brand_id",
+      "category_id",
+      "created_at",
+    ],
     select: "id,title,slug,status,brand_id,category_id,created_at",
   },
   customers: {
     table: "subscribers",
     dateColumn: "created_at",
-    headers: ["subscriber_id", "email", "status", "source", "email_consent", "sms_consent", "created_at"],
+    headers: [
+      "subscriber_id",
+      "email",
+      "status",
+      "source",
+      "email_consent",
+      "sms_consent",
+      "created_at",
+    ],
     select: "id,email,status,source,email_consent,sms_consent,created_at",
   },
   product_events: {
@@ -88,12 +116,32 @@ const SPECS: Record<ExportObjectType, Spec> = {
   },
 };
 
-export const EXPORT_TYPES: { value: ExportObjectType; key: string; en: string }[] = [
+export const EXPORT_TYPES: {
+  value: ExportObjectType;
+  key: string;
+  en: string;
+}[] = [
   { value: "orders", key: "export.type.orders", en: en("export.type.orders") },
-  { value: "products", key: "export.type.products", en: en("export.type.products") },
-  { value: "customers", key: "export.type.customers", en: en("export.type.customers") },
-  { value: "product_events", key: "export.type.product_events", en: en("export.type.product_events") },
-  { value: "analytics_raw", key: "export.type.analytics_raw", en: en("export.type.analytics_raw") },
+  {
+    value: "products",
+    key: "export.type.products",
+    en: en("export.type.products"),
+  },
+  {
+    value: "customers",
+    key: "export.type.customers",
+    en: en("export.type.customers"),
+  },
+  {
+    value: "product_events",
+    key: "export.type.product_events",
+    en: en("export.type.product_events"),
+  },
+  {
+    value: "analytics_raw",
+    key: "export.type.analytics_raw",
+    en: en("export.type.analytics_raw"),
+  },
 ];
 
 export async function listJobs(db: Client, merchantId: string) {
@@ -114,7 +162,12 @@ export async function listJobs(db: Client, merchantId: string) {
 export async function countRows(
   db: Client,
   merchantId: string,
-  input: { objectType: ExportObjectType; rangeStart: string | null; rangeEnd: string | null; status: string | null },
+  input: {
+    objectType: ExportObjectType;
+    rangeStart: string | null;
+    rangeEnd: string | null;
+    status: string | null;
+  },
 ) {
   const spec = SPECS[input.objectType];
   let q = db
@@ -144,7 +197,8 @@ export async function createJob(
   // §5: bulk egress needs a stated reason and an audit row before the job runs.
   const estimated = await countRows(db, merchantId, input);
   const problem = checkExportReason(estimated, input.reason);
-  if (problem) throw new ExportError(problem, exportReasonMessage(problem, estimated));
+  if (problem)
+    throw new ExportError(problem, exportReasonMessage(problem, estimated));
   const reason = (input.reason ?? "").trim() || null;
 
   const { data, error } = await db
@@ -180,14 +234,19 @@ export async function createJob(
   return data.id;
 }
 
-async function fetchRows(db: Client, merchantId: string, job: Record<string, unknown>) {
+async function fetchRows(
+  db: Client,
+  merchantId: string,
+  job: Record<string, unknown>,
+) {
   const spec = SPECS[job["object_type"] as ExportObjectType];
   let q = db
     .from(spec.table as "orders")
     .select(spec.select)
     .eq("merchant_id", merchantId)
     .order("id", { ascending: true });
-  if (job["range_start"]) q = q.gte(spec.dateColumn, job["range_start"] as string);
+  if (job["range_start"])
+    q = q.gte(spec.dateColumn, job["range_start"] as string);
   if (job["range_end"]) q = q.lte(spec.dateColumn, job["range_end"] as string);
   const filters = (job["filters"] ?? {}) as { status?: string };
   if (filters.status) q = q.eq("status", filters.status as never);
@@ -195,7 +254,13 @@ async function fetchRows(db: Client, merchantId: string, job: Record<string, unk
   if (error) throw new ExportError("query_failed", error.message);
   const rows = (data ?? []) as unknown as Record<string, unknown>[];
   const keys = spec.select.split(",");
-  return { csv: toCsv(spec.headers, rows.map((r) => keys.map((k) => r[k]))), count: rows.length };
+  return {
+    csv: toCsv(
+      spec.headers,
+      rows.map((r) => keys.map((k) => r[k])),
+    ),
+    count: rows.length,
+  };
 }
 
 export async function runJob(db: Client, merchantId: string, jobId: string) {
@@ -205,18 +270,31 @@ export async function runJob(db: Client, merchantId: string, jobId: string) {
     .eq("id", jobId)
     .eq("merchant_id", merchantId)
     .single();
-  if (error || !job) throw new ExportError("job_not_found", "Export job not found");
+  if (error || !job)
+    throw new ExportError("job_not_found", "Export job not found");
 
   await db
     .from("export_jobs")
-    .update({ status: "generating", started_at: new Date().toISOString(), error: null })
+    .update({
+      status: "generating",
+      started_at: new Date().toISOString(),
+      error: null,
+    })
     .eq("id", jobId);
 
   try {
-    const { csv, count } = await fetchRows(db, merchantId, job as unknown as Record<string, unknown>);
-    await db.from("export_jobs").update({ status: "signing", total_rows: count }).eq("id", jobId);
+    const { csv, count } = await fetchRows(
+      db,
+      merchantId,
+      job as unknown as Record<string, unknown>,
+    );
+    await db
+      .from("export_jobs")
+      .update({ status: "signing", total_rows: count })
+      .eq("id", jobId);
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const path = `${merchantId}/${jobId}.csv`;
     const body = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const up = await supabaseAdmin.storage.from("exports").upload(path, body, {
@@ -225,8 +303,14 @@ export async function runJob(db: Client, merchantId: string, jobId: string) {
     });
     if (up.error) throw new ExportError("upload_failed", up.error.message);
 
-    const signed = await supabaseAdmin.storage.from("exports").createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
-    if (signed.error || !signed.data) throw new ExportError("sign_failed", signed.error?.message ?? "sign failed");
+    const signed = await supabaseAdmin.storage
+      .from("exports")
+      .createSignedUrl(path, SIGNED_URL_TTL_SECONDS);
+    if (signed.error || !signed.data)
+      throw new ExportError(
+        "sign_failed",
+        signed.error?.message ?? "sign failed",
+      );
 
     const now = Date.now();
     await db
@@ -235,7 +319,9 @@ export async function runJob(db: Client, merchantId: string, jobId: string) {
         status: "ready_for_download",
         storage_path: path,
         signed_url: signed.data.signedUrl,
-        signed_url_expires_at: new Date(now + SIGNED_URL_TTL_SECONDS * 1000).toISOString(),
+        signed_url_expires_at: new Date(
+          now + SIGNED_URL_TTL_SECONDS * 1000,
+        ).toISOString(),
         expires_at: new Date(now + FILE_TTL_HOURS * 3600 * 1000).toISOString(),
         size_bytes: new TextEncoder().encode(csv).length,
         finished_at: new Date().toISOString(),
@@ -256,30 +342,42 @@ export async function runJob(db: Client, merchantId: string, jobId: string) {
   }
 }
 
-export async function downloadJob(db: Client, merchantId: string, jobId: string) {
+export async function downloadJob(
+  db: Client,
+  merchantId: string,
+  jobId: string,
+) {
   const { data: job } = await db
     .from("export_jobs")
     .select("*")
     .eq("id", jobId)
     .eq("merchant_id", merchantId)
     .maybeSingle();
-  if (!job || !job.storage_path) throw new ExportError("not_ready", "File is not ready yet");
+  if (!job || !job.storage_path)
+    throw new ExportError("not_ready", "File is not ready yet");
   if (job.expires_at && new Date(job.expires_at).getTime() < Date.now()) {
     await db.from("export_jobs").update({ status: "expired" }).eq("id", jobId);
-    throw new ExportError("expired", "Link has expired, please create a new export");
+    throw new ExportError(
+      "expired",
+      "Link has expired, please create a new export",
+    );
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const signed = await supabaseAdmin.storage
     .from("exports")
     .createSignedUrl(job.storage_path, SIGNED_URL_TTL_SECONDS);
-  if (signed.error || !signed.data) throw new ExportError("sign_failed", "Failed to create link");
+  if (signed.error || !signed.data)
+    throw new ExportError("sign_failed", "Failed to create link");
   await db
     .from("export_jobs")
     .update({
       status: "downloaded",
       downloaded_at: new Date().toISOString(),
       signed_url: signed.data.signedUrl,
-      signed_url_expires_at: new Date(Date.now() + SIGNED_URL_TTL_SECONDS * 1000).toISOString(),
+      signed_url_expires_at: new Date(
+        Date.now() + SIGNED_URL_TTL_SECONDS * 1000,
+      ).toISOString(),
     })
     .eq("id", jobId);
   return { url: signed.data.signedUrl };

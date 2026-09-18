@@ -54,7 +54,10 @@ export async function ownerGate<T>(
     `owner.${opts.action}`,
     async () => {
       const out = await fn();
-      incr("framique_owner_action_total", { action: opts.action, kind: opts.kind });
+      incr("framique_owner_action_total", {
+        action: opts.action,
+        kind: opts.kind,
+      });
       let auditError: { message: string } | null = null;
       try {
         const { error } = await db.rpc("platform_audit_event", {
@@ -67,13 +70,16 @@ export async function ownerGate<T>(
         });
         if (error) auditError = error;
       } catch (err: unknown) {
-        auditError = { message: err instanceof Error ? err.message : String(err) };
+        auditError = {
+          message: err instanceof Error ? err.message : String(err),
+        };
       }
 
       if (auditError) {
         // Fallback: direct append to platform_audit_log table if RPC is not present in PostgREST cache
         try {
-          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
           const clientToUse = supabaseAdmin ?? db;
           const { error: insertErr } = await (clientToUse as any)
             .from("platform_audit_log")
@@ -96,7 +102,10 @@ export async function ownerGate<T>(
 
       if (auditError) {
         incr("framique_owner_audit_failures_total", { action: opts.action });
-        log("error", "owner.audit_write_failed", { action: opts.action, message: auditError.message });
+        log("error", "owner.audit_write_failed", {
+          action: opts.action,
+          message: auditError.message,
+        });
         if (opts.kind === "read") {
           return out;
         }
@@ -118,7 +127,11 @@ export type AuditFilter = {
   pageSize?: number;
 };
 
-export async function loadOwnerAudit(db: Client, userId: string, filter: AuditFilter = {}) {
+export async function loadOwnerAudit(
+  db: Client,
+  userId: string,
+  filter: AuditFilter = {},
+) {
   const pageSize = Math.min(Math.max(filter.pageSize ?? 25, 5), 100);
   const page = Math.max(filter.page ?? 1, 1);
   const from = (page - 1) * pageSize;
@@ -136,9 +149,12 @@ export async function loadOwnerAudit(db: Client, userId: string, filter: AuditFi
     async () => {
       let q = db
         .from("platform_audit_log")
-        .select("id, action, entity, entity_id, actor, scope, before_data, after_data, created_at", {
-          count: "exact",
-        })
+        .select(
+          "id, action, entity, entity_id, actor, scope, before_data, after_data, created_at",
+          {
+            count: "exact",
+          },
+        )
         .order("created_at", { ascending: false })
         .range(from, from + pageSize - 1);
       if (filter.scope) q = q.eq("scope", filter.scope);
@@ -148,7 +164,10 @@ export async function loadOwnerAudit(db: Client, userId: string, filter: AuditFi
       const { data, count, error } = await q;
       if (error) throw new OwnerError("audit.read_failed", error.message);
 
-      const scopes = await db.from("platform_audit_log").select("scope").limit(500);
+      const scopes = await db
+        .from("platform_audit_log")
+        .select("scope")
+        .limit(500);
       return {
         rows: data ?? [],
         total: count ?? 0,
@@ -181,8 +200,12 @@ export async function loadRevenue(db: Client, userId: string) {
           const [subs, plans, merchants] = await Promise.all([
             db
               .from("subscriptions")
-              .select("merchant_id, plan, status, currency_code, cancelled_at, created_at"),
-            db.from("plan_definitions").select("plan, currency_code, price_minor_int, title_en"),
+              .select(
+                "merchant_id, plan, status, currency_code, cancelled_at, created_at",
+              ),
+            db
+              .from("plan_definitions")
+              .select("plan, currency_code, price_minor_int, title_en"),
             db.from("merchants").select("id, name, status"),
           ]);
 
@@ -201,7 +224,9 @@ export async function loadRevenue(db: Client, userId: string) {
           }));
 
           const snapshot = revenueSnapshot(rows, priced, "BDT");
-          const planTitles = new Map((plans.data ?? []).map((p) => [p.plan, p.title_en]));
+          const planTitles = new Map(
+            (plans.data ?? []).map((p) => [p.plan, p.title_en]),
+          );
           const merchantRows = merchants.data ?? [];
 
           return {
@@ -217,8 +242,10 @@ export async function loadRevenue(db: Client, userId: string) {
             tenants: {
               total: merchantRows.length,
               active: merchantRows.filter((m) => m.status === "active").length,
-              suspended: merchantRows.filter((m) => m.status === "suspended").length,
-              pending: merchantRows.filter((m) => m.status === "pending").length,
+              suspended: merchantRows.filter((m) => m.status === "suspended")
+                .length,
+              pending: merchantRows.filter((m) => m.status === "pending")
+                .length,
             },
             generatedAt: new Date().toISOString(),
           };
@@ -230,13 +257,19 @@ export async function loadRevenue(db: Client, userId: string) {
 
 // ------------------------------------------------------- suspend / reinstate
 
-export type SuspensionRow = Database["public"]["Tables"]["merchant_suspensions"]["Row"];
+export type SuspensionRow =
+  Database["public"]["Tables"]["merchant_suspensions"]["Row"];
 
 export async function loadSuspensions(db: Client, userId: string) {
   return ownerGate(
     db,
     userId,
-    { action: "suspension.read", entity: "merchant", bucket: "owner.read", kind: "read" },
+    {
+      action: "suspension.read",
+      entity: "merchant",
+      bucket: "owner.read",
+      kind: "read",
+    },
     async () => {
       const [suspensions, merchants] = await Promise.all([
         db
@@ -283,7 +316,8 @@ export async function suspendMerchant(
         _reason: reason,
         _freeze_payments: freezePayments,
       });
-      if (error) throw new OwnerError(mapRpcError(error.message), error.message);
+      if (error)
+        throw new OwnerError(mapRpcError(error.message), error.message);
       invalidate("owner:revenue");
       invalidate(`merchant:freeze:${merchantId}`);
       incr("framique_merchant_suspension_total", { outcome: "suspended" });
@@ -313,7 +347,8 @@ export async function reinstateMerchant(
         _merchant_id: merchantId,
         _note: note ?? undefined,
       });
-      if (error) throw new OwnerError(mapRpcError(error.message), error.message);
+      if (error)
+        throw new OwnerError(mapRpcError(error.message), error.message);
       invalidate("owner:revenue");
       invalidate(`merchant:freeze:${merchantId}`);
       incr("framique_merchant_suspension_total", { outcome: "reinstated" });
@@ -328,7 +363,8 @@ export async function reinstateMerchant(
  * money in either direction, even if a checkout was already in flight.
  */
 export async function assertPaymentsNotFrozen(merchantId: string) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const frozen = await cached(`merchant:freeze:${merchantId}`, 30, async () => {
     const { data } = await supabaseAdmin
       .from("merchant_suspensions")
@@ -348,7 +384,8 @@ export async function assertPaymentsNotFrozen(merchantId: string) {
 
 // --------------------------------------------------------------- impersonation
 
-export type GrantRow = Database["public"]["Tables"]["impersonation_grants"]["Row"];
+export type GrantRow =
+  Database["public"]["Tables"]["impersonation_grants"]["Row"];
 
 export type GrantState = "pending_consent" | "active" | "expired" | "revoked";
 
@@ -362,7 +399,12 @@ export async function loadImpersonation(db: Client, userId: string) {
   return ownerGate(
     db,
     userId,
-    { action: "impersonation.read", entity: "impersonation_grants", bucket: "owner.read", kind: "read" },
+    {
+      action: "impersonation.read",
+      entity: "impersonation_grants",
+      bucket: "owner.read",
+      kind: "read",
+    },
     async () => {
       const [grants, merchants] = await Promise.all([
         db
@@ -388,7 +430,12 @@ export async function loadImpersonation(db: Client, userId: string) {
 export async function requestImpersonation(
   db: Client,
   userId: string,
-  input: { merchantId: string; reason: string; scope: "read" | "write"; minutes: number },
+  input: {
+    merchantId: string;
+    reason: string;
+    scope: "read" | "write";
+    minutes: number;
+  },
 ) {
   return ownerGate(
     db,
@@ -408,14 +455,19 @@ export async function requestImpersonation(
         _scope: input.scope,
         _minutes: input.minutes,
       });
-      if (error) throw new OwnerError(mapRpcError(error.message), error.message);
+      if (error)
+        throw new OwnerError(mapRpcError(error.message), error.message);
       incr("framique_impersonation_total", { outcome: "requested" });
       return { grant: data as unknown as GrantRow };
     },
   );
 }
 
-export async function revokeImpersonation(db: Client, userId: string, grantId: string) {
+export async function revokeImpersonation(
+  db: Client,
+  userId: string,
+  grantId: string,
+) {
   return ownerGate(
     db,
     userId,
@@ -427,8 +479,11 @@ export async function revokeImpersonation(db: Client, userId: string, grantId: s
       kind: "write",
     },
     async () => {
-      const { error } = await db.rpc("impersonation_revoke", { _grant_id: grantId });
-      if (error) throw new OwnerError(mapRpcError(error.message), error.message);
+      const { error } = await db.rpc("impersonation_revoke", {
+        _grant_id: grantId,
+      });
+      if (error)
+        throw new OwnerError(mapRpcError(error.message), error.message);
       incr("framique_impersonation_total", { outcome: "revoked" });
       return { ok: true };
     },
@@ -474,13 +529,19 @@ export async function merchantConsentQueue(db: Client, merchantId: string) {
   };
 }
 
-export async function respondToImpersonation(db: Client, grantId: string, approve: boolean) {
+export async function respondToImpersonation(
+  db: Client,
+  grantId: string,
+  approve: boolean,
+) {
   const { error } = await db.rpc("impersonation_consent", {
     _grant_id: grantId,
     _approve: approve,
   });
   if (error) throw new OwnerError(mapRpcError(error.message), error.message);
-  incr("framique_impersonation_total", { outcome: approve ? "consented" : "declined" });
+  incr("framique_impersonation_total", {
+    outcome: approve ? "consented" : "declined",
+  });
   return { ok: true };
 }
 

@@ -8,7 +8,11 @@
  */
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { BITEXT_FIELDS, SECTION_CATALOG as CATALOG, type SectionType } from "./builder-ast";
+import {
+  BITEXT_FIELDS,
+  SECTION_CATALOG as CATALOG,
+  type SectionType,
+} from "./builder-ast";
 import { WIDGET_REGISTRY } from "./widget-registry";
 import {
   answerStep,
@@ -21,7 +25,13 @@ import {
   resultHref,
   type QuizStep,
 } from "./quiz-flow";
-import { depthLabel, findTerm, parseTerms, termLabel, termsOf } from "./beauty-taxonomy";
+import {
+  depthLabel,
+  findTerm,
+  parseTerms,
+  termLabel,
+  termsOf,
+} from "./beauty-taxonomy";
 
 const BEAUTY_TYPES = [
   "shade_finder",
@@ -45,8 +55,20 @@ const BEAUTY_TYPES = [
 const SRC = readFileSync("src/components/builder/beauty.tsx", "utf8");
 
 const steps: QuizStep[] = [
-  { key: "a", prompt: "A?", options: [{ value: "a1", label: "A1" }, { value: "a2", label: "A2" }] },
-  { key: "b", prompt: "B?", options: [{ value: "b1", label: "B1" }], multi: true },
+  {
+    key: "a",
+    prompt: "A?",
+    options: [
+      { value: "a1", label: "A1" },
+      { value: "a2", label: "A2" },
+    ],
+  },
+  {
+    key: "b",
+    prompt: "B?",
+    options: [{ value: "b1", label: "B1" }],
+    multi: true,
+  },
 ];
 
 describe("quiz flow", () => {
@@ -57,9 +79,17 @@ describe("quiz flow", () => {
   });
 
   it("keeps single-select to one value and lets multi-select accumulate", () => {
-    const single = answerStep(answerStep(emptyQuizState, steps[0]!, "a1"), steps[0]!, "a2");
+    const single = answerStep(
+      answerStep(emptyQuizState, steps[0]!, "a1"),
+      steps[0]!,
+      "a2",
+    );
     expect(single.answers["a"]).toEqual(["a2"]);
-    const multi = answerStep(answerStep(emptyQuizState, steps[1]!, "b1"), steps[1]!, "b1");
+    const multi = answerStep(
+      answerStep(emptyQuizState, steps[1]!, "b1"),
+      steps[1]!,
+      "b1",
+    );
     expect(multi.answers["b"]).toEqual([]);
   });
 
@@ -118,7 +148,10 @@ describe("beauty taxonomy", () => {
 describe("beauty catalogue wiring", () => {
   it("registers every Phase 2.8 widget with a catalogue entry and registry meta", () => {
     for (const type of BEAUTY_TYPES) {
-      expect(CATALOG.find((entry) => entry.type === type), `${type} catalogue`).toBeTruthy();
+      expect(
+        CATALOG.find((entry) => entry.type === type),
+        `${type} catalogue`,
+      ).toBeTruthy();
       expect(WIDGET_REGISTRY[type], `${type} registry`).toBeTruthy();
     }
   });
@@ -131,12 +164,20 @@ describe("beauty catalogue wiring", () => {
 
   it("gives merchant-authored copy a বাংলা sibling", () => {
     for (const type of BEAUTY_TYPES) {
-      expect((BITEXT_FIELDS[type] ?? []).length, `${type} bitext`).toBeGreaterThan(0);
+      expect(
+        (BITEXT_FIELDS[type] ?? []).length,
+        `${type} bitext`,
+      ).toBeGreaterThan(0);
     }
   });
 
   it("marks data-backed widgets with a source and a skeleton", () => {
-    for (const type of ["shade_finder", "routine_builder", "gift_builder", "loyalty_strip"] as const) {
+    for (const type of [
+      "shade_finder",
+      "routine_builder",
+      "gift_builder",
+      "loyalty_strip",
+    ] as const) {
       const meta = WIDGET_REGISTRY[type];
       expect(meta.data?.source, `${type} source`).toBeTruthy();
       expect(meta.skeleton, `${type} skeleton`).toBe(true);
@@ -146,12 +187,17 @@ describe("beauty catalogue wiring", () => {
 
 describe("beauty module rules", () => {
   it("never performs money arithmetic in a renderer", () => {
-    const math = SRC.match(/(?:priceMinor|totalMinor|compareAtMinor|Minor)\s*[+\-*/]\s*\w/g) ?? [];
+    const math =
+      SRC.match(
+        /(?:priceMinor|totalMinor|compareAtMinor|Minor)\s*[+\-*/]\s*\w/g,
+      ) ?? [];
     expect(math, `money arithmetic: ${math.join(", ")}`).toEqual([]);
   });
 
   it("imports no theme module and writes no raw colour", () => {
-    const imports = [...SRC.matchAll(/from\s+"([^"]+)"/g)].map((match) => match[1]!);
+    const imports = [...SRC.matchAll(/from\s+"([^"]+)"/g)].map(
+      (match) => match[1]!,
+    );
     expect(imports.filter((path) => /themes?\//.test(path))).toEqual([]);
     expect(SRC.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).toEqual([]);
     expect(SRC).not.toMatch(/\b(?:text|bg|border)-(?:white|black)\b/);
@@ -160,7 +206,9 @@ describe("beauty module rules", () => {
   it("requires a non-empty disclaimer before rendering before/after", () => {
     expect(SRC).toMatch(/disclaimer[\s\S]{0,120}return null/);
     const entry = CATALOG.find((item) => item.type === "before_after")!;
-    expect(String(entry.defaults["disclaimer"] ?? "").length).toBeGreaterThan(0);
+    expect(String(entry.defaults["disclaimer"] ?? "").length).toBeGreaterThan(
+      0,
+    );
     expect(BITEXT_FIELDS["before_after"]).toContain("disclaimer");
   });
 

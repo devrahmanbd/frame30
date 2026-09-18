@@ -12,7 +12,8 @@ export const Route = createFileRoute("/api/public/font/$")({
   server: {
     handlers: {
       GET: async ({ params }) => {
-        const { isFontObjectPath, FONT_FALLBACK_METRIC } = await import("@/lib/theme-fonts");
+        const { isFontObjectPath, FONT_FALLBACK_METRIC } =
+          await import("@/lib/theme-fonts");
         const { readFontObject } = await import("@/lib/theme-fonts.server");
 
         const splat = (params as { _splat?: string })._splat ?? "";
@@ -25,7 +26,10 @@ export const Route = createFileRoute("/api/public/font/$")({
         const miss = async (reason: string) => {
           const { incr } = await import("@/lib/observability.server");
           incr(FONT_FALLBACK_METRIC, { reason });
-          return new Response("not_found", { status: 404, headers: { "cache-control": "no-store" } });
+          return new Response("not_found", {
+            status: 404,
+            headers: { "cache-control": "no-store" },
+          });
         };
 
         if (!isFontObjectPath(path)) return miss("bad_path");

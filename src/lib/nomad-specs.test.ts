@@ -52,7 +52,7 @@ describe("Phase 11.6 — HashiCorp Nomad Production Job Specifications", () => {
       expect(content).toContain('path     = "/api/healthz?type=liveness"');
       expect(content).toContain('path     = "/api/healthz?type=readiness"');
       expect(content).toContain('CLUSTER_SLOT              = "green"');
-      expect(content).toContain('canary=candidate');
+      expect(content).toContain("canary=candidate");
       expect(content).toContain("cpu    = var.cpu");
       expect(content).toContain("memory = var.memory");
     });
@@ -67,11 +67,11 @@ describe("Phase 11.6 — HashiCorp Nomad Production Job Specifications", () => {
       expect(content).toContain("static = 80");
       expect(content).toContain("static = 443");
       expect(content).toContain('path     = "/healthz"');
-      expect(content).toContain('upstream framique_blue');
-      expect(content).toContain('upstream framique_green');
+      expect(content).toContain("upstream framique_blue");
+      expect(content).toContain("upstream framique_green");
       expect(content).toContain('{{ range service "framique-blue" }}');
       expect(content).toContain('{{ range service "framique-green" }}');
-      expect(content).toContain('split_clients');
+      expect(content).toContain("split_clients");
     });
   });
 

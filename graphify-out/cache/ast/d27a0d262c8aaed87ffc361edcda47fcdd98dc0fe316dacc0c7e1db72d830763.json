@@ -1,1 +1,665 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "label": "support-tickets.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L1"}, {"id": "lib_support_tickets_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L15"}, {"id": "lib_support_tickets_server_ticketerror", "label": "TicketError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L17"}, {"id": "lib_support_tickets_server_ticketerror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L18"}, {"id": "lib_support_tickets_server_admin", "label": "admin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L24"}, {"id": "lib_support_tickets_server_slapolicies", "label": "slaPolicies()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L29"}, {"id": "lib_support_tickets_server_createticketinput", "label": "CreateTicketInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L37"}, {"id": "lib_support_tickets_server_createticket", "label": "createTicket()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L52"}, {"id": "lib_support_tickets_server_ticketrow", "label": "TicketRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L112"}, {"id": "lib_support_tickets_server_listtickets", "label": "listTickets()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L114"}, {"id": "lib_support_tickets_server_ticketevents", "label": "ticketEvents()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L141"}, {"id": "lib_support_tickets_server_updateticketinput", "label": "UpdateTicketInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L151"}, {"id": "lib_support_tickets_server_updateticket", "label": "updateTicket()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L164"}, {"id": "lib_support_tickets_server_saveslapolicy", "label": "saveSlaPolicy()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L215"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_sla_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_sla_duedates", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_sla_summarise", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_sla_priority", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_sla_slapolicy", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_ticketerror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "lib_support_tickets_server_ticketerror", "target": "lib_support_tickets_server_ticketerror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_slapolicies", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_createticketinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_createticket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_ticketrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_listtickets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L114", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_ticketevents", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_updateticketinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_updateticket", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L164", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts", "target": "lib_support_tickets_server_saveslapolicy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L215", "weight": 1.0}, {"source": "lib_support_tickets_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "lib_support_tickets_server_createticket", "target": "lib_support_tickets_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L57", "weight": 1.0}, {"source": "lib_support_tickets_server_createticket", "target": "lib_support_tickets_server_slapolicies", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L58", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_tickets_server_ticketerror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L19"}, {"caller_nid": "lib_support_tickets_server_slapolicies", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L30"}, {"caller_nid": "lib_support_tickets_server_slapolicies", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L30"}, {"caller_nid": "lib_support_tickets_server_slapolicies", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L30"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "dueDates", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L54"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "dueDates", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L59"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "single", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L61"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L61"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L61"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L61"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L65"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L66"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L80"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L80"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L89"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L90"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L100"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L100"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "toString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L100"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "random", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L100"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L101"}, {"caller_nid": "lib_support_tickets_server_createticket", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L104"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L115"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L116"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L116"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L116"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L116"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L116"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "summarise", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L127"}, {"caller_nid": "lib_support_tickets_server_listtickets", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L128"}, {"caller_nid": "lib_support_tickets_server_ticketevents", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L142"}, {"caller_nid": "lib_support_tickets_server_ticketevents", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L142"}, {"caller_nid": "lib_support_tickets_server_ticketevents", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L142"}, {"caller_nid": "lib_support_tickets_server_ticketevents", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L142"}, {"caller_nid": "lib_support_tickets_server_ticketevents", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L142"}, {"caller_nid": "lib_support_tickets_server_updateticket", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L170"}, {"caller_nid": "lib_support_tickets_server_saveslapolicy", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L221"}, {"caller_nid": "lib_support_tickets_server_saveslapolicy", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L222"}, {"caller_nid": "lib_support_tickets_server_saveslapolicy", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts", "source_location": "L222"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "label": "support-tickets.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_tickets_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_support_tickets_server_ticketerror",
+      "label": "TicketError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_support_tickets_server_ticketerror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_support_tickets_server_admin",
+      "label": "admin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L24"
+    },
+    {
+      "id": "lib_support_tickets_server_slapolicies",
+      "label": "slaPolicies()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_support_tickets_server_createticketinput",
+      "label": "CreateTicketInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_support_tickets_server_createticket",
+      "label": "createTicket()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_support_tickets_server_ticketrow",
+      "label": "TicketRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_support_tickets_server_listtickets",
+      "label": "listTickets()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L114"
+    },
+    {
+      "id": "lib_support_tickets_server_ticketevents",
+      "label": "ticketEvents()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L141"
+    },
+    {
+      "id": "lib_support_tickets_server_updateticketinput",
+      "label": "UpdateTicketInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_support_tickets_server_updateticket",
+      "label": "updateTicket()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L164"
+    },
+    {
+      "id": "lib_support_tickets_server_saveslapolicy",
+      "label": "saveSlaPolicy()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L215"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_sla_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_sla_duedates",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_sla_summarise",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_sla_priority",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_sla_slapolicy",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_ticketerror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_tickets_server_ticketerror",
+      "target": "lib_support_tickets_server_ticketerror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_slapolicies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_createticketinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_createticket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_ticketrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_listtickets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_ticketevents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_updateticketinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_updateticket",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_tickets_server_ts",
+      "target": "lib_support_tickets_server_saveslapolicy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_tickets_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_tickets_server_createticket",
+      "target": "lib_support_tickets_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_tickets_server_createticket",
+      "target": "lib_support_tickets_server_slapolicies",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_tickets_server_ticketerror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_slapolicies",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_slapolicies",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_slapolicies",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "dueDates",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "dueDates",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "single",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "toString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "random",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_createticket",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L116"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "summarise",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L127"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_listtickets",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_ticketevents",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_ticketevents",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_ticketevents",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_ticketevents",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_ticketevents",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_updateticket",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_saveslapolicy",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_saveslapolicy",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L222"
+    },
+    {
+      "caller_nid": "lib_support_tickets_server_saveslapolicy",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-tickets.server.ts",
+      "source_location": "L222"
+    }
+  ]
+}

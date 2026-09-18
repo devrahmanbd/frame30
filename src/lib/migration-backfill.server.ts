@@ -15,16 +15,17 @@
 import { incr, log } from "./observability.server";
 import { redisCommand, redisConfigured, redisKey } from "./redis.server";
 
-export type BackfillStatus = "idle" | "running" | "paused" | "completed" | "failed";
+export type BackfillStatus =
+  "idle" | "running" | "paused" | "completed" | "failed";
 
 export type BackfillConfig = {
   jobId: string;
   tableName: string;
-  batchSize?: number;              // default: 500
-  sleepBetweenBatchesMs?: number;  // default: 50ms
-  lockTimeoutMs?: number;          // default: 500ms
-  statementTimeoutMs?: number;     // default: 2000ms
-  maxRows?: number;                // optional limit
+  batchSize?: number; // default: 500
+  sleepBetweenBatchesMs?: number; // default: 50ms
+  lockTimeoutMs?: number; // default: 500ms
+  statementTimeoutMs?: number; // default: 2000ms
+  maxRows?: number; // optional limit
   dryRun?: boolean;
 };
 
@@ -55,7 +56,9 @@ const activeJobAbortControllers = new Map<string, AbortController>();
 /**
  * Fetch progress and cursor checkpoint for a given backfill job.
  */
-export async function getBackfillProgress(jobId: string): Promise<BackfillProgress | null> {
+export async function getBackfillProgress(
+  jobId: string,
+): Promise<BackfillProgress | null> {
   const local = memoryBackfillProgress.get(jobId);
   if (local) return local;
 
@@ -80,7 +83,9 @@ export async function getBackfillProgress(jobId: string): Promise<BackfillProgre
 /**
  * Save progress and checkpoint cursor for a backfill job.
  */
-export async function saveBackfillProgress(progress: BackfillProgress): Promise<boolean> {
+export async function saveBackfillProgress(
+  progress: BackfillProgress,
+): Promise<boolean> {
   progress.updatedAt = new Date().toISOString();
   memoryBackfillProgress.set(progress.jobId, progress);
 
@@ -88,7 +93,10 @@ export async function saveBackfillProgress(progress: BackfillProgress): Promise<
     try {
       const res = await redisCommand([
         "SET",
-        redisKey("platform", `${BACKFILL_PROGRESS_KEY_PREFIX}${progress.jobId}`),
+        redisKey(
+          "platform",
+          `${BACKFILL_PROGRESS_KEY_PREFIX}${progress.jobId}`,
+        ),
         JSON.stringify(progress),
       ]);
       return res.ok;
@@ -125,7 +133,9 @@ export type BatchTransformFn<T> = (
 /**
  * Generic Chunked Backfill Engine with Lock Guard and Throttling.
  */
-export async function executeChunkedBackfill<TRecord extends { id: string | number }>(
+export async function executeChunkedBackfill<
+  TRecord extends { id: string | number },
+>(
   config: BackfillConfig,
   fetchChunk: ChunkFetchFn<TRecord>,
   transformBatch: BatchTransformFn<TRecord>,
@@ -178,7 +188,10 @@ export async function executeChunkedBackfill<TRecord extends { id: string | numb
       if (abortController.signal.aborted) {
         progress.status = "paused";
         await saveBackfillProgress(progress);
-        log("warn", "backfill.paused_by_signal", { jobId: config.jobId, cursor });
+        log("warn", "backfill.paused_by_signal", {
+          jobId: config.jobId,
+          cursor,
+        });
         return progress;
       }
 

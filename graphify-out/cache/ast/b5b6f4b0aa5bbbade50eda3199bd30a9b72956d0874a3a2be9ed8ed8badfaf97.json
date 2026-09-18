@@ -1,1 +1,279 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "label": "manifest.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L1"}, {"id": "harness_manifest_schema", "label": "schema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L2"}, {"id": "harness_manifest_generator", "label": "generator", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L3"}, {"id": "harness_manifest_template", "label": "template", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L4"}, {"id": "harness_manifest_template_version", "label": "template_version", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L5"}, {"id": "harness_manifest_vars", "label": "vars", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L6"}, {"id": "harness_manifest_vars_name", "label": "name", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L7"}, {"id": "harness_manifest_vars_description", "label": "description", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L8"}, {"id": "harness_manifest_vars_host", "label": "host", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L9"}, {"id": "harness_manifest_hosts", "label": "hosts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L11"}, {"id": "harness_manifest_files", "label": "files", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L12"}, {"id": "harness_manifest_files_harness_mcp_policy_json", "label": ".harness/mcp-policy.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L13"}, {"id": "harness_manifest_files_claude_settings_json", "label": ".claude/settings.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L14"}, {"id": "harness_manifest_generated_at", "label": "generated_at", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L16"}, {"id": "harness_manifest_meta", "label": "meta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L17"}, {"id": "harness_manifest_meta_surface", "label": "surface", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L18"}, {"id": "harness_manifest_meta_adr_anchor", "label": "adr_anchor", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L19"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_schema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_generator", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_template", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_template_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_vars", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L6", "weight": 1.0}, {"source": "harness_manifest_vars", "target": "harness_manifest_vars_name", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L7", "weight": 1.0}, {"source": "harness_manifest_vars", "target": "harness_manifest_vars_description", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L8", "weight": 1.0}, {"source": "harness_manifest_vars", "target": "harness_manifest_vars_host", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_hosts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L11", "weight": 1.0}, {"source": "harness_manifest_hosts", "target": "ref_claude_code", "relation": "extends", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L11", "weight": 1.0, "context": "import"}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_files", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L12", "weight": 1.0}, {"source": "harness_manifest_files", "target": "harness_manifest_files_harness_mcp_policy_json", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L13", "weight": 1.0}, {"source": "harness_manifest_files", "target": "harness_manifest_files_claude_settings_json", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_generated_at", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json", "target": "harness_manifest_meta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L17", "weight": 1.0}, {"source": "harness_manifest_meta", "target": "harness_manifest_meta_surface", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L18", "weight": 1.0}, {"source": "harness_manifest_meta", "target": "harness_manifest_meta_adr_anchor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json", "source_location": "L19", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "label": "manifest.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "harness_manifest_schema",
+      "label": "schema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "harness_manifest_generator",
+      "label": "generator",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "harness_manifest_template",
+      "label": "template",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "harness_manifest_template_version",
+      "label": "template_version",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "harness_manifest_vars",
+      "label": "vars",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "harness_manifest_vars_name",
+      "label": "name",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "harness_manifest_vars_description",
+      "label": "description",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "harness_manifest_vars_host",
+      "label": "host",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "harness_manifest_hosts",
+      "label": "hosts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "harness_manifest_files",
+      "label": "files",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "harness_manifest_files_harness_mcp_policy_json",
+      "label": ".harness/mcp-policy.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "harness_manifest_files_claude_settings_json",
+      "label": ".claude/settings.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "harness_manifest_generated_at",
+      "label": "generated_at",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "harness_manifest_meta",
+      "label": "meta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L17"
+    },
+    {
+      "id": "harness_manifest_meta_surface",
+      "label": "surface",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "harness_manifest_meta_adr_anchor",
+      "label": "adr_anchor",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L19"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_generator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_template",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_template_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_vars",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_vars",
+      "target": "harness_manifest_vars_name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_vars",
+      "target": "harness_manifest_vars_description",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_vars",
+      "target": "harness_manifest_vars_host",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_hosts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_hosts",
+      "target": "ref_claude_code",
+      "relation": "extends",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L11",
+      "weight": 1.0,
+      "context": "import"
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_files",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_files",
+      "target": "harness_manifest_files_harness_mcp_policy_json",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_files",
+      "target": "harness_manifest_files_claude_settings_json",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_generated_at",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_harness_manifest_json",
+      "target": "harness_manifest_meta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_meta",
+      "target": "harness_manifest_meta_surface",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "harness_manifest_meta",
+      "target": "harness_manifest_meta_adr_anchor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/.harness/manifest.json",
+      "source_location": "L19",
+      "weight": 1.0
+    }
+  ]
+}

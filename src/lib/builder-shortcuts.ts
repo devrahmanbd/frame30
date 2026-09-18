@@ -143,7 +143,10 @@ export const SHORTCUTS: ShortcutSpec[] = [
   },
 ];
 
-export const SHORTCUT_GROUP_LABEL: Record<ShortcutGroup, { en: string; bn: string }> = {
+export const SHORTCUT_GROUP_LABEL: Record<
+  ShortcutGroup,
+  { en: string; bn: string }
+> = {
   history: { en: "History", bn: "ইতিহাস" },
   clipboard: { en: "Clipboard", bn: "ক্লিপবোর্ড" },
   structure: { en: "Structure", bn: "স্ট্রাকচার" },
@@ -171,7 +174,9 @@ export function formatCombo(combo: Combo, platform: Platform): string {
   if (combo.mod) parts.push(platform === "mac" ? "⌘" : "Ctrl");
   if (combo.shift) parts.push(platform === "mac" ? "⇧" : "Shift");
   if (combo.alt) parts.push(platform === "mac" ? "⌥" : "Alt");
-  const key = KEY_LABEL[combo.key] ?? (combo.key.length === 1 ? combo.key.toUpperCase() : combo.key);
+  const key =
+    KEY_LABEL[combo.key] ??
+    (combo.key.length === 1 ? combo.key.toUpperCase() : combo.key);
   parts.push(key);
   return platform === "mac" ? parts.join("") : parts.join("+");
 }
@@ -204,9 +209,7 @@ function comboMatches(combo: Combo, event: KeyEventLike): boolean {
 /** Resolves an event to a shortcut id, or null when nothing claims it. */
 export function matchShortcut(event: KeyEventLike): ShortcutId | null {
   // Longest-specificity first: ⇧⌘V must win over ⌘V.
-  const ranked = [...SHORTCUTS].sort(
-    (a, b) => specificity(b) - specificity(a),
-  );
+  const ranked = [...SHORTCUTS].sort((a, b) => specificity(b) - specificity(a));
   for (const spec of ranked) {
     if (spec.combos.some((combo) => comboMatches(combo, event))) return spec.id;
   }
@@ -215,7 +218,10 @@ export function matchShortcut(event: KeyEventLike): ShortcutId | null {
 
 function specificity(spec: ShortcutSpec): number {
   return Math.max(
-    ...spec.combos.map((combo) => (combo.mod ? 1 : 0) + (combo.shift ? 2 : 0) + (combo.alt ? 4 : 0)),
+    ...spec.combos.map(
+      (combo) =>
+        (combo.mod ? 1 : 0) + (combo.shift ? 2 : 0) + (combo.alt ? 4 : 0),
+    ),
   );
 }
 
@@ -228,7 +234,18 @@ export function isTypingTarget(target: EventTarget | null): boolean {
   return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
 }
 
-export function shortcutsByGroup(): { group: ShortcutGroup; items: ShortcutSpec[] }[] {
-  const groups: ShortcutGroup[] = ["history", "clipboard", "structure", "workflow"];
-  return groups.map((group) => ({ group, items: SHORTCUTS.filter((s) => s.group === group) }));
+export function shortcutsByGroup(): {
+  group: ShortcutGroup;
+  items: ShortcutSpec[];
+}[] {
+  const groups: ShortcutGroup[] = [
+    "history",
+    "clipboard",
+    "structure",
+    "workflow",
+  ];
+  return groups.map((group) => ({
+    group,
+    items: SHORTCUTS.filter((s) => s.group === group),
+  }));
 }

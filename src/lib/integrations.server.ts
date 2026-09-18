@@ -38,7 +38,8 @@ export class IntegrationError extends Error {
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Client;
 }
 
@@ -57,14 +58,17 @@ type ConnectionRow = {
 const PROBE_TIMEOUT_MS = 5000;
 const STALE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes
 
-function credentialHeaders(service: IntegrationService): Record<string, string> {
+function credentialHeaders(
+  service: IntegrationService,
+): Record<string, string> {
   const spec = SERVICE_CATALOG[service];
   if (!spec.credentialEnv) return {};
   const value = process.env[spec.credentialEnv];
   if (!value) return {};
   if (spec.auth === "bearer") return { authorization: `Bearer ${value}` };
   if (spec.auth === "apikey") return { apikey: value };
-  if (spec.auth === "basic") return { authorization: `Basic ${btoa(`admin:${value}`)}` };
+  if (spec.auth === "basic")
+    return { authorization: `Basic ${btoa(`admin:${value}`)}` };
   return {};
 }
 
@@ -83,7 +87,10 @@ export type ProbeResult = {
 };
 
 /** One HTTP probe. Returns the exact failure text — an operator needs it. */
-export async function probeService(service: IntegrationService, baseUrl: string): Promise<ProbeResult> {
+export async function probeService(
+  service: IntegrationService,
+  baseUrl: string,
+): Promise<ProbeResult> {
   const started = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
@@ -100,7 +107,8 @@ export async function probeService(service: IntegrationService, baseUrl: string)
       status,
       latencyMs,
       httpStatus: res.status,
-      error: status === "up" ? null : `HTTP ${res.status} ${res.statusText}`.trim(),
+      error:
+        status === "up" ? null : `HTTP ${res.status} ${res.statusText}`.trim(),
     };
   } catch (err) {
     return {
@@ -131,9 +139,11 @@ async function recordProbe(db: Client, result: ProbeResult) {
       last_checked_at: new Date().toISOString(),
     } as never)
     .eq("service", result.service);
-  incr("framique_integration_probe_total", { service: result.service, outcome: result.status });
+  incr("framique_integration_probe_total", {
+    service: result.service,
+    outcome: result.status,
+  });
 }
-
 
 /* ---------------------------------- reads ---------------------------------- */
 
@@ -175,18 +185,30 @@ export async function loadIntegrations(db: Client, userId: string) {
   const stale = connRows.some((r) => {
     if (!r.enabled || !isIntegrationService(r.service)) return false;
     if (!r.last_checked_at) return true;
-    return Date.now() - new Date(r.last_checked_at).getTime() > STALE_THRESHOLD_MS;
+    return (
+      Date.now() - new Date(r.last_checked_at).getTime() > STALE_THRESHOLD_MS
+    );
   });
   if (stale) {
-    probeAllIntegrations().catch((err) => log("warn", "integration.background_probe_failed", { error: String(err) }));
+    probeAllIntegrations().catch((err) =>
+      log("warn", "integration.background_probe_failed", {
+        error: String(err),
+      }),
+    );
   }
 
   const byService = new Map(connRows.map((r) => [r.service, r]));
-  const probeRows = (probes ?? []) as { service: string; status: string; checked_at: string }[];
+  const probeRows = (probes ?? []) as {
+    service: string;
+    status: string;
+    checked_at: string;
+  }[];
 
   const views: ServiceView[] = Object.values(SERVICE_CATALOG).map((spec) => {
     const row = byService.get(spec.key);
-    const history = probeRows.filter((p) => p.service === spec.key).slice(0, 200);
+    const history = probeRows
+      .filter((p) => p.service === spec.key)
+      .slice(0, 200);
     return {
       service: spec.key,
       label: spec.label,
@@ -213,10 +235,17 @@ export async function loadIntegrations(db: Client, userId: string) {
 export async function saveIntegration(
   db: Client,
   userId: string,
-  input: { service: string; baseUrl: string; notes?: string | null; enabled?: boolean },
+  input: {
+    service: string;
+    baseUrl: string;
+    notes?: string | null;
+    enabled?: boolean;
+  },
 ) {
-  if (!isIntegrationService(input.service)) throw new IntegrationError("integration.unknown_service");
-  if (!validBaseUrl(input.baseUrl)) throw new IntegrationError("integration.bad_url");
+  if (!isIntegrationService(input.service))
+    throw new IntegrationError("integration.unknown_service");
+  if (!validBaseUrl(input.baseUrl))
+    throw new IntegrationError("integration.bad_url");
   const key = input.service;
   return ownerGate(
     db,
@@ -227,7 +256,11 @@ export async function saveIntegration(
       entityId: key,
       bucket: "platform.write",
       kind: "write",
-      meta: { service: key, baseUrl: input.baseUrl, enabled: input.enabled ?? true },
+      meta: {
+        service: key,
+        baseUrl: input.baseUrl,
+        enabled: input.enabled ?? true,
+      },
     },
     async () => {
       const service = await admin();
@@ -251,8 +284,13 @@ export async function saveIntegration(
   );
 }
 
-export async function disconnectIntegration(db: Client, userId: string, serviceKey: string) {
-  if (!isIntegrationService(serviceKey)) throw new IntegrationError("integration.unknown_service");
+export async function disconnectIntegration(
+  db: Client,
+  userId: string,
+  serviceKey: string,
+) {
+  if (!isIntegrationService(serviceKey))
+    throw new IntegrationError("integration.unknown_service");
   const key = serviceKey;
   return ownerGate(
     db,
@@ -274,8 +312,13 @@ export async function disconnectIntegration(db: Client, userId: string, serviceK
 }
 
 /** "Test connection": probe now, store the result, return latency or the error. */
-export async function testIntegration(db: Client, userId: string, serviceKey: string) {
-  if (!isIntegrationService(serviceKey)) throw new IntegrationError("integration.unknown_service");
+export async function testIntegration(
+  db: Client,
+  userId: string,
+  serviceKey: string,
+) {
+  if (!isIntegrationService(serviceKey))
+    throw new IntegrationError("integration.unknown_service");
   const key = serviceKey;
   return ownerGate(
     db,
@@ -294,7 +337,9 @@ export async function testIntegration(db: Client, userId: string, serviceKey: st
         .select("base_url")
         .eq("service", key)
         .maybeSingle();
-      const baseUrl = (data as { base_url: string } | null)?.base_url ?? SERVICE_CATALOG[key].defaultUrl;
+      const baseUrl =
+        (data as { base_url: string } | null)?.base_url ??
+        SERVICE_CATALOG[key].defaultUrl;
       const result = await probeService(key, baseUrl);
       await recordProbe(service, result);
       return result;
@@ -305,10 +350,12 @@ export async function testIntegration(db: Client, userId: string, serviceKey: st
 /** Probe everything connected — used by the dashboard poll and by cron. */
 export async function probeAllIntegrations() {
   const service = await admin();
-  const { data } = await service.from("integration_connections").select("service, base_url, enabled");
-  const rows = ((data ?? []) as { service: string; base_url: string; enabled: boolean }[]).filter(
-    (r) => r.enabled && isIntegrationService(r.service),
-  );
+  const { data } = await service
+    .from("integration_connections")
+    .select("service, base_url, enabled");
+  const rows = (
+    (data ?? []) as { service: string; base_url: string; enabled: boolean }[]
+  ).filter((r) => r.enabled && isIntegrationService(r.service));
   const results = await Promise.all(
     rows.map((r) => probeService(r.service as IntegrationService, r.base_url)),
   );
@@ -332,10 +379,12 @@ export async function sweepIntegrationProbes() {
 /* Phase 13 — health strip + public status publication                  */
 /* ------------------------------------------------------------------ */
 
-
 const SIGNAL_TIMEOUT_MS = 4000;
 
-async function getJson(url: string, headers: Record<string, string>): Promise<unknown | null> {
+async function getJson(
+  url: string,
+  headers: Record<string, string>,
+): Promise<unknown | null> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), SIGNAL_TIMEOUT_MS);
   try {
@@ -350,17 +399,28 @@ async function getJson(url: string, headers: Record<string, string>): Promise<un
 }
 
 function promScalar(payload: unknown): number | null {
-  const result = (payload as { data?: { result?: { value?: [number, string] }[] } })?.data?.result;
+  const result = (
+    payload as { data?: { result?: { value?: [number, string] }[] } }
+  )?.data?.result;
   const raw = result?.[0]?.value?.[1];
   const n = raw === undefined ? NaN : Number(raw);
   return Number.isFinite(n) ? n : null;
 }
 
-async function baseUrls(db: Client): Promise<Partial<Record<IntegrationService, string>>> {
-  const { data } = await db.from("integration_connections").select("service, base_url, enabled");
+async function baseUrls(
+  db: Client,
+): Promise<Partial<Record<IntegrationService, string>>> {
+  const { data } = await db
+    .from("integration_connections")
+    .select("service, base_url, enabled");
   const out: Partial<Record<IntegrationService, string>> = {};
-  for (const row of (data ?? []) as { service: string; base_url: string; enabled: boolean }[]) {
-    if (row.enabled && isIntegrationService(row.service)) out[row.service] = row.base_url.replace(/\/+$/, "");
+  for (const row of (data ?? []) as {
+    service: string;
+    base_url: string;
+    enabled: boolean;
+  }[]) {
+    if (row.enabled && isIntegrationService(row.service))
+      out[row.service] = row.base_url.replace(/\/+$/, "");
   }
   return out;
 }
@@ -369,13 +429,22 @@ async function baseUrls(db: Client): Promise<Partial<Record<IntegrationService, 
  * The five health-strip numbers. Every credential is read from the server
  * environment here, so the browser only ever receives the numbers themselves.
  */
-export async function loadOpsSignals(db: Client, userId: string): Promise<{ signals: OpsSignal[] }> {
+export async function loadOpsSignals(
+  db: Client,
+  userId: string,
+): Promise<{ signals: OpsSignal[] }> {
   await requirePlatformAdmin(db, userId);
   const service = await admin();
   const urls = await baseUrls(service);
-  const values = new Map<SignalKey, { value: number | null; detail: string | null }>();
-  const put = (key: SignalKey, value: number | null, detail: string | null = null) =>
-    values.set(key, { value, detail });
+  const values = new Map<
+    SignalKey,
+    { value: number | null; detail: string | null }
+  >();
+  const put = (
+    key: SignalKey,
+    value: number | null,
+    detail: string | null = null,
+  ) => values.set(key, { value, detail });
 
   // Prometheus: seconds since the freshest scrape of anything.
   if (urls.prometheus) {
@@ -383,7 +452,11 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
       `${urls.prometheus}/api/v1/query?query=${encodeURIComponent("time() - max(timestamp(up))")}`,
       credentialHeaders("prometheus"),
     );
-    put("last_scrape", promScalar(payload), payload ? null : "Prometheus did not answer");
+    put(
+      "last_scrape",
+      promScalar(payload),
+      payload ? null : "Prometheus did not answer",
+    );
   } else put("last_scrape", null, "Prometheus not connected");
 
   // Loki: age of the newest line, and how many error lines landed in an hour.
@@ -393,11 +466,17 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
       `${urls.loki}/loki/api/v1/query_range?limit=1&direction=backward&query=${encodeURIComponent('{job="framique"}')}`,
       headers,
     );
-    const streams = (tail as { data?: { result?: { values?: [string, string][] }[] } })?.data?.result ?? [];
-    const newestNs = streams.flatMap((s) => s.values ?? []).map((v) => Number(v[0]))[0];
+    const streams =
+      (tail as { data?: { result?: { values?: [string, string][] }[] } })?.data
+        ?.result ?? [];
+    const newestNs = streams
+      .flatMap((s) => s.values ?? [])
+      .map((v) => Number(v[0]))[0];
     put(
       "last_log",
-      Number.isFinite(newestNs) ? Math.max(0, (Date.now() - newestNs / 1e6) / 1000) : null,
+      Number.isFinite(newestNs)
+        ? Math.max(0, (Date.now() - newestNs / 1e6) / 1000)
+        : null,
       tail ? null : "Loki did not answer",
     );
 
@@ -419,7 +498,11 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
       `${urls.alertmanager}/api/v2/alerts?active=true&silenced=false&inhibited=false`,
       credentialHeaders("alertmanager"),
     );
-    put("active_alerts", Array.isArray(alerts) ? alerts.length : null, alerts ? null : "Alertmanager did not answer");
+    put(
+      "active_alerts",
+      Array.isArray(alerts) ? alerts.length : null,
+      alerts ? null : "Alertmanager did not answer",
+    );
   } else put("active_alerts", null, "Alertmanager not connected");
 
   // Backup age comes from our own ledger, not from a service probe.
@@ -429,11 +512,19 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
       .select("created_at, outcome")
       .order("created_at", { ascending: false })
       .limit(20);
-    const rows = (data ?? []) as { created_at: string; outcome: string | null }[];
+    const rows = (data ?? []) as {
+      created_at: string;
+      outcome: string | null;
+    }[];
     const newest = rows.find((r) => (r.outcome ?? "ok") !== "fail");
     put(
       "backup_age",
-      newest ? Math.max(0, (Date.now() - new Date(newest.created_at).getTime()) / 1000) : null,
+      newest
+        ? Math.max(
+            0,
+            (Date.now() - new Date(newest.created_at).getTime()) / 1000,
+          )
+        : null,
       newest ? null : "No successful backup recorded",
     );
   } catch {
@@ -451,7 +542,11 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
     if (Array.isArray(issues)) {
       put("glitchtip_errors", issues.length);
     } else {
-      put("glitchtip_errors", null, issues ? "GlitchTip did not answer" : "GlitchTip not connected");
+      put(
+        "glitchtip_errors",
+        null,
+        issues ? "GlitchTip did not answer" : "GlitchTip not connected",
+      );
     }
   } else put("glitchtip_errors", null, "GlitchTip not connected");
 
@@ -472,11 +567,17 @@ export async function publishProbeStatuses(results: ProbeResult[]) {
   if (results.length === 0) return 0;
   const service = await admin();
   const worst = new Map<string, ProbeStatus>();
-  const rank: Record<ProbeStatus, number> = { up: 0, unknown: 1, degraded: 2, down: 3 };
+  const rank: Record<ProbeStatus, number> = {
+    up: 0,
+    unknown: 1,
+    degraded: 2,
+    down: 3,
+  };
   for (const r of results) {
     const component = STATUS_COMPONENT[r.service];
     const current = worst.get(component);
-    if (!current || rank[r.status] > rank[current]) worst.set(component, r.status);
+    if (!current || rank[r.status] > rank[current])
+      worst.set(component, r.status);
   }
   let written = 0;
   for (const [component, status] of worst) {
@@ -489,8 +590,15 @@ export async function publishProbeStatuses(results: ProbeResult[]) {
     if (!row || row.state === "maintenance") continue;
     const next = componentStateForProbe(status);
     if (next === row.state) continue;
-    await service.from("ops_status_components").update({ state: next } as never).eq("key", component);
-    log("warn", "integration.status_component_changed", { component, from: row.state, to: next });
+    await service
+      .from("ops_status_components")
+      .update({ state: next } as never)
+      .eq("key", component);
+    log("warn", "integration.status_component_changed", {
+      component,
+      from: row.state,
+      to: next,
+    });
     written += 1;
   }
   return written;

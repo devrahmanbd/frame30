@@ -80,26 +80,126 @@ type Rule = {
  * data"); the narrower pattern is always listed above the broader one.
  */
 const RULES: Rule[] = [
-  { code: "node.duplicate_id", test: /^Duplicate node id/i, rank: 0, title: { en: "Duplicate node id", bn: "একই নোড আইডি দুবার" } },
-  { code: "node.unsupported", test: /^Unsupported widget/i, rank: 1, title: { en: "Unsupported widget", bn: "অসমর্থিত উইজেট" } },
-  { code: "node.children_illegal", test: /cannot hold nested widgets/i, rank: 2, title: { en: "Nesting not allowed", bn: "ভিতরে রাখা যাবে না" } },
-  { code: "node.slot_illegal", test: /is not allowed in the .* slot/i, rank: 3, title: { en: "Wrong slot", bn: "ভুল স্লট" } },
-  { code: "template.context_mismatch", test: /needs data this template does not provide/i, rank: 4, title: { en: "Missing page context", bn: "পেজ কনটেক্সট নেই" } },
-  { code: "template.required_widget", test: /template has no /i, rank: 5, title: { en: "Required widget missing", bn: "দরকারি উইজেট নেই" } },
-  { code: "heading.duplicate_h1", test: /claims the page <h1>/i, rank: 6, title: { en: "Two primary headings", bn: "দুটি প্রধান হেডিং" } },
-  { code: "heading.skipped_level", test: /skipp?ed|from h\d to h\d/i, rank: 7, title: { en: "Heading level skipped", bn: "হেডিং লেভেল বাদ পড়েছে" } },
-  { code: "heading.missing_h1", test: /No primary heading/i, rank: 8, title: { en: "No primary heading", bn: "প্রধান হেডিং নেই" } },
-  { code: "schema.duplicate", test: /only one per page is valid/i, rank: 9, title: { en: "Duplicate structured data", bn: "স্ট্রাকচার্ড ডেটা দুবার" } },
-  { code: "schema.invalid", test: /^Structured data/i, rank: 10, title: { en: "Invalid structured data", bn: "ভুল স্ট্রাকচার্ড ডেটা" } },
-  { code: "media.alt_missing", test: /missing alt text/i, rank: 11, title: { en: "Alt text missing", bn: "অল্ট টেক্সট নেই" } },
-  { code: "media.video_title", test: /missing an accessible title/i, rank: 12, title: { en: "Video title missing", bn: "ভিডিও টাইটেল নেই" } },
-  { code: "style.raw_colour", test: /Raw colour value/i, rank: 13, title: { en: "Raw colour", bn: "কাঁচা রঙ" } },
-  { code: "style.fixed_width", test: /Fixed pixel width/i, rank: 14, title: { en: "Fixed pixel width", bn: "নির্দিষ্ট পিক্সেল প্রস্থ" } },
-  { code: "style.uppercase_bangla", test: /Uppercase styling on/i, rank: 15, title: { en: "Uppercase on বাংলা", bn: "বাংলায় বড় হাতের স্টাইল" } },
-  { code: "content.english_missing", test: /English copy is missing/i, rank: 16, title: { en: "English copy missing", bn: "ইংরেজি কপি নেই" } },
-  { code: "content.bangla_missing", test: /no বাংলা translation/i, rank: 17, title: { en: "বাংলা translation missing", bn: "বাংলা অনুবাদ নেই" } },
-  { code: "content.countdown_end", test: /Countdown has no valid end time/i, rank: 18, title: { en: "Countdown end time", bn: "কাউন্টডাউন শেষ সময়" } },
-  { code: "container.empty", test: /Empty container/i, rank: 19, title: { en: "Empty container", bn: "খালি কনটেইনার" } },
+  {
+    code: "node.duplicate_id",
+    test: /^Duplicate node id/i,
+    rank: 0,
+    title: { en: "Duplicate node id", bn: "একই নোড আইডি দুবার" },
+  },
+  {
+    code: "node.unsupported",
+    test: /^Unsupported widget/i,
+    rank: 1,
+    title: { en: "Unsupported widget", bn: "অসমর্থিত উইজেট" },
+  },
+  {
+    code: "node.children_illegal",
+    test: /cannot hold nested widgets/i,
+    rank: 2,
+    title: { en: "Nesting not allowed", bn: "ভিতরে রাখা যাবে না" },
+  },
+  {
+    code: "node.slot_illegal",
+    test: /is not allowed in the .* slot/i,
+    rank: 3,
+    title: { en: "Wrong slot", bn: "ভুল স্লট" },
+  },
+  {
+    code: "template.context_mismatch",
+    test: /needs data this template does not provide/i,
+    rank: 4,
+    title: { en: "Missing page context", bn: "পেজ কনটেক্সট নেই" },
+  },
+  {
+    code: "template.required_widget",
+    test: /template has no /i,
+    rank: 5,
+    title: { en: "Required widget missing", bn: "দরকারি উইজেট নেই" },
+  },
+  {
+    code: "heading.duplicate_h1",
+    test: /claims the page <h1>/i,
+    rank: 6,
+    title: { en: "Two primary headings", bn: "দুটি প্রধান হেডিং" },
+  },
+  {
+    code: "heading.skipped_level",
+    test: /skipp?ed|from h\d to h\d/i,
+    rank: 7,
+    title: { en: "Heading level skipped", bn: "হেডিং লেভেল বাদ পড়েছে" },
+  },
+  {
+    code: "heading.missing_h1",
+    test: /No primary heading/i,
+    rank: 8,
+    title: { en: "No primary heading", bn: "প্রধান হেডিং নেই" },
+  },
+  {
+    code: "schema.duplicate",
+    test: /only one per page is valid/i,
+    rank: 9,
+    title: { en: "Duplicate structured data", bn: "স্ট্রাকচার্ড ডেটা দুবার" },
+  },
+  {
+    code: "schema.invalid",
+    test: /^Structured data/i,
+    rank: 10,
+    title: { en: "Invalid structured data", bn: "ভুল স্ট্রাকচার্ড ডেটা" },
+  },
+  {
+    code: "media.alt_missing",
+    test: /missing alt text/i,
+    rank: 11,
+    title: { en: "Alt text missing", bn: "অল্ট টেক্সট নেই" },
+  },
+  {
+    code: "media.video_title",
+    test: /missing an accessible title/i,
+    rank: 12,
+    title: { en: "Video title missing", bn: "ভিডিও টাইটেল নেই" },
+  },
+  {
+    code: "style.raw_colour",
+    test: /Raw colour value/i,
+    rank: 13,
+    title: { en: "Raw colour", bn: "কাঁচা রঙ" },
+  },
+  {
+    code: "style.fixed_width",
+    test: /Fixed pixel width/i,
+    rank: 14,
+    title: { en: "Fixed pixel width", bn: "নির্দিষ্ট পিক্সেল প্রস্থ" },
+  },
+  {
+    code: "style.uppercase_bangla",
+    test: /Uppercase styling on/i,
+    rank: 15,
+    title: { en: "Uppercase on বাংলা", bn: "বাংলায় বড় হাতের স্টাইল" },
+  },
+  {
+    code: "content.english_missing",
+    test: /English copy is missing/i,
+    rank: 16,
+    title: { en: "English copy missing", bn: "ইংরেজি কপি নেই" },
+  },
+  {
+    code: "content.bangla_missing",
+    test: /no বাংলা translation/i,
+    rank: 17,
+    title: { en: "বাংলা translation missing", bn: "বাংলা অনুবাদ নেই" },
+  },
+  {
+    code: "content.countdown_end",
+    test: /Countdown has no valid end time/i,
+    rank: 18,
+    title: { en: "Countdown end time", bn: "কাউন্টডাউন শেষ সময়" },
+  },
+  {
+    code: "container.empty",
+    test: /Empty container/i,
+    rank: 19,
+    title: { en: "Empty container", bn: "খালি কনটেইনার" },
+  },
 ];
 
 const FALLBACK: Rule = {
@@ -145,7 +245,10 @@ export function classifyIssues(issues: readonly AstIssue[]): ClassifiedIssue[] {
 }
 
 /** Counts for the badge on the studio header. */
-export function issueSummary(issues: readonly AstIssue[]): { errors: number; warnings: number } {
+export function issueSummary(issues: readonly AstIssue[]): {
+  errors: number;
+  warnings: number;
+} {
   let errors = 0;
   let warnings = 0;
   for (const issue of issues) {
@@ -170,7 +273,10 @@ function defaultsOf(type: SectionType): Record<string, PropValue> {
  * default (or the empty string when the schema has no default). Only the base
  * layer is touched here; breakpoint layers are handled by `resetOverrides`.
  */
-function resetMatching(section: Section, pattern: RegExp): Record<string, PropValue> {
+function resetMatching(
+  section: Section,
+  pattern: RegExp,
+): Record<string, PropValue> {
   const defaults = defaultsOf(section.type);
   const patch: Record<string, PropValue> = {};
   for (const [key, value] of Object.entries(section.props)) {
@@ -185,7 +291,10 @@ function stripUppercase(section: Section): Record<string, PropValue> {
   for (const [key, value] of Object.entries(section.props)) {
     if (typeof value !== "string" || !UPPERCASE.test(value)) continue;
     UPPERCASE.lastIndex = 0;
-    patch[key] = value.replace(UPPERCASE, "").replace(/\s{2,}/g, " ").trim();
+    patch[key] = value
+      .replace(UPPERCASE, "")
+      .replace(/\s{2,}/g, " ")
+      .trim();
   }
   UPPERCASE.lastIndex = 0;
   return patch;
@@ -211,12 +320,21 @@ export function planFix(
 ): FixPlan | null {
   switch (issue.code) {
     case "node.duplicate_id":
-      return { kind: "reid", label: { en: "Give a new id", bn: "নতুন আইডি দিন" } };
+      return {
+        kind: "reid",
+        label: { en: "Give a new id", bn: "নতুন আইডি দিন" },
+      };
     case "node.unsupported":
     case "container.empty":
-      return { kind: "remove", label: { en: "Remove this node", bn: "নোডটি মুছুন" } };
+      return {
+        kind: "remove",
+        label: { en: "Remove this node", bn: "নোডটি মুছুন" },
+      };
     case "node.children_illegal":
-      return { kind: "unnest", label: { en: "Remove nested widgets", bn: "ভিতরের উইজেট সরান" } };
+      return {
+        kind: "unnest",
+        label: { en: "Remove nested widgets", bn: "ভিতরের উইজেট সরান" },
+      };
     case "style.raw_colour":
       if (!section) return null;
       return {
@@ -248,18 +366,36 @@ export function planFix(
     case "media.video_title":
     case "content.english_missing":
     case "content.bangla_missing":
-      return { kind: "focus", panel: "content", label: { en: "Open the field", bn: "ফিল্ড খুলুন" } };
+      return {
+        kind: "focus",
+        panel: "content",
+        label: { en: "Open the field", bn: "ফিল্ড খুলুন" },
+      };
     case "node.slot_illegal":
     case "template.context_mismatch":
     case "heading.duplicate_h1":
     case "schema.duplicate":
     case "schema.invalid":
-      return { kind: "focus", panel: "content", label: { en: "Review this widget", bn: "উইজেট দেখুন" } };
+      return {
+        kind: "focus",
+        panel: "content",
+        label: { en: "Review this widget", bn: "উইজেট দেখুন" },
+      };
     case "heading.missing_h1":
     case "heading.skipped_level":
-      return { kind: "focus", panel: "seo", label: { en: "Open SEO panel", bn: "SEO প্যানেল খুলুন" } };
+      return {
+        kind: "focus",
+        panel: "seo",
+        label: { en: "Open SEO panel", bn: "SEO প্যানেল খুলুন" },
+      };
     default:
-      return section ? { kind: "focus", panel: "content", label: { en: "Review this widget", bn: "উইজেট দেখুন" } } : null;
+      return section
+        ? {
+            kind: "focus",
+            panel: "content",
+            label: { en: "Review this widget", bn: "উইজেট দেখুন" },
+          }
+        : null;
   }
 }
 

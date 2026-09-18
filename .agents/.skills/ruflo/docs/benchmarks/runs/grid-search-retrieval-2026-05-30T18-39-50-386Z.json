@@ -4,23 +4,10 @@
   "queries": 10,
   "configsEvaluated": 5,
   "grid": {
-    "ALPHA_GRID": [
-      0.5,
-      0.7
-    ],
-    "SUBJ_GRID": [
-      3,
-      5
-    ],
-    "MMR_GRID": [
-      0.5
-    ],
-    "RERANK_GRID": [
-      [
-        0.5,
-        0.5
-      ]
-    ]
+    "ALPHA_GRID": [0.5, 0.7],
+    "SUBJ_GRID": [3, 5],
+    "MMR_GRID": [0.5],
+    "RERANK_GRID": [[0.5, 0.5]]
   },
   "results": [
     {

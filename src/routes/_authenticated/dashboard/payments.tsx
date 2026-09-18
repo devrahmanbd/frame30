@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { StatusPill, Field, inputClass, btnPrimary } from "@/components/admin/MarketingUi";
+import {
+  StatusPill,
+  Field,
+  inputClass,
+  btnPrimary,
+} from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
 import {
@@ -20,10 +25,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/payments")({
       { title: "Payments desk — Framique admin" },
       {
         name: "description",
-        content: "Charge attempts, refunds, cash-on-delivery reconcile and provider settlement matching.",
+        content:
+          "Charge attempts, refunds, cash-on-delivery reconcile and provider settlement matching.",
       },
       { property: "og:title", content: "Payments desk — Framique admin" },
-      { property: "og:description", content: "Track every taka from charge attempt to settled payout." },
+      {
+        property: "og:description",
+        content: "Track every taka from charge attempt to settled payout.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -31,7 +40,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/payments")({
   }),
   component: PaymentsDesk,
   errorComponent: ({ error }) => (
-    <p role="alert" className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm">
+    <p
+      role="alert"
+      className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm"
+    >
       {error.message}
     </p>
   ),
@@ -68,7 +80,10 @@ const FILE_TONE: Record<string, Tone> = {
 };
 
 /** Only forward moves a human can make; the database rejects anything else. */
-const REFUND_NEXT: Record<string, ReadonlyArray<"approved" | "processing" | "settled" | "failed" | "declined">> = {
+const REFUND_NEXT: Record<
+  string,
+  ReadonlyArray<"approved" | "processing" | "settled" | "failed" | "declined">
+> = {
   requested: ["approved", "declined"],
   approved: ["processing", "declined"],
   processing: ["settled", "failed"],
@@ -82,15 +97,33 @@ const TABS = [
 ] as const;
 
 function Card({ children }: { children: React.ReactNode }) {
-  return <div className="overflow-x-auto rounded-fq-md border border-border bg-card">{children}</div>;
+  return (
+    <div className="overflow-x-auto rounded-fq-md border border-border bg-card">
+      {children}
+    </div>
+  );
 }
 
 function Th({ children }: { children: React.ReactNode }) {
-  return <th className="whitespace-nowrap px-3 py-2 text-left font-medium text-muted-foreground">{children}</th>;
+  return (
+    <th className="whitespace-nowrap px-3 py-2 text-left font-medium text-muted-foreground">
+      {children}
+    </th>
+  );
 }
 
-function Td({ children, money }: { children: React.ReactNode; money?: boolean }) {
-  return <td className={`px-3 py-2 align-middle ${money ? "money text-right" : ""}`}>{children}</td>;
+function Td({
+  children,
+  money,
+}: {
+  children: React.ReactNode;
+  money?: boolean;
+}) {
+  return (
+    <td className={`px-3 py-2 align-middle ${money ? "money text-right" : ""}`}>
+      {children}
+    </td>
+  );
 }
 
 function Empty({ label }: { label: string }) {
@@ -112,8 +145,12 @@ function PaymentsDesk() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [provider, setProvider] = useState<"bkash" | "nagad" | "rocket" | "bank">("bkash");
-  const [fileDate, setFileDate] = useState(new Date().toISOString().slice(0, 10));
+  const [provider, setProvider] = useState<
+    "bkash" | "nagad" | "rocket" | "bank"
+  >("bkash");
+  const [fileDate, setFileDate] = useState(
+    new Date().toISOString().slice(0, 10),
+  );
   const [csv, setCsv] = useState("");
 
   async function run(fn: () => Promise<unknown>, ok: string) {
@@ -136,7 +173,9 @@ function PaymentsDesk() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-bangla-display text-xl font-semibold">{t("Payments desk", "পেমেন্ট ডেস্ক")}</h1>
+        <h1 className="font-bangla-display text-xl font-semibold">
+          {t("Payments desk", "পেমেন্ট ডেস্ক")}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {t(
             "Every taka from charge attempt to settled payout. Amounts are integer minor units and never change once recorded.",
@@ -146,12 +185,18 @@ function PaymentsDesk() {
       </header>
 
       {error && (
-        <p role="alert" className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm">
+        <p
+          role="alert"
+          className="rounded-fq-md border border-danger bg-danger-soft px-3 py-2 text-sm"
+        >
           {error}
         </p>
       )}
       {message && (
-        <p role="status" className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm">
+        <p
+          role="status"
+          className="rounded-fq-md border border-success bg-success-soft px-3 py-2 text-sm"
+        >
           {message}
         </p>
       )}
@@ -159,21 +204,36 @@ function PaymentsDesk() {
       {unresolved > 0 && (
         <section className="rounded-fq-md border border-warning-foreground/30 bg-warning-soft p-4">
           <h2 className="text-sm font-semibold text-warning-foreground">
-            {t("Settlement variances need a decision", "সেটলমেন্ট গরমিলের সিদ্ধান্ত দরকার")} ({unresolved})
+            {t(
+              "Settlement variances need a decision",
+              "সেটলমেন্ট গরমিলের সিদ্ধান্ত দরকার",
+            )}{" "}
+            ({unresolved})
           </h2>
           <ul className="mt-2 space-y-2 text-sm">
             {data.alerts.map((a) => (
-              <li key={a.id} className="flex flex-wrap items-center justify-between gap-2">
+              <li
+                key={a.id}
+                className="flex flex-wrap items-center justify-between gap-2"
+              >
                 <span className="money">
-                  {a.kind} — {t("expected", "প্রত্যাশিত")} {fmtMinor(Number(a.expected_minor_int), "BDT")},{" "}
-                  {t("actual", "প্রকৃত")} {fmtMinor(Number(a.actual_minor_int), "BDT")}
+                  {a.kind} — {t("expected", "প্রত্যাশিত")}{" "}
+                  {fmtMinor(Number(a.expected_minor_int), "BDT")},{" "}
+                  {t("actual", "প্রকৃত")}{" "}
+                  {fmtMinor(Number(a.actual_minor_int), "BDT")}
                 </span>
                 <button
                   type="button"
                   disabled={busy}
                   onClick={() =>
                     void run(
-                      () => resolve({ data: { alertId: a.id, note: "Reviewed on the payments desk" } }),
+                      () =>
+                        resolve({
+                          data: {
+                            alertId: a.id,
+                            note: "Reviewed on the payments desk",
+                          },
+                        }),
                       t("Variance resolved", "গরমিল নিষ্পত্তি হয়েছে"),
                     )
                   }
@@ -187,7 +247,11 @@ function PaymentsDesk() {
         </section>
       )}
 
-      <div role="tablist" aria-label={t("Payment views", "পেমেন্ট ভিউ")} className="flex flex-wrap gap-2">
+      <div
+        role="tablist"
+        aria-label={t("Payment views", "পেমেন্ট ভিউ")}
+        className="flex flex-wrap gap-2"
+      >
         {TABS.map((tb) => (
           <button
             key={tb.id}
@@ -196,7 +260,9 @@ function PaymentsDesk() {
             aria-selected={tab === tb.id}
             onClick={() => setTab(tb.id)}
             className={`min-h-11 rounded-fq-md border px-4 text-sm font-medium ${
-              tab === tb.id ? "border-primary bg-info-soft text-info-foreground" : "border-border bg-card"
+              tab === tb.id
+                ? "border-primary bg-info-soft text-info-foreground"
+                : "border-border bg-card"
             }`}
           >
             {t(tb.en, tb.bn)}
@@ -207,10 +273,17 @@ function PaymentsDesk() {
       {tab === "intents" && (
         <Card>
           {data.intents.length === 0 ? (
-            <Empty label={t("No charge attempts yet.", "এখনও কোনো চার্জ অ্যাটেম্পট নেই।")} />
+            <Empty
+              label={t(
+                "No charge attempts yet.",
+                "এখনও কোনো চার্জ অ্যাটেম্পট নেই।",
+              )}
+            />
           ) : (
             <table className="w-full text-sm">
-              <caption className="sr-only">{t("Charge attempts", "চার্জ অ্যাটেম্পট")}</caption>
+              <caption className="sr-only">
+                {t("Charge attempts", "চার্জ অ্যাটেম্পট")}
+              </caption>
               <thead className="border-b border-border bg-muted/40">
                 <tr>
                   <Th>{t("Method", "মেথড")}</Th>
@@ -222,14 +295,22 @@ function PaymentsDesk() {
               </thead>
               <tbody>
                 {data.intents.map((i) => (
-                  <tr key={i.id} className="border-b border-border last:border-0">
+                  <tr
+                    key={i.id}
+                    className="border-b border-border last:border-0"
+                  >
                     <Td>{i.method}</Td>
                     <Td>#{i.attempt}</Td>
                     <Td>
-                      <StatusPill tone={INTENT_TONE[i.status] ?? "neutral"} label={i.status} />
+                      <StatusPill
+                        tone={INTENT_TONE[i.status] ?? "neutral"}
+                        label={i.status}
+                      />
                     </Td>
                     <Td>{i.provider_reference ?? "—"}</Td>
-                    <Td money>{fmtMinor(Number(i.amount_minor_int), i.currency_code)}</Td>
+                    <Td money>
+                      {fmtMinor(Number(i.amount_minor_int), i.currency_code)}
+                    </Td>
                   </tr>
                 ))}
               </tbody>
@@ -241,7 +322,9 @@ function PaymentsDesk() {
       {tab === "refunds" && (
         <Card>
           {data.refunds.length === 0 ? (
-            <Empty label={t("No refunds requested.", "কোনো রিফান্ড অনুরোধ নেই।")} />
+            <Empty
+              label={t("No refunds requested.", "কোনো রিফান্ড অনুরোধ নেই।")}
+            />
           ) : (
             <table className="w-full text-sm">
               <caption className="sr-only">{t("Refunds", "রিফান্ড")}</caption>
@@ -255,12 +338,20 @@ function PaymentsDesk() {
               </thead>
               <tbody>
                 {data.refunds.map((r) => (
-                  <tr key={r.id} className="border-b border-border last:border-0">
+                  <tr
+                    key={r.id}
+                    className="border-b border-border last:border-0"
+                  >
                     <Td>
-                      <StatusPill tone={REFUND_TONE[r.status] ?? "neutral"} label={r.status} />
+                      <StatusPill
+                        tone={REFUND_TONE[r.status] ?? "neutral"}
+                        label={r.status}
+                      />
                     </Td>
                     <Td>{r.reason}</Td>
-                    <Td money>{fmtMinor(Number(r.amount_minor_int), r.currency_code)}</Td>
+                    <Td money>
+                      {fmtMinor(Number(r.amount_minor_int), r.currency_code)}
+                    </Td>
                     <Td>
                       <span className="flex flex-wrap gap-2">
                         {(REFUND_NEXT[r.status] ?? []).map((to) => (
@@ -271,7 +362,10 @@ function PaymentsDesk() {
                             onClick={() =>
                               void run(
                                 () => advance({ data: { refundId: r.id, to } }),
-                                t(`Refund moved to ${to}`, `রিফান্ড ${to} হয়েছে`),
+                                t(
+                                  `Refund moved to ${to}`,
+                                  `রিফান্ড ${to} হয়েছে`,
+                                ),
                               )
                             }
                             className="min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm"
@@ -280,7 +374,9 @@ function PaymentsDesk() {
                           </button>
                         ))}
                         {(REFUND_NEXT[r.status] ?? []).length === 0 && (
-                          <span className="text-muted-foreground">{t("Closed", "সম্পন্ন")}</span>
+                          <span className="text-muted-foreground">
+                            {t("Closed", "সম্পন্ন")}
+                          </span>
                         )}
                       </span>
                     </Td>
@@ -295,10 +391,17 @@ function PaymentsDesk() {
       {tab === "cod" && (
         <Card>
           {data.cod.length === 0 ? (
-            <Empty label={t("No cash-on-delivery collections recorded.", "কোনো COD সংগ্রহ লেখা হয়নি।")} />
+            <Empty
+              label={t(
+                "No cash-on-delivery collections recorded.",
+                "কোনো COD সংগ্রহ লেখা হয়নি।",
+              )}
+            />
           ) : (
             <table className="w-full text-sm">
-              <caption className="sr-only">{t("COD reconcile", "COD মিলকরণ")}</caption>
+              <caption className="sr-only">
+                {t("COD reconcile", "COD মিলকরণ")}
+              </caption>
               <thead className="border-b border-border bg-muted/40">
                 <tr>
                   <Th>{t("Carrier", "কুরিয়ার")}</Th>
@@ -311,14 +414,29 @@ function PaymentsDesk() {
               </thead>
               <tbody>
                 {data.cod.map((c) => (
-                  <tr key={c.id} className="border-b border-border last:border-0">
+                  <tr
+                    key={c.id}
+                    className="border-b border-border last:border-0"
+                  >
                     <Td>{c.carrier_code ?? "—"}</Td>
-                    <Td money>{fmtMinor(Number(c.expected_minor_int), "BDT")}</Td>
-                    <Td money>{fmtMinor(Number(c.collected_minor_int), "BDT")}</Td>
-                    <Td money>{fmtMinor(Number(c.variance_minor_int), "BDT")}</Td>
+                    <Td money>
+                      {fmtMinor(Number(c.expected_minor_int), "BDT")}
+                    </Td>
+                    <Td money>
+                      {fmtMinor(Number(c.collected_minor_int), "BDT")}
+                    </Td>
+                    <Td money>
+                      {fmtMinor(Number(c.variance_minor_int), "BDT")}
+                    </Td>
                     <Td>
                       <StatusPill
-                        tone={c.status === "matched" ? "success" : c.status === "cleared" ? "info" : "warning"}
+                        tone={
+                          c.status === "matched"
+                            ? "success"
+                            : c.status === "cleared"
+                              ? "info"
+                              : "warning"
+                        }
                         label={c.status}
                       />
                     </Td>
@@ -329,7 +447,13 @@ function PaymentsDesk() {
                           disabled={busy}
                           onClick={() =>
                             void run(
-                              () => clear({ data: { reconId: c.id, note: "Cleared after courier confirmation" } }),
+                              () =>
+                                clear({
+                                  data: {
+                                    reconId: c.id,
+                                    note: "Cleared after courier confirmation",
+                                  },
+                                }),
                               t("Variance cleared", "গরমিল নিষ্পত্তি হয়েছে"),
                             )
                           }
@@ -362,7 +486,11 @@ function PaymentsDesk() {
             }}
           >
             <Field label={t("Provider", "প্রোভাইডার")}>
-              <select className={inputClass} value={provider} onChange={(e) => setProvider(e.target.value as typeof provider)}>
+              <select
+                className={inputClass}
+                value={provider}
+                onChange={(e) => setProvider(e.target.value as typeof provider)}
+              >
                 <option value="bkash">bKash</option>
                 <option value="nagad">Nagad</option>
                 <option value="rocket">Rocket</option>
@@ -370,17 +498,28 @@ function PaymentsDesk() {
               </select>
             </Field>
             <Field label={t("File date", "ফাইলের তারিখ")}>
-              <input type="date" className={inputClass} value={fileDate} onChange={(e) => setFileDate(e.target.value)} required />
+              <input
+                type="date"
+                className={inputClass}
+                value={fileDate}
+                onChange={(e) => setFileDate(e.target.value)}
+                required
+              />
             </Field>
             <div className="sm:col-span-2">
               <Field
-                label={t("Feed rows (ref,gross,fee,net in minor units)", "ফিড রো (ref,gross,fee,net — পয়সায়)")}
+                label={t(
+                  "Feed rows (ref,gross,fee,net in minor units)",
+                  "ফিড রো (ref,gross,fee,net — পয়সায়)",
+                )}
               >
                 <textarea
                   className={`${inputClass} min-h-32 font-mono`}
                   value={csv}
                   onChange={(e) => setCsv(e.target.value)}
-                  placeholder={"ref,gross,fee,net\nbkash:abc123,120000,2400,117600"}
+                  placeholder={
+                    "ref,gross,fee,net\nbkash:abc123,120000,2400,117600"
+                  }
                   required
                 />
               </Field>
@@ -394,10 +533,17 @@ function PaymentsDesk() {
 
           <Card>
             {data.files.length === 0 ? (
-              <Empty label={t("No settlement files yet.", "এখনও কোনো সেটলমেন্ট ফাইল নেই।")} />
+              <Empty
+                label={t(
+                  "No settlement files yet.",
+                  "এখনও কোনো সেটলমেন্ট ফাইল নেই।",
+                )}
+              />
             ) : (
               <table className="w-full text-sm">
-                <caption className="sr-only">{t("Settlement files", "সেটলমেন্ট ফাইল")}</caption>
+                <caption className="sr-only">
+                  {t("Settlement files", "সেটলমেন্ট ফাইল")}
+                </caption>
                 <thead className="border-b border-border bg-muted/40">
                   <tr>
                     <Th>{t("Provider", "প্রোভাইডার")}</Th>
@@ -410,7 +556,10 @@ function PaymentsDesk() {
                 </thead>
                 <tbody>
                   {data.files.map((f) => (
-                    <tr key={f.id} className="border-b border-border last:border-0">
+                    <tr
+                      key={f.id}
+                      className="border-b border-border last:border-0"
+                    >
                       <Td>{f.provider}</Td>
                       <Td>{f.file_date}</Td>
                       <Td>
@@ -418,7 +567,10 @@ function PaymentsDesk() {
                       </Td>
                       <Td money>{fmtMinor(Number(f.net_minor_int), "BDT")}</Td>
                       <Td>
-                        <StatusPill tone={FILE_TONE[f.status] ?? "neutral"} label={f.status} />
+                        <StatusPill
+                          tone={FILE_TONE[f.status] ?? "neutral"}
+                          label={f.status}
+                        />
                       </Td>
                       <Td>
                         {f.status === "matched" ? (
@@ -428,7 +580,10 @@ function PaymentsDesk() {
                             onClick={() =>
                               void run(
                                 () => post({ data: { fileId: f.id } }),
-                                t("Settlement posted to the ledger", "সেটলমেন্ট লেজারে পোস্ট হয়েছে"),
+                                t(
+                                  "Settlement posted to the ledger",
+                                  "সেটলমেন্ট লেজারে পোস্ট হয়েছে",
+                                ),
                               )
                             }
                             className="min-h-11 rounded-fq-md border border-border bg-card px-3 text-sm"
@@ -436,7 +591,9 @@ function PaymentsDesk() {
                             {t("Post to ledger", "লেজারে পোস্ট")}
                           </button>
                         ) : (
-                          <span className="text-muted-foreground">{f.reject_reason ?? "—"}</span>
+                          <span className="text-muted-foreground">
+                            {f.reject_reason ?? "—"}
+                          </span>
                         )}
                       </Td>
                     </tr>

@@ -1,1 +1,234 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "label": "InstalledApps.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L1"}, {"id": "marketplace_installedapps_installedapps", "label": "InstalledApps()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L10"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "users_rahman_documents_frame30_src_lib_plugins_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_plugins_functions_pluginlistfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_plugins_functions_pluginsettingssavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_plugins_functions_plugintogglefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_plugin_manifest_satisfiesapirange", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "lib_plugin_manifest_settingsvalues", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "marketplace_pluginsettingsform_pluginsettingsform", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx", "target": "marketplace_installedapps_installedapps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L10", "weight": 1.0}], "raw_calls": [{"caller_nid": "marketplace_installedapps_installedapps", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L11"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L12"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L13"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L14"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L15"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L17"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L38"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L41"}, {"caller_nid": "marketplace_installedapps_installedapps", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx", "source_location": "L45"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "label": "InstalledApps.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "marketplace_installedapps_installedapps",
+      "label": "InstalledApps()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L10"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_plugins_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_plugins_functions_pluginlistfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_plugins_functions_pluginsettingssavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_plugins_functions_plugintogglefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_plugin_manifest_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_plugin_manifest_satisfiesapirange",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "lib_plugin_manifest_settingsvalues",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "users_rahman_documents_frame30_src_components_marketplace_pluginsettingsform_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "marketplace_pluginsettingsform_pluginsettingsform",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_marketplace_installedapps_tsx",
+      "target": "marketplace_installedapps_installedapps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L11"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L13"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L15"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "marketplace_installedapps_installedapps",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/marketplace/InstalledApps.tsx",
+      "source_location": "L45"
+    }
+  ]
+}

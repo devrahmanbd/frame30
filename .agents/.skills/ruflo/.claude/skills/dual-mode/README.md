@@ -4,15 +4,16 @@ Optional skills for orchestrating Claude Code and headless Codex workers togethe
 
 ## Available Skills
 
-| Skill | File | Purpose |
-|-------|------|---------|
-| `/dual-spawn` | dual-spawn.md | Spawn headless Codex workers from Claude Code |
-| `/dual-coordinate` | dual-coordinate.md | Coordinate hybrid Claude+Codex workflows |
-| `/dual-collect` | dual-collect.md | Collect results from headless workers |
+| Skill              | File               | Purpose                                       |
+| ------------------ | ------------------ | --------------------------------------------- |
+| `/dual-spawn`      | dual-spawn.md      | Spawn headless Codex workers from Claude Code |
+| `/dual-coordinate` | dual-coordinate.md | Coordinate hybrid Claude+Codex workflows      |
+| `/dual-collect`    | dual-collect.md    | Collect results from headless workers         |
 
 ## Quick Start
 
 ### Spawn Parallel Workers
+
 ```
 /dual-spawn "Implement auth module" --workers 3
 ```
@@ -20,11 +21,13 @@ Optional skills for orchestrating Claude Code and headless Codex workers togethe
 This spawns 3 headless Codex workers in background.
 
 ### Collect Results
+
 ```
 /dual-collect --namespace results
 ```
 
 ### Full Hybrid Workflow
+
 ```
 /dual-coordinate --workflow hybrid_development --task "Build user API"
 ```
@@ -32,6 +35,7 @@ This spawns 3 headless Codex workers in background.
 ## Workflow Examples
 
 ### Feature Implementation
+
 ```bash
 # 1. Spawn implementation workers
 /dual-spawn "Implement user CRUD API" --workers 2 --type coder
@@ -44,6 +48,7 @@ This spawns 3 headless Codex workers in background.
 ```
 
 ### Documentation Sprint
+
 ```bash
 /dual-spawn "Document all API endpoints" --workers 4 --type docs
 /dual-collect --namespace results
@@ -52,6 +57,7 @@ This spawns 3 headless Codex workers in background.
 ## Related Agents
 
 See `.claude/agents/dual-mode/` for agent definitions:
+
 - `dual-orchestrator` - Hybrid workflow orchestration
 - `codex-coordinator` - Parallel worker coordination
 - `codex-worker` - Headless execution worker

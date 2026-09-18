@@ -1,1 +1,334 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "label": "marketplace-vault.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L1"}, {"id": "lib_marketplace_vault_test_rec", "label": "rec", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L12"}, {"id": "lib_marketplace_vault_test_recorder", "label": "recorder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L13"}, {"id": "lib_marketplace_vault_test_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L28"}, {"id": "lib_marketplace_vault_test_vaultdb", "label": "vaultDb()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L30"}, {"id": "lib_marketplace_vault_test_publishinput", "label": "publishInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L48"}, {"id": "lib_marketplace_vault_test_db", "label": "db", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L62"}, {"id": "lib_marketplace_vault_test_installdb", "label": "installDb()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L143"}, {"id": "lib_marketplace_vault_test_input", "label": "input", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L175"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "fixtures_fake_db_fakedb", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "users_rahman_documents_frame30_src_lib_fixtures_test_doubles_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "fixtures_test_doubles_metricrecorder", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "fixtures_test_doubles_allowallratelimits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_rec", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_recorder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_vaultdb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_publishinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L62", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L108", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L129", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_installdb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_input", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L175", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L194", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L214", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L225", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L242", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts", "target": "lib_marketplace_vault_test_db", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L249", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_marketplace_vault_test_vaultdb", "callee": "fakeDb", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L31"}, {"caller_nid": "lib_marketplace_vault_test_installdb", "callee": "fakeDb", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts", "source_location": "L144"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "label": "marketplace-vault.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_marketplace_vault_test_rec",
+      "label": "rec",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L12"
+    },
+    {
+      "id": "lib_marketplace_vault_test_recorder",
+      "label": "recorder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_marketplace_vault_test_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_marketplace_vault_test_vaultdb",
+      "label": "vaultDb()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_marketplace_vault_test_publishinput",
+      "label": "publishInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_marketplace_vault_test_db",
+      "label": "db",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L62"
+    },
+    {
+      "id": "lib_marketplace_vault_test_installdb",
+      "label": "installDb()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L143"
+    },
+    {
+      "id": "lib_marketplace_vault_test_input",
+      "label": "input",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L175"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_fake_db_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "fixtures_fake_db_fakedb",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_fixtures_test_doubles_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "fixtures_test_doubles_metricrecorder",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "fixtures_test_doubles_allowallratelimits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_rec",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_recorder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_vaultdb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_publishinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_installdb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_input",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L194",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L225",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_marketplace_vault_test_ts",
+      "target": "lib_marketplace_vault_test_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L249",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_marketplace_vault_test_vaultdb",
+      "callee": "fakeDb",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "lib_marketplace_vault_test_installdb",
+      "callee": "fakeDb",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/marketplace-vault.test.ts",
+      "source_location": "L144"
+    }
+  ]
+}

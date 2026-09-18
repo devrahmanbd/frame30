@@ -1,1 +1,351 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_observability_test_ts", "label": "observability.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L1"}, {"id": "lib_observability_test_allowed", "label": "allowed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L56"}, {"id": "lib_observability_test_payload", "label": "payload", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L81"}, {"id": "lib_observability_test_reg", "label": "reg", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L112"}, {"id": "lib_observability_test_text", "label": "text", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L117"}, {"id": "lib_observability_test_tp", "label": "tp", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L151"}, {"id": "lib_observability_test_parsed", "label": "parsed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L152"}, {"id": "lib_observability_test_id", "label": "id", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L164"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "users_rahman_documents_frame30_src_lib_beacon_guard_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_beacon_max_body_bytes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_checktimestamp", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_isbodywithinlimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_isjsoncontenttype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_isoriginallowed", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_isvalidnonce", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_rejectionstatus", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_safelandingpath", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_safereferrerhost", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_signaturepayload", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_beacon_guard_timingsafeequalhex", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "users_rahman_documents_frame30_src_lib_telemetry_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_telemetry_metricregistry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_telemetry_sampletrace", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_telemetry_parsetraceparent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_telemetry_formattraceparent", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_allowed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_payload", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_reg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L112", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L117", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_reg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L127", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_reg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L134", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_reg", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_text", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L143", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_tp", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_parsed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L152", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_observability_test_ts", "target": "lib_observability_test_id", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts", "source_location": "L164", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "label": "observability.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_observability_test_allowed",
+      "label": "allowed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_observability_test_payload",
+      "label": "payload",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_observability_test_reg",
+      "label": "reg",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L112"
+    },
+    {
+      "id": "lib_observability_test_text",
+      "label": "text",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L117"
+    },
+    {
+      "id": "lib_observability_test_tp",
+      "label": "tp",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_observability_test_parsed",
+      "label": "parsed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L152"
+    },
+    {
+      "id": "lib_observability_test_id",
+      "label": "id",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L164"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_beacon_guard_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_beacon_max_body_bytes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_checktimestamp",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_isbodywithinlimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_isjsoncontenttype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_isoriginallowed",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_isvalidnonce",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_rejectionstatus",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_safelandingpath",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_safereferrerhost",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_signaturepayload",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_beacon_guard_timingsafeequalhex",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_telemetry_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_telemetry_metricregistry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_telemetry_sampletrace",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_telemetry_parsetraceparent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_telemetry_formattraceparent",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_allowed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_payload",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_reg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_reg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_reg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_reg",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_tp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_parsed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_observability_test_ts",
+      "target": "lib_observability_test_id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/observability.test.ts",
+      "source_location": "L164",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

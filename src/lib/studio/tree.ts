@@ -8,7 +8,10 @@ import { isContainerNode, uid, type StudioNode } from "./model";
 
 export type Path = number[];
 
-export function findNode(nodes: StudioNode[], id: string): StudioNode | undefined {
+export function findNode(
+  nodes: StudioNode[],
+  id: string,
+): StudioNode | undefined {
   for (const node of nodes) {
     if (node.id === id) return node;
     const child = node.children ? findNode(node.children, id) : undefined;
@@ -17,7 +20,11 @@ export function findNode(nodes: StudioNode[], id: string): StudioNode | undefine
   return undefined;
 }
 
-export function findPath(nodes: StudioNode[], id: string, prefix: Path = []): Path | undefined {
+export function findPath(
+  nodes: StudioNode[],
+  id: string,
+  prefix: Path = [],
+): Path | undefined {
   for (let i = 0; i < nodes.length; i += 1) {
     const node = nodes[i]!;
     const path = [...prefix, i];
@@ -30,7 +37,10 @@ export function findPath(nodes: StudioNode[], id: string, prefix: Path = []): Pa
   return undefined;
 }
 
-export function parentOf(nodes: StudioNode[], id: string): StudioNode | undefined {
+export function parentOf(
+  nodes: StudioNode[],
+  id: string,
+): StudioNode | undefined {
   for (const node of nodes) {
     if (node.children?.some((child) => child.id === id)) return node;
     const nested = node.children ? parentOf(node.children, id) : undefined;
@@ -44,12 +54,19 @@ export function siblingsOf(nodes: StudioNode[], id: string): StudioNode[] {
   return parent?.children ?? nodes;
 }
 
-function mapNodes(nodes: StudioNode[], fn: (node: StudioNode) => StudioNode | null): StudioNode[] {
+function mapNodes(
+  nodes: StudioNode[],
+  fn: (node: StudioNode) => StudioNode | null,
+): StudioNode[] {
   const out: StudioNode[] = [];
   for (const node of nodes) {
     const mapped = fn(node);
     if (!mapped) continue;
-    out.push(mapped.children ? { ...mapped, children: mapNodes(mapped.children, fn) } : mapped);
+    out.push(
+      mapped.children
+        ? { ...mapped, children: mapNodes(mapped.children, fn) }
+        : mapped,
+    );
   }
   return out;
 }
@@ -109,7 +126,11 @@ export function duplicateNode(nodes: StudioNode[], id: string): StudioNode[] {
 }
 
 /** True when `maybeAncestorId` contains `id` (or is `id`). */
-export function containsNode(nodes: StudioNode[], maybeAncestorId: string, id: string): boolean {
+export function containsNode(
+  nodes: StudioNode[],
+  maybeAncestorId: string,
+  id: string,
+): boolean {
   if (maybeAncestorId === id) return true;
   const ancestor = findNode(nodes, maybeAncestorId);
   if (!ancestor?.children) return false;
@@ -121,7 +142,11 @@ export type DropPosition = "before" | "after" | "inside";
 export type DropTarget = { id: string | null; position: DropPosition };
 
 /** A move is illegal when it would place a node inside itself. */
-export function canMove(nodes: StudioNode[], dragId: string, target: DropTarget): boolean {
+export function canMove(
+  nodes: StudioNode[],
+  dragId: string,
+  target: DropTarget,
+): boolean {
   if (!target.id) return true;
   if (target.id === dragId) return false;
   if (containsNode(nodes, dragId, target.id)) return false;
@@ -132,7 +157,11 @@ export function canMove(nodes: StudioNode[], dragId: string, target: DropTarget)
   return true;
 }
 
-export function moveNode(nodes: StudioNode[], dragId: string, target: DropTarget): StudioNode[] {
+export function moveNode(
+  nodes: StudioNode[],
+  dragId: string,
+  target: DropTarget,
+): StudioNode[] {
   if (!canMove(nodes, dragId, target)) return nodes;
   const node = findNode(nodes, dragId);
   if (!node) return nodes;
@@ -140,7 +169,11 @@ export function moveNode(nodes: StudioNode[], dragId: string, target: DropTarget
   return dropInto(detached, node, target);
 }
 
-export function dropInto(nodes: StudioNode[], node: StudioNode, target: DropTarget): StudioNode[] {
+export function dropInto(
+  nodes: StudioNode[],
+  node: StudioNode,
+  target: DropTarget,
+): StudioNode[] {
   if (!target.id) return insertNode(nodes, null, nodes.length, node);
   if (target.position === "inside") {
     const parent = findNode(nodes, target.id);
@@ -150,7 +183,12 @@ export function dropInto(nodes: StudioNode[], node: StudioNode, target: DropTarg
   const list = parent?.children ?? nodes;
   const index = list.findIndex((candidate) => candidate.id === target.id);
   if (index < 0) return insertNode(nodes, null, nodes.length, node);
-  return insertNode(nodes, parent?.id ?? null, target.position === "before" ? index : index + 1, node);
+  return insertNode(
+    nodes,
+    parent?.id ?? null,
+    target.position === "before" ? index : index + 1,
+    node,
+  );
 }
 
 /**
@@ -169,7 +207,10 @@ export function dropPositionFor(
   return "inside";
 }
 
-export function flatten(nodes: StudioNode[], depth = 0): { node: StudioNode; depth: number }[] {
+export function flatten(
+  nodes: StudioNode[],
+  depth = 0,
+): { node: StudioNode; depth: number }[] {
   return nodes.flatMap((node) => [
     { node, depth },
     ...(node.children ? flatten(node.children, depth + 1) : []),
@@ -177,7 +218,11 @@ export function flatten(nodes: StudioNode[], depth = 0): { node: StudioNode; dep
 }
 
 /** Next/previous node id in document order — powers arrow-key selection. */
-export function neighbourId(nodes: StudioNode[], id: string, direction: 1 | -1): string | undefined {
+export function neighbourId(
+  nodes: StudioNode[],
+  id: string,
+  direction: 1 | -1,
+): string | undefined {
   const flat = flatten(nodes).map((entry) => entry.node.id);
   const index = flat.indexOf(id);
   if (index < 0) return flat[0];

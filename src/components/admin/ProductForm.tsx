@@ -7,7 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { recordSlugChangeFn } from "@/lib/url-lifecycle.functions";
 import { slugify } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
-import { KIND_META, PRODUCT_KINDS, isShippable, type ProductKind } from "@/lib/catalog";
+import {
+  KIND_META,
+  PRODUCT_KINDS,
+  isShippable,
+  type ProductKind,
+} from "@/lib/catalog";
 import { catalogSaveKindFn } from "@/lib/catalog.functions";
 import {
   ActionMenu,
@@ -86,7 +91,12 @@ export function ProductForm({
   const [busy, setBusy] = useState(false);
   const saveKind = useServerFn(catalogSaveKindFn);
   const kind = product.product_kind;
-  const [digital, setDigital] = useState({ fileName: "", storagePath: "", maxDownloads: "5", expiryHours: "720" });
+  const [digital, setDigital] = useState({
+    fileName: "",
+    storagePath: "",
+    maxDownloads: "5",
+    expiryHours: "720",
+  });
   const [service, setService] = useState({
     durationMinutes: "60",
     bufferMinutes: "0",
@@ -117,12 +127,16 @@ export function ProductForm({
   // Validation lives next to its field — never a top-of-page error dump.
   const errors = {
     title: product.title.trim() ? null : "Give the product a title.",
-    variants: variants.some((v) => v.name.trim()) ? null : "Add at least one variant.",
+    variants: variants.some((v) => v.name.trim())
+      ? null
+      : "Add at least one variant.",
   };
   const invalid = Object.values(errors).some(Boolean);
 
   // Dirty tracking drives the save bar and the autosave clock.
-  const snapshot = useRef(JSON.stringify({ p: initialProduct, v: initialVariants }));
+  const snapshot = useRef(
+    JSON.stringify({ p: initialProduct, v: initialVariants }),
+  );
   const current = JSON.stringify({ p: product, v: variants });
   const dirty = current !== snapshot.current;
 
@@ -132,7 +146,6 @@ export function ProductForm({
     const redirect = opts?.redirect ?? true;
     setBusy(true);
     try {
-
       const payload = {
         merchant_id: merchantId,
         title: product.title,
@@ -156,7 +169,11 @@ export function ProductForm({
         // link is already in search results and in customers' chat threads.
         if (initialSlug.current && initialSlug.current !== payload.slug) {
           void recordSlugChangeFn({
-            data: { entityType: "product", oldSlug: initialSlug.current, newSlug: payload.slug },
+            data: {
+              entityType: "product",
+              oldSlug: initialSlug.current,
+              newSlug: payload.slug,
+            },
           }).catch(() => undefined);
           initialSlug.current = payload.slug;
         }
@@ -193,7 +210,8 @@ export function ProductForm({
         .from("product_variants")
         .delete()
         .eq("product_id", productId!);
-      if (keepIds.length) removal = removal.not("id", "in", `(${keepIds.join(",")})`);
+      if (keepIds.length)
+        removal = removal.not("id", "in", `(${keepIds.join(",")})`);
       const { error: delError } = await removal;
       if (delError) throw delError;
 
@@ -224,19 +242,26 @@ export function ProductForm({
                 ? {
                     fileName: digital.fileName,
                     storagePath: digital.storagePath,
-                    maxDownloads: Number.parseInt(digital.maxDownloads, 10) || 5,
-                    expiryHours: Number.parseInt(digital.expiryHours, 10) || 720,
+                    maxDownloads:
+                      Number.parseInt(digital.maxDownloads, 10) || 5,
+                    expiryHours:
+                      Number.parseInt(digital.expiryHours, 10) || 720,
                   }
                 : null,
             service:
               kind === "service"
                 ? {
-                    durationMinutes: Number.parseInt(service.durationMinutes, 10) || 60,
-                    bufferMinutes: Number.parseInt(service.bufferMinutes, 10) || 0,
-                    capacityPerSlot: Number.parseInt(service.capacityPerSlot, 10) || 1,
+                    durationMinutes:
+                      Number.parseInt(service.durationMinutes, 10) || 60,
+                    bufferMinutes:
+                      Number.parseInt(service.bufferMinutes, 10) || 0,
+                    capacityPerSlot:
+                      Number.parseInt(service.capacityPerSlot, 10) || 1,
                     locationKind: service.locationKind,
-                    advanceBookingDays: Number.parseInt(service.advanceBookingDays, 10) || 30,
-                    cancellationHours: Number.parseInt(service.cancellationHours, 10) || 24,
+                    advanceBookingDays:
+                      Number.parseInt(service.advanceBookingDays, 10) || 30,
+                    cancellationHours:
+                      Number.parseInt(service.cancellationHours, 10) || 24,
                   }
                 : null,
             subscription:
@@ -259,10 +284,14 @@ export function ProductForm({
         navigate({ to: "/dashboard/products" });
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not save product";
+      const message =
+        err instanceof Error ? err.message : "Could not save product";
       if (message.includes("plan_limit_products")) {
         toast.error(message.replace(/^.*plan_limit_products:\s*/, ""), {
-          action: { label: "Upgrade", onClick: () => navigate({ to: "/dashboard/plans" }) },
+          action: {
+            label: "Upgrade",
+            onClick: () => navigate({ to: "/dashboard/plans" }),
+          },
         });
       } else {
         toast.error(message);
@@ -302,7 +331,14 @@ export function ProductForm({
                       setVariants(
                         initialVariants.length
                           ? initialVariants
-                          : [{ name: "Default", sku: "", price: "0.00", stock: "0" }],
+                          : [
+                              {
+                                name: "Default",
+                                sku: "",
+                                price: "0.00",
+                                stock: "0",
+                              },
+                            ],
                       );
                     },
                   },
@@ -342,166 +378,261 @@ export function ProductForm({
               onChange={(v) => patch("category_id", v)}
               options={[{ id: "", name: "— none —" }, ...categories]}
             />
-
           </div>
         }
       >
-      <section className="space-y-4 rounded-fq-lg border border-border bg-card p-5">
-
-        <TextField
-          label="Title"
-          value={product.title}
-          onChange={(v) => patch("title", v)}
-          error={errors.title}
-          required
-        />
-        <TextField
-          label="Slug"
-          value={product.slug}
-          onChange={(v) => patch("slug", v)}
-          placeholder="auto from title"
-        />
-        <label className="block text-sm">
-          <span className="mb-1.5 block font-medium text-foreground">Description</span>
-          <textarea
-            rows={5}
-            value={product.description}
-            onChange={(e) => patch("description", e.target.value)}
-            className="w-full rounded-fq-md border border-border bg-background p-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        <section className="space-y-4 rounded-fq-lg border border-border bg-card p-5">
+          <TextField
+            label="Title"
+            value={product.title}
+            onChange={(v) => patch("title", v)}
+            error={errors.title}
+            required
           />
-        </label>
-        <TextField
-          label="Image URL"
-          value={product.image_url}
-          onChange={(v) => patch("image_url", v)}
-        />
-
-        <div className="rounded-fq-md border border-border p-3">
-          <SelectField
-            label="Product kind"
-            value={kind}
-            onChange={(v) => setProduct((p) => ({ ...p, product_kind: v as ProductKind }))}
-            options={PRODUCT_KINDS.map((k) => ({ id: k, name: t(KIND_META[k].en, KIND_META[k].bn) }))}
+          <TextField
+            label="Slug"
+            value={product.slug}
+            onChange={(v) => patch("slug", v)}
+            placeholder="auto from title"
           />
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            {t(KIND_META[kind].hint.en, KIND_META[kind].hint.bn)}
-          </p>
+          <label className="block text-sm">
+            <span className="mb-1.5 block font-medium text-foreground">
+              Description
+            </span>
+            <textarea
+              rows={5}
+              value={product.description}
+              onChange={(e) => patch("description", e.target.value)}
+              className="w-full rounded-fq-md border border-border bg-background p-3 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            />
+          </label>
+          <TextField
+            label="Image URL"
+            value={product.image_url}
+            onChange={(v) => patch("image_url", v)}
+          />
 
-          {kind === "digital" ? (
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <TextField label="File name" value={digital.fileName} onChange={(v) => setDigital({ ...digital, fileName: v })} />
-              <TextField label="Storage path" value={digital.storagePath} onChange={(v) => setDigital({ ...digital, storagePath: v })} />
-              <TextField label="Max downloads" value={digital.maxDownloads} inputMode="numeric" money onChange={(v) => setDigital({ ...digital, maxDownloads: v })} />
-              <TextField label="Link valid (hours)" value={digital.expiryHours} inputMode="numeric" money onChange={(v) => setDigital({ ...digital, expiryHours: v })} />
-            </div>
-          ) : null}
-
-          {kind === "service" ? (
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <TextField label="Duration (min)" value={service.durationMinutes} inputMode="numeric" money onChange={(v) => setService({ ...service, durationMinutes: v })} />
-              <TextField label="Buffer (min)" value={service.bufferMinutes} inputMode="numeric" money onChange={(v) => setService({ ...service, bufferMinutes: v })} />
-              <TextField label="Capacity per slot" value={service.capacityPerSlot} inputMode="numeric" money onChange={(v) => setService({ ...service, capacityPerSlot: v })} />
-              <SelectField
-                label="Location"
-                value={service.locationKind}
-                onChange={(v) => setService({ ...service, locationKind: v as typeof service.locationKind })}
-                options={[
-                  { id: "onsite", name: "On site" },
-                  { id: "remote", name: "Remote" },
-                  { id: "customer_address", name: "Customer address" },
-                ]}
-              />
-              <TextField label="Book ahead (days)" value={service.advanceBookingDays} inputMode="numeric" money onChange={(v) => setService({ ...service, advanceBookingDays: v })} />
-              <TextField label="Free cancel (hours)" value={service.cancellationHours} inputMode="numeric" money onChange={(v) => setService({ ...service, cancellationHours: v })} />
-            </div>
-          ) : null}
-
-          {kind === "subscription" ? (
-            <div className="mt-3 grid gap-3 sm:grid-cols-4">
-              <SelectField
-                label="Interval"
-                value={plan.intervalUnit}
-                onChange={(v) => setPlan({ ...plan, intervalUnit: v as typeof plan.intervalUnit })}
-                options={[
-                  { id: "day", name: "Day" },
-                  { id: "week", name: "Week" },
-                  { id: "month", name: "Month" },
-                  { id: "year", name: "Year" },
-                ]}
-              />
-              <TextField label="Every" value={plan.intervalCount} inputMode="numeric" money onChange={(v) => setPlan({ ...plan, intervalCount: v })} />
-              <TextField label="Trial days" value={plan.trialDays} inputMode="numeric" money onChange={(v) => setPlan({ ...plan, trialDays: v })} />
-              <TextField label="Minimum cycles" value={plan.minimumCycles} inputMode="numeric" money onChange={(v) => setPlan({ ...plan, minimumCycles: v })} />
-            </div>
-          ) : null}
-        </div>
-
-        <div className="pt-2">
-          <div className="mb-2 flex items-center justify-between">
-            <h2 className="font-bangla-display text-sm font-semibold">
-              {t("Variants & stock", "ভ্যারিয়েন্ট ও স্টক")}
-            </h2>
-            <button
-              type="button"
-              onClick={() =>
-                setVariants((l) => [
-                  ...l,
-                  { name: "", sku: "", price: "0.00", stock: "0" },
-                ])
+          <div className="rounded-fq-md border border-border p-3">
+            <SelectField
+              label="Product kind"
+              value={kind}
+              onChange={(v) =>
+                setProduct((p) => ({ ...p, product_kind: v as ProductKind }))
               }
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-fq-md border border-border px-3 text-sm hover:bg-muted"
-            >
-              <Plus className="size-4" aria-hidden /> Add variant
-            </button>
-          </div>
-          {errors.variants ? (
-            <p className="text-xs text-[var(--fq-danger)]">{errors.variants}</p>
-          ) : null}
-          <div className="space-y-3">
-            {variants.map((v, i) => (
-              <div
-                key={v.id ?? `new-${i}`}
-                className="grid gap-3 rounded-fq-md border border-border p-3 sm:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_auto]"
-              >
+              options={PRODUCT_KINDS.map((k) => ({
+                id: k,
+                name: t(KIND_META[k].en, KIND_META[k].bn),
+              }))}
+            />
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              {t(KIND_META[kind].hint.en, KIND_META[kind].hint.bn)}
+            </p>
+
+            {kind === "digital" ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
                 <TextField
-                  label="Name"
-                  value={v.name}
-                  onChange={(val) => patchVariant(i, "name", val)}
+                  label="File name"
+                  value={digital.fileName}
+                  onChange={(v) => setDigital({ ...digital, fileName: v })}
                 />
                 <TextField
-                  label="SKU"
-                  value={v.sku}
-                  onChange={(val) => patchVariant(i, "sku", val)}
+                  label="Storage path"
+                  value={digital.storagePath}
+                  onChange={(v) => setDigital({ ...digital, storagePath: v })}
                 />
                 <TextField
-                  label="Price (BDT)"
-                  value={v.price}
-                  inputMode="decimal"
-                  money
-                  onChange={(val) => patchVariant(i, "price", val)}
-                />
-                <TextField
-                  label="Stock"
-                  value={v.stock}
+                  label="Max downloads"
+                  value={digital.maxDownloads}
                   inputMode="numeric"
                   money
-                  onChange={(val) => patchVariant(i, "stock", val)}
+                  onChange={(v) => setDigital({ ...digital, maxDownloads: v })}
                 />
-                <div className="flex items-end">
-                  <button
-                    type="button"
-                    aria-label={`Remove variant ${i + 1}`}
-                    onClick={() => setVariants((l) => l.filter((_, idx) => idx !== i))}
-                    className="grid min-h-11 w-11 place-items-center rounded-fq-md text-[hsl(var(--rickshaw-red))] hover:bg-muted"
-                  >
-                    <Trash2 className="size-4" aria-hidden />
-                  </button>
-                </div>
+                <TextField
+                  label="Link valid (hours)"
+                  value={digital.expiryHours}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) => setDigital({ ...digital, expiryHours: v })}
+                />
               </div>
-            ))}
+            ) : null}
+
+            {kind === "service" ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                <TextField
+                  label="Duration (min)"
+                  value={service.durationMinutes}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) =>
+                    setService({ ...service, durationMinutes: v })
+                  }
+                />
+                <TextField
+                  label="Buffer (min)"
+                  value={service.bufferMinutes}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) => setService({ ...service, bufferMinutes: v })}
+                />
+                <TextField
+                  label="Capacity per slot"
+                  value={service.capacityPerSlot}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) =>
+                    setService({ ...service, capacityPerSlot: v })
+                  }
+                />
+                <SelectField
+                  label="Location"
+                  value={service.locationKind}
+                  onChange={(v) =>
+                    setService({
+                      ...service,
+                      locationKind: v as typeof service.locationKind,
+                    })
+                  }
+                  options={[
+                    { id: "onsite", name: "On site" },
+                    { id: "remote", name: "Remote" },
+                    { id: "customer_address", name: "Customer address" },
+                  ]}
+                />
+                <TextField
+                  label="Book ahead (days)"
+                  value={service.advanceBookingDays}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) =>
+                    setService({ ...service, advanceBookingDays: v })
+                  }
+                />
+                <TextField
+                  label="Free cancel (hours)"
+                  value={service.cancellationHours}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) =>
+                    setService({ ...service, cancellationHours: v })
+                  }
+                />
+              </div>
+            ) : null}
+
+            {kind === "subscription" ? (
+              <div className="mt-3 grid gap-3 sm:grid-cols-4">
+                <SelectField
+                  label="Interval"
+                  value={plan.intervalUnit}
+                  onChange={(v) =>
+                    setPlan({
+                      ...plan,
+                      intervalUnit: v as typeof plan.intervalUnit,
+                    })
+                  }
+                  options={[
+                    { id: "day", name: "Day" },
+                    { id: "week", name: "Week" },
+                    { id: "month", name: "Month" },
+                    { id: "year", name: "Year" },
+                  ]}
+                />
+                <TextField
+                  label="Every"
+                  value={plan.intervalCount}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) => setPlan({ ...plan, intervalCount: v })}
+                />
+                <TextField
+                  label="Trial days"
+                  value={plan.trialDays}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) => setPlan({ ...plan, trialDays: v })}
+                />
+                <TextField
+                  label="Minimum cycles"
+                  value={plan.minimumCycles}
+                  inputMode="numeric"
+                  money
+                  onChange={(v) => setPlan({ ...plan, minimumCycles: v })}
+                />
+              </div>
+            ) : null}
           </div>
-        </div>
-      </section>
+
+          <div className="pt-2">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="font-bangla-display text-sm font-semibold">
+                {t("Variants & stock", "ভ্যারিয়েন্ট ও স্টক")}
+              </h2>
+              <button
+                type="button"
+                onClick={() =>
+                  setVariants((l) => [
+                    ...l,
+                    { name: "", sku: "", price: "0.00", stock: "0" },
+                  ])
+                }
+                className="inline-flex min-h-9 items-center gap-1.5 rounded-fq-md border border-border px-3 text-sm hover:bg-muted"
+              >
+                <Plus className="size-4" aria-hidden /> Add variant
+              </button>
+            </div>
+            {errors.variants ? (
+              <p className="text-xs text-[var(--fq-danger)]">
+                {errors.variants}
+              </p>
+            ) : null}
+            <div className="space-y-3">
+              {variants.map((v, i) => (
+                <div
+                  key={v.id ?? `new-${i}`}
+                  className="grid gap-3 rounded-fq-md border border-border p-3 sm:grid-cols-[1.2fr_1fr_0.9fr_0.7fr_auto]"
+                >
+                  <TextField
+                    label="Name"
+                    value={v.name}
+                    onChange={(val) => patchVariant(i, "name", val)}
+                  />
+                  <TextField
+                    label="SKU"
+                    value={v.sku}
+                    onChange={(val) => patchVariant(i, "sku", val)}
+                  />
+                  <TextField
+                    label="Price (BDT)"
+                    value={v.price}
+                    inputMode="decimal"
+                    money
+                    onChange={(val) => patchVariant(i, "price", val)}
+                  />
+                  <TextField
+                    label="Stock"
+                    value={v.stock}
+                    inputMode="numeric"
+                    money
+                    onChange={(val) => patchVariant(i, "stock", val)}
+                  />
+                  <div className="flex items-end">
+                    <button
+                      type="button"
+                      aria-label={`Remove variant ${i + 1}`}
+                      onClick={() =>
+                        setVariants((l) => l.filter((_, idx) => idx !== i))
+                      }
+                      className="grid min-h-11 w-11 place-items-center rounded-fq-md text-[hsl(var(--rickshaw-red))] hover:bg-muted"
+                    >
+                      <Trash2 className="size-4" aria-hidden />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </DetailLayout>
       <SaveBar
         state={autosave.state}
@@ -530,7 +661,6 @@ export function ProductForm({
       </SaveBar>
     </form>
   );
-
 }
 
 export function TextField({
@@ -566,7 +696,11 @@ export function TextField({
         } ${error ? "border-[var(--fq-danger)]" : ""}`}
         aria-invalid={error ? true : undefined}
       />
-      {error ? <span className="mt-1 block text-xs text-[var(--fq-danger)]">{error}</span> : null}
+      {error ? (
+        <span className="mt-1 block text-xs text-[var(--fq-danger)]">
+          {error}
+        </span>
+      ) : null}
     </label>
   );
 }

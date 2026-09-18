@@ -97,14 +97,14 @@ experiment {
 
 ## 10. Persistence & lifecycle copy
 
-| State       | Copy (Bangla-first)                | Note               |
-| ----------- | ---------------------------------- | ------------------ |
-| draft       | "খসড়া" (Draft)                    | slate dot          |
-| running     | "চলমান" (Running)                  | amber dot          |
-| evaluating  | "মূল্যায়ন চলছে" (Evaluating)      | amber dot          |
-| concluded   | "সমাপ্ত — বিজয়ী" (Winner)         | mint dot           |
-| stopped     | "বন্ধ" (Stopped)                   | muted dot          |
-| manual win  | "ম্যানুয়াল সিদ্ধান্ত"             | teal dot           |
+| State      | Copy (Bangla-first)           | Note      |
+| ---------- | ----------------------------- | --------- |
+| draft      | "খসড়া" (Draft)               | slate dot |
+| running    | "চলমান" (Running)             | amber dot |
+| evaluating | "মূল্যায়ন চলছে" (Evaluating) | amber dot |
+| concluded  | "সমাপ্ত — বিজয়ী" (Winner)    | mint dot  |
+| stopped    | "বন্ধ" (Stopped)              | muted dot |
+| manual win | "ম্যানুয়াল সিদ্ধান্ত"        | teal dot  |
 
 ## 11. Testing gates
 

@@ -124,6 +124,15 @@ export async function uploadMedia(
     throw new MediaError(magicCheck.reason, magicCheck.message);
   }
 
+  // Active SVG sanitization (REPORT WF-13): strip script, event handlers and dangerous tags
+  let uploadBytes = bytes;
+  if (contentType.toLowerCase() === "image/svg+xml") {
+    const { sanitiseSvg } = await import("./media/library");
+    const source = new TextDecoder().decode(bytes);
+    const result = sanitiseSvg(source);
+    uploadBytes = new TextEncoder().encode(result.svg);
+  }
+
   /* Storage quota is charged in bytes, so the cap is checked with the *actual*
    * decoded size — not the client-declared length, which is trivially lied
    * about. The check runs before the upload so we never have to delete an
@@ -135,7 +144,7 @@ export async function uploadMedia(
       db as never,
       merchantId,
       "media_bytes",
-      bytes.length,
+      uploadBytes.length,
     );
     invalidateEntitlements(merchantId);
   }
@@ -143,7 +152,7 @@ export async function uploadMedia(
   const path = `${merchantId}/${safeFileName(fileName, contentType)}`;
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  const up = await supabaseAdmin.storage.from(BUCKET).upload(path, bytes, {
+  const up = await supabaseAdmin.storage.from(BUCKET).upload(path, uploadBytes, {
     contentType,
     upsert: false,
     cacheControl: "31536000",
@@ -154,7 +163,7 @@ export async function uploadMedia(
     path,
     url: mediaUrl(path),
     name: path.slice(merchantId.length + 1),
-    size: bytes.length,
+    size: uploadBytes.length,
     updatedAt: new Date().toISOString(),
   };
 }

@@ -4,20 +4,21 @@ description: Agent skill for v3-integration-architect - invoke with $agent-v3-in
 ---
 
 ---
+
 name: v3-integration-architect
 version: "3.0.0-alpha"
 updated: "2026-01-04"
 description: V3 Integration Architect for deep agentic-flow@alpha integration. Implements ADR-001 to eliminate 10,000+ duplicate lines and build claude-flow as specialized extension rather than parallel implementation.
 color: green
 metadata:
-  v3_role: "architect"
-  agent_id: 10
-  priority: "high"
-  domain: "integration"
-  phase: "integration"
+v3_role: "architect"
+agent_id: 10
+priority: "high"
+domain: "integration"
+phase: "integration"
 hooks:
-  pre_execution: |
-    echo "🔗 V3 Integration Architect starting agentic-flow@alpha deep integration..."
+pre_execution: |
+echo "🔗 V3 Integration Architect starting agentic-flow@alpha deep integration..."
 
     # Check agentic-flow status
     npx agentic-flow@alpha --version 2>$dev$null | head -1 || echo "⚠️ agentic-flow@alpha not available"
@@ -32,8 +33,8 @@ hooks:
     # Check integration points
     ls -la services$agentic-flow-hooks/ 2>$dev$null | wc -l | xargs echo "🔧 Current hook integrations:"
 
-  post_execution: |
-    echo "🔗 agentic-flow@alpha integration milestone complete"
+post_execution: |
+echo "🔗 agentic-flow@alpha integration milestone complete"
 
     # Store integration patterns
     npx agentic-flow@alpha memory store-pattern \
@@ -41,6 +42,7 @@ hooks:
       --task "Integration: $TASK" \
       --agent "v3-integration-architect" \
       --code-reduction "10000+" 2>$dev$null || true
+
 ---
 
 # V3 Integration Architect
@@ -54,6 +56,7 @@ Transform claude-flow from parallel implementation to specialized extension of a
 ## Integration Strategy
 
 ### **Current Duplication Analysis**
+
 ```
 ┌─────────────────────────────────────────┐
 │         FUNCTIONALITY OVERLAP           │
@@ -70,9 +73,10 @@ TARGET: <5,000 lines orchestration (vs 15,000+ currently)
 ```
 
 ### **Integration Architecture**
+
 ```typescript
 // Phase 1: Adapter Layer Creation
-import { Agent as AgenticFlowAgent } from 'agentic-flow@alpha';
+import { Agent as AgenticFlowAgent } from "agentic-flow@alpha";
 
 export class ClaudeFlowAgent extends AgenticFlowAgent {
   // Add claude-flow specific capabilities
@@ -90,14 +94,15 @@ export class ClaudeFlowAgent extends AgenticFlowAgent {
 ## agentic-flow@alpha Feature Integration
 
 ### **SONA Learning Modes**
+
 ```typescript
 interface SONAIntegration {
   modes: {
-    realTime: '~0.05ms adaptation',
-    balanced: 'general purpose learning',
-    research: 'deep exploration mode',
-    edge: 'resource-constrained environments',
-    batch: 'high-throughput processing'
+    realTime: "~0.05ms adaptation";
+    balanced: "general purpose learning";
+    research: "deep exploration mode";
+    edge: "resource-constrained environments";
+    batch: "high-throughput processing";
   };
 }
 
@@ -111,34 +116,37 @@ class ClaudeFlowSONAAdapter {
 ```
 
 ### **Flash Attention Integration**
+
 ```typescript
 // Target: 2.49x-7.47x speedup
 class FlashAttentionIntegration {
   async optimizeAttention(): Promise<AttentionResult> {
     return this.agenticFlow.attention.flashAttention({
-      speedupTarget: '2.49x-7.47x',
-      memoryReduction: '50-75%',
-      mechanisms: ['multi-head', 'linear', 'local', 'global']
+      speedupTarget: "2.49x-7.47x",
+      memoryReduction: "50-75%",
+      mechanisms: ["multi-head", "linear", "local", "global"],
     });
   }
 }
 ```
 
 ### **AgentDB Coordination**
+
 ```typescript
 // 150x-12,500x faster search via HNSW
 class AgentDBIntegration {
   async setupCrossAgentMemory(): Promise<void> {
     await this.agentdb.enableCrossAgentSharing({
-      indexType: 'HNSW',
+      indexType: "HNSW",
       dimensions: 1536,
-      speedupTarget: '150x-12500x'
+      speedupTarget: "150x-12500x",
     });
   }
 }
 ```
 
 ### **MCP Tools Integration**
+
 ```typescript
 // Leverage 213 pre-built tools + 19 hook types
 class MCPToolsIntegration {
@@ -157,13 +165,20 @@ class MCPToolsIntegration {
 ```
 
 ### **RL Algorithm Integration**
+
 ```typescript
 // Multiple RL algorithms for optimization
 class RLIntegration {
   algorithms = [
-    'PPO', 'DQN', 'A2C', 'MCTS', 'Q-Learning',
-    'SARSA', 'Actor-Critic', 'Decision-Transformer',
-    'Curiosity-Driven'
+    "PPO",
+    "DQN",
+    "A2C",
+    "MCTS",
+    "Q-Learning",
+    "SARSA",
+    "Actor-Critic",
+    "Decision-Transformer",
+    "Curiosity-Driven",
   ];
 
   async optimizeAgentBehavior(): Promise<void> {
@@ -171,7 +186,7 @@ class RLIntegration {
       await this.agenticFlow.rl.train(algorithm, {
         episodes: 1000,
         learningRate: 0.001,
-        rewardFunction: this.claudeFlowRewardFunction
+        rewardFunction: this.claudeFlowRewardFunction,
       });
     }
   }
@@ -181,6 +196,7 @@ class RLIntegration {
 ## Migration Implementation Plan
 
 ### **Phase 1: Foundation Adapter (Week 7)**
+
 ```typescript
 // Create compatibility layer
 class AgenticFlowAdapter {
@@ -205,6 +221,7 @@ class AgenticFlowAdapter {
 ```
 
 ### **Phase 2: Core Migration (Week 8-9)**
+
 ```typescript
 // Migrate task execution
 class TaskExecutionMigration {
@@ -227,14 +244,15 @@ class SessionMigration {
 ```
 
 ### **Phase 3: Optimization (Week 10)**
+
 ```typescript
 // Remove compatibility layer
 class CompatibilityCleanup {
   async removeDeprecatedCode(): Promise<void> {
     // Remove old implementations
-    await this.removeFile('src$core/SwarmCoordinator.ts'); // 800+ lines
-    await this.removeFile('src$agents/AgentManager.ts');   // 1,736 lines
-    await this.removeFile('src$task/TaskScheduler.ts');    // 500+ lines
+    await this.removeFile("src$core/SwarmCoordinator.ts"); // 800+ lines
+    await this.removeFile("src$agents/AgentManager.ts"); // 1,736 lines
+    await this.removeFile("src$task/TaskScheduler.ts"); // 500+ lines
 
     // Total code reduction: 10,000+ lines → <5,000 lines
   }
@@ -244,39 +262,43 @@ class CompatibilityCleanup {
 ## Performance Integration Targets
 
 ### **Flash Attention Optimization**
+
 ```typescript
 // Target: 2.49x-7.47x speedup
 const attentionBenchmark = {
-  baseline: 'current attention mechanism',
-  target: '2.49x-7.47x improvement',
-  memoryReduction: '50-75%',
-  implementation: 'agentic-flow@alpha Flash Attention'
+  baseline: "current attention mechanism",
+  target: "2.49x-7.47x improvement",
+  memoryReduction: "50-75%",
+  implementation: "agentic-flow@alpha Flash Attention",
 };
 ```
 
 ### **AgentDB Search Performance**
+
 ```typescript
 // Target: 150x-12,500x improvement
 const searchBenchmark = {
-  baseline: 'linear search in current memory systems',
-  target: '150x-12,500x via HNSW indexing',
-  implementation: 'agentic-flow@alpha AgentDB'
+  baseline: "linear search in current memory systems",
+  target: "150x-12,500x via HNSW indexing",
+  implementation: "agentic-flow@alpha AgentDB",
 };
 ```
 
 ### **SONA Learning Performance**
+
 ```typescript
 // Target: <0.05ms adaptation
 const sonaBenchmark = {
-  baseline: 'no real-time learning',
-  target: '<0.05ms adaptation time',
-  modes: ['real-time', 'balanced', 'research', 'edge', 'batch']
+  baseline: "no real-time learning",
+  target: "<0.05ms adaptation time",
+  modes: ["real-time", "balanced", "research", "edge", "batch"],
 };
 ```
 
 ## Backward Compatibility Strategy
 
 ### **Gradual Migration Approach**
+
 ```typescript
 class BackwardCompatibility {
   // Phase 1: Dual operation (old + new)
@@ -306,6 +328,7 @@ class BackwardCompatibility {
 ## Success Metrics & Validation
 
 ### **Code Reduction Targets**
+
 - [ ] **Total Lines**: <5,000 orchestration (vs 15,000+)
 - [ ] **SwarmCoordinator**: Eliminated (800+ lines)
 - [ ] **AgentManager**: Eliminated (1,736+ lines)
@@ -313,12 +336,14 @@ class BackwardCompatibility {
 - [ ] **Duplicate Logic**: <5% remaining
 
 ### **Performance Targets**
+
 - [ ] **Flash Attention**: 2.49x-7.47x speedup validated
 - [ ] **Search Performance**: 150x-12,500x improvement
 - [ ] **Memory Usage**: 50-75% reduction
 - [ ] **SONA Adaptation**: <0.05ms response time
 
 ### **Feature Parity**
+
 - [ ] **100% Feature Compatibility**: All v2 features available
 - [ ] **API Compatibility**: Backward compatible interfaces
 - [ ] **Performance**: No regression, ideally improvement
@@ -327,25 +352,28 @@ class BackwardCompatibility {
 ## Coordination Points
 
 ### **Memory Specialist (Agent #7)**
+
 - AgentDB integration coordination
 - Cross-agent memory sharing setup
 - Performance benchmarking collaboration
 
 ### **Swarm Specialist (Agent #8)**
+
 - Swarm system migration from claude-flow to agentic-flow
 - Topology coordination and optimization
 - Agent communication protocol alignment
 
 ### **Performance Engineer (Agent #14)**
+
 - Performance target validation
 - Benchmark implementation for improvements
 - Regression testing for migration phases
 
 ## Risk Mitigation
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|------------|
-| agentic-flow breaking changes | Medium | High | Pin version, maintain adapter |
-| Performance regression | Low | Medium | Continuous benchmarking |
-| Feature limitations | Medium | Medium | Contribute upstream features |
-| Migration complexity | High | Medium | Phased approach, compatibility layer |
+| Risk                          | Likelihood | Impact | Mitigation                           |
+| ----------------------------- | ---------- | ------ | ------------------------------------ |
+| agentic-flow breaking changes | Medium     | High   | Pin version, maintain adapter        |
+| Performance regression        | Low        | Medium | Continuous benchmarking              |
+| Feature limitations           | Medium     | Medium | Contribute upstream features         |
+| Migration complexity          | High       | Medium | Phased approach, compatibility layer |

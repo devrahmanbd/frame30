@@ -20,7 +20,11 @@ describe("reviewSummary", () => {
   });
 
   it("builds percentages from the histogram", () => {
-    const s = reviewSummary({ count: 4, mean: 4.25, histogram: { "5": 2, "4": 1, "1": 1 } });
+    const s = reviewSummary({
+      count: 4,
+      mean: 4.25,
+      histogram: { "5": 2, "4": 1, "1": 1 },
+    });
     expect(s.rounded).toBe(4.5);
     expect(s.bars.find((b) => b.stars === 5)?.pct).toBe(50);
     expect(s.bars.find((b) => b.stars === 3)?.count).toBe(0);
@@ -63,10 +67,23 @@ describe("countdown", () => {
 });
 
 describe("mergeRails", () => {
-  const p = (id: string) => ({ id, title: id, slug: id, image_url: null, price_minor: 100 });
+  const p = (id: string) => ({
+    id,
+    title: id,
+    slug: id,
+    image_url: null,
+    price_minor: 100,
+  });
 
   it("dedupes across sources and drops the current product", () => {
-    const out = mergeRails([[p("a"), p("b")], [p("b"), p("c")]], "a", 6);
+    const out = mergeRails(
+      [
+        [p("a"), p("b")],
+        [p("b"), p("c")],
+      ],
+      "a",
+      6,
+    );
     expect(out.map((x) => x.id)).toEqual(["b", "c"]);
   });
 

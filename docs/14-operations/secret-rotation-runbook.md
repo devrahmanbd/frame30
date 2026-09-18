@@ -6,14 +6,14 @@
 
 ## Routine rotation (scheduled, no incident)
 
-| Secret | Where it lives | How to rotate | Grace behavior |
-|---|---|---|---|
-| Per-merchant webhook secret | `webhook_endpoints` (`secret_prefix` shown, plaintext once) | `rotateWebhookSecret()` (`src/lib/webhooks.server.ts:161`) | Old secret keeps verifying through the grace window (dual-sign); deliveries flip to the new secret immediately |
-| OAuth client secret | `oauth_clients` | `rotateClientSecret()` (`src/lib/oauth.server.ts:202`) | Same dual window; refresh tokens rotate on every use regardless |
-| Merchant API keys | API key lifecycle surface (`/dashboard/developers`) | Create replacement → verify traffic on new key → revoke old | Overlap window monitored; revocation is instant |
-| Gateway credentials (bKash/Nagad/bank) | Provider gate vault, step-up protected | Rotate in provider dashboard first, then update vault via credential-edit (step-up MFA required) | Keep old credential until first successful live callback on the new one |
-| Supabase JWT / service keys | Supabase dashboard → app env (`SUPABASE_*`) | Rotate in dashboard, rolling-restart app (Blue/Green: new key to GREEN, canary, promote) | Zero-downtime via slot swap; never commit keys to git |
-| SMTP / Resend keys | Mailer config | Same slot-swap as Supabase keys | Test-send before promote |
+| Secret                                 | Where it lives                                              | How to rotate                                                                                    | Grace behavior                                                                                                 |
+| -------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| Per-merchant webhook secret            | `webhook_endpoints` (`secret_prefix` shown, plaintext once) | `rotateWebhookSecret()` (`src/lib/webhooks.server.ts:161`)                                       | Old secret keeps verifying through the grace window (dual-sign); deliveries flip to the new secret immediately |
+| OAuth client secret                    | `oauth_clients`                                             | `rotateClientSecret()` (`src/lib/oauth.server.ts:202`)                                           | Same dual window; refresh tokens rotate on every use regardless                                                |
+| Merchant API keys                      | API key lifecycle surface (`/dashboard/developers`)         | Create replacement → verify traffic on new key → revoke old                                      | Overlap window monitored; revocation is instant                                                                |
+| Gateway credentials (bKash/Nagad/bank) | Provider gate vault, step-up protected                      | Rotate in provider dashboard first, then update vault via credential-edit (step-up MFA required) | Keep old credential until first successful live callback on the new one                                        |
+| Supabase JWT / service keys            | Supabase dashboard → app env (`SUPABASE_*`)                 | Rotate in dashboard, rolling-restart app (Blue/Green: new key to GREEN, canary, promote)         | Zero-downtime via slot swap; never commit keys to git                                                          |
+| SMTP / Resend keys                     | Mailer config                                               | Same slot-swap as Supabase keys                                                                  | Test-send before promote                                                                                       |
 
 Cadence: webhook + OAuth client secrets every 90 days (or on staff offboarding);
 platform keys every 180 days; gateway credentials per provider policy.

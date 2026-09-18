@@ -9,7 +9,9 @@ import {
   takeSanitiserRejects,
 } from "./builder-ast";
 
-const html = (body: string) => ({ main: [{ id: "s1", type: "html", props: { body } }] });
+const html = (body: string) => ({
+  main: [{ id: "s1", type: "html", props: { body } }],
+});
 
 describe("theme sandbox — content sanitiser", () => {
   it("strips tags, event handlers and residual angle brackets", () => {
@@ -42,25 +44,39 @@ describe("theme sandbox — content sanitiser", () => {
 
 describe("theme sandbox — links and embeds", () => {
   const link = (href: string) =>
-    parseAst({ main: [{ id: "s1", type: "hero", props: { ctaHref: href } }] }).main[0]?.props[
-      "ctaHref"
-    ];
+    parseAst({ main: [{ id: "s1", type: "hero", props: { ctaHref: href } }] })
+      .main[0]?.props["ctaHref"];
 
   it("rejects dangerous link schemes", () => {
-    for (const href of ["javascript:alert(1)", "data:text/html,<script>", "vbscript:x", "//evil.test"]) {
+    for (const href of [
+      "javascript:alert(1)",
+      "data:text/html,<script>",
+      "vbscript:x",
+      "//evil.test",
+    ]) {
       expect(link(href)).toBe("");
     }
   });
 
   it("allows safe link schemes", () => {
-    for (const href of ["https://a.test/x", "/collections", "#top", "mailto:a@b.test", "tel:+8801"]) {
+    for (const href of [
+      "https://a.test/x",
+      "/collections",
+      "#top",
+      "mailto:a@b.test",
+      "tel:+8801",
+    ]) {
       expect(link(href)).toBe(href);
     }
   });
 
   it("frames only allowlisted https hosts", () => {
-    expect(safeEmbedUrl("https://www.youtube.com/embed/abc")).toContain("youtube.com/embed/abc");
-    expect(safeEmbedUrl("https://player.vimeo.com/video/1")).toContain("player.vimeo.com");
+    expect(safeEmbedUrl("https://www.youtube.com/embed/abc")).toContain(
+      "youtube.com/embed/abc",
+    );
+    expect(safeEmbedUrl("https://player.vimeo.com/video/1")).toContain(
+      "player.vimeo.com",
+    );
     for (const bad of [
       "https://evil.test/frame",
       "http://www.youtube.com/embed/abc",
@@ -74,7 +90,19 @@ describe("theme sandbox — links and embeds", () => {
 
 describe("theme sandbox — structural limits", () => {
   it("rejects an oversized payload", () => {
-    const big = { templates: { index: { main: [{ id: "s", type: "html", props: { body: "x".repeat(AST_LIMITS.maxPayloadChars) } }] } } };
+    const big = {
+      templates: {
+        index: {
+          main: [
+            {
+              id: "s",
+              type: "html",
+              props: { body: "x".repeat(AST_LIMITS.maxPayloadChars) },
+            },
+          ],
+        },
+      },
+    };
     expect(() => assertPayloadWithinLimits(big)).toThrow(/payload_too_large/);
   });
 
@@ -85,12 +113,17 @@ describe("theme sandbox — structural limits", () => {
   });
 
   it("caps sections per slot", () => {
-    const many = Array.from({ length: AST_LIMITS.maxSectionsPerSlot + 25 }, (_, i) => ({
-      id: `s${i}`,
-      type: "html",
-      props: { body: "x" },
-    }));
-    expect(parseAst({ main: many }).main.length).toBe(AST_LIMITS.maxSectionsPerSlot);
+    const many = Array.from(
+      { length: AST_LIMITS.maxSectionsPerSlot + 25 },
+      (_, i) => ({
+        id: `s${i}`,
+        type: "html",
+        props: { body: "x" },
+      }),
+    );
+    expect(parseAst({ main: many }).main.length).toBe(
+      AST_LIMITS.maxSectionsPerSlot,
+    );
   });
 
   it("drops malformed template keys and unknown widgets", () => {
@@ -100,7 +133,9 @@ describe("theme sandbox — structural limits", () => {
       __proto__: { main: [] },
     });
     expect(Object.keys(parsed)).toEqual(["index"]);
-    const unknown = parseAst({ main: [{ id: "s1", type: "evil_widget", props: {} }] });
+    const unknown = parseAst({
+      main: [{ id: "s1", type: "evil_widget", props: {} }],
+    });
     expect(unknown.main[0]?.invalid).toContain("unknown_widget");
   });
 });

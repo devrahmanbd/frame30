@@ -20,7 +20,9 @@ type Row = {
 const MAX_CARDS = 24;
 
 function toCard(row: Row, storeSlug: string): ProductCard {
-  const prices = (row.product_variants ?? []).map((v) => Number(v.price_amount_minor_int));
+  const prices = (row.product_variants ?? []).map((v) =>
+    Number(v.price_amount_minor_int),
+  );
   return {
     id: row.id,
     title: row.title,
@@ -51,7 +53,9 @@ export async function resolveBuilderProducts(
 
   const { data } = await db
     .from("products")
-    .select("id, title, slug, image_url, categories(slug), product_variants(price_amount_minor_int)")
+    .select(
+      "id, title, slug, image_url, categories(slug), product_variants(price_amount_minor_int)",
+    )
     .eq("merchant_id", merchantId)
     .eq("status", "active")
     .is("deleted_at", null)
@@ -64,7 +68,9 @@ export async function resolveBuilderProducts(
     const category = (widget.settings.category ?? "").trim().toLowerCase();
     const limit = Math.min(Math.max(widget.settings.limit ?? 4, 1), MAX_CARDS);
     const scoped = category
-      ? rows.filter((r) => (r.categories?.slug ?? "").toLowerCase() === category)
+      ? rows.filter(
+          (r) => (r.categories?.slug ?? "").toLowerCase() === category,
+        )
       : rows;
     out[widget.id] = scoped.slice(0, limit).map((r) => toCard(r, storeSlug));
   }

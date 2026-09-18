@@ -12,7 +12,12 @@ import {
   signaturePayload,
   timingSafeEqualHex,
 } from "./beacon-guard";
-import { MetricRegistry, sampleTrace, parseTraceparent, formatTraceparent } from "./telemetry";
+import {
+  MetricRegistry,
+  sampleTrace,
+  parseTraceparent,
+  formatTraceparent,
+} from "./telemetry";
 
 describe("beacon guard — media type and size", () => {
   it("accepts JSON with parameters, rejects anything else", () => {
@@ -24,7 +29,9 @@ describe("beacon guard — media type and size", () => {
 
   it("rejects bodies over the cap by declared or actual size", () => {
     expect(isBodyWithinLimit("100", 100)).toBe(true);
-    expect(isBodyWithinLimit(String(BEACON_MAX_BODY_BYTES + 1), 10)).toBe(false);
+    expect(isBodyWithinLimit(String(BEACON_MAX_BODY_BYTES + 1), 10)).toBe(
+      false,
+    );
     expect(isBodyWithinLimit(null, BEACON_MAX_BODY_BYTES + 1)).toBe(false);
   });
 });
@@ -67,11 +74,15 @@ describe("beacon guard — normalization", () => {
     // Absolute URLs are not paths — they are dropped rather than coerced.
     expect(safeLandingPath("https://shop.example/p/shoes?a=1")).toBeNull();
     expect(safeLandingPath("")).toBeNull();
-    expect((safeLandingPath("/" + "a".repeat(500)) ?? "").length).toBeLessThanOrEqual(256);
+    expect(
+      (safeLandingPath("/" + "a".repeat(500)) ?? "").length,
+    ).toBeLessThanOrEqual(256);
   });
 
   it("reduces referrers to a host so we never store user URLs", () => {
-    expect(safeReferrerHost("https://www.facebook.com/ads/x?id=1")).toBe("www.facebook.com");
+    expect(safeReferrerHost("https://www.facebook.com/ads/x?id=1")).toBe(
+      "www.facebook.com",
+    );
     expect(safeReferrerHost("not a url")).toBeNull();
   });
 });
@@ -88,7 +99,13 @@ describe("beacon guard — signatures", () => {
     expect(payload).toBe("m1\nn1\n123\nv1\nmeta");
     // Changing any field must change the payload — no field is optional filler.
     expect(
-      signaturePayload({ merchantId: "m1", nonce: "n1", sentAt: 124, visitorId: "v1", network: "meta" }),
+      signaturePayload({
+        merchantId: "m1",
+        nonce: "n1",
+        sentAt: 124,
+        visitorId: "v1",
+        network: "meta",
+      }),
     ).not.toBe(payload);
   });
 
@@ -142,13 +159,19 @@ describe("telemetry registry", () => {
     reg.incr("t_x_total", { route: 'a"b\nc' });
     const text = reg.render();
     expect(text).not.toMatch(/route="a"b/);
-    expect(text.split("\n").filter((l) => l.startsWith("t_x_total")).length).toBe(1);
+    expect(
+      text.split("\n").filter((l) => l.startsWith("t_x_total")).length,
+    ).toBe(1);
   });
 });
 
 describe("trace context", () => {
   it("round-trips a W3C traceparent", () => {
-    const tp = formatTraceparent({ traceId: "a".repeat(32), spanId: "b".repeat(16), sampled: true });
+    const tp = formatTraceparent({
+      traceId: "a".repeat(32),
+      spanId: "b".repeat(16),
+      sampled: true,
+    });
     const parsed = parseTraceparent(tp);
     expect(parsed?.traceId).toBe("a".repeat(32));
     expect(parsed?.sampled).toBe(true);

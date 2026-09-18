@@ -1,1 +1,389 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "label": "ai-support-admin.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L1"}, {"id": "lib_ai_support_admin_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L5"}, {"id": "lib_ai_support_admin_server_listconversations", "label": "listConversations()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L7"}, {"id": "lib_ai_support_admin_server_listmessages", "label": "listMessages()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L17"}, {"id": "lib_ai_support_admin_server_supportstats", "label": "SupportStats", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L27"}, {"id": "lib_ai_support_admin_server_computestats", "label": "computeStats()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L36"}, {"id": "lib_ai_support_admin_server_agentreply", "label": "agentReply()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L51"}, {"id": "lib_ai_support_admin_server_setconversationstatus", "label": "setConversationStatus()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L69"}, {"id": "lib_ai_support_admin_server_suggestions", "label": "SUGGESTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L84"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_i18n_dict_en", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_listconversations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_listmessages", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_supportstats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_computestats", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_agentreply", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_setconversationstatus", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts", "target": "lib_ai_support_admin_server_suggestions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L84", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_ai_support_admin_server_listconversations", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L8"}, {"caller_nid": "lib_ai_support_admin_server_listconversations", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L8"}, {"caller_nid": "lib_ai_support_admin_server_listconversations", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L8"}, {"caller_nid": "lib_ai_support_admin_server_listconversations", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L8"}, {"caller_nid": "lib_ai_support_admin_server_listconversations", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L8"}, {"caller_nid": "lib_ai_support_admin_server_listmessages", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L18"}, {"caller_nid": "lib_ai_support_admin_server_listmessages", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L18"}, {"caller_nid": "lib_ai_support_admin_server_listmessages", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L18"}, {"caller_nid": "lib_ai_support_admin_server_listmessages", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L18"}, {"caller_nid": "lib_ai_support_admin_server_listmessages", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L18"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L39"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L40"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L40"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L43"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L44"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L45"}, {"caller_nid": "lib_ai_support_admin_server_computestats", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L46"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L57"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L57"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L61"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L61"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L61"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L61"}, {"caller_nid": "lib_ai_support_admin_server_agentreply", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L63"}, {"caller_nid": "lib_ai_support_admin_server_setconversationstatus", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L75"}, {"caller_nid": "lib_ai_support_admin_server_setconversationstatus", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L75"}, {"caller_nid": "lib_ai_support_admin_server_setconversationstatus", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L75"}, {"caller_nid": "lib_ai_support_admin_server_setconversationstatus", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts", "source_location": "L75"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "label": "ai-support-admin.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_ai_support_admin_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L5"
+    },
+    {
+      "id": "lib_ai_support_admin_server_listconversations",
+      "label": "listConversations()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_ai_support_admin_server_listmessages",
+      "label": "listMessages()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_ai_support_admin_server_supportstats",
+      "label": "SupportStats",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_ai_support_admin_server_computestats",
+      "label": "computeStats()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_ai_support_admin_server_agentreply",
+      "label": "agentReply()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_ai_support_admin_server_setconversationstatus",
+      "label": "setConversationStatus()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_ai_support_admin_server_suggestions",
+      "label": "SUGGESTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L84"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_i18n_dict_en",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_listconversations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_listmessages",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_supportstats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_computestats",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_agentreply",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_setconversationstatus",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_ai_support_admin_server_ts",
+      "target": "lib_ai_support_admin_server_suggestions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_ai_support_admin_server_listconversations",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listconversations",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listconversations",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listconversations",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listconversations",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L8"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listmessages",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listmessages",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listmessages",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listmessages",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_listmessages",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_computestats",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_agentreply",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_setconversationstatus",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_setconversationstatus",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_setconversationstatus",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_ai_support_admin_server_setconversationstatus",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/ai-support-admin.server.ts",
+      "source_location": "L75"
+    }
+  ]
+}

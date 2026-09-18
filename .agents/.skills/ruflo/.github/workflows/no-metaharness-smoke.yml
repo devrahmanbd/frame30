@@ -17,18 +17,18 @@ on:
   push:
     branches: [main]
     paths:
-      - 'plugins/**'
-      - 'scripts/**'
-      - '**/package.json'
-      - '**/package-lock.json'
-      - '.github/workflows/no-metaharness-smoke.yml'
+      - "plugins/**"
+      - "scripts/**"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - ".github/workflows/no-metaharness-smoke.yml"
   pull_request:
     paths:
-      - 'plugins/**'
-      - 'scripts/**'
-      - '**/package.json'
-      - '**/package-lock.json'
-      - '.github/workflows/no-metaharness-smoke.yml'
+      - "plugins/**"
+      - "scripts/**"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - ".github/workflows/no-metaharness-smoke.yml"
   workflow_dispatch:
 
 jobs:
@@ -41,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Verify no `@metaharness/*` or `metaharness` appears in non-optional deps anywhere
         # Static check: every plugins/*/package.json AND v3/*/package.json

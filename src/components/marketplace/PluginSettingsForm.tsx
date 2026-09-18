@@ -29,7 +29,8 @@ export function PluginSettingsForm({
   const [values, setValues] = useState<SettingsValues>(plugin.settings);
 
   const label = useMemo(() => {
-    const dict = lang === "bn" ? plugin.manifest.i18n.bn : plugin.manifest.i18n.en;
+    const dict =
+      lang === "bn" ? plugin.manifest.i18n.bn : plugin.manifest.i18n.en;
     return (key: string, fallback: string) => dict[key] ?? fallback;
   }, [lang, plugin.manifest.i18n]);
 
@@ -110,7 +111,12 @@ export function PluginSettingsForm({
                 min={field.min}
                 max={field.max}
                 onChange={(e) =>
-                  set(field.key, field.kind === "number" ? Number(e.target.value) : e.target.value)
+                  set(
+                    field.key,
+                    field.kind === "number"
+                      ? Number(e.target.value)
+                      : e.target.value,
+                  )
                 }
                 className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
               />
@@ -121,7 +127,8 @@ export function PluginSettingsForm({
 
       {errors.length > 0 && (
         <p className="text-xs text-destructive">
-          {t("Check the highlighted values.", "মানগুলো আবার দেখুন।")} ({errors.join(", ")})
+          {t("Check the highlighted values.", "মানগুলো আবার দেখুন।")} (
+          {errors.join(", ")})
         </p>
       )}
 
@@ -130,7 +137,9 @@ export function PluginSettingsForm({
         disabled={saving || errors.length > 0}
         className="rounded-fq-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground disabled:opacity-50"
       >
-        {saving ? t("Saving…", "সেভ হচ্ছে…") : t("Save settings", "সেটিং সেভ করুন")}
+        {saving
+          ? t("Saving…", "সেভ হচ্ছে…")
+          : t("Save settings", "সেটিং সেভ করুন")}
       </button>
     </form>
   );

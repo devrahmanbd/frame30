@@ -27,7 +27,10 @@ export class CallbackError extends Error {
 
 export type CallbackTimeWindow = "morning" | "afternoon" | "evening";
 
-export const CALLBACK_WINDOWS: Record<CallbackTimeWindow, { label: string; labelBn: string; description: string }> = {
+export const CALLBACK_WINDOWS: Record<
+  CallbackTimeWindow,
+  { label: string; labelBn: string; description: string }
+> = {
   morning: {
     label: "Morning",
     labelBn: "সকাল",
@@ -88,7 +91,11 @@ export function normaliseBdPhone(raw: string): string {
 /**
  * Validate a Bangladesh mobile phone number.
  */
-export function validateBdPhone(phone: string): { valid: boolean; normalised?: string; error?: string } {
+export function validateBdPhone(phone: string): {
+  valid: boolean;
+  normalised?: string;
+  error?: string;
+} {
   try {
     const normalised = normaliseBdPhone(phone);
     if (!BD_PHONE_REGEX.test(normalised)) {
@@ -129,7 +136,10 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
     // Rate-limit by phone hash to prevent spam
     const { hashPhone } = await import("./ai-support.server");
     const phoneKey = await hashPhone(input.phone);
-    await enforceRateLimit("support.callback", `${input.merchantId}:${phoneKey}`);
+    await enforceRateLimit(
+      "support.callback",
+      `${input.merchantId}:${phoneKey}`,
+    );
 
     // Validate and normalise phone
     const phoneResult = validateBdPhone(input.phone);
@@ -149,7 +159,8 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
     let record: CallbackRecord;
 
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
 
       const { data, error } = await supabaseAdmin
         .from("support_callbacks")
@@ -163,7 +174,9 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
           channel: input.channel ?? "widget",
           status: "pending",
         })
-        .select("id, merchant_id, conversation_id, customer_name, phone_e164, preferred_window, note, status, created_at")
+        .select(
+          "id, merchant_id, conversation_id, customer_name, phone_e164, preferred_window, note, status, created_at",
+        )
         .single();
 
       if (error || !data) throw new CallbackError("callback_create_failed");
@@ -187,7 +200,10 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
     const agentMessage = `Thank you, ${sanitizedName}! I've scheduled a callback for you during the **${windowInfo.label}** window (${windowInfo.description}). A Framique support specialist will call you at the number provided. Callback reference: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
     const agentMessageBn = `ধন্যবাদ, ${sanitizedName}! আপনার জন্য **${windowInfo.labelBn}** (${windowInfo.description}) সময়ে কলব্যাক নির্ধারণ করা হয়েছে। একজন Framique সহায়তা বিশেষজ্ঞ আপনার সাথে যোগাযোগ করবেন। রেফারেন্স: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
 
-    incr("framique_support_callback_total", { window: input.preferredWindow, status: "created" });
+    incr("framique_support_callback_total", {
+      window: input.preferredWindow,
+      status: "created",
+    });
     log("info", "support.callback_created", {
       merchant_id: input.merchantId,
       callback_id: record.id,
@@ -209,14 +225,20 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
 /**
  * List pending callbacks for merchant admin triage.
  */
-export async function listCallbacks(merchantId: string, status?: string): Promise<CallbackRecord[]> {
+export async function listCallbacks(
+  merchantId: string,
+  status?: string,
+): Promise<CallbackRecord[]> {
   await enforceRateLimit("support.read", merchantId);
 
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     let q = supabaseAdmin
       .from("support_callbacks")
-      .select("id, merchant_id, conversation_id, customer_name, phone_e164, preferred_window, note, status, created_at")
+      .select(
+        "id, merchant_id, conversation_id, customer_name, phone_e164, preferred_window, note, status, created_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(200);
@@ -241,7 +263,8 @@ export async function updateCallbackStatus(
   status: "contacted" | "failed" | "cancelled",
 ): Promise<{ ok: boolean }> {
   try {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin
       .from("support_callbacks")
       .update({ status, updated_at: new Date().toISOString() })
@@ -250,7 +273,9 @@ export async function updateCallbackStatus(
 
     if (error) throw new CallbackError("callback_update_failed");
   } catch {
-    const cb = IN_MEMORY_CALLBACKS.find((c) => c.id === callbackId && c.merchant_id === merchantId);
+    const cb = IN_MEMORY_CALLBACKS.find(
+      (c) => c.id === callbackId && c.merchant_id === merchantId,
+    );
     if (cb) (cb as CallbackRecord & { status: string }).status = status;
   }
 

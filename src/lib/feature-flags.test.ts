@@ -24,7 +24,9 @@ describe("Phase 7.3 — Tenant Feature Flag Engine", () => {
       rolloutPercentage: 100,
     });
 
-    const enabled = await isFeatureEnabled("test_kill_switch", { merchantId: "merchant-any" });
+    const enabled = await isFeatureEnabled("test_kill_switch", {
+      merchantId: "merchant-any",
+    });
     expect(enabled).toBe(false);
   });
 
@@ -39,19 +41,29 @@ describe("Phase 7.3 — Tenant Feature Flag Engine", () => {
     });
 
     // Merchant A and B initially both disabled
-    expect(await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" })).toBe(false);
-    expect(await isFeatureEnabled(flagKey, { merchantId: "merchant-beta" })).toBe(false);
+    expect(
+      await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" }),
+    ).toBe(false);
+    expect(
+      await isFeatureEnabled(flagKey, { merchantId: "merchant-beta" }),
+    ).toBe(false);
 
     // Explicitly enable for Merchant A only
     await setMerchantFlagOverride(flagKey, "merchant-alpha", true);
 
     // Verify Merchant A is enabled, Merchant B remains disabled
-    expect(await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" })).toBe(true);
-    expect(await isFeatureEnabled(flagKey, { merchantId: "merchant-beta" })).toBe(false);
+    expect(
+      await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" }),
+    ).toBe(true);
+    expect(
+      await isFeatureEnabled(flagKey, { merchantId: "merchant-beta" }),
+    ).toBe(false);
 
     // Explicitly disable for Merchant A
     await setMerchantFlagOverride(flagKey, "merchant-alpha", false);
-    expect(await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" })).toBe(false);
+    expect(
+      await isFeatureEnabled(flagKey, { merchantId: "merchant-alpha" }),
+    ).toBe(false);
   });
 
   it("enforces tenant cohort ring targeting", async () => {
@@ -66,13 +78,22 @@ describe("Phase 7.3 — Tenant Feature Flag Engine", () => {
     });
 
     // Internal store (Cohort 0) -> Allowed
-    expect(await isFeatureEnabled(cohortFlag, { merchantId: "framique-hq" })).toBe(true);
+    expect(
+      await isFeatureEnabled(cohortFlag, { merchantId: "framique-hq" }),
+    ).toBe(true);
 
     // Beta store (Cohort 1) -> Allowed
-    expect(await isFeatureEnabled(cohortFlag, { merchantId: "beta-partner-1" })).toBe(true);
+    expect(
+      await isFeatureEnabled(cohortFlag, { merchantId: "beta-partner-1" }),
+    ).toBe(true);
 
     // Global store (Cohort 4) -> Denied
-    expect(await isFeatureEnabled(cohortFlag, { merchantId: "standard-global-shop", cohortTier: 4 })).toBe(false);
+    expect(
+      await isFeatureEnabled(cohortFlag, {
+        merchantId: "standard-global-shop",
+        cohortTier: 4,
+      }),
+    ).toBe(false);
   });
 
   it("evaluates deterministic percentage rollouts consistently", async () => {
@@ -91,12 +112,24 @@ describe("Phase 7.3 — Tenant Feature Flag Engine", () => {
     expect(res1).toBe(res2); // strictly deterministic
 
     // 0% rollout -> always false
-    await setFeatureFlag({ key: "rollout_0pct", enabled: true, rolloutPercentage: 0 });
-    expect(await isFeatureEnabled("rollout_0pct", { merchantId: "any-store" })).toBe(false);
+    await setFeatureFlag({
+      key: "rollout_0pct",
+      enabled: true,
+      rolloutPercentage: 0,
+    });
+    expect(
+      await isFeatureEnabled("rollout_0pct", { merchantId: "any-store" }),
+    ).toBe(false);
 
     // 100% rollout -> always true
-    await setFeatureFlag({ key: "rollout_100pct", enabled: true, rolloutPercentage: 100 });
-    expect(await isFeatureEnabled("rollout_100pct", { merchantId: "any-store" })).toBe(true);
+    await setFeatureFlag({
+      key: "rollout_100pct",
+      enabled: true,
+      rolloutPercentage: 100,
+    });
+    expect(
+      await isFeatureEnabled("rollout_100pct", { merchantId: "any-store" }),
+    ).toBe(true);
   });
 
   it("evaluates flags with zero latency overhead (< 0.1ms per check)", async () => {

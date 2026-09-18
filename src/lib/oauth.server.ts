@@ -12,7 +12,12 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { intersectScopes, parseScopes, refusedScopes, type Scope } from "./api-scopes";
+import {
+  intersectScopes,
+  parseScopes,
+  refusedScopes,
+  type Scope,
+} from "./api-scopes";
 import { incr, log } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
@@ -40,7 +45,9 @@ function toHex(buf: ArrayBuffer) {
 }
 
 export async function sha256Hex(value: string) {
-  return toHex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)));
+  return toHex(
+    await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)),
+  );
 }
 
 function randomToken(bytes = 32) {
@@ -56,15 +63,23 @@ function b64url(buf: ArrayBuffer) {
 }
 
 /** RFC 7636 S256: BASE64URL(SHA256(verifier)) must equal the stored challenge. */
-export async function verifyPkce(verifier: string, challenge: string, method: string) {
+export async function verifyPkce(
+  verifier: string,
+  challenge: string,
+  method: string,
+) {
   if (method !== "S256") return false;
   if (verifier.length < 43 || verifier.length > 128) return false;
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(verifier),
+  );
   return b64url(digest) === challenge;
 }
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -79,7 +94,8 @@ async function audit(
     merchant_id: merchantId,
     actor: actor ?? null,
     action,
-    payload: payload as unknown as Database["public"]["Tables"]["api_key_events"]["Insert"]["payload"],
+    payload:
+      payload as unknown as Database["public"]["Tables"]["api_key_events"]["Insert"]["payload"],
   });
 }
 
@@ -87,7 +103,11 @@ async function audit(
 /* App registry (merchant admin surface)                                */
 /* ------------------------------------------------------------------ */
 
-async function requireAdminRole(db: Client, merchantId: string, userId: string) {
+async function requireAdminRole(
+  db: Client,
+  merchantId: string,
+  userId: string,
+) {
   const { data } = await db
     .from("merchant_members")
     .select("role")
@@ -119,8 +139,10 @@ function sanitizeRedirects(uris: string[]) {
       throw new OAuthError("invalid_redirect_uri", 400, value);
     }
     // https only, except localhost for local development of third-party apps.
-    const isLocal = parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
-    if (parsed.protocol !== "https:" && !isLocal) throw new OAuthError("invalid_redirect_uri", 400, value);
+    const isLocal =
+      parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1";
+    if (parsed.protocol !== "https:" && !isLocal)
+      throw new OAuthError("invalid_redirect_uri", 400, value);
     if (parsed.hash) throw new OAuthError("invalid_redirect_uri", 400, value);
     out.push(parsed.toString());
   }
@@ -133,7 +155,9 @@ export async function listClients(db: Client, merchantId: string) {
   const [clients, consents] = await Promise.all([
     db
       .from("oauth_clients")
-      .select("id,name,client_id,client_type,redirect_uris,scopes,status,created_at,secret_rotated_at")
+      .select(
+        "id,name,client_id,client_type,redirect_uris,scopes,status,created_at,secret_rotated_at",
+      )
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false })
       .limit(100),
@@ -173,12 +197,22 @@ export async function saveClient(
       .eq("merchant_id", merchantId)
       .eq("id", input.id);
     if (error) throw new OAuthError("client_save_failed", 500, error.message);
-    await audit(merchantId, "oauth.app.updated", { app: input.name, scopes }, userId);
-    return { id: input.id, clientId: null as string | null, secret: null as string | null };
+    await audit(
+      merchantId,
+      "oauth.app.updated",
+      { app: input.name, scopes },
+      userId,
+    );
+    return {
+      id: input.id,
+      clientId: null as string | null,
+      secret: null as string | null,
+    };
   }
 
   const clientId = `frmapp_${randomToken(12)}`;
-  const secret = input.clientType === "confidential" ? `frmsec_${randomToken(24)}` : null;
+  const secret =
+    input.clientType === "confidential" ? `frmsec_${randomToken(24)}` : null;
   const { data, error } = await db
     .from("oauth_clients")
     .insert({
@@ -193,8 +227,14 @@ export async function saveClient(
     })
     .select("id")
     .single();
-  if (error || !data) throw new OAuthError("client_save_failed", 500, error?.message);
-  await audit(merchantId, "oauth.app.created", { app: input.name, scopes }, userId);
+  if (error || !data)
+    throw new OAuthError("client_save_failed", 500, error?.message);
+  await audit(
+    merchantId,
+    "oauth.app.created",
+    { app: input.name, scopes },
+    userId,
+  );
   incr("framique_oauth_app_total", { action: "created" });
   return { id: data.id, clientId, secret };
 }
@@ -253,12 +293,22 @@ export async function setClientStatus(
       .eq("merchant_id", merchantId)
       .eq("client_row_id", id)
       .is("revoked_at", null);
-    await audit(merchantId, "oauth.token.revoked", { client_row_id: id, reason: "app_disabled" }, userId);
+    await audit(
+      merchantId,
+      "oauth.token.revoked",
+      { client_row_id: id, reason: "app_disabled" },
+      userId,
+    );
   }
   return { ok: true as const };
 }
 
-export async function revokeConsent(db: Client, merchantId: string, userId: string, consentId: string) {
+export async function revokeConsent(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  consentId: string,
+) {
   await requireAdminRole(db, merchantId, userId);
   const dba = await admin();
   const { data } = await db
@@ -281,7 +331,12 @@ export async function revokeConsent(db: Client, merchantId: string, userId: stri
     .eq("client_row_id", data.client_row_id)
     .eq("user_id", data.user_id)
     .is("revoked_at", null);
-  await audit(merchantId, "oauth.token.revoked", { reason: "consent_revoked" }, userId);
+  await audit(
+    merchantId,
+    "oauth.token.revoked",
+    { reason: "consent_revoked" },
+    userId,
+  );
   incr("framique_oauth_token_total", { action: "revoked" });
   return { ok: true as const };
 }
@@ -304,12 +359,15 @@ export async function describeAuthorization(req: AuthorizeRequest) {
   const db = await admin();
   const { data: client } = await db
     .from("oauth_clients")
-    .select("id,merchant_id,name,client_id,client_type,redirect_uris,scopes,status")
+    .select(
+      "id,merchant_id,name,client_id,client_type,redirect_uris,scopes,status",
+    )
     .eq("client_id", req.clientId)
     .maybeSingle();
   if (!client) throw new OAuthError("invalid_client", 400);
   if (client.status !== "active") throw new OAuthError("client_disabled", 403);
-  if (!client.redirect_uris.includes(req.redirectUri)) throw new OAuthError("invalid_redirect_uri", 400);
+  if (!client.redirect_uris.includes(req.redirectUri))
+    throw new OAuthError("invalid_redirect_uri", 400);
   if (req.codeChallengeMethod !== "S256" || !req.codeChallenge) {
     throw new OAuthError("pkce_required", 400);
   }
@@ -330,7 +388,10 @@ export async function describeAuthorization(req: AuthorizeRequest) {
 /** Called after the staff member presses "Allow" on the consent screen. */
 export async function issueCode(userId: string, req: AuthorizeRequest) {
   const described = await describeAuthorization(req);
-  await enforceRateLimit("oauth.authorize", `${described.merchantId}:${userId}`);
+  await enforceRateLimit(
+    "oauth.authorize",
+    `${described.merchantId}:${userId}`,
+  );
   const db = await admin();
   const code = randomToken(24);
   const { error } = await db.from("oauth_authorizations").insert({
@@ -352,7 +413,12 @@ export async function issueCode(userId: string, req: AuthorizeRequest) {
     user_id: userId,
     scopes: described.granted,
   });
-  await audit(described.merchantId, "oauth.consent.granted", { scopes: described.granted }, userId);
+  await audit(
+    described.merchantId,
+    "oauth.consent.granted",
+    { scopes: described.granted },
+    userId,
+  );
   incr("framique_oauth_code_total", { outcome: "issued" });
 
   const redirect = new URL(req.redirectUri);
@@ -389,13 +455,17 @@ async function mintPair(opts: {
     access_hash: await sha256Hex(access),
     refresh_hash: await sha256Hex(refresh),
     access_expires_at: new Date(now + ACCESS_TTL_SECONDS * 1000).toISOString(),
-    refresh_expires_at: new Date(now + REFRESH_TTL_SECONDS * 1000).toISOString(),
+    refresh_expires_at: new Date(
+      now + REFRESH_TTL_SECONDS * 1000,
+    ).toISOString(),
   };
   if (opts.familyId) insert.family_id = opts.familyId;
   if (opts.rotatedFrom) insert.rotated_from = opts.rotatedFrom;
   const { error } = await db.from("oauth_tokens").insert(insert);
   if (error) throw new OAuthError("token_issue_failed", 500, error.message);
-  incr("framique_oauth_token_total", { action: opts.rotatedFrom ? "rotated" : "issued" });
+  incr("framique_oauth_token_total", {
+    action: opts.rotatedFrom ? "rotated" : "issued",
+  });
   return {
     access_token: access,
     refresh_token: refresh,
@@ -415,7 +485,8 @@ async function assertClientAuth(clientId: string, clientSecret: string | null) {
   if (!client) throw new OAuthError("invalid_client", 401);
   if (client.status !== "active") throw new OAuthError("client_disabled", 403);
   if (client.client_type === "confidential") {
-    if (!clientSecret || !client.client_secret_hash) throw new OAuthError("invalid_client", 401);
+    if (!clientSecret || !client.client_secret_hash)
+      throw new OAuthError("invalid_client", 401);
     if ((await sha256Hex(clientSecret)) !== client.client_secret_hash) {
       throw new OAuthError("invalid_client", 401);
     }
@@ -431,7 +502,10 @@ export async function exchangeCode(input: {
   codeVerifier: string;
 }) {
   const client = await assertClientAuth(input.clientId, input.clientSecret);
-  await enforceRateLimit("oauth.token", `${client.merchant_id}:${input.clientId}`);
+  await enforceRateLimit(
+    "oauth.token",
+    `${client.merchant_id}:${input.clientId}`,
+  );
   const db = await admin();
   const codeHash = await sha256Hex(input.code);
   const { data: auth } = await db
@@ -439,12 +513,16 @@ export async function exchangeCode(input: {
     .select("*")
     .eq("code_hash", codeHash)
     .maybeSingle();
-  if (!auth || auth.client_row_id !== client.id) throw new OAuthError("invalid_grant", 400);
+  if (!auth || auth.client_row_id !== client.id)
+    throw new OAuthError("invalid_grant", 400);
   if (auth.consumed_at) {
     // Replay of a consumed code: burn every token minted from that grant.
     await db
       .from("oauth_tokens")
-      .update({ revoked_at: new Date().toISOString(), revoke_reason: "code_replay" })
+      .update({
+        revoked_at: new Date().toISOString(),
+        revoke_reason: "code_replay",
+      })
       .eq("merchant_id", auth.merchant_id)
       .eq("client_row_id", auth.client_row_id)
       .eq("user_id", auth.user_id)
@@ -452,9 +530,17 @@ export async function exchangeCode(input: {
     incr("framique_oauth_code_total", { outcome: "replay" });
     throw new OAuthError("invalid_grant", 400, "code_replay");
   }
-  if (Date.parse(auth.expires_at) < Date.now()) throw new OAuthError("invalid_grant", 400, "expired");
-  if (auth.redirect_uri !== input.redirectUri) throw new OAuthError("invalid_grant", 400, "redirect_mismatch");
-  if (!(await verifyPkce(input.codeVerifier, auth.code_challenge, auth.code_challenge_method))) {
+  if (Date.parse(auth.expires_at) < Date.now())
+    throw new OAuthError("invalid_grant", 400, "expired");
+  if (auth.redirect_uri !== input.redirectUri)
+    throw new OAuthError("invalid_grant", 400, "redirect_mismatch");
+  if (
+    !(await verifyPkce(
+      input.codeVerifier,
+      auth.code_challenge,
+      auth.code_challenge_method,
+    ))
+  ) {
     throw new OAuthError("invalid_grant", 400, "pkce_failed");
   }
 
@@ -463,7 +549,10 @@ export async function exchangeCode(input: {
     .update({ consumed_at: new Date().toISOString() })
     .eq("id", auth.id);
 
-  const scopes = intersectScopes(parseScopes(auth.scopes), parseScopes(client.scopes));
+  const scopes = intersectScopes(
+    parseScopes(auth.scopes),
+    parseScopes(client.scopes),
+  );
   if (!scopes.length) throw new OAuthError("scope_mismatch", 403);
   const pair = await mintPair({
     merchantId: auth.merchant_id,
@@ -481,27 +570,50 @@ export async function refreshToken(input: {
   refreshToken: string;
 }) {
   const client = await assertClientAuth(input.clientId, input.clientSecret);
-  await enforceRateLimit("oauth.token", `${client.merchant_id}:${input.clientId}`);
+  await enforceRateLimit(
+    "oauth.token",
+    `${client.merchant_id}:${input.clientId}`,
+  );
   const db = await admin();
   const hash = await sha256Hex(input.refreshToken);
-  const { data: token } = await db.from("oauth_tokens").select("*").eq("refresh_hash", hash).maybeSingle();
-  if (!token || token.client_row_id !== client.id) throw new OAuthError("invalid_grant", 400);
+  const { data: token } = await db
+    .from("oauth_tokens")
+    .select("*")
+    .eq("refresh_hash", hash)
+    .maybeSingle();
+  if (!token || token.client_row_id !== client.id)
+    throw new OAuthError("invalid_grant", 400);
 
   // Reuse detection: a rotated or revoked refresh token means the pair leaked.
   if (token.rotated_at || token.revoked_at) {
     await db
       .from("oauth_tokens")
-      .update({ revoked_at: new Date().toISOString(), revoke_reason: "refresh_reuse" })
+      .update({
+        revoked_at: new Date().toISOString(),
+        revoke_reason: "refresh_reuse",
+      })
       .eq("family_id", token.family_id)
       .is("revoked_at", null);
     incr("framique_oauth_token_total", { action: "reuse_detected" });
-    log("warn", "oauth.refresh_reuse", { merchant_id: token.merchant_id, family: token.family_id });
-    await audit(token.merchant_id, "oauth.token.revoked", { reason: "refresh_reuse" }, token.user_id);
+    log("warn", "oauth.refresh_reuse", {
+      merchant_id: token.merchant_id,
+      family: token.family_id,
+    });
+    await audit(
+      token.merchant_id,
+      "oauth.token.revoked",
+      { reason: "refresh_reuse" },
+      token.user_id,
+    );
     throw new OAuthError("invalid_grant", 400, "refresh_reuse");
   }
-  if (Date.parse(token.refresh_expires_at) < Date.now()) throw new OAuthError("invalid_grant", 400, "expired");
+  if (Date.parse(token.refresh_expires_at) < Date.now())
+    throw new OAuthError("invalid_grant", 400, "expired");
 
-  const scopes = intersectScopes(parseScopes(token.scopes), parseScopes(client.scopes));
+  const scopes = intersectScopes(
+    parseScopes(token.scopes),
+    parseScopes(client.scopes),
+  );
   if (!scopes.length) throw new OAuthError("scope_mismatch", 403);
   const pair = await mintPair({
     merchantId: token.merchant_id,
@@ -530,10 +642,18 @@ export async function revokeToken(token: string) {
   if (!data) return { ok: true as const };
   await db
     .from("oauth_tokens")
-    .update({ revoked_at: new Date().toISOString(), revoke_reason: "client_revoke" })
+    .update({
+      revoked_at: new Date().toISOString(),
+      revoke_reason: "client_revoke",
+    })
     .eq("family_id", data.family_id)
     .is("revoked_at", null);
-  await audit(data.merchant_id, "oauth.token.revoked", { reason: "client_revoke" }, data.user_id);
+  await audit(
+    data.merchant_id,
+    "oauth.token.revoked",
+    { reason: "client_revoke" },
+    data.user_id,
+  );
   incr("framique_oauth_token_total", { action: "revoked" });
   return { ok: true as const };
 }
@@ -547,7 +667,9 @@ export type ResolvedToken = {
 };
 
 /** Access-token introspection used by the REST gateway. Never returns a revoked row. */
-export async function resolveAccessToken(token: string): Promise<ResolvedToken | null> {
+export async function resolveAccessToken(
+  token: string,
+): Promise<ResolvedToken | null> {
   const db = await admin();
   const { data } = await db
     .from("oauth_tokens")
@@ -556,7 +678,10 @@ export async function resolveAccessToken(token: string): Promise<ResolvedToken |
     .maybeSingle();
   if (!data || data.revoked_at) return null;
   if (Date.parse(data.access_expires_at) < Date.now()) return null;
-  void db.from("oauth_tokens").update({ last_used_at: new Date().toISOString() }).eq("id", data.id);
+  void db
+    .from("oauth_tokens")
+    .update({ last_used_at: new Date().toISOString() })
+    .eq("id", data.id);
   return {
     kind: "oauth",
     merchantId: data.merchant_id,

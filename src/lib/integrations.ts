@@ -143,7 +143,10 @@ export const SERVICE_CATALOG: Record<IntegrationService, ServiceSpec> = {
 };
 
 /** Probe result → status. Slow but answering is degraded, not down. */
-export function classifyProbe(httpStatus: number | null, latencyMs: number): ProbeStatus {
+export function classifyProbe(
+  httpStatus: number | null,
+  latencyMs: number,
+): ProbeStatus {
   if (httpStatus === null) return "down";
   if (httpStatus >= 500) return "down";
   if (httpStatus === 401 || httpStatus === 403) return "degraded";
@@ -189,7 +192,10 @@ export function healthUrl(baseUrl: string, service: IntegrationService) {
 /* ------------------------------------------------------------------ */
 
 /** The `.env` block an operator pastes for the services they picked. */
-export function envBlock(services: IntegrationService[], urls: Partial<Record<IntegrationService, string>> = {}) {
+export function envBlock(
+  services: IntegrationService[],
+  urls: Partial<Record<IntegrationService, string>> = {},
+) {
   const lines: string[] = ["# Framique observability integrations"];
   for (const key of services) {
     const spec = SERVICE_CATALOG[key];
@@ -201,22 +207,33 @@ export function envBlock(services: IntegrationService[], urls: Partial<Record<In
 
 /** The compose command that starts exactly the chosen profiles. */
 export function composeCommand(services: IntegrationService[]) {
-  const profiles = [...new Set(services.map((k) => SERVICE_CATALOG[k].profile))].filter((p) => p !== "supabase");
-  if (profiles.length === 0) return "docker compose -f ops/docker-compose.observability.yml up -d";
+  const profiles = [
+    ...new Set(services.map((k) => SERVICE_CATALOG[k].profile)),
+  ].filter((p) => p !== "supabase");
+  if (profiles.length === 0)
+    return "docker compose -f ops/docker-compose.observability.yml up -d";
   const files = new Set<string>();
   for (const p of profiles) {
-    files.add(p === "observability" ? "ops/docker-compose.observability.yml" : "ops/docker-compose.errors.yml");
+    files.add(
+      p === "observability"
+        ? "ops/docker-compose.observability.yml"
+        : "ops/docker-compose.errors.yml",
+    );
   }
   const fileArgs = [...files].map((f) => `-f ${f}`).join(" ");
   const profileArgs = profiles
     .filter((p) => p !== "observability")
     .map((p) => `--profile ${p}`)
     .join(" ");
-  return `docker compose ${fileArgs} ${profileArgs} up -d`.replace(/\s+/g, " ").trim();
+  return `docker compose ${fileArgs} ${profileArgs} up -d`
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function costNote(services: IntegrationService[]) {
-  return services.map((k) => `${SERVICE_CATALOG[k].label}: ${SERVICE_CATALOG[k].runningCost}`);
+  return services.map(
+    (k) => `${SERVICE_CATALOG[k].label}: ${SERVICE_CATALOG[k].runningCost}`,
+  );
 }
 
 /** A URL is only accepted when it is absolute and http(s). */
@@ -238,7 +255,14 @@ export function validBaseUrl(value: string) {
  * scraper still scraping, are logs still arriving, is anything firing, how many
  * errors landed in the last hour, and how old is the newest backup.
  */
-export const SIGNAL_KEYS = ["last_scrape", "last_log", "active_alerts", "errors_1h", "backup_age", "glitchtip_errors"] as const;
+export const SIGNAL_KEYS = [
+  "last_scrape",
+  "last_log",
+  "active_alerts",
+  "errors_1h",
+  "backup_age",
+  "glitchtip_errors",
+] as const;
 
 export type SignalKey = (typeof SIGNAL_KEYS)[number];
 
@@ -253,18 +277,67 @@ export type SignalSpec = {
 };
 
 export const SIGNAL_SPECS: Record<SignalKey, SignalSpec> = {
-  last_scrape: { key: "last_scrape", label: "Last scrape", unit: "seconds", warn: 120, bad: 600, source: "prometheus" },
-  last_log: { key: "last_log", label: "Last log line", unit: "seconds", warn: 300, bad: 1800, source: "loki" },
-  active_alerts: { key: "active_alerts", label: "Active alerts", unit: "count", warn: 1, bad: 5, source: "alertmanager" },
-  errors_1h: { key: "errors_1h", label: "Errors (1h)", unit: "count", warn: 10, bad: 100, source: "loki" },
-  backup_age: { key: "backup_age", label: "Newest backup", unit: "seconds", warn: 26 * 3600, bad: 48 * 3600, source: "supabase" },
-  glitchtip_errors: { key: "glitchtip_errors", label: "Tracked errors (1h)", unit: "count", warn: 5, bad: 50, source: "glitchtip" },
+  last_scrape: {
+    key: "last_scrape",
+    label: "Last scrape",
+    unit: "seconds",
+    warn: 120,
+    bad: 600,
+    source: "prometheus",
+  },
+  last_log: {
+    key: "last_log",
+    label: "Last log line",
+    unit: "seconds",
+    warn: 300,
+    bad: 1800,
+    source: "loki",
+  },
+  active_alerts: {
+    key: "active_alerts",
+    label: "Active alerts",
+    unit: "count",
+    warn: 1,
+    bad: 5,
+    source: "alertmanager",
+  },
+  errors_1h: {
+    key: "errors_1h",
+    label: "Errors (1h)",
+    unit: "count",
+    warn: 10,
+    bad: 100,
+    source: "loki",
+  },
+  backup_age: {
+    key: "backup_age",
+    label: "Newest backup",
+    unit: "seconds",
+    warn: 26 * 3600,
+    bad: 48 * 3600,
+    source: "supabase",
+  },
+  glitchtip_errors: {
+    key: "glitchtip_errors",
+    label: "Tracked errors (1h)",
+    unit: "count",
+    warn: 5,
+    bad: 50,
+    source: "glitchtip",
+  },
 };
 
-export type OpsSignal = { key: SignalKey; value: number | null; detail: string | null };
+export type OpsSignal = {
+  key: SignalKey;
+  value: number | null;
+  detail: string | null;
+};
 
 /** Tone for one signal. An unknown value is amber: silence is not health. */
-export function signalTone(key: SignalKey, value: number | null): "ok" | "warn" | "bad" {
+export function signalTone(
+  key: SignalKey,
+  value: number | null,
+): "ok" | "warn" | "bad" {
   if (value === null || !Number.isFinite(value)) return "warn";
   const spec = SIGNAL_SPECS[key];
   if (value >= spec.bad) return "bad";
@@ -283,7 +356,9 @@ export function formatAge(seconds: number | null): string {
 
 export function formatSignal(key: SignalKey, value: number | null): string {
   if (value === null || !Number.isFinite(value)) return "—";
-  return SIGNAL_SPECS[key].unit === "seconds" ? formatAge(value) : String(Math.round(value));
+  return SIGNAL_SPECS[key].unit === "seconds"
+    ? formatAge(value)
+    : String(Math.round(value));
 }
 
 /**
@@ -301,7 +376,9 @@ export const STATUS_COMPONENT: Record<IntegrationService, string> = {
 };
 
 /** Probe status → public component state. Degraded plumbing is not an outage. */
-export function componentStateForProbe(status: ProbeStatus): "operational" | "degraded" | "partial_outage" {
+export function componentStateForProbe(
+  status: ProbeStatus,
+): "operational" | "degraded" | "partial_outage" {
   if (status === "down") return "partial_outage";
   if (status === "degraded") return "degraded";
   return "operational";

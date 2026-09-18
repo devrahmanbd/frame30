@@ -24,11 +24,17 @@ const seoShape = z.object({
 export const templateSeoListFn = createServerFn({ method: "GET" })
   .middleware([requirePermission("themes.read")])
   .inputValidator((d: unknown) =>
-    z.object({ merchantId: uuid.optional(), themeId: uuid.nullish() }).parse(d ?? {}),
+    z
+      .object({ merchantId: uuid.optional(), themeId: uuid.nullish() })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { listTemplateSeo } = await import("./builder-seo.server");
-    return listTemplateSeo(context.supabase, context.actor.merchantId!, data.themeId ?? null);
+    return listTemplateSeo(
+      context.supabase,
+      context.actor.merchantId!,
+      data.themeId ?? null,
+    );
   });
 
 export const templateSeoSaveFn = createServerFn({ method: "POST" })
@@ -48,14 +54,19 @@ export const templateSeoSaveFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { saveTemplateSeo } = await import("./builder-seo.server");
-    return saveTemplateSeo(context.supabase, context.actor.merchantId!, context.userId, {
-      template: data.template,
-      themeId: data.themeId ?? null,
-      seo: data.seo,
-      ast: data.ast,
-      storeName: data.storeName,
-      expectedRevision: data.expectedRevision,
-    });
+    return saveTemplateSeo(
+      context.supabase,
+      context.actor.merchantId!,
+      context.userId,
+      {
+        template: data.template,
+        themeId: data.themeId ?? null,
+        seo: data.seo,
+        ast: data.ast,
+        storeName: data.storeName,
+        expectedRevision: data.expectedRevision,
+      },
+    );
   });
 
 export const templateSeoClearFn = createServerFn({ method: "POST" })

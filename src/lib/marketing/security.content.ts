@@ -51,7 +51,12 @@ export const isolation = {
     "Isolation is a test suite, not a design intention: a negative-assertion end-to-end spec runs on every release — logged in as merchant A, every attempt to read, list, update or delete a row belonging to merchant B must fail.",
     "GRANTs are explicit per role in addition to policies. A table with RLS enabled but no grant for a role is unreachable by that role at the connection layer, before policy evaluation even runs.",
   ],
-  helperFunctions: ["is_merchant_member()", "has_merchant_role()", "staff_has()", "is_platform_admin()"],
+  helperFunctions: [
+    "is_merchant_member()",
+    "has_merchant_role()",
+    "staff_has()",
+    "is_platform_admin()",
+  ],
   controlTable: {
     caption: "Where each isolation control lives",
     columns: [
@@ -69,24 +74,30 @@ export const isolation = {
         id: "row",
         label: "Row",
         mechanism: "ENABLE ROW LEVEL SECURITY + policy per table",
-        fails: "No policy → zero rows returned to any role, a loud break not a leak",
+        fails:
+          "No policy → zero rows returned to any role, a loud break not a leak",
       },
       {
         id: "policy",
         label: "Policy logic",
-        mechanism: "SECURITY DEFINER helper functions, not inlined per-policy SQL",
-        fails: "Centralised, so a fix or audit touches one function, not forty policies",
+        mechanism:
+          "SECURITY DEFINER helper functions, not inlined per-policy SQL",
+        fails:
+          "Centralised, so a fix or audit touches one function, not forty policies",
       },
       {
         id: "identity",
         label: "Identity vs entitlement",
-        mechanism: "merchant_members(user_id, merchant_id, role) — never a column on profiles",
-        fails: "Revocation is a row delete; escalation cannot happen through a profile update",
+        mechanism:
+          "merchant_members(user_id, merchant_id, role) — never a column on profiles",
+        fails:
+          "Revocation is a row delete; escalation cannot happen through a profile update",
       },
       {
         id: "privileged",
         label: "Privileged operations",
-        mechanism: "Service role loaded inside the handler, after caller verification, audit-logged",
+        mechanism:
+          "Service role loaded inside the handler, after caller verification, audit-logged",
         fails: "Never the default client; never reachable before authorization",
       },
       {
@@ -161,52 +172,112 @@ export const permissions = {
     {
       id: "view",
       label: "View orders & customers",
-      cells: { owner: "granted", manager: "granted", staff: "granted", support: "read-only, audited", admin: "audited, break-glass" },
+      cells: {
+        owner: "granted",
+        manager: "granted",
+        staff: "granted",
+        support: "read-only, audited",
+        admin: "audited, break-glass",
+      },
     },
     {
       id: "edit-products",
       label: "Edit products & inventory",
-      cells: { owner: "granted", manager: "granted", staff: "granted", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "granted",
+        staff: "granted",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "refunds",
       label: "Issue refunds",
-      cells: { owner: "granted", manager: "granted", staff: "limit-capped", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "granted",
+        staff: "limit-capped",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "manage-staff",
       label: "Manage staff & roles",
-      cells: { owner: "granted", manager: "not granted", staff: "not granted", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "not granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "payout",
       label: "View payout account details",
-      cells: { owner: "granted", manager: "masked", staff: "not granted", support: "not granted", admin: "masked" },
+      cells: {
+        owner: "granted",
+        manager: "masked",
+        staff: "not granted",
+        support: "not granted",
+        admin: "masked",
+      },
     },
     {
       id: "keys",
       label: "Rotate / revoke API keys",
-      cells: { owner: "granted", manager: "granted", staff: "not granted", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "export",
       label: "Export customer data",
-      cells: { owner: "granted", manager: "granted", staff: "not granted", support: "not granted", admin: "audited, on request only" },
+      cells: {
+        owner: "granted",
+        manager: "granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "audited, on request only",
+      },
     },
     {
       id: "delete-store",
       label: "Delete store / close account",
-      cells: { owner: "granted", manager: "not granted", staff: "not granted", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "not granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "billing",
       label: "Access billing & plan",
-      cells: { owner: "granted", manager: "not granted", staff: "not granted", support: "not granted", admin: "not granted" },
+      cells: {
+        owner: "granted",
+        manager: "not granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "not granted",
+      },
     },
     {
       id: "cross-merchant",
       label: "Cross-merchant visibility",
-      cells: { owner: "not granted", manager: "not granted", staff: "not granted", support: "not granted", admin: "audited, scoped, time-boxed" },
+      cells: {
+        owner: "not granted",
+        manager: "not granted",
+        staff: "not granted",
+        support: "not granted",
+        admin: "audited, scoped, time-boxed",
+      },
     },
   ],
   notes: [
@@ -255,8 +326,7 @@ export const apiKeys = {
 export const secretHandling = {
   title: "Secret handling — what we never log",
   bn: "টোকেন, কার্ড নম্বর ও অথরাইজেশন হেডারের মতো তথ্য কখনো লগে, এরর বার্তায় বা মেট্রিক লেবেলে প্রকাশ পায় না — লগ লেখা হওয়ার আগেই তা স্ক্রাব করা হয়।",
-  rule:
-    "Secrets — API keys, session tokens, payment credentials, service-role keys, webhook signing secrets — follow one rule: read inside the handler that needs them, never at module scope, never passed further than necessary.",
+  rule: "Secrets — API keys, session tokens, payment credentials, service-role keys, webhook signing secrets — follow one rule: read inside the handler that needs them, never at module scope, never passed further than necessary.",
   never: [
     "Never: a secret survives into a log line — scrubPayload / scrubText redact known secret-shaped values before a line leaves the process.",
     "Never: a secret appears in an error message returned to a browser, a Sentry error body, or a metric label.",
@@ -295,11 +365,31 @@ export const paymentBoundary = {
 export const encryption = {
   title: "Encryption in transit and at rest",
   rows: [
-    { id: "transit", title: "In transit", body: "TLS terminates at the OpenResty edge with ACME-managed certificates auto-renewed ahead of expiry; internal service-to-service traffic runs inside a private network boundary, not exposed to the public internet." },
-    { id: "rest", title: "At rest", body: "Postgres volumes and storage buckets are encrypted at the disk layer; recoverable secrets and credentials use envelope encryption rather than a single static key baked into configuration." },
-    { id: "backups", title: "Backups", body: "Backups inherit the same at-rest encryption as the primary store — a stolen backup is not a shortcut around the controls on the live database." },
-    { id: "headers", title: "Security headers and CSP", body: "Enforced on every response: a strict Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, and a locked-down frame-ancestors to prevent clickjacking of merchant admin surfaces." },
-    { id: "ratelimit", title: "Rate limiting", body: "Applied on all public, unauthenticated endpoints (webhooks, storefront checkout, auth) to shed abusive traffic at the edge before it reaches application logic." },
+    {
+      id: "transit",
+      title: "In transit",
+      body: "TLS terminates at the OpenResty edge with ACME-managed certificates auto-renewed ahead of expiry; internal service-to-service traffic runs inside a private network boundary, not exposed to the public internet.",
+    },
+    {
+      id: "rest",
+      title: "At rest",
+      body: "Postgres volumes and storage buckets are encrypted at the disk layer; recoverable secrets and credentials use envelope encryption rather than a single static key baked into configuration.",
+    },
+    {
+      id: "backups",
+      title: "Backups",
+      body: "Backups inherit the same at-rest encryption as the primary store — a stolen backup is not a shortcut around the controls on the live database.",
+    },
+    {
+      id: "headers",
+      title: "Security headers and CSP",
+      body: "Enforced on every response: a strict Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, and a locked-down frame-ancestors to prevent clickjacking of merchant admin surfaces.",
+    },
+    {
+      id: "ratelimit",
+      title: "Rate limiting",
+      body: "Applied on all public, unauthenticated endpoints (webhooks, storefront checkout, auth) to shed abusive traffic at the edge before it reaches application logic.",
+    },
   ],
 };
 
@@ -346,7 +436,8 @@ export const backups = {
         label: "Customer PII (profile, address)",
         frequency: "Hourly",
         drill: "Scheduled, documented",
-        deletion: "Deleted on confirmed request, subject to legal hold if applicable",
+        deletion:
+          "Deleted on confirmed request, subject to legal hold if applicable",
       },
     ],
   },
@@ -368,10 +459,34 @@ export const observability = {
       { id: "retention", label: "Retention" },
     ],
     rows: [
-      { id: "metrics", label: "Metrics", captures: "Request rates, error rates, latency, queue depth", path: "App → Prometheus scrape (30s)", retention: "30 days / 20GB" },
-      { id: "logs", label: "Logs", captures: "Structured JSON, PII-scrubbed, carrying trace_id/span_id", path: "App stdout → Promtail → Loki", retention: "30 days" },
-      { id: "errors", label: "Errors & traces", captures: "Exceptions and distributed traces", path: "App → self-hosted Sentry", retention: "Per configured Sentry quota" },
-      { id: "alerts", label: "Alerts", captures: "Burn-rate and threshold rules", path: "Prometheus → Alertmanager → PagerDuty / Slack", retention: "—" },
+      {
+        id: "metrics",
+        label: "Metrics",
+        captures: "Request rates, error rates, latency, queue depth",
+        path: "App → Prometheus scrape (30s)",
+        retention: "30 days / 20GB",
+      },
+      {
+        id: "logs",
+        label: "Logs",
+        captures: "Structured JSON, PII-scrubbed, carrying trace_id/span_id",
+        path: "App stdout → Promtail → Loki",
+        retention: "30 days",
+      },
+      {
+        id: "errors",
+        label: "Errors & traces",
+        captures: "Exceptions and distributed traces",
+        path: "App → self-hosted Sentry",
+        retention: "Per configured Sentry quota",
+      },
+      {
+        id: "alerts",
+        label: "Alerts",
+        captures: "Burn-rate and threshold rules",
+        path: "Prometheus → Alertmanager → PagerDuty / Slack",
+        retention: "—",
+      },
     ],
   },
   correlationChain: ["Grafana", "Loki", "Sentry"],
@@ -405,8 +520,7 @@ export const incidentResponse = {
     "Public/customer write-up",
     "Post-mortem",
   ],
-  body:
-    "On-call classifies severity within minutes of acknowledgement, not after full root-cause is known. The fastest safe action that stops ongoing harm — revoke a key, disable a route, roll back a deploy — happens before root cause is fully understood. Affected merchants are notified directly for anything SEV-1 or SEV-2 with merchant impact: what we know, what we don't yet know, and what we're doing next.",
+  body: "On-call classifies severity within minutes of acknowledgement, not after full root-cause is known. The fastest safe action that stops ongoing harm — revoke a key, disable a route, roll back a deploy — happens before root cause is fully understood. Affected merchants are notified directly for anything SEV-1 or SEV-2 with merchant impact: what we know, what we don't yet know, and what we're doing next.",
   commitments: [
     "Affected merchants are notified directly — email plus in-dashboard notice — not left to discover impact themselves.",
     "Timelines in the severity table are commitments, not aspirations; if we miss one, the post-mortem says so.",
@@ -425,7 +539,8 @@ export const incidentResponse = {
       {
         id: "sev1",
         label: "SEV-1",
-        definition: "Data breach, cross-tenant data exposure, or platform-wide outage",
+        definition:
+          "Data breach, cross-tenant data exposure, or platform-wide outage",
         example: "RLS bypass discovered; checkout down platform-wide",
         page: "Immediate page, on-call + security lead",
         update: "Within 1 hour of confirmation",
@@ -433,7 +548,8 @@ export const incidentResponse = {
       {
         id: "sev2",
         label: "SEV-2",
-        definition: "Significant degraded service or a contained security issue affecting a subset of merchants",
+        definition:
+          "Significant degraded service or a contained security issue affecting a subset of merchants",
         example: "Elevated checkout error rate; one integration's key leaked",
         page: "Immediate page, on-call",
         update: "Within 4 hours",
@@ -441,7 +557,8 @@ export const incidentResponse = {
       {
         id: "sev3",
         label: "SEV-3",
-        definition: "Limited-impact bug or a vulnerability with no evidence of exploitation",
+        definition:
+          "Limited-impact bug or a vulnerability with no evidence of exploitation",
         example: "A dependency CVE with no known exploit path in our usage",
         page: "Ticket, next business day",
         update: "Included in routine disclosure if applicable",
@@ -464,7 +581,8 @@ export const incidentResponse = {
 
 export const disclosure = {
   title: "Vulnerability disclosure policy",
-  intro: "We welcome good-faith security research and would rather hear from you first.",
+  intro:
+    "We welcome good-faith security research and would rather hear from you first.",
   steps: [
     "Email security@framique.com (placeholder pending final domain configuration) with a description, reproduction steps and impact assessment.",
     "Do not test against live merchant stores you do not own or operate; use a test account or ask us to provision one.",
@@ -473,8 +591,10 @@ export const disclosure = {
   ],
   contactEmail: "security@framique.com",
   scope: {
-    inScope: "The production application and API surfaces at *.framique.com and merchant subdomains.",
-    outOfScope: "Third-party subprocessor infrastructure (report to them directly), denial-of-service testing, and social engineering of staff or merchants.",
+    inScope:
+      "The production application and API surfaces at *.framique.com and merchant subdomains.",
+    outOfScope:
+      "Third-party subprocessor infrastructure (report to them directly), denial-of-service testing, and social engineering of staff or merchants.",
   },
   bountyNote:
     "Out of scope for now: a paid bug bounty program is not yet running (see the roadmap band); we still want the report, and we will credit researchers publicly on request.",
@@ -487,12 +607,36 @@ export const disclosure = {
 export const supplyChain = {
   title: "Dependency and supply-chain scanning",
   rows: [
-    { id: "scan", body: "Automated dependency scanning runs against every change, flagging known-vulnerable packages before merge.", tag: "blocks release" },
-    { id: "gate", body: "A confirmed high or critical severity finding with a known exploit path blocks release until patched or explicitly risk-accepted by a named engineer, in writing, with a remediation deadline.", tag: "blocks release" },
-    { id: "lockfile", body: "Lockfiles are committed and CI verifies the resolved dependency tree matches the lockfile.", tag: "verified in CI" },
-    { id: "bundle-scan", body: "Client bundles are scanned before release for accidental inclusion of server-only code or secrets.", tag: "blocks release" },
-    { id: "pinned", body: "Base images and infrastructure containers are pinned to specific versions rather than tracking latest.", tag: "pinned, not latest" },
-    { id: "review", body: "Internal code review requires at least one other engineer's approval before merge to main.", tag: "reviewed change" },
+    {
+      id: "scan",
+      body: "Automated dependency scanning runs against every change, flagging known-vulnerable packages before merge.",
+      tag: "blocks release",
+    },
+    {
+      id: "gate",
+      body: "A confirmed high or critical severity finding with a known exploit path blocks release until patched or explicitly risk-accepted by a named engineer, in writing, with a remediation deadline.",
+      tag: "blocks release",
+    },
+    {
+      id: "lockfile",
+      body: "Lockfiles are committed and CI verifies the resolved dependency tree matches the lockfile.",
+      tag: "verified in CI",
+    },
+    {
+      id: "bundle-scan",
+      body: "Client bundles are scanned before release for accidental inclusion of server-only code or secrets.",
+      tag: "blocks release",
+    },
+    {
+      id: "pinned",
+      body: "Base images and infrastructure containers are pinned to specific versions rather than tracking latest.",
+      tag: "pinned, not latest",
+    },
+    {
+      id: "review",
+      body: "Internal code review requires at least one other engineer's approval before merge to main.",
+      tag: "reviewed change",
+    },
   ],
 };
 
@@ -544,9 +688,11 @@ export const subprocessors = {
       {
         id: "payments",
         label: "Payment processing (MFS/bank/BNPL partners)",
-        purpose: "Processing charges, refunds and payouts initiated by the merchant",
+        purpose:
+          "Processing charges, refunds and payouts initiated by the merchant",
         data: "Transaction reference, amount, masked payment details",
-        location: "Per processor's own regulatory jurisdiction; raw credentials never transit our servers",
+        location:
+          "Per processor's own regulatory jurisdiction; raw credentials never transit our servers",
       },
       {
         id: "courier",
@@ -580,7 +726,8 @@ export const subprocessors = {
 export const checklist = {
   title: "Your side of the security checklist",
   titleBn: "আপনার পক্ষের নিরাপত্তা চেকলিস্ট",
-  intro: "Security is shared: we harden the platform, and these ten habits close the gaps only the merchant controls.",
+  intro:
+    "Security is shared: we harden the platform, and these ten habits close the gaps only the merchant controls.",
   items: [
     "Turn on two-factor authentication for every staff account with owner or manager access.",
     "Use the least-privileged role for each staff member.",
@@ -613,27 +760,32 @@ export const complianceRoadmap = {
       {
         id: "pentest",
         label: "Formal penetration test by an independent third party",
-        meaning: "External validation of the isolation model and API surface, with findings remediated and summarised publicly",
+        meaning:
+          "External validation of the isolation model and API surface, with findings remediated and summarised publicly",
       },
       {
         id: "bounty",
         label: "Bug bounty program",
-        meaning: "A standing paid incentive for external researchers, replacing the current goodwill disclosure process",
+        meaning:
+          "A standing paid incentive for external researchers, replacing the current goodwill disclosure process",
       },
       {
         id: "soc2",
         label: "SOC 2 Type II readiness review",
-        meaning: "Not a claim of certification today; a scoped effort to align controls with SOC 2 Type II criteria ahead of a future audit",
+        meaning:
+          "Not a claim of certification today; a scoped effort to align controls with SOC 2 Type II criteria ahead of a future audit",
       },
       {
         id: "pci",
         label: "PCI DSS scope reduction review",
-        meaning: "Formal confirmation of the tokenisation boundary, ahead of any assessment",
+        meaning:
+          "Formal confirmation of the tokenisation boundary, ahead of any assessment",
       },
       {
         id: "iso27001",
         label: "ISO 27001 gap assessment",
-        meaning: "Structured comparison of current practices against the standard, as a precursor to a certification decision",
+        meaning:
+          "Structured comparison of current practices against the standard, as a precursor to a certification decision",
       },
     ],
   },
@@ -658,7 +810,8 @@ export const faq: Array<{ id: string; question: string; answer: string }> = [
   },
   {
     id: "cross-tenant",
-    question: "Can one merchant ever see another merchant's data through a bug in your app?",
+    question:
+      "Can one merchant ever see another merchant's data through a bug in your app?",
     answer:
       "Isolation is enforced by Postgres row-level security, underneath our application code, and verified by a negative-assertion test suite that runs on every release. No system is provably bug-free, which is exactly why isolation is enforced at the database layer rather than trusted to application logic alone.",
   },

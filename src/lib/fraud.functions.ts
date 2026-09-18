@@ -9,7 +9,6 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
   return currentMerchantId(db, userId);
 }
 
-
 export const fraudDeskFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -76,7 +75,6 @@ export const fraudRuleFn = createServerFn({ method: "POST" })
     );
   });
 
-
 export const fraudBlacklistAddFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -109,7 +107,13 @@ export const fraudBlacklistToggleFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setBlacklistActive } = await import("./fraud-desk.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setBlacklistActive(context.supabase, merchantId, context.userId, data.id, data.active);
+    return setBlacklistActive(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+      data.active,
+    );
   });
 
 export const fraudAuditFn = createServerFn({ method: "GET" })

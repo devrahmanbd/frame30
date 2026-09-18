@@ -1,1 +1,575 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_canary_shift_ts", "label": "canary-shift.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L1"}, {"id": "scripts_canary_shift_reloadnginxifrunning", "label": "reloadNginxIfRunning()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L28"}, {"id": "scripts_canary_shift_main", "label": "main()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L37"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "node_child_process", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "lib_canary_weights_server_canary_stages", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "lib_canary_weights_server_abortcanary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "lib_canary_weights_server_getcanarystate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "lib_canary_weights_server_setcanarystage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "lib_canary_weights_server_canarystageid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "scripts_canary_shift_reloadnginxifrunning", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_canary_shift_ts", "target": "scripts_canary_shift_main", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L37", "weight": 1.0}, {"source": "scripts_canary_shift_main", "target": "scripts_canary_shift_reloadnginxifrunning", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L50", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_canary_shift_reloadnginxifrunning", "callee": "execSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L30"}, {"caller_nid": "scripts_canary_shift_reloadnginxifrunning", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L31"}, {"caller_nid": "scripts_canary_shift_reloadnginxifrunning", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L33"}, {"caller_nid": "scripts_canary_shift_main", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L38"}, {"caller_nid": "scripts_canary_shift_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L40"}, {"caller_nid": "scripts_canary_shift_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L41"}, {"caller_nid": "scripts_canary_shift_main", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L42"}, {"caller_nid": "scripts_canary_shift_main", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L43"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L46"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L46"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L47"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L48"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L48"}, {"caller_nid": "scripts_canary_shift_main", "callee": "abortCanary", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L49"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L51"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L51"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L56"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L56"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L57"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L58"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L58"}, {"caller_nid": "scripts_canary_shift_main", "callee": "getCanaryState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L59"}, {"caller_nid": "scripts_canary_shift_main", "callee": "setCanaryStage", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L60"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L65"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L65"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L66"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L66"}, {"caller_nid": "scripts_canary_shift_main", "callee": "parseInt", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L71"}, {"caller_nid": "scripts_canary_shift_main", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L71"}, {"caller_nid": "scripts_canary_shift_main", "callee": "error", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L73"}, {"caller_nid": "scripts_canary_shift_main", "callee": "exit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L74"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L78"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L78"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L79"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L80"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L81"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L82"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L84"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L86"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L86"}, {"caller_nid": "scripts_canary_shift_main", "callee": "setCanaryStage", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L88"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L91"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L92"}, {"caller_nid": "scripts_canary_shift_main", "callee": "getCanaryState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L97"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L100"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L100"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L101"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L102"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L102"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L103"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L104"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L105"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L105"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L106"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L106"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L107"}, {"caller_nid": "scripts_canary_shift_main", "callee": "toUpperCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L107"}, {"caller_nid": "scripts_canary_shift_main", "callee": "ceil", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L110"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L111"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L112"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L113"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L115"}, {"caller_nid": "scripts_canary_shift_main", "callee": "log", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L118"}, {"caller_nid": "scripts_canary_shift_main", "callee": "repeat", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts", "source_location": "L118"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "label": "canary-shift.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_canary_shift_reloadnginxifrunning",
+      "label": "reloadNginxIfRunning()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "scripts_canary_shift_main",
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L37"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "node_child_process",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "users_rahman_documents_frame30_src_lib_canary_weights_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "lib_canary_weights_server_canary_stages",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "lib_canary_weights_server_abortcanary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "lib_canary_weights_server_getcanarystate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "lib_canary_weights_server_setcanarystage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "lib_canary_weights_server_canarystageid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "scripts_canary_shift_reloadnginxifrunning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_canary_shift_ts",
+      "target": "scripts_canary_shift_main",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_canary_shift_main",
+      "target": "scripts_canary_shift_reloadnginxifrunning",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_canary_shift_reloadnginxifrunning",
+      "callee": "execSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_reloadnginxifrunning",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_reloadnginxifrunning",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L47"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "abortCanary",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L51"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L56"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "getCanaryState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L59"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "setCanaryStage",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "parseInt",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "error",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "exit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L79"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L80"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L82"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L84"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "setCanaryStage",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "getCanaryState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L102"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L104"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L106"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "toUpperCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "ceil",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "log",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "scripts_canary_shift_main",
+      "callee": "repeat",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/canary-shift.ts",
+      "source_location": "L118"
+    }
+  ]
+}

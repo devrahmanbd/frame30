@@ -13,7 +13,11 @@ import {
   btnGhost,
 } from "@/components/admin/MarketingUi";
 import { useLang } from "@/lib/i18n";
-import { giftCardsLoadFn, giftCardIssueFn, giftCardVoidFn } from "@/lib/commerce.functions";
+import {
+  giftCardsLoadFn,
+  giftCardIssueFn,
+  giftCardVoidFn,
+} from "@/lib/commerce.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/gift-cards")({
   head: () => ({
@@ -27,7 +31,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/gift-cards")({
       { property: "og:title", content: "Gift cards — Framique admin" },
       {
         property: "og:description",
-        content: "Ledger-backed gift cards with idempotent redemption and instant void.",
+        content:
+          "Ledger-backed gift cards with idempotent redemption and instant void.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -39,7 +44,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/gift-cards")({
 
 const KEY = ["commerce", "gift-cards"] as const;
 
-const TONE: Record<string, "neutral" | "success" | "warning" | "danger" | "info"> = {
+const TONE: Record<
+  string,
+  "neutral" | "success" | "warning" | "danger" | "info"
+> = {
   active: "success",
   redeemed: "info",
   expired: "warning",
@@ -58,7 +66,12 @@ function GiftCardsPage() {
   const voidCard = useServerFn(giftCardVoidFn);
   const [error, setError] = useState<string | null>(null);
 
-  const { data, isLoading, isError, error: loadError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isError,
+    error: loadError,
+  } = useQuery({
     queryKey: KEY,
     queryFn: () => load(),
   });
@@ -66,8 +79,11 @@ function GiftCardsPage() {
   const invalidate = () => void qc.invalidateQueries({ queryKey: KEY });
 
   const issueMutation = useMutation({
-    mutationFn: (v: { amountMinorInt: number; email?: string | null; expiresAt?: string | null }) =>
-      issue({ data: v }),
+    mutationFn: (v: {
+      amountMinorInt: number;
+      email?: string | null;
+      expiresAt?: string | null;
+    }) => issue({ data: v }),
     onSuccess: () => {
       setError(null);
       invalidate();
@@ -105,11 +121,17 @@ function GiftCardsPage() {
 
       <dl className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Cards", "কার্ড")}</dt>
-          <dd className="tabular-nums text-2xl font-semibold">{cards.length}</dd>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Cards", "কার্ড")}
+          </dt>
+          <dd className="tabular-nums text-2xl font-semibold">
+            {cards.length}
+          </dd>
         </div>
         <div className="rounded-fq-lg border border-border bg-card p-4">
-          <dt className="text-xs uppercase text-muted-foreground">{t("Active", "সক্রিয়")}</dt>
+          <dt className="text-xs uppercase text-muted-foreground">
+            {t("Active", "সক্রিয়")}
+          </dt>
           <dd className="tabular-nums text-2xl font-semibold">
             {cards.filter((c) => c.status === "active").length}
           </dd>
@@ -132,10 +154,18 @@ function GiftCardsPage() {
             <caption className="sr-only">Issued gift cards</caption>
             <thead className="border-b border-border text-left text-xs uppercase text-muted-foreground">
               <tr>
-                <th scope="col" className="p-3">{t("Code", "কোড")}</th>
-                <th scope="col" className="p-3">{t("Balance", "ব্যালেন্স")}</th>
-                <th scope="col" className="p-3">{t("Status", "অবস্থা")}</th>
-                <th scope="col" className="p-3">{t("Expires", "মেয়াদ")}</th>
+                <th scope="col" className="p-3">
+                  {t("Code", "কোড")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Balance", "ব্যালেন্স")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Status", "অবস্থা")}
+                </th>
+                <th scope="col" className="p-3">
+                  {t("Expires", "মেয়াদ")}
+                </th>
                 <th scope="col" className="p-3">
                   <span className="sr-only">{t("Actions", "অ্যাকশন")}</span>
                 </th>
@@ -152,10 +182,15 @@ function GiftCardsPage() {
                     <Money minor={Number(c.balance_minor_int)} />
                   </td>
                   <td className="p-3">
-                    <StatusPill label={c.status} tone={TONE[c.status] ?? "neutral"} />
+                    <StatusPill
+                      label={c.status}
+                      tone={TONE[c.status] ?? "neutral"}
+                    />
                   </td>
                   <td className="p-3 tabular-nums text-muted-foreground">
-                    {c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "—"}
+                    {c.expires_at
+                      ? new Date(c.expires_at).toLocaleDateString()
+                      : "—"}
                   </td>
                   <td className="p-3 text-right">
                     <button
@@ -172,7 +207,10 @@ function GiftCardsPage() {
               {!isLoading && cards.length === 0 && (
                 <tr>
                   <td colSpan={5} className="p-6 text-sm text-muted-foreground">
-                    {t("No gift cards issued yet.", "এখনো কোনো গিফট কার্ড ইস্যু হয়নি।")}
+                    {t(
+                      "No gift cards issued yet.",
+                      "এখনো কোনো গিফট কার্ড ইস্যু হয়নি।",
+                    )}
                   </td>
                 </tr>
               )}
@@ -194,7 +232,9 @@ function GiftCardsPage() {
             e.currentTarget.reset();
           }}
         >
-          <h2 className="text-sm font-semibold">{t("Issue a card", "কার্ড ইস্যু করুন")}</h2>
+          <h2 className="text-sm font-semibold">
+            {t("Issue a card", "কার্ড ইস্যু করুন")}
+          </h2>
           <Field label={t("Amount (BDT)", "পরিমাণ (টাকা)")}>
             <input
               name="amount"
@@ -211,7 +251,11 @@ function GiftCardsPage() {
           <Field label={t("Expires on", "মেয়াদ শেষ")}>
             <input name="expires" type="date" className={inputClass} />
           </Field>
-          <button type="submit" className={btnPrimary} disabled={issueMutation.isPending}>
+          <button
+            type="submit"
+            className={btnPrimary}
+            disabled={issueMutation.isPending}
+          >
             {t("Issue card", "কার্ড ইস্যু")}
           </button>
         </form>

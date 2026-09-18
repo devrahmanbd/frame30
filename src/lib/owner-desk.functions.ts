@@ -6,11 +6,15 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const ownerPayoutsFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ state: z.string().max(20).nullable().optional() }).parse(d ?? {}),
+    z
+      .object({ state: z.string().max(20).nullable().optional() })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { loadOwnerPayouts } = await import("./owner-payouts.server");
-    return loadOwnerPayouts(context.supabase, context.userId, { state: data.state ?? null });
+    return loadOwnerPayouts(context.supabase, context.userId, {
+      state: data.state ?? null,
+    });
   });
 
 export const ownerPlaceHoldFn = createServerFn({ method: "POST" })
@@ -31,7 +35,9 @@ export const ownerPlaceHoldFn = createServerFn({ method: "POST" })
 
 export const ownerReleaseHoldFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ holdId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ holdId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { ownerReleaseHold } = await import("./owner-payouts.server");
     return ownerReleaseHold(context.supabase, context.userId, data.holdId);
@@ -40,17 +46,31 @@ export const ownerReleaseHoldFn = createServerFn({ method: "POST" })
 export const ownerCancelPayoutFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ payoutId: z.string().uuid(), reason: z.string().min(3).max(200) }).parse(d),
+    z
+      .object({
+        payoutId: z.string().uuid(),
+        reason: z.string().min(3).max(200),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { ownerCancelPayout } = await import("./owner-payouts.server");
-    return ownerCancelPayout(context.supabase, context.userId, data.payoutId, data.reason);
+    return ownerCancelPayout(
+      context.supabase,
+      context.userId,
+      data.payoutId,
+      data.reason,
+    );
   });
 
 /** People: who can sign in, which stores they belong to, who owns the platform. */
 export const ownerPeopleFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ page: z.number().int().min(1).max(200).optional() }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z
+      .object({ page: z.number().int().min(1).max(200).optional() })
+      .parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const { loadPeople } = await import("./owner-people.server");
     return loadPeople(context.supabase, context.userId, data.page ?? 1);
@@ -63,7 +83,12 @@ export const ownerSetOwnerRightFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { setOwnerRight } = await import("./owner-people.server");
-    return setOwnerRight(context.supabase, context.userId, data.userId, data.grant);
+    return setOwnerRight(
+      context.supabase,
+      context.userId,
+      data.userId,
+      data.grant,
+    );
   });
 
 export const ownerCreateAccountFn = createServerFn({ method: "POST" })
@@ -75,7 +100,10 @@ export const ownerCreateAccountFn = createServerFn({ method: "POST" })
         password: z.string().min(6).optional().nullable(),
         isOwner: z.boolean().optional(),
         merchantId: z.string().uuid().optional().nullable(),
-        role: z.enum(["owner", "admin", "staff", "viewer"]).optional().nullable(),
+        role: z
+          .enum(["owner", "admin", "staff", "viewer"])
+          .optional()
+          .nullable(),
       })
       .parse(d),
   )
@@ -93,7 +121,10 @@ export const ownerUpdateAccountFn = createServerFn({ method: "POST" })
         email: z.string().email().optional().nullable(),
         password: z.string().min(6).optional().nullable(),
         merchantId: z.string().uuid().optional().nullable(),
-        role: z.enum(["owner", "admin", "staff", "viewer"]).optional().nullable(),
+        role: z
+          .enum(["owner", "admin", "staff", "viewer"])
+          .optional()
+          .nullable(),
         removeMerchantId: z.string().uuid().optional().nullable(),
         isOwner: z.boolean().optional().nullable(),
       })
@@ -106,9 +137,10 @@ export const ownerUpdateAccountFn = createServerFn({ method: "POST" })
 
 export const ownerDeleteAccountFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ userId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ userId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteAccount } = await import("./owner-people.server");
     return deleteAccount(context.supabase, context.userId, data.userId);
   });
-

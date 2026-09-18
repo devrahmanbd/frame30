@@ -1,1 +1,337 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "label": "LayerTree.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L1"}, {"id": "builder_layertree_nodelabel", "label": "nodeLabel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L10"}, {"id": "builder_layertree_props", "label": "Props", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L15"}, {"id": "builder_layertree_drophint", "label": "DropHint", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L34"}, {"id": "builder_layertree_hidden_label", "label": "HIDDEN_LABEL", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L36"}, {"id": "builder_layertree_layertree", "label": "LayerTree()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L49"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_ast_catalogentry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_ast_breakpoint", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_ast_section", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_tree_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_tree_iscontainer", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_tree_outline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_builder_tree_dropposition", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "users_rahman_documents_frame30_src_lib_global_blocks_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "lib_global_blocks_linkedblockid", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "builder_layertree_nodelabel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "builder_layertree_props", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "builder_layertree_drophint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "builder_layertree_hidden_label", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx", "target": "builder_layertree_layertree", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L49", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_layertree_nodelabel", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L12"}, {"caller_nid": "builder_layertree_nodelabel", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L12"}, {"caller_nid": "builder_layertree_layertree", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L62"}, {"caller_nid": "builder_layertree_layertree", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L63"}, {"caller_nid": "builder_layertree_layertree", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L64"}, {"caller_nid": "builder_layertree_layertree", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L65"}, {"caller_nid": "builder_layertree_layertree", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L66"}, {"caller_nid": "builder_layertree_layertree", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L68"}, {"caller_nid": "builder_layertree_layertree", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L69"}, {"caller_nid": "builder_layertree_layertree", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L69"}, {"caller_nid": "builder_layertree_layertree", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L70"}, {"caller_nid": "builder_layertree_layertree", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L87"}, {"caller_nid": "builder_layertree_layertree", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L125"}, {"caller_nid": "builder_layertree_layertree", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L133"}, {"caller_nid": "builder_layertree_layertree", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L141"}, {"caller_nid": "builder_layertree_layertree", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx", "source_location": "L151"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "label": "LayerTree.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_layertree_nodelabel",
+      "label": "nodeLabel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L10"
+    },
+    {
+      "id": "builder_layertree_props",
+      "label": "Props",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "builder_layertree_drophint",
+      "label": "DropHint",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L34"
+    },
+    {
+      "id": "builder_layertree_hidden_label",
+      "label": "HIDDEN_LABEL",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L36"
+    },
+    {
+      "id": "builder_layertree_layertree",
+      "label": "LayerTree()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L49"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_ast_catalogentry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_ast_breakpoint",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_ast_section",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_tree_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_tree_iscontainer",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_tree_outline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_builder_tree_dropposition",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_global_blocks_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "lib_global_blocks_linkedblockid",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "builder_layertree_nodelabel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "builder_layertree_props",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "builder_layertree_drophint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "builder_layertree_hidden_label",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_layertree_tsx",
+      "target": "builder_layertree_layertree",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L49",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_layertree_nodelabel",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "builder_layertree_nodelabel",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L12"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L63"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L66"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L68"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L69"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L87"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L125"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L141"
+    },
+    {
+      "caller_nid": "builder_layertree_layertree",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/LayerTree.tsx",
+      "source_location": "L151"
+    }
+  ]
+}

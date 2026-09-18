@@ -4,11 +4,11 @@ This directory holds the files that `harness <subcommand>` from `metaharness` re
 
 ## Contents
 
-| File | Purpose | Iter |
-|---|---|---|
-| `mcp-policy.json` | MCP governance policy. ADR-022 default-deny, audit-log on, dangerous-pattern list, per-turn call budget. Required to clear the `no-policy` HIGH finding from `harness mcp-scan`. | 30 |
-| `manifest.json` | Hand-authored harness identity manifest: hosts + sha256 fingerprints of the security-relevant files (mcp-policy + .claude/settings). Required input for `harness sign` and for OIA-manifest's `mcpPolicyPath` field. | 32 |
-| `witness.json` | **NOT YET CREATED.** Ed25519-signed Merkle-style witness over the manifest. Would push OIA governance from "full / mcp-policy.json (witness missing)" to "full / mcp-policy.json + witness ADR-011". See below. | — |
+| File              | Purpose                                                                                                                                                                                                              | Iter |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- |
+| `mcp-policy.json` | MCP governance policy. ADR-022 default-deny, audit-log on, dangerous-pattern list, per-turn call budget. Required to clear the `no-policy` HIGH finding from `harness mcp-scan`.                                     | 30   |
+| `manifest.json`   | Hand-authored harness identity manifest: hosts + sha256 fingerprints of the security-relevant files (mcp-policy + .claude/settings). Required input for `harness sign` and for OIA-manifest's `mcpPolicyPath` field. | 32   |
+| `witness.json`    | **NOT YET CREATED.** Ed25519-signed Merkle-style witness over the manifest. Would push OIA governance from "full / mcp-policy.json (witness missing)" to "full / mcp-policy.json + witness ADR-011". See below.      | —    |
 
 ## Witness — what's needed to ship it
 
@@ -23,6 +23,7 @@ To enable witness signing, one of:
 3. **Skip the witness** and accept the "partial witness" note in the OIA manifest. The threat-model and mcp-scan are already CLEAN without it; the witness only signs the manifest, it doesn't itself add new security controls.
 
 Current state (option 3) gives ruflo:
+
 - ✓ L7 governance alignment: **full** (per `harness oia-manifest`)
 - ✓ threat-model worst severity: **info / clean**
 - ✓ mcp-scan: **0 actionable findings**

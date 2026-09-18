@@ -1,1 +1,117 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "label": "MarketingPlaceholderImage.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L1"}, {"id": "public_marketingplaceholderimage_marketingplaceholderimageprops", "label": "MarketingPlaceholderImageProps", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L5"}, {"id": "public_marketingplaceholderimage_aspect_classes", "label": "ASPECT_CLASSES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L18"}, {"id": "public_marketingplaceholderimage_marketingplaceholderimage", "label": "MarketingPlaceholderImage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L32"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "public_marketingplaceholderimage_marketingplaceholderimageprops", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "public_marketingplaceholderimage_aspect_classes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx", "target": "public_marketingplaceholderimage_marketingplaceholderimage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L32", "weight": 1.0}], "raw_calls": [{"caller_nid": "public_marketingplaceholderimage_marketingplaceholderimage", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L45"}, {"caller_nid": "public_marketingplaceholderimage_marketingplaceholderimage", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx", "source_location": "L50"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "label": "MarketingPlaceholderImage.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "public_marketingplaceholderimage_marketingplaceholderimageprops",
+      "label": "MarketingPlaceholderImageProps",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L5"
+    },
+    {
+      "id": "public_marketingplaceholderimage_aspect_classes",
+      "label": "ASPECT_CLASSES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "public_marketingplaceholderimage_marketingplaceholderimage",
+      "label": "MarketingPlaceholderImage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L32"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "public_marketingplaceholderimage_marketingplaceholderimageprops",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "public_marketingplaceholderimage_aspect_classes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_public_marketingplaceholderimage_tsx",
+      "target": "public_marketingplaceholderimage_marketingplaceholderimage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L32",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "public_marketingplaceholderimage_marketingplaceholderimage",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "public_marketingplaceholderimage_marketingplaceholderimage",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/public/MarketingPlaceholderImage.tsx",
+      "source_location": "L50"
+    }
+  ]
+}

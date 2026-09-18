@@ -103,7 +103,8 @@ Configuration Steps:
   },
   {
     id: "kb-doc-page-builder-ast",
-    title: "Framique Page Builder AST, Sections, Global Blocks & Custom Styling",
+    title:
+      "Framique Page Builder AST, Sections, Global Blocks & Custom Styling",
     locale: "en" as const,
     tags: ["builder", "cms", "ast", "theme", "templates", "custom-css"],
     sourceUrl: "/docs/v1/storefront/builder",
@@ -146,11 +147,16 @@ Capabilities:
 /**
  * Standard text-based KB search using cache.
  */
-export async function searchKb(merchantId: string, query: string, limit = 4): Promise<KbHit[]> {
+export async function searchKb(
+  merchantId: string,
+  query: string,
+  limit = 4,
+): Promise<KbHit[]> {
   const key = `kb:${merchantId}:${query.toLowerCase().slice(0, 120)}`;
   return cached(key, 30, async () => {
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const { data, error } = await supabaseAdmin.rpc("support_kb_search", {
         _merchant_id: merchantId,
         _q: query,
@@ -165,7 +171,10 @@ export async function searchKb(merchantId: string, query: string, limit = 4): Pr
         ...h,
         body: snippet(h.body, query, 320),
       }));
-      incr("framique_ai_kb_search_total", { outcome: hits.length ? "hit" : "miss", mode: "text" });
+      incr("framique_ai_kb_search_total", {
+        outcome: hits.length ? "hit" : "miss",
+        mode: "text",
+      });
       return hits;
     } catch {
       // In-memory fallback
@@ -199,10 +208,16 @@ export async function searchKbHybrid(
 
     // 2. Query Supabase RPC `support_kb_hybrid_search`
     try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const { data, error } = await (supabaseAdmin as unknown as {
-        rpc: (fn: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }>;
-      }).rpc("support_kb_hybrid_search", {
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
+      const { data, error } = await (
+        supabaseAdmin as unknown as {
+          rpc: (
+            fn: string,
+            args: Record<string, unknown>,
+          ) => Promise<{ data: unknown; error: unknown }>;
+        }
+      ).rpc("support_kb_hybrid_search", {
         _merchant_id: merchantId,
         _q: trimmed,
         _query_embedding: queryEmbedding,
@@ -214,15 +229,17 @@ export async function searchKbHybrid(
         throw new Error(error ? JSON.stringify(error) : "empty_or_error");
       }
 
-      const hits = (data as Array<{
-        doc_id: string;
-        title: string;
-        body: string;
-        source_url: string | null;
-        combined_score: number;
-        text_rank: number;
-        vector_sim: number;
-      }>).map((h) => ({
+      const hits = (
+        data as Array<{
+          doc_id: string;
+          title: string;
+          body: string;
+          source_url: string | null;
+          combined_score: number;
+          text_rank: number;
+          vector_sim: number;
+        }>
+      ).map((h) => ({
         doc_id: h.doc_id,
         title: h.title,
         body: snippet(h.body, trimmed, 360),
@@ -234,19 +251,94 @@ export async function searchKbHybrid(
       }));
 
       const elapsed = Date.now() - started;
-      incr("framique_ai_kb_search_total", { outcome: hits.length ? "hit" : "miss", mode: "hybrid" });
+      incr("framique_ai_kb_search_total", {
+        outcome: hits.length ? "hit" : "miss",
+        mode: "hybrid",
+      });
       observe("framique_ai_kb_search_latency_ms", elapsed, { mode: "hybrid" });
       return hits;
     } catch {
       // 3. Resilient in-memory fallback for local dev / tests
-      const fallbackHits = searchInMemoryKb(merchantId, trimmed, queryEmbedding ?? undefined, limit, rrfK);
+      const fallbackHits = searchInMemoryKb(
+        merchantId,
+        trimmed,
+        queryEmbedding ?? undefined,
+        limit,
+        rrfK,
+      );
       const elapsed = Date.now() - started;
-      incr("framique_ai_kb_search_total", { outcome: fallbackHits.length ? "hit" : "miss", mode: "hybrid_fallback" });
-      observe("framique_ai_kb_search_latency_ms", elapsed, { mode: "hybrid_fallback" });
+      incr("framique_ai_kb_search_total", {
+        outcome: fallbackHits.length ? "hit" : "miss",
+        mode: "hybrid_fallback",
+      });
+      observe("framique_ai_kb_search_latency_ms", elapsed, {
+        mode: "hybrid_fallback",
+      });
       return fallbackHits;
     }
   });
 }
+
+/**
+ * Additional Platform Documentation Articles for Framique Front Pages & Lead Inquiries.
+ */
+export const PLATFORM_KB_DOCS = [
+  {
+    id: "kb-doc-platform-overview-trial",
+    title:
+      "Framique Cloud Commerce Platform Overview, Architecture & 14-Day Free Trial",
+    locale: "en" as const,
+    tags: ["platform", "overview", "free-trial", "features", "getting-started"],
+    sourceUrl: "/about",
+    body: `Framique is an all-in-one cloud hosting and e-commerce service provider built for merchants in Bangladesh and worldwide.
+Merchants get a complete high-performance storefront hosted at store.framique.com/<slug> or on their own custom domain.
+Key Platform Features:
+1. All-in-One Infrastructure: Managed edge CDN hosting, automated TLS certificates, PostgreSQL databases with Row Level Security, Redis caching, and continuous zero-downtime deployments.
+2. 14-Day Free Trial: Merchants can launch and test their storefront for 14 days without entering credit card information.
+3. Visual Drag-and-Drop Page Builder: Full customization over sections, product carousels, hero banners, trust badges, and brand aesthetics.
+4. Native Bangladeshi Integrations: 1-click connectivity for bKash, Nagad, SSLCommerz, and SteadFast/Pathao/RedX courier dispatch with real-time parcel tracking.
+5. Zero Commission Fees: 0% transaction fees on all sales.`,
+  },
+  {
+    id: "kb-doc-platform-pricing-plans",
+    title:
+      "Framique Subscription Pricing Plans, Zero Commission & Feature Matrix",
+    locale: "en" as const,
+    tags: [
+      "pricing",
+      "plans",
+      "costs",
+      "zero-commission",
+      "starter",
+      "growth",
+      "scale",
+    ],
+    sourceUrl: "/pricing",
+    body: `Framique offers transparent subscription tiers with strictly 0% per-transaction commission fees across all plans:
+1. 14-Day Free Trial: Full platform access to build storefronts, upload products, and test integrations with zero risk.
+2. Starter Plan: BDT 1,500/month (or BDT 15,000/year). Includes up to 500 products, free SSL certificates, bKash & Nagad checkout, SteadFast courier integration, and standard support.
+3. Growth Plan: BDT 3,500/month (or BDT 35,000/year). Includes unlimited products, custom domain connection, Pathao & RedX couriers, bulk label printing, advanced analytics, and priority live chat support.
+4. Scale / Enterprise Plan: BDT 8,000/month (or BDT 80,000/year). Multi-staff RBAC, dedicated technical account manager, custom API integrations, high-traffic surge capacity, and 99.99% uptime SLA guarantee.
+All plans include free managed hosting, daily backups, DDoS protection, and responsive customer support.`,
+  },
+  {
+    id: "kb-doc-platform-sales-consultation",
+    title:
+      "Talk to Framique Sales Team, Book a Live Demo & Store Migration Consultation",
+    locale: "en" as const,
+    tags: ["sales", "demo", "consultation", "callback", "migration", "leads"],
+    sourceUrl: "/contact",
+    body: `Prospective store owners and enterprise brands can connect directly with the Framique sales and solutions architecture team:
+1. Book a Live Demo: Request a personalized walkthrough of the visual page builder, payment gateways, and automated courier fulfillment.
+2. Free Store Migration: We assist brands migrating from Shopify, WooCommerce, or custom platforms with catalog imports, customer data migration, and zero-downtime cutover.
+3. Schedule a Callback: You can request a callback directly through our AI chat widget by providing your phone number (01XXXXXXXXX) and preferred time window (morning, afternoon, evening).
+4. Direct Contact Channels:
+   • Phone: +880 9612-345678 (9 AM – 10 PM BST)
+   • WhatsApp: +880 1700-000000
+   • Email: sales@framique.com or support@framique.com
+   • Office: Dhaka, Bangladesh.`,
+  },
+];
 
 let canonicalSeeded = false;
 
@@ -255,10 +347,29 @@ export function ensureCanonicalSeeded() {
   canonicalSeeded = true;
   for (const doc of FRAMIQUE_CANONICAL_KB_DOCS) {
     if (!IN_MEMORY_KB_CHUNKS.some((c) => c.doc_id === doc.id)) {
-      const vec = generateDeterministicEmbedding(`${doc.title}\n${doc.body}`, 1024);
+      const vec = generateDeterministicEmbedding(
+        `${doc.title}\n${doc.body}`,
+        1024,
+      );
       IN_MEMORY_KB_CHUNKS.push({
         doc_id: doc.id,
         merchant_id: "canonical",
+        title: doc.title,
+        body: doc.body,
+        source_url: doc.sourceUrl ?? null,
+        embedding: vec,
+      });
+    }
+  }
+  for (const doc of PLATFORM_KB_DOCS) {
+    if (!IN_MEMORY_KB_CHUNKS.some((c) => c.doc_id === doc.id)) {
+      const vec = generateDeterministicEmbedding(
+        `${doc.title}\n${doc.body}`,
+        1024,
+      );
+      IN_MEMORY_KB_CHUNKS.push({
+        doc_id: doc.id,
+        merchant_id: "framique",
         title: doc.title,
         body: doc.body,
         source_url: doc.sourceUrl ?? null,
@@ -280,11 +391,16 @@ export function searchInMemoryKb(
 ): KbHit[] {
   ensureCanonicalSeeded();
   const qTokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const isPlatformMerchant =
+    merchantId === "framique" ||
+    merchantId === "platform" ||
+    merchantId === "00000000-0000-4000-8000-000000000001";
   const pool = IN_MEMORY_KB_CHUNKS.filter(
     (c) =>
       c.merchant_id === merchantId ||
       c.merchant_id === "canonical" ||
       c.merchant_id === "seed" ||
+      (isPlatformMerchant && c.merchant_id === "framique") ||
       merchantId === "seed",
   );
 
@@ -309,7 +425,10 @@ export function searchInMemoryKb(
     const textScore = qTokens.length > 0 ? matches / qTokens.length : 0;
 
     // Vector cosine similarity score
-    const vectorSim = queryEmbedding && c.embedding ? cosineSimilarity(queryEmbedding, c.embedding) : 0;
+    const vectorSim =
+      queryEmbedding && c.embedding
+        ? cosineSimilarity(queryEmbedding, c.embedding)
+        : 0;
 
     return {
       chunk: c,
@@ -363,7 +482,9 @@ export function registerInMemoryDoc(
   doc: { id: string; title: string; body: string; sourceUrl?: string | null },
   embedding?: number[],
 ) {
-  const vec = embedding || generateDeterministicEmbedding(`${doc.title}\n${doc.body}`, 1024);
+  const vec =
+    embedding ||
+    generateDeterministicEmbedding(`${doc.title}\n${doc.body}`, 1024);
   IN_MEMORY_KB_CHUNKS.push({
     doc_id: doc.id,
     merchant_id: merchantId,
@@ -384,13 +505,20 @@ export function clearInMemoryKb() {
  */
 export async function seedCanonicalFramiqueDocs(merchantId: string) {
   for (const doc of FRAMIQUE_CANONICAL_KB_DOCS) {
-    const embedding = generateDeterministicEmbedding(`${doc.title}\n${doc.body}`, 1024);
-    registerInMemoryDoc(merchantId, {
-      id: doc.id,
-      title: doc.title,
-      body: doc.body,
-      sourceUrl: doc.sourceUrl,
-    }, embedding);
+    const embedding = generateDeterministicEmbedding(
+      `${doc.title}\n${doc.body}`,
+      1024,
+    );
+    registerInMemoryDoc(
+      merchantId,
+      {
+        id: doc.id,
+        title: doc.title,
+        body: doc.body,
+        sourceUrl: doc.sourceUrl,
+      },
+      embedding,
+    );
   }
 }
 
@@ -443,7 +571,11 @@ export async function saveDoc(
       docId = data.id;
 
       const chunks = chunkDocument(row.body);
-      await db.from("support_kb_chunks").delete().eq("merchant_id", merchantId).eq("doc_id", docId);
+      await db
+        .from("support_kb_chunks")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("doc_id", docId);
 
       if (chunks.length) {
         // Generate vector embeddings for chunks
@@ -468,28 +600,46 @@ export async function saveDoc(
     } catch {
       // Fallback: register in in-memory index
       if (!docId) docId = `inmem-doc-${Date.now()}`;
-      const emb = generateDeterministicEmbedding(`${row.title}\n${row.body}`, 1024);
-      registerInMemoryDoc(merchantId, {
-        id: docId,
-        title: row.title,
-        body: row.body,
-        sourceUrl: row.source_url,
-      }, emb);
+      const emb = generateDeterministicEmbedding(
+        `${row.title}\n${row.body}`,
+        1024,
+      );
+      registerInMemoryDoc(
+        merchantId,
+        {
+          id: docId,
+          title: row.title,
+          body: row.body,
+          sourceUrl: row.source_url,
+        },
+        emb,
+      );
     }
 
     invalidate(`kb:${merchantId}:`);
     invalidate(`kb_hybrid:${merchantId}:`);
-    incr("framique_ai_kb_doc_total", { action: input.id ? "updated" : "created" });
+    incr("framique_ai_kb_doc_total", {
+      action: input.id ? "updated" : "created",
+    });
     log("info", "support.kb_saved", { merchant_id: merchantId, doc_id: docId });
     return { id: docId, ok: true };
   });
 }
 
 /** Soft delete: the doc leaves retrieval immediately, history stays auditable. */
-export async function deleteDoc(db: Client, merchantId: string, userId: string, docId: string) {
+export async function deleteDoc(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  docId: string,
+) {
   await enforceRateLimit("support.kb_write", `${merchantId}:${userId}`);
   try {
-    await db.from("support_kb_chunks").delete().eq("merchant_id", merchantId).eq("doc_id", docId);
+    await db
+      .from("support_kb_chunks")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("doc_id", docId);
     await db
       .from("support_kb_docs")
       .update({ deleted_at: new Date().toISOString(), status: "draft" })

@@ -8,8 +8,14 @@ import {
 } from "./blue-green-router.server";
 
 describe("Phase 6.4 — Active / Standby Blue/Green Environment Topology", () => {
-  const composePath = resolve(process.cwd(), "ops/docker-compose.blue-green.yml");
-  const nginxConfPath = resolve(process.cwd(), "ops/routing/nginx-blue-green.conf");
+  const composePath = resolve(
+    process.cwd(),
+    "ops/docker-compose.blue-green.yml",
+  );
+  const nginxConfPath = resolve(
+    process.cwd(),
+    "ops/routing/nginx-blue-green.conf",
+  );
   const upstreamConfPath = resolve(process.cwd(), "ops/routing/upstream.conf");
   const k8sBluePath = resolve(process.cwd(), "ops/k8s/deployment-blue.yaml");
   const k8sGreenPath = resolve(process.cwd(), "ops/k8s/deployment-green.yaml");
@@ -30,7 +36,9 @@ describe("Phase 6.4 — Active / Standby Blue/Green Environment Topology", () =>
     const content = readFileSync(nginxConfPath, "utf8");
     expect(content).toContain("proxy_http_version 1.1;");
     expect(content).toContain('proxy_set_header Connection "";');
-    expect(content).toContain("proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;");
+    expect(content).toContain(
+      "proxy_next_upstream error timeout invalid_header http_502 http_503 http_504;",
+    );
     expect(content).toContain("proxy_next_upstream_tries 3;");
     expect(content).toContain("keepalive_requests 10000;");
   });
@@ -58,20 +66,27 @@ describe("Phase 6.4 — Active / Standby Blue/Green Environment Topology", () =>
 
   it("generates correct upstream block for Active BLUE / Standby GREEN", () => {
     const upstream = generateNginxUpstream({ primarySlot: "blue" });
-    expect(upstream).toContain("server framique-blue:3000 max_fails=3 fail_timeout=10s;");
+    expect(upstream).toContain(
+      "server framique-blue:3000 max_fails=3 fail_timeout=10s;",
+    );
     expect(upstream).toContain("server framique-green:3000 backup;");
     expect(upstream).toContain("keepalive 64;");
   });
 
   it("generates correct upstream block for Active GREEN / Standby BLUE", () => {
     const upstream = generateNginxUpstream({ primarySlot: "green" });
-    expect(upstream).toContain("server framique-green:3000 max_fails=3 fail_timeout=10s;");
+    expect(upstream).toContain(
+      "server framique-green:3000 max_fails=3 fail_timeout=10s;",
+    );
     expect(upstream).toContain("server framique-blue:3000 backup;");
     expect(upstream).toContain("keepalive 64;");
   });
 
   it("generates weighted upstream configuration for canary traffic splitting", () => {
-    const upstream = generateNginxUpstream({ primarySlot: "blue", canaryWeight: 10 });
+    const upstream = generateNginxUpstream({
+      primarySlot: "blue",
+      canaryWeight: 10,
+    });
     expect(upstream).toContain("server framique-blue:3000 weight=90");
     expect(upstream).toContain("server framique-green:3000 weight=10");
   });

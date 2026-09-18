@@ -69,14 +69,14 @@ describe("Phase 9.3 — Intent Detection: create_ticket", () => {
     "detects create_ticket intent from English phrase: %s",
     (phrase) => {
       expect(detectIntent(phrase)).toBe("create_ticket");
-    }
+    },
   );
 
   it.each(TICKET_PHRASES_BN)(
     "detects create_ticket intent from Bangla phrase: %s",
     (phrase) => {
       expect(detectIntent(phrase)).toBe("create_ticket");
-    }
+    },
   );
 
   it("does NOT classify generic 'where is my order' as create_ticket", () => {
@@ -231,9 +231,15 @@ describe("Phase 9.3 — Ticket Service: createTicket", () => {
 
     expect(ticketAction.ticketId).toBeTruthy();
     expect(ticketAction.subject).toBeTruthy();
-    expect(["low", "normal", "high", "urgent"]).toContain(ticketAction.priority);
-    expect(["open", "pending", "resolved", "closed"]).toContain(ticketAction.status);
-    expect(new Date(ticketAction.firstResponseDueAt).getTime()).toBeGreaterThan(Date.now());
+    expect(["low", "normal", "high", "urgent"]).toContain(
+      ticketAction.priority,
+    );
+    expect(["open", "pending", "resolved", "closed"]).toContain(
+      ticketAction.status,
+    );
+    expect(new Date(ticketAction.firstResponseDueAt).getTime()).toBeGreaterThan(
+      Date.now(),
+    );
   });
 });
 
@@ -263,14 +269,14 @@ describe("Phase 9.4 — Intent Detection: request_callback", () => {
     "detects request_callback from English phrase: %s",
     (phrase) => {
       expect(detectIntent(phrase)).toBe("request_callback");
-    }
+    },
   );
 
   it.each(CALLBACK_PHRASES_BN)(
     "detects request_callback from Bangla phrase: %s",
     (phrase) => {
       expect(detectIntent(phrase)).toBe("request_callback");
-    }
+    },
   );
 
   it("does NOT classify 'where is my order' as request_callback", () => {
@@ -288,27 +294,27 @@ describe("Phase 9.4 — Intent Detection: request_callback", () => {
 
 describe("Phase 9.4 — Bangladesh Phone Number Validation", () => {
   const VALID_NUMBERS = [
-    "01712345678",    // Standard Robi/GP local
-    "01812345678",    // Banglalink
-    "01912345678",    // Robi/Airtel
-    "01312345678",    // Teletalk
-    "01412345678",    // Teletalk/Skitto
-    "01512345678",    // Teletalk
-    "01612345678",    // GrameenPhone
+    "01712345678", // Standard Robi/GP local
+    "01812345678", // Banglalink
+    "01912345678", // Robi/Airtel
+    "01312345678", // Teletalk
+    "01412345678", // Teletalk/Skitto
+    "01512345678", // Teletalk
+    "01612345678", // GrameenPhone
     "+8801712345678", // E.164 with country code
-    "8801712345678",  // Without leading +
+    "8801712345678", // Without leading +
   ];
 
   const INVALID_NUMBERS = [
-    "01012345678",   // 010x not a valid BD operator prefix
-    "01112345678",   // 011x not valid
-    "01212345678",   // 012x not valid
-    "0171234567",    // Too short
-    "017123456789",  // Too long
-    "1234567890",    // Not BD format
-    "",              // Empty
-    "not-a-number",  // Alphanumeric
-    "+15551234567",  // US number
+    "01012345678", // 010x not a valid BD operator prefix
+    "01112345678", // 011x not valid
+    "01212345678", // 012x not valid
+    "0171234567", // Too short
+    "017123456789", // Too long
+    "1234567890", // Not BD format
+    "", // Empty
+    "not-a-number", // Alphanumeric
+    "+15551234567", // US number
     "00447911123456", // UK number
   ];
 
@@ -333,7 +339,7 @@ describe("Phase 9.4 — Bangladesh Phone Number Validation", () => {
   it("BD_PHONE_REGEX matches only valid +8801X numbers", () => {
     expect(BD_PHONE_REGEX.test("+8801712345678")).toBe(true);
     expect(BD_PHONE_REGEX.test("+8801012345678")).toBe(false); // 010 not valid
-    expect(BD_PHONE_REGEX.test("+88017123456")).toBe(false);   // Too short
+    expect(BD_PHONE_REGEX.test("+88017123456")).toBe(false); // Too short
   });
 });
 
@@ -424,9 +430,30 @@ describe("Phase 9.4 — Callback Service: createCallback", () => {
 
   it("generates unique callback IDs for concurrent requests", async () => {
     const [r1, r2, r3] = await Promise.all([
-      createCallback({ merchantId: MERCHANT_ID, conversationId: null, customerName: "User A", phone: "01712345678", preferredWindow: "morning", channel: "widget" }),
-      createCallback({ merchantId: MERCHANT_ID, conversationId: null, customerName: "User B", phone: "01812345678", preferredWindow: "afternoon", channel: "widget" }),
-      createCallback({ merchantId: MERCHANT_ID, conversationId: null, customerName: "User C", phone: "01912345678", preferredWindow: "evening", channel: "widget" }),
+      createCallback({
+        merchantId: MERCHANT_ID,
+        conversationId: null,
+        customerName: "User A",
+        phone: "01712345678",
+        preferredWindow: "morning",
+        channel: "widget",
+      }),
+      createCallback({
+        merchantId: MERCHANT_ID,
+        conversationId: null,
+        customerName: "User B",
+        phone: "01812345678",
+        preferredWindow: "afternoon",
+        channel: "widget",
+      }),
+      createCallback({
+        merchantId: MERCHANT_ID,
+        conversationId: null,
+        customerName: "User C",
+        phone: "01912345678",
+        preferredWindow: "evening",
+        channel: "widget",
+      }),
     ]);
 
     const ids = new Set([r1.id, r2.id, r3.id]);
@@ -468,8 +495,22 @@ describe("Phase 9.4 — Callback Service: createCallback", () => {
   it("stores multiple callbacks independently per merchant", async () => {
     const MERCHANT_B = "00000000-0000-0000-0000-000000009401";
 
-    await createCallback({ merchantId: MERCHANT_ID, conversationId: null, customerName: "A", phone: "01712345678", preferredWindow: "morning", channel: "widget" });
-    await createCallback({ merchantId: MERCHANT_B, conversationId: null, customerName: "B", phone: "01812345678", preferredWindow: "evening", channel: "widget" });
+    await createCallback({
+      merchantId: MERCHANT_ID,
+      conversationId: null,
+      customerName: "A",
+      phone: "01712345678",
+      preferredWindow: "morning",
+      channel: "widget",
+    });
+    await createCallback({
+      merchantId: MERCHANT_B,
+      conversationId: null,
+      customerName: "B",
+      phone: "01812345678",
+      preferredWindow: "evening",
+      channel: "widget",
+    });
 
     const cbA = getInMemoryCallbacks(MERCHANT_ID);
     const cbB = getInMemoryCallbacks(MERCHANT_B);
@@ -510,7 +551,9 @@ describe("Phase 9.3 & 9.4 — AskResult Type Contract", () => {
     expect(ticketAction.subject).toBeTruthy();
     expect(ticketAction.priority).toBe("high");
     expect(ticketAction.status).toBe("open");
-    expect(new Date(ticketAction.firstResponseDueAt).getTime()).toBeGreaterThan(Date.now());
+    expect(new Date(ticketAction.firstResponseDueAt).getTime()).toBeGreaterThan(
+      Date.now(),
+    );
     expect(ticketAction.conversationId).toBeTruthy();
   });
 
@@ -630,13 +673,17 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
     it("English reply contains the exact required limitation statement", () => {
       const reply = buildEpistemicHumilityReply("en");
       expect(reply).toContain(EPISTEMIC_ADMISSION_EN);
-      expect(reply).toContain("I don't have enough verified information to answer this accurately.");
+      expect(reply).toContain(
+        "I don't have enough verified information to answer this accurately.",
+      );
     });
 
     it("Bangla reply contains the exact required limitation statement", () => {
       const reply = buildEpistemicHumilityReply("bn");
       expect(reply).toContain(EPISTEMIC_ADMISSION_BN);
-      expect(reply).toContain("আমি এই বিষয়ে নিশ্চিত নই এবং ভুল তথ্য এড়াতে অনুমান করতে চাই না।");
+      expect(reply).toContain(
+        "আমি এই বিষয়ে নিশ্চিত নই এবং ভুল তথ্য এড়াতে অনুমান করতে চাই না।",
+      );
     });
 
     it("renders all 4 proactive action paths in both English and Bangla", () => {
@@ -739,7 +786,8 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       // Query about an obscure topic not in KB
       const res = await runSupportAgentTurn({
         slug: "demo",
-        message: "Can I use Martian currency credits to pay for my sunglasses order?",
+        message:
+          "Can I use Martian currency credits to pay for my sunglasses order?",
         locale: "en",
       });
 
@@ -832,7 +880,10 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
     });
 
     // Check takeover state lookup
-    const state = await getConversationTakeoverState("merchant-demo-123", convId);
+    const state = await getConversationTakeoverState(
+      "merchant-demo-123",
+      convId,
+    );
     expect(state?.takeoverMode).toBe("human_takeover");
 
     const res = await runSupportAgentTurn({
@@ -891,7 +942,10 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
       minutesSinceLastCustomerMsg: null,
     });
 
-    const state = await getConversationTakeoverState("merchant-demo-123", convId);
+    const state = await getConversationTakeoverState(
+      "merchant-demo-123",
+      convId,
+    );
     expect(state?.takeoverMode).toBe("ai");
 
     const res = await runSupportAgentTurn({
@@ -912,4 +966,3 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
     expect(typeof customerSendChatMessageFn).toBe("function");
   });
 });
-

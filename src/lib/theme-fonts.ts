@@ -94,7 +94,8 @@ export function resolveFontStack(family: string, locale: Locale): string[] {
   const meta = familyMeta(family);
   const stack: string[] = [];
   if (meta) stack.push(family);
-  if (!meta || !meta.scripts.includes(script)) stack.push(SCRIPT_DEFAULT[script]);
+  if (!meta || !meta.scripts.includes(script))
+    stack.push(SCRIPT_DEFAULT[script]);
   for (const name of [...stack]) {
     const fallback = familyMeta(name)?.fallback;
     if (fallback && !stack.includes(fallback)) stack.push(fallback);
@@ -111,7 +112,9 @@ export function fontStackCss(family: string, locale: Locale): string {
 }
 
 /** The (deduped) families a theme actually loads. */
-export function themeFamilies(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">): string[] {
+export function themeFamilies(
+  tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">,
+): string[] {
   return [...new Set([tokens.fontDisplay, tokens.fontBody].filter(Boolean))];
 }
 
@@ -129,7 +132,9 @@ export const FONT_BUDGET = {
 export type BudgetFailure = { code: string; message: string };
 
 /** Fails a theme whose typography would blow the loading budget. */
-export function checkFontBudget(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">): {
+export function checkFontBudget(
+  tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">,
+): {
   ok: boolean;
   failures: BudgetFailure[];
 } {
@@ -144,7 +149,10 @@ export function checkFontBudget(tokens: Pick<ThemeTokens, "fontDisplay" | "fontB
   for (const family of families) {
     const meta = familyMeta(family);
     if (!meta) {
-      failures.push({ code: "font:unknown", message: `${family} is not in the font catalogue.` });
+      failures.push({
+        code: "font:unknown",
+        message: `${family} is not in the font catalogue.`,
+      });
       continue;
     }
     if (meta.weights.length > FONT_BUDGET.maxWeightsPerFamily) {
@@ -164,7 +172,9 @@ export function checkFontBudget(tokens: Pick<ThemeTokens, "fontDisplay" | "fontB
  * one stylesheet so a locale switch never waits on a second network round
  * trip, and `display=swap` keeps text visible during load.
  */
-export function fontStylesheetUrl(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">): string {
+export function fontStylesheetUrl(
+  tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">,
+): string {
   const families = themeFamilies(tokens)
     .filter((family) => familyMeta(family))
     .map((family) => {
@@ -179,7 +189,10 @@ export function fontStylesheetUrl(tokens: Pick<ThemeTokens, "fontDisplay" | "fon
   return `https://fonts.googleapis.com/css2?${families.join("&")}${subset}&display=swap`;
 }
 
-export const FONT_ORIGINS = ["https://fonts.googleapis.com", "https://fonts.gstatic.com"] as const;
+export const FONT_ORIGINS = [
+  "https://fonts.googleapis.com",
+  "https://fonts.gstatic.com",
+] as const;
 
 export type FontPreload = {
   stylesheet: string;
@@ -188,7 +201,9 @@ export type FontPreload = {
 };
 
 /** Everything a route `head()` needs for the active theme's typography. */
-export function fontPreload(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">): FontPreload {
+export function fontPreload(
+  tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">,
+): FontPreload {
   return {
     stylesheet: fontStylesheetUrl(tokens),
     origins: FONT_ORIGINS,
@@ -199,7 +214,9 @@ export function fontPreload(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody"
 }
 
 /** `head().links` entries: preconnect ×2, preload, stylesheet. */
-export function fontHeadLinks(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">) {
+export function fontHeadLinks(
+  tokens: Pick<ThemeTokens, "fontDisplay" | "fontBody">,
+) {
   const preload = fontPreload(tokens);
   return [
     ...preload.origins.map((href) => ({
@@ -213,13 +230,19 @@ export function fontHeadLinks(tokens: Pick<ThemeTokens, "fontDisplay" | "fontBod
 }
 
 /** Every pairing in the catalogue must resolve to a covering face per locale. */
-export function pairingCoverage(): { pairing: string; locale: Locale; ok: boolean }[] {
+export function pairingCoverage(): {
+  pairing: string;
+  locale: Locale;
+  ok: boolean;
+}[] {
   const out: { pairing: string; locale: Locale; ok: boolean }[] = [];
   for (const [pairing, pair] of Object.entries(FONT_PAIRINGS)) {
     for (const locale of ["en", "bn"] as Locale[]) {
       const script = scriptFor(locale);
       const ok = [pair.display, pair.body].every((family) =>
-        resolveFontStack(family, locale).some((name) => coversScript(name, script)),
+        resolveFontStack(family, locale).some((name) =>
+          coversScript(name, script),
+        ),
       );
       out.push({ pairing, locale, ok });
     }
@@ -248,13 +271,18 @@ export function customFontUrl(path: string): string {
 }
 
 /** `<merchant-uuid>/<family>/<weight>.woff2` and nothing else. */
-const FONT_OBJECT_PATH = /^[0-9a-f-]{36}\/[A-Za-z0-9][A-Za-z0-9 _-]{0,60}\/[1-9]00\.woff2$/;
+const FONT_OBJECT_PATH =
+  /^[0-9a-f-]{36}\/[A-Za-z0-9][A-Za-z0-9 _-]{0,60}\/[1-9]00\.woff2$/;
 
 export function isFontObjectPath(path: string): boolean {
   return FONT_OBJECT_PATH.test(path) && !path.includes("..");
 }
 
-export function fontStoragePath(merchantId: string, family: string, weight: number): string {
+export function fontStoragePath(
+  merchantId: string,
+  family: string,
+  weight: number,
+): string {
   return `${merchantId}/${family.replace(/[^A-Za-z0-9 _-]/g, "").trim()}/${weight}.woff2`;
 }
 
@@ -269,7 +297,8 @@ export function isWoff2(bytes: Uint8Array): boolean {
   );
 }
 
-export type UploadCheck = { ok: true } | { ok: false; code: string; message: string };
+export type UploadCheck =
+  { ok: true } | { ok: false; code: string; message: string };
 
 export function validateFontUpload(input: {
   bytes: Uint8Array;
@@ -278,16 +307,32 @@ export function validateFontUpload(input: {
   existingFilesForFamily: number;
 }): UploadCheck {
   if (!isWoff2(input.bytes)) {
-    return { ok: false, code: "bad_format", message: "Only woff2 font files are accepted." };
+    return {
+      ok: false,
+      code: "bad_format",
+      message: "Only woff2 font files are accepted.",
+    };
   }
   if (input.bytes.length > FONT_BUDGET.maxFileBytes) {
-    return { ok: false, code: "too_large", message: "Font files must be 400 KB or smaller." };
+    return {
+      ok: false,
+      code: "too_large",
+      message: "Font files must be 400 KB or smaller.",
+    };
   }
   if (!/^[A-Za-z0-9][A-Za-z0-9 _-]{1,40}$/.test(input.family)) {
-    return { ok: false, code: "bad_family", message: "Family name contains unsupported characters." };
+    return {
+      ok: false,
+      code: "bad_family",
+      message: "Family name contains unsupported characters.",
+    };
   }
   if (![100, 200, 300, 400, 500, 600, 700, 800, 900].includes(input.weight)) {
-    return { ok: false, code: "bad_weight", message: "Weight must be a multiple of 100." };
+    return {
+      ok: false,
+      code: "bad_weight",
+      message: "Weight must be a multiple of 100.",
+    };
   }
   if (input.existingFilesForFamily >= FONT_BUDGET.maxFilesPerFamily) {
     return {
@@ -319,7 +364,10 @@ export function customFontFaceCss(assets: FontAsset[]): string {
 export function licenceGate(assets: FontAsset[]): string[] {
   return assets
     .filter((asset) => !asset.licenceConfirmedAt)
-    .map((asset) => `fonts: ${asset.family} ${asset.weight} needs a licence confirmation before publish.`);
+    .map(
+      (asset) =>
+        `fonts: ${asset.family} ${asset.weight} needs a licence confirmation before publish.`,
+    );
 }
 
 /** Emitted when a custom face 404s and the storefront silently falls back. */

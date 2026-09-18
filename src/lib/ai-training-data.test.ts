@@ -16,7 +16,8 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
   });
 
   it("redacts PII from user turns and agent replies before saving", async () => {
-    const rawUser = "My phone is 01712345678 and email is customer@gmail.com. Where is order?";
+    const rawUser =
+      "My phone is 01712345678 and email is customer@gmail.com. Where is order?";
     const rawReply = "We will call you on 01712345678 regarding your shipment.";
 
     const turn = await captureTrainingTurn({
@@ -42,8 +43,14 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       merchantId: TEST_MERCHANT,
       conversationId: "conv_test_102",
       userMessage: "How do I configure SteadFast webhook?",
-      contextPassages: [{ title: "SteadFast Courier", body: "Configured under Admin Shipping." }],
-      agentReply: "Configure SteadFast webhook in Admin -> Shipping with your API key.",
+      contextPassages: [
+        {
+          title: "SteadFast Courier",
+          body: "Configured under Admin Shipping.",
+        },
+      ],
+      agentReply:
+        "Configure SteadFast webhook in Admin -> Shipping with your API key.",
       latencyMs: 1100,
       grounded: true,
     });
@@ -66,7 +73,11 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
     });
 
     // Customer submits a 5-star review
-    const res = await updateTurnCsat(convId, 5, "Super fast and helpful answer!");
+    const res = await updateTurnCsat(
+      convId,
+      5,
+      "Super fast and helpful answer!",
+    );
     expect(res.updatedCount).toBeGreaterThan(0);
 
     const sftTurns = await exportSftDataset({ minRating: 4 });
@@ -78,7 +89,8 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       merchantId: TEST_MERCHANT,
       conversationId: "conv_good_1",
       userMessage: "How to setup custom domain?",
-      agentReply: "Add an A record pointing to Framique ingress IP in your DNS provider.",
+      agentReply:
+        "Add an A record pointing to Framique ingress IP in your DNS provider.",
       csatRating: 5,
       grounded: true,
     });
@@ -99,7 +111,9 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
 
     // Only good conversation exported
     expect(chatmlDataset.length).toBe(1);
-    const item = chatmlDataset[0] as { messages: Array<{ role: string; content: string }> };
+    const item = chatmlDataset[0] as {
+      messages: Array<{ role: string; content: string }>;
+    };
     expect(item.messages).toHaveLength(3);
     expect(item.messages[0].role).toBe("system");
     expect(item.messages[1].role).toBe("user");
@@ -112,7 +126,8 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       merchantId: TEST_MERCHANT,
       conversationId: "conv_good_2",
       userMessage: "Tell me about Page Builder AST",
-      agentReply: "Framique Page Builder represents storefront layouts as a JSON AST.",
+      agentReply:
+        "Framique Page Builder represents storefront layouts as a JSON AST.",
       csatRating: 5,
       grounded: true,
     });
@@ -123,7 +138,9 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
     });
 
     expect(sharegptDataset.length).toBe(1);
-    const item = sharegptDataset[0] as { conversations: Array<{ from: string; value: string }> };
+    const item = sharegptDataset[0] as {
+      conversations: Array<{ from: string; value: string }>;
+    };
     expect(item.conversations[0].from).toBe("system");
     expect(item.conversations[1].from).toBe("human");
     expect(item.conversations[2].from).toBe("gpt");
@@ -135,7 +152,8 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       merchantId: TEST_MERCHANT,
       conversationId: "conv_pair_chosen",
       userMessage: "How to track parcel?",
-      agentReply: "You can track your parcel anytime from your customer account dashboard.",
+      agentReply:
+        "You can track your parcel anytime from your customer account dashboard.",
       csatRating: 5,
       grounded: true,
     });
@@ -198,7 +216,8 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
         merchantId: DOOMED_MERCHANT,
         conversationId: "conv_doomed_001",
         userMessage: "How do I request return pickup via SteadFast?",
-        agentReply: "Go to Orders -> Select Order -> Click Book SteadFast Return Pickup.",
+        agentReply:
+          "Go to Orders -> Select Order -> Click Book SteadFast Return Pickup.",
         csatRating: 5,
         csatReview: "Saved my day, perfect instructions!",
         grounded: true,
@@ -208,8 +227,9 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       expect(turn1.anonymizedActorToken).toMatch(/^act_/);
 
       // 2. Simulate merchant deletion / GDPR account purge
-      const { unlinkedCount, preservedCohortHash } =
-        await (await import("./ai-training-data.server")).disassociateTenantFromTrainingData(DOOMED_MERCHANT);
+      const { unlinkedCount, preservedCohortHash } = await (
+        await import("./ai-training-data.server")
+      ).disassociateTenantFromTrainingData(DOOMED_MERCHANT);
 
       expect(unlinkedCount).toBe(1);
       expect(preservedCohortHash).toBe(turn1.merchantCohortHash);
@@ -218,7 +238,11 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
       // ML data has immunity from relational table deletion!
       const allSft = await exportSftDataset({ format: "chatml", minRating: 4 });
       const preservedTurn = allSft.find(
-        (item) => "messages" in item && item.messages.some((m) => m.content.includes("Book SteadFast Return Pickup")),
+        (item) =>
+          "messages" in item &&
+          item.messages.some((m) =>
+            m.content.includes("Book SteadFast Return Pickup"),
+          ),
       );
 
       expect(preservedTurn).toBeDefined();
@@ -229,4 +253,3 @@ describe("Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF
     });
   });
 });
-

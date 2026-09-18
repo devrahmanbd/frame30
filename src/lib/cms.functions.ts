@@ -39,9 +39,20 @@ const articleSchema = z.object({
 
 /** Surface a merchant-actionable failure; keep everything else opaque. */
 function toClientError(error: unknown): Error {
-  if (error && typeof error === "object" && (error as { name?: string }).name === "ArticleValidationError") {
-    const detail = error as { code: string; field: string; en: string; bn: string };
-    const wrapped = new Error(`${detail.code}|${detail.field}|${detail.en}|${detail.bn}`);
+  if (
+    error &&
+    typeof error === "object" &&
+    (error as { name?: string }).name === "ArticleValidationError"
+  ) {
+    const detail = error as {
+      code: string;
+      field: string;
+      en: string;
+      bn: string;
+    };
+    const wrapped = new Error(
+      `${detail.code}|${detail.field}|${detail.en}|${detail.bn}`,
+    );
     wrapped.name = "ArticleValidationError";
     return wrapped;
   }
@@ -55,10 +66,21 @@ export const saveArticleFn = createServerFn({ method: "POST" })
     const { currentMerchantId } = await import("./marketing.server");
     const { saveArticle } = await import("./cms.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await enforceRateLimit(data.autosave ? "cms.autosave" : "cms.save", `${merchantId}:${context.userId}`);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit(
+      data.autosave ? "cms.autosave" : "cms.save",
+      `${merchantId}:${context.userId}`,
+    );
     try {
-      return await saveArticle(context.supabase, merchantId, context.userId, data);
+      return await saveArticle(
+        context.supabase,
+        merchantId,
+        context.userId,
+        data,
+      );
     } catch (error) {
       throw toClientError(error);
     }
@@ -66,12 +88,17 @@ export const saveArticleFn = createServerFn({ method: "POST" })
 
 export const articleRevisionsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ articleId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ articleId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { listRevisions } = await import("./cms.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("cms.read", `${merchantId}:${context.userId}`);
     return listRevisions(context.supabase, merchantId, data.articleId);
   });
@@ -80,47 +107,81 @@ export const articleRevisionsFn = createServerFn({ method: "GET" })
 export const revisionPairFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ leftId: z.string().uuid(), rightId: z.string().uuid() }).parse(d),
+    z
+      .object({ leftId: z.string().uuid(), rightId: z.string().uuid() })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { revisionPair } = await import("./cms.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("cms.read", `${merchantId}:${context.userId}`);
-    return revisionPair(context.supabase, merchantId, data.leftId, data.rightId);
+    return revisionPair(
+      context.supabase,
+      merchantId,
+      data.leftId,
+      data.rightId,
+    );
   });
 
 export const restoreRevisionFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ revisionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ revisionId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { restoreRevision } = await import("./cms.server");
     const { enforceRateLimit } = await import("./rate-limit.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await enforceRateLimit("cms.restore", `${merchantId}:${context.userId}`);
-    return restoreRevision(context.supabase, merchantId, data.revisionId, context.userId);
+    return restoreRevision(
+      context.supabase,
+      merchantId,
+      data.revisionId,
+      context.userId,
+    );
   });
-
 
 export const listRedirectsFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { listRedirects } = await import("./cms.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return listRedirects(context.supabase, merchantId);
   });
 
 export const saveRedirectFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
-  .inputValidator((d: unknown) => z.object({ fromPath: z.string().min(1), toPath: z.string().min(1) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z
+      .object({ fromPath: z.string().min(1), toPath: z.string().min(1) })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { saveRedirect } = await import("./cms.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await saveRedirect(context.supabase, merchantId, data.fromPath, data.toPath);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await saveRedirect(
+      context.supabase,
+      merchantId,
+      data.fromPath,
+      data.toPath,
+    );
     return { ok: true };
   });
 
@@ -130,7 +191,10 @@ export const deleteRedirectFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { deleteRedirect } = await import("./cms.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await deleteRedirect(context.supabase, merchantId, data.id);
     return { ok: true };
   });
@@ -158,7 +222,10 @@ export const formsLoadFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { loadForms } = await import("./accounts.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return loadForms(context.supabase, merchantId);
   });
 
@@ -168,7 +235,10 @@ export const saveFormFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { saveForm } = await import("./accounts.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     await saveForm(context.supabase, merchantId, data);
     return { ok: true };
   });
@@ -176,12 +246,25 @@ export const saveFormFn = createServerFn({ method: "POST" })
 export const submissionStatusFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("marketing.update")])
   .inputValidator((d: unknown) =>
-    z.object({ submissionId: z.string().uuid(), status: z.enum(["new", "handled", "spam"]) }).parse(d),
+    z
+      .object({
+        submissionId: z.string().uuid(),
+        status: z.enum(["new", "handled", "spam"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
     const { setSubmissionStatus } = await import("./accounts.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    await setSubmissionStatus(context.supabase, merchantId, data.submissionId, data.status);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await setSubmissionStatus(
+      context.supabase,
+      merchantId,
+      data.submissionId,
+      data.status,
+    );
     return { ok: true };
   });

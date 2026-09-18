@@ -11,7 +11,13 @@ import {
   ownerPlaceHoldFn,
   ownerReleaseHoldFn,
 } from "@/lib/owner-desk.functions";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
 
 export const Route = createFileRoute("/root/payouts")({
@@ -23,10 +29,14 @@ export const Route = createFileRoute("/root/payouts")({
         content:
           "Cross-tenant payout desk: every store's payout queue, platform holds and cancellations, each one audited.",
       },
-      { property: "og:title", content: "Payout queue — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Payout queue — Framique owner console",
+      },
       {
         property: "og:description",
-        content: "Review, hold and cancel merchant payouts across every Framique store.",
+        content:
+          "Review, hold and cancel merchant payouts across every Framique store.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -53,7 +63,9 @@ function PayoutDesk() {
   const cancelPayout = useServerFn(ownerCancelPayoutFn);
 
   const [state, setState] = useState<string>("all");
-  const [pending, setPending] = useState<{ id: string; label: string } | null>(null);
+  const [pending, setPending] = useState<{ id: string; label: string } | null>(
+    null,
+  );
   const [holdMerchant, setHoldMerchant] = useState("");
   const [holdAmount, setHoldAmount] = useState("");
   const [holdReason, setHoldReason] = useState("");
@@ -64,8 +76,10 @@ function PayoutDesk() {
     queryFn: () => load({ data: { state } }),
   });
 
-  const refresh = () => void qc.invalidateQueries({ queryKey: ["owner-payouts"] });
-  const fail = (e: unknown) => setError(e instanceof Error ? e.message : "unknown");
+  const refresh = () =>
+    void qc.invalidateQueries({ queryKey: ["owner-payouts"] });
+  const fail = (e: unknown) =>
+    setError(e instanceof Error ? e.message : "unknown");
 
   const holdMutation = useMutation({
     mutationFn: () =>
@@ -91,7 +105,9 @@ function PayoutDesk() {
   });
   const cancelMutation = useMutation({
     mutationFn: (payoutId: string) =>
-      cancelPayout({ data: { payoutId, reason: "Cancelled from the platform payout desk" } }),
+      cancelPayout({
+        data: { payoutId, reason: "Cancelled from the platform payout desk" },
+      }),
     onSuccess: () => {
       setPending(null);
       refresh();
@@ -108,10 +124,16 @@ function PayoutDesk() {
 
   return (
     <section className="space-y-6">
-      <OwnerHeader title={tk("owner.payouts.title")} subtitle={tk("owner.payouts.subtitle")} />
+      <OwnerHeader
+        title={tk("owner.payouts.title")}
+        subtitle={tk("owner.payouts.subtitle")}
+      />
 
       {error ? (
-        <p role="alert" className="rounded-fq-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-fq-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+        >
           {error}
         </p>
       ) : null}
@@ -121,14 +143,25 @@ function PayoutDesk() {
           label={tk("owner.payouts.open")}
           value={`${totals?.openCount ?? 0} · ${formatMinor(totals?.openMinor ?? 0, "BDT")}`}
         />
-        <StatCard label={tk("owner.payouts.paid")} value={formatMinor(totals?.paidMinor ?? 0, "BDT")} />
-        <StatCard label={tk("owner.payouts.held")} value={formatMinor(totals?.heldMinor ?? 0, "BDT")} />
-        <StatCard label={tk("owner.payouts.failed")} value={String(totals?.failedCount ?? 0)} />
+        <StatCard
+          label={tk("owner.payouts.paid")}
+          value={formatMinor(totals?.paidMinor ?? 0, "BDT")}
+        />
+        <StatCard
+          label={tk("owner.payouts.held")}
+          value={formatMinor(totals?.heldMinor ?? 0, "BDT")}
+        />
+        <StatCard
+          label={tk("owner.payouts.failed")}
+          value={String(totals?.failedCount ?? 0)}
+        />
       </StatGrid>
 
       <div className="flex flex-wrap items-end gap-3">
         <label className="text-sm">
-          <span className="block pb-1 font-medium">{tk("owner.payouts.filter_state")}</span>
+          <span className="block pb-1 font-medium">
+            {tk("owner.payouts.filter_state")}
+          </span>
           <select
             value={state}
             onChange={(e) => setState(e.target.value)}
@@ -144,7 +177,9 @@ function PayoutDesk() {
         </label>
       </div>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
 
       {!isLoading && payouts.length === 0 ? (
         <p className="rounded-fq-md border border-border p-4 text-sm text-muted-foreground">
@@ -167,15 +202,21 @@ function PayoutDesk() {
           {payouts.map((p) => (
             <tr key={p.id} className="border-t border-border">
               <td className="px-3 py-2">{p.merchantName}</td>
-              <td className="px-3 py-2 tabular-nums">{formatMinor(p.amountMinor, p.currency)}</td>
-              <td className="px-3 py-2 tabular-nums">{formatMinor(p.netMinor, p.currency)}</td>
+              <td className="px-3 py-2 tabular-nums">
+                {formatMinor(p.amountMinor, p.currency)}
+              </td>
+              <td className="px-3 py-2 tabular-nums">
+                {formatMinor(p.netMinor, p.currency)}
+              </td>
               <td className="px-3 py-2">
                 <span className="font-mono text-xs">{p.destination}</span>
               </td>
               <td className="px-3 py-2">
                 <StatePill tone={stateTone(p.state)}>{p.state}</StatePill>
                 {p.failureCode ? (
-                  <span className="block text-xs text-muted-foreground">{p.failureCode}</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {p.failureCode}
+                  </span>
                 ) : null}
               </td>
               <td className="px-3 py-2 tabular-nums">
@@ -185,7 +226,9 @@ function PayoutDesk() {
                 {CANCELLABLE.has(p.state) ? (
                   <button
                     type="button"
-                    onClick={() => setPending({ id: p.id, label: p.merchantName })}
+                    onClick={() =>
+                      setPending({ id: p.id, label: p.merchantName })
+                    }
                     className="rounded-fq-sm border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
                   >
                     {tk("owner.payouts.cancel")}
@@ -199,7 +242,9 @@ function PayoutDesk() {
 
       <div className="space-y-3">
         <h3 className="text-sm font-semibold">{tk("owner.payouts.holds")}</h3>
-        <p className="text-sm text-muted-foreground">{tk("owner.payouts.holds_hint")}</p>
+        <p className="text-sm text-muted-foreground">
+          {tk("owner.payouts.holds_hint")}
+        </p>
         <form
           className="flex flex-wrap items-end gap-3"
           onSubmit={(e) => {
@@ -208,7 +253,9 @@ function PayoutDesk() {
           }}
         >
           <label className="text-sm">
-            <span className="block pb-1 font-medium">{tk("owner.payouts.tenant")}</span>
+            <span className="block pb-1 font-medium">
+              {tk("owner.payouts.tenant")}
+            </span>
             <select
               required
               value={holdMerchant}
@@ -224,7 +271,9 @@ function PayoutDesk() {
             </select>
           </label>
           <label className="text-sm">
-            <span className="block pb-1 font-medium">{tk("owner.payouts.hold_amount")}</span>
+            <span className="block pb-1 font-medium">
+              {tk("owner.payouts.hold_amount")}
+            </span>
             <input
               required
               inputMode="decimal"
@@ -234,7 +283,9 @@ function PayoutDesk() {
             />
           </label>
           <label className="text-sm">
-            <span className="block pb-1 font-medium">{tk("owner.payouts.hold_reason")}</span>
+            <span className="block pb-1 font-medium">
+              {tk("owner.payouts.hold_reason")}
+            </span>
             <input
               required
               minLength={3}
@@ -265,11 +316,15 @@ function PayoutDesk() {
             {holds.map((h) => (
               <tr key={h.id} className="border-t border-border">
                 <td className="px-3 py-2">{h.merchantName}</td>
-                <td className="px-3 py-2 tabular-nums">{formatMinor(h.amountMinor, "BDT")}</td>
+                <td className="px-3 py-2 tabular-nums">
+                  {formatMinor(h.amountMinor, "BDT")}
+                </td>
                 <td className="px-3 py-2">{h.reason}</td>
                 <td className="px-3 py-2">
                   <StatePill tone={h.releasedAt ? "ok" : "warn"}>
-                    {h.releasedAt ? tk("owner.payouts.released") : tk("owner.payouts.active_hold")}
+                    {h.releasedAt
+                      ? tk("owner.payouts.released")
+                      : tk("owner.payouts.active_hold")}
                   </StatePill>
                 </td>
                 <td className="px-3 py-2 text-right">

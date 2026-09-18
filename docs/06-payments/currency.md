@@ -25,10 +25,10 @@ No existing engine behavior is removed; this spec adds columns, a conversion bou
 
 ## 3. Scope of currencies
 
-| Code | Major name | Minor unit (stored, integer) | Scope | Owner |
-|------|------------|------------------------------|-------|-------|
-| `BDT` | Bangladeshi Taka | paisa (100 per ৳1) | Always on, the default | platform (default stores) |
-| `USD` | US Dollar | cent (100 per $1) | opt-in store, USD-pilot tier only | currency product owner |
+| Code  | Major name       | Minor unit (stored, integer) | Scope                             | Owner                     |
+| ----- | ---------------- | ---------------------------- | --------------------------------- | ------------------------- |
+| `BDT` | Bangladeshi Taka | paisa (100 per ৳1)           | Always on, the default            | platform (default stores) |
+| `USD` | US Dollar        | cent (100 per $1)            | opt-in store, USD-pilot tier only | currency product owner    |
 
 - Non-goal **here**: any third currency, live mid-session FX, or cross-border shipping quotes. A store not in the USD pilot remains BDT-coded to the book (see `currency-gates.md`).
 - "Minor units for USD" means we store `amount_minor_int // 100` in cents and display `$` via a helper parallel to `fmtBDT`.
@@ -39,10 +39,10 @@ No existing engine behavior is removed; this spec adds columns, a conversion bou
 
 Throughout the corpus (`payments`, `payments_attempts`, `refunds`, `refund_attempts`, `payouts`, `wallet_ledger`, `vat_rates`, `invoices`, `cart`) money is stored as:
 
-| Column | Type | Meaning |
-|--------|------|---------|
-| `amount_minor_int` | `bigint` | integer value in the minor unit of `currency_code` (paisa / cent) |
-| `currency_code` | `char(3)` | ISO 4217, constrained `IN ('BDT','USD')` for this spec; any further code requires a plan amendment |
+| Column             | Type      | Meaning                                                                                            |
+| ------------------ | --------- | -------------------------------------------------------------------------------------------------- |
+| `amount_minor_int` | `bigint`  | integer value in the minor unit of `currency_code` (paisa / cent)                                  |
+| `currency_code`    | `char(3)` | ISO 4217, constrained `IN ('BDT','USD')` for this spec; any further code requires a plan amendment |
 
 - `currency_code` is added **everywhere** `amount_minor` already exists; a single monetary row (or the two sides of a ledger entry) must never mix currencies.
 - No `float`/`numeric(k, n)` with scale; no `money` type; integer only. Rounding is a deterministic function of integers, never a DB decimal-round.
@@ -59,20 +59,20 @@ Throughout the corpus (`payments`, `payments_attempts`, `refunds`, `refund_attem
 
 Two distinct attributes, never collapsed:
 
-| Term | Where | Meaning |
-|------|-------|---------|
-| Store presentation currency | `store_currency_settings` | What the storefront/admin prices in (BDT default; USD pilot) |
+| Term                        | Where                                   | Meaning                                                               |
+| --------------------------- | --------------------------------------- | --------------------------------------------------------------------- |
+| Store presentation currency | `store_currency_settings`               | What the storefront/admin prices in (BDT default; USD pilot)          |
 | Store currency (settlement) | goods/basket currency at order creation | What the order is priced AND settled in; fixed at creation, immutable |
 
 ### `store_currency_settings` (tenant)
 
-| Column | Meaning |
-|--------|---------|
-| `merchant_id` | RLS owner (parity with every tenant table) |
-| `presentation_code` | `BDT` (default) or `USD` (pilot only) |
-| `settlement_code` | always `BDT` in pilot v1 (§10 reserve); mutability = **named TBD-3** |
-| `fx_policy` | FK → `fx_policies` (see §7) |
-| `updated_by` / `updated_at` | admin audit trail |
+| Column                      | Meaning                                                              |
+| --------------------------- | -------------------------------------------------------------------- |
+| `merchant_id`               | RLS owner (parity with every tenant table)                           |
+| `presentation_code`         | `BDT` (default) or `USD` (pilot only)                                |
+| `settlement_code`           | always `BDT` in pilot v1 (§10 reserve); mutability = **named TBD-3** |
+| `fx_policy`                 | FK → `fx_policies` (see §7)                                          |
+| `updated_by` / `updated_at` | admin audit trail                                                    |
 
 - Switching to USD is limited to the **USD-pilot gate** in `currency-gates.md`; reverting to BDT is an explicit `store_currency_settings` action with history (never a silent delete).
 
@@ -91,22 +91,22 @@ The order's currency is **set in stone at order creation**; payment, refund, and
 
 Single daily legal rate per business day; conservative tiers:
 
-| Item | Realisation | Policy |
-|------|------------|--------|
-| Base rate | One regulator-published daily rate; never a live mid-session call | from `fx_rates` pipeline once per day |
+| Item           | Realisation                                                                               | Policy                                |
+| -------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| Base rate      | One regulator-published daily rate; never a live mid-session call                         | from `fx_rates` pipeline once per day |
 | Buy/sell split | Customer conversion uses `sell`, payout uses `buy`; both derived from the same daily base | one row per `(pair, side, rate_date)` |
 
 ### `fx_rates` (audited feed table)
 
-| Column | Meaning |
-|--------|---------|
-| `rate_date` | business date; one row per `(pair, side)` |
-| `pair` | canonical order, e.g. `BDT→USD` and `USD→BDT` |
-| `side` | `sell` (for checkout conversion) / `buy` (for settlement conversion) |
-| `base_rate_scaled` | integer-scaled base rate (e.g. scaled ×1,000,000 so the row stays integer); numeric trace |
-| `source` | provider/feed reference, or `manual` with `linked_reg...` |
-| `verified_at` / `verified_by` | lane of ops audit |
-| `supersedes` | old row ref when correcting; append-only, no `UPDATE` of published rates |
+| Column                        | Meaning                                                                                   |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| `rate_date`                   | business date; one row per `(pair, side)`                                                 |
+| `pair`                        | canonical order, e.g. `BDT→USD` and `USD→BDT`                                             |
+| `side`                        | `sell` (for checkout conversion) / `buy` (for settlement conversion)                      |
+| `base_rate_scaled`            | integer-scaled base rate (e.g. scaled ×1,000,000 so the row stays integer); numeric trace |
+| `source`                      | provider/feed reference, or `manual` with `linked_reg...`                                 |
+| `verified_at` / `verified_by` | lane of ops audit                                                                         |
+| `supersedes`                  | old row ref when correcting; append-only, no `UPDATE` of published rates                  |
 
 A rate is referenced by **snapshot id**, never re-read at pay time.
 
@@ -168,13 +168,13 @@ rate_snapshot   = fx_rates row id used (rate_date, pair, side)
 
 ## 14. Permissions (admin)
 
-| Action | Requires | Gate |
-|--------|----------|------|
-| Set store presentation to USD | owner | USD-pilot tier gate (`currency-gates.md`) |
-| Set store Currency revert to BDT | owner | always allowed; history row |
-| View fx_rates blotter | owner (read) | read-only, FX audit page |
-| Set/treat daily rate (manual entry) | ops role + owner | writes `verified_by`, emission row |
-| Update settlement currency / mismatch policy | platform legal + treasury | amendment doc, never silent |
+| Action                                       | Requires                  | Gate                                      |
+| -------------------------------------------- | ------------------------- | ----------------------------------------- |
+| Set store presentation to USD                | owner                     | USD-pilot tier gate (`currency-gates.md`) |
+| Set store Currency revert to BDT             | owner                     | always allowed; history row               |
+| View fx_rates blotter                        | owner (read)              | read-only, FX audit page                  |
+| Set/treat daily rate (manual entry)          | ops role + owner          | writes `verified_by`, emission row        |
+| Update settlement currency / mismatch policy | platform legal + treasury | amendment doc, never silent               |
 
 No role may decide an amount-side FX value at execution time; rate changes land via §7 feed or a signed manual row.
 
@@ -188,7 +188,7 @@ Superseded rule (verbatim, what `AGENTS.md` §2 held before execution): `**BDT o
 
 Amended rule now in force (`AGENTS.md` §2, verbatim):
 
-> `**BDT default, integer minor units, optional USD pilot** — money is stored as `currency_code` (ISO 4217 STRING) + `amount_minor_int` (integer minor units; BDT↔paisa, USD↔cent); floats are never stored, transmitted, or computed for money amounts. BDT is the exclusive currency of every non-pilot store. Currency conversion (USD) is restricted to the USD-pilot gate and happens only at the documented conversion boundary, server-side, idempotently, always off a stored `fx_rate` snapshot — never client-computed and never in a mixed ledger row.`
+> `**BDT default, integer minor units, optional USD pilot** — money is stored as `currency_code`(ISO 4217 STRING) +`amount_minor_int`(integer minor units; BDT↔paisa, USD↔cent); floats are never stored, transmitted, or computed for money amounts. BDT is the exclusive currency of every non-pilot store. Currency conversion (USD) is restricted to the USD-pilot gate and happens only at the documented conversion boundary, server-side, idempotently, always off a stored`fx_rate` snapshot — never client-computed and never in a mixed ledger row.`
 
 - Effect on corpus: every money column already written as "integer BDT" becomes `amount_minor_int` + `currency_code`, BDT default; no numeric losses.
 - `SYSTEM.md` (BDT as market scope) is extended by an explicit pointer to this spec so a reader doesn't read "only USD" as "never a code column".
@@ -227,12 +227,12 @@ These sit behind the engine core (parent README-owned) and are evolving the two 
 - Motion: panel in opacity/transform only; `prefers-reduced-motion` → opacity only.
 - A11y: AA radios, explicit submit, result in a live-region, keyboard-complete; the "enable pilot" button is gated (disabled state has a mechanism label).
 - Performance: static admin page; no heavy queries.
-- Anti-slop: distinctive — the two settings cards (BDT default / USD pilot) with a real snapshot rate chip ("rate BDT→USD 1.0 = x.y (daily)"), not a generic dropdown; the USD option shows a *pilot-chip* (pending gate) so it can't be confused with an open global switch.
+- Anti-slop: distinctive — the two settings cards (BDT default / USD pilot) with a real snapshot rate chip ("rate BDT→USD 1.0 = x.y (daily)"), not a generic dropdown; the USD option shows a _pilot-chip_ (pending gate) so it can't be confused with an open global switch.
 
 ## 19. Design guidelines — FX rates audit (admin, second surface)
 
 - Intent: an authorized view of the FX feed and the conversions it served: rate_date, pair, sell/buy, source, verified_by, and per-order snapshot usage; like a till/a rate ledger, not a chart.
-- Palette: mint for `verified`/sourced; amber for stale/pending; Rickshaw Red only if a *stale* snapshot was used on a live amount (must not happen); no color-only states.
+- Palette: mint for `verified`/sourced; amber for stale/pending; Rickshaw Red only if a _stale_ snapshot was used on a live amount (must not happen); no color-only states.
 - Typography: tabular numerals, monospaced rate cells, pair codes (`BDT->USD`) — reviewing rates is reading accuracy.
 - Density: ledger-dense (not checkout); paginated by `rate_date`+pair; row ID sticky.
 - Motion: minimal in/out; reduced-motion → opacity only.
@@ -253,13 +253,13 @@ Full conformance matrix lives in `docs/06-payments/currency-gates.md` (companion
 
 ## 22. Residual gaps — named TBDs
 
-| # | Lead | Owner | Scope of decision |
-|---|------|-------|-------------------|
-| TBD-1 | FX staleness window (rate age) | treasury | sets the fail-closed age; default assumed 1 day |
-| TBD-2 | sell/buy spread (adjuster between sell and buy) | treasury | the one proportional handling, in the docs (fee) |
-| TBD-3 | `settlement_code` setting in the pilot (immutability in prod) | currency owner | do/do-not allow mid-pilot flip |
-| TBD-4 | Refund currency-mismatch policy detail | treasury + ops | how wide a drift tolerated before block+alert |
-| TBD-5 | USD export wallet scope + BDT↔USD row isolation governance | treasury | money-out for USD pilot |
+| #     | Lead                                                          | Owner          | Scope of decision                                |
+| ----- | ------------------------------------------------------------- | -------------- | ------------------------------------------------ |
+| TBD-1 | FX staleness window (rate age)                                | treasury       | sets the fail-closed age; default assumed 1 day  |
+| TBD-2 | sell/buy spread (adjuster between sell and buy)               | treasury       | the one proportional handling, in the docs (fee) |
+| TBD-3 | `settlement_code` setting in the pilot (immutability in prod) | currency owner | do/do-not allow mid-pilot flip                   |
+| TBD-4 | Refund currency-mismatch policy detail                        | treasury + ops | how wide a drift tolerated before block+alert    |
+| TBD-5 | USD export wallet scope + BDT↔USD row isolation governance    | treasury       | money-out for USD pilot                          |
 
 All `TBD-*` are owner-named and not merged; nothing above implements until each is resolved (per `docs/00-meta/README.md` named-TBD protocol).
 

@@ -1,1 +1,470 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "label": "trajectory-mrr-2026-05-30T16-23-22-570Z.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L1"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_runat", "label": "runAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L2"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_benchmark", "label": "benchmark", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L3"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_embedder", "label": "embedder", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L4"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpusversion", "label": "corpusVersion", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L5"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpussize", "label": "corpusSize", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L6"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "label": "mrr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L7"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_raw", "label": "raw", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L8"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_distilled", "label": "distilled", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L9"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_delta", "label": "delta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L10"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "label": "paperReference", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L11"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_raw", "label": "raw", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L12"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_distilled", "label": "distilled", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L13"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_delta", "label": "delta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L14"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L15"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "label": "compression", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L18"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totalrawbytes", "label": "totalRawBytes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L19"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totaldistbytes", "label": "totalDistBytes", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L20"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_ratio", "label": "ratio", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L21"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "label": "paperReference", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L22"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensraw", "label": "tokensRaw", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L23"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensdistilled", "label": "tokensDistilled", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L24"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_ratio", "label": "ratio", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L25"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms", "label": "latencyMs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L29"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_embedall", "label": "embedAll", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L30"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_queryall", "label": "queryAll", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L31"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_perdistill", "label": "perDistill", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L32"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_distilledisbetter", "label": "distilledIsBetter", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L34"}, {"id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_perqueryranks", "label": "perQueryRanks", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L35"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_runat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_benchmark", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_embedder", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpusversion", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpussize", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L7", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_raw", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L8", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_distilled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L9", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_delta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L10", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L11", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_raw", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L12", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_distilled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L13", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_delta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L14", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L18", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totalrawbytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L19", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totaldistbytes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L20", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L21", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L22", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensraw", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L23", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensdistilled", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L24", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L25", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L29", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_embedall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L30", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_queryall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L31", "weight": 1.0}, {"source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_perdistill", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_distilledisbetter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json", "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_perqueryranks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json", "source_location": "L35", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "label": "trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_runat",
+      "label": "runAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_benchmark",
+      "label": "benchmark",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_embedder",
+      "label": "embedder",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpusversion",
+      "label": "corpusVersion",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpussize",
+      "label": "corpusSize",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "label": "mrr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_raw",
+      "label": "raw",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_distilled",
+      "label": "distilled",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_delta",
+      "label": "delta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "label": "paperReference",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_raw",
+      "label": "raw",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_distilled",
+      "label": "distilled",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L13"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_delta",
+      "label": "delta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "label": "compression",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totalrawbytes",
+      "label": "totalRawBytes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totaldistbytes",
+      "label": "totalDistBytes",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_ratio",
+      "label": "ratio",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L21"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "label": "paperReference",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensraw",
+      "label": "tokensRaw",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensdistilled",
+      "label": "tokensDistilled",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_ratio",
+      "label": "ratio",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L25"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms",
+      "label": "latencyMs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L29"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_embedall",
+      "label": "embedAll",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_queryall",
+      "label": "queryAll",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L31"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_perdistill",
+      "label": "perDistill",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L32"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_distilledisbetter",
+      "label": "distilledIsBetter",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L34"
+    },
+    {
+      "id": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_perqueryranks",
+      "label": "perQueryRanks",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L35"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_runat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_benchmark",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_embedder",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpusversion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_corpussize",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_raw",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_distilled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_delta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_raw",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_distilled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_delta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_mrr_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totalrawbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_totaldistbytes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensraw",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_tokensdistilled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_compression_paperreference",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_paperreference_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_embedall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_queryall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_latencyms_perdistill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_distilledisbetter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_trajectory_mrr_2026_05_30t16_23_22_570z_json",
+      "target": "runs_trajectory_mrr_2026_05_30t16_23_22_570z_perqueryranks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/trajectory-mrr-2026-05-30T16-23-22-570Z.json",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ]
+}

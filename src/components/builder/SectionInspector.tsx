@@ -20,7 +20,11 @@ import { altKey, sizesKey } from "@/lib/media";
 import { taxonomyOptions } from "@/lib/taxonomy";
 import { unitLabel } from "@/lib/unit-format";
 import { MenuBuilder } from "./MenuBuilder";
-import { dataEmptyState, missingBindings, widgetHelp } from "@/lib/widget-metadata";
+import {
+  dataEmptyState,
+  missingBindings,
+  widgetHelp,
+} from "@/lib/widget-metadata";
 import type { VisibilityRule } from "@/lib/visibility";
 import { ArrayFieldEditor } from "./ArrayFieldEditor";
 import { MediaPicker } from "./MediaPicker";
@@ -62,8 +66,9 @@ function BiTextField({
     value,
     className,
     lang: tab === "bn" ? "bn" : undefined,
-    onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-      onChange(key, event.target.value),
+    onChange: (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) => onChange(key, event.target.value),
   };
 
   return (
@@ -81,7 +86,11 @@ function BiTextField({
                 : "bg-muted text-muted-foreground"
           }`}
         >
-          {state === "ok" ? "EN + বাংলা" : state === "fallback" ? "EN only" : "empty"}
+          {state === "ok"
+            ? "EN + বাংলা"
+            : state === "fallback"
+              ? "EN only"
+              : "empty"}
         </span>
       </div>
 
@@ -94,7 +103,9 @@ function BiTextField({
             aria-selected={tab === locale}
             onClick={() => setTab(locale)}
             className={`rounded-fq-sm px-2 py-1 text-[0.65rem] ${
-              tab === locale ? "bg-primary text-primary-foreground" : "border border-border"
+              tab === locale
+                ? "bg-primary text-primary-foreground"
+                : "border border-border"
             }`}
           >
             {locale === "en" ? "English" : "বাংলা"}
@@ -102,7 +113,11 @@ function BiTextField({
         ))}
       </div>
 
-      {long ? <textarea rows={4} {...commonProps} /> : <input type="text" {...commonProps} />}
+      {long ? (
+        <textarea rows={4} {...commonProps} />
+      ) : (
+        <input type="text" {...commonProps} />
+      )}
 
       {tab === "bn" && !bn.trim() && en.trim() && (
         <p className="text-[0.65rem] text-muted-foreground">
@@ -112,7 +127,6 @@ function BiTextField({
     </div>
   );
 }
-
 
 type PanelKey = "content" | "style" | "advanced";
 
@@ -150,9 +164,14 @@ const PANEL_LABEL: Record<PanelKey, { en: string; bn: string }> = {
 /** Client-side field validation; the server re-validates every value on save. */
 function fieldError(field: Field, value: PropValue | undefined): string | null {
   if (field.kind === "url" && typeof value === "string" && value.trim()) {
-    if (!/^(https?:\/\/|\/)/i.test(value.trim())) return "Use an https:// or /relative URL";
+    if (!/^(https?:\/\/|\/)/i.test(value.trim()))
+      return "Use an https:// or /relative URL";
   }
-  if (field.kind === "number" && value !== undefined && Number.isNaN(Number(value))) {
+  if (
+    field.kind === "number" &&
+    value !== undefined &&
+    Number.isNaN(Number(value))
+  ) {
     return "Enter a number";
   }
   if (typeof value === "string" && field.max && value.length > field.max) {
@@ -180,12 +199,18 @@ export function SectionInspector({
   const entry = section ? catalogEntry(section.type) : undefined;
 
   const grouped = useMemo(() => {
-    const out: Record<PanelKey, Field[]> = { content: [], style: [], advanced: [] };
+    const out: Record<PanelKey, Field[]> = {
+      content: [],
+      style: [],
+      advanced: [],
+    };
     const fields = entry?.fields ?? [];
     // Phase 3.3: alt text and the sizes preset are rendered inside their image
     // field's block, so they are skipped here.
     const owned = new Set(
-      fields.filter((f) => f.kind === "image").flatMap((f) => [altKey(f.key), sizesKey(f.key)]),
+      fields
+        .filter((f) => f.kind === "image")
+        .flatMap((f) => [altKey(f.key), sizesKey(f.key)]),
     );
     for (const field of fields) {
       if (owned.has(field.key)) continue;
@@ -199,11 +224,13 @@ export function SectionInspector({
     return out;
   }, [entry, contentOnly]);
 
-
   if (!section) {
     return (
       <p className="text-sm text-muted-foreground">
-        {t("Select a section to edit its content.", "কন্টেন্ট এডিট করতে একটি সেকশন বাছুন।")}
+        {t(
+          "Select a section to edit its content.",
+          "কন্টেন্ট এডিট করতে একটি সেকশন বাছুন।",
+        )}
       </p>
     );
   }
@@ -212,9 +239,16 @@ export function SectionInspector({
     return (
       <div className="space-y-3">
         <p className="rounded-fq-md border border-danger bg-danger-soft p-3 text-sm text-danger-foreground">
-          {t("This widget is not supported by the current theme engine.", "বর্তমান থিম ইঞ্জিন এই উইজেট সাপোর্ট করে না।")}
+          {t(
+            "This widget is not supported by the current theme engine.",
+            "বর্তমান থিম ইঞ্জিন এই উইজেট সাপোর্ট করে না।",
+          )}
         </p>
-        <button type="button" onClick={onDelete} className="text-sm text-danger-foreground underline">
+        <button
+          type="button"
+          onClick={onDelete}
+          className="text-sm text-danger-foreground underline"
+        >
           {t("Remove section", "সেকশন মুছুন")}
         </button>
       </div>
@@ -248,7 +282,10 @@ export function SectionInspector({
     // Phase 3.2: a titled cluster of sub-fields, stored flat.
     if (field.kind === "group") {
       return (
-        <fieldset key={field.key} className="space-y-3 rounded-fq-md border border-border p-3">
+        <fieldset
+          key={field.key}
+          className="space-y-3 rounded-fq-md border border-border p-3"
+        >
           <legend className="px-1 text-xs font-medium">{field.label}</legend>
           {(field.fields ?? []).map(renderField)}
         </fieldset>
@@ -305,7 +342,9 @@ export function SectionInspector({
               ) : (
                 <input
                   type={
-                    sub.kind === "number" || sub.kind === "range" || sub.kind === "unit"
+                    sub.kind === "number" ||
+                    sub.kind === "range" ||
+                    sub.kind === "unit"
                       ? "number"
                       : sub.kind === "color"
                         ? "color"
@@ -315,7 +354,9 @@ export function SectionInspector({
                   onChange={(e) =>
                     set(
                       sub.key,
-                      sub.kind === "number" || sub.kind === "range" || sub.kind === "unit"
+                      sub.kind === "number" ||
+                        sub.kind === "range" ||
+                        sub.kind === "unit"
                         ? Number(e.target.value)
                         : (e.target.value as PropScalar),
                     )
@@ -337,7 +378,11 @@ export function SectionInspector({
           field={field}
           id={id}
           editable={editable === true}
-          en={typeof section.props[field.key] === "string" ? (section.props[field.key] as string) : ""}
+          en={
+            typeof section.props[field.key] === "string"
+              ? (section.props[field.key] as string)
+              : ""
+          }
           bn={
             typeof section.props[bnKey(field.key)] === "string"
               ? (section.props[bnKey(field.key)] as string)
@@ -351,7 +396,13 @@ export function SectionInspector({
 
     // Phase 3.3: image props get the media picker, alt text and a sizes preset.
     if (field.kind === "image") {
-      const altField: Field = { ...field, key: altKey(field.key), label: `${field.label} — alt`, kind: "bitext", max: 200 };
+      const altField: Field = {
+        ...field,
+        key: altKey(field.key),
+        label: `${field.label} — alt`,
+        kind: "bitext",
+        max: 200,
+      };
       return (
         <div key={field.key} className="space-y-2">
           <span className="block text-xs font-medium">{field.label}</span>
@@ -363,18 +414,27 @@ export function SectionInspector({
               onChange(field.key, url, "desktop");
               /* Inherit the library's alt text, but never over an author's. */
               const existing = section.props[altKey(field.key)];
-              if (meta?.altText && !(typeof existing === "string" && existing.trim())) {
+              if (
+                meta?.altText &&
+                !(typeof existing === "string" && existing.trim())
+              ) {
                 onChange(altKey(field.key), meta.altText, "desktop");
               }
             }}
 
-            onSizes={(preset) => onChange(sizesKey(field.key), preset, "desktop")}
+            onSizes={(preset) =>
+              onChange(sizesKey(field.key), preset, "desktop")
+            }
           />
           <BiTextField
             field={altField}
             id={`${id}-alt`}
             editable={editable === true}
-            en={typeof section.props[altKey(field.key)] === "string" ? (section.props[altKey(field.key)] as string) : ""}
+            en={
+              typeof section.props[altKey(field.key)] === "string"
+                ? (section.props[altKey(field.key)] as string)
+                : ""
+            }
             bn={
               typeof section.props[bnKey(altKey(field.key))] === "string"
                 ? (section.props[bnKey(altKey(field.key))] as string)
@@ -387,10 +447,7 @@ export function SectionInspector({
       );
     }
 
-
-
     return (
-
       <div key={field.key} className="space-y-1">
         <div className="flex items-baseline justify-between gap-2">
           <label htmlFor={id} className="block text-xs font-medium">
@@ -399,7 +456,10 @@ export function SectionInspector({
           {device !== "desktop" && field.responsive && (
             <span className="text-[0.65rem] text-muted-foreground">
               {overridden
-                ? t(`${BP_LABEL[device].en} override`, `${BP_LABEL[device].bn} ওভাররাইড`)
+                ? t(
+                    `${BP_LABEL[device].en} override`,
+                    `${BP_LABEL[device].bn} ওভাররাইড`,
+                  )
                 : t("Inherited", "উত্তরাধিকারী")}
             </span>
           )}
@@ -440,7 +500,11 @@ export function SectionInspector({
           <select
             id={id}
             disabled={!editable}
-            value={typeof value === "string" ? value : (field.options?.[0]?.value ?? "")}
+            value={
+              typeof value === "string"
+                ? value
+                : (field.options?.[0]?.value ?? "")
+            }
             onChange={(e) => onChange(field.key, e.target.value, device)}
             className={shared}
           >
@@ -483,8 +547,12 @@ export function SectionInspector({
               min={field.min ?? 0}
               max={typeof field.max === "number" ? field.max : 100}
               step={field.step ?? 1}
-              value={typeof value === "number" ? value : Number(value ?? 0) || 0}
-              onChange={(e) => onChange(field.key, Number(e.target.value), device)}
+              value={
+                typeof value === "number" ? value : Number(value ?? 0) || 0
+              }
+              onChange={(e) =>
+                onChange(field.key, Number(e.target.value), device)
+              }
               className={field.kind === "range" ? "w-full" : shared}
             />
             <span className="w-16 shrink-0 text-[0.65rem] text-muted-foreground">
@@ -512,16 +580,28 @@ export function SectionInspector({
         ) : (
           <input
             id={id}
-            type={field.kind === "number" ? "number" : field.kind === "url" ? "url" : "text"}
+            type={
+              field.kind === "number"
+                ? "number"
+                : field.kind === "url"
+                  ? "url"
+                  : "text"
+            }
             maxLength={field.max ?? 200}
             disabled={!editable}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : undefined}
-            value={typeof value === "number" || typeof value === "string" ? String(value) : ""}
+            value={
+              typeof value === "number" || typeof value === "string"
+                ? String(value)
+                : ""
+            }
             onChange={(e) =>
               onChange(
                 field.key,
-                field.kind === "number" ? Number(e.target.value) : e.target.value,
+                field.kind === "number"
+                  ? Number(e.target.value)
+                  : e.target.value,
                 device,
               )
             }
@@ -537,16 +617,27 @@ export function SectionInspector({
             {device !== "desktop" && field.responsive && (
               <span
                 className={`rounded-full px-2 py-0.5 text-[0.6rem] ${
-                  overridden ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
+                  overridden
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted text-muted-foreground"
                 }`}
                 title={
                   overridden
-                    ? t("Set on this device layer.", "এই ডিভাইস লেয়ারে সেট করা।")
-                    : t("Value comes from a wider layer.", "মান বড় লেয়ার থেকে আসছে।")
+                    ? t(
+                        "Set on this device layer.",
+                        "এই ডিভাইস লেয়ারে সেট করা।",
+                      )
+                    : t(
+                        "Value comes from a wider layer.",
+                        "মান বড় লেয়ার থেকে আসছে।",
+                      )
                 }
               >
                 {overridden
-                  ? t(`Overridden on ${device}`, `${BP_LABEL[device].bn}-এ ওভাররাইড`)
+                  ? t(
+                      `Overridden on ${device}`,
+                      `${BP_LABEL[device].bn}-এ ওভাররাইড`,
+                    )
                   : t(
                       `Inherited from ${inheritance.source === "default" ? "default" : inheritance.source}`,
                       `${
@@ -584,7 +675,9 @@ export function SectionInspector({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="font-bangla-display text-sm font-semibold">{entry.label}</h3>
+        <h3 className="font-bangla-display text-sm font-semibold">
+          {entry.label}
+        </h3>
         <p className="text-xs text-muted-foreground">{section.id}</p>
       </div>
 
@@ -631,7 +724,11 @@ export function SectionInspector({
       )}
 
       {activePanels.length > 1 && (
-        <div role="tablist" aria-label={t("Field groups", "ফিল্ড গ্রুপ")} className="flex flex-wrap gap-1">
+        <div
+          role="tablist"
+          aria-label={t("Field groups", "ফিল্ড গ্রুপ")}
+          className="flex flex-wrap gap-1"
+        >
           {activePanels.map((key) => (
             <button
               key={key}
@@ -640,7 +737,9 @@ export function SectionInspector({
               aria-selected={current === key}
               onClick={() => setPanel(key)}
               className={`rounded-fq-md px-2 py-1.5 text-xs ${
-                current === key ? "bg-primary text-primary-foreground" : "border border-border"
+                current === key
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border"
               }`}
             >
               {t(PANEL_LABEL[key].en, PANEL_LABEL[key].bn)}
@@ -657,13 +756,18 @@ export function SectionInspector({
 
       {onAbChange && (
         <fieldset className="space-y-2 rounded-fq-md border border-border p-3">
-          <legend className="px-1 text-xs font-medium">{t("A/B variant", "A/B ভ্যারিয়েন্ট")}</legend>
+          <legend className="px-1 text-xs font-medium">
+            {t("A/B variant", "A/B ভ্যারিয়েন্ট")}
+          </legend>
           <input
             type="text"
             placeholder={t("Experiment key", "এক্সপেরিমেন্ট কী")}
             value={section.ab?.experiment ?? ""}
             onChange={(e) =>
-              onAbChange({ experiment: e.target.value, variant: section.ab?.variant ?? "" })
+              onAbChange({
+                experiment: e.target.value,
+                variant: section.ab?.variant ?? "",
+              })
             }
             className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
           />
@@ -672,7 +776,10 @@ export function SectionInspector({
             placeholder={t("Variant key", "ভ্যারিয়েন্ট কী")}
             value={section.ab?.variant ?? ""}
             onChange={(e) =>
-              onAbChange({ experiment: section.ab?.experiment ?? "", variant: e.target.value })
+              onAbChange({
+                experiment: section.ab?.experiment ?? "",
+                variant: e.target.value,
+              })
             }
             className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
           />
@@ -686,7 +793,9 @@ export function SectionInspector({
       )}
 
       <fieldset className="space-y-2 rounded-fq-md border border-border p-3">
-        <legend className="px-1 text-xs font-medium">{t("Visible on", "যেখানে দেখাবে")}</legend>
+        <legend className="px-1 text-xs font-medium">
+          {t("Visible on", "যেখানে দেখাবে")}
+        </legend>
         {BREAKPOINTS.map((bp) => (
           <label key={bp} className="flex items-center gap-2 text-sm">
             <input
@@ -700,7 +809,10 @@ export function SectionInspector({
         ))}
         {hidden.length === BREAKPOINTS.length && (
           <p className="text-xs text-warning-foreground">
-            {t("Hidden everywhere — shoppers will never see this section.", "সব জায়গায় লুকানো — ক্রেতারা এটি দেখবে না।")}
+            {t(
+              "Hidden everywhere — shoppers will never see this section.",
+              "সব জায়গায় লুকানো — ক্রেতারা এটি দেখবে না।",
+            )}
           </p>
         )}
       </fieldset>

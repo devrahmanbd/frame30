@@ -129,7 +129,6 @@ quote(order) → createShipment(order) → label + AWB
    records the outcome plus `framique_courier_replay_total`.
 4. On repeated failure, escalation queue alerts ops; no order is mis-closed.
 
-
 ### Failure story — courier rate API down at quote
 
 1. Quote call fails at checkout dispatch.

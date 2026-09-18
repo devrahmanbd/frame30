@@ -19,7 +19,10 @@ function chain(rows: unknown[]) {
 describe("marketplace preset bridge", () => {
   it("prepends one synthetic entry per official preset", async () => {
     const db = { from: vi.fn(() => chain([])) } as never;
-    const catalog = await listCatalog(db, "00000000-0000-4000-a000-000000000001");
+    const catalog = await listCatalog(
+      db,
+      "00000000-0000-4000-a000-000000000001",
+    );
     expect(catalog.themes.length).toBe(THEME_PRESETS.length);
     expect(THEME_PRESETS.length).toBeGreaterThan(0);
     for (const [i, entry] of catalog.themes.entries()) {
@@ -63,7 +66,10 @@ describe("marketplace preset bridge", () => {
         return n <= 2 ? chain(n === 1 ? [row] : []) : chain([]);
       }),
     } as never;
-    const catalog = await listCatalog(db, "00000000-0000-4000-a000-000000000001");
+    const catalog = await listCatalog(
+      db,
+      "00000000-0000-4000-a000-000000000001",
+    );
     expect(catalog.themes.length).toBe(THEME_PRESETS.length + 1);
     const last = catalog.themes[catalog.themes.length - 1]!;
     expect(last.builtin).toBe(false);
@@ -72,12 +78,17 @@ describe("marketplace preset bridge", () => {
   it("prepends synthetic entries for official widgets", async () => {
     const { BUILTIN_PLUGINS } = await import("./builtin-plugins");
     const db = { from: vi.fn(() => chain([])) } as never;
-    const catalog = await listCatalog(db, "00000000-0000-4000-a000-000000000001");
+    const catalog = await listCatalog(
+      db,
+      "00000000-0000-4000-a000-000000000001",
+    );
     expect(catalog.widgets.length).toBe(BUILTIN_PLUGINS.length);
     expect(BUILTIN_PLUGINS.length).toBeGreaterThan(0);
     for (const [i, entry] of catalog.widgets.entries()) {
       expect(entry.builtin).toBe(true);
-      expect(entry.id).toBe(`${BUILTIN_PREFIX}${BUILTIN_PLUGINS[i]!.manifest.id}`);
+      expect(entry.id).toBe(
+        `${BUILTIN_PREFIX}${BUILTIN_PLUGINS[i]!.manifest.id}`,
+      );
       expect(entry.kind).toBe("widget");
       expect(entry.status).toBe("active");
       expect(entry.price_minor_int).toBe(0);
@@ -96,9 +107,10 @@ describe("marketplace preset bridge", () => {
       const verdict = parseManifest(p.manifest);
       expect(verdict.ok).toBe(true);
       if (!verdict.ok) {
-        throw new Error(`Manifest for ${p.manifest.id} failed: ${verdict.errors.join(", ")}`);
+        throw new Error(
+          `Manifest for ${p.manifest.id} failed: ${verdict.errors.join(", ")}`,
+        );
       }
     }
   });
 });
-

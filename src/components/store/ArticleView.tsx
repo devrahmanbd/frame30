@@ -19,7 +19,11 @@ export type ArticleViewData = {
     tags?: string[] | null;
     published_at?: string | null;
     reading_minutes?: number | null;
-    author?: { slug: string; displayName: string; displayNameEn: string | null } | null;
+    author?: {
+      slug: string;
+      displayName: string;
+      displayNameEn: string | null;
+    } | null;
   };
   merchant?: { name?: string | null; slug?: string | null } | null;
 };
@@ -38,11 +42,25 @@ export function ArticleView({ article, merchant }: ArticleViewData) {
     <main className="mx-auto max-w-3xl px-4 py-10">
       <article>
         <header className="space-y-3">
-          <h1 className="font-bangla-display text-3xl font-semibold leading-tight">{article.title}</h1>
+          <h1 className="font-bangla-display text-3xl font-semibold leading-tight">
+            {article.title}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            {article.author ? <Link to="/blog/author/$slug" params={{ slug: article.author.slug }} className="hover:underline">{article.author.displayNameEn || article.author.displayName}</Link> : merchant?.name}
+            {article.author ? (
+              <Link
+                to="/blog/author/$slug"
+                params={{ slug: article.author.slug }}
+                className="hover:underline"
+              >
+                {article.author.displayNameEn || article.author.displayName}
+              </Link>
+            ) : (
+              merchant?.name
+            )}
             {published ? ` · ${published}` : ""}
-            {article.reading_minutes ? ` · ${article.reading_minutes} min read` : ""}
+            {article.reading_minutes
+              ? ` · ${article.reading_minutes} min read`
+              : ""}
           </p>
           {(article.tags ?? []).length > 0 && (
             <ul className="flex flex-wrap gap-2">
@@ -70,10 +88,13 @@ export function ArticleView({ article, merchant }: ArticleViewData) {
             decoding="async"
             className="mt-6 aspect-[16/9] w-full rounded-fq-md border border-border object-cover"
           />
-
         )}
 
-        {article.excerpt && <p className="mt-6 text-base text-muted-foreground">{article.excerpt}</p>}
+        {article.excerpt && (
+          <p className="mt-6 text-base text-muted-foreground">
+            {article.excerpt}
+          </p>
+        )}
 
         <ArticleBody body={article.body as never} className="mt-6" />
       </article>

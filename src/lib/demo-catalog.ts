@@ -36,12 +36,20 @@ export type DemoCatalog = {
 /** apparel — sizes, colourways, fabric and model measurements in the copy. */
 const APPAREL: DemoCatalog = {
   categories: [
-    { slug: "womens", name: "Women", description: "Everyday and occasion wear." },
+    {
+      slug: "womens",
+      name: "Women",
+      description: "Everyday and occasion wear.",
+    },
     { slug: "mens", name: "Men", description: "Shirts, kurtas and outerwear." },
   ],
   collections: [
     { slug: "new-in", name: "New In", description: "This week's arrivals." },
-    { slug: "everyday-edit", name: "The Everyday Edit", description: "Wardrobe staples." },
+    {
+      slug: "everyday-edit",
+      name: "The Everyday Edit",
+      description: "Wardrobe staples.",
+    },
   ],
   products: [
     {
@@ -53,14 +61,21 @@ const APPAREL: DemoCatalog = {
       collections: ["new-in"],
       tags: ["cotton", "handloom", "saree"],
       variants: [
-        { name: "Indigo", sku: "APP-SAR-IND", price: 349000, compare_at: 420000, stock: 12 },
+        {
+          name: "Indigo",
+          sku: "APP-SAR-IND",
+          price: 349000,
+          compare_at: 420000,
+          stock: 12,
+        },
         { name: "Terracotta", sku: "APP-SAR-TER", price: 349000, stock: 8 },
       ],
     },
     {
       slug: "oversized-poplin-shirt",
       title: "Oversized Poplin Shirt",
-      description: "Crisp 120gsm cotton poplin, drop shoulder, mother-of-pearl buttons. Model is 180cm and wears M.",
+      description:
+        "Crisp 120gsm cotton poplin, drop shoulder, mother-of-pearl buttons. Model is 180cm and wears M.",
       category: "mens",
       collections: ["new-in", "everyday-edit"],
       tags: ["shirt", "cotton"],
@@ -73,7 +88,8 @@ const APPAREL: DemoCatalog = {
     {
       slug: "linen-blend-trouser",
       title: "Linen Blend Trouser",
-      description: "55% linen, 45% viscose. Elasticated back waist, 28in inseam. Model is 172cm and wears 30.",
+      description:
+        "55% linen, 45% viscose. Elasticated back waist, 28in inseam. Model is 172cm and wears 30.",
       category: "womens",
       collections: ["everyday-edit"],
       tags: ["linen", "trouser"],
@@ -85,11 +101,20 @@ const APPAREL: DemoCatalog = {
     {
       slug: "quilted-cotton-jacket",
       title: "Quilted Cotton Jacket",
-      description: "Hand-quilted nakshi lining, two patch pockets, unlined cuffs. Model is 175cm and wears M.",
+      description:
+        "Hand-quilted nakshi lining, two patch pockets, unlined cuffs. Model is 175cm and wears M.",
       category: "mens",
       collections: ["new-in"],
       tags: ["outerwear", "quilted"],
-      variants: [{ name: "Charcoal / M", sku: "APP-QLT-CM", price: 545000, compare_at: 620000, stock: 5 }],
+      variants: [
+        {
+          name: "Charcoal / M",
+          sku: "APP-QLT-CM",
+          price: 545000,
+          compare_at: 620000,
+          stock: 5,
+        },
+      ],
     },
   ],
 };
@@ -103,23 +128,37 @@ const MARKETPLACE: DemoCatalog = {
     { slug: "fashion", name: "Fashion" },
   ],
   collections: [
-    { slug: "todays-deals", name: "Today's Deals", description: "Time-limited price drops." },
+    {
+      slug: "todays-deals",
+      name: "Today's Deals",
+      description: "Time-limited price drops.",
+    },
     { slug: "best-sellers", name: "Best Sellers" },
   ],
   products: [
     {
       slug: "stainless-steel-cookware-set",
       title: "5-Piece Stainless Steel Cookware Set",
-      description: "Tri-ply base, induction-ready, dishwasher safe. Includes two saucepans, a kadai and lids.",
+      description:
+        "Tri-ply base, induction-ready, dishwasher safe. Includes two saucepans, a kadai and lids.",
       category: "home",
       collections: ["todays-deals", "best-sellers"],
       tags: ["kitchen", "cookware"],
-      variants: [{ name: "5-piece", sku: "MKT-CKW-5", price: 489000, compare_at: 650000, stock: 30 }],
+      variants: [
+        {
+          name: "5-piece",
+          sku: "MKT-CKW-5",
+          price: 489000,
+          compare_at: 650000,
+          stock: 30,
+        },
+      ],
     },
     {
       slug: "premium-basmati-rice-5kg",
       title: "Premium Basmati Rice 5kg",
-      description: "Aged 12 months, extra-long grain, sourced from a single mill.",
+      description:
+        "Aged 12 months, extra-long grain, sourced from a single mill.",
       category: "grocery",
       collections: ["best-sellers"],
       tags: ["rice", "pantry"],
@@ -131,11 +170,20 @@ const MARKETPLACE: DemoCatalog = {
     {
       slug: "wireless-earbuds-anc",
       title: "Wireless Earbuds with ANC",
-      description: "Hybrid active noise cancellation, 32h with case, USB-C, IPX5.",
+      description:
+        "Hybrid active noise cancellation, 32h with case, USB-C, IPX5.",
       category: "gadgets",
       collections: ["todays-deals"],
       tags: ["audio", "anc"],
-      variants: [{ name: "Black", sku: "MKT-EAR-BLK", price: 349000, compare_at: 449000, stock: 45 }],
+      variants: [
+        {
+          name: "Black",
+          sku: "MKT-EAR-BLK",
+          price: 349000,
+          compare_at: 449000,
+          stock: 45,
+        },
+      ],
     },
     {
       slug: "cotton-crew-tee-3pack",
@@ -156,7 +204,9 @@ const MARKETPLACE: DemoCatalog = {
       category: "home",
       collections: ["todays-deals"],
       tags: ["fan", "rechargeable"],
-      variants: [{ name: "White", sku: "MKT-FAN-WHT", price: 275000, stock: 22 }],
+      variants: [
+        { name: "White", sku: "MKT-FAN-WHT", price: 275000, stock: 22 },
+      ],
     },
   ],
 };
@@ -169,52 +219,85 @@ const ELECTRONICS: DemoCatalog = {
     { slug: "accessories", name: "Accessories" },
   ],
   collections: [
-    { slug: "emi-available", name: "EMI Available", description: "0% EMI up to 12 months." },
+    {
+      slug: "emi-available",
+      name: "EMI Available",
+      description: "0% EMI up to 12 months.",
+    },
     { slug: "just-launched", name: "Just Launched" },
   ],
   products: [
     {
       slug: "ultrabook-14-i7",
-      title: "Ultrabook 14\" Core i7",
+      title: 'Ultrabook 14" Core i7',
       description:
         "14in 2.8K OLED 120Hz · Core i7-13700H · 16GB LPDDR5 · 1TB NVMe · 75Wh · 1.29kg. 2-year international warranty.",
       category: "laptops",
       collections: ["emi-available", "just-launched"],
       tags: ["laptop", "oled", "emi"],
       variants: [
-        { name: "16GB / 1TB", sku: "ELC-UB14-16-1T", price: 16500000, stock: 7 },
-        { name: "32GB / 2TB", sku: "ELC-UB14-32-2T", price: 19900000, stock: 3 },
+        {
+          name: "16GB / 1TB",
+          sku: "ELC-UB14-16-1T",
+          price: 16500000,
+          stock: 7,
+        },
+        {
+          name: "32GB / 2TB",
+          sku: "ELC-UB14-32-2T",
+          price: 19900000,
+          stock: 3,
+        },
       ],
     },
     {
       slug: "over-ear-anc-headphones",
       title: "Over-Ear ANC Headphones",
-      description: "40mm drivers · LDAC · 45dB hybrid ANC · 40h playback · multipoint. 1-year warranty.",
+      description:
+        "40mm drivers · LDAC · 45dB hybrid ANC · 40h playback · multipoint. 1-year warranty.",
       category: "audio",
       collections: ["emi-available"],
       tags: ["headphones", "anc"],
       variants: [
-        { name: "Graphite", sku: "ELC-HP-GRA", price: 2450000, compare_at: 2900000, stock: 15 },
+        {
+          name: "Graphite",
+          sku: "ELC-HP-GRA",
+          price: 2450000,
+          compare_at: 2900000,
+          stock: 15,
+        },
         { name: "Silver", sku: "ELC-HP-SIL", price: 2450000, stock: 9 },
       ],
     },
     {
       slug: "gan-charger-100w",
       title: "100W GaN Charger",
-      description: "2× USB-C PD 3.1 + 1× USB-A · foldable pins · 100W total. 18-month warranty.",
+      description:
+        "2× USB-C PD 3.1 + 1× USB-A · foldable pins · 100W total. 18-month warranty.",
       category: "accessories",
       collections: ["just-launched"],
       tags: ["charger", "gan", "usb-c"],
-      variants: [{ name: "100W", sku: "ELC-GAN-100", price: 620000, stock: 40 }],
+      variants: [
+        { name: "100W", sku: "ELC-GAN-100", price: 620000, stock: 40 },
+      ],
     },
     {
       slug: "27-inch-4k-monitor",
-      title: "27\" 4K IPS Monitor",
-      description: "3840×2160 · 144Hz · 95% DCI-P3 · HDMI 2.1 + USB-C 90W PD. 3-year panel warranty.",
+      title: '27" 4K IPS Monitor',
+      description:
+        "3840×2160 · 144Hz · 95% DCI-P3 · HDMI 2.1 + USB-C 90W PD. 3-year panel warranty.",
       category: "accessories",
       collections: ["emi-available"],
       tags: ["monitor", "4k", "emi"],
-      variants: [{ name: "27in 4K", sku: "ELC-MON-27", price: 5800000, compare_at: 6500000, stock: 6 }],
+      variants: [
+        {
+          name: "27in 4K",
+          sku: "ELC-MON-27",
+          price: 5800000,
+          compare_at: 6500000,
+          stock: 6,
+        },
+      ],
     },
   ],
 };
@@ -227,7 +310,11 @@ const BEAUTY: DemoCatalog = {
     { slug: "haircare", name: "Haircare" },
   ],
   collections: [
-    { slug: "the-routine", name: "The Routine", description: "Cleanse, treat, protect." },
+    {
+      slug: "the-routine",
+      name: "The Routine",
+      description: "Cleanse, treat, protect.",
+    },
     { slug: "shade-finder", name: "Shade Finder" },
   ],
   products: [
@@ -244,16 +331,20 @@ const BEAUTY: DemoCatalog = {
     {
       slug: "gel-cleanser",
       title: "Gentle Gel Cleanser",
-      description: "Step 1 — Cleanse. Coco-glucoside, glycerin, allantoin. Sulphate-free, suits sensitive skin. 150ml.",
+      description:
+        "Step 1 — Cleanse. Coco-glucoside, glycerin, allantoin. Sulphate-free, suits sensitive skin. 150ml.",
       category: "skincare",
       collections: ["the-routine"],
       tags: ["cleanser"],
-      variants: [{ name: "150ml", sku: "BTY-CLN-150", price: 98000, stock: 85 }],
+      variants: [
+        { name: "150ml", sku: "BTY-CLN-150", price: 98000, stock: 85 },
+      ],
     },
     {
       slug: "silk-finish-foundation",
       title: "Silk Finish Foundation",
-      description: "Buildable medium coverage, 12h wear, hyaluronic acid + squalane. Six shades across warm and neutral.",
+      description:
+        "Buildable medium coverage, 12h wear, hyaluronic acid + squalane. Six shades across warm and neutral.",
       category: "makeup",
       collections: ["shade-finder"],
       tags: ["foundation", "shades"],
@@ -267,11 +358,20 @@ const BEAUTY: DemoCatalog = {
     {
       slug: "rice-water-hair-mask",
       title: "Rice Water Hair Mask",
-      description: "Weekly treatment. Fermented rice water, amla, hydrolysed keratin. Silicone-free. 200ml.",
+      description:
+        "Weekly treatment. Fermented rice water, amla, hydrolysed keratin. Silicone-free. 200ml.",
       category: "haircare",
       collections: ["the-routine"],
       tags: ["hair", "mask"],
-      variants: [{ name: "200ml", sku: "BTY-MSK-200", price: 132000, compare_at: 160000, stock: 35 }],
+      variants: [
+        {
+          name: "200ml",
+          sku: "BTY-MSK-200",
+          price: 132000,
+          compare_at: 160000,
+          stock: 35,
+        },
+      ],
     },
   ],
 };

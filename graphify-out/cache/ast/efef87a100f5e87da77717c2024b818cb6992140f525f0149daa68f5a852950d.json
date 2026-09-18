@@ -1,1 +1,637 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "label": "router-4way-seed99-2026-06-15T14-12-40Z.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L1"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "label": "metadata", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L2"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_ts", "label": "ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L3"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_node", "label": "node", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L4"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_platform", "label": "platform", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L5"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "label": "args", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L6"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_n", "label": "N", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L7"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_dim", "label": "dim", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L8"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_epochs", "label": "epochs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L9"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_hidden", "label": "hidden", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L10"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_seed", "label": "seed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L11"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_jsononly", "label": "jsonOnly", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L12"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits", "label": "splits", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L14"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_train", "label": "train", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L15"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_test", "label": "test", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L16"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance", "label": "label_balance", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L18"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_cheap", "label": "cheap", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L19"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_strong", "label": "strong", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L20"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_available", "label": "mh_native_available", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L22"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_version", "label": "mh_native_version", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L23"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_auto_backend", "label": "mh_auto_backend", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L24"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines", "label": "trivial_baselines", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L26"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_cheap_accuracy", "label": "always_cheap_accuracy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L27"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_strong_accuracy", "label": "always_strong_accuracy", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L28"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_systems", "label": "systems", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L30"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "label": "agreements", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L128"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_tinydancer", "label": "baseline_vs_tinydancer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L129"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_knn", "label": "baseline_vs_mh_knn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L130"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_krr", "label": "baseline_vs_mh_krr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L131"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_mh_knn_vs_tinydancer", "label": "mh_knn_vs_tinydancer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L132"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline", "label": "improvement_vs_baseline", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L134"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn", "label": "mh_knn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L135"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_accuracy_delta", "label": "accuracy_delta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L136"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_latency_ratio", "label": "latency_ratio", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L137"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr", "label": "mh_krr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L139"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_accuracy_delta", "label": "accuracy_delta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L140"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_latency_ratio", "label": "latency_ratio", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L141"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer", "label": "tiny_dancer", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L143"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_accuracy_delta", "label": "accuracy_delta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L144"}, {"id": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_latency_ratio", "label": "latency_ratio", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L145"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L2", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_ts", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L3", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_node", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L4", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_platform", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L5", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L6", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_n", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L7", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_dim", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L8", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_epochs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L9", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_hidden", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L10", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_seed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L11", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_jsononly", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L12", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L14", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_train", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L15", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_test", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L16", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L18", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_cheap", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L19", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_strong", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L20", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_available", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L22", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_version", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L23", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_auto_backend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L26", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_cheap_accuracy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L27", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_strong_accuracy", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_systems", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L128", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_tinydancer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L129", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_knn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L130", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_krr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L131", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_mh_knn_vs_tinydancer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L132", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L134", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L135", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_accuracy_delta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L136", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_latency_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L137", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L139", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_accuracy_delta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L140", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_latency_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L141", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L143", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_accuracy_delta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L144", "weight": 1.0}, {"source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer", "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_latency_ratio", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json", "source_location": "L145", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "label": "router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "label": "metadata",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_ts",
+      "label": "ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_node",
+      "label": "node",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_platform",
+      "label": "platform",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "label": "args",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_n",
+      "label": "N",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_dim",
+      "label": "dim",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_epochs",
+      "label": "epochs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_hidden",
+      "label": "hidden",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L10"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_seed",
+      "label": "seed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L11"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_jsononly",
+      "label": "jsonOnly",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L12"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits",
+      "label": "splits",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_train",
+      "label": "train",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L15"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_test",
+      "label": "test",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L16"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance",
+      "label": "label_balance",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_cheap",
+      "label": "cheap",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L19"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_strong",
+      "label": "strong",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L20"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_available",
+      "label": "mh_native_available",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L22"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_version",
+      "label": "mh_native_version",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L23"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_auto_backend",
+      "label": "mh_auto_backend",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L24"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines",
+      "label": "trivial_baselines",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L26"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_cheap_accuracy",
+      "label": "always_cheap_accuracy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L27"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_strong_accuracy",
+      "label": "always_strong_accuracy",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L28"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_systems",
+      "label": "systems",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L30"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "label": "agreements",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L128"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_tinydancer",
+      "label": "baseline_vs_tinydancer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L129"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_knn",
+      "label": "baseline_vs_mh_knn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L130"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_krr",
+      "label": "baseline_vs_mh_krr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L131"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_mh_knn_vs_tinydancer",
+      "label": "mh_knn_vs_tinydancer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L132"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline",
+      "label": "improvement_vs_baseline",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L134"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn",
+      "label": "mh_knn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L135"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_accuracy_delta",
+      "label": "accuracy_delta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L136"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_latency_ratio",
+      "label": "latency_ratio",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L137"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr",
+      "label": "mh_krr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L139"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_accuracy_delta",
+      "label": "accuracy_delta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L140"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_latency_ratio",
+      "label": "latency_ratio",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L141"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer",
+      "label": "tiny_dancer",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L143"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_accuracy_delta",
+      "label": "accuracy_delta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L144"
+    },
+    {
+      "id": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_latency_ratio",
+      "label": "latency_ratio",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L145"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_node",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_platform",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_n",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_dim",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_epochs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_hidden",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_seed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_args",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_args_jsononly",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_train",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_splits",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_splits_test",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_cheap",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_label_balance",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_label_balance_strong",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_available",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_native_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_metadata_mh_auto_backend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_cheap_accuracy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_trivial_baselines_always_strong_accuracy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_systems",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_tinydancer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_knn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L130",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_baseline_vs_mh_krr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_agreements_mh_knn_vs_tinydancer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_runs_router_4way_seed99_2026_06_15t14_12_40z_json",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L134",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L135",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_accuracy_delta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L136",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_knn",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_knn_latency_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_accuracy_delta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_mh_krr",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_mh_krr_latency_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_accuracy_delta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "runs_router_4way_seed99_2026_06_15t14_12_40z_improvement_vs_baseline_tiny_dancer",
+      "target": "runs_router_4way_seed99_2026_06_15t14_12_40z_tiny_dancer_latency_ratio",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/runs/router-4way-seed99-2026-06-15T14-12-40Z.json",
+      "source_location": "L145",
+      "weight": 1.0
+    }
+  ]
+}

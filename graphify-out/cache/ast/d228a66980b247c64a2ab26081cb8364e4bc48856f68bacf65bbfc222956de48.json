@@ -1,1 +1,481 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "label": "site-seo.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L1"}, {"id": "seo_site_seo_seo_entity_kinds", "label": "SEO_ENTITY_KINDS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L10"}, {"id": "seo_site_seo_seoentitykind", "label": "SeoEntityKind", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L11"}, {"id": "seo_site_seo_titletemplate", "label": "TitleTemplate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L13"}, {"id": "seo_site_seo_siteseosettings", "label": "SiteSeoSettings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L21"}, {"id": "seo_site_seo_default_templates", "label": "DEFAULT_TEMPLATES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L36"}, {"id": "seo_site_seo_default_site_seo", "label": "DEFAULT_SITE_SEO", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L59"}, {"id": "seo_site_seo_str", "label": "str()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L74"}, {"id": "seo_site_seo_bool", "label": "bool()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L76"}, {"id": "seo_site_seo_parsesiteseo", "label": "parseSiteSeo()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L79"}, {"id": "seo_site_seo_resolvetemplate", "label": "resolveTemplate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L124"}, {"id": "seo_site_seo_redirect_code_options", "label": "REDIRECT_CODE_OPTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L139"}, {"id": "seo_site_seo_redirectrow", "label": "RedirectRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L141"}, {"id": "seo_site_seo_notfoundrow", "label": "NotFoundRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L153"}, {"id": "seo_site_seo_normalisepath", "label": "normalisePath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L162"}, {"id": "seo_site_seo_redirectissue", "label": "RedirectIssue", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L173"}, {"id": "seo_site_seo_validateredirect", "label": "validateRedirect()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L175"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "users_rahman_documents_frame30_src_lib_seo_seo_meta_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_seo_meta_separators", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_seo_meta_applytokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_seo_meta_tokenvars", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_seo_entity_kinds", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_seoentitykind", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_titletemplate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_siteseosettings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L21", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_default_templates", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_default_site_seo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L59", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_str", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L74", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_bool", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_parsesiteseo", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_resolvetemplate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_redirect_code_options", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_redirectrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L141", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_notfoundrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L153", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_normalisepath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_redirectissue", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L173", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts", "target": "seo_site_seo_validateredirect", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L175", "weight": 1.0}, {"source": "seo_site_seo_parsesiteseo", "target": "seo_site_seo_str", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L85", "weight": 1.0}, {"source": "seo_site_seo_parsesiteseo", "target": "seo_site_seo_bool", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L93", "weight": 1.0}, {"source": "seo_site_seo_validateredirect", "target": "seo_site_seo_normalisepath", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L176", "weight": 1.0}], "raw_calls": [{"caller_nid": "seo_site_seo_str", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L75"}, {"caller_nid": "seo_site_seo_str", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L75"}, {"caller_nid": "seo_site_seo_str", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L75"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L98"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L100"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L109"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L109"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L109"}, {"caller_nid": "seo_site_seo_parsesiteseo", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L109"}, {"caller_nid": "seo_site_seo_resolvetemplate", "callee": "applyTokens", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L132"}, {"caller_nid": "seo_site_seo_resolvetemplate", "callee": "applyTokens", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L133"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L163"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L163"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L166"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L170"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L170"}, {"caller_nid": "seo_site_seo_normalisepath", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L170"}, {"caller_nid": "seo_site_seo_validateredirect", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L178"}, {"caller_nid": "seo_site_seo_validateredirect", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L178"}, {"caller_nid": "seo_site_seo_validateredirect", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts", "source_location": "L178"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "label": "site-seo.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "seo_site_seo_seo_entity_kinds",
+      "label": "SEO_ENTITY_KINDS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "seo_site_seo_seoentitykind",
+      "label": "SeoEntityKind",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "seo_site_seo_titletemplate",
+      "label": "TitleTemplate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "seo_site_seo_siteseosettings",
+      "label": "SiteSeoSettings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L21"
+    },
+    {
+      "id": "seo_site_seo_default_templates",
+      "label": "DEFAULT_TEMPLATES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "seo_site_seo_default_site_seo",
+      "label": "DEFAULT_SITE_SEO",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L59"
+    },
+    {
+      "id": "seo_site_seo_str",
+      "label": "str()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L74"
+    },
+    {
+      "id": "seo_site_seo_bool",
+      "label": "bool()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L76"
+    },
+    {
+      "id": "seo_site_seo_parsesiteseo",
+      "label": "parseSiteSeo()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "seo_site_seo_resolvetemplate",
+      "label": "resolveTemplate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "seo_site_seo_redirect_code_options",
+      "label": "REDIRECT_CODE_OPTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L139"
+    },
+    {
+      "id": "seo_site_seo_redirectrow",
+      "label": "RedirectRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L141"
+    },
+    {
+      "id": "seo_site_seo_notfoundrow",
+      "label": "NotFoundRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L153"
+    },
+    {
+      "id": "seo_site_seo_normalisepath",
+      "label": "normalisePath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "seo_site_seo_redirectissue",
+      "label": "RedirectIssue",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L173"
+    },
+    {
+      "id": "seo_site_seo_validateredirect",
+      "label": "validateRedirect()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L175"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "users_rahman_documents_frame30_src_lib_seo_seo_meta_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_seo_meta_separators",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_seo_meta_applytokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_seo_meta_tokenvars",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_seo_entity_kinds",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_seoentitykind",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_titletemplate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_siteseosettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_default_templates",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_default_site_seo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_str",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_bool",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_parsesiteseo",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_resolvetemplate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_redirect_code_options",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_redirectrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_notfoundrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L153",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_normalisepath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_redirectissue",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L173",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_site_seo_ts",
+      "target": "seo_site_seo_validateredirect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L175",
+      "weight": 1.0
+    },
+    {
+      "source": "seo_site_seo_parsesiteseo",
+      "target": "seo_site_seo_str",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "seo_site_seo_parsesiteseo",
+      "target": "seo_site_seo_bool",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "seo_site_seo_validateredirect",
+      "target": "seo_site_seo_normalisepath",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "seo_site_seo_str",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "seo_site_seo_str",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "seo_site_seo_str",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L98"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "seo_site_seo_parsesiteseo",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "seo_site_seo_resolvetemplate",
+      "callee": "applyTokens",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "seo_site_seo_resolvetemplate",
+      "callee": "applyTokens",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L133"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "seo_site_seo_normalisepath",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "seo_site_seo_validateredirect",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "seo_site_seo_validateredirect",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "seo_site_seo_validateredirect",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo/site-seo.ts",
+      "source_location": "L178"
+    }
+  ]
+}

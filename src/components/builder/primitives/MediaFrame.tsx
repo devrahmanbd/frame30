@@ -32,7 +32,6 @@ function originalSource(src: string): string | null {
   return decoded && /^https?:\/\//.test(decoded) ? decoded : null;
 }
 
-
 export function MediaFrame({
   src,
   alt,
@@ -55,7 +54,12 @@ export function MediaFrame({
 }) {
   // "given" → "original" → placeholder. One-way, so it can never loop.
   const [stage, setStage] = useState<"given" | "original" | "failed">("given");
-  const shown = stage === "given" ? (src ?? null) : stage === "original" ? originalSource(src ?? "") : null;
+  const shown =
+    stage === "given"
+      ? (src ?? null)
+      : stage === "original"
+        ? originalSource(src ?? "")
+        : null;
   return (
     <div
       className={`relative overflow-hidden rounded-fq-md bg-muted ${RATIO_CLASS[ratio]} ${className}`}
@@ -71,7 +75,9 @@ export function MediaFrame({
           className={`h-full w-full ${fit === "cover" ? "object-cover" : "object-contain"}`}
           onError={() =>
             setStage((current) =>
-              current === "given" && originalSource(src ?? "") ? "original" : "failed",
+              current === "given" && originalSource(src ?? "")
+                ? "original"
+                : "failed",
             )
           }
         />

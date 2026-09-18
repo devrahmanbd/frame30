@@ -4,7 +4,8 @@ import type {} from "@tanstack/react-start";
 interface SitemapEntry {
   path: string;
   lastmod?: string;
-  changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  changefreq?:
+    "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
   /** bn/en alternates, emitted as `xhtml:link` rows. */
   alternates?: { hrefLang: string; href: string }[];
@@ -24,29 +25,40 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async ({ request }) => {
         const BASE_URL = new URL(request.url).origin;
-        const { listPublishedArticles, listPublicStores } = await import("@/lib/marketing.server");
+        const { listPublishedArticles, listPublicStores } =
+          await import("@/lib/marketing.server");
         const { marketingSitemapEntries } = await import("@/lib/marketing-seo");
 
         // Marketing URLs come from the one registry that also feeds every
         // route's canonical, so a page can never be in the sitemap with a
         // canonical pointing somewhere else. Non-indexable rows (e.g. /status)
         // are filtered out there, not here.
-        const entries: SitemapEntry[] = marketingSitemapEntries(BASE_URL).map((entry) => ({
-          path: entry.path,
-          lastmod: entry.lastmod,
-          changefreq: entry.changefreq,
-          priority: entry.priority,
-          alternates: entry.alternates ?? [],
-        }));
+        const entries: SitemapEntry[] = marketingSitemapEntries(BASE_URL).map(
+          (entry) => ({
+            path: entry.path,
+            lastmod: entry.lastmod,
+            changefreq: entry.changefreq,
+            priority: entry.priority,
+            alternates: entry.alternates ?? [],
+          }),
+        );
 
         for (const store of await listPublicStores()) {
-          entries.push({ path: `/store/${store.slug}`, changefreq: "daily", priority: "0.9" });
+          entries.push({
+            path: `/store/${store.slug}`,
+            changefreq: "daily",
+            priority: "0.9",
+          });
         }
 
         for (const article of await listPublishedArticles()) {
           entries.push({
             path: `/blog/${article.slug}`,
-            lastmod: (article.updated_at ?? article.published_at ?? undefined)?.slice(0, 10),
+            lastmod: (
+              article.updated_at ??
+              article.published_at ??
+              undefined
+            )?.slice(0, 10),
             changefreq: "monthly",
             priority: "0.7",
           });
@@ -70,7 +82,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
             e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
-            e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+            e.changefreq
+              ? `    <changefreq>${e.changefreq}</changefreq>`
+              : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             ...(e.alternates ?? []).map(
               (alt) =>

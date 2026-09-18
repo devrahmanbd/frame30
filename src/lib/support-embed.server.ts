@@ -21,9 +21,7 @@ export type AiGatewayConfig = {
 };
 
 export const DEFAULT_AI_GATEWAY_CONFIG: AiGatewayConfig = {
-  apiKey:
-    process.env["OPENROUTER_API_KEY"] ||
-    "sk-or-v1-REDACTED",
+  apiKey: process.env["OPENROUTER_API_KEY"] || "sk-or-v1-REDACTED",
   chatModel: "nvidia/nemotron-3-ultra-550b-a55b:free",
   fallbackChatModel: "nvidia/nemotron-3.5-lightning:free",
   embeddingModel: "nvidia/llama-nemotron-embed-vl-1b-v2:free",
@@ -38,6 +36,18 @@ export function maskApiKey(key: string): string {
   return `${trimmed.slice(0, 8)}...${trimmed.slice(-4)}`;
 }
 
+/** Check if API key is empty or an unconfigured placeholder. */
+export function isPlaceholderApiKey(key?: string | null): boolean {
+  if (!key) return true;
+  const k = key.trim();
+  return (
+    k === "" ||
+    k === "sk-or-v1-REDACTED" ||
+    k.includes("REDACTED") ||
+    k.includes("placeholder")
+  );
+}
+
 /** Retrieve active AI gateway configuration from dynamic config vault. */
 export async function getAiGatewayConfig(): Promise<AiGatewayConfig> {
   const dynamic = await getDynamicPlatformConfig<AiGatewayConfig>(
@@ -47,8 +57,10 @@ export async function getAiGatewayConfig(): Promise<AiGatewayConfig> {
   return {
     apiKey: dynamic.apiKey || DEFAULT_AI_GATEWAY_CONFIG.apiKey,
     chatModel: dynamic.chatModel || DEFAULT_AI_GATEWAY_CONFIG.chatModel,
-    fallbackChatModel: dynamic.fallbackChatModel || DEFAULT_AI_GATEWAY_CONFIG.fallbackChatModel,
-    embeddingModel: dynamic.embeddingModel || DEFAULT_AI_GATEWAY_CONFIG.embeddingModel,
+    fallbackChatModel:
+      dynamic.fallbackChatModel || DEFAULT_AI_GATEWAY_CONFIG.fallbackChatModel,
+    embeddingModel:
+      dynamic.embeddingModel || DEFAULT_AI_GATEWAY_CONFIG.embeddingModel,
     gatewayUrl: dynamic.gatewayUrl || DEFAULT_AI_GATEWAY_CONFIG.gatewayUrl,
   };
 }
@@ -81,7 +93,10 @@ export function cosineSimilarity(a: number[], b: number[]): number {
  *  3. Weight by inverse document-frequency proxy (shorter, rarer tokens weighted less).
  *  4. Apply L2 normalisation so cosine similarity is simply the dot product.
  */
-export function generateDeterministicEmbedding(text: string, dimensions = 1024): number[] {
+export function generateDeterministicEmbedding(
+  text: string,
+  dimensions = 1024,
+): number[] {
   const vec = new Float64Array(dimensions);
   const normalized = text.toLowerCase().replace(/[^a-z0-9\s]/g, " ");
   const tokens = normalized.split(/\s+/).filter(Boolean);
@@ -106,8 +121,8 @@ export function generateDeterministicEmbedding(text: string, dimensions = 1024):
     // Two independent projections per feature for density
     const idx1 = Math.abs(h1) % dimensions;
     const idx2 = Math.abs(h2) % dimensions;
-    const sign1 = (h1 >>> 31) === 0 ? 1 : -1;
-    const sign2 = (h2 >>> 31) === 0 ? 1 : -1;
+    const sign1 = h1 >>> 31 === 0 ? 1 : -1;
+    const sign2 = h2 >>> 31 === 0 ? 1 : -1;
     vec[idx1] += sign1 * weight;
     vec[idx2] += sign2 * weight * 0.5;
   }
@@ -169,14 +184,15 @@ export async function generateEmbedding(
   const cfg = await getAiGatewayConfig();
   const apiKey = options?.apiKey || cfg.apiKey;
   const model = options?.model || cfg.embeddingModel;
-  const baseUrl = cfg.gatewayUrl?.replace(/\/+$/, "") || "https://openrouter.ai/api/v1";
+  const baseUrl =
+    cfg.gatewayUrl?.replace(/\/+$/, "") || "https://openrouter.ai/api/v1";
   const url = `${baseUrl}/embeddings`;
   const timeoutMs = options?.timeoutMs ?? 5000;
   const allowFallback = options?.allowDeterministicFallback ?? true;
 
   const sanitized = text.slice(0, 4000).trim();
-  if (!sanitized) {
-    return generateDeterministicEmbedding("", 1024);
+  if (!sanitized || isPlaceholderApiKey(apiKey)) {
+    return generateDeterministicEmbedding(sanitized || "", 1024);
   }
 
   try {
@@ -200,7 +216,9 @@ export async function generateEmbedding(
 
     if (!res.ok) {
       const errBody = await res.text().catch(() => "");
-      throw new Error(`OpenRouter embed HTTP ${res.status}: ${errBody.slice(0, 200)}`);
+      throw new Error(
+        `OpenRouter embed HTTP ${res.status}: ${errBody.slice(0, 200)}`,
+      );
     }
 
     const payload = (await res.json()) as {

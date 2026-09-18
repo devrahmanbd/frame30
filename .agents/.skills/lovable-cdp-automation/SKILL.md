@@ -100,7 +100,8 @@ cp -R "$HOME/Library/Application Support/Google/Chrome" /tmp/lovable-profile/Chr
   &>/dev/null &
 ```
 
-**Important**: 
+**Important**:
+
 1. Chrome must be fully closed before launching with `--remote-debugging-port`
 2. Wait for the debug port to become available (10-15 seconds)
 3. The user's existing login sessions and cookies will be preserved
@@ -132,22 +133,25 @@ Use the `send-prompt.js` script (see section 8) to send prompts and poll for res
 
 States to detect from `document.body.innerText`:
 
-| Signal | Meaning | Action |
-|--------|---------|--------|
-| `Previewing last saved version` | Page in preview mode | Click "Build" button first |
-| `Working` / `Thought for` / `thinking` | AI is processing | Poll every 15s |
-| `Queue follow-up...` + queue count | Prompt queued, waiting | Poll every 15s |
-| `Ask Lovable...` + editor empty | Ready for new prompt | Send next prompt |
-| `shipped` / `Typecheck clean` / `typecheck passes` / `Typecheck is clean` | Build succeeded | Read result, send next |
-| `This message was cancelled` | Prompt was cancelled | Resend |
-| `\d+ message[s]? in queue` | Queue count | Parse number, wait |
+| Signal                                                                    | Meaning                | Action                     |
+| ------------------------------------------------------------------------- | ---------------------- | -------------------------- |
+| `Previewing last saved version`                                           | Page in preview mode   | Click "Build" button first |
+| `Working` / `Thought for` / `thinking`                                    | AI is processing       | Poll every 15s             |
+| `Queue follow-up...` + queue count                                        | Prompt queued, waiting | Poll every 15s             |
+| `Ask Lovable...` + editor empty                                           | Ready for new prompt   | Send next prompt           |
+| `shipped` / `Typecheck clean` / `typecheck passes` / `Typecheck is clean` | Build succeeded        | Read result, send next     |
+| `This message was cancelled`                                              | Prompt was cancelled   | Resend                     |
+| `\d+ message[s]? in queue`                                                | Queue count            | Parse number, wait         |
 
 To click "Build" to switch from preview to build mode:
 
 ```javascript
-const b = Array.from(document.querySelectorAll("button"))
-  .find(x => x.innerText.trim() === "Build");
-if (b) { b.click(); }
+const b = Array.from(document.querySelectorAll("button")).find(
+  (x) => x.innerText.trim() === "Build",
+);
+if (b) {
+  b.click();
+}
 ```
 
 ---
@@ -178,18 +182,23 @@ FORM#chat-input
 The send button has `id="chatinput-send-message-button"` but is `aria-disabled="true"` when no text is in the editor. You cannot click it while disabled. After inserting text, wait ~500ms for the UI to enable it, then click it. If the button remains disabled, use form submit as fallback.
 
 **Preferred approach — click the send button after text is inserted (wait 500ms for enable):**
+
 ```javascript
 document.getElementById("chatinput-send-message-button").click();
 ```
 
 **Fallback — submit the form directly (works even if button stays disabled):**
+
 ```javascript
-document.getElementById("chat-input").dispatchEvent(new Event("submit", {cancelable: true}))
+document
+  .getElementById("chat-input")
+  .dispatchEvent(new Event("submit", { cancelable: true }));
 ```
 
 The editor must have non-empty text before either approach works.
 
 **DO NOT** click these buttons (they are mode selectors, not send actions):
+
 - **"Build"** button — switches to Build agent mode
 - **"Plan"** button — switches to Plan agent mode
 - **"Start voice recording"** — starts voice input
@@ -214,7 +223,9 @@ setTimeout(() => {
 }, 1000);
 
 // OR as fallback (if button stays disabled):
-document.getElementById("chat-input").dispatchEvent(new Event("submit", {cancelable: true}));
+document
+  .getElementById("chat-input")
+  .dispatchEvent(new Event("submit", { cancelable: true }));
 ```
 
 ---
@@ -223,18 +234,20 @@ document.getElementById("chat-input").dispatchEvent(new Event("submit", {cancela
 
 **Keep prompts small and focused.** Lovable's AI context window fills up quickly:
 
-| Rule | Why |
-|------|-----|
-| **Single module per prompt** | Multi-module prompts cause the AI to list instead of build |
-| **Under 400 chars** | Long prompts trigger "plan mode" instead of building |
-| **End with "Run typecheck"** | Forces build + verify instead of task listing |
-| **Never ask "Build X and Y and Z"** | The AI will list follow-ups instead of building |
-| **Use concrete file paths** | "Create src/routes/hosting.tsx" not "Add the hosting page" |
+| Rule                                | Why                                                        |
+| ----------------------------------- | ---------------------------------------------------------- |
+| **Single module per prompt**        | Multi-module prompts cause the AI to list instead of build |
+| **Under 400 chars**                 | Long prompts trigger "plan mode" instead of building       |
+| **End with "Run typecheck"**        | Forces build + verify instead of task listing              |
+| **Never ask "Build X and Y and Z"** | The AI will list follow-ups instead of building            |
+| **Use concrete file paths**         | "Create src/routes/hosting.tsx" not "Add the hosting page" |
 
 **Bad** (AI will plan, not build):
+
 > "Add loading skeletons, empty states, confirm dialogs, and form validation"
 
 **Good** (AI will build):
+
 > "Create src/routes/hosting.tsx with three pricing tiers. Run typecheck."
 
 ### Pattern: Single-Module Loop
@@ -270,15 +283,19 @@ async function poll(projectId) {
     const hasQueue = /Queue follow-up/i.test(text);
     const isReady = /Ask Lovable/i.test(text);
     const hasShipped = /shipped|Typecheck clean|typecheck passes/i.test(text);
-    const queueCount = parseInt((text.match(/(\d+)\s*message[s]?\s*in\s*queue/) || [])[1] || "0");
+    const queueCount = parseInt(
+      (text.match(/(\d+)\s*message[s]?\s*in\s*queue/) || [])[1] || "0",
+    );
 
-    console.log(`[${attempts}/40] ${isWorking ? "WORKING" : hasQueue ? `QUEUED (${queueCount})` : isReady ? "READY" : hasShipped ? "SHIPPED" : "UNKNOWN"}`);
+    console.log(
+      `[${attempts}/40] ${isWorking ? "WORKING" : hasQueue ? `QUEUED (${queueCount})` : isReady ? "READY" : hasShipped ? "SHIPPED" : "UNKNOWN"}`,
+    );
 
     if (hasShipped || (isReady && !hasQueue)) {
       console.log(text.slice(-2000)); // Show last 2000 chars for context
       break;
     }
-    await new Promise(r => setTimeout(r, 15000));
+    await new Promise((r) => setTimeout(r, 15000));
   }
 }
 ```
@@ -286,6 +303,7 @@ async function poll(projectId) {
 ### Reading Lovable's Response
 
 The response text from `document.body.innerText` contains the chat history. To find what Lovable shipped:
+
 1. Look for lines after "Details" and before "Preview" — these show what was built
 2. Look for "Typecheck clean" / "typecheck passes" confirmation
 3. The response includes user prompts and Lovable's responses interleaved
@@ -304,9 +322,11 @@ The AI falls into an unproductive "plan mode" when it lists tasks instead of bui
 ### Recovery
 
 **Short-term**: Send a very short (1-line), ultra-specific prompt:
+
 > "Create src/routes/hosting.tsx with three plan cards: Launch ৳699 Scale ৳1499 Grow ৳2999. Run typecheck."
 
 **Permanent fix**: Switch to local workflow — push code directly to GitHub (Lovable auto-syncs):
+
 ```bash
 git add -A && git commit -m "message" && git push origin main
 ```
@@ -330,7 +350,7 @@ http.get("http://localhost:9222/json", (res) => {
   res.on("end", () => {
     const pages = JSON.parse(data);
     const target = pages.find(
-      (p) => p.url?.includes(PROJECT_ID) && p.type === "page"
+      (p) => p.url?.includes(PROJECT_ID) && p.type === "page",
     );
     if (!target) {
       console.log("Project tab not found");
@@ -415,6 +435,7 @@ http.get("http://localhost:9222/json", (res) => {
 ```
 
 Run it:
+
 ```bash
 NODE_PATH=/opt/homebrew/lib/node_modules PROJECT_ID=<PROJECT_ID> node /path/to/send-prompt.js "Your prompt here. Run typecheck."
 ```
@@ -424,7 +445,8 @@ NODE_PATH=/opt/homebrew/lib/node_modules PROJECT_ID=<PROJECT_ID> node /path/to/s
 Save as `/tmp/opencode/poll.js`:
 
 ```javascript
-const http = require("http"), WebSocket = require("ws");
+const http = require("http"),
+  WebSocket = require("ws");
 
 const PROJECT_ID = process.env.PROJECT_ID || "<PROJECT_ID>";
 
@@ -435,18 +457,37 @@ function checkState(projectId) {
       r.on("data", (c) => (d += c));
       r.on("end", () => {
         const pages = JSON.parse(d);
-        const target = pages.find((p) => p.url?.includes(projectId) && p.type === "page");
-        if (!target) { resolve("tab not found"); return; }
+        const target = pages.find(
+          (p) => p.url?.includes(projectId) && p.type === "page",
+        );
+        if (!target) {
+          resolve("tab not found");
+          return;
+        }
         const ws = new WebSocket(target.webSocketDebuggerUrl);
         ws.on("open", () => {
-          ws.send(JSON.stringify({id:1, method:"Runtime.evaluate",
-            params:{expression:"document.body.innerText.slice(-4000)", returnByValue:true}}));
+          ws.send(
+            JSON.stringify({
+              id: 1,
+              method: "Runtime.evaluate",
+              params: {
+                expression: "document.body.innerText.slice(-4000)",
+                returnByValue: true,
+              },
+            }),
+          );
         });
         ws.on("message", (m) => {
           const r = JSON.parse(m.toString());
-          if (r.id === 1) { resolve(r.result?.result?.value); ws.close(); }
+          if (r.id === 1) {
+            resolve(r.result?.result?.value);
+            ws.close();
+          }
         });
-        setTimeout(() => { ws.close(); resolve("timeout"); }, 5000);
+        setTimeout(() => {
+          ws.close();
+          resolve("timeout");
+        }, 5000);
       });
     });
   });
@@ -462,7 +503,9 @@ async function poll(projectId) {
     const isReady = /Ask Lovable/i.test(text);
     const hasShipped = /shipped|Typecheck clean|typecheck passes/i.test(text);
 
-    console.log(`[${attempts}/40] ${isWorking ? "WORKING" : hasQueue ? "QUEUED" : isReady ? "READY" : hasShipped ? "SHIPPED" : "UNKNOWN"} ${new Date().toLocaleTimeString()}`);
+    console.log(
+      `[${attempts}/40] ${isWorking ? "WORKING" : hasQueue ? "QUEUED" : isReady ? "READY" : hasShipped ? "SHIPPED" : "UNKNOWN"} ${new Date().toLocaleTimeString()}`,
+    );
 
     if (hasShipped || (isReady && !hasQueue)) {
       if (hasShipped) console.log("=== SHIPPED ===", text.slice(-2000));

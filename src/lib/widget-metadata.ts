@@ -27,17 +27,75 @@ import {
 } from "./builder-ast";
 import { altKey } from "./media";
 import { WIDGET_REGISTRY } from "./widget-registry";
-import { PROP_HINTS, PROP_HINT_PATTERNS, WIDGET_HELP, type BiText } from "./widget-help";
+import {
+  PROP_HINTS,
+  PROP_HINT_PATTERNS,
+  WIDGET_HELP,
+  type BiText,
+} from "./widget-help";
 
 export type { BiText };
 
-export const VERTICALS = ["general", "apparel", "electronics", "beauty"] as const;
+export const VERTICALS = [
+  "general",
+  "apparel",
+  "electronics",
+  "beauty",
+] as const;
 export type WidgetVertical = (typeof VERTICALS)[number];
 
 /** Vertical membership follows the widget families the catalog ships. */
-const APPAREL: SectionType[] = ["editorial_hero", "lookbook", "shoppable_image", "split_feature", "collection_story", "ugc_gallery", "social_strip", "store_locator", "size_selector", "size_guide", "fit_note", "back_in_stock", "care_panel", "sustain_badge", "complete_the_look", "wishlist_button"];
-const ELECTRONICS: SectionType[] = ["spec_highlights", "compare_tray", "warranty_panel", "authenticity_badge", "emi_calculator", "price_sparkline", "bundle_builder", "doc_links", "support_strip", "buying_guide", "trade_in", "compare_table", "spec_table"];
-const BEAUTY: SectionType[] = ["shade_finder", "skin_quiz", "routine_builder", "ingredient_list", "ingredient_glossary", "claim_chips", "before_after", "safety_note", "batch_info", "texture_strip", "how_to_use", "refill_widget", "gift_builder", "sample_picker", "consult_cta", "loyalty_strip"];
+const APPAREL: SectionType[] = [
+  "editorial_hero",
+  "lookbook",
+  "shoppable_image",
+  "split_feature",
+  "collection_story",
+  "ugc_gallery",
+  "social_strip",
+  "store_locator",
+  "size_selector",
+  "size_guide",
+  "fit_note",
+  "back_in_stock",
+  "care_panel",
+  "sustain_badge",
+  "complete_the_look",
+  "wishlist_button",
+];
+const ELECTRONICS: SectionType[] = [
+  "spec_highlights",
+  "compare_tray",
+  "warranty_panel",
+  "authenticity_badge",
+  "emi_calculator",
+  "price_sparkline",
+  "bundle_builder",
+  "doc_links",
+  "support_strip",
+  "buying_guide",
+  "trade_in",
+  "compare_table",
+  "spec_table",
+];
+const BEAUTY: SectionType[] = [
+  "shade_finder",
+  "skin_quiz",
+  "routine_builder",
+  "ingredient_list",
+  "ingredient_glossary",
+  "claim_chips",
+  "before_after",
+  "safety_note",
+  "batch_info",
+  "texture_strip",
+  "how_to_use",
+  "refill_widget",
+  "gift_builder",
+  "sample_picker",
+  "consult_cta",
+  "loyalty_strip",
+];
 
 export function verticalsOf(type: SectionType): WidgetVertical[] {
   const out: WidgetVertical[] = [];
@@ -92,15 +150,27 @@ export function widgetHelp(type: SectionType): BiText {
 
 /** Exact prop key first; then the generated-key families. */
 export function propHint(key: string): BiText | null {
-  return PROP_HINTS[key] ?? PROP_HINT_PATTERNS.find((p) => p.test.test(key))?.hint ?? null;
+  return (
+    PROP_HINTS[key] ??
+    PROP_HINT_PATTERNS.find((p) => p.test.test(key))?.hint ??
+    null
+  );
 }
 
 /* ------------------------------------------------------- data empty states */
 
-type DataEntry = { data?: { source: string; params?: { key: string; label: string; kind: string }[] } };
+type DataEntry = {
+  data?: {
+    source: string;
+    params?: { key: string; label: string; kind: string }[];
+  };
+};
 
 function dataSpec(type: SectionType) {
-  return (WIDGET_REGISTRY as Record<string, DataEntry | undefined>)[type]?.data ?? null;
+  return (
+    (WIDGET_REGISTRY as Record<string, DataEntry | undefined>)[type]?.data ??
+    null
+  );
 }
 
 export function isDataWidget(type: SectionType): boolean {
@@ -109,16 +179,46 @@ export function isDataWidget(type: SectionType): boolean {
 
 /** One hint per data source; each names the field to connect. */
 const SOURCE_EMPTY: Record<string, BiText> = {
-  collection: { en: "No collection connected — set the collection handle to choose what this shows.", bn: "কোনো কালেকশন সংযুক্ত নয় — কী দেখাবে তা ঠিক করতে কালেকশন হ্যান্ডেল দিন।" },
-  taxonomy: { en: "Reads your categories. Publish at least one category for this to fill.", bn: "আপনার ক্যাটাগরি থেকে ডেটা নেয় — অন্তত একটি ক্যাটাগরি প্রকাশ করুন।" },
-  variants: { en: "Needs a product. On a product template it uses the current product; elsewhere set a product handle.", bn: "একটি প্রোডাক্ট দরকার — প্রোডাক্ট টেমপ্লেটে বর্তমান প্রোডাক্ট নেয়, অন্যত্র প্রোডাক্ট হ্যান্ডেল দিন।" },
-  specs: { en: "Needs a product handle to read specifications from.", bn: "স্পেসিফিকেশন পড়তে প্রোডাক্ট হ্যান্ডেল দরকার।" },
-  reviews: { en: "Shows published reviews for a product — set the product handle.", bn: "প্রোডাক্টের প্রকাশিত রিভিউ দেখায় — প্রোডাক্ট হ্যান্ডেল দিন।" },
-  qna: { en: "Shows answered questions for a product — set the product handle.", bn: "প্রোডাক্টের উত্তরকৃত প্রশ্ন দেখায় — প্রোডাক্ট হ্যান্ডেল দিন।" },
-  facets: { en: "Reads the filters of a collection — set the collection handle.", bn: "কালেকশনের ফিল্টার নেয় — কালেকশন হ্যান্ডেল দিন।" },
-  recommendation: { en: "Filled by the recommendation service once the store has traffic.", bn: "স্টোরে ট্রাফিক এলে রেকমেন্ডেশন সার্ভিস এটি পূরণ করবে।" },
-  order: { en: "Shows a signed-in shopper's order; nothing renders for guests.", bn: "সাইন-ইন করা ক্রেতার অর্ডার দেখায় — গেস্টদের জন্য কিছু দেখাবে না।" },
-  finance: { en: "Needs a product handle to price the instalments against.", bn: "কিস্তির হিসাব করতে প্রোডাক্ট হ্যান্ডেল দরকার।" },
+  collection: {
+    en: "No collection connected — set the collection handle to choose what this shows.",
+    bn: "কোনো কালেকশন সংযুক্ত নয় — কী দেখাবে তা ঠিক করতে কালেকশন হ্যান্ডেল দিন।",
+  },
+  taxonomy: {
+    en: "Reads your categories. Publish at least one category for this to fill.",
+    bn: "আপনার ক্যাটাগরি থেকে ডেটা নেয় — অন্তত একটি ক্যাটাগরি প্রকাশ করুন।",
+  },
+  variants: {
+    en: "Needs a product. On a product template it uses the current product; elsewhere set a product handle.",
+    bn: "একটি প্রোডাক্ট দরকার — প্রোডাক্ট টেমপ্লেটে বর্তমান প্রোডাক্ট নেয়, অন্যত্র প্রোডাক্ট হ্যান্ডেল দিন।",
+  },
+  specs: {
+    en: "Needs a product handle to read specifications from.",
+    bn: "স্পেসিফিকেশন পড়তে প্রোডাক্ট হ্যান্ডেল দরকার।",
+  },
+  reviews: {
+    en: "Shows published reviews for a product — set the product handle.",
+    bn: "প্রোডাক্টের প্রকাশিত রিভিউ দেখায় — প্রোডাক্ট হ্যান্ডেল দিন।",
+  },
+  qna: {
+    en: "Shows answered questions for a product — set the product handle.",
+    bn: "প্রোডাক্টের উত্তরকৃত প্রশ্ন দেখায় — প্রোডাক্ট হ্যান্ডেল দিন।",
+  },
+  facets: {
+    en: "Reads the filters of a collection — set the collection handle.",
+    bn: "কালেকশনের ফিল্টার নেয় — কালেকশন হ্যান্ডেল দিন।",
+  },
+  recommendation: {
+    en: "Filled by the recommendation service once the store has traffic.",
+    bn: "স্টোরে ট্রাফিক এলে রেকমেন্ডেশন সার্ভিস এটি পূরণ করবে।",
+  },
+  order: {
+    en: "Shows a signed-in shopper's order; nothing renders for guests.",
+    bn: "সাইন-ইন করা ক্রেতার অর্ডার দেখায় — গেস্টদের জন্য কিছু দেখাবে না।",
+  },
+  finance: {
+    en: "Needs a product handle to price the instalments against.",
+    bn: "কিস্তির হিসাব করতে প্রোডাক্ট হ্যান্ডেল দরকার।",
+  },
   product: { en: "Needs a product handle.", bn: "প্রোডাক্ট হ্যান্ডেল দরকার।" },
 };
 
@@ -126,11 +226,19 @@ const SOURCE_EMPTY: Record<string, BiText> = {
 export function dataEmptyState(type: SectionType): BiText | null {
   const spec = dataSpec(type);
   if (!spec) return null;
-  return SOURCE_EMPTY[spec.source] ?? { en: "Connect this widget's data source in the Content panel.", bn: "কনটেন্ট প্যানেলে এই উইজেটের ডেটা সোর্স সংযুক্ত করুন।" };
+  return (
+    SOURCE_EMPTY[spec.source] ?? {
+      en: "Connect this widget's data source in the Content panel.",
+      bn: "কনটেন্ট প্যানেলে এই উইজেটের ডেটা সোর্স সংযুক্ত করুন।",
+    }
+  );
 }
 
 /** Which data params are still unset — drives the in-editor hint. */
-export function missingBindings(type: SectionType, props: Record<string, PropValue>): string[] {
+export function missingBindings(
+  type: SectionType,
+  props: Record<string, PropValue>,
+): string[] {
   const spec = dataSpec(type);
   if (!spec) return [];
   return (spec.params ?? [])
@@ -172,33 +280,93 @@ export type WidgetPreset = {
 
 const PRESETS: Partial<Record<SectionType, WidgetPreset[]>> = {
   hero: [
-    { key: "split", label: { en: "Split", bn: "স্প্লিট" }, props: { align: "left", maxW: "container", padY: 72 } },
-    { key: "centred", label: { en: "Centred", bn: "মধ্যবর্তী" }, props: { align: "center", maxW: "narrow", padY: 96 } },
-    { key: "full", label: { en: "Full bleed", bn: "পূর্ণ প্রস্থ" }, props: { align: "center", maxW: "full", padY: 128 } },
+    {
+      key: "split",
+      label: { en: "Split", bn: "স্প্লিট" },
+      props: { align: "left", maxW: "container", padY: 72 },
+    },
+    {
+      key: "centred",
+      label: { en: "Centred", bn: "মধ্যবর্তী" },
+      props: { align: "center", maxW: "narrow", padY: 96 },
+    },
+    {
+      key: "full",
+      label: { en: "Full bleed", bn: "পূর্ণ প্রস্থ" },
+      props: { align: "center", maxW: "full", padY: 128 },
+    },
   ],
   product_grid: [
-    { key: "grid4", label: { en: "Four up", bn: "চার কলাম" }, props: { columns: 4, limit: 8, cardVariant: "standard" } },
-    { key: "dense", label: { en: "Dense", bn: "ঘন" }, props: { columns: 4, limit: 12, cardVariant: "compact", density: "compact" } },
-    { key: "editorial", label: { en: "Editorial", bn: "এডিটোরিয়াল" }, props: { columns: 3, limit: 6, cardVariant: "editorial" } },
+    {
+      key: "grid4",
+      label: { en: "Four up", bn: "চার কলাম" },
+      props: { columns: 4, limit: 8, cardVariant: "standard" },
+    },
+    {
+      key: "dense",
+      label: { en: "Dense", bn: "ঘন" },
+      props: {
+        columns: 4,
+        limit: 12,
+        cardVariant: "compact",
+        density: "compact",
+      },
+    },
+    {
+      key: "editorial",
+      label: { en: "Editorial", bn: "এডিটোরিয়াল" },
+      props: { columns: 3, limit: 6, cardVariant: "editorial" },
+    },
   ],
   container: [
-    { key: "one", label: { en: "Single column", bn: "এক কলাম" }, props: { columns: 1, gap: 24 } },
-    { key: "two", label: { en: "Two columns", bn: "দুই কলাম" }, props: { columns: 2, gap: 24 } },
-    { key: "band", label: { en: "Surface band", bn: "সারফেস ব্যান্ড" }, props: { columns: 1, bg: "surface", padY: 64 } },
+    {
+      key: "one",
+      label: { en: "Single column", bn: "এক কলাম" },
+      props: { columns: 1, gap: 24 },
+    },
+    {
+      key: "two",
+      label: { en: "Two columns", bn: "দুই কলাম" },
+      props: { columns: 2, gap: 24 },
+    },
+    {
+      key: "band",
+      label: { en: "Surface band", bn: "সারফেস ব্যান্ড" },
+      props: { columns: 1, bg: "surface", padY: 64 },
+    },
   ],
   banner: [
-    { key: "wide", label: { en: "Wide", bn: "চওড়া" }, props: { maxW: "full" } },
-    { key: "card", label: { en: "Card", bn: "কার্ড" }, props: { maxW: "container", radius: "lg", border: "hairline" } },
+    {
+      key: "wide",
+      label: { en: "Wide", bn: "চওড়া" },
+      props: { maxW: "full" },
+    },
+    {
+      key: "card",
+      label: { en: "Card", bn: "কার্ড" },
+      props: { maxW: "container", radius: "lg", border: "hairline" },
+    },
   ],
   product_rail: [
-    { key: "standard", label: { en: "Standard rail", bn: "সাধারণ রেল" }, props: { limit: 12, cardVariant: "standard" } },
-    { key: "compact", label: { en: "Compact rail", bn: "কমপ্যাক্ট রেল" }, props: { limit: 16, cardVariant: "compact" } },
+    {
+      key: "standard",
+      label: { en: "Standard rail", bn: "সাধারণ রেল" },
+      props: { limit: 12, cardVariant: "standard" },
+    },
+    {
+      key: "compact",
+      label: { en: "Compact rail", bn: "কমপ্যাক্ট রেল" },
+      props: { limit: 16, cardVariant: "compact" },
+    },
   ],
 };
 
 /** Always at least one preset: "As designed" is the catalog default state. */
 export function presetsFor(type: SectionType): WidgetPreset[] {
-  return [{ key: "default", label: { en: "As designed", bn: "ডিফল্ট" }, props: {} }, ...(PRESETS[type] ?? [])];
+  return [
+    { key: "default", label: { en: "As designed", bn: "ডিফল্ট" }, props: {} },
+    ...(PRESETS[type] ?? []),
+  ];
 }
 
 export type PresetApplication = {
@@ -212,7 +380,10 @@ export type PresetApplication = {
  * validated against the widget's own schema; unknown keys are reported, not
  * written, which keeps a stale preset from poisoning the AST.
  */
-export function applyPreset(type: SectionType, presetKey: string): PresetApplication {
+export function applyPreset(
+  type: SectionType,
+  presetKey: string,
+): PresetApplication {
   const entry = catalogEntry(type);
   if (!entry) return { props: {}, dropped: [] };
   const preset = presetsFor(type).find((p) => p.key === presetKey);
@@ -270,7 +441,12 @@ export function searchWidgets(query: WidgetSearchQuery): WidgetSearchHit[] {
   for (const entry of SECTION_CATALOG) {
     if (!entry.slots.includes(query.slot)) continue;
     const verticals = verticalsOf(entry.type);
-    if (query.vertical && query.vertical !== "general" && !verticals.includes(query.vertical) && !verticals.includes("general")) {
+    if (
+      query.vertical &&
+      query.vertical !== "general" &&
+      !verticals.includes(query.vertical) &&
+      !verticals.includes("general")
+    ) {
       continue;
     }
     const label = entry.label.toLowerCase();
@@ -281,7 +457,12 @@ export function searchWidgets(query: WidgetSearchQuery): WidgetSearchHit[] {
 
     if (!term) {
       score = 10;
-      reason = query.vertical && query.vertical !== "general" && verticals.includes(query.vertical) ? "vertical" : "label";
+      reason =
+        query.vertical &&
+        query.vertical !== "general" &&
+        verticals.includes(query.vertical)
+          ? "vertical"
+          : "label";
     } else if (label === term) {
       score = 100;
     } else if (label.startsWith(term)) {
@@ -300,8 +481,19 @@ export function searchWidgets(query: WidgetSearchQuery): WidgetSearchHit[] {
 
     const recentIndex = recent.indexOf(entry.type);
     if (recentIndex >= 0) score += Math.max(6 - recentIndex, 1);
-    if (query.vertical && query.vertical !== "general" && verticals.includes(query.vertical)) score += 5;
-    hits.push({ type: entry.type, label: entry.label, group: entry.group, score, reason });
+    if (
+      query.vertical &&
+      query.vertical !== "general" &&
+      verticals.includes(query.vertical)
+    )
+      score += 5;
+    hits.push({
+      type: entry.type,
+      label: entry.label,
+      group: entry.group,
+      score,
+      reason,
+    });
   }
 
   return hits
@@ -310,6 +502,11 @@ export function searchWidgets(query: WidgetSearchQuery): WidgetSearchHit[] {
 }
 
 /** Widgets recommended for a vertical, in catalog order. */
-export function recommendedFor(vertical: WidgetVertical, slot: Slot): SectionType[] {
-  return SECTION_CATALOG.filter((e) => e.slots.includes(slot) && verticalsOf(e.type).includes(vertical)).map((e) => e.type);
+export function recommendedFor(
+  vertical: WidgetVertical,
+  slot: Slot,
+): SectionType[] {
+  return SECTION_CATALOG.filter(
+    (e) => e.slots.includes(slot) && verticalsOf(e.type).includes(vertical),
+  ).map((e) => e.type);
 }

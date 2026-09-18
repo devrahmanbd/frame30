@@ -21,11 +21,27 @@ export const TIERS: Tier[] = ["bronze", "silver", "gold", "platinum"];
 /** Lifetime *net* spend (minor units) required to hold a tier, plus its perks. */
 export const TIER_LADDER: Record<
   Tier,
-  { minLifetimeMinor: number; earnMultiplier: number; label: { en: string; bn: string } }
+  {
+    minLifetimeMinor: number;
+    earnMultiplier: number;
+    label: { en: string; bn: string };
+  }
 > = {
-  bronze: { minLifetimeMinor: 0, earnMultiplier: 1, label: { en: "Bronze", bn: "ব্রোঞ্জ" } },
-  silver: { minLifetimeMinor: 500_00, earnMultiplier: 1.25, label: { en: "Silver", bn: "সিলভার" } },
-  gold: { minLifetimeMinor: 2_500_00, earnMultiplier: 1.5, label: { en: "Gold", bn: "গোল্ড" } },
+  bronze: {
+    minLifetimeMinor: 0,
+    earnMultiplier: 1,
+    label: { en: "Bronze", bn: "ব্রোঞ্জ" },
+  },
+  silver: {
+    minLifetimeMinor: 500_00,
+    earnMultiplier: 1.25,
+    label: { en: "Silver", bn: "সিলভার" },
+  },
+  gold: {
+    minLifetimeMinor: 2_500_00,
+    earnMultiplier: 1.5,
+    label: { en: "Gold", bn: "গোল্ড" },
+  },
   platinum: {
     minLifetimeMinor: 10_000_00,
     earnMultiplier: 2,
@@ -62,7 +78,9 @@ export const DEFAULT_PROGRAM: LoyaltyProgram = {
   earnOnTax: false,
 };
 
-export function normalizeProgram(input: Partial<LoyaltyProgram> | null | undefined): LoyaltyProgram {
+export function normalizeProgram(
+  input: Partial<LoyaltyProgram> | null | undefined,
+): LoyaltyProgram {
   const p = { ...DEFAULT_PROGRAM, ...(input ?? {}) };
   return {
     pointsPerMajorUnit: clampInt(p.pointsPerMajorUnit, 0, 1000),
@@ -98,7 +116,10 @@ export function tierProgress(lifetimeNetMinor: number) {
   const floor = TIER_LADDER[tier].minLifetimeMinor;
   const ceiling = TIER_LADDER[next].minLifetimeMinor;
   const span = Math.max(1, ceiling - floor);
-  const done = Math.max(0, Math.min(span, Math.trunc(lifetimeNetMinor) - floor));
+  const done = Math.max(
+    0,
+    Math.min(span, Math.trunc(lifetimeNetMinor) - floor),
+  );
   return {
     tier,
     next,
@@ -125,21 +146,31 @@ export type EarnInput = {
  * points to earn points.
  */
 export function earnPoints(program: LoyaltyProgram, input: EarnInput) {
-  const minorPerMajor = input.minorPerMajor && input.minorPerMajor > 0 ? input.minorPerMajor : 100;
+  const minorPerMajor =
+    input.minorPerMajor && input.minorPerMajor > 0 ? input.minorPerMajor : 100;
   const base =
     Math.max(0, Math.trunc(input.subtotalMinor)) +
-    (program.earnOnShipping ? Math.max(0, Math.trunc(input.shippingMinor)) : 0) +
+    (program.earnOnShipping
+      ? Math.max(0, Math.trunc(input.shippingMinor))
+      : 0) +
     (program.earnOnTax ? Math.max(0, Math.trunc(input.taxMinor)) : 0);
   const qualifying = Math.max(
     0,
-    base - Math.max(0, Math.trunc(input.discountMinor)) - Math.max(0, Math.trunc(input.pointsPaidMinor)),
+    base -
+      Math.max(0, Math.trunc(input.discountMinor)) -
+      Math.max(0, Math.trunc(input.pointsPaidMinor)),
   );
   const tier = tierFor(input.lifetimeNetMinor);
   const multiplier = TIER_LADDER[tier].earnMultiplier;
   const points = Math.floor(
     (qualifying / minorPerMajor) * program.pointsPerMajorUnit * multiplier,
   );
-  return { tier, multiplier, qualifyingMinor: qualifying, points: Math.max(0, points) };
+  return {
+    tier,
+    multiplier,
+    qualifyingMinor: qualifying,
+    points: Math.max(0, points),
+  };
 }
 
 /**
@@ -150,14 +181,20 @@ export function earnPoints(program: LoyaltyProgram, input: EarnInput) {
  */
 export function quoteRedemption(
   program: LoyaltyProgram,
-  args: { balancePoints: number; orderTotalMinor: number; requestedPoints?: number },
+  args: {
+    balancePoints: number;
+    orderTotalMinor: number;
+    requestedPoints?: number;
+  },
 ) {
   const balance = Math.max(0, Math.trunc(args.balancePoints));
   const total = Math.max(0, Math.trunc(args.orderTotalMinor));
   const capMinor = Math.floor((total * program.maxRedeemPercent) / 100);
   const capPoints = Math.floor(capMinor / program.pointValueMinor);
   const wanted =
-    args.requestedPoints === undefined ? capPoints : Math.max(0, Math.trunc(args.requestedPoints));
+    args.requestedPoints === undefined
+      ? capPoints
+      : Math.max(0, Math.trunc(args.requestedPoints));
   const points = Math.min(balance, capPoints, wanted);
 
   if (points < program.minRedeemPoints || points <= 0) {
@@ -188,7 +225,11 @@ export type LedgerEntry = {
 };
 
 /** Balance split by state, plus what expires within the warning horizon. */
-export function summarizeLedger(entries: LedgerEntry[], now = new Date(), warnDays = 30) {
+export function summarizeLedger(
+  entries: LedgerEntry[],
+  now = new Date(),
+  warnDays = 30,
+) {
   const horizon = new Date(now.getTime() + warnDays * 86_400_000).toISOString();
   let pending = 0;
   let available = 0;
@@ -204,16 +245,28 @@ export function summarizeLedger(entries: LedgerEntry[], now = new Date(), warnDa
     } else if (e.state === "spent") spent += Math.abs(points);
     else if (e.state === "expired") expired += points;
   }
-  return { pending, available, spent, expired, expiringSoon, lifetime: available + spent + expired };
+  return {
+    pending,
+    available,
+    spent,
+    expired,
+    expiringSoon,
+    lifetime: available + spent + expired,
+  };
 }
 
 /** Points expire oldest-first so a customer's soonest-to-die points are used up first. */
-export function planSpend(entries: (LedgerEntry & { id: string })[], points: number) {
+export function planSpend(
+  entries: (LedgerEntry & { id: string })[],
+  points: number,
+) {
   let remaining = Math.max(0, Math.trunc(points));
   const draws: { id: string; points: number }[] = [];
   const usable = entries
     .filter((e) => e.state === "available" && e.points > 0)
-    .sort((a, b) => (a.expiresAt ?? "9999").localeCompare(b.expiresAt ?? "9999"));
+    .sort((a, b) =>
+      (a.expiresAt ?? "9999").localeCompare(b.expiresAt ?? "9999"),
+    );
   for (const entry of usable) {
     if (remaining <= 0) break;
     const take = Math.min(remaining, entry.points);
@@ -275,8 +328,14 @@ export type ReferralVerdict = {
  * identity, device and payment overlap all block payout rather than merely
  * flagging it.
  */
-export function evaluateReferral(policy: ReferralPolicy, check: ReferralCheck): ReferralVerdict {
-  const deny = (reason: NonNullable<ReferralVerdict["reason"]>, reviewRequired = false) => ({
+export function evaluateReferral(
+  policy: ReferralPolicy,
+  check: ReferralCheck,
+): ReferralVerdict {
+  const deny = (
+    reason: NonNullable<ReferralVerdict["reason"]>,
+    reviewRequired = false,
+  ) => ({
     qualified: false,
     reason,
     referrerPoints: 0,
@@ -290,8 +349,10 @@ export function evaluateReferral(policy: ReferralPolicy, check: ReferralCheck): 
   }
   if (!check.refereeIsFirstOrder) return deny("not_first_order");
   if (check.refereeAccountAgeMinutes < 5) return deny("account_too_new", true);
-  if (check.refereeOrderTotalMinor < policy.minOrderMinor) return deny("order_below_minimum");
-  if (check.rewardsInWindow >= policy.maxRewardsPerWindow) return deny("window_cap_reached", true);
+  if (check.refereeOrderTotalMinor < policy.minOrderMinor)
+    return deny("order_below_minimum");
+  if (check.rewardsInWindow >= policy.maxRewardsPerWindow)
+    return deny("window_cap_reached", true);
 
   return {
     qualified: true,
@@ -329,17 +390,26 @@ export const DEFAULT_AFFILIATE: AffiliateTerms = {
 
 export function commissionFor(
   terms: AffiliateTerms,
-  order: { subtotalMinor: number; shippingMinor: number; discountMinor: number; refundedMinor: number },
+  order: {
+    subtotalMinor: number;
+    shippingMinor: number;
+    discountMinor: number;
+    refundedMinor: number;
+  },
 ) {
   const gross =
     Math.max(0, Math.trunc(order.subtotalMinor)) +
     (terms.payOnShipping ? Math.max(0, Math.trunc(order.shippingMinor)) : 0);
   const net = Math.max(
     0,
-    gross - Math.max(0, Math.trunc(order.discountMinor)) - Math.max(0, Math.trunc(order.refundedMinor)),
+    gross -
+      Math.max(0, Math.trunc(order.discountMinor)) -
+      Math.max(0, Math.trunc(order.refundedMinor)),
   );
   if (net === 0) return { qualifyingMinor: 0, commissionMinor: 0 };
-  const percentPart = Math.floor((net * Math.max(0, Math.trunc(terms.commissionBps))) / 10_000);
+  const percentPart = Math.floor(
+    (net * Math.max(0, Math.trunc(terms.commissionBps))) / 10_000,
+  );
   return {
     qualifyingMinor: net,
     commissionMinor: percentPart + Math.max(0, Math.trunc(terms.flatMinor)),
@@ -356,7 +426,11 @@ export function attributeOrder(
   args: {
     orderAt: string;
     customerId: string | null;
-    clicks: { affiliateId: string; affiliateOwnerId: string | null; clickedAt: string }[];
+    clicks: {
+      affiliateId: string;
+      affiliateOwnerId: string | null;
+      clickedAt: string;
+    }[];
   },
 ) {
   const orderTime = Date.parse(args.orderAt);
@@ -366,13 +440,18 @@ export function attributeOrder(
       const t = Date.parse(c.clickedAt);
       if (!Number.isFinite(t) || t > orderTime) return false;
       if (orderTime - t > windowMs) return false;
-      if (args.customerId && c.affiliateOwnerId === args.customerId) return false;
+      if (args.customerId && c.affiliateOwnerId === args.customerId)
+        return false;
       return true;
     })
     .sort((a, b) => Date.parse(b.clickedAt) - Date.parse(a.clickedAt));
   const winner = eligible[0];
   return winner
-    ? { affiliateId: winner.affiliateId, clickedAt: winner.clickedAt, contenders: eligible.length }
+    ? {
+        affiliateId: winner.affiliateId,
+        clickedAt: winner.clickedAt,
+        contenders: eligible.length,
+      }
     : null;
 }
 

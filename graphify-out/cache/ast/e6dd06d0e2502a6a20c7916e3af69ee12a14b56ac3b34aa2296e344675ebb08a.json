@@ -1,1 +1,742 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "label": "vitals.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L1"}, {"id": "lib_vitals_server_ingestmeta", "label": "IngestMeta", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L41"}, {"id": "lib_vitals_server_ingestresult", "label": "IngestResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L48"}, {"id": "lib_vitals_server_withtimeout", "label": "withTimeout()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L61"}, {"id": "lib_vitals_server_sessionhash", "label": "sessionHash()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L84"}, {"id": "lib_vitals_server_rowsfor", "label": "rowsFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L100"}, {"id": "lib_vitals_server_ingestvitals", "label": "ingestVitals()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L128"}, {"id": "lib_vitals_server_summaryoptions", "label": "SummaryOptions", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L176"}, {"id": "lib_vitals_server_cacheentry", "label": "CacheEntry", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L183"}, {"id": "lib_vitals_server_cache", "label": "cache", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L184"}, {"id": "lib_vitals_server_cachekey", "label": "cacheKey()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L186"}, {"id": "lib_vitals_server_invalidatevitals", "label": "invalidateVitals()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L191"}, {"id": "lib_vitals_server_vitalssummary", "label": "vitalsSummary()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L202"}, {"id": "lib_vitals_server_vitalsverdict", "label": "vitalsVerdict()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L263"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "users_rahman_documents_frame30_src_lib_vitals_report_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_min_samples_to_judge", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_normalizebatch", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_summarize", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_vitalmetric", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_vitalsample", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_report_vitalssummary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_ingestmeta", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_ingestresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_withtimeout", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_sessionhash", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L84", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_rowsfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L100", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_ingestvitals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_summaryoptions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L176", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_cacheentry", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L183", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_cache", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L184", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_cachekey", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L186", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_invalidatevitals", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L191", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_vitalssummary", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L202", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_vitals_server_ts", "target": "lib_vitals_server_vitalsverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L263", "weight": 1.0}, {"source": "lib_vitals_server_withtimeout", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L71", "weight": 1.0}, {"source": "lib_vitals_server_ingestvitals", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L129", "weight": 1.0}, {"source": "lib_vitals_server_ingestvitals", "target": "lib_vitals_server_sessionhash", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L141", "weight": 1.0}, {"source": "lib_vitals_server_ingestvitals", "target": "lib_vitals_server_rowsfor", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L142", "weight": 1.0}, {"source": "lib_vitals_server_ingestvitals", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L143", "weight": 1.0}, {"source": "lib_vitals_server_ingestvitals", "target": "lib_vitals_server_withtimeout", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L155", "weight": 1.0}, {"source": "lib_vitals_server_vitalssummary", "target": "lib_vitals_server_cachekey", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L207", "weight": 1.0}, {"source": "lib_vitals_server_vitalssummary", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L212", "weight": 1.0}, {"source": "lib_vitals_server_vitalssummary", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L213", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_vitals_server_withtimeout", "callee": "race", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L64"}, {"caller_nid": "lib_vitals_server_withtimeout", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L72"}, {"caller_nid": "lib_vitals_server_withtimeout", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L72"}, {"caller_nid": "lib_vitals_server_withtimeout", "callee": "clearTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L75"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L86"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L86"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L90"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L90"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L91"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L91"}, {"caller_nid": "lib_vitals_server_sessionhash", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L91"}, {"caller_nid": "lib_vitals_server_rowsfor", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L101"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L130"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "normalizeBatch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L131"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L134"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L136"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L155"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L155"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "observe", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L157"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L157"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L158"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L160"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L167"}, {"caller_nid": "lib_vitals_server_ingestvitals", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L168"}, {"caller_nid": "lib_vitals_server_invalidatevitals", "callee": "keys", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L192"}, {"caller_nid": "lib_vitals_server_invalidatevitals", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L193"}, {"caller_nid": "lib_vitals_server_invalidatevitals", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L193"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L204"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L204"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "trunc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L204"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L208"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L209"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L214"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "gte", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L217"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L224"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "await withTimeout", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L226"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L229"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L230"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "summarize", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L242"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L243"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "set", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L246"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L247"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L249"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L251"}, {"caller_nid": "lib_vitals_server_vitalssummary", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L251"}, {"caller_nid": "lib_vitals_server_vitalsverdict", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L264"}, {"caller_nid": "lib_vitals_server_vitalsverdict", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts", "source_location": "L264"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "label": "vitals.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_vitals_server_ingestmeta",
+      "label": "IngestMeta",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_vitals_server_ingestresult",
+      "label": "IngestResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_vitals_server_withtimeout",
+      "label": "withTimeout()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_vitals_server_sessionhash",
+      "label": "sessionHash()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L84"
+    },
+    {
+      "id": "lib_vitals_server_rowsfor",
+      "label": "rowsFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "id": "lib_vitals_server_ingestvitals",
+      "label": "ingestVitals()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_vitals_server_summaryoptions",
+      "label": "SummaryOptions",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L176"
+    },
+    {
+      "id": "lib_vitals_server_cacheentry",
+      "label": "CacheEntry",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L183"
+    },
+    {
+      "id": "lib_vitals_server_cache",
+      "label": "cache",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L184"
+    },
+    {
+      "id": "lib_vitals_server_cachekey",
+      "label": "cacheKey()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L186"
+    },
+    {
+      "id": "lib_vitals_server_invalidatevitals",
+      "label": "invalidateVitals()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L191"
+    },
+    {
+      "id": "lib_vitals_server_vitalssummary",
+      "label": "vitalsSummary()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L202"
+    },
+    {
+      "id": "lib_vitals_server_vitalsverdict",
+      "label": "vitalsVerdict()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L263"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_vitals_report_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_min_samples_to_judge",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_normalizebatch",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_summarize",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_vitalmetric",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_vitalsample",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_report_vitalssummary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_ingestmeta",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_ingestresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_withtimeout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_sessionhash",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_rowsfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L100",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_ingestvitals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_summaryoptions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L176",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_cacheentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L183",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_cache",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_cachekey",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_invalidatevitals",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L191",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_vitalssummary",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_vitals_server_ts",
+      "target": "lib_vitals_server_vitalsverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L263",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_withtimeout",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_ingestvitals",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_ingestvitals",
+      "target": "lib_vitals_server_sessionhash",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L141",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_ingestvitals",
+      "target": "lib_vitals_server_rowsfor",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L142",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_ingestvitals",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L143",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_ingestvitals",
+      "target": "lib_vitals_server_withtimeout",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_vitalssummary",
+      "target": "lib_vitals_server_cachekey",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_vitalssummary",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L212",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_vitals_server_vitalssummary",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L213",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_vitals_server_withtimeout",
+      "callee": "race",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_vitals_server_withtimeout",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_vitals_server_withtimeout",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_vitals_server_withtimeout",
+      "callee": "clearTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L75"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L86"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_vitals_server_sessionhash",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "lib_vitals_server_rowsfor",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "normalizeBatch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L131"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "observe",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L160"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "lib_vitals_server_ingestvitals",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "lib_vitals_server_invalidatevitals",
+      "callee": "keys",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L192"
+    },
+    {
+      "caller_nid": "lib_vitals_server_invalidatevitals",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "lib_vitals_server_invalidatevitals",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L193"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "trunc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L204"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L214"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "gte",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L217"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L224"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "await withTimeout",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L226"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L230"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "summarize",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L242"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L243"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "set",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L246"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L247"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L249"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalssummary",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L251"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalsverdict",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L264"
+    },
+    {
+      "caller_nid": "lib_vitals_server_vitalsverdict",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/vitals.server.ts",
+      "source_location": "L264"
+    }
+  ]
+}

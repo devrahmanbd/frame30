@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
-import { buildSearchIndex, docPath, searchDocs, type DocVersionId, type SearchHit } from "@/lib/docs";
+import {
+  buildSearchIndex,
+  docPath,
+  searchDocs,
+  type DocVersionId,
+  type SearchHit,
+} from "@/lib/docs";
 
 /**
  * Client-side docs search — no external service, no network call, no index
@@ -63,7 +69,9 @@ export function DocsSearch({ version }: { version: DocVersionId }) {
         aria-expanded={open && hits.length > 0}
         aria-controls="docs-search-results"
         aria-autocomplete="list"
-        {...(open && hits[active] ? { "aria-activedescendant": `docs-hit-${active}` } : {})}
+        {...(open && hits[active]
+          ? { "aria-activedescendant": `docs-hit-${active}` }
+          : {})}
         value={query}
         placeholder="Search docs  /"
         className="min-h-11 w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm"
@@ -116,9 +124,16 @@ export function DocsSearch({ version }: { version: DocVersionId }) {
             >
               <span className="block font-medium">
                 {hit.title}
-                {hit.heading && <span className="text-muted-foreground"> › {hit.heading}</span>}
+                {hit.heading && (
+                  <span className="text-muted-foreground">
+                    {" "}
+                    › {hit.heading}
+                  </span>
+                )}
               </span>
-              <span className="mt-0.5 block line-clamp-2 text-xs text-muted-foreground">{hit.excerpt}</span>
+              <span className="mt-0.5 block line-clamp-2 text-xs text-muted-foreground">
+                {hit.excerpt}
+              </span>
             </li>
           ))}
         </ul>
@@ -126,8 +141,12 @@ export function DocsSearch({ version }: { version: DocVersionId }) {
 
       {open && query.trim().length > 1 && hits.length === 0 && (
         <p className="absolute z-30 mt-1 w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
-          Nothing matches “{query}”. Try an endpoint name, a status code, or “webhook”.{" "}
-          <a href={docPath(version, "quickstart")} className="fq-tap text-primary underline underline-offset-4">
+          Nothing matches “{query}”. Try an endpoint name, a status code, or
+          “webhook”.{" "}
+          <a
+            href={docPath(version, "quickstart")}
+            className="fq-tap text-primary underline underline-offset-4"
+          >
             Start at the quickstart
           </a>
           .

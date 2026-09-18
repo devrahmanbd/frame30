@@ -11,6 +11,7 @@ When yolo mode is enabled (`yolo_mode: on` in CLAUDE.md), automatically detect w
 ### 1. Edge Function Deployment Detection
 
 **When to trigger:**
+
 - User runs `/deploy-edge` command
 - Files in `supabase/functions/` have been modified
 - Changes are committed and pushed to `main` branch
@@ -18,6 +19,7 @@ When yolo mode is enabled (`yolo_mode: on` in CLAUDE.md), automatically detect w
 **Detection steps:**
 
 1. **Check yolo mode status:**
+
    ```
    - Read CLAUDE.md
    - Look for: yolo_mode: on
@@ -25,6 +27,7 @@ When yolo mode is enabled (`yolo_mode: on` in CLAUDE.md), automatically detect w
    ```
 
 2. **Verify changes are ready:**
+
    ```
    - Run: git status
    - Check: No uncommitted changes in supabase/functions/
@@ -33,6 +36,7 @@ When yolo mode is enabled (`yolo_mode: on` in CLAUDE.md), automatically detect w
    ```
 
 3. **Identify which functions changed:**
+
    ```
    - Run: git diff origin/main HEAD -- supabase/functions/
    - Parse: Which function directories have changes
@@ -52,6 +56,7 @@ When yolo mode is enabled (`yolo_mode: on` in CLAUDE.md), automatically detect w
    ```
 
 **Example:**
+
 ```
 Files changed:
   supabase/functions/send-email/index.ts
@@ -72,6 +77,7 @@ Prompt: "Deploy the send-email edge function"
 ### 2. Migration Application Detection
 
 **When to trigger:**
+
 - User runs `/apply-migration` command
 - New files in `supabase/migrations/` exist
 - Changes are committed and pushed to `main` branch
@@ -79,6 +85,7 @@ Prompt: "Deploy the send-email edge function"
 **Detection steps:**
 
 1. **Check yolo mode status:**
+
    ```
    - Read CLAUDE.md
    - Look for: yolo_mode: on
@@ -86,6 +93,7 @@ Prompt: "Deploy the send-email edge function"
    ```
 
 2. **Verify migrations are ready:**
+
    ```
    - Run: git status
    - Check: No uncommitted migrations
@@ -94,6 +102,7 @@ Prompt: "Deploy the send-email edge function"
    ```
 
 3. **List pending migrations:**
+
    ```
    - List all files in supabase/migrations/
    - Sort by timestamp (filename prefix)
@@ -113,6 +122,7 @@ Prompt: "Deploy the send-email edge function"
    ```
 
 **Example:**
+
 ```
 Files in supabase/migrations/:
   20240115103000_add_user_preferences.sql (new)
@@ -150,6 +160,7 @@ Add this logic at the end of `/deploy-edge` command:
 4. If yolo mode is OFF:
    - Show manual prompt (current behavior):
      📋 **LOVABLE PROMPT:**
+
      > "Deploy the [name] edge function"
 
    - Suggest enabling yolo mode:
@@ -177,6 +188,7 @@ Add this logic at the end of `/apply-migration` command:
 4. If yolo mode is OFF:
    - Show manual prompt:
      📋 **LOVABLE PROMPT:**
+
      > "Apply pending Supabase migrations"
 
    - Suggest yolo mode:
@@ -192,6 +204,7 @@ When `auto_deploy: on` is enabled, Claude automatically detects and deploys back
 ### Activation Criteria
 
 Auto-deploy triggers when ALL conditions are met:
+
 1. `yolo_mode: on` in CLAUDE.md
 2. `auto_deploy: on` in CLAUDE.md
 3. `git push origin main` completed successfully
@@ -200,6 +213,7 @@ Auto-deploy triggers when ALL conditions are met:
 ### Detection After Git Push
 
 **Step 1: Analyze pushed files**
+
 ```
 After: git push origin main [succeeds]
 
@@ -213,6 +227,7 @@ After: git push origin main [succeeds]
 ```
 
 **Step 2: Check configuration**
+
 ```
 1. Read CLAUDE.md
 2. Check yolo_mode and auto_deploy settings
@@ -223,6 +238,7 @@ After: git push origin main [succeeds]
 ```
 
 **Step 3: Verify GitHub Sync (DOM-based)**
+
 ```
 IMPORTANT: Before submitting deployment prompts, verify Lovable has synced.
 
@@ -241,6 +257,7 @@ WHY THIS MATTERS:
 ```
 
 **Step 4: Execute or notify**
+
 ```
 If auto_deploy: on AND sync verified:
   - Show: "🤖 Auto-deploy: Backend changes detected..."
@@ -323,6 +340,7 @@ See `references/post-push-automation.md` for complete implementation details.
 ```
 
 **Example CLAUDE.md section:**
+
 ```markdown
 ## Yolo Mode Configuration (Beta)
 
@@ -335,6 +353,7 @@ See `references/post-push-automation.md` for complete implementation details.
 ```
 
 **Parsed result:**
+
 ```javascript
 {
   yolo_mode: "on",
@@ -347,6 +366,7 @@ See `references/post-push-automation.md` for complete implementation details.
 ```
 
 **Auto-deploy decision logic:**
+
 ```
 if (yolo_mode === "on" && auto_deploy === "on") {
   // Automatically deploy after git push
@@ -365,6 +385,7 @@ if (yolo_mode === "on" && auto_deploy === "on") {
 ## Error Handling in Detection
 
 **CLAUDE.md not found:**
+
 ```
 - Assume yolo mode is off
 - Proceed with manual prompts
@@ -372,18 +393,21 @@ if (yolo_mode === "on" && auto_deploy === "on") {
 ```
 
 **Yolo mode section not in CLAUDE.md:**
+
 ```
 - Assume yolo mode is off
 - Proceed with manual prompts
 ```
 
 **Invalid yolo mode value:**
+
 ```
 - Treat as "off"
 - Proceed with manual prompts
 ```
 
 **Git operations fail:**
+
 ```
 - Show error to user
 - Can't determine if changes are pushed
@@ -430,6 +454,7 @@ Check: yolo_mode field
 ## Testing Detection Logic
 
 **Test case 1: Yolo mode on, single edge function changed**
+
 ```
 Setup:
 - CLAUDE.md has yolo_mode: on
@@ -444,6 +469,7 @@ Expected:
 ```
 
 **Test case 2: Yolo mode off**
+
 ```
 Setup:
 - CLAUDE.md has yolo_mode: off
@@ -456,6 +482,7 @@ Expected:
 ```
 
 **Test case 3: Multiple functions changed**
+
 ```
 Setup:
 - CLAUDE.md has yolo_mode: on
@@ -468,6 +495,7 @@ Expected:
 ```
 
 **Test case 4: Migration detection**
+
 ```
 Setup:
 - CLAUDE.md has yolo_mode: on
@@ -482,4 +510,4 @@ Expected:
 
 ---
 
-*This detection logic ensures yolo mode only activates when explicitly enabled and changes are ready to deploy.*
+_This detection logic ensures yolo mode only activates when explicitly enabled and changes are ready to deploy._

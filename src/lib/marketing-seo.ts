@@ -34,7 +34,12 @@
  * `llms.txt` handler and by tests, so it must stay free of runtime deps.
  */
 import { HREFLANG, LOCALES, type SeoLocale } from "./seo-technical";
-import { ORG_NAP, napPostalAddress, organizationSchema, LEGAL_DOCS } from "./legal";
+import {
+  ORG_NAP,
+  napPostalAddress,
+  organizationSchema,
+  LEGAL_DOCS,
+} from "./legal";
 
 /* -------------------------------------------------------------------------- */
 /* Constants                                                                  */
@@ -97,7 +102,8 @@ export type MarketingRoute = {
   linksTo: readonly MarketingRouteId[];
   /** In the XML sitemap? Non-indexable surfaces stay out of it. */
   indexable: boolean;
-  changefreq: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  changefreq:
+    "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority: string;
   /** Structured data this route is required to emit. */
   schema: readonly SchemaKind[];
@@ -158,7 +164,16 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
     },
     label: { en: "Features", bn: "ফিচার" },
     parent: "home",
-    linksTo: ["pricing", "builder", "payments", "fulfilment", "security", "docs", "contact", "home"],
+    linksTo: [
+      "pricing",
+      "builder",
+      "payments",
+      "fulfilment",
+      "security",
+      "docs",
+      "contact",
+      "home",
+    ],
     indexable: true,
     changefreq: "monthly",
     priority: "0.8",
@@ -432,8 +447,12 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
   },
 ] as const;
 
-const BY_ID = new Map<MarketingRouteId, MarketingRoute>(MARKETING_ROUTES.map((r) => [r.id, r]));
-const BY_PATH = new Map<string, MarketingRoute>(MARKETING_ROUTES.map((r) => [r.path, r]));
+const BY_ID = new Map<MarketingRouteId, MarketingRoute>(
+  MARKETING_ROUTES.map((r) => [r.id, r]),
+);
+const BY_PATH = new Map<string, MarketingRoute>(
+  MARKETING_ROUTES.map((r) => [r.path, r]),
+);
 
 export function marketingRoute(id: MarketingRouteId): MarketingRoute {
   const route = BY_ID.get(id);
@@ -457,7 +476,9 @@ export function isAbsoluteUrl(value: unknown): value is string {
 }
 
 /** Origin without a trailing slash, or null when we cannot trust it. */
-export function normaliseOrigin(origin: string | null | undefined): string | null {
+export function normaliseOrigin(
+  origin: string | null | undefined,
+): string | null {
   if (!origin) return null;
   const trimmed = origin.trim().replace(/\/+$/, "");
   return /^https?:\/\/[^\s/]+$/.test(trimmed) ? trimmed : null;
@@ -471,7 +492,10 @@ export function normaliseOrigin(origin: string | null | undefined): string | nul
  * crawler resolves it against whatever host served the page — including a
  * preview host we do not want indexed.
  */
-export function absoluteUrl(origin: string | null | undefined, path: string): string | null {
+export function absoluteUrl(
+  origin: string | null | undefined,
+  path: string,
+): string | null {
   const base = normaliseOrigin(origin);
   if (!base) return null;
   if (/^https?:\/\//.test(path)) return path;
@@ -483,7 +507,9 @@ export function absoluteUrl(origin: string | null | undefined, path: string): st
  * the browser during client-side navigation. The loader supplies the
  * request-derived origin; the browser can always answer for itself.
  */
-export function resolveOrigin(loaderOrigin: string | null | undefined): string | null {
+export function resolveOrigin(
+  loaderOrigin: string | null | undefined,
+): string | null {
   const fromLoader = normaliseOrigin(loaderOrigin);
   if (fromLoader) return fromLoader;
   if (typeof window !== "undefined" && window.location?.origin) {
@@ -539,7 +565,10 @@ export function clampText(value: string, max: number): string {
   if (text.length <= max) return text;
   const cut = text.slice(0, max);
   const lastSpace = cut.lastIndexOf(" ");
-  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—-]+$/, "");
+  return (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(
+    /[\s,;:—-]+$/,
+    "",
+  );
 }
 
 /**
@@ -556,7 +585,10 @@ export function buildMarketingHead(input: BuildHeadInput): MarketingHead {
   const origin = normaliseOrigin(input.origin);
   const path = input.path ?? route.path;
 
-  const title = clampText(input.title ?? route.title[lang] ?? route.title.en, TITLE_MAX);
+  const title = clampText(
+    input.title ?? route.title[lang] ?? route.title.en,
+    TITLE_MAX,
+  );
   const description = clampText(
     input.description ?? route.description[lang] ?? route.description.en,
     DESCRIPTION_MAX,
@@ -564,7 +596,8 @@ export function buildMarketingHead(input: BuildHeadInput): MarketingHead {
   const canonical = absoluteUrl(origin, path);
   const robots = input.robots ?? (route.indexable ? null : "noindex,follow");
   const ogImage = isAbsoluteUrl(input.ogImage) ? input.ogImage : null;
-  const ogType = route.id === "blog" || route.id === "legal" ? "website" : "website";
+  const ogType =
+    route.id === "blog" || route.id === "legal" ? "website" : "website";
 
   const meta: HeadTag[] = [
     { title },
@@ -578,7 +611,10 @@ export function buildMarketingHead(input: BuildHeadInput): MarketingHead {
       property: "og:locale:alternate",
       content: lang === "bn" ? "en_US" : "bn_BD",
     },
-    { name: "twitter:card", content: ogImage ? "summary_large_image" : "summary" },
+    {
+      name: "twitter:card",
+      content: ogImage ? "summary_large_image" : "summary",
+    },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
   ];
@@ -607,7 +643,12 @@ export function buildMarketingHead(input: BuildHeadInput): MarketingHead {
     links.push({ rel: "alternate", hrefLang: "x-default", href: canonical });
   }
 
-  const graph = buildGraph({ route: route.id, origin, path, extra: input.extraSchema ?? [] });
+  const graph = buildGraph({
+    route: route.id,
+    origin,
+    path,
+    extra: input.extraSchema ?? [],
+  });
   const scripts = graph
     ? [{ type: "application/ld+json", children: JSON.stringify(graph) }]
     : [];
@@ -644,7 +685,10 @@ export function websiteNode(origin: string | null): Node {
     // pointing SearchAction at a 404 is a structured-data lie.
     node["potentialAction"] = {
       "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${origin}/blog?q={search_term_string}` },
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${origin}/blog?q={search_term_string}`,
+      },
       "query-input": "required name=search_term_string",
     };
   }
@@ -660,7 +704,10 @@ export type PlanOffer = {
 };
 
 /** SoftwareApplication — the product itself, with plan offers when known. */
-export function softwareApplicationNode(origin: string | null, offers: PlanOffer[] = []): Node {
+export function softwareApplicationNode(
+  origin: string | null,
+  offers: PlanOffer[] = [],
+): Node {
   const node: Node = {
     "@type": "SoftwareApplication",
     "@id": origin ? `${origin}/#software` : "#software",
@@ -720,9 +767,16 @@ export type FaqItem = { question: string; answer: string };
  * structured-data violation, so callers read from the same source the page
  * renders. Empty pairs are dropped rather than emitted blank.
  */
-export function faqPageNode(items: FaqItem[], origin: string | null, path = "/"): Node | null {
+export function faqPageNode(
+  items: FaqItem[],
+  origin: string | null,
+  path = "/",
+): Node | null {
   const clean = items
-    .map((item) => ({ question: item.question?.trim() ?? "", answer: item.answer?.trim() ?? "" }))
+    .map((item) => ({
+      question: item.question?.trim() ?? "",
+      answer: item.answer?.trim() ?? "",
+    }))
     .filter((item) => item.question.length > 0 && item.answer.length > 0);
   if (clean.length === 0) return null;
   return {
@@ -747,7 +801,10 @@ export function breadcrumbNode(
   const trail: { name: string; path: string }[] = [];
   let cursor: MarketingRoute | null = marketingRoute(routeId);
   while (cursor) {
-    trail.unshift({ name: cursor.label[lang] ?? cursor.label.en, path: cursor.path });
+    trail.unshift({
+      name: cursor.label[lang] ?? cursor.label.en,
+      path: cursor.path,
+    });
     cursor = cursor.parent ? marketingRoute(cursor.parent) : null;
   }
   if (leaf) trail.push({ name: leaf.name, path: leaf.path });
@@ -777,7 +834,10 @@ export type ArticleNodeInput = {
 };
 
 /** Article — blog posts. `TechArticle` is the same shape for developer docs. */
-export function articleNode(input: ArticleNodeInput, type: "Article" | "TechArticle" = "Article"): Node | null {
+export function articleNode(
+  input: ArticleNodeInput,
+  type: "Article" | "TechArticle" = "Article",
+): Node | null {
   const headline = input.headline?.trim();
   if (!headline) return null;
   const url = absoluteUrl(input.origin, input.path);
@@ -786,7 +846,9 @@ export function articleNode(input: ArticleNodeInput, type: "Article" | "TechArti
     ...(url ? { "@id": `${url}#article`, url, mainEntityOfPage: url } : {}),
     // Google truncates headlines past 110 characters in rich results.
     headline: clampText(headline, 110),
-    ...(input.description ? { description: clampText(input.description, DESCRIPTION_MAX) } : {}),
+    ...(input.description
+      ? { description: clampText(input.description, DESCRIPTION_MAX) }
+      : {}),
     ...(isAbsoluteUrl(input.image) ? { image: [input.image] } : {}),
     inLanguage: input.inLanguage ?? "en",
     ...(input.section ? { articleSection: input.section } : {}),
@@ -809,13 +871,19 @@ export function techArticleNode(input: ArticleNodeInput): Node | null {
 export function contactPageNode(origin: string | null): Node {
   return {
     "@type": "ContactPage",
-    ...(origin ? { "@id": `${origin}/contact#page`, url: `${origin}/contact` } : {}),
+    ...(origin
+      ? { "@id": `${origin}/contact#page`, url: `${origin}/contact` }
+      : {}),
     name: `Contact ${SITE_NAME}`,
     inLanguage: ["en", "bn"],
   };
 }
 
-export function collectionPageNode(origin: string | null, path: string, name: string): Node {
+export function collectionPageNode(
+  origin: string | null,
+  path: string,
+  name: string,
+): Node {
   const url = absoluteUrl(origin, path);
   return {
     "@type": "CollectionPage",
@@ -865,7 +933,9 @@ export function buildGraph(input: {
         nodes.push(contactPageNode(origin));
         break;
       case "CollectionPage":
-        nodes.push(collectionPageNode(origin, path, route.title[lang] ?? route.title.en));
+        nodes.push(
+          collectionPageNode(origin, path, route.title[lang] ?? route.title.en),
+        );
         break;
       case "FAQPage": {
         const faq = faqPageNode(input.faq ?? [], origin, path);
@@ -900,7 +970,12 @@ export type SeoIssue = {
   level: "error" | "warn";
 };
 
-const issue = (level: SeoIssue["level"], code: string, route: string, message: string): SeoIssue => ({
+const issue = (
+  level: SeoIssue["level"],
+  code: string,
+  route: string,
+  message: string,
+): SeoIssue => ({
   level,
   code,
   route,
@@ -914,41 +989,116 @@ export function validateRoute(route: MarketingRoute): SeoIssue[] {
     const title = route.title[locale];
     const description = route.description[locale];
     if (!title) {
-      out.push(issue("error", "title:missing", route.path, `no ${locale} title`));
+      out.push(
+        issue("error", "title:missing", route.path, `no ${locale} title`),
+      );
     } else {
       if (title.length > TITLE_MAX)
-        out.push(issue("error", "title:too_long", route.path, `${locale} title is ${title.length} chars (max ${TITLE_MAX})`));
+        out.push(
+          issue(
+            "error",
+            "title:too_long",
+            route.path,
+            `${locale} title is ${title.length} chars (max ${TITLE_MAX})`,
+          ),
+        );
       if (title.length < TITLE_MIN)
-        out.push(issue("warn", "title:too_short", route.path, `${locale} title is ${title.length} chars (min ${TITLE_MIN})`));
+        out.push(
+          issue(
+            "warn",
+            "title:too_short",
+            route.path,
+            `${locale} title is ${title.length} chars (min ${TITLE_MIN})`,
+          ),
+        );
     }
     if (!description) {
-      out.push(issue("error", "description:missing", route.path, `no ${locale} description`));
+      out.push(
+        issue(
+          "error",
+          "description:missing",
+          route.path,
+          `no ${locale} description`,
+        ),
+      );
     } else {
       if (description.length > DESCRIPTION_MAX)
         out.push(
-          issue("error", "description:too_long", route.path, `${locale} description is ${description.length} chars (max ${DESCRIPTION_MAX})`),
+          issue(
+            "error",
+            "description:too_long",
+            route.path,
+            `${locale} description is ${description.length} chars (max ${DESCRIPTION_MAX})`,
+          ),
         );
       if (description.length < DESCRIPTION_MIN)
         out.push(
-          issue("warn", "description:too_short", route.path, `${locale} description is ${description.length} chars (min ${DESCRIPTION_MIN})`),
+          issue(
+            "warn",
+            "description:too_short",
+            route.path,
+            `${locale} description is ${description.length} chars (min ${DESCRIPTION_MIN})`,
+          ),
         );
     }
   }
   // A `bn` string with no Bangla codepoints is English wearing a bn tag; the
   // hrefLang alternate then promises a translation that does not exist.
   if (!BANGLA.test(route.title.bn))
-    out.push(issue("error", "locale:bn_not_bangla", route.path, "bn title contains no Bangla characters"));
+    out.push(
+      issue(
+        "error",
+        "locale:bn_not_bangla",
+        route.path,
+        "bn title contains no Bangla characters",
+      ),
+    );
   if (!BANGLA.test(route.description.bn))
-    out.push(issue("error", "locale:bn_not_bangla", route.path, "bn description contains no Bangla characters"));
+    out.push(
+      issue(
+        "error",
+        "locale:bn_not_bangla",
+        route.path,
+        "bn description contains no Bangla characters",
+      ),
+    );
   if (route.title.en === route.title.bn)
-    out.push(issue("error", "locale:duplicate", route.path, "en and bn titles are identical"));
+    out.push(
+      issue(
+        "error",
+        "locale:duplicate",
+        route.path,
+        "en and bn titles are identical",
+      ),
+    );
   if (!/^\d{4}-\d{2}-\d{2}$/.test(route.lastmod))
-    out.push(issue("error", "lastmod:invalid", route.path, `lastmod "${route.lastmod}" is not an ISO date`));
+    out.push(
+      issue(
+        "error",
+        "lastmod:invalid",
+        route.path,
+        `lastmod "${route.lastmod}" is not an ISO date`,
+      ),
+    );
   const priority = Number(route.priority);
   if (!(priority >= 0 && priority <= 1))
-    out.push(issue("error", "priority:invalid", route.path, `priority ${route.priority} is outside 0..1`));
+    out.push(
+      issue(
+        "error",
+        "priority:invalid",
+        route.path,
+        `priority ${route.priority} is outside 0..1`,
+      ),
+    );
   if (route.parent === route.id)
-    out.push(issue("error", "breadcrumb:self_parent", route.path, "route is its own parent"));
+    out.push(
+      issue(
+        "error",
+        "breadcrumb:self_parent",
+        route.path,
+        "route is its own parent",
+      ),
+    );
   return out;
 }
 
@@ -960,18 +1110,39 @@ export function validateRegistry(): SeoIssue[] {
   for (const route of MARKETING_ROUTES) {
     out.push(...validateRoute(route));
     if (seenPath.has(route.path))
-      out.push(issue("error", "path:duplicate", route.path, "two routes claim the same path"));
+      out.push(
+        issue(
+          "error",
+          "path:duplicate",
+          route.path,
+          "two routes claim the same path",
+        ),
+      );
     seenPath.add(route.path);
     const titleKey = route.title.en.toLowerCase();
     if (seenTitle.has(titleKey))
-      out.push(issue("error", "title:duplicate", route.path, "duplicate en title — cannibalisation risk"));
+      out.push(
+        issue(
+          "error",
+          "title:duplicate",
+          route.path,
+          "duplicate en title — cannibalisation risk",
+        ),
+      );
     seenTitle.add(titleKey);
     // Breadcrumb chains must terminate at home without cycling.
     const seen = new Set<MarketingRouteId>([route.id]);
     let cursor = route.parent;
     while (cursor) {
       if (seen.has(cursor)) {
-        out.push(issue("error", "breadcrumb:cycle", route.path, `parent chain cycles at ${cursor}`));
+        out.push(
+          issue(
+            "error",
+            "breadcrumb:cycle",
+            route.path,
+            `parent chain cycles at ${cursor}`,
+          ),
+        );
         break;
       }
       seen.add(cursor);
@@ -988,7 +1159,8 @@ export function validateRegistry(): SeoIssue[] {
  * matter how good the copy is. Home is the crawl entry point and is exempt.
  */
 export function inboundLinkCount(id: MarketingRouteId): number {
-  return MARKETING_ROUTES.filter((r) => r.id !== id && r.linksTo.includes(id)).length;
+  return MARKETING_ROUTES.filter((r) => r.id !== id && r.linksTo.includes(id))
+    .length;
 }
 
 /** BFS from `/` over `linksTo`, returning click depth per route. */
@@ -1018,16 +1190,44 @@ export function orphanIssues(): SeoIssue[] {
     if (route.id === "home") continue;
     if (!route.indexable) continue;
     if (inboundLinkCount(route.id) === 0)
-      out.push(issue("error", "link:orphan", route.path, "no other marketing page links here"));
+      out.push(
+        issue(
+          "error",
+          "link:orphan",
+          route.path,
+          "no other marketing page links here",
+        ),
+      );
     const depth = depths.get(route.id);
     if (depth === undefined) {
-      out.push(issue("error", "link:unreachable", route.path, "not reachable from / by internal links"));
+      out.push(
+        issue(
+          "error",
+          "link:unreachable",
+          route.path,
+          "not reachable from / by internal links",
+        ),
+      );
     } else if (depth > MAX_CRAWL_DEPTH) {
-      out.push(issue("warn", "link:deep", route.path, `${depth} clicks from / (max ${MAX_CRAWL_DEPTH})`));
+      out.push(
+        issue(
+          "warn",
+          "link:deep",
+          route.path,
+          `${depth} clicks from / (max ${MAX_CRAWL_DEPTH})`,
+        ),
+      );
     }
     for (const target of route.linksTo) {
       if (!BY_ID.has(target))
-        out.push(issue("error", "link:broken", route.path, `links to unknown route "${target}"`));
+        out.push(
+          issue(
+            "error",
+            "link:broken",
+            route.path,
+            `links to unknown route "${target}"`,
+          ),
+        );
     }
   }
   return out;
@@ -1037,29 +1237,57 @@ export function orphanIssues(): SeoIssue[] {
 export function validateJsonLd(node: unknown, label = "jsonld"): SeoIssue[] {
   const out: SeoIssue[] = [];
   if (!node || typeof node !== "object") {
-    return [issue("error", "jsonld:not_object", label, "node is not an object")];
+    return [
+      issue("error", "jsonld:not_object", label, "node is not an object"),
+    ];
   }
   const record = node as Node;
   const graph = record["@graph"];
   if (graph !== undefined) {
     if (record["@context"] !== "https://schema.org")
-      out.push(issue("error", "jsonld:context", label, "@graph is missing the schema.org @context"));
+      out.push(
+        issue(
+          "error",
+          "jsonld:context",
+          label,
+          "@graph is missing the schema.org @context",
+        ),
+      );
     if (!Array.isArray(graph) || graph.length === 0)
       out.push(issue("error", "jsonld:empty_graph", label, "@graph is empty"));
-    else for (const child of graph) out.push(...validateJsonLdNode(child, label));
+    else
+      for (const child of graph) out.push(...validateJsonLdNode(child, label));
     return out;
   }
   return validateJsonLdNode(record, label, true);
 }
 
-function validateJsonLdNode(node: unknown, label: string, requireContext = false): SeoIssue[] {
+function validateJsonLdNode(
+  node: unknown,
+  label: string,
+  requireContext = false,
+): SeoIssue[] {
   const out: SeoIssue[] = [];
   if (!node || typeof node !== "object") {
-    return [issue("error", "jsonld:not_object", label, "graph member is not an object")];
+    return [
+      issue(
+        "error",
+        "jsonld:not_object",
+        label,
+        "graph member is not an object",
+      ),
+    ];
   }
   const record = node as Node;
   if (requireContext && record["@context"] !== "https://schema.org")
-    out.push(issue("error", "jsonld:context", label, "standalone node is missing @context"));
+    out.push(
+      issue(
+        "error",
+        "jsonld:context",
+        label,
+        "standalone node is missing @context",
+      ),
+    );
   if (typeof record["@type"] !== "string" && !Array.isArray(record["@type"]))
     out.push(issue("error", "jsonld:type", label, "node has no @type"));
 
@@ -1068,20 +1296,41 @@ function validateJsonLdNode(node: unknown, label: string, requireContext = false
   const walk = (value: unknown, path: string, depth: number): void => {
     if (depth > 8) return;
     if (typeof value === "string") {
-      if (/^(url|@id|item|target|mainEntityOfPage|image)$/.test(path.split(".").pop() ?? "")) {
+      if (
+        /^(url|@id|item|target|mainEntityOfPage|image)$/.test(
+          path.split(".").pop() ?? "",
+        )
+      ) {
         if (value.startsWith("/"))
-          out.push(issue("error", "jsonld:relative_url", label, `${path} is relative: ${value}`));
+          out.push(
+            issue(
+              "error",
+              "jsonld:relative_url",
+              label,
+              `${path} is relative: ${value}`,
+            ),
+          );
       }
       if (value.trim() === "")
-        out.push(issue("warn", "jsonld:empty_string", label, `${path} is an empty string`));
+        out.push(
+          issue(
+            "warn",
+            "jsonld:empty_string",
+            label,
+            `${path} is an empty string`,
+          ),
+        );
       return;
     }
     if (Array.isArray(value)) {
-      value.forEach((item, index) => walk(item, `${path}[${index}]`, depth + 1));
+      value.forEach((item, index) =>
+        walk(item, `${path}[${index}]`, depth + 1),
+      );
       return;
     }
     if (value && typeof value === "object") {
-      for (const [key, child] of Object.entries(value)) walk(child, `${path}.${key}`, depth + 1);
+      for (const [key, child] of Object.entries(value))
+        walk(child, `${path}.${key}`, depth + 1);
     }
   };
   for (const [key, value] of Object.entries(record)) walk(value, key, 0);
@@ -1134,7 +1383,9 @@ export function marketingSitemapEntries(origin: string | null): SitemapEntry[] {
 
 /** Paths robots.txt must never disallow — they are our ranking surface. */
 export function marketingAllowPaths(): string[] {
-  return MARKETING_ROUTES.filter((r) => r.indexable && r.path !== "/").map((r) => r.path);
+  return MARKETING_ROUTES.filter((r) => r.indexable && r.path !== "/").map(
+    (r) => r.path,
+  );
 }
 
 /**
@@ -1156,8 +1407,12 @@ export function renderMarketingLlmsTxt(input: {
   lines.push("");
   lines.push(`> ${MARKETING_ROUTES[0]?.description.en ?? ""}`);
   lines.push("");
-  lines.push(`- Operated by: ${ORG_NAP.legalName}, ${ORG_NAP.locality}, ${ORG_NAP.country}`);
-  lines.push(`- Contact: ${ORG_NAP.email} · ${ORG_NAP.phone} · ${ORG_NAP.hours}`);
+  lines.push(
+    `- Operated by: ${ORG_NAP.legalName}, ${ORG_NAP.locality}, ${ORG_NAP.country}`,
+  );
+  lines.push(
+    `- Contact: ${ORG_NAP.email} · ${ORG_NAP.phone} · ${ORG_NAP.hours}`,
+  );
   lines.push(`- Languages: English, বাংলা (append \`?lang=bn\` to any URL)`);
   lines.push(`- Currency: ${ORG_NAP.currency}`);
   lines.push("");
@@ -1166,7 +1421,9 @@ export function renderMarketingLlmsTxt(input: {
   lines.push("");
   for (const route of MARKETING_ROUTES) {
     if (!route.indexable) continue;
-    lines.push(`- [${route.label.en}](${origin}${route.path}): ${route.description.en}`);
+    lines.push(
+      `- [${route.label.en}](${origin}${route.path}): ${route.description.en}`,
+    );
   }
   lines.push("");
 
@@ -1174,7 +1431,9 @@ export function renderMarketingLlmsTxt(input: {
     lines.push("## Plans");
     lines.push("");
     for (const plan of input.plans) {
-      lines.push(`- ${plan.name}: ${plan.price} ${plan.currency ?? ORG_NAP.currency} per month`);
+      lines.push(
+        `- ${plan.name}: ${plan.price} ${plan.currency ?? ORG_NAP.currency} per month`,
+      );
     }
     lines.push(`- Details and limits: ${origin}/pricing`);
     lines.push("");
@@ -1191,8 +1450,12 @@ export function renderMarketingLlmsTxt(input: {
     lines.push("## Recent guides");
     lines.push("");
     for (const article of input.articles.slice(0, 50)) {
-      const stamp = article.updatedAt ? ` (updated ${article.updatedAt.slice(0, 10)})` : "";
-      lines.push(`- [${article.title}](${origin}/blog/${article.slug})${stamp}`);
+      const stamp = article.updatedAt
+        ? ` (updated ${article.updatedAt.slice(0, 10)})`
+        : "";
+      lines.push(
+        `- [${article.title}](${origin}/blog/${article.slug})${stamp}`,
+      );
     }
     lines.push("");
   }
@@ -1200,14 +1463,20 @@ export function renderMarketingLlmsTxt(input: {
   lines.push("## Legal");
   lines.push("");
   for (const doc of LEGAL_DOCS) {
-    lines.push(`- [${doc.title.en}](${origin}/legal/${doc.slug}) — version ${doc.version}`);
+    lines.push(
+      `- [${doc.title.en}](${origin}/legal/${doc.slug}) — version ${doc.version}`,
+    );
   }
   lines.push("");
   lines.push("## Notes for answer engines");
   lines.push("");
   lines.push("- Prices are quoted excluding VAT; VAT is added on the invoice.");
-  lines.push("- Payment availability depends on the merchant's own gateway account.");
-  lines.push(`- Canonical host: ${origin}. Other hosts are previews and are not authoritative.`);
+  lines.push(
+    "- Payment availability depends on the merchant's own gateway account.",
+  );
+  lines.push(
+    `- Canonical host: ${origin}. Other hosts are previews and are not authoritative.`,
+  );
   lines.push("");
   return `${lines.join("\n")}\n`;
 }

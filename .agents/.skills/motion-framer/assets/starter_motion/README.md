@@ -66,6 +66,7 @@ starter_motion/
 ### 1. Hover Animations (HoverCard)
 
 Demonstrates `whileHover` for interactive cards:
+
 - Scale on hover
 - Shadow effects
 - Smooth transitions
@@ -74,6 +75,7 @@ Demonstrates `whileHover` for interactive cards:
 ### 2. Drag Interactions (DraggableBox)
 
 Shows drag functionality:
+
 - Drag constraints
 - Visual feedback (`whileDrag`)
 - Drag events (`onDragStart`, `onDragEnd`)
@@ -82,6 +84,7 @@ Shows drag functionality:
 ### 3. Staggered Animations (StaggerList)
 
 Illustrates variant propagation:
+
 - Container/item variant pattern
 - `staggerChildren` for sequential animations
 - `delayChildren` for initial delay
@@ -90,6 +93,7 @@ Illustrates variant propagation:
 ### 4. Exit Animations (Modal)
 
 Demonstrates AnimatePresence:
+
 - Exit animations with `exit` prop
 - Modal backdrop fade
 - Modal enter/exit with spring physics
@@ -112,10 +116,7 @@ Demonstrates AnimatePresence:
 ### Hover Effect
 
 ```jsx
-<motion.button
-  whileHover={{ scale: 1.05 }}
-  whileTap={{ scale: 0.95 }}
->
+<motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
   Click me
 </motion.button>
 ```
@@ -176,26 +177,24 @@ Create new components in `src/components/`:
 
 ```jsx
 // src/components/MyComponent.jsx
-import { motion } from 'framer-motion'
+import { motion } from "framer-motion";
 
 export default function MyComponent() {
   return (
-    <motion.div
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-    >
+    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
       My Content
     </motion.div>
-  )
+  );
 }
 ```
 
 Import in App.jsx:
+
 ```jsx
-import MyComponent from './components/MyComponent'
+import MyComponent from "./components/MyComponent";
 
 // In App component:
-<MyComponent />
+<MyComponent />;
 ```
 
 ### Change Transition Physics
@@ -230,23 +229,21 @@ import MyComponent from './components/MyComponent'
 ### Layout Animations
 
 ```jsx
-<motion.div layout>
-  {/* Content that changes size/position */}
-</motion.div>
+<motion.div layout>{/* Content that changes size/position */}</motion.div>
 ```
 
 ### Shared Element Transitions
 
 ```jsx
 // Tab indicator
-{tabs.map(tab => (
-  <div key={tab.id}>
-    {tab.label}
-    {activeTab === tab.id && (
-      <motion.div layoutId="underline" />
-    )}
-  </div>
-))}
+{
+  tabs.map((tab) => (
+    <div key={tab.id}>
+      {tab.label}
+      {activeTab === tab.id && <motion.div layoutId="underline" />}
+    </div>
+  ));
+}
 ```
 
 ## Performance Tips
@@ -255,9 +252,9 @@ import MyComponent from './components/MyComponent'
 2. **Avoid layout properties** - Don't animate `width`, `height`, `top`, `left`
 3. **Reduce motion** - Respect accessibility preferences:
    ```jsx
-   import { useReducedMotion } from "framer-motion"
+   import { useReducedMotion } from "framer-motion";
 
-   const shouldReduceMotion = useReducedMotion()
+   const shouldReduceMotion = useReducedMotion();
    ```
 4. **Use `will-change` CSS** - For complex animations
 5. **Optimize variants** - Reuse variant objects
@@ -272,6 +269,7 @@ npm install -D typescript @types/react @types/react-dom
 ```
 
 Rename files to `.tsx`:
+
 ```bash
 mv src/main.jsx src/main.tsx
 mv src/App.jsx src/App.tsx

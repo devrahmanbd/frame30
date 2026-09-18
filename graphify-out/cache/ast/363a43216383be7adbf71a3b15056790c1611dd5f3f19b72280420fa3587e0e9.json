@@ -1,1 +1,501 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "label": "cells.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L1"}, {"id": "content_cells_titlecell", "label": "TitleCell()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L20"}, {"id": "content_cells_rowactionlink", "label": "RowActionLink()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L80"}, {"id": "content_cells_band_dot", "label": "BAND_DOT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L127"}, {"id": "content_cells_band_word", "label": "BAND_WORD", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L133"}, {"id": "content_cells_seocell", "label": "SeoCell()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L139"}, {"id": "content_cells_datecell", "label": "DateCell()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L160"}, {"id": "content_cells_authorcell", "label": "AuthorCell()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L177"}, {"id": "content_cells_termscell", "label": "TermsCell()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L183"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "users_rahman_documents_frame30_src_lib_content_desk_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_datecelllabel", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_formatwpdate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_row_action_label", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_rowactions", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_seoband", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_titlesuffixes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_trashdaysleft", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_contentrow", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "lib_content_desk_rowaction", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "users_rahman_documents_frame30_src_components_admin_content_content_links_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_content_links_edithref", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_content_links_previewhref", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_titlecell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_rowactionlink", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_band_dot", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L127", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_band_word", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_seocell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L139", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_datecell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L160", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_authorcell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L177", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx", "target": "content_cells_termscell", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L183", "weight": 1.0}], "raw_calls": [{"caller_nid": "content_cells_titlecell", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L29"}, {"caller_nid": "content_cells_titlecell", "callee": "titleSuffixes", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L31"}, {"caller_nid": "content_cells_titlecell", "callee": "rowActions", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L32"}, {"caller_nid": "content_cells_titlecell", "callee": "editHref", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L42"}, {"caller_nid": "content_cells_titlecell", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L48"}, {"caller_nid": "content_cells_titlecell", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L57"}, {"caller_nid": "content_cells_titlecell", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L62"}, {"caller_nid": "content_cells_titlecell", "callee": "trashDaysLeft", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L71"}, {"caller_nid": "content_cells_titlecell", "callee": "trashDaysLeft", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L72"}, {"caller_nid": "content_cells_rowactionlink", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L91"}, {"caller_nid": "content_cells_rowactionlink", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L95"}, {"caller_nid": "content_cells_rowactionlink", "callee": "editHref", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L103"}, {"caller_nid": "content_cells_rowactionlink", "callee": "previewHref", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L112"}, {"caller_nid": "content_cells_rowactionlink", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L112"}, {"caller_nid": "content_cells_seocell", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L140"}, {"caller_nid": "content_cells_seocell", "callee": "seoBand", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L142"}, {"caller_nid": "content_cells_seocell", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L144"}, {"caller_nid": "content_cells_seocell", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L144"}, {"caller_nid": "content_cells_seocell", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L148"}, {"caller_nid": "content_cells_datecell", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L161"}, {"caller_nid": "content_cells_datecell", "callee": "dateCellLabel", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L163"}, {"caller_nid": "content_cells_datecell", "callee": "formatWpDate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L169"}, {"caller_nid": "content_cells_authorcell", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L178"}, {"caller_nid": "content_cells_termscell", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx", "source_location": "L187"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "label": "cells.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "content_cells_titlecell",
+      "label": "TitleCell()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "content_cells_rowactionlink",
+      "label": "RowActionLink()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L80"
+    },
+    {
+      "id": "content_cells_band_dot",
+      "label": "BAND_DOT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L127"
+    },
+    {
+      "id": "content_cells_band_word",
+      "label": "BAND_WORD",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L133"
+    },
+    {
+      "id": "content_cells_seocell",
+      "label": "SeoCell()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L139"
+    },
+    {
+      "id": "content_cells_datecell",
+      "label": "DateCell()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L160"
+    },
+    {
+      "id": "content_cells_authorcell",
+      "label": "AuthorCell()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L177"
+    },
+    {
+      "id": "content_cells_termscell",
+      "label": "TermsCell()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L183"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_content_desk_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_datecelllabel",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_formatwpdate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_row_action_label",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_rowactions",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_seoband",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_titlesuffixes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_trashdaysleft",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_contentrow",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "lib_content_desk_rowaction",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "users_rahman_documents_frame30_src_components_admin_content_content_links_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_content_links_edithref",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_content_links_previewhref",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_titlecell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_rowactionlink",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_band_dot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L127",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_band_word",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_seocell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_datecell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L160",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_authorcell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L177",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_content_cells_tsx",
+      "target": "content_cells_termscell",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L183",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L29"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "titleSuffixes",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L31"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "rowActions",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "editHref",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L48"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L62"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "trashDaysLeft",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "content_cells_titlecell",
+      "callee": "trashDaysLeft",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "content_cells_rowactionlink",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L91"
+    },
+    {
+      "caller_nid": "content_cells_rowactionlink",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "content_cells_rowactionlink",
+      "callee": "editHref",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "content_cells_rowactionlink",
+      "callee": "previewHref",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "content_cells_rowactionlink",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L112"
+    },
+    {
+      "caller_nid": "content_cells_seocell",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L140"
+    },
+    {
+      "caller_nid": "content_cells_seocell",
+      "callee": "seoBand",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L142"
+    },
+    {
+      "caller_nid": "content_cells_seocell",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "content_cells_seocell",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L144"
+    },
+    {
+      "caller_nid": "content_cells_seocell",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "content_cells_datecell",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L161"
+    },
+    {
+      "caller_nid": "content_cells_datecell",
+      "callee": "dateCellLabel",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "content_cells_datecell",
+      "callee": "formatWpDate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "content_cells_authorcell",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L178"
+    },
+    {
+      "caller_nid": "content_cells_termscell",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/content/cells.tsx",
+      "source_location": "L187"
+    }
+  ]
+}

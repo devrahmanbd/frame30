@@ -36,16 +36,24 @@ export type HistoryState = {
 
 export const HISTORY_LIMIT = 60;
 
-export function initHistory(doc: StudioDoc, limit = HISTORY_LIMIT): HistoryState {
+export function initHistory(
+  doc: StudioDoc,
+  limit = HISTORY_LIMIT,
+): HistoryState {
   return {
-    entries: [{ id: "start", element: "Page", verb: "added", at: Date.now(), doc }],
+    entries: [
+      { id: "start", element: "Page", verb: "added", at: Date.now(), doc },
+    ],
     cursor: 0,
     limit,
   };
 }
 
 export function historyLabel(entry: HistoryEntry): string {
-  const verb = entry.verb === "added" && entry.id === "start" ? "Editing started" : `${entry.element} ${entry.verb}`;
+  const verb =
+    entry.verb === "added" && entry.id === "start"
+      ? "Editing started"
+      : `${entry.element} ${entry.verb}`;
   return verb.charAt(0).toUpperCase() + verb.slice(1);
 }
 
@@ -89,7 +97,9 @@ export function currentDoc(state: HistoryState): StudioDoc {
 }
 
 /** Newest first, which is the order the panel renders. */
-export function historyList(state: HistoryState): { entry: HistoryEntry; index: number; current: boolean }[] {
+export function historyList(
+  state: HistoryState,
+): { entry: HistoryEntry; index: number; current: boolean }[] {
   return state.entries
     .map((entry, index) => ({ entry, index, current: index === state.cursor }))
     .reverse();
@@ -102,11 +112,22 @@ export type RevisionEntry = {
   kind: "autosave" | "revision" | "published";
 };
 
-export function revisionLabel(revision: RevisionEntry, now = Date.now()): string {
+export function revisionLabel(
+  revision: RevisionEntry,
+  now = Date.now(),
+): string {
   const minutes = Math.max(0, Math.round((now - revision.at) / 60000));
   const when =
-    minutes < 1 ? "just now" : minutes < 60 ? `${minutes} min ago` : `${Math.round(minutes / 60)} h ago`;
+    minutes < 1
+      ? "just now"
+      : minutes < 60
+        ? `${minutes} min ago`
+        : `${Math.round(minutes / 60)} h ago`;
   const kind =
-    revision.kind === "autosave" ? "Autosave" : revision.kind === "published" ? "Published" : "Revision";
+    revision.kind === "autosave"
+      ? "Autosave"
+      : revision.kind === "published"
+        ? "Published"
+        : "Revision";
   return `${kind} · ${revision.author} · ${when}`;
 }

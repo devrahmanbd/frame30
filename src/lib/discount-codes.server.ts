@@ -21,7 +21,10 @@ const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 export function randomCode(prefix: string, length = 8) {
   const bytes = crypto.getRandomValues(new Uint8Array(length));
   const body = Array.from(bytes, (b) => ALPHABET[b % ALPHABET.length]).join("");
-  const clean = prefix.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const clean = prefix
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
   return clean ? `${clean}-${body}` : body;
 }
 
@@ -48,7 +51,8 @@ export async function generateCodes(
   return withSpan("commerce.codegen", async () => {
     await enforceRateLimit("commerce.codegen", `${merchantId}:${actor}`);
     const count = Math.min(500, Math.max(1, Math.floor(input.count)));
-    if (!input.batchLabel.trim()) throw new CommerceError("batch_required", "Name the batch");
+    if (!input.batchLabel.trim())
+      throw new CommerceError("batch_required", "Name the batch");
     if (input.type === "percent" && !input.percentOff) {
       throw new CommerceError("percent_required", "Set a percentage");
     }
@@ -64,10 +68,18 @@ export async function generateCodes(
       code,
       type: input.type,
       amount_minor_int: Math.max(0, Math.floor(input.amountMinorInt ?? 0)),
-      percent_off: Math.min(100, Math.max(0, Math.floor(input.percentOff ?? 0))),
-      min_subtotal_minor_int: Math.max(0, Math.floor(input.minSubtotalMinorInt ?? 0)),
+      percent_off: Math.min(
+        100,
+        Math.max(0, Math.floor(input.percentOff ?? 0)),
+      ),
+      min_subtotal_minor_int: Math.max(
+        0,
+        Math.floor(input.minSubtotalMinorInt ?? 0),
+      ),
       max_discount_minor_int:
-        input.maxDiscountMinorInt == null ? null : Math.max(0, Math.floor(input.maxDiscountMinorInt)),
+        input.maxDiscountMinorInt == null
+          ? null
+          : Math.max(0, Math.floor(input.maxDiscountMinorInt)),
       usage_limit: input.usageLimit,
       per_customer_limit: input.perCustomerLimit,
       expires_at: input.expiresAt ?? null,
@@ -75,23 +87,37 @@ export async function generateCodes(
       batch_label: input.batchLabel.trim(),
     }));
 
-    const { data, error } = await db.from("coupons").insert(rows).select("id, code");
+    const { data, error } = await db
+      .from("coupons")
+      .insert(rows)
+      .select("id, code");
     if (error) throw new CommerceError("codegen_failed", error.message);
     incr("framique_discount_codes_generated_total", {}, data?.length ?? 0);
-    return { batchLabel: input.batchLabel.trim(), codes: (data ?? []).map((d) => d.code) };
+    return {
+      batchLabel: input.batchLabel.trim(),
+      codes: (data ?? []).map((d) => d.code),
+    };
   });
 }
 
 export async function loadBatches(db: Client, merchantId: string) {
   const { data } = await db
     .from("coupons")
-    .select("batch_label, code, redeemed_count, usage_limit, status, expires_at")
+    .select(
+      "batch_label, code, redeemed_count, usage_limit, status, expires_at",
+    )
     .eq("merchant_id", merchantId)
     .not("batch_label", "is", null)
     .limit(2000);
   const map = new Map<
     string,
-    { label: string; codes: number; redeemed: number; active: number; expiresAt: string | null }
+    {
+      label: string;
+      codes: number;
+      redeemed: number;
+      active: number;
+      expiresAt: string | null;
+    }
   >();
   for (const row of data ?? []) {
     const label = row.batch_label as string;

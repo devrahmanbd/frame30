@@ -17,6 +17,7 @@ export type PrivilegedRpc = {
 };
 
 export async function privilegedRpc(): Promise<PrivilegedRpc> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as PrivilegedRpc;
 }

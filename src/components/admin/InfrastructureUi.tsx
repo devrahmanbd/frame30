@@ -17,18 +17,30 @@ const verdictTone: Record<QueueVerdict["status"], string> = {
 
 export function StatusPill({ status }: { status: QueueVerdict["status"] }) {
   return (
-    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${verdictTone[status]}`}>
+    <span
+      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${verdictTone[status]}`}
+    >
       {status}
     </span>
   );
 }
 
-export function Kpi({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function Kpi({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
     <div className="rounded-fq-md border border-border bg-card p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
-      {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -49,7 +61,11 @@ export function Section({
       <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold">{title}</h2>
-          {description ? <p className="mt-0.5 text-xs text-muted-foreground">{description}</p> : null}
+          {description ? (
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {description}
+            </p>
+          ) : null}
         </div>
         {action}
       </header>
@@ -60,9 +76,19 @@ export function Section({
 
 export type QueueRow = QueueDepth & { verdict: QueueVerdict };
 
-export function QueueTable({ rows, emptyLabel }: { rows: QueueRow[]; emptyLabel: string }) {
+export function QueueTable({
+  rows,
+  emptyLabel,
+}: {
+  rows: QueueRow[];
+  emptyLabel: string;
+}) {
   if (rows.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">{emptyLabel}</p>;
+    return (
+      <p className="py-6 text-center text-sm text-muted-foreground">
+        {emptyLabel}
+      </p>
+    );
   }
   return (
     <div className="overflow-x-auto">
@@ -70,12 +96,24 @@ export function QueueTable({ rows, emptyLabel }: { rows: QueueRow[]; emptyLabel:
         <caption className="sr-only">Background queue depth and health</caption>
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-            <th scope="col" className="py-2 pr-3 font-medium">Queue</th>
-            <th scope="col" className="py-2 pr-3 font-medium">Health</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Waiting</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Running</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Gave up</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Oldest</th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Queue
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Health
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Waiting
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Running
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Gave up
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Oldest
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -84,15 +122,21 @@ export function QueueTable({ rows, emptyLabel }: { rows: QueueRow[]; emptyLabel:
               <td className="py-2 pr-3 font-medium">{r.queue}</td>
               <td className="py-2 pr-3">
                 <StatusPill status={r.verdict.status} />
-                <span className="ml-2 text-xs text-muted-foreground">{r.verdict.message}</span>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {r.verdict.message}
+                </span>
               </td>
               <td className="py-2 pr-3 text-right tabular-nums">{r.queued}</td>
               <td className="py-2 pr-3 text-right tabular-nums">{r.running}</td>
-              <td className={`py-2 pr-3 text-right tabular-nums ${r.dead > 0 ? "text-destructive" : ""}`}>
+              <td
+                className={`py-2 pr-3 text-right tabular-nums ${r.dead > 0 ? "text-destructive" : ""}`}
+              >
                 {r.dead}
               </td>
               <td className="py-2 pr-3 text-right tabular-nums">
-                {r.oldestQueuedAgeSeconds > 0 ? `${Math.round(r.oldestQueuedAgeSeconds / 60)}m` : "—"}
+                {r.oldestQueuedAgeSeconds > 0
+                  ? `${Math.round(r.oldestQueuedAgeSeconds / 60)}m`
+                  : "—"}
               </td>
             </tr>
           ))}
@@ -138,7 +182,11 @@ export function JobTable({
   onCancel: (id: string) => void;
 }) {
   if (rows.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">{emptyLabel}</p>;
+    return (
+      <p className="py-6 text-center text-sm text-muted-foreground">
+        {emptyLabel}
+      </p>
+    );
   }
   return (
     <div className="overflow-x-auto">
@@ -146,10 +194,18 @@ export function JobTable({
         <caption className="sr-only">Recent background jobs</caption>
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-            <th scope="col" className="py-2 pr-3 font-medium">Job</th>
-            <th scope="col" className="py-2 pr-3 font-medium">State</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Attempts</th>
-            <th scope="col" className="py-2 pr-3 font-medium">Last error</th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Job
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              State
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Attempts
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Last error
+            </th>
             <th scope="col" className="py-2 font-medium" />
           </tr>
         </thead>
@@ -158,9 +214,15 @@ export function JobTable({
             <tr key={j.id} className="border-b border-border/60">
               <td className="py-2 pr-3">
                 <span className="font-medium">{j.name}</span>
-                <span className="ml-2 text-xs text-muted-foreground">{j.queue}</span>
+                <span className="ml-2 text-xs text-muted-foreground">
+                  {j.queue}
+                </span>
               </td>
-              <td className={`py-2 pr-3 font-medium ${stateTone[j.state] ?? ""}`}>{j.state}</td>
+              <td
+                className={`py-2 pr-3 font-medium ${stateTone[j.state] ?? ""}`}
+              >
+                {j.state}
+              </td>
               <td className="py-2 pr-3 text-right tabular-nums">
                 {j.attempts}/{j.max_attempts}
               </td>
@@ -168,7 +230,9 @@ export function JobTable({
                 {j.last_error_message ?? j.last_error_code ?? "—"}
               </td>
               <td className="py-2 text-right">
-                {j.state === "dead" || j.state === "failed" || j.state === "cancelled" ? (
+                {j.state === "dead" ||
+                j.state === "failed" ||
+                j.state === "cancelled" ? (
                   <button
                     type="button"
                     disabled={busy}
@@ -208,9 +272,19 @@ export type LoadTestRow = {
   created_at: string;
 };
 
-export function LoadTestTable({ rows, emptyLabel }: { rows: LoadTestRow[]; emptyLabel: string }) {
+export function LoadTestTable({
+  rows,
+  emptyLabel,
+}: {
+  rows: LoadTestRow[];
+  emptyLabel: string;
+}) {
   if (rows.length === 0) {
-    return <p className="py-6 text-center text-sm text-muted-foreground">{emptyLabel}</p>;
+    return (
+      <p className="py-6 text-center text-sm text-muted-foreground">
+        {emptyLabel}
+      </p>
+    );
   }
   return (
     <div className="overflow-x-auto">
@@ -218,13 +292,27 @@ export function LoadTestTable({ rows, emptyLabel }: { rows: LoadTestRow[]; empty
         <caption className="sr-only">Load test history</caption>
         <thead>
           <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
-            <th scope="col" className="py-2 pr-3 font-medium">Scenario</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Users</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Requests</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">Failed</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">p95</th>
-            <th scope="col" className="py-2 pr-3 text-right font-medium">RPS</th>
-            <th scope="col" className="py-2 pr-3 font-medium">Verdict</th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Scenario
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Users
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Requests
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              Failed
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              p95
+            </th>
+            <th scope="col" className="py-2 pr-3 text-right font-medium">
+              RPS
+            </th>
+            <th scope="col" className="py-2 pr-3 font-medium">
+              Verdict
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -236,12 +324,20 @@ export function LoadTestTable({ rows, emptyLabel }: { rows: LoadTestRow[]; empty
                   {new Date(r.created_at).toLocaleDateString()}
                 </span>
               </td>
-              <td className="py-2 pr-3 text-right tabular-nums">{r.concurrency}</td>
-              <td className="py-2 pr-3 text-right tabular-nums">{r.requests}</td>
-              <td className={`py-2 pr-3 text-right tabular-nums ${r.failures > 0 ? "text-destructive" : ""}`}>
+              <td className="py-2 pr-3 text-right tabular-nums">
+                {r.concurrency}
+              </td>
+              <td className="py-2 pr-3 text-right tabular-nums">
+                {r.requests}
+              </td>
+              <td
+                className={`py-2 pr-3 text-right tabular-nums ${r.failures > 0 ? "text-destructive" : ""}`}
+              >
                 {r.failures}
               </td>
-              <td className="py-2 pr-3 text-right tabular-nums">{r.p95_ms}ms</td>
+              <td className="py-2 pr-3 text-right tabular-nums">
+                {r.p95_ms}ms
+              </td>
               <td className="py-2 pr-3 text-right tabular-nums">{r.rps}</td>
               <td className="py-2 pr-3">
                 <span

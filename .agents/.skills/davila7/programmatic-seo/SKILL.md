@@ -17,20 +17,20 @@ Expert in building SEO-optimized pages at scale using templates and data.
 
 ## The 12 Playbooks
 
-| # | Playbook | Pattern | Example |
-|---|----------|---------|---------|
-| 1 | Templates | "[Type] template" | `/templates/resume/` |
-| 2 | Curation | "best [category]" | `/best/crm-software/` |
-| 3 | Conversions | "[X] to [Y]" | `/usd-to-gbp/` |
-| 4 | Comparisons | "[X] vs [Y]" | `/slack-vs-discord/` |
-| 5 | Examples | "[type] examples" | `/saas-landing-examples/` |
-| 6 | Locations | "[service] in [city]" | `/dental/san-diego/` |
-| 7 | Personas | "[product] for [role]" | `/crm-for-real-estate/` |
-| 8 | Integrations | "[product] + [product]" | `/hubspot-salesforce/` |
-| 9 | Glossary | "what is [term]" | `/glossary/seo/` |
-| 10 | Translations | Multi-language | `/es/guia/` |
-| 11 | Directory | "[category] tools" | `/email-marketing-tools/` |
-| 12 | Profiles | "[entity] + [attribute]" | `/stripe-founding-story/` |
+| #   | Playbook     | Pattern                  | Example                   |
+| --- | ------------ | ------------------------ | ------------------------- |
+| 1   | Templates    | "[Type] template"        | `/templates/resume/`      |
+| 2   | Curation     | "best [category]"        | `/best/crm-software/`     |
+| 3   | Conversions  | "[X] to [Y]"             | `/usd-to-gbp/`            |
+| 4   | Comparisons  | "[X] vs [Y]"             | `/slack-vs-discord/`      |
+| 5   | Examples     | "[type] examples"        | `/saas-landing-examples/` |
+| 6   | Locations    | "[service] in [city]"    | `/dental/san-diego/`      |
+| 7   | Personas     | "[product] for [role]"   | `/crm-for-real-estate/`   |
+| 8   | Integrations | "[product] + [product]"  | `/hubspot-salesforce/`    |
+| 9   | Glossary     | "what is [term]"         | `/glossary/seo/`          |
+| 10  | Translations | Multi-language           | `/es/guia/`               |
+| 11  | Directory    | "[category] tools"       | `/email-marketing-tools/` |
+| 12  | Profiles     | "[entity] + [attribute]" | `/stripe-founding-story/` |
 
 ## Data Defensibility Hierarchy
 
@@ -43,6 +43,7 @@ Expert in building SEO-optimized pages at scale using templates and data.
 ## Template Design
 
 Each page needs:
+
 - Unique H1 (not just variables swapped)
 - Data-driven sections
 - City/service-specific insights
@@ -52,17 +53,20 @@ Each page needs:
 ## Quality Checklist
 
 **Content:**
+
 - [ ] Each page provides unique value
 - [ ] Not just variable substitution
 - [ ] Answers search intent
 
 **Technical:**
+
 - [ ] Unique titles and meta descriptions
 - [ ] Proper heading structure
 - [ ] Schema markup
 - [ ] Canonical tags
 
 **Internal Linking:**
+
 - [ ] Connected to site architecture
 - [ ] No orphan pages
 - [ ] Breadcrumbs implemented

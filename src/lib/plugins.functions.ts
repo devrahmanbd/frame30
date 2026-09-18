@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requirePermission } from "./authz-middleware";
 
 async function scope(db: SupabaseClient<Database>, userId: string) {
   const { currentMerchantId } = await import("./marketing.server");
@@ -12,15 +12,17 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 const pluginId = z.string().regex(/^[a-z][a-z0-9-]{2,39}$/);
 
 export const pluginListFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.read")])
   .handler(async ({ context }) => {
     const { listInstalledPlugins } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { plugins: await listInstalledPlugins(context.supabase, merchantId) };
+    return {
+      plugins: await listInstalledPlugins(context.supabase, merchantId),
+    };
   });
 
 export const pluginInstallFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -41,37 +43,55 @@ export const pluginInstallFn = createServerFn({ method: "POST" })
   });
 
 export const pluginSettingsSaveFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
     z.object({ pluginId, values: z.record(z.string(), z.unknown()) }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { savePluginSettings } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return savePluginSettings(context.supabase, merchantId, data.pluginId, data.values);
+    return savePluginSettings(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.values,
+    );
   });
 
 export const pluginToggleFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ pluginId, enabled: z.boolean() }).parse(d))
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ pluginId, enabled: z.boolean() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { setPluginEnabled } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setPluginEnabled(context.supabase, merchantId, data.pluginId, data.enabled, context.userId);
+    return setPluginEnabled(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.enabled,
+      context.userId,
+    );
   });
 
 export const pluginUninstallFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) => z.object({ pluginId }).parse(d))
   .handler(async ({ data, context }) => {
     const { uninstallPlugin } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallPlugin(context.supabase, merchantId, data.pluginId, context.userId);
+    return uninstallPlugin(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      context.userId,
+    );
   });
 
 /** Platform owner only — RLS rejects a merchant who tries. Kill switches are global per plugin. */
 export const pluginKillSwitchFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("flags.write")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -83,5 +103,10 @@ export const pluginKillSwitchFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { setPluginKillSwitch } = await import("./plugins.server");
-    return setPluginKillSwitch(context.supabase, data.pluginId, data.disabled, data.reason);
+    return setPluginKillSwitch(
+      context.supabase,
+      data.pluginId,
+      data.disabled,
+      data.reason,
+    );
   });

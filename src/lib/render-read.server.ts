@@ -58,8 +58,11 @@ export type RenderReadOptions<T> = {
   context?: Record<string, string | number | boolean | null>;
 };
 
-
-function withTimeout<T>(promise: PromiseLike<T>, ms: number, label: string): Promise<T> {
+function withTimeout<T>(
+  promise: PromiseLike<T>,
+  ms: number,
+  label: string,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timer = setTimeout(() => reject(new RenderReadTimeout(label)), ms);
     Promise.resolve(promise).then(
@@ -105,18 +108,26 @@ export async function renderRead<T>(opts: RenderReadOptions<T>): Promise<T> {
         const started = Date.now();
         try {
           const value = await withTimeout(load(), timeoutMs, name);
-          observe("framique_render_read_ms", Date.now() - started, { read: name, result: "ok" });
+          observe("framique_render_read_ms", Date.now() - started, {
+            read: name,
+            result: "ok",
+          });
           incr("framique_render_read_total", { read: name, result: "ok" });
           return value;
         } catch (error) {
           const timeout = error instanceof RenderReadTimeout;
           const result = timeout ? "timeout" : "error";
-          observe("framique_render_read_ms", Date.now() - started, { read: name, result });
+          observe("framique_render_read_ms", Date.now() - started, {
+            read: name,
+            result,
+          });
           incr("framique_render_read_total", { read: name, result });
           log("warn", "render_read.failed", {
             ...(context ?? {}),
             read: name,
-            reason: timeout ? "timeout" : String((error as Error)?.message ?? error).slice(0, 200),
+            reason: timeout
+              ? "timeout"
+              : String((error as Error)?.message ?? error).slice(0, 200),
           });
           // Fallback is cached for the TTL on purpose: a broken table should not
           // be hammered once per page view while it is down.

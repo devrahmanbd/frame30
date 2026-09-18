@@ -24,9 +24,13 @@
 
 import { communityPlugin } from "./payment-plugins";
 
-export const LIVE_PROVIDERS = ["sslcommerz", "aamarpay", "bkash", "piprapay"] as const;
+export const LIVE_PROVIDERS = [
+  "sslcommerz",
+  "aamarpay",
+  "bkash",
+  "piprapay",
+] as const;
 export type LiveProvider = (typeof LIVE_PROVIDERS)[number];
-
 
 export type GatewayMode = "mock" | "sandbox" | "live";
 
@@ -49,14 +53,20 @@ export type LiveCredentials = {
   baseUrl?: string;
 };
 
-export const REQUIRED_CREDENTIALS: Record<LiveProvider, (keyof LiveCredentials)[]> = {
+export const REQUIRED_CREDENTIALS: Record<
+  LiveProvider,
+  (keyof LiveCredentials)[]
+> = {
   sslcommerz: ["storeId", "storePassword"],
   aamarpay: ["storeId", "storePassword"],
   bkash: ["storeId", "storePassword", "username", "password"],
   piprapay: ["apiKey", "baseUrl"],
 };
 
-export function credentialsComplete(provider: LiveProvider, creds: LiveCredentials) {
+export function credentialsComplete(
+  provider: LiveProvider,
+  creds: LiveCredentials,
+) {
   const complete = REQUIRED_CREDENTIALS[provider].every((k) => {
     const v = creds[k];
     return typeof v === "string" && v.trim().length > 0;
@@ -65,13 +75,18 @@ export function credentialsComplete(provider: LiveProvider, creds: LiveCredentia
   // A self-hosted plugin has no endpoint we could default to, so an origin that
   // is not plainly https is treated as "not configured" rather than guessed at.
   const plugin = communityPlugin(provider);
-  if (plugin?.requiresBaseUrl && !/^https:\/\/[^\s]+$/.test((creds.baseUrl ?? "").trim())) return false;
+  if (
+    plugin?.requiresBaseUrl &&
+    !/^https:\/\/[^\s]+$/.test((creds.baseUrl ?? "").trim())
+  )
+    return false;
   return true;
 }
 
-
 /** Hints are all that ever leaves the server: which keys exist, last 2 chars. */
-export function credentialHints(creds: LiveCredentials): Record<string, string> {
+export function credentialHints(
+  creds: LiveCredentials,
+): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [k, v] of Object.entries(creds)) {
     if (typeof v !== "string" || !v) continue;
@@ -81,7 +96,10 @@ export function credentialHints(creds: LiveCredentials): Record<string, string> 
 }
 
 /** Default endpoints. A merchant may override per account (`base_url`). */
-export const PROVIDER_BASE_URL: Record<LiveProvider, Record<"sandbox" | "live", string>> = {
+export const PROVIDER_BASE_URL: Record<
+  LiveProvider,
+  Record<"sandbox" | "live", string>
+> = {
   sslcommerz: {
     sandbox: "https://sandbox.sslcommerz.com",
     live: "https://securepay.sslcommerz.com",
@@ -104,12 +122,12 @@ export function baseUrlFor(
   override?: string | null,
   creds?: LiveCredentials,
 ) {
-  if (override && /^https:\/\//.test(override)) return override.replace(/\/+$/, "");
+  if (override && /^https:\/\//.test(override))
+    return override.replace(/\/+$/, "");
   const own = creds?.baseUrl?.trim();
   if (own && /^https:\/\//.test(own)) return own.replace(/\/+$/, "");
   return PROVIDER_BASE_URL[provider][mode === "live" ? "live" : "sandbox"];
 }
-
 
 /* ------------------------------------------------------------------ */
 /* Session requests                                                     */
@@ -194,7 +212,6 @@ export function buildSessionRequest(input: SessionInput): SessionRequest {
     };
   }
   if (input.provider === "piprapay") {
-
     // Community plugin: PipraPay's own create-charge endpoint on the merchant's
     // server. The intent id travels in metadata so the callback can be matched
     // back to a charge we opened, never to one the caller names.
@@ -240,7 +257,10 @@ export function buildSessionRequest(input: SessionInput): SessionRequest {
   };
 }
 
-export function bkashGrantRequest(baseUrl: string, c: LiveCredentials): SessionRequest {
+export function bkashGrantRequest(
+  baseUrl: string,
+  c: LiveCredentials,
+): SessionRequest {
   return {
     url: `${baseUrl}/v1.2.0-beta/tokenized/checkout/token/grant`,
     method: "POST",
@@ -260,32 +280,62 @@ export type SessionAnswer =
   | { ok: false; reason: string };
 
 /** Read a rail's answer without trusting its shape. */
-export function parseSessionResponse(provider: LiveProvider, payload: unknown): SessionAnswer {
+export function parseSessionResponse(
+  provider: LiveProvider,
+  payload: unknown,
+): SessionAnswer {
   const p = (payload ?? {}) as Record<string, unknown>;
-  const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : null);
+  const str = (v: unknown) =>
+    typeof v === "string" && v.trim() ? v.trim() : null;
   if (provider === "sslcommerz") {
     const url = str(p["GatewayPageURL"]) ?? str(p["redirectGatewayURL"]);
     if (str(p["status"]) === "SUCCESS" && url) {
-      return { ok: true, redirectUrl: url, providerReference: str(p["sessionkey"]) };
+      return {
+        ok: true,
+        redirectUrl: url,
+        providerReference: str(p["sessionkey"]),
+      };
     }
-    return { ok: false, reason: str(p["failedreason"]) ?? "sslcommerz_session_rejected" };
+    return {
+      ok: false,
+      reason: str(p["failedreason"]) ?? "sslcommerz_session_rejected",
+    };
   }
   if (provider === "aamarpay") {
     const url = str(p["payment_url"]);
-    if (url) return { ok: true, redirectUrl: url, providerReference: str(p["tran_id"]) };
-    return { ok: false, reason: str(p["result"]) ?? "aamarpay_session_rejected" };
+    if (url)
+      return {
+        ok: true,
+        redirectUrl: url,
+        providerReference: str(p["tran_id"]),
+      };
+    return {
+      ok: false,
+      reason: str(p["result"]) ?? "aamarpay_session_rejected",
+    };
   }
   if (provider === "piprapay") {
     const url = str(p["pp_url"]);
-    if (p["status"] === true && url) return { ok: true, redirectUrl: url, providerReference: str(p["pp_id"]) };
-    return { ok: false, reason: str(p["message"]) ?? "piprapay_session_rejected" };
+    if (p["status"] === true && url)
+      return { ok: true, redirectUrl: url, providerReference: str(p["pp_id"]) };
+    return {
+      ok: false,
+      reason: str(p["message"]) ?? "piprapay_session_rejected",
+    };
   }
 
   const url = str(p["bkashURL"]);
   if (url && str(p["statusCode"]) !== "0009") {
-    return { ok: true, redirectUrl: url, providerReference: str(p["paymentID"]) };
+    return {
+      ok: true,
+      redirectUrl: url,
+      providerReference: str(p["paymentID"]),
+    };
   }
-  return { ok: false, reason: str(p["statusMessage"]) ?? "bkash_session_rejected" };
+  return {
+    ok: false,
+    reason: str(p["statusMessage"]) ?? "bkash_session_rejected",
+  };
 }
 
 /* ------------------------------------------------------------------ */
@@ -302,7 +352,12 @@ export type CallbackVerdict = {
 };
 
 function minor(value: unknown): number | null {
-  const n = typeof value === "string" ? Number(value) : typeof value === "number" ? value : NaN;
+  const n =
+    typeof value === "string"
+      ? Number(value)
+      : typeof value === "number"
+        ? value
+        : NaN;
   if (!Number.isFinite(n)) return null;
   return Math.round(n * 100);
 }
@@ -312,8 +367,12 @@ function minor(value: unknown): number | null {
  * rail's word alone for SSLCommerz/bKash — the server half re-validates against
  * the provider API and compares the amount before any order is marked paid.
  */
-export function readCallback(provider: LiveProvider, body: Record<string, unknown>): CallbackVerdict {
-  const str = (v: unknown) => (typeof v === "string" && v.trim() ? v.trim() : null);
+export function readCallback(
+  provider: LiveProvider,
+  body: Record<string, unknown>,
+): CallbackVerdict {
+  const str = (v: unknown) =>
+    typeof v === "string" && v.trim() ? v.trim() : null;
   if (provider === "sslcommerz") {
     const status = str(body["status"]);
     return {
@@ -334,7 +393,12 @@ export function readCallback(provider: LiveProvider, body: Record<string, unknow
     const result = str(body["pay_status"]) ?? str(body["status_code"]);
     return {
       intentId: str(body["opt_a"]) ?? str(body["mer_txnid"]),
-      status: result === "Successful" || result === "2" ? "paid" : result === "Canceled" ? "cancelled" : "failed",
+      status:
+        result === "Successful" || result === "2"
+          ? "paid"
+          : result === "Canceled"
+            ? "cancelled"
+            : "failed",
       providerReference: str(body["pg_txnid"]),
       amountMinorInt: minor(body["amount"]),
     };
@@ -374,7 +438,10 @@ export function readCallback(provider: LiveProvider, body: Record<string, unknow
 }
 
 /** The rail's own answer must match the intent to the paisa, or it is not paid. */
-export function amountMatches(expectedMinorInt: number, seenMinorInt: number | null) {
+export function amountMatches(
+  expectedMinorInt: number,
+  seenMinorInt: number | null,
+) {
   return seenMinorInt !== null && seenMinorInt === expectedMinorInt;
 }
 
@@ -386,7 +453,8 @@ export function amountMatches(expectedMinorInt: number, seenMinorInt: number | n
 function sameSecret(a: string, b: string) {
   if (a.length !== b.length || a.length === 0) return false;
   let diff = 0;
-  for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  for (let i = 0; i < a.length; i += 1)
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
   return diff === 0;
 }
 

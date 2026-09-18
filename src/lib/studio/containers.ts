@@ -10,7 +10,13 @@ import { resolveResponsive, type DeviceKey, type Maybe } from "./responsive";
 
 export type ContainerLayout = "flex" | "grid";
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
-export type Justify = "flex-start" | "center" | "flex-end" | "space-between" | "space-around" | "space-evenly";
+export type Justify =
+  | "flex-start"
+  | "center"
+  | "flex-end"
+  | "space-between"
+  | "space-around"
+  | "space-evenly";
 export type AlignItems = "flex-start" | "center" | "flex-end" | "stretch";
 export type Wrap = "nowrap" | "wrap";
 export type ContentWidth = "boxed" | "full";
@@ -71,15 +77,72 @@ export const LAYOUT_PRESETS: LayoutPreset[] = [
   { key: "c100", label: "Full width", layout: "flex", rows: [[100]] },
   { key: "r100", label: "Row, full width", layout: "flex", rows: [[100]] },
   { key: "50-50", label: "Two equal", layout: "flex", rows: [[50, 50]] },
-  { key: "33-66", label: "One third / two thirds", layout: "flex", rows: [[33, 66]] },
-  { key: "25-25-25-25", label: "Four equal", layout: "flex", rows: [[25, 25, 25, 25]] },
-  { key: "25-50-25", label: "Narrow / wide / narrow", layout: "flex", rows: [[25, 50, 25]] },
-  { key: "50-50-50-50", label: "Two by two", layout: "flex", rows: [[50, 50], [50, 50]] },
-  { key: "50-50-100", label: "Two up, one full", layout: "flex", rows: [[50, 50], [100]] },
-  { key: "c100-c50-50", label: "Full then two", layout: "flex", rows: [[100], [50, 50]] },
-  { key: "33x6", label: "Six thirds", layout: "grid", rows: [[33, 33, 33], [33, 33, 33]] },
-  { key: "33x4+66", label: "Four thirds and a wide", layout: "grid", rows: [[33, 33, 33], [33, 66]] },
-  { key: "66-33-33-66", label: "Wide / narrow, narrow / wide", layout: "flex", rows: [[66, 33], [33, 66]] },
+  {
+    key: "33-66",
+    label: "One third / two thirds",
+    layout: "flex",
+    rows: [[33, 66]],
+  },
+  {
+    key: "25-25-25-25",
+    label: "Four equal",
+    layout: "flex",
+    rows: [[25, 25, 25, 25]],
+  },
+  {
+    key: "25-50-25",
+    label: "Narrow / wide / narrow",
+    layout: "flex",
+    rows: [[25, 50, 25]],
+  },
+  {
+    key: "50-50-50-50",
+    label: "Two by two",
+    layout: "flex",
+    rows: [
+      [50, 50],
+      [50, 50],
+    ],
+  },
+  {
+    key: "50-50-100",
+    label: "Two up, one full",
+    layout: "flex",
+    rows: [[50, 50], [100]],
+  },
+  {
+    key: "c100-c50-50",
+    label: "Full then two",
+    layout: "flex",
+    rows: [[100], [50, 50]],
+  },
+  {
+    key: "33x6",
+    label: "Six thirds",
+    layout: "grid",
+    rows: [
+      [33, 33, 33],
+      [33, 33, 33],
+    ],
+  },
+  {
+    key: "33x4+66",
+    label: "Four thirds and a wide",
+    layout: "grid",
+    rows: [
+      [33, 33, 33],
+      [33, 66],
+    ],
+  },
+  {
+    key: "66-33-33-66",
+    label: "Wide / narrow, narrow / wide",
+    layout: "flex",
+    rows: [
+      [66, 33],
+      [33, 66],
+    ],
+  },
 ];
 
 export function presetByKey(key: string): LayoutPreset | undefined {
@@ -104,7 +167,8 @@ export function containerCss(
   const gap = resolveResponsive(settings.gap, device) ?? 20;
   const justify = resolveResponsive(settings.justify, device);
   const align = resolveResponsive(settings.align, device);
-  const contentWidth = resolveResponsive(settings.contentWidth, device) ?? "boxed";
+  const contentWidth =
+    resolveResponsive(settings.contentWidth, device) ?? "boxed";
   const maxWidth = resolveResponsive(settings.maxWidth, device) ?? 1140;
   const minHeight = resolveResponsive(settings.minHeight, device);
 
@@ -139,7 +203,10 @@ export function containerCss(
 }
 
 /** Style applied to a container that is itself a child of a flex container. */
-export function childBasisCss(basis: Maybe<number>, device: DeviceKey = "desktop"): CSSProperties {
+export function childBasisCss(
+  basis: Maybe<number>,
+  device: DeviceKey = "desktop",
+): CSSProperties {
   const value = resolveResponsive(basis, device);
   if (value === undefined) return {};
   return { flexBasis: `${value}%`, flexGrow: 0, flexShrink: 1, minWidth: 0 };

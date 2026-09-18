@@ -12,7 +12,12 @@
  */
 
 export type GlobalColor = { id: string; name: string; value: string };
-export type GlobalFont = { id: string; name: string; family: string; weight: string };
+export type GlobalFont = {
+  id: string;
+  name: string;
+  family: string;
+  weight: string;
+};
 export type ThemeGlobals = { colors: GlobalColor[]; fonts: GlobalFont[] };
 
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
@@ -32,7 +37,12 @@ export const DEFAULT_GLOBALS: ThemeGlobals = {
     { id: "surface", name: "Surface", value: "#FFFFFF" },
   ],
   fonts: [
-    { id: "heading", name: "Headings", family: "Noto Sans Bengali", weight: "700" },
+    {
+      id: "heading",
+      name: "Headings",
+      family: "Noto Sans Bengali",
+      weight: "700",
+    },
     { id: "body", name: "Body", family: "Noto Sans Bengali", weight: "400" },
   ],
 };
@@ -45,15 +55,23 @@ export function globalFontVar(id: string): string {
 }
 
 /** The value stored on a widget prop when it is bound to a global. */
-export function globalRef(id: string, kind: "color" | "font" = "color"): string {
+export function globalRef(
+  id: string,
+  kind: "color" | "font" = "color",
+): string {
   return `var(${kind === "color" ? globalColorVar(id) : globalFontVar(id)})`;
 }
 
 /** The global id a prop value is bound to, or null when it holds a raw value. */
-export function globalRefId(value: unknown, kind: "color" | "font" = "color"): string | null {
+export function globalRefId(
+  value: unknown,
+  kind: "color" | "font" = "color",
+): string | null {
   if (typeof value !== "string") return null;
   const prefix = kind === "color" ? "--fq-g-" : "--fq-gf-";
-  const match = value.trim().match(/^var\(\s*(--fq-g-[a-z0-9-]+|--fq-gf-[a-z0-9-]+)\s*\)$/);
+  const match = value
+    .trim()
+    .match(/^var\(\s*(--fq-g-[a-z0-9-]+|--fq-gf-[a-z0-9-]+)\s*\)$/);
   if (!match) return null;
   const name = match[1]!;
   return name.startsWith(prefix) ? name.slice(prefix.length) : null;
@@ -76,7 +94,10 @@ export function parseGlobals(input: unknown): ThemeGlobals {
     seenColor.add(id);
     colors.push({
       id,
-      name: typeof r["name"] === "string" && r["name"].trim() ? r["name"].trim().slice(0, 40) : id,
+      name:
+        typeof r["name"] === "string" && r["name"].trim()
+          ? r["name"].trim().slice(0, 40)
+          : id,
       value,
     });
     if (colors.length >= MAX_GLOBAL_COLORS) break;
@@ -90,10 +111,16 @@ export function parseGlobals(input: unknown): ThemeGlobals {
     const family = typeof r["family"] === "string" ? r["family"].trim() : "";
     if (!ID.test(id) || !FAMILY.test(family) || seenFont.has(id)) continue;
     seenFont.add(id);
-    const weight = typeof r["weight"] === "string" && WEIGHT.test(r["weight"]) ? r["weight"] : "400";
+    const weight =
+      typeof r["weight"] === "string" && WEIGHT.test(r["weight"])
+        ? r["weight"]
+        : "400";
     fonts.push({
       id,
-      name: typeof r["name"] === "string" && r["name"].trim() ? r["name"].trim().slice(0, 40) : id,
+      name:
+        typeof r["name"] === "string" && r["name"].trim()
+          ? r["name"].trim().slice(0, 40)
+          : id,
       family,
       weight,
     });
@@ -110,8 +137,10 @@ export function parseGlobals(input: unknown): ThemeGlobals {
 /** CSS custom properties for the theme surface. */
 export function globalsToCss(globals: ThemeGlobals): Record<string, string> {
   const out: Record<string, string> = {};
-  for (const color of globals.colors) out[globalColorVar(color.id)] = color.value;
-  for (const font of globals.fonts) out[globalFontVar(font.id)] = `"${font.family}", system-ui, sans-serif`;
+  for (const color of globals.colors)
+    out[globalColorVar(color.id)] = color.value;
+  for (const font of globals.fonts)
+    out[globalFontVar(font.id)] = `"${font.family}", system-ui, sans-serif`;
   return out;
 }
 

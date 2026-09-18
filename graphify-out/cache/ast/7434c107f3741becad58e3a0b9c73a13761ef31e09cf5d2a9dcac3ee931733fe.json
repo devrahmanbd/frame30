@@ -1,1 +1,34 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js", "label": "vite.config.js", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js", "source_location": "L1"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js", "target": "vite", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js", "target": "plugin_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js", "source_location": "L2", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js",
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js",
+      "target": "vite",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_motion_framer_assets_starter_motion_vite_config_js",
+      "target": "plugin_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/motion-framer/assets/starter_motion/vite.config.js",
+      "source_location": "L2",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

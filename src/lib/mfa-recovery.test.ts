@@ -10,7 +10,9 @@ import {
 
 describe("recovery codes — shape", () => {
   it("formats entropy as three readable groups", () => {
-    const code = encodeRecoveryCode(new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]));
+    const code = encodeRecoveryCode(
+      new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    );
     expect(code).toMatch(/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/);
   });
 

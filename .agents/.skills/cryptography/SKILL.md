@@ -15,7 +15,7 @@
 1. **Use bcrypt or Argon2 for password hashing.** Never use MD5, SHA-1, or SHA-256 alone for passwords — they are too fast and vulnerable to brute force. Use a purpose-built password hashing function with built-in salting and configurable cost.
 
 ```typescript
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 const SALT_ROUNDS = 12; // Adjust for ~250ms hash time on your hardware
 
@@ -23,7 +23,10 @@ async function hashPassword(plaintext: string): Promise<string> {
   return bcrypt.hash(plaintext, SALT_ROUNDS);
 }
 
-async function verifyPassword(plaintext: string, hash: string): Promise<boolean> {
+async function verifyPassword(
+  plaintext: string,
+  hash: string,
+): Promise<boolean> {
   return bcrypt.compare(plaintext, hash);
 }
 ```
@@ -31,7 +34,7 @@ async function verifyPassword(plaintext: string, hash: string): Promise<boolean>
 For higher security requirements, use Argon2id:
 
 ```typescript
-import argon2 from 'argon2';
+import argon2 from "argon2";
 
 async function hashPassword(plaintext: string): Promise<string> {
   return argon2.hash(plaintext, {
@@ -46,43 +49,50 @@ async function hashPassword(plaintext: string): Promise<string> {
 2. **Use AES-256-GCM for symmetric encryption.** GCM provides both confidentiality and authenticity (authenticated encryption). Always use a unique IV for every encryption operation.
 
 ```typescript
-import crypto from 'node:crypto';
+import crypto from "node:crypto";
 
-const ALGORITHM = 'aes-256-gcm';
+const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12; // 96 bits for GCM
 const TAG_LENGTH = 16; // 128 bits
 
 function encrypt(plaintext: string, key: Buffer): string {
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv(ALGORITHM, key, iv, { authTagLength: TAG_LENGTH });
+  const cipher = crypto.createCipheriv(ALGORITHM, key, iv, {
+    authTagLength: TAG_LENGTH,
+  });
 
-  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  const encrypted = Buffer.concat([
+    cipher.update(plaintext, "utf8"),
+    cipher.final(),
+  ]);
   const tag = cipher.getAuthTag();
 
   // Prepend IV and tag to ciphertext for storage
-  return Buffer.concat([iv, tag, encrypted]).toString('base64');
+  return Buffer.concat([iv, tag, encrypted]).toString("base64");
 }
 
 function decrypt(encoded: string, key: Buffer): string {
-  const data = Buffer.from(encoded, 'base64');
+  const data = Buffer.from(encoded, "base64");
   const iv = data.subarray(0, IV_LENGTH);
   const tag = data.subarray(IV_LENGTH, IV_LENGTH + TAG_LENGTH);
   const ciphertext = data.subarray(IV_LENGTH + TAG_LENGTH);
 
-  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv, { authTagLength: TAG_LENGTH });
+  const decipher = crypto.createDecipheriv(ALGORITHM, key, iv, {
+    authTagLength: TAG_LENGTH,
+  });
   decipher.setAuthTag(tag);
 
-  return decipher.update(ciphertext) + decipher.final('utf8');
+  return decipher.update(ciphertext) + decipher.final("utf8");
 }
 ```
 
 3. **Generate cryptographically secure random values.** Use `crypto.randomBytes()` or `crypto.randomUUID()` — never `Math.random()` for security purposes.
 
 ```typescript
-import crypto from 'node:crypto';
+import crypto from "node:crypto";
 
 // Random bytes for keys, IVs, tokens
-const token = crypto.randomBytes(32).toString('hex');
+const token = crypto.randomBytes(32).toString("hex");
 
 // Random UUID
 const id = crypto.randomUUID();
@@ -92,12 +102,19 @@ const id = crypto.randomUUID();
 
 ```typescript
 function createHmac(data: string, secret: string): string {
-  return crypto.createHmac('sha256', secret).update(data).digest('hex');
+  return crypto.createHmac("sha256", secret).update(data).digest("hex");
 }
 
-function verifyHmac(data: string, secret: string, expectedMac: string): boolean {
+function verifyHmac(
+  data: string,
+  secret: string,
+  expectedMac: string,
+): boolean {
   const computed = createHmac(data, secret);
-  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(expectedMac));
+  return crypto.timingSafeEqual(
+    Buffer.from(computed),
+    Buffer.from(expectedMac),
+  );
 }
 ```
 
@@ -127,7 +144,7 @@ function deriveKey(password: string, salt: Buffer): Promise<Buffer> {
 
 ```typescript
 // Generate key pair
-const { publicKey, privateKey } = crypto.generateKeyPairSync('ed25519');
+const { publicKey, privateKey } = crypto.generateKeyPairSync("ed25519");
 
 // Sign
 const signature = crypto.sign(null, Buffer.from(data), privateKey);
@@ -148,14 +165,15 @@ interface EncryptedField {
 ## Details
 
 **Algorithm selection guide:**
-| Purpose | Recommended | Avoid |
-|---|---|---|
-| Password hashing | Argon2id, bcrypt, scrypt | MD5, SHA-\*, plain text |
-| Symmetric encryption | AES-256-GCM | AES-ECB, DES, 3DES, RC4 |
-| Hashing (non-password) | SHA-256, SHA-3 | MD5, SHA-1 |
-| Signing | Ed25519, RSA-PSS (2048+) | RSA-PKCS1v15 |
-| Key derivation | scrypt, PBKDF2 (600K+ iterations) | Single-pass hash |
-| Random generation | crypto.randomBytes | Math.random |
+
+| Purpose                | Recommended                       | Avoid                   |
+| ---------------------- | --------------------------------- | ----------------------- |
+| Password hashing       | Argon2id, bcrypt, scrypt          | MD5, SHA-\*, plain text |
+| Symmetric encryption   | AES-256-GCM                       | AES-ECB, DES, 3DES, RC4 |
+| Hashing (non-password) | SHA-256, SHA-3                    | MD5, SHA-1              |
+| Signing                | Ed25519, RSA-PSS (2048+)          | RSA-PKCS1v15            |
+| Key derivation         | scrypt, PBKDF2 (600K+ iterations) | Single-pass hash        |
+| Random generation      | crypto.randomBytes                | Math.random             |
 
 **Why GCM over CBC:** GCM is an authenticated encryption mode — it detects tampering. CBC requires a separate HMAC step for integrity, and incorrect implementations lead to padding oracle attacks.
 

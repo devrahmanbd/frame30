@@ -9,6 +9,7 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
+import { COMMON_TIMEZONES, DEFAULT_MERCHANT_TIMEZONE } from "@/lib/timezone";
 import { CustomFontsPanel } from "./CustomFontsPanel";
 
 type Props = {
@@ -22,27 +23,48 @@ function Contrast({ label, ratio }: { label: string; ratio: number }) {
   return (
     <p
       className={`flex items-center justify-between rounded-fq-md px-3 py-2 text-xs ${
-        pass ? "bg-success-soft text-success-foreground" : "bg-danger-soft text-danger-foreground"
+        pass
+          ? "bg-success-soft text-success-foreground"
+          : "bg-danger-soft text-danger-foreground"
       }`}
     >
       <span>{label}</span>
       <span className="tabular-nums">
-        {ratio.toFixed(2)}:1 · {pass ? t("AA pass", "AA পাস") : t("AA fail", "AA ফেল")}
+        {ratio.toFixed(2)}:1 ·{" "}
+        {pass ? t("AA pass", "AA পাস") : t("AA fail", "AA ফেল")}
       </span>
     </p>
   );
 }
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+function Group({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <details open className="rounded-fq-md border border-border bg-card">
-      <summary className="cursor-pointer px-3 py-2 text-xs font-semibold">{title}</summary>
-      <div className="space-y-3 border-t border-border px-3 py-3">{children}</div>
+      <summary className="cursor-pointer px-3 py-2 text-xs font-semibold">
+        {title}
+      </summary>
+      <div className="space-y-3 border-t border-border px-3 py-3">
+        {children}
+      </div>
     </details>
   );
 }
 
-function Field({ id, label, children }: { id: string; label: string; children: React.ReactNode }) {
+function Field({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="block text-xs font-medium">
@@ -53,7 +75,8 @@ function Field({ id, label, children }: { id: string; label: string; children: R
   );
 }
 
-const SELECT = "w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm";
+const SELECT =
+  "w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm";
 
 function ColourRow({
   id,
@@ -76,7 +99,9 @@ function ColourRow({
           onChange={(e) => onChange(e.target.value)}
           className="h-9 w-12 rounded-fq-md border border-border bg-card"
         />
-        <output className="text-xs tabular-nums text-muted-foreground">{value.toUpperCase()}</output>
+        <output className="text-xs tabular-nums text-muted-foreground">
+          {value.toUpperCase()}
+        </output>
       </div>
     </Field>
   );
@@ -94,9 +119,14 @@ export function TokenEditor({ tokens, onChange }: Props) {
   const dark: DarkTokens = tokens.dark ?? DEFAULT_DARK_TOKENS;
   const editingDark = scheme === "dark" && Boolean(tokens.dark);
 
-  const setDark = (patch: Partial<DarkTokens>) => onChange({ dark: { ...dark, ...patch } });
+  const setDark = (patch: Partial<DarkTokens>) =>
+    onChange({ dark: { ...dark, ...patch } });
 
-  const colours: { key: "brand" | "accent" | "surface" | "ink"; en: string; bn: string }[] = [
+  const colours: {
+    key: "brand" | "accent" | "surface" | "ink";
+    en: string;
+    bn: string;
+  }[] = [
     { key: "brand", en: "Brand", bn: "ব্র্যান্ড" },
     { key: "accent", en: "Accent", bn: "অ্যাকসেন্ট" },
     { key: "surface", en: "Surface", bn: "সারফেস" },
@@ -107,7 +137,11 @@ export function TokenEditor({ tokens, onChange }: Props) {
   return (
     <div className="space-y-3">
       <Group title={t("Colour", "রঙ")}>
-        <div className="flex gap-2" role="tablist" aria-label={t("Colour scheme", "কালার স্কিম")}>
+        <div
+          className="flex gap-2"
+          role="tablist"
+          aria-label={t("Colour scheme", "কালার স্কিম")}
+        >
           {(["light", "dark"] as const).map((mode) => (
             <button
               key={mode}
@@ -116,7 +150,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
               aria-selected={scheme === mode}
               onClick={() => setScheme(mode)}
               className={`rounded-fq-md border px-3 py-1 text-xs ${
-                scheme === mode ? "border-primary bg-primary text-primary-foreground" : "border-border"
+                scheme === mode
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border"
               }`}
             >
               {mode === "light" ? t("Light", "লাইট") : t("Dark", "ডার্ক")}
@@ -183,7 +219,11 @@ export function TokenEditor({ tokens, onChange }: Props) {
           <select
             id="token-font-pairing"
             value={tokens.fontPairing}
-            onChange={(e) => onChange(applyFontPairing(tokens, e.target.value as FontPairingKey))}
+            onChange={(e) =>
+              onChange(
+                applyFontPairing(tokens, e.target.value as FontPairingKey),
+              )
+            }
             className={SELECT}
           >
             {(Object.keys(FONT_PAIRINGS) as FontPairingKey[]).map((key) => (
@@ -195,14 +235,24 @@ export function TokenEditor({ tokens, onChange }: Props) {
             ))}
           </select>
           <p className="text-[0.65rem] text-muted-foreground">
-            {t("Fonts are theme-level; widgets never pick their own.", "ফন্ট থিম-লেভেল; উইজেট নিজে বেছে নেয় না।")}
+            {t(
+              "Fonts are theme-level; widgets never pick their own.",
+              "ফন্ট থিম-লেভেল; উইজেট নিজে বেছে নেয় না।",
+            )}
           </p>
         </Field>
-        <Field id="token-type-scale" label={t("Typographic scale", "টাইপ স্কেল")}>
+        <Field
+          id="token-type-scale"
+          label={t("Typographic scale", "টাইপ স্কেল")}
+        >
           <select
             id="token-type-scale"
             value={tokens.typeScale}
-            onChange={(e) => onChange({ typeScale: e.target.value as ThemeTokens["typeScale"] })}
+            onChange={(e) =>
+              onChange({
+                typeScale: e.target.value as ThemeTokens["typeScale"],
+              })
+            }
             className={SELECT}
           >
             <option value="compact">{t("Compact", "কমপ্যাক্ট")}</option>
@@ -215,7 +265,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
 
       <Group title={t("Shape", "আকার")}>
         <div className="grid grid-cols-2 gap-3">
-          <Field id="token-radius" label={t("Corner radius", "কর্নার রেডিয়াস")}>
+          <Field
+            id="token-radius"
+            label={t("Corner radius", "কর্নার রেডিয়াস")}
+          >
             <select
               id="token-radius"
               value={tokens.radius}
@@ -229,7 +282,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
               ))}
             </select>
           </Field>
-          <Field id="token-container" label={t("Content width", "কন্টেন্ট প্রস্থ")}>
+          <Field
+            id="token-container"
+            label={t("Content width", "কন্টেন্ট প্রস্থ")}
+          >
             <select
               id="token-container"
               value={tokens.container}
@@ -252,11 +308,15 @@ export function TokenEditor({ tokens, onChange }: Props) {
             <select
               id="token-density"
               value={tokens.density}
-              onChange={(e) => onChange({ density: e.target.value as ThemeTokens["density"] })}
+              onChange={(e) =>
+                onChange({ density: e.target.value as ThemeTokens["density"] })
+              }
               className={SELECT}
             >
               <option value="dense">{t("Dense", "ঘন")}</option>
-              <option value="comfortable">{t("Comfortable", "স্বাভাবিক")}</option>
+              <option value="comfortable">
+                {t("Comfortable", "স্বাভাবিক")}
+              </option>
               <option value="airy">{t("Airy", "খোলা")}</option>
             </select>
           </Field>
@@ -276,7 +336,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
           </Field>
         </div>
         <p className="text-[0.65rem] text-muted-foreground">
-          {t("Drives section rhythm across every template.", "সব টেমপ্লেটে সেকশন ছন্দ নিয়ন্ত্রণ করে।")}
+          {t(
+            "Drives section rhythm across every template.",
+            "সব টেমপ্লেটে সেকশন ছন্দ নিয়ন্ত্রণ করে।",
+          )}
         </p>
       </Group>
 
@@ -285,7 +348,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
           <select
             id="token-shadow"
             value={tokens.shadow}
-            onChange={(e) => onChange({ shadow: e.target.value as ThemeTokens["shadow"] })}
+            onChange={(e) =>
+              onChange({ shadow: e.target.value as ThemeTokens["shadow"] })
+            }
             className={SELECT}
           >
             <option value="none">{t("Flat", "সমতল")}</option>
@@ -296,11 +361,16 @@ export function TokenEditor({ tokens, onChange }: Props) {
       </Group>
 
       <Group title={t("Motion", "মোশন")}>
-        <Field id="token-motion" label={t("Entrance motion", "এন্ট্রান্স মোশন")}>
+        <Field
+          id="token-motion"
+          label={t("Entrance motion", "এন্ট্রান্স মোশন")}
+        >
           <select
             id="token-motion"
             value={tokens.motion}
-            onChange={(e) => onChange({ motion: e.target.value as ThemeTokens["motion"] })}
+            onChange={(e) =>
+              onChange({ motion: e.target.value as ThemeTokens["motion"] })
+            }
             className={SELECT}
           >
             <option value="none">{t("None", "নেই")}</option>
@@ -322,7 +392,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
             <select
               id="token-locale"
               value={tokens.locale}
-              onChange={(e) => onChange({ locale: e.target.value as ThemeTokens["locale"] })}
+              onChange={(e) =>
+                onChange({ locale: e.target.value as ThemeTokens["locale"] })
+              }
               className={SELECT}
             >
               <option value="en">English</option>
@@ -333,19 +405,27 @@ export function TokenEditor({ tokens, onChange }: Props) {
             <select
               id="token-digits"
               value={tokens.digits}
-              onChange={(e) => onChange({ digits: e.target.value as ThemeTokens["digits"] })}
+              onChange={(e) =>
+                onChange({ digits: e.target.value as ThemeTokens["digits"] })
+              }
               className={SELECT}
             >
               <option value="latin">1234</option>
               <option value="bengali">১২৩৪</option>
             </select>
           </Field>
-          <Field id="token-currency-display" label={t("Currency display", "মুদ্রা প্রদর্শন")}>
+          <Field
+            id="token-currency-display"
+            label={t("Currency display", "মুদ্রা প্রদর্শন")}
+          >
             <select
               id="token-currency-display"
               value={tokens.currencyDisplay}
               onChange={(e) =>
-                onChange({ currencyDisplay: e.target.value as ThemeTokens["currencyDisplay"] })
+                onChange({
+                  currencyDisplay: e.target
+                    .value as ThemeTokens["currencyDisplay"],
+                })
               }
               className={SELECT}
             >
@@ -353,6 +433,58 @@ export function TokenEditor({ tokens, onChange }: Props) {
               <option value="code">BDT 1,200</option>
             </select>
           </Field>
+          <div className="col-span-2 space-y-3 pt-2 border-t border-border">
+            <Field
+              id="token-timezone"
+              label={t("Store Timezone", "স্টোর টাইমজোন")}
+            >
+              <select
+                id="token-timezone"
+                value={tokens.timezone ?? DEFAULT_MERCHANT_TIMEZONE}
+                onChange={(e) => onChange({ timezone: e.target.value })}
+                className={SELECT}
+              >
+                {Array.from(
+                  new Set(COMMON_TIMEZONES.map((tz) => tz.region)),
+                ).map((region) => (
+                  <optgroup key={region} label={region}>
+                    {COMMON_TIMEZONES.filter((tz) => tz.region === region).map(
+                      (tz) => (
+                        <option key={tz.value} value={tz.value}>
+                          {tz.offset} — {tz.label}
+                        </option>
+                      ),
+                    )}
+                  </optgroup>
+                ))}
+              </select>
+            </Field>
+
+            <label className="flex items-start gap-2.5 pt-1 cursor-pointer text-xs">
+              <input
+                type="checkbox"
+                checked={Boolean(tokens.allowCustomerTimezone)}
+                onChange={(e) =>
+                  onChange({ allowCustomerTimezone: e.target.checked })
+                }
+                className="mt-0.5 size-4 rounded-fq-sm border-border text-primary"
+              />
+              <div>
+                <span className="font-medium text-foreground">
+                  {t(
+                    "Allow shoppers to pick their timezone",
+                    "ক্রেতাদের টাইমজোন পছন্দের অনুমতি দিন",
+                  )}
+                </span>
+                <span className="block text-[0.65rem] text-muted-foreground mt-0.5">
+                  {t(
+                    "Adds a timezone selector in the storefront and adapts timestamps to customer location.",
+                    "স্টোরফ্রন্টে টাইমজোন সিলেক্টর যোগ করে এবং ক্রেতার অবস্থান অনুযায়ী সময় প্রদর্শন করে।",
+                  )}
+                </span>
+              </div>
+            </label>
+          </div>
         </div>
       </Group>
     </div>

@@ -63,6 +63,7 @@ Users install with:
 ## Components
 
 ### Plugin Metadata
+
 - **plugin.json**: Plugin manifest with configuration
   - Plugin name, version, description
   - Author and repository information
@@ -74,18 +75,21 @@ Users install with:
   - Requirements and dependencies
 
 ### Commands (`commands/`)
+
 - Markdown files (.md)
 - Automatically discovered by Claude Code
 - 150+ commands across 19 categories
 - Named with kebab-case (e.g., `coordination-swarm-init.md`)
 
 ### Agents (`agents/`)
+
 - Markdown files with YAML frontmatter
 - Available for delegation
 - 74+ specialized agents across 20 categories
 - Named with kebab-case (e.g., `backend-dev.md`)
 
 ### Hooks (`hooks/hooks.json`)
+
 - Event handler configuration
 - Integration with Claude Flow coordination
 - Pre/post task execution, session management

@@ -9,7 +9,8 @@
 import { THEME_PRESETS } from "../src/lib/theme-presets";
 
 const MERCHANT = "11111111-1111-4111-8111-111111111111";
-const q = (v: string | null) => (v === null ? "null" : `'${v.replace(/'/g, "''")}'`);
+const q = (v: string | null) =>
+  v === null ? "null" : `'${v.replace(/'/g, "''")}'`;
 const j = (v: unknown) => `'${JSON.stringify(v).replace(/'/g, "''")}'::jsonb`;
 const uuid = (prefix: string, n: number) =>
   `${prefix.padEnd(8, "0").slice(0, 8)}-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -21,10 +22,26 @@ begin;`);
 
 /* ------------------------------------------------------------- taxonomy --- */
 const cats = [
-  { slug: "sarees", name: "Sarees", desc: "Handloom and jamdani sarees woven in Bangladesh." },
-  { slug: "panjabi", name: "Panjabi", desc: "Everyday and occasion panjabi in cotton and khadi." },
-  { slug: "home", name: "Home & living", desc: "Nakshi kantha, ceramics and rugs for the home." },
-  { slug: "accessories", name: "Accessories", desc: "Leather, jute and brass finishing pieces." },
+  {
+    slug: "sarees",
+    name: "Sarees",
+    desc: "Handloom and jamdani sarees woven in Bangladesh.",
+  },
+  {
+    slug: "panjabi",
+    name: "Panjabi",
+    desc: "Everyday and occasion panjabi in cotton and khadi.",
+  },
+  {
+    slug: "home",
+    name: "Home & living",
+    desc: "Nakshi kantha, ceramics and rugs for the home.",
+  },
+  {
+    slug: "accessories",
+    name: "Accessories",
+    desc: "Leather, jute and brass finishing pieces.",
+  },
 ];
 cats.forEach((c, i) => {
   out.push(`insert into public.categories (id, merchant_id, name, slug, description) values
@@ -43,7 +60,16 @@ brands.forEach((b, i) => {
 });
 
 /* -------------------------------------------------------------- products --- */
-type Seed = { title: string; slug: string; cat: number; price: number; compare: number | null; stock: number; kind: string; desc: string };
+type Seed = {
+  title: string;
+  slug: string;
+  cat: number;
+  price: number;
+  compare: number | null;
+  stock: number;
+  kind: string;
+  desc: string;
+};
 const titles: Seed[] = [
   ["Jamdani handloom saree — indigo", "sarees", 1, 8450, 9900, 12],
   ["Jamdani handloom saree — ivory", "sarees", 1, 7950, null, 8],
@@ -71,7 +97,11 @@ const titles: Seed[] = [
   ["Gift card — digital", "accessories", 4, 2000, null, 999],
 ].map(([title, , cat, price, compare, stock], i) => ({
   title: title as string,
-  slug: String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60),
+  slug: String(title)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60),
   cat: cat as number,
   price: (price as number) * 100,
   compare: compare === null ? null : (compare as number) * 100,
@@ -88,10 +118,27 @@ titles.forEach((p, i) => {
   on conflict (id) do update set title = excluded.title, description = excluded.description, image_url = excluded.image_url, status = 'active';`);
   const variants =
     p.kind === "digital"
-      ? [{ name: "Digital", sku: `GC-${i + 1}`, price: p.price, stock: p.stock }]
+      ? [
+          {
+            name: "Digital",
+            sku: `GC-${i + 1}`,
+            price: p.price,
+            stock: p.stock,
+          },
+        ]
       : [
-          { name: "Standard", sku: `FR-${i + 1}-S`, price: p.price, stock: Math.ceil(p.stock / 2) },
-          { name: "Large", sku: `FR-${i + 1}-L`, price: p.price + 30000, stock: Math.floor(p.stock / 2) },
+          {
+            name: "Standard",
+            sku: `FR-${i + 1}-S`,
+            price: p.price,
+            stock: Math.ceil(p.stock / 2),
+          },
+          {
+            name: "Large",
+            sku: `FR-${i + 1}-L`,
+            price: p.price + 30000,
+            stock: Math.floor(p.stock / 2),
+          },
         ];
   variants.forEach((v, vi) => {
     out.push(`insert into public.product_variants (id, merchant_id, product_id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity, position, currency_code) values
@@ -125,8 +172,18 @@ collections.forEach((c, i) => {
 
 /* -------------------------------------------------------------- customers -- */
 const customers = [
-  { id: uuid("11", 1), name: "Ayesha Rahman", email: "ayesha@example.com", phone: "+8801711000001" },
-  { id: uuid("11", 2), name: "Tanvir Hasan", email: "tanvir@example.com", phone: "+8801711000002" },
+  {
+    id: uuid("11", 1),
+    name: "Ayesha Rahman",
+    email: "ayesha@example.com",
+    phone: "+8801711000001",
+  },
+  {
+    id: uuid("11", 2),
+    name: "Tanvir Hasan",
+    email: "tanvir@example.com",
+    phone: "+8801711000002",
+  },
 ];
 customers.forEach((c, i) => {
   out.push(`insert into public.customers (id, merchant_id, auth_uid, name, email, phone, locale) values
@@ -135,7 +192,14 @@ customers.forEach((c, i) => {
 });
 
 /* ----------------------------------------------------------------- orders -- */
-const statuses = ["pending", "confirmed", "paid", "shipped", "delivered", "refunded"];
+const statuses = [
+  "pending",
+  "confirmed",
+  "paid",
+  "shipped",
+  "delivered",
+  "refunded",
+];
 const methods = ["cod", "bkash", "sslcommerz", "nagad", "card", "bkash"];
 statuses.forEach((status, i) => {
   const id = uuid("21", i + 1);
@@ -156,11 +220,36 @@ statuses.forEach((status, i) => {
 
 /* ---------------------------------------------------------------- reviews -- */
 const reviews = [
-  { p: 1, rating: 5, title: "Exactly as pictured", body: "The weave is beautiful and it arrived in two days." },
-  { p: 1, rating: 4, title: "Lovely, runs long", body: "Colour is true to the photo. Length is generous." },
-  { p: 7, rating: 5, title: "Perfect for Eid", body: "Fabric breathes and the stitching is clean." },
-  { p: 13, rating: 4, title: "Warm and soft", body: "Kantha stitching is dense; washed well." },
-  { p: 19, rating: 5, title: "Great leather", body: "Smells like real leather and holds cards snugly." },
+  {
+    p: 1,
+    rating: 5,
+    title: "Exactly as pictured",
+    body: "The weave is beautiful and it arrived in two days.",
+  },
+  {
+    p: 1,
+    rating: 4,
+    title: "Lovely, runs long",
+    body: "Colour is true to the photo. Length is generous.",
+  },
+  {
+    p: 7,
+    rating: 5,
+    title: "Perfect for Eid",
+    body: "Fabric breathes and the stitching is clean.",
+  },
+  {
+    p: 13,
+    rating: 4,
+    title: "Warm and soft",
+    body: "Kantha stitching is dense; washed well.",
+  },
+  {
+    p: 19,
+    rating: 5,
+    title: "Great leather",
+    body: "Smells like real leather and holds cards snugly.",
+  },
 ];
 reviews.forEach((r, i) => {
   out.push(`insert into public.product_reviews (id, merchant_id, product_id, customer_id, author_name, rating, title, body, status, verified_purchase, published_at) values
@@ -170,9 +259,21 @@ reviews.forEach((r, i) => {
 
 /* ------------------------------------------------------------------ pages -- */
 const pages = [
-  { slug: "about", title: "About Frame19", body: "## Woven in Bangladesh\n\nFrame19 works with looms in Tangail and Narayanganj. Every piece is photographed in daylight and shipped in recycled packaging." },
-  { slug: "shipping-returns", title: "Shipping & returns", body: "## Delivery\n\nInside Dhaka: 1–2 working days. Outside Dhaka: 2–4 working days.\n\n## Returns\n\nUnworn items can be returned within 7 days." },
-  { slug: "contact", title: "Contact us", body: "## Talk to us\n\nCall +8809600000000, 10am–8pm, or email hello@frame19.demo." },
+  {
+    slug: "about",
+    title: "About Frame19",
+    body: "## Woven in Bangladesh\n\nFrame19 works with looms in Tangail and Narayanganj. Every piece is photographed in daylight and shipped in recycled packaging.",
+  },
+  {
+    slug: "shipping-returns",
+    title: "Shipping & returns",
+    body: "## Delivery\n\nInside Dhaka: 1–2 working days. Outside Dhaka: 2–4 working days.\n\n## Returns\n\nUnworn items can be returned within 7 days.",
+  },
+  {
+    slug: "contact",
+    title: "Contact us",
+    body: "## Talk to us\n\nCall +8809600000000, 10am–8pm, or email hello@frame19.demo.",
+  },
 ];
 pages.forEach((p, i) => {
   out.push(`insert into public.storefront_pages (id, merchant_id, slug, title, excerpt, body_markdown, meta_title, meta_description, is_published, show_in_nav, position, published_at, robots) values
@@ -182,10 +283,26 @@ pages.forEach((p, i) => {
 
 /* ------------------------------------------------------------------ posts -- */
 const posts = [
-  { slug: "how-jamdani-is-woven", title: "How a jamdani saree is woven", excerpt: "Two weavers, one loom, six weeks." },
-  { slug: "caring-for-khadi", title: "Caring for khadi", excerpt: "Cold water, shade drying, no wringing." },
-  { slug: "eid-gift-guide", title: "The Eid gift guide", excerpt: "Twelve gifts under 5,000 taka." },
-  { slug: "meet-the-tangail-looms", title: "Meet the Tangail looms", excerpt: "The families behind our cotton sarees." },
+  {
+    slug: "how-jamdani-is-woven",
+    title: "How a jamdani saree is woven",
+    excerpt: "Two weavers, one loom, six weeks.",
+  },
+  {
+    slug: "caring-for-khadi",
+    title: "Caring for khadi",
+    excerpt: "Cold water, shade drying, no wringing.",
+  },
+  {
+    slug: "eid-gift-guide",
+    title: "The Eid gift guide",
+    excerpt: "Twelve gifts under 5,000 taka.",
+  },
+  {
+    slug: "meet-the-tangail-looms",
+    title: "Meet the Tangail looms",
+    excerpt: "The families behind our cotton sarees.",
+  },
 ];
 posts.forEach((p, i) => {
   out.push(`insert into public.articles (id, merchant_id, slug, title, title_en, excerpt, body, status, tags, meta_title, meta_description, cover_image_url, published_at, robots) values
@@ -233,7 +350,8 @@ THEME_PRESETS.forEach((preset, i) => {
   on conflict (key) do update set name_en = excluded.name_en, preset = excluded.preset, active = true, sort_order = excluded.sort_order;`);
 });
 
-const active = THEME_PRESETS.find((p) => p.key === "modern") ?? THEME_PRESETS[0]!;
+const active =
+  THEME_PRESETS.find((p) => p.key === "modern") ?? THEME_PRESETS[0]!;
 const themeId = uuid("91", 1);
 const versionId = uuid("92", 1);
 out.push(`insert into public.store_themes (id, merchant_id, name, is_active, source_listing_slug, source_version, author, description, tags, installed_at) values
@@ -243,7 +361,9 @@ out.push(`insert into public.theme_versions (id, merchant_id, theme_id, version,
   (${q(versionId)}, ${q(MERCHANT)}, ${q(themeId)}, 1, 'published', 'Installed from the official catalogue', ${j(active.tokens)}, ${j(active.templates)}, ${j((active.templates as Record<string, unknown>)["index"] ?? {})}, ${q(active.key)}, ${q(active.version ?? "1.0.0")}, now())
   on conflict (id) do update set status = 'published', tokens = excluded.tokens, templates = excluded.templates;`);
 
-out.push(`update public.store_themes set published_version_id = ${q(versionId)} where id = ${q(themeId)};`);
+out.push(
+  `update public.store_themes set published_version_id = ${q(versionId)} where id = ${q(themeId)};`,
+);
 out.push(`update public.merchant_settings set cod_enabled = true, mfs_enabled = true,
   shipping_flat_minor_int = 6000, free_shipping_threshold_minor_int = 500000,
   cod_surcharge_minor_int = 2000, prices_include_vat = false, low_stock_threshold = 5,
@@ -253,4 +373,6 @@ out.push(`update public.merchant_settings set cod_enabled = true, mfs_enabled = 
 out.push("commit;");
 
 await Bun.write("migration/0003_demo_catalogue.sql", out.join("\n") + "\n");
-console.log(`wrote migration/0003_demo_catalogue.sql (${out.length} statements)`);
+console.log(
+  `wrote migration/0003_demo_catalogue.sql (${out.length} statements)`,
+);

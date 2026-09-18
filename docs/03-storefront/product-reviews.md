@@ -20,10 +20,10 @@ Reviews are the trust layer of the storefront PDP: honest aggregate (mean, 1–5
 
 ## 3. Data model & RLS
 
-| Table | Notes |
-|---|---|
-| `product_reviews` | `merchant_id, customer_id FK (nullable), product_id, rating smallint (1–5), title, body, verified_purchase, status (draft|pending|published|rejected), created_at, published_at, moderation_note` |
-| `review_replies` | `review_id, staff_user_id, body, published_at` (single thread) |
+| Table             | Notes                                                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `product_reviews` | `merchant_id, customer_id FK (nullable), product_id, rating smallint (1–5), title, body, verified_purchase, status (draft | pending | published | rejected), created_at, published_at, moderation_note` |
+| `review_replies`  | `review_id, staff_user_id, body, published_at` (single thread)                                                            |
 
 RLS: published rows readable by `anon` (like catalog read surface, RPC-only); pending/draft/rejected rows only to staff via `get_my_review` for the author + staff RPCs.
 

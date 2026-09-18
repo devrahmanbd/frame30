@@ -19,7 +19,11 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
-import { assertPayloadWithinLimits, parseAst, type Section } from "./builder-ast";
+import {
+  assertPayloadWithinLimits,
+  parseAst,
+  type Section,
+} from "./builder-ast";
 import { assertTenantId } from "./tenant-scope";
 import { incr, log, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
@@ -65,22 +69,32 @@ function toBlock(row: Row): GlobalBlock {
 }
 
 export function sanitiseNodes(input: unknown): Section[] {
-  const ast = parseAst({ header: [], main: Array.isArray(input) ? input : [], footer: [] });
+  const ast = parseAst({
+    header: [],
+    main: Array.isArray(input) ? input : [],
+    footer: [],
+  });
   return ast.main.filter((node) => !node.invalid);
 }
 
 function cleanName(raw: string): string {
   const name = raw.trim().replace(/\s+/g, " ");
   if (!name) throw new GlobalBlockError("global_block.name_required");
-  if (name.length > MAX_NAME) throw new GlobalBlockError("global_block.name_too_long");
+  if (name.length > MAX_NAME)
+    throw new GlobalBlockError("global_block.name_too_long");
   return name;
 }
 
 function mapWriteError(error: { code?: string; message?: string }): never {
   // 23505 = unique violation on (merchant, theme, lower(name)).
-  if (error.code === "23505") throw new GlobalBlockError("global_block.duplicate_name");
-  if (error.code === "42501") throw new GlobalBlockError("global_block.forbidden");
-  throw new GlobalBlockError("global_block.write_failed", error.message ?? "write failed");
+  if (error.code === "23505")
+    throw new GlobalBlockError("global_block.duplicate_name");
+  if (error.code === "42501")
+    throw new GlobalBlockError("global_block.forbidden");
+  throw new GlobalBlockError(
+    "global_block.write_failed",
+    error.message ?? "write failed",
+  );
 }
 
 /* --------------------------------------------------------------------- read */
@@ -95,8 +109,11 @@ export async function listGlobalBlocks(
     await enforceRateLimit("builder.blocks_read", merchant);
     let query = db.from(TABLE).select(SELECT).eq("merchant_id", merchant);
     if (themeId) query = query.or(`theme_id.is.null,theme_id.eq.${themeId}`);
-    const { data, error } = await query.order("updated_at", { ascending: false }).limit(MAX_BLOCKS_PER_MERCHANT);
-    if (error) throw new GlobalBlockError("global_block.read_failed", error.message);
+    const { data, error } = await query
+      .order("updated_at", { ascending: false })
+      .limit(MAX_BLOCKS_PER_MERCHANT);
+    if (error)
+      throw new GlobalBlockError("global_block.read_failed", error.message);
     const rows = (data ?? []) as Row[];
     incr("builder_global_blocks_read_total", {}, 1);
     return rows.map(toBlock);
@@ -129,8 +146,13 @@ export async function createGlobalBlock(
       .from(TABLE)
       .select("id", { count: "exact", head: true })
       .eq("merchant_id", merchant);
-    if (countError) throw new GlobalBlockError("global_block.read_failed", countError.message);
-    if ((count ?? 0) >= MAX_BLOCKS_PER_MERCHANT) throw new GlobalBlockError("global_block.limit_reached");
+    if (countError)
+      throw new GlobalBlockError(
+        "global_block.read_failed",
+        countError.message,
+      );
+    if ((count ?? 0) >= MAX_BLOCKS_PER_MERCHANT)
+      throw new GlobalBlockError("global_block.limit_reached");
 
     const { data, error } = await db
       .from(TABLE)
@@ -153,7 +175,15 @@ export async function createGlobalBlock(
       block_id: block.id,
       nodes: nodes.length,
     });
-    await auditAction(db, merchant, actor, "builder.global_block.create", "builder_global_block", { name }, block.id);
+    await auditAction(
+      db,
+      merchant,
+      actor,
+      "builder.global_block.create",
+      "builder_global_block",
+      { name },
+      block.id,
+    );
     return block;
   });
 }
@@ -183,7 +213,8 @@ export async function updateGlobalBlock(
       if (!nodes.length) throw new GlobalBlockError("global_block.empty");
       patch["nodes"] = nodes as unknown as Json;
     }
-    if (Object.keys(patch).length === 1) throw new GlobalBlockError("global_block.nothing_to_update");
+    if (Object.keys(patch).length === 1)
+      throw new GlobalBlockError("global_block.nothing_to_update");
     patch["revision"] = input.expectedRevision + 1;
 
     const { data, error } = await db
@@ -204,7 +235,9 @@ export async function updateGlobalBlock(
         .eq("merchant_id", merchant)
         .maybeSingle();
       incr("builder_global_blocks_conflict_total", {});
-      throw new GlobalBlockError(exists ? "global_block.conflict" : "global_block.not_found");
+      throw new GlobalBlockError(
+        exists ? "global_block.conflict" : "global_block.not_found",
+      );
     }
     const block = toBlock(data as Row);
     incr("builder_global_blocks_write_total", { op: "update" });
@@ -245,8 +278,19 @@ export async function deleteGlobalBlock(
     if (error) mapWriteError(error);
     if (!data) throw new GlobalBlockError("global_block.not_found");
     incr("builder_global_blocks_write_total", { op: "delete" });
-    log("warn", "builder.global_block.deleted", { merchant_id: merchant, block_id: id });
-    await auditAction(db, merchant, actor, "builder.global_block.delete", "builder_global_block", {}, id);
+    log("warn", "builder.global_block.deleted", {
+      merchant_id: merchant,
+      block_id: id,
+    });
+    await auditAction(
+      db,
+      merchant,
+      actor,
+      "builder.global_block.delete",
+      "builder_global_block",
+      {},
+      id,
+    );
     return { id };
   });
 }

@@ -12,13 +12,27 @@ import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { DataTable } from "./primitives/DataTable";
 import { MediaFrame } from "./primitives/MediaFrame";
-import { ProductCard, ProductCardSkeleton, type CardVariant } from "./primitives/ProductCard";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+  type CardVariant,
+} from "./primitives/ProductCard";
 import { Rail } from "./primitives/Rail";
 
-const CARD_VARIANTS = new Set<CardVariant>(["standard", "compact", "wide", "editorial"]);
+const CARD_VARIANTS = new Set<CardVariant>([
+  "standard",
+  "compact",
+  "wide",
+  "editorial",
+]);
 
-export function cardVariantOf(value: string, fallback: CardVariant = "standard"): CardVariant {
-  return CARD_VARIANTS.has(value as CardVariant) ? (value as CardVariant) : fallback;
+export function cardVariantOf(
+  value: string,
+  fallback: CardVariant = "standard",
+): CardVariant {
+  return CARD_VARIANTS.has(value as CardVariant)
+    ? (value as CardVariant)
+    : fallback;
 }
 
 const GRID_COLUMNS: Record<number, string> = {
@@ -30,7 +44,9 @@ const GRID_COLUMNS: Record<number, string> = {
 function SectionHeading({ ctx }: { ctx: WidgetCtx }) {
   const { str, Heading } = ctx;
   if (!str("heading")) return null;
-  return <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>;
+  return (
+    <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>
+  );
 }
 
 /** Rail of product cards, or a box-model-identical skeleton while loading. */
@@ -46,11 +62,14 @@ function CardRail({
   sponsored?: boolean;
 }) {
   const { str, bool, data, locale } = ctx;
-  const label = str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const label =
+    str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
   if (data?.pending || rows === undefined) {
     return (
       <Rail label={label}>
-        {Array.from({ length: 6 }, (_, i) => <ProductCardSkeleton key={i} variant={variant} />)}
+        {Array.from({ length: 6 }, (_, i) => (
+          <ProductCardSkeleton key={i} variant={variant} />
+        ))}
       </Rail>
     );
   }
@@ -78,7 +97,11 @@ const ProductRail: WidgetComponent = (ctx) => {
   return (
     <section>
       <SectionHeading ctx={ctx} />
-      <CardRail ctx={ctx} rows={rows} variant={cardVariantOf(ctx.str("cardVariant"), "compact")} />
+      <CardRail
+        ctx={ctx}
+        rows={rows}
+        variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+      />
     </section>
   );
 };
@@ -86,12 +109,20 @@ const ProductRail: WidgetComponent = (ctx) => {
 const DealStrip: WidgetComponent = (ctx) => {
   // Only rows that actually carry a saving belong in a deal strip.
   const rows = ctx.data?.rows
-    ?.filter((row) => typeof row.compareAtMinor === "number" && row.compareAtMinor > (row.priceMinor ?? 0))
+    ?.filter(
+      (row) =>
+        typeof row.compareAtMinor === "number" &&
+        row.compareAtMinor > (row.priceMinor ?? 0),
+    )
     .slice(0, ctx.int("limit", 8, 1, 24));
   return (
     <section>
       <SectionHeading ctx={ctx} />
-      <CardRail ctx={ctx} rows={rows} variant={cardVariantOf(ctx.str("cardVariant"), "compact")} />
+      <CardRail
+        ctx={ctx}
+        rows={rows}
+        variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+      />
     </section>
   );
 };
@@ -114,12 +145,20 @@ const SponsoredSlot: WidgetComponent = (ctx) => {
       </div>
       {ctx.data?.pending || rows === undefined ? (
         <div className={`${GRID_COLUMNS[4]} gap-4`} aria-hidden="true">
-          {Array.from({ length: 4 }, (_, i) => <ProductCardSkeleton key={i} variant={variant} />)}
+          {Array.from({ length: 4 }, (_, i) => (
+            <ProductCardSkeleton key={i} variant={variant} />
+          ))}
         </div>
       ) : rows.length === 0 ? null : (
         <div className={`${GRID_COLUMNS[4]} gap-4`}>
           {rows.map((row) => (
-            <ProductCard key={row.id} row={row} locale={ctx.locale} variant={variant} sponsored />
+            <ProductCard
+              key={row.id}
+              row={row}
+              locale={ctx.locale}
+              variant={variant}
+              sponsored
+            />
           ))}
         </div>
       )}
@@ -167,7 +206,12 @@ function BrandTile({ row }: { row: WidgetRow }) {
       href={row.href ? `#${row.href}` : "#"}
       className="flex h-full flex-col items-center justify-center gap-2 rounded-fq-lg border border-border bg-card p-3 text-center"
     >
-      <MediaFrame src={row.imageUrl} alt={row.title} ratio="landscape" className="w-full rounded-fq-sm" />
+      <MediaFrame
+        src={row.imageUrl}
+        alt={row.title}
+        ratio="landscape"
+        className="w-full rounded-fq-sm"
+      />
       <span className="line-clamp-1 text-xs font-medium">{row.title}</span>
     </a>
   );
@@ -183,7 +227,10 @@ const BrandStrip: WidgetComponent = (ctx) => {
       {ctx.data?.pending || rows === undefined ? (
         <div className={grid} aria-hidden="true">
           {Array.from({ length: cols * 2 }, (_, i) => (
-            <div key={i} className="rounded-fq-lg border border-border bg-card p-3">
+            <div
+              key={i}
+              className="rounded-fq-lg border border-border bg-card p-3"
+            >
               <div className="aspect-[4/3] animate-pulse rounded bg-muted" />
               <div className="mt-2 h-3 w-2/3 animate-pulse rounded bg-muted" />
             </div>
@@ -202,19 +249,27 @@ const BrandStrip: WidgetComponent = (ctx) => {
 
 const BrandRail: WidgetComponent = (ctx) => {
   const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 16, 1, 32));
-  const label = ctx.str("heading") || (ctx.locale === "bn" ? "ব্র্যান্ড" : "Brands");
+  const label =
+    ctx.str("heading") || (ctx.locale === "bn" ? "ব্র্যান্ড" : "Brands");
   return (
     <section>
       <SectionHeading ctx={ctx} />
-      <Rail label={label} itemClassName="min-w-[40%] sm:min-w-[24%] lg:min-w-[16%]">
-        {(ctx.data?.pending || rows === undefined
+      <Rail
+        label={label}
+        itemClassName="min-w-[40%] sm:min-w-[24%] lg:min-w-[16%]"
+      >
+        {ctx.data?.pending || rows === undefined
           ? Array.from({ length: 8 }, (_, i) => (
-              <div key={i} className="rounded-fq-lg border border-border bg-card p-3" aria-hidden="true">
+              <div
+                key={i}
+                className="rounded-fq-lg border border-border bg-card p-3"
+                aria-hidden="true"
+              >
                 <div className="aspect-[4/3] animate-pulse rounded bg-muted" />
                 <div className="mt-2 h-3 w-2/3 animate-pulse rounded bg-muted" />
               </div>
             ))
-          : rows.map((row) => <BrandTile key={row.id} row={row} />))}
+          : rows.map((row) => <BrandTile key={row.id} row={row} />)}
       </Rail>
     </section>
   );
@@ -246,7 +301,13 @@ const CompareTable: WidgetComponent = ({ str, int, data, locale, money }) => {
       key: "stock",
       label: str("r2Label") || (locale === "bn" ? "স্টক" : "Availability"),
       cells: cellsFor((row) =>
-        row.inStock === false ? (locale === "bn" ? "নেই" : "Out of stock") : locale === "bn" ? "আছে" : "In stock",
+        row.inStock === false
+          ? locale === "bn"
+            ? "নেই"
+            : "Out of stock"
+          : locale === "bn"
+            ? "আছে"
+            : "In stock",
       ),
     },
     ...[3, 4]
@@ -254,7 +315,13 @@ const CompareTable: WidgetComponent = ({ str, int, data, locale, money }) => {
       .filter((row) => row.label)
       .map((row) => ({ ...row, cells: cellsFor(() => "—") })),
   ];
-  return <DataTable caption={str("caption") || undefined} columns={columns} rows={attributes} />;
+  return (
+    <DataTable
+      caption={str("caption") || undefined}
+      columns={columns}
+      rows={attributes}
+    />
+  );
 };
 
 /** Numbered bestseller list; ranks are tabular and locale-aware. */
@@ -272,7 +339,10 @@ const RankList: WidgetComponent = (ctx) => {
       ) : rows.length === 0 ? null : (
         <ol className="space-y-2">
           {rows.map((row, index) => (
-            <li key={row.id} className="flex items-center gap-3 rounded-fq-lg border border-border bg-card p-2">
+            <li
+              key={row.id}
+              className="flex items-center gap-3 rounded-fq-lg border border-border bg-card p-2"
+            >
               <span className="w-8 shrink-0 text-center text-sm font-semibold tabular-nums text-muted-foreground">
                 {formatDisplayNumber(index + 1, { locale: ctx.locale })}
               </span>

@@ -5,9 +5,11 @@ Real-world examples and scenarios for pair programming sessions.
 ## Example 1: Feature Implementation
 
 ### Scenario
+
 Implementing a user authentication feature with JWT tokens.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode switch \
@@ -18,6 +20,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 Starting pair programming for authentication feature...
 
@@ -53,9 +56,11 @@ claude-flow pair --start \
 ## Example 2: Bug Fixing Session
 
 ### Scenario
+
 Debugging a memory leak in a Node.js application.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode navigator \
@@ -65,6 +70,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 Starting debugging session...
 
@@ -95,9 +101,11 @@ claude-flow pair --start \
 ## Example 3: Test-Driven Development
 
 ### Scenario
+
 Building a shopping cart feature using TDD.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode tdd \
@@ -106,6 +114,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 TDD Session: Shopping Cart Feature
 
@@ -138,9 +147,11 @@ claude-flow pair --start \
 ## Example 4: Code Refactoring
 
 ### Scenario
+
 Refactoring legacy code to modern patterns.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode driver \
@@ -150,6 +161,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 Refactoring Session: Modernizing UserService
 
@@ -187,9 +199,11 @@ claude-flow pair --start \
 ## Example 5: Learning Session
 
 ### Scenario
+
 Learning React hooks with AI mentorship.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode mentor \
@@ -199,7 +213,8 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
-```
+
+````
 👥 Learning Session: React Hooks
 
 /learn useState hook
@@ -212,25 +227,29 @@ function useApi(url) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   useEffect(() => {
     // Implementation explained step by step
   }, [url]);
-  
+
   return { data, loading, error };
 }
-```
+````
 
 /implement my own custom hook
+
 # You write with AI guidance
 
 /review --educational
+
 > AI provides detailed feedback with learning points
 
 /quiz react hooks
+
 > AI tests your understanding
 > Score: 8/10 - Good progress!
-```
+
+````
 
 ## Example 6: Performance Optimization
 
@@ -244,9 +263,10 @@ claude-flow pair --start \
   --agent performance-expert \
   --focus optimize \
   --profile
-```
+````
 
 ### Session Flow
+
 ```
 👥 Performance Optimization Session
 
@@ -281,9 +301,11 @@ claude-flow pair --start \
 ## Example 7: API Development
 
 ### Scenario
+
 Building a RESTful API with Express.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode navigator \
@@ -293,6 +315,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 API Development Session
 
@@ -330,9 +353,11 @@ claude-flow pair --start \
 ## Example 8: Database Migration
 
 ### Scenario
+
 Migrating from MongoDB to PostgreSQL.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode switch \
@@ -342,6 +367,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 Database Migration Session
 
@@ -374,9 +400,11 @@ claude-flow pair --start \
 ## Example 9: CI/CD Pipeline
 
 ### Scenario
+
 Setting up GitHub Actions CI/CD pipeline.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode navigator \
@@ -385,6 +413,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 CI/CD Pipeline Setup
 
@@ -417,9 +446,11 @@ claude-flow pair --start \
 ## Example 10: Mobile App Development
 
 ### Scenario
+
 Building a React Native mobile feature.
 
 ### Session Setup
+
 ```bash
 claude-flow pair --start \
   --mode switch \
@@ -429,6 +460,7 @@ claude-flow pair --start \
 ```
 
 ### Session Flow
+
 ```
 👥 Mobile Development Session
 
@@ -463,12 +495,14 @@ claude-flow pair --start \
 ## Common Patterns
 
 ### Starting Patterns
+
 ```bash
 # Quick start for common scenarios
 claude-flow pair --template <template>
 ```
 
 Available templates:
+
 - `feature` - New feature development
 - `bugfix` - Bug fixing session
 - `refactor` - Code refactoring
@@ -480,16 +514,19 @@ Available templates:
 ### Session Commands Flow
 
 #### Typical Feature Development
+
 ```
 /start → /explain → /design → /implement → /test → /review → /commit → /end
 ```
 
 #### Typical Bug Fix
+
 ```
 /start → /reproduce → /debug → /trace → /fix → /test → /verify → /commit → /end
 ```
 
 #### Typical Refactoring
+
 ```
 /start → /analyze → /plan → /test-gen → /refactor → /test → /review → /commit → /end
 ```

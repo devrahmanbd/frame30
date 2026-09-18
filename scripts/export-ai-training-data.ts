@@ -42,8 +42,10 @@ Options:
     process.exit(0);
   }
 
-  const formatArg = args.find((a) => a.startsWith("--format="))?.split("=")[1] || "chatml";
-  const minRatingArg = Number(args.find((a) => a.startsWith("--min-rating="))?.split("=")[1]) || 4;
+  const formatArg =
+    args.find((a) => a.startsWith("--format="))?.split("=")[1] || "chatml";
+  const minRatingArg =
+    Number(args.find((a) => a.startsWith("--min-rating="))?.split("=")[1]) || 4;
   const outputArg = args.find((a) => a.startsWith("--output="))?.split("=")[1];
   const isDryRun = args.includes("--dry-run");
   const verifyPii = args.includes("--verify-pii") || true;
@@ -63,7 +65,9 @@ Options:
       format: formatArg === "sharegpt" ? "sharegpt" : "chatml",
       minRating: minRatingArg,
     });
-    console.log(`   Gathered ${sft.length} high-quality SFT turns (CSAT >= ${minRatingArg}).`);
+    console.log(
+      `   Gathered ${sft.length} high-quality SFT turns (CSAT >= ${minRatingArg}).`,
+    );
     lines = sft.map((item) => JSON.stringify(item));
   }
 
@@ -75,7 +79,9 @@ Options:
       const line = lines[i];
       for (const check of PII_LEAK_CHECKS) {
         if (check.regex.test(line)) {
-          console.error(`   ❌ PII LEAK DETECTED at line ${i + 1} (${check.name}): ${line.slice(0, 80)}`);
+          console.error(
+            `   ❌ PII LEAK DETECTED at line ${i + 1} (${check.name}): ${line.slice(0, 80)}`,
+          );
           leakFound = true;
         }
       }
@@ -84,7 +90,9 @@ Options:
       console.error(`\n🚨 Export aborted due to PII leak detection.`);
       process.exit(1);
     }
-    console.log(`   ✅ Zero PII leaks detected! All lines sanitized with [redacted] tags.`);
+    console.log(
+      `   ✅ Zero PII leaks detected! All lines sanitized with [redacted] tags.`,
+    );
   }
 
   if (isDryRun || !outputArg) {
@@ -94,7 +102,9 @@ Options:
   } else {
     const targetPath = resolve(process.cwd(), outputArg);
     writeFileSync(targetPath, lines.join("\n") + "\n", "utf8");
-    console.log(`\n🎉 Successfully exported ${lines.length} lines to: ${targetPath}`);
+    console.log(
+      `\n🎉 Successfully exported ${lines.length} lines to: ${targetPath}`,
+    );
   }
 }
 

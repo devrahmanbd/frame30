@@ -4,19 +4,30 @@ description: "Encrytion Decryption Toolkit: Cryptographic toolkit: generate secu
 version: 1.0.0
 homepage: https://www.agentpmt.com/marketplace/encrytion-decryption-toolkit
 compatibility: "Agent instructions for AgentPMT-hosted remote tool calls. Follow this skill body for supported account, wallet, and setup routes. No local command runtime is declared."
-metadata: {"author":"agentpmt","openclaw":{"homepage":"https://www.agentpmt.com/marketplace/encrytion-decryption-toolkit"}}
+metadata:
+  {
+    "author": "agentpmt",
+    "openclaw":
+      {
+        "homepage": "https://www.agentpmt.com/marketplace/encrytion-decryption-toolkit",
+      },
+  }
 ---
+
 # Encrytion Decryption Toolkit
 
 ## Freshness
+
 Last updated: `2026-06-23`.
 
 If the current date is more than 7 days after the last updated date, reinstall this skill from skills.sh or ClawHub before relying on endpoints, schemas, setup steps, or examples.
 
 ## What This Tool Does
+
 This function supports six core actions: generate for creating secure random values in ASCII, BASE64, HEX, or UUID formats with configurable lengths from 4 to 256 characters; hash for computing cryptographic digests using MD5, SHA256, SHA384, SHA512, and SHA3 family algorithms; hmac for generating keyed-hash message authentication codes with a secret key; sign for creating digital signatures using RSA (RS256, RS512) or ECDSA (ES256, ES384, ES512) algorithms with PEM-encoded private keys; and encrypt/decrypt for AES-256-GCM authenticated encryption with support for initialization vectors and optional additional authenticated data. Users can provide input as plain text or base64-encoded binary data, and all cryptographic outputs can be encoded in either hexadecimal or base64 format for flexibility across different system integrations. The toolkit handles the underlying cryptographic complexity while exposing a straightforward interface, making it ideal for agent workflows that require secure token generation, data integrity verification, or sensitive information protection.
 
 ## Product Instructions
+
 ### Encryption Decryption Toolkit
 
 Cryptographic utility for generating random values, hashing data, computing HMACs, creating digital signatures, and performing AES-256-GCM encryption/decryption.
@@ -30,13 +41,16 @@ Cryptographic utility for generating random values, hashing data, computing HMAC
 Generate a cryptographically secure random value.
 
 **Required fields:**
+
 - `generation_type` (string) — Type of value to generate: `ASCII`, `BASE64`, `HEX`, or `UUID`
 - `property_name` (string) — Name for the output property containing the generated value
 
 **Optional fields:**
+
 - `length` (integer, 4-256, default 32) — Length of the generated value (ignored for UUID)
 
 **Example — Generate a hex API key:**
+
 ```json
 {
   "action": "generate",
@@ -47,6 +61,7 @@ Generate a cryptographically secure random value.
 ```
 
 **Example — Generate a UUID:**
+
 ```json
 {
   "action": "generate",
@@ -56,6 +71,7 @@ Generate a cryptographically secure random value.
 ```
 
 **Example — Generate a base64 token:**
+
 ```json
 {
   "action": "generate",
@@ -72,10 +88,12 @@ Generate a cryptographically secure random value.
 Compute a cryptographic hash of text or binary data.
 
 **Required fields:**
+
 - `hash_algorithm` (string) — Hash algorithm: `MD5`, `SHA256`, `SHA384`, `SHA512`, `SHA3-256`, `SHA3-384`, or `SHA3-512`
 - `value` (string) — Text to hash (required unless `binary_file` is true)
 
 **Optional fields:**
+
 - `property_name` (string) — Output property name (defaults to `hash_result`)
 - `encoding` (string) — Output encoding: `hex` (default) or `base64`
 - `binary_file` (boolean, default false) — Set to true to hash binary data instead of text
@@ -83,6 +101,7 @@ Compute a cryptographic hash of text or binary data.
 - `binary_property_name` (string) — Metadata label for the binary input
 
 **Example — SHA-256 hash of text:**
+
 ```json
 {
   "action": "hash",
@@ -92,6 +111,7 @@ Compute a cryptographic hash of text or binary data.
 ```
 
 **Example — Hash binary data with base64 output:**
+
 ```json
 {
   "action": "hash",
@@ -103,6 +123,7 @@ Compute a cryptographic hash of text or binary data.
 ```
 
 **Example — MD5 hash with custom property name:**
+
 ```json
 {
   "action": "hash",
@@ -119,17 +140,20 @@ Compute a cryptographic hash of text or binary data.
 Compute a keyed-hash message authentication code.
 
 **Required fields:**
+
 - `hash_algorithm` (string) — Hash algorithm: `MD5`, `SHA256`, `SHA384`, `SHA512`, `SHA3-256`, `SHA3-384`, or `SHA3-512`
 - `secret` (string) — The secret key for HMAC computation
 - `value` (string) — Text to authenticate (required unless `binary_file` is true)
 
 **Optional fields:**
+
 - `property_name` (string) — Output property name (defaults to `hmac_result`)
 - `encoding` (string) — Output encoding: `hex` (default) or `base64`
 - `binary_file` (boolean, default false) — Set to true to use binary data as input
 - `binary_value_base64` (string) — Base64-encoded binary data (required when `binary_file` is true)
 
 **Example — HMAC-SHA256:**
+
 ```json
 {
   "action": "hmac",
@@ -140,6 +164,7 @@ Compute a keyed-hash message authentication code.
 ```
 
 **Example — HMAC-SHA512 with base64 output:**
+
 ```json
 {
   "action": "hmac",
@@ -157,15 +182,18 @@ Compute a keyed-hash message authentication code.
 Create a digital signature using a private key.
 
 **Required fields:**
+
 - `value` (string) — The text to sign
 - `algorithm` (string) — Signing algorithm: `RS256`, `RS512` (RSA), or `ES256`, `ES384`, `ES512` (ECDSA)
 - `private_key` (string) — PEM-encoded private key
 
 **Optional fields:**
+
 - `property_name` (string) — Output property name (defaults to `signature`)
 - `encoding` (string) — Output encoding: `hex` (default) or `base64`
 
 **Example — RSA SHA-256 signature:**
+
 ```json
 {
   "action": "sign",
@@ -177,6 +205,7 @@ Create a digital signature using a private key.
 ```
 
 **Example — ECDSA signature:**
+
 ```json
 {
   "action": "sign",
@@ -193,15 +222,18 @@ Create a digital signature using a private key.
 Encrypt plaintext using AES-256-GCM authenticated encryption.
 
 **Required fields:**
+
 - `value` (string) — Plaintext to encrypt
 - `key` (string) — 32-byte AES key, encoded as hex or base64
 - `iv` (string) — 12-byte nonce/initialization vector, encoded as hex or base64
 
 **Optional fields:**
+
 - `encoding` (string) — Encoding for key, iv, and output: `hex` (default) or `base64`
 - `aad` (string) — Additional authenticated data (verified during decryption but not encrypted)
 
 **Example — Encrypt with hex-encoded key and IV:**
+
 ```json
 {
   "action": "encrypt",
@@ -212,6 +244,7 @@ Encrypt plaintext using AES-256-GCM authenticated encryption.
 ```
 
 **Example — Encrypt with AAD:**
+
 ```json
 {
   "action": "encrypt",
@@ -229,15 +262,18 @@ Encrypt plaintext using AES-256-GCM authenticated encryption.
 Decrypt AES-256-GCM ciphertext back to plaintext.
 
 **Required fields:**
+
 - `value` (string) — Ciphertext to decrypt (hex or base64 encoded)
 - `key` (string) — 32-byte AES key (same encoding used during encryption)
 - `iv` (string) — 12-byte nonce (same value used during encryption)
 
 **Optional fields:**
+
 - `encoding` (string) — Encoding for key, iv, and ciphertext: `hex` (default) or `base64`
 - `aad` (string) — Additional authenticated data (must match what was used during encryption)
 
 **Example — Decrypt hex-encoded ciphertext:**
+
 ```json
 {
   "action": "decrypt",
@@ -252,17 +288,20 @@ Decrypt AES-256-GCM ciphertext back to plaintext.
 #### Common Workflows
 
 ##### Generate a key, encrypt, then decrypt
+
 1. Use `generate` with `generation_type: "HEX"` and `length: 64` to create a 32-byte key
 2. Use `generate` with `generation_type: "HEX"` and `length: 24` to create a 12-byte IV
 3. Use `encrypt` with the generated key, IV, and your plaintext
 4. Use `decrypt` with the same key, IV, and the returned ciphertext
 
 ##### Verify data integrity with HMAC
+
 1. Sender computes `hmac` on the message with a shared secret
 2. Receiver computes `hmac` on the received message with the same secret
 3. Compare the two HMAC values — if they match, the message is authentic and unaltered
 
 ##### Hash a file for checksums
+
 1. Base64-encode the file contents
 2. Use `hash` with `binary_file: true` and `binary_value_base64` set to the encoded content
 
@@ -278,12 +317,14 @@ Decrypt AES-256-GCM ciphertext back to plaintext.
 - **property_name**: Controls the key name in the response JSON where the result appears. Useful for chaining outputs in workflows.
 
 ## When To Use
+
 - Use this skill for `Encrytion Decryption Toolkit` on AgentPMT.
 - Use it when an agent needs this specific tool's behavior, schema, inputs, outputs, and invocation shape.
 - Search and activation keywords: encrytion decryption toolkit, generating secure api keys or access tokens for authentication systems, creating unique uuids for database record identifiers, computing file checksums to verify data integrity during transfers, validating webhook payloads by computing and comparing hmac signatures, decrypt, value, key.
 - Supported action names: `decrypt`, `encrypt`, `generate`, `hash`, `hmac`, `sign`.
 
 ## Use Cases
+
 - Generating secure API keys or access tokens for authentication systems
 - creating unique UUIDs for database record identifiers
 - computing file checksums to verify data integrity during transfers
@@ -296,9 +337,11 @@ Decrypt AES-256-GCM ciphertext back to plaintext.
 - signing API requests to third-party services that require cryptographic authentication
 
 ## Categories And Industries
+
 No categories or industry tags are published for this tool.
 
 ## Actions And Schema
+
 Complete generated action schema: `./schema.md`.
 Supported action count: `6`.
 x402 availability: not enabled for this product.
@@ -311,6 +354,7 @@ x402 availability: not enabled for this product.
 - `sign` (action slug: `sign`): Create a digital signature using RSA or ECDSA with a PEM-encoded private key. Price: `5` credits. Parameters: `algorithm`, `encoding`, `private_key`, `property_name`, `value`.
 
 ## Live Schema And Examples
+
 Use the compact schema above for ordinary calls. Before a new production integration, or whenever parameters, enum values, nested objects, outputs, or examples are unclear, fetch live details first.
 
 - Exact schema: call `agentpmt-tool-search-and-execution` with `action: "get_schema"`, and `tool_id: "encrytion-decryption-toolkit"`.
@@ -366,6 +410,7 @@ Authenticated AgentPMT REST live examples body:
 ```
 
 ## Call This Tool
+
 Product slug: `encrytion-decryption-toolkit`
 
 Marketplace page: https://www.agentpmt.com/marketplace/encrytion-decryption-toolkit
@@ -377,6 +422,7 @@ Marketplace page: https://www.agentpmt.com/marketplace/encrytion-decryption-tool
 If those setup skills are not installed beside this product skill, use the downloads below.
 
 Core AgentPMT setup skills:
+
 - What AgentPMT is: ../what-is-agentpmt
   - ClawHub page: https://clawhub.ai/agentpmt/what-is-agentpmt
   - OpenClaw install: `openclaw skills install what-is-agentpmt`
@@ -433,6 +479,7 @@ Authenticated AgentPMT REST call body:
 Use the setup skill for the account connection details before making REST calls.
 
 ## Response Handling
+
 - Treat the returned JSON as the source of truth for this tool call.
 - If the response includes warnings or correction targets, apply them before retrying.
 - If the response includes a `passed` or success-style boolean, use it as the workflow gate.
@@ -440,11 +487,13 @@ Use the setup skill for the account connection details before making REST calls.
 - If `decrypt` fails, preserve the request parameters and retry only after fixing schema, auth, or payment errors.
 
 ## Security
+
 - Do not place account secrets, wallet private keys, mnemonics, signatures, or payment headers in prompts or logs.
 - Keep tool inputs scoped to the minimum content needed for the task.
 - Use the setup skills for credential handling; this product skill only defines product-specific behavior.
 
 ## AgentPMT Reference
+
 - What AgentPMT is: ../what-is-agentpmt (ClawHub: `what-is-agentpmt`, page: https://clawhub.ai/agentpmt/what-is-agentpmt; skills.sh: `npx skills add AgentPMT/agent-skills --skill what-is-agentpmt`)
 - AgentPMT account MCP/REST setup: ../agentpmt-account-mcp-rest-api-setup (ClawHub: `agentpmt-account-mcp-rest-api-setup`, page: https://clawhub.ai/agentpmt/agentpmt-account-mcp-rest-api-setup; skills.sh: `npx skills add AgentPMT/agent-skills --skill agentpmt-account-mcp-rest-api-setup`)
 - Marketplace product: https://www.agentpmt.com/marketplace/encrytion-decryption-toolkit

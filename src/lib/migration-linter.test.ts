@@ -22,7 +22,9 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(validExpandSql);
     expect(result.valid).toBe(true);
-    expect(result.violations.filter((v) => v.severity === "error").length).toBe(0);
+    expect(result.violations.filter((v) => v.severity === "error").length).toBe(
+      0,
+    );
   });
 
   it("blocks ALTER TABLE DROP COLUMN in standard migrations", () => {
@@ -32,7 +34,9 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(dangerousSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN")).toBe(true);
+    expect(
+      result.violations.some((v) => v.ruleId === "RULE_NO_DROP_COLUMN"),
+    ).toBe(true);
     expect(result.violations[0].remediation).toContain("Stage 4 Contract");
   });
 
@@ -43,8 +47,12 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(dangerousSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_NO_RENAME_COLUMN")).toBe(true);
-    expect(result.violations[0].message).toContain("breaks running Version N (BLUE) pods");
+    expect(
+      result.violations.some((v) => v.ruleId === "RULE_NO_RENAME_COLUMN"),
+    ).toBe(true);
+    expect(result.violations[0].message).toContain(
+      "breaks running Version N (BLUE) pods",
+    );
   });
 
   it("blocks ALTER TABLE RENAME TO (table rename)", () => {
@@ -54,7 +62,9 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(dangerousSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_NO_RENAME_TABLE")).toBe(true);
+    expect(
+      result.violations.some((v) => v.ruleId === "RULE_NO_RENAME_TABLE"),
+    ).toBe(true);
   });
 
   it("blocks ADD COLUMN NOT NULL without DEFAULT on existing tables", () => {
@@ -64,7 +74,11 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(dangerousSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_NO_NOT_NULL_WITHOUT_DEFAULT")).toBe(true);
+    expect(
+      result.violations.some(
+        (v) => v.ruleId === "RULE_NO_NOT_NULL_WITHOUT_DEFAULT",
+      ),
+    ).toBe(true);
   });
 
   it("blocks in-place column type changes (ALTER COLUMN TYPE)", () => {
@@ -74,8 +88,14 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(dangerousSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_NO_IN_PLACE_TYPE_ALTERATION")).toBe(true);
-    expect(result.violations[0].message).toContain("ACCESS EXCLUSIVE table lock");
+    expect(
+      result.violations.some(
+        (v) => v.ruleId === "RULE_NO_IN_PLACE_TYPE_ALTERATION",
+      ),
+    ).toBe(true);
+    expect(result.violations[0].message).toContain(
+      "ACCESS EXCLUSIVE table lock",
+    );
   });
 
   it("permits DROP COLUMN when explicitly annotated as Stage 4 Contract with rationale", () => {
@@ -89,7 +109,9 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
     const result = lintMigrationSql(validContractSql);
     expect(result.valid).toBe(true);
     expect(result.stage).toBe("contract");
-    expect(result.violations.filter((v) => v.severity === "error").length).toBe(0);
+    expect(result.violations.filter((v) => v.severity === "error").length).toBe(
+      0,
+    );
   });
 
   it("rejects contract stage annotations missing an explicit rationale", () => {
@@ -100,7 +122,11 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(invalidContractSql);
     expect(result.valid).toBe(false);
-    expect(result.violations.some((v) => v.ruleId === "RULE_CONTRACT_RATIONALE_REQUIRED")).toBe(true);
+    expect(
+      result.violations.some(
+        (v) => v.ruleId === "RULE_CONTRACT_RATIONALE_REQUIRED",
+      ),
+    ).toBe(true);
   });
 
   it("ignores commented-out SQL lines without triggering false positives", () => {
@@ -114,7 +140,9 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
 
     const result = lintMigrationSql(commentedSql);
     expect(result.valid).toBe(true);
-    expect(result.violations.filter((v) => v.severity === "error").length).toBe(0);
+    expect(result.violations.filter((v) => v.severity === "error").length).toBe(
+      0,
+    );
   });
 
   it("verifies all existing migrations in supabase/migrations adhere to protocol", () => {

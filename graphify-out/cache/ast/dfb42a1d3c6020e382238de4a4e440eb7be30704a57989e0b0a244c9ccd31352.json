@@ -1,1 +1,264 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "label": "rls-matrix.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L1"}, {"id": "lib_rls_matrix_test_configured", "label": "configured", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L19"}, {"id": "lib_rls_matrix_test_allow_read", "label": "ALLOW_READ", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L23"}, {"id": "lib_rls_matrix_test_private_columns", "label": "PRIVATE_COLUMNS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L42"}, {"id": "lib_rls_matrix_test_deny_read", "label": "DENY_READ", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L45"}, {"id": "lib_rls_matrix_test_deny_write", "label": "DENY_WRITE", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L99"}, {"id": "lib_rls_matrix_test_read", "label": "read()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L110"}, {"id": "lib_rls_matrix_test_write", "label": "write()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L118"}, {"id": "lib_rls_matrix_test_rpc_allow_anon", "label": "RPC_ALLOW_ANON", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L137"}, {"id": "lib_rls_matrix_test_rpc_deny_anon", "label": "RPC_DENY_ANON", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L151"}, {"id": "lib_rls_matrix_test_rpc", "label": "rpc()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L202"}, {"id": "lib_rls_matrix_test_readcolumns", "label": "readColumns()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L212"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_configured", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_allow_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_private_columns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_deny_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_deny_write", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_read", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L110", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_write", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L118", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_rpc_allow_anon", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_rpc_deny_anon", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_rpc", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L202", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts", "target": "lib_rls_matrix_test_readcolumns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L212", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_rls_matrix_test_read", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L111"}, {"caller_nid": "lib_rls_matrix_test_read", "callee": "json", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L114"}, {"caller_nid": "lib_rls_matrix_test_write", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L119"}, {"caller_nid": "lib_rls_matrix_test_write", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L122"}, {"caller_nid": "lib_rls_matrix_test_rpc", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L203"}, {"caller_nid": "lib_rls_matrix_test_rpc", "callee": "stringify", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L206"}, {"caller_nid": "lib_rls_matrix_test_rpc", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L208"}, {"caller_nid": "lib_rls_matrix_test_rpc", "callee": "text", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L208"}, {"caller_nid": "lib_rls_matrix_test_readcolumns", "callee": "fetch", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts", "source_location": "L213"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "label": "rls-matrix.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_rls_matrix_test_configured",
+      "label": "configured",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L19"
+    },
+    {
+      "id": "lib_rls_matrix_test_allow_read",
+      "label": "ALLOW_READ",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L23"
+    },
+    {
+      "id": "lib_rls_matrix_test_private_columns",
+      "label": "PRIVATE_COLUMNS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L42"
+    },
+    {
+      "id": "lib_rls_matrix_test_deny_read",
+      "label": "DENY_READ",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_rls_matrix_test_deny_write",
+      "label": "DENY_WRITE",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "lib_rls_matrix_test_read",
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L110"
+    },
+    {
+      "id": "lib_rls_matrix_test_write",
+      "label": "write()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L118"
+    },
+    {
+      "id": "lib_rls_matrix_test_rpc_allow_anon",
+      "label": "RPC_ALLOW_ANON",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "lib_rls_matrix_test_rpc_deny_anon",
+      "label": "RPC_DENY_ANON",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_rls_matrix_test_rpc",
+      "label": "rpc()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L202"
+    },
+    {
+      "id": "lib_rls_matrix_test_readcolumns",
+      "label": "readColumns()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L212"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_configured",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_allow_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_private_columns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_deny_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_deny_write",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_read",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L110",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_write",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_rpc_allow_anon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_rpc_deny_anon",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_rpc",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L202",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_rls_matrix_test_ts",
+      "target": "lib_rls_matrix_test_readcolumns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L212",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_rls_matrix_test_read",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L111"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_read",
+      "callee": "json",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L114"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_write",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L119"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_write",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_rpc",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L203"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_rpc",
+      "callee": "stringify",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L206"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_rpc",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_rpc",
+      "callee": "text",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_rls_matrix_test_readcolumns",
+      "callee": "fetch",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/rls-matrix.test.ts",
+      "source_location": "L213"
+    }
+  ]
+}

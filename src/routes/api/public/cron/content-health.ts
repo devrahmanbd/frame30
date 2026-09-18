@@ -14,7 +14,8 @@ export const Route = createFileRoute("/api/public/cron/content-health")({
       POST: cronPost("content-health", async (ctx) => {
         const { enforceRateLimit } = await import("@/lib/rate-limit.server");
         await enforceRateLimit("content.health_sweep", "cron");
-        const { runContentHealthSweep } = await import("@/lib/content-health.server");
+        const { runContentHealthSweep } =
+          await import("@/lib/content-health.server");
         return runContentHealthSweep({
           limit: ctx.num("limit", 25, 100),
           checkExternal: ctx.url.searchParams.get("external") !== "0",

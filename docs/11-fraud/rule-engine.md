@@ -13,7 +13,7 @@ Verbatim rule quote (`docs/11-fraud/README.md` §7): "Rules are server-side only
 This depth spec pins down how README §7 rules are evaluated, combined, and swapped, so that builders and QA implement one engine — never a parallel one. It is the implementation contract for `docs/15-e2e/fraud_loop.md`.
 
 - Evaluation happens **server-side, at charge time** (re-checked against order final values), never at cart time and never in a client.
-- Every evaluation outcome is one of three long-lived statuses the decision machine consumes: `flagged`, `review`, or `approved`. Blocks are *decisions made later on a flagged case*, by the machine — the engine itself emits evidence.
+- Every evaluation outcome is one of three long-lived statuses the decision machine consumes: `flagged`, `review`, or `approved`. Blocks are _decisions made later on a flagged case_, by the machine — the engine itself emits evidence.
 - Ad-integrity shares the engine: bot-dial evidence from `docs/05` enters as one of the signal families below (see §3), never as a separate bespoke path.
 
 ## 2. Boundary & ownership
@@ -23,15 +23,15 @@ This depth spec pins down how README §7 rules are evaluated, combined, and swap
 
 ## 3. Rule shapes & `rule_key` convention
 
-Rules are *nameless* to merchants and vendors (README §7: opaque `rule_key` + reason code, never a vendor-named rule). Internally the engine keys a rule `rule_key = "<domain>:<name>"` (e.g. `checkout:credential_stuffing`, `payment:mfs_velocity`) — the `domain` groups by rule family in §5, and the `name` is the stable internal handle. Vendors map **onto** these keys; the reverse never happens (a vendor rule is always carried inside a corpus rule key + reason code).
+Rules are _nameless_ to merchants and vendors (README §7: opaque `rule_key` + reason code, never a vendor-named rule). Internally the engine keys a rule `rule_key = "<domain>:<name>"` (e.g. `checkout:credential_stuffing`, `payment:mfs_velocity`) — the `domain` groups by rule family in §5, and the `name` is the stable internal handle. Vendors map **onto** these keys; the reverse never happens (a vendor rule is always carried inside a corpus rule key + reason code).
 
 Three shapes (from README §7):
 
-| Shape | What it does | Case effect | Terminal by |
-| ----- | ------------ |------------ | ----------- |
-| **Hard block** | blacklist IP/phone/MFS | `blocked` (deny + notify) | rule hit (min 2 signals) |
-| **Soft hold** | review queue entry | `review` | case decision |
-| **Auto-approve** | clears `flagged` without review | `approved` | threshold in §4 |
+| Shape            | What it does                    | Case effect               | Terminal by              |
+| ---------------- | ------------------------------- | ------------------------- | ------------------------ |
+| **Hard block**   | blacklist IP/phone/MFS          | `blocked` (deny + notify) | rule hit (min 2 signals) |
+| **Soft hold**    | review queue entry              | `review`                  | case decision            |
+| **Auto-approve** | clears `flagged` without review | `approved`                | threshold in §4          |
 
 - Every rule is merchant-tenant, and every mutation writes a who/why audit diff (README §5, §12).
 - Rule evaluation is idempotent per (order, rule): same order + same rule = same evidence, no double rows.
@@ -40,12 +40,12 @@ Three shapes (from README §7):
 
 **Signal registry** — nothing invented here; four families from README §7 (9 named signals + 2 cross-surface drivers):
 
-| Family (`domain:`) | Signals (README §7, names verbatim/pinned) | Source surface |
-| ----------------- | ------------------------------------------ | -------------- |
-| `checkout:` | device fingerprint · browser·IP reputation tracking (`ip_reputation`) · phone-format validity | `03-storefront` capture + `11-fraud` tables |
-| `payment:` | MFS-account velocity · amount vs. historical user/IP · coupon stacking (`coupon_codes`) · COD abuse (cancelled > 30d window) | `06-payments`, `07-commerce` anchor |
-| `identity:` | mismatch flags (billing vs shipping) · first-order priority (first order of a user gets prioritized). | `03-storefront`, `02-merchant` |
-| `external:` | chargeback-rate threshold (feed from `06-payments` chargebacks) · `ad_bot_score` per source (from `05-marketing`) | `06-payments`, `05-marketing` |
+| Family (`domain:`) | Signals (README §7, names verbatim/pinned)                                                                                   | Source surface                              |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `checkout:`        | device fingerprint · browser·IP reputation tracking (`ip_reputation`) · phone-format validity                                | `03-storefront` capture + `11-fraud` tables |
+| `payment:`         | MFS-account velocity · amount vs. historical user/IP · coupon stacking (`coupon_codes`) · COD abuse (cancelled > 30d window) | `06-payments`, `07-commerce` anchor         |
+| `identity:`        | mismatch flags (billing vs shipping) · first-order priority (first order of a user gets prioritized).                        | `03-storefront`, `02-merchant`              |
+| `external:`        | chargeback-rate threshold (feed from `06-payments` chargebacks) · `ad_bot_score` per source (from `05-marketing`)            | `06-payments`, `05-marketing`               |
 
 - **Combine policy — max-weight-of-hits** (fixed as §5 of this spec; no invented scoring variance): each signal emits a normalized weight in `[0,1]`; the case score is the single highest weight across all fired signals — a hard-block family with ≥ 2 signals hits the block floor; anything below floors to `review`. Rationale (pinned from §7): false-positive harm > false-negative; block requires minimum 2 signals; default is `review`.
 - **ML tier (optional, swappable)**: the engine exposes a `FraudScorer` seam (interface — `score(case) → {score, reason_codes[], sources}`); the default implementation is a **deterministic mock** (dev/test parity with the `06-payments` mock-MFS sandbox), a real provider plugs in without touching rules or the machine. Any tier must stay explainable — reason codes + sources, never a naked number.

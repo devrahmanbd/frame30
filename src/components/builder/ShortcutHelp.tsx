@@ -44,12 +44,20 @@ export function ShortcutHelp({
           {shortcutsByGroup().map(({ group, items }) => (
             <section key={group}>
               <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t(SHORTCUT_GROUP_LABEL[group].en, SHORTCUT_GROUP_LABEL[group].bn)}
+                {t(
+                  SHORTCUT_GROUP_LABEL[group].en,
+                  SHORTCUT_GROUP_LABEL[group].bn,
+                )}
               </h3>
               <dl className="mt-1 divide-y divide-border">
                 {items.map((spec) => (
-                  <div key={spec.id} className="flex items-center justify-between gap-4 py-1.5">
-                    <dt className="text-sm">{t(spec.label.en, spec.label.bn)}</dt>
+                  <div
+                    key={spec.id}
+                    className="flex items-center justify-between gap-4 py-1.5"
+                  >
+                    <dt className="text-sm">
+                      {t(spec.label.en, spec.label.bn)}
+                    </dt>
                     <dd className="shrink-0 rounded-fq-md border border-border px-2 py-0.5 font-mono text-xs tabular-nums">
                       {formatShortcut(spec, platform)}
                     </dd>

@@ -19,7 +19,11 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { PREVIEW_WIDTHS, previewUrl, type PreviewDevice } from "@/lib/themes/appearance";
+import {
+  PREVIEW_WIDTHS,
+  previewUrl,
+  type PreviewDevice,
+} from "@/lib/themes/appearance";
 import { btnGhost, btnPrimary } from "@/components/console/kit";
 
 const DEVICES: { id: PreviewDevice; label: string; icon: typeof Monitor }[] = [
@@ -63,8 +67,14 @@ export function ThemePreviewSplit({
   const [device, setDevice] = useState<PreviewDevice>("desktop");
   const [collapsed, setCollapsed] = useState(false);
   const width = PREVIEW_WIDTHS[device];
-  const src = previewSrc ?? (storeSlug ? previewUrl(storeSlug, subject.key, device) : null);
-  const primaryLabel = subject.active ? "Customize" : subject.installed ? "Activate" : "Install";
+  const src =
+    previewSrc ??
+    (storeSlug ? previewUrl(storeSlug, subject.key, device) : null);
+  const primaryLabel = subject.active
+    ? "Customize"
+    : subject.installed
+      ? "Activate"
+      : "Install";
   const host = useRef<HTMLDivElement | null>(null);
   if (!host.current && typeof document !== "undefined")
     host.current = document.createElement("div");
@@ -78,7 +88,9 @@ export function ThemePreviewSplit({
     const node = host.current;
     if (!node) return;
     document.body.appendChild(node);
-    const siblings = Array.from(document.body.children).filter((child) => child !== node);
+    const siblings = Array.from(document.body.children).filter(
+      (child) => child !== node,
+    );
     const previous = siblings.map((child) => child.getAttribute("aria-hidden"));
     siblings.forEach((child) => {
       child.setAttribute("aria-hidden", "true");
@@ -89,7 +101,8 @@ export function ThemePreviewSplit({
     return () => {
       siblings.forEach((child, index) => {
         const value = previous[index];
-        if (value === null || value === undefined) child.removeAttribute("aria-hidden");
+        if (value === null || value === undefined)
+          child.removeAttribute("aria-hidden");
         else child.setAttribute("aria-hidden", value);
         (child as HTMLElement).inert = false;
       });
@@ -134,7 +147,9 @@ export function ThemePreviewSplit({
             </div>
           )}
           <IconButton
-            label={collapsed ? "Expand preview sidebar" : "Collapse preview sidebar"}
+            label={
+              collapsed ? "Expand preview sidebar" : "Collapse preview sidebar"
+            }
             onClick={() => setCollapsed((value) => !value)}
           >
             {collapsed ? (
@@ -148,16 +163,23 @@ export function ThemePreviewSplit({
         {!collapsed && (
           <div className="flex-1 space-y-4 overflow-auto p-4">
             <div>
-              <h2 className="text-lg font-semibold text-foreground">{subject.name}</h2>
+              <h2 className="text-lg font-semibold text-foreground">
+                {subject.name}
+              </h2>
               <p className="mt-1 text-sm fq-sub">
                 Version {subject.version} · By {subject.author}
               </p>
             </div>
             {typeof subject.rating === "number" ? (
               <p className="flex items-center gap-1.5 text-sm fq-sub">
-                <Star className="size-4 fill-current text-primary" aria-hidden />
-                <span className="fq-num text-foreground">{subject.rating.toFixed(1)}</span> average
-                rating
+                <Star
+                  className="size-4 fill-current text-primary"
+                  aria-hidden
+                />
+                <span className="fq-num text-foreground">
+                  {subject.rating.toFixed(1)}
+                </span>{" "}
+                average rating
               </p>
             ) : null}
             <p className="text-sm text-foreground/90">{subject.summary}</p>
@@ -169,7 +191,11 @@ export function ThemePreviewSplit({
             >
               {primaryLabel}
             </button>
-            <button type="button" className={cn(btnGhost, "w-full")} onClick={onClose}>
+            <button
+              type="button"
+              className={cn(btnGhost, "w-full")}
+              onClick={onClose}
+            >
               Close preview
             </button>
           </div>
@@ -196,7 +222,8 @@ export function ThemePreviewSplit({
               />
             ) : (
               <div className="grid h-full min-h-[60vh] place-items-center rounded-fq-md border border-dashed border-border text-sm fq-sub">
-                Your storefront address is still being set up, so there is nothing to preview yet.
+                Your storefront address is still being set up, so there is
+                nothing to preview yet.
               </div>
             )}
           </div>

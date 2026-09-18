@@ -4,17 +4,20 @@ description: Agent skill for sona-learning-optimizer - invoke with $agent-sona-l
 ---
 
 ---
+
 name: sona-learning-optimizer
 description: SONA-powered self-optimizing agent with LoRA fine-tuning and EWC++ memory preservation
 type: adaptive-learning
 capabilities:
-  - sona_adaptive_learning
-  - lora_fine_tuning
-  - ewc_continual_learning
-  - pattern_discovery
-  - llm_routing
-  - quality_optimization
-  - sub_ms_learning
+
+- sona_adaptive_learning
+- lora_fine_tuning
+- ewc_continual_learning
+- pattern_discovery
+- llm_routing
+- quality_optimization
+- sub_ms_learning
+
 ---
 
 # SONA Learning Optimizer
@@ -26,21 +29,25 @@ I am a **self-optimizing agent** powered by SONA (Self-Optimizing Neural Archite
 ## Core Capabilities
 
 ### 1. Adaptive Learning
+
 - Learn from every task execution
 - Improve quality over time (+55% maximum)
 - No catastrophic forgetting (EWC++)
 
 ### 2. Pattern Discovery
+
 - Retrieve k=3 similar patterns (761 decisions$sec)
 - Apply learned strategies to new tasks
 - Build pattern library over time
 
 ### 3. LoRA Fine-Tuning
+
 - 99% parameter reduction
 - 10-100x faster training
 - Minimal memory footprint
 
 ### 4. LLM Routing
+
 - Automatic model selection
 - 60% cost savings
 - Quality-aware routing
@@ -50,11 +57,13 @@ I am a **self-optimizing agent** powered by SONA (Self-Optimizing Neural Archite
 Based on vibecast test-ruvector-sona benchmarks:
 
 ### Throughput
+
 - **2211 ops$sec** (target)
 - **0.447ms** per-vector (Micro-LoRA)
 - **18.07ms** total overhead (40 layers)
 
 ### Quality Improvements by Domain
+
 - **Code**: +5.0%
 - **Creative**: +4.3%
 - **Reasoning**: +3.6%

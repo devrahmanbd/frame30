@@ -8,12 +8,12 @@ than skipping quietly.
 
 `.e2e/specs/`, Playwright, desktop + mobile projects.
 
-| Loop | What it proves |
-| --- | --- |
-| `owner_loop` | Every `/root/*` console route redirects an anonymous visitor to `/auth`; the server-shipped HTML carries no merchant list, no `amount_minor_int`, no service key; `/root` is disallowed in `robots.txt`; the Prometheus scrape target refuses anonymous scrapes (404 unconfigured, 401 configured) and never echoes a metric name. |
-| `currency_gate` | BDT is the only currency a non-pilot store can render. Amounts must match `^\d{1,3}(,\d{3})*\.\d{2}$` — a float that leaked through arithmetic fails the regex — no `$`/`USD` mark appears on pricing, storefront, or search, minor-unit fields in the SSR payload are integers, and prices are typeset with `tabular-nums`. |
-| `fraud_loop` | Fraud desk routes are staff-only; no rule id, threshold, blacklist kind, or risk score reaches a public page; `fraud_cases`, `fraud_rules`, `fraud_blacklist`, `fraud_audit` return nothing to the anonymous role, and an anonymous blacklist insert is refused. |
-| `ai_support_loop` | Assistant desks are staff-only; `ai_conversations` / `ai_messages` are anonymous-invisible; no model key or system prompt is shipped to the browser; the storefront stays console-clean and transcript-free without a session. |
+| Loop              | What it proves                                                                                                                                                                                                                                                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `owner_loop`      | Every `/root/*` console route redirects an anonymous visitor to `/auth`; the server-shipped HTML carries no merchant list, no `amount_minor_int`, no service key; `/root` is disallowed in `robots.txt`; the Prometheus scrape target refuses anonymous scrapes (404 unconfigured, 401 configured) and never echoes a metric name. |
+| `currency_gate`   | BDT is the only currency a non-pilot store can render. Amounts must match `^\d{1,3}(,\d{3})*\.\d{2}$` — a float that leaked through arithmetic fails the regex — no `$`/`USD` mark appears on pricing, storefront, or search, minor-unit fields in the SSR payload are integers, and prices are typeset with `tabular-nums`.       |
+| `fraud_loop`      | Fraud desk routes are staff-only; no rule id, threshold, blacklist kind, or risk score reaches a public page; `fraud_cases`, `fraud_rules`, `fraud_blacklist`, `fraud_audit` return nothing to the anonymous role, and an anonymous blacklist insert is refused.                                                                   |
+| `ai_support_loop` | Assistant desks are staff-only; `ai_conversations` / `ai_messages` are anonymous-invisible; no model key or system prompt is shipped to the browser; the storefront stays console-clean and transcript-free without a session.                                                                                                     |
 
 Shared helper `expectGated()` in `.e2e/fixtures.ts` handles the client-side
 auth gate (`ssr:false`) with a 30s window and one reload retry, so a cold dev

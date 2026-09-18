@@ -1,1 +1,1155 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_identity_server_ts", "label": "identity.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L1"}, {"id": "lib_identity_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L17"}, {"id": "lib_identity_server_loosedb", "label": "LooseDb", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L18"}, {"id": "lib_identity_server_stepuprequirederror", "label": "StepUpRequiredError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L28"}, {"id": "lib_identity_server_stepuprequirederror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L29"}, {"id": "lib_identity_server_step_up_actions", "label": "STEP_UP_ACTIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L36"}, {"id": "lib_identity_server_stepupaction", "label": "StepUpAction", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L37"}, {"id": "lib_identity_server_sha256", "label": "sha256()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L40"}, {"id": "lib_identity_server_requestfingerprint", "label": "requestFingerprint()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L51"}, {"id": "lib_identity_server_resolverequestuserid", "label": "resolveRequestUserId()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L68"}, {"id": "lib_identity_server_describedevice", "label": "describeDevice()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L87"}, {"id": "lib_identity_server_autheventinput", "label": "AuthEventInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L111"}, {"id": "lib_identity_server_recordauthevent", "label": "recordAuthEvent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L120"}, {"id": "lib_identity_server_signinguardverdict", "label": "SignInGuardVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L140"}, {"id": "lib_identity_server_signinguard", "label": "signInGuard()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L151"}, {"id": "lib_identity_server_registersession", "label": "registerSession()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L181"}, {"id": "lib_identity_server_marksessionsrevoked", "label": "markSessionsRevoked()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L205"}, {"id": "lib_identity_server_securitydesk", "label": "SecurityDesk", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L215"}, {"id": "lib_identity_server_loadsecuritydesk", "label": "loadSecurityDesk()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L230"}, {"id": "lib_identity_server_grantstepup", "label": "grantStepUp()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L280"}, {"id": "lib_identity_server_requirestepup", "label": "requireStepUp()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L318"}, {"id": "lib_identity_server_requestpasswordreset", "label": "requestPasswordReset()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L336"}, {"id": "lib_identity_server_requestemailchange", "label": "requestEmailChange()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L365"}, {"id": "lib_identity_server_registermerchant", "label": "registerMerchant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L398"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "server", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_rate_limit_server_ratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_rate_limit_server_rateverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_loosedb", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_stepuprequirederror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "lib_identity_server_stepuprequirederror", "target": "lib_identity_server_stepuprequirederror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_step_up_actions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L36", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_stepupaction", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_sha256", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L40", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_requestfingerprint", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_resolverequestuserid", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L68", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_describedevice", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L87", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_autheventinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L111", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_recordauthevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L120", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_signinguardverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_signinguard", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L151", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_registersession", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L181", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_marksessionsrevoked", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_securitydesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L215", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_loadsecuritydesk", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L230", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_grantstepup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L280", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_requirestepup", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L318", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_requestpasswordreset", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L336", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_requestemailchange", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L365", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_identity_server_ts", "target": "lib_identity_server_registermerchant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L398", "weight": 1.0}, {"source": "lib_identity_server_requestfingerprint", "target": "lib_identity_server_sha256", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L64", "weight": 1.0}, {"source": "lib_identity_server_requestfingerprint", "target": "lib_identity_server_describedevice", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L64", "weight": 1.0}, {"source": "lib_identity_server_resolverequestuserid", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L75", "weight": 1.0}, {"source": "lib_identity_server_recordauthevent", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L124", "weight": 1.0}, {"source": "lib_identity_server_recordauthevent", "target": "lib_identity_server_requestfingerprint", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L125", "weight": 1.0}, {"source": "lib_identity_server_recordauthevent", "target": "lib_identity_server_sha256", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L128", "weight": 1.0}, {"source": "lib_identity_server_registersession", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L185", "weight": 1.0}, {"source": "lib_identity_server_registersession", "target": "lib_identity_server_requestfingerprint", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L186", "weight": 1.0}, {"source": "lib_identity_server_registersession", "target": "lib_identity_server_recordauthevent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L201", "weight": 1.0}, {"source": "lib_identity_server_marksessionsrevoked", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L206", "weight": 1.0}, {"source": "lib_identity_server_marksessionsrevoked", "target": "lib_identity_server_recordauthevent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L211", "weight": 1.0}, {"source": "lib_identity_server_grantstepup", "target": "lib_identity_server_recordauthevent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L287", "weight": 1.0}, {"source": "lib_identity_server_grantstepup", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L295", "weight": 1.0}, {"source": "lib_identity_server_requestpasswordreset", "target": "lib_identity_server_requestfingerprint", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L337", "weight": 1.0}, {"source": "lib_identity_server_requestpasswordreset", "target": "lib_identity_server_sha256", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L338", "weight": 1.0}, {"source": "lib_identity_server_requestpasswordreset", "target": "lib_identity_server_recordauthevent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L344", "weight": 1.0}, {"source": "lib_identity_server_requestpasswordreset", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L347", "weight": 1.0}, {"source": "lib_identity_server_registermerchant", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L399", "weight": 1.0}, {"source": "lib_identity_server_registermerchant", "target": "lib_identity_server_recordauthevent", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L412", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_identity_server_stepuprequirederror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L30"}, {"caller_nid": "lib_identity_server_sha256", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L42"}, {"caller_nid": "lib_identity_server_sha256", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L42"}, {"caller_nid": "lib_identity_server_sha256", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L42"}, {"caller_nid": "lib_identity_server_sha256", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L43"}, {"caller_nid": "lib_identity_server_sha256", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L44"}, {"caller_nid": "lib_identity_server_sha256", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L44"}, {"caller_nid": "lib_identity_server_sha256", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L44"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "getRequest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L55"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L57"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L58"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L58"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L58"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L60"}, {"caller_nid": "lib_identity_server_requestfingerprint", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L64"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "getRequest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L70"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "get", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L71"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "startsWith", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L72"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L73"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L73"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L74"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "getClaims", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L76"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "getUser", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L78"}, {"caller_nid": "lib_identity_server_resolverequestuserid", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L81"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L88"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L90"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L92"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L94"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L96"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L99"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L101"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L103"}, {"caller_nid": "lib_identity_server_describedevice", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L105"}, {"caller_nid": "lib_identity_server_recordauthevent", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L122"}, {"caller_nid": "lib_identity_server_recordauthevent", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L126"}, {"caller_nid": "lib_identity_server_recordauthevent", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L126"}, {"caller_nid": "lib_identity_server_recordauthevent", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L136"}, {"caller_nid": "lib_identity_server_recordauthevent", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L136"}, {"caller_nid": "lib_identity_server_signinguard", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L152"}, {"caller_nid": "lib_identity_server_registersession", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L188"}, {"caller_nid": "lib_identity_server_registersession", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L188"}, {"caller_nid": "lib_identity_server_registersession", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L195"}, {"caller_nid": "lib_identity_server_registersession", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L200"}, {"caller_nid": "lib_identity_server_registersession", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L200"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "is", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L208"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L208"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L208"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L208"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L208"}, {"caller_nid": "lib_identity_server_marksessionsrevoked", "callee": "neq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L209"}, {"caller_nid": "lib_identity_server_loadsecuritydesk", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L235"}, {"caller_nid": "lib_identity_server_grantstepup", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L285"}, {"caller_nid": "lib_identity_server_grantstepup", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L296"}, {"caller_nid": "lib_identity_server_grantstepup", "callee": "now", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L296"}, {"caller_nid": "lib_identity_server_grantstepup", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L297"}, {"caller_nid": "lib_identity_server_grantstepup", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L297"}, {"caller_nid": "lib_identity_server_requirestepup", "callee": "rpc", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L323"}, {"caller_nid": "lib_identity_server_requirestepup", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L328"}, {"caller_nid": "lib_identity_server_requirestepup", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L331"}, {"caller_nid": "lib_identity_server_requestpasswordreset", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L339"}, {"caller_nid": "lib_identity_server_requestpasswordreset", "callee": "rateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L340"}, {"caller_nid": "lib_identity_server_requestpasswordreset", "callee": "rateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L341"}, {"caller_nid": "lib_identity_server_requestpasswordreset", "callee": "resetPasswordForEmail", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L348"}, {"caller_nid": "lib_identity_server_requestemailchange", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L370"}, {"caller_nid": "lib_identity_server_registermerchant", "callee": "createUser", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L401"}, {"caller_nid": "lib_identity_server_registermerchant", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L402"}, {"caller_nid": "lib_identity_server_registermerchant", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts", "source_location": "L406"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "label": "identity.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_identity_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_identity_server_loosedb",
+      "label": "LooseDb",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "lib_identity_server_stepuprequirederror",
+      "label": "StepUpRequiredError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L28"
+    },
+    {
+      "id": "lib_identity_server_stepuprequirederror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L29"
+    },
+    {
+      "id": "lib_identity_server_step_up_actions",
+      "label": "STEP_UP_ACTIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L36"
+    },
+    {
+      "id": "lib_identity_server_stepupaction",
+      "label": "StepUpAction",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_identity_server_sha256",
+      "label": "sha256()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "id": "lib_identity_server_requestfingerprint",
+      "label": "requestFingerprint()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_identity_server_resolverequestuserid",
+      "label": "resolveRequestUserId()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_identity_server_describedevice",
+      "label": "describeDevice()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L87"
+    },
+    {
+      "id": "lib_identity_server_autheventinput",
+      "label": "AuthEventInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L111"
+    },
+    {
+      "id": "lib_identity_server_recordauthevent",
+      "label": "recordAuthEvent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "lib_identity_server_signinguardverdict",
+      "label": "SignInGuardVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_identity_server_signinguard",
+      "label": "signInGuard()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L151"
+    },
+    {
+      "id": "lib_identity_server_registersession",
+      "label": "registerSession()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L181"
+    },
+    {
+      "id": "lib_identity_server_marksessionsrevoked",
+      "label": "markSessionsRevoked()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L205"
+    },
+    {
+      "id": "lib_identity_server_securitydesk",
+      "label": "SecurityDesk",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L215"
+    },
+    {
+      "id": "lib_identity_server_loadsecuritydesk",
+      "label": "loadSecurityDesk()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L230"
+    },
+    {
+      "id": "lib_identity_server_grantstepup",
+      "label": "grantStepUp()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L280"
+    },
+    {
+      "id": "lib_identity_server_requirestepup",
+      "label": "requireStepUp()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L318"
+    },
+    {
+      "id": "lib_identity_server_requestpasswordreset",
+      "label": "requestPasswordReset()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L336"
+    },
+    {
+      "id": "lib_identity_server_requestemailchange",
+      "label": "requestEmailChange()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L365"
+    },
+    {
+      "id": "lib_identity_server_registermerchant",
+      "label": "registerMerchant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L398"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "server",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_rate_limit_server_ratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_rate_limit_server_rateverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_loosedb",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_stepuprequirederror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_stepuprequirederror",
+      "target": "lib_identity_server_stepuprequirederror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_step_up_actions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_stepupaction",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_sha256",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_requestfingerprint",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_resolverequestuserid",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_describedevice",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_autheventinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L111",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_signinguardverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_signinguard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L151",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_registersession",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_marksessionsrevoked",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_securitydesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_loadsecuritydesk",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_grantstepup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L280",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_requirestepup",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L318",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_requestpasswordreset",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L336",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_requestemailchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L365",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_identity_server_ts",
+      "target": "lib_identity_server_registermerchant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L398",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestfingerprint",
+      "target": "lib_identity_server_sha256",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestfingerprint",
+      "target": "lib_identity_server_describedevice",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_resolverequestuserid",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_recordauthevent",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_recordauthevent",
+      "target": "lib_identity_server_requestfingerprint",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_recordauthevent",
+      "target": "lib_identity_server_sha256",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_registersession",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_registersession",
+      "target": "lib_identity_server_requestfingerprint",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L186",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_registersession",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L201",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_marksessionsrevoked",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_marksessionsrevoked",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L211",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_grantstepup",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L287",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_grantstepup",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L295",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestpasswordreset",
+      "target": "lib_identity_server_requestfingerprint",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestpasswordreset",
+      "target": "lib_identity_server_sha256",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L338",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestpasswordreset",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L344",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_requestpasswordreset",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L347",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_registermerchant",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L399",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_identity_server_registermerchant",
+      "target": "lib_identity_server_recordauthevent",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L412",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_identity_server_stepuprequirederror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_identity_server_sha256",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "getRequest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L58"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestfingerprint",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "getRequest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "get",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "startsWith",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L72"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L74"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "getClaims",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L76"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "getUser",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_identity_server_resolverequestuserid",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L90"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L94"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L96"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L99"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L101"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L103"
+    },
+    {
+      "caller_nid": "lib_identity_server_describedevice",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_identity_server_recordauthevent",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_identity_server_recordauthevent",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_identity_server_recordauthevent",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L126"
+    },
+    {
+      "caller_nid": "lib_identity_server_recordauthevent",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_identity_server_recordauthevent",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L136"
+    },
+    {
+      "caller_nid": "lib_identity_server_signinguard",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "lib_identity_server_registersession",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_identity_server_registersession",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_identity_server_registersession",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L195"
+    },
+    {
+      "caller_nid": "lib_identity_server_registersession",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L200"
+    },
+    {
+      "caller_nid": "lib_identity_server_registersession",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L200"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "is",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "lib_identity_server_marksessionsrevoked",
+      "callee": "neq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L209"
+    },
+    {
+      "caller_nid": "lib_identity_server_loadsecuritydesk",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L235"
+    },
+    {
+      "caller_nid": "lib_identity_server_grantstepup",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L285"
+    },
+    {
+      "caller_nid": "lib_identity_server_grantstepup",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "lib_identity_server_grantstepup",
+      "callee": "now",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L296"
+    },
+    {
+      "caller_nid": "lib_identity_server_grantstepup",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "lib_identity_server_grantstepup",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L297"
+    },
+    {
+      "caller_nid": "lib_identity_server_requirestepup",
+      "callee": "rpc",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L323"
+    },
+    {
+      "caller_nid": "lib_identity_server_requirestepup",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L328"
+    },
+    {
+      "caller_nid": "lib_identity_server_requirestepup",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L331"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestpasswordreset",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L339"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestpasswordreset",
+      "callee": "rateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L340"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestpasswordreset",
+      "callee": "rateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestpasswordreset",
+      "callee": "resetPasswordForEmail",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L348"
+    },
+    {
+      "caller_nid": "lib_identity_server_requestemailchange",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L370"
+    },
+    {
+      "caller_nid": "lib_identity_server_registermerchant",
+      "callee": "createUser",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L401"
+    },
+    {
+      "caller_nid": "lib_identity_server_registermerchant",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L402"
+    },
+    {
+      "caller_nid": "lib_identity_server_registermerchant",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/identity.server.ts",
+      "source_location": "L406"
+    }
+  ]
+}

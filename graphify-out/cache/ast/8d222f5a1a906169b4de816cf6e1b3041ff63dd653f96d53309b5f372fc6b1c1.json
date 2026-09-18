@@ -1,1 +1,346 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "label": "seo.functions.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L1"}, {"id": "lib_seo_functions_entitytype", "label": "entityType", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L7"}, {"id": "lib_seo_functions_faqschema", "label": "faqSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L9"}, {"id": "lib_seo_functions_saveschema", "label": "saveSchema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L14"}, {"id": "lib_seo_functions_seoindexfn", "label": "seoIndexFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L33"}, {"id": "lib_seo_functions_seoloadfn", "label": "seoLoadFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L48"}, {"id": "lib_seo_functions_seosavefn", "label": "seoSaveFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L60"}, {"id": "lib_seo_functions_consentledgerfn", "label": "consentLedgerFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L70"}, {"id": "lib_seo_functions_consentrecordfn", "label": "consentRecordFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L80"}, {"id": "lib_seo_functions_templatetype", "label": "templateType", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L123"}, {"id": "lib_seo_functions_seotemplatesfn", "label": "seoTemplatesFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L125"}, {"id": "lib_seo_functions_seotemplatesavefn", "label": "seoTemplateSaveFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L138"}, {"id": "lib_seo_functions_seoredirectsavefn", "label": "seoRedirectSaveFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L158"}, {"id": "lib_seo_functions_seoredirectdeletefn", "label": "seoRedirectDeleteFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L178"}, {"id": "lib_seo_functions_bulkquery", "label": "bulkQuery", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L192"}, {"id": "lib_seo_functions_seobulkfn", "label": "seoBulkFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L203"}, {"id": "lib_seo_functions_seobulksavefn", "label": "seoBulkSaveFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L216"}, {"id": "lib_seo_functions_seogatefn", "label": "seoGateFn", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L247"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "zod", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_auth_middleware_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "supabase_auth_middleware_requiresupabaseauth", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "users_rahman_documents_frame30_src_lib_authz_middleware_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_authz_middleware_requirepermission", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_entitytype", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_faqschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_saveschema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seoindexfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L33", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seoloadfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L48", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seosavefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_consentledgerfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L70", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_consentrecordfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L80", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_templatetype", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L123", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seotemplatesfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L125", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seotemplatesavefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L138", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seoredirectsavefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L158", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seoredirectdeletefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L178", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_bulkquery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L192", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seobulkfn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L203", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seobulksavefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L216", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_seo_functions_ts", "target": "lib_seo_functions_seogatefn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts", "source_location": "L247", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "label": "seo.functions.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_seo_functions_entitytype",
+      "label": "entityType",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L7"
+    },
+    {
+      "id": "lib_seo_functions_faqschema",
+      "label": "faqSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L9"
+    },
+    {
+      "id": "lib_seo_functions_saveschema",
+      "label": "saveSchema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_seo_functions_seoindexfn",
+      "label": "seoIndexFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "lib_seo_functions_seoloadfn",
+      "label": "seoLoadFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L48"
+    },
+    {
+      "id": "lib_seo_functions_seosavefn",
+      "label": "seoSaveFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_seo_functions_consentledgerfn",
+      "label": "consentLedgerFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L70"
+    },
+    {
+      "id": "lib_seo_functions_consentrecordfn",
+      "label": "consentRecordFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L80"
+    },
+    {
+      "id": "lib_seo_functions_templatetype",
+      "label": "templateType",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L123"
+    },
+    {
+      "id": "lib_seo_functions_seotemplatesfn",
+      "label": "seoTemplatesFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L125"
+    },
+    {
+      "id": "lib_seo_functions_seotemplatesavefn",
+      "label": "seoTemplateSaveFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L138"
+    },
+    {
+      "id": "lib_seo_functions_seoredirectsavefn",
+      "label": "seoRedirectSaveFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L158"
+    },
+    {
+      "id": "lib_seo_functions_seoredirectdeletefn",
+      "label": "seoRedirectDeleteFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L178"
+    },
+    {
+      "id": "lib_seo_functions_bulkquery",
+      "label": "bulkQuery",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L192"
+    },
+    {
+      "id": "lib_seo_functions_seobulkfn",
+      "label": "seoBulkFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L203"
+    },
+    {
+      "id": "lib_seo_functions_seobulksavefn",
+      "label": "seoBulkSaveFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L216"
+    },
+    {
+      "id": "lib_seo_functions_seogatefn",
+      "label": "seoGateFn",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L247"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "zod",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_auth_middleware_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "supabase_auth_middleware_requiresupabaseauth",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "users_rahman_documents_frame30_src_lib_authz_middleware_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_authz_middleware_requirepermission",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_entitytype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_faqschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_saveschema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seoindexfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seoloadfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seosavefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_consentledgerfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_consentrecordfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_templatetype",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seotemplatesfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seotemplatesavefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L138",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seoredirectsavefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L158",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seoredirectdeletefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L178",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_bulkquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L192",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seobulkfn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L203",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seobulksavefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_seo_functions_ts",
+      "target": "lib_seo_functions_seogatefn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/seo.functions.ts",
+      "source_location": "L247",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

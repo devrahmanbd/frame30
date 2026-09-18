@@ -1,1 +1,347 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "label": "currency-gate.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L1"}, {"id": "lib_currency_gate_currency_modes", "label": "CURRENCY_MODES", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L10"}, {"id": "lib_currency_gate_currencymode", "label": "CurrencyMode", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L11"}, {"id": "lib_currency_gate_mode_transitions", "label": "MODE_TRANSITIONS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L13"}, {"id": "lib_currency_gate_currencymodecantransition", "label": "currencyModeCanTransition()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L20"}, {"id": "lib_currency_gate_gate_checks", "label": "GATE_CHECKS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L25"}, {"id": "lib_currency_gate_gatecheck", "label": "GateCheck", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L32"}, {"id": "lib_currency_gate_gateinput", "label": "GateInput", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L34"}, {"id": "lib_currency_gate_checkresult", "label": "CheckResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L45"}, {"id": "lib_currency_gate_gateverdict", "label": "GateVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L46"}, {"id": "lib_currency_gate_fxageseconds", "label": "fxAgeSeconds()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L51"}, {"id": "lib_currency_gate_evaluatecurrencygate", "label": "evaluateCurrencyGate()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L58"}, {"id": "lib_currency_gate_fxauditrow", "label": "FxAuditRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L103"}, {"id": "lib_currency_gate_driftbps", "label": "driftBps()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L113"}, {"id": "lib_currency_gate_auditsnapshots", "label": "auditSnapshots()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L121"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_currency_modes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_currencymode", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_mode_transitions", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_currencymodecantransition", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L20", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_gate_checks", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_gatecheck", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L32", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_gateinput", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L34", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_checkresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L45", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_gateverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L46", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_fxageseconds", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L51", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_evaluatecurrencygate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L58", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_fxauditrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L103", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_driftbps", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L113", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_currency_gate_ts", "target": "lib_currency_gate_auditsnapshots", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L121", "weight": 1.0}, {"source": "lib_currency_gate_evaluatecurrencygate", "target": "lib_currency_gate_fxageseconds", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L62", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_currency_gate_currencymodecantransition", "callee": "includes", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L22"}, {"caller_nid": "lib_currency_gate_fxageseconds", "callee": "parse", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L53"}, {"caller_nid": "lib_currency_gate_fxageseconds", "callee": "isNaN", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L54"}, {"caller_nid": "lib_currency_gate_fxageseconds", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L55"}, {"caller_nid": "lib_currency_gate_fxageseconds", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L55"}, {"caller_nid": "lib_currency_gate_fxageseconds", "callee": "getTime", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L55"}, {"caller_nid": "lib_currency_gate_evaluatecurrencygate", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L78"}, {"caller_nid": "lib_currency_gate_evaluatecurrencygate", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L88"}, {"caller_nid": "lib_currency_gate_evaluatecurrencygate", "callee": "floor", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L89"}, {"caller_nid": "lib_currency_gate_evaluatecurrencygate", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L97"}, {"caller_nid": "lib_currency_gate_evaluatecurrencygate", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L97"}, {"caller_nid": "lib_currency_gate_driftbps", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L115"}, {"caller_nid": "lib_currency_gate_auditsnapshots", "callee": "sort", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L122"}, {"caller_nid": "lib_currency_gate_auditsnapshots", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts", "source_location": "L123"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "label": "currency-gate.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_currency_gate_currency_modes",
+      "label": "CURRENCY_MODES",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L10"
+    },
+    {
+      "id": "lib_currency_gate_currencymode",
+      "label": "CurrencyMode",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L11"
+    },
+    {
+      "id": "lib_currency_gate_mode_transitions",
+      "label": "MODE_TRANSITIONS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "lib_currency_gate_currencymodecantransition",
+      "label": "currencyModeCanTransition()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L20"
+    },
+    {
+      "id": "lib_currency_gate_gate_checks",
+      "label": "GATE_CHECKS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L25"
+    },
+    {
+      "id": "lib_currency_gate_gatecheck",
+      "label": "GateCheck",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L32"
+    },
+    {
+      "id": "lib_currency_gate_gateinput",
+      "label": "GateInput",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L34"
+    },
+    {
+      "id": "lib_currency_gate_checkresult",
+      "label": "CheckResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L45"
+    },
+    {
+      "id": "lib_currency_gate_gateverdict",
+      "label": "GateVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "lib_currency_gate_fxageseconds",
+      "label": "fxAgeSeconds()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L51"
+    },
+    {
+      "id": "lib_currency_gate_evaluatecurrencygate",
+      "label": "evaluateCurrencyGate()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L58"
+    },
+    {
+      "id": "lib_currency_gate_fxauditrow",
+      "label": "FxAuditRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L103"
+    },
+    {
+      "id": "lib_currency_gate_driftbps",
+      "label": "driftBps()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L113"
+    },
+    {
+      "id": "lib_currency_gate_auditsnapshots",
+      "label": "auditSnapshots()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L121"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_currency_modes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_currencymode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_mode_transitions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_currencymodecantransition",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_gate_checks",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_gatecheck",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_gateinput",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_checkresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_gateverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_fxageseconds",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_evaluatecurrencygate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L58",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_fxauditrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_driftbps",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_currency_gate_ts",
+      "target": "lib_currency_gate_auditsnapshots",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_currency_gate_evaluatecurrencygate",
+      "target": "lib_currency_gate_fxageseconds",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_currency_gate_currencymodecantransition",
+      "callee": "includes",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L22"
+    },
+    {
+      "caller_nid": "lib_currency_gate_fxageseconds",
+      "callee": "parse",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "lib_currency_gate_fxageseconds",
+      "callee": "isNaN",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L54"
+    },
+    {
+      "caller_nid": "lib_currency_gate_fxageseconds",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_currency_gate_fxageseconds",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_currency_gate_fxageseconds",
+      "callee": "getTime",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "lib_currency_gate_evaluatecurrencygate",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_currency_gate_evaluatecurrencygate",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L88"
+    },
+    {
+      "caller_nid": "lib_currency_gate_evaluatecurrencygate",
+      "callee": "floor",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L89"
+    },
+    {
+      "caller_nid": "lib_currency_gate_evaluatecurrencygate",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_currency_gate_evaluatecurrencygate",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L97"
+    },
+    {
+      "caller_nid": "lib_currency_gate_driftbps",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L115"
+    },
+    {
+      "caller_nid": "lib_currency_gate_auditsnapshots",
+      "callee": "sort",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L122"
+    },
+    {
+      "caller_nid": "lib_currency_gate_auditsnapshots",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/currency-gate.ts",
+      "source_location": "L123"
+    }
+  ]
+}

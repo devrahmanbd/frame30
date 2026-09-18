@@ -24,14 +24,28 @@ const SKIP_DIRS = new Set([
   ".vite",
   ".agents",
 ]);
-const SKIP_FILES = new Set(["bun.lock", "package-lock.json", "tsconfig.tsbuildinfo"]);
-const TEXT = /\.(ts|tsx|js|jsx|mjs|cjs|json|md|sql|yml|yaml|toml|sh|env|txt|html|css)$/i;
+const SKIP_FILES = new Set([
+  "bun.lock",
+  "package-lock.json",
+  "tsconfig.tsbuildinfo",
+]);
+const TEXT =
+  /\.(ts|tsx|js|jsx|mjs|cjs|json|md|sql|yml|yaml|toml|sh|env|txt|html|css)$/i;
 
 const RULES = [
   { id: "supabase-secret-key", re: /\bsb_secret_[A-Za-z0-9_-]{10,}/ },
-  { id: "supabase-service-role-jwt", re: /"?service_role"?\s*[:=]\s*["']ey[A-Za-z0-9_-]{20,}/ },
-  { id: "jwt", re: /\bey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/ },
-  { id: "private-key-block", re: /-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----/ },
+  {
+    id: "supabase-service-role-jwt",
+    re: /"?service_role"?\s*[:=]\s*["']ey[A-Za-z0-9_-]{20,}/,
+  },
+  {
+    id: "jwt",
+    re: /\bey[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/,
+  },
+  {
+    id: "private-key-block",
+    re: /-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----/,
+  },
   { id: "openai-key", re: /\bsk-[A-Za-z0-9]{32,}/ },
   { id: "stripe-secret", re: /\b(?:sk|rk)_(?:live|test)_[A-Za-z0-9]{16,}/ },
   { id: "aws-access-key", re: /\bAKIA[0-9A-Z]{16}\b/ },
@@ -73,7 +87,8 @@ function isIgnored(rel) {
  * service key, password or private token appearing in it is, so the contents
  * are checked key by key rather than the file being waved through.
  */
-const PUBLIC_ENV_KEY = /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY|ANON_KEY|SERVICE_ROLE_KEY)$/;
+const PUBLIC_ENV_KEY =
+  /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY|ANON_KEY|SERVICE_ROLE_KEY)$/;
 function envFileFindings(rel, full) {
   const out = [];
   readFileSync(full, "utf8")
@@ -83,11 +98,15 @@ function envFileFindings(rel, full) {
       if (!trimmed || trimmed.startsWith("#")) return;
       const key = trimmed.split("=")[0]?.trim() ?? "";
       if (PUBLIC_ENV_KEY.test(key)) return;
-      out.push({ file: rel, line: i + 1, rule: "env-secret-committed", text: key });
+      out.push({
+        file: rel,
+        line: i + 1,
+        rule: "env-secret-committed",
+        text: key,
+      });
     });
   return out;
 }
-
 
 const findings = [];
 
@@ -114,7 +133,12 @@ function walk(dir) {
       if (ALLOW.some((a) => a.test(text))) return;
       for (const rule of RULES) {
         if (rule.re.test(text)) {
-          findings.push({ file: rel, line: i + 1, rule: rule.id, text: text.trim().slice(0, 120) });
+          findings.push({
+            file: rel,
+            line: i + 1,
+            rule: rule.id,
+            text: text.trim().slice(0, 120),
+          });
         }
       }
     });

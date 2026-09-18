@@ -1,1 +1,103 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_routes_api_public_v1_ts", "label": "$.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L1"}, {"id": "v1_cors", "label": "CORS", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L8"}, {"id": "v1_dispatch", "label": "dispatch()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L15"}, {"id": "v1_route", "label": "Route", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L23"}], "edges": [{"source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts", "target": "react_router", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts", "target": "v1_cors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts", "target": "v1_dispatch", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts", "target": "v1_route", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L23", "weight": 1.0}, {"source": "v1_dispatch", "target": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L16", "weight": 1.0}], "raw_calls": [{"caller_nid": "v1_dispatch", "callee": "handleApiRequest", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L17"}, {"caller_nid": "v1_dispatch", "callee": "forEach", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L19"}, {"caller_nid": "v1_dispatch", "callee": "entries", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts", "source_location": "L19"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_routes_api_public_v1_ts",
+      "label": "$.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "v1_cors",
+      "label": "CORS",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "v1_dispatch",
+      "label": "dispatch()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "v1_route",
+      "label": "Route",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L23"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts",
+      "target": "react_router",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts",
+      "target": "v1_cors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts",
+      "target": "v1_dispatch",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_routes_api_public_v1_ts",
+      "target": "v1_route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "v1_dispatch",
+      "target": "users_rahman_documents_frame30_src_lib_rest_gateway_server_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "v1_dispatch",
+      "callee": "handleApiRequest",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L17"
+    },
+    {
+      "caller_nid": "v1_dispatch",
+      "callee": "forEach",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "v1_dispatch",
+      "callee": "entries",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/routes/api/public/v1/$.ts",
+      "source_location": "L19"
+    }
+  ]
+}

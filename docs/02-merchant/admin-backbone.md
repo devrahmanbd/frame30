@@ -9,16 +9,16 @@ least-privilege role editor.
 rather than from a stored wizard cursor, so the checklist is always truthful and
 resumable after a crash, a remix or a hand edit in SQL:
 
-| Step | Satisfied when |
-| --- | --- |
-| profile | `merchant_settings.support_phone` set |
-| payments | COD or MFS enabled |
-| shipping | pickup address + city set |
-| courier | at least one enabled, non-deleted carrier |
-| product | at least one active product |
-| theme | active theme with a published version |
-| vat | `merchants.vat_registration_no` set |
-| kyc | verification submitted or verified |
+| Step     | Satisfied when                            |
+| -------- | ----------------------------------------- |
+| profile  | `merchant_settings.support_phone` set     |
+| payments | COD or MFS enabled                        |
+| shipping | pickup address + city set                 |
+| courier  | at least one enabled, non-deleted carrier |
+| product  | at least one active product               |
+| theme    | active theme with a published version     |
+| vat      | `merchants.vat_registration_no` set       |
+| kyc      | verification submitted or verified        |
 
 `merchant_save_setup` is the only writer; it requires `settings:update`, patches
 only known keys, and returns the recomputed state. The checklist is cached for
@@ -89,7 +89,7 @@ implied reads render checked and locked.
   dialog, closes on Escape and on outside click, and is polled every 60s rather
   than pushed, to keep the admin cheap on flaky mobile networks.
 - Checklist progress is a real `role="progressbar"` with min/now/max; completed
-  steps are struck through *and* carry a check icon.
+  steps are struck through _and_ carry a check icon.
 - Money and counts use tabular figures; Bengali strings come from the shared
   dictionary, never inline.
 

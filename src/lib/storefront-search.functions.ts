@@ -1,7 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import { MAX_TERM_LENGTH, PRODUCT_KINDS_FILTER, SORTS } from "./storefront-search";
+import {
+  MAX_TERM_LENGTH,
+  PRODUCT_KINDS_FILTER,
+  SORTS,
+} from "./storefront-search";
 
 const paramsSchema = z.object({
   slug: z.string().min(1).max(80),
@@ -41,10 +45,16 @@ export const searchStorefrontFn = createServerFn({ method: "GET" })
 
 export const getStorePageFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
-    z.object({ slug: z.string().min(1).max(80), pageSlug: z.string().min(1).max(63) }).parse(d),
+    z
+      .object({
+        slug: z.string().min(1).max(80),
+        pageSlug: z.string().min(1).max(63),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
-    const { loadStorePage, listStorePageNav } = await import("./storefront-search.server");
+    const { loadStorePage, listStorePageNav } =
+      await import("./storefront-search.server");
     const { renderPageMarkdown } = await import("./storefront-search");
     const found = await loadStorePage(data.slug, data.pageSlug);
     if (!found) return null;
@@ -62,7 +72,8 @@ export const getStorePageFn = createServerFn({ method: "GET" })
     // Phase 14/17: a page authored in the builder stores its document inside
     // the markdown column; rendering it through the markdown renderer would
     // print the JSON. The builder renderer escapes every author value itself.
-    const { isBuilderBody, parseBuilderBody, renderBuilderHtml } = await import("./page-builder");
+    const { isBuilderBody, parseBuilderBody, renderBuilderHtml } =
+      await import("./page-builder");
     const builderDoc = isBuilderBody(found.page.body_markdown)
       ? parseBuilderBody(found.page.body_markdown)
       : null;
@@ -70,8 +81,13 @@ export const getStorePageFn = createServerFn({ method: "GET" })
     // instead of the snapshot that was saved with the page.
     let builderProducts = {};
     if (builderDoc) {
-      const { resolveBuilderProducts } = await import("./builder-products.server");
-      builderProducts = await resolveBuilderProducts(found.merchant.id, data.slug, builderDoc);
+      const { resolveBuilderProducts } =
+        await import("./builder-products.server");
+      builderProducts = await resolveBuilderProducts(
+        found.merchant.id,
+        data.slug,
+        builderDoc,
+      );
     }
     return {
       ...found,
@@ -91,7 +107,9 @@ export const getStorePageFn = createServerFn({ method: "GET" })
 
 export const pagesDeskFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ merchantId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ merchantId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { loadPagesDesk } = await import("./storefront-search.server");
     return loadPagesDesk(context.supabase, data.merchantId);
@@ -110,7 +128,9 @@ const pageInputSchema = z.object({
   bodyMarkdown: z.string().max(40000).default(""),
   metaTitle: z.string().max(60).default(""),
   metaDescription: z.string().max(160).default(""),
-  robots: z.enum(["index,follow", "noindex,follow", "noindex,nofollow"]).default("index,follow"),
+  robots: z
+    .enum(["index,follow", "noindex,follow", "noindex,nofollow"])
+    .default("index,follow"),
   isPublished: z.boolean().default(false),
   showInNav: z.boolean().default(true),
   position: z.number().int().min(0).max(999).default(0),
@@ -121,14 +141,19 @@ export const savePageFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => pageInputSchema.parse(d))
   .handler(async ({ data, context }) => {
     const { savePage } = await import("./storefront-search.server");
-    await savePage(context.supabase, data.merchantId, { ...data, id: data.id ?? null });
+    await savePage(context.supabase, data.merchantId, {
+      ...data,
+      id: data.id ?? null,
+    });
     return { ok: true };
   });
 
 export const archivePageFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ merchantId: z.string().uuid(), pageId: z.string().uuid() }).parse(d),
+    z
+      .object({ merchantId: z.string().uuid(), pageId: z.string().uuid() })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { archivePage } = await import("./storefront-search.server");

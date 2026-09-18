@@ -38,25 +38,33 @@ describe("Support Canned Responses & Macro Engine", () => {
   });
 
   it("interpolates placeholder variables accurately", () => {
-    const template = "Hello {{merchantName}}, your order #{{orderNumber}} via {{courierName}} is on track!";
+    const template =
+      "Hello {{merchantName}}, your order #{{orderNumber}} via {{courierName}} is on track!";
     const interpolated = interpolateMacro(template, {
       merchantName: "Rahman Store",
       orderNumber: "ORD-9821",
       courierName: "Pathao Express",
     });
 
-    expect(interpolated).toBe("Hello Rahman Store, your order #ORD-9821 via Pathao Express is on track!");
+    expect(interpolated).toBe(
+      "Hello Rahman Store, your order #ORD-9821 via Pathao Express is on track!",
+    );
   });
 
   it("safely falls back for missing interpolation variables", () => {
-    const template = "Hi {{merchantName}}, order {{orderNumber}} will be handled by {{operatorName}}.";
+    const template =
+      "Hi {{merchantName}}, order {{orderNumber}} will be handled by {{operatorName}}.";
     const interpolated = interpolateMacro(template, {});
-    expect(interpolated).toBe("Hi our store, order [Order #] will be handled by Specialist.");
+    expect(interpolated).toBe(
+      "Hi our store, order [Order #] will be handled by Specialist.",
+    );
   });
 
   it("searches and filters canned responses by query and category", () => {
     const refundMacros = searchCannedResponses("", "refunds_returns");
-    expect(refundMacros.every((m) => m.category === "refunds_returns")).toBe(true);
+    expect(refundMacros.every((m) => m.category === "refunds_returns")).toBe(
+      true,
+    );
     expect(refundMacros.length).toBeGreaterThanOrEqual(1);
 
     const searchResults = searchCannedResponses("refund");

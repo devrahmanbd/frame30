@@ -1,1 +1,2234 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "label": "permalink.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L1"}, {"id": "lib_permalink_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L47"}, {"id": "lib_permalink_server_looseclient", "label": "LooseClient", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L54"}, {"id": "lib_permalink_server_settings_key", "label": "SETTINGS_KEY()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L56"}, {"id": "lib_permalink_server_slug_key", "label": "SLUG_KEY()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L57"}, {"id": "lib_permalink_server_permalinkservererror", "label": "PermalinkServerError", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L68"}, {"id": "lib_permalink_server_permalinkservererror_constructor", "label": ".constructor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L69"}, {"id": "lib_permalink_server_withtimeout", "label": "withTimeout()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L88"}, {"id": "lib_permalink_server_readsettingsrow", "label": "readSettingsRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L104"}, {"id": "lib_permalink_server_loadpermalinksettings", "label": "loadPermalinkSettings()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L124"}, {"id": "lib_permalink_server_permalinksettingsfor", "label": "permalinkSettingsFor()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L133"}, {"id": "lib_permalink_server_invalidatetenant", "label": "invalidateTenant()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L154"}, {"id": "lib_permalink_server_storeslugof", "label": "storeSlugOf()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L162"}, {"id": "lib_permalink_server_row", "label": "Row", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L169"}, {"id": "lib_permalink_server_pull", "label": "pull()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L171"}, {"id": "lib_permalink_server_liveentities", "label": "liveEntities()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L197"}, {"id": "lib_permalink_server_permalinkplan", "label": "PermalinkPlan", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L235"}, {"id": "lib_permalink_server_previewpermalinkchange", "label": "previewPermalinkChange()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L253"}, {"id": "lib_permalink_server_listallredirectpairs", "label": "listAllRedirectPairs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L308"}, {"id": "lib_permalink_server_applypermalinkchange", "label": "applyPermalinkChange()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L335"}, {"id": "lib_permalink_server_slugverdict", "label": "SlugVerdict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L421"}, {"id": "lib_permalink_server_checkslug", "label": "checkSlug()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L437"}, {"id": "lib_permalink_server_redirectrow", "label": "RedirectRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L511"}, {"id": "lib_permalink_server_redirectquery", "label": "RedirectQuery", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L523"}, {"id": "lib_permalink_server_mapredirect", "label": "mapRedirect()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L531"}, {"id": "lib_permalink_server_listredirectspage", "label": "listRedirectsPage()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L549"}, {"id": "lib_permalink_server_assertrule", "label": "assertRule()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L582"}, {"id": "lib_permalink_server_upsertredirect", "label": "upsertRedirect()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L605"}, {"id": "lib_permalink_server_deleteredirects", "label": "deleteRedirects()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L669"}, {"id": "lib_permalink_server_importredirectcsv", "label": "importRedirectCsv()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L694"}, {"id": "lib_permalink_server_exportredirectcsv", "label": "exportRedirectCsv()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L749"}, {"id": "lib_permalink_server_missingrow", "label": "MissingRow", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L769"}, {"id": "lib_permalink_server_recordmissingpath", "label": "recordMissingPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L784"}, {"id": "lib_permalink_server_listmissingpaths", "label": "listMissingPaths()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L821"}, {"id": "lib_permalink_server_resolvemissingpath", "label": "resolveMissingPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L846"}, {"id": "lib_permalink_server_dismissmissingpath", "label": "dismissMissingPath()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L877"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L23", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_lib_cache_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_cache_server_cached", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_cache_server_invalidate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L25", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_observability_server_observe", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_lib_hardening_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_hardening_server_auditaction", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L28", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "users_rahman_documents_frame30_src_lib_permalink_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_csv_max_rows", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_default_permalinks", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_permalinkerror", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_buildpermalink", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_collapseredirects", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_normalisebase", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_parseredirectcsv", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_planpermalinkchange", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_toredirectcsv", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_validatesettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_validateslug", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_permalinkentity", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_permalinkkind", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_permalinkmove", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_permalinksettings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L47", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_looseclient", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_settings_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_slug_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L57", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_permalinkservererror", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L68", "weight": 1.0}, {"source": "lib_permalink_server_permalinkservererror", "target": "lib_permalink_server_permalinkservererror_constructor", "relation": "method", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_withtimeout", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L88", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_readsettingsrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L104", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_loadpermalinksettings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L124", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_permalinksettingsfor", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L133", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_invalidatetenant", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L154", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_storeslugof", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L162", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_row", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L169", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_pull", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L171", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_liveentities", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L197", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_permalinkplan", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L235", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_previewpermalinkchange", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L253", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_listallredirectpairs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L308", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_applypermalinkchange", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L335", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_slugverdict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L421", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_checkslug", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L437", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_redirectrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L511", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_redirectquery", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L523", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_mapredirect", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L531", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_listredirectspage", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L549", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_assertrule", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L582", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_upsertredirect", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L605", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_deleteredirects", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L669", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_importredirectcsv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L694", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_exportredirectcsv", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L749", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_missingrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L769", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_recordmissingpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L784", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_listmissingpaths", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L821", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_resolvemissingpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L846", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_permalink_server_ts", "target": "lib_permalink_server_dismissmissingpath", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L877", "weight": 1.0}, {"source": "lib_permalink_server_loadpermalinksettings", "target": "lib_permalink_server_readsettingsrow", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L125", "weight": 1.0}, {"source": "lib_permalink_server_permalinksettingsfor", "target": "lib_permalink_server_settings_key", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L139", "weight": 1.0}, {"source": "lib_permalink_server_invalidatetenant", "target": "lib_permalink_server_settings_key", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L155", "weight": 1.0}, {"source": "lib_permalink_server_invalidatetenant", "target": "lib_permalink_server_slug_key", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L157", "weight": 1.0}, {"source": "lib_permalink_server_liveentities", "target": "lib_permalink_server_pull", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L200", "weight": 1.0}, {"source": "lib_permalink_server_checkslug", "target": "lib_permalink_server_loadpermalinksettings", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L481", "weight": 1.0}, {"source": "lib_permalink_server_upsertredirect", "target": "lib_permalink_server_assertrule", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L614", "weight": 1.0}, {"source": "lib_permalink_server_upsertredirect", "target": "lib_permalink_server_storeslugof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L658", "weight": 1.0}, {"source": "lib_permalink_server_upsertredirect", "target": "lib_permalink_server_invalidatetenant", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L659", "weight": 1.0}, {"source": "lib_permalink_server_upsertredirect", "target": "lib_permalink_server_mapredirect", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L666", "weight": 1.0}, {"source": "lib_permalink_server_deleteredirects", "target": "lib_permalink_server_storeslugof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L683", "weight": 1.0}, {"source": "lib_permalink_server_deleteredirects", "target": "lib_permalink_server_invalidatetenant", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L684", "weight": 1.0}, {"source": "lib_permalink_server_importredirectcsv", "target": "lib_permalink_server_storeslugof", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L736", "weight": 1.0}, {"source": "lib_permalink_server_importredirectcsv", "target": "lib_permalink_server_invalidatetenant", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L737", "weight": 1.0}, {"source": "lib_permalink_server_recordmissingpath", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L792", "weight": 1.0}, {"source": "lib_permalink_server_resolvemissingpath", "target": "lib_permalink_server_upsertredirect", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L862", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_permalink_server_permalinkservererror_constructor", "callee": "super", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L81"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L105"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L105"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L105"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L105"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "validateSettings", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L113"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L117"}, {"caller_nid": "lib_permalink_server_readsettingsrow", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L118"}, {"caller_nid": "lib_permalink_server_permalinksettingsfor", "callee": "cached", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L138"}, {"caller_nid": "lib_permalink_server_permalinksettingsfor", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L145"}, {"caller_nid": "lib_permalink_server_permalinksettingsfor", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L146"}, {"caller_nid": "lib_permalink_server_permalinksettingsfor", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L148"}, {"caller_nid": "lib_permalink_server_invalidatetenant", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L155"}, {"caller_nid": "lib_permalink_server_invalidatetenant", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L157"}, {"caller_nid": "lib_permalink_server_invalidatetenant", "callee": "invalidate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L158"}, {"caller_nid": "lib_permalink_server_storeslugof", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L163"}, {"caller_nid": "lib_permalink_server_storeslugof", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L163"}, {"caller_nid": "lib_permalink_server_storeslugof", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L163"}, {"caller_nid": "lib_permalink_server_storeslugof", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L163"}, {"caller_nid": "lib_permalink_server_pull", "callee": "range", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L181"}, {"caller_nid": "lib_permalink_server_pull", "callee": "filters", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L181"}, {"caller_nid": "lib_permalink_server_pull", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L182"}, {"caller_nid": "lib_permalink_server_pull", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L182"}, {"caller_nid": "lib_permalink_server_pull", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L182"}, {"caller_nid": "lib_permalink_server_pull", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L186"}, {"caller_nid": "lib_permalink_server_liveentities", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L199"}, {"caller_nid": "lib_permalink_server_liveentities", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L218"}, {"caller_nid": "lib_permalink_server_liveentities", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L219"}, {"caller_nid": "lib_permalink_server_liveentities", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L220"}, {"caller_nid": "lib_permalink_server_liveentities", "callee": "push", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L221"}, {"caller_nid": "lib_permalink_server_previewpermalinkchange", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L258"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "range", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L313"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "neq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L313"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L313"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L313"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L313"}, {"caller_nid": "lib_permalink_server_listallredirectpairs", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L321"}, {"caller_nid": "lib_permalink_server_applypermalinkchange", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L341"}, {"caller_nid": "lib_permalink_server_applypermalinkchange", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L342"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "validateSlug", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L444"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L449"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L449"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "test", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L450"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L466"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L466"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L466"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L466"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L466"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "neq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L467"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "buildPermalink", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L482"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L483"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L483"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L483"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L483"}, {"caller_nid": "lib_permalink_server_checkslug", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L483"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L532"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L534"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L535"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L536"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L538"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L539"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L540"}, {"caller_nid": "lib_permalink_server_mapredirect", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L542"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L554"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L554"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L555"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L558"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L558"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L558"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L562"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L563"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L563"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "or", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L564"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L566"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L567"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "range", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L569"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L569"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L569"}, {"caller_nid": "lib_permalink_server_listredirectspage", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L575"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L611"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "normaliseBase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L612"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "normaliseBase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L613"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L617"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L617"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L617"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "single", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L629"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L629"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L629"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L629"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "neq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L648"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L648"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L648"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L648"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L648"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L655"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L655"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L655"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L655"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "auditAction", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L660"}, {"caller_nid": "lib_permalink_server_upsertredirect", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L665"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "in", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L677"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L677"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L677"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L677"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L681"}, {"caller_nid": "lib_permalink_server_deleteredirects", "callee": "auditAction", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L685"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L700"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "parseRedirectCsv", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L701"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L705"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L705"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L705"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L710"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L710"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L713"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L718"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L718"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "upsert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L726"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L726"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "push", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L730"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "auditAction", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L738"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L743"}, {"caller_nid": "lib_permalink_server_importredirectcsv", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L744"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L751"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L751"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L751"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L751"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L751"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "toRedirectCsv", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L758"}, {"caller_nid": "lib_permalink_server_exportredirectcsv", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L759"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "normaliseBase", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L789"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L794"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L794"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L794"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L794"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L794"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L801"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L801"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L801"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "Number", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L803"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L803"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L806"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L806"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L809"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L812"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L814"}, {"caller_nid": "lib_permalink_server_recordmissingpath", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L816"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "is", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L827"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L833"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L833"}, {"caller_nid": "lib_permalink_server_listmissingpaths", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L835"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "maybeSingle", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L853"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L853"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L853"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L853"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L853"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "String", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L863"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L868"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L868"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L868"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L868"}, {"caller_nid": "lib_permalink_server_resolvemissingpath", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L873"}, {"caller_nid": "lib_permalink_server_dismissmissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L879"}, {"caller_nid": "lib_permalink_server_dismissmissingpath", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L879"}, {"caller_nid": "lib_permalink_server_dismissmissingpath", "callee": "delete", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L879"}, {"caller_nid": "lib_permalink_server_dismissmissingpath", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts", "source_location": "L879"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "label": "permalink.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_permalink_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L47"
+    },
+    {
+      "id": "lib_permalink_server_looseclient",
+      "label": "LooseClient",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L54"
+    },
+    {
+      "id": "lib_permalink_server_settings_key",
+      "label": "SETTINGS_KEY()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_permalink_server_slug_key",
+      "label": "SLUG_KEY()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L57"
+    },
+    {
+      "id": "lib_permalink_server_permalinkservererror",
+      "label": "PermalinkServerError",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L68"
+    },
+    {
+      "id": "lib_permalink_server_permalinkservererror_constructor",
+      "label": ".constructor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_permalink_server_withtimeout",
+      "label": "withTimeout()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L88"
+    },
+    {
+      "id": "lib_permalink_server_readsettingsrow",
+      "label": "readSettingsRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L104"
+    },
+    {
+      "id": "lib_permalink_server_loadpermalinksettings",
+      "label": "loadPermalinkSettings()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L124"
+    },
+    {
+      "id": "lib_permalink_server_permalinksettingsfor",
+      "label": "permalinkSettingsFor()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L133"
+    },
+    {
+      "id": "lib_permalink_server_invalidatetenant",
+      "label": "invalidateTenant()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "id": "lib_permalink_server_storeslugof",
+      "label": "storeSlugOf()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L162"
+    },
+    {
+      "id": "lib_permalink_server_row",
+      "label": "Row",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L169"
+    },
+    {
+      "id": "lib_permalink_server_pull",
+      "label": "pull()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L171"
+    },
+    {
+      "id": "lib_permalink_server_liveentities",
+      "label": "liveEntities()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L197"
+    },
+    {
+      "id": "lib_permalink_server_permalinkplan",
+      "label": "PermalinkPlan",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L235"
+    },
+    {
+      "id": "lib_permalink_server_previewpermalinkchange",
+      "label": "previewPermalinkChange()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L253"
+    },
+    {
+      "id": "lib_permalink_server_listallredirectpairs",
+      "label": "listAllRedirectPairs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L308"
+    },
+    {
+      "id": "lib_permalink_server_applypermalinkchange",
+      "label": "applyPermalinkChange()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L335"
+    },
+    {
+      "id": "lib_permalink_server_slugverdict",
+      "label": "SlugVerdict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L421"
+    },
+    {
+      "id": "lib_permalink_server_checkslug",
+      "label": "checkSlug()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L437"
+    },
+    {
+      "id": "lib_permalink_server_redirectrow",
+      "label": "RedirectRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L511"
+    },
+    {
+      "id": "lib_permalink_server_redirectquery",
+      "label": "RedirectQuery",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L523"
+    },
+    {
+      "id": "lib_permalink_server_mapredirect",
+      "label": "mapRedirect()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L531"
+    },
+    {
+      "id": "lib_permalink_server_listredirectspage",
+      "label": "listRedirectsPage()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L549"
+    },
+    {
+      "id": "lib_permalink_server_assertrule",
+      "label": "assertRule()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L582"
+    },
+    {
+      "id": "lib_permalink_server_upsertredirect",
+      "label": "upsertRedirect()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L605"
+    },
+    {
+      "id": "lib_permalink_server_deleteredirects",
+      "label": "deleteRedirects()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L669"
+    },
+    {
+      "id": "lib_permalink_server_importredirectcsv",
+      "label": "importRedirectCsv()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L694"
+    },
+    {
+      "id": "lib_permalink_server_exportredirectcsv",
+      "label": "exportRedirectCsv()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L749"
+    },
+    {
+      "id": "lib_permalink_server_missingrow",
+      "label": "MissingRow",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L769"
+    },
+    {
+      "id": "lib_permalink_server_recordmissingpath",
+      "label": "recordMissingPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L784"
+    },
+    {
+      "id": "lib_permalink_server_listmissingpaths",
+      "label": "listMissingPaths()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L821"
+    },
+    {
+      "id": "lib_permalink_server_resolvemissingpath",
+      "label": "resolveMissingPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L846"
+    },
+    {
+      "id": "lib_permalink_server_dismissmissingpath",
+      "label": "dismissMissingPath()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L877"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_cache_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_cache_server_cached",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_cache_server_invalidate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_observability_server_observe",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_hardening_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_hardening_server_auditaction",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_permalink_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_csv_max_rows",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_default_permalinks",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_permalinkerror",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_buildpermalink",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_collapseredirects",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_normalisebase",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_parseredirectcsv",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_planpermalinkchange",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_toredirectcsv",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_validatesettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_validateslug",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_permalinkentity",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_permalinkkind",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_permalinkmove",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_permalinksettings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_looseclient",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_settings_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_slug_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L57",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_permalinkservererror",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_permalinkservererror",
+      "target": "lib_permalink_server_permalinkservererror_constructor",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_withtimeout",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_readsettingsrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_loadpermalinksettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L124",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_permalinksettingsfor",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_invalidatetenant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L154",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_storeslugof",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_pull",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_liveentities",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L197",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_permalinkplan",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L235",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_previewpermalinkchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_listallredirectpairs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L308",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_applypermalinkchange",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L335",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_slugverdict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L421",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_checkslug",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L437",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_redirectrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L511",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_redirectquery",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L523",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_mapredirect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L531",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_listredirectspage",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L549",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_assertrule",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L582",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_upsertredirect",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L605",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_deleteredirects",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L669",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_importredirectcsv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L694",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_exportredirectcsv",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L749",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_missingrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L769",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_recordmissingpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L784",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_listmissingpaths",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L821",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_resolvemissingpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L846",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_permalink_server_ts",
+      "target": "lib_permalink_server_dismissmissingpath",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L877",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_loadpermalinksettings",
+      "target": "lib_permalink_server_readsettingsrow",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_permalinksettingsfor",
+      "target": "lib_permalink_server_settings_key",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_invalidatetenant",
+      "target": "lib_permalink_server_settings_key",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_invalidatetenant",
+      "target": "lib_permalink_server_slug_key",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L157",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_liveentities",
+      "target": "lib_permalink_server_pull",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_checkslug",
+      "target": "lib_permalink_server_loadpermalinksettings",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L481",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_upsertredirect",
+      "target": "lib_permalink_server_assertrule",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L614",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_upsertredirect",
+      "target": "lib_permalink_server_storeslugof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L658",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_upsertredirect",
+      "target": "lib_permalink_server_invalidatetenant",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L659",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_upsertredirect",
+      "target": "lib_permalink_server_mapredirect",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L666",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_deleteredirects",
+      "target": "lib_permalink_server_storeslugof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L683",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_deleteredirects",
+      "target": "lib_permalink_server_invalidatetenant",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L684",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_importredirectcsv",
+      "target": "lib_permalink_server_storeslugof",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L736",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_importredirectcsv",
+      "target": "lib_permalink_server_invalidatetenant",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L737",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_recordmissingpath",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L792",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_permalink_server_resolvemissingpath",
+      "target": "lib_permalink_server_upsertredirect",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L862",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_permalink_server_permalinkservererror_constructor",
+      "callee": "super",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L81"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L105"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "validateSettings",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L113"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L117"
+    },
+    {
+      "caller_nid": "lib_permalink_server_readsettingsrow",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L118"
+    },
+    {
+      "caller_nid": "lib_permalink_server_permalinksettingsfor",
+      "callee": "cached",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L138"
+    },
+    {
+      "caller_nid": "lib_permalink_server_permalinksettingsfor",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L145"
+    },
+    {
+      "caller_nid": "lib_permalink_server_permalinksettingsfor",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L146"
+    },
+    {
+      "caller_nid": "lib_permalink_server_permalinksettingsfor",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_permalink_server_invalidatetenant",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "lib_permalink_server_invalidatetenant",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L157"
+    },
+    {
+      "caller_nid": "lib_permalink_server_invalidatetenant",
+      "callee": "invalidate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "lib_permalink_server_storeslugof",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_permalink_server_storeslugof",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_permalink_server_storeslugof",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_permalink_server_storeslugof",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L163"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "range",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L181"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "filters",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L181"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "lib_permalink_server_pull",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "lib_permalink_server_liveentities",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L199"
+    },
+    {
+      "caller_nid": "lib_permalink_server_liveentities",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L218"
+    },
+    {
+      "caller_nid": "lib_permalink_server_liveentities",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L219"
+    },
+    {
+      "caller_nid": "lib_permalink_server_liveentities",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "lib_permalink_server_liveentities",
+      "callee": "push",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "lib_permalink_server_previewpermalinkchange",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L258"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "range",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "neq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L313"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listallredirectpairs",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L321"
+    },
+    {
+      "caller_nid": "lib_permalink_server_applypermalinkchange",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L341"
+    },
+    {
+      "caller_nid": "lib_permalink_server_applypermalinkchange",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L342"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "validateSlug",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L444"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L449"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "test",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L450"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L466"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "neq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L467"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "buildPermalink",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L482"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L483"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L483"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L483"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L483"
+    },
+    {
+      "caller_nid": "lib_permalink_server_checkslug",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L483"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L532"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L534"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L535"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L536"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L538"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L539"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L540"
+    },
+    {
+      "caller_nid": "lib_permalink_server_mapredirect",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L542"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L554"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L554"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L555"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L558"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L558"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L558"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L562"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L563"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L563"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "or",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L564"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L566"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L567"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "range",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L569"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L569"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L569"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listredirectspage",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L575"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L611"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "normaliseBase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L612"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "normaliseBase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L613"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L617"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L617"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L617"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "single",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L629"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L629"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L629"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L629"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "neq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L648"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L655"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L655"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L655"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L655"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "auditAction",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L660"
+    },
+    {
+      "caller_nid": "lib_permalink_server_upsertredirect",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L665"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "in",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L677"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L677"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L677"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L677"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L681"
+    },
+    {
+      "caller_nid": "lib_permalink_server_deleteredirects",
+      "callee": "auditAction",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L685"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L700"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "parseRedirectCsv",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L701"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L705"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L705"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L705"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L710"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L710"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L713"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L718"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L718"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "upsert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L726"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L726"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "push",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L730"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "auditAction",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L738"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L743"
+    },
+    {
+      "caller_nid": "lib_permalink_server_importredirectcsv",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L744"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L751"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L751"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L751"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L751"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L751"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "toRedirectCsv",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L758"
+    },
+    {
+      "caller_nid": "lib_permalink_server_exportredirectcsv",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L759"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "normaliseBase",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L789"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L794"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L801"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L801"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L801"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "Number",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L803"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L803"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L806"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L806"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L809"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L812"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L814"
+    },
+    {
+      "caller_nid": "lib_permalink_server_recordmissingpath",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L816"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "is",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L827"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L833"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L833"
+    },
+    {
+      "caller_nid": "lib_permalink_server_listmissingpaths",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L835"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "maybeSingle",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L853"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "String",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L863"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L868"
+    },
+    {
+      "caller_nid": "lib_permalink_server_resolvemissingpath",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L873"
+    },
+    {
+      "caller_nid": "lib_permalink_server_dismissmissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L879"
+    },
+    {
+      "caller_nid": "lib_permalink_server_dismissmissingpath",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L879"
+    },
+    {
+      "caller_nid": "lib_permalink_server_dismissmissingpath",
+      "callee": "delete",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L879"
+    },
+    {
+      "caller_nid": "lib_permalink_server_dismissmissingpath",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/permalink.server.ts",
+      "source_location": "L879"
+    }
+  ]
+}

@@ -12,10 +12,17 @@ import { renderToStaticMarkup } from "react-dom/server";
 // `Link` needs a live router; this suite is about which widgets render, so the
 // router is stubbed down to the anchor it would emit.
 vi.mock("@tanstack/react-router", async () => {
-  const actual = await vi.importActual<Record<string, unknown>>("@tanstack/react-router");
+  const actual = await vi.importActual<Record<string, unknown>>(
+    "@tanstack/react-router",
+  );
   return {
     ...actual,
-    Link: ({ to, params, children, ...rest }: Record<string, unknown> & { children?: unknown }) => {
+    Link: ({
+      to,
+      params,
+      children,
+      ...rest
+    }: Record<string, unknown> & { children?: unknown }) => {
       const path = String(to ?? "").replace(/\$(\w+)/g, (_m, key: string) =>
         String((params as Record<string, string> | undefined)?.[key] ?? ""),
       );
@@ -29,8 +36,6 @@ vi.mock("@tanstack/react-router", async () => {
 });
 
 const { BlogArchiveTheme } = await import("./BlogArchiveTheme");
-
-
 
 const feed = {
   articles: [
@@ -47,7 +52,16 @@ const feed = {
     },
   ],
   facets: [],
-  paging: { page: 1, total: 1, pages: 1, from: 0, to: 0, overrun: false, prev: null, next: null },
+  paging: {
+    page: 1,
+    total: 1,
+    pages: 1,
+    from: 0,
+    to: 0,
+    overrun: false,
+    prev: null,
+    next: null,
+  },
   basePath: (page: number) => (page > 1 ? `/blog?page=${page}` : "/blog"),
 } as unknown as Parameters<typeof BlogArchiveTheme>[0]["feed"];
 
@@ -65,4 +79,3 @@ describe("BlogArchiveTheme", () => {
     expect(html).not.toContain("No articles published yet.");
   });
 });
-

@@ -1,1 +1,457 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "label": "SeoDrawer.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L1"}, {"id": "builder_seodrawer_stored", "label": "Stored", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L17"}, {"id": "builder_seodrawer_seodrawer", "label": "SeoDrawer()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L26"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L1", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "react_query", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "react_start", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "sonner", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_ast_astissue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_ast_templatekey", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_ast_themeast", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_seo_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_empty_page_seo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_seo_desc_px_max", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_seo_title_px_max", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_parsepageseo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_scorebuilderseo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_pageseo", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "users_rahman_documents_frame30_src_lib_builder_seo_functions_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_functions_templateseolistfn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_builder_seo_functions_templateseosavefn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "builder_seodrawer_stored", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx", "target": "builder_seodrawer_seodrawer", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L26", "weight": 1.0}], "raw_calls": [{"caller_nid": "builder_seodrawer_seodrawer", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L39"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useQueryClient", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L40"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L41"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useServerFn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L42"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L43"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L44"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useQuery", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L46"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "Boolean", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L49"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L53"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useEffect", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L60"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useMemo", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L65"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "useMutation", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L70"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L132"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L134"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L150"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L152"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L155"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L158"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L166"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L167"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L168"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L169"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L170"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L171"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "field", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L172"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L182"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L186"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L187"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L208"}, {"caller_nid": "builder_seodrawer_seodrawer", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx", "source_location": "L208"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "label": "SeoDrawer.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "builder_seodrawer_stored",
+      "label": "Stored",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "builder_seodrawer_seodrawer",
+      "label": "SeoDrawer()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L26"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "react_query",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "react_start",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "sonner",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_ast_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_ast_astissue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_ast_templatekey",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_ast_themeast",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_seo_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_empty_page_seo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_seo_desc_px_max",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_seo_title_px_max",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_parsepageseo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_scorebuilderseo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_pageseo",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_builder_seo_functions_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_functions_templateseolistfn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_builder_seo_functions_templateseosavefn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "builder_seodrawer_stored",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_seodrawer_tsx",
+      "target": "builder_seodrawer_seodrawer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L26",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useQueryClient",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L41"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useServerFn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L42"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L43"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L44"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useQuery",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "Boolean",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useEffect",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L60"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useMemo",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "useMutation",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L70"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L132"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L134"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L150"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L152"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L155"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L158"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L166"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L167"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L170"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L171"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "field",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L172"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L186"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L187"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L208"
+    },
+    {
+      "caller_nid": "builder_seodrawer_seodrawer",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/SeoDrawer.tsx",
+      "source_location": "L208"
+    }
+  ]
+}

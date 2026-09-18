@@ -34,7 +34,11 @@ export type EditorDoc = { templates: ThemeTemplates; tokens: ThemeTokens };
 const HISTORY_LIMIT = 50;
 
 function cloneAst(ast: ThemeAst): ThemeAst {
-  return { header: [...ast.header], main: [...ast.main], footer: [...ast.footer] };
+  return {
+    header: [...ast.header],
+    main: [...ast.main],
+    footer: [...ast.footer],
+  };
 }
 
 /**
@@ -69,7 +73,9 @@ export function useBuilderEditor(
   useEffect(() => {
     if (!initial) return;
     setDoc((current) => current ?? initial);
-    setSavedDigest((current) => current ?? astDigest(initial.templates, initial.tokens));
+    setSavedDigest(
+      (current) => current ?? astDigest(initial.templates, initial.tokens),
+    );
     revision.current = Math.max(revision.current, opts.revision);
   }, [initial, opts.revision]);
 
@@ -158,7 +164,10 @@ export function useBuilderEditor(
       commit((current) => {
         const ast = cloneAst(current.templates[template] ?? EMPTY_AST);
         ast[slot] = fn(ast[slot]);
-        return { ...current, templates: { ...current.templates, [template]: ast } };
+        return {
+          ...current,
+          templates: { ...current.templates, [template]: ast },
+        };
       });
 
     /** Patch one node anywhere in the tree. */
@@ -167,7 +176,10 @@ export function useBuilderEditor(
       slot: Slot,
       id: string,
       fn: (section: Section) => Section,
-    ) => editSlot(template, slot, (sections) => mapTree(sections, (s) => (s.id === id ? fn(s) : s)));
+    ) =>
+      editSlot(template, slot, (sections) =>
+        mapTree(sections, (s) => (s.id === id ? fn(s) : s)),
+      );
 
     return {
       /**
@@ -188,7 +200,9 @@ export function useBuilderEditor(
             parentId === null
               ? sections.length
               : (locate(sections, parentId)?.node.children?.length ?? 0);
-          return insertNodes(sections, parentId, target?.index ?? fallback, [section]);
+          return insertNodes(sections, parentId, target?.index ?? fallback, [
+            section,
+          ]);
         });
         return section.id;
       },
@@ -207,15 +221,28 @@ export function useBuilderEditor(
             parentId === null
               ? sections.length
               : (locate(sections, parentId)?.node.children?.length ?? 0);
-          return insertNodes(sections, parentId, target?.index ?? fallback, copies);
+          return insertNodes(
+            sections,
+            parentId,
+            target?.index ?? fallback,
+            copies,
+          );
         });
         return copies.map((node) => node.id);
       },
       remove(template: TemplateKey, slot: Slot, id: string) {
-        editSlot(template, slot, (sections) => removeNodes(sections, [id]).tree);
+        editSlot(
+          template,
+          slot,
+          (sections) => removeNodes(sections, [id]).tree,
+        );
       },
       removeMany(template: TemplateKey, slot: Slot, ids: readonly string[]) {
-        editSlot(template, slot, (sections) => removeNodes(sections, topMost(sections, ids)).tree);
+        editSlot(
+          template,
+          slot,
+          (sections) => removeNodes(sections, topMost(sections, ids)).tree,
+        );
       },
       /** Reorder within the current parent — the keyboard and arrow-button path. */
       nudge(template: TemplateKey, slot: Slot, id: string, delta: -1 | 1) {
@@ -229,22 +256,34 @@ export function useBuilderEditor(
         targetId: string | null,
         position: DropPosition,
       ) {
-        editSlot(template, slot, (sections) => moveRelative(sections, dragId, targetId, position));
+        editSlot(template, slot, (sections) =>
+          moveRelative(sections, dragId, targetId, position),
+        );
       },
       duplicate(template: TemplateKey, slot: Slot, id: string) {
         editSlot(template, slot, (sections) => {
           const found = locate(sections, id);
           if (!found) return sections;
           const [copy] = cloneNodes([found.node]);
-          if (!copy || !canDrop(sections, [copy], found.parentId).ok) return sections;
+          if (!copy || !canDrop(sections, [copy], found.parentId).ok)
+            return sections;
           return insertNodes(sections, found.parentId, found.index + 1, [copy]);
         });
       },
       duplicateMany(template: TemplateKey, slot: Slot, ids: readonly string[]) {
         for (const id of ids) this.duplicate(template, slot, id);
       },
-      setProp(template: TemplateKey, slot: Slot, id: string, key: string, value: PropValue) {
-        editNode(template, slot, id, (s) => ({ ...s, props: { ...s.props, [key]: value } }));
+      setProp(
+        template: TemplateKey,
+        slot: Slot,
+        id: string,
+        key: string,
+        value: PropValue,
+      ) {
+        editNode(template, slot, id, (s) => ({
+          ...s,
+          props: { ...s.props, [key]: value },
+        }));
       },
       /**
        * Write a value at the active breakpoint. `desktop` is the base layer, so
@@ -260,13 +299,19 @@ export function useBuilderEditor(
         device: Breakpoint,
       ) {
         editNode(template, slot, id, (s) => {
-          if (device === "desktop") return { ...s, props: { ...s.props, [key]: value } };
+          if (device === "desktop")
+            return { ...s, props: { ...s.props, [key]: value } };
           const layer = { ...(s.bp?.[device] ?? {}), [key]: value };
           return { ...s, bp: { ...(s.bp ?? {}), [device]: layer } };
         });
       },
       /** Phase 3.2: conditional visibility rules for one node. */
-      setWhen(template: TemplateKey, slot: Slot, id: string, rules: VisibilityRule[]) {
+      setWhen(
+        template: TemplateKey,
+        slot: Slot,
+        id: string,
+        rules: VisibilityRule[],
+      ) {
         editNode(template, slot, id, (s) => {
           const next: Section = { ...s };
           if (rules.length) next.when = rules;
@@ -284,7 +329,13 @@ export function useBuilderEditor(
         });
       },
       /** Drop a breakpoint override so the field inherits the base value again. */
-      clearOverride(template: TemplateKey, slot: Slot, id: string, key: string, device: Breakpoint) {
+      clearOverride(
+        template: TemplateKey,
+        slot: Slot,
+        id: string,
+        key: string,
+        device: Breakpoint,
+      ) {
         editNode(template, slot, id, (s) => {
           if (device === "desktop" || !s.bp?.[device]) return s;
           const layer = { ...s.bp[device] };
@@ -298,7 +349,12 @@ export function useBuilderEditor(
           return next;
         });
       },
-      toggleHidden(template: TemplateKey, slot: Slot, id: string, breakpoint: Breakpoint) {
+      toggleHidden(
+        template: TemplateKey,
+        slot: Slot,
+        id: string,
+        breakpoint: Breakpoint,
+      ) {
         editNode(template, slot, id, (s) => {
           const hidden = new Set(s.hidden ?? []);
           if (hidden.has(breakpoint)) hidden.delete(breakpoint);
@@ -310,7 +366,10 @@ export function useBuilderEditor(
         });
       },
       setTokens(patch: Partial<ThemeTokens>) {
-        commit((current) => ({ ...current, tokens: { ...current.tokens, ...patch } }));
+        commit((current) => ({
+          ...current,
+          tokens: { ...current.tokens, ...patch },
+        }));
       },
       /**
        * Phase 1.2: arbitrary single-node transform in one history step. Used by
@@ -342,7 +401,9 @@ export function useBuilderEditor(
             parentId === null
               ? sections.length
               : (locate(sections, parentId)?.node.children?.length ?? 0);
-          return insertNodes(sections, parentId, target?.index ?? fallback, [node]);
+          return insertNodes(sections, parentId, target?.index ?? fallback, [
+            node,
+          ]);
         });
         return node.id;
       },
@@ -350,7 +411,12 @@ export function useBuilderEditor(
        * Phase 1.5: replace a linked placement with plain copies of the block's
        * nodes, in place, atomically.
        */
-      detachPlacement(template: TemplateKey, slot: Slot, id: string, nodes: Section[]) {
+      detachPlacement(
+        template: TemplateKey,
+        slot: Slot,
+        id: string,
+        nodes: Section[],
+      ) {
         editSlot(template, slot, (sections) => {
           const found = locate(sections, id);
           if (!found) return sections;
@@ -370,7 +436,8 @@ export function useBuilderEditor(
   const issues = useMemo(() => {
     if (!doc) return {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
     const out = {} as Record<TemplateKey, ReturnType<typeof lintTemplate>>;
-    for (const key of TEMPLATE_KEYS) out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST);
+    for (const key of TEMPLATE_KEYS)
+      out[key] = lintTemplate(doc.templates[key] ?? EMPTY_AST);
     return out;
   }, [doc]);
 

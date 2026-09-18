@@ -71,7 +71,10 @@ export function ZRow({
         <Heading id={id} className="fq-display text-2xl sm:text-3xl">
           {title}
         </Heading>
-        <p data-type-role="body" className="fq-measure mt-4 text-muted-foreground">
+        <p
+          data-type-role="body"
+          className="fq-measure mt-4 text-muted-foreground"
+        >
           {body}
         </p>
 
@@ -79,7 +82,10 @@ export function ZRow({
           <ul className="mt-5 space-y-2 text-sm text-muted-foreground">
             {bullets.map((item, index) => (
               <li key={index} className="flex gap-3">
-                <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-border" />
+                <span
+                  aria-hidden="true"
+                  className="mt-2 size-1.5 shrink-0 rounded-full bg-border"
+                />
                 <span>{item}</span>
               </li>
             ))}

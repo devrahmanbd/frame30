@@ -239,7 +239,12 @@
     {
       "id": "wp_theme_management",
       "label": "WordPress Theme Installation and Management",
-      "nodes": ["themes_3_install", "themes_3_install_filters", "themes_1", "themes_1_active_theme"],
+      "nodes": [
+        "themes_3_install",
+        "themes_3_install_filters",
+        "themes_1",
+        "themes_1_active_theme"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -248,7 +253,11 @@
     {
       "id": "elementor_design_system",
       "label": "Elementor Design System Settings",
-      "nodes": ["el_61_global_colors", "el_61_system_colors", "el_61_global_fonts"],
+      "nodes": [
+        "el_61_global_colors",
+        "el_61_system_colors",
+        "el_61_global_fonts"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -257,7 +266,11 @@
     {
       "id": "elementor_editor_productivity",
       "label": "Elementor Editor Productivity Features",
-      "nodes": ["el_45_keyboard_shortcuts", "el_45_shortcuts_actions", "el_45_shortcuts_panels"],
+      "nodes": [
+        "el_45_keyboard_shortcuts",
+        "el_45_shortcuts_actions",
+        "el_45_shortcuts_panels"
+      ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,

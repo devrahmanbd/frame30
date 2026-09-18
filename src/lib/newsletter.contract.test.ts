@@ -16,7 +16,9 @@ describe("rate limiting", () => {
   it("buckets subscribe by IP and by address, and keeps both tight", () => {
     expect(BUCKETS["newsletter.subscribe_ip"].limit).toBeLessThanOrEqual(10);
     expect(BUCKETS["newsletter.subscribe_email"].limit).toBeLessThanOrEqual(5);
-    expect(BUCKETS["newsletter.subscribe_email"].windowSeconds).toBeGreaterThanOrEqual(3600);
+    expect(
+      BUCKETS["newsletter.subscribe_email"].windowSeconds,
+    ).toBeGreaterThanOrEqual(3600);
     expect(BUCKETS["newsletter.verify"]).toBeTruthy();
     expect(BUCKETS["newsletter.unsubscribe"]).toBeTruthy();
   });
@@ -112,19 +114,25 @@ describe("delivery", () => {
   it("retries only retriable failures and dead-letters the rest", () => {
     const src = read("src/lib/mailer.server.ts");
     expect(src).toContain("res.status === 429 || res.status >= 500");
-    expect(read("src/lib/newsletter.server.ts")).toContain("outboxIsDead(attempts)");
+    expect(read("src/lib/newsletter.server.ts")).toContain(
+      "outboxIsDead(attempts)",
+    );
   });
 
   it("never claims delivery when no provider is configured", () => {
     const src = read("src/lib/mailer.server.ts");
     expect(src).toContain("simulated: true");
     expect(src).toContain("mail.no_provider");
-    expect(read("src/lib/newsletter.server.ts")).toContain("no_provider_configured");
+    expect(read("src/lib/newsletter.server.ts")).toContain(
+      "no_provider_configured",
+    );
   });
 
   it("keeps the opportunistic flush too small to become a job", () => {
     expect(NEWSLETTER_LIMITS.outboxFlushBatch).toBeLessThanOrEqual(10);
-    expect(read("src/lib/newsletter.server.ts")).toContain("Math.min(NEWSLETTER_LIMITS.outboxFlushBatch");
+    expect(read("src/lib/newsletter.server.ts")).toContain(
+      "Math.min(NEWSLETTER_LIMITS.outboxFlushBatch",
+    );
   });
 });
 
@@ -150,7 +158,9 @@ describe("form", () => {
     expect(src).toContain("tabIndex={-1}");
     // Off-screen, not `display:none`: hidden inputs are skipped by some bots.
     expect(src).toContain("left-[-9999px]");
-    expect(src.replace(/\/\*[\s\S]*?\*\//g, "")).not.toMatch(/display:\s*none|type="hidden"/);
+    expect(src.replace(/\/\*[\s\S]*?\*\//g, "")).not.toMatch(
+      /display:\s*none|type="hidden"/,
+    );
   });
 
   it("requires an untouched consent checkbox rather than implying consent", () => {

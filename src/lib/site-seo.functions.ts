@@ -17,16 +17,18 @@ import { createServerFn } from "@tanstack/react-start";
  * loaders, where no bearer token exists. It reads nothing tenant-private and
  * cannot throw: a failed slug lookup degrades to "no demo link".
  */
-export const getSiteContext = createServerFn({ method: "GET" }).handler(async () => {
-  const { requestOrigin } = await import("./site-origin.server");
-  
-  try {
-    const { featuredStoreSlug } = await import("./storefront.server");
-    
-  } catch (error) {
-    const { log } = await import("./observability.server");
-    log("warn", "site_context.demo_slug_failed", {
-      reason: String((error as Error)?.message ?? error).slice(0, 160)});
-  }
-  return { origin: requestOrigin() };
-});
+export const getSiteContext = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const { requestOrigin } = await import("./site-origin.server");
+
+    try {
+      const { featuredStoreSlug } = await import("./storefront.server");
+    } catch (error) {
+      const { log } = await import("./observability.server");
+      log("warn", "site_context.demo_slug_failed", {
+        reason: String((error as Error)?.message ?? error).slice(0, 160),
+      });
+    }
+    return { origin: requestOrigin() };
+  },
+);

@@ -12,7 +12,8 @@ export const Route = createFileRoute("/api/public/cron/analytics")({
     handlers: {
       GET: cronGet,
       POST: cronPost("analytics", async (ctx) => {
-        const { runAnalyticsSweep } = await import("@/lib/analytics-warehouse.server");
+        const { runAnalyticsSweep } =
+          await import("@/lib/analytics-warehouse.server");
         return runAnalyticsSweep(ctx.num("limit", 50, 200));
       }),
     },

@@ -37,6 +37,7 @@ claude-flow verify check --json > verification.json
 ## Truth Scoring
 
 The check command evaluates:
+
 - Code correctness
 - Best practices adherence
 - Security vulnerabilities

@@ -45,11 +45,18 @@ export const customCodeSaveFn = createServerFn({ method: "POST" })
 
 export const customCodeRestoreFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ themeId, versionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ themeId, versionId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { restoreCustomCode } = await import("./custom-code.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return restoreCustomCode(context.supabase, merchantId, data.themeId, data.versionId);
+    return restoreCustomCode(
+      context.supabase,
+      merchantId,
+      data.themeId,
+      data.versionId,
+    );
   });
 
 /** Platform owner only — RLS rejects a merchant who tries. */
@@ -57,10 +64,19 @@ export const customCodeKillFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
-      .object({ merchantId: z.string().uuid(), disabled: z.boolean(), reason: z.string().max(200).nullable() })
+      .object({
+        merchantId: z.string().uuid(),
+        disabled: z.boolean(),
+        reason: z.string().max(200).nullable(),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { setCustomCodeKill } = await import("./custom-code.server");
-    return setCustomCodeKill(context.supabase, data.merchantId, data.disabled, data.reason);
+    return setCustomCodeKill(
+      context.supabase,
+      data.merchantId,
+      data.disabled,
+      data.reason,
+    );
   });

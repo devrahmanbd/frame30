@@ -3,7 +3,7 @@
 > **Target Search Queries:** `how to make ecommerce website in bangladesh`, `bkash integrated ecommerce website`, `shopify alternative bangladesh`, `steadfast courier api ecommerce`, `best website builder in bangladesh`  
 > **Target Audience:** Bangladeshi D2C Founders, Retail Brands, Instagram/F-Commerce Sellers, and Digital Agencies  
 > **Framework:** Koray Tuğberk Gübür Local Semantic SEO & Entity Optimization  
-> **Reading Time:** 14 minutes  
+> **Reading Time:** 14 minutes
 
 ---
 
@@ -33,18 +33,22 @@ If your e-commerce website forces customers through confusing multi-step checkou
 Many founders start by building their store on Shopify or WooCommerce because they are the most talked-about global names. Within 90 days, they encounter severe structural friction:
 
 ### 2.1 The Shopify Bottlenecks in Bangladesh
+
 1. **High Monthly USD Fees:** Shopify plans start at $39/month (over 4,500 BDT/mo), requiring a dual-currency credit card with endorsed international travel quota.
 2. **The 2.0% External Gateway Penalty:** Because Shopify Payments is unavailable in Bangladesh, Shopify penalizes local merchants by taking an extra **2.0% of every sale** made through bKash, Nagad, or SSLCommerz.
 3. **Third-Party App Costs:** To get basic invoice printing, a working bKash popup, or volume discounts, merchants must install 5–10 third-party apps, pushing monthly costs above **$200 to $300 USD (25,000–35,000 BDT/month)**.
 4. **Latency & TTFB:** Shopify’s servers are hosted in North America and Western Europe. A user in Dhaka or Chittagong experiences a **400ms–800ms initial server response time (TTFB)** before the store begins rendering.
 
 ### 2.2 The WooCommerce Fragility
+
 WooCommerce is theoretically free, but in practice:
+
 - It requires unmanaged WordPress hosting that crashes during seasonal flash sales (Eid, 11.11, Pahela Baishakh).
 - bKash and courier integration requires unofficial, unmaintained WordPress plugins that break with every core update or expose database vulnerabilities.
 - Routine maintenance, backups, and security patching drain merchant time and technical resources.
 
 ### 2.3 The Webflow & Framer Limitation
+
 Webflow and Framer are world-class design tools, but they **do not support Bangladeshi payment gateways natively** and offer zero courier dispatch automation for local delivery services.
 
 ---
@@ -82,7 +86,9 @@ FRAMIQUE was built from the ground up to provide the **world-class visual design
 With FRAMIQUE, you do not pay a middleman or rent expensive third-party plugins. You connect your own merchant credentials directly to your store.
 
 ### 4.1 bKash Tokenized Checkout
+
 Unlike manual payment methods where customers type a phone number and wait for manual approval:
+
 1. The customer selects **bKash** at checkout.
 2. A secure, official bKash overlay appears with the exact order amount pre-filled.
 3. The customer authorizes the payment using their bKash PIN and OTP.
@@ -90,9 +96,11 @@ Unlike manual payment methods where customers type a phone number and wait for m
 5. The order status updates instantly to `Paid`, and money arrives directly in your official bKash Merchant Account.
 
 ### 4.2 Nagad Merchant Gateway
+
 Direct API integration with Nagad's secure payment rail enables one-click mobile checkout with automated refund handling and reconciliation.
 
 ### 4.3 Multi-Bank Cards & Internet Banking
+
 Connect **SSLCommerz**, **AamarPay**, or **Shurjopay** to accept Visa, Mastercard, AMEX, and direct bank transfers from City Bank, BRAC Bank, Eastern Bank, and all major commercial banks in Bangladesh.
 
 ---
@@ -127,6 +135,7 @@ The biggest daily operational headache for Bangladeshi e-commerce teams is fulfi
 ```
 
 ### Key Operational Benefits:
+
 - **Save 2+ Hours Daily:** Eliminate human errors in phone number or address entry.
 - **Accurate COD Reconciliation:** When the courier marks the parcel as `Delivered` and pays out the collected cash, the order status in Framique updates automatically.
 - **Real-Time Webhook Tracking:** Customers can check parcel status directly on your store's branded tracking page without contacting your customer support.
@@ -138,6 +147,7 @@ The biggest daily operational headache for Bangladeshi e-commerce teams is fulfi
 In Bangladesh, high return rates (often 15% to 30% for fashion and gadget categories) can turn a profitable business into an insolvent one. Every returned parcel costs the merchant 100–160 BDT in non-refundable courier fees.
 
 FRAMIQUE includes a native **COD Protection Shield**:
+
 1. **Phone Number Intelligence:** Automatically validates Bangladeshi mobile numbers against standard telecom prefixes (017, 018, 019, 014, 016, 013, 015).
 2. **Serial Returner Detection:** Flags delivery addresses with high historical return rates across the merchant's customer base.
 3. **Optional One-Time Password (OTP):** Trigger an automated SMS verification before confirming orders for customers ordering via Cash on Delivery for the first time.
@@ -149,6 +159,7 @@ FRAMIQUE includes a native **COD Protection Shield**:
 A professional brand needs a custom domain—whether a standard `.com` or a localized `.com.bd` domain.
 
 ### Step-by-Step Custom Domain Connection on Framique:
+
 1. Purchase your domain from your preferred registrar (Namecheap, Porkbun, or BTCL for `.com.bd`).
 2. In your DNS management console, create a `CNAME` record pointing your domain (e.g., `store.yourbrand.com` or `@`) to Framique’s edge cluster.
 3. In your Framique Admin Dashboard, enter your domain name under **Settings > Custom Domains**.
@@ -182,12 +193,15 @@ A professional brand needs a custom domain—whether a standard `.com` or a loca
 ## 9. Frequently Asked Questions by Local Merchants
 
 ### Do I need a trade license to start a store on Framique?
+
 You can start designing your store, uploading products, and testing checkouts immediately without a trade license. To activate official bKash Merchant API or SSLCommerz payment gateway accounts, those financial institutions will require a valid Trade License and TIN certificate. In the interim, you can launch immediately using Cash on Delivery.
 
 ### Does Framique charge any percentage of my sales?
+
 No. Framique has a strict **0% platform transaction fee policy**. You keep 100% of your earnings. You only pay the direct transaction processing fees charged by the payment gateways themselves (e.g., standard bKash/Nagad merchant rates).
 
 ### Can I migrate my existing store from Shopify or WooCommerce?
+
 Yes. Framique provides automated CSV product and customer import tools. You can export your catalog from Shopify or WooCommerce and import it into Framique in under five minutes.
 
 ---

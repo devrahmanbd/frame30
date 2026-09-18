@@ -19,12 +19,12 @@ coherence:
 
 ## Kind-specific configuration
 
-| Kind | Table | Notes |
-| --- | --- | --- |
-| digital | `digital_assets` | file, storage path, `max_downloads` (1–100), `expiry_hours` (1–8760) |
-| digital | `digital_grants` | per-buyer entitlement; only `token_hash` is stored |
-| service | `service_offerings` | duration, buffer, capacity, location kind, booking and cancel windows |
-| subscription | `subscription_terms` | interval unit/count, trial days, minimum cycles, optional anchor day |
+| Kind         | Table                | Notes                                                                 |
+| ------------ | -------------------- | --------------------------------------------------------------------- |
+| digital      | `digital_assets`     | file, storage path, `max_downloads` (1–100), `expiry_hours` (1–8760)  |
+| digital      | `digital_grants`     | per-buyer entitlement; only `token_hash` is stored                    |
+| service      | `service_offerings`  | duration, buffer, capacity, location kind, booking and cancel windows |
+| subscription | `subscription_terms` | interval unit/count, trial days, minimum cycles, optional anchor day  |
 
 Download flow: `digital_grant_issue` hashes a caller-supplied token (min 32
 chars) and is `ON CONFLICT DO NOTHING`, so re-issuing the same token is

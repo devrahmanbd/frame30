@@ -15,7 +15,9 @@ async function main() {
   const targetArg = args.find((a) => a.startsWith("--target-url="));
   const targetUrl = targetArg
     ? targetArg.split("=")[1]
-    : process.env["GREEN_URL"] || process.env["DEPLOY_TARGET_URL"] || "http://127.0.0.1:3000";
+    : process.env["GREEN_URL"] ||
+      process.env["DEPLOY_TARGET_URL"] ||
+      "http://127.0.0.1:3000";
 
   const isJson = args.includes("--json");
   const skipDb = args.includes("--skip-db");
@@ -27,7 +29,9 @@ async function main() {
     console.log("=".repeat(80));
     console.log("Framique Production Release Pre-Flight Gate (Phase 6.2)");
     console.log(`Candidate Target : GREEN (${targetUrl})`);
-    console.log(`Active Production: BLUE (Warm Standby / Serving 100% Traffic)`);
+    console.log(
+      `Active Production: BLUE (Warm Standby / Serving 100% Traffic)`,
+    );
     console.log("=".repeat(80));
   }
 
@@ -46,15 +50,21 @@ async function main() {
   // Terminal Output
   console.log("\n[TIER 1: CONTAINER READINESS]");
   if (report.readiness.passed) {
-    console.log(`  ✓ HTTP /api/healthz returned ${report.readiness.statusCode} (${report.readiness.latencyMs}ms)`);
+    console.log(
+      `  ✓ HTTP /api/healthz returned ${report.readiness.statusCode} (${report.readiness.latencyMs}ms)`,
+    );
   } else {
-    console.log(`  ✗ READINESS FAILED: ${report.readiness.error || `HTTP ${report.readiness.statusCode}`}`);
+    console.log(
+      `  ✗ READINESS FAILED: ${report.readiness.error || `HTTP ${report.readiness.statusCode}`}`,
+    );
   }
 
   console.log("\n[TIER 2: HEADLESS SMOKE JOURNEYS]");
   for (const j of report.smoke.journeys) {
     const symbol = j.passed ? "✓" : "✗";
-    console.log(`  ${symbol} ${j.journey.padEnd(30)} -> ${j.passed ? "PASS" : "FAIL"} (HTTP ${j.statusCode}, ${j.latencyMs}ms)`);
+    console.log(
+      `  ${symbol} ${j.journey.padEnd(30)} -> ${j.passed ? "PASS" : "FAIL"} (HTTP ${j.statusCode}, ${j.latencyMs}ms)`,
+    );
     if (!j.passed && j.error) {
       console.log(`    Reason: ${j.error}`);
     }
@@ -63,8 +73,12 @@ async function main() {
   console.log("\n[TIER 3: DATABASE SCHEMA COMPATIBILITY]");
   if (report.databaseCompatibility.passed) {
     console.log(`  ✓ Schema verification passed:`);
-    console.log(`    - Tables verified : ${report.databaseCompatibility.checkedTables.length} (0 missing)`);
-    console.log(`    - RPCs verified   : ${report.databaseCompatibility.checkedRpcs.length} (0 missing)`);
+    console.log(
+      `    - Tables verified : ${report.databaseCompatibility.checkedTables.length} (0 missing)`,
+    );
+    console.log(
+      `    - RPCs verified   : ${report.databaseCompatibility.checkedRpcs.length} (0 missing)`,
+    );
   } else {
     console.log(`  ✗ SCHEMA COMPATIBILITY FAILED:`);
     console.log(`    ${report.databaseCompatibility.error}`);
@@ -72,13 +86,21 @@ async function main() {
 
   console.log("\n" + "-".repeat(80));
   if (report.passed) {
-    console.log(`FINAL VERDICT: \x1b[32m${report.verdict}\x1b[0m (Duration: ${report.durationMs}ms)`);
-    console.log(`BLUE Status  : ${report.blueEnvironmentStatus} (Ready for Canary Traffic Shifting)`);
+    console.log(
+      `FINAL VERDICT: \x1b[32m${report.verdict}\x1b[0m (Duration: ${report.durationMs}ms)`,
+    );
+    console.log(
+      `BLUE Status  : ${report.blueEnvironmentStatus} (Ready for Canary Traffic Shifting)`,
+    );
     console.log("=".repeat(80));
     process.exit(0);
   } else {
-    console.log(`FINAL VERDICT: \x1b[31m${report.verdict}\x1b[0m (Duration: ${report.durationMs}ms)`);
-    console.log(`BLUE Status  : \x1b[32m${report.blueEnvironmentStatus}\x1b[0m (Retaining 100% Traffic, Zero Blast Radius)`);
+    console.log(
+      `FINAL VERDICT: \x1b[31m${report.verdict}\x1b[0m (Duration: ${report.durationMs}ms)`,
+    );
+    console.log(
+      `BLUE Status  : \x1b[32m${report.blueEnvironmentStatus}\x1b[0m (Retaining 100% Traffic, Zero Blast Radius)`,
+    );
     console.log("\nABORT REASONS:");
     for (const reason of report.failureReasons) {
       console.log(`  • ${reason}`);

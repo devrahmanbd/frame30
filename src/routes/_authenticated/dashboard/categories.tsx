@@ -7,7 +7,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/categories")({
       { title: "Categories — Framique Admin" },
       {
         name: "description",
-        content: "Organise your catalog with product categories for your storefront.",
+        content:
+          "Organise your catalog with product categories for your storefront.",
       },
       { property: "og:title", content: "Category management" },
       {

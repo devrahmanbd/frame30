@@ -18,15 +18,25 @@ export const FLAG_KEYS = [
 export type FlagKey = (typeof FLAG_KEYS)[number];
 
 export async function loadFlags(db: Client) {
-  const { data } = await db.from("platform_flags").select("key, value, updated_at, updated_by");
+  const { data } = await db
+    .from("platform_flags")
+    .select("key, value, updated_at, updated_by");
   const map: Record<string, Json> = {};
   for (const row of data ?? []) map[row.key] = row.value;
   return { flags: map, flagRows: data ?? [] };
 }
 
-export async function setFlag(db: Client, userId: string, key: string, value: Json) {
+export async function setFlag(
+  db: Client,
+  userId: string,
+  key: string,
+  value: Json,
+) {
   await requirePlatformAdmin(db, userId);
-  const { error } = await db.rpc("platform_set_flag", { _key: key, _value: value });
+  const { error } = await db.rpc("platform_set_flag", {
+    _key: key,
+    _value: value,
+  });
   if (error) throw new Error(error.message);
   return { ok: true };
 }
@@ -40,13 +50,17 @@ export async function loadTrials(db: Client, userId: string) {
   const [subs, merchants, plans] = await Promise.all([
     db
       .from("subscriptions")
-      .select("merchant_id, plan, status, trial_ends_at, next_billing_at, past_due_since")
+      .select(
+        "merchant_id, plan, status, trial_ends_at, next_billing_at, past_due_since",
+      )
       .order("trial_ends_at", { ascending: true }),
     db.from("merchants").select("id, name"),
     db.from("plan_definitions").select("plan, trial_days, title_en"),
   ]);
   const names = nameOf(merchants.data);
-  const trialDays = new Map((plans.data ?? []).map((p) => [p.plan, p.trial_days]));
+  const trialDays = new Map(
+    (plans.data ?? []).map((p) => [p.plan, p.trial_days]),
+  );
   const rows = (subs.data ?? []).map((s) => ({
     merchantId: s.merchant_id,
     merchantName: names.get(s.merchant_id) ?? null,
@@ -90,7 +104,8 @@ export async function loadCoupons(db: Client, userId: string) {
     merchantName: names.get(c.merchant_id) ?? null,
     ledgerRedemptions: redeemed.get(c.id) ?? 0,
     overCap:
-      c.usage_limit !== null && (redeemed.get(c.id) ?? c.redeemed_count) > c.usage_limit,
+      c.usage_limit !== null &&
+      (redeemed.get(c.id) ?? c.redeemed_count) > c.usage_limit,
   }));
   return { rows, overCap: rows.filter((r) => r.overCap).length };
 }
@@ -100,7 +115,9 @@ export async function loadMarketing(db: Client, userId: string) {
   await requirePlatformAdmin(db, userId);
   const [{ flags }, subscribers, consents] = await Promise.all([
     loadFlags(db),
-    db.from("subscribers").select("status, email_consent, sms_consent, unsubscribed_at"),
+    db
+      .from("subscribers")
+      .select("status, email_consent, sms_consent, unsubscribed_at"),
     db.from("customer_consents").select("channel, granted"),
   ]);
   const subs = subscribers.data ?? [];
@@ -172,7 +189,9 @@ export async function loadAi(db: Client, userId: string) {
       .limit(200),
     db.from("merchants").select("id, name, email"),
   ]);
-  const names = new Map((merchants.data ?? []).map((m) => [m.id, { name: m.name, email: m.email }]));
+  const names = new Map(
+    (merchants.data ?? []).map((m) => [m.id, { name: m.name, email: m.email }]),
+  );
   const rows = (convos.data ?? []).map((c) => ({
     ...c,
     merchantName: names.get(c.merchant_id)?.name ?? null,
@@ -183,7 +202,8 @@ export async function loadAi(db: Client, userId: string) {
       (c.takeover_mode ?? "ai") === "ai" &&
       c.last_customer_message_at !== null &&
       (c.last_operator_message_at === null ||
-        new Date(c.last_customer_message_at) > new Date(c.last_operator_message_at)),
+        new Date(c.last_customer_message_at) >
+          new Date(c.last_operator_message_at)),
     priorityRank:
       (c.priority ?? "normal") === "urgent"
         ? 4
@@ -199,9 +219,13 @@ export async function loadAi(db: Client, userId: string) {
     counts: {
       open: rows.filter((r) => r.status === "open").length,
       needsAgent: rows.filter((r) => r.needsHumanAgent).length,
-      humanTakeover: rows.filter((r) => (r.takeover_mode ?? "ai") === "human_takeover").length,
+      humanTakeover: rows.filter(
+        (r) => (r.takeover_mode ?? "ai") === "human_takeover",
+      ).length,
       inProgress: rows.filter((r) => r.status === "in_progress").length,
-      resolved: rows.filter((r) => r.status === "resolved" || r.status === "closed").length,
+      resolved: rows.filter(
+        (r) => r.status === "resolved" || r.status === "closed",
+      ).length,
     },
   };
 }
@@ -223,7 +247,9 @@ export async function loadAiConversationMessages(
       .single(),
     db
       .from("ai_messages")
-      .select("id, role, body, flagged, created_at, sent_by_operator_id, is_internal_note")
+      .select(
+        "id, role, body, flagged, created_at, sent_by_operator_id, is_internal_note",
+      )
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: true })
       .limit(500),
@@ -339,7 +365,10 @@ export async function ownerUpdateConversationStatus(
         .from("ai_conversations")
         .update({
           status,
-          resolved_at: status === "resolved" || status === "closed" ? new Date().toISOString() : null,
+          resolved_at:
+            status === "resolved" || status === "closed"
+              ? new Date().toISOString()
+              : null,
           updated_at: new Date().toISOString(),
         } as never)
         .eq("id", conversationId);
@@ -399,7 +428,10 @@ export async function ownerSaveOperatorNotes(
     async () => {
       const { error } = await db
         .from("ai_conversations")
-        .update({ operator_notes: notes, updated_at: new Date().toISOString() } as never)
+        .update({
+          operator_notes: notes,
+          updated_at: new Date().toISOString(),
+        } as never)
         .eq("id", conversationId);
       if (error) throw new Error(error.message);
       return { ok: true };
@@ -437,7 +469,9 @@ export async function ownerExportConversationTranscript(
           .single(),
         db
           .from("ai_messages")
-          .select("id, role, body, flagged, created_at, sent_by_operator_id, is_internal_note")
+          .select(
+            "id, role, body, flagged, created_at, sent_by_operator_id, is_internal_note",
+          )
           .eq("conversation_id", conversationId)
           .order("created_at", { ascending: true })
           .limit(1000),
@@ -454,7 +488,6 @@ export async function ownerExportConversationTranscript(
     },
   );
 }
-
 
 /** Owner roster. PII-minimal by design: ids only, no profile join. */
 export async function loadOwners(db: Client, userId: string) {
@@ -485,7 +518,8 @@ export async function loadOwnerSettings(db: Client, userId: string) {
       processed: rows.filter((e) => e.status === "processed").length,
     },
     approvals: {
-      pending: (approvals.data ?? []).filter((a) => a.status === "pending").length,
+      pending: (approvals.data ?? []).filter((a) => a.status === "pending")
+        .length,
     },
   };
 }

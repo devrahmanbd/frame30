@@ -3,12 +3,14 @@
 [![Ruflo Banner](ruflo/assets/ruflo-small.jpeg)](https://cognitum.one/agentic-engineering)
 
 <!-- Try Ruflo — the 4 badges first-time visitors actually act on -->
+
 [![Try the UI Beta — flo.ruv.io](https://img.shields.io/badge/_Try_the_UI_Beta-flo.ruv.io-6366f1?style=for-the-badge&logoColor=white&logo=svelte)](https://flo.ruv.io/)
 [![npm version (ruflo)](https://img.shields.io/npm/v/ruflo?label=npx%20ruflo&style=for-the-badge&logo=npm&color=cb3837)](https://www.npmjs.com/package/ruflo)
 [![MIT License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 [![Star on GitHub](https://img.shields.io/github/stars/ruvnet/claude-flow?style=for-the-badge&logo=github&color=gold)](https://github.com/ruvnet/claude-flow)
 
 <!-- Ecosystem strip (collapsed visually with flat-square) -->
+
 [![Goal Planner](https://img.shields.io/badge/_Goal_Planner-goal.ruv.io-8b5cf6?style=flat-square&logoColor=white&logo=react)](https://goal.ruv.io/)
 [![Live Agents](https://img.shields.io/badge/_Live_Agents-goal.ruv.io%2Fagents-10b981?style=flat-square&logoColor=white&logo=react)](https://goal.ruv.io/agents)
 [![🕸️ RuVector Agentic DB](https://img.shields.io/badge/RuVector_Agentic-DB-06b6d4?style=flat-square&logoColor=white&logo=graphql)](https://github.com/ruvnet/ruvector)
@@ -52,13 +54,13 @@ User --> Ruflo (CLI/MCP) --> Router --> Swarm --> Agents --> Memory --> LLM Prov
 
 There are **two different install paths** with very different surface areas. Pick based on what you need (#1744):
 
-| | **Claude Code Plugin** | **CLI install (`npx ruflo init`)** |
-|---|---|---|
-| What it gives you | Slash commands + a few skills + agent definitions per-plugin | Full Ruflo loop — 98 agents, 60+ commands, 30 skills, MCP server, hooks, daemon |
-| Files in your workspace | **Zero** | `.claude/`, `.claude-flow/`, `CLAUDE.md`, helpers, settings |
-| MCP server registered | **No** (`memory_store`, `swarm_init`, etc. unavailable to Claude) | Yes |
-| Hooks installed | No | Yes |
-| Best for | Try a single plugin's commands without committing to the full install | Production use — everything works as documented |
+|                         | **Claude Code Plugin**                                                | **CLI install (`npx ruflo init`)**                                              |
+| ----------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| What it gives you       | Slash commands + a few skills + agent definitions per-plugin          | Full Ruflo loop — 98 agents, 60+ commands, 30 skills, MCP server, hooks, daemon |
+| Files in your workspace | **Zero**                                                              | `.claude/`, `.claude-flow/`, `CLAUDE.md`, helpers, settings                     |
+| MCP server registered   | **No** (`memory_store`, `swarm_init`, etc. unavailable to Claude)     | Yes                                                                             |
+| Hooks installed         | No                                                                    | Yes                                                                             |
+| Best for                | Try a single plugin's commands without committing to the full install | Production use — everything works as documented                                 |
 
 ### Path A — Claude Code Plugins (lite, slash commands only)
 
@@ -80,83 +82,83 @@ This adds slash commands and agent definitions only. The Ruflo MCP server is NOT
 
 #### Core & Orchestration
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-core**](plugins/ruflo-core/README.md) | Foundation — server, health checks, plugin discovery |
-| [**ruflo-swarm**](plugins/ruflo-swarm/README.md) | Coordinate multiple agents as a team |
-| [**ruflo-autopilot**](plugins/ruflo-autopilot/README.md) | Let agents run autonomously in a loop |
-| [**ruflo-loop-workers**](plugins/ruflo-loop-workers/README.md) | Schedule background tasks on a timer |
-| [**ruflo-workflows**](plugins/ruflo-workflows/README.md) | Reusable multi-step task templates |
-| [**ruflo-federation**](plugins/ruflo-federation/README.md) | Agents on different machines collaborate securely |
+| Plugin                                                         | What it does                                         |
+| -------------------------------------------------------------- | ---------------------------------------------------- |
+| [**ruflo-core**](plugins/ruflo-core/README.md)                 | Foundation — server, health checks, plugin discovery |
+| [**ruflo-swarm**](plugins/ruflo-swarm/README.md)               | Coordinate multiple agents as a team                 |
+| [**ruflo-autopilot**](plugins/ruflo-autopilot/README.md)       | Let agents run autonomously in a loop                |
+| [**ruflo-loop-workers**](plugins/ruflo-loop-workers/README.md) | Schedule background tasks on a timer                 |
+| [**ruflo-workflows**](plugins/ruflo-workflows/README.md)       | Reusable multi-step task templates                   |
+| [**ruflo-federation**](plugins/ruflo-federation/README.md)     | Agents on different machines collaborate securely    |
 
 #### Memory & Knowledge
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-agentdb**](plugins/ruflo-agentdb/README.md) | Fast vector database for agent memory |
-| [**ruflo-rag-memory**](plugins/ruflo-rag-memory/README.md) | Smart retrieval — hybrid search, graph hops, diversity ranking |
-| [**ruflo-rvf**](plugins/ruflo-rvf/README.md) | Save and restore agent memory across sessions |
-| [**ruflo-ruvector**](plugins/ruflo-ruvector/README.md) | [`ruvector`](https://npmjs.com/package/ruvector) — GPU-accelerated search, Graph RAG, 103 tools |
-| [**ruflo-knowledge-graph**](plugins/ruflo-knowledge-graph/README.md) | Build and traverse entity relationship maps |
+| Plugin                                                               | What it does                                                                                    |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [**ruflo-agentdb**](plugins/ruflo-agentdb/README.md)                 | Fast vector database for agent memory                                                           |
+| [**ruflo-rag-memory**](plugins/ruflo-rag-memory/README.md)           | Smart retrieval — hybrid search, graph hops, diversity ranking                                  |
+| [**ruflo-rvf**](plugins/ruflo-rvf/README.md)                         | Save and restore agent memory across sessions                                                   |
+| [**ruflo-ruvector**](plugins/ruflo-ruvector/README.md)               | [`ruvector`](https://npmjs.com/package/ruvector) — GPU-accelerated search, Graph RAG, 103 tools |
+| [**ruflo-knowledge-graph**](plugins/ruflo-knowledge-graph/README.md) | Build and traverse entity relationship maps                                                     |
 
 #### Intelligence & Learning
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-intelligence**](plugins/ruflo-intelligence/README.md) | Agents learn from past successes and get smarter |
+| Plugin                                                            | What it does                                                                              |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [**ruflo-intelligence**](plugins/ruflo-intelligence/README.md)    | Agents learn from past successes and get smarter                                          |
 | [**ruflo-graph-intelligence**](plugins/ruflo-graph-intelligence/) | Sublinear graph reasoning — PageRank, delta updates, complexity-aware execution (ADR-123) |
-| [**ruflo-daa**](plugins/ruflo-daa/README.md) | Dynamic agent behavior and cognitive patterns |
-| [**ruflo-ruvllm**](plugins/ruflo-ruvllm/README.md) | Run local LLMs (Ollama, etc.) with smart routing |
-| [**ruflo-goals**](plugins/ruflo-goals/README.md) | Break big goals into plans and track progress |
+| [**ruflo-daa**](plugins/ruflo-daa/README.md)                      | Dynamic agent behavior and cognitive patterns                                             |
+| [**ruflo-ruvllm**](plugins/ruflo-ruvllm/README.md)                | Run local LLMs (Ollama, etc.) with smart routing                                          |
+| [**ruflo-goals**](plugins/ruflo-goals/README.md)                  | Break big goals into plans and track progress                                             |
 
 #### Code Quality & Testing
 
-| Plugin | What it does |
-|--------|-------------|
+| Plugin                                               | What it does                                       |
+| ---------------------------------------------------- | -------------------------------------------------- |
 | [**ruflo-testgen**](plugins/ruflo-testgen/README.md) | Find missing tests and generate them automatically |
-| [**ruflo-browser**](plugins/ruflo-browser/README.md) | Automate browser testing with Playwright |
-| [**ruflo-jujutsu**](plugins/ruflo-jujutsu/README.md) | Analyze git diffs, score risk, suggest reviewers |
-| [**ruflo-docs**](plugins/ruflo-docs/README.md) | Generate and maintain documentation automatically |
+| [**ruflo-browser**](plugins/ruflo-browser/README.md) | Automate browser testing with Playwright           |
+| [**ruflo-jujutsu**](plugins/ruflo-jujutsu/README.md) | Analyze git diffs, score risk, suggest reviewers   |
+| [**ruflo-docs**](plugins/ruflo-docs/README.md)       | Generate and maintain documentation automatically  |
 
 #### Security & Compliance
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-security-audit**](plugins/ruflo-security-audit/README.md) | Scan for vulnerabilities and CVEs |
-| [**ruflo-aidefence**](plugins/ruflo-aidefence/README.md) | Block prompt injection, detect PII, safety scanning |
+| Plugin                                                             | What it does                                        |
+| ------------------------------------------------------------------ | --------------------------------------------------- |
+| [**ruflo-security-audit**](plugins/ruflo-security-audit/README.md) | Scan for vulnerabilities and CVEs                   |
+| [**ruflo-aidefence**](plugins/ruflo-aidefence/README.md)           | Block prompt injection, detect PII, safety scanning |
 
 #### Architecture & Methodology
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-adr**](plugins/ruflo-adr/README.md) | Track architecture decisions with a living record |
-| [**ruflo-ddd**](plugins/ruflo-ddd/README.md) | Scaffold domain-driven design — contexts, aggregates, events |
-| [**ruflo-sparc**](plugins/ruflo-sparc/README.md) | Guided 5-phase development methodology with quality gates |
+| Plugin                                                       | What it does                                                                                                                        |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| [**ruflo-adr**](plugins/ruflo-adr/README.md)                 | Track architecture decisions with a living record                                                                                   |
+| [**ruflo-ddd**](plugins/ruflo-ddd/README.md)                 | Scaffold domain-driven design — contexts, aggregates, events                                                                        |
+| [**ruflo-sparc**](plugins/ruflo-sparc/README.md)             | Guided 5-phase development methodology with quality gates                                                                           |
 | [**ruflo-metaharness**](plugins/ruflo-metaharness/README.md) | Grade your agent setup, scan tool configs for security risks, and track changes over time ([guide](docs/metaharness-user-guide.md)) |
-| [**ruflo-arena**](plugins/ruflo-arena/README.md) | Competitive ruliology — pit agent strategies against each other in tournaments, hill-climb and co-evolve the winners (ADR-147/148) |
+| [**ruflo-arena**](plugins/ruflo-arena/README.md)             | Competitive ruliology — pit agent strategies against each other in tournaments, hill-climb and co-evolve the winners (ADR-147/148)  |
 
 #### DevOps & Observability
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-migrations**](plugins/ruflo-migrations/README.md) | Manage database schema changes safely |
+| Plugin                                                           | What it does                                      |
+| ---------------------------------------------------------------- | ------------------------------------------------- |
+| [**ruflo-migrations**](plugins/ruflo-migrations/README.md)       | Manage database schema changes safely             |
 | [**ruflo-observability**](plugins/ruflo-observability/README.md) | Structured logs, traces, and metrics in one place |
-| [**ruflo-cost-tracker**](plugins/ruflo-cost-tracker/README.md) | Track token usage, set budgets, get cost alerts |
+| [**ruflo-cost-tracker**](plugins/ruflo-cost-tracker/README.md)   | Track token usage, set budgets, get cost alerts   |
 
 #### Extensibility
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-agent**](plugins/ruflo-agent/README.md) | Run agents — local WASM sandbox (rvagent) + Anthropic Claude Managed Agents (cloud) |
-| [**ruflo-plugin-creator**](plugins/ruflo-plugin-creator/README.md) | Scaffold, validate, and publish your own plugins |
+| Plugin                                                             | What it does                                                                        |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| [**ruflo-agent**](plugins/ruflo-agent/README.md)                   | Run agents — local WASM sandbox (rvagent) + Anthropic Claude Managed Agents (cloud) |
+| [**ruflo-plugin-creator**](plugins/ruflo-plugin-creator/README.md) | Scaffold, validate, and publish your own plugins                                    |
 
 #### Domain-Specific
 
-| Plugin | What it does |
-|--------|-------------|
-| [**ruflo-iot-cognitum**](plugins/ruflo-iot-cognitum/README.md) | IoT device management — trust scoring, anomaly detection, fleets |
+| Plugin                                                           | What it does                                                                                                   |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| [**ruflo-iot-cognitum**](plugins/ruflo-iot-cognitum/README.md)   | IoT device management — trust scoring, anomaly detection, fleets                                               |
 | [**ruflo-neural-trader**](plugins/ruflo-neural-trader/README.md) | [`neural-trader`](https://npmjs.com/package/neural-trader) — AI trading with 4 agents, backtesting, 112+ tools |
-| [**ruflo-market-data**](plugins/ruflo-market-data/README.md) | Ingest market data, vectorize OHLCV, detect patterns |
+| [**ruflo-market-data**](plugins/ruflo-market-data/README.md)     | Ingest market data, vectorize OHLCV, detect patterns                                                           |
 
 </details>
 
@@ -195,21 +197,21 @@ claude mcp add ruflo -- npx ruflo@latest mcp start
 
 ## What You Get
 
-| Capability | Description |
-|------------|-------------|
-| 🤖 **100+ Agents** | Specialized agents for coding, testing, security, docs, architecture |
-| 📡 **Comms Layer** | Zero-trust federation — agents across machines/orgs discover, authenticate, and exchange work securely |
-| 🐝 **Swarm Coordination** | Hierarchical, mesh, and adaptive topologies with consensus |
-| 🧠 **Self-Learning** | SONA neural patterns, ReasoningBank, trajectory learning |
-| 💾 **Vector Memory** | HNSW-indexed AgentDB — measured ~1.9x faster at N=20k, ~3.2x–4.7x at N=5k vs brute force (recall@10 ~0.99); ANN wins above the crossover, ties/loses at small N. See [audit](docs/reviews/intelligence-system-audit-2026-05-29.md) + [`scripts/benchmark-intelligence.mjs`](scripts/benchmark-intelligence.mjs) |
-| ⚡ **Background Workers** | 12 auto-triggered workers (audit, optimize, testgaps, etc.) |
-| 🧩 **Plugin Marketplace** | 33 native Claude Code plugins + 21 npm plugins |
-| 🔌 **Multi-Provider** | Claude, GPT, Gemini, Cohere, Ollama with smart routing |
-| 🛡️ **Security** | AIDefence, input validation, CVE remediation, path traversal prevention |
-| 🌐 **Agent Federation** | Cross-installation agent collaboration with zero-trust security |
+| Capability                                           | Description                                                                                                                                                                                                                                                                                                                                         |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🤖 **100+ Agents**                                   | Specialized agents for coding, testing, security, docs, architecture                                                                                                                                                                                                                                                                                |
+| 📡 **Comms Layer**                                   | Zero-trust federation — agents across machines/orgs discover, authenticate, and exchange work securely                                                                                                                                                                                                                                              |
+| 🐝 **Swarm Coordination**                            | Hierarchical, mesh, and adaptive topologies with consensus                                                                                                                                                                                                                                                                                          |
+| 🧠 **Self-Learning**                                 | SONA neural patterns, ReasoningBank, trajectory learning                                                                                                                                                                                                                                                                                            |
+| 💾 **Vector Memory**                                 | HNSW-indexed AgentDB — measured ~1.9x faster at N=20k, ~3.2x–4.7x at N=5k vs brute force (recall@10 ~0.99); ANN wins above the crossover, ties/loses at small N. See [audit](docs/reviews/intelligence-system-audit-2026-05-29.md) + [`scripts/benchmark-intelligence.mjs`](scripts/benchmark-intelligence.mjs)                                     |
+| ⚡ **Background Workers**                            | 12 auto-triggered workers (audit, optimize, testgaps, etc.)                                                                                                                                                                                                                                                                                         |
+| 🧩 **Plugin Marketplace**                            | 33 native Claude Code plugins + 21 npm plugins                                                                                                                                                                                                                                                                                                      |
+| 🔌 **Multi-Provider**                                | Claude, GPT, Gemini, Cohere, Ollama with smart routing                                                                                                                                                                                                                                                                                              |
+| 🛡️ **Security**                                      | AIDefence, input validation, CVE remediation, path traversal prevention                                                                                                                                                                                                                                                                             |
+| 🌐 **Agent Federation**                              | Cross-installation agent collaboration with zero-trust security                                                                                                                                                                                                                                                                                     |
 | 🔬 **[MetaHarness](docs/metaharness-user-guide.md)** | Audit your AI agent setup before you ship. Grade readiness (1-100), scan tool configs for security issues, snapshot the whole project to catch regressions over time, and find templates that match your repo. `ruflo eject` turns a ruflo project into a standalone agent toolkit with its own name. [Full guide](docs/metaharness-user-guide.md). |
-| 💬 **[Web UI Beta](https://flo.ruv.io/)** | Multi-model chat at flo.ruv.io with parallel MCP tool calling and an in-browser WASM tool gallery |
-| 🎯 **[RuFlo Research](https://goal.ruv.io/)** | GOAP A\* planner at goal.ruv.io — plain-English goals → executable agent plans, with a live agent dashboard at [/agents](https://goal.ruv.io/agents) |
+| 💬 **[Web UI Beta](https://flo.ruv.io/)**            | Multi-model chat at flo.ruv.io with parallel MCP tool calling and an in-browser WASM tool gallery                                                                                                                                                                                                                                                   |
+| 🎯 **[RuFlo Research](https://goal.ruv.io/)**        | GOAP A\* planner at goal.ruv.io — plain-English goals → executable agent plans, with a live agent dashboard at [/agents](https://goal.ruv.io/agents)                                                                                                                                                                                                |
 
 <p align="center">
   <a href="https://flo.ruv.io/">
@@ -221,17 +223,17 @@ claude mcp add ruflo -- npx ruflo@latest mcp start
 
 **RuFlo's web UI is a multi-model AI chat with built-in Model Context Protocol (MCP) tool calling.** Talk to Qwen, Claude, Gemini, or OpenAI while RuFlo invokes the same MCP tools the CLI uses — agent orchestration, persistent memory, swarm coordination, code review, GitHub ops — directly from chat. No install, no API key needed to try it.
 
-| | What it is | Why it matters |
-|---|------------|----------------|
-| 🧠 | **Any model, local or remote** | 6 curated frontier models out-of-the-box — Qwen 3.6 Max (default), Claude Sonnet 4.6, Claude Haiku 4.5, Gemini 2.5 Pro, Gemini 2.5 Flash, OpenAI — via OpenRouter. Add your own: any OpenAI-compatible endpoint (vLLM, Ollama, LM Studio, Together, Groq, self-hosted). |
-| 🦾 | **ruvLLM self-learning AI** | Native support for [ruvLLM](https://github.com/ruvnet/RuVector/tree/main/examples/ruvLLM) (lives in `ruvnet/RuVector/examples/ruvLLM`) — RuFlo's self-improving local model layer. Routes to MicroLoRA adapters, learns from your trajectories via SONA, and stays on your machine. Pair with the cloud models or run fully offline. |
-| 🛠️ | **~210 tools, ready to call** | 5 server groups (Core, Intelligence, Agents, Memory, DevTools) plus an 18-tool gallery that runs entirely in your browser — works offline. |
-| 🔌 | **Bring your own MCP servers** | Click the **MCP (n)** pill in the chat input → *Add Server* and paste any MCP endpoint (HTTP, SSE, or stdio). Your tools join RuFlo's native ones in the same parallel-execution flow. Run a local MCP server on `localhost:3000` and it just works. |
-| ⚡ | **Tools run in parallel** | One model response can fire 4–6+ tools at the same time. The UI shows them as cards with a *Step 1 — 2 tools completed* badge so you can see exactly what ran. |
-| 💾 | **Memory that sticks** | Say *"remember my favorite color is indigo"* and ask weeks later — RuFlo recalls it. Backed by AgentDB + HNSW vector search (measured ~1.9x–4.7x faster than brute force above the crossover, recall@10 ~0.99). |
-| 📘 | **Built-in capabilities tour** | Click the question-mark icon in the sidebar — a "RuFlo Capabilities" modal opens with the full tool list, model strengths, architecture, and keyboard shortcuts. |
-| 🏠 | **Self-hostable** | Web UI is shipped as Docker (`ruflo/src/ruvocal/Dockerfile`) with embedded Mongo. Deploy to your own Cloud Run / Fly / Kubernetes / docker-compose. The hosted [flo.ruv.io](https://flo.ruv.io/) demo is one option; running your own is fully supported. |
-| 🚀 | **Zero install to try** | Open the hosted URL, pick a model, type a question. That's the whole onboarding. |
+|     | What it is                     | Why it matters                                                                                                                                                                                                                                                                                                                       |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 🧠  | **Any model, local or remote** | 6 curated frontier models out-of-the-box — Qwen 3.6 Max (default), Claude Sonnet 4.6, Claude Haiku 4.5, Gemini 2.5 Pro, Gemini 2.5 Flash, OpenAI — via OpenRouter. Add your own: any OpenAI-compatible endpoint (vLLM, Ollama, LM Studio, Together, Groq, self-hosted).                                                              |
+| 🦾  | **ruvLLM self-learning AI**    | Native support for [ruvLLM](https://github.com/ruvnet/RuVector/tree/main/examples/ruvLLM) (lives in `ruvnet/RuVector/examples/ruvLLM`) — RuFlo's self-improving local model layer. Routes to MicroLoRA adapters, learns from your trajectories via SONA, and stays on your machine. Pair with the cloud models or run fully offline. |
+| 🛠️  | **~210 tools, ready to call**  | 5 server groups (Core, Intelligence, Agents, Memory, DevTools) plus an 18-tool gallery that runs entirely in your browser — works offline.                                                                                                                                                                                           |
+| 🔌  | **Bring your own MCP servers** | Click the **MCP (n)** pill in the chat input → _Add Server_ and paste any MCP endpoint (HTTP, SSE, or stdio). Your tools join RuFlo's native ones in the same parallel-execution flow. Run a local MCP server on `localhost:3000` and it just works.                                                                                 |
+| ⚡  | **Tools run in parallel**      | One model response can fire 4–6+ tools at the same time. The UI shows them as cards with a _Step 1 — 2 tools completed_ badge so you can see exactly what ran.                                                                                                                                                                       |
+| 💾  | **Memory that sticks**         | Say _"remember my favorite color is indigo"_ and ask weeks later — RuFlo recalls it. Backed by AgentDB + HNSW vector search (measured ~1.9x–4.7x faster than brute force above the crossover, recall@10 ~0.99).                                                                                                                      |
+| 📘  | **Built-in capabilities tour** | Click the question-mark icon in the sidebar — a "RuFlo Capabilities" modal opens with the full tool list, model strengths, architecture, and keyboard shortcuts.                                                                                                                                                                     |
+| 🏠  | **Self-hostable**              | Web UI is shipped as Docker (`ruflo/src/ruvocal/Dockerfile`) with embedded Mongo. Deploy to your own Cloud Run / Fly / Kubernetes / docker-compose. The hosted [flo.ruv.io](https://flo.ruv.io/) demo is one option; running your own is fully supported.                                                                            |
+| 🚀  | **Zero install to try**        | Open the hosted URL, pick a model, type a question. That's the whole onboarding.                                                                                                                                                                                                                                                     |
 
 **Try the hosted demo:** [https://flo.ruv.io/](https://flo.ruv.io/) — no account, no API key. **Run your own:** the source lives in [`ruflo/src/ruvocal/`](ruflo/src/ruvocal/) with a multi-stage Dockerfile (`INCLUDE_DB=true` builds in MongoDB) and a `cloudbuild.yaml` for Google Cloud Run. See [ADR-033](ruflo/docs/adr/ADR-033-RUVOCAL-WASM-MCP-INTEGRATION.md) for the architecture and [issue #1689](https://github.com/ruvnet/ruflo/issues/1689) for the roadmap.
 
@@ -245,16 +247,16 @@ claude mcp add ruflo -- npx ruflo@latest mcp start
 
 **Turn high-level goals into executable agent plans.** `goal.ruv.io` is RuFlo's hosted Goal-Oriented Action Planning (GOAP) front-end — describe an outcome in plain English and watch RuFlo decompose it into preconditions, actions, and an A* path through state space, then dispatch the work to live agents at [`/agents`](https://goal.ruv.io/agents).
 
-| | What it is | Why it matters |
-|---|------------|----------------|
-| 🎯 | **Plain-English goals** | Type *"ship the auth refactor with tests and a PR"* — RuFlo extracts the success criteria, the constraints, and the implicit preconditions. No JSON, no DSL. |
-| 🧭 | **GOAP A\* planner** | Classic gaming-AI planning ported to software work: state-space search through actions with preconditions/effects to find the shortest viable path. Replans on the fly when state changes. |
-| 🤖 | **Live agent dashboard** | [goal.ruv.io/agents](https://goal.ruv.io/agents) shows every spawned agent — role, current step, memory namespace, token budget, status. Click in to inspect trajectories, kill runaway workers, or reassign. |
-| 🌳 | **Visual plan tree** | Goals render as collapsible action trees with progress, blocked branches, and rollbacks highlighted. See *exactly* why an agent picked a path — no opaque chain-of-thought. |
-| ♻️ | **Adaptive replanning** | When an action fails or new info arrives, the planner re-runs A\* from the current state instead of restarting. Failures become learning, not loops. |
-| 🧠 | **Shared memory + SONA** | Plans, trajectories, and outcomes flow into AgentDB. Future plans retrieve past solutions via HNSW — the planner gets smarter with every run. |
-| 🔗 | **Wired to MCP tools** | Every action node maps to a tool call (RuFlo's ~210 MCP tools, your custom servers, or shell). The planner schedules them in parallel where the dependency graph allows. |
-| 🚀 | **Zero install to try** | Open [goal.ruv.io](https://goal.ruv.io/), describe a goal, watch it run. Source lives in [`v3/goal_ui/`](v3/goal_ui/) — Vite + Supabase, self-hostable. |
+|     | What it is               | Why it matters                                                                                                                                                                                                |
+| --- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🎯  | **Plain-English goals**  | Type _"ship the auth refactor with tests and a PR"_ — RuFlo extracts the success criteria, the constraints, and the implicit preconditions. No JSON, no DSL.                                                  |
+| 🧭  | **GOAP A\* planner**     | Classic gaming-AI planning ported to software work: state-space search through actions with preconditions/effects to find the shortest viable path. Replans on the fly when state changes.                    |
+| 🤖  | **Live agent dashboard** | [goal.ruv.io/agents](https://goal.ruv.io/agents) shows every spawned agent — role, current step, memory namespace, token budget, status. Click in to inspect trajectories, kill runaway workers, or reassign. |
+| 🌳  | **Visual plan tree**     | Goals render as collapsible action trees with progress, blocked branches, and rollbacks highlighted. See _exactly_ why an agent picked a path — no opaque chain-of-thought.                                   |
+| ♻️  | **Adaptive replanning**  | When an action fails or new info arrives, the planner re-runs A\* from the current state instead of restarting. Failures become learning, not loops.                                                          |
+| 🧠  | **Shared memory + SONA** | Plans, trajectories, and outcomes flow into AgentDB. Future plans retrieve past solutions via HNSW — the planner gets smarter with every run.                                                                 |
+| 🔗  | **Wired to MCP tools**   | Every action node maps to a tool call (RuFlo's ~210 MCP tools, your custom servers, or shell). The planner schedules them in parallel where the dependency graph allows.                                      |
+| 🚀  | **Zero install to try**  | Open [goal.ruv.io](https://goal.ruv.io/), describe a goal, watch it run. Source lives in [`v3/goal_ui/`](v3/goal_ui/) — Vite + Supabase, self-hostable.                                                       |
 
 **Try it:** [https://goal.ruv.io/](https://goal.ruv.io/) for goals · [https://goal.ruv.io/agents](https://goal.ruv.io/agents) for live agents. **Run your own:** clone the `goal` branch and `cd v3/goal_ui && npm install && npm run dev`.
 
@@ -285,13 +287,13 @@ You don't configure handshakes or manage certificates. You `federation init`, `f
 <details>
 <summary><strong>Federation capabilities</strong></summary>
 
-| | Capability | How it works |
-|---|---|---|
-| 🔒 | **Zero-trust federation** | Remote agents start untrusted. Identity proven via mTLS + ed25519 challenge-response. No API keys, no shared secrets. |
-| 🛡️ | **PII-gated data flow** | 14-type detection pipeline scans every outbound message. Per-trust-level policies: BLOCK, REDACT, HASH, or PASS. Adaptive calibration reduces false positives. |
-| 📊 | **Behavioral trust scoring** | Formula (`0.4×success + 0.2×uptime + 0.2×threat + 0.2×integrity`) continuously evaluates peers. Upgrades require history; downgrades are instant. |
-| 📋 | **Compliance built-in** | HIPAA, SOC2, GDPR audit trails as compliance modes. Every federation event produces a structured record searchable via HNSW. |
-| 🤝 | **9 MCP tools + 10 CLI commands** | Full lifecycle: `federation_init`, `federation_send`, `federation_trust`, `federation_audit`, and more. |
+|     | Capability                        | How it works                                                                                                                                                   |
+| --- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🔒  | **Zero-trust federation**         | Remote agents start untrusted. Identity proven via mTLS + ed25519 challenge-response. No API keys, no shared secrets.                                          |
+| 🛡️  | **PII-gated data flow**           | 14-type detection pipeline scans every outbound message. Per-trust-level policies: BLOCK, REDACT, HASH, or PASS. Adaptive calibration reduces false positives. |
+| 📊  | **Behavioral trust scoring**      | Formula (`0.4×success + 0.2×uptime + 0.2×threat + 0.2×integrity`) continuously evaluates peers. Upgrades require history; downgrades are instant.              |
+| 📋  | **Compliance built-in**           | HIPAA, SOC2, GDPR audit trails as compliance modes. Every federation event produces a structured record searchable via HNSW.                                   |
+| 🤝  | **9 MCP tools + 10 CLI commands** | Full lifecycle: `federation_init`, `federation_send`, `federation_trust`, `federation_audit`, and more.                                                        |
 
 </details>
 
@@ -328,16 +330,16 @@ npx claude-flow@latest plugins install @claude-flow/plugin-agent-federation
 <details>
 <summary><strong>Claude Code: With vs Without Ruflo</strong></summary>
 
-| Capability | Claude Code Alone | + Ruflo |
-|------------|-------------------|---------|
-| Agent Collaboration | Isolated, no shared context | Swarms with shared memory and consensus |
-| Coordination | Manual orchestration | Queen-led hierarchy (Raft, Byzantine, Gossip) |
-| Memory | Session-only | HNSW vector memory with sub-ms retrieval |
-| Learning | Static behavior | SONA self-learning with pattern matching |
-| Task Routing | You decide | Intelligent routing (89% accuracy) |
-| Background Workers | None | 12 auto-triggered workers |
-| LLM Providers | Anthropic only | 5 providers with failover |
-| Security | Standard | CVE-hardened with AIDefence |
+| Capability          | Claude Code Alone           | + Ruflo                                       |
+| ------------------- | --------------------------- | --------------------------------------------- |
+| Agent Collaboration | Isolated, no shared context | Swarms with shared memory and consensus       |
+| Coordination        | Manual orchestration        | Queen-led hierarchy (Raft, Byzantine, Gossip) |
+| Memory              | Session-only                | HNSW vector memory with sub-ms retrieval      |
+| Learning            | Static behavior             | SONA self-learning with pattern matching      |
+| Task Routing        | You decide                  | Intelligent routing (89% accuracy)            |
+| Background Workers  | None                        | 12 auto-triggered workers                     |
+| LLM Providers       | Anthropic only              | 5 providers with failover                     |
+| Security            | Standard                    | CVE-hardened with AIDefence                   |
 
 </details>
 
@@ -376,41 +378,41 @@ User --> Claude Code / CLI
 
 Four docs for four audiences:
 
-| Doc | When to read it |
-|-----|-----------------|
-| **[Status](docs/STATUS.md)** | See what currently works — capability counts, test baselines, recent fixes, what's next. The *is-it-ready* doc. |
-| **[User Guide](docs/USERGUIDE.md)** | Daily reference — every command, every config flag, every plugin. The *how-do-I* doc. |
-| **[MetaHarness Guide](docs/metaharness-user-guide.md)** | How to grade your agent setup, scan tool configs for security, detect changes between runs, and eject a project into a standalone agent toolkit. The *audit-my-setup* doc. |
-| **[Benchmarks](https://gist.github.com/ruvnet/298f8c668c8859b369f91734a0e9cbbe)** | v3.8.0 SOTA matrix vs LangGraph / AutoGen / CrewAI on darwin-arm64 + linux-x64. ruflo wins cold start, single turn, RSS by 1.3×–1953×. The *is-it-fast* doc. |
-| **[Verification](verification.md)** | Cryptographically prove your installed bytes match the signed witness — `ruflo verify`. The *trust-but-verify* doc. |
-| **[Team Gateway Checklist](docs/TEAM-GATEWAY-CHECKLIST.md)** | Before-merge gates, dual-mode handoff, memory namespace sharing, and witness manifest entry per merge. The *safer-team-workflows* doc. |
+| Doc                                                                               | When to read it                                                                                                                                                            |
+| --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[Status](docs/STATUS.md)**                                                      | See what currently works — capability counts, test baselines, recent fixes, what's next. The _is-it-ready_ doc.                                                            |
+| **[User Guide](docs/USERGUIDE.md)**                                               | Daily reference — every command, every config flag, every plugin. The _how-do-I_ doc.                                                                                      |
+| **[MetaHarness Guide](docs/metaharness-user-guide.md)**                           | How to grade your agent setup, scan tool configs for security, detect changes between runs, and eject a project into a standalone agent toolkit. The _audit-my-setup_ doc. |
+| **[Benchmarks](https://gist.github.com/ruvnet/298f8c668c8859b369f91734a0e9cbbe)** | v3.8.0 SOTA matrix vs LangGraph / AutoGen / CrewAI on darwin-arm64 + linux-x64. ruflo wins cold start, single turn, RSS by 1.3×–1953×. The _is-it-fast_ doc.               |
+| **[Verification](verification.md)**                                               | Cryptographically prove your installed bytes match the signed witness — `ruflo verify`. The _trust-but-verify_ doc.                                                        |
+| **[Team Gateway Checklist](docs/TEAM-GATEWAY-CHECKLIST.md)**                      | Before-merge gates, dual-mode handoff, memory namespace sharing, and witness manifest entry per merge. The _safer-team-workflows_ doc.                                     |
 
 Benchmark internals (for reproduction): [`sota-workload-spec.md`](https://github.com/ruvnet/ruflo/blob/perf/sota-comparator-benchmarks/docs/benchmarks/sota-workload-spec.md) · [`SOTA-PROGRESS.md`](https://github.com/ruvnet/ruflo/blob/perf/sota-comparator-benchmarks/docs/benchmarks/SOTA-PROGRESS.md) · [raw matrix JSON: darwin](https://github.com/ruvnet/ruflo/blob/perf/sota-comparator-benchmarks/docs/benchmarks/sota-matrix.json) · [linux](https://github.com/ruvnet/ruflo/blob/perf/sota-comparator-benchmarks/docs/benchmarks/sota-matrix-linux.json)
 
 User Guide section index:
 
-| Section | Topics |
-|---------|--------|
-| [Quick Start](docs/USERGUIDE.md#quick-start) | Installation, prerequisites, install profiles |
-| [Core Features](docs/USERGUIDE.md#-core-features) | MCP tools, agents, memory, neural learning |
-| [Intelligence & Learning](docs/USERGUIDE.md#-intelligence--learning) | Hooks, workers, SONA, model routing |
-| [Swarm & Coordination](docs/USERGUIDE.md#-swarm--coordination) | Topologies, consensus, hive mind |
-| [Security](docs/USERGUIDE.md#%EF%B8%8F-security) | AIDefence, CVE remediation, validation |
-| [Ecosystem](docs/USERGUIDE.md#-ecosystem--integrations) | RuVector, agentic-flow, Flow Nexus |
-| [Configuration](docs/USERGUIDE.md#%EF%B8%8F-configuration--reference) | Environment variables, config schema |
-| [Plugin Marketplace](https://ruvnet.github.io/ruflo) | Browse and install plugins |
+| Section                                                               | Topics                                        |
+| --------------------------------------------------------------------- | --------------------------------------------- |
+| [Quick Start](docs/USERGUIDE.md#quick-start)                          | Installation, prerequisites, install profiles |
+| [Core Features](docs/USERGUIDE.md#-core-features)                     | MCP tools, agents, memory, neural learning    |
+| [Intelligence & Learning](docs/USERGUIDE.md#-intelligence--learning)  | Hooks, workers, SONA, model routing           |
+| [Swarm & Coordination](docs/USERGUIDE.md#-swarm--coordination)        | Topologies, consensus, hive mind              |
+| [Security](docs/USERGUIDE.md#%EF%B8%8F-security)                      | AIDefence, CVE remediation, validation        |
+| [Ecosystem](docs/USERGUIDE.md#-ecosystem--integrations)               | RuVector, agentic-flow, Flow Nexus            |
+| [Configuration](docs/USERGUIDE.md#%EF%B8%8F-configuration--reference) | Environment variables, config schema          |
+| [Plugin Marketplace](https://ruvnet.github.io/ruflo)                  | Browse and install plugins                    |
 
 ---
 
 ## Support
 
-| Resource | Link |
-|----------|------|
-| Documentation | [User Guide](docs/USERGUIDE.md) |
-| Issues & Bugs | [GitHub Issues](https://github.com/ruvnet/claude-flow/issues) |
-| Enterprise | [ruv.io](https://ruv.io) |
-| Community | [Agentics Foundation Discord](https://discord.com/invite/dfxmpwkG2D) |
-| Powered by | [Cognitum.one](https://cognitum.one) |
+| Resource      | Link                                                                 |
+| ------------- | -------------------------------------------------------------------- |
+| Documentation | [User Guide](docs/USERGUIDE.md)                                      |
+| Issues & Bugs | [GitHub Issues](https://github.com/ruvnet/claude-flow/issues)        |
+| Enterprise    | [ruv.io](https://ruv.io)                                             |
+| Community     | [Agentics Foundation Discord](https://discord.com/invite/dfxmpwkG2D) |
+| Powered by    | [Cognitum.one](https://cognitum.one)                                 |
 
 ## License
 

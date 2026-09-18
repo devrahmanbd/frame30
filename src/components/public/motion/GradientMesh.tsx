@@ -18,7 +18,10 @@ export type GradientMeshProps = {
   intensity?: number;
 };
 
-export function GradientMesh({ className, intensity = 0.6 }: GradientMeshProps) {
+export function GradientMesh({
+  className,
+  intensity = 0.6,
+}: GradientMeshProps) {
   const intent = useMotionIntent();
   const drifting = intent === "full";
   const alpha = Math.min(Math.max(intensity, 0), 1);

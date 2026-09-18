@@ -49,7 +49,10 @@ function daysAgo(days: number) {
 }
 
 async function sha256Hex(value: string) {
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value));
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(value),
+  );
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
@@ -60,9 +63,17 @@ async function sha256Hex(value: string) {
  * the same shopper and yesterday's hash cannot be joined to today's, so the
  * warehouse holds no durable identifier.
  */
-export async function tenantHash(merchantId: string, kind: string, raw: string, day = today()) {
+export async function tenantHash(
+  merchantId: string,
+  kind: string,
+  raw: string,
+  day = today(),
+) {
   const salt = process.env["ANALYTICS_SALT"] ?? "framique-analytics";
-  return (await sha256Hex(`${salt}:${merchantId}:${kind}:${day}:${raw}`)).slice(0, 32);
+  return (await sha256Hex(`${salt}:${merchantId}:${kind}:${day}:${raw}`)).slice(
+    0,
+    32,
+  );
 }
 
 /**
@@ -71,7 +82,10 @@ export async function tenantHash(merchantId: string, kind: string, raw: string, 
  * store, and a store can never enumerate another store's traffic.
  */
 export async function networkDigest(kind: string, raw: string) {
-  const salt = process.env["AD_NETWORK_SALT"] ?? process.env["ANALYTICS_SALT"] ?? "framique-network";
+  const salt =
+    process.env["AD_NETWORK_SALT"] ??
+    process.env["ANALYTICS_SALT"] ??
+    "framique-network";
   return (await sha256Hex(`${salt}:network:${kind}:${raw}`)).slice(0, 40);
 }
 
@@ -95,7 +109,8 @@ export type ClickBeacon = {
   occurredAt?: string | null;
 };
 
-const DATACENTER_HINTS = /(aws|amazon|google|azure|digitalocean|linode|hetzner|ovh|vultr|oracle)/i;
+const DATACENTER_HINTS =
+  /(aws|amazon|google|azure|digitalocean|linode|hetzner|ovh|vultr|oracle)/i;
 
 /** Coarse network class from what an edge proxy gives us; never client-set. */
 function classifyIp(ipRaw: string, asnHint: string | null): ClickInputClass {
@@ -104,7 +119,8 @@ function classifyIp(ipRaw: string, asnHint: string | null): ClickInputClass {
   return "residential";
 }
 
-type ClickInputClass = "residential" | "mobile" | "datacenter" | "vpn" | "unknown";
+type ClickInputClass =
+  "residential" | "mobile" | "datacenter" | "vpn" | "unknown";
 
 async function activeBlockHashes(admin: Client, merchantId: string) {
   return cached(`ads:blocklist:${merchantId}`, 60, async () => {
@@ -184,7 +200,9 @@ export async function ingestClick(
 ): Promise<IngestResult> {
   const started = Date.now();
   return withSpan("ads.ingest_click", async () => {
-    const network: AdNetwork = isAdNetwork(beacon.network) ? beacon.network : "other";
+    const network: AdNetwork = isAdNetwork(beacon.network)
+      ? beacon.network
+      : "other";
     const day = today();
     const occurredAt = beacon.occurredAt ?? new Date().toISOString();
 
@@ -192,7 +210,9 @@ export async function ingestClick(
       tenantHash(merchantId, "visitor", beacon.visitorRaw, day),
       tenantHash(merchantId, "ip", beacon.ipRaw, day),
       tenantHash(merchantId, "ua", beacon.userAgent, day),
-      beacon.clickId ? tenantHash(merchantId, "clid", beacon.clickId, day) : Promise.resolve(null),
+      beacon.clickId
+        ? tenantHash(merchantId, "clid", beacon.clickId, day)
+        : Promise.resolve(null),
     ]);
 
     // A single fingerprint must not be able to flood the store bucket for
@@ -200,49 +220,60 @@ export async function ingestClick(
     const perIp = await rateLimit("ads.click_ip", `${merchantId}:${ipHash}`);
     if (!perIp.allowed) {
       incr("framique_ad_clicks_total", { verdict: "throttled" });
-      return { accepted: false, duplicate: false, verdict: "invalid", score: 100, reasons: ["CLICK_FLOOD"] };
+      return {
+        accepted: false,
+        duplicate: false,
+        verdict: "invalid",
+        score: 100,
+        reasons: ["CLICK_FLOOD"],
+      };
     }
 
     const sinceHour = new Date(Date.now() - 3600_000).toISOString();
     const blocked = await activeBlockHashes(admin, merchantId);
 
-    const [clicksHour, ipFanout, clickIdSeen, lastEvent, netReports] = await Promise.all([
-      admin
-        .from("ad_click_events")
-        .select("id", { count: "exact", head: true })
-        .eq("merchant_id", merchantId)
-        .eq("visitor_hash", visitorHash)
-        .gte("occurred_at", sinceHour),
-      admin
-        .from("ad_click_events")
-        .select("visitor_hash")
-        .eq("merchant_id", merchantId)
-        .eq("ip_hash", ipHash)
-        .gte("occurred_at", sinceHour)
-        .limit(200),
-      clickIdHash
-        ? admin
-            .from("ad_click_events")
-            .select("id", { count: "exact", head: true })
-            .eq("merchant_id", merchantId)
-            .eq("click_id_hash", clickIdHash)
-        : Promise.resolve({ count: 0 } as { count: number | null }),
-      admin
-        .from("ad_click_events")
-        .select("ip_hash, visitor_country, occurred_at")
-        .eq("merchant_id", merchantId)
-        .eq("visitor_hash", visitorHash)
-        .order("occurred_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-      networkReportCount(admin, await networkDigest("ip", beacon.ipRaw)),
-    ]);
+    const [clicksHour, ipFanout, clickIdSeen, lastEvent, netReports] =
+      await Promise.all([
+        admin
+          .from("ad_click_events")
+          .select("id", { count: "exact", head: true })
+          .eq("merchant_id", merchantId)
+          .eq("visitor_hash", visitorHash)
+          .gte("occurred_at", sinceHour),
+        admin
+          .from("ad_click_events")
+          .select("visitor_hash")
+          .eq("merchant_id", merchantId)
+          .eq("ip_hash", ipHash)
+          .gte("occurred_at", sinceHour)
+          .limit(200),
+        clickIdHash
+          ? admin
+              .from("ad_click_events")
+              .select("id", { count: "exact", head: true })
+              .eq("merchant_id", merchantId)
+              .eq("click_id_hash", clickIdHash)
+          : Promise.resolve({ count: 0 } as { count: number | null }),
+        admin
+          .from("ad_click_events")
+          .select("ip_hash, visitor_country, occurred_at")
+          .eq("merchant_id", merchantId)
+          .eq("visitor_hash", visitorHash)
+          .order("occurred_at", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+        networkReportCount(admin, await networkDigest("ip", beacon.ipRaw)),
+      ]);
 
-    const distinctVisitors = new Set((ipFanout.data ?? []).map((r) => r.visitor_hash)).size;
+    const distinctVisitors = new Set(
+      (ipFanout.data ?? []).map((r) => r.visitor_hash),
+    ).size;
     const previous = lastEvent.data ?? null;
     const minutesSinceDistantHop =
       previous && previous.ip_hash !== ipHash
-        ? Math.round((Date.parse(occurredAt) - Date.parse(previous.occurred_at)) / 60000)
+        ? Math.round(
+            (Date.parse(occurredAt) - Date.parse(previous.occurred_at)) / 60000,
+          )
         : null;
 
     const ipClass = classifyIp(beacon.ipRaw, opts.asnHint ?? null);
@@ -271,10 +302,9 @@ export async function ingestClick(
       networkReports: netReports,
     });
 
-    const dedupeKey =
-      beacon.clickId
-        ? `clid:${clickIdHash}`
-        : `${visitorHash}:${network}:${beacon.campaign ?? "unknown"}:${Math.floor(Date.parse(occurredAt) / 60000)}`;
+    const dedupeKey = beacon.clickId
+      ? `clid:${clickIdHash}`
+      : `${visitorHash}:${network}:${beacon.campaign ?? "unknown"}:${Math.floor(Date.parse(occurredAt) / 60000)}`;
 
     const { data: inserted, error } = await admin
       .from("ad_click_events")
@@ -294,7 +324,8 @@ export async function ingestClick(
           landing_path: beacon.landingPath?.slice(0, 200) ?? null,
           referrer_host: beacon.referrerHost?.slice(0, 120) ?? null,
           ip_class: ipClass,
-          visitor_country: beacon.visitorCountry?.slice(0, 2)?.toUpperCase() ?? null,
+          visitor_country:
+            beacon.visitorCountry?.slice(0, 2)?.toUpperCase() ?? null,
           score: scored.score,
           verdict: scored.verdict,
           decisive_code: scored.decisiveCode,
@@ -311,14 +342,35 @@ export async function ingestClick(
     const duplicate = !inserted;
 
     if (!duplicate) {
-      await bumpVisitorProfile(admin, merchantId, visitorHash, day, scored.verdict, beacon, network);
+      await bumpVisitorProfile(
+        admin,
+        merchantId,
+        visitorHash,
+        day,
+        scored.verdict,
+        beacon,
+        network,
+      );
       if (scored.verdict === "invalid") {
-        await reportToNetwork(admin, await networkDigest("ip", beacon.ipRaw), "ip");
-        await maybeAutoBlock(admin, merchantId, ipHash, scored.score, clicksHour.count ?? 0);
+        await reportToNetwork(
+          admin,
+          await networkDigest("ip", beacon.ipRaw),
+          "ip",
+        );
+        await maybeAutoBlock(
+          admin,
+          merchantId,
+          ipHash,
+          scored.score,
+          clicksHour.count ?? 0,
+        );
       }
     }
 
-    incr("framique_ad_clicks_total", { verdict: duplicate ? "duplicate" : scored.verdict, network });
+    incr("framique_ad_clicks_total", {
+      verdict: duplicate ? "duplicate" : scored.verdict,
+      network,
+    });
     observe("framique_ad_ingest_ms", Date.now() - started, { network });
 
     return {
@@ -349,11 +401,18 @@ async function bumpVisitorProfile(
     .maybeSingle();
 
   const clicks = (existing?.clicks ?? 0) + 1;
-  const invalid = (existing?.invalid_clicks ?? 0) + (verdict === "invalid" ? 1 : 0);
-  const suspicious = (existing?.suspicious_clicks ?? 0) + (verdict === "suspicious" ? 1 : 0);
+  const invalid =
+    (existing?.invalid_clicks ?? 0) + (verdict === "invalid" ? 1 : 0);
+  const suspicious =
+    (existing?.suspicious_clicks ?? 0) + (verdict === "suspicious" ? 1 : 0);
   const dwell = beacon.dwellMs ?? 0;
-  const medianDwell = existing ? Math.round((existing.median_dwell_ms + dwell) / 2) : dwell;
-  const distinctCampaigns = Math.max(existing?.distinct_campaigns ?? 0, network ? 1 : 0);
+  const medianDwell = existing
+    ? Math.round((existing.median_dwell_ms + dwell) / 2)
+    : dwell;
+  const distinctCampaigns = Math.max(
+    existing?.distinct_campaigns ?? 0,
+    network ? 1 : 0,
+  );
 
   const scored = scoreVisitor({
     clicks,
@@ -416,7 +475,15 @@ async function maybeAutoBlock(
     },
     { onConflict: "merchant_id,kind,value_hash" },
   );
-  await writeAdAudit(admin, merchantId, "system", "ads.auto_block", null, { ipHash, score }, "auto sweep");
+  await writeAdAudit(
+    admin,
+    merchantId,
+    "system",
+    "ads.auto_block",
+    null,
+    { ipHash, score },
+    "auto sweep",
+  );
   incr("framique_ad_autoblocks_total", {});
 }
 
@@ -447,7 +514,11 @@ export async function writeAdAudit(
  * Recomputes the attribution-integrity report for one merchant-day. Pure maths
  * lives in `ad-fraud.ts`; this only gathers counters and persists them.
  */
-export async function rollupIntegrityDay(admin: Client, merchantId: string, day: string) {
+export async function rollupIntegrityDay(
+  admin: Client,
+  merchantId: string,
+  day: string,
+) {
   return withSpan("ads.rollup_day", async () => {
     const [clicks, spend] = await Promise.all([
       admin
@@ -474,9 +545,14 @@ export async function rollupIntegrityDay(admin: Client, merchantId: string, day:
     const buckets = new Map<string, Bucket>();
     for (const row of clicks.data ?? []) {
       const key = `${row.network}::${row.campaign}`;
-      const b =
-        buckets.get(key) ??
-        { clicks: 0, invalid: 0, suspicious: 0, conversions: 0, poisoned: 0, signals: new Map() };
+      const b = buckets.get(key) ?? {
+        clicks: 0,
+        invalid: 0,
+        suspicious: 0,
+        conversions: 0,
+        poisoned: 0,
+        signals: new Map(),
+      };
       b.clicks += 1;
       if (row.verdict === "invalid") b.invalid += 1;
       if (row.verdict === "suspicious") b.suspicious += 1;
@@ -484,17 +560,26 @@ export async function rollupIntegrityDay(admin: Client, merchantId: string, day:
         b.conversions += 1;
         if (row.verdict === "invalid") b.poisoned += 1;
       }
-      if (row.decisive_code) b.signals.set(row.decisive_code, (b.signals.get(row.decisive_code) ?? 0) + 1);
+      if (row.decisive_code)
+        b.signals.set(
+          row.decisive_code,
+          (b.signals.get(row.decisive_code) ?? 0) + 1,
+        );
       buckets.set(key, b);
     }
 
-    const spendByKey = new Map<string, { spend_minor_int: number; currency_code: string }>(
+    const spendByKey = new Map<
+      string,
+      { spend_minor_int: number; currency_code: string }
+    >(
       (spend.data ?? []).map((s) => [
         `${s.network}::${s.campaign}`,
-        { spend_minor_int: Number(s.spend_minor_int), currency_code: s.currency_code },
+        {
+          spend_minor_int: Number(s.spend_minor_int),
+          currency_code: s.currency_code,
+        },
       ]),
     );
-
 
     const rows = [...buckets.entries()].map(([key, b]) => {
       const [network, campaign] = key.split("::");
@@ -545,7 +630,8 @@ export async function rollupIntegrityDay(admin: Client, merchantId: string, day:
 
 /** Cron entry point: rolls up today and yesterday, then expires stale blocks. */
 export async function runAdFraudSweep(limit = 50) {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   await enforceRateLimit("ads.sweep", "global");
 
@@ -558,7 +644,10 @@ export async function runAdFraudSweep(limit = 50) {
 
   const pairs = new Map<string, { merchantId: string; day: string }>();
   for (const row of active ?? []) {
-    pairs.set(`${row.merchant_id}:${row.day}`, { merchantId: row.merchant_id, day: row.day });
+    pairs.set(`${row.merchant_id}:${row.day}`, {
+      merchantId: row.merchant_id,
+      day: row.day,
+    });
   }
 
   let processed = 0;
@@ -567,7 +656,11 @@ export async function runAdFraudSweep(limit = 50) {
       await rollupIntegrityDay(admin, pair.merchantId, pair.day);
       processed += 1;
     } catch (err) {
-      log("error", "ads.rollup_failed", { merchantId: pair.merchantId, day: pair.day, err: String(err) });
+      log("error", "ads.rollup_failed", {
+        merchantId: pair.merchantId,
+        day: pair.day,
+        err: String(err),
+      });
     }
   }
 
@@ -580,7 +673,6 @@ export async function runAdFraudSweep(limit = 50) {
 
   return { processed, expired: expiredRows?.length ?? 0 };
 }
-
 
 /* ------------------------------------------------------------------ */
 /* Beacon policy                                                       */
@@ -601,19 +693,30 @@ export type BeaconPolicy = {
  * path, and fails closed on an unknown merchant so a random uuid cannot create
  * rows via the public endpoint.
  */
-export async function beaconPolicy(admin: Client, merchantId: string): Promise<BeaconPolicy> {
+export async function beaconPolicy(
+  admin: Client,
+  merchantId: string,
+): Promise<BeaconPolicy> {
   return cached(`ads:beacon-policy:${merchantId}`, 60, async () => {
     const [{ data: merchant }, { data: settings }] = await Promise.all([
       admin.from("merchants").select("id").eq("id", merchantId).maybeSingle(),
       admin
         .from("ad_beacon_settings")
-        .select("allowed_origins, beacon_secret_enc, require_signature, target_country")
+        .select(
+          "allowed_origins, beacon_secret_enc, require_signature, target_country",
+        )
         .eq("merchant_id", merchantId)
         .maybeSingle(),
     ]);
 
     if (!merchant) {
-      return { exists: false, allowedOrigins: [], beaconSecret: null, requireSignature: false, targetCountry: "BD" };
+      return {
+        exists: false,
+        allowedOrigins: [],
+        beaconSecret: null,
+        requireSignature: false,
+        targetCountry: "BD",
+      };
     }
 
     let secret: string | null = null;
@@ -631,7 +734,9 @@ export async function beaconPolicy(admin: Client, merchantId: string): Promise<B
     return {
       exists: true,
       allowedOrigins: settings?.allowed_origins ?? [],
-      beaconSecret: settings?.require_signature ? (secret ?? "unavailable") : secret,
+      beaconSecret: settings?.require_signature
+        ? (secret ?? "unavailable")
+        : secret,
       requireSignature: settings?.require_signature ?? false,
       targetCountry: settings?.target_country ?? "BD",
     };
@@ -649,7 +754,11 @@ export type DeskPayload = Awaited<ReturnType<typeof loadAdFraudDesk>>;
  * with stale-while-revalidate so a polling dashboard never hammers the
  * warehouse, and always keyed by `merchant_id` so a hit cannot cross tenants.
  */
-export async function loadAdFraudDesk(db: Client, merchantId: string, days = AD_FRAUD_WINDOW_DAYS) {
+export async function loadAdFraudDesk(
+  db: Client,
+  merchantId: string,
+  days = AD_FRAUD_WINDOW_DAYS,
+) {
   await enforceRateLimit("ads.read", merchantId);
   const from = daysAgo(days);
 
@@ -658,52 +767,63 @@ export async function loadAdFraudDesk(db: Client, merchantId: string, days = AD_
     30,
     async () =>
       withSpan("ads.desk_load", async () => {
-        const [integrity, recent, offenders, blocklist, spend, audit] = await Promise.all([
-          db
-            .from("ad_integrity_days")
-            .select("*")
-            .eq("merchant_id", merchantId)
-            .gte("day", from)
-            .order("day", { ascending: false })
-            .limit(500),
-          db
-            .from("ad_click_events")
-            .select("id, network, campaign, occurred_at, score, verdict, decisive_code, signals, ip_class, visitor_country, landing_path")
-            .eq("merchant_id", merchantId)
-            .gte("day", from)
-            .order("occurred_at", { ascending: false })
-            .limit(100),
-          db
-            .from("ad_visitor_profiles")
-            .select("visitor_hash, day, clicks, invalid_clicks, fake_score, intent_score, verdict, reasons")
-            .eq("merchant_id", merchantId)
-            .gte("day", from)
-            .order("fake_score", { ascending: false })
-            .limit(25),
-          db
-            .from("ad_blocklist")
-            .select("id, kind, value_hash, label, reason, auto, active, expires_at, created_at")
-            .eq("merchant_id", merchantId)
-            .order("created_at", { ascending: false })
-            .limit(100),
-          db
-            .from("ad_spend_days")
-            .select("id, network, campaign, day, spend_minor_int, currency_code")
-            .eq("merchant_id", merchantId)
-            .gte("day", from)
-            .order("day", { ascending: false })
-            .limit(200),
-          db
-            .from("ad_fraud_audit")
-            .select("id, actor, action, reason, created_at, after_state")
-            .eq("merchant_id", merchantId)
-            .order("created_at", { ascending: false })
-            .limit(30),
-        ]);
+        const [integrity, recent, offenders, blocklist, spend, audit] =
+          await Promise.all([
+            db
+              .from("ad_integrity_days")
+              .select("*")
+              .eq("merchant_id", merchantId)
+              .gte("day", from)
+              .order("day", { ascending: false })
+              .limit(500),
+            db
+              .from("ad_click_events")
+              .select(
+                "id, network, campaign, occurred_at, score, verdict, decisive_code, signals, ip_class, visitor_country, landing_path",
+              )
+              .eq("merchant_id", merchantId)
+              .gte("day", from)
+              .order("occurred_at", { ascending: false })
+              .limit(100),
+            db
+              .from("ad_visitor_profiles")
+              .select(
+                "visitor_hash, day, clicks, invalid_clicks, fake_score, intent_score, verdict, reasons",
+              )
+              .eq("merchant_id", merchantId)
+              .gte("day", from)
+              .order("fake_score", { ascending: false })
+              .limit(25),
+            db
+              .from("ad_blocklist")
+              .select(
+                "id, kind, value_hash, label, reason, auto, active, expires_at, created_at",
+              )
+              .eq("merchant_id", merchantId)
+              .order("created_at", { ascending: false })
+              .limit(100),
+            db
+              .from("ad_spend_days")
+              .select(
+                "id, network, campaign, day, spend_minor_int, currency_code",
+              )
+              .eq("merchant_id", merchantId)
+              .gte("day", from)
+              .order("day", { ascending: false })
+              .limit(200),
+            db
+              .from("ad_fraud_audit")
+              .select("id, actor, action, reason, created_at, after_state")
+              .eq("merchant_id", merchantId)
+              .order("created_at", { ascending: false })
+              .limit(30),
+          ]);
 
         const campaigns: CampaignIntegrity[] = (integrity.data ?? []).map((r) =>
           campaignIntegrity({
-            network: (isAdNetwork(r.network) ? r.network : "other") as AdNetwork,
+            network: (isAdNetwork(r.network)
+              ? r.network
+              : "other") as AdNetwork,
             campaign: r.campaign,
             day: r.day,
             clicks: r.clicks,
@@ -734,8 +854,14 @@ export async function loadAdFraudDesk(db: Client, merchantId: string, days = AD_
             ipClass: c.ip_class,
             country: c.visitor_country,
             landingPath: c.landing_path,
-            explainedBn: explainSignals((c.signals ?? []) as unknown as FiredSignal[], "bn"),
-            explainedEn: explainSignals((c.signals ?? []) as unknown as FiredSignal[], "en"),
+            explainedBn: explainSignals(
+              (c.signals ?? []) as unknown as FiredSignal[],
+              "bn",
+            ),
+            explainedEn: explainSignals(
+              (c.signals ?? []) as unknown as FiredSignal[],
+              "en",
+            ),
           })),
           offenders: offenders.data ?? [],
           blocklist: blocklist.data ?? [],
@@ -752,7 +878,13 @@ export async function saveSpend(
   db: Client,
   merchantId: string,
   actor: string,
-  input: { network: string; campaign: string; day: string; spendMinorInt: number; currencyCode: string },
+  input: {
+    network: string;
+    campaign: string;
+    day: string;
+    spendMinorInt: number;
+    currencyCode: string;
+  },
 ) {
   await enforceRateLimit("ads.write", merchantId);
   const network = isAdNetwork(input.network) ? input.network : "other";
@@ -780,9 +912,22 @@ export async function saveSpend(
   );
   if (error) throw new Error("ad_spend_save_failed");
 
-  await writeAdAudit(db, merchantId, actor, "ads.spend_saved", before, input, null);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  await rollupIntegrityDay(supabaseAdmin as unknown as Client, merchantId, input.day);
+  await writeAdAudit(
+    db,
+    merchantId,
+    actor,
+    "ads.spend_saved",
+    before,
+    input,
+    null,
+  );
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  await rollupIntegrityDay(
+    supabaseAdmin as unknown as Client,
+    merchantId,
+    input.day,
+  );
   return { ok: true };
 }
 
@@ -790,7 +935,11 @@ export async function addBlock(
   db: Client,
   merchantId: string,
   actor: string,
-  input: { kind: "ip_hash" | "visitor_hash" | "ua_hash" | "campaign"; value: string; reason?: string | null },
+  input: {
+    kind: "ip_hash" | "visitor_hash" | "ua_hash" | "campaign";
+    value: string;
+    reason?: string | null;
+  },
 ) {
   await enforceRateLimit("ads.write", merchantId);
   const value = input.value.trim();
@@ -808,7 +957,15 @@ export async function addBlock(
     { onConflict: "merchant_id,kind,value_hash" },
   );
   if (error) throw new Error("ad_block_failed");
-  await writeAdAudit(db, merchantId, actor, "ads.block_added", null, input, input.reason ?? null);
+  await writeAdAudit(
+    db,
+    merchantId,
+    actor,
+    "ads.block_added",
+    null,
+    input,
+    input.reason ?? null,
+  );
   return { ok: true };
 }
 
@@ -835,20 +992,42 @@ export async function setBlockActive(
     .eq("id", id);
   if (error) throw new Error("ad_block_update_failed");
 
-  await writeAdAudit(db, merchantId, actor, "ads.block_toggled", before, { ...before, active }, null);
+  await writeAdAudit(
+    db,
+    merchantId,
+    actor,
+    "ads.block_toggled",
+    before,
+    { ...before, active },
+    null,
+  );
   return { ok: true };
 }
 
 /** Manual "recompute now" for a merchant who just entered spend numbers. */
-export async function recomputeWindow(db: Client, merchantId: string, actor: string, days = 7) {
+export async function recomputeWindow(
+  db: Client,
+  merchantId: string,
+  actor: string,
+  days = 7,
+) {
   await enforceRateLimit("ads.recompute", merchantId);
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as Client;
   let campaigns = 0;
   for (let i = 0; i < days; i += 1) {
     const result = await rollupIntegrityDay(admin, merchantId, daysAgo(i));
     campaigns += result.campaigns;
   }
-  await writeAdAudit(db, merchantId, actor, "ads.recomputed", null, { days, campaigns }, null);
+  await writeAdAudit(
+    db,
+    merchantId,
+    actor,
+    "ads.recomputed",
+    null,
+    { days, campaigns },
+    null,
+  );
   return { days, campaigns };
 }

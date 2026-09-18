@@ -60,7 +60,9 @@ function Panel({
 }) {
   return (
     <section className="rounded-fq-lg border border-border bg-card p-4">
-      {heading ? <Heading className="mb-3 text-base font-semibold">{heading}</Heading> : null}
+      {heading ? (
+        <Heading className="mb-3 text-base font-semibold">{heading}</Heading>
+      ) : null}
       {children}
     </section>
   );
@@ -70,7 +72,10 @@ function Skeleton({ lines = 3 }: { lines?: number }) {
   return (
     <div className="space-y-2" aria-hidden="true">
       {Array.from({ length: lines }, (_, i) => (
-        <div key={i} className="h-10 w-full animate-pulse rounded-fq-md bg-muted" />
+        <div
+          key={i}
+          className="h-10 w-full animate-pulse rounded-fq-md bg-muted"
+        />
       ))}
     </div>
   );
@@ -86,7 +91,8 @@ function repeated(
   const out: Record<string, string>[] = [];
   for (let i = 1; i <= count; i += 1) {
     const entry: Record<string, string> = { key: `${prefix}${i}` };
-    for (const field of keys) entry[field] = str(`${prefix}${i}${field}`).trim();
+    for (const field of keys)
+      entry[field] = str(`${prefix}${i}${field}`).trim();
     if (entry[keys[0]!]) out.push(entry);
   }
   return out;
@@ -102,11 +108,18 @@ export function rowSwatch(row: WidgetRow): SwatchValue {
 }
 
 function toneLabels(locale: "en" | "bn"): string[] {
-  return [t(locale, "Fair", "ফর্সা"), t(locale, "Medium", "মাঝারি"), t(locale, "Deep", "গাঢ়")];
+  return [
+    t(locale, "Fair", "ফর্সা"),
+    t(locale, "Medium", "মাঝারি"),
+    t(locale, "Deep", "গাঢ়"),
+  ];
 }
 
 function taxonomyOptions(kind: TaxonomyKind, locale: "en" | "bn") {
-  return termsOf(kind).map((term) => ({ value: term.slug, label: locale === "bn" ? term.bn : term.en }));
+  return termsOf(kind).map((term) => ({
+    value: term.slug,
+    label: locale === "bn" ? term.bn : term.en,
+  }));
 }
 
 /* ------------------------------------------------------------ shade_finder */
@@ -121,12 +134,16 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
     () => [
       {
         key: "undertone",
-        prompt: str("undertonePrompt") || t(locale, "What is your undertone?", "আপনার আন্ডারটোন কী?"),
+        prompt:
+          str("undertonePrompt") ||
+          t(locale, "What is your undertone?", "আপনার আন্ডারটোন কী?"),
         options: taxonomyOptions("undertone", locale),
       },
       {
         key: "depth",
-        prompt: str("depthPrompt") || t(locale, "How deep is your skin tone?", "আপনার ত্বকের গভীরতা?"),
+        prompt:
+          str("depthPrompt") ||
+          t(locale, "How deep is your skin tone?", "আপনার ত্বকের গভীরতা?"),
         options: SHADE_DEPTHS.map((depth) => ({
           value: depth.slug,
           label: depthLabel(depth.slug, locale),
@@ -140,7 +157,8 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
   const depth = state.answers["depth"]?.[0] ?? "";
   const undertone = state.answers["undertone"]?.[0] ?? "";
   const matches = rows.filter((row) => {
-    const haystack = `${row.title} ${row.subtitle ?? ""} ${row.options ?? ""}`.toLowerCase();
+    const haystack =
+      `${row.title} ${row.subtitle ?? ""} ${row.options ?? ""}`.toLowerCase();
     const depthOk = !depth || haystack.includes(depth);
     const toneOk = !undertone || haystack.includes(undertone);
     return depthOk && toneOk;
@@ -152,7 +170,9 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
       <StepFlow
         steps={steps}
         state={state}
-        onAnswer={(step, value) => setState((current) => answerStep(current, step, value))}
+        onAnswer={(step, value) =>
+          setState((current) => answerStep(current, step, value))
+        }
         onBack={() => setState(goBack)}
         onNext={() => setState((current) => goNext(current, steps))}
         labels={{
@@ -165,7 +185,9 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
         {data?.pending ? (
           <Skeleton lines={2} />
         ) : shown.length === 0 ? (
-          <p className="m-0 text-sm text-muted-foreground">{str("emptyText")}</p>
+          <p className="m-0 text-sm text-muted-foreground">
+            {str("emptyText")}
+          </p>
         ) : (
           <>
             <p className="m-0 text-sm text-muted-foreground">
@@ -216,17 +238,22 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
     () => [
       {
         key: "skin_type",
-        prompt: str("typePrompt") || t(locale, "Your skin type?", "আপনার ত্বকের ধরন?"),
+        prompt:
+          str("typePrompt") ||
+          t(locale, "Your skin type?", "আপনার ত্বকের ধরন?"),
         options: taxonomyOptions("skin_type", locale),
       },
       {
         key: "concern",
-        prompt: str("concernPrompt") || t(locale, "Main concern?", "প্রধান সমস্যা?"),
+        prompt:
+          str("concernPrompt") || t(locale, "Main concern?", "প্রধান সমস্যা?"),
         options: taxonomyOptions("concern", locale),
       },
       {
         key: "sensitivity",
-        prompt: str("sensitivityPrompt") || t(locale, "Sensitive skin?", "ত্বক কি সংবেদনশীল?"),
+        prompt:
+          str("sensitivityPrompt") ||
+          t(locale, "Sensitive skin?", "ত্বক কি সংবেদনশীল?"),
         options: [
           { value: "sensitive", label: t(locale, "Yes", "হ্যাঁ") },
           { value: "normal", label: t(locale, "No", "না") },
@@ -234,7 +261,9 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
       },
       {
         key: "finish",
-        prompt: str("finishPrompt") || t(locale, "Preferred finish?", "পছন্দের ফিনিশ?"),
+        prompt:
+          str("finishPrompt") ||
+          t(locale, "Preferred finish?", "পছন্দের ফিনিশ?"),
         options: taxonomyOptions("finish", locale),
         required: false,
       },
@@ -242,17 +271,24 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
     [locale, str],
   );
 
-  const mapping: Partial<Record<string, FacetKey>> = { skin_type: "category", concern: "collection" };
+  const mapping: Partial<Record<string, FacetKey>> = {
+    skin_type: "category",
+    concern: "collection",
+  };
   const done = isFinished(state, steps);
   const href = resultHref(str("resultPath") || "/search", state, mapping);
 
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      {str("body") ? <p className="mb-3 text-sm text-muted-foreground">{str("body")}</p> : null}
+      {str("body") ? (
+        <p className="mb-3 text-sm text-muted-foreground">{str("body")}</p>
+      ) : null}
       <StepFlow
         steps={steps}
         state={state}
-        onAnswer={(step, value) => setState((current) => answerStep(current, step, value))}
+        onAnswer={(step, value) =>
+          setState((current) => answerStep(current, step, value))
+        }
         onBack={() => setState(goBack)}
         onNext={() => setState((current) => goNext(current, steps))}
         labels={{
@@ -269,7 +305,8 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
               href={href}
               className="mt-3 inline-flex min-h-[44px] items-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground"
             >
-              {str("resultLabel") || t(locale, "Shop my routine", "আমার রুটিন দেখুন")}
+              {str("resultLabel") ||
+                t(locale, "Shop my routine", "আমার রুটিন দেখুন")}
             </a>
           </div>
         ) : null}
@@ -284,11 +321,20 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
  * AM/PM steps with per-step swap. Add-all posts the whole set to the server,
  * which is the only place the combined total may be computed.
  */
-const RoutineBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) => {
+const RoutineBuilder: WidgetComponent = ({
+  str,
+  int,
+  data,
+  locale,
+  Heading,
+}) => {
   const [phase, setPhase] = useState<"am" | "pm">("am");
   const limit = int("limit", 4, 2, 6);
   const rows = (data?.rows ?? []).slice(0, limit);
-  const labels = { am: str("amLabel") || t(locale, "Morning", "সকাল"), pm: str("pmLabel") || t(locale, "Night", "রাত") };
+  const labels = {
+    am: str("amLabel") || t(locale, "Morning", "সকাল"),
+    pm: str("pmLabel") || t(locale, "Night", "রাত"),
+  };
 
   return (
     <Panel heading={str("heading")} Heading={Heading}>
@@ -301,7 +347,9 @@ const RoutineBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) =>
             aria-selected={phase === key}
             onClick={() => setPhase(key)}
             className={`min-h-[44px] rounded-full border px-4 text-sm ${
-              phase === key ? "border-primary bg-primary text-primary-foreground" : "border-border"
+              phase === key
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border"
             }`}
           >
             {labels[key]}
@@ -340,9 +388,12 @@ const RoutineBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) =>
         disabled={rows.length === 0}
         className="mt-4 min-h-[44px] rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
       >
-        {str("addAllLabel") || t(locale, "Add routine to cart", "রুটিন কার্টে যোগ করুন")}
+        {str("addAllLabel") ||
+          t(locale, "Add routine to cart", "রুটিন কার্টে যোগ করুন")}
       </button>
-      {str("note") ? <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p> : null}
+      {str("note") ? (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      ) : null}
     </Panel>
   );
 };
@@ -369,19 +420,39 @@ const IngredientList: WidgetComponent = ({ str, data, locale, Heading }) => {
     <Panel heading={str("heading")} Heading={Heading}>
       <dl className="m-0">
         {items.map((item) => (
-          <div key={item.key} className="border-b border-border py-2 last:border-b-0">
+          <div
+            key={item.key}
+            className="border-b border-border py-2 last:border-b-0"
+          >
             <dt dir="ltr" lang="en" className="text-sm font-medium">
               {item.Name}
-              {item.Amount ? <span className="ms-2 tabular-nums text-muted-foreground">{item.Amount}</span> : null}
+              {item.Amount ? (
+                <span className="ms-2 tabular-nums text-muted-foreground">
+                  {item.Amount}
+                </span>
+              ) : null}
             </dt>
-            {item.Gloss ? <dd className="m-0 text-sm text-muted-foreground">{item.Gloss}</dd> : null}
+            {item.Gloss ? (
+              <dd className="m-0 text-sm text-muted-foreground">
+                {item.Gloss}
+              </dd>
+            ) : null}
           </div>
         ))}
       </dl>
       {str("inci") ? (
         <div className="mt-3">
-          <Disclosure summary={str("inciLabel") || t(locale, "Full ingredients (INCI)", "সম্পূর্ণ উপাদান (INCI)")}>
-            <p dir="ltr" lang="en" className="m-0 text-xs leading-relaxed text-muted-foreground">
+          <Disclosure
+            summary={
+              str("inciLabel") ||
+              t(locale, "Full ingredients (INCI)", "সম্পূর্ণ উপাদান (INCI)")
+            }
+          >
+            <p
+              dir="ltr"
+              lang="en"
+              className="m-0 text-xs leading-relaxed text-muted-foreground"
+            >
               {str("inci")}
             </p>
           </Disclosure>
@@ -422,9 +493,11 @@ const ClaimChips: WidgetComponent = ({ str, Heading }) => {
             <span className="inline-flex min-h-[32px] items-center gap-2 rounded-full border border-border px-3 py-1 text-sm">
               {claim.Label}
               {claim.Source ? (
-                <span className="text-xs text-muted-foreground" title={claim.Source}>
-                  ⓘ
-                  <span className="sr-only">{claim.Source}</span>
+                <span
+                  className="text-xs text-muted-foreground"
+                  title={claim.Source}
+                >
+                  ⓘ<span className="sr-only">{claim.Source}</span>
                 </span>
               ) : null}
             </span>
@@ -451,13 +524,23 @@ const BeforeAfter: WidgetComponent = ({ str, Heading, locale }) => {
     <Panel heading={str("heading")} Heading={Heading}>
       <div className="grid gap-2 sm:grid-cols-2">
         <figure className="m-0">
-          <MediaFrame src={before} alt={str("beforeAlt")} ratio="square" className="rounded-fq-md" />
+          <MediaFrame
+            src={before}
+            alt={str("beforeAlt")}
+            ratio="square"
+            className="rounded-fq-md"
+          />
           <figcaption className="mt-1 text-xs text-muted-foreground">
             {str("beforeLabel") || t(locale, "Before", "আগে")}
           </figcaption>
         </figure>
         <figure className="m-0">
-          <MediaFrame src={after} alt={str("afterAlt")} ratio="square" className="rounded-fq-md" />
+          <MediaFrame
+            src={after}
+            alt={str("afterAlt")}
+            ratio="square"
+            className="rounded-fq-md"
+          />
           <figcaption className="mt-1 text-xs text-muted-foreground">
             {str("afterLabel") || t(locale, "After", "পরে")}
           </figcaption>
@@ -478,8 +561,15 @@ const SafetyNote: WidgetComponent = ({ str, Heading, locale }) => {
       <p className="m-0 text-sm">{body}</p>
       {str("howTo") ? (
         <div className="mt-3">
-          <Disclosure summary={str("howToLabel") || t(locale, "How to patch test", "প্যাচ টেস্ট কীভাবে")}>
-            <p className="m-0 whitespace-pre-line text-sm text-muted-foreground">{str("howTo")}</p>
+          <Disclosure
+            summary={
+              str("howToLabel") ||
+              t(locale, "How to patch test", "প্যাচ টেস্ট কীভাবে")
+            }
+          >
+            <p className="m-0 whitespace-pre-line text-sm text-muted-foreground">
+              {str("howTo")}
+            </p>
           </Disclosure>
         </div>
       ) : null}
@@ -493,7 +583,10 @@ const BatchInfo: WidgetComponent = ({ str, int, Heading, locale }) => {
   const pao = int("paoMonths", 0, 0, 60);
   const rows: [string, string][] = [
     [str("mfgLabel") || t(locale, "Manufactured", "উৎপাদন"), str("mfgDate")],
-    [str("expiryLabel") || t(locale, "Best before", "মেয়াদ"), str("expiryDate")],
+    [
+      str("expiryLabel") || t(locale, "Best before", "মেয়াদ"),
+      str("expiryDate"),
+    ],
     [str("batchLabel") || t(locale, "Batch", "ব্যাচ"), str("batchCode")],
   ].filter(([, value]) => Boolean(value)) as [string, string][];
   if (rows.length === 0 && !pao) return null;
@@ -501,7 +594,10 @@ const BatchInfo: WidgetComponent = ({ str, int, Heading, locale }) => {
     <Panel heading={str("heading")} Heading={Heading}>
       <dl className="m-0 text-sm">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex justify-between gap-3 border-b border-border py-2 last:border-b-0">
+          <div
+            key={label}
+            className="flex justify-between gap-3 border-b border-border py-2 last:border-b-0"
+          >
             <dt className="text-muted-foreground">{label}</dt>
             <dd className="m-0 tabular-nums" dir="ltr">
               {value}
@@ -511,7 +607,11 @@ const BatchInfo: WidgetComponent = ({ str, int, Heading, locale }) => {
       </dl>
       {pao ? (
         <p className="mt-2 text-xs text-muted-foreground">
-          {t(locale, `Best used within ${pao} months of opening.`, `খোলার পর ${pao} মাসের মধ্যে ব্যবহার করুন।`)}
+          {t(
+            locale,
+            `Best used within ${pao} months of opening.`,
+            `খোলার পর ${pao} মাসের মধ্যে ব্যবহার করুন।`,
+          )}
         </p>
       ) : null}
     </Panel>
@@ -528,8 +628,17 @@ const TextureStrip: WidgetComponent = ({ str, Heading }) => {
       <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 sm:grid-cols-4">
         {tiles.map((tile) => (
           <li key={tile.key} className="min-w-0">
-            <MediaFrame src={tile.Image} alt={tile.Alt || tile.Label || ""} ratio="square" className="rounded-fq-md" />
-            {tile.Label ? <p className="mt-1 m-0 text-xs text-muted-foreground">{tile.Label}</p> : null}
+            <MediaFrame
+              src={tile.Image}
+              alt={tile.Alt || tile.Label || ""}
+              ratio="square"
+              className="rounded-fq-md"
+            />
+            {tile.Label ? (
+              <p className="mt-1 m-0 text-xs text-muted-foreground">
+                {tile.Label}
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>
@@ -555,7 +664,11 @@ const HowToUse: WidgetComponent = ({ str, Heading }) => {
             </span>
             <span className="min-w-0">
               <span className="block text-sm font-medium">{step.Title}</span>
-              {step.Body ? <span className="block text-sm text-muted-foreground">{step.Body}</span> : null}
+              {step.Body ? (
+                <span className="block text-sm text-muted-foreground">
+                  {step.Body}
+                </span>
+              ) : null}
             </span>
           </li>
         ))}
@@ -567,24 +680,38 @@ const HowToUse: WidgetComponent = ({ str, Heading }) => {
 /* ------------------------------------------------------------- refill_widget */
 
 /** Cadence choice only; the refill price is quoted by the server at add time. */
-const RefillWidget: WidgetComponent = ({ str, data, locale, money, Heading }) => {
+const RefillWidget: WidgetComponent = ({
+  str,
+  data,
+  locale,
+  money,
+  Heading,
+}) => {
   const cadences = repeated(str, "c", ["Label", "Value"], 3);
   const [chosen, setChosen] = useState("");
   const refill = data?.rows?.[0];
   const active = chosen || cadences[0]?.Value || "";
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      {str("body") ? <p className="m-0 text-sm text-muted-foreground">{str("body")}</p> : null}
+      {str("body") ? (
+        <p className="m-0 text-sm text-muted-foreground">{str("body")}</p>
+      ) : null}
       {refill ? (
         <div className="mt-3 flex items-center justify-between gap-3 rounded-fq-md border border-border p-3">
           <span className="min-w-0 text-sm">{refill.title}</span>
           {typeof refill.priceMinor === "number" ? (
-            <span className="shrink-0 text-sm tabular-nums">{money(refill.priceMinor, refill.currency)}</span>
+            <span className="shrink-0 text-sm tabular-nums">
+              {money(refill.priceMinor, refill.currency)}
+            </span>
           ) : null}
         </div>
       ) : null}
       {cadences.length ? (
-        <div role="radiogroup" aria-label={str("heading")} className="mt-3 flex flex-wrap gap-2">
+        <div
+          role="radiogroup"
+          aria-label={str("heading")}
+          className="mt-3 flex flex-wrap gap-2"
+        >
           {cadences.map((cadence) => (
             <button
               key={cadence.key}
@@ -593,7 +720,9 @@ const RefillWidget: WidgetComponent = ({ str, data, locale, money, Heading }) =>
               aria-checked={cadence.Value === active}
               onClick={() => setChosen(cadence.Value!)}
               className={`min-h-[44px] rounded-full border px-4 text-sm ${
-                cadence.Value === active ? "border-primary ring-1 ring-primary" : "border-border"
+                cadence.Value === active
+                  ? "border-primary ring-1 ring-primary"
+                  : "border-border"
               }`}
             >
               {cadence.Label}
@@ -644,7 +773,9 @@ const GiftBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) => {
                   disabled={!on && remaining <= 0}
                   onChange={() =>
                     setPicked((current) =>
-                      current.includes(row.id) ? current.filter((id) => id !== row.id) : [...current, row.id],
+                      current.includes(row.id)
+                        ? current.filter((id) => id !== row.id)
+                        : [...current, row.id],
                     )
                   }
                   className="mt-1 h-5 w-5"
@@ -658,7 +789,9 @@ const GiftBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) => {
         })}
       </ul>
       <label className="mt-3 block text-sm">
-        <span className="mb-1 block">{str("messageLabel") || t(locale, "Message card", "মেসেজ কার্ড")}</span>
+        <span className="mb-1 block">
+          {str("messageLabel") || t(locale, "Message card", "মেসেজ কার্ড")}
+        </span>
         <textarea
           rows={2}
           maxLength={200}
@@ -672,14 +805,22 @@ const GiftBuilder: WidgetComponent = ({ str, int, data, locale, Heading }) => {
       >
         {str("buttonLabel") || t(locale, "Add gift set", "গিফট সেট যোগ করুন")}
       </button>
-      {str("note") ? <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p> : null}
+      {str("note") ? (
+        <p className="mt-2 text-xs text-muted-foreground">{str("note")}</p>
+      ) : null}
     </Panel>
   );
 };
 
 /* -------------------------------------------------------------- sample_picker */
 
-const SamplePicker: WidgetComponent = ({ str, data, locale, money, Heading }) => {
+const SamplePicker: WidgetComponent = ({
+  str,
+  data,
+  locale,
+  money,
+  Heading,
+}) => {
   const rows = (data?.rows ?? []).slice(0, 4);
   const [chosen, setChosen] = useState("");
   const threshold = data?.rows?.[0]?.compareAtMinor;
@@ -688,11 +829,18 @@ const SamplePicker: WidgetComponent = ({ str, data, locale, money, Heading }) =>
     <Panel heading={str("heading")} Heading={Heading}>
       {typeof threshold === "number" ? (
         <p className="m-0 text-sm text-muted-foreground">
-          {str("thresholdText") || t(locale, "Free sample over", "ফ্রি স্যাম্পল, ন্যূনতম")}{" "}
-          <span className="tabular-nums">{money(threshold, rows[0]!.currency)}</span>
+          {str("thresholdText") ||
+            t(locale, "Free sample over", "ফ্রি স্যাম্পল, ন্যূনতম")}{" "}
+          <span className="tabular-nums">
+            {money(threshold, rows[0]!.currency)}
+          </span>
         </p>
       ) : null}
-      <div role="radiogroup" aria-label={str("heading")} className="mt-3 flex flex-wrap gap-2">
+      <div
+        role="radiogroup"
+        aria-label={str("heading")}
+        className="mt-3 flex flex-wrap gap-2"
+      >
         {rows.map((row) => (
           <button
             key={row.id}
@@ -701,7 +849,9 @@ const SamplePicker: WidgetComponent = ({ str, data, locale, money, Heading }) =>
             aria-checked={chosen === row.id}
             onClick={() => setChosen(row.id)}
             className={`min-h-[44px] rounded-full border px-4 text-sm ${
-              chosen === row.id ? "border-primary ring-1 ring-primary" : "border-border"
+              chosen === row.id
+                ? "border-primary ring-1 ring-primary"
+                : "border-border"
             }`}
           >
             {row.title}
@@ -723,7 +873,9 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
 
   return (
     <Panel heading={str("heading")} Heading={Heading}>
-      {str("body") ? <p className="m-0 text-sm text-muted-foreground">{str("body")}</p> : null}
+      {str("body") ? (
+        <p className="m-0 text-sm text-muted-foreground">{str("body")}</p>
+      ) : null}
       <div className="mt-3 flex flex-wrap gap-2">
         {whatsapp ? (
           <a
@@ -744,7 +896,8 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
       </div>
       {sent ? (
         <p role="status" className="mt-3 text-sm">
-          {str("pendingText") || t(locale, "We will call you back.", "আমরা কল করব।")}
+          {str("pendingText") ||
+            t(locale, "We will call you back.", "আমরা কল করব।")}
         </p>
       ) : (
         <form
@@ -755,7 +908,9 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
           }}
         >
           <label className="block text-sm">
-            <span className="mb-1 block">{str("fieldLabel") || t(locale, "Your number", "আপনার নম্বর")}</span>
+            <span className="mb-1 block">
+              {str("fieldLabel") || t(locale, "Your number", "আপনার নম্বর")}
+            </span>
             <input
               name="phone"
               type="tel"
@@ -779,7 +934,8 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
             disabled={!agreed}
             className="min-h-[44px] rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
-            {str("buttonLabel") || t(locale, "Book a consult", "কনসাল্ট বুক করুন")}
+            {str("buttonLabel") ||
+              t(locale, "Book a consult", "কনসাল্ট বুক করুন")}
           </button>
         </form>
       )}
@@ -793,16 +949,20 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
 const LoyaltyStrip: WidgetComponent = ({ str, data, locale, money }) => {
   const row = data?.rows?.[0];
   const points = row?.count;
-  const label = str("label") || t(locale, "Points on this order", "এই অর্ডারে পয়েন্ট");
+  const label =
+    str("label") || t(locale, "Points on this order", "এই অর্ডারে পয়েন্ট");
   if (data?.pending) return <Skeleton lines={1} />;
-  if (typeof points !== "number" && typeof row?.priceMinor !== "number") return null;
+  if (typeof points !== "number" && typeof row?.priceMinor !== "number")
+    return null;
   return (
     <p className="m-0 flex flex-wrap items-center justify-between gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm">
       <span>{label}</span>
       <span className="tabular-nums">
         {typeof points === "number" ? points : null}
         {typeof row?.priceMinor === "number" ? (
-          <span className="ms-2 text-muted-foreground">{money(row.priceMinor, row.currency)}</span>
+          <span className="ms-2 text-muted-foreground">
+            {money(row.priceMinor, row.currency)}
+          </span>
         ) : null}
       </span>
     </p>
@@ -815,8 +975,15 @@ const LoyaltyStrip: WidgetComponent = ({ str, data, locale, money }) => {
  * Small helper exported for the `product_rail` concern variant and the tone
  * filter on `ugc_gallery`: turns an authored slug list into chips.
  */
-export function taxonomyChips(value: string, locale: "en" | "bn", kind?: TaxonomyKind) {
-  return parseTerms(value, kind).map((term) => ({ slug: term.slug, label: termLabel(term.slug, locale) }));
+export function taxonomyChips(
+  value: string,
+  locale: "en" | "bn",
+  kind?: TaxonomyKind,
+) {
+  return parseTerms(value, kind).map((term) => ({
+    slug: term.slug,
+    label: termLabel(term.slug, locale),
+  }));
 }
 
 /* ----------------------------------------------------------------- registry */

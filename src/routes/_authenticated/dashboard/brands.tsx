@@ -7,7 +7,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/brands")({
       { title: "Brands — Framique Admin" },
       {
         name: "description",
-        content: "Create and manage the brands used across your Framique catalog.",
+        content:
+          "Create and manage the brands used across your Framique catalog.",
       },
       { property: "og:title", content: "Brand management" },
       {
@@ -19,6 +20,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/brands")({
     ],
   }),
   component: () => (
-    <TaxonomyManager table="brands" titleBn="ব্র্যান্ড" titleEn="Brands in your catalog" />
+    <TaxonomyManager
+      table="brands"
+      titleBn="ব্র্যান্ড"
+      titleEn="Brands in your catalog"
+    />
   ),
 });

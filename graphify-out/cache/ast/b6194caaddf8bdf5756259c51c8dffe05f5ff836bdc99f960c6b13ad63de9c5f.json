@@ -1,1 +1,637 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "label": "copy-quality.contract.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L1"}, {"id": "lib_copy_quality_contract_test_dict", "label": "dict", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L38"}, {"id": "lib_copy_quality_contract_test_findings", "label": "findings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L41"}, {"id": "lib_copy_quality_contract_test_errors", "label": "errors", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L44"}, {"id": "lib_copy_quality_contract_test_warns", "label": "warns", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L49"}, {"id": "lib_copy_quality_contract_test_missing", "label": "missing", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L56"}, {"id": "lib_copy_quality_contract_test_identical", "label": "identical", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L61"}, {"id": "lib_copy_quality_contract_test_parity", "label": "parity", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L69"}, {"id": "lib_copy_quality_contract_test_mismatched", "label": "mismatched", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L71"}, {"id": "lib_copy_quality_contract_test_bn", "label": "bn()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L79"}, {"id": "lib_copy_quality_contract_test_found", "label": "found", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L83"}, {"id": "lib_copy_quality_contract_test_vague", "label": "vague", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L96"}, {"id": "lib_copy_quality_contract_test_measured", "label": "measured", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L99"}, {"id": "lib_copy_quality_contract_test_label", "label": "label", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L137"}, {"id": "lib_copy_quality_contract_test_prose", "label": "prose", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L140"}, {"id": "lib_copy_quality_contract_test_long", "label": "long", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L148"}, {"id": "lib_copy_quality_contract_test_keys", "label": "keys", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L159"}, {"id": "lib_copy_quality_contract_test_ids", "label": "ids", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L185"}, {"id": "lib_copy_quality_contract_test_entries", "label": "entries", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L200"}, {"id": "lib_copy_quality_contract_test_address", "label": "address", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L230"}, {"id": "lib_copy_quality_contract_test_schema", "label": "schema", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L238"}, {"id": "lib_copy_quality_contract_test_types", "label": "types", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L243"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_i18n_dict_dict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_brand_voice_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_bangla_lint", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_banned_hype", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_copy_limits", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_forbidden_claims", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_locale_identical_allowlist", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_auditdictionary", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_auditentry", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_auditmeta", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_errorsonly", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_formatfindings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_hasadjacentnumber", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_moneyfindings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_brand_voice_placeholders", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "users_rahman_documents_frame30_src_lib_legal_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_legal_docs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_legal_slugs", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_org_nap", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_legaldoc", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_legallastupdated", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_napaddressline", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_nappostaladdress", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_legal_organizationschema", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_dict", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L38", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_findings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L41", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_errors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L44", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_warns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_missing", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L56", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_identical", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_parity", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_mismatched", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L71", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_bn", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L79", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_found", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L83", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_found", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L90", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_vague", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L96", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_measured", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L99", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_found", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L125", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_label", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L137", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_prose", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L140", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_long", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_keys", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_ids", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L185", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_entries", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L200", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_errors", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L208", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_address", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L230", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_schema", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L238", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts", "target": "lib_copy_quality_contract_test_types", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts", "source_location": "L243", "weight": 1.0}], "raw_calls": []}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "label": "copy-quality.contract.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_dict",
+      "label": "dict",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L38"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_findings",
+      "label": "findings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L41"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_errors",
+      "label": "errors",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L44"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_warns",
+      "label": "warns",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_missing",
+      "label": "missing",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L56"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_identical",
+      "label": "identical",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L61"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_parity",
+      "label": "parity",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_mismatched",
+      "label": "mismatched",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L71"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_bn",
+      "label": "bn()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L79"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_found",
+      "label": "found",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L83"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_vague",
+      "label": "vague",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L96"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_measured",
+      "label": "measured",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L99"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_label",
+      "label": "label",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L137"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_prose",
+      "label": "prose",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L140"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_long",
+      "label": "long",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L148"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_keys",
+      "label": "keys",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_ids",
+      "label": "ids",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L185"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_entries",
+      "label": "entries",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L200"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_address",
+      "label": "address",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L230"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_schema",
+      "label": "schema",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L238"
+    },
+    {
+      "id": "lib_copy_quality_contract_test_types",
+      "label": "types",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L243"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_dict_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_i18n_dict_dict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_brand_voice_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_bangla_lint",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_banned_hype",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_copy_limits",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_forbidden_claims",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_locale_identical_allowlist",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_auditdictionary",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_auditentry",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_auditmeta",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_errorsonly",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_formatfindings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_hasadjacentnumber",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_moneyfindings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_brand_voice_placeholders",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_legal_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_legal_docs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_legal_slugs",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_org_nap",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_legaldoc",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_legallastupdated",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_napaddressline",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_nappostaladdress",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_legal_organizationschema",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_dict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_findings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_warns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_missing",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L56",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_identical",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_parity",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_mismatched",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_bn",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_found",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_found",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_vague",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_measured",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L99",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_found",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L125",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_label",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L137",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_prose",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L140",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_long",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_ids",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_entries",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L200",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_errors",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_address",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L230",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_schema",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_copy_quality_contract_test_ts",
+      "target": "lib_copy_quality_contract_test_types",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/copy-quality.contract.test.ts",
+      "source_location": "L243",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": []
+}

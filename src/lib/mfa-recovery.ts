@@ -21,7 +21,11 @@ export function encodeRecoveryCode(bytes: Uint8Array): string {
   }
   const groups: string[] = [];
   for (let g = 0; g < RECOVERY_CODE_GROUPS; g += 1) {
-    groups.push(chars.slice(g * RECOVERY_CODE_GROUP_SIZE, (g + 1) * RECOVERY_CODE_GROUP_SIZE).join(""));
+    groups.push(
+      chars
+        .slice(g * RECOVERY_CODE_GROUP_SIZE, (g + 1) * RECOVERY_CODE_GROUP_SIZE)
+        .join(""),
+    );
   }
   return groups.join("-");
 }
@@ -30,7 +34,9 @@ export function generateRecoveryCodes(count = RECOVERY_CODE_COUNT): string[] {
   const out = new Set<string>();
   let guard = 0;
   while (out.size < count && guard < count * 20) {
-    const bytes = new Uint8Array(RECOVERY_CODE_GROUPS * RECOVERY_CODE_GROUP_SIZE);
+    const bytes = new Uint8Array(
+      RECOVERY_CODE_GROUPS * RECOVERY_CODE_GROUP_SIZE,
+    );
     crypto.getRandomValues(bytes);
     out.add(encodeRecoveryCode(bytes));
     guard += 1;
@@ -45,13 +51,23 @@ export function normalizeRecoveryCode(input: string): string {
 
 export function isWellFormedRecoveryCode(input: string): boolean {
   const n = normalizeRecoveryCode(input);
-  if (n.length !== RECOVERY_CODE_GROUPS * RECOVERY_CODE_GROUP_SIZE) return false;
+  if (n.length !== RECOVERY_CODE_GROUPS * RECOVERY_CODE_GROUP_SIZE)
+    return false;
   return [...n].every((c) => ALPHABET.includes(c));
 }
 
 /** Salted, user-bound digest. Same value on server and in tests. */
-export async function hashRecoveryCode(userId: string, code: string, salt: string): Promise<string> {
+export async function hashRecoveryCode(
+  userId: string,
+  code: string,
+  salt: string,
+): Promise<string> {
   const material = `${salt}:${userId}:${normalizeRecoveryCode(code)}`;
-  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(material));
-  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(material),
+  );
+  return [...new Uint8Array(digest)]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }

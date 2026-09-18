@@ -55,7 +55,13 @@ describe("negotiateFormat", () => {
 
 describe("path coding", () => {
   it("round-trips a spec", () => {
-    const spec = normalizeSpec({ width: 640, height: 480, resize: "cover", quality: 80, format: "webp" });
+    const spec = normalizeSpec({
+      width: 640,
+      height: 480,
+      resize: "cover",
+      quality: 80,
+      format: "webp",
+    });
     expect(decodeSpec(encodeSpec(spec))).toEqual(spec);
   });
 
@@ -77,12 +83,18 @@ describe("isAllowedSource (SSRF guard)", () => {
   const hosts = ["cdn.example.com", "supabase.co"];
 
   it("allows an exact host and its subdomains", () => {
-    expect(isAllowedSource("https://cdn.example.com/a.jpg", hosts).ok).toBe(true);
-    expect(isAllowedSource("https://bucket.supabase.co/a.jpg", hosts).ok).toBe(true);
+    expect(isAllowedSource("https://cdn.example.com/a.jpg", hosts).ok).toBe(
+      true,
+    );
+    expect(isAllowedSource("https://bucket.supabase.co/a.jpg", hosts).ok).toBe(
+      true,
+    );
   });
 
   it("blocks non-https", () => {
-    expect(isAllowedSource("http://cdn.example.com/a.jpg", hosts)).toMatchObject({ reason: "not_https" });
+    expect(
+      isAllowedSource("http://cdn.example.com/a.jpg", hosts),
+    ).toMatchObject({ reason: "not_https" });
   });
 
   it("blocks hosts that are not allow-listed", () => {
@@ -92,22 +104,30 @@ describe("isAllowedSource (SSRF guard)", () => {
   });
 
   it("blocks the cloud metadata endpoint and loopback", () => {
-    expect(isAllowedSource("https://169.254.169.254/latest/meta-data", hosts).ok).toBe(false);
+    expect(
+      isAllowedSource("https://169.254.169.254/latest/meta-data", hosts).ok,
+    ).toBe(false);
     expect(isAllowedSource("https://127.0.0.1/admin", hosts).ok).toBe(false);
   });
 
   it("blocks credentials embedded in the url", () => {
-    expect(isAllowedSource("https://u:p@cdn.example.com/a.jpg", hosts)).toMatchObject({
+    expect(
+      isAllowedSource("https://u:p@cdn.example.com/a.jpg", hosts),
+    ).toMatchObject({
       reason: "credentials_in_url",
     });
   });
 
   it("is not fooled by a suffix lookalike domain", () => {
-    expect(isAllowedSource("https://notcdn.example.com.evil.io/a.jpg", hosts).ok).toBe(false);
+    expect(
+      isAllowedSource("https://notcdn.example.com.evil.io/a.jpg", hosts).ok,
+    ).toBe(false);
   });
 
   it("rejects garbage input", () => {
-    expect(isAllowedSource("not a url", hosts)).toMatchObject({ reason: "bad_url" });
+    expect(isAllowedSource("not a url", hosts)).toMatchObject({
+      reason: "bad_url",
+    });
   });
 });
 

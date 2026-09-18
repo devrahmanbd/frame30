@@ -6,8 +6,18 @@
  * runs away from the cursor (Fitts's law beats delight). Touch and coarse
  * pointers get nothing — a magnet with no cursor is just jitter.
  */
-import { useEffect, useRef, useState, type ComponentPropsWithoutRef, type ElementType } from "react";
-import { MOTION_TOKENS, allowsMagnetic, magneticOffset } from "@/lib/motion-policy";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentPropsWithoutRef,
+  type ElementType,
+} from "react";
+import {
+  MOTION_TOKENS,
+  allowsMagnetic,
+  magneticOffset,
+} from "@/lib/motion-policy";
 import { useMotionIntent } from "@/lib/motion-runtime";
 
 type MagneticButtonProps<T extends ElementType> = {
@@ -102,7 +112,9 @@ export function MagneticButton<T extends ElementType = "button">({
       }}
       style={{
         ...(rest.style ?? {}),
-        transform: enabled ? `translate3d(${offset.x}px, ${offset.y}px, 0)` : undefined,
+        transform: enabled
+          ? `translate3d(${offset.x}px, ${offset.y}px, 0)`
+          : undefined,
         transition: `transform ${MOTION_TOKENS.duration.fast}ms ${MOTION_TOKENS.easing.out}`,
       }}
     >

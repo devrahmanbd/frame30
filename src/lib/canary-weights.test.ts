@@ -12,7 +12,10 @@ import {
 } from "./canary-weights.server";
 
 describe("Phase 7.1 — Weighted Canary Traffic Shifting (1% → 5% → 25% → 100%)", () => {
-  const canaryConfPath = resolve(process.cwd(), "ops/routing/canary-weights.conf");
+  const canaryConfPath = resolve(
+    process.cwd(),
+    "ops/routing/canary-weights.conf",
+  );
 
   it("canary stages define explicit weights, soak durations, and verification gates", () => {
     // Stage 1 (1%): 10m soak
@@ -27,14 +30,18 @@ describe("Phase 7.1 — Weighted Canary Traffic Shifting (1% → 5% → 25% → 
     expect(s2.canaryWeight).toBe(5);
     expect(s2.primaryWeight).toBe(95);
     expect(s2.soakDurationMs).toBe(15 * 60 * 1000);
-    expect(s2.verificationCriteria.some((c) => c.includes("Checkout"))).toBe(true);
+    expect(s2.verificationCriteria.some((c) => c.includes("Checkout"))).toBe(
+      true,
+    );
 
     // Stage 3 (25%): 30m soak
     const s3 = CANARY_STAGES[3];
     expect(s3.canaryWeight).toBe(25);
     expect(s3.primaryWeight).toBe(75);
     expect(s3.soakDurationMs).toBe(30 * 60 * 1000);
-    expect(s3.verificationCriteria.some((c) => c.includes("connection pool"))).toBe(true);
+    expect(
+      s3.verificationCriteria.some((c) => c.includes("connection pool")),
+    ).toBe(true);
 
     // Stage 4 (100%): 60m warm standby retention
     const s4 = CANARY_STAGES[4];
@@ -85,14 +92,19 @@ describe("Phase 7.1 — Weighted Canary Traffic Shifting (1% → 5% → 25% → 
       primarySlot: "blue",
     });
 
-    expect(config).toContain("server framique-green:3000 max_fails=3 fail_timeout=10s;");
+    expect(config).toContain(
+      "server framique-green:3000 max_fails=3 fail_timeout=10s;",
+    );
     expect(config).toContain("server framique-blue:3000 backup;");
     expect(config).toContain("keepalive 64;");
   });
 
   it("persists and advances canary rollout states cleanly", async () => {
     // Shift to Stage 1
-    const shift1 = await setCanaryStage(1, { candidateSlot: "green", primarySlot: "blue" });
+    const shift1 = await setCanaryStage(1, {
+      candidateSlot: "green",
+      primarySlot: "blue",
+    });
     expect(shift1.success).toBe(true);
     expect(shift1.state.active).toBe(true);
     expect(shift1.state.stage).toBe(1);

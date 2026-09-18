@@ -9,11 +9,41 @@
  */
 
 export const FUNNEL_STAGES = [
-  { key: "visit", entity: "page", action: "view", en: "Visitors", bn: "ভিজিটর" },
-  { key: "product", entity: "product", action: "view", en: "Product views", bn: "প্রোডাক্ট ভিউ" },
-  { key: "cart", entity: "cart", action: "add", en: "Added to cart", bn: "কার্টে যোগ" },
-  { key: "checkout", entity: "checkout", action: "start", en: "Checkout started", bn: "চেকআউট শুরু" },
-  { key: "paid", entity: "order", action: "paid", en: "Paid", bn: "পেমেন্ট সম্পন্ন" },
+  {
+    key: "visit",
+    entity: "page",
+    action: "view",
+    en: "Visitors",
+    bn: "ভিজিটর",
+  },
+  {
+    key: "product",
+    entity: "product",
+    action: "view",
+    en: "Product views",
+    bn: "প্রোডাক্ট ভিউ",
+  },
+  {
+    key: "cart",
+    entity: "cart",
+    action: "add",
+    en: "Added to cart",
+    bn: "কার্টে যোগ",
+  },
+  {
+    key: "checkout",
+    entity: "checkout",
+    action: "start",
+    en: "Checkout started",
+    bn: "চেকআউট শুরু",
+  },
+  {
+    key: "paid",
+    entity: "order",
+    action: "paid",
+    en: "Paid",
+    bn: "পেমেন্ট সম্পন্ন",
+  },
 ] as const;
 
 export type FunnelStageKey = (typeof FUNNEL_STAGES)[number]["key"];
@@ -118,14 +148,22 @@ export type CohortMatrix = {
   rows: {
     week: string;
     size: number;
-    cells: { offset: number; active: number; retention: number; revenueMinorInt: number }[];
+    cells: {
+      offset: number;
+      active: number;
+      retention: number;
+      revenueMinorInt: number;
+    }[];
   }[];
   /** Average retention per offset across cohorts, offset 0 excluded. */
   averages: { offset: number; retention: number }[];
 };
 
 /** Turns flat cohort rows into a dense retention grid the UI can render. */
-export function buildCohortMatrix(rows: CohortRow[], maxOffsetCap = 8): CohortMatrix {
+export function buildCohortMatrix(
+  rows: CohortRow[],
+  maxOffsetCap = 8,
+): CohortMatrix {
   const byWeek = new Map<string, CohortRow[]>();
   for (const row of rows) {
     if (row.week_offset < 0 || row.week_offset > maxOffsetCap) continue;
@@ -161,22 +199,38 @@ export function buildCohortMatrix(rows: CohortRow[], maxOffsetCap = 8): CohortMa
     const values = grid
       .map((r) => r.cells[offset]?.retention ?? 0)
       .filter((_, i) => (grid[i]?.size ?? 0) > 0);
-    const avg = values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+    const avg = values.length
+      ? values.reduce((a, b) => a + b, 0) / values.length
+      : 0;
     averages.push({ offset, retention: round1(avg) });
   }
 
   return { weeks, maxOffset, rows: grid, averages };
 }
 
-export const PERSONAS = ["new", "repeat", "loyal", "vip", "at_risk", "dormant"] as const;
+export const PERSONAS = [
+  "new",
+  "repeat",
+  "loyal",
+  "vip",
+  "at_risk",
+  "dormant",
+] as const;
 export type Persona = (typeof PERSONAS)[number];
 
-export const PERSONA_LABELS: Record<Persona, { en: string; bn: string; hint: string }> = {
+export const PERSONA_LABELS: Record<
+  Persona,
+  { en: string; bn: string; hint: string }
+> = {
   new: { en: "First-time", bn: "নতুন", hint: "One order, bought recently" },
   repeat: { en: "Repeat", bn: "রিপিট", hint: "2-3 orders and still active" },
   loyal: { en: "Loyal", bn: "লয়্যাল", hint: "4+ orders and still active" },
   vip: { en: "VIP", bn: "ভিআইপি", hint: "Top spenders — high lifetime value" },
-  at_risk: { en: "At risk", bn: "ঝুঁকিতে", hint: "Was active, quiet for 60-120 days" },
+  at_risk: {
+    en: "At risk",
+    bn: "ঝুঁকিতে",
+    hint: "Was active, quiet for 60-120 days",
+  },
   dormant: { en: "Dormant", bn: "নিষ্ক্রিয়", hint: "No order in 120+ days" },
 };
 
@@ -190,9 +244,16 @@ export type BuyerStats = {
  * Deterministic persona banding. VIP wins over everything (spend is the
  * strongest signal), then recency decay, then frequency.
  */
-export function classifyPersona(stats: BuyerStats, vipSpendMinorInt: number): Persona {
+export function classifyPersona(
+  stats: BuyerStats,
+  vipSpendMinorInt: number,
+): Persona {
   if (stats.orders <= 0) return "dormant";
-  if (vipSpendMinorInt > 0 && stats.spendMinorInt >= vipSpendMinorInt && stats.daysSinceLast <= 120) {
+  if (
+    vipSpendMinorInt > 0 &&
+    stats.spendMinorInt >= vipSpendMinorInt &&
+    stats.daysSinceLast <= 120
+  ) {
     return "vip";
   }
   if (stats.daysSinceLast > 120) return "dormant";
@@ -251,13 +312,15 @@ export function summarizeAging(rows: AgingInput[]) {
     const bucket = buckets[i]!;
     bucket.units += Math.max(0, row.stock);
     bucket.variants += 1;
-    bucket.tiedUpMinorInt += Math.max(0, row.stock) * Math.max(0, row.unitCostMinorInt);
+    bucket.tiedUpMinorInt +=
+      Math.max(0, row.stock) * Math.max(0, row.unitCostMinorInt);
   }
 
   return {
     buckets,
     totalTiedUpMinorInt: buckets.reduce((sum, b) => sum + b.tiedUpMinorInt, 0),
-    deadStockMinorInt: buckets.find((b) => b.key === "dead")?.tiedUpMinorInt ?? 0,
+    deadStockMinorInt:
+      buckets.find((b) => b.key === "dead")?.tiedUpMinorInt ?? 0,
   };
 }
 
@@ -267,7 +330,12 @@ export const REPORT_DATASETS = {
   orders: {
     en: "Orders",
     dimensions: ["day", "status", "payment_method", "channel"],
-    metrics: ["orders", "revenue_minor_int", "aov_minor_int", "discount_minor_int"],
+    metrics: [
+      "orders",
+      "revenue_minor_int",
+      "aov_minor_int",
+      "discount_minor_int",
+    ],
   },
   products: {
     en: "Product performance",
@@ -307,7 +375,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  * Rejects a report before it can be scheduled: unknown columns, empty metric
  * lists and bad recipients would otherwise fail silently at 3am in a cron run.
  */
-export function validateReport(input: ReportDefinition): { ok: true } | { ok: false; errors: string[] } {
+export function validateReport(
+  input: ReportDefinition,
+): { ok: true } | { ok: false; errors: string[] } {
   const errors: string[] = [];
   const dataset = REPORT_DATASETS[input.dataset as DatasetKey];
 
@@ -316,7 +386,8 @@ export function validateReport(input: ReportDefinition): { ok: true } | { ok: fa
   }
   if (input.metrics.length === 0) errors.push("Pick at least one metric");
   if (input.metrics.length > 6) errors.push("At most 6 metrics per report");
-  if (input.dimensions.length > 3) errors.push("At most 3 dimensions per report");
+  if (input.dimensions.length > 3)
+    errors.push("At most 3 dimensions per report");
 
   for (const dim of input.dimensions) {
     if (!(dataset.dimensions as readonly string[]).includes(dim)) {
@@ -328,11 +399,17 @@ export function validateReport(input: ReportDefinition): { ok: true } | { ok: fa
       errors.push(`"${metric}" is not a metric of ${dataset.en}`);
     }
   }
-  if (!Number.isInteger(input.rangeDays) || input.rangeDays < 1 || input.rangeDays > 365) {
+  if (
+    !Number.isInteger(input.rangeDays) ||
+    input.rangeDays < 1 ||
+    input.rangeDays > 365
+  ) {
     errors.push("Range must be between 1 and 365 days");
   }
-  if (!(SCHEDULES as readonly string[]).includes(input.schedule)) errors.push("Unknown schedule");
-  if (!(FORMATS as readonly string[]).includes(input.format)) errors.push("Unknown format");
+  if (!(SCHEDULES as readonly string[]).includes(input.schedule))
+    errors.push("Unknown schedule");
+  if (!(FORMATS as readonly string[]).includes(input.format))
+    errors.push("Unknown format");
   if (input.recipients.length > 10) errors.push("At most 10 recipients");
   for (const to of input.recipients) {
     if (!EMAIL_RE.test(to)) errors.push(`"${to}" is not a valid email`);
@@ -353,13 +430,18 @@ export function nextRunAt(schedule: string, from: Date): string | null {
 }
 
 /** CSV with RFC-4180 quoting so a product title with a comma cannot shift columns. */
-export function toCsv(rows: Record<string, unknown>[], columns: string[]): string {
+export function toCsv(
+  rows: Record<string, unknown>[],
+  columns: string[],
+): string {
   const escape = (value: unknown) => {
     const text = value === null || value === undefined ? "" : String(value);
     return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
   };
   const head = columns.map(escape).join(",");
-  const body = rows.map((row) => columns.map((c) => escape(row[c])).join(",")).join("\n");
+  const body = rows
+    .map((row) => columns.map((c) => escape(row[c])).join(","))
+    .join("\n");
   return rows.length ? `${head}\n${body}` : head;
 }
 
@@ -381,7 +463,9 @@ export type BatchRow = {
  * renumbering.
  */
 export function auditBatchChain(batches: BatchRow[]) {
-  const ordered = [...batches].sort((a, b) => a.created_at.localeCompare(b.created_at));
+  const ordered = [...batches].sort((a, b) =>
+    a.created_at.localeCompare(b.created_at),
+  );
   const ids = new Set(ordered.map((b) => b.id));
   const problems: { batchId: string; reason: string }[] = [];
 
@@ -394,7 +478,8 @@ export function auditBatchChain(batches: BatchRow[]) {
     }
     if (batch.previous_batch_id && !ids.has(batch.previous_batch_id)) {
       // Out of window rather than missing — only flag when it is also uncommitted.
-      if (!batch.committed_at) problems.push({ batchId: batch.id, reason: "orphan" });
+      if (!batch.committed_at)
+        problems.push({ batchId: batch.id, reason: "orphan" });
     }
     if (batch.status !== "committed" && !batch.committed_at) {
       problems.push({ batchId: batch.id, reason: "uncommitted" });
@@ -405,7 +490,8 @@ export function auditBatchChain(batches: BatchRow[]) {
   return {
     healthy: problems.length === 0,
     problems,
-    lastCommittedAt: [...ordered].reverse().find((b) => b.committed_at)?.committed_at ?? null,
+    lastCommittedAt:
+      [...ordered].reverse().find((b) => b.committed_at)?.committed_at ?? null,
     lastBatchId: last?.id ?? null,
     totalEvents: ordered.reduce((sum, b) => sum + (b.event_count ?? 0), 0),
   };

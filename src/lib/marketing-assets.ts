@@ -92,7 +92,12 @@ export const ICONS = {
 } as const;
 
 /** Assets a page may request that are not ours to budget (analytics pixels…). */
-export const REQUEST_IGNORE = [/^data:/, /^blob:/, /\/@vite\//, /\/@react-refresh/];
+export const REQUEST_IGNORE = [
+  /^data:/,
+  /^blob:/,
+  /\/@vite\//,
+  /\/@react-refresh/,
+];
 
 /* -------------------------------------------------------------------------- */
 /* Findings                                                                   */
@@ -151,10 +156,17 @@ const finding = (
   where: string,
   message: string,
   detail?: Record<string, unknown>,
-): AssetFinding => ({ code, severity, where, message, ...(detail ? { detail } : {}) });
+): AssetFinding => ({
+  code,
+  severity,
+  where,
+  message,
+  ...(detail ? { detail } : {}),
+});
 
 export function formatAssetFinding(f: AssetFinding) {
-  const label = f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
+  const label =
+    f.severity === "error" ? "FAIL" : f.severity === "warn" ? "WARN" : "INFO";
   return `${label} [${f.code}] ${f.where}: ${f.message}`;
 }
 
@@ -341,7 +353,10 @@ export function uiStill(id: string): UiStill {
   return found;
 }
 
-export function stillSource(still: UiStill, format: (typeof STILLS.formats)[number]) {
+export function stillSource(
+  still: UiStill,
+  format: (typeof STILLS.formats)[number],
+) {
   return `${STILL_DIR}/${still.file}.${format}`;
 }
 
@@ -442,23 +457,65 @@ const MINT = "162 74% 52%";
 const AMBER = "38 96% 60%";
 
 export const OG_CARDS: readonly OgCard[] = [
-  { route: "home", eyebrow: { en: "Commerce platform", bn: "কমার্স প্ল্যাটফর্ম" }, accent: SIGNAL },
-  { route: "features", eyebrow: { en: "Features", bn: "ফিচার" }, accent: SIGNAL },
+  {
+    route: "home",
+    eyebrow: { en: "Commerce platform", bn: "কমার্স প্ল্যাটফর্ম" },
+    accent: SIGNAL,
+  },
+  {
+    route: "features",
+    eyebrow: { en: "Features", bn: "ফিচার" },
+    accent: SIGNAL,
+  },
   { route: "pricing", eyebrow: { en: "Pricing", bn: "মূল্য" }, accent: MINT },
-  { route: "builder", eyebrow: { en: "Builder", bn: "বিল্ডার" }, accent: AURORA },
-  { route: "payments", eyebrow: { en: "Payments", bn: "পেমেন্ট" }, accent: MINT },
-  { route: "fulfilment", eyebrow: { en: "Fulfilment", bn: "ফুলফিলমেন্ট" }, accent: AMBER },
-  { route: "customers", eyebrow: { en: "Customers", bn: "গ্রাহক" }, accent: SIGNAL },
-  { route: "security", eyebrow: { en: "Security", bn: "নিরাপত্তা" }, accent: SIGNAL },
-  { route: "about", eyebrow: { en: "About", bn: "আমাদের কথা" }, accent: AURORA },
-  { route: "docs", eyebrow: { en: "Developers", bn: "ডেভেলপার" }, accent: SIGNAL },
-  { route: "contact", eyebrow: { en: "Contact", bn: "যোগাযোগ" }, accent: AMBER },
+  {
+    route: "builder",
+    eyebrow: { en: "Builder", bn: "বিল্ডার" },
+    accent: AURORA,
+  },
+  {
+    route: "payments",
+    eyebrow: { en: "Payments", bn: "পেমেন্ট" },
+    accent: MINT,
+  },
+  {
+    route: "fulfilment",
+    eyebrow: { en: "Fulfilment", bn: "ফুলফিলমেন্ট" },
+    accent: AMBER,
+  },
+  {
+    route: "customers",
+    eyebrow: { en: "Customers", bn: "গ্রাহক" },
+    accent: SIGNAL,
+  },
+  {
+    route: "security",
+    eyebrow: { en: "Security", bn: "নিরাপত্তা" },
+    accent: SIGNAL,
+  },
+  {
+    route: "about",
+    eyebrow: { en: "About", bn: "আমাদের কথা" },
+    accent: AURORA,
+  },
+  {
+    route: "docs",
+    eyebrow: { en: "Developers", bn: "ডেভেলপার" },
+    accent: SIGNAL,
+  },
+  {
+    route: "contact",
+    eyebrow: { en: "Contact", bn: "যোগাযোগ" },
+    accent: AMBER,
+  },
   { route: "blog", eyebrow: { en: "Journal", bn: "জার্নাল" }, accent: AURORA },
   { route: "legal", eyebrow: { en: "Legal", bn: "আইনি" }, accent: SIGNAL },
   { route: "status", eyebrow: { en: "Status", bn: "স্ট্যাটাস" }, accent: MINT },
 ] as const;
 
-const OG_BY_ROUTE = new Map<MarketingRouteId, OgCard>(OG_CARDS.map((c) => [c.route, c]));
+const OG_BY_ROUTE = new Map<MarketingRouteId, OgCard>(
+  OG_CARDS.map((c) => [c.route, c]),
+);
 
 export function ogCard(route: MarketingRouteId): OgCard | null {
   return OG_BY_ROUTE.get(route) ?? null;
@@ -472,7 +529,9 @@ export function ogAssetPath(route: MarketingRouteId): string | null {
 /** Alt text for the card. Scrapers show it when the image fails to load. */
 export function ogAssetAlt(route: MarketingRouteId, title: string) {
   const card = ogCard(route);
-  return card ? `${title} — ${card.eyebrow.en}, Framique` : `${title} — Framique`;
+  return card
+    ? `${title} — ${card.eyebrow.en}, Framique`
+    : `${title} — Framique`;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -519,7 +578,11 @@ export type OgSample = {
   twitterImage: string | null;
   ogImageAlt: string | null;
   /** HEAD probe of the asset. Null when the probe itself could not run. */
-  probe: { status: number; bytes: number | null; contentType: string | null } | null;
+  probe: {
+    status: number;
+    bytes: number | null;
+    contentType: string | null;
+  } | null;
   /** Intrinsic size of the decoded card, when the gate decoded it. */
   intrinsic: { width: number; height: number } | null;
   /** True when the tag came from the shared root document rather than the leaf. */
@@ -551,8 +614,10 @@ export type AssetPageMeasurement = {
 /* Auditors                                                                   */
 /* -------------------------------------------------------------------------- */
 
-const at = (m: { route: string | MarketingRouteId; width: number }, suffix: string) =>
-  `${m.route} @${m.width} · ${suffix}`;
+const at = (
+  m: { route: string | MarketingRouteId; width: number },
+  suffix: string,
+) => `${m.route} @${m.width} · ${suffix}`;
 
 /**
  * TODO §10.5 bullet 1. Every registry-backed image must carry intrinsic
@@ -563,7 +628,10 @@ const at = (m: { route: string | MarketingRouteId; width: number }, suffix: stri
 export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
   const out: AssetFinding[] = [];
   for (const s of m.stills) {
-    const where = at(m, `still:${s.id ?? s.currentSrc.split("/").pop() ?? "unknown"}`);
+    const where = at(
+      m,
+      `still:${s.id ?? s.currentSrc.split("/").pop() ?? "unknown"}`,
+    );
 
     if (!s.id || !STILL_BY_ID.has(s.id)) {
       out.push(
@@ -581,9 +649,15 @@ export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
 
     if (s.naturalWidth === 0 || s.naturalHeight === 0) {
       out.push(
-        finding("asset.still.broken", "error", where, "image failed to decode (naturalWidth is 0)", {
-          src: s.currentSrc,
-        }),
+        finding(
+          "asset.still.broken",
+          "error",
+          where,
+          "image failed to decode (naturalWidth is 0)",
+          {
+            src: s.currentSrc,
+          },
+        ),
       );
       // Nothing else is measurable on a broken image.
       continue;
@@ -608,7 +682,10 @@ export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
             "error",
             where,
             `declared aspect ${declared.toFixed(3)} does not match the file's ${actual.toFixed(3)}`,
-            { attr: [s.attrWidth, s.attrHeight], natural: [s.naturalWidth, s.naturalHeight] },
+            {
+              attr: [s.attrWidth, s.attrHeight],
+              natural: [s.naturalWidth, s.naturalHeight],
+            },
           ),
         );
       }
@@ -636,7 +713,10 @@ export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
             "warn",
             where,
             `rendered at ${density.toFixed(2)}x; §10.5 asks for ${STILLS.dpr}x crops`,
-            { naturalWidth: s.naturalWidth, displayWidth: Math.round(s.displayWidth) },
+            {
+              naturalWidth: s.naturalWidth,
+              displayWidth: Math.round(s.displayWidth),
+            },
           ),
         );
       }
@@ -645,9 +725,17 @@ export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
     const alt = (s.alt ?? "").trim();
     if (!alt) {
       out.push(
-        finding("asset.still.alt_missing", "error", where, "no alt text on a meaningful screenshot"),
+        finding(
+          "asset.still.alt_missing",
+          "error",
+          where,
+          "no alt text on a meaningful screenshot",
+        ),
       );
-    } else if (alt.length < STILLS.minAltChars || alt.length > STILLS.maxAltChars) {
+    } else if (
+      alt.length < STILLS.minAltChars ||
+      alt.length > STILLS.maxAltChars
+    ) {
       out.push(
         finding(
           "asset.still.alt_length",
@@ -681,8 +769,7 @@ export function auditStills(m: AssetPageMeasurement): AssetFinding[] {
     }
 
     const ext = s.currentSrc.split(".").pop()?.split("?")[0] as
-      | keyof typeof STILLS.maxBytes
-      | undefined;
+      keyof typeof STILLS.maxBytes | undefined;
     const budget = ext && ext in STILLS.maxBytes ? STILLS.maxBytes[ext] : null;
     if (budget !== null && s.bytes !== null && s.bytes > budget) {
       out.push(
@@ -716,7 +803,11 @@ export function auditIcons(m: AssetPageMeasurement): AssetFinding[] {
       ),
     );
   }
-  if (m.sprite?.ok && m.sprite.bytes !== null && m.sprite.bytes > ICONS.maxBytes) {
+  if (
+    m.sprite?.ok &&
+    m.sprite.bytes !== null &&
+    m.sprite.bytes > ICONS.maxBytes
+  ) {
     out.push(
       finding(
         "asset.icon.sprite_oversize",
@@ -844,12 +935,22 @@ export function auditOpenGraph(m: AssetPageMeasurement): AssetFinding[] {
   }
   if (!s.twitterImage) {
     out.push(
-      finding("asset.og.twitter_mismatch", "warn", where, "og:image present but twitter:image absent"),
+      finding(
+        "asset.og.twitter_mismatch",
+        "warn",
+        where,
+        "og:image present but twitter:image absent",
+      ),
     );
   }
   if (!s.ogImageAlt?.trim()) {
     out.push(
-      finding("asset.og.alt_missing", "warn", where, "og:image:alt is absent; add a one-line description"),
+      finding(
+        "asset.og.alt_missing",
+        "warn",
+        where,
+        "og:image:alt is absent; add a one-line description",
+      ),
     );
   }
   if (s.probe) {
@@ -888,7 +989,10 @@ export function auditOpenGraph(m: AssetPageMeasurement): AssetFinding[] {
       }
     }
   }
-  if (s.intrinsic && (s.intrinsic.width !== OG.width || s.intrinsic.height !== OG.height)) {
+  if (
+    s.intrinsic &&
+    (s.intrinsic.width !== OG.width || s.intrinsic.height !== OG.height)
+  ) {
     out.push(
       finding(
         "asset.og.dimensions",
@@ -912,13 +1016,29 @@ export function auditRequests(m: AssetPageMeasurement): AssetFinding[] {
     if (REQUEST_IGNORE.some((re) => re.test(r.url))) continue;
     const where = at(m, `request:${r.url.replace(/^https?:\/\/[^/]+/, "")}`);
     if (r.status === 404) {
-      out.push(finding("asset.request.not_found", "error", where, `404 on a ${r.resourceType} request`));
+      out.push(
+        finding(
+          "asset.request.not_found",
+          "error",
+          where,
+          `404 on a ${r.resourceType} request`,
+        ),
+      );
     } else if (r.status >= 400) {
       out.push(
-        finding("asset.request.error", "error", where, `HTTP ${r.status} on a ${r.resourceType} request`),
+        finding(
+          "asset.request.error",
+          "error",
+          where,
+          `HTTP ${r.status} on a ${r.resourceType} request`,
+        ),
       );
     }
-    if (r.resourceType === "image" && r.contentType && !r.contentType.startsWith("image/")) {
+    if (
+      r.resourceType === "image" &&
+      r.contentType &&
+      !r.contentType.startsWith("image/")
+    ) {
       out.push(
         finding(
           "asset.request.wrong_type",
@@ -949,7 +1069,9 @@ export function auditAssetPage(m: AssetPageMeasurement) {
  * simple existence probe so a missing file is reported once, by name, instead
  * of eleven times as a 404.
  */
-export function auditAssetInventory(present: (path: string) => boolean): AssetFinding[] {
+export function auditAssetInventory(
+  present: (path: string) => boolean,
+): AssetFinding[] {
   const out: AssetFinding[] = [];
   for (const s of UI_STILLS) {
     for (const format of STILLS.formats) {
@@ -957,7 +1079,9 @@ export function auditAssetInventory(present: (path: string) => boolean): AssetFi
       if (!present(path)) {
         out.push(
           finding(
-            format === "png" ? "asset.still.broken" : "asset.still.no_modern_format",
+            format === "png"
+              ? "asset.still.broken"
+              : "asset.still.no_modern_format",
             format === "png" ? "error" : "warn",
             `inventory · still:${s.id}`,
             `${path} is missing; run \`bun run assets:stills\``,

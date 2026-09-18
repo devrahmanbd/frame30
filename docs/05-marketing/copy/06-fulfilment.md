@@ -53,7 +53,7 @@ Shell: marketing shell, dark canvas. Scope: product deep-dive page for the order
 
 ## 1. Hero
 
-*Lever: specificity beats hype — naming the exact couriers and the exact surface (the drawer) makes the claim falsifiable, which is what makes it credible.*
+_Lever: specificity beats hype — naming the exact couriers and the exact surface (the drawer) makes the claim falsifiable, which is what makes it credible._
 
 - **Eyebrow**: `Four couriers · one drawer`
 - **H1**: **From order to doorstep, tracked.**
@@ -68,7 +68,7 @@ Shell: marketing shell, dark canvas. Scope: product deep-dive page for the order
 
 ## 2. Courier wall
 
-*Lever: recognition heuristic — buyers scan for their existing courier relationships before reading a single sentence of copy.*
+_Lever: recognition heuristic — buyers scan for their existing courier relationships before reading a single sentence of copy._
 
 Row of inline SVG marks with `aria-label`: **SteadFast · Pathao · RedX · Paperfly**, plus **Manual / own rider** rendered as a fifth, first-class tile (dashed hairline border, not greyed out) so merchants running their own delivery fleet don't read this page as "courier-only."
 
@@ -80,7 +80,7 @@ Caption: One credential per courier, entered once in Settings → Couriers. Noth
 
 ## 3. The order lifecycle: a state machine, not a status label
 
-*Lever: mental-model transfer — merchants coming from a spreadsheet think of "status" as a free-text field they update manually. Naming it a state machine sets the expectation that state changes are system-driven and auditable, which is the actual value proposition.*
+_Lever: mental-model transfer — merchants coming from a spreadsheet think of "status" as a free-text field they update manually. Naming it a state machine sets the expectation that state changes are system-driven and auditable, which is the actual value proposition._
 
 Every order occupies exactly one state at a time. States only move forward, except the three terminal branches (`Delivered`, `Returned`, `Lost`), and every transition writes an **order event** with an actor (system, courier webhook, or staff name) and a timestamp — the same event log a support agent, a courier, and a customer's public tracking page all read from.
 
@@ -88,16 +88,16 @@ Every order occupies exactly one state at a time. States only move forward, exce
 
 ### 3.1 What happens automatically at each state
 
-| State | Trigger | Automatic actions | Who can see it |
-|---|---|---|---|
-| **Placed** | Customer completes checkout (or staff creates a manual order) | Inventory soft-reserved (see §9); order confirmation sent by SMS/email/WhatsApp; fraud/COD risk score attached if enabled | Staff, customer |
-| **Confirmed** | Staff clicks Confirm, or auto-confirm rule passes (e.g. prepaid, or COD under a risk threshold) | Order enters the pick queue; hard inventory allocation; "Confirmed" Bangla SMS sent | Staff, customer |
-| **Packed** | Staff marks items packed against the pick-list (§8) | Package weight/dimensions locked for courier rate calc; label becomes eligible for generation | Staff |
-| **Picked up** | Courier scans the label or staff marks manual handover | Pickup timestamp and courier consignment ID attached to the order; "On the way" SMS sent | Staff, customer, courier |
-| **In transit** | Courier webhook posts an intermediate scan | Each scan appended to the public tracking timeline; ETA recalculated if the courier supplies one | Staff, customer |
-| **Delivered** | Courier webhook posts final delivery scan, or staff manually confirms cash-in-hand | COD amount posted to the remittance ledger (§12) as "awaited"; inventory deduction finalized; delivery SMS + review-request trigger sent | Staff, customer |
-| **Returned** | Courier webhook posts RTO/return scan, or staff processes a customer-initiated return | Return reason captured; stock optionally auto-restocked pending inspection (§9); return counted against that courier's return-rate metric (§6) | Staff |
-| **Lost** | Staff marks lost after courier confirms non-recovery, or after an SLA-breach investigation (§11) closes with no resolution | Inventory written off; case flagged for courier claim; excluded from delivery-rate KPI as a distinct category from "returned" | Staff |
+| State          | Trigger                                                                                                                    | Automatic actions                                                                                                                              | Who can see it           |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| **Placed**     | Customer completes checkout (or staff creates a manual order)                                                              | Inventory soft-reserved (see §9); order confirmation sent by SMS/email/WhatsApp; fraud/COD risk score attached if enabled                      | Staff, customer          |
+| **Confirmed**  | Staff clicks Confirm, or auto-confirm rule passes (e.g. prepaid, or COD under a risk threshold)                            | Order enters the pick queue; hard inventory allocation; "Confirmed" Bangla SMS sent                                                            | Staff, customer          |
+| **Packed**     | Staff marks items packed against the pick-list (§8)                                                                        | Package weight/dimensions locked for courier rate calc; label becomes eligible for generation                                                  | Staff                    |
+| **Picked up**  | Courier scans the label or staff marks manual handover                                                                     | Pickup timestamp and courier consignment ID attached to the order; "On the way" SMS sent                                                       | Staff, customer, courier |
+| **In transit** | Courier webhook posts an intermediate scan                                                                                 | Each scan appended to the public tracking timeline; ETA recalculated if the courier supplies one                                               | Staff, customer          |
+| **Delivered**  | Courier webhook posts final delivery scan, or staff manually confirms cash-in-hand                                         | COD amount posted to the remittance ledger (§12) as "awaited"; inventory deduction finalized; delivery SMS + review-request trigger sent       | Staff, customer          |
+| **Returned**   | Courier webhook posts RTO/return scan, or staff processes a customer-initiated return                                      | Return reason captured; stock optionally auto-restocked pending inspection (§9); return counted against that courier's return-rate metric (§6) | Staff                    |
+| **Lost**       | Staff marks lost after courier confirms non-recovery, or after an SLA-breach investigation (§11) closes with no resolution | Inventory written off; case flagged for courier claim; excluded from delivery-rate KPI as a distinct category from "returned"                  | Staff                    |
 
 Caption under the table: Returned and Lost are both exits from In transit, not from Delivered — a parcel does not need to reach the doorstep to leave the pipeline.
 
@@ -107,7 +107,7 @@ Caption under the table: Returned and Lost are both exits from In transit, not f
 
 ## 4. Multi-courier booking, inside the order drawer
 
-*Lever: reduction of switching cost — every extra tab or login is a decision point where a task gets deferred. Collapsing courier choice, label generation and pickup request into one drawer removes three decision points, not one.*
+_Lever: reduction of switching cost — every extra tab or login is a decision point where a task gets deferred. Collapsing courier choice, label generation and pickup request into one drawer removes three decision points, not one._
 
 **Z row, text-left, image-right**
 
@@ -130,7 +130,7 @@ What the drawer does concretely, in order:
 
 ## 5. Courier selection decision framework
 
-*Lever: worked decision trees outperform prose rules — a merchant packing at 11pm needs a lookup, not an essay.*
+_Lever: worked decision trees outperform prose rules — a merchant packing at 11pm needs a lookup, not an essay._
 
 No single courier wins every parcel. The right choice depends on four variables you already know at pack time: **destination zone, weight band, fragility, and COD value**. Treat courier selection as a decision tree, not a default.
 
@@ -154,13 +154,13 @@ No single courier wins every parcel. The right choice depends on four variables 
 
 Values are couriers' published terms shown for comparison — not a Framique guarantee, and not a substitute for your signed contract.
 
-| Courier | Inside-Dhaka coverage | Outside-Dhaka coverage | Typical pickup cut-off | Typical COD remittance cycle | Return window |
-|---|---|---|---|---|---|
-| SteadFast | Full metro | Wide, most districts | Same-day if booked before contracted cut-off | Weekly, per your contract | Per courier policy |
-| Pathao | Full metro | Major districts | Same-day, tight cut-off | Weekly or twice-weekly, per your contract | Per courier policy |
-| RedX | Full metro | Wide, most districts | Same-day if booked before contracted cut-off | Weekly, per your contract | Per courier policy |
-| Paperfly | Full metro | Widest rural reach, per operator claims | Next-day standard | Weekly, per your contract | Per courier policy |
-| Manual / own rider | Your defined zone | N/A | Your own SOP | Same-day cash-in-hand | Your own policy |
+| Courier            | Inside-Dhaka coverage | Outside-Dhaka coverage                  | Typical pickup cut-off                       | Typical COD remittance cycle              | Return window      |
+| ------------------ | --------------------- | --------------------------------------- | -------------------------------------------- | ----------------------------------------- | ------------------ |
+| SteadFast          | Full metro            | Wide, most districts                    | Same-day if booked before contracted cut-off | Weekly, per your contract                 | Per courier policy |
+| Pathao             | Full metro            | Major districts                         | Same-day, tight cut-off                      | Weekly or twice-weekly, per your contract | Per courier policy |
+| RedX               | Full metro            | Wide, most districts                    | Same-day if booked before contracted cut-off | Weekly, per your contract                 | Per courier policy |
+| Paperfly           | Full metro            | Widest rural reach, per operator claims | Next-day standard                            | Weekly, per your contract                 | Per courier policy |
+| Manual / own rider | Your defined zone     | N/A                                     | Your own SOP                                 | Same-day cash-in-hand                     | Your own policy    |
 
 **Design note**: hairline-row table, `surface-1`, monospaced numerals for cut-off/cycle columns for scanability. The decision tree renders as a 4-question vertical accordion above the table on mobile; on desktop, a 2×2 glass card grid, one card per variable.
 
@@ -168,7 +168,7 @@ Values are couriers' published terms shown for comparison — not a Framique gua
 
 ## 6. Returns and RTO reduction: a playbook, with a worked margin example
 
-*Lever: loss aversion framed as a controllable number — merchants underestimate RTO cost until it's shown against their own margin, at which point it becomes the single most actionable metric on this page.*
+_Lever: loss aversion framed as a controllable number — merchants underestimate RTO cost until it's shown against their own margin, at which point it becomes the single most actionable metric on this page._
 
 Return-to-origin (RTO) is not a courier problem alone; it's a data-quality and expectation-setting problem that happens to surface at the courier. Three levers reduce it, in order of typical impact:
 
@@ -208,7 +208,7 @@ Caption: Recompute this with your own AOV, margin and RTO rate under Analytics �
 
 ## 7. Address quality and phone verification
 
-*Lever: front-loading friction that prevents downstream cost is easier to justify once §6's math is visible — sequencing matters.*
+_Lever: front-loading friction that prevents downstream cost is easier to justify once §6's math is visible — sequencing matters._
 
 Two structured fields do most of the work:
 
@@ -225,7 +225,7 @@ Both fields feed the risk score referenced in §3's "Placed" row — a mismatche
 
 ## 8. Packing and pick-list workflow for a small warehouse
 
-*Lever: procedural clarity reduces the "who does what" ambiguity that causes packing errors more often than carelessness does.*
+_Lever: procedural clarity reduces the "who does what" ambiguity that causes packing errors more often than carelessness does._
 
 For a one-to-five-person packing operation, the workflow that scales without new headcount looks like this:
 
@@ -249,17 +249,17 @@ For a one-to-five-person packing operation, the workflow that scales without new
 
 ## 9. Inventory reservation and oversell prevention
 
-*Lever: the oversell scenario is the single most trust-damaging failure mode in commerce — showing the exact reservation mechanics converts a vague reassurance into an inspectable fact.*
+_Lever: the oversell scenario is the single most trust-damaging failure mode in commerce — showing the exact reservation mechanics converts a vague reassurance into an inspectable fact._
 
 Stock moves through the same discipline as orders — a state, not a single number:
 
-| Stock state | When it applies | Counted in "available to sell"? |
-|---|---|---|
-| **On hand** | Physically in the warehouse, uncommitted | Yes |
-| **Soft-reserved** | Order Placed, payment not yet settled or COD not yet confirmed | No — decremented from available immediately |
-| **Hard-allocated** | Order Confirmed | No — locked to that order specifically |
-| **Deducted** | Order Delivered | No — permanently removed from on-hand |
-| **Restocked** | Order Returned and inspection passed | Yes, once inspection completes |
+| Stock state        | When it applies                                                | Counted in "available to sell"?             |
+| ------------------ | -------------------------------------------------------------- | ------------------------------------------- |
+| **On hand**        | Physically in the warehouse, uncommitted                       | Yes                                         |
+| **Soft-reserved**  | Order Placed, payment not yet settled or COD not yet confirmed | No — decremented from available immediately |
+| **Hard-allocated** | Order Confirmed                                                | No — locked to that order specifically      |
+| **Deducted**       | Order Delivered                                                | No — permanently removed from on-hand       |
+| **Restocked**      | Order Returned and inspection passed                           | Yes, once inspection completes              |
 
 Because soft-reservation happens at Placed, not at Confirmed, two customers cannot both check out the last unit and both receive a confirmation — the second checkout sees "unavailable" in real time, sourced from the same ledger the storefront reads.
 
@@ -271,19 +271,19 @@ Soft reservations that never reach Confirmed (abandoned COD orders, failed payme
 
 ## 10. Delivery-status webhooks and Bangla customer notifications
 
-*Lever: proactive status communication is a documented driver of reduced support load — "where is my parcel" tickets fall when the answer arrives before the question is asked.*
+_Lever: proactive status communication is a documented driver of reduced support load — "where is my parcel" tickets fall when the answer arrives before the question is asked._
 
 Every courier scan that reaches Framique via webhook does two things simultaneously: appends to the order's public tracking timeline, and — if the transition matches a notification rule — sends a customer message in the customer's stated language.
 
 ### 10.1 Notification rules and Bangla copy
 
-| Trigger state | Channel | English copy | বাংলা copy |
-|---|---|---|---|
-| Confirmed | SMS | Your order #{id} is confirmed and being packed. | আপনার অর্ডার #{id} নিশ্চিত হয়েছে, প্যাক করা হচ্ছে। |
-| Picked up | SMS | Your order #{id} is on its way with {courier}. | আপনার অর্ডার #{id} {courier}-এর মাধ্যমে যাত্রা শুরু করেছে। |
-| In transit (out for delivery) | SMS | Your parcel is out for delivery today. | আপনার পার্সেল আজ ডেলিভারির জন্য বের হয়েছে। |
-| Delivered | SMS + review request | Delivered. Thank you for your order — rate your experience: {link} | ডেলিভারি সম্পন্ন। ধন্যবাদ — আপনার অভিজ্ঞতা জানান: {link} |
-| Returned | SMS | Your order #{id} could not be delivered and is being returned. We'll contact you. | আপনার অর্ডার #{id} ডেলিভারি সম্ভব হয়নি, ফেরত পাঠানো হচ্ছে। আমরা যোগাযোগ করব। |
+| Trigger state                 | Channel              | English copy                                                                      | বাংলা copy                                                                    |
+| ----------------------------- | -------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Confirmed                     | SMS                  | Your order #{id} is confirmed and being packed.                                   | আপনার অর্ডার #{id} নিশ্চিত হয়েছে, প্যাক করা হচ্ছে।                           |
+| Picked up                     | SMS                  | Your order #{id} is on its way with {courier}.                                    | আপনার অর্ডার #{id} {courier}-এর মাধ্যমে যাত্রা শুরু করেছে।                    |
+| In transit (out for delivery) | SMS                  | Your parcel is out for delivery today.                                            | আপনার পার্সেল আজ ডেলিভারির জন্য বের হয়েছে।                                   |
+| Delivered                     | SMS + review request | Delivered. Thank you for your order — rate your experience: {link}                | ডেলিভারি সম্পন্ন। ধন্যবাদ — আপনার অভিজ্ঞতা জানান: {link}                      |
+| Returned                      | SMS                  | Your order #{id} could not be delivered and is being returned. We'll contact you. | আপনার অর্ডার #{id} ডেলিভারি সম্ভব হয়নি, ফেরত পাঠানো হচ্ছে। আমরা যোগাযোগ করব। |
 
 Each row is independently toggleable per merchant — a merchant running high-touch WhatsApp support may disable SMS for "In transit" and keep only "Confirmed" and "Delivered" to avoid over-messaging.
 
@@ -293,7 +293,7 @@ Each row is independently toggleable per merchant — a merchant running high-to
 
 ## 11. Exceptions queue and SLA breach handling
 
-*Lever: naming the failure path explicitly is more trust-building than pretending it doesn't exist — merchants have all been burned by silent courier failures before.*
+_Lever: naming the failure path explicitly is more trust-building than pretending it doesn't exist — merchants have all been burned by silent courier failures before._
 
 Not every order moves cleanly through the state machine. The exceptions queue collects anything that has stalled against a threshold you define, so it's a worklist, not a mystery:
 
@@ -317,15 +317,15 @@ Each exception surfaces with the order, the courier, the last known event, and t
 
 ## 12. Remittance reconciliation with the courier
 
-*Lever: the ledger metaphor makes an abstract "trust the courier" relationship into a concrete, auditable balance — the same instinct that makes bank statements trustworthy.*
+_Lever: the ledger metaphor makes an abstract "trust the courier" relationship into a concrete, auditable balance — the same instinct that makes bank statements trustworthy._
 
 COD money physically sits with the courier between Delivered and the courier's remittance payout. Framique tracks this as a running ledger per courier, not a single trust-based number:
 
-| Ledger state | Meaning |
-|---|---|
-| **Awaited** | Order Delivered, COD amount logged, courier has not yet paid out |
-| **Remitted** | Courier payout received and matched to one or more orders |
-| **Short** | Remitted amount doesn't match the sum of matched orders — flagged for manual reconciliation |
+| Ledger state | Meaning                                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Awaited**  | Order Delivered, COD amount logged, courier has not yet paid out                                                               |
+| **Remitted** | Courier payout received and matched to one or more orders                                                                      |
+| **Short**    | Remitted amount doesn't match the sum of matched orders — flagged for manual reconciliation                                    |
 | **Disputed** | Order marked Delivered by courier webhook, but merchant has no matching remittance after the courier's stated cycle has passed |
 
 Reconciliation workflow: when a courier payout arrives (bank transfer or courier-app statement), staff enters the payout amount and reference; Framique matches it against Awaited orders for that courier by amount and date range, auto-clearing exact matches and surfacing the remainder for manual line-by-line matching.
@@ -338,7 +338,7 @@ Worked check: 45 Delivered orders in a remittance cycle, COD total 54,200৳. Co
 
 ## 13. Peak-season capacity checklist: Eid and Pohela Boishakh
 
-*Lever: a dated, high-stakes seasonal moment converts general advice into an urgent, specific to-do list — merchants remember peak-season failures for years.*
+_Lever: a dated, high-stakes seasonal moment converts general advice into an urgent, specific to-do list — merchants remember peak-season failures for years._
 
 Order volume during Eid-ul-Fitr, Eid-ul-Adha, and Pohela Boishakh windows routinely multiplies baseline daily volume; courier networks and your own packing capacity both come under strain at the same time. Plan against capacity, not just demand:
 
@@ -357,20 +357,20 @@ Order volume during Eid-ul-Fitr, Eid-ul-Adha, and Pohela Boishakh windows routin
 
 ## 14. Comparison: Framique vs spreadsheet + courier panels
 
-*Lever: contrast with the reader's actual current workflow (not a straw-man competitor) makes the value concrete, because every line item maps to a task the reader personally does today.*
+_Lever: contrast with the reader's actual current workflow (not a straw-man competitor) makes the value concrete, because every line item maps to a task the reader personally does today._
 
-| Task | Spreadsheet + courier panels | Framique |
-|---|---|---|
-| Choosing a courier per order | Manual judgment call, no data | Suggested by the decision framework, always overridable |
-| Generating a label | Log into courier panel, re-type address | Generated from the order, address already there |
-| Requesting pickup | Separate action per courier panel | Batch request from the order list |
-| Tracking status | Check each courier's tracking page manually | Webhook-driven timeline on the order and a public customer page |
-| Customer "where is my order" messages | Manual reply, per message | Bangla notifications sent automatically at each state |
-| Return rate per courier | Not tracked, or tracked manually in a separate sheet | Automatic per-courier, per-month metric |
-| COD remittance matching | Manual line-by-line against a courier statement | Auto-matched, exceptions surfaced as Short/Disputed |
-| Oversell prevention | Manual stock check, error-prone at volume | Soft-reservation at order placement, real-time |
-| Exceptions (stalled orders) | Discovered when a customer complains | Surfaced automatically by elapsed-time thresholds |
-| Peak-season readiness | Ad hoc, remembered from last year if at all | Checklist and capacity settings built into the same dashboard |
+| Task                                  | Spreadsheet + courier panels                         | Framique                                                        |
+| ------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------- |
+| Choosing a courier per order          | Manual judgment call, no data                        | Suggested by the decision framework, always overridable         |
+| Generating a label                    | Log into courier panel, re-type address              | Generated from the order, address already there                 |
+| Requesting pickup                     | Separate action per courier panel                    | Batch request from the order list                               |
+| Tracking status                       | Check each courier's tracking page manually          | Webhook-driven timeline on the order and a public customer page |
+| Customer "where is my order" messages | Manual reply, per message                            | Bangla notifications sent automatically at each state           |
+| Return rate per courier               | Not tracked, or tracked manually in a separate sheet | Automatic per-courier, per-month metric                         |
+| COD remittance matching               | Manual line-by-line against a courier statement      | Auto-matched, exceptions surfaced as Short/Disputed             |
+| Oversell prevention                   | Manual stock check, error-prone at volume            | Soft-reservation at order placement, real-time                  |
+| Exceptions (stalled orders)           | Discovered when a customer complains                 | Surfaced automatically by elapsed-time thresholds               |
+| Peak-season readiness                 | Ad hoc, remembered from last year if at all          | Checklist and capacity settings built into the same dashboard   |
 
 Caption: The spreadsheet doesn't disappear because it was bad at its job — it disappears because a state machine and a webhook do the same job without the re-typing.
 
@@ -380,7 +380,7 @@ Caption: The spreadsheet doesn't disappear because it was bad at its job — it 
 
 ## 15. FAQ
 
-*Lever: objection-handling at the point of highest doubt — placed just before the final CTA, where a remaining unresolved question is most likely to stall conversion.*
+_Lever: objection-handling at the point of highest doubt — placed just before the final CTA, where a remaining unresolved question is most likely to stall conversion._
 
 1. **Do I need all four couriers, or can I use just one?**
    Use as many or as few as you want. The courier wall and the decision framework are most useful with two or more, since they let you compare, but a single-courier setup works identically — the drawer just won't show alternatives.
@@ -418,7 +418,7 @@ Caption: The spreadsheet doesn't disappear because it was bad at its job — it 
 
 ## 16. Final CTA
 
-*Lever: closing on the cost of inaction (manual reconciliation) rather than a generic feature summary, mirroring the worked-example framing from §6 so the last thing the reader sees is a number, not an adjective.*
+_Lever: closing on the cost of inaction (manual reconciliation) rather than a generic feature summary, mirroring the worked-example framing from §6 so the last thing the reader sees is a number, not an adjective._
 
 **H2**: Stop reconciling parcels by hand.
 **Sub**: Every state change, every label, every remitted taka — one ledger, not four browser tabs.

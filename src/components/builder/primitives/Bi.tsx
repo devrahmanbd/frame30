@@ -43,12 +43,17 @@ type Props = {
 };
 
 export function Bi({ value, locale, className, as = "span" }: Props) {
-  const pair: BiText = typeof value === "string" ? { en: value, bn: "" } : value;
+  const pair: BiText =
+    typeof value === "string" ? { en: value, bn: "" } : value;
   const tagged = resolveBiTextTagged(pair, locale);
   if (!tagged.text) return null;
   const Tag = as;
   return (
-    <Tag className={className} lang={tagged.lang} {...(tagged.state === "fallback" ? { "data-bn-fallback": "" } : {})}>
+    <Tag
+      className={className}
+      lang={tagged.lang}
+      {...(tagged.state === "fallback" ? { "data-bn-fallback": "" } : {})}
+    >
       {mixedScriptNodes(tagged.text, tagged.lang)}
     </Tag>
   );

@@ -13,20 +13,26 @@ export type NotificationSweepResult = {
   approvals: number;
 };
 
-export async function runNotificationSweep(subject = "cron"): Promise<NotificationSweepResult> {
+export async function runNotificationSweep(
+  subject = "cron",
+): Promise<NotificationSweepResult> {
   return withSpan("notifications.sweep", async () => {
     await enforceRateLimit("notifications.sweep", subject);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
     const { data, error } = await (
       supabaseAdmin as unknown as {
-        rpc: (fn: string) => Promise<{ data: unknown; error: { message: string } | null }>;
+        rpc: (
+          fn: string,
+        ) => Promise<{ data: unknown; error: { message: string } | null }>;
       }
     ).rpc("notifications_sweep");
     if (error) throw new Error(`notifications_sweep_failed: ${error.message}`);
 
     const result = data as NotificationSweepResult;
     for (const [key, value] of Object.entries(result ?? {})) {
-      if (typeof value === "number") incr("framique_notifications_total", { bucket: key }, value);
+      if (typeof value === "number")
+        incr("framique_notifications_total", { bucket: key }, value);
     }
     log("info", "notifications.sweep", { ...result });
     return result;

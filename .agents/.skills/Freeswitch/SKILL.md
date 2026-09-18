@@ -44,48 +44,49 @@ Based on my thorough exploration of the FreeSWITCH codebase, here is the compreh
 ## 1. Repository Overview
 
 ### 1.1 Directory Structure
-
 ```
+
 signalwire/freeswitch/
-├── src/                        # Core C source files
-│   ├── include/                # Public header files
-│   │   ├── switch.h            # Master include (include this in all modules)
-│   │   ├── switch_types.h      # All enums, typedefs, constants
-│   │   ├── switch_core.h       # Core engine API
-│   │   ├── switch_channel.h    # Channel management API
-│   │   ├── switch_event.h      # Event system API
-│   │   ├── switch_ivr.h        # IVR/originate API
-│   │   ├── switch_module_interfaces.h  # Module interface structs
-│   │   └── switch_xml.h        # XML processing API
-│   ├── mod/                    # Loadable modules
-│   │   ├── applications/       # Call control apps (mod_dptools, mod_conference, etc.)
-│   │   ├── endpoints/          # Protocol handlers (mod_sofia, mod_verto, etc.)
-│   │   ├── event_handlers/     # Event consumers (mod_event_socket, mod_json_cdr, etc.)
-│   │   ├── codecs/             # Audio/video codecs (mod_opus, mod_openh264, etc.)
-│   │   ├── dialplans/          # Dialplan engines (mod_dialplan_xml, etc.)
-│   │   ├── languages/          # Scripting (mod_lua, mod_perl, mod_managed, etc.)
-│   │   ├── formats/            # File formats (mod_local_stream, mod_vlc, etc.)
-│   │   ├── loggers/            # Log handlers (mod_console, mod_graylog2, etc.)
-│   │   ├── asr_tts/            # Speech (mod_flite, mod_pocketsphinx, etc.)
-│   │   └── xml_int/            # XML providers (mod_xml_rpc, mod_xml_curl, etc.)
-│   ├── switch_core.c           # Main engine init/shutdown
-│   ├── switch_core_session.c   # Session management
-│   ├── switch_channel.c        # Channel state machine
-│   ├── switch_event.c          # Event dispatch
-│   ├── switch_ivr_originate.c  # Call origination
-│   ├── switch_rtp.c            # RTP engine
-│   └── switch_xml.c            # XML parser
-├── conf/                       # Configuration templates
-│   ├── vanilla/                # Default production config
-│   ├── minimal/                # Minimal config for testing
-│   └── testing/                # CI/test config
+├── src/ # Core C source files
+│ ├── include/ # Public header files
+│ │ ├── switch.h # Master include (include this in all modules)
+│ │ ├── switch_types.h # All enums, typedefs, constants
+│ │ ├── switch_core.h # Core engine API
+│ │ ├── switch_channel.h # Channel management API
+│ │ ├── switch_event.h # Event system API
+│ │ ├── switch_ivr.h # IVR/originate API
+│ │ ├── switch_module_interfaces.h # Module interface structs
+│ │ └── switch_xml.h # XML processing API
+│ ├── mod/ # Loadable modules
+│ │ ├── applications/ # Call control apps (mod_dptools, mod_conference, etc.)
+│ │ ├── endpoints/ # Protocol handlers (mod_sofia, mod_verto, etc.)
+│ │ ├── event_handlers/ # Event consumers (mod_event_socket, mod_json_cdr, etc.)
+│ │ ├── codecs/ # Audio/video codecs (mod_opus, mod_openh264, etc.)
+│ │ ├── dialplans/ # Dialplan engines (mod_dialplan_xml, etc.)
+│ │ ├── languages/ # Scripting (mod_lua, mod_perl, mod_managed, etc.)
+│ │ ├── formats/ # File formats (mod_local_stream, mod_vlc, etc.)
+│ │ ├── loggers/ # Log handlers (mod_console, mod_graylog2, etc.)
+│ │ ├── asr_tts/ # Speech (mod_flite, mod_pocketsphinx, etc.)
+│ │ └── xml_int/ # XML providers (mod_xml_rpc, mod_xml_curl, etc.)
+│ ├── switch_core.c # Main engine init/shutdown
+│ ├── switch_core_session.c # Session management
+│ ├── switch_channel.c # Channel state machine
+│ ├── switch_event.c # Event dispatch
+│ ├── switch_ivr_originate.c # Call origination
+│ ├── switch_rtp.c # RTP engine
+│ └── switch_xml.c # XML parser
+├── conf/ # Configuration templates
+│ ├── vanilla/ # Default production config
+│ ├── minimal/ # Minimal config for testing
+│ └── testing/ # CI/test config
 ├── libs/
-│   └── esl/                    # Event Socket Library (client-side)
-│       ├── src/                # C library source
-│       ├── fs_cli.c            # Reference CLI client
-│       └── php/, perl/, etc.   # Language-specific ESL wrappers
+│ └── esl/ # Event Socket Library (client-side)
+│ ├── src/ # C library source
+│ ├── fs_cli.c # Reference CLI client
+│ └── php/, perl/, etc. # Language-specific ESL wrappers
 └── tests/
-    └── unit/                   # Unit test suite (FCTX-based)
+└── unit/ # Unit test suite (FCTX-based)
+
 ```
 
 ### 1.2 Key Source Files Reference
@@ -110,27 +111,29 @@ signalwire/freeswitch/
 ### 2.1 Architectural Layers
 
 ```
+
 ┌─────────────────────────────────────────────────────────────┐
-│                    External Applications                     │
-│         (ESL clients, web apps, AI agents, scripts)         │
+│ External Applications │
+│ (ESL clients, web apps, AI agents, scripts) │
 ├─────────────────────────────────────────────────────────────┤
-│              Integration Layer (libs/esl, SWIG)             │
-│     mod_event_socket │ mod_xml_rpc │ mod_verto (WS)         │
+│ Integration Layer (libs/esl, SWIG) │
+│ mod_event_socket │ mod_xml_rpc │ mod_verto (WS) │
 ├─────────────────────────────────────────────────────────────┤
-│                   Application Modules                        │
-│  mod_dptools │ mod_conference │ mod_voicemail │ mod_fifo     │
+│ Application Modules │
+│ mod_dptools │ mod_conference │ mod_voicemail │ mod_fifo │
 ├─────────────────────────────────────────────────────────────┤
-│                     Core Engine                              │
-│  switch_core_session │ switch_channel │ switch_event         │
-│  switch_ivr_originate │ switch_rtp │ switch_core_media       │
+│ Core Engine │
+│ switch_core_session │ switch_channel │ switch_event │
+│ switch_ivr_originate │ switch_rtp │ switch_core_media │
 ├─────────────────────────────────────────────────────────────┤
-│                   Endpoint Modules                           │
-│       mod_sofia (SIP) │ mod_verto (WebRTC) │ mod_loopback    │
+│ Endpoint Modules │
+│ mod_sofia (SIP) │ mod_verto (WebRTC) │ mod_loopback │
 ├─────────────────────────────────────────────────────────────┤
-│                   Network / Hardware                         │
-│         SIP/UDP/TCP/TLS │ WebSocket │ RTP/SRTP/DTLS          │
+│ Network / Hardware │
+│ SIP/UDP/TCP/TLS │ WebSocket │ RTP/SRTP/DTLS │
 └─────────────────────────────────────────────────────────────┘
-```
+
+````
 
 ### 2.2 Core Data Structures
 
@@ -175,7 +178,7 @@ char *copy = switch_core_session_strdup(session, original);
 
 // String duplication into pool
 char *copy = switch_core_strdup(pool, original);
-```
+````
 
 **Rule:** Prefer session/pool allocation over heap allocation. Never `free()` pool-allocated memory.
 
@@ -241,6 +244,7 @@ CF_BREAK             // Signal channel to stop current operation
 ```
 
 Usage:
+
 ```c
 // Set a flag
 switch_channel_set_flag(channel, CF_ANSWERED);
@@ -271,6 +275,7 @@ switch_channel_set_variable_printf(channel, "call_count", "%d", count);
 ```
 
 **Important built-in variables:**
+
 - `destination_number` — The dialed number
 - `caller_id_name`, `caller_id_number` — Caller identity
 - `context` — Current dialplan context
@@ -312,36 +317,36 @@ if ((session = switch_core_session_locate(uuid))) {
 
 All event types are defined in `src/include/switch_types.h` as `switch_event_types_t`. Key events for AI integration:
 
-| Event Name | Trigger |
-|-----------|---------|
-| `CHANNEL_CREATE` | New channel created (CS_INIT) |
-| `CHANNEL_DESTROY` | Channel destroyed |
-| `CHANNEL_STATE` | Channel state changed |
-| `CHANNEL_ANSWER` | Channel answered |
-| `CHANNEL_HANGUP` | Channel hangup initiated |
-| `CHANNEL_HANGUP_COMPLETE` | Hangup fully processed |
-| `CHANNEL_BRIDGE` | Two channels bridged |
-| `CHANNEL_UNBRIDGE` | Bridge ended |
-| `CHANNEL_EXECUTE` | Application started |
-| `CHANNEL_EXECUTE_COMPLETE` | Application finished |
-| `CHANNEL_PROGRESS` | Ringing started |
-| `CHANNEL_PROGRESS_MEDIA` | Early media started |
-| `CHANNEL_PARK` | Channel parked |
-| `CHANNEL_ORIGINATE` | Outbound channel originated |
-| `DTMF` | DTMF digit received |
-| `DETECTED_SPEECH` | ASR result available |
-| `DETECTED_TONE` | Tone detected |
-| `RECORD_START` | Recording started |
-| `RECORD_STOP` | Recording stopped |
-| `PLAYBACK_START` | Playback started |
-| `PLAYBACK_STOP` | Playback stopped |
-| `BACKGROUND_JOB` | bgapi job completed |
-| `HEARTBEAT` | System heartbeat (every 20s by default) |
-| `RELOADXML` | XML config reloaded |
-| `CUSTOM` | Module-defined custom event |
-| `TALK` | Voice activity detected |
-| `NOTALK` | Silence detected |
-| `SESSION_HEARTBEAT` | Per-session heartbeat |
+| Event Name                 | Trigger                                 |
+| -------------------------- | --------------------------------------- |
+| `CHANNEL_CREATE`           | New channel created (CS_INIT)           |
+| `CHANNEL_DESTROY`          | Channel destroyed                       |
+| `CHANNEL_STATE`            | Channel state changed                   |
+| `CHANNEL_ANSWER`           | Channel answered                        |
+| `CHANNEL_HANGUP`           | Channel hangup initiated                |
+| `CHANNEL_HANGUP_COMPLETE`  | Hangup fully processed                  |
+| `CHANNEL_BRIDGE`           | Two channels bridged                    |
+| `CHANNEL_UNBRIDGE`         | Bridge ended                            |
+| `CHANNEL_EXECUTE`          | Application started                     |
+| `CHANNEL_EXECUTE_COMPLETE` | Application finished                    |
+| `CHANNEL_PROGRESS`         | Ringing started                         |
+| `CHANNEL_PROGRESS_MEDIA`   | Early media started                     |
+| `CHANNEL_PARK`             | Channel parked                          |
+| `CHANNEL_ORIGINATE`        | Outbound channel originated             |
+| `DTMF`                     | DTMF digit received                     |
+| `DETECTED_SPEECH`          | ASR result available                    |
+| `DETECTED_TONE`            | Tone detected                           |
+| `RECORD_START`             | Recording started                       |
+| `RECORD_STOP`              | Recording stopped                       |
+| `PLAYBACK_START`           | Playback started                        |
+| `PLAYBACK_STOP`            | Playback stopped                        |
+| `BACKGROUND_JOB`           | bgapi job completed                     |
+| `HEARTBEAT`                | System heartbeat (every 20s by default) |
+| `RELOADXML`                | XML config reloaded                     |
+| `CUSTOM`                   | Module-defined custom event             |
+| `TALK`                     | Voice activity detected                 |
+| `NOTALK`                   | Silence detected                        |
+| `SESSION_HEARTBEAT`        | Per-session heartbeat                   |
 
 ### 4.2 Binding to Events (C Module)
 
@@ -479,17 +484,17 @@ SWITCH_MODULE_SHUTDOWN_FUNCTION(mod_mymodule_shutdown)
 
 ### 5.2 Module Interface Types
 
-| Interface Type | Macro | Structure | Purpose |
-|---------------|-------|-----------|---------|
-| API | `SWITCH_ADD_API` | `switch_api_interface_t` | CLI/HTTP commands |
-| Application | `SWITCH_ADD_APP` | `switch_application_interface_t` | Dialplan apps |
-| Endpoint | Manual | `switch_endpoint_interface_t` | Protocol handlers |
-| Codec | Manual | `switch_codec_interface_t` | Audio/video codecs |
-| File Format | Manual | `switch_file_interface_t` | Media file I/O |
-| Dialplan | Manual | `switch_dialplan_interface_t` | Routing engines |
-| Logger | Manual | `switch_log_interface_t` | Log consumers |
-| ASR/TTS | Manual | `switch_asr_interface_t` / `switch_tts_interface_t` | Speech |
-| Chat | `SWITCH_ADD_CHAT` | `switch_chat_interface_t` | Messaging |
+| Interface Type | Macro             | Structure                                           | Purpose            |
+| -------------- | ----------------- | --------------------------------------------------- | ------------------ |
+| API            | `SWITCH_ADD_API`  | `switch_api_interface_t`                            | CLI/HTTP commands  |
+| Application    | `SWITCH_ADD_APP`  | `switch_application_interface_t`                    | Dialplan apps      |
+| Endpoint       | Manual            | `switch_endpoint_interface_t`                       | Protocol handlers  |
+| Codec          | Manual            | `switch_codec_interface_t`                          | Audio/video codecs |
+| File Format    | Manual            | `switch_file_interface_t`                           | Media file I/O     |
+| Dialplan       | Manual            | `switch_dialplan_interface_t`                       | Routing engines    |
+| Logger         | Manual            | `switch_log_interface_t`                            | Log consumers      |
+| ASR/TTS        | Manual            | `switch_asr_interface_t` / `switch_tts_interface_t` | Speech             |
+| Chat           | `SWITCH_ADD_CHAT` | `switch_chat_interface_t`                           | Messaging          |
 
 ### 5.3 Application Function Signature
 
@@ -656,6 +661,7 @@ static switch_call_cause_t my_outgoing_channel(
 - **sofia_glue.c:** The bridge between Sofia-SIP NUA events and FreeSWITCH channel states.
 
 Dial string format:
+
 ```
 sofia/profile_name/user@domain
 sofia/gateway/gateway_name/number
@@ -672,6 +678,7 @@ loopback/1000/default/XML
 ```
 
 Key channel variables set by loopback:
+
 - `loopback_leg` — "A" or "B"
 - `other_loopback_leg_uuid` — UUID of the paired leg
 
@@ -750,6 +757,7 @@ Conference rooms are identified by `name@profile`:
 ```
 
 Conference API commands (via ESL or `conference` API):
+
 ```
 conference room1 list                    # List members
 conference room1 kick <member_id>        # Kick member
@@ -770,6 +778,7 @@ ACD (Automatic Call Distributor) for call center use cases:
 ```
 
 Key concepts:
+
 - **Queues:** Named call queues with strategies (ring-all, longest-idle-agent, etc.)
 - **Agents:** Can be `callback` (FS calls agent) or `uuid-standby` (agent already on FS)
 - **Tiers:** Priority-based agent-to-queue assignments
@@ -855,6 +864,7 @@ bgapi originate sofia/internal/1000@domain &echo()
 ```
 
 Response:
+
 ```
 Content-Type: command/reply
 Reply-Text: +OK Job-UUID: <job-uuid>
@@ -1090,6 +1100,7 @@ In outbound mode, FreeSWITCH connects to your server when a call hits the `socke
 ```
 
 Your server receives the connection and must:
+
 1. Send `connect\n\n` to get channel data
 2. Send `myevents\n\n` to subscribe to this channel's events
 3. Control the call with `sendmsg` commands
@@ -1231,8 +1242,16 @@ freeswitch.consoleLog("INFO", "My log message\n")
 session.answer();
 session.sleep(1000);
 
-var digits = session.playAndGetDigits(1, 4, 3, 5000, "#",
-    "/sounds/prompt.wav", "/sounds/invalid.wav", "\\d+");
+var digits = session.playAndGetDigits(
+  1,
+  4,
+  3,
+  5000,
+  "#",
+  "/sounds/prompt.wav",
+  "/sounds/invalid.wav",
+  "\\d+",
+);
 
 session.setVariable("my_var", "my_value");
 var val = session.getVariable("my_var");
@@ -1245,6 +1264,7 @@ var result = api.execute("status", "");
 ### 11.3 Python (mod_python / ESL)
 
 For in-process Python (mod_python):
+
 ```python
 # session is passed as argument
 def handler(session, args):
@@ -1289,6 +1309,7 @@ $session->hangup("NORMAL_CLEARING");
 ### 12.1 RTP Engine
 
 The RTP engine (`src/switch_rtp.c`) handles:
+
 - RTP/RTCP send and receive
 - SRTP encryption/decryption
 - ICE NAT traversal
@@ -1296,6 +1317,7 @@ The RTP engine (`src/switch_rtp.c`) handles:
 - Jitter buffer management
 
 Key structures:
+
 - `switch_rtp_t` — RTP session handle
 - `switch_frame_t` — Media frame (audio or video)
 - `switch_rtp_engine_t` — Per-media-type engine (audio/video/text)
@@ -1599,11 +1621,13 @@ mod_verto uses JSON-RPC over WebSocket. Key methods:
 ### 14.3 ICE/DTLS/SRTP
 
 For WebRTC, FreeSWITCH handles:
+
 - **ICE:** NAT traversal via STUN/TURN
 - **DTLS:** Key exchange for SRTP
 - **SRTP:** Encrypted media
 
 Key channel variables for WebRTC:
+
 ```
 rtp_secure_media=true          # Enable SRTP
 rtp_secure_media_confirmed=true # SRTP confirmed
@@ -1612,7 +1636,7 @@ ice_lite=true                  # ICE lite mode
 
 ## 15. Configuration and XML Processing
 
-```markdown
+````markdown
 ### 15.1 Configuration Hierarchy
 
 The root config file `conf/vanilla/freeswitch.xml` uses `X-PRE-PROCESS` directives to assemble the full XML document at startup:
@@ -1649,6 +1673,7 @@ The root config file `conf/vanilla/freeswitch.xml` uses `X-PRE-PROCESS` directiv
   </section>
 </document>
 ```
+````
 
 The preprocessor compiles the full document to `${log_dir}/freeswitch.xml.fsxml` at startup. **Do not edit this compiled file.**
 
@@ -1656,12 +1681,13 @@ The preprocessor compiles the full document to `${log_dir}/freeswitch.xml.fsxml`
 
 Two variable namespaces exist:
 
-| Syntax | Scope | Set with |
-|--------|-------|---------|
-| `$${var}` | Preprocessor (compile-time) | `X-PRE-PROCESS cmd="set"` |
-| `${var}` | Runtime channel variable | `set` app or `switch_channel_set_variable()` |
+| Syntax    | Scope                       | Set with                                     |
+| --------- | --------------------------- | -------------------------------------------- |
+| `$${var}` | Preprocessor (compile-time) | `X-PRE-PROCESS cmd="set"`                    |
+| `${var}`  | Runtime channel variable    | `set` app or `switch_channel_set_variable()` |
 
 **Built-in preprocessor variables** (auto-calculated, from `conf/vanilla/vars.xml`):
+
 ```
 hostname          local_ip_v4       local_mask_v4     local_ip_v6
 base_dir          recordings_dir    sound_prefix      sounds_dir
@@ -1673,13 +1699,13 @@ core_uuid         nat_public_addr   nat_private_addr  nat_type
 
 ### 15.3 XML Sections
 
-| Section | Purpose | Key Files |
-|---------|---------|-----------|
-| `configuration` | Module configs | `autoload_configs/*.xml` |
-| `dialplan` | Call routing | `dialplan/*.xml` |
-| `directory` | User/domain data | `directory/*.xml` |
-| `languages` | Phrase macros | `lang/**/*.xml` |
-| `chatplan` | Chat routing | `chatplan/*.xml` |
+| Section         | Purpose          | Key Files                |
+| --------------- | ---------------- | ------------------------ |
+| `configuration` | Module configs   | `autoload_configs/*.xml` |
+| `dialplan`      | Call routing     | `dialplan/*.xml`         |
+| `directory`     | User/domain data | `directory/*.xml`        |
+| `languages`     | Phrase macros    | `lang/**/*.xml`          |
+| `chatplan`      | Chat routing     | `chatplan/*.xml`         |
 
 ### 15.4 User Directory Structure
 
@@ -1706,6 +1732,7 @@ core_uuid         nat_public_addr   nat_private_addr  nat_type
 ```
 
 Individual user entry:
+
 ```xml
 <!-- conf/vanilla/directory/default/1000.xml -->
 <include>
@@ -1759,11 +1786,11 @@ Your HTTP server receives a POST with parameters like `section`, `tag_name`, `ke
 
 FreeSWITCH uses a cached database handle pool (`switch_cache_db_handle_t`) that supports three backends:
 
-| Type | DSN Format | Use Case |
-|------|-----------|---------|
-| SQLite (default) | `sqlite:///path/to/db` or just a path | Development, single-node |
-| ODBC | `odbc://dsn:user:pass` | Production, MySQL/PostgreSQL |
-| Database Interface | `pgsql://connection_string` | PostgreSQL via `mod_pgsql` |
+| Type               | DSN Format                            | Use Case                     |
+| ------------------ | ------------------------------------- | ---------------------------- |
+| SQLite (default)   | `sqlite:///path/to/db` or just a path | Development, single-node     |
+| ODBC               | `odbc://dsn:user:pass`                | Production, MySQL/PostgreSQL |
+| Database Interface | `pgsql://connection_string`           | PostgreSQL via `mod_pgsql`   |
 
 ### 16.2 Getting a Database Handle
 
@@ -1820,19 +1847,20 @@ static int my_row_callback(void *pArg, int argc, char **argv, char **columnNames
 
 The core maintains these tables (in `switch_core_sqldb.c`):
 
-| Table | Purpose |
-|-------|---------|
-| `channels` | Active channel state (UUID, caller ID, state, etc.) |
-| `calls` | Active call legs (bridged pairs) |
-| `registrations` | SIP registrations |
-| `aliases` | Dialplan aliases |
-| `complete` | Tab-completion data |
-| `nat` | NAT mappings |
-| `recovery` | Call recovery data for failover |
-| `interfaces` | Loaded module interfaces |
-| `tasks` | Scheduled tasks |
+| Table           | Purpose                                             |
+| --------------- | --------------------------------------------------- |
+| `channels`      | Active channel state (UUID, caller ID, state, etc.) |
+| `calls`         | Active call legs (bridged pairs)                    |
+| `registrations` | SIP registrations                                   |
+| `aliases`       | Dialplan aliases                                    |
+| `complete`      | Tab-completion data                                 |
+| `nat`           | NAT mappings                                        |
+| `recovery`      | Call recovery data for failover                     |
+| `interfaces`    | Loaded module interfaces                            |
+| `tasks`         | Scheduled tasks                                     |
 
 Query example:
+
 ```sql
 -- Get all active calls
 SELECT uuid, caller_id_name, caller_id_number, dest, state
@@ -1849,6 +1877,7 @@ JOIN channels b ON c.bleg_uuid = b.uuid;
 ### 16.5 DSN Configuration
 
 In `conf/vanilla/autoload_configs/switch.conf.xml`:
+
 ```xml
 <configuration name="switch.conf" description="Core Configuration">
   <settings>
@@ -1942,22 +1971,22 @@ cd tests/unit
 
 ### 17.4 Test Files Reference
 
-| Test File | Tests |
-|-----------|-------|
-| `switch_core.c` | Core functions, UUID, regex, string ops |
-| `switch_core_session.c` | Session creation, state machine |
-| `switch_event.c` | Event creation, binding, firing |
-| `switch_ivr_originate.c` | Call origination |
-| `switch_ivr_play_say.c` | Playback and TTS |
-| `switch_core_db.c` | Database operations |
-| `switch_core_codec.c` | Codec encode/decode |
-| `switch_rtp.c` | RTP send/receive |
-| `switch_xml.c` | XML parsing |
-| `switch_utils.c` | Utility functions |
-| `switch_log.c` | Logging |
-| `switch_vad.c` | Voice activity detection |
-| `switch_sip.c` | SIP message parsing |
-| `test_sofia.c` | Sofia SIP integration |
+| Test File                | Tests                                   |
+| ------------------------ | --------------------------------------- |
+| `switch_core.c`          | Core functions, UUID, regex, string ops |
+| `switch_core_session.c`  | Session creation, state machine         |
+| `switch_event.c`         | Event creation, binding, firing         |
+| `switch_ivr_originate.c` | Call origination                        |
+| `switch_ivr_play_say.c`  | Playback and TTS                        |
+| `switch_core_db.c`       | Database operations                     |
+| `switch_core_codec.c`    | Codec encode/decode                     |
+| `switch_rtp.c`           | RTP send/receive                        |
+| `switch_xml.c`           | XML parsing                             |
+| `switch_utils.c`         | Utility functions                       |
+| `switch_log.c`           | Logging                                 |
+| `switch_vad.c`           | Voice activity detection                |
+| `switch_sip.c`           | SIP message parsing                     |
+| `test_sofia.c`           | Sofia SIP integration                   |
 
 ### 17.5 Integration Testing with ESL
 
@@ -2129,6 +2158,7 @@ The default ESL config (`event_socket.conf.xml`) binds only to `127.0.0.1` with 
 ```
 
 **Rules:**
+
 - Never expose port 8021 to the public internet
 - Always change the default password `ClueCon`
 - Use `apply-inbound-acl` to restrict by IP
@@ -2146,6 +2176,7 @@ userauth user@domain:password\n\n
 ```
 
 User directory entry:
+
 ```xml
 <variable name="esl-password" value="secure_password"/>
 <variable name="esl-allowed-events" value="CHANNEL_CREATE,CHANNEL_HANGUP,DTMF"/>
@@ -2175,6 +2206,7 @@ User directory entry:
 ```
 
 ACL definition in `conf/vanilla/autoload_configs/acl.conf.xml`:
+
 ```xml
 <configuration name="acl.conf" description="Network Lists">
   <network-lists>
@@ -2193,6 +2225,7 @@ ACL definition in `conf/vanilla/autoload_configs/acl.conf.xml`:
 ### 19.4 SRTP / TLS
 
 Enable SRTP for media encryption:
+
 ```xml
 <!-- In vars.xml -->
 <X-PRE-PROCESS cmd="set" data="rtp_secure_media=mandatory"/>
@@ -2200,6 +2233,7 @@ Enable SRTP for media encryption:
 ```
 
 Enable SIP TLS:
+
 ```xml
 <!-- In SIP profile -->
 <param name="tls" value="true"/>
@@ -2370,17 +2404,17 @@ event json CHANNEL_CREATE CHANNEL_HANGUP
 
 From `src/include/switch_types.h` and `src/switch_log.c`:
 
-| Level | Value | Use |
-|-------|-------|-----|
-| `SWITCH_LOG_CONSOLE` | 0 | Console output only |
-| `SWITCH_LOG_ALERT` | 1 | System-level alerts |
-| `SWITCH_LOG_CRIT` | 2 | Critical errors (system may be unstable) |
-| `SWITCH_LOG_ERROR` | 3 | Errors (operation failed) |
-| `SWITCH_LOG_WARNING` | 4 | Warnings (unexpected but recoverable) |
-| `SWITCH_LOG_NOTICE` | 5 | Notable events |
-| `SWITCH_LOG_INFO` | 6 | Informational |
-| `SWITCH_LOG_DEBUG` | 7 | Debug (default max) |
-| `SWITCH_LOG_DEBUG1`–`DEBUG10` | 101–110 | Verbose debug levels |
+| Level                         | Value   | Use                                      |
+| ----------------------------- | ------- | ---------------------------------------- |
+| `SWITCH_LOG_CONSOLE`          | 0       | Console output only                      |
+| `SWITCH_LOG_ALERT`            | 1       | System-level alerts                      |
+| `SWITCH_LOG_CRIT`             | 2       | Critical errors (system may be unstable) |
+| `SWITCH_LOG_ERROR`            | 3       | Errors (operation failed)                |
+| `SWITCH_LOG_WARNING`          | 4       | Warnings (unexpected but recoverable)    |
+| `SWITCH_LOG_NOTICE`           | 5       | Notable events                           |
+| `SWITCH_LOG_INFO`             | 6       | Informational                            |
+| `SWITCH_LOG_DEBUG`            | 7       | Debug (default max)                      |
+| `SWITCH_LOG_DEBUG1`–`DEBUG10` | 101–110 | Verbose debug levels                     |
 
 ### 21.2 Logging Macros
 
@@ -2668,6 +2702,7 @@ switch_core_hash_destroy(&hash);
 ### 23.1 Session Lock Leaks
 
 **Wrong:**
+
 ```c
 switch_core_session_t *session = switch_core_session_locate(uuid);
 if (session) {
@@ -2677,6 +2712,7 @@ if (session) {
 ```
 
 **Correct:**
+
 ```c
 switch_core_session_t *session;
 if ((session = switch_core_session_locate(uuid))) {
@@ -2688,6 +2724,7 @@ if ((session = switch_core_session_locate(uuid))) {
 ### 23.2 Blocking in Event Handlers
 
 **Wrong:**
+
 ```c
 static void my_event_handler(switch_event_t *event)
 {
@@ -2698,6 +2735,7 @@ static void my_event_handler(switch_event_t *event)
 ```
 
 **Correct:**
+
 ```c
 static void my_event_handler(switch_event_t *event)
 {
@@ -2712,6 +2750,7 @@ static void my_event_handler(switch_event_t *event)
 ### 23.3 Freeing Pool Memory
 
 **Wrong:**
+
 ```c
 char *buf = switch_core_session_alloc(session, 256);
 // ...
@@ -2719,6 +2758,7 @@ free(buf);  // WRONG: pool memory must not be freed with free()
 ```
 
 **Correct:**
+
 ```c
 char *buf = switch_core_session_alloc(session, 256);
 // Use buf, it will be freed when the session ends
@@ -2731,6 +2771,7 @@ switch_safe_free(buf);  // NULL-safe free
 ### 23.4 Using `data` Pointer After Application Returns
 
 **Wrong:**
+
 ```c
 SWITCH_STANDARD_APP(my_app)
 {
@@ -2740,6 +2781,7 @@ SWITCH_STANDARD_APP(my_app)
 ```
 
 **Correct:**
+
 ```c
 SWITCH_STANDARD_APP(my_app)
 {
@@ -2753,6 +2795,7 @@ SWITCH_STANDARD_APP(my_app)
 ### 23.5 Race Conditions with Channel State
 
 **Wrong:**
+
 ```c
 if (switch_channel_get_state(channel) == CS_EXECUTE) {
     // Channel might have changed state between check and use
@@ -2761,6 +2804,7 @@ if (switch_channel_get_state(channel) == CS_EXECUTE) {
 ```
 
 **Correct:**
+
 ```c
 // Use switch_channel_ready() for "is the channel usable" checks
 if (switch_channel_ready(channel)) {
@@ -2772,6 +2816,7 @@ if (switch_channel_ready(channel)) {
 ### 23.6 XML Memory Leaks
 
 **Wrong:**
+
 ```c
 switch_xml_t xml = switch_xml_open_cfg("mymodule.conf", &cfg, NULL);
 // ... use xml ...
@@ -2779,6 +2824,7 @@ switch_xml_t xml = switch_xml_open_cfg("mymodule.conf", &cfg, NULL);
 ```
 
 **Correct:**
+
 ```c
 switch_xml_t xml, cfg;
 if ((xml = switch_xml_open_cfg("mymodule.conf", &cfg, NULL))) {
@@ -2790,6 +2836,7 @@ if ((xml = switch_xml_open_cfg("mymodule.conf", &cfg, NULL))) {
 ### 23.7 Incorrect Originate String Parsing
 
 **Wrong:**
+
 ```c
 // Assuming originate string is always "type/data"
 char *slash = strchr(dial_str, '/');
@@ -2797,6 +2844,7 @@ char *type = strndup(dial_str, slash - dial_str);
 ```
 
 **Correct:**
+
 ```c
 // Use the core's originate function which handles all syntax
 switch_ivr_originate(session, &new_session, &cause,
@@ -3241,61 +3289,61 @@ def stop_and_analyze(con, uuid, recording_path):
 
 ## 25. Glossary
 
-| Term | Definition |
-|------|-----------|
-| **A-leg** | The originating (inbound) call leg |
-| **B-leg** | The destination (outbound) call leg created by `bridge` or `originate` |
-| **ACL** | Access Control List — IP-based allow/deny rules |
-| **ANI** | Automatic Number Identification — the calling party's number |
-| **ANIII** | ANI Information Indicator — additional caller info |
-| **APR** | Apache Portable Runtime — the threading/socket/pool library FreeSWITCH uses |
-| **ASR** | Automatic Speech Recognition |
-| **bgapi** | Background API — async ESL command that returns a Job-UUID |
-| **Bridge** | Connecting two call legs so they can exchange media |
-| **CDR** | Call Detail Record — post-call accounting data |
-| **Channel** | The signaling state of a call leg (`switch_channel_t`) |
-| **ClueCon** | The default ESL password (also the name of the FreeSWITCH conference) |
-| **Context** | A named group of dialplan extensions (e.g., `default`, `public`) |
-| **DTLS** | Datagram TLS — used for WebRTC key exchange |
-| **DTMF** | Dual-Tone Multi-Frequency — telephone keypad tones |
-| **Early Media** | Audio before a call is answered (183 Session Progress) |
-| **ESL** | Event Socket Library — the external control interface |
-| **Extension** | A dialplan routing rule with conditions and actions |
-| **FCTX** | FreeSWITCH's C unit test framework |
-| **Gateway** | An outbound SIP registration to a provider |
-| **ICE** | Interactive Connectivity Establishment — WebRTC NAT traversal |
-| **IVR** | Interactive Voice Response — automated phone menus |
-| **Media Bug** | A hook to intercept/modify audio/video frames in a session |
-| **mod_dptools** | The core dialplan tools module (bridge, playback, set, etc.) |
-| **mod_sofia** | The SIP endpoint module (based on Sofia-SIP library) |
-| **mod_verto** | The WebRTC/WebSocket endpoint module |
-| **NUA** | Sofia-SIP's Network User Agent — the SIP stack |
-| **Originate** | Creating an outbound call leg |
-| **Park** | Placing a call in a waiting state |
-| **Pool** | APR memory pool — a region of memory freed all at once |
-| **Profile** | A SIP listener configuration (internal, external, etc.) |
-| **RDNIS** | Redirecting DNIS — the number that was redirected |
-| **RTP** | Real-time Transport Protocol — carries audio/video |
-| **SAF** | Switch Application Flag — flags for dialplan applications |
-| **SCF** | Switch Core Flag — runtime flags for the core engine |
-| **SDP** | Session Description Protocol — describes media capabilities |
-| **Session** | A single call leg with its own thread (`switch_core_session_t`) |
-| **SMBF** | Switch Media Bug Flag — flags for media bug behavior |
-| **SOF** | Switch Originate Flag — flags for `switch_ivr_originate()` |
-| **Sofia-SIP** | The open-source SIP stack used by `mod_sofia` |
-| **SRTP** | Secure RTP — encrypted media |
-| **State Handler** | A callback table for channel state transitions |
-| **tech_pvt** | Technology-private data — endpoint-specific session data |
-| **TLS** | Transport Layer Security — encrypted SIP signaling |
-| **TTS** | Text-to-Speech |
-| **UUID** | Universally Unique Identifier — identifies a session |
-| **VAD** | Voice Activity Detection |
-| **Verto** | FreeSWITCH's JSON-RPC over WebSocket protocol |
-| **XML Curl** | Dynamic XML config fetched from an HTTP server |
-| `zstr()` | Macro: returns true if string is NULL or empty |
-| `switch_safe_free()` | NULL-safe `free()` macro |
-| `SWITCH_CHANNEL_LOG` | Log channel macro that includes file/function/line |
-| `SWITCH_CHANNEL_SESSION_LOG(s)` | Log channel macro that includes session UUID |
+| Term                            | Definition                                                                  |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| **A-leg**                       | The originating (inbound) call leg                                          |
+| **B-leg**                       | The destination (outbound) call leg created by `bridge` or `originate`      |
+| **ACL**                         | Access Control List — IP-based allow/deny rules                             |
+| **ANI**                         | Automatic Number Identification — the calling party's number                |
+| **ANIII**                       | ANI Information Indicator — additional caller info                          |
+| **APR**                         | Apache Portable Runtime — the threading/socket/pool library FreeSWITCH uses |
+| **ASR**                         | Automatic Speech Recognition                                                |
+| **bgapi**                       | Background API — async ESL command that returns a Job-UUID                  |
+| **Bridge**                      | Connecting two call legs so they can exchange media                         |
+| **CDR**                         | Call Detail Record — post-call accounting data                              |
+| **Channel**                     | The signaling state of a call leg (`switch_channel_t`)                      |
+| **ClueCon**                     | The default ESL password (also the name of the FreeSWITCH conference)       |
+| **Context**                     | A named group of dialplan extensions (e.g., `default`, `public`)            |
+| **DTLS**                        | Datagram TLS — used for WebRTC key exchange                                 |
+| **DTMF**                        | Dual-Tone Multi-Frequency — telephone keypad tones                          |
+| **Early Media**                 | Audio before a call is answered (183 Session Progress)                      |
+| **ESL**                         | Event Socket Library — the external control interface                       |
+| **Extension**                   | A dialplan routing rule with conditions and actions                         |
+| **FCTX**                        | FreeSWITCH's C unit test framework                                          |
+| **Gateway**                     | An outbound SIP registration to a provider                                  |
+| **ICE**                         | Interactive Connectivity Establishment — WebRTC NAT traversal               |
+| **IVR**                         | Interactive Voice Response — automated phone menus                          |
+| **Media Bug**                   | A hook to intercept/modify audio/video frames in a session                  |
+| **mod_dptools**                 | The core dialplan tools module (bridge, playback, set, etc.)                |
+| **mod_sofia**                   | The SIP endpoint module (based on Sofia-SIP library)                        |
+| **mod_verto**                   | The WebRTC/WebSocket endpoint module                                        |
+| **NUA**                         | Sofia-SIP's Network User Agent — the SIP stack                              |
+| **Originate**                   | Creating an outbound call leg                                               |
+| **Park**                        | Placing a call in a waiting state                                           |
+| **Pool**                        | APR memory pool — a region of memory freed all at once                      |
+| **Profile**                     | A SIP listener configuration (internal, external, etc.)                     |
+| **RDNIS**                       | Redirecting DNIS — the number that was redirected                           |
+| **RTP**                         | Real-time Transport Protocol — carries audio/video                          |
+| **SAF**                         | Switch Application Flag — flags for dialplan applications                   |
+| **SCF**                         | Switch Core Flag — runtime flags for the core engine                        |
+| **SDP**                         | Session Description Protocol — describes media capabilities                 |
+| **Session**                     | A single call leg with its own thread (`switch_core_session_t`)             |
+| **SMBF**                        | Switch Media Bug Flag — flags for media bug behavior                        |
+| **SOF**                         | Switch Originate Flag — flags for `switch_ivr_originate()`                  |
+| **Sofia-SIP**                   | The open-source SIP stack used by `mod_sofia`                               |
+| **SRTP**                        | Secure RTP — encrypted media                                                |
+| **State Handler**               | A callback table for channel state transitions                              |
+| **tech_pvt**                    | Technology-private data — endpoint-specific session data                    |
+| **TLS**                         | Transport Layer Security — encrypted SIP signaling                          |
+| **TTS**                         | Text-to-Speech                                                              |
+| **UUID**                        | Universally Unique Identifier — identifies a session                        |
+| **VAD**                         | Voice Activity Detection                                                    |
+| **Verto**                       | FreeSWITCH's JSON-RPC over WebSocket protocol                               |
+| **XML Curl**                    | Dynamic XML config fetched from an HTTP server                              |
+| `zstr()`                        | Macro: returns true if string is NULL or empty                              |
+| `switch_safe_free()`            | NULL-safe `free()` macro                                                    |
+| `SWITCH_CHANNEL_LOG`            | Log channel macro that includes file/function/line                          |
+| `SWITCH_CHANNEL_SESSION_LOG(s)` | Log channel macro that includes session UUID                                |
 
 ---
 
@@ -3311,19 +3359,21 @@ Here is the continuation of the SKILL.md with the new sections. Add these after 
 ### 26.1 Architecture: OpenSIPS as SIP Proxy in Front of FreeSWITCH
 
 The canonical production pattern places OpenSIPS as the SIP edge proxy and FreeSWITCH as the media/application server:
+```
 
-```
                     ┌──────────────────────────────────────────┐
-  SIP Clients ──────►  OpenSIPS (SIP Proxy / Load Balancer)   │
-  PSTN Carriers ────►  Port 5060/5061 (UDP/TCP/TLS)           │
-                    └──────────────┬───────────────────────────┘
-                                   │ SIP (internal, port 5080)
-                    ┌──────────────▼───────────────────────────┐
-                    │  FreeSWITCH Cluster (1..N nodes)         │
-                    │  mod_sofia (internal profile, port 5080) │
-                    │  mod_event_socket (port 8021)            │
-                    └──────────────────────────────────────────┘
-```
+
+SIP Clients ──────► OpenSIPS (SIP Proxy / Load Balancer) │
+PSTN Carriers ────► Port 5060/5061 (UDP/TCP/TLS) │
+└──────────────┬───────────────────────────┘
+│ SIP (internal, port 5080)
+┌──────────────▼───────────────────────────┐
+│ FreeSWITCH Cluster (1..N nodes) │
+│ mod_sofia (internal profile, port 5080) │
+│ mod_event_socket (port 8021) │
+└──────────────────────────────────────────┘
+
+````
 
 **Why this pattern:**
 - OpenSIPS handles registration, authentication, NAT traversal, and load balancing
@@ -3366,9 +3416,10 @@ Configure a dedicated SIP profile that trusts OpenSIPS:
     <param name="inbound-use-callid-as-uuid" value="true"/>
   </settings>
 </profile>
-```
+````
 
 ACL for OpenSIPS:
+
 ```xml
 <!-- autoload_configs/acl.conf.xml -->
 <list name="opensips_trusted" default="deny">
@@ -3448,6 +3499,7 @@ route[TO_FREESWITCH] {
 ```
 
 Or via ESL:
+
 ```python
 # Originate through OpenSIPS outbound proxy
 con.api(
@@ -3495,14 +3547,14 @@ def sync_call_state():
 
 ### 26.9 Cautions for OpenSIPS Integration
 
-| Risk | Mitigation |
-|------|-----------|
-| SIP loop (FS sends back to OpenSIPS) | Use separate profiles/ports; set `Max-Forwards` limit |
-| Auth bypass on FS internal profile | Strict ACL — only allow OpenSIPS IPs |
-| Route header stripping | Use `Record-Route` carefully; test with `sip_trace` |
-| OPTIONS ping flood | Set `ds_ping_interval` ≥ 10s; use `ds_probing_mode=1` |
-| Split-brain call state | Use shared Redis for dialog state |
-| TLS mismatch | Ensure both sides use same TLS version and cipher suite |
+| Risk                                 | Mitigation                                              |
+| ------------------------------------ | ------------------------------------------------------- |
+| SIP loop (FS sends back to OpenSIPS) | Use separate profiles/ports; set `Max-Forwards` limit   |
+| Auth bypass on FS internal profile   | Strict ACL — only allow OpenSIPS IPs                    |
+| Route header stripping               | Use `Record-Route` carefully; test with `sip_trace`     |
+| OPTIONS ping flood                   | Set `ds_ping_interval` ≥ 10s; use `ds_probing_mode=1`   |
+| Split-brain call state               | Use shared Redis for dialog state                       |
+| TLS mismatch                         | Ensure both sides use same TLS version and cipher suite |
 
 ---
 
@@ -3512,12 +3564,12 @@ def sync_call_state():
 
 FreeSWITCH ships two Redis modules:
 
-| Module | Library | Use Case |
-|--------|---------|---------|
-| `mod_redis` | `credis` (bundled) | Legacy; limit/rate-limiting backend |
-| `mod_hiredis` | `libhiredis` | Modern; full Redis command support |
+| Module        | Library            | Use Case                            |
+| ------------- | ------------------ | ----------------------------------- |
+| `mod_redis`   | `credis` (bundled) | Legacy; limit/rate-limiting backend |
+| `mod_hiredis` | `libhiredis`       | Modern; full Redis command support  |
 
-`mod_hiredis` is preferred for new integrations. [1](#2-0) 
+`mod_hiredis` is preferred for new integrations. [1](#2-0)
 
 ### 27.2 mod_hiredis Configuration
 
@@ -3710,15 +3762,15 @@ func (cm *CallManager) BridgeEventsToRedis(eslConn *goesl.Client, rdb *redis.Cli
 
 ### 27.7 Redis Security Cautions
 
-| Risk | Mitigation |
-|------|-----------|
-| Unauthenticated Redis | Always set `requirepass` in `redis.conf` |
-| Redis exposed to internet | Bind to `127.0.0.1` or private network only |
-| No TLS | Use Redis 6+ TLS or stunnel for cross-host connections |
-| Key collision between tenants | Always prefix keys with `tenant:{id}:` |
-| Unbounded key growth | Set TTL on ALL call-related keys |
-| Lua injection via EVAL | Validate all inputs before passing to Redis EVAL |
-| Sensitive data in Redis | Encrypt PII fields; use Redis ACLs to restrict key access |
+| Risk                          | Mitigation                                                |
+| ----------------------------- | --------------------------------------------------------- |
+| Unauthenticated Redis         | Always set `requirepass` in `redis.conf`                  |
+| Redis exposed to internet     | Bind to `127.0.0.1` or private network only               |
+| No TLS                        | Use Redis 6+ TLS or stunnel for cross-host connections    |
+| Key collision between tenants | Always prefix keys with `tenant:{id}:`                    |
+| Unbounded key growth          | Set TTL on ALL call-related keys                          |
+| Lua injection via EVAL        | Validate all inputs before passing to Redis EVAL          |
+| Sensitive data in Redis       | Encrypt PII fields; use Redis ACLs to restrict key access |
 
 ```
 # redis.conf hardening
@@ -3740,10 +3792,10 @@ maxmemory-policy allkeys-lru
 
 Two main Go ESL libraries exist (neither is in the FreeSWITCH repo — use as external dependencies):
 
-| Library | Import Path | Notes |
-|---------|------------|-------|
-| `goesl` | `github.com/0x19/goesl` | Inbound + outbound, widely used |
-| `eventsocket` | `github.com/fiorix/go-eventsocket/eventsocket` | Clean API, good for inbound |
+| Library       | Import Path                                    | Notes                           |
+| ------------- | ---------------------------------------------- | ------------------------------- |
+| `goesl`       | `github.com/0x19/goesl`                        | Inbound + outbound, widely used |
+| `eventsocket` | `github.com/fiorix/go-eventsocket/eventsocket` | Clean API, good for inbound     |
 
 ### 28.2 Go Inbound ESL Client
 
@@ -4107,14 +4159,14 @@ func ConnectWithRetry(ctx context.Context, host string, port int, pass string) (
 
 ### 28.6 Go Cautions for FreeSWITCH Integration
 
-| Risk | Mitigation |
-|------|-----------|
-| ESL injection via user input | Validate ALL inputs; use regex allowlists for phone numbers and UUIDs |
-| Goroutine leak on ESL disconnect | Use `context.Context` cancellation; always `defer client.Close()` |
-| Race on shared ESL connection | Use a single goroutine for reads; use mutex for writes |
-| Blocking event loop | Always `go fn(event)` for handlers; never block the read loop |
-| Missing reconnect logic | Implement exponential backoff reconnection |
-| Unbounded goroutine spawning | Use `semaphore` or worker pool for event handlers |
+| Risk                             | Mitigation                                                            |
+| -------------------------------- | --------------------------------------------------------------------- |
+| ESL injection via user input     | Validate ALL inputs; use regex allowlists for phone numbers and UUIDs |
+| Goroutine leak on ESL disconnect | Use `context.Context` cancellation; always `defer client.Close()`     |
+| Race on shared ESL connection    | Use a single goroutine for reads; use mutex for writes                |
+| Blocking event loop              | Always `go fn(event)` for handlers; never block the read loop         |
+| Missing reconnect logic          | Implement exponential backoff reconnection                            |
+| Unbounded goroutine spawning     | Use `semaphore` or worker pool for event handlers                     |
 
 ---
 
@@ -4314,14 +4366,14 @@ CDR Receiver (Go HTTP endpoint)
 
 ### 29.6 SaaS Security Cautions
 
-| Risk | Mitigation |
-|------|-----------|
-| Tenant data leakage | Always scope DB queries with `tenant_id`; use Row-Level Security in PostgreSQL |
-| ESL command injection | Validate ALL inputs; never interpolate raw user data into ESL commands |
-| Unlimited call origination | Enforce `max_calls` limit via Redis before every originate |
-| CDR tampering | Sign CDRs with HMAC; store raw CDR in append-only storage |
-| Billing bypass | Double-check balance in both API and dialplan (defense in depth) |
-| Cross-tenant UUID access | Verify UUID belongs to requesting tenant before any operation |
+| Risk                       | Mitigation                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------ |
+| Tenant data leakage        | Always scope DB queries with `tenant_id`; use Row-Level Security in PostgreSQL |
+| ESL command injection      | Validate ALL inputs; never interpolate raw user data into ESL commands         |
+| Unlimited call origination | Enforce `max_calls` limit via Redis before every originate                     |
+| CDR tampering              | Sign CDRs with HMAC; store raw CDR in append-only storage                      |
+| Billing bypass             | Double-check balance in both API and dialplan (defense in depth)               |
+| Cross-tenant UUID access   | Verify UUID belongs to requesting tenant before any operation                  |
 
 ---
 
@@ -4361,7 +4413,7 @@ Next.js App (App Router)
 
 ```typescript
 // lib/websocket.ts
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from "react";
 
 export type FSEvent = {
   event: string;
@@ -4374,7 +4426,7 @@ export type FSEvent = {
 
 export function useFreeSWITCHEvents(
   tenantId: string,
-  onEvent: (event: FSEvent) => void
+  onEvent: (event: FSEvent) => void,
 ) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimer = useRef<NodeJS.Timeout>();
@@ -4387,7 +4439,7 @@ export function useFreeSWITCHEvents(
     const ws = new WebSocket(`${wsUrl}?token=${token}&tenant=${tenantId}`);
 
     ws.onopen = () => {
-      console.log('FreeSWITCH WS connected');
+      console.log("FreeSWITCH WS connected");
       clearTimeout(reconnectTimer.current);
     };
 
@@ -4396,18 +4448,18 @@ export function useFreeSWITCHEvents(
         const event: FSEvent = JSON.parse(msg.data);
         onEvent(event);
       } catch (e) {
-        console.error('Invalid WS message', e);
+        console.error("Invalid WS message", e);
       }
     };
 
     ws.onclose = (e) => {
-      console.log('WS closed, reconnecting...', e.code);
+      console.log("WS closed, reconnecting...", e.code);
       // Exponential backoff reconnect
       reconnectTimer.current = setTimeout(connect, 3000);
     };
 
     ws.onerror = (e) => {
-      console.error('WS error', e);
+      console.error("WS error", e);
       ws.close();
     };
 
@@ -4501,31 +4553,31 @@ export function CallList({ tenantId }: { tenantId: string }) {
 
 ```typescript
 // app/api/calls/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 const API_BASE = process.env.API_BASE_URL!; // internal Go API URL
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const res = await fetch(`${API_BASE}/calls`, {
     headers: {
-      'Authorization': `Bearer ${session.accessToken}`,
-      'X-Tenant-ID': session.user.tenantId,
+      Authorization: `Bearer ${session.accessToken}`,
+      "X-Tenant-ID": session.user.tenantId,
     },
     // Don't cache active calls
-    cache: 'no-store',
+    cache: "no-store",
   });
 
   if (!res.ok) {
     return NextResponse.json(
-      { error: 'Failed to fetch calls' },
-      { status: res.status }
+      { error: "Failed to fetch calls" },
+      { status: res.status },
     );
   }
 
@@ -4536,7 +4588,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await req.json();
@@ -4544,16 +4596,16 @@ export async function POST(req: NextRequest) {
   // Validate on the frontend side too
   if (!isValidE164(body.to) || !isValidE164(body.from)) {
     return NextResponse.json(
-      { error: 'Invalid phone number format' },
-      { status: 400 }
+      { error: "Invalid phone number format" },
+      { status: 400 },
     );
   }
 
   const res = await fetch(`${API_BASE}/calls/originate`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${session.accessToken}`,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.accessToken}`,
     },
     body: JSON.stringify({
       ...body,
@@ -4590,34 +4642,34 @@ GOOGLE_CLIENT_SECRET=...
 
 ### 30.6 Next.js Security Cautions
 
-| Risk | Mitigation |
-|------|-----------|
-| Exposing internal API URL | Use `API_BASE_URL` (no `NEXT_PUBLIC_`) for server-side calls |
-| CSRF on API routes | Use `next-auth` CSRF protection; validate `Origin` header |
-| XSS via call data | Sanitize all caller ID / destination data before rendering |
-| JWT stored in localStorage | Use `httpOnly` cookies via `next-auth`; never localStorage |
-| WebSocket token exposure | Use short-lived tokens (TTL ≤ 60s) for WS auth |
-| Tenant ID from client | NEVER trust `tenant_id` from client; always derive from server-side session |
-| Unvalidated phone numbers | Validate E.164 format on both client and server |
-| Open redirects | Validate `callbackUrl` against allowlist in `next-auth` config |
+| Risk                       | Mitigation                                                                  |
+| -------------------------- | --------------------------------------------------------------------------- |
+| Exposing internal API URL  | Use `API_BASE_URL` (no `NEXT_PUBLIC_`) for server-side calls                |
+| CSRF on API routes         | Use `next-auth` CSRF protection; validate `Origin` header                   |
+| XSS via call data          | Sanitize all caller ID / destination data before rendering                  |
+| JWT stored in localStorage | Use `httpOnly` cookies via `next-auth`; never localStorage                  |
+| WebSocket token exposure   | Use short-lived tokens (TTL ≤ 60s) for WS auth                              |
+| Tenant ID from client      | NEVER trust `tenant_id` from client; always derive from server-side session |
+| Unvalidated phone numbers  | Validate E.164 format on both client and server                             |
+| Open redirects             | Validate `callbackUrl` against allowlist in `next-auth` config              |
 
 ```typescript
 // next-auth config with security hardening
 // lib/auth.ts
-import { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
     maxAge: 8 * 60 * 60, // 8 hours
   },
   cookies: {
     sessionToken: {
       options: {
         httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
       },
     },
   },
@@ -4636,7 +4688,7 @@ export const authOptions: NextAuthOptions = {
     },
     async redirect({ url, baseUrl }) {
       // Prevent open redirect
-      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
       if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
@@ -4807,16 +4859,20 @@ srv := &http.Server{
 ```typescript
 // next.config.ts — security headers
 const securityHeaders = [
-  { key: 'X-DNS-Prefetch-Control', value: 'on' },
-  { key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload' },
-  { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-  { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-  { key: 'Permissions-Policy',
-    value: 'camera=(), microphone=(), geolocation=()' },
+  { key: "X-DNS-Prefetch-Control", value: "on" },
   {
-    key: 'Content-Security-Policy',
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=()",
+  },
+  {
+    key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'", // tighten in prod
@@ -4824,13 +4880,13 @@ const securityHeaders = [
       `connect-src 'self' ${process.env.NEXT_PUBLIC_WS_URL}`,
       "img-src 'self' data: blob:",
       "frame-ancestors 'none'",
-    ].join('; '),
+    ].join("; "),
   },
 ];
 
 const nextConfig = {
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }];
+    return [{ source: "/(.*)", headers: securityHeaders }];
   },
 };
 ```
@@ -4857,6 +4913,7 @@ const nextConfig = {
 Before deploying a FreeSWITCH SaaS integration to production:
 
 ### FreeSWITCH
+
 - [ ] Changed `default_password` from `1234`
 - [ ] Changed ESL password from `ClueCon`
 - [ ] ESL bound to `127.0.0.1` or private IP only
@@ -4869,6 +4926,7 @@ Before deploying a FreeSWITCH SaaS integration to production:
 - [ ] RTP port range configured and firewalled
 
 ### OpenSIPS
+
 - [ ] Dispatcher list configured with all FS nodes
 - [ ] OPTIONS ping enabled for health checking
 - [ ] fail2ban or pike module enabled
@@ -4876,6 +4934,7 @@ Before deploying a FreeSWITCH SaaS integration to production:
 - [ ] ACL for trusted FS nodes
 
 ### Redis
+
 - [ ] `requirepass` set
 - [ ] Bound to private network
 - [ ] Dangerous commands disabled
@@ -4884,6 +4943,7 @@ Before deploying a FreeSWITCH SaaS integration to production:
 - [ ] TLS enabled for cross-host connections
 
 ### Go API
+
 - [ ] All inputs validated with regex allowlists
 - [ ] UUID format validated before ESL commands
 - [ ] Rate limiting implemented
@@ -4893,6 +4953,7 @@ Before deploying a FreeSWITCH SaaS integration to production:
 - [ ] Structured logging with tenant context
 
 ### Next.js
+
 - [ ] `NEXTAUTH_SECRET` is a strong random value
 - [ ] All cookies are `httpOnly` and `Secure`
 - [ ] Security headers configured in `next.config.ts`
@@ -4902,6 +4963,7 @@ Before deploying a FreeSWITCH SaaS integration to production:
 ### Citations
 
 **File:** debian/control-modules (L113-117)
+
 ```text
 Module: applications/mod_hiredis
 Description: Redis client support
@@ -4909,11 +4971,12 @@ Description: Redis client support
 Build-Depends: libhiredis-dev
 Depends: libhiredis0.10 | libhiredis0.13 | libhiredis0.14
 ```
+
 Here is the new section to append to the SKILL.md:
 
 ---
 
-```markdown
+````markdown
 ---
 
 ## 32. SaaS-Level System Design for 1000+ Concurrent Users
@@ -5013,12 +5076,13 @@ The default `switch.conf.xml` ships with `max-sessions=1000` and `sessions-per-s
   </settings>
 </configuration>
 ```
+````
 
-The `initial-event-threads` value is capped internally at `cpu_count / 2`. [2](#3-1) 
+The `initial-event-threads` value is capped internally at `cpu_count / 2`. [2](#3-1)
 
-The `sessions-per-second` counter resets every second via the soft timer loop. [3](#3-2) 
+The `sessions-per-second` counter resets every second via the soft timer loop. [3](#3-2)
 
-Session creation is rejected when `session_count + 1 > session_limit` or `sps <= 0`. [4](#3-3) 
+Session creation is rejected when `session_count + 1 > session_limit` or `sps <= 0`. [4](#3-3)
 
 ---
 
@@ -5210,7 +5274,7 @@ A single FreeSWITCH node on modern hardware (32-core, 64 GB RAM) can handle appr
      └──────────────┘  └──────────────┘  └──────────────┘
 ```
 
-Each FS node uses the same `core-db-dsn` pointing to PostgreSQL. The `switchname` parameter ensures each node's channels are distinguishable in the shared `channels` table. [5](#3-4) 
+Each FS node uses the same `core-db-dsn` pointing to PostgreSQL. The `switchname` parameter ensures each node's channels are distinguishable in the shared `channels` table. [5](#3-4)
 
 ---
 
@@ -5229,6 +5293,7 @@ api fsctl recover
 For this to work across nodes, all nodes must share the same PostgreSQL database. The `recovery` table stores call state that survives restarts.
 
 Enable recovery in the dialplan:
+
 ```xml
 <!-- Enable call recovery for bridged calls -->
 <action application="set" data="enable_recovery=true"/>
@@ -5323,6 +5388,7 @@ func (p *ESLPool) Do(ctx context.Context, fn func(*ESLClient) error) error {
 ```
 
 Usage:
+
 ```go
 pool, _ := NewESLPool("127.0.0.1", 8021, "ClueCon", 10)
 
@@ -5443,6 +5509,7 @@ Redis Cluster (6 nodes):
 ```
 
 Go Redis Cluster client:
+
 ```go
 rdb := redis.NewClusterClient(&redis.ClusterOptions{
     Addrs: []string{
@@ -5506,7 +5573,7 @@ func monitorHeartbeat(event map[string]string) {
 }
 ```
 
-The `HEARTBEAT` event carries `Session-Count`, `Max-Sessions`, `Session-Per-Sec`, `Session-Per-Sec-Last`, `Session-Peak-Max`, and `Idle-CPU`. [6](#3-5) 
+The `HEARTBEAT` event carries `Session-Count`, `Max-Sessions`, `Session-Per-Sec`, `Session-Per-Sec-Last`, `Session-Peak-Max`, and `Idle-CPU`. [6](#3-5)
 
 ---
 
@@ -5538,7 +5605,7 @@ while True:
 con.api("fsctl shutdown elegant")
 ```
 
-The `SCSC_PAUSE_INBOUND` and `SCSC_SHUTDOWN_ELEGANT` controls are available via `fsctl`. [7](#3-6) 
+The `SCSC_PAUSE_INBOUND` and `SCSC_SHUTDOWN_ELEGANT` controls are available via `fsctl`. [7](#3-6)
 
 ---
 
@@ -5547,6 +5614,7 @@ The `SCSC_PAUSE_INBOUND` and `SCSC_SHUTDOWN_ELEGANT` controls are available via 
 For 1000+ users, rate limiting must be enforced at multiple layers to prevent any single tenant from starving others:
 
 **Layer 1: OpenSIPS (SIP level)**
+
 ```
 # opensips.cfg — rate limit per source IP
 loadmodule "pike.so"
@@ -5563,6 +5631,7 @@ route[CHECK_RATE] {
 ```
 
 **Layer 2: FreeSWITCH dialplan (per-tenant)**
+
 ```xml
 <!-- Limit concurrent calls per tenant using mod_limit -->
 <action application="limit"
@@ -5574,6 +5643,7 @@ route[CHECK_RATE] {
 ```
 
 **Layer 3: Go API (per-tenant, per-endpoint)**
+
 ```go
 // Token bucket rate limiter per tenant
 type TenantLimiter struct {
@@ -5614,6 +5684,7 @@ func (api *CallAPI) Originate(w http.ResponseWriter, r *http.Request) {
 ```
 
 **Layer 4: Redis (balance check)**
+
 ```go
 // Atomic balance check and deduct using Redis Lua script
 const deductScript = `
@@ -5741,6 +5812,7 @@ At 1000 concurrent users with average 5-minute calls, you generate ~200 CDRs/min
 ```
 
 Go CDR receiver with async processing:
+
 ```go
 func (s *CDRService) HandleCDR(w http.ResponseWriter, r *http.Request) {
     // Respond immediately — never make FS wait for CDR processing
@@ -5793,21 +5865,21 @@ func (s *CDRService) processCDR(data []byte) {
 
 ### 32.16 High-Scale Cautions and Anti-Patterns
 
-| Anti-Pattern | Why It Fails at Scale | Correct Approach |
-|-------------|----------------------|-----------------|
-| `event plain ALL` on ESL | Generates millions of events/day; overwhelms the consumer | Subscribe only to needed events |
-| SQLite for core DB | File locking serializes all DB writes; collapses above ~200 CPS | Use PostgreSQL via `mod_pgsql` |
-| Single ESL connection for API calls | Serializes all commands; creates queue backlog | Use ESL connection pool (10–20 connections) |
-| `siptrace on` in production | Logs every SIP packet; fills disk in hours | Enable only for targeted debugging |
-| `loglevel debug` in production | Generates gigabytes of logs per hour | Use `info` in production |
-| Presence enabled when not needed | `manage-presence=true` adds significant CPU/DB overhead | Disable if not using BLF/presence |
-| Blocking in event handlers | Stalls the event dispatch thread for all events | Always `go func()` for handler work |
-| No `min-idle-cpu` | FS accepts calls until CPU is 100%; audio quality degrades | Set `min-idle-cpu=15` |
-| No `sessions-per-second` limit | Burst origination can overwhelm the system | Set appropriate CPS limit |
-| Shared Redis keys without tenant prefix | Tenant A can read/overwrite Tenant B's data | Always prefix: `{tenant_id}:key` |
-| CDR processing in HTTP handler | Makes FS wait for DB write; causes CDR timeouts | Respond 200 immediately, process async |
-| No graceful drain procedure | Rolling restarts drop active calls | Implement pause-inbound + elegant shutdown |
-| Verbose channel events enabled | Doubles event payload size | Keep `verbose-channel-events=no` |
+| Anti-Pattern                            | Why It Fails at Scale                                           | Correct Approach                            |
+| --------------------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| `event plain ALL` on ESL                | Generates millions of events/day; overwhelms the consumer       | Subscribe only to needed events             |
+| SQLite for core DB                      | File locking serializes all DB writes; collapses above ~200 CPS | Use PostgreSQL via `mod_pgsql`              |
+| Single ESL connection for API calls     | Serializes all commands; creates queue backlog                  | Use ESL connection pool (10–20 connections) |
+| `siptrace on` in production             | Logs every SIP packet; fills disk in hours                      | Enable only for targeted debugging          |
+| `loglevel debug` in production          | Generates gigabytes of logs per hour                            | Use `info` in production                    |
+| Presence enabled when not needed        | `manage-presence=true` adds significant CPU/DB overhead         | Disable if not using BLF/presence           |
+| Blocking in event handlers              | Stalls the event dispatch thread for all events                 | Always `go func()` for handler work         |
+| No `min-idle-cpu`                       | FS accepts calls until CPU is 100%; audio quality degrades      | Set `min-idle-cpu=15`                       |
+| No `sessions-per-second` limit          | Burst origination can overwhelm the system                      | Set appropriate CPS limit                   |
+| Shared Redis keys without tenant prefix | Tenant A can read/overwrite Tenant B's data                     | Always prefix: `{tenant_id}:key`            |
+| CDR processing in HTTP handler          | Makes FS wait for DB write; causes CDR timeouts                 | Respond 200 immediately, process async      |
+| No graceful drain procedure             | Rolling restarts drop active calls                              | Implement pause-inbound + elegant shutdown  |
+| Verbose channel events enabled          | Doubles event payload size                                      | Keep `verbose-channel-events=no`            |
 
 ---
 
@@ -5815,16 +5887,16 @@ func (s *CDRService) processCDR(data []byte) {
 
 On a well-tuned single Linux server (32 vCPU, 64 GB RAM, 10 Gbps NIC):
 
-| Workload | Realistic Max | Notes |
-|---------|--------------|-------|
-| G.711 bridged calls (bypass media) | 5000+ concurrent | FS not in media path |
-| G.711 bridged calls (proxy media) | 2000–3000 concurrent | FS processes all RTP |
-| Opus transcoding | 800–1200 concurrent | CPU-intensive |
-| Conference (mod_conference) | 500–800 rooms × 5 participants | Mixing is CPU-heavy |
-| Recording (all calls) | 1000–1500 concurrent | Disk I/O becomes bottleneck |
-| IVR with TTS/ASR | 300–500 concurrent | Depends on TTS/ASR engine |
+| Workload                           | Realistic Max                  | Notes                       |
+| ---------------------------------- | ------------------------------ | --------------------------- |
+| G.711 bridged calls (bypass media) | 5000+ concurrent               | FS not in media path        |
+| G.711 bridged calls (proxy media)  | 2000–3000 concurrent           | FS processes all RTP        |
+| Opus transcoding                   | 800–1200 concurrent            | CPU-intensive               |
+| Conference (mod_conference)        | 500–800 rooms × 5 participants | Mixing is CPU-heavy         |
+| Recording (all calls)              | 1000–1500 concurrent           | Disk I/O becomes bottleneck |
+| IVR with TTS/ASR                   | 300–500 concurrent             | Depends on TTS/ASR engine   |
 
-**The RTP port range** defaults to 16384–32768 (16384 ports). Each call needs 2 ports (RTP + RTCP), giving a hard maximum of 8192 concurrent calls per IP address. For 1000 users this is not a constraint, but for larger deployments, use multiple IP addresses. [8](#3-7) 
+**The RTP port range** defaults to 16384–32768 (16384 ports). Each call needs 2 ports (RTP + RTCP), giving a hard maximum of 8192 concurrent calls per IP address. For 1000 users this is not a constraint, but for larger deployments, use multiple IP addresses. [8](#3-7)
 
 ---
 
@@ -5889,20 +5961,21 @@ Monitoring
   ☐ Redis memory usage monitored
   ☐ PostgreSQL connection count monitored
 ```
-```
+
+````
 
 ---
 
 The key codebase facts backing this section:
 
-- Default `max-sessions=1000` and `sessions-per-second=30` in `conf/vanilla/autoload_configs/switch.conf.xml` must both be raised for 1000+ users. [1](#3-0) 
-- `initial-event-threads` is capped at `cpu_count / 2` by the core. [2](#3-1) 
-- Session creation is hard-rejected when `session_count + 1 > session_limit` or `sps <= 0`. [4](#3-3) 
-- The `sps` counter resets every second in the soft timer loop. [3](#3-2) 
-- Default RTP port range is `16384–32768` (16384 ports = 8192 concurrent calls max per IP). [8](#3-7) 
-- `switchname` overrides hostname for all DB/CURL requests in cluster environments. [5](#3-4) 
-- `HEARTBEAT` events carry `Session-Count`, `Max-Sessions`, `Idle-CPU`, and SPS metrics. [6](#3-5) 
-- `core-db-name` can be set to `/dev/shm/core.db` for ramdisk SQLite (single-node only). [9](#3-8) 
+- Default `max-sessions=1000` and `sessions-per-second=30` in `conf/vanilla/autoload_configs/switch.conf.xml` must both be raised for 1000+ users. [1](#3-0)
+- `initial-event-threads` is capped at `cpu_count / 2` by the core. [2](#3-1)
+- Session creation is hard-rejected when `session_count + 1 > session_limit` or `sps <= 0`. [4](#3-3)
+- The `sps` counter resets every second in the soft timer loop. [3](#3-2)
+- Default RTP port range is `16384–32768` (16384 ports = 8192 concurrent calls max per IP). [8](#3-7)
+- `switchname` overrides hostname for all DB/CURL requests in cluster environments. [5](#3-4)
+- `HEARTBEAT` events carry `Session-Count`, `Max-Sessions`, `Idle-CPU`, and SPS metrics. [6](#3-5)
+- `core-db-name` can be set to `/dev/shm/core.db` for ramdisk SQLite (single-node only). [9](#3-8)
 - `SCSC_PAUSE_INBOUND` and `SCSC_SHUTDOWN_ELEGANT` are available for graceful drain. [7](#3-6)
 
 ### Citations
@@ -5915,9 +5988,10 @@ The key codebase facts backing this section:
     <param name="max-sessions" value="1000"/>
     <!--Most channels to create per second -->
     <param name="sessions-per-second" value="30"/>
-```
+````
 
 **File:** conf/vanilla/autoload_configs/switch.conf.xml (L192-195)
+
 ```text
      Allow to specify the sqlite db at a different location (In this example, move it to ramdrive for
      better performance on most linux distro (note, you loose the data if you reboot))
@@ -5926,6 +6000,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/switch_core.c (L114-124)
+
 ```c
         switch_event_add_header(event, SWITCH_STACK_BOTTOM, "Session-Count", "%u", switch_core_session_count());
         switch_event_add_header(event, SWITCH_STACK_BOTTOM, "Max-Sessions", "%u", switch_core_session_limit(0));
@@ -5941,6 +6016,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/switch_core.c (L2284-2306)
+
 ```c
                 } else if (!strcasecmp(var, "initial-event-threads") && !zstr(val)) {
                     int tmp;
@@ -5968,6 +6044,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/switch_core.c (L2336-2338)
+
 ```c
                 } else if (!strcasecmp(var, "switchname") && !zstr(val)) {
                     runtime.switchname = switch_core_strdup(runtime.memory_pool, val);
@@ -5975,6 +6052,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/switch_time.c (L1242-1267)
+
 ```c
             if (runtime.sps <= 0) {
                 switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_CRIT, "Over Session Rate of %d!\n", runtime.sps_total);
@@ -6005,6 +6083,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/switch_core_session.c (L2418-2436)
+
 ```c
     if (!(originate_flags & SOF_NO_LIMITS)) {
         switch_mutex_lock(runtime.throttle_mutex);
@@ -6028,6 +6107,7 @@ The key codebase facts backing this section:
 ```
 
 **File:** src/include/switch_types.h (L2268-2286)
+
 ```text
 typedef enum {
     SCSC_PAUSE_INBOUND,
@@ -6051,11 +6131,11 @@ typedef enum {
 ```
 
 **File:** src/switch_rtp.c (L74-75)
+
 ```c
 #define RTP_START_PORT 16384
 #define RTP_END_PORT 32768
 ```
-
 
 ## Appendix A: Quick Reference Card
 
@@ -6089,3 +6169,4 @@ RECORD_STEREO           — true: record both legs in stereo
 sip_h_X-*              — Custom SIP headers (inbound)
 sip_rh_X-*             — Custom SIP headers (reply)
 sip_profile             — S
+```

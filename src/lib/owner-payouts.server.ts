@@ -13,14 +13,20 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { ownerGate, OwnerError } from "./owner-ops.server";
-import { maskDestination, netPayoutMinor, type PayoutMethod, type PayoutState } from "./payouts";
+import {
+  maskDestination,
+  netPayoutMinor,
+  type PayoutMethod,
+  type PayoutState,
+} from "./payouts";
 
 type Client = SupabaseClient<Database>;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Loose = any;
 
 async function service() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as Loose;
 }
 
@@ -55,7 +61,11 @@ export type OwnerHoldRow = {
 const OPEN_STATES: PayoutState[] = ["requested", "approved", "processing"];
 
 /** The whole desk in one round trip: queue, holds and per-state totals. */
-export async function loadOwnerPayouts(db: Client, userId: string, filter: { state?: string | null } = {}) {
+export async function loadOwnerPayouts(
+  db: Client,
+  userId: string,
+  filter: { state?: string | null } = {},
+) {
   return ownerGate(
     db,
     userId,
@@ -70,7 +80,10 @@ export async function loadOwnerPayouts(db: Client, userId: string, filter: { sta
       const svc = await service();
       const merchants = await svc.from("merchants").select("id, name, status");
       const names = new Map<string, string>(
-        ((merchants.data ?? []) as { id: string; name: string }[]).map((m) => [m.id, m.name]),
+        ((merchants.data ?? []) as { id: string; name: string }[]).map((m) => [
+          m.id,
+          m.name,
+        ]),
       );
 
       let q = svc
@@ -80,7 +93,8 @@ export async function loadOwnerPayouts(db: Client, userId: string, filter: { sta
         )
         .order("requested_at", { ascending: false })
         .limit(200);
-      if (filter.state && filter.state !== "all") q = q.eq("state", filter.state);
+      if (filter.state && filter.state !== "all")
+        q = q.eq("state", filter.state);
       const { data, error } = await q;
       if (error) throw new OwnerError("payouts.read_failed", error.message);
       const rows = (data ?? []) as Loose[];
@@ -98,7 +112,9 @@ export async function loadOwnerPayouts(db: Client, userId: string, filter: { sta
 
       const holdRows = await svc
         .from("payout_holds")
-        .select("id, merchant_id, amount_minor_int, reason, created_at, released_at")
+        .select(
+          "id, merchant_id, amount_minor_int, reason, created_at, released_at",
+        )
         .order("created_at", { ascending: false })
         .limit(200);
 
@@ -111,7 +127,10 @@ export async function loadOwnerPayouts(db: Client, userId: string, filter: { sta
           state: r.state as PayoutState,
           amountMinor: Number(r.amount_minor_int ?? 0),
           feeMinor: Number(r.fee_minor_int ?? 0),
-          netMinor: Number(r.net_minor_int ?? netPayoutMinor(Number(r.amount_minor_int ?? 0), r.method)),
+          netMinor: Number(
+            r.net_minor_int ??
+              netPayoutMinor(Number(r.amount_minor_int ?? 0), r.method),
+          ),
           currency: r.currency_code ?? "BDT",
           method: r.method as PayoutMethod,
           // Never surface a full bank/mobile number in a cross-tenant view.
@@ -130,24 +149,30 @@ export async function loadOwnerPayouts(db: Client, userId: string, filter: { sta
         };
       });
 
-      const holds: OwnerHoldRow[] = ((holdRows.data ?? []) as Loose[]).map((h) => ({
-        id: h.id,
-        merchantId: h.merchant_id,
-        merchantName: names.get(h.merchant_id) ?? "—",
-        amountMinor: Number(h.amount_minor_int ?? 0),
-        reason: h.reason,
-        createdAt: h.created_at,
-        releasedAt: h.released_at ?? null,
-      }));
+      const holds: OwnerHoldRow[] = ((holdRows.data ?? []) as Loose[]).map(
+        (h) => ({
+          id: h.id,
+          merchantId: h.merchant_id,
+          merchantName: names.get(h.merchant_id) ?? "—",
+          amountMinor: Number(h.amount_minor_int ?? 0),
+          reason: h.reason,
+          createdAt: h.created_at,
+          releasedAt: h.released_at ?? null,
+        }),
+      );
 
       const totals = {
         openCount: payouts.filter((p) => OPEN_STATES.includes(p.state)).length,
         openMinor: payouts
           .filter((p) => OPEN_STATES.includes(p.state))
           .reduce((s, p) => s + p.amountMinor, 0),
-        paidMinor: payouts.filter((p) => p.state === "paid").reduce((s, p) => s + p.amountMinor, 0),
+        paidMinor: payouts
+          .filter((p) => p.state === "paid")
+          .reduce((s, p) => s + p.amountMinor, 0),
         failedCount: payouts.filter((p) => p.state === "failed").length,
-        heldMinor: holds.filter((h) => !h.releasedAt).reduce((s, h) => s + h.amountMinor, 0),
+        heldMinor: holds
+          .filter((h) => !h.releasedAt)
+          .reduce((s, h) => s + h.amountMinor, 0),
       };
 
       return {
@@ -196,7 +221,11 @@ export async function ownerPlaceHold(
   );
 }
 
-export async function ownerReleaseHold(db: Client, userId: string, holdId: string) {
+export async function ownerReleaseHold(
+  db: Client,
+  userId: string,
+  holdId: string,
+) {
   return ownerGate(
     db,
     userId,
@@ -225,7 +254,12 @@ export async function ownerReleaseHold(db: Client, userId: string, holdId: strin
  * states can be cancelled — a paid payout is history and must be reversed
  * through the ledger, not edited here.
  */
-export async function ownerCancelPayout(db: Client, userId: string, payoutId: string, reason: string) {
+export async function ownerCancelPayout(
+  db: Client,
+  userId: string,
+  payoutId: string,
+  reason: string,
+) {
   return ownerGate(
     db,
     userId,

@@ -26,7 +26,8 @@ export const askSupportFn = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const { askSupport, degradedAnswer } = await import("./support-agent.server");
+    const { askSupport, degradedAnswer } =
+      await import("./support-agent.server");
     try {
       return await askSupport(data);
     } catch (err) {
@@ -53,7 +54,8 @@ export const customerSendChatMessageFn = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const { runSupportAgentTurn, degradedAnswer } = await import("./support-agent.server");
+    const { runSupportAgentTurn, degradedAnswer } =
+      await import("./support-agent.server");
     try {
       return await runSupportAgentTurn(data);
     } catch (err) {
@@ -75,9 +77,17 @@ export const rateSupportFn = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { rateConversation } = await import("./support-agent.server");
     try {
-      return await rateConversation(data.conversationId, data.rating, data.review);
+      return await rateConversation(
+        data.conversationId,
+        data.rating,
+        data.review,
+      );
     } catch {
-      return { ok: false, rating: data.rating, review: data.review ?? null } as const;
+      return {
+        ok: false,
+        rating: data.rating,
+        review: data.review ?? null,
+      } as const;
     }
   });
 
@@ -90,22 +100,28 @@ export const getCsatAnalyticsFn = createServerFn({ method: "GET" })
     return getCsatAnalytics(merchantId);
   });
 
-
 export const supportDeskFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const merchantId = await merchantOf(context);
-    const [{ listTickets }, { listDocs }, { listChannels }] = await Promise.all([
-      import("./support-tickets.server"),
-      import("./support-kb.server"),
-      import("./support-channels.server"),
-    ]);
+    const [{ listTickets }, { listDocs }, { listChannels }] = await Promise.all(
+      [
+        import("./support-tickets.server"),
+        import("./support-kb.server"),
+        import("./support-channels.server"),
+      ],
+    );
     const [tickets, docs, channels] = await Promise.all([
       listTickets(context.supabase, merchantId),
       listDocs(context.supabase, merchantId),
       listChannels(context.supabase, merchantId),
     ]);
-    const db = context.supabase as unknown as import("@supabase/supabase-js").SupabaseClient<any, any, any>;
+    const db =
+      context.supabase as unknown as import("@supabase/supabase-js").SupabaseClient<
+        any,
+        any,
+        any
+      >;
     const { data: policies } = await db
       .from("support_sla_policies")
       .select("priority, first_response_minutes, resolution_minutes")
@@ -125,7 +141,9 @@ export const supportDeskFn = createServerFn({ method: "GET" })
 
 export const supportTicketEventsFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ ticketId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ ticketId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { ticketEvents } = await import("./support-tickets.server");
     const merchantId = await merchantOf(context);
@@ -219,7 +237,9 @@ export const supportKbSaveFn = createServerFn({ method: "POST" })
 
 export const supportKbDeleteFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ docId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ docId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteDoc } = await import("./support-kb.server");
     const merchantId = await merchantOf(context);
@@ -260,7 +280,9 @@ export const supportAuditFn = createServerFn({ method: "GET" })
         .limit(50),
       (context.supabase as any)
         .from("ai_tool_calls")
-        .select("id, tool, source_table, ok, latency_ms, error_code, created_at")
+        .select(
+          "id, tool, source_table, ok, latency_ms, error_code, created_at",
+        )
         .eq("merchant_id", merchantId)
         .order("created_at", { ascending: false })
         .limit(50),
@@ -300,18 +322,32 @@ export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
     const { enforceRateLimit } = await import("./rate-limit.server");
 
     // Resolve merchant by storefront slug
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: merchant, error: merchantErr } = await supabaseAdmin
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const querySlug = data.slug === "platform" ? "framique" : data.slug;
+    let { data: merchant, error: merchantErr } = await supabaseAdmin
       .from("merchants")
       .select("id, name")
-      .eq("slug", data.slug)
+      .eq("slug", querySlug)
       .maybeSingle();
+
+    if (
+      (merchantErr || !merchant) &&
+      (data.slug === "framique" || data.slug === "platform")
+    ) {
+      merchant = {
+        id: "00000000-0000-4000-8000-000000000001",
+        name: "Framique",
+      };
+      merchantErr = null;
+    }
 
     if (merchantErr || !merchant) {
       return {
         ok: false as const,
         error: "store_not_found",
-        reply: "I'm sorry, I couldn't find your store. Please contact us directly.",
+        reply:
+          "I'm sorry, I couldn't find your store. Please contact us directly.",
       };
     }
 
@@ -357,7 +393,8 @@ export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
       return {
         ok: false as const,
         error: "ticket_create_failed",
-        reply: "I was unable to create your support ticket. Please try again or contact us directly.",
+        reply:
+          "I was unable to create your support ticket. Please try again or contact us directly.",
       };
     }
   });
@@ -391,7 +428,8 @@ const callbackSchema = z.object({
 export const requestCallbackFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => callbackSchema.parse(d))
   .handler(async ({ data }) => {
-    const { createCallback, validateBdPhone } = await import("./support-callbacks.server");
+    const { createCallback, validateBdPhone } =
+      await import("./support-callbacks.server");
 
     // Validate phone before hitting DB
     const phoneCheck = validateBdPhone(data.phone);
@@ -399,23 +437,38 @@ export const requestCallbackFn = createServerFn({ method: "POST" })
       return {
         ok: false as const,
         error: "invalid_phone",
-        reply: "The phone number is not a valid Bangladeshi mobile number. Please use 01XXXXXXXXX format.",
+        reply:
+          "The phone number is not a valid Bangladeshi mobile number. Please use 01XXXXXXXXX format.",
       };
     }
 
     // Resolve merchant by slug
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: merchant, error: merchantErr } = await supabaseAdmin
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const querySlug = data.slug === "platform" ? "framique" : data.slug;
+    let { data: merchant, error: merchantErr } = await supabaseAdmin
       .from("merchants")
       .select("id, name")
-      .eq("slug", data.slug)
+      .eq("slug", querySlug)
       .maybeSingle();
+
+    if (
+      (merchantErr || !merchant) &&
+      (data.slug === "framique" || data.slug === "platform")
+    ) {
+      merchant = {
+        id: "00000000-0000-4000-8000-000000000001",
+        name: "Framique",
+      };
+      merchantErr = null;
+    }
 
     if (merchantErr || !merchant) {
       return {
         ok: false as const,
         error: "store_not_found",
-        reply: "I'm sorry, I couldn't find your store. Please contact us directly.",
+        reply:
+          "I'm sorry, I couldn't find your store. Please contact us directly.",
       };
     }
 
@@ -447,13 +500,15 @@ export const requestCallbackFn = createServerFn({ method: "POST" })
         return {
           ok: false as const,
           error: "invalid_phone",
-          reply: "The phone number is not a valid Bangladeshi mobile number. Please use 01XXXXXXXXX format.",
+          reply:
+            "The phone number is not a valid Bangladeshi mobile number. Please use 01XXXXXXXXX format.",
         };
       }
       return {
         ok: false as const,
         error: "callback_failed",
-        reply: "I was unable to schedule the callback. Please try again shortly.",
+        reply:
+          "I was unable to schedule the callback. Please try again shortly.",
       };
     }
   });
@@ -483,4 +538,3 @@ export const updateCallbackStatusFn = createServerFn({ method: "POST" })
     const { updateCallbackStatus } = await import("./support-callbacks.server");
     return updateCallbackStatus(merchantId, data.callbackId, data.status);
   });
-

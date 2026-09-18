@@ -31,10 +31,15 @@ function split(gross: number) {
 }
 
 async function loadListing(db: Client, kind: Kind, id: string) {
-  const { data } = await db.from(table(kind)).select("*").eq("id", id).maybeSingle();
+  const { data } = await db
+    .from(table(kind))
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
   if (!data) throw new Error("market_listing_not_found");
   if (data.status !== "active") throw new Error("market_listing_not_active");
-  if (!isCompatible(data.compatible_versions)) throw new Error("market_version_mismatch");
+  if (!isCompatible(data.compatible_versions))
+    throw new Error("market_version_mismatch");
   return data;
 }
 
@@ -54,10 +59,16 @@ export async function installListing(
     .eq("merchant_id", merchantId)
     .eq("idempotency_key", input.idempotencyKey)
     .maybeSingle();
-  if (existingKey) return { installId: existingKey.id, replayed: true, impacted: [] as string[] };
+  if (existingKey)
+    return {
+      installId: existingKey.id,
+      replayed: true,
+      impacted: [] as string[],
+    };
 
   const listing = await loadListing(db, input.kind, input.listingId);
-  if (input.trial && !listing.trial_allowed) throw new Error("market_trial_not_allowed");
+  if (input.trial && !listing.trial_allowed)
+    throw new Error("market_trial_not_allowed");
 
   // Consent gate: an install may never receive more scopes than the merchant
   // saw and approved, and never fewer than the pinned version requires.
@@ -72,11 +83,17 @@ export async function installListing(
     if (!version) throw new Error("market_version_not_found");
     if (version.listing_id !== listing.id || version.kind !== input.kind)
       throw new Error("market_version_mismatch");
-    if (version.status !== "active") throw new Error("market_version_not_published");
+    if (version.status !== "active")
+      throw new Error("market_version_not_published");
     const { missingScopes } = await import("./marketplace-scopes");
     const missing = missingScopes(version.scopes ?? [], granted);
-    if (missing.length) throw new Error(`market_consent_required:${missing.join(",")}`);
-    pinned = { id: version.id, version: version.version, scopes: version.scopes ?? [] };
+    if (missing.length)
+      throw new Error(`market_consent_required:${missing.join(",")}`);
+    pinned = {
+      id: version.id,
+      version: version.version,
+      scopes: version.scopes ?? [],
+    };
   }
 
   const charge = input.trial ? 0 : listing.price_minor_int;
@@ -113,7 +130,10 @@ export async function installListing(
       await postLedgerEntry(db, {
         merchantId,
         counterpartyMerchantId: listing.seller_merchant_id,
-        source: input.kind === "theme" ? "market.theme.installed" : "market.widget.installed",
+        source:
+          input.kind === "theme"
+            ? "market.theme.installed"
+            : "market.widget.installed",
         referenceId: install.id,
         direction: "debit",
         gross: money(seller + platform, listing.currency_code),
@@ -132,13 +152,16 @@ export async function installListing(
     .update({ install_count: listing.install_count + 1 })
     .eq("id", listing.id);
 
-  const applied = input.kind === "theme" ? await applyTheme(db, install.id) : null;
+  const applied =
+    input.kind === "theme" ? await applyTheme(db, install.id) : null;
 
   // Third-party themes materialize their own inactive theme row (same shape
   // as builtin installs) so Activate/Delete/badges work uniformly. Listings
   // whose manifest carries no usable AST stay ledger-only, as before.
   if (input.kind === "theme") {
-    await materializeListingTheme(db, merchantId, install.id, listing).catch(() => null);
+    await materializeListingTheme(db, merchantId, install.id, listing).catch(
+      () => null,
+    );
   }
 
   return {
@@ -162,11 +185,16 @@ async function materializeListingTheme(
   listing: { id: string; slug: string; name: string; manifest: unknown },
 ): Promise<string | null> {
   try {
-    const manifest = (listing.manifest ?? {}) as { templates?: unknown; tokens?: unknown };
-    if (!manifest.templates || typeof manifest.templates !== "object") return null;
+    const manifest = (listing.manifest ?? {}) as {
+      templates?: unknown;
+      tokens?: unknown;
+    };
+    if (!manifest.templates || typeof manifest.templates !== "object")
+      return null;
     const { parseTemplates, parseTokens } = await import("./builder-ast");
     const templates = parseTemplates(manifest.templates);
-    if (!Object.values(templates).some((t) => t && typeof t === "object")) return null;
+    if (!Object.values(templates).some((t) => t && typeof t === "object"))
+      return null;
     const tokens = parseTokens(manifest.tokens ?? {});
     const { data: theme, error: themeError } = await db
       .from("store_themes")
@@ -202,7 +230,10 @@ async function materializeListingTheme(
     });
     await db
       .from("store_themes")
-      .update({ source_install_id: installId, source_listing_slug: listing.slug })
+      .update({
+        source_install_id: installId,
+        source_listing_slug: listing.slug,
+      })
       .eq("id", themeId);
     return themeId;
   } catch {
@@ -211,7 +242,9 @@ async function materializeListingTheme(
 }
 
 async function applyTheme(db: Client, installId: string) {
-  const { error } = await db.rpc("market_apply_theme_install", { _install_id: installId });
+  const { error } = await db.rpc("market_apply_theme_install", {
+    _install_id: installId,
+  });
   if (!error) return { ok: true, noticeKey: "marketplace.theme.applied" };
   if (error.message.includes("market.theme_manifest_missing_ast")) {
     return { ok: false, noticeKey: "marketplace.theme.no_ast" };
@@ -220,8 +253,15 @@ async function applyTheme(db: Client, installId: string) {
 }
 
 async function revertTheme(db: Client, installId: string) {
-  const { error } = await db.rpc("market_revert_theme_install", { _install_id: installId });
-  return { ok: !error, noticeKey: error ? "marketplace.theme.revert_failed" : "marketplace.theme.reverted" };
+  const { error } = await db.rpc("market_revert_theme_install", {
+    _install_id: installId,
+  });
+  return {
+    ok: !error,
+    noticeKey: error
+      ? "marketplace.theme.revert_failed"
+      : "marketplace.theme.reverted",
+  };
 }
 
 async function snapshotCurrent(db: Client, merchantId: string, kind: Kind) {
@@ -251,7 +291,8 @@ export async function setInstallStatus(
     .eq("id", installId)
     .maybeSingle();
   if (!row) throw new Error("market_install_not_found");
-  if (row.status === "rolled_back") throw new Error("market_install_rolled_back");
+  if (row.status === "rolled_back")
+    throw new Error("market_install_rolled_back");
 
   const next = status === "installed" && row.is_trial ? "trial" : status;
   const { error } = await db
@@ -261,9 +302,17 @@ export async function setInstallStatus(
     .eq("id", installId);
   if (error) throw new Error("market_install_update_failed");
   const { auditAction } = await import("./hardening.server");
-  await auditAction(db, merchantId, actorId ?? null, `market.${next}`, row.kind, {
-    slug: row.listing_slug,
-  }, installId);
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    `market.${next}`,
+    row.kind,
+    {
+      slug: row.listing_slug,
+    },
+    installId,
+  );
 
   let themeNoticeKey: string | null = null;
   if (row.kind === "theme") {
@@ -275,7 +324,10 @@ export async function setInstallStatus(
   } else if (row.kind === "widget") {
     await db
       .from("plugin_state")
-      .update({ enabled: next === "installed" || next === "trial", updated_at: new Date().toISOString() })
+      .update({
+        enabled: next === "installed" || next === "trial",
+        updated_at: new Date().toISOString(),
+      })
       .eq("merchant_id", merchantId)
       .eq("plugin_id", row.listing_slug);
   }
@@ -361,11 +413,23 @@ export async function sellerTransition(
   return { ok: true, status: next };
 }
 
-export async function moderate(db: Client, kind: Kind, id: string, next: "active" | "paused" | "draft") {
-  const { data } = await db.from(table(kind)).select("id, status").eq("id", id).maybeSingle();
+export async function moderate(
+  db: Client,
+  kind: Kind,
+  id: string,
+  next: "active" | "paused" | "draft",
+) {
+  const { data } = await db
+    .from(table(kind))
+    .select("id, status")
+    .eq("id", id)
+    .maybeSingle();
   if (!data) throw new Error("market_listing_not_found");
   if (data.status === "archived") throw new Error("market_listing_archived");
-  const { error } = await db.from(table(kind)).update({ status: next }).eq("id", id);
+  const { error } = await db
+    .from(table(kind))
+    .update({ status: next })
+    .eq("id", id);
   if (error) throw new Error("market_moderation_failed");
   return { ok: true, status: next };
 }
@@ -395,12 +459,15 @@ export async function installBuiltinTheme(
   const { registryPackage } = await import("./themes.server");
   const pkg = registryPackage(key);
 
-  const { data, error } = await (db as unknown as LooseRpc).rpc("marketplace_install_preset", {
-    _merchant_id: merchantId,
-    _key: key,
-    _name: preset.nameEn,
-    _preset: { tokens: pkg.tokens, templates: pkg.templates },
-  });
+  const { data, error } = await (db as unknown as LooseRpc).rpc(
+    "marketplace_install_preset",
+    {
+      _merchant_id: merchantId,
+      _key: key,
+      _name: preset.nameEn,
+      _preset: { tokens: pkg.tokens, templates: pkg.templates },
+    },
+  );
   if (error || !data) throw new Error("market_install_failed");
   const installed = data as { theme_id: string; version_id: string };
 
@@ -430,7 +497,11 @@ export async function installBuiltinTheme(
     .eq("id", installed.theme_id)
     .eq("merchant_id", merchantId);
 
-  return { themeId: installed.theme_id, versionId: installed.version_id, installId: ledger.id };
+  return {
+    themeId: installed.theme_id,
+    versionId: installed.version_id,
+    installId: ledger.id,
+  };
 }
 
 /**
@@ -488,7 +559,8 @@ export async function uninstallWidgetInstall(
     .eq("merchant_id", merchantId)
     .eq("id", installId)
     .maybeSingle();
-  if (!row || row.kind !== "widget") throw new Error("market_install_not_found");
+  if (!row || row.kind !== "widget")
+    throw new Error("market_install_not_found");
 
   const { data: plugins } = await db
     .from("plugin_state")
@@ -510,9 +582,17 @@ export async function uninstallWidgetInstall(
     .eq("merchant_id", merchantId)
     .eq("id", installId);
   const { auditAction } = await import("./hardening.server");
-  await auditAction(db, merchantId, actorId ?? null, "plugin.uninstalled", "plugin", {
-    plugin: row.listing_slug,
-  }, installId);
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "plugin.uninstalled",
+    "plugin",
+    {
+      plugin: row.listing_slug,
+    },
+    installId,
+  );
   return { ok: true, removedPlugin: matched.length > 0 };
 }
 

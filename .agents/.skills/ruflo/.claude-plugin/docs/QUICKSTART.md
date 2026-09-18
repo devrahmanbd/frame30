@@ -24,6 +24,7 @@ cd claude-flow
 ```
 
 Then in Claude Code:
+
 ```
 /plugin add .
 /restart
@@ -42,6 +43,7 @@ In Claude Code:
 Look for `claude-flow` in the active plugins.
 
 Try a command:
+
 ```
 /coordination-swarm-init
 ```
@@ -61,6 +63,7 @@ In Claude Code, run:
 ```
 
 This creates a hierarchical swarm with:
+
 - Automatic agent spawning
 - Cross-session memory
 - Performance optimization
@@ -72,6 +75,7 @@ This creates a hierarchical swarm with:
 ```
 
 Choose from 74+ agents:
+
 - `coder` - Code implementation
 - `tester` - Test creation
 - `reviewer` - Code review
@@ -85,6 +89,7 @@ Choose from 74+ agents:
 ```
 
 The swarm automatically:
+
 1. Analyzes requirements
 2. Spawns appropriate agents
 3. Coordinates parallel execution
@@ -220,6 +225,7 @@ List available MCP tools for claude-flow
 ```
 
 Expected: 40+ tools including:
+
 - `swarm_init`
 - `agent_spawn`
 - `task_orchestrate`
@@ -331,26 +337,26 @@ chmod -R 755 ~/.claude/agents/
 
 ### Most Used Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/coordination-swarm-init` | Initialize swarm |
-| `/coordination-agent-spawn` | Spawn agents |
+| Command                          | Purpose           |
+| -------------------------------- | ----------------- |
+| `/coordination-swarm-init`       | Initialize swarm  |
+| `/coordination-agent-spawn`      | Spawn agents      |
 | `/coordination-task-orchestrate` | Orchestrate tasks |
-| `/sparc-tdd` | TDD workflow |
-| `/github-pr-manager` | PR management |
-| `/monitoring-status` | System status |
-| `/analysis-performance-report` | Performance |
+| `/sparc-tdd`                     | TDD workflow      |
+| `/github-pr-manager`             | PR management     |
+| `/monitoring-status`             | System status     |
+| `/analysis-performance-report`   | Performance       |
 
 ### Most Used Agents
 
-| Agent | Purpose |
-|-------|---------|
-| `coder` | Code implementation |
-| `tester` | Test creation |
-| `reviewer` | Code review |
-| `planner` | Project planning |
+| Agent         | Purpose             |
+| ------------- | ------------------- |
+| `coder`       | Code implementation |
+| `tester`      | Test creation       |
+| `reviewer`    | Code review         |
+| `planner`     | Project planning    |
 | `backend-dev` | Backend development |
-| `pr-manager` | PR automation |
+| `pr-manager`  | PR automation       |
 
 ---
 

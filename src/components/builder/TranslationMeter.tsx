@@ -19,13 +19,21 @@ export function TranslationMeter({
   if (report.total === 0) return null;
 
   const tone =
-    report.empty > 0 ? "text-danger-foreground" : report.fallback > 0 ? "text-muted-foreground" : "text-primary";
+    report.empty > 0
+      ? "text-danger-foreground"
+      : report.fallback > 0
+        ? "text-muted-foreground"
+        : "text-primary";
 
   return (
     <section className="space-y-2 rounded-fq-md border border-border p-3">
       <div className="flex items-baseline justify-between gap-2">
-        <h4 className="text-xs font-medium">{t("বাংলা coverage", "বাংলা কভারেজ")}</h4>
-        <span className={`text-xs font-semibold ${tone}`}>{report.percent}%</span>
+        <h4 className="text-xs font-medium">
+          {t("বাংলা coverage", "বাংলা কভারেজ")}
+        </h4>
+        <span className={`text-xs font-semibold ${tone}`}>
+          {report.percent}%
+        </span>
       </div>
 
       <div
@@ -36,7 +44,10 @@ export function TranslationMeter({
         aria-valuemax={100}
         aria-label={t("Translation completeness", "অনুবাদ সম্পূর্ণতা")}
       >
-        <div className="h-full bg-primary" style={{ width: `${report.percent}%` }} />
+        <div
+          className="h-full bg-primary"
+          style={{ width: `${report.percent}%` }}
+        />
       </div>
 
       <ul className="space-y-0.5 text-[0.65rem] text-muted-foreground">
@@ -59,7 +70,11 @@ export function TranslationMeter({
                 onClick={() => onJump(ref.template, ref.sectionId)}
                 className="w-full truncate rounded-fq-sm px-1 py-0.5 text-left text-[0.65rem] hover:bg-muted"
               >
-                <span className={ref.state === "empty" ? "text-danger-foreground" : ""}>
+                <span
+                  className={
+                    ref.state === "empty" ? "text-danger-foreground" : ""
+                  }
+                >
                   {ref.state === "empty" ? "✕" : "⚠"}
                 </span>{" "}
                 {ref.sectionLabel} · {ref.fieldLabel}

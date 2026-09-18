@@ -8,20 +8,38 @@ const TONE: Record<string, string> = {
   muted: "bg-muted text-muted-foreground",
 };
 
-export function Pill({ tone = "muted", children }: { tone?: keyof typeof TONE; children: ReactNode }) {
+export function Pill({
+  tone = "muted",
+  children,
+}: {
+  tone?: keyof typeof TONE;
+  children: ReactNode;
+}) {
   return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${TONE[tone]}`}>
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${TONE[tone]}`}
+    >
       {children}
     </span>
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+}) {
   return (
     <div className="rounded-fq-md border border-border bg-card p-4">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
-      {hint ? <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -42,7 +60,9 @@ export function Section({
       <header className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-4 py-3">
         <div>
           <h2 className="text-sm font-semibold">{title}</h2>
-          {description ? <p className="text-xs text-muted-foreground">{description}</p> : null}
+          {description ? (
+            <p className="text-xs text-muted-foreground">{description}</p>
+          ) : null}
         </div>
         {action}
       </header>
@@ -69,5 +89,7 @@ export function minutes(value: number | null) {
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <p className="py-6 text-center text-sm text-muted-foreground">{children}</p>;
+  return (
+    <p className="py-6 text-center text-sm text-muted-foreground">{children}</p>
+  );
 }

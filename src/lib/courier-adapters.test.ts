@@ -10,7 +10,14 @@ describe("carrier coverage", () => {
   it("ships every contracted Bangladeshi carrier", () => {
     const codes = CARRIER_PROFILES.map((c) => c.code).sort();
     expect(codes).toEqual(
-      ["ecourier", "paperfly", "pathao", "redx", "steadfast", "sundarban"].sort(),
+      [
+        "ecourier",
+        "paperfly",
+        "pathao",
+        "redx",
+        "steadfast",
+        "sundarban",
+      ].sort(),
     );
   });
 

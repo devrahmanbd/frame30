@@ -32,7 +32,8 @@ import { redactPii } from "./support-guardrails";
 import { incr, log } from "./observability.server";
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin;
 }
 
@@ -147,7 +148,10 @@ export function clearMockTransactionalData() {
 /**
  * Scan text for any un-redacted Bangladeshi phone numbers, emails, or credit cards.
  */
-export function scanResidualPii(text: string): { hasPii: boolean; matches: string[] } {
+export function scanResidualPii(text: string): {
+  hasPii: boolean;
+  matches: string[];
+} {
   const matches: string[] = [];
 
   // BD Phone numbers: (01[3-9]\d{8}) or (+8801...)
@@ -155,7 +159,9 @@ export function scanResidualPii(text: string): { hasPii: boolean; matches: strin
   if (phoneMatch) matches.push(...phoneMatch);
 
   // Email regex
-  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g);
+  const emailMatch = text.match(
+    /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
+  );
   if (emailMatch) matches.push(...emailMatch);
 
   // Card PAN (13-19 digits)
@@ -172,7 +178,7 @@ export function scanResidualPii(text: string): { hasPii: boolean; matches: strin
  * Core Worker: Execute GDPR Erasure & Decouple ML Training Flywheel.
  */
 export async function processGdprErasure(
-  request: GdprErasureRequest
+  request: GdprErasureRequest,
 ): Promise<GdprErasureResult> {
   const startTime = Date.now();
   const requestId = `gdpr_${createHash("sha256").update(`${request.targetId}_${Date.now()}`).digest("hex").slice(0, 12)}`;
@@ -236,7 +242,6 @@ export async function processGdprErasure(
     const unlinkResult = await disassociateTenantFromTrainingData(merchantId);
     turnsUnlinked = unlinkResult.unlinkedCount;
     cohortHash = unlinkResult.preservedCohortHash;
-
   } else if (request.targetType === "customer") {
     const customerId = request.targetId;
     const merchantId = request.merchantId || "unknown_merchant";
@@ -323,18 +328,23 @@ export async function processGdprErasure(
  * Webhook Dispatcher: Ingest tenant deletion webhook and trigger unlinking.
  */
 export async function handleTenantDeletionWebhook(
-  payload: TenantDeletionWebhookPayload
+  payload: TenantDeletionWebhookPayload,
 ): Promise<GdprErasureResult> {
   const targetType: GdprErasureTargetType =
     payload.event === "customer.gdpr_erasure" ? "customer" : "merchant";
   const targetId =
-    payload.event === "customer.gdpr_erasure" ? (payload.customerId || payload.merchantId) : payload.merchantId;
+    payload.event === "customer.gdpr_erasure"
+      ? payload.customerId || payload.merchantId
+      : payload.merchantId;
 
   return processGdprErasure({
     targetType,
     targetId,
     merchantId: payload.merchantId,
-    reason: payload.event === "customer.gdpr_erasure" ? "gdpr_right_to_erasure" : "tenant_churn",
+    reason:
+      payload.event === "customer.gdpr_erasure"
+        ? "gdpr_right_to_erasure"
+        : "tenant_churn",
     requestedAt: payload.timestamp,
     requestedBy: "webhook_dispatcher",
   });

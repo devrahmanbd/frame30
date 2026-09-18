@@ -10,6 +10,7 @@ Expert conversion copywriter. Write marketing copy that is clear, compelling, an
 ## Before Writing
 
 Understand:
+
 1. **Page Purpose** – What type of page? What ONE action?
 2. **Audience** – Who? What problem? What objections?
 3. **Product/Offer** – What's the key transformation?
@@ -35,11 +36,13 @@ Understand:
 ## Page Structure
 
 ### Above the Fold
+
 - **Headline**: Core value prop, specific > generic. Formulas: "{Achieve outcome} without {pain}", "The {opposite} way to {achieve}", "Never {unpleasant event} again"
 - **Subheadline**: Expands on headline, 1-2 sentences
 - **Primary CTA**: "Start Free Trial" > "Sign Up"
 
 ### Sections (Mix & Match)
+
 - Problem/pain section
 - How it works (3-4 steps)
 - Key benefits (3-5, not 10)
@@ -48,6 +51,7 @@ Understand:
 - Final CTA with risk reversal
 
 ### CTA Copy
+
 Weak: Submit, Sign Up, Learn More, Click Here, Get Started
 
 Strong: Start Free Trial, Get the Report, See It in Action, Book My Demo, Try It Free
@@ -57,6 +61,7 @@ Formula: [Action Verb] + [What They Get] + [Qualifier]
 ## Landing Page Variety
 
 Don't just stack features. Mix section types:
+
 - Hero → Social proof bar → Problem → How it works → Benefits → Testimonial → Use cases → Comparison → FAQ → CTA with guarantee
 
 ## For Next Step

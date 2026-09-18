@@ -64,7 +64,9 @@ export function parseTerms(value: string, kind?: TaxonomyKind): TaxonomyTerm[] {
     .map((part) => part.trim().toLowerCase())
     .filter(Boolean)
     .map((slug) => findTerm(slug))
-    .filter((term): term is TaxonomyTerm => !!term && (!kind || term.kind === kind));
+    .filter(
+      (term): term is TaxonomyTerm => !!term && (!kind || term.kind === kind),
+    );
 }
 
 /** The depth ladder a shade finder walks. Slugs stay stable across locales. */

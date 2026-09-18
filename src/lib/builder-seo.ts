@@ -101,7 +101,9 @@ export function safeUrl(value: string): string {
   if (!value) return "";
   try {
     const url = new URL(value);
-    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : "";
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.toString()
+      : "";
   } catch {
     return "";
   }
@@ -130,7 +132,6 @@ export function isPageSeoEmpty(seo: PageSeo): boolean {
 export { pixelWidth } from "./seo-pixels";
 import { pixelWidth } from "./seo-pixels";
 
-
 export type SerpPreview = {
   title: string;
   description: string;
@@ -140,7 +141,10 @@ export type SerpPreview = {
   descriptionTruncated: boolean;
 };
 
-export function serpPreview(seo: PageSeo, fallback: { title: string; description: string }): SerpPreview {
+export function serpPreview(
+  seo: PageSeo,
+  fallback: { title: string; description: string },
+): SerpPreview {
   const title = seo.title || fallback.title;
   const description = seo.description || fallback.description;
   const titlePx = pixelWidth(title, 16);
@@ -176,7 +180,12 @@ const HREF_KEY = /href$/i;
 
 function isInternal(href: string): boolean {
   if (!href) return false;
-  if (href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) return false;
+  if (
+    href.startsWith("#") ||
+    href.startsWith("mailto:") ||
+    href.startsWith("tel:")
+  )
+    return false;
   if (/^https?:\/\//i.test(href)) return false;
   return href.startsWith("/");
 }
@@ -204,7 +213,9 @@ export function analyseTemplate(ast: ThemeAst): TemplateContent {
     if (!entry) continue;
 
     if (section.type === "heading") {
-      headingLevels.push(String(section.props["level"] ?? "h2") === "h3" ? 3 : 2);
+      headingLevels.push(
+        String(section.props["level"] ?? "h2") === "h3" ? 3 : 2,
+      );
     } else if (entry.heading) {
       h1Claims += 1;
       headingLevels.push(1);
@@ -228,7 +239,11 @@ export function analyseTemplate(ast: ThemeAst): TemplateContent {
         else if (/^https?:\/\//i.test(value)) externalLinks += 1;
         continue;
       }
-      if (value.length > 2 && /[a-z\u0980-\u09FF]/i.test(value) && !/^https?:\/\//i.test(value)) {
+      if (
+        value.length > 2 &&
+        /[a-z\u0980-\u09FF]/i.test(value) &&
+        !/^https?:\/\//i.test(value)
+      ) {
         words.push(value);
       }
     }
@@ -256,7 +271,10 @@ export function analyseTemplate(ast: ThemeAst): TemplateContent {
 }
 
 /** Bilingual coverage of the copy a crawler indexes, per locale. */
-export function banglaCoverage(ast: ThemeAst): { keys: number; translated: number } {
+export function banglaCoverage(ast: ThemeAst): {
+  keys: number;
+  translated: number;
+} {
   let keys = 0;
   let translated = 0;
   for (const slot of SLOTS) void slot;
@@ -334,7 +352,17 @@ export function scoreBuilderSeo(input: BuilderSeoInput): BuilderSeoReport {
     status: SeoCheck["status"],
     hint: string,
     weight: number,
-  ) => contentChecks.push({ id, group: "aeo", label, labelBn: label, status, hint, hintBn: hint, weight });
+  ) =>
+    contentChecks.push({
+      id,
+      group: "aeo",
+      label,
+      labelBn: label,
+      status,
+      hint,
+      hintBn: hint,
+      weight,
+    });
 
   push(
     "content.h1",
@@ -353,11 +381,16 @@ export function scoreBuilderSeo(input: BuilderSeoInput): BuilderSeoReport {
     "content.heading_order",
     "Heading order",
     skipped ? "fail" : "pass",
-    skipped ? "A heading level is skipped — screen readers lose the outline." : "Heading levels step down one at a time.",
+    skipped
+      ? "A heading level is skipped — screen readers lose the outline."
+      : "Heading levels step down one at a time.",
     8,
   );
 
-  const alt = content.images.total === 0 ? 1 : content.images.withAlt / content.images.total;
+  const alt =
+    content.images.total === 0
+      ? 1
+      : content.images.withAlt / content.images.total;
   push(
     "content.alt",
     "Image alt coverage",
@@ -371,7 +404,11 @@ export function scoreBuilderSeo(input: BuilderSeoInput): BuilderSeoReport {
   push(
     "content.words",
     "Indexable copy",
-    content.words >= MIN_WORDS ? "pass" : content.words >= MIN_WORDS / 2 ? "warn" : "fail",
+    content.words >= MIN_WORDS
+      ? "pass"
+      : content.words >= MIN_WORDS / 2
+        ? "warn"
+        : "fail",
     `${content.words} words of crawlable copy (target ${MIN_WORDS}+).`,
     8,
   );
@@ -406,30 +443,43 @@ export function scoreBuilderSeo(input: BuilderSeoInput): BuilderSeoReport {
   push(
     "content.hreflang",
     "Locale alternates",
-    alternates.length >= 3 && ratio >= 0.9 ? "pass" : alternates.length ? "warn" : "fail",
+    alternates.length >= 3 && ratio >= 0.9
+      ? "pass"
+      : alternates.length
+        ? "warn"
+        : "fail",
     alternates.length === 0
       ? "Set a canonical URL so en/bn alternates can be emitted."
       : `${bn.translated}/${bn.keys} strings translated to বাংলা.`,
     8,
   );
 
-  const blocking = (input.issues ?? []).filter((issue) => issue.level === "error").length;
+  const blocking = (input.issues ?? []).filter(
+    (issue) => issue.level === "error",
+  ).length;
   push(
     "content.lints",
     "Publish blockers",
     blocking === 0 ? "pass" : "fail",
-    blocking === 0 ? "No blocking template errors." : `${blocking} blocking template errors must be fixed first.`,
+    blocking === 0
+      ? "No blocking template errors."
+      : `${blocking} blocking template errors must be fixed first.`,
     12,
   );
 
   const checks = [...base.checks, ...contentChecks];
   const earned = checks.reduce(
     (sum, check) =>
-      sum + check.weight * (check.status === "pass" ? 1 : check.status === "warn" ? 0.5 : 0),
+      sum +
+      check.weight *
+        (check.status === "pass" ? 1 : check.status === "warn" ? 0.5 : 0),
     0,
   );
   const denominator =
-    checks.reduce((sum, check) => sum + (check.status === "skip" ? 0 : check.weight), 0) || 1;
+    checks.reduce(
+      (sum, check) => sum + (check.status === "skip" ? 0 : check.weight),
+      0,
+    ) || 1;
   const counts = {
     pass: checks.filter((c) => c.status === "pass").length,
     warn: checks.filter((c) => c.status === "warn").length,
@@ -446,7 +496,10 @@ export function scoreBuilderSeo(input: BuilderSeoInput): BuilderSeoReport {
     facts: base.facts,
     content,
     contentChecks,
-    preview: serpPreview(input.seo, { title: fallbackTitle(input), description: "" }),
+    preview: serpPreview(input.seo, {
+      title: fallbackTitle(input),
+      description: "",
+    }),
   };
 }
 
@@ -464,22 +517,34 @@ export function hasSkippedLevel(levels: readonly number[]): boolean {
  * `noindex` — the two are independent, and the sitemap must agree with the
  * robots directive the page itself emits.
  */
-export function isSitemapEligible(input: { published: boolean; seo: PageSeo }): boolean {
+export function isSitemapEligible(input: {
+  published: boolean;
+  seo: PageSeo;
+}): boolean {
   return input.published && !input.seo.noindex;
 }
 
 /** Head fragments for a builder-authored page. Absolute URLs only. */
-export function pageSeoHead(seo: PageSeo, fallback: { title: string; description: string }) {
+export function pageSeoHead(
+  seo: PageSeo,
+  fallback: { title: string; description: string },
+) {
   const title = seo.title || fallback.title;
   const description = seo.description || fallback.description;
   const meta: Record<string, string>[] = [{ title }];
   if (description) meta.push({ name: "description", content: description });
   meta.push({ property: "og:title", content: seo.ogTitle || title });
   if (seo.ogDescription || description) {
-    meta.push({ property: "og:description", content: seo.ogDescription || description });
+    meta.push({
+      property: "og:description",
+      content: seo.ogDescription || description,
+    });
   }
   meta.push({ property: "og:type", content: "website" });
-  meta.push({ name: "twitter:card", content: seo.ogImage ? "summary_large_image" : "summary" });
+  meta.push({
+    name: "twitter:card",
+    content: seo.ogImage ? "summary_large_image" : "summary",
+  });
   if (seo.ogImage) {
     meta.push({ property: "og:image", content: seo.ogImage });
     meta.push({ name: "twitter:image", content: seo.ogImage });
@@ -489,7 +554,8 @@ export function pageSeoHead(seo: PageSeo, fallback: { title: string; description
   const links: Record<string, string>[] = [];
   if (seo.canonical && !seo.noindex) {
     links.push({ rel: "canonical", href: seo.canonical });
-    for (const alternate of hreflangAlternates(seo.canonical)) links.push(alternate);
+    for (const alternate of hreflangAlternates(seo.canonical))
+      links.push(alternate);
   }
   return { meta, links };
 }

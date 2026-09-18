@@ -62,7 +62,9 @@ type Db = {
       ) => { maybeSingle: () => Promise<{ data: unknown; error: unknown }> };
     };
     insert: (row: Record<string, unknown>) => {
-      select: (c: string) => { single: () => Promise<{ data: unknown; error: unknown }> };
+      select: (c: string) => {
+        single: () => Promise<{ data: unknown; error: unknown }>;
+      };
     };
   };
 };
@@ -90,7 +92,10 @@ export async function postLedgerEntry(
         .eq("idempotency_key", input.idempotencyKey)
         .maybeSingle();
       if ((existing.data as { id: string } | null)?.id) {
-        incr("framique_ledger_total", { source: input.source, outcome: "replayed" });
+        incr("framique_ledger_total", {
+          source: input.source,
+          outcome: "replayed",
+        });
         return { id: (existing.data as { id: string }).id, replayed: true };
       }
 
@@ -116,15 +121,27 @@ export async function postLedgerEntry(
         // A racing writer with the same key lost the insert: treat as replay.
         const msg = (error as { message?: string }).message ?? "";
         if (msg.includes("duplicate key")) {
-          incr("framique_ledger_total", { source: input.source, outcome: "replayed" });
+          incr("framique_ledger_total", {
+            source: input.source,
+            outcome: "replayed",
+          });
           return { id: null, replayed: true };
         }
-        incr("framique_ledger_total", { source: input.source, outcome: "failed" });
-        log("error", "ledger.write_failed", { source: input.source, message: msg });
+        incr("framique_ledger_total", {
+          source: input.source,
+          outcome: "failed",
+        });
+        log("error", "ledger.write_failed", {
+          source: input.source,
+          message: msg,
+        });
         throw new LedgerError("ledger.write_failed", msg);
       }
 
-      incr("framique_ledger_total", { source: input.source, outcome: "posted" });
+      incr("framique_ledger_total", {
+        source: input.source,
+        outcome: "posted",
+      });
       return { id: (data as { id: string }).id, replayed: false };
     },
     { source: input.source, direction: input.direction },
@@ -161,11 +178,18 @@ export async function postCorrection(
 
 /** Net position from a set of rows — credits minus debits, currency-safe. */
 export function ledgerBalance(
-  rows: { direction: string; seller_minor_int: number | string; currency_code: string }[],
+  rows: {
+    direction: string;
+    seller_minor_int: number | string;
+    currency_code: string;
+  }[],
   currency = "BDT",
 ) {
-  return rows.reduce((acc, r) => {
-    const amount = money(Number(r.seller_minor_int), r.currency_code);
-    return r.direction === "credit" ? add(acc, amount) : sub(acc, amount);
-  }, money(0, currency));
+  return rows.reduce(
+    (acc, r) => {
+      const amount = money(Number(r.seller_minor_int), r.currency_code);
+      return r.direction === "credit" ? add(acc, amount) : sub(acc, amount);
+    },
+    money(0, currency),
+  );
 }

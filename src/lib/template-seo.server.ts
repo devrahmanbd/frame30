@@ -58,7 +58,9 @@ const SELECT =
  * resolves them, and an unknown template key is dropped instead of failing the
  * whole map (the catalogue can shrink under stored rows).
  */
-export async function loadTemplateSeoMap(merchantId: string): Promise<TemplateSeoMap> {
+export async function loadTemplateSeoMap(
+  merchantId: string,
+): Promise<TemplateSeoMap> {
   if (!merchantId) return EMPTY_MAP;
   return renderRead<TemplateSeoMap>({
     name: "template_seo.map",
@@ -81,7 +83,10 @@ export async function loadTemplateSeoMap(merchantId: string): Promise<TemplateSe
       for (const row of (data ?? []) as (Row & { theme_id: string | null })[]) {
         const template = String(row.template ?? "");
         if (!known.has(template)) {
-          log("warn", "storefront.template_seo.unknown_template", { merchant_id: merchantId, template });
+          log("warn", "storefront.template_seo.unknown_template", {
+            merchant_id: merchantId,
+            template,
+          });
           continue;
         }
         if (themed.has(template) && !row.theme_id) continue;
@@ -129,7 +134,9 @@ export async function resolveSeoWithTemplate(
  * Templates the merchant hid from search. The sitemap builders subtract these
  * so a URL is never advertised and de-indexed at the same time.
  */
-export async function hiddenTemplates(merchantId: string): Promise<Set<TemplateKey>> {
+export async function hiddenTemplates(
+  merchantId: string,
+): Promise<Set<TemplateKey>> {
   const map = await loadTemplateSeoMap(merchantId);
   const hidden = new Set<TemplateKey>();
   for (const [template, record] of Object.entries(map)) {

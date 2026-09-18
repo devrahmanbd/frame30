@@ -21,6 +21,12 @@ import { useLang } from "@/lib/i18n";
 import { ownerSetFlagFn, ownerSettingsFn } from "@/lib/owner.functions";
 import { OwnerHeader, StatCard, StatGrid } from "@/components/root/OwnerUi";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
+import {
+  COMMON_TIMEZONES,
+  DEFAULT_PLATFORM_TIMEZONE,
+  formatInTimezone,
+  sanitizeTimezone,
+} from "@/lib/timezone";
 
 export const Route = createFileRoute("/root/settings")({
   head: () => ({
@@ -113,7 +119,30 @@ export function OwnerSettings() {
     },
   });
 
+  const saveStringFlag = useMutation({
+    mutationFn: (input: { key: string; value: string }) =>
+      setFlag({ data: input }),
+    onSuccess: () => {
+      toast.success(
+        t(
+          "Platform timezone updated successfully",
+          "প্ল্যাটফর্ম টাইমজোন সফলভাবে আপডেট হয়েছে",
+        ),
+      );
+      void qc.invalidateQueries({ queryKey: ["owner-settings"] });
+    },
+    onError: (err: unknown) => {
+      const msg =
+        err instanceof Error ? err.message : "Failed to update timezone";
+      toast.error(msg);
+    },
+  });
+
   const flags = data?.flags ?? {};
+  const platformTimezone = sanitizeTimezone(
+    flags["platform_timezone"],
+    DEFAULT_PLATFORM_TIMEZONE,
+  );
   const isAiActive = flags["ai_support_enabled"] !== false;
   const isFraudActive = flags["fraud_engine_enabled"] !== false;
   const isEmailActive = flags["consent_channel_email"] !== false;
@@ -242,6 +271,74 @@ export function OwnerSettings() {
           </div>
         </div>
       </div>
+
+      {/* Platform Sovereign Timezone & Regional Governance */}
+      <section className="rounded-fq-lg border border-border bg-card p-5 space-y-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <Clock className="size-4.5 text-primary" />
+              <h2 className="text-base font-semibold text-foreground">
+                {t(
+                  "Platform Sovereign Timezone",
+                  "প্ল্যাটফর্ম পরিচালন টাইমজোন",
+                )}
+              </h2>
+              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+                {platformTimezone}
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+              {t(
+                "Sets the default timezone for platform-wide metrics, cron schedules, root audit ledgers, and operator incident reports.",
+                "প্ল্যাটফর্ম মেট্রিক্স, ক্রন শিডিউল, অডিট লেজার এবং ইনসিডেন্ট রিপোর্টের সার্বজনীন টাইমজোন নির্ধারণ করে।",
+              )}
+            </p>
+          </div>
+
+          <div className="text-right hidden sm:block">
+            <span className="text-[11px] text-muted-foreground block font-mono">
+              {t("Live Platform Clock", "প্ল্যাটফর্ম লাইভ সময়")}
+            </span>
+            <span className="font-mono text-sm font-semibold text-foreground">
+              {formatInTimezone(new Date(), platformTimezone, {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+              })}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-1">
+          <label className="text-xs font-semibold text-foreground shrink-0">
+            {t("Select Active Timezone:", "সক্রিয় টাইমজোন নির্বাচন করুন:")}
+          </label>
+          <select
+            value={platformTimezone}
+            disabled={saveStringFlag.isPending}
+            onChange={(e) =>
+              saveStringFlag.mutate({
+                key: "platform_timezone",
+                value: e.target.value,
+              })
+            }
+            className="min-h-10 w-full sm:w-80 rounded-fq-md border border-input bg-background px-3 text-xs font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            {COMMON_TIMEZONES.map((tz) => (
+              <option key={tz.value} value={tz.value}>
+                {tz.offset} — {tz.label}
+              </option>
+            ))}
+          </select>
+          {saveStringFlag.isPending && (
+            <span className="text-xs text-muted-foreground animate-pulse">
+              {t("Saving…", "সংরক্ষণ হচ্ছে…")}
+            </span>
+          )}
+        </div>
+      </section>
 
       {/* Emergency Circuit Breakers (Kill Switches) */}
       <div className="space-y-4">

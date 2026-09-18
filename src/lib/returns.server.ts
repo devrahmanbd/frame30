@@ -33,10 +33,17 @@ function mapError(message: string) {
   const code = Object.keys(MESSAGES).find((k) => message.includes(k));
   if (code) return new CommerceError(code, MESSAGES[code] as string);
   log("warn", "returns.rpc_failed", { detail: message.slice(0, 120) });
-  return new CommerceError("returns_unavailable", "That action is temporarily unavailable");
+  return new CommerceError(
+    "returns_unavailable",
+    "That action is temporarily unavailable",
+  );
 }
 
-export async function loadReturns(db: Client, merchantId: string, status?: ReturnStatus) {
+export async function loadReturns(
+  db: Client,
+  merchantId: string,
+  status?: ReturnStatus,
+) {
   return withSpan("commerce.returns_load", async () => {
     let q = db
       .from("return_requests")
@@ -53,7 +60,11 @@ export async function loadReturns(db: Client, merchantId: string, status?: Retur
   });
 }
 
-export async function loadReturnEvents(db: Client, merchantId: string, returnId: string) {
+export async function loadReturnEvents(
+  db: Client,
+  merchantId: string,
+  returnId: string,
+) {
   const { data } = await db
     .from("return_events")
     .select("*")
@@ -83,8 +94,10 @@ export async function openReturn(
         restock: i.restock ?? true,
       }))
       .filter((i) => i.quantity > 0);
-    if (items.length === 0) throw new CommerceError("return_items_required", "Select an item");
-    if (!input.reason.trim()) throw new CommerceError("reason_required", "Give a reason");
+    if (items.length === 0)
+      throw new CommerceError("return_items_required", "Select an item");
+    if (!input.reason.trim())
+      throw new CommerceError("reason_required", "Give a reason");
 
     const { data, error } = await db.rpc("return_open", {
       _order_id: input.orderId,
@@ -111,7 +124,10 @@ export async function advanceReturn(
   return withSpan(
     "commerce.return_advance",
     async () => {
-      await enforceRateLimit("commerce.return_advance", `${merchantId}:${actor}`);
+      await enforceRateLimit(
+        "commerce.return_advance",
+        `${merchantId}:${actor}`,
+      );
       const { data, error } = await db.rpc("return_advance", {
         _return_id: input.returnId,
         _to: input.status,
@@ -138,7 +154,11 @@ export async function loadDisputes(db: Client, merchantId: string) {
   return data ?? [];
 }
 
-export async function loadDisputeEvents(db: Client, merchantId: string, disputeId: string) {
+export async function loadDisputeEvents(
+  db: Client,
+  merchantId: string,
+  disputeId: string,
+) {
   const { data } = await db
     .from("dispute_events")
     .select("*")

@@ -1,1 +1,538 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "label": "support-channels.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L1"}, {"id": "lib_support_channels_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L15"}, {"id": "lib_support_channels_server_admin", "label": "admin()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L17"}, {"id": "lib_support_channels_server_hashsecret", "label": "hashSecret()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L22"}, {"id": "lib_support_channels_server_timingsafeequal", "label": "timingSafeEqual()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L30"}, {"id": "lib_support_channels_server_verifysignature", "label": "verifySignature()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L37"}, {"id": "lib_support_channels_server_channelintake", "label": "ChannelIntake", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L52"}, {"id": "lib_support_channels_server_intakeoutcome", "label": "IntakeOutcome", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L63"}, {"id": "lib_support_channels_server_ingestchannelevent", "label": "ingestChannelEvent()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L69"}, {"id": "lib_support_channels_server_listchannels", "label": "listChannels()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L152"}, {"id": "lib_support_channels_server_savechannel", "label": "saveChannel()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L162"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_rate_limit_server_enforceratelimit", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "users_rahman_documents_frame30_src_lib_support_guardrails_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_guardrails_digest", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L17", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_hashsecret", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L22", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_timingsafeequal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L30", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_verifysignature", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L37", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_channelintake", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L52", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_intakeoutcome", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_ingestchannelevent", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L69", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_listchannels", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L152", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts", "target": "lib_support_channels_server_savechannel", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L162", "weight": 1.0}, {"source": "lib_support_channels_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L18", "weight": 1.0}, {"source": "lib_support_channels_server_verifysignature", "target": "lib_support_channels_server_timingsafeequal", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L49", "weight": 1.0}, {"source": "lib_support_channels_server_savechannel", "target": "lib_support_channels_server_hashsecret", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L185", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_support_channels_server_hashsecret", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L23"}, {"caller_nid": "lib_support_channels_server_hashsecret", "callee": "digest", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L24"}, {"caller_nid": "lib_support_channels_server_hashsecret", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L25"}, {"caller_nid": "lib_support_channels_server_hashsecret", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L25"}, {"caller_nid": "lib_support_channels_server_hashsecret", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L25"}, {"caller_nid": "lib_support_channels_server_timingsafeequal", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L33"}, {"caller_nid": "lib_support_channels_server_timingsafeequal", "callee": "charCodeAt", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L33"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "importKey", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L38"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L40"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "sign", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L45"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "encode", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L45"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "join", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L46"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L46"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L46"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "toLowerCase", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L49"}, {"caller_nid": "lib_support_channels_server_verifysignature", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L49"}, {"caller_nid": "lib_support_channels_server_ingestchannelevent", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L73"}, {"caller_nid": "lib_support_channels_server_listchannels", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L153"}, {"caller_nid": "lib_support_channels_server_listchannels", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L154"}, {"caller_nid": "lib_support_channels_server_listchannels", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L154"}, {"caller_nid": "lib_support_channels_server_listchannels", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L154"}, {"caller_nid": "lib_support_channels_server_listchannels", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L154"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "enforceRateLimit", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L175"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L179"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L180"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L183"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L188"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L188"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "update", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L188"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L188"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L189"}, {"caller_nid": "lib_support_channels_server_savechannel", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts", "source_location": "L189"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "label": "support-channels.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_support_channels_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L15"
+    },
+    {
+      "id": "lib_support_channels_server_admin",
+      "label": "admin()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "lib_support_channels_server_hashsecret",
+      "label": "hashSecret()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_support_channels_server_timingsafeequal",
+      "label": "timingSafeEqual()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L30"
+    },
+    {
+      "id": "lib_support_channels_server_verifysignature",
+      "label": "verifySignature()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_support_channels_server_channelintake",
+      "label": "ChannelIntake",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L52"
+    },
+    {
+      "id": "lib_support_channels_server_intakeoutcome",
+      "label": "IntakeOutcome",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_support_channels_server_ingestchannelevent",
+      "label": "ingestChannelEvent()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L69"
+    },
+    {
+      "id": "lib_support_channels_server_listchannels",
+      "label": "listChannels()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L152"
+    },
+    {
+      "id": "lib_support_channels_server_savechannel",
+      "label": "saveChannel()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L162"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_rate_limit_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_rate_limit_server_enforceratelimit",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_support_guardrails_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_guardrails_digest",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_hashsecret",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_timingsafeequal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_verifysignature",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_channelintake",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_intakeoutcome",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_ingestchannelevent",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_listchannels",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L152",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_support_channels_server_ts",
+      "target": "lib_support_channels_server_savechannel",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L162",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_channels_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_channels_server_verifysignature",
+      "target": "lib_support_channels_server_timingsafeequal",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_support_channels_server_savechannel",
+      "target": "lib_support_channels_server_hashsecret",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L185",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_support_channels_server_hashsecret",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_hashsecret",
+      "callee": "digest",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L24"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_hashsecret",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_hashsecret",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_hashsecret",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L25"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_timingsafeequal",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_timingsafeequal",
+      "callee": "charCodeAt",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L33"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "importKey",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L40"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "sign",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "encode",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L45"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "join",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L46"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "toLowerCase",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_verifysignature",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L49"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_ingestchannelevent",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L73"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_listchannels",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L153"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_listchannels",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_listchannels",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_listchannels",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_listchannels",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L154"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "enforceRateLimit",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L175"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L179"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L180"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L183"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "update",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L188"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L189"
+    },
+    {
+      "caller_nid": "lib_support_channels_server_savechannel",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/support-channels.server.ts",
+      "source_location": "L189"
+    }
+  ]
+}

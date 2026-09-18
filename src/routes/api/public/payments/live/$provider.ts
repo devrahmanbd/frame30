@@ -8,14 +8,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 async function handle(request: Request, provider: string, redirect: boolean) {
-  const { rateLimit, rateLimitHeaders } = await import("@/lib/rate-limit.server");
+  const { rateLimit, rateLimitHeaders } =
+    await import("@/lib/rate-limit.server");
   const ip =
     request.headers.get("cf-connecting-ip") ??
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     "unknown";
   const verdict = await rateLimit("webhook.gateway", `live:${provider}:${ip}`);
   if (!verdict.allowed) {
-    return Response.json({ status: "rate_limited" }, { status: 429, headers: rateLimitHeaders(verdict) });
+    return Response.json(
+      { status: "rate_limited" },
+      { status: 429, headers: rateLimitHeaders(verdict) },
+    );
   }
 
   const body: Record<string, unknown> = {};
@@ -42,7 +46,8 @@ async function handle(request: Request, provider: string, redirect: boolean) {
     const result = await settleLiveCallback(provider, body, ip, headers);
 
     if (redirect && result.orderId) {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const { data: order } = await supabaseAdmin
         .from("orders")
         .select("access_token, merchant_id")
@@ -53,19 +58,31 @@ async function handle(request: Request, provider: string, redirect: boolean) {
         .select("slug")
         .eq("id", order?.merchant_id ?? "")
         .maybeSingle();
-      const to = new URL(`/store/${merchant?.slug ?? ""}/order/${result.orderId}`, url.origin);
+      const to = new URL(
+        `/store/${merchant?.slug ?? ""}/order/${result.orderId}`,
+        url.origin,
+      );
       if (order?.access_token) to.searchParams.set("t", order.access_token);
       to.searchParams.set("payment", result.status);
       return Response.redirect(to.toString(), 303);
     }
-    return Response.json({ status: result.status }, { headers: rateLimitHeaders(verdict) });
+    return Response.json(
+      { status: result.status },
+      { headers: rateLimitHeaders(verdict) },
+    );
   } catch (err) {
     const code = (err as { code?: string }).code ?? "live_gateway.failed";
     // A provider retries on non-2xx, which is what we want for a transient
     // failure; an unknown intent is permanent, so it is acknowledged.
-    const permanent = code === "live_gateway.intent_missing" || code === "live_gateway.unsupported_provider";
-    if (redirect) return Response.redirect(new URL("/", url.origin).toString(), 303);
-    return Response.json({ status: "rejected", reason: code }, { status: permanent ? 200 : 502 });
+    const permanent =
+      code === "live_gateway.intent_missing" ||
+      code === "live_gateway.unsupported_provider";
+    if (redirect)
+      return Response.redirect(new URL("/", url.origin).toString(), 303);
+    return Response.json(
+      { status: "rejected", reason: code },
+      { status: permanent ? 200 : 502 },
+    );
   }
 }
 
@@ -73,8 +90,13 @@ export const Route = createFileRoute("/api/public/payments/live/$provider")({
   server: {
     handlers: {
       POST: async ({ request, params }) =>
-        handle(request, params.provider, new URL(request.url).searchParams.get("redirect") === "1"),
-      GET: async ({ request, params }) => handle(request, params.provider, true),
+        handle(
+          request,
+          params.provider,
+          new URL(request.url).searchParams.get("redirect") === "1",
+        ),
+      GET: async ({ request, params }) =>
+        handle(request, params.provider, true),
     },
   },
 });

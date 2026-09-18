@@ -34,7 +34,10 @@ export function ElementsPanel(props: ElementsPanelProps) {
   const [query, setQuery] = useState("");
   const [closed, setClosed] = useState<Record<string, boolean>>({});
 
-  const groups = useMemo(() => groupWidgets(searchWidgets(query, WIDGETS)), [query]);
+  const groups = useMemo(
+    () => groupWidgets(searchWidgets(query, WIDGETS)),
+    [query],
+  );
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-card">
@@ -42,7 +45,11 @@ export function ElementsPanel(props: ElementsPanelProps) {
         <h2 className="text-sm font-semibold">Elements</h2>
       </div>
 
-      <div role="tablist" aria-label="Element sources" className="flex border-b border-border">
+      <div
+        role="tablist"
+        aria-label="Element sources"
+        className="flex border-b border-border"
+      >
         {(["widgets", "components", "globals"] as Tab[]).map((key) => (
           <button
             key={key}
@@ -66,7 +73,10 @@ export function ElementsPanel(props: ElementsPanelProps) {
       {tab === "widgets" && (
         <div className="border-b border-border p-3">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
             <Input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
@@ -87,7 +97,9 @@ export function ElementsPanel(props: ElementsPanelProps) {
             className="flex flex-col gap-4"
           >
             {groups.length === 0 && (
-              <p className="px-1 text-xs text-muted-foreground">No widget matches “{query}”.</p>
+              <p className="px-1 text-xs text-muted-foreground">
+                No widget matches “{query}”.
+              </p>
             )}
             {groups.map((group) => {
               const open = !closed[group.category];
@@ -95,17 +107,29 @@ export function ElementsPanel(props: ElementsPanelProps) {
                 <section key={group.category}>
                   <button
                     type="button"
-                    onClick={() => setClosed((prev) => ({ ...prev, [group.category]: open }))}
+                    onClick={() =>
+                      setClosed((prev) => ({ ...prev, [group.category]: open }))
+                    }
                     aria-expanded={open}
                     className="flex min-h-9 w-full items-center justify-between rounded-fq-sm px-1 text-left text-[11px] font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground"
                   >
                     {CATEGORY_LABEL[group.category]}
-                    <ChevronDown className={cn("size-4 transition-transform", open ? "" : "-rotate-90")} aria-hidden />
+                    <ChevronDown
+                      className={cn(
+                        "size-4 transition-transform",
+                        open ? "" : "-rotate-90",
+                      )}
+                      aria-hidden
+                    />
                   </button>
                   {open && (
                     <div className="mt-2 grid grid-cols-2 gap-2">
                       {group.items.map((widget) => (
-                        <WidgetCard key={widget.key} widget={widget} {...props} />
+                        <WidgetCard
+                          key={widget.key}
+                          widget={widget}
+                          {...props}
+                        />
                       ))}
                     </div>
                   )}
@@ -124,7 +148,8 @@ export function ElementsPanel(props: ElementsPanelProps) {
           >
             {props.savedBlocks.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Save any container as a component and it appears here, ready to reuse.
+                Save any container as a component and it appears here, ready to
+                reuse.
               </p>
             ) : (
               props.savedBlocks.map((block) => (
@@ -150,7 +175,8 @@ export function ElementsPanel(props: ElementsPanelProps) {
           >
             {props.globals.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Global blocks stay in sync everywhere they are placed. Create one from a container’s menu.
+                Global blocks stay in sync everywhere they are placed. Create
+                one from a container’s menu.
               </p>
             ) : (
               props.globals.map((block) => (
@@ -188,7 +214,11 @@ function WidgetCard({
         onDragWidget(widget.key);
       }}
       onClick={() => onAdd(widget.key)}
-      title={widget.locked ? `${widget.label} — connect your storefront to use this` : widget.label}
+      title={
+        widget.locked
+          ? `${widget.label} — connect your storefront to use this`
+          : widget.label
+      }
       className={cn(
         "relative flex h-22 min-h-[88px] flex-col items-center justify-center gap-1.5 rounded-fq-md border border-border bg-card px-1 text-center transition-colors",
         widget.locked
@@ -196,9 +226,20 @@ function WidgetCard({
           : "hover:border-primary hover:bg-accent/40 focus-visible:border-primary",
       )}
     >
-      <LucideIcon name={widget.icon} size={24} className="text-muted-foreground" />
-      <span className="line-clamp-2 text-[12px] font-medium leading-tight">{widget.label}</span>
-      {widget.locked && <Lock className="absolute right-1.5 top-1.5 size-3 text-muted-foreground" aria-hidden />}
+      <LucideIcon
+        name={widget.icon}
+        size={24}
+        className="text-muted-foreground"
+      />
+      <span className="line-clamp-2 text-[12px] font-medium leading-tight">
+        {widget.label}
+      </span>
+      {widget.locked && (
+        <Lock
+          className="absolute right-1.5 top-1.5 size-3 text-muted-foreground"
+          aria-hidden
+        />
+      )}
     </button>
   );
 }

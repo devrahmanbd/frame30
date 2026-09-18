@@ -15,30 +15,34 @@ Collect and aggregate results from headless Codex workers stored in shared memor
 
 ## Parameters
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `--namespace` | results | Memory namespace to search |
-| `--format` | summary | Output format: summary, detailed, json |
-| `--filter` | none | Filter by key pattern |
+| Parameter     | Default | Description                            |
+| ------------- | ------- | -------------------------------------- |
+| `--namespace` | results | Memory namespace to search             |
+| `--format`    | summary | Output format: summary, detailed, json |
+| `--filter`    | none    | Filter by key pattern                  |
 
 ## Examples
 
 ### Collect All Results
+
 ```
 /dual-collect
 ```
 
 ### Collect from Specific Namespace
+
 ```
 /dual-collect --namespace patterns
 ```
 
 ### Detailed Output
+
 ```
 /dual-collect --format detailed
 ```
 
 ### Filter by Worker
+
 ```
 /dual-collect --filter "worker-auth-*"
 ```
@@ -68,6 +72,7 @@ npx claude-flow@v3alpha memory get -k "{{this.key}}" -n {{namespace}}
 ## Output Formats
 
 ### Summary (default)
+
 ```
 Workers Completed: 4/4
 ├─ worker-auth-core: ✅ Complete (auth.service.ts)
@@ -77,6 +82,7 @@ Workers Completed: 4/4
 ```
 
 ### Detailed
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ Worker: worker-auth-core                        │
@@ -88,12 +94,13 @@ Workers Completed: 4/4
 ```
 
 ### JSON
+
 ```json
 {
   "workers": [
-    {"id": "worker-auth-core", "status": "complete", "result": "..."}
+    { "id": "worker-auth-core", "status": "complete", "result": "..." }
   ],
-  "summary": {"total": 4, "completed": 4, "failed": 0}
+  "summary": { "total": 4, "completed": 4, "failed": 0 }
 }
 ```
 

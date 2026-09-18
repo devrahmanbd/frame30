@@ -4,7 +4,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
 import { ownerCouponsFn } from "@/lib/owner.functions";
-import { OwnerHeader, OwnerTable, StatCard, StatGrid, StatePill } from "@/components/root/OwnerUi";
+import {
+  OwnerHeader,
+  OwnerTable,
+  StatCard,
+  StatGrid,
+  StatePill,
+} from "@/components/root/OwnerUi";
 
 export const Route = createFileRoute("/root/coupons")({
   head: () => ({
@@ -15,7 +21,10 @@ export const Route = createFileRoute("/root/coupons")({
         content:
           "Platform-wide coupon oversight for Framique: highest-volume codes, their usage caps and the redemption ledger behind each counter.",
       },
-      { property: "og:title", content: "Coupon oversight — Framique owner console" },
+      {
+        property: "og:title",
+        content: "Coupon oversight — Framique owner console",
+      },
       {
         property: "og:description",
         content: "Coupon usage caps checked against the redemption ledger.",
@@ -31,19 +40,33 @@ export const Route = createFileRoute("/root/coupons")({
 function CouponDesk() {
   const { tk } = useLang();
   const load = useServerFn(ownerCouponsFn);
-  const { data, isLoading } = useQuery({ queryKey: ["owner-coupons"], queryFn: () => load() });
+  const { data, isLoading } = useQuery({
+    queryKey: ["owner-coupons"],
+    queryFn: () => load(),
+  });
   const rows = data?.rows ?? [];
 
   return (
     <section className="space-y-4">
-      <OwnerHeader title={tk("owner.coupons.title")} subtitle={tk("owner.coupons.subtitle")} />
+      <OwnerHeader
+        title={tk("owner.coupons.title")}
+        subtitle={tk("owner.coupons.subtitle")}
+      />
 
       <StatGrid>
-        <StatCard label={tk("owner.coupons.ledger")} value={String(rows.length)} />
-        <StatCard label={tk("owner.coupons.over_cap")} value={String(data?.overCap ?? 0)} />
+        <StatCard
+          label={tk("owner.coupons.ledger")}
+          value={String(rows.length)}
+        />
+        <StatCard
+          label={tk("owner.coupons.over_cap")}
+          value={String(data?.overCap ?? 0)}
+        />
       </StatGrid>
 
-      {isLoading ? <p className="text-sm text-muted-foreground">{tk("common.loading")}</p> : null}
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">{tk("common.loading")}</p>
+      ) : null}
       {!isLoading && rows.length === 0 ? (
         <p className="rounded-fq-md border border-dashed border-border p-6 text-sm text-muted-foreground">
           {tk("common.empty")}
@@ -72,7 +95,9 @@ function CouponDesk() {
                 {c.overCap ? (
                   <>
                     {" "}
-                    <StatePill tone="bad">{tk("owner.coupons.over_cap")}</StatePill>
+                    <StatePill tone="bad">
+                      {tk("owner.coupons.over_cap")}
+                    </StatePill>
                   </>
                 ) : null}
               </td>

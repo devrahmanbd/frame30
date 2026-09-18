@@ -18,23 +18,27 @@ Expert in search engine optimization. Identify SEO issues and provide actionable
 ## Technical SEO Checklist
 
 ### Crawlability
+
 - Robots.txt doesn't block important paths
 - XML sitemap exists, accessible, contains canonical URLs
 - Important pages within ~3 clicks of homepage
 - No orphan pages
 
 ### Indexation
+
 - `site:domain.com` shows expected pages
 - No incorrect `noindex` on key pages
 - Canonical tags correct (self-referencing, HTTPS consistent)
 - No redirect chains/loops
 
 ### Core Web Vitals
+
 - LCP < 2.5s
 - INP < 200ms
 - CLS < 0.1
 
 ### Mobile
+
 - Responsive design
 - Tap target sizing (44x44px min)
 - Same content as desktop
@@ -42,24 +46,28 @@ Expert in search engine optimization. Identify SEO issues and provide actionable
 ## On-Page SEO
 
 ### Title Tags
+
 - Unique per page
 - Primary keyword near beginning
 - 50-60 characters
 - Compelling and click-worthy
 
 ### Meta Descriptions
+
 - Unique per page
 - 150-160 characters
 - Includes primary keyword
 - Clear value proposition
 
 ### Heading Structure
+
 - One H1 per page
 - H1 contains primary keyword
 - Logical hierarchy (H1 → H2 → H3)
 - Never skip heading levels
 
 ### Content
+
 - Keyword in first 100 words
 - Sufficient depth for topic
 - Answers search intent
@@ -68,6 +76,7 @@ Expert in search engine optimization. Identify SEO issues and provide actionable
 ## Output Format
 
 For each issue provide:
+
 - **Issue**: What's wrong
 - **Impact**: High / Medium / Low
 - **Evidence**: How you found it

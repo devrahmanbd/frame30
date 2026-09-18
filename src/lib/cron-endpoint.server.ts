@@ -24,7 +24,13 @@
  * header so an operator can join a scheduler log line to the ledger row.
  */
 import { cronJob, nextRunAfter, type CronJobDefinition } from "./cron-registry";
-import { captureError, incr, log, observe, withSpan } from "./observability.server";
+import {
+  captureError,
+  incr,
+  log,
+  observe,
+  withSpan,
+} from "./observability.server";
 
 export type CronRunContext = {
   request: Request;
@@ -52,7 +58,8 @@ export class CronSkip extends Error {
 type FinishStatus = "ok" | "failed" | "timeout" | "skipped";
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as {
     rpc: (
       fn: string,
@@ -61,7 +68,12 @@ async function admin() {
   };
 }
 
-async function claim(key: string, token: string, trigger: string, leaseSeconds: number) {
+async function claim(
+  key: string,
+  token: string,
+  trigger: string,
+  leaseSeconds: number,
+) {
   try {
     const a = await admin();
     const { data, error } = await a.rpc("ops_cron_claim", {
@@ -74,10 +86,21 @@ async function claim(key: string, token: string, trigger: string, leaseSeconds: 
       // A ledger outage must not stop the platform's heartbeat: run unledgered
       // and shout about it, because a silent job is worse than an unrecorded one.
       log("error", "cron.claim_failed", { job: key, message: error.message });
-      return { ok: true as const, runId: null, attempt: 1, unledgered: true as const };
+      return {
+        ok: true as const,
+        runId: null,
+        attempt: 1,
+        unledgered: true as const,
+      };
     }
-    const row = (data ?? {}) as { ok?: boolean; reason?: string; run_id?: string; attempt?: number };
-    if (!row.ok) return { ok: false as const, reason: row.reason ?? "unavailable" };
+    const row = (data ?? {}) as {
+      ok?: boolean;
+      reason?: string;
+      run_id?: string;
+      attempt?: number;
+    };
+    if (!row.ok)
+      return { ok: false as const, reason: row.reason ?? "unavailable" };
     return {
       ok: true as const,
       runId: row.run_id ?? null,
@@ -85,8 +108,16 @@ async function claim(key: string, token: string, trigger: string, leaseSeconds: 
       unledgered: false as const,
     };
   } catch (err) {
-    log("error", "cron.claim_threw", { job: key, message: (err as Error)?.message });
-    return { ok: true as const, runId: null, attempt: 1, unledgered: true as const };
+    log("error", "cron.claim_threw", {
+      job: key,
+      message: (err as Error)?.message,
+    });
+    return {
+      ok: true as const,
+      runId: null,
+      attempt: 1,
+      unledgered: true as const,
+    };
   }
 }
 
@@ -117,13 +148,19 @@ async function finish(
       _next_run_at: next ? next.toISOString() : null,
     });
     if (error) {
-      log("error", "cron.finish_failed", { job: job.key, message: error.message });
+      log("error", "cron.finish_failed", {
+        job: job.key,
+        message: error.message,
+      });
       return { consecutiveFailures: 0 };
     }
     const row = (data ?? {}) as { consecutive_failures?: number };
     return { consecutiveFailures: Number(row.consecutive_failures ?? 0) };
   } catch (err) {
-    log("error", "cron.finish_threw", { job: job.key, message: (err as Error)?.message });
+    log("error", "cron.finish_threw", {
+      job: job.key,
+      message: (err as Error)?.message,
+    });
     return { consecutiveFailures: 0 };
   }
 }
@@ -159,7 +196,10 @@ async function maybeAlert(
     });
   } catch (err) {
     // Alerting is best-effort by construction; the ledger row is the record.
-    log("error", "cron.alert_failed", { job: job.key, message: (err as Error)?.message });
+    log("error", "cron.alert_failed", {
+      job: job.key,
+      message: (err as Error)?.message,
+    });
   }
 }
 
@@ -197,20 +237,27 @@ export function cronPost<T>(
     if (!gate.ok) return gate.response;
 
     const url = new URL(request.url);
-    const trigger = url.searchParams.get("trigger") === "manual" ? "manual" : "schedule";
+    const trigger =
+      url.searchParams.get("trigger") === "manual" ? "manual" : "schedule";
     const token = crypto.randomUUID();
     const leaseSeconds = Math.ceil(job.timeoutMs / 1000) + 60;
 
     const lease = await claim(key, token, trigger, leaseSeconds);
     if (!lease.ok) {
       const locked = lease.reason === "locked";
-      incr("framique_cron_runs_total", { job: key, outcome: locked ? "locked" : lease.reason });
+      incr("framique_cron_runs_total", {
+        job: key,
+        outcome: locked ? "locked" : lease.reason,
+      });
       log("warn", "cron.not_claimed", { job: key, reason: lease.reason });
       return Response.json(
         { skipped: true, reason: lease.reason },
         {
           status: locked ? 409 : 503,
-          headers: { "cache-control": "no-store", "retry-after": String(Math.min(job.timeoutMs / 1000, 300)) },
+          headers: {
+            "cache-control": "no-store",
+            "retry-after": String(Math.min(job.timeoutMs / 1000, 300)),
+          },
         },
       );
     }
@@ -240,7 +287,8 @@ export function cronPost<T>(
             work(ctx),
             new Promise<never>((_, reject) => {
               timer = setTimeout(
-                () => reject(new Error(`cron timeout after ${job.timeoutMs}ms`)),
+                () =>
+                  reject(new Error(`cron timeout after ${job.timeoutMs}ms`)),
                 job.timeoutMs,
               );
             }),
@@ -249,19 +297,30 @@ export function cronPost<T>(
       );
       const durationMs = Date.now() - startedAt;
       const slow = durationMs > job.slaMaxDurationMs;
-      const { consecutiveFailures } = await finish(job, lease.runId, token, "ok", {
-        httpStatus: 200,
-        stats: {
-          duration_ms: durationMs,
-          slow,
-          ...(payload && typeof payload === "object" && !Array.isArray(payload)
-            ? summarise(payload as Record<string, unknown>)
-            : {}),
+      const { consecutiveFailures } = await finish(
+        job,
+        lease.runId,
+        token,
+        "ok",
+        {
+          httpStatus: 200,
+          stats: {
+            duration_ms: durationMs,
+            slow,
+            ...(payload &&
+            typeof payload === "object" &&
+            !Array.isArray(payload)
+              ? summarise(payload as Record<string, unknown>)
+              : {}),
+          },
         },
-      });
+      );
       void consecutiveFailures;
       observe("framique_cron_duration_ms", durationMs, { job: key });
-      incr("framique_cron_runs_total", { job: key, outcome: slow ? "slow" : "ok" });
+      incr("framique_cron_runs_total", {
+        job: key,
+        outcome: slow ? "slow" : "ok",
+      });
       log("info", "cron.completed", { job: key, durationMs, slow, trigger });
       return Response.json(
         { ok: true, job: key, durationMs, slow, result: payload },
@@ -291,7 +350,9 @@ export function cronPost<T>(
             status: 200,
             headers: {
               "cache-control": "no-store",
-              ...(err.retryAfterSeconds ? { "retry-after": String(err.retryAfterSeconds) } : {}),
+              ...(err.retryAfterSeconds
+                ? { "retry-after": String(err.retryAfterSeconds) }
+                : {}),
             },
           },
         );
@@ -309,21 +370,38 @@ export function cronPost<T>(
         log("warn", "cron.rate_limited", { job: key });
         return Response.json(
           { skipped: true, reason: "rate_limited" },
-          { status: 429, headers: { "cache-control": "no-store", "retry-after": "600" } },
+          {
+            status: 429,
+            headers: { "cache-control": "no-store", "retry-after": "600" },
+          },
         );
       }
 
       const message = String((err as Error)?.message ?? err).slice(0, 500);
       const timedOut = message.includes("cron timeout after");
       const status: FinishStatus = timedOut ? "timeout" : "failed";
-      const { consecutiveFailures } = await finish(job, lease.runId, token, status, {
-        httpStatus: timedOut ? 504 : 500,
-        errorCode: timedOut ? "timeout" : ((err as { code?: string })?.code ?? "exception"),
-        errorMessage: message,
-        stats: { duration_ms: durationMs },
-      });
+      const { consecutiveFailures } = await finish(
+        job,
+        lease.runId,
+        token,
+        status,
+        {
+          httpStatus: timedOut ? 504 : 500,
+          errorCode: timedOut
+            ? "timeout"
+            : ((err as { code?: string })?.code ?? "exception"),
+          errorMessage: message,
+          stats: { duration_ms: durationMs },
+        },
+      );
       incr("framique_cron_runs_total", { job: key, outcome: status });
-      log("error", "cron.failed", { job: key, status, durationMs, message, trigger });
+      log("error", "cron.failed", {
+        job: key,
+        status,
+        durationMs,
+        message,
+        trigger,
+      });
       void captureError(err, { route: `cron.${key}`, job: key, status });
       await maybeAlert(job, consecutiveFailures, status, message);
       return Response.json(

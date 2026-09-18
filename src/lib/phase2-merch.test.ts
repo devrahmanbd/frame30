@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { biTextKeysOf, SECTION_CATALOG, catalogEntry, type Section, type SectionType } from "./builder-ast";
+import {
+  biTextKeysOf,
+  SECTION_CATALOG,
+  catalogEntry,
+  type Section,
+  type SectionType,
+} from "./builder-ast";
 import { collectWidgetRequests } from "./widget-data";
 import { resolveWidgetData, type SourceLoaders } from "./widget-data.server";
 import { widgetMeta } from "./widget-registry";
@@ -47,13 +53,19 @@ describe("phase 2.2 merchandising widgets", () => {
   });
 
   it("declares ItemList structured data on the list surfaces", () => {
-    for (const type of ["product_rail", "deal_strip", "rank_list", "brand_rail"] as SectionType[]) {
+    for (const type of [
+      "product_rail",
+      "deal_strip",
+      "rank_list",
+      "brand_rail",
+    ] as SectionType[]) {
       expect(widgetMeta(type)?.seo.jsonLd).toBe("ItemList");
     }
   });
 
   it("gives every merchant-authored string a বাংলা sibling", () => {
-    for (const type of MERCH) expect(biTextKeysOf(type).length).toBeGreaterThan(0);
+    for (const type of MERCH)
+      expect(biTextKeysOf(type).length).toBeGreaterThan(0);
   });
 
   it("resolves a whole merchandising template in one call per source", async () => {
@@ -80,7 +92,10 @@ describe("phase 2.2 merchandising widgets", () => {
   });
 
   it("collapses two identical rails into one request", () => {
-    const bundle = collectWidgetRequests([node("product_rail", "a"), node("product_rail", "b")]);
+    const bundle = collectWidgetRequests([
+      node("product_rail", "a"),
+      node("product_rail", "b"),
+    ]);
     expect(bundle.requests).toHaveLength(1);
     expect(bundle.byNode["a"]).toBe(bundle.byNode["b"]);
   });

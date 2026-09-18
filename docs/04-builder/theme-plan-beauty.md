@@ -18,30 +18,30 @@ Reuses: all layout widgets, `product_grid`, `product_rail`, `facet_sidebar`, `ca
 
 Inherits **all** of `theme-plan-electronics.md` §1 verbatim (one AST + `{en,bn}` props, Noto Sans Bengali variable, `--fq-bn-scale`, elastic widths, tabular ৳ integers, no all-caps Bangla, `dir="ltr"` islands for Latin terms). Additions specific to beauty:
 
-| Rule | Implementation |
-| --- | --- |
-| Beauty vocabulary is bilingual-by-default | Skin type (শুষ্ক / তৈলাক্ত / মিশ্র / সংবেদনশীল), concern (ব্রণ, দাগ, বয়সের ছাপ), undertone (উষ্ণ / নিরপেক্ষ / শীতল) ship as **taxonomy terms with both labels**, not as free text — filters, quizzes and PDP chips all read the same term. |
-| Ingredient names stay Latin, glossed in Bangla | `Niacinamide` + a Bangla gloss line beneath; INCI list always Latin, `dir="ltr"`. |
-| Shade names are never translated | Shade name is a proper noun; the *descriptor* ("cool pink / শীতল গোলাপি") is localised. |
-| Longer chips | Bangla concern chips run long — chips wrap to 2 lines, filter drawer scrolls, never truncates a term mid-conjunct. |
-| Warm-tone contrast guard | Blush/nude tokens fail contrast easily. Text never sits on a pastel below 4.5:1; pastels are surfaces, ink is text. |
-| Regulatory copy | Ingredient, expiry, batch and patch-test warnings are readable paragraphs in the chosen locale, never icon-only. |
+| Rule                                           | Implementation                                                                                                                                                                                                                              |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Beauty vocabulary is bilingual-by-default      | Skin type (শুষ্ক / তৈলাক্ত / মিশ্র / সংবেদনশীল), concern (ব্রণ, দাগ, বয়সের ছাপ), undertone (উষ্ণ / নিরপেক্ষ / শীতল) ship as **taxonomy terms with both labels**, not as free text — filters, quizzes and PDP chips all read the same term. |
+| Ingredient names stay Latin, glossed in Bangla | `Niacinamide` + a Bangla gloss line beneath; INCI list always Latin, `dir="ltr"`.                                                                                                                                                           |
+| Shade names are never translated               | Shade name is a proper noun; the _descriptor_ ("cool pink / শীতল গোলাপি") is localised.                                                                                                                                                     |
+| Longer chips                                   | Bangla concern chips run long — chips wrap to 2 lines, filter drawer scrolls, never truncates a term mid-conjunct.                                                                                                                          |
+| Warm-tone contrast guard                       | Blush/nude tokens fail contrast easily. Text never sits on a pastel below 4.5:1; pastels are surfaces, ink is text.                                                                                                                         |
+| Regulatory copy                                | Ingredient, expiry, batch and patch-test warnings are readable paragraphs in the chosen locale, never icon-only.                                                                                                                            |
 
 ---
 
 ## 2. Core design principles (opinionated)
 
-| Principle | Rule |
-| --- | --- |
-| Skin-true colour | Product and shade imagery is colour-managed; swatches are real colour values from the variant record, shown on 3 skin-tone backdrops. Never a decorative approximation. |
-| Soft, clean surfaces | Ivory canvas `#FFFBF8`, ink `#241E1C`, muted `#7A6E68`, one pigment (rose-clay) as accent, mint for "in stock / authentic", amber for "low stock / expiring", red only for real discount. No neon pink. |
-| Rounded and generous | Radius 16/24px, pill buttons, soft one-level shadow, 80/112px section rhythm. |
-| Routine over catalogue | The homepage sells a routine (AM/PM steps), not a grid. Steps link to filtered collections. |
-| Guided selling | Shade finder and skin-type quiz are first-class widgets; results become a saved filter, not a dead end. |
-| Proof before price | Authenticity, expiry/batch, dermatologist-tested claim and real UGC sit above the fold on PDP. |
-| Motion is gentle | 180–300ms, `--fq-ease-soft`; swatch tap 180ms, routine step reveal 300ms, drawer slide. Transform/opacity only; reduced-motion → static. |
-| Accessibility | Swatches are labelled radios (colour + name), never colour-only. Quiz is keyboard-complete. 44px targets. Scrim token under any text-on-image. |
-| Performance | Swatch sprites, lazy UGC, hero ≤ 250KB AVIF, LCP < 2.5s, CSS ≤ 60KB gz, JS ≤ 100KB gz. |
+| Principle              | Rule                                                                                                                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skin-true colour       | Product and shade imagery is colour-managed; swatches are real colour values from the variant record, shown on 3 skin-tone backdrops. Never a decorative approximation.                                 |
+| Soft, clean surfaces   | Ivory canvas `#FFFBF8`, ink `#241E1C`, muted `#7A6E68`, one pigment (rose-clay) as accent, mint for "in stock / authentic", amber for "low stock / expiring", red only for real discount. No neon pink. |
+| Rounded and generous   | Radius 16/24px, pill buttons, soft one-level shadow, 80/112px section rhythm.                                                                                                                           |
+| Routine over catalogue | The homepage sells a routine (AM/PM steps), not a grid. Steps link to filtered collections.                                                                                                             |
+| Guided selling         | Shade finder and skin-type quiz are first-class widgets; results become a saved filter, not a dead end.                                                                                                 |
+| Proof before price     | Authenticity, expiry/batch, dermatologist-tested claim and real UGC sit above the fold on PDP.                                                                                                          |
+| Motion is gentle       | 180–300ms, `--fq-ease-soft`; swatch tap 180ms, routine step reveal 300ms, drawer slide. Transform/opacity only; reduced-motion → static.                                                                |
+| Accessibility          | Swatches are labelled radios (colour + name), never colour-only. Quiz is keyboard-complete. 44px targets. Scrim token under any text-on-image.                                                          |
+| Performance            | Swatch sprites, lazy UGC, hero ≤ 250KB AVIF, LCP < 2.5s, CSS ≤ 60KB gz, JS ≤ 100KB gz.                                                                                                                  |
 
 Token additions: `--fq-pigment`, `--fq-ivory`, `--fq-ink-muted`, `--fq-ease-soft`, `--fq-swatch-ring`, `--fq-skin-tone-1..3`, `--fq-scrim`, `--fq-radius-soft`.
 
@@ -51,28 +51,28 @@ Token additions: `--fq-pigment`, `--fq-ivory`, `--fq-ink-muted`, `--fq-ease-soft
 
 `[N]` new · `[U]` upgrade.
 
-| Widget | Type key | Notes |
-| --- | --- | --- |
-| Shade swatches **[U]** | `variant_picker` | `shade` mode: real hex/gradient chips, shade name + descriptor, sold-out state, "swatch on skin" preview. |
-| Shade finder **[N]** | `shade_finder` | Undertone + depth questions → recommended shades (server-resolved to real variants). |
-| Skin quiz **[N]** | `skin_quiz` | 4–6 steps (type, concerns, sensitivity, budget) → saved filter + product set. |
-| Routine builder **[N]** | `routine_builder` | AM/PM numbered steps, add-all-to-cart, per-step swap. |
-| Ingredient list **[N]** | `ingredient_list` | Key actives with % and Bangla gloss; full INCI in a disclosure. |
-| Ingredient glossary **[N]** | `ingredient_glossary` | Term → plain-language explanation, linkable from PDP. |
-| Free-from / claims **[N]** | `claim_chips` | Paraben-free, halal, cruelty-free, non-comedogenic — each with a source tooltip. |
-| Skin-concern rail **[U]** | `product_rail` | `concern` variant with taxonomy chips as the rail header. |
-| Before / after **[N]** | `before_after` | Slider or paired images with a mandatory disclaimer line. |
-| Patch-test note **[N]** | `safety_note` | Warning paragraph + how-to-patch-test disclosure. |
-| Expiry & batch **[N]** | `batch_info` | Mfg/expiry, batch code, "best used within N months of opening" (PAO). |
-| Texture / finish **[N]** | `texture_strip` | Macro texture images + finish labels (matte, dewy, satin). |
-| How to use **[N]** | `how_to_use` | Numbered steps with icons/short clip poster. |
-| Refill / subscribe **[N]** | `refill_widget` | Refill SKU link + reorder cadence (server-priced). |
-| Gift set builder **[N]** | `gift_builder` | Pick N items, gift box, message card, combined server total. |
-| Sample / travel size **[N]** | `sample_picker` | Add a sample at checkout threshold. |
-| Tone-inclusive gallery **[U]** | `ugc_gallery` | Filter UGC by skin tone/type. |
-| Consultation CTA **[N]** | `consult_cta` | WhatsApp / call booking, consent chip **never pre-checked**. |
-| Bestseller ranking **[N]** | `rank_list` | "Top 10 in সিরাম" numbered list with rank badges. |
-| Loyalty / points **[N]** | `loyalty_strip` | Points earned on this order (server-valued). |
+| Widget                         | Type key              | Notes                                                                                                     |
+| ------------------------------ | --------------------- | --------------------------------------------------------------------------------------------------------- |
+| Shade swatches **[U]**         | `variant_picker`      | `shade` mode: real hex/gradient chips, shade name + descriptor, sold-out state, "swatch on skin" preview. |
+| Shade finder **[N]**           | `shade_finder`        | Undertone + depth questions → recommended shades (server-resolved to real variants).                      |
+| Skin quiz **[N]**              | `skin_quiz`           | 4–6 steps (type, concerns, sensitivity, budget) → saved filter + product set.                             |
+| Routine builder **[N]**        | `routine_builder`     | AM/PM numbered steps, add-all-to-cart, per-step swap.                                                     |
+| Ingredient list **[N]**        | `ingredient_list`     | Key actives with % and Bangla gloss; full INCI in a disclosure.                                           |
+| Ingredient glossary **[N]**    | `ingredient_glossary` | Term → plain-language explanation, linkable from PDP.                                                     |
+| Free-from / claims **[N]**     | `claim_chips`         | Paraben-free, halal, cruelty-free, non-comedogenic — each with a source tooltip.                          |
+| Skin-concern rail **[U]**      | `product_rail`        | `concern` variant with taxonomy chips as the rail header.                                                 |
+| Before / after **[N]**         | `before_after`        | Slider or paired images with a mandatory disclaimer line.                                                 |
+| Patch-test note **[N]**        | `safety_note`         | Warning paragraph + how-to-patch-test disclosure.                                                         |
+| Expiry & batch **[N]**         | `batch_info`          | Mfg/expiry, batch code, "best used within N months of opening" (PAO).                                     |
+| Texture / finish **[N]**       | `texture_strip`       | Macro texture images + finish labels (matte, dewy, satin).                                                |
+| How to use **[N]**             | `how_to_use`          | Numbered steps with icons/short clip poster.                                                              |
+| Refill / subscribe **[N]**     | `refill_widget`       | Refill SKU link + reorder cadence (server-priced).                                                        |
+| Gift set builder **[N]**       | `gift_builder`        | Pick N items, gift box, message card, combined server total.                                              |
+| Sample / travel size **[N]**   | `sample_picker`       | Add a sample at checkout threshold.                                                                       |
+| Tone-inclusive gallery **[U]** | `ugc_gallery`         | Filter UGC by skin tone/type.                                                                             |
+| Consultation CTA **[N]**       | `consult_cta`         | WhatsApp / call booking, consent chip **never pre-checked**.                                              |
+| Bestseller ranking **[N]**     | `rank_list`           | "Top 10 in সিরাম" numbered list with rank badges.                                                         |
+| Loyalty / points **[N]**       | `loyalty_strip`       | Points earned on this order (server-valued).                                                              |
 
 Rupaboti-specific: **20 widgets** (17 new, 3 upgrades).
 
@@ -97,6 +97,7 @@ Everything in `theme-plan-marketplace.md` §3 and `theme-plan-electronics.md` §
 **Tokens** — ivory `#FFFBF8`, ink `#241E1C`, pigment rose-clay, mint success, amber warn, radius 16/24, section spacing 96px, font pair grotesk + Noto Sans Bengali (display weight 700+ once per page).
 
 **index**
+
 ```
 header: announcement_bar(authentic products / ফ্রি ডেলিভারি) · [logo | mega_menu(category × concern) | search | account · wishlist · cart_drawer]
 main:   editorial_hero("আপনার ত্বকের জন্য / Made for your skin")
@@ -116,6 +117,7 @@ footer: footer_sitemap · payment_icons · trust_bar(authenticity, returns) · l
 **collection** — `category_header` · `facet_sidebar` (concern, skin type, shade family, finish, brand, price; drawer on mobile) · `result_toolbar` · `product_grid(cols=[2,3,4], swatch row on card, quick_view, wishlist)` · `shade_finder` injected after row 2 for shade categories · `pagination(load-more)`.
 
 **product**
+
 ```
 container(cols=[6,6])
   ├ product_media(gallery + texture_strip + swatch-on-skin)

@@ -1,1 +1,360 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "label": "parts.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L1"}, {"id": "metabox_parts_pixelmeter", "label": "PixelMeter()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L19"}, {"id": "metabox_parts_underlinetabs", "label": "UnderlineTabs()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L42"}, {"id": "metabox_parts_collapsible", "label": "Collapsible()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L81"}, {"id": "metabox_parts_checkrow", "label": "CheckRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L123"}, {"id": "metabox_parts_keywordpills", "label": "KeywordPills()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L159"}, {"id": "metabox_parts_tokenfield", "label": "TokenField()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L243"}, {"id": "metabox_parts_checkboxrow", "label": "CheckboxRow()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L327"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "lucide_react", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "users_rahman_documents_frame30_src_lib_utils_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "lib_utils_cn", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "users_rahman_documents_frame30_src_lib_i18n_tsx", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "lib_i18n_uselang", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "users_rahman_documents_frame30_src_lib_seo_analysis_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "lib_seo_analysis_seocheck", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "users_rahman_documents_frame30_src_lib_seo_seo_meta_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "seo_seo_meta_seo_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_pixelmeter", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L19", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_underlinetabs", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L42", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_collapsible", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_checkrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L123", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_keywordpills", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_tokenfield", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L243", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx", "target": "metabox_parts_checkboxrow", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L327", "weight": 1.0}], "raw_calls": [{"caller_nid": "metabox_parts_pixelmeter", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L20"}, {"caller_nid": "metabox_parts_pixelmeter", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L27"}, {"caller_nid": "metabox_parts_pixelmeter", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L32"}, {"caller_nid": "metabox_parts_underlinetabs", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L55"}, {"caller_nid": "metabox_parts_collapsible", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L92"}, {"caller_nid": "metabox_parts_collapsible", "callee": "useId", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L93"}, {"caller_nid": "metabox_parts_collapsible", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L107"}, {"caller_nid": "metabox_parts_checkrow", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L124"}, {"caller_nid": "metabox_parts_checkrow", "callee": "cn", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L143"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L168"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L169"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L182"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L220"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L221"}, {"caller_nid": "metabox_parts_keywordpills", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L229"}, {"caller_nid": "metabox_parts_tokenfield", "callee": "useLang", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L260"}, {"caller_nid": "metabox_parts_tokenfield", "callee": "useState", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L261"}, {"caller_nid": "metabox_parts_tokenfield", "callee": "t", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L279"}, {"caller_nid": "metabox_parts_tokenfield", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx", "source_location": "L284"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "label": "parts.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "metabox_parts_pixelmeter",
+      "label": "PixelMeter()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "metabox_parts_underlinetabs",
+      "label": "UnderlineTabs()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L42"
+    },
+    {
+      "id": "metabox_parts_collapsible",
+      "label": "Collapsible()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L81"
+    },
+    {
+      "id": "metabox_parts_checkrow",
+      "label": "CheckRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L123"
+    },
+    {
+      "id": "metabox_parts_keywordpills",
+      "label": "KeywordPills()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L159"
+    },
+    {
+      "id": "metabox_parts_tokenfield",
+      "label": "TokenField()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L243"
+    },
+    {
+      "id": "metabox_parts_checkboxrow",
+      "label": "CheckboxRow()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L327"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "lucide_react",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_utils_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "lib_utils_cn",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_i18n_tsx",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "lib_i18n_uselang",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_seo_analysis_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "lib_seo_analysis_seocheck",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_seo_seo_meta_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "seo_seo_meta_seo_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_pixelmeter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_underlinetabs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_collapsible",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_checkrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_keywordpills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_tokenfield",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_admin_seo_metabox_parts_tsx",
+      "target": "metabox_parts_checkboxrow",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L327",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "metabox_parts_pixelmeter",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "metabox_parts_pixelmeter",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L27"
+    },
+    {
+      "caller_nid": "metabox_parts_pixelmeter",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L32"
+    },
+    {
+      "caller_nid": "metabox_parts_underlinetabs",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L55"
+    },
+    {
+      "caller_nid": "metabox_parts_collapsible",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L92"
+    },
+    {
+      "caller_nid": "metabox_parts_collapsible",
+      "callee": "useId",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L93"
+    },
+    {
+      "caller_nid": "metabox_parts_collapsible",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L107"
+    },
+    {
+      "caller_nid": "metabox_parts_checkrow",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L124"
+    },
+    {
+      "caller_nid": "metabox_parts_checkrow",
+      "callee": "cn",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L143"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L168"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L169"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L182"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L220"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L221"
+    },
+    {
+      "caller_nid": "metabox_parts_keywordpills",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L229"
+    },
+    {
+      "caller_nid": "metabox_parts_tokenfield",
+      "callee": "useLang",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L260"
+    },
+    {
+      "caller_nid": "metabox_parts_tokenfield",
+      "callee": "useState",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L261"
+    },
+    {
+      "caller_nid": "metabox_parts_tokenfield",
+      "callee": "t",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L279"
+    },
+    {
+      "caller_nid": "metabox_parts_tokenfield",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/admin/seo/metabox/parts.tsx",
+      "source_location": "L284"
+    }
+  ]
+}

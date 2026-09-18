@@ -17,6 +17,7 @@ Registry CID stored in: `v3/@claude-flow/cli/src/plugins/store/discovery.ts`
 Gateway: `https://gateway.pinata.cloud/ipfs/{CID}`
 
 Steps to add a plugin:
+
 1. Fetch current registry: `curl -s "https://gateway.pinata.cloud/ipfs/$(grep LIVE_REGISTRY_CID v3/@claude-flow/cli/src/plugins/store/discovery.ts | cut -d"'" -f2)" > /tmp/registry.json`
 2. Add plugin entry to `plugins` array, increment `totalPlugins`, update category counts
 3. Upload: `curl -X POST "https://api.pinata.cloud/pinning/pinJSONToIPFS" -H "Authorization: Bearer $PINATA_JWT" -H "Content-Type: application/json" -d @/tmp/registry.json`

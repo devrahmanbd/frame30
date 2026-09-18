@@ -1,1 +1,93 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_public_media_stills_manifest_json", "label": "manifest.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L1"}, {"id": "stills_manifest_capturedat", "label": "capturedAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L2"}, {"id": "stills_manifest_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L3"}, {"id": "stills_manifest_dpr", "label": "dpr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L4"}, {"id": "stills_manifest_stills", "label": "stills", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L5"}, {"id": "stills_manifest_skipped", "label": "skipped", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L24"}], "edges": [{"source": "users_rahman_documents_frame30_public_media_stills_manifest_json", "target": "stills_manifest_capturedat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_public_media_stills_manifest_json", "target": "stills_manifest_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_public_media_stills_manifest_json", "target": "stills_manifest_dpr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_public_media_stills_manifest_json", "target": "stills_manifest_stills", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_public_media_stills_manifest_json", "target": "stills_manifest_skipped", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json", "source_location": "L24", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "label": "manifest.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "stills_manifest_capturedat",
+      "label": "capturedAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "stills_manifest_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "stills_manifest_dpr",
+      "label": "dpr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "stills_manifest_stills",
+      "label": "stills",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "stills_manifest_skipped",
+      "label": "skipped",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L24"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "target": "stills_manifest_capturedat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "target": "stills_manifest_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "target": "stills_manifest_dpr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "target": "stills_manifest_stills",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_public_media_stills_manifest_json",
+      "target": "stills_manifest_skipped",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/public/media/stills/manifest.json",
+      "source_location": "L24",
+      "weight": 1.0
+    }
+  ]
+}

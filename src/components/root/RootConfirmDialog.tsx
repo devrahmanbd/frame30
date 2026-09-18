@@ -54,7 +54,10 @@ export function RootConfirmDialog({
         aria-describedby="root-confirm-desc"
         className="w-full max-w-md rounded-fq-lg border border-border bg-card p-5 shadow-lg"
       >
-        <h2 id="root-confirm-title" className="text-base font-semibold text-foreground">
+        <h2
+          id="root-confirm-title"
+          className="text-base font-semibold text-foreground"
+        >
           {title}
         </h2>
         <p id="root-confirm-desc" className="mt-2 text-sm text-foreground">

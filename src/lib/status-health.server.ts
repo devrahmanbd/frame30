@@ -22,14 +22,19 @@ import { COMPONENT_STATES, type ComponentState } from "./ops";
 import { evaluateFleet } from "./cron-ops.server";
 import { OPS_OBJECTIVES } from "./cron-registry";
 
-type Admin = { from: (table: string) => Record<string, (...args: unknown[]) => unknown> };
+type Admin = {
+  from: (table: string) => Record<string, (...args: unknown[]) => unknown>;
+};
 
 async function admin() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as {
     from: (table: string) => {
       select: (cols: string, opts?: Record<string, unknown>) => any;
-      update: (patch: unknown) => { eq: (col: string, val: string) => Promise<unknown> };
+      update: (patch: unknown) => {
+        eq: (col: string, val: string) => Promise<unknown>;
+      };
     };
   };
 }
@@ -63,7 +68,10 @@ export async function deriveComponentStates(now = new Date()): Promise<{
   derived: Map<string, { state: ComponentState; reasons: string[] }>;
   signals: Record<string, unknown>;
 }> {
-  const derived = new Map<string, { state: ComponentState; reasons: string[] }>();
+  const derived = new Map<
+    string,
+    { state: ComponentState; reasons: string[] }
+  >();
   const bump = (key: string, state: ComponentState, reason: string) => {
     const current = derived.get(key);
     if (!current) derived.set(key, { state, reasons: [reason] });
@@ -94,7 +102,11 @@ export async function deriveComponentStates(now = new Date()): Promise<{
           `${view.definition.key} is ${view.health}`,
         );
       } else if (view.health === "slow") {
-        bump(component, "operational", `${view.definition.key} is over its duration budget`);
+        bump(
+          component,
+          "operational",
+          `${view.definition.key} is over its duration budget`,
+        );
       }
     }
   }
@@ -105,7 +117,10 @@ export async function deriveComponentStates(now = new Date()): Promise<{
   let dlqDepth = 0;
   try {
     const [payments, couriers] = (await Promise.all([
-      a.from("webhook_events").select("id", { count: "exact", head: true }).eq("status", "dead_letter"),
+      a
+        .from("webhook_events")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "dead_letter"),
       a
         .from("courier_webhook_events")
         .select("id", { count: "exact", head: true })
@@ -113,11 +128,16 @@ export async function deriveComponentStates(now = new Date()): Promise<{
     ])) as { count?: number }[];
     const pay = Number(payments?.count ?? 0);
     dlqDepth = pay + Number(couriers?.count ?? 0);
-    if (dlqDepth >= 50) bump("webhooks", "partial_outage", `${dlqDepth} dead-lettered events`);
-    else if (dlqDepth >= 10) bump("webhooks", "degraded", `${dlqDepth} dead-lettered events`);
-    if (pay >= 25) bump("payments", "degraded", `${pay} payment events dead-lettered`);
+    if (dlqDepth >= 50)
+      bump("webhooks", "partial_outage", `${dlqDepth} dead-lettered events`);
+    else if (dlqDepth >= 10)
+      bump("webhooks", "degraded", `${dlqDepth} dead-lettered events`);
+    if (pay >= 25)
+      bump("payments", "degraded", `${pay} payment events dead-lettered`);
   } catch (err) {
-    log("warn", "status.dlq_signal_failed", { message: (err as Error)?.message });
+    log("warn", "status.dlq_signal_failed", {
+      message: (err as Error)?.message,
+    });
   }
 
   // --- signal 3: backup drill freshness (we publish an RPO/RTO, so prove it)
@@ -127,10 +147,18 @@ export async function deriveComponentStates(now = new Date()): Promise<{
     lastDrillAt = await lastPassedDrillAt();
     const stale =
       !lastDrillAt ||
-      now.getTime() - new Date(lastDrillAt).getTime() > OPS_OBJECTIVES.drillMaxAgeDays * 86_400_000;
-    if (stale) bump("database", "degraded", "No verified restore drill inside the published window");
+      now.getTime() - new Date(lastDrillAt).getTime() >
+        OPS_OBJECTIVES.drillMaxAgeDays * 86_400_000;
+    if (stale)
+      bump(
+        "database",
+        "degraded",
+        "No verified restore drill inside the published window",
+      );
   } catch (err) {
-    log("warn", "status.drill_signal_failed", { message: (err as Error)?.message });
+    log("warn", "status.drill_signal_failed", {
+      message: (err as Error)?.message,
+    });
   }
 
   // --- signal 4: open public incidents always win
@@ -155,10 +183,15 @@ export async function deriveComponentStates(now = new Date()): Promise<{
       }
     }
   } catch (err) {
-    log("warn", "status.incident_signal_failed", { message: (err as Error)?.message });
+    log("warn", "status.incident_signal_failed", {
+      message: (err as Error)?.message,
+    });
   }
 
-  return { derived, signals: { jobs: fleet.length, dlqDepth, lastDrillAt, openIncidents } };
+  return {
+    derived,
+    signals: { jobs: fleet.length, dlqDepth, lastDrillAt, openIncidents },
+  };
 }
 
 /**
@@ -168,7 +201,9 @@ export async function deriveComponentStates(now = new Date()): Promise<{
 export async function refreshComponentHealth(now = new Date()) {
   const { derived, signals } = await deriveComponentStates(now);
   const a = await admin();
-  const { data } = (await a.from("ops_status_components").select("key, state")) as {
+  const { data } = (await a
+    .from("ops_status_components")
+    .select("key, state")) as {
     data: { key: string; state: string }[] | null;
   };
   const verdicts: ComponentVerdict[] = [];
@@ -180,14 +215,23 @@ export async function refreshComponentHealth(now = new Date()) {
     const hit = derived.get(row.key);
     const target = hit?.state ?? "operational";
     const applied = previous === "maintenance" ? "maintenance" : target;
-    verdicts.push({ key: row.key, derived: target, previous, applied, reasons: hit?.reasons ?? [] });
+    verdicts.push({
+      key: row.key,
+      derived: target,
+      previous,
+      applied,
+      reasons: hit?.reasons ?? [],
+    });
     if (applied !== previous) {
       try {
         await a
           .from("ops_status_components")
           .update({ state: applied })
           .eq("key", row.key);
-        incr("framique_status_component_changes_total", { component: row.key, state: applied });
+        incr("framique_status_component_changes_total", {
+          component: row.key,
+          state: applied,
+        });
         log("warn", "status.component_changed", {
           component: row.key,
           from: previous,
@@ -210,5 +254,9 @@ export async function refreshComponentHealth(now = new Date()) {
     /* cache module is optional on this path */
   }
 
-  return { verdicts, signals, changed: verdicts.filter((v) => v.applied !== v.previous).length };
+  return {
+    verdicts,
+    signals,
+    changed: verdicts.filter((v) => v.applied !== v.previous).length,
+  };
 }

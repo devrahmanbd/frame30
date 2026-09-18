@@ -1,17 +1,18 @@
 # FRAMIQUE: Reddit Search Optimization & Subreddit Marketing Playbook
 
 > **Target Channel:** Reddit Organic Search & Google "Discussions and Forums" SERP Features  
-> **Frameworks Applied:**  
-> - `~/.agents/skills/seo-flow/references/prompts/optimize/reddit-claude-prompt.md` (FLOW Optimization Standard)  
-> - `~/.agents/skills/sickn33-marketing-psychology` (Authenticity, Contrast Framing & Social Proof)  
+> **Frameworks Applied:**
+>
+> - `~/.agents/skills/seo-flow/references/prompts/optimize/reddit-claude-prompt.md` (FLOW Optimization Standard)
+> - `~/.agents/skills/sickn33-marketing-psychology` (Authenticity, Contrast Framing & Social Proof)
 > - `~/.agents/skills/sickn33-price-psychology-strategist` (Anchoring & Pain-of-Paying Decoupling)  
-> **Core Objective:** Dominate Google’s forum carousels for high-intent comparison queries while building genuine community goodwill.  
+>   **Core Objective:** Dominate Google’s forum carousels for high-intent comparison queries while building genuine community goodwill.
 
 ---
 
 ## 1. Why Reddit SEO is Crucial in 2026
 
-Google’s search algorithms now heavily prioritize authentic community discussions via the **"Discussions and Forums"** rich carousel. For commercial queries like *"shopify alternative reddit"* or *"framer for ecommerce reddit"*, Reddit threads rank in **positions #1 to #4** globally.
+Google’s search algorithms now heavily prioritize authentic community discussions via the **"Discussions and Forums"** rich carousel. For commercial queries like _"shopify alternative reddit"_ or _"framer for ecommerce reddit"_, Reddit threads rank in **positions #1 to #4** globally.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -34,16 +35,16 @@ Traditional corporate blog posts fail on Reddit. Success requires **technical ho
 
 ## 2. Master Reddit Keyword & Subreddit Target Matrix
 
-| Subreddit | Target Search Query (Reddit + Google Forum SERP) | Monthly Search Vol | Core Community Persona | Community Pain Point |
-| :--- | :--- | :--- | :--- | :--- |
-| **`r/ecommerce`** | `shopify alternative reddit` | 8,900 | D2C Brand Owners ($10k-$100k/mo) | Bleeding 2% to Shopify on top of $200/mo app subscriptions. |
-| **`r/shopify`** | `why does shopify charge 2% on external gateways` | 3,200 | Frustrated Shopify Merchants | Being penalized for offering regional payment options. |
-| **`r/framer`** | `can you build an ecommerce store on framer reddit` | 4,100 | Visual Designers & Agency Owners | Love Framer's visual canvas, but hate Frankenstein checkout widgets. |
-| **`r/webflow`** | `webflow ecommerce limitations reddit` | 2,800 | Webflow Developers & Studios | Hitting the 3,000 item cap, slow multi-variant loading, high plan tiers. |
-| **`r/SaaS`** | `cloud ecommerce cms architecture reddit` | 1,400 | Technical Founders & Engineers | Interested in TanStack Start, PostgreSQL RLS, and edge SSR benchmarks. |
-| **`r/bangladesh`** | `best ecommerce website builder in bangladesh reddit` | 1,950 | Local Entrepreneurs & Startups | Lack of international cards; need bKash/Nagad and Steadfast courier APIs. |
-| **`r/webdev`** | `headless ecommerce vs visual builder reddit` | 3,600 | Full-Stack Web Developers | Tired of building custom storefronts from scratch for small clients. |
-| **`r/entrepreneur`** | `cheapest way to run online store with zero fees` | 5,400 | Early-Stage Founders & Bootstrappers | Cash flow preservation; avoiding monthly SaaS taxes before turning profit. |
+| Subreddit            | Target Search Query (Reddit + Google Forum SERP)      | Monthly Search Vol | Core Community Persona               | Community Pain Point                                                       |
+| :------------------- | :---------------------------------------------------- | :----------------- | :----------------------------------- | :------------------------------------------------------------------------- |
+| **`r/ecommerce`**    | `shopify alternative reddit`                          | 8,900              | D2C Brand Owners ($10k-$100k/mo)     | Bleeding 2% to Shopify on top of $200/mo app subscriptions.                |
+| **`r/shopify`**      | `why does shopify charge 2% on external gateways`     | 3,200              | Frustrated Shopify Merchants         | Being penalized for offering regional payment options.                     |
+| **`r/framer`**       | `can you build an ecommerce store on framer reddit`   | 4,100              | Visual Designers & Agency Owners     | Love Framer's visual canvas, but hate Frankenstein checkout widgets.       |
+| **`r/webflow`**      | `webflow ecommerce limitations reddit`                | 2,800              | Webflow Developers & Studios         | Hitting the 3,000 item cap, slow multi-variant loading, high plan tiers.   |
+| **`r/SaaS`**         | `cloud ecommerce cms architecture reddit`             | 1,400              | Technical Founders & Engineers       | Interested in TanStack Start, PostgreSQL RLS, and edge SSR benchmarks.     |
+| **`r/bangladesh`**   | `best ecommerce website builder in bangladesh reddit` | 1,950              | Local Entrepreneurs & Startups       | Lack of international cards; need bKash/Nagad and Steadfast courier APIs.  |
+| **`r/webdev`**       | `headless ecommerce vs visual builder reddit`         | 3,600              | Full-Stack Web Developers            | Tired of building custom storefronts from scratch for small clients.       |
+| **`r/entrepreneur`** | `cheapest way to run online store with zero fees`     | 5,400              | Early-Stage Founders & Bootstrappers | Cash flow preservation; avoiding monthly SaaS taxes before turning profit. |
 
 ---
 
@@ -54,19 +55,22 @@ Reddit titles must never sound like Facebook ads. They must sound like an authen
 ### 3.1 Taglines by Audience Segment
 
 #### For Shopify Merchants (Focus: Margin Reclaim & Fee Elimination)
-- **Tagline 1:** *"The design freedom of Framer, the transactional muscle of Shopify, and 0% platform fees."*
-- **Tagline 2:** *"Stop paying rent on your own revenue: why your CMS shouldn't take 2% of your hard work."*
-- **Reddit Title Hook:** *"I audited our Shopify store after $120k in sales: we spent $4,800 on transaction penalties and app bloat. Here's our alternative."*
+
+- **Tagline 1:** _"The design freedom of Framer, the transactional muscle of Shopify, and 0% platform fees."_
+- **Tagline 2:** _"Stop paying rent on your own revenue: why your CMS shouldn't take 2% of your hard work."_
+- **Reddit Title Hook:** _"I audited our Shopify store after $120k in sales: we spent $4,800 on transaction penalties and app bloat. Here's our alternative."_
 
 #### For Designers & Agencies (Focus: Creative Freedom + Native Cart)
-- **Tagline 1:** *"Say goodbye to Frankenstein checkouts: Framer-grade visual canvas with a real relational store backend."*
-- **Tagline 2:** *"Bento grids, fluid typography clamps, and 0 code—directly bound to live inventory."*
-- **Reddit Title Hook:** *"Framer is incredible for landing pages, but building a real store on it is painful. We built the missing middle."*
+
+- **Tagline 1:** _"Say goodbye to Frankenstein checkouts: Framer-grade visual canvas with a real relational store backend."_
+- **Tagline 2:** _"Bento grids, fluid typography clamps, and 0 code—directly bound to live inventory."_
+- **Reddit Title Hook:** _"Framer is incredible for landing pages, but building a real store on it is painful. We built the missing middle."_
 
 #### For Local & Regional Merchants (Focus: Automation & MFS)
-- **Tagline 1:** *"The first sovereign cloud CMS built natively for Bangladeshi commerce."*
-- **Tagline 2:** *"One-click bKash checkout, automated Steadfast parcel booking, and zero monthly USD headaches."*
-- **Reddit Title Hook:** *"Why every Bangladeshi e-commerce brand struggles on Shopify (and how native courier + MFS APIs solve it)."*
+
+- **Tagline 1:** _"The first sovereign cloud CMS built natively for Bangladeshi commerce."_
+- **Tagline 2:** _"One-click bKash checkout, automated Steadfast parcel booking, and zero monthly USD headaches."_
+- **Reddit Title Hook:** _"Why every Bangladeshi e-commerce brand struggles on Shopify (and how native courier + MFS APIs solve it)."_
 
 ---
 
@@ -113,11 +117,13 @@ Happy to answer questions on edge performance (TanStack Start / sub-50ms TTFB) a
 I run a digital design studio. For client marketing sites, Framer and Webflow are undisputed kings. But every time a client says "we want to sell 150 SKUs with sizes, colors, and local shipping," things get messy.
 
 With Framer:
+
 - No native shopping cart or multi-item checkout.
 - You have to embed Lemon Squeezy or a Shopify Buy Button, which opens an external modal and completely breaks the custom aesthetic.
 - Zero customer account portals, inventory tracking, or automated shipping manifests.
 
 With Webflow:
+
 - Hit the 3,000 CMS item ceiling quickly on dynamic variants.
 - E-commerce tiers jump drastically in price ($42 to $235/mo) while still charging a 2% fee on standard tiers.
 - No native support for regional couriers or local payment rails.
@@ -134,18 +140,20 @@ Are other agencies still hacking Shopify Buy Buttons into Framer, or are you mov
 When users post threads asking for recommendations or venting frustrations, use these community-first responses:
 
 ### Scenario A: User asks "What is the best alternative to Shopify in 2026?"
-> *"Depends entirely on your stage and geography:*  
-> *- If you're in North America/UK and rely on 30+ Shopify App Store integrations, Shopify is still the standard despite the fees.*  
-> *- If you're purely digital or selling 1–2 items, Framer + Lemon Squeezy works.*  
-> *- If you want 100% design freedom without rigid Liquid code, hate paying the 2% gateway penalty, or need native regional payments and automated couriers, check out FRAMIQUE. It’s a modern cloud CMS with 0% platform fees, bento-grid visual building, and sub-50ms edge rendering."*
+
+> _"Depends entirely on your stage and geography:_  
+> _- If you're in North America/UK and rely on 30+ Shopify App Store integrations, Shopify is still the standard despite the fees._  
+> _- If you're purely digital or selling 1–2 items, Framer + Lemon Squeezy works._  
+> _- If you want 100% design freedom without rigid Liquid code, hate paying the 2% gateway penalty, or need native regional payments and automated couriers, check out FRAMIQUE. It’s a modern cloud CMS with 0% platform fees, bento-grid visual building, and sub-50ms edge rendering."_
 
 ### Scenario B: User complains "Why is bKash integration so buggy on Shopify/WooCommerce?"
-> *"Because on Shopify/WooCommerce, bKash is an afterthought handled by third-party plugins that store webhooks on random middleman servers or break whenever the core platform updates. For proper reliability, you need a platform with native tokenized MFS checkouts built into the core order state machine. FRAMIQUE handles this natively—orders update automatically in under 2 seconds without merchants having to copy-paste Transaction IDs."*
+
+> _"Because on Shopify/WooCommerce, bKash is an afterthought handled by third-party plugins that store webhooks on random middleman servers or break whenever the core platform updates. For proper reliability, you need a platform with native tokenized MFS checkouts built into the core order state machine. FRAMIQUE handles this natively—orders update automatically in under 2 seconds without merchants having to copy-paste Transaction IDs."_
 
 ---
 
 ## 6. Ethical Community Rules (Anti-Spam Standard)
 
 1. **Never use link shorteners or affiliate redirects.** Always link transparently to domain root or relevant comparison guides.
-2. **Never hide affiliation.** When team members post, include clear disclosure: *"Disclaimer: I’m part of the team building Framique, but the numbers above are from verified client audits."*
+2. **Never hide affiliation.** When team members post, include clear disclosure: _"Disclaimer: I’m part of the team building Framique, but the numbers above are from verified client audits."_
 3. **Prioritize answering the user’s specific question first** before mentioning Framique. If WooCommerce or Shopify is genuinely a better fit for their specific edge case, say so honestly.

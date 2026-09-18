@@ -1,1 +1,180 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "label": "schema-fingerprint.mjs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L1"}, {"id": "scripts_schema_fingerprint_out", "label": "OUT", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L14"}, {"id": "scripts_schema_fingerprint_env", "label": "env()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L16"}, {"id": "scripts_schema_fingerprint_key", "label": "key", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L29"}, {"id": "scripts_schema_fingerprint_drift", "label": "drift", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L60"}, {"id": "scripts_schema_fingerprint_names", "label": "names", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L61"}, {"id": "scripts_schema_fingerprint_fnbase", "label": "fnBase", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L73"}], "edges": [{"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "node_path", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_out", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_env", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_key", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L29", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_drift", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_names", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L61", "weight": 1.0}, {"source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs", "target": "scripts_schema_fingerprint_fnbase", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L73", "weight": 1.0}], "raw_calls": [{"caller_nid": "scripts_schema_fingerprint_env", "callee": "find", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L20"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "split", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L20"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "readFileSync", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L20"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "resolve", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L20"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "replace", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L23"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "trim", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L23"}, {"caller_nid": "scripts_schema_fingerprint_env", "callee": "slice", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs", "source_location": "L23"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "label": "schema-fingerprint.mjs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_schema_fingerprint_out",
+      "label": "OUT",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L14"
+    },
+    {
+      "id": "scripts_schema_fingerprint_env",
+      "label": "env()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L16"
+    },
+    {
+      "id": "scripts_schema_fingerprint_key",
+      "label": "key",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L29"
+    },
+    {
+      "id": "scripts_schema_fingerprint_drift",
+      "label": "drift",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L60"
+    },
+    {
+      "id": "scripts_schema_fingerprint_names",
+      "label": "names",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L61"
+    },
+    {
+      "id": "scripts_schema_fingerprint_fnbase",
+      "label": "fnBase",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L73"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "node_path",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_out",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_env",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_drift",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_names",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_scripts_schema_fingerprint_mjs",
+      "target": "scripts_schema_fingerprint_fnbase",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L73",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "find",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "split",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "readFileSync",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "resolve",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "replace",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "trim",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L23"
+    },
+    {
+      "caller_nid": "scripts_schema_fingerprint_env",
+      "callee": "slice",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/scripts/schema-fingerprint.mjs",
+      "source_location": "L23"
+    }
+  ]
+}

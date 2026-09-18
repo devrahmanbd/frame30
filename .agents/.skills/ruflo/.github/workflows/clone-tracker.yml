@@ -15,17 +15,17 @@ name: Clone Tracker (14-day rolling)
 
 on:
   schedule:
-    - cron: '17 6 */13 * *'
+    - cron: "17 6 */13 * *"
   workflow_dispatch:
     # Allow manual runs (e.g., after a release announcement to capture the spike).
   push:
     branches: [main]
     paths:
-      - 'scripts/track-clones.mjs'
-      - '.github/workflows/clone-tracker.yml'
+      - "scripts/track-clones.mjs"
+      - ".github/workflows/clone-tracker.yml"
 
 permissions:
-  contents: write     # to push the snapshot commit
+  contents: write # to push the snapshot commit
   actions: read
 
 concurrency:
@@ -47,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install root deps (for @ruvector/rvf binding)
         run: npm install --legacy-peer-deps --no-audit --no-fund --ignore-scripts

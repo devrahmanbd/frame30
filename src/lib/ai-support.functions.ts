@@ -19,7 +19,8 @@ export const askAssistantFn = createServerFn({ method: "POST" })
     } catch {
       return {
         conversationId: data.conversationId ?? null,
-        reply: "Unable to fetch information right now. Please try again shortly or contact customer care.",
+        reply:
+          "Unable to fetch information right now. Please try again shortly or contact customer care.",
         provenance: null,
         needsAgent: true,
         cta: "ticket" as const,
@@ -30,22 +31,34 @@ export const askAssistantFn = createServerFn({ method: "POST" })
 export const supportInboxFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { listConversations, computeStats, SUGGESTIONS } = await import(
-      "./ai-support-admin.server"
-    );
+    const { listConversations, computeStats, SUGGESTIONS } =
+      await import("./ai-support-admin.server");
     const { currentMerchantId } = await import("./marketing.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     const conversations = await listConversations(context.supabase, merchantId);
-    return { merchantId, conversations, stats: computeStats(conversations), suggestions: SUGGESTIONS };
+    return {
+      merchantId,
+      conversations,
+      stats: computeStats(conversations),
+      suggestions: SUGGESTIONS,
+    };
   });
 
 export const supportThreadFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ conversationId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ conversationId: z.string().uuid() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { listMessages } = await import("./ai-support-admin.server");
     const { currentMerchantId } = await import("./marketing.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
     return listMessages(context.supabase, merchantId, data.conversationId);
   });
 
@@ -53,14 +66,25 @@ export const supportReplyFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
-      .object({ conversationId: z.string().uuid(), body: z.string().trim().min(1).max(1000) })
+      .object({
+        conversationId: z.string().uuid(),
+        body: z.string().trim().min(1).max(1000),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { agentReply } = await import("./ai-support-admin.server");
     const { currentMerchantId } = await import("./marketing.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return agentReply(context.supabase, merchantId, data.conversationId, data.body);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return agentReply(
+      context.supabase,
+      merchantId,
+      data.conversationId,
+      data.body,
+    );
   });
 
 export const supportStatusFn = createServerFn({ method: "POST" })
@@ -76,16 +100,26 @@ export const supportStatusFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setConversationStatus } = await import("./ai-support-admin.server");
     const { currentMerchantId } = await import("./marketing.server");
-    const merchantId = await currentMerchantId(context.supabase, context.userId);
-    return setConversationStatus(context.supabase, merchantId, data.conversationId, data.status);
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return setConversationStatus(
+      context.supabase,
+      merchantId,
+      data.conversationId,
+      data.status,
+    );
   });
 
 export const getAiGatewayConfigFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
-    const { getAiGatewayConfig, maskApiKey } = await import("./support-embed.server");
-    const { getDynamicConfigMetadata } = await import("./dynamic-config.server");
-    
+    const { getAiGatewayConfig, maskApiKey } =
+      await import("./support-embed.server");
+    const { getDynamicConfigMetadata } =
+      await import("./dynamic-config.server");
+
     // Retrieve dynamic config state
     const cfg = await getAiGatewayConfig();
     const meta = await getDynamicConfigMetadata("ai.gateway");
@@ -130,12 +164,20 @@ export const testAiGatewayProbeFn = createServerFn({ method: "POST" })
 
       if (!res.ok) {
         const txt = await res.text().catch(() => "");
-        return { ok: false, latencyMs: Date.now() - started, error: `HTTP ${res.status}: ${txt.slice(0, 120)}` };
+        return {
+          ok: false,
+          latencyMs: Date.now() - started,
+          error: `HTTP ${res.status}: ${txt.slice(0, 120)}`,
+        };
       }
 
       return { ok: true, latencyMs: Date.now() - started };
     } catch (err) {
-      return { ok: false, latencyMs: Date.now() - started, error: (err as Error).message };
+      return {
+        ok: false,
+        latencyMs: Date.now() - started,
+        error: (err as Error).message,
+      };
     }
   });
 
@@ -165,4 +207,3 @@ export const updateAiGatewayConfigFn = createServerFn({ method: "POST" })
       "admin_ui_key_rotation",
     );
   });
-

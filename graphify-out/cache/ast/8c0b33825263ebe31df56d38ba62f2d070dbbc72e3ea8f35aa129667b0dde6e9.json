@@ -1,1 +1,227 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "label": "Stars.tsx", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L1"}, {"id": "primitives_stars_clamprating", "label": "clampRating()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L12"}, {"id": "primitives_stars_histogrampercents", "label": "histogramPercents()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L18"}, {"id": "primitives_stars_stars", "label": "Stars()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L24"}, {"id": "primitives_stars_histogrambar", "label": "HistogramBar()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L59"}], "edges": [{"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "users_rahman_documents_frame30_src_lib_money_display_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "lib_money_display_formatdisplaynumber", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "users_rahman_documents_frame30_src_lib_bitext_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "lib_bitext_locale", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "primitives_stars_clamprating", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "primitives_stars_histogrampercents", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L18", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "primitives_stars_stars", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L24", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx", "target": "primitives_stars_histogrambar", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L59", "weight": 1.0}, {"source": "primitives_stars_stars", "target": "primitives_stars_clamprating", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L35", "weight": 1.0}], "raw_calls": [{"caller_nid": "primitives_stars_clamprating", "callee": "isFinite", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L13"}, {"caller_nid": "primitives_stars_clamprating", "callee": "min", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L14"}, {"caller_nid": "primitives_stars_clamprating", "callee": "max", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L14"}, {"caller_nid": "primitives_stars_histogrampercents", "callee": "reduce", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L19"}, {"caller_nid": "primitives_stars_histogrampercents", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L20"}, {"caller_nid": "primitives_stars_histogrampercents", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L21"}, {"caller_nid": "primitives_stars_stars", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L38"}, {"caller_nid": "primitives_stars_stars", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L38"}, {"caller_nid": "primitives_stars_stars", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L39"}, {"caller_nid": "primitives_stars_stars", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L52"}, {"caller_nid": "primitives_stars_stars", "callee": "round", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L52"}, {"caller_nid": "primitives_stars_stars", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L53"}, {"caller_nid": "primitives_stars_histogrambar", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L71"}, {"caller_nid": "primitives_stars_histogrambar", "callee": "formatDisplayNumber", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx", "source_location": "L77"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "label": "Stars.tsx",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "primitives_stars_clamprating",
+      "label": "clampRating()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "primitives_stars_histogrampercents",
+      "label": "histogramPercents()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L18"
+    },
+    {
+      "id": "primitives_stars_stars",
+      "label": "Stars()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "primitives_stars_histogrambar",
+      "label": "HistogramBar()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L59"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_money_display_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "lib_money_display_formatdisplaynumber",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "users_rahman_documents_frame30_src_lib_bitext_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "lib_bitext_locale",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "primitives_stars_clamprating",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "primitives_stars_histogrampercents",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "primitives_stars_stars",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_components_builder_primitives_stars_tsx",
+      "target": "primitives_stars_histogrambar",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "primitives_stars_stars",
+      "target": "primitives_stars_clamprating",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "primitives_stars_clamprating",
+      "callee": "isFinite",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L13"
+    },
+    {
+      "caller_nid": "primitives_stars_clamprating",
+      "callee": "min",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "primitives_stars_clamprating",
+      "callee": "max",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L14"
+    },
+    {
+      "caller_nid": "primitives_stars_histogrampercents",
+      "callee": "reduce",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L19"
+    },
+    {
+      "caller_nid": "primitives_stars_histogrampercents",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L20"
+    },
+    {
+      "caller_nid": "primitives_stars_histogrampercents",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L21"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L38"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L39"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "round",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L52"
+    },
+    {
+      "caller_nid": "primitives_stars_stars",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L53"
+    },
+    {
+      "caller_nid": "primitives_stars_histogrambar",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L71"
+    },
+    {
+      "caller_nid": "primitives_stars_histogrambar",
+      "callee": "formatDisplayNumber",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/components/builder/primitives/Stars.tsx",
+      "source_location": "L77"
+    }
+  ]
+}

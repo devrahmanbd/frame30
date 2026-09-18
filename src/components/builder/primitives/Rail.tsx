@@ -21,7 +21,10 @@ export function Rail({
   const nudge = useCallback((direction: 1 | -1) => {
     const el = ref.current;
     if (!el) return;
-    el.scrollBy({ left: direction * Math.max(160, el.clientWidth * 0.8), behavior: "smooth" });
+    el.scrollBy({
+      left: direction * Math.max(160, el.clientWidth * 0.8),
+      behavior: "smooth",
+    });
   }, []);
 
   if (children.length === 0) return null;

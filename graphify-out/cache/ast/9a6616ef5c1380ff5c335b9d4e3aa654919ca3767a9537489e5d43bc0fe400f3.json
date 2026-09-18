@@ -1,1 +1,493 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "label": "backup-drill.server.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L1"}, {"id": "lib_backup_drill_server_client", "label": "Client", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L26"}, {"id": "lib_backup_drill_server_admin", "label": "Admin", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L27"}, {"id": "lib_backup_drill_server_countmanifest", "label": "countManifest()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L63"}, {"id": "lib_backup_drill_server_recordrun", "label": "recordRun()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L81"}, {"id": "lib_backup_drill_server_drillresult", "label": "DrillResult", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L115"}, {"id": "lib_backup_drill_server_lastpasseddrillat", "label": "lastPassedDrillAt()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L128"}, {"id": "lib_backup_drill_server_runbackupdrill", "label": "runBackupDrill()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L144"}, {"id": "lib_backup_drill_server_runbackupdrillasowner", "label": "runBackupDrillAsOwner()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L222"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "supabase_js", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L10", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "supabase_types_loose_database", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "supabase_types_loose_json", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L11", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_owner_ops_server_ownergate", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L12", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "users_rahman_documents_frame30_src_lib_observability_server_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_observability_server_incr", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_observability_server_log", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_observability_server_setgauge", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_observability_server_withspan", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "users_rahman_documents_frame30_src_lib_backup_drill_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_backup_manifest", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_buildsnapshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_drilldue", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_drillnotes", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_evaluatedrill", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_nextdrillat", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_drillverdict", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_snapshot", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_tablecount", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_client", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L26", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L27", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_admin", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L54", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_countmanifest", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L63", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_recordrun", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L81", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_drillresult", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L115", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_lastpasseddrillat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L128", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_runbackupdrill", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L144", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts", "target": "lib_backup_drill_server_runbackupdrillasowner", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L222", "weight": 1.0}, {"source": "lib_backup_drill_server_admin", "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts", "relation": "imports_from", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L55", "weight": 1.0}, {"source": "lib_backup_drill_server_lastpasseddrillat", "target": "lib_backup_drill_server_admin", "relation": "calls", "context": "call", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L129", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_backup_drill_server_countmanifest", "callee": "all", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L64"}, {"caller_nid": "lib_backup_drill_server_countmanifest", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L65"}, {"caller_nid": "lib_backup_drill_server_countmanifest", "callee": "filter", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L78"}, {"caller_nid": "lib_backup_drill_server_recordrun", "callee": "insert", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L95"}, {"caller_nid": "lib_backup_drill_server_recordrun", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L95"}, {"caller_nid": "lib_backup_drill_server_recordrun", "callee": "toISOString", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L100"}, {"caller_nid": "lib_backup_drill_server_recordrun", "callee": "incr", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L109"}, {"caller_nid": "lib_backup_drill_server_recordrun", "callee": "log", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L110"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "limit", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "order", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "eq", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "select", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_lastpasseddrillat", "callee": "from", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L130"}, {"caller_nid": "lib_backup_drill_server_runbackupdrill", "callee": "withSpan", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L148"}, {"caller_nid": "lib_backup_drill_server_runbackupdrillasowner", "callee": "ownerGate", "is_member_call": false, "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts", "source_location": "L223"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "label": "backup-drill.server.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_backup_drill_server_client",
+      "label": "Client",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L26"
+    },
+    {
+      "id": "lib_backup_drill_server_admin",
+      "label": "Admin",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L27"
+    },
+    {
+      "id": "lib_backup_drill_server_countmanifest",
+      "label": "countManifest()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L63"
+    },
+    {
+      "id": "lib_backup_drill_server_recordrun",
+      "label": "recordRun()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L81"
+    },
+    {
+      "id": "lib_backup_drill_server_drillresult",
+      "label": "DrillResult",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L115"
+    },
+    {
+      "id": "lib_backup_drill_server_lastpasseddrillat",
+      "label": "lastPassedDrillAt()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L128"
+    },
+    {
+      "id": "lib_backup_drill_server_runbackupdrill",
+      "label": "runBackupDrill()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L144"
+    },
+    {
+      "id": "lib_backup_drill_server_runbackupdrillasowner",
+      "label": "runBackupDrillAsOwner()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L222"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "supabase_js",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_types_loose_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "supabase_types_loose_database",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "supabase_types_loose_json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_owner_ops_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_owner_ops_server_ownergate",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_observability_server_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_observability_server_incr",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_observability_server_log",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_observability_server_setgauge",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_observability_server_withspan",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "users_rahman_documents_frame30_src_lib_backup_drill_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_backup_manifest",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_buildsnapshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_drilldue",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_drillnotes",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_evaluatedrill",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_nextdrillat",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_drillverdict",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_snapshot",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_tablecount",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_client",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_admin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_countmanifest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_recordrun",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_drillresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_lastpasseddrillat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_runbackupdrill",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L144",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_backup_drill_server_ts",
+      "target": "lib_backup_drill_server_runbackupdrillasowner",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_backup_drill_server_admin",
+      "target": "users_rahman_documents_frame30_src_integrations_supabase_client_server_loose_ts",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_backup_drill_server_lastpasseddrillat",
+      "target": "lib_backup_drill_server_admin",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L129",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_backup_drill_server_countmanifest",
+      "callee": "all",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L64"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_countmanifest",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L65"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_countmanifest",
+      "callee": "filter",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L78"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_recordrun",
+      "callee": "insert",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_recordrun",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L95"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_recordrun",
+      "callee": "toISOString",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L100"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_recordrun",
+      "callee": "incr",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L109"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_recordrun",
+      "callee": "log",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L110"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "limit",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "order",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "eq",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "select",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_lastpasseddrillat",
+      "callee": "from",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L130"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_runbackupdrill",
+      "callee": "withSpan",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L148"
+    },
+    {
+      "caller_nid": "lib_backup_drill_server_runbackupdrillasowner",
+      "callee": "ownerGate",
+      "is_member_call": false,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/backup-drill.server.ts",
+      "source_location": "L223"
+    }
+  ]
+}

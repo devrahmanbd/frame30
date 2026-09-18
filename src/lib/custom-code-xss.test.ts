@@ -9,7 +9,10 @@ const PAYLOADS: [string, string][] = [
   ["js-url", `<a href="javascript:alert(1)">x</a>`],
   ["event-handler", `<div onmouseover="alert(1)">x</div>`],
   ["iframe-srcdoc", `<iframe srcdoc="<script>alert(1)</script>"></iframe>`],
-  ["form-action-js", `<form action="javascript:alert(1)"><button>x</button></form>`],
+  [
+    "form-action-js",
+    `<form action="javascript:alert(1)"><button>x</button></form>`,
+  ],
   ["style-expression", `<div style="x:expression(alert(1))">x</div>`],
   ["head-script", `<script src="https://evil.example/x.js"></script>`],
 ];
@@ -24,7 +27,9 @@ describe("xss probe", () => {
     });
   }
   it("rejects head script tags", () => {
-    const r = parseHeadSnippet(`<script src="https://evil.example/x.js"></script>`);
+    const r = parseHeadSnippet(
+      `<script src="https://evil.example/x.js"></script>`,
+    );
     expect(r.tags).toHaveLength(0);
     expect(r.findings.length).toBeGreaterThan(0);
   });

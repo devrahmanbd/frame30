@@ -1,1 +1,555 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "label": "motion-choreography.test.ts", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L1"}, {"id": "lib_motion_choreography_test_base", "label": "base", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L35"}, {"id": "lib_motion_choreography_test_reveal", "label": "reveal()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L49"}, {"id": "lib_motion_choreography_test_codes", "label": "codes()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L60"}, {"id": "lib_motion_choreography_test_f", "label": "f", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L75"}, {"id": "lib_motion_choreography_test_drift", "label": "drift()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L106"}, {"id": "lib_motion_choreography_test_magnet", "label": "magnet()", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L159"}, {"id": "lib_motion_choreography_test_report", "label": "report", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L265"}, {"id": "lib_motion_choreography_test_findings", "label": "findings", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L286"}, {"id": "lib_motion_choreography_test_unique", "label": "unique", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L291"}, {"id": "lib_motion_choreography_test_css", "label": "css", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L298"}, {"id": "lib_motion_choreography_test_ms", "label": "ms", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L312"}, {"id": "lib_motion_choreography_test_seconds", "label": "seconds", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L321"}, {"id": "lib_motion_choreography_test_props", "label": "props", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L330"}, {"id": "lib_motion_choreography_test_clamp", "label": "clamp", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L342"}, {"id": "lib_motion_choreography_test_durations", "label": "durations", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L347"}], "edges": [{"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "node_fs", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L13", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "vitest", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L14", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_policy_motion_tokens", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_policy_allowsmagnetic", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_policy_driftdurationms", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L15", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "users_rahman_documents_frame30_src_lib_motion_choreography_ts", "relation": "imports_from", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_drift", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_fold", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_magnetic", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_reduced", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_reveal", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditdrift", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditfold", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditmagnetic", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditmotionpage", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditreducedmotion", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_auditreveal", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_countmotionbyseverity", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_dedupemotionfindings", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_formatmotionfinding", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_motionpagemeasurement", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_revealsample", "relation": "imports", "context": "import", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L16", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_base", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L35", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_reveal", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L49", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_codes", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L60", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L75", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_drift", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L106", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L148", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_magnet", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L159", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L163", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L205", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L238", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_f", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L244", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L265", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L276", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_report", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L281", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_findings", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L286", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_unique", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L291", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_css", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L298", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_ms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L312", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_seconds", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L321", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_props", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L330", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_clamp", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L342", "weight": 1.0}, {"source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts", "target": "lib_motion_choreography_test_durations", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L347", "weight": 1.0}], "raw_calls": [{"caller_nid": "lib_motion_choreography_test_codes", "callee": "map", "is_member_call": true, "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts", "source_location": "L60"}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "label": "motion-choreography.test.ts",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_motion_choreography_test_base",
+      "label": "base",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_motion_choreography_test_reveal",
+      "label": "reveal()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L49"
+    },
+    {
+      "id": "lib_motion_choreography_test_codes",
+      "label": "codes()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L60"
+    },
+    {
+      "id": "lib_motion_choreography_test_f",
+      "label": "f",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L75"
+    },
+    {
+      "id": "lib_motion_choreography_test_drift",
+      "label": "drift()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L106"
+    },
+    {
+      "id": "lib_motion_choreography_test_magnet",
+      "label": "magnet()",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L159"
+    },
+    {
+      "id": "lib_motion_choreography_test_report",
+      "label": "report",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L265"
+    },
+    {
+      "id": "lib_motion_choreography_test_findings",
+      "label": "findings",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L286"
+    },
+    {
+      "id": "lib_motion_choreography_test_unique",
+      "label": "unique",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L291"
+    },
+    {
+      "id": "lib_motion_choreography_test_css",
+      "label": "css",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L298"
+    },
+    {
+      "id": "lib_motion_choreography_test_ms",
+      "label": "ms",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L312"
+    },
+    {
+      "id": "lib_motion_choreography_test_seconds",
+      "label": "seconds",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L321"
+    },
+    {
+      "id": "lib_motion_choreography_test_props",
+      "label": "props",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L330"
+    },
+    {
+      "id": "lib_motion_choreography_test_clamp",
+      "label": "clamp",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L342"
+    },
+    {
+      "id": "lib_motion_choreography_test_durations",
+      "label": "durations",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L347"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "node_fs",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "vitest",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_motion_policy_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_policy_motion_tokens",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_policy_allowsmagnetic",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_policy_driftdurationms",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "users_rahman_documents_frame30_src_lib_motion_choreography_ts",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_drift",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_fold",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_magnetic",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_reduced",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_reveal",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditdrift",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditfold",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditmagnetic",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditmotionpage",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditreducedmotion",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_auditreveal",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_countmotionbyseverity",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_dedupemotionfindings",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_formatmotionfinding",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_motionpagemeasurement",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_revealsample",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_reveal",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_codes",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_drift",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L106",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L148",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_magnet",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L159",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L205",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_f",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L244",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L265",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L276",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L281",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_findings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L286",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_unique",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L291",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_css",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_ms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L312",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_seconds",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L321",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_props",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L330",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_clamp",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L342",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_src_lib_motion_choreography_test_ts",
+      "target": "lib_motion_choreography_test_durations",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L347",
+      "weight": 1.0
+    }
+  ],
+  "raw_calls": [
+    {
+      "caller_nid": "lib_motion_choreography_test_codes",
+      "callee": "map",
+      "is_member_call": true,
+      "source_file": "/Users/rahman/Documents/frame30/src/lib/motion-choreography.test.ts",
+      "source_location": "L60"
+    }
+  ]
+}

@@ -80,9 +80,11 @@ export function useListState(opts?: {
   const view = str("view") ?? defaultView;
   const q = str("q") ?? "";
   const sort = str("sort") ?? defaultSort;
-  const dir: SortDir = str("dir") === "asc" ? "asc" : str("dir") === "desc" ? "desc" : defaultDir;
+  const dir: SortDir =
+    str("dir") === "asc" ? "asc" : str("dir") === "desc" ? "desc" : defaultDir;
   const pageRaw = Number(str("page") ?? 1);
-  const page = Number.isFinite(pageRaw) && pageRaw >= 1 ? Math.floor(pageRaw) : 1;
+  const page =
+    Number.isFinite(pageRaw) && pageRaw >= 1 ? Math.floor(pageRaw) : 1;
 
   return useMemo<ListState>(
     () => ({
@@ -92,7 +94,11 @@ export function useListState(opts?: {
       dir,
       page,
       pageSize,
-      setView: (next) => patch({ view: next === defaultView ? undefined : next, page: undefined }),
+      setView: (next) =>
+        patch({
+          view: next === defaultView ? undefined : next,
+          page: undefined,
+        }),
       setQ: (next) => patch({ q: next || undefined, page: undefined }),
       toggleSort: (key) =>
         patch({
@@ -102,8 +108,10 @@ export function useListState(opts?: {
         }),
       setPage: (next) => patch({ page: next <= 1 ? undefined : String(next) }),
       param: (key) => str(key),
-      setParam: (key, value) => patch({ [key]: value || undefined, page: undefined }),
-      paginate: (rows) => rows.slice((page - 1) * pageSize, page * pageSize) as never,
+      setParam: (key, value) =>
+        patch({ [key]: value || undefined, page: undefined }),
+      paginate: (rows) =>
+        rows.slice((page - 1) * pageSize, page * pageSize) as never,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [view, q, sort, dir, page, pageSize, patch, defaultView, search],

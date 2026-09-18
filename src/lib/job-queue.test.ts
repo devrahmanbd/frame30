@@ -32,7 +32,9 @@ describe("job state machine", () => {
 
 describe("policies", () => {
   it("retries money far harder than bulk work", () => {
-    expect(policyFor("payments").maxAttempts).toBeGreaterThan(policyFor("exports").maxAttempts);
+    expect(policyFor("payments").maxAttempts).toBeGreaterThan(
+      policyFor("exports").maxAttempts,
+    );
   });
 
   it("ranks critical work ahead of bulk", () => {
@@ -48,16 +50,24 @@ describe("backoff", () => {
   const policy = policyFor("delivery");
 
   it("grows with attempts", () => {
-    expect(backoffSeconds(policy, 3, "job-a")).toBeGreaterThan(backoffSeconds(policy, 1, "job-a"));
+    expect(backoffSeconds(policy, 3, "job-a")).toBeGreaterThan(
+      backoffSeconds(policy, 1, "job-a"),
+    );
   });
 
   it("never exceeds the cap", () => {
-    expect(backoffSeconds(policy, 40, "job-a")).toBeLessThanOrEqual(policy.maxBackoffSeconds * 1.25);
+    expect(backoffSeconds(policy, 40, "job-a")).toBeLessThanOrEqual(
+      policy.maxBackoffSeconds * 1.25,
+    );
   });
 
   it("is deterministic per job but differs across jobs (thundering-herd spread)", () => {
-    expect(backoffSeconds(policy, 4, "job-a")).toBe(backoffSeconds(policy, 4, "job-a"));
-    expect(backoffSeconds(policy, 4, "job-a")).not.toBe(backoffSeconds(policy, 4, "job-zzzz"));
+    expect(backoffSeconds(policy, 4, "job-a")).toBe(
+      backoffSeconds(policy, 4, "job-a"),
+    );
+    expect(backoffSeconds(policy, 4, "job-a")).not.toBe(
+      backoffSeconds(policy, 4, "job-zzzz"),
+    );
   });
 });
 
@@ -71,11 +81,16 @@ describe("afterFailure", () => {
   });
 
   it("dead-letters immediately for non-retryable errors", () => {
-    expect(afterFailure(policy, 1, "j1", false)).toMatchObject({ next: "dead", dead: true });
+    expect(afterFailure(policy, 1, "j1", false)).toMatchObject({
+      next: "dead",
+      dead: true,
+    });
   });
 
   it("dead-letters once attempts are exhausted", () => {
-    expect(afterFailure(policy, policy.maxAttempts, "j1", true).dead).toBe(true);
+    expect(afterFailure(policy, policy.maxAttempts, "j1", true).dead).toBe(
+      true,
+    );
   });
 });
 
@@ -104,8 +119,12 @@ describe("isLeaseExpired", () => {
 
   it("keeps a fresh lease and releases an old one", () => {
     const now = Date.now();
-    expect(isLeaseExpired(new Date(now - 5_000).toISOString(), 60, now)).toBe(false);
-    expect(isLeaseExpired(new Date(now - 120_000).toISOString(), 60, now)).toBe(true);
+    expect(isLeaseExpired(new Date(now - 5_000).toISOString(), 60, now)).toBe(
+      false,
+    );
+    expect(isLeaseExpired(new Date(now - 120_000).toISOString(), 60, now)).toBe(
+      true,
+    );
   });
 });
 
@@ -131,7 +150,9 @@ describe("cronMatches", () => {
 
   it("rejects malformed expressions instead of firing", () => {
     expect(cronMatches("* * *", at("2026-01-01T00:00:00Z"))).toBe(false);
-    expect(cronMatches("bogus * * * *", at("2026-01-01T00:00:00Z"))).toBe(false);
+    expect(cronMatches("bogus * * * *", at("2026-01-01T00:00:00Z"))).toBe(
+      false,
+    );
   });
 });
 
@@ -147,23 +168,37 @@ describe("scheduleIsDue", () => {
   });
 
   it("fires on first run with no history", () => {
-    expect(scheduleIsDue("* * * * *", null, new Date("2026-01-01T00:00:00Z"))).toBe(true);
+    expect(
+      scheduleIsDue("* * * * *", null, new Date("2026-01-01T00:00:00Z")),
+    ).toBe(true);
   });
 });
 
 describe("judgeQueue", () => {
-  const base = { queue: "delivery", queued: 0, running: 0, dead: 0, oldestQueuedAgeSeconds: 0 };
+  const base = {
+    queue: "delivery",
+    queued: 0,
+    running: 0,
+    dead: 0,
+    oldestQueuedAgeSeconds: 0,
+  };
 
   it("calls a draining queue healthy", () => {
-    expect(judgeQueue({ ...base, queued: 40, oldestQueuedAgeSeconds: 20 }).status).toBe("healthy");
+    expect(
+      judgeQueue({ ...base, queued: 40, oldestQueuedAgeSeconds: 20 }).status,
+    ).toBe("healthy");
   });
 
   it("flags a stalled head even when shallow", () => {
-    expect(judgeQueue({ ...base, queued: 2, oldestQueuedAgeSeconds: 1200 }).status).toBe("stalled");
+    expect(
+      judgeQueue({ ...base, queued: 2, oldestQueuedAgeSeconds: 1200 }).status,
+    ).toBe("stalled");
   });
 
   it("flags a deep backlog", () => {
-    expect(judgeQueue({ ...base, queued: 5000, oldestQueuedAgeSeconds: 30 }).status).toBe("backlogged");
+    expect(
+      judgeQueue({ ...base, queued: 5000, oldestQueuedAgeSeconds: 30 }).status,
+    ).toBe("backlogged");
   });
 
   it("flags dead letters above everything else", () => {

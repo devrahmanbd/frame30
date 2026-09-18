@@ -28,7 +28,9 @@ function tree(): Section[] {
 
 describe("builder tree", () => {
   it("outlines every node with parent, index and depth", () => {
-    expect(outline(tree()).map((n) => [n.node.id, n.parentId, n.depth])).toEqual([
+    expect(
+      outline(tree()).map((n) => [n.node.id, n.parentId, n.depth]),
+    ).toEqual([
       ["a", null, 0],
       ["box", null, 0],
       ["b", "box", 1],
@@ -63,7 +65,9 @@ describe("builder tree", () => {
   });
 
   it("refuses to drop a node into its own descendant", () => {
-    const start = [{ ...container([{ ...container(), id: "inner" }]), id: "outer" }];
+    const start = [
+      { ...container([{ ...container(), id: "inner" }]), id: "outer" },
+    ];
     expect(moveRelative(start, "outer", "inner", "inside")).toEqual(start);
   });
 
@@ -77,7 +81,9 @@ describe("builder tree", () => {
     for (let i = 1; i < MAX_TREE_DEPTH; i += 1) deep = container([deep]);
     const sections = [deep];
     const deepest = outline(sections).sort((a, b) => b.depth - a.depth)[0]!;
-    expect(canDrop(sections, [newSection("heading")], deepest.node.id).ok).toBe(false);
+    expect(canDrop(sections, [newSection("heading")], deepest.node.id).ok).toBe(
+      false,
+    );
   });
 
   it("nudges only within the current parent", () => {
@@ -100,7 +106,10 @@ describe("builder tree", () => {
   });
 
   it("maps props across the whole tree", () => {
-    const next = mapTree(tree(), (s) => ({ ...s, props: { ...s.props, text: "x" } }));
+    const next = mapTree(tree(), (s) => ({
+      ...s,
+      props: { ...s.props, text: "x" },
+    }));
     expect(outline(next).every((n) => n.node.props["text"] === "x")).toBe(true);
   });
 });

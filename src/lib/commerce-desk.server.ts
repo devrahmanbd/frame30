@@ -13,7 +13,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { cached, invalidate } from "./cache.server";
 import { incr, log, withSpan } from "./observability.server";
-import { chargeKey, normaliseTags, validateBulkRows, type BulkRow } from "./commerce-desk";
+import {
+  chargeKey,
+  normaliseTags,
+  validateBulkRows,
+  type BulkRow,
+} from "./commerce-desk";
 
 type Db = SupabaseClient<Database>;
 
@@ -118,7 +123,11 @@ export async function saveDraftOrder(
     } else {
       const { data, error } = await db
         .from("draft_orders")
-        .insert({ ...patch, number: sequenceNumber("DRAFT"), share_token: shareToken() })
+        .insert({
+          ...patch,
+          number: sequenceNumber("DRAFT"),
+          share_token: shareToken(),
+        })
         .select("id")
         .single();
       if (error) throw error;
@@ -139,19 +148,26 @@ export async function saveDraftOrder(
         quantity: Math.max(1, Math.floor(i.quantity)),
         unit_price_minor_int: Math.max(0, Math.floor(i.unitPriceMinorInt)),
         line_total_minor_int:
-          Math.max(1, Math.floor(i.quantity)) * Math.max(0, Math.floor(i.unitPriceMinorInt)),
+          Math.max(1, Math.floor(i.quantity)) *
+          Math.max(0, Math.floor(i.unitPriceMinorInt)),
       }));
       const { error } = await db.from("draft_order_items").insert(rows);
       if (error) throw error;
     }
 
-    const { error: recalcError } = await db.rpc("draft_order_recalc", { _draft_id: draftId! });
+    const { error: recalcError } = await db.rpc("draft_order_recalc", {
+      _draft_id: draftId!,
+    });
     if (recalcError) throw recalcError;
     return { id: draftId! };
   });
 }
 
-export async function sendDraftOrder(db: Db, merchantId: string, draftId: string) {
+export async function sendDraftOrder(
+  db: Db,
+  merchantId: string,
+  draftId: string,
+) {
   return withSpan("commerce_desk.draft_send", async () => {
     const { data, error } = await db
       .from("draft_orders")
@@ -162,7 +178,11 @@ export async function sendDraftOrder(db: Db, merchantId: string, draftId: string
       .select("share_token, number")
       .maybeSingle();
     if (error) throw error;
-    if (!data) fail("draft_not_sendable", "That draft has already been sent or converted.");
+    if (!data)
+      fail(
+        "draft_not_sendable",
+        "That draft has already been sent or converted.",
+      );
     incr("framique_draft_orders_total", { action: "sent" });
     return data;
   });
@@ -170,20 +190,35 @@ export async function sendDraftOrder(db: Db, merchantId: string, draftId: string
 
 export async function convertDraftOrder(db: Db, draftId: string) {
   return withSpan("commerce_desk.draft_convert", async () => {
-    const { data, error } = await db.rpc("draft_order_convert", { _draft_id: draftId });
+    const { data, error } = await db.rpc("draft_order_convert", {
+      _draft_id: draftId,
+    });
     if (error) throw error;
-    const result = data as { outcome: string; order_id?: string; order_number?: string };
+    const result = data as {
+      outcome: string;
+      order_id?: string;
+      order_number?: string;
+    };
     incr("framique_draft_orders_total", { action: result.outcome });
-    if (result.outcome === "empty") fail("draft_empty", "Add at least one item before converting.");
+    if (result.outcome === "empty")
+      fail("draft_empty", "Add at least one item before converting.");
     if (result.outcome === "not_acceptable") {
-      fail("draft_not_acceptable", "Send the invoice link before converting it to an order.");
+      fail(
+        "draft_not_acceptable",
+        "Send the invoice link before converting it to an order.",
+      );
     }
-    if (result.outcome === "not_found") fail("draft_not_found", "That draft no longer exists.");
+    if (result.outcome === "not_found")
+      fail("draft_not_found", "That draft no longer exists.");
     return result;
   });
 }
 
-export async function cancelDraftOrder(db: Db, merchantId: string, draftId: string) {
+export async function cancelDraftOrder(
+  db: Db,
+  merchantId: string,
+  draftId: string,
+) {
   const { error } = await db
     .from("draft_orders")
     .update({ status: "cancelled" })
@@ -199,8 +234,16 @@ export async function cancelDraftOrder(db: Db, merchantId: string, draftId: stri
 export async function loadPricing(db: Db, merchantId: string) {
   return withSpan("commerce_desk.pricing_load", async () => {
     const [lists, items, accounts] = await Promise.all([
-      db.from("price_lists").select("*").eq("merchant_id", merchantId).order("priority", { ascending: false }),
-      db.from("price_list_items").select("*").eq("merchant_id", merchantId).limit(2000),
+      db
+        .from("price_lists")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("priority", { ascending: false }),
+      db
+        .from("price_list_items")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .limit(2000),
       db
         .from("b2b_accounts")
         .select("*, customers(name, email)")
@@ -211,7 +254,11 @@ export async function loadPricing(db: Db, merchantId: string) {
     if (lists.error) throw lists.error;
     if (items.error) throw items.error;
     if (accounts.error) throw accounts.error;
-    return { lists: lists.data ?? [], items: items.data ?? [], accounts: accounts.data ?? [] };
+    return {
+      lists: lists.data ?? [],
+      items: items.data ?? [],
+      accounts: accounts.data ?? [],
+    };
   });
 }
 
@@ -240,11 +287,18 @@ export async function savePriceList(
     priority: Math.max(0, Math.floor(input.priority)),
   };
   const query = input.id
-    ? db.from("price_lists").update(patch).eq("id", input.id).eq("merchant_id", merchantId).select("*").single()
+    ? db
+        .from("price_lists")
+        .update(patch)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
+        .select("*")
+        .single()
     : db.from("price_lists").insert(patch).select("*").single();
   const { data, error } = await query;
   if (error) {
-    if ((error as { code?: string }).code === "23505") fail("code_taken", "That price list code is already used.");
+    if ((error as { code?: string }).code === "23505")
+      fail("code_taken", "That price list code is already used.");
     throw error;
   }
   return data;
@@ -253,7 +307,12 @@ export async function savePriceList(
 export async function savePriceListItem(
   db: Db,
   merchantId: string,
-  input: { priceListId: string; variantId: string; minQuantity: number; priceMinorInt: number },
+  input: {
+    priceListId: string;
+    variantId: string;
+    minQuantity: number;
+    priceMinorInt: number;
+  },
 ) {
   const { error } = await db.from("price_list_items").upsert(
     {
@@ -269,8 +328,16 @@ export async function savePriceListItem(
   return { ok: true };
 }
 
-export async function deletePriceListItem(db: Db, merchantId: string, id: string) {
-  const { error } = await db.from("price_list_items").delete().eq("id", id).eq("merchant_id", merchantId);
+export async function deletePriceListItem(
+  db: Db,
+  merchantId: string,
+  id: string,
+) {
+  const { error } = await db
+    .from("price_list_items")
+    .delete()
+    .eq("id", id)
+    .eq("merchant_id", merchantId);
   if (error) throw error;
   return { ok: true };
 }
@@ -332,7 +399,11 @@ export async function priceForCustomer(
 export async function loadPurchasing(db: Db, merchantId: string) {
   return withSpan("commerce_desk.purchasing_load", async () => {
     const [suppliers, orders] = await Promise.all([
-      db.from("suppliers").select("*").eq("merchant_id", merchantId).order("name"),
+      db
+        .from("suppliers")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("name"),
       db
         .from("purchase_orders")
         .select("*, purchase_order_items(*), suppliers(name, code)")
@@ -342,7 +413,10 @@ export async function loadPurchasing(db: Db, merchantId: string) {
     ]);
     if (suppliers.error) throw suppliers.error;
     if (orders.error) throw orders.error;
-    return { suppliers: suppliers.data ?? [], purchaseOrders: orders.data ?? [] };
+    return {
+      suppliers: suppliers.data ?? [],
+      purchaseOrders: orders.data ?? [],
+    };
   });
 }
 
@@ -371,11 +445,18 @@ export async function saveSupplier(
     is_active: input.isActive,
   };
   const query = input.id
-    ? db.from("suppliers").update(patch).eq("id", input.id).eq("merchant_id", merchantId).select("*").single()
+    ? db
+        .from("suppliers")
+        .update(patch)
+        .eq("id", input.id)
+        .eq("merchant_id", merchantId)
+        .select("*")
+        .single()
     : db.from("suppliers").insert(patch).select("*").single();
   const { data, error } = await query;
   if (error) {
-    if ((error as { code?: string }).code === "23505") fail("code_taken", "That supplier code is already used.");
+    if ((error as { code?: string }).code === "23505")
+      fail("code_taken", "That supplier code is already used.");
     throw error;
   }
   return data;
@@ -391,7 +472,12 @@ export async function savePurchaseOrder(
     currencyCode: string;
     expectedAt: string | null;
     note: string;
-    items: { variantId: string; sku: string; quantityOrdered: number; unitCostMinorInt: number }[];
+    items: {
+      variantId: string;
+      sku: string;
+      quantityOrdered: number;
+      unitCostMinorInt: number;
+    }[];
   },
 ) {
   return withSpan("commerce_desk.po_save", async () => {
@@ -403,7 +489,10 @@ export async function savePurchaseOrder(
       expected_at: input.expectedAt,
       note: input.note.slice(0, 2000),
       total_minor_int: input.items.reduce(
-        (s, i) => s + Math.max(1, Math.floor(i.quantityOrdered)) * Math.max(0, Math.floor(i.unitCostMinorInt)),
+        (s, i) =>
+          s +
+          Math.max(1, Math.floor(i.quantityOrdered)) *
+            Math.max(0, Math.floor(i.unitCostMinorInt)),
         0,
       ),
     };
@@ -419,7 +508,11 @@ export async function savePurchaseOrder(
         .select("id")
         .maybeSingle();
       if (error) throw error;
-      if (!data) fail("po_locked", "A submitted purchase order can no longer be edited.");
+      if (!data)
+        fail(
+          "po_locked",
+          "A submitted purchase order can no longer be edited.",
+        );
     } else {
       const { data, error } = await db
         .from("purchase_orders")
@@ -430,7 +523,10 @@ export async function savePurchaseOrder(
       poId = data.id;
     }
 
-    await db.from("purchase_order_items").delete().eq("purchase_order_id", poId);
+    await db
+      .from("purchase_order_items")
+      .delete()
+      .eq("purchase_order_id", poId);
     if (input.items.length) {
       const { error } = await db.from("purchase_order_items").insert(
         input.items.slice(0, 300).map((i) => ({
@@ -448,7 +544,11 @@ export async function savePurchaseOrder(
   });
 }
 
-export async function submitPurchaseOrder(db: Db, merchantId: string, poId: string) {
+export async function submitPurchaseOrder(
+  db: Db,
+  merchantId: string,
+  poId: string,
+) {
   const { data, error } = await db
     .from("purchase_orders")
     .update({ status: "submitted", submitted_at: new Date().toISOString() })
@@ -458,7 +558,8 @@ export async function submitPurchaseOrder(db: Db, merchantId: string, poId: stri
     .select("id")
     .maybeSingle();
   if (error) throw error;
-  if (!data) fail("po_not_draft", "That purchase order has already been submitted.");
+  if (!data)
+    fail("po_not_draft", "That purchase order has already been submitted.");
   incr("framique_purchase_orders_total", { action: "submitted" });
   return { ok: true };
 }
@@ -471,20 +572,35 @@ export async function receivePurchaseOrder(
   return withSpan("commerce_desk.po_receive", async () => {
     const { data, error } = await db.rpc("purchase_order_receive", {
       _po_id: poId,
-      _lines: lines.map((l) => ({ item_id: l.itemId, quantity: Math.max(0, Math.floor(l.quantity)) })),
+      _lines: lines.map((l) => ({
+        item_id: l.itemId,
+        quantity: Math.max(0, Math.floor(l.quantity)),
+      })),
     });
     if (error) throw error;
-    const result = data as { outcome: string; units?: number; outstanding?: number };
+    const result = data as {
+      outcome: string;
+      units?: number;
+      outstanding?: number;
+    };
     if (result.outcome === "not_receivable") {
-      fail("po_not_receivable", "Submit the purchase order before receiving stock.");
+      fail(
+        "po_not_receivable",
+        "Submit the purchase order before receiving stock.",
+      );
     }
-    if (result.outcome === "not_found") fail("po_not_found", "That purchase order no longer exists.");
+    if (result.outcome === "not_found")
+      fail("po_not_found", "That purchase order no longer exists.");
     incr("framique_purchase_orders_total", { action: "received" });
     return result;
   });
 }
 
-export async function cancelPurchaseOrder(db: Db, merchantId: string, poId: string) {
+export async function cancelPurchaseOrder(
+  db: Db,
+  merchantId: string,
+  poId: string,
+) {
   const { error } = await db
     .from("purchase_orders")
     .update({ status: "cancelled" })
@@ -497,19 +613,28 @@ export async function cancelPurchaseOrder(db: Db, merchantId: string, poId: stri
 
 /* ============================== bulk editor =============================== */
 
-export async function loadVariantGrid(db: Db, merchantId: string, search: string) {
+export async function loadVariantGrid(
+  db: Db,
+  merchantId: string,
+  search: string,
+) {
   const key = `variant-grid:${merchantId}:${search.trim().toLowerCase()}`;
   return cached(key, 20, async () =>
     withSpan("commerce_desk.variant_grid", async () => {
       let query = db
         .from("product_variants")
-        .select("id, name, sku, barcode, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity, backorder_policy, backorder_limit, preorder_release_at, currency_code, products(title, slug)")
+        .select(
+          "id, name, sku, barcode, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity, backorder_policy, backorder_limit, preorder_release_at, currency_code, products(title, slug)",
+        )
         .eq("merchant_id", merchantId)
         .is("deleted_at", null)
         .order("updated_at", { ascending: false })
         .limit(300);
       const term = search.trim();
-      if (term) query = query.or(`sku.ilike.%${term}%,name.ilike.%${term}%,barcode.ilike.%${term}%`);
+      if (term)
+        query = query.or(
+          `sku.ilike.%${term}%,name.ilike.%${term}%,barcode.ilike.%${term}%`,
+        );
       const { data, error } = await query;
       if (error) throw error;
       return data ?? [];
@@ -521,11 +646,22 @@ export function purgeVariantGrid(merchantId: string) {
   invalidate(`variant-grid:${merchantId}`);
 }
 
-export async function bulkUpdateVariants(db: Db, merchantId: string, rows: BulkRow[]) {
+export async function bulkUpdateVariants(
+  db: Db,
+  merchantId: string,
+  rows: BulkRow[],
+) {
   return withSpan("commerce_desk.bulk_update", async () => {
     const { valid, invalid, overflow } = validateBulkRows(rows);
     if (!valid.length) {
-      return { requested: rows.length, applied: 0, rejected: rows.length, invalid, overflow, detail: [] };
+      return {
+        requested: rows.length,
+        applied: 0,
+        rejected: rows.length,
+        invalid,
+        overflow,
+        detail: [],
+      };
     }
     const { data, error } = await db.rpc("bulk_update_variants", {
       _merchant_id: merchantId,
@@ -539,8 +675,16 @@ export async function bulkUpdateVariants(db: Db, merchantId: string, rows: BulkR
       rejected: number;
       detail: { variant_id?: string; error?: string }[];
     };
-    incr("framique_bulk_edit_rows_total", { result: "applied" }, result.applied);
-    log("info", "commerce_desk.bulk_update", { merchantId, ...result, locallyRejected: invalid.length });
+    incr(
+      "framique_bulk_edit_rows_total",
+      { result: "applied" },
+      result.applied,
+    );
+    log("info", "commerce_desk.bulk_update", {
+      merchantId,
+      ...result,
+      locallyRejected: invalid.length,
+    });
     return { ...result, invalid, overflow };
   });
 }
@@ -572,14 +716,22 @@ export async function setVariantPreorder(
 }
 
 export async function nextSku(db: Db, merchantId: string, prefix: string) {
-  const { data, error } = await db.rpc("sku_next", { _merchant_id: merchantId, _prefix: prefix });
+  const { data, error } = await db.rpc("sku_next", {
+    _merchant_id: merchantId,
+    _prefix: prefix,
+  });
   if (error) throw error;
   return data as string;
 }
 
 /* ========================= order tags + saved views ======================= */
 
-export async function setOrderTags(db: Db, merchantId: string, orderId: string, tags: string[]) {
+export async function setOrderTags(
+  db: Db,
+  merchantId: string,
+  orderId: string,
+  tags: string[],
+) {
   const clean = normaliseTags(tags);
   const { error } = await db
     .from("orders")
@@ -590,7 +742,11 @@ export async function setOrderTags(db: Db, merchantId: string, orderId: string, 
   return { tags: clean };
 }
 
-export async function listSavedViews(db: Db, merchantId: string, userId: string) {
+export async function listSavedViews(
+  db: Db,
+  merchantId: string,
+  userId: string,
+) {
   const { data, error } = await db
     .from("order_saved_views")
     .select("*")
@@ -606,7 +762,13 @@ export async function saveSavedView(
   db: Db,
   merchantId: string,
   userId: string,
-  input: { id?: string; name: string; filters: Record<string, unknown>; isShared: boolean; position: number },
+  input: {
+    id?: string;
+    name: string;
+    filters: Record<string, unknown>;
+    isShared: boolean;
+    position: number;
+  },
 ) {
   const patch = {
     merchant_id: merchantId,
@@ -631,7 +793,12 @@ export async function saveSavedView(
   return data;
 }
 
-export async function deleteSavedView(db: Db, merchantId: string, userId: string, id: string) {
+export async function deleteSavedView(
+  db: Db,
+  merchantId: string,
+  userId: string,
+  id: string,
+) {
   const { error } = await db
     .from("order_saved_views")
     .delete()
@@ -679,7 +846,11 @@ export async function setSubscriptionState(
       : action === "resume"
         ? { status: "active" as const, paused_at: null, next_charge_at: now }
         : action === "cancel"
-          ? { status: "cancelled" as const, cancelled_at: now, next_charge_at: null }
+          ? {
+              status: "cancelled" as const,
+              cancelled_at: now,
+              next_charge_at: null,
+            }
           : { cancel_at_period_end: true };
   const { error } = await db
     .from("customer_subscriptions")
@@ -727,21 +898,29 @@ export async function runSubscriptionBilling(
     for (const claim of claims) {
       // Defensive: the key must match what the pure helper would produce, so a
       // future gateway integration can dedupe on it too.
-      if (claim.idempotency_key !== chargeKey(claim.subscription_id, claim.cycle)) {
+      if (
+        claim.idempotency_key !== chargeKey(claim.subscription_id, claim.cycle)
+      ) {
         log("warn", "subscription.key_mismatch", { chargeId: claim.charge_id });
       }
       let outcome: { paid: boolean; orderId?: string; reason?: string };
       try {
         outcome = await charge(claim);
       } catch (err) {
-        outcome = { paid: false, reason: err instanceof Error ? err.message : "charge_failed" };
+        outcome = {
+          paid: false,
+          reason: err instanceof Error ? err.message : "charge_failed",
+        };
       }
-      const { error: settleError } = await db.rpc("subscription_settle_charge", {
-        _charge_id: claim.charge_id,
-        _outcome: outcome.paid ? "paid" : "failed",
-        _order_id: outcome.orderId ?? undefined,
-        _reason: outcome.reason ?? undefined,
-      });
+      const { error: settleError } = await db.rpc(
+        "subscription_settle_charge",
+        {
+          _charge_id: claim.charge_id,
+          _outcome: outcome.paid ? "paid" : "failed",
+          _order_id: outcome.orderId ?? undefined,
+          _reason: outcome.reason ?? undefined,
+        },
+      );
       if (settleError) throw settleError;
       if (outcome.paid) paid += 1;
       else failed += 1;
@@ -749,7 +928,12 @@ export async function runSubscriptionBilling(
 
     incr("framique_subscription_charges_total", { result: "paid" }, paid);
     incr("framique_subscription_charges_total", { result: "failed" }, failed);
-    log("info", "commerce_desk.subscription_billing", { merchantId, claimed: claims.length, paid, failed });
+    log("info", "commerce_desk.subscription_billing", {
+      merchantId,
+      claimed: claims.length,
+      paid,
+      failed,
+    });
     return { claimed: claims.length, paid, failed };
   });
 }

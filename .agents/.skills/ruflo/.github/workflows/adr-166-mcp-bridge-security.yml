@@ -8,20 +8,20 @@ on:
   push:
     branches: [main]
     paths:
-      - 'ruflo/src/mcp-bridge/**'
-      - 'ruflo/src/ruvocal/mcp-bridge/**'
-      - 'ruflo/docker-compose.yml'
-      - 'ruflo/docker-compose.public.yml'
-      - 'v3/@claude-flow/plugin-agent-federation/src/bin.ts'
-      - '.github/workflows/adr-166-mcp-bridge-security.yml'
+      - "ruflo/src/mcp-bridge/**"
+      - "ruflo/src/ruvocal/mcp-bridge/**"
+      - "ruflo/docker-compose.yml"
+      - "ruflo/docker-compose.public.yml"
+      - "v3/@claude-flow/plugin-agent-federation/src/bin.ts"
+      - ".github/workflows/adr-166-mcp-bridge-security.yml"
   pull_request:
     paths:
-      - 'ruflo/src/mcp-bridge/**'
-      - 'ruflo/src/ruvocal/mcp-bridge/**'
-      - 'ruflo/docker-compose.yml'
-      - 'ruflo/docker-compose.public.yml'
-      - 'v3/@claude-flow/plugin-agent-federation/src/bin.ts'
-      - '.github/workflows/adr-166-mcp-bridge-security.yml'
+      - "ruflo/src/mcp-bridge/**"
+      - "ruflo/src/ruvocal/mcp-bridge/**"
+      - "ruflo/docker-compose.yml"
+      - "ruflo/docker-compose.public.yml"
+      - "v3/@claude-flow/plugin-agent-federation/src/bin.ts"
+      - ".github/workflows/adr-166-mcp-bridge-security.yml"
   workflow_dispatch:
 
 jobs:

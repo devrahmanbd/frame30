@@ -2,7 +2,7 @@
 
 > **Target Query:** `bento grid ecommerce layout`, `modern product page bento layout`, `responsive bento grid ecommerce`  
 > **Reading Time:** 8 minutes  
-> **Published:** November 2026  
+> **Published:** November 2026
 
 ---
 
@@ -32,15 +32,19 @@ The solution adopted by leading global brands (Apple, Linear, Teenage Engineerin
 ## 2. Why Bento Grids Out-Convert Traditional Layouts
 
 ### 1. Natural Visual Hierarchy (F-Pattern Scanning)
+
 Bento grids use variable card dimensions (1x1, 2x1, 2x2 spans) to guide the shopper’s eye directly toward high-margin hero products and key conversion proofs without overwhelming the cognitive load.
 
 ### 2. Micro-Information Density
+
 Instead of burying variant selectors and shipping guarantees inside small text below an image, Bento cards modularize product benefits into clear visual compartments:
+
 - Live stock counters.
 - Customer photo review snippets.
 - Interactive color swatch pickers.
 
 ### 3. Responsive Container-Free Fluidity
+
 On desktop, Bento cards arrange into modular mosaic layouts. On mobile viewports (375px–430px), Bento containers collapse naturally into a vertical stack with zero horizontal scrolling.
 
 ---
@@ -48,6 +52,7 @@ On desktop, Bento cards arrange into modular mosaic layouts. On mobile viewports
 ## 3. How to Build Bento Grids on FRAMIQUE
 
 In **FRAMIQUE**, Bento grids are first-class visual building primitives:
+
 1. Select the **Bento Grid** component in the visual canvas.
 2. Define column spans (`col-span-1`, `col-span-2`, `row-span-2`) with responsive breakpoint overrides.
 3. Bind card contents directly to live product catalog props (e.g. `product.featured_image`, `product.price`, `product.stock_status`).

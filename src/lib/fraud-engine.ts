@@ -141,7 +141,6 @@ export const RULE_CATALOG: RuleDef[] = [
 /** Score at or above which a case is treated as high risk in the desk UI. */
 export const HIGH_RISK_THRESHOLD = 70;
 
-
 export type RuleState = { code: string; enabled: boolean; params: unknown };
 
 export type HistoryOrder = {
@@ -192,7 +191,9 @@ export function ruleDef(code: RuleCode) {
 }
 
 export function defaultParams(): Record<string, Record<string, number>> {
-  return Object.fromEntries(RULE_CATALOG.map((r) => [r.code, { ...r.defaults }]));
+  return Object.fromEntries(
+    RULE_CATALOG.map((r) => [r.code, { ...r.defaults }]),
+  );
 }
 
 function param(rules: RuleState[], def: RuleDef): number | null {
@@ -210,20 +211,33 @@ function normalisePhone(value: string) {
 }
 
 function normaliseAddress(value: string | null | undefined) {
-  return (value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return (value ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
-type Evaluator = (ctx: FraudContext, threshold: number) => { observed: number; detail: string } | null;
+type Evaluator = (
+  ctx: FraudContext,
+  threshold: number,
+) => { observed: number; detail: string } | null;
 
 const EVALUATORS: Record<RuleCode, Evaluator> = {
   BLACKLIST_MATCH: (ctx) =>
-    ctx.blacklisted ? { observed: 1, detail: "Shopper matches an active blacklist entry" } : null,
+    ctx.blacklisted
+      ? { observed: 1, detail: "Shopper matches an active blacklist entry" }
+      : null,
   HONEYPOT_TRIP: (ctx) =>
-    ctx.honeypotTripped ? { observed: 1, detail: "Hidden honeypot field was filled" } : null,
+    ctx.honeypotTripped
+      ? { observed: 1, detail: "Hidden honeypot field was filled" }
+      : null,
   BOT_BEACON: (ctx, threshold) => {
     const score = ctx.botScore ?? 0;
     return score > threshold
-      ? { observed: score, detail: `Bot score ${score} above tolerance ${threshold}` }
+      ? {
+          observed: score,
+          detail: `Bot score ${score} above tolerance ${threshold}`,
+        }
       : null;
   },
   CARDTESTING: (ctx, threshold) => {
@@ -232,7 +246,10 @@ const EVALUATORS: Record<RuleCode, Evaluator> = {
       (o) => normalisePhone(o.phone) === phone && FAILED_STATUSES.has(o.status),
     ).length;
     return failed >= threshold
-      ? { observed: failed, detail: `${failed} failed or abandoned payments on this phone` }
+      ? {
+          observed: failed,
+          detail: `${failed} failed or abandoned payments on this phone`,
+        }
       : null;
   },
   VELOCITY_LIMIT: (ctx, threshold) => {
@@ -244,7 +261,10 @@ const EVALUATORS: Record<RuleCode, Evaluator> = {
         Math.abs(Date.parse(o.createdAt) - ts) <= 3_600_000,
     ).length;
     return recent > threshold
-      ? { observed: recent, detail: `${recent} orders from this phone within an hour` }
+      ? {
+          observed: recent,
+          detail: `${recent} orders from this phone within an hour`,
+        }
       : null;
   },
   COD_REFUSAL_HISTORY: (ctx, threshold) => {
@@ -256,7 +276,10 @@ const EVALUATORS: Record<RuleCode, Evaluator> = {
         REFUSAL_STATUSES.has(o.status),
     ).length;
     return refusals >= threshold
-      ? { observed: refusals, detail: `${refusals} refused or returned COD parcels` }
+      ? {
+          observed: refusals,
+          detail: `${refusals} refused or returned COD parcels`,
+        }
       : null;
   },
   ADDRESS_CLUSTER: (ctx, threshold) => {
@@ -269,7 +292,10 @@ const EVALUATORS: Record<RuleCode, Evaluator> = {
     );
     phones.add(normalisePhone(ctx.phone));
     return phones.size >= threshold
-      ? { observed: phones.size, detail: `${phones.size} distinct phones on this address` }
+      ? {
+          observed: phones.size,
+          detail: `${phones.size} distinct phones on this address`,
+        }
       : null;
   },
   NEW_DEVICE_HIGH_VALUE: (ctx, threshold) => {
@@ -279,17 +305,26 @@ const EVALUATORS: Record<RuleCode, Evaluator> = {
       (o) => normalisePhone(o.phone) === phone && Date.parse(o.createdAt) < ts,
     ).length;
     return prior === 0 && ctx.amountMinorInt >= threshold
-      ? { observed: ctx.amountMinorInt, detail: "First order from this shopper is high value" }
+      ? {
+          observed: ctx.amountMinorInt,
+          detail: "First order from this shopper is high value",
+        }
       : null;
   },
   COD_MAX_AMOUNT: (ctx, threshold) =>
     ctx.paymentMethod === "cod" && ctx.amountMinorInt > threshold
-      ? { observed: ctx.amountMinorInt, detail: "COD amount above merchant ceiling" }
+      ? {
+          observed: ctx.amountMinorInt,
+          detail: "COD amount above merchant ceiling",
+        }
       : null,
 };
 
 /** Evaluate every enabled rule in precedence order and return an explainable verdict. */
-export function assess(ctx: FraudContext, rules: RuleState[] = []): FraudAssessment {
+export function assess(
+  ctx: FraudContext,
+  rules: RuleState[] = [],
+): FraudAssessment {
   const signals: FraudSignal[] = [];
   let decisive: RuleCode | null = null;
   const ordered = [...RULE_CATALOG].sort((a, b) => a.precedence - b.precedence);
@@ -323,8 +358,13 @@ export function assess(ctx: FraudContext, rules: RuleState[] = []): FraudAssessm
       ? "review"
       : "allow";
 
-
-  return { version: FRAUD_ENGINE_VERSION, score, action, decisiveCode: decisive, signals };
+  return {
+    version: FRAUD_ENGINE_VERSION,
+    score,
+    action,
+    decisiveCode: decisive,
+    signals,
+  };
 }
 
 /**
@@ -340,7 +380,8 @@ export type BeaconInput = {
   webdriver?: boolean;
 };
 
-const BOT_AGENTS = /(bot|crawler|spider|headless|phantom|puppeteer|playwright|curl|wget|python-requests)/i;
+const BOT_AGENTS =
+  /(bot|crawler|spider|headless|phantom|puppeteer|playwright|curl|wget|python-requests)/i;
 
 export function botScore(input: BeaconInput): number {
   let score = 0;

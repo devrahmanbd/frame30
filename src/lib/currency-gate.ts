@@ -7,7 +7,11 @@
  * pilot instead of showing a dead toggle.
  */
 
-export const CURRENCY_MODES = ["bdt_locked", "pilot_assessing", "usd_enabled"] as const;
+export const CURRENCY_MODES = [
+  "bdt_locked",
+  "pilot_assessing",
+  "usd_enabled",
+] as const;
 export type CurrencyMode = (typeof CURRENCY_MODES)[number];
 
 const MODE_TRANSITIONS: Record<CurrencyMode, CurrencyMode[]> = {
@@ -17,7 +21,10 @@ const MODE_TRANSITIONS: Record<CurrencyMode, CurrencyMode[]> = {
 };
 
 /** Rollback to BDT is always allowed; entering the pilot never is, without the gate. */
-export function currencyModeCanTransition(from: CurrencyMode, to: CurrencyMode) {
+export function currencyModeCanTransition(
+  from: CurrencyMode,
+  to: CurrencyMode,
+) {
   if (to === "bdt_locked") return from !== "bdt_locked";
   return (MODE_TRANSITIONS[from] ?? []).includes(to);
 }
@@ -43,7 +50,11 @@ export type GateInput = {
 };
 
 export type CheckResult = { key: GateCheck; ok: boolean; detail: string };
-export type GateVerdict = { allowed: boolean; checks: CheckResult[]; deniedFor: GateCheck[] };
+export type GateVerdict = {
+  allowed: boolean;
+  checks: CheckResult[];
+  deniedFor: GateCheck[];
+};
 
 /** A snapshot older than this cannot back a conversion — fail closed. */
 export const FX_MAX_AGE_SECONDS = 24 * 60 * 60;
@@ -58,7 +69,8 @@ export function fxAgeSeconds(snapshotAt: string | null, now: Date) {
 export function evaluateCurrencyGate(input: GateInput): GateVerdict {
   const tierOk =
     (input.planTier === "business" || input.planTier === "enterprise") &&
-    (input.subscriptionStatus === "active" || input.subscriptionStatus === "trialing");
+    (input.subscriptionStatus === "active" ||
+      input.subscriptionStatus === "trialing");
   const age = fxAgeSeconds(input.fxSnapshotAt, input.now);
   const checks: CheckResult[] = [
     {
@@ -71,12 +83,16 @@ export function evaluateCurrencyGate(input: GateInput): GateVerdict {
     {
       key: "entitlement",
       ok: input.entitled,
-      detail: input.entitled ? "currency_pilot entitlement resolved" : "currency_pilot entitlement not granted",
+      detail: input.entitled
+        ? "currency_pilot entitlement resolved"
+        : "currency_pilot entitlement not granted",
     },
     {
       key: "owner_consent",
       ok: Boolean(input.consentAt),
-      detail: input.consentAt ? `recorded ${input.consentAt}` : "owner has not accepted the USD pilot terms",
+      detail: input.consentAt
+        ? `recorded ${input.consentAt}`
+        : "owner has not accepted the USD pilot terms",
     },
     {
       key: "fx_feed",
@@ -91,7 +107,10 @@ export function evaluateCurrencyGate(input: GateInput): GateVerdict {
     {
       key: "kyc_standing",
       ok: input.kycState === "approved",
-      detail: input.kycState === "approved" ? "KYC approved" : `KYC state is ${input.kycState ?? "missing"}`,
+      detail:
+        input.kycState === "approved"
+          ? "KYC approved"
+          : `KYC state is ${input.kycState ?? "missing"}`,
     },
   ];
   const deniedFor = checks.filter((c) => !c.ok).map((c) => c.key);
@@ -119,10 +138,16 @@ export function driftBps(previousPpm: number, currentPpm: number) {
 export const DRIFT_ALERT_BPS = 500;
 
 export function auditSnapshots(rows: FxAuditRow[]) {
-  const sorted = [...rows].sort((a, b) => Date.parse(a.effectiveAt) - Date.parse(b.effectiveAt));
+  const sorted = [...rows].sort(
+    (a, b) => Date.parse(a.effectiveAt) - Date.parse(b.effectiveAt),
+  );
   return sorted.map((row, i) => {
     const prev = i > 0 ? sorted[i - 1] : undefined;
     const drift = prev ? driftBps(prev.ratePpm, row.ratePpm) : 0;
-    return { ...row, driftBps: drift, suspicious: Math.abs(drift) >= DRIFT_ALERT_BPS };
+    return {
+      ...row,
+      driftBps: drift,
+      suspicious: Math.abs(drift) >= DRIFT_ALERT_BPS,
+    };
   });
 }

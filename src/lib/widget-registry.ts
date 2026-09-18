@@ -46,7 +46,14 @@ export type WidgetData = {
 /** What the widget contributes to structured data / head metadata. */
 export type WidgetSeo = {
   /** JSON-LD type emitted for this node, if any. */
-  jsonLd?: "FAQPage" | "ItemList" | "Product" | "BreadcrumbList" | "VideoObject" | "HowTo" | "Article";
+  jsonLd?:
+    | "FAQPage"
+    | "ItemList"
+    | "Product"
+    | "BreadcrumbList"
+    | "VideoObject"
+    | "HowTo"
+    | "Article";
   /** True when the widget may claim the page's single primary heading. */
   heading: boolean;
   /** Renders above the fold often enough that its media should not lazy-load. */
@@ -79,8 +86,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
         {
           key: "sort",
           label: "Sort",
@@ -101,7 +118,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   collection_grid: {
     data: {
       source: "taxonomy",
-      params: [{ key: "limit", label: "Max collections", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Max collections",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "ItemList", heading: false },
@@ -112,7 +136,9 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   recently_viewed: {
     data: {
       source: "collection",
-      params: [{ key: "limit", label: "Max items", kind: "number", panel: "content" }],
+      params: [
+        { key: "limit", label: "Max items", kind: "number", panel: "content" },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "ItemList", heading: false },
@@ -120,19 +146,31 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   quick_view: {
     data: {
       source: "collection",
-      params: [{ key: "limit", label: "Max products", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "ItemList", heading: false },
   },
 
-
-
   // Phase 2.1: navigation reads the taxonomy source through the same batch.
   mega_menu: {
     data: {
       source: "taxonomy",
-      params: [{ key: "limit", label: "Max entries", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Max entries",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -140,7 +178,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   department_strip: {
     data: {
       source: "taxonomy",
-      params: [{ key: "limit", label: "Max departments", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Max departments",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -155,8 +200,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
         { key: "source", label: "Source", kind: "text", panel: "content" },
       ],
     },
@@ -168,7 +223,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Max deals", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -177,7 +237,9 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   sponsored_slot: {
     data: {
       source: "recommendation",
-      params: [{ key: "limit", label: "Max items", kind: "number", panel: "content" }],
+      params: [
+        { key: "limit", label: "Max items", kind: "number", panel: "content" },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -208,8 +270,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -219,8 +291,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -233,7 +315,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   buy_box: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "Product", heading: false },
@@ -241,7 +330,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   variant_picker: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -249,7 +345,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   stock_delivery: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -257,7 +360,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   sticky_buy_bar: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -265,7 +375,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   rating_summary: {
     data: {
       source: "reviews",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "Product", heading: false },
@@ -274,8 +391,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "reviews",
       params: [
-        { key: "handle", label: "Product handle", kind: "text", panel: "content" },
-        { key: "limit", label: "Reviews per page", kind: "number", panel: "content" },
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+        {
+          key: "limit",
+          label: "Reviews per page",
+          kind: "number",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -284,7 +411,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   product_qna: {
     data: {
       source: "qna",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { jsonLd: "FAQPage", heading: false },
@@ -297,8 +431,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "facets",
       params: [
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
-        { key: "limit", label: "Max options per group", kind: "number", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
+        {
+          key: "limit",
+          label: "Max options per group",
+          kind: "number",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -308,17 +452,33 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   result_toolbar: {
     data: {
       source: "facets",
-      params: [{ key: "collection", label: "Collection handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
   },
   pagination: { seo: { heading: false } },
-  category_header: { seo: { jsonLd: "BreadcrumbList", heading: true, eager: true } },
+  category_header: {
+    seo: { jsonLd: "BreadcrumbList", heading: true, eager: true },
+  },
   empty_state: {
     data: {
       source: "collection",
-      params: [{ key: "limit", label: "Max suggestions", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Max suggestions",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -342,7 +502,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   order_tracker: {
     data: {
       source: "order",
-      params: [{ key: "orderNumber", label: "Order number", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "orderNumber",
+          label: "Order number",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: true },
@@ -356,7 +523,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Max pins", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -367,7 +539,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Max tiles", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -378,7 +555,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Max items", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -387,7 +569,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   size_selector: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -395,7 +584,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   back_in_stock: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -408,7 +604,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   spec_table: {
     data: {
       source: "specs",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -417,7 +620,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   compare_tray: {
     data: {
       source: "collection",
-      params: [{ key: "limit", label: "Rows to resolve", kind: "number", panel: "content" }],
+      params: [
+        {
+          key: "limit",
+          label: "Rows to resolve",
+          kind: "number",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -427,7 +637,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   emi_calculator: {
     data: {
       source: "finance",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -436,8 +653,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "finance",
       params: [
-        { key: "handle", label: "Product handle", kind: "text", panel: "content" },
-        { key: "days", label: "Window in days", kind: "number", panel: "content" },
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+        {
+          key: "days",
+          label: "Window in days",
+          kind: "number",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -447,8 +674,18 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max add-ons", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "limit",
+          label: "Max add-ons",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -463,7 +700,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   shade_finder: {
     data: {
       source: "variants",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -474,7 +718,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Steps", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -483,7 +732,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   ingredient_list: {
     data: {
       source: "specs",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -498,7 +754,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   refill_widget: {
     data: {
       source: "product",
-      params: [{ key: "handle", label: "Refill handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Refill handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -508,7 +771,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Choices", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -519,7 +787,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
       source: "collection",
       params: [
         { key: "limit", label: "Samples", kind: "number", panel: "content" },
-        { key: "collection", label: "Collection handle", kind: "text", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
       ],
     },
     skeleton: true,
@@ -529,7 +802,14 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
   loyalty_strip: {
     data: {
       source: "product",
-      params: [{ key: "handle", label: "Product handle", kind: "text", panel: "content" }],
+      params: [
+        {
+          key: "handle",
+          label: "Product handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
     },
     skeleton: true,
     seo: { heading: false },
@@ -562,9 +842,10 @@ function metaFor(entry: CatalogEntry): WidgetMeta {
  * Closed registry. The `Record<SectionType, …>` annotation is the enforcement:
  * a new `SectionType` without an entry is a compile error.
  */
-export const WIDGET_REGISTRY: Record<SectionType, WidgetMeta> = Object.fromEntries(
-  SECTION_CATALOG.map((entry) => [entry.type, metaFor(entry)]),
-) as Record<SectionType, WidgetMeta>;
+export const WIDGET_REGISTRY: Record<SectionType, WidgetMeta> =
+  Object.fromEntries(
+    SECTION_CATALOG.map((entry) => [entry.type, metaFor(entry)]),
+  ) as Record<SectionType, WidgetMeta>;
 
 export const WIDGET_TYPES = Object.keys(WIDGET_REGISTRY) as SectionType[];
 
@@ -574,5 +855,8 @@ export function widgetMeta(type: SectionType): WidgetMeta | undefined {
 
 /** True when the widget needs the Phase 0.3 batched data resolver. */
 export function isDataWidget(type: SectionType): boolean {
-  return WIDGET_REGISTRY[type]?.data !== undefined || catalogEntry(type)?.templates !== undefined;
+  return (
+    WIDGET_REGISTRY[type]?.data !== undefined ||
+    catalogEntry(type)?.templates !== undefined
+  );
 }

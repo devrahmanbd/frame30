@@ -9,9 +9,11 @@ description: >
 # Workflow Automation Skill
 
 ## Purpose
+
 Create and execute automated workflows for complex multi-step processes.
 
 ## When to Trigger
+
 - Multi-step automated processes
 - Reusable workflow creation
 - Complex task orchestration
@@ -20,41 +22,47 @@ Create and execute automated workflows for complex multi-step processes.
 ## Commands
 
 ### Create Workflow
+
 ```bash
 npx claude-flow workflow create --name "deploy-flow" --template ci
 ```
 
 ### Execute Workflow
+
 ```bash
 npx claude-flow workflow execute --name "deploy-flow" --env production
 ```
 
 ### List Workflows
+
 ```bash
 npx claude-flow workflow list
 ```
 
 ### Export Template
+
 ```bash
 npx claude-flow workflow export --name "deploy-flow" --format yaml
 ```
 
 ### View Status
+
 ```bash
 npx claude-flow workflow status --name "deploy-flow"
 ```
 
 ## Built-in Templates
 
-| Template | Description |
-|----------|-------------|
-| `ci` | Continuous integration pipeline |
-| `deploy` | Deployment workflow |
-| `test` | Testing workflow |
-| `release` | Release automation |
-| `review` | Code review workflow |
+| Template  | Description                     |
+| --------- | ------------------------------- |
+| `ci`      | Continuous integration pipeline |
+| `deploy`  | Deployment workflow             |
+| `test`    | Testing workflow                |
+| `release` | Release automation              |
+| `review`  | Code review workflow            |
 
 ## Workflow Structure
+
 ```yaml
 name: example-workflow
 steps:
@@ -72,6 +80,7 @@ steps:
 ```
 
 ## Best Practices
+
 1. Define clear step dependencies
 2. Use appropriate agent types per step
 3. Include validation gates

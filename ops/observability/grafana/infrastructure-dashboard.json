@@ -76,14 +76,23 @@
           }
         }
       },
-      "targets": [{ "expr": "sum(framique_queue_depth{state=\"dead\",queue=~\"$queue\"})", "legendFormat": "dead" }]
+      "targets": [
+        {
+          "expr": "sum(framique_queue_depth{state=\"dead\",queue=~\"$queue\"})",
+          "legendFormat": "dead"
+        }
+      ]
     },
     {
       "type": "timeseries",
       "title": "Queue depth by state",
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 1 },
-      "fieldConfig": { "defaults": { "custom": { "fillOpacity": 15, "stacking": { "mode": "normal" } } } },
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "fillOpacity": 15, "stacking": { "mode": "normal" } }
+        }
+      },
       "targets": [
         {
           "expr": "sum by (state) (framique_queue_depth{queue=~\"$queue\"})",
@@ -161,7 +170,9 @@
           }
         }
       },
-      "targets": [{ "expr": "sum(framique_search_breaker_open)", "legendFormat": "open" }]
+      "targets": [
+        { "expr": "sum(framique_search_breaker_open)", "legendFormat": "open" }
+      ]
     },
     {
       "type": "timeseries",
@@ -232,7 +243,10 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "gridPos": { "h": 7, "w": 12, "x": 0, "y": 37 },
       "targets": [
-        { "expr": "sum by (outcome) (rate(framique_image_transform_total[5m]))", "legendFormat": "{{outcome}}" }
+        {
+          "expr": "sum by (outcome) (rate(framique_image_transform_total[5m]))",
+          "legendFormat": "{{outcome}}"
+        }
       ]
     },
     {

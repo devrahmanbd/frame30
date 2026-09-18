@@ -15,7 +15,11 @@ const base = {
 
 describe("seo analysis", () => {
   it("is deterministic for the same draft", () => {
-    const draft = { ...base, metaTitle: "Dhaka handmade jute bags for daily use", focusKeyword: "jute bags" };
+    const draft = {
+      ...base,
+      metaTitle: "Dhaka handmade jute bags for daily use",
+      focusKeyword: "jute bags",
+    };
     expect(analyseSeo(draft)).toEqual(analyseSeo(draft));
   });
 
@@ -29,10 +33,17 @@ describe("seo analysis", () => {
       canonical: "https://shop.example.com/store/demo",
       ogImageUrl: "https://cdn.example.com/og.jpg",
       focusKeyword: "jute bags",
-      content: "Our jute bags are woven by hand. Every jute bag ships from Dhaka within two days.",
+      content:
+        "Our jute bags are woven by hand. Every jute bag ships from Dhaka within two days.",
       faq: [
-        { q: "Do you deliver outside Dhaka?", a: "Yes, we deliver nationwide within three working days." },
-        { q: "Can I pay cash on delivery?", a: "Yes, cash on delivery is available for every district." },
+        {
+          q: "Do you deliver outside Dhaka?",
+          a: "Yes, we deliver nationwide within three working days.",
+        },
+        {
+          q: "Can I pay cash on delivery?",
+          a: "Yes, cash on delivery is available for every district.",
+        },
       ],
     });
     expect(empty.score).toBeLessThan(full.score);
@@ -42,16 +53,25 @@ describe("seo analysis", () => {
 
   it("flags a title that overflows the snippet", () => {
     const report = analyseSeo({ ...base, metaTitle: "x".repeat(120) });
-    expect(report.checks.find((c) => c.id === "title.length")?.status).toBe("warn");
+    expect(report.checks.find((c) => c.id === "title.length")?.status).toBe(
+      "warn",
+    );
   });
 
   it("rejects a non-https social image", () => {
-    const report = analyseSeo({ ...base, ogImageUrl: "http://cdn.example.com/og.jpg" });
-    expect(report.checks.find((c) => c.id === "og.image")?.status).not.toBe("pass");
+    const report = analyseSeo({
+      ...base,
+      ogImageUrl: "http://cdn.example.com/og.jpg",
+    });
+    expect(report.checks.find((c) => c.id === "og.image")?.status).not.toBe(
+      "pass",
+    );
   });
 
   it("drops malformed faq rows instead of throwing", () => {
-    expect(normaliseFaq([{ q: "a", a: "b" }, { q: "" }, null, "nope"])).toEqual([{ q: "a", a: "b" }]);
+    expect(normaliseFaq([{ q: "a", a: "b" }, { q: "" }, null, "nope"])).toEqual(
+      [{ q: "a", a: "b" }],
+    );
   });
 });
 
@@ -71,28 +91,44 @@ describe("seo overrides in head output", () => {
       canonical: "https://custom.example.com/landing",
     };
     const head = buildStoreHead({ ...input, seo });
-    expect(head.meta?.find((m) => "title" in m)).toEqual({ title: "Merchant title" });
-    expect(head.links?.find((l) => l.rel === "canonical")?.href).toBe("https://custom.example.com/landing");
+    expect(head.meta?.find((m) => "title" in m)).toEqual({
+      title: "Merchant title",
+    });
+    expect(head.links?.find((l) => l.rel === "canonical")?.href).toBe(
+      "https://custom.example.com/landing",
+    );
   });
 
   it("keeps theme defaults when the override is blank", () => {
-    const head = buildStoreHead({ ...input, seo: { metaTitle: "  ", metaDescription: "" } });
+    const head = buildStoreHead({
+      ...input,
+      seo: { metaTitle: "  ", metaDescription: "" },
+    });
     const title = head.meta?.find((m) => "title" in m) as { title: string };
     expect(title.title).toContain("Demo Store");
   });
 
   it("honours a noindex toggle and drops the canonical link", () => {
     const head = buildStoreHead({ ...input, seo: { robotsIndex: false } });
-    expect(head.meta?.find((m) => m.name === "robots")?.content).toBe("noindex,follow");
+    expect(head.meta?.find((m) => m.name === "robots")?.content).toBe(
+      "noindex,follow",
+    );
     expect(head.links?.some((l) => l.rel === "canonical")).toBe(false);
   });
 
   it("emits FAQPage json-ld from merchant answers", () => {
     const head = buildStoreHead({
       ...input,
-      seo: { faq: [{ q: "Do you ship to Sylhet?", a: "Yes, in two days." }, { q: "", a: "ignored" }] },
+      seo: {
+        faq: [
+          { q: "Do you ship to Sylhet?", a: "Yes, in two days." },
+          { q: "", a: "ignored" },
+        ],
+      },
     });
-    const faq = (head.scripts ?? []).map((s) => s.children ?? "").find((c) => c.includes("FAQPage"));
+    const faq = (head.scripts ?? [])
+      .map((s) => s.children ?? "")
+      .find((c) => c.includes("FAQPage"));
     expect(faq).toBeTruthy();
     const parsed = JSON.parse(faq!);
     expect(parsed.mainEntity).toHaveLength(1);
@@ -100,7 +136,12 @@ describe("seo overrides in head output", () => {
   });
 
   it("ignores a non-https canonical override", () => {
-    const head = buildStoreHead({ ...input, seo: { canonical: "javascript:alert(1)" } });
-    expect(head.links?.find((l) => l.rel === "canonical")?.href).toBe("https://shop.example.com/store/demo");
+    const head = buildStoreHead({
+      ...input,
+      seo: { canonical: "javascript:alert(1)" },
+    });
+    expect(head.links?.find((l) => l.rel === "canonical")?.href).toBe(
+      "https://shop.example.com/store/demo",
+    );
   });
 });

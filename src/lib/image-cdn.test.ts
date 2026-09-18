@@ -2,12 +2,14 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { WIDTH_LADDER } from "./image-transform";
 
 vi.mock("./image-transform.server", () => ({
-  buildImageUrl: vi.fn(async (source: string, spec: { width: number; height: number }) =>
-    `/api/public/img/sig/${spec.width}x${spec.height}/${encodeURIComponent(source)}`,
+  buildImageUrl: vi.fn(
+    async (source: string, spec: { width: number; height: number }) =>
+      `/api/public/img/sig/${spec.width}x${spec.height}/${encodeURIComponent(source)}`,
   ),
 }));
 
-const { responsiveImage, responsiveImages, IMAGE_PRESETS } = await import("./image-cdn.server");
+const { responsiveImage, responsiveImages, IMAGE_PRESETS } =
+  await import("./image-cdn.server");
 
 describe("responsiveImage", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -20,16 +22,24 @@ describe("responsiveImage", () => {
 
   it("emits one srcset entry per preset width, ascending", async () => {
     const img = await responsiveImage("https://cdn.example.com/a.jpg", "card");
-    const widths = img!.srcSet.split(", ").map((e) => Number(e.split(" ")[1]!.replace("w", "")));
+    const widths = img!.srcSet
+      .split(", ")
+      .map((e) => Number(e.split(" ")[1]!.replace("w", "")));
     expect(widths).toEqual([...widths].sort((a, b) => a - b));
     expect(widths).toEqual([...IMAGE_PRESETS.card.widths]);
   });
 
   it("only ever requests widths on the shared ladder", async () => {
     for (const preset of ["thumb", "card", "hero", "banner"] as const) {
-      const img = await responsiveImage("https://cdn.example.com/a.jpg", preset);
-      const widths = img!.srcSet.split(", ").map((e) => Number(e.split(" ")[1]!.replace("w", "")));
-      for (const w of widths) expect(WIDTH_LADDER).toContain(w as (typeof WIDTH_LADDER)[number]);
+      const img = await responsiveImage(
+        "https://cdn.example.com/a.jpg",
+        preset,
+      );
+      const widths = img!.srcSet
+        .split(", ")
+        .map((e) => Number(e.split(" ")[1]!.replace("w", "")));
+      for (const w of widths)
+        expect(WIDTH_LADDER).toContain(w as (typeof WIDTH_LADDER)[number]);
     }
   });
 
@@ -40,8 +50,13 @@ describe("responsiveImage", () => {
   });
 
   it("keeps banner aspect ratio in the derived height", async () => {
-    const img = await responsiveImage("https://cdn.example.com/a.jpg", "banner");
-    expect(img!.height).toBe(Math.round(img!.width / IMAGE_PRESETS.banner.aspect));
+    const img = await responsiveImage(
+      "https://cdn.example.com/a.jpg",
+      "banner",
+    );
+    expect(img!.height).toBe(
+      Math.round(img!.width / IMAGE_PRESETS.banner.aspect),
+    );
   });
 
   it("passes the preset sizes hint through unchanged", async () => {
@@ -51,7 +66,11 @@ describe("responsiveImage", () => {
 
   it("maps a list while preserving order and tolerating gaps", async () => {
     const out = await responsiveImages(
-      [{ image_url: "https://cdn.example.com/1.jpg" }, { image_url: null }, { image_url: "https://cdn.example.com/3.jpg" }],
+      [
+        { image_url: "https://cdn.example.com/1.jpg" },
+        { image_url: null },
+        { image_url: "https://cdn.example.com/3.jpg" },
+      ],
       "card",
     );
     expect(out).toHaveLength(3);

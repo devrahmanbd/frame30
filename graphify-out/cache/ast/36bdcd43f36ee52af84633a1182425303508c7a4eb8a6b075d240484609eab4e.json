@@ -1,1 +1,493 @@
-{"nodes": [{"id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "label": "multiagent-mock-2026-06-22T17-02-43-846Z.json", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L1"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_schemaversion", "label": "schemaVersion", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L2"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_adr", "label": "adr", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L3"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_backend", "label": "backend", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L4"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_seed", "label": "seed", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L5"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_runspertask", "label": "runsPerTask", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L6"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_startedat", "label": "startedAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L7"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_finishedat", "label": "finishedAt", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L8"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_pertask", "label": "perTask", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L9"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "label": "overall", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L71"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalruns", "label": "totalRuns", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L72"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalpasses", "label": "totalPasses", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L73"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_overallpassrate", "label": "overallPassRate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L74"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalcostusd", "label": "totalCostUsd", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L75"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_avglatencyms", "label": "avgLatencyMs", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L76"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "label": "targets", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L78"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph", "label": "langGraph", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L79"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_passrate", "label": "passRate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L80"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_costpertask", "label": "costPerTask", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L81"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L82"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen", "label": "autoGen", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L84"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_passrate", "label": "passRate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L85"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_costpertask", "label": "costPerTask", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L86"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L87"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai", "label": "crewAi", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L89"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_passrate", "label": "passRate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L90"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_costpertask", "label": "costPerTask", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L91"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_source", "label": "source", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L92"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget", "label": "rufloTarget", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L94"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_ruflotarget_passrate", "label": "passRate", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L95"}, {"id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_note", "label": "note", "file_type": "code", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L98"}], "edges": [{"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_schemaversion", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L2", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_adr", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L3", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_backend", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L4", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_seed", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L5", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_runspertask", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L6", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_startedat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L7", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_finishedat", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L8", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_pertask", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L9", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L71", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalruns", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L72", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalpasses", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L73", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_overallpassrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L74", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalcostusd", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L75", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_avglatencyms", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L76", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L78", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L79", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_passrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L80", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_costpertask", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L81", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L82", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L84", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_passrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L85", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_costpertask", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L86", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L87", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L89", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_passrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L90", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_costpertask", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L91", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_source", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L92", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L94", "weight": 1.0}, {"source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_ruflotarget_passrate", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L95", "weight": 1.0}, {"source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json", "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_note", "relation": "contains", "confidence": "EXTRACTED", "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json", "source_location": "L98", "weight": 1.0}]}
+{
+  "nodes": [
+    {
+      "id": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "label": "multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_schemaversion",
+      "label": "schemaVersion",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L2"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_adr",
+      "label": "adr",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L3"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_backend",
+      "label": "backend",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L4"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_seed",
+      "label": "seed",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L5"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_runspertask",
+      "label": "runsPerTask",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L6"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_startedat",
+      "label": "startedAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L7"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_finishedat",
+      "label": "finishedAt",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L8"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_pertask",
+      "label": "perTask",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L9"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "label": "overall",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L71"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalruns",
+      "label": "totalRuns",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L72"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalpasses",
+      "label": "totalPasses",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L73"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_overallpassrate",
+      "label": "overallPassRate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L74"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalcostusd",
+      "label": "totalCostUsd",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L75"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_avglatencyms",
+      "label": "avgLatencyMs",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L76"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "label": "targets",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L78"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph",
+      "label": "langGraph",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L79"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_passrate",
+      "label": "passRate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L80"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_costpertask",
+      "label": "costPerTask",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L81"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L82"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen",
+      "label": "autoGen",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L84"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_passrate",
+      "label": "passRate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L85"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_costpertask",
+      "label": "costPerTask",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L86"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L87"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai",
+      "label": "crewAi",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L89"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_passrate",
+      "label": "passRate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L90"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_costpertask",
+      "label": "costPerTask",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L91"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_source",
+      "label": "source",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L92"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget",
+      "label": "rufloTarget",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L94"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_ruflotarget_passrate",
+      "label": "passRate",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L95"
+    },
+    {
+      "id": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_note",
+      "label": "note",
+      "file_type": "code",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L98"
+    }
+  ],
+  "edges": [
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_schemaversion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_adr",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_backend",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_seed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_runspertask",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_startedat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_finishedat",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_pertask",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalruns",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalpasses",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_overallpassrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_totalcostusd",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_overall_avglatencyms",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_passrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_costpertask",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_langgraph",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_langgraph_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L82",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_passrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_costpertask",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L86",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_autogen",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_autogen_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L87",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_passrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L90",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_costpertask",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L91",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_crewai",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_crewai_source",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L92",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
+      "source": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_targets_ruflotarget",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_ruflotarget_passrate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L95",
+      "weight": 1.0
+    },
+    {
+      "source": "users_rahman_documents_frame30_agents_skills_ruflo_docs_benchmarks_multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_json",
+      "target": "multi_agent_multiagent_mock_2026_06_22t17_02_43_846z_note",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "/Users/rahman/Documents/frame30/.agents/.skills/ruflo/docs/benchmarks/multi-agent/multiagent-mock-2026-06-22T17-02-43-846Z.json",
+      "source_location": "L98",
+      "weight": 1.0
+    }
+  ]
+}

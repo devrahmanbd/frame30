@@ -7,7 +7,8 @@ export const Route = createFileRoute("/api/public/cron/notifications")({
     handlers: {
       GET: cronGet,
       POST: cronPost("notifications", async () => {
-        const { runNotificationSweep } = await import("@/lib/notifications-cron.server");
+        const { runNotificationSweep } =
+          await import("@/lib/notifications-cron.server");
         return runNotificationSweep("cron");
       }),
     },

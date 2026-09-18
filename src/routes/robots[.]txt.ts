@@ -7,7 +7,8 @@ export const Route = createFileRoute("/robots.txt")({
     handlers: {
       GET: async ({ request }) => {
         const { listPublicStores } = await import("@/lib/marketing.server");
-        const { marketingAllowPaths, MARKETING_ROUTES } = await import("@/lib/marketing-seo");
+        const { marketingAllowPaths, MARKETING_ROUTES } =
+          await import("@/lib/marketing-seo");
         const origin = new URL(request.url).origin;
         const lines = [
           "User-agent: *",
@@ -21,7 +22,9 @@ export const Route = createFileRoute("/robots.txt")({
           ...marketingAllowPaths().map((path) => `Allow: ${path}`),
           // Non-indexable marketing routes (live status) stay out of the index
           // and out of the crawl budget; the head also carries noindex.
-          ...MARKETING_ROUTES.filter((r) => !r.indexable).map((r) => `Disallow: ${r.path}`),
+          ...MARKETING_ROUTES.filter((r) => !r.indexable).map(
+            (r) => `Disallow: ${r.path}`,
+          ),
           "Disallow: /dashboard",
           "Disallow: /admin",
           "Disallow: /auth",
@@ -41,7 +44,10 @@ export const Route = createFileRoute("/robots.txt")({
         lines.push("");
         lines.push(`# llms.txt: ${origin}/llms.txt`);
         return new Response(`${lines.join("\n")}\n`, {
-          headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "public, max-age=3600" },
+          headers: {
+            "content-type": "text/plain; charset=utf-8",
+            "cache-control": "public, max-age=3600",
+          },
         });
       },
     },

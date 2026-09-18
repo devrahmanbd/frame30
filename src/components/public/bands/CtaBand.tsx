@@ -53,18 +53,32 @@ export function CtaBand({
           title={title}
           body={body}
           actions={actions}
-          aside={note ? <div className="max-w-xs text-sm opacity-80">{note}</div> : undefined}
+          aside={
+            note ? (
+              <div className="max-w-xs text-sm opacity-80">{note}</div>
+            ) : undefined
+          }
         />
       ) : (
-        <Reveal className={cn("fq-glass fq-gridlines fq-halo fq-edge-inner rounded-fq-lg p-8 sm:p-12")}>
+        <Reveal
+          className={cn(
+            "fq-glass fq-gridlines fq-halo fq-edge-inner rounded-fq-lg p-8 sm:p-12",
+          )}
+        >
           <h2 id={id} className="fq-display text-3xl sm:text-4xl">
             {title}
           </h2>
           {/* `div` wrappers: `body`/`note` are ReactNode, and callers pass
               checklists. `<p><ul>` is invalid HTML and breaks hydration. */}
-          {body ? <div className="fq-measure mt-4 text-muted-foreground">{body}</div> : null}
-          <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 [&>*]:w-full [&>*]:sm:w-auto [&>*]:min-h-[44px] [&>*]:flex [&>*]:items-center [&>*]:justify-center">{actions}</div>
-          {note ? <div className="mt-4 text-sm text-muted-foreground">{note}</div> : null}
+          {body ? (
+            <div className="fq-measure mt-4 text-muted-foreground">{body}</div>
+          ) : null}
+          <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 [&>*]:w-full [&>*]:sm:w-auto [&>*]:min-h-[44px] [&>*]:flex [&>*]:items-center [&>*]:justify-center">
+            {actions}
+          </div>
+          {note ? (
+            <div className="mt-4 text-sm text-muted-foreground">{note}</div>
+          ) : null}
         </Reveal>
       )}
     </Band>

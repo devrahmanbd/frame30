@@ -1,20 +1,91 @@
 {
   "nodes": [
-    {"id": "mkt_dashboard", "type": "image", "label": "Dashboard Marketing Image", "properties": {"asset": "dashboard", "format": "jpg", "category": "product_feature"}},
-    {"id": "mkt_courier", "type": "image", "label": "Courier Marketing Image", "properties": {"asset": "courier", "format": "jpg", "category": "logistics"}},
-    {"id": "mkt_payment_hands", "type": "image", "label": "Payment Hands Marketing Image", "properties": {"asset": "payment-hands", "format": "jpg", "category": "payments"}},
-    {"id": "mkt_themes", "type": "image", "label": "Themes Marketing Image", "properties": {"asset": "themes", "format": "jpg", "category": "design"}},
-    {"id": "mkt_mobile_store", "type": "image", "label": "Mobile Store Marketing Image", "properties": {"asset": "mobile-store", "format": "jpg", "category": "mobile_commerce"}}
+    {
+      "id": "mkt_dashboard",
+      "type": "image",
+      "label": "Dashboard Marketing Image",
+      "properties": {
+        "asset": "dashboard",
+        "format": "jpg",
+        "category": "product_feature"
+      }
+    },
+    {
+      "id": "mkt_courier",
+      "type": "image",
+      "label": "Courier Marketing Image",
+      "properties": {
+        "asset": "courier",
+        "format": "jpg",
+        "category": "logistics"
+      }
+    },
+    {
+      "id": "mkt_payment_hands",
+      "type": "image",
+      "label": "Payment Hands Marketing Image",
+      "properties": {
+        "asset": "payment-hands",
+        "format": "jpg",
+        "category": "payments"
+      }
+    },
+    {
+      "id": "mkt_themes",
+      "type": "image",
+      "label": "Themes Marketing Image",
+      "properties": { "asset": "themes", "format": "jpg", "category": "design" }
+    },
+    {
+      "id": "mkt_mobile_store",
+      "type": "image",
+      "label": "Mobile Store Marketing Image",
+      "properties": {
+        "asset": "mobile-store",
+        "format": "jpg",
+        "category": "mobile_commerce"
+      }
+    }
   ],
   "edges": [
-    {"source": "mkt_dashboard", "target": "mkt_mobile_store", "type": "related_to", "properties": {"relation": "admin_interfaces"}},
-    {"source": "mkt_courier", "target": "mkt_payment_hands", "type": "related_to", "properties": {"relation": "order_fulfillment"}},
-    {"source": "mkt_themes", "target": "mkt_mobile_store", "type": "related_to", "properties": {"relation": "storefront_customization"}}
+    {
+      "source": "mkt_dashboard",
+      "target": "mkt_mobile_store",
+      "type": "related_to",
+      "properties": { "relation": "admin_interfaces" }
+    },
+    {
+      "source": "mkt_courier",
+      "target": "mkt_payment_hands",
+      "type": "related_to",
+      "properties": { "relation": "order_fulfillment" }
+    },
+    {
+      "source": "mkt_themes",
+      "target": "mkt_mobile_store",
+      "type": "related_to",
+      "properties": { "relation": "storefront_customization" }
+    }
   ],
   "hyperedges": [
-    {"id": "he_product_features", "nodes": ["mkt_dashboard", "mkt_themes", "mkt_mobile_store"], "label": "Core Platform Features", "properties": {"category": "product"}},
-    {"id": "he_commerce_operations", "nodes": ["mkt_courier", "mkt_payment_hands"], "label": "Commerce Operations", "properties": {"category": "operations"}},
-    {"id": "he_user_interfaces", "nodes": ["mkt_dashboard", "mkt_mobile_store", "mkt_themes"], "label": "User Interfaces", "properties": {"category": "ux"}}
+    {
+      "id": "he_product_features",
+      "nodes": ["mkt_dashboard", "mkt_themes", "mkt_mobile_store"],
+      "label": "Core Platform Features",
+      "properties": { "category": "product" }
+    },
+    {
+      "id": "he_commerce_operations",
+      "nodes": ["mkt_courier", "mkt_payment_hands"],
+      "label": "Commerce Operations",
+      "properties": { "category": "operations" }
+    },
+    {
+      "id": "he_user_interfaces",
+      "nodes": ["mkt_dashboard", "mkt_mobile_store", "mkt_themes"],
+      "label": "User Interfaces",
+      "properties": { "category": "ux" }
+    }
   ],
   "input_tokens": 0,
   "output_tokens": 0

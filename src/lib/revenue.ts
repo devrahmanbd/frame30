@@ -45,7 +45,9 @@ export function revenueSnapshot(
   reportingCurrency = "BDT",
 ): RevenueSnapshot {
   const price = new Map(
-    plans.map((p) => [`${p.plan}:${p.currencyCode}`, p.priceMinorInt ?? 0] as const),
+    plans.map(
+      (p) => [`${p.plan}:${p.currencyCode}`, p.priceMinorInt ?? 0] as const,
+    ),
   );
   const perPlan = new Map<string, { paying: number; mrrMinorInt: number }>();
   const mixed = new Set<string>();
@@ -120,7 +122,11 @@ export function churnWindow(
   for (const s of subs) {
     const cancelled = s.cancelledAt ? Date.parse(s.cancelledAt) : null;
     const created = s.createdAt ? Date.parse(s.createdAt) : null;
-    if (cancelled !== null && cancelled >= start && cancelled <= now.getTime()) {
+    if (
+      cancelled !== null &&
+      cancelled >= start &&
+      cancelled <= now.getTime()
+    ) {
       cancelledInWindow += 1;
     }
     // Existed before the window opened and had not already churned by then.
